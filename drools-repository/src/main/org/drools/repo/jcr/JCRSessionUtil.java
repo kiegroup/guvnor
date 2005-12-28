@@ -21,11 +21,21 @@ import org.apache.jackrabbit.core.jndi.RegistryHelper;
 public class JCRSessionUtil
 {
 
+    public static final String REPO_JNDI_NAME = "repo";
+
+    /**
+     * At the moment this is all hard coded to be un-authenticated and local
+     * It is looking for a jaas.config, as well as the repository.xml to setup the repository.
+     * @return
+     * @throws NamingException
+     * @throws RepositoryException
+     */
     public Session getSession() throws NamingException, RepositoryException {
         
+        
         System.setProperty("java.security.auth.login.config", "c:/jaas.config");                 
-        String configFile = "repotest/repository.xml";
-        String repHomeDir = "repotest";
+        String configFile = "conf/repository.xml";
+        String repHomeDir = "drools-repository";
 
         Hashtable env = new Hashtable( );
         env.put( Context.INITIAL_CONTEXT_FACTORY,
@@ -35,19 +45,29 @@ public class JCRSessionUtil
         
         InitialContext ctx = new InitialContext( env );
 
-        //configure repo, if its not already
-        RegistryHelper.registerRepository( ctx,
-                                           "repo",
-                                           configFile,
-                                           repHomeDir,
-                                           true );
-        Repository r = (Repository) ctx.lookup( "repo" );
+        registerNewRepoInJNDI( configFile,
+                               repHomeDir,
+                               ctx );
+        Repository r = (Repository) ctx.lookup( REPO_JNDI_NAME );
         
         Session session = r.login( new SimpleCredentials( "userid",
                                                           "".toCharArray( ) ),
                                    null );
         return session;        
         
+    }
+
+    private void registerNewRepoInJNDI(String configFile,
+                                       String repHomeDir,
+                                       InitialContext ctx) throws NamingException,
+                                                          RepositoryException
+    {
+        //configure repo, if its not already
+        RegistryHelper.registerRepository( ctx,
+                                           REPO_JNDI_NAME,
+                                           configFile,
+                                           repHomeDir,
+                                           true );
     }
     
 }

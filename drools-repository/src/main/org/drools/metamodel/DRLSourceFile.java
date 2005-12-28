@@ -5,14 +5,14 @@ package org.drools.metamodel;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  */
-public class DRLSourceFile extends RuleSetFile
+public class DRLSourceFile 
 {
     
     private String content;
-    
+    private String name;
     
     public DRLSourceFile(String content, String name) {
-        super.name = name;
+        this.name = name;
         this.content = content;
         
     }
