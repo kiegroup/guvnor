@@ -4,12 +4,18 @@ import org.drools.repository.RuleDef;
 
 import junit.framework.TestCase;
 
-public class RepositoryImplTest extends TestCase {
+public class RepositoryImplTest extends HibernateTester {
 
     public void testStoreNewRuleDef() throws Exception {
+       
         RepositoryImpl repo = new RepositoryImpl();
         RuleDef def = repo.addNewRule("myRule", "A rule", "some comment");
         assertNotNull(def.getId());
+        
+        
+        
+        
+        
     }
     
 }

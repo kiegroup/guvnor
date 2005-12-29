@@ -10,20 +10,19 @@
         <id name="id" column="RULE_ID">
             <generator class="native"/>
         </id>
-        
-<!-- 
-        <property name="dateSaved" type="timestamp" column="DATE_CREATED"/>
         <property name="name"/>
-        <property name="versionNumber"/>      
-        <property name="content" />
-		<property name="status" />
-		<property name="checkedOut" />
-		<property name="checkedOutBy" />
+        <property name="versionNumber"/>  
+		<property name="content" />   
+		<property name="status" />	
+		<property name="checkedOut" />	
+		<property name="checkedOutBy" />	
 		<property name="versionComment" />
 		<property name="documentation" />		
 		<property name="effectiveDate" />		
-		<property name="expiryDate" />
- -->		
+		<property name="expiryDate" />					
+        <property name="dateSaved" type="timestamp" column="DATE_CREATED"/>
+        
+ 
     </class>
 
 </hibernate-mapping>        

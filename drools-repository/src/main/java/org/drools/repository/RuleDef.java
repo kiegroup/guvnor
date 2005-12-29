@@ -11,7 +11,7 @@ public class RuleDef extends Persistent {
     private MetaData metaData;
     private String status;
     private boolean checkedOut;    
-    private String checkOutBy;
+    private String checkedOutBy;
     private String versionComment;
     private Set tags;
     private String documentation;
@@ -65,11 +65,11 @@ public class RuleDef extends Persistent {
     public void setCheckedOut(boolean checkedOut){
         this.checkedOut = checkedOut;
     }
-    public String getCheckOutBy(){
-        return checkOutBy;
+    public String getCheckedOutBy(){
+        return checkedOutBy;
     }
-    public void setCheckOutBy(String checkOutBy){
-        this.checkOutBy = checkOutBy;
+    public void setCheckedOutBy(String checkOutBy){
+        this.checkedOutBy = checkOutBy;
     }
     public boolean isHead(){
         return isHead;
@@ -116,8 +116,9 @@ public class RuleDef extends Persistent {
     public String getName(){
         return name;
     }
-    public void setName(String name){
+    public RuleDef setName(String name){
         this.name = name;
+        return this;
     }
 
     
