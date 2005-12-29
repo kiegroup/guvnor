@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+<hibernate-mapping>
+
+    <class name="org.drools.repository.RuleDef" table="RULE_DEFINITIONS">
+        <id name="id" column="RULE_ID">
+            <generator class="native"/>
+        </id>
+        <natural-id>
+        	<property name="name"/>
+        	<property name="versionNumber" />
+        </natural-id>
+        
+		<property name="content" />   
+		<property name="status" />	
+		<property name="checkedOut" />	
+		<property name="checkedOutBy" />	
+		<property name="versionComment" />
+		<property name="documentation" />		
+		<property name="effectiveDate" />		
+		<property name="expiryDate" />					
+        <property name="dateCreated" type="timestamp" column="DATE_CREATED"/>
+        <property name="head" />
+ 
+    </class>
+
+</hibernate-mapping>        
