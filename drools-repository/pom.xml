@@ -6,11 +6,10 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-
   <artifactId>drools-repository</artifactId>
-
-  <name>Drools :: Repository</name>
-  <version>3.0-M1-dev</version>
+  <name>Drools :: Repository API</name>
+  <version>3.0-M1-dev</version>  
+  <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
@@ -19,6 +18,22 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+
+	<!-- should update this to 3.1 final when it is pom'ed  -->
+    <dependency>
+      <groupId>hibernate</groupId>
+      <artifactId>hibernate</artifactId>
+      <version>3.1rc2</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>1.8.0.1</version>
+    </dependency>    
+
+
   </dependencies>
+
 
 </project>
