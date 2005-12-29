@@ -6,7 +6,7 @@ import java.util.Set;
 public class RuleDef extends Persistent {
 
     private String name;
-    private Long versionNumber;
+    private long versionNumber;
     private String content;
     private MetaData metaData;
     private String status;
@@ -17,21 +17,34 @@ public class RuleDef extends Persistent {
     private String documentation;
     private Date effectiveDate;
     private Date expiryDate;     
-    private Date dateSaved;
+    private Date dateCreated;
     
-    public Date getDateSaved(){
-        return dateSaved;
+    public Date getDateCreated(){
+        return dateCreated;
     }
-    private void setDateSaved(Date dateSaved){
-        this.dateSaved = dateSaved;
+    private void setDateCreated(Date dateCreated){
+        this.dateCreated = dateCreated;
     }
     
     public RuleDef() {}
+    
+    /**
+     * This is for creating a brand new rule.
+     * @param name
+     * @param content
+     */
+    public RuleDef(String name, String content) {
+        this.name = name;
+        this.content = content;
+        this.versionNumber = 1;
+        this.head = true;
+        this.dateCreated = new Date();
+    }
     /**
      * This little cheat tells the repo that this
      * rule is at the head of versions.
      */
-    private boolean isHead;
+    private boolean head;
     
     
     public String getContent(){
@@ -53,12 +66,7 @@ public class RuleDef extends Persistent {
     public void setStatus(String status){
         this.status = status;
     }
-    public Long getVersion(){
-        return versionNumber;
-    }
-    private void setVersion(Long version){
-        this.versionNumber = version;
-    }
+
     public boolean isCheckedOut(){
         return checkedOut;
     }
@@ -72,10 +80,10 @@ public class RuleDef extends Persistent {
         this.checkedOutBy = checkOutBy;
     }
     public boolean isHead(){
-        return isHead;
+        return head;
     }
     public void setHead(boolean isHead){
-        this.isHead = isHead;
+        this.head = isHead;
     }
     public String getVersionComment(){
         return versionComment;
@@ -83,10 +91,10 @@ public class RuleDef extends Persistent {
     public void setVersionComment(String versionComment){
         this.versionComment = versionComment;
     }
-    public Long getVersionNumber(){
-        return versionNumber;
+    public long getVersionNumber(){
+        return this.versionNumber;
     }
-    private void setVersionNumber(Long versionNumber){
+    private void setVersionNumber(long versionNumber){
         this.versionNumber = versionNumber;
     }
     public String getDocumentation(){
