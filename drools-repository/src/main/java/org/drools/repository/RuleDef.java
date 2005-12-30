@@ -1,6 +1,8 @@
 package org.drools.repository;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class RuleDef extends Persistent {
@@ -16,15 +18,34 @@ public class RuleDef extends Persistent {
     private Set tags;
     private String documentation;
     private Date effectiveDate;
-    private Date expiryDate;     
-    private Date dateCreated;
+    private Date expiryDate;   
+    private boolean deleted;
+
     
-    public Date getDateCreated(){
-        return dateCreated;
+    public boolean isDeleted(){
+        return deleted;
     }
-    private void setDateCreated(Date dateCreated){
-        this.dateCreated = dateCreated;
+
+
+
+    public void setDeleted(boolean deleted){
+        this.deleted = deleted;
     }
+
+
+
+    /**
+     * Use tagging to aid with searching and sorting of large numbers of rules.
+     * Tags should not effect the versioning of the rules.
+     *  
+     *
+     */
+    public RuleDef addTag(String tag) {
+        this.tags.add(new Tag(tag));
+        return this;
+    }
+    
+
     
     public RuleDef() {}
     
@@ -37,8 +58,8 @@ public class RuleDef extends Persistent {
         this.name = name;
         this.content = content;
         this.versionNumber = 1;
-        this.head = true;
-        this.dateCreated = new Date();
+        this.head = true;   
+        this.tags = new HashSet();
     }
     /**
      * This little cheat tells the repo that this
@@ -106,7 +127,7 @@ public class RuleDef extends Persistent {
     public Set getTags(){
         return tags;
     }
-    public void setTags(Set tags){
+    private void setTags(Set tags){
         this.tags = tags;
     }
     public Date getEffectiveDate(){
@@ -129,6 +150,18 @@ public class RuleDef extends Persistent {
         return this;
     }
 
+    /** return a list of tags */
+    public String[] listTags() {
+
+        String[] tagList = new String[tags.size()];
+        int i = 0;
+        for ( Iterator iter = tags.iterator(); iter.hasNext(); ) {
+            Tag tag = (Tag) iter.next();
+            tagList[i] = tag.getTag();                   
+            i++;
+        }
+        return tagList;
+    }
     
     
 }

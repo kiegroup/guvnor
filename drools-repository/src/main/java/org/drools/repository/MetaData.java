@@ -4,32 +4,34 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * This is based on the <a href="http://dublincore.org/documents/dces/">
- * Dublin Core</a> specification, plus a little bit more, and a little bit
- * less. Not all of these fields will be used.
+ * This is based on the <a href="http://dublincore.org/documents/dces/"> Dublin
+ * Core</a> specification. Not
+ * all of these fields will be used by everyone. They should only be used for classification.
  */
-public class MetaData implements Serializable {
+public class MetaData
+    implements
+    Serializable {
 
-    private String         title;
-    private String         creator;
-    private String         subject;
-    private String         description;
-    private String         publisher;
-    private String         contributor;
-    private Date dateCreated = new Date();
-    private String         format;
-    private String         source;
-    private String         language;
-    private String         relation;
-    private String         coverage;
-    private String         rights;
+    private String title;
+    private String creator;
+    private String subject;
+    private String description;
+    private String publisher;
+    private String contributor;
+    private Date   dateCreated = new Date();
+    private String format;
+    private String source;
+    private String language;
+    private String relation;
+    private String coverage;
+    private String rights;
 
     public String getContributor(){
         return contributor;
     }
 
     public void setContributor(String contributor){
-        this.contributor = contributor;        
+        this.contributor = contributor;
     }
 
     public String getCoverage(){

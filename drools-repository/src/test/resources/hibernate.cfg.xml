@@ -32,7 +32,12 @@
         <!-- Drop and re-create the database schema on startup -->
         <property name="hbm2ddl.auto">create</property>
 
+		<!-- add in all the objects below -->
         <mapping resource="org/drools/repository/RuleDef.hbm.xml"/>
+        <mapping resource="org/drools/repository/Tag.hbm.xml"/>
+        <mapping resource="org/drools/repository/RuleSetDef.hbm.xml"/>
+        
+
 
     </session-factory>
 

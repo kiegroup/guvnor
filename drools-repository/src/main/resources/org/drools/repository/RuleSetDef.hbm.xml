@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+<hibernate-mapping>
+
+    <class name="org.drools.repository.RuleSetDef" table="RULESET_DEFINITIONS">
+        <id name="id" column="RULESET_ID">
+			<generator class="native"/>
+        </id>
+        
+        <natural-id>        
+			<property name="name" />
+			<property name="versionNumber" />
+		</natural-id>
+		
+		<component name="metaData">
+			<property name="title" />
+			<property name="creator" />
+			<property name="subject" />
+			<property name="description" />
+			<property name="publisher" />
+			<property name="contributor" />
+			<property name="dateCreated" />
+			<property name="format" />
+			<property name="source" />
+			<property name="language" />
+			<property name="relation" />
+			<property name="coverage" />
+			<property name="rights" />
+		</component>
+	
+	
+		<!--  tags to aid with searching and management of rules -->        
+		<set name="tags" table="RULESET_TAGS" lazy="false">
+		    <key column="RULESET_ID"/>
+		    <many-to-many column="TAG_ID" class="org.drools.repository.Tag"/>
+		</set>  		
+
+    </class>
+
+</hibernate-mapping>    

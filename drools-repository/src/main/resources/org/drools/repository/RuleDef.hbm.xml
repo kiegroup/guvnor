@@ -10,10 +10,10 @@
         <id name="id" column="RULE_ID">
             <generator class="native"/>
         </id>
-        <natural-id>
+<!--        <natural-id> -->
         	<property name="name"/>
         	<property name="versionNumber" />
-        </natural-id>
+<!--        </natural-id> -->
         
 		<property name="content" />   
 		<property name="status" />	
@@ -23,8 +23,14 @@
 		<property name="documentation" />		
 		<property name="effectiveDate" />		
 		<property name="expiryDate" />					
-        <property name="dateCreated" type="timestamp" column="DATE_CREATED"/>
         <property name="head" />
+        <property name="deleted" />
+
+		<!--  tags to aid with searching and management of rules -->        
+		<set name="tags" table="RULE_TAGS" lazy="false">
+		    <key column="RULE_ID"/>
+		    <many-to-many column="TAG_ID" class="org.drools.repository.Tag"/>
+		</set>        
  
     </class>
 
