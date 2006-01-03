@@ -130,4 +130,22 @@ public class MetaData
         this.title = title;
     }
 
+    public MetaData copy(){
+        MetaData copy = new MetaData();
+        copy.contributor = this.contributor;
+        copy.coverage = this.coverage;
+        copy.creator = this.creator;
+        copy.dateCreated = this.dateCreated;
+        copy.description = this.description;
+        copy.format = this.format;
+        copy.language = this.language;
+        copy.publisher = this.publisher;
+        copy.relation = this.relation;
+        copy.rights = this.rights;
+        copy.source = this.source;
+        copy.subject = this.subject;
+        copy.title = this.title;        
+        return copy;
+    }
+
 }

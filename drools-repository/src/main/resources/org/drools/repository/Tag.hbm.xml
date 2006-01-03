@@ -7,7 +7,10 @@
 <hibernate-mapping>
 
     <class name="org.drools.repository.Tag" table="DROOLS_TAGS">
-        <id name="tag" column="TAG_VALUE"/>
+    	<id name="id" column="TAG_ID">
+    		<generator class="native" />
+    	</id>
+        <property name="tag" column="TAG_VALUE"/>
     </class>
 
 </hibernate-mapping>        

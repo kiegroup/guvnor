@@ -1,5 +1,6 @@
 package org.drools.repository;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,41 +9,40 @@ public class RuleSetDef extends Persistent {
     
     private String name;
     private MetaData metaData;
-    private List rules;
-    private long versionNumber;
-    private Set tags;
+    private Set rules;
+    private Set tags;    
     
     public RuleSetDef(String name, MetaData meta) {
         this.name = name;
         this.metaData = meta;
-        this.versionNumber = 1;
         this.tags = new HashSet();
+        this.rules = new HashSet();
     }
     
     /**
      * This is not for public consumption. Use the 
      * proper constructor instead.
      */
-    public RuleSetDef() {        
+    RuleSetDef() {        
+    }
+    
+    public RuleSetDef addRule(RuleDef rule) {
+        this.rules.add(rule);
+        return this;
     }
     
     
-    public long getVersionNumber(){
-        return versionNumber;
-    }
-    private void setVersionNumber(long versionNumber){
-        this.versionNumber = versionNumber;
-    }
+
     public MetaData getMetaData(){
         return metaData;
     }
     public void setMetaData(MetaData metaData){
         this.metaData = metaData;
     }
-    public List getRules(){
+    public Set getRules(){
         return rules;
     }
-    public void setRules(List rules){
+    private void setRules(Set rules){
         this.rules = rules;
     }
     public String getName(){

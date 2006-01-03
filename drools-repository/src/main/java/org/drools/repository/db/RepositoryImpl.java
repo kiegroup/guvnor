@@ -15,29 +15,28 @@ import org.hibernate.Session;
 
 public class RepositoryImpl implements Repository {
 
-    public RuleDef addNewRule(RuleDef newRule) {
+    /** This will simply save the current version of the rule */
+    public RuleDef saveOrUpdateRule(RuleDef newRule) {
         Session session = getSession();
         session.beginTransaction();
 
-        Set tags = newRule.getTags();
-        saveTags( session,
-                  tags );
-        
-        session.save(newRule);
+        session.saveOrUpdate(newRule);
+
+        session.getTransaction().commit();
+        //session.close();
+        return newRule;
+    }
+    
+    /** This will simply save the current version of the rule */
+    public RuleDef merge(RuleDef newRule) {
+        Session session = getSession();
+        session.beginTransaction();
+
+        session.merge(newRule);
 
         session.getTransaction().commit();
         return newRule;
-    }
-
-
-    private void saveTags(Session session,
-                          Set tags){
-        for ( Iterator iter = tags.iterator(); iter.hasNext(); ) {
-            Tag tag = (Tag) iter.next();
-            session.saveOrUpdate(tag);
-        }
-    }
-
+    }    
     
     public List listAllRules(boolean head) {
         Session session = getSession();
@@ -50,7 +49,7 @@ public class RepositoryImpl implements Repository {
         return results;        
     }
     
-    public RuleDef retrieveRule(String ruleName, long versionNumber) {
+    public RuleDef loadRule(String ruleName, long versionNumber) {
         Session session = getSession();
         session.beginTransaction();
         
@@ -60,6 +59,17 @@ public class RepositoryImpl implements Repository {
         
         session.getTransaction().commit();
         return result;
+    }
+    
+    public List listRuleHistory(String ruleName) {
+        Session session = getSession();
+        session.beginTransaction();
+        
+        List result = (List) session.createQuery("from RuleDef where name = :name order by versionNumber")
+              .setString("name", ruleName).list();
+        
+        session.getTransaction().commit();
+        return result;        
     }
     
     public List findRulesByTag(String tag) {
@@ -74,22 +84,20 @@ public class RepositoryImpl implements Repository {
     
 
     
-    public RuleSetDef saveRuleSet(RuleSetDef ruleSet) {
+    public RuleSetDef saveOrUpdateRuleSet(RuleSetDef ruleSet) {
         Session session = getSession();
         session.beginTransaction();     
-        saveTags(session, ruleSet.getTags());
         session.saveOrUpdate(ruleSet);
         session.getTransaction().commit();
         return ruleSet;
     }
     
-    public RuleSetDef retrieveRuleSet(String ruleSetName, long versionNumber) {
+    public RuleSetDef loadRuleSet(String ruleSetName) {
         Session session = getSession();
         session.beginTransaction();        
         RuleSetDef def = (RuleSetDef)
-                session.createQuery("from RuleSetDef where name = :name and versionNumber = :versionNumber")
-                .setString("name", ruleSetName )
-                .setLong("versionNumber", versionNumber).uniqueResult();
+                session.createQuery("from RuleSetDef where name = :name")
+                .setString("name", ruleSetName ).uniqueResult();
         session.getTransaction().commit();
         return def;
     }

@@ -150,7 +150,7 @@ public class RuleDef extends Persistent {
         return this;
     }
 
-    /** return a list of tags */
+    /** return a list of tags as Strings */
     public String[] listTags() {
 
         String[] tagList = new String[tags.size()];
@@ -162,6 +162,56 @@ public class RuleDef extends Persistent {
         }
         return tagList;
     }
+    
+    public RuleDef createNewVersion() {
+//        if (this.checkedOut) {
+//            throw new RuleRepositoryLockException("Rule is checked out by " + this.checkedOutBy);
+//        }
+        RuleDef newVersion = new RuleDef();
+        newVersion.content = this.content;        
+        this.head = false;
+        newVersion.head = true;
+        newVersion.documentation = documentation;
+        newVersion.effectiveDate = this.effectiveDate;
+        newVersion.expiryDate = this.expiryDate;
+        if (this.metaData != null) {
+            newVersion.metaData = this.metaData.copy();
+        }                
+        newVersion.name = this.name;
+        newVersion.status = "";
+        newVersion.tags = this.copyTags();
+        newVersion.versionNumber = this.versionNumber + 1;
+        return newVersion;
+    }
+
+
+
+    private Set copyTags() {
+        Set newTags = new HashSet();
+        for ( Iterator iter = this.tags.iterator(); iter.hasNext(); ) {
+            Tag tag = (Tag) iter.next();
+            newTags.add(tag);
+        }
+        return newTags;
+    }
+
+
+
+//    public boolean equals(Object arg){
+//        if (arg.getClass() != this.getClass()) return false;
+//        RuleDef other = (RuleDef) arg;
+//        return (other.versionNumber == this.versionNumber 
+//                && other.name.equals(this.name));        
+//    }
+//
+//
+//
+//    public int hashCode(){
+//        int result = this.name.hashCode();
+//        return new Long(versionNumber).hashCode() + 27 * result;
+//    }
+    
+    
     
     
 }

@@ -12,8 +12,7 @@
         </id>
         
         <natural-id>        
-			<property name="name" />
-			<property name="versionNumber" />
+			<property name="name" />			
 		</natural-id>
 		
 		<component name="metaData">
@@ -34,11 +33,16 @@
 	
 	
 		<!--  tags to aid with searching and management of rules -->        
-		<set name="tags" table="RULESET_TAGS" lazy="false">
+		<set name="tags" table="RULESET_TAGS" lazy="false" cascade="all">
 		    <key column="RULESET_ID"/>
-		    <many-to-many column="TAG_ID" class="org.drools.repository.Tag"/>
-		</set>  		
-
+		    <one-to-many class="org.drools.repository.Tag"/>
+		</set>  
+		
+		<set name="rules" table="RULESET_RULES" lazy="false" cascade="all">
+			<key column="RULESET_ID"/>
+			<one-to-many class="org.drools.repository.RuleDef"/>
+		</set>
+		
     </class>
 
 </hibernate-mapping>    

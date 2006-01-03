@@ -14,7 +14,16 @@ import java.io.Serializable;
 public class Tag implements Serializable {
 
     private String tag;
+    private Long id;
     
+    public Long getId(){
+        return id;
+    }
+
+    public void setId(Long id){
+        this.id = id;
+    }
+
     public Tag(String tag) {
         this.tag = tag;
     }
