@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+<hibernate-mapping>
+
+    <class name="org.drools.repository.RuleSetAttachment" table="RULESET_ATTACHMENTS">
+        <id name="id" column="RULESET_ATTACHMENT_ID">
+			<generator class="native"/>
+        </id>
+		
+		<property name="name" />		
+		<property name="typeOfAttachment" />
+	
+		<set name="attachments" table="RULESET_ATTACHMENT_FILES" lazy="false" cascade="all">
+		    <key column="RULESET_ATTACHMENT_ID"/>
+		    <one-to-many class="org.drools.repository.AttachmentFile"/>
+		</set>  
+		 
+		
+    </class>
+
+</hibernate-mapping>    

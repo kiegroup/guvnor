@@ -10,18 +10,18 @@ public class RulePersistenceTest extends PersistentCase {
 
     public void testStoreNewRuleDef() throws Exception {
         RepositoryImpl repo = getRepo();
-        RuleDef def = repo.saveOrUpdateRule(new RuleDef("myRule", "A rule"));
+        RuleDef def = repo.save(new RuleDef("myRule", "A rule"));
         assertNotNull(def.getId());        
-        def = repo.saveOrUpdateRule(new RuleDef("myRule2", "A rule2"));               
+        def = repo.save(new RuleDef("myRule2", "A rule2"));               
         def = new RuleDef("myRule3", "A rule3");
         def.addTag("tag1").addTag("tag2").addTag("HR");
-        def = repo.saveOrUpdateRule(def);               
+        def = repo.save(def);               
         assertNotNull(def.getId());
     }
     
     public void testListRules() {
         RepositoryImpl repo = getRepo();
-        repo.saveOrUpdateRule(new RuleDef("blah", "blah"));
+        repo.save(new RuleDef("blah", "blah"));
         List list = repo.listAllRules(true);
         assertTrue(list.size() > 0);        
     }
@@ -30,7 +30,7 @@ public class RulePersistenceTest extends PersistentCase {
         RepositoryImpl repo = getRepo();
         RuleDef newRule = new RuleDef("my rule", "content");
         newRule.addTag("HR").addTag("SALARY");
-        repo.saveOrUpdateRule(newRule);
+        repo.save(newRule);
         
         RuleDef rule = repo.loadRule("my rule", 1);
         assertNotNull(rule);
@@ -54,16 +54,13 @@ public class RulePersistenceTest extends PersistentCase {
         meta.setCreator("Peter Jackson");
         rule1.setMetaData(meta);
         
-        repo.saveOrUpdateRule(rule1);
-        
-        //?????repo.saveOrUpdateRule(rule1);
-        //repo.merge(rule1);
+        repo.save(rule1);
         
         RuleDef rule2 = rule1.createNewVersion();
         rule2.addTag("PJ");
         
-        repo.saveOrUpdateRule(rule2);
-        
+        repo.save(rule2);
+        repo.save(rule1);
         
         RuleDef latest = repo.loadRule("newVersionTest", 2);
         assertEquals("Peter Jackson", latest.getMetaData().getCreator());

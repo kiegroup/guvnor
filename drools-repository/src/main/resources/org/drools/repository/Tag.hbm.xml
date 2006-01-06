@@ -6,6 +6,9 @@
 
 <hibernate-mapping>
 
+	<!-- NOTE I really want to make tag strings normalised
+		Need to add in logic for finding existing tags of same value 
+		Or else use string as ID (not the best idea).-->
     <class name="org.drools.repository.Tag" table="DROOLS_TAGS">
     	<id name="id" column="TAG_ID">
     		<generator class="native" />

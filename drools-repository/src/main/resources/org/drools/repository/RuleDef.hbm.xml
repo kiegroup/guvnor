@@ -10,11 +10,9 @@
         <id name="id" column="RULE_ID">
             <generator class="native"/>
         </id>
-        <natural-id>
-        	<property name="name"/>
-        	<property name="versionNumber" />
-        </natural-id>
         
+       	<property name="name"/>
+       	<property name="versionNumber" />
 		<property name="content" />   
 		<property name="status" />	
 		<property name="checkedOut" />	
@@ -25,7 +23,8 @@
 		<property name="expiryDate" />					
         <property name="head" />
         <property name="deleted" />
-
+		
+		<!-- want nothing to be lazy, no runtime proxies??? -->
 		<!--  tags to aid with searching and management of rules -->        
 		<set name="tags" table="RULE_TAGS" lazy="false" cascade="all">
 		    <key column="RULE_ID"/>
