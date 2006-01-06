@@ -1,4 +1,4 @@
-package org.drools.repository.db;
+package org.drools.repository;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +9,8 @@ import org.drools.repository.RuleDef;
 import org.drools.repository.RuleSetAttachment;
 import org.drools.repository.RuleSetDef;
 import org.drools.repository.RuleSetVersionInfo;
+import org.drools.repository.db.PersistentCase;
+import org.drools.repository.db.RepositoryImpl;
 
 public class RuleSetPersistenceTest extends PersistentCase {
 
@@ -52,27 +54,28 @@ public class RuleSetPersistenceTest extends PersistentCase {
         meta.setCreator("Michael Neale - Uber pimp");
         RuleSetDef ruleSet = new RuleSetDef("Attachmate", meta);
         
-        RuleSetAttachment attachment = new RuleSetAttachment("decision-table", "my text file");
-        attachment.addFile(new AttachmentFile("blah,blah".getBytes(), "text", "nothing.csv"));
-        attachment.addFile(new AttachmentFile("boo,boo".getBytes(), "binary", "smeg.xls"));
-        ruleSet.setAttachment(attachment);
+        RuleSetAttachment attachment = new RuleSetAttachment("decision-table", 
+                                                             "my text file", 
+                                                             "content".getBytes(), 
+                                                             "file.txt");
+        ruleSet.addAttachment(attachment);
         
         RepositoryImpl repo = getRepo();
         repo.save(ruleSet);
         
-        RuleSetDef result = repo.loadRuleSet("Attachmate");
-        assertNotNull(result);
-        assertEquals("decision-table", result.getAttachment().getTypeOfAttachment());
-        assertEquals(2, result.getAttachment().getAttachments().size());
+        RuleSetDef result = repo.loadRuleSet("Attachmate");             
+        assertEquals(1, result.getAttachments().size());
+        RuleSetAttachment at2 = (RuleSetAttachment) result.getAttachments().iterator().next();
+        assertEquals("file.txt", at2.getOriginalFileName());
     }
     
     public void testRuleSetWithVersionHistory() {
         RuleSetDef def = new RuleSetDef("WithHistory", null);
         Set history = new HashSet();
-        RuleSetVersionInfo info = new RuleSetVersionInfo("Michael", 1, "blah");
+        RuleSetVersionInfo info = new RuleSetVersionInfo(1, "blah");
         
         history.add(info);
-        RuleSetVersionInfo info2 = new RuleSetVersionInfo("Michael", 2, "woo");
+        RuleSetVersionInfo info2 = new RuleSetVersionInfo(2, "woo");
         history.add(info2);
         
         def.setVersionHistory(history);

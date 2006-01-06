@@ -21,8 +21,7 @@
 		<property name="documentation" />		
 		<property name="effectiveDate" />		
 		<property name="expiryDate" />					
-        <property name="head" />
-        <property name="deleted" />
+
 		
 		<!-- want nothing to be lazy, no runtime proxies??? -->
 		<!--  tags to aid with searching and management of rules -->        

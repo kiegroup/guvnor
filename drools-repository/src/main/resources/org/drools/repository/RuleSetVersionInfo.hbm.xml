@@ -15,7 +15,6 @@
         <property name="versionNumber"/>
         <property name="versionComment"/>
         <property name="createdOn"/>
-        <property name="createdByUser"/>
         <property name="status" />
         
     </class>

@@ -13,9 +13,11 @@ import java.util.Date;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  */
-public class RuleSetVersionInfo extends Persistent {
+public class RuleSetVersionInfo extends Persistent implements Comparable {
 
-    private String createdByUser;
+
+    private static final long serialVersionUID = 53728327711138178L;
+    
     private Date createdOn = new Date();
     private long versionNumber;
     private String versionComment;
@@ -29,23 +31,15 @@ public class RuleSetVersionInfo extends Persistent {
         this.status = status;
     }
 
-    public RuleSetVersionInfo(String createdByUser,
-                              long versionNumber,
+    public RuleSetVersionInfo(long versionNumber,
                               String versionComment){
         super();
-        this.createdByUser = createdByUser;
         this.versionNumber = versionNumber;
         this.versionComment = versionComment;
     }
     
     RuleSetVersionInfo() {}
     
-    public String getCreatedByUser(){
-        return createdByUser;
-    }
-    public void setCreatedByUser(String createdByUser){
-        this.createdByUser = createdByUser;
-    }
     public Date getCreatedOn(){
         return createdOn;
     }
@@ -63,6 +57,21 @@ public class RuleSetVersionInfo extends Persistent {
     }
     public void setVersionNumber(long versionNumber){
         this.versionNumber = versionNumber;
+    }
+
+    /** The version number provides the natural ordering */
+    public int compareTo(Object arg){
+        if (arg instanceof RuleSetVersionInfo) {
+            RuleSetVersionInfo info = (RuleSetVersionInfo) arg;
+            if (info.versionNumber == this.versionNumber ) {
+                return 0; 
+            } else if (info.versionNumber < this.versionNumber) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+        return 0;
     }
     
     

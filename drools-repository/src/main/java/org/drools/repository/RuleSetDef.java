@@ -1,6 +1,9 @@
 package org.drools.repository;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -8,11 +11,9 @@ import java.util.Set;
  * The workingVersionNumber drives what version of rules will be included in this ruleset.
  * Changing this number will mean that different versions of ruledefs are loaded etc.
  * 
- * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
- *
  */
-public class RuleSetDef extends Persistent {
+public class RuleSetDef extends Persistent implements Comparable {
     private static final long serialVersionUID = 608068118653708104L;
     
     private String name;
@@ -21,13 +22,14 @@ public class RuleSetDef extends Persistent {
     private Set tags;   
     private long workingVersionNumber; 
     private Set versionHistory;
-    private RuleSetAttachment attachment;
+    private Set attachments;
 
     public RuleSetDef(String name, MetaData meta) {
         this.name = name;
         this.metaData = meta;
         this.tags = new HashSet();
         this.rules = new HashSet();
+        this.attachments = new HashSet();
         this.workingVersionNumber = 1;
     }  
     
@@ -38,15 +40,6 @@ public class RuleSetDef extends Persistent {
     RuleSetDef() {        
     }    
     
-    public RuleSetAttachment getAttachment(){
-        return attachment;
-    }
-
-
-    public void setAttachment(RuleSetAttachment attachment){
-        this.attachment = attachment;
-    }
-
 
     public Set getVersionHistory(){
         return versionHistory;
@@ -57,8 +50,30 @@ public class RuleSetDef extends Persistent {
         this.versionHistory = versionHistory;
     }
 
+    /** 
+     * This adds a rule to the ruleset.
+     * 
+     * If the rule already has an Id, and it is a different version number, then
+     * it will be copied for this ruleset.
+     * If it has the same version number, then it will be shared.
+     */
     public RuleSetDef addRule(RuleDef rule) {
-        this.rules.add(rule);
+        if (rule.getId() == null) {
+            rule.setVersionNumber(this.workingVersionNumber);
+            this.rules.add(rule);            
+        } else if (rule.getVersionNumber() == this.workingVersionNumber) {
+            this.rules.add(rule);
+        } else {
+            RuleDef copy = rule.copy();
+            copy.setVersionNumber(this.workingVersionNumber);
+            this.rules.add(copy);            
+        }
+        return this;
+    }
+    
+    public RuleSetDef addAttachment(RuleSetAttachment attachmentFile) {
+        attachmentFile.setVersionNumber(this.workingVersionNumber);
+        this.attachments.add(attachmentFile);
         return this;
     }
     
@@ -68,12 +83,16 @@ public class RuleSetDef extends Persistent {
     public void setMetaData(MetaData metaData){
         this.metaData = metaData;
     }
+    
+    
+    /** The list of rules that are currently loaded for this ruleset */
     public Set getRules(){
         return rules;
     }
     private void setRules(Set rules){
         this.rules = rules;
     }
+    
     public String getName(){
         return name;
     }
@@ -102,14 +121,84 @@ public class RuleSetDef extends Persistent {
         this.workingVersionNumber = workingVersionNumber;
     }
 
-    /** This method increments the version of the ruleset, creating a brand new version.
+    /** 
+     * This method increments the working version of the ruleset, creating a brand new version.
      * This records the event in the version history.
-     * All rules and ruleset-attachments that are connected to this version of the ruleset are 
+     * 
+     * Typically you would call this method when you want to make a stable version of a rule set (lock in all 
+     * the related assets) and then move on to an "editing" version. You can always switch back to a previous version 
+     * of a rulebase.
+     * 
+     * All rules and ruleset-attachments etc that are 
+     * connected to this version of the ruleset are cloned with the new workingVersionNumber.
+     * 
+     * This means that the previous state of the RuleSet is kept in tact (for instance, as a release of rules).
+     * Rules can then be edited, removed and so on without effecting any previous versions of rules and the ruleset.
+     * 
+     * Previous rules can be retrieved by changing the value of workingVersionNumber.
+     * 
+     * Note that further to this, rules themselves will be versioned on save (think of that versioning as 
+     * "minor" versions, and this sort of ruleset versions as major versions).
+     * 
+     * Ideally once a new version is created, the RuleSet should be stored and then loaded fresh, 
+     * which will hide the non working versions of the rules.
+     * 
      */ 
     public void createNewVersion(String comment, String newStatus) {
+        this.workingVersionNumber++;
+        RuleSetVersionInfo newVersion = new RuleSetVersionInfo();
+        newVersion.setStatus(newStatus);
+        newVersion.setVersionNumber(this.workingVersionNumber);
+        this.versionHistory.add(newVersion);
+        
+        //as the Ids are null, copied objects 
+        //will get a new identity, and have the new workingVersionNumber        
+        
+        //now have to create new rules and add to the collection
+        createNewRuleVersions( comment );
+        
+//        //create new attachment
+//        for ( Iterator iter = this.attachments.iterator(); iter.hasNext(); ) {
+//            RuleSetAttachment att = (RuleSetAttachment) iter.next();
+//            //TODO: need too finish this.
+//            att.copy();
+//            
+//        }
+
+        //create new functions, app data and imports etc.
+        System.out.println("DON'T FORGET FUNCTIONS ETC !!");
         
     }
+
+    private void createNewRuleVersions(String comment){
+        for ( Iterator iter = this.rules.iterator(); iter.hasNext(); ) {
+            RuleDef old = (RuleDef) iter.next();
+            RuleDef clone = (RuleDef) old.copy();
+            clone.setVersionComment(comment);
+            clone.setVersionNumber(this.workingVersionNumber);
+            this.rules.add(clone);
+        }
+    }
     
+    public String toString() {
+        return "{ name=" + this.name + " , workingVersionNumber=" + this.workingVersionNumber + " }";
+    }
+
+    /** The name provides the natural ordering */
+    public int compareTo(Object arg){
+        if (arg instanceof RuleSetDef) {
+            return ((RuleSetDef) arg).name.compareTo(this.name);
+        }
+        return 0;
+    }
+
+    public Set getAttachments(){
+        return attachments;
+    }
+
+    private void setAttachments(Set attachments){
+        this.attachments = attachments;
+    }
     
     
 }

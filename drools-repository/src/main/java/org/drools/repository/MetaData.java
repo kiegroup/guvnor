@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * MetaData for rule assets.
+ * 
  * This is based on the <a href="http://dublincore.org/documents/dces/"> Dublin
  * Core</a> specification. Not
  * all of these fields will be used by everyone. They should only be used for classification.
+ * An alternative approach is to use the free form "tagging" of Rule assets.
  */
 public class MetaData
     implements
@@ -130,7 +133,12 @@ public class MetaData
         this.title = title;
     }
 
-    public MetaData copy(){
+    /**
+     * This is used for versioning.
+     * MetaData itself is not versioned, but copies of it are taken when
+     * other assets are versioned.
+     */
+    MetaData copy(){
         MetaData copy = new MetaData();
         copy.contributor = this.contributor;
         copy.coverage = this.coverage;

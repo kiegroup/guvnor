@@ -1,10 +1,12 @@
-package org.drools.repository.db;
+package org.drools.repository;
 
 import java.util.List;
 import java.util.Set;
 
 import org.drools.repository.MetaData;
 import org.drools.repository.RuleDef;
+import org.drools.repository.db.PersistentCase;
+import org.drools.repository.db.RepositoryImpl;
 
 public class RulePersistenceTest extends PersistentCase {
 
@@ -19,12 +21,7 @@ public class RulePersistenceTest extends PersistentCase {
         assertNotNull(def.getId());
     }
     
-    public void testListRules() {
-        RepositoryImpl repo = getRepo();
-        repo.save(new RuleDef("blah", "blah"));
-        List list = repo.listAllRules(true);
-        assertTrue(list.size() > 0);        
-    }
+
     
     public void testRetreieveRuleWithTags() {
         RepositoryImpl repo = getRepo();
@@ -46,29 +43,22 @@ public class RulePersistenceTest extends PersistentCase {
         
     }
     
-    public void testNewVersionOfRule() {
+    public void testRuleCopy() {
         RepositoryImpl repo = getRepo();
         
         RuleDef rule1 = new RuleDef("newVersionTest", "XXX");
+        rule1.addTag("HR").addTag("BOO");
+        
         MetaData meta = new MetaData();
         meta.setCreator("Peter Jackson");
         rule1.setMetaData(meta);
         
         repo.save(rule1);
+        RuleDef ruleCopy  = rule1.copy();
+        assertEquals(null, ruleCopy.getId());
+        assertEquals(2, ruleCopy.getTags().size());
+        assertEquals("Peter Jackson", ruleCopy.getMetaData().getCreator());
         
-        RuleDef rule2 = rule1.createNewVersion();
-        rule2.addTag("PJ");
-        
-        repo.save(rule2);
-        repo.save(rule1);
-        
-        RuleDef latest = repo.loadRule("newVersionTest", 2);
-        assertEquals("Peter Jackson", latest.getMetaData().getCreator());
-        
-        List ruleHistory = repo.listRuleHistory("newVersionTest");
-        assertEquals(2, ruleHistory.size());
-        assertEquals(1, ((RuleDef) ruleHistory.get(0)).getVersionNumber());
-        assertEquals(2, ((RuleDef) ruleHistory.get(1)).getVersionNumber());        
     }
 
 

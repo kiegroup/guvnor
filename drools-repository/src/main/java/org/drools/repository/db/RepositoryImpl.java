@@ -27,17 +27,6 @@ public class RepositoryImpl implements Repository {
 
     
     //DODGY METHODS START
-    public List listAllRules(boolean head) {
-        Session session = getSession();
-        session.beginTransaction();
-        List results = session
-                    .createQuery("from RuleDef where head = :head")
-                    .setBoolean("head", head).setMaxResults(1000)
-                    .list();        
-        session.getTransaction().commit();
-        return results;        
-    }
-    
     public RuleDef loadRule(String ruleName, long versionNumber) {
         Session session = getSession();
         session.beginTransaction();

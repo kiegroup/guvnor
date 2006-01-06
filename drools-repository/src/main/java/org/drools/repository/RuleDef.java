@@ -7,6 +7,9 @@ import java.util.Set;
 
 public class RuleDef extends Persistent {
 
+
+    private static final long serialVersionUID = -677781085801764266L;
+    
     private String name;
     private long versionNumber;
     private String content;
@@ -19,19 +22,8 @@ public class RuleDef extends Persistent {
     private String documentation;
     private Date effectiveDate;
     private Date expiryDate;   
-    private boolean deleted;
 
     
-    public boolean isDeleted(){
-        return deleted;
-    }
-
-
-
-    public void setDeleted(boolean deleted){
-        this.deleted = deleted;
-    }
-
 
 
     /**
@@ -58,15 +50,9 @@ public class RuleDef extends Persistent {
         this.name = name;
         this.content = content;
         this.versionNumber = 1;
-        this.head = true;   
         this.tags = new HashSet();
     }
-    /**
-     * This little cheat tells the repo that this
-     * rule is at the head of versions.
-     */
-    private boolean head;
-    
+
     
     public String getContent(){
         return content;
@@ -100,12 +86,7 @@ public class RuleDef extends Persistent {
     public void setCheckedOutBy(String checkOutBy){
         this.checkedOutBy = checkOutBy;
     }
-    public boolean isHead(){
-        return head;
-    }
-    public void setHead(boolean isHead){
-        this.head = isHead;
-    }
+
     public String getVersionComment(){
         return versionComment;
     }
@@ -115,7 +96,7 @@ public class RuleDef extends Persistent {
     public long getVersionNumber(){
         return this.versionNumber;
     }
-    private void setVersionNumber(long versionNumber){
+    void setVersionNumber(long versionNumber){
         this.versionNumber = versionNumber;
     }
     public String getDocumentation(){
@@ -150,7 +131,9 @@ public class RuleDef extends Persistent {
         return this;
     }
 
-    /** return a list of tags as Strings */
+    /** return a list of tags as Strings. Tags are stored as Tag objects, 
+     * but are essentially strings. 
+     */
     public String[] listTags() {
 
         String[] tagList = new String[tags.size()];
@@ -163,29 +146,9 @@ public class RuleDef extends Persistent {
         return tagList;
     }
     
-    public RuleDef createNewVersion() {
-//        if (this.checkedOut) {
-//            throw new RuleRepositoryLockException("Rule is checked out by " + this.checkedOutBy);
-//        }
-        RuleDef newVersion = new RuleDef();
-        newVersion.content = this.content;        
-        this.head = false;
-        newVersion.head = true;
-        newVersion.documentation = documentation;
-        newVersion.effectiveDate = this.effectiveDate;
-        newVersion.expiryDate = this.expiryDate;
-        if (this.metaData != null) {
-            newVersion.metaData = this.metaData.copy();
-        }                
-        newVersion.name = this.name;
-        newVersion.status = "";
-        newVersion.tags = this.copyTags();
-        newVersion.versionNumber = this.versionNumber + 1;
-        return newVersion;
-    }
-
-
-
+    /**
+     * Copy the tags. It is allowable to reuse the same Tag identities.
+     */
     private Set copyTags() {
         Set newTags = new HashSet();
         for ( Iterator iter = this.tags.iterator(); iter.hasNext(); ) {
@@ -195,23 +158,22 @@ public class RuleDef extends Persistent {
         return newTags;
     }
 
-
-
-//    public boolean equals(Object arg){
-//        if (arg.getClass() != this.getClass()) return false;
-//        RuleDef other = (RuleDef) arg;
-//        return (other.versionNumber == this.versionNumber 
-//                && other.name.equals(this.name));        
-//    }
-//
-//
-//
-//    public int hashCode(){
-//        int result = this.name.hashCode();
-//        return new Long(versionNumber).hashCode() + 27 * result;
-//    }
-    
-    
-    
+    /**
+     * This is used for versioning.
+     */
+    RuleDef copy() {
+        RuleDef newVersion = new RuleDef();
+        newVersion.content = this.content;        
+        newVersion.documentation = documentation;
+        newVersion.effectiveDate = this.effectiveDate;
+        newVersion.expiryDate = this.expiryDate;
+        if (this.metaData != null) {
+            newVersion.metaData = this.metaData.copy();
+        }                
+        newVersion.name = this.name;
+        newVersion.status = "";
+        newVersion.tags = this.copyTags();        
+        return newVersion;
+    }
     
 }

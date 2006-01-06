@@ -37,7 +37,6 @@
         <mapping resource="org/drools/repository/Tag.hbm.xml"/>
         <mapping resource="org/drools/repository/RuleSetDef.hbm.xml"/>
         <mapping resource="org/drools/repository/RuleSetAttachment.hbm.xml"/>
-        <mapping resource="org/drools/repository/AttachmentFile.hbm.xml"/>
         <mapping resource="org/drools/repository/RuleSetVersionInfo.hbm.xml"/>
 
 

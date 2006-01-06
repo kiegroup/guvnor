@@ -50,13 +50,12 @@
 			<one-to-many class="org.drools.repository.RuleSetVersionInfo"/>
 		</set>
 		
-		<!-- we need only one ruleset attachment object. The files are attached to it as a 
-			collection -->
-		<many-to-one name="attachment" column="RULESET_ATTACHMENT_ID"
-			class="org.drools.repository.RuleSetAttachment" 
-			lazy="false" 
-			cascade="all" 
-			unique="true"/>
+		<set name="attachments" lazy="false" cascade="all">
+			<key column="RULESET_ID"/>
+			<one-to-many class="org.drools.repository.RuleSetAttachment"/>
+		</set>
+
+
 		
     </class>
 
