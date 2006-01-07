@@ -1,6 +1,7 @@
 package org.drools.repository;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.repository.AttachmentFile;
@@ -24,7 +25,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         RepositoryImpl repo = getRepo();
         repo.save(def);
         
-        RuleSetDef def2 = repo.loadRuleSet("my ruleset");
+        RuleSetDef def2 = repo.loadRuleSet("my ruleset", 1);
         assertEquals("my ruleset", def2.getName());
         assertEquals("Michael Neale", def2.getMetaData().getCreator());
         assertEquals(1, def2.getTags().size());
@@ -44,7 +45,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         RepositoryImpl repo = getRepo();
         repo.save(ruleSet);
         
-        RuleSetDef loaded = repo.loadRuleSet("Uber 1");
+        RuleSetDef loaded = repo.loadRuleSet("Uber 1", 1);
         assertEquals(2, loaded.getRules().size());
         
     }
@@ -63,7 +64,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         RepositoryImpl repo = getRepo();
         repo.save(ruleSet);
         
-        RuleSetDef result = repo.loadRuleSet("Attachmate");             
+        RuleSetDef result = repo.loadRuleSet("Attachmate", 1);             
         assertEquals(1, result.getAttachments().size());
         RuleSetAttachment at2 = (RuleSetAttachment) result.getAttachments().iterator().next();
         assertEquals("file.txt", at2.getOriginalFileName());
@@ -82,8 +83,47 @@ public class RuleSetPersistenceTest extends PersistentCase {
         RepositoryImpl repo = getRepo();
         repo.save(def);
         
-        RuleSetDef def2 = repo.loadRuleSet("WithHistory");
+        RuleSetDef def2 = repo.loadRuleSet("WithHistory", 1);
         assertEquals(2, def2.getVersionHistory().size());
+    }
+    
+    public void testNewVersionInMemory() {
+        RuleSetDef set = new RuleSetDef("InMemory", null);
+        RuleDef def1 = new RuleDef("Rule1", "blah");
+        RuleDef def2 = new RuleDef("Rule2", "blah2");
+        
+        def1.addTag("S").addTag("A");
+        set.addRule(def1).addRule(def2);
+        
+        assertEquals(2, set.getRules().size());
+        assertEquals(1, def1.getVersionNumber());
+        assertEquals(1, def2.getVersionNumber());
+        assertEquals(1, set.getWorkingVersionNumber());
+        
+        set.createNewVersion("New version", "Draft");
+        assertEquals(4, set.getRules().size());
+        
+        assertEquals(1, def1.getVersionNumber());
+        for ( Iterator iter = set.getRules().iterator(); iter.hasNext(); ) {
+            RuleDef rule = (RuleDef) iter.next();
+            if (rule.getVersionNumber() == 2) {
+                assertEquals("New version", rule.getVersionComment());
+                if (rule.getName().equals("Rule1")) {
+                    assertEquals(2, rule.getTags().size());
+                }
+            }            
+        }
+        
+        RepositoryImpl repo = getRepo();
+        repo.save(set);
+        
+        RuleSetDef loaded = repo.loadRuleSet("InMemory", 2);
+        assertEquals(2, loaded.getRules().size());
+        
+        
+        
+        
+        
     }
     
 }

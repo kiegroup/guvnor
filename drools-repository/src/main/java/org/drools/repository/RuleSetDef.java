@@ -30,6 +30,7 @@ public class RuleSetDef extends Persistent implements Comparable {
         this.tags = new HashSet();
         this.rules = new HashSet();
         this.attachments = new HashSet();
+        this.versionHistory = new HashSet();
         this.workingVersionNumber = 1;
     }  
     
@@ -117,6 +118,16 @@ public class RuleSetDef extends Persistent implements Comparable {
         return workingVersionNumber;
     }
 
+    /**
+     * This will only be set when loading the RuleSet from the repository.
+     * When you load a ruleset, a version number is specified. 
+     * This property is not persistent, as multiple people could be working on different versions
+     * at the same time. 
+     * 
+     * DO NOT set this property.
+     * 
+     * @param workingVersionNumber
+     */
     public void setWorkingVersionNumber(long workingVersionNumber){
         this.workingVersionNumber = workingVersionNumber;
     }
@@ -145,6 +156,7 @@ public class RuleSetDef extends Persistent implements Comparable {
      * 
      */ 
     public void createNewVersion(String comment, String newStatus) {
+
         this.workingVersionNumber++;
         RuleSetVersionInfo newVersion = new RuleSetVersionInfo();
         newVersion.setStatus(newStatus);
@@ -155,7 +167,7 @@ public class RuleSetDef extends Persistent implements Comparable {
         //will get a new identity, and have the new workingVersionNumber        
         
         //now have to create new rules and add to the collection
-        createNewRuleVersions( comment );
+        createNewRuleVersions( comment, this.workingVersionNumber );
         
 //        //create new attachment
 //        for ( Iterator iter = this.attachments.iterator(); iter.hasNext(); ) {
@@ -170,14 +182,19 @@ public class RuleSetDef extends Persistent implements Comparable {
         
     }
 
-    private void createNewRuleVersions(String comment){
+    private void createNewRuleVersions(String comment, long newVersionNumber){
+        Set newVersions = new HashSet();
         for ( Iterator iter = this.rules.iterator(); iter.hasNext(); ) {
             RuleDef old = (RuleDef) iter.next();
-            RuleDef clone = (RuleDef) old.copy();
-            clone.setVersionComment(comment);
-            clone.setVersionNumber(this.workingVersionNumber);
-            this.rules.add(clone);
+            if (old.getVersionNumber() == newVersionNumber - 1) {
+                //we only want to clone rules that are for the version being cloned
+                RuleDef clone = old.copy();
+                clone.setVersionComment(comment);
+                clone.setVersionNumber(newVersionNumber);
+                newVersions.add(clone);
+            }
         }
+        this.rules.addAll(newVersions);
     }
     
     public String toString() {

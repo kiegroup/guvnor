@@ -71,12 +71,20 @@ public class RepositoryImpl implements Repository {
         return ruleSet;
     }
     
-    public RuleSetDef loadRuleSet(String ruleSetName) {
+    /** This loads a RuleSet with the appropriate workingVersionNumber applied to its assets. 
+     */
+    public RuleSetDef loadRuleSet(String ruleSetName, long workingVersionNumber) {
         Session session = getSession();
-        session.beginTransaction();        
+        
+        session.beginTransaction();
+        session.enableFilter("workingVersionFilter")
+                .setParameter("filteredVersionNumber", 
+                new Long(workingVersionNumber));
         RuleSetDef def = (RuleSetDef)
                 session.createQuery("from RuleSetDef where name = :name")
                 .setString("name", ruleSetName ).uniqueResult();
+        def.setWorkingVersionNumber(workingVersionNumber);
+        session.disableFilter("workingVersionFilter");
         session.getTransaction().commit();
         return def;
     }

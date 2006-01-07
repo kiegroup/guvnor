@@ -23,8 +23,6 @@
 		<property name="expiryDate" />					
 
 		
-		<!-- want nothing to be lazy, no runtime proxies??? -->
-		<!--  tags to aid with searching and management of rules -->        
 		<set name="tags" table="RULE_TAGS" lazy="false" cascade="all">
 		    <key column="RULE_ID"/>
 		    <one-to-many class="org.drools.repository.Tag"  />
@@ -46,6 +44,10 @@
 			<property name="rights" />
 		</component>		 
  
+
+ 
     </class>
+    
+   
 
 </hibernate-mapping>        

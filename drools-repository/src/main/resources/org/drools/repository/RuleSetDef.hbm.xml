@@ -13,8 +13,6 @@
         
                 
 		<property name="name" />			
-		<property name="workingVersionNumber" />
-		
 		
 		<component name="metaData">
 			<property name="title" />
@@ -43,6 +41,7 @@
 		<set name="rules" table="RULESET_RULES" lazy="false" cascade="all">
 			<key column="RULESET_ID"/>
 			<one-to-many class="org.drools.repository.RuleDef"/>
+			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />
 		</set>
 		
 		<set name="versionHistory" table="RULESET_VERSION_HISTORY" lazy="false" cascade="all">
@@ -58,5 +57,10 @@
 
 		
     </class>
+    
+    <!-- This magic allows us to have a view of working versions only -->
+	<filter-def name="workingVersionFilter">
+		<filter-param name="filteredVersionNumber" type="long" />
+	</filter-def>     
 
 </hibernate-mapping>    

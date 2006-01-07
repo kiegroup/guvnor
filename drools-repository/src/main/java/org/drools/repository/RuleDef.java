@@ -126,12 +126,12 @@ public class RuleDef extends Persistent {
     public String getName(){
         return name;
     }
-    public RuleDef setName(String name){
-        this.name = name;
-        return this;
+    public void setName(String name){
+        this.name = name;        
     }
 
-    /** return a list of tags as Strings. Tags are stored as Tag objects, 
+    /** 
+     * Return a list of tags as Strings. Tags are stored as Tag objects, 
      * but are essentially strings. 
      */
     public String[] listTags() {
@@ -164,7 +164,7 @@ public class RuleDef extends Persistent {
     RuleDef copy() {
         RuleDef newVersion = new RuleDef();
         newVersion.content = this.content;        
-        newVersion.documentation = documentation;
+        newVersion.documentation = this.documentation;
         newVersion.effectiveDate = this.effectiveDate;
         newVersion.expiryDate = this.expiryDate;
         if (this.metaData != null) {

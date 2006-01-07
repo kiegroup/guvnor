@@ -17,8 +17,7 @@ package org.drools.repository;
 public class RuleSetAttachment extends Persistent {
 
 
-    private static final long serialVersionUID = 7474038734785975202L;
-    
+    private static final long serialVersionUID = 7474038734785975202L;    
     
     private byte[] content;  
     private String originalFileName;
