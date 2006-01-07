@@ -94,16 +94,20 @@ public class RuleSetPersistenceTest extends PersistentCase {
         
         def1.addTag("S").addTag("A");
         set.addRule(def1).addRule(def2);
+        set.addAttachment(new RuleSetAttachment("x", "x", "x".getBytes(), "x"));
         
         assertEquals(2, set.getRules().size());
         assertEquals(1, def1.getVersionNumber());
         assertEquals(1, def2.getVersionNumber());
         assertEquals(1, set.getWorkingVersionNumber());
         
+        //once we create a new version, we double the asset counts, one for each version
         set.createNewVersion("New version", "Draft");
         assertEquals(4, set.getRules().size());
-        
+        assertEquals(2, set.getAttachments().size());
         assertEquals(1, def1.getVersionNumber());
+        
+        //now check that the new version rules are kosher (tag wise)
         for ( Iterator iter = set.getRules().iterator(); iter.hasNext(); ) {
             RuleDef rule = (RuleDef) iter.next();
             if (rule.getVersionNumber() == 2) {
@@ -114,13 +118,31 @@ public class RuleSetPersistenceTest extends PersistentCase {
             }            
         }
         
+        
         RepositoryImpl repo = getRepo();
         repo.save(set);
         
+        //now when we load it, the filter only loads the workingVersion that we specify
         RuleSetDef loaded = repo.loadRuleSet("InMemory", 2);
-        assertEquals(2, loaded.getRules().size());
         
+        //now should have half as many as before, as old versions are not loaded.
+        assertEquals(2, loaded.getRules().size());        
+        assertEquals(1, loaded.getAttachments().size());
         
+        //now check the version numbers and comment, use attachment as there is only one in set so easy..
+        RuleSetAttachment att = (RuleSetAttachment) loaded.getAttachments().iterator().next();
+        assertEquals(2, att.getVersionNumber());
+        assertEquals("New version", att.getVersionComment());
+        
+        //now run it again, with OLD VERSION...
+        loaded = repo.loadRuleSet("InMemory", 1);
+        assertEquals(2, loaded.getRules().size());        
+        assertEquals(1, loaded.getAttachments().size());
+
+        //now the version number should be one
+        att = (RuleSetAttachment) loaded.getAttachments().iterator().next();
+        assertEquals(1, att.getVersionNumber());
+        assertFalse("New version".equals(att.getVersionComment()));
         
         
         

@@ -14,7 +14,7 @@ package org.drools.repository;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  */
-public class RuleSetAttachment extends Persistent {
+public class RuleSetAttachment extends Persistent implements IVersionable {
 
 
     private static final long serialVersionUID = 7474038734785975202L;    
@@ -26,6 +26,7 @@ public class RuleSetAttachment extends Persistent {
     
     private String name;
     private long versionNumber = 1;
+    private String versionComment;
     
     
     public RuleSetAttachment(String typeOfAttachment,
@@ -64,7 +65,7 @@ public class RuleSetAttachment extends Persistent {
         return versionNumber;
     }
 
-    void setVersionNumber(long versionNumber){
+    public void setVersionNumber(long versionNumber){
         this.versionNumber = versionNumber;
     }
 
@@ -82,6 +83,22 @@ public class RuleSetAttachment extends Persistent {
 
     public void setOriginalFileName(String originalFileName){
         this.originalFileName = originalFileName;
+    }
+    
+    public IVersionable copy() {
+        RuleSetAttachment copy = new RuleSetAttachment(this.typeOfAttachment, 
+                                                       this.name, 
+                                                       this.content, 
+                                                       this.originalFileName);
+        return copy;
+    }
+
+    public void setVersionComment(String comment){
+        this.versionComment = comment;        
+    }
+    
+    public String getVersionComment() {
+        return this.versionComment;
     }
     
     

@@ -52,6 +52,7 @@
 		<set name="attachments" lazy="false" cascade="all">
 			<key column="RULESET_ID"/>
 			<one-to-many class="org.drools.repository.RuleSetAttachment"/>
+			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />			
 		</set>
 
 

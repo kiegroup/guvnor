@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class RuleDef extends Persistent {
+public class RuleDef extends Persistent implements IVersionable {
 
 
     private static final long serialVersionUID = -677781085801764266L;
@@ -96,7 +96,7 @@ public class RuleDef extends Persistent {
     public long getVersionNumber(){
         return this.versionNumber;
     }
-    void setVersionNumber(long versionNumber){
+    public void setVersionNumber(long versionNumber){
         this.versionNumber = versionNumber;
     }
     public String getDocumentation(){
@@ -161,7 +161,7 @@ public class RuleDef extends Persistent {
     /**
      * This is used for versioning.
      */
-    RuleDef copy() {
+    public IVersionable copy() {
         RuleDef newVersion = new RuleDef();
         newVersion.content = this.content;        
         newVersion.documentation = this.documentation;

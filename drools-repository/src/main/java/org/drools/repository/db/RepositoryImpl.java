@@ -77,24 +77,19 @@ public class RepositoryImpl implements Repository {
         Session session = getSession();
         
         session.beginTransaction();
-        session.enableFilter("workingVersionFilter")
-                .setParameter("filteredVersionNumber", 
-                new Long(workingVersionNumber));
+        enableVersionFilter( workingVersionNumber,
+                             session );
+        
         RuleSetDef def = (RuleSetDef)
                 session.createQuery("from RuleSetDef where name = :name")
                 .setString("name", ruleSetName ).uniqueResult();
-        def.setWorkingVersionNumber(workingVersionNumber);
-        session.disableFilter("workingVersionFilter");
+        
+        def.setWorkingVersionNumber(workingVersionNumber);        
+        removeVersionFilter( session );
         session.getTransaction().commit();
         return def;
     }
-    
-    public void save(RuleSetAttachment attachment) {
-        Session session = getSession();
-        session.beginTransaction();
-        session.saveOrUpdate(attachment);
-        session.getTransaction().commit();
-    }
+
     
     public RuleSetAttachment loadAttachment(String name) {
         Session session = getSession();
@@ -105,7 +100,30 @@ public class RepositoryImpl implements Repository {
                                 .uniqueResult();
         session.getTransaction().commit();
         return at;       
+    }    
+
+
+    private void enableVersionFilter(long workingVersionNumber,
+                                     Session session){
+        session.enableFilter("workingVersionFilter")
+                .setParameter("filteredVersionNumber", 
+                new Long(workingVersionNumber));
     }
+
+
+
+    private void removeVersionFilter(Session session){
+        session.disableFilter("workingVersionFilter");
+    }
+    
+    public void save(RuleSetAttachment attachment) {
+        Session session = getSession();
+        session.beginTransaction();
+        session.saveOrUpdate(attachment);
+        session.getTransaction().commit();
+    }
+    
+
     
     
     

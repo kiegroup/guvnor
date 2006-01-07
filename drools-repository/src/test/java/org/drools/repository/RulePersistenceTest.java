@@ -54,7 +54,7 @@ public class RulePersistenceTest extends PersistentCase {
         rule1.setMetaData(meta);
         
         repo.save(rule1);
-        RuleDef ruleCopy  = rule1.copy();
+        RuleDef ruleCopy  = (RuleDef) rule1.copy();
         assertEquals(null, ruleCopy.getId());
         assertEquals(2, ruleCopy.getTags().size());
         assertEquals("Peter Jackson", ruleCopy.getMetaData().getCreator());

@@ -47,7 +47,7 @@ public class RuleSetDef extends Persistent implements Comparable {
     }
 
 
-    public void setVersionHistory(Set versionHistory){
+    void setVersionHistory(Set versionHistory){
         this.versionHistory = versionHistory;
     }
 
@@ -65,8 +65,9 @@ public class RuleSetDef extends Persistent implements Comparable {
         } else if (rule.getVersionNumber() == this.workingVersionNumber) {
             this.rules.add(rule);
         } else {
-            RuleDef copy = rule.copy();
+            RuleDef copy = (RuleDef) rule.copy();
             copy.setVersionNumber(this.workingVersionNumber);
+            copy.setVersionComment("Copied for this version.");
             this.rules.add(copy);            
         }
         return this;
@@ -97,7 +98,7 @@ public class RuleSetDef extends Persistent implements Comparable {
     public String getName(){
         return name;
     }
-    public void setName(String name){
+    private void setName(String name){
         this.name = name;
     }
 
@@ -158,44 +159,49 @@ public class RuleSetDef extends Persistent implements Comparable {
     public void createNewVersion(String comment, String newStatus) {
 
         this.workingVersionNumber++;
-        RuleSetVersionInfo newVersion = new RuleSetVersionInfo();
-        newVersion.setStatus(newStatus);
-        newVersion.setVersionNumber(this.workingVersionNumber);
-        this.versionHistory.add(newVersion);
+        addNewVersionHistory( newStatus );
         
-        //as the Ids are null, copied objects 
-        //will get a new identity, and have the new workingVersionNumber        
         
         //now have to create new rules and add to the collection
-        createNewRuleVersions( comment, this.workingVersionNumber );
+        createAndAddNewVersions( this.rules, comment, this.workingVersionNumber );
         
-//        //create new attachment
-//        for ( Iterator iter = this.attachments.iterator(); iter.hasNext(); ) {
-//            RuleSetAttachment att = (RuleSetAttachment) iter.next();
-//            //TODO: need too finish this.
-//            att.copy();
-//            
-//        }
+        //now attachments
+        createAndAddNewVersions( this.attachments, comment, this.workingVersionNumber );
+
 
         //create new functions, app data and imports etc.
         System.out.println("DON'T FORGET FUNCTIONS ETC !!");
         
     }
 
-    private void createNewRuleVersions(String comment, long newVersionNumber){
+    private void addNewVersionHistory(String newStatus){
+        RuleSetVersionInfo newVersion = new RuleSetVersionInfo();
+        newVersion.setStatus(newStatus);
+        newVersion.setVersionNumber(this.workingVersionNumber);
+        this.versionHistory.add(newVersion);
+    }
+
+    /** This will work on any set of <code>IVersionable</code> objects. They are copied, and 
+     * then added to the original set (with null Ids). The comment is added, as is the new version number. 
+     */
+    private void createAndAddNewVersions(Set assets, String comment, long newVersionNumber){
+        //as the Ids are null, copied objects 
+        //will get a new identity, and have the new workingVersionNumber        
         Set newVersions = new HashSet();
-        for ( Iterator iter = this.rules.iterator(); iter.hasNext(); ) {
-            RuleDef old = (RuleDef) iter.next();
+        for ( Iterator iter = assets.iterator(); iter.hasNext(); ) {
+            IVersionable old = (IVersionable) iter.next();
             if (old.getVersionNumber() == newVersionNumber - 1) {
                 //we only want to clone rules that are for the version being cloned
-                RuleDef clone = old.copy();
+                IVersionable clone = (IVersionable) old.copy();
                 clone.setVersionComment(comment);
                 clone.setVersionNumber(newVersionNumber);
                 newVersions.add(clone);
             }
         }
-        this.rules.addAll(newVersions);
+        assets.addAll(newVersions);
     }
+    
+  
     
     public String toString() {
         return "{ name=" + this.name + " , workingVersionNumber=" + this.workingVersionNumber + " }";
