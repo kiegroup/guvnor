@@ -87,7 +87,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         assertEquals(2, def2.getVersionHistory().size());
     }
     
-    public void testNewVersionInMemory() {
+    public void testNewVersioning() {
         RuleSetDef set = new RuleSetDef("InMemory", null);
         RuleDef def1 = new RuleDef("Rule1", "blah");
         RuleDef def2 = new RuleDef("Rule2", "blah2");
