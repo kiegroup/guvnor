@@ -9,24 +9,26 @@ import org.drools.repository.RuleSetDef;
 import org.hibernate.Session;
 
 
-
+/**
+ * The repository manager takes care of storing and sychronising the repository data with 
+ * the repository database. 
+ * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
+ */
 public class RepositoryImpl implements Repository {
 
     /** This will simply save the current version of the rule */
-    public RuleDef save(RuleDef newRule) {
+    public void save(RuleDef newRule) {
         Session session = getSession();
         session.beginTransaction();
 
         session.saveOrUpdate(newRule);
 
         session.getTransaction().commit();
-        
-        return newRule;
     }
     
 
     
-    //DODGY METHODS START
+
     public RuleDef loadRule(String ruleName, long versionNumber) {
         Session session = getSession();
         session.beginTransaction();
@@ -49,7 +51,6 @@ public class RepositoryImpl implements Repository {
         session.getTransaction().commit();
         return result;        
     }
-    //DODGY METHODS END
     
     public List findRulesByTag(String tag) {
         Session session = getSession();
@@ -63,15 +64,18 @@ public class RepositoryImpl implements Repository {
     
 
     
-    public RuleSetDef save(RuleSetDef ruleSet) {
+    /** Save the ruleset. The Ruleset will not be reloaded. */
+    public void save(RuleSetDef ruleSet) {
         Session session = getSession();
         session.beginTransaction();     
         session.saveOrUpdate(ruleSet);
         session.getTransaction().commit();
-        return ruleSet;
     }
     
-    /** This loads a RuleSet with the appropriate workingVersionNumber applied to its assets. 
+    /** 
+     * This loads a RuleSet with the appropriate workingVersionNumber applied to its assets. 
+     * @param workingVersionNumber The version of the ruleset and rules you want to work on.
+     * @param ruleSetName The ruleset name to retrieve (ruleset names must be unique).
      */
     public RuleSetDef loadRuleSet(String ruleSetName, long workingVersionNumber) {
         Session session = getSession();
@@ -82,9 +86,9 @@ public class RepositoryImpl implements Repository {
         
         RuleSetDef def = (RuleSetDef)
                 session.createQuery("from RuleSetDef where name = :name")
-                .setString("name", ruleSetName ).uniqueResult();
+                .setString("name", ruleSetName ).uniqueResult();        
+        def.setWorkingVersionNumber(workingVersionNumber);  
         
-        def.setWorkingVersionNumber(workingVersionNumber);        
         removeVersionFilter( session );
         session.getTransaction().commit();
         return def;

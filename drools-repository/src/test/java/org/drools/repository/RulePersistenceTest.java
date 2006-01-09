@@ -12,17 +12,16 @@ public class RulePersistenceTest extends PersistentCase {
 
     public void testStoreNewRuleDef() throws Exception {
         RepositoryImpl repo = getRepo();
-        RuleDef def = repo.save(new RuleDef("myRule", "A rule"));
+        RuleDef def = new RuleDef("myRule", "A rule"); 
+            repo.save(def);
         assertNotNull(def.getId());        
-        def = repo.save(new RuleDef("myRule2", "A rule2"));               
+        repo.save(new RuleDef("myRule2", "A rule2"));               
         def = new RuleDef("myRule3", "A rule3");
         def.addTag("tag1").addTag("tag2").addTag("HR");
-        def = repo.save(def);               
+        repo.save(def);               
         assertNotNull(def.getId());
     }
-    
-
-    
+        
     public void testRetreieveRuleWithTags() {
         RepositoryImpl repo = getRepo();
         RuleDef newRule = new RuleDef("my rule", "content");
@@ -39,8 +38,7 @@ public class RulePersistenceTest extends PersistentCase {
         assertTrue(tagList[0].equals("HR") || tagList[0].equals("SALARY"));
         
         List rules = repo.findRulesByTag("HR");
-        assertTrue(rules.size() > 0);
-        
+        assertTrue(rules.size() > 0);        
     }
     
     public void testRuleCopy() {

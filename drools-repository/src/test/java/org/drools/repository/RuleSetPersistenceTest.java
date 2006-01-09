@@ -4,15 +4,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.drools.repository.AttachmentFile;
-import org.drools.repository.MetaData;
-import org.drools.repository.RuleDef;
-import org.drools.repository.RuleSetAttachment;
-import org.drools.repository.RuleSetDef;
-import org.drools.repository.RuleSetVersionInfo;
 import org.drools.repository.db.PersistentCase;
 import org.drools.repository.db.RepositoryImpl;
 
+/**
+ * Some quasi unit tests, and some quasi integration tests including versioning.
+ * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
+ *
+ */
 public class RuleSetPersistenceTest extends PersistentCase {
 
     public void testLoadSaveRuleSet() {
@@ -87,7 +86,41 @@ public class RuleSetPersistenceTest extends PersistentCase {
         assertEquals(2, def2.getVersionHistory().size());
     }
     
-    public void testNewVersioning() {
+    public void testRemoveAsset() {
+        RuleSetDef def = new RuleSetDef("addRemove", null);
+        RuleDef rule = new RuleDef("addRemove Rule", "xxx");
+        def.addRule(rule);
+                
+        RepositoryImpl repo = getRepo();
+        
+        //save and load it fresh
+        repo.save(def);               
+        def = repo.loadRuleSet("addRemove", 1);
+        assertEquals(1, def.getRules().size());
+        
+        //create a new version
+        def.createNewVersion("new version", null);        
+        repo.save(def);
+        
+        //load it fresh, and the remove the only rule
+        def = repo.loadRuleSet("addRemove", 2);
+        RuleDef onlyRule = (RuleDef) def.getRules().iterator().next();
+        def.removeRule(onlyRule);
+        //assertEquals(0, def.getRules().size());
+        repo.save(def);
+        
+        //load the new one, check its not there
+        def = repo.loadRuleSet("addRemove", 2);
+        assertEquals(0, def.getRules().size());        
+        
+        //load the old version, check its there
+        def = repo.loadRuleSet("addRemove", 1);
+        assertEquals(1, def.getRules().size());
+        
+
+    }
+    
+    public void testIntegrationNewVersioning() {
         RuleSetDef set = new RuleSetDef("InMemory", null);
         RuleDef def1 = new RuleDef("Rule1", "blah");
         RuleDef def2 = new RuleDef("Rule2", "blah2");
@@ -143,6 +176,61 @@ public class RuleSetPersistenceTest extends PersistentCase {
         att = (RuleSetAttachment) loaded.getAttachments().iterator().next();
         assertEquals(1, att.getVersionNumber());
         assertFalse("New version".equals(att.getVersionComment()));
+        
+        RuleDef newRule = new RuleDef("blah42", "blah42"); 
+        loaded.addRule(newRule);
+        //add some other assets to it.
+        loaded
+            .addApplicationData(new ApplicationDataDef("x", "XX"))
+            .addFunction(new FunctionDef("My func", "yeah"))
+            .addImport(new ImportDef("com.allenparsons.project"));
+        repo.save(loaded);
+        assertEquals(loaded.getWorkingVersionNumber(), newRule.getVersionNumber());
+        assertNotNull(newRule.getId());
+        
+        loaded = repo.loadRuleSet("InMemory", 1);
+        assertEquals(1, loaded.getApplicationData().size());
+        assertEquals(1, loaded.getFunctions().size());
+        assertEquals(1, loaded.getImports().size());
+        
+        loaded = repo.loadRuleSet("InMemory", 2);
+        assertEquals(0, loaded.getApplicationData().size());
+        assertEquals(0, loaded.getFunctions().size());
+        assertEquals(0, loaded.getImports().size());
+    }
+    
+    public void testParallelVersions() {
+        RuleSetDef def = new RuleSetDef("para", null);
+        def.addRule(new RuleDef("para1","sss"));
+        
+        RepositoryImpl repo = getRepo();
+        repo.save(def);
+        
+        //create a new version
+        def = repo.loadRuleSet("para", 1);
+        def.createNewVersion("yeah", null);        
+        repo.save(def);
+        
+        //load em up
+        RuleSetDef old = repo.loadRuleSet("para", 1);
+        RuleSetDef newRs = repo.loadRuleSet("para", 2);
+        assertEquals(1, old.getRules().size());
+        assertEquals(1, newRs.getRules().size());
+        
+ 
+        newRs.addRule(new RuleDef("para2", "xxx"));
+        repo.save(newRs);
+
+        
+        newRs = repo.loadRuleSet("para", 2);
+        old = repo.loadRuleSet("para", 1);
+        assertEquals(2, newRs.getRules().size());
+        assertEquals(1, old.getRules().size());
+        RuleDef originalRule = (RuleDef) old.getRules().iterator().next();
+        //check that the original one still has the right version number
+        assertEquals(1, originalRule.getVersionNumber());
+        
+        
         
         
         

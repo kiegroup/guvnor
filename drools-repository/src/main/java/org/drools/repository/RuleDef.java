@@ -176,4 +176,8 @@ public class RuleDef extends Persistent implements IVersionable {
         return newVersion;
     }
     
+    public String toString() {
+        return "{ id = " + this.getId() +  "name= (" + this.name + ") version = " + this.getVersionNumber() + " }";
+    }
+    
 }
