@@ -16,10 +16,22 @@ public class RulePersistenceTest extends PersistentCase {
             repo.save(def);
         assertNotNull(def.getId());        
         repo.save(new RuleDef("myRule2", "A rule2"));               
+        
         def = new RuleDef("myRule3", "A rule3");
         def.addTag("tag1").addTag("tag2").addTag("HR");
-        repo.save(def);               
+        repo.save(def);        
+        
         assertNotNull(def.getId());
+        Long id = def.getId();
+        
+        def.setContent("new content");
+        repo.save(def);
+        
+        
+        def = repo.loadRule("myRule3", 1);
+        assertEquals(id, def.getId());
+        
+        assertEquals("new content", def.getContent());
     }
         
     public void testRetreieveRuleWithTags() {

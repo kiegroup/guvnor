@@ -1,7 +1,13 @@
 package org.drools.repository;
 
-/** All assets that support major versioning must implement this. */
-interface IVersionable {
+/** All assets that support versioning must implement this. */
+public interface IVersionable {
+    
+    /** 
+     * This is used to indicate that the asset is un-attached to 
+     * any ruleset. Basically deleted.
+     */
+    public static final long NO_VERSION = -1;
     
     /** of course they have to have an id ! 
      * Ids are always assigned by the database.

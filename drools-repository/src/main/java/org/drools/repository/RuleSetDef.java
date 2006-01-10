@@ -8,7 +8,20 @@ import java.util.Set;
  * The ruleset definition contains a grouping of rules for editing/release. The
  * workingVersionNumber drives what version of rules will be included in this
  * ruleset. Changing this number will mean that different versions of ruledefs
- * are loaded etc.
+ * are loaded etc. This number is set when you load the rulebase (it starts with
+ * 1 for a new RuleSet).
+ * 
+ * Assets such as RuleDefs, Functions etc can be added to the RuleSet.
+ * When an asset that already has an identity (eg a Rule that is 
+ * already is in the repository) is added to a RuleSet, it is copied, 
+ * and its version is set to to match the working version number of the RuleSet.
+ * This is to stop in advertent changes effecting unrelated rulesets, in cases
+ * where rules are "shared".
+ * 
+ * Note that as RuleDefs are taged, it is possible to load Rules based on these tags,
+ * and thus build up rulesets dynamically (without using a RuleSetDef object). This
+ * is possible for environments where rules are changed and managed individually,
+ * rather then as part of a ruleset.
  * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  */
@@ -40,6 +53,7 @@ public class RuleSetDef extends Persistent
         this.applicationData = new HashSet();
         this.imports = new HashSet();
         this.workingVersionNumber = 1;
+        this.versionHistory.add(new RuleSetVersionInfo(1, "New"));
     }
 
     /**
@@ -48,6 +62,12 @@ public class RuleSetDef extends Persistent
     RuleSetDef() {
     }
 
+    /** 
+     * This returns a version history of RuleSet versions.
+     * You can think of these as "major" versions. Past versions 
+     * can be loaded from the repository on demand, using the versionNumber
+     * from the appropriate history record that you wish to retrieve.
+     */
     public Set getVersionHistory() {
         return versionHistory;
     }
@@ -80,40 +100,51 @@ public class RuleSetDef extends Persistent
      * Removes a rule from the current ruleset. This
      * DOES NOT delete the rule, and DOES NOT effect any other versions
      * of the ruleset. 
+     * 
+     * Note that assets are removed by setting their version number to
+     * IVersionable.NO_VERSION (-1) so that the do not show up.
+     * This may be changed so they are archived in future, and deleted.
+     * 
+     * The repository API has a delete(RuleDef rule) method
+     * 
      */
     public void removeRule(RuleDef rule) {
-        //rule.setVersionNumber(-1);
-        this.rules.remove(rule);
+        rule.setVersionNumber(IVersionable.NO_VERSION);
     }
     
     public void removeFunction(FunctionDef function) {
-        this.functions.remove(function);
+        function.setVersionNumber(IVersionable.NO_VERSION);        
     }
     
     public void removeApplicationData(ApplicationDataDef appData) {
-        this.applicationData.remove(appData);
+        appData.setVersionNumber(IVersionable.NO_VERSION);        
     }
     
     public void removeImport(ImportDef imp) {
-        this.imports.remove(imp);
+        imp.setVersionNumber(IVersionable.NO_VERSION);
     }
     
     public void removeAttachment(RuleSetAttachment attachment) {
-        this.attachments.remove(attachment);
+        attachment.setVersionNumber(IVersionable.NO_VERSION);
     }
 
     public RuleSetDef addFunction(FunctionDef function) {
         return addAssetToSet( function,
                               this.functions );
     }
+    
+    public void removeTag(Tag tag) {
+        this.tags.remove(tag);
+    }
 
     /**
      * This adds a versionable asset to the specified set.
      * 
-     * Copy/versus linking: If the asset already has an Id, and it is a
-     * different version number, then it will be copied for the set. If it has
-     * the same version number, then it will be shared. Sharing is generally not
-     * recommended, but can be useful.
+     * Copy/versus linking: If the asset already has an Id, it will be copied
+     * for this ruleset.
+     * If it does not have an id, well it is obviously new, 
+     * and will be given an id when the RuleSet is synchronized with 
+     * the repository.
      */
     RuleSetDef addAssetToSet(IVersionable asset,
                              Set set) {
@@ -122,13 +153,11 @@ public class RuleSetDef extends Persistent
             asset.setVersionComment( "New" );
             set.add( asset );
         }
-        else if ( asset.getVersionNumber() == this.workingVersionNumber ) {
-            set.add( asset );
-        }
         else {
             IVersionable copy = asset.copy();
             copy.setVersionNumber( this.workingVersionNumber );
-            copy.setVersionComment( "Copied for this version." );
+            copy.setVersionComment( "Copied for this version from version: " 
+                                    + asset.getVersionNumber() );
             set.add( copy );
         }
         return this;
@@ -169,6 +198,11 @@ public class RuleSetDef extends Persistent
 
     public RuleSetDef addTag(String tag) {
         this.tags.add( new Tag( tag ) );
+        return this;
+    }
+    
+    public RuleSetDef addTag(Tag tag) {
+        this.tags.add(tag);
         return this;
     }
 

@@ -29,17 +29,18 @@ public class RuleDef extends Persistent implements IVersionable {
     /**
      * Use tagging to aid with searching and sorting of large numbers of rules.
      * Tags should not effect the versioning of the rules.
-     *  
-     *
      */
     public RuleDef addTag(String tag) {
         this.tags.add(new Tag(tag));
         return this;
     }
     
-
-    
-    public RuleDef() {}
+    public RuleDef addTag(Tag tag) {
+        this.tags.add(tag);
+        return this;
+    }
+        
+    RuleDef() {}
     
     /**
      * This is for creating a brand new rule.
@@ -177,7 +178,9 @@ public class RuleDef extends Persistent implements IVersionable {
     }
     
     public String toString() {
-        return "{ id = " + this.getId() +  "name= (" + this.name + ") version = " + this.getVersionNumber() + " }";
+        return "{ id = " + this.getId() 
+            +  " name = (" + this.name + ") version = " 
+            + this.getVersionNumber() + " }";
     }
     
 }

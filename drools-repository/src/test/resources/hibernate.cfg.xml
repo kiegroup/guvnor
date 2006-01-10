@@ -43,8 +43,6 @@
 		<mapping resource="org/drools/repository/ImportDef.hbm.xml" />
 		
 
-
-
     </session-factory>
 
 </hibernate-configuration>

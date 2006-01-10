@@ -32,6 +32,13 @@
       <version>1.8.0.1</version>
     </dependency>    
 
+    <dependency>
+      <groupId>xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>1.1.2</version>
+    </dependency>    
+
+
 
   </dependencies>
 

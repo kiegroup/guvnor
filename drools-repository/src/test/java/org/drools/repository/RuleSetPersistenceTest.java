@@ -2,6 +2,7 @@ package org.drools.repository;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.drools.repository.db.PersistentCase;
@@ -10,7 +11,7 @@ import org.drools.repository.db.RepositoryImpl;
 /**
  * Some quasi unit tests, and some quasi integration tests including versioning.
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
- *
+ * Take deep breaths... its not really that scary...
  */
 public class RuleSetPersistenceTest extends PersistentCase {
 
@@ -21,6 +22,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         
         RuleSetDef def = new RuleSetDef("my ruleset", meta);
         def.addTag("ME");
+        def.addRule(new RuleDef("simple", "x"));
         RepositoryImpl repo = getRepo();
         repo.save(def);
         
@@ -29,6 +31,14 @@ public class RuleSetPersistenceTest extends PersistentCase {
         assertEquals("Michael Neale", def2.getMetaData().getCreator());
         assertEquals(1, def2.getTags().size());
         
+        //now modify the content of a rule, ensure it is saved
+        RuleDef rule = (RuleDef) def2.getRules().iterator().next();
+        rule.setContent("Something new");
+        repo.save(def2);
+        
+        def2 = repo.loadRuleSet("my ruleset", 1);
+        RuleDef rule2 = (RuleDef) def2.getRules().iterator().next();
+        assertEquals("Something new", rule2.getContent());
     }
     
     public void testRuleSetWithRules() {
@@ -217,8 +227,9 @@ public class RuleSetPersistenceTest extends PersistentCase {
         assertEquals(1, old.getRules().size());
         assertEquals(1, newRs.getRules().size());
         
- 
+        //add a rule to new one
         newRs.addRule(new RuleDef("para2", "xxx"));
+        newRs.addTag("HR");
         repo.save(newRs);
 
         
@@ -226,14 +237,64 @@ public class RuleSetPersistenceTest extends PersistentCase {
         old = repo.loadRuleSet("para", 1);
         assertEquals(2, newRs.getRules().size());
         assertEquals(1, old.getRules().size());
+        
         RuleDef originalRule = (RuleDef) old.getRules().iterator().next();
         //check that the original one still has the right version number
-        assertEquals(1, originalRule.getVersionNumber());
+        assertEquals(1, originalRule.getVersionNumber());                
         
+        assertEquals(1, old.getRules().size());
+        repo.delete(originalRule);
+        old = repo.loadRuleSet("para", 1);
+        assertEquals(0, old.getRules().size());
         
+    }
+    
+    /** just make sure it works for at least one other asset type */
+    public void testRuleSetWithFunction() {
+        RuleSetDef def = new RuleSetDef("with functions", null);
+        def.addFunction(new FunctionDef("abc", "123"));
+        RepositoryImpl repo = getRepo();
+        repo.save(def);
         
+        def = repo.loadRuleSet("with functions", 1);
+        FunctionDef func = (FunctionDef) def.getFunctions().iterator().next();
+        assertEquals("abc", func.getFunctionContent());
+        
+        //just make sure it preserves content, and same ID (now new versions).
+        func.setFunctionContent("xyz");
+        Long id = func.getId();
+        repo.save(def);
+        def = repo.loadRuleSet("with functions", 1);
+        func = (FunctionDef) def.getFunctions().iterator().next();
+        assertEquals(id, func.getId());
+        assertEquals("xyz", func.getFunctionContent());
         
         
     }
+    
+    public void testRuleSetNameList() {
+        List list = getRepo().listRuleSets();
+        assertTrue(list.size() > 0);        
+    }
+    
+//    public void testLargeNumbers() {
+//        RuleSetDef large = new RuleSetDef("Large1", null);
+//        
+//        for (int i = 0; i < 4000; i++) {
+//            RuleDef def = new RuleDef("RuleNumber " + i, "Content");
+//            def.addTag("HR" + i);
+//            large.addRule(def);
+//        }
+//        RepositoryImpl repo = getRepo();
+//        repo.save(large);
+//        
+//        large = repo.loadRuleSet("Large1", 1);
+//        assertEquals(4000, large.getRules().size());
+//        
+//        List list = repo.findRulesByTag("HR1024");
+//        assertEquals(1, list.size());
+//        
+//        
+//    }
     
 }

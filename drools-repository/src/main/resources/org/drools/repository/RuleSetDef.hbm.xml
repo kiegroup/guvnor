@@ -12,7 +12,7 @@
         </id>
         
                 
-		<property name="name" />			
+		<property name="name" not-null="true" />			
 		
 		<component name="metaData">
 			<property name="title" />
@@ -32,7 +32,7 @@
 	
 	
 		<!--  tags to aid with searching and management of rules -->        
-		<set name="tags" table="RULESET_TAGS" lazy="false" cascade="all">
+		<set name="tags" table="RULESET_TAGS" lazy="false" cascade="all" optimistic-lock="false">
 		    <key column="RULESET_ID"/>
 		    <one-to-many class="org.drools.repository.Tag"/>
 		</set>  		
@@ -43,31 +43,31 @@
 		</set>		
 
 		<!-- now come the versioned assets -->
-		<set name="rules" lazy="false" cascade="all">
+		<set name="rules" lazy="false" cascade="all" optimistic-lock="false">
 			<key column="RULESET_ID"/>
 			<one-to-many class="org.drools.repository.RuleDef"/>
 			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />
 		</set>
 				
-		<set name="attachments" lazy="false" cascade="all">
+		<set name="attachments" lazy="false" cascade="all" optimistic-lock="false">
 			<key column="RULESET_ID"/>
 			<one-to-many class="org.drools.repository.RuleSetAttachment"/>
 			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />			
 		</set>
 		
-		<set name="imports" lazy="false" cascade="all">
+		<set name="imports" lazy="false" cascade="all" optimistic-lock="false">
 			<key column="RULESET_ID"/>
 			<one-to-many class="org.drools.repository.ImportDef"/>
 			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />			
 		</set>		
 		
-		<set name="functions" lazy="false" cascade="all">
+		<set name="functions" lazy="false" cascade="all" optimistic-lock="false">
 			<key column="RULESET_ID"/>
 			<one-to-many class="org.drools.repository.FunctionDef"/>
 			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />			
 		</set>		
 		
-		<set name="applicationData" lazy="false" cascade="all">
+		<set name="applicationData" lazy="false" cascade="all" optimistic-lock="false">
 			<key column="RULESET_ID"/>
 			<one-to-many class="org.drools.repository.ApplicationDataDef"/>
 			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />			

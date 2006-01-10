@@ -127,6 +127,23 @@ public class RepositoryImpl implements Repository {
         session.getTransaction().commit();
     }
     
+    
+    /** Returns List<String> of Rule set names */
+    public List listRuleSets() {
+        Session session = getSession();
+        session.beginTransaction();
+        List list = session.createQuery("select name from RuleSetDef where name is not null").list();
+        session.getTransaction().commit();
+        return list;
+    }
+    
+    
+    public void delete(RuleDef rule) {
+        Session session = getSession();
+        session.beginTransaction();
+        session.delete(rule);
+        session.getTransaction().commit();
+    }
 
     
     
