@@ -6,7 +6,7 @@
 
 <hibernate-mapping>
 
-    <class name="org.drools.repository.RuleSetAttachment" table="RULESET_ATTACHMENTS">
+    <class name="org.drools.repository.RuleSetAttachment" table="DROOLS_ATTACHMENTS">
         <id name="id" column="RULESET_ATTACHMENT_ID">
 			<generator class="native"/>
         </id>

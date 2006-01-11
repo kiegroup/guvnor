@@ -70,6 +70,26 @@ public class RulePersistenceTest extends PersistentCase {
         assertEquals("Peter Jackson", ruleCopy.getMetaData().getCreator());
         
     }
+    
+    public void testRuleRuleSetHistory() {
+        RuleSetDef rs = new RuleSetDef("rule history", null);
+        rs.addRule(new RuleDef("rh1", "xxxxx"));
+        rs.addRule(new RuleDef("rh2", "xxxxx"));
+        rs.addRule(new RuleDef("rh3", "xxxxx"));
+        
+        RepositoryImpl repo = getRepo();
+        repo.save(rs);
+        
+        rs = repo.loadRuleSet("rule history", 1);
+        rs.createNewVersion("yeah", "new version");
+        repo.save(rs);
+        
+        
+        List list = repo.listRuleHistory("rh1");
+        assertEquals(2, list.size());
+        assertTrue(list.get(0) instanceof RuleDef);
+        
+    }
 
 
     

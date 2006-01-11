@@ -138,13 +138,7 @@ public class RuleSetDef extends Persistent
     }
 
     /**
-     * This adds a versionable asset to the specified set.
-     * 
-     * Copy/versus linking: If the asset already has an Id, it will be copied
-     * for this ruleset.
-     * If it does not have an id, well it is obviously new, 
-     * and will be given an id when the RuleSet is synchronized with 
-     * the repository.
+     * This adds a new versionable asset to the specified set.
      */
     RuleSetDef addAssetToSet(IVersionable asset,
                              Set set) {
@@ -154,11 +148,14 @@ public class RuleSetDef extends Persistent
             set.add( asset );
         }
         else {
-            IVersionable copy = asset.copy();
-            copy.setVersionNumber( this.workingVersionNumber );
-            copy.setVersionComment( "Copied for this version from version: " 
-                                    + asset.getVersionNumber() );
-            set.add( copy );
+            throw new RepositoryException("The repo does not support sharing of rules across rulesets at this time." +
+                    "Assets must be copied, and given a unique " +
+                    "name before being added to the RuleSet. This asset already has a name and identity.");
+//            IVersionable copy = asset.copy();
+//            copy.setVersionNumber( this.workingVersionNumber );
+//            copy.setVersionComment( "Copied for this version from version: " 
+//                                    + asset.getVersionNumber() );
+//            set.add( copy );
         }
         return this;
     }

@@ -43,13 +43,13 @@
 		</set>		
 
 		<!-- now come the versioned assets -->
-		<set name="rules" lazy="false" cascade="all" optimistic-lock="false">
+		<set name="rules" lazy="false" table="RULESET_RULES" cascade="all" optimistic-lock="false">		
 			<key column="RULESET_ID"/>
 			<one-to-many class="org.drools.repository.RuleDef"/>
 			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />
 		</set>
 				
-		<set name="attachments" lazy="false" cascade="all" optimistic-lock="false">
+		<set name="attachments" lazy="false" table="RULESET_ATTACHMENTS" cascade="all" optimistic-lock="false">
 			<key column="RULESET_ID"/>
 			<one-to-many class="org.drools.repository.RuleSetAttachment"/>
 			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />			

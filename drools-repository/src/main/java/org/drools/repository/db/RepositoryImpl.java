@@ -137,7 +137,6 @@ public class RepositoryImpl implements Repository {
         return list;
     }
     
-    
     public void delete(RuleDef rule) {
         Session session = getSession();
         session.beginTransaction();

@@ -44,7 +44,8 @@ public class RuleDef extends Persistent implements IVersionable {
     
     /**
      * This is for creating a brand new rule.
-     * @param name
+     * @param name Name of the MUST BE UNIQUE in the repository.
+     * The only time duplicate names exist are for different versions of rules.
      * @param content
      */
     public RuleDef(String name, String content) {
