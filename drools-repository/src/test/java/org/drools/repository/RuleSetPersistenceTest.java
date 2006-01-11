@@ -247,6 +247,26 @@ public class RuleSetPersistenceTest extends PersistentCase {
         old = repo.loadRuleSet("para", 1);
         assertEquals(0, old.getRules().size());
         
+        
+    }
+    
+    public void testSaveHistoryFromCascade() {
+        
+        RuleSetDef old = new RuleSetDef("something old", null);
+        RepositoryImpl repo = getRepo();
+        RuleDef newRule = new RuleDef("save history 2", "ABC");        
+        old.addRule(newRule);
+        
+        repo.save(old);
+        
+        assertEquals(0, repo.listRuleSaveHistory(newRule).size());
+        old.addTag("yeah");
+        repo.save(old);
+        assertEquals(0, repo.listRuleSaveHistory(newRule).size());
+        newRule.setContent("CHANGED CONTENT");
+        repo.save(old);
+        assertEquals(1, repo.listRuleSaveHistory(newRule).size());
+        
     }
     
     /** just make sure it works for at least one other asset type */

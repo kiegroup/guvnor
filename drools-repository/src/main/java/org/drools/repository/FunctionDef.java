@@ -37,6 +37,8 @@ public class FunctionDef extends Persistent
     public IVersionable copy(){
         FunctionDef clone = new FunctionDef(this.functionContent, this.description);
         clone.language = this.language;
+        clone.versionNumber = this.versionNumber;
+        clone.versionComment = this.versionComment;
         return clone;
     }    
 

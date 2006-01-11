@@ -18,47 +18,55 @@ public class RepositoryImpl implements Repository {
 
     /** This will simply save the current version of the rule */
     public void save(RuleDef newRule) {
-        Session session = getSession();
-        session.beginTransaction();
+        Session session = getSessionNewTx();
 
         session.saveOrUpdate(newRule);
 
-        session.getTransaction().commit();
+        commit( session );
     }
     
 
     
 
     public RuleDef loadRule(String ruleName, long versionNumber) {
-        Session session = getSession();
-        session.beginTransaction();
+        Session session = getSessionNewTx();
         
         RuleDef result = (RuleDef) session.createQuery("from RuleDef where name = :name and versionNumber = :version")
               .setString("name", ruleName)
               .setLong("version", versionNumber).uniqueResult();
         
-        session.getTransaction().commit();
+        commit( session );
         return result;
     }
     
-    public List listRuleHistory(String ruleName) {
-        Session session = getSession();
-        session.beginTransaction();
+    public List listRuleVersions(String ruleName) {
+        Session session = getSessionNewTx();
         
         List result = (List) session.createQuery("from RuleDef where name = :name order by versionNumber")
               .setString("name", ruleName).list();
         
-        session.getTransaction().commit();
+        commit( session );
         return result;        
     }
     
+    public List listRuleSaveHistory(RuleDef rule) {
+        Session session = getSessionNewTx();
+        disableHistoryFilter(session);
+        
+        List result = (List) session.createQuery("from RuleDef where historicalId = :id")
+                        .setLong("id", rule.getId().longValue()).list();
+        
+        enableHistoryFilter(session);
+        commit( session );
+        return result;
+    }
+    
     public List findRulesByTag(String tag) {
-        Session session = getSession();
-        session.beginTransaction();
+        Session session = getSessionNewTx();
         List result = session.createQuery("from RuleDef as rule where rule.tags.tag = :tag")
             .setString("tag", tag)
             .list();              
-        session.getTransaction().commit();
+        commit( session );
         return result;
     }
     
@@ -66,10 +74,9 @@ public class RepositoryImpl implements Repository {
     
     /** Save the ruleset. The Ruleset will not be reloaded. */
     public void save(RuleSetDef ruleSet) {
-        Session session = getSession();
-        session.beginTransaction();     
+        Session session = getSessionNewTx();  
         session.saveOrUpdate(ruleSet);
-        session.getTransaction().commit();
+        commit( session );
     }
     
     /** 
@@ -78,9 +85,8 @@ public class RepositoryImpl implements Repository {
      * @param ruleSetName The ruleset name to retrieve (ruleset names must be unique).
      */
     public RuleSetDef loadRuleSet(String ruleSetName, long workingVersionNumber) {
-        Session session = getSession();
+        Session session = getSessionNewTx();
         
-        session.beginTransaction();
         enableVersionFilter( workingVersionNumber,
                              session );
         
@@ -88,8 +94,8 @@ public class RepositoryImpl implements Repository {
                                             session );        
         def.setWorkingVersionNumber(workingVersionNumber);  
         
-        removeVersionFilter( session );
-        session.getTransaction().commit();
+        disableVersionFilter( session );
+        commit( session );
         return def;
     }
 
@@ -106,52 +112,37 @@ public class RepositoryImpl implements Repository {
 
     
     public RuleSetAttachment loadAttachment(String name) {
-        Session session = getSession();
-        session.beginTransaction();
+        Session session = getSessionNewTx();
         RuleSetAttachment at = (RuleSetAttachment) 
                                 session.createQuery("from RuleSetAttachment where name = :name")
                                 .setString("name", name)
                                 .uniqueResult();
-        session.getTransaction().commit();
+        commit( session );
         return at;       
     }    
 
 
-    private void enableVersionFilter(long workingVersionNumber,
-                                     Session session){
-        session.enableFilter("workingVersionFilter")
-                .setParameter("filteredVersionNumber", 
-                new Long(workingVersionNumber));
-    }
 
-
-
-    private void removeVersionFilter(Session session){
-        session.disableFilter("workingVersionFilter");
-    }
     
     public void save(RuleSetAttachment attachment) {
-        Session session = getSession();
-        session.beginTransaction();
+        Session session = getSessionNewTx();
         session.saveOrUpdate(attachment);
-        session.getTransaction().commit();
+        commit( session );
     }
     
     
     /** Returns List<String> of Rule set names */
     public List listRuleSets() {
-        Session session = getSession();
-        session.beginTransaction();
+        Session session = getSessionNewTx();
         List list = session.createQuery("select name from RuleSetDef where name is not null").list();
-        session.getTransaction().commit();
+        commit( session );
         return list;
     }
     
     public void delete(RuleDef rule) {
-        Session session = getSession();
-        session.beginTransaction();
+        Session session = getSessionNewTx();
         session.delete(rule);
-        session.getTransaction().commit();
+        commit( session );
     }
 
     
@@ -160,23 +151,50 @@ public class RepositoryImpl implements Repository {
      * This will search ALL VERSIONS. 
      */
     public List searchRulesByTag(String ruleSetName, String tag) {
-        Session session = getSession();
-        session.beginTransaction();        
+        Session session = getSessionNewTx();
+               
         RuleSetDef def = loadRuleSetByName(ruleSetName, session);
         List list = session.createFilter(def.getRules(), 
                              "where this.tags.tag = :tag")
                              .setString("tag", tag).list();
-        session.getTransaction().commit();
+        commit( session );
         session.close();
         return list;
     }
-    
-    
-    
-    private Session getSession(){
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        return session;
+
+
+
+
+    private void commit(Session session) {
+        session.getTransaction().commit();
     }
     
+    
+    
+    private Session getSessionNewTx(){
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction(); 
+        enableHistoryFilter( session );
+        return session;
+    }
+
+    private void enableHistoryFilter(Session session) {
+        session.enableFilter("historyFilter").setParameter("viewHistory", Boolean.FALSE);
+    }
+    
+    private void disableHistoryFilter(Session session) {
+        session.disableFilter("historyFilter");
+    }
+    
+    private void enableVersionFilter(long workingVersionNumber,
+                                     Session session){
+        session.enableFilter("workingVersionFilter")
+                .setParameter("filteredVersionNumber", 
+                new Long(workingVersionNumber));
+    }
+
+    private void disableVersionFilter(Session session){
+        session.disableFilter("workingVersionFilter");
+    }    
     
 }

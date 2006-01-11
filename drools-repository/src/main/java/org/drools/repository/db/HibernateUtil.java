@@ -10,14 +10,10 @@ public class HibernateUtil {
 
     static {
         try {
-            // Create the SessionFactory from hibernate.cfg.xml
-
-            Configuration cfg = new Configuration();
-
-            SaveOrUpdateEventListener[] listeners = new SaveOrUpdateEventListener[]{new StoreEventListener()};
             
+            // Create the SessionFactory from hibernate.cfg.xml
+            Configuration cfg = new Configuration();
             cfg.setInterceptor( new StoreEventListener() );
-            cfg.getEventListeners().setUpdateEventListeners( listeners );
             cfg.configure();
             sessionFactory = cfg.buildSessionFactory();
         }

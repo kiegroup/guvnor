@@ -6,7 +6,9 @@
 
 <hibernate-mapping>
 
-    <class name="org.drools.repository.RuleDef" table="RULE_DEFINITIONS">
+    <class name="org.drools.repository.RuleDef" 
+    	table="RULE_DEFINITIONS" 
+    	entity-name="org.drools.repository.RuleDef">
         <id name="id" column="RULE_ID">
             <generator class="native"/>
         </id>
@@ -21,9 +23,10 @@
 		<property name="documentation" />		
 		<property name="effectiveDate" />		
 		<property name="expiryDate" />					
-
+		<property name="historicalId" />
+		<property name="historicalRecord" />
 		
-		<set name="tags" table="RULE_TAGS" lazy="false" cascade="all">
+		<set name="tags" table="RULE_TAGS" lazy="false" cascade="all" optimistic-lock="false">
 		    <key column="RULE_ID"/>
 		    <one-to-many class="org.drools.repository.Tag"  />
 		</set>       
@@ -44,10 +47,12 @@
 			<property name="rights" />
 		</component>		 
  
-
- 
+		<filter name="historyFilter" condition=":viewHistory = historicalRecord" />
     </class>
-    
+
+	<filter-def name="historyFilter">
+		<filter-param name="viewHistory" type="boolean" />
+	</filter-def>      
    
 
 </hibernate-mapping>        

@@ -5,149 +5,171 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class RuleDef extends Persistent implements IVersionable {
-
+public class RuleDef extends Persistent
+    implements
+    ISaveHistory {
 
     private static final long serialVersionUID = -677781085801764266L;
-    
-    private String name;
-    private long versionNumber;
-    private String content;
-    private MetaData metaData;
-    private String status;
-    private boolean checkedOut;    
-    private String checkedOutBy;
-    private String versionComment;
-    private Set tags;
-    private String documentation;
-    private Date effectiveDate;
-    private Date expiryDate;   
 
-    
-
+    private String            name;
+    private long              versionNumber;
+    private String            content;
+    private MetaData          metaData;
+    private String            status;
+    private boolean           checkedOut;
+    private String            checkedOutBy;
+    private String            versionComment;
+    private Set               tags;
+    private String            documentation;
+    private Date              effectiveDate;
+    private Date              expiryDate;
+    private Long              historicalId;
+    private boolean           historicalRecord = false;
 
     /**
      * Use tagging to aid with searching and sorting of large numbers of rules.
      * Tags should not effect the versioning of the rules.
      */
     public RuleDef addTag(String tag) {
-        this.tags.add(new Tag(tag));
+        this.tags.add( new Tag( tag ) );
         return this;
     }
-    
+
     public RuleDef addTag(Tag tag) {
-        this.tags.add(tag);
+        this.tags.add( tag );
         return this;
     }
-        
-    RuleDef() {}
-    
+
+    RuleDef() {
+    }
+
     /**
      * This is for creating a brand new rule.
-     * @param name Name of the MUST BE UNIQUE in the repository.
-     * The only time duplicate names exist are for different versions of rules.
+     * 
+     * @param name
+     *            Name of the MUST BE UNIQUE in the repository. The only time
+     *            duplicate names exist are for different versions of rules.
      * @param content
      */
-    public RuleDef(String name, String content) {
+    public RuleDef(String name,
+                   String content) {
         this.name = name;
         this.content = content;
         this.versionNumber = 1;
         this.tags = new HashSet();
     }
 
-    
-    public String getContent(){
+    public String getContent() {
         return content;
     }
-    public void setContent(String content){
+
+    public void setContent(String content) {
         this.content = content;
     }
 
-    public MetaData getMetaData(){
+    public MetaData getMetaData() {
         return metaData;
     }
-    public void setMetaData(MetaData metaData){
+
+    public void setMetaData(MetaData metaData) {
         this.metaData = metaData;
     }
-    public String getStatus(){
+
+    public String getStatus() {
         return status;
     }
-    public void setStatus(String status){
+
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public boolean isCheckedOut(){
+    public boolean isCheckedOut() {
         return checkedOut;
     }
-    public void setCheckedOut(boolean checkedOut){
+
+    public void setCheckedOut(boolean checkedOut) {
         this.checkedOut = checkedOut;
     }
-    public String getCheckedOutBy(){
+
+    public String getCheckedOutBy() {
         return checkedOutBy;
     }
-    public void setCheckedOutBy(String checkOutBy){
+
+    public void setCheckedOutBy(String checkOutBy) {
         this.checkedOutBy = checkOutBy;
     }
 
-    public String getVersionComment(){
+    public String getVersionComment() {
         return versionComment;
     }
-    public void setVersionComment(String versionComment){
+
+    public void setVersionComment(String versionComment) {
         this.versionComment = versionComment;
     }
-    public long getVersionNumber(){
+
+    public long getVersionNumber() {
         return this.versionNumber;
     }
-    public void setVersionNumber(long versionNumber){
+
+    public void setVersionNumber(long versionNumber) {
         this.versionNumber = versionNumber;
     }
-    public String getDocumentation(){
+
+    public String getDocumentation() {
         return documentation;
     }
-    public void setDocumentation(String documentation){
+
+    public void setDocumentation(String documentation) {
         this.documentation = documentation;
     }
-    public Set getTags(){
+
+    public Set getTags() {
         return tags;
     }
-    private void setTags(Set tags){
+
+    private void setTags(Set tags) {
         this.tags = tags;
     }
-    public Date getEffectiveDate(){
+
+    public Date getEffectiveDate() {
         return effectiveDate;
     }
-    public void setEffectiveDate(Date effectiveDate){
+
+    public void setEffectiveDate(Date effectiveDate) {
         this.effectiveDate = effectiveDate;
     }
-    public Date getExpiryDate(){
+
+    public Date getExpiryDate() {
         return expiryDate;
     }
-    public void setExpiryDate(Date expiryDate){
+
+    public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
     }
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    public void setName(String name){
-        this.name = name;        
+
+    private void setName(String name) {
+        this.name = name;
     }
 
-    /** 
-     * Return a list of tags as Strings. Tags are stored as Tag objects, 
-     * but are essentially strings. 
+    /**
+     * Return a list of tags as Strings. Tags are stored as Tag objects, but are
+     * essentially strings.
      */
     public String[] listTags() {
-
         String[] tagList = new String[tags.size()];
         int i = 0;
         for ( Iterator iter = tags.iterator(); iter.hasNext(); ) {
             Tag tag = (Tag) iter.next();
-            tagList[i] = tag.getTag();                   
+            tagList[i] = tag.getTag();
             i++;
         }
         return tagList;
     }
-    
+
     /**
      * Copy the tags. It is allowable to reuse the same Tag identities.
      */
@@ -155,7 +177,7 @@ public class RuleDef extends Persistent implements IVersionable {
         Set newTags = new HashSet();
         for ( Iterator iter = this.tags.iterator(); iter.hasNext(); ) {
             Tag tag = (Tag) iter.next();
-            newTags.add(tag);
+            newTags.add( new Tag( tag.getTag() ) );
         }
         return newTags;
     }
@@ -165,23 +187,53 @@ public class RuleDef extends Persistent implements IVersionable {
      */
     public IVersionable copy() {
         RuleDef newVersion = new RuleDef();
-        newVersion.content = this.content;        
+        newVersion.content = this.content;
         newVersion.documentation = this.documentation;
         newVersion.effectiveDate = this.effectiveDate;
         newVersion.expiryDate = this.expiryDate;
-        if (this.metaData != null) {
+        if ( this.metaData != null ) {
             newVersion.metaData = this.metaData.copy();
-        }                
+        }
         newVersion.name = this.name;
-        newVersion.status = "";
-        newVersion.tags = this.copyTags();        
+        newVersion.status = this.status;
+        newVersion.tags = this.copyTags();
+        newVersion.versionNumber = this.versionNumber;
+        newVersion.versionComment = this.versionComment;
         return newVersion;
     }
-    
+
     public String toString() {
-        return "{ id = " + this.getId() 
-            +  " name = (" + this.name + ") version = " 
-            + this.getVersionNumber() + " }";
+        return "{ id = " + this.getId() + " name = (" + this.name + ") version = " + this.getVersionNumber() + " }";
+    }
+
+    public Long getHistoricalId() {
+        return historicalId;
+    }
+
+    public void setHistoricalId(Long historicalId) {
+        this.historicalId = historicalId;
+    }
+
+    public boolean isHistoricalRecord() {
+        return historicalRecord;
+    }
+
+    public void setHistoricalRecord(boolean historicalRecord) {
+        this.historicalRecord = historicalRecord;
+    }
+
+    public boolean isStateChanged(ISaveHistory oldObject) {
+        RuleDef old = (RuleDef) oldObject;
+        if (diffStr(this.getContent(), old.getContent())) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
+    /** return true if different */
+    private boolean diffStr(String left, String right) {
+        return !left.equals(right);
+    }
+
 }
