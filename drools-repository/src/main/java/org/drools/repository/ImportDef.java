@@ -2,6 +2,9 @@ package org.drools.repository;
 
 /**
  * This holds a type import for a ruleset. 
+ * TODO: This probably does not need to be versioned this granular.
+ * A simple Import collection object, which is versionable, would do fine
+ * (same argument for ApplicationDataDef). 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  */
 public class ImportDef extends Persistent

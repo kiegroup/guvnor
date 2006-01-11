@@ -277,6 +277,18 @@ public class RuleSetPersistenceTest extends PersistentCase {
         assertTrue(list.size() > 0);        
     }
     
+    public void testRuleSetSearchRuleTags() {
+        RepositoryImpl repo = getRepo();
+        RuleSetDef def = new RuleSetDef("rules with tags", null);
+        RuleDef rule = new RuleDef("search rule tags in set", "fdsfdsfds");
+        rule.addTag("HR");
+        def.addRule(rule);
+        repo.save(def);
+        List list = repo.searchRulesByTag("rules with tags", "HR");
+        assertEquals(1, list.size());
+        assertEquals("search rule tags in set", ((RuleDef) list.get(0)).getName());
+    }
+    
 //    public void testLargeNumbers() {
 //        RuleSetDef large = new RuleSetDef("Large1", null);
 //        

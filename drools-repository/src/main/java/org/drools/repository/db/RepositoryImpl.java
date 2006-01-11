@@ -84,13 +84,23 @@ public class RepositoryImpl implements Repository {
         enableVersionFilter( workingVersionNumber,
                              session );
         
-        RuleSetDef def = (RuleSetDef)
-                session.createQuery("from RuleSetDef where name = :name")
-                .setString("name", ruleSetName ).uniqueResult();        
+        RuleSetDef def = loadRuleSetByName( ruleSetName,
+                                            session );        
         def.setWorkingVersionNumber(workingVersionNumber);  
         
         removeVersionFilter( session );
         session.getTransaction().commit();
+        return def;
+    }
+
+
+
+
+    private RuleSetDef loadRuleSetByName(String ruleSetName,
+                                         Session session) {
+        RuleSetDef def = (RuleSetDef)
+                session.createQuery("from RuleSetDef where name = :name")
+                .setString("name", ruleSetName ).uniqueResult();
         return def;
     }
 
@@ -144,6 +154,22 @@ public class RepositoryImpl implements Repository {
         session.getTransaction().commit();
     }
 
+    
+    /** 
+     * Searches the ruleset for a rule with a certain tag.
+     * This will search ALL VERSIONS. 
+     */
+    public List searchRulesByTag(String ruleSetName, String tag) {
+        Session session = getSession();
+        session.beginTransaction();        
+        RuleSetDef def = loadRuleSetByName(ruleSetName, session);
+        List list = session.createFilter(def.getRules(), 
+                             "where this.tags.tag = :tag")
+                             .setString("tag", tag).list();
+        session.getTransaction().commit();
+        session.close();
+        return list;
+    }
     
     
     
