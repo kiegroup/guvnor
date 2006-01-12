@@ -39,6 +39,19 @@ public class RuleSetPersistenceTest extends PersistentCase {
         def2 = repo.loadRuleSet("my ruleset", 1);
         RuleDef rule2 = (RuleDef) def2.getRules().iterator().next();
         assertEquals("Something new", rule2.getContent());
+        
+        //try adding a pre-saved rule
+        RuleDef newRule = new RuleDef("pre-existing", "ABC");
+        repo.save(newRule);
+        newRule.addTag("a tag");
+        repo.save(newRule);
+        newRule = repo.loadRule("pre-existing", 1);
+        def2.addRule(newRule);
+        repo.save(def2);
+        def2 = repo.loadRuleSet("my ruleset", 1);
+        newRule = def2.findRuleByName("pre-existing");
+        assertEquals("ABC", newRule.getContent());
+        assertEquals(1, newRule.getTags().size());
     }
     
     public void testRuleSetWithRules() {
@@ -308,6 +321,8 @@ public class RuleSetPersistenceTest extends PersistentCase {
         assertEquals(1, list.size());
         assertEquals("search rule tags in set", ((RuleDef) list.get(0)).getName());
     }
+    
+    
     
 //    public void testLargeNumbers() {
 //        RuleSetDef large = new RuleSetDef("Large1", null);

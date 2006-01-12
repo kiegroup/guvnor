@@ -127,6 +127,19 @@ public class RuleSetDef extends Persistent
     public void removeAttachment(RuleSetAttachment attachment) {
         attachment.setVersionNumber(IVersionable.NO_VERSION);
     }
+    
+    /** 
+     * @return a rule that is associated with this ruleset by the rules name. 
+     * If its not found, then it will return null.
+     */
+    public RuleDef findRuleByName(String name) {
+        for ( Iterator iter = this.rules.iterator(); iter.hasNext(); ) {
+            RuleDef rule = (RuleDef) iter.next();
+            if (rule.getName().equals(name)) return rule;
+        }
+        return null;
+        
+    }
 
     public RuleSetDef addFunction(FunctionDef function) {
         return addAssetToSet( function,
@@ -139,6 +152,8 @@ public class RuleSetDef extends Persistent
 
     /**
      * This adds a new versionable asset to the specified set.
+     * If an asset already exists, it will be added to this ruleset with the
+     * current rulesets version (it is recommended to copy assets first).
      */
     RuleSetDef addAssetToSet(IVersionable asset,
                              Set set) {
@@ -148,14 +163,16 @@ public class RuleSetDef extends Persistent
             set.add( asset );
         }
         else {
-            throw new RepositoryException("The repo does not support sharing of rules across rulesets at this time." +
-                    "Assets must be copied, and given a unique " +
-                    "name before being added to the RuleSet. This asset already has a name and identity.");
-//            IVersionable copy = asset.copy();
-//            copy.setVersionNumber( this.workingVersionNumber );
-//            copy.setVersionComment( "Copied for this version from version: " 
-//                                    + asset.getVersionNumber() );
-//            set.add( copy );
+            asset.setVersionNumber( this.workingVersionNumber );
+            set.add( asset );
+//            throw new RepositoryException("The repo does not support sharing of rules across rulesets at this time." +
+//                    "Assets must be copied, and given a unique " +
+//                    "name before being added to the RuleSet. This asset already has a name and identity.");
+////            IVersionable copy = asset.copy();
+////            copy.setVersionNumber( this.workingVersionNumber );
+////            copy.setVersionComment( "Copied for this version from version: " 
+////                                    + asset.getVersionNumber() );
+////            set.add( copy );
         }
         return this;
     }
@@ -353,5 +370,6 @@ public class RuleSetDef extends Persistent
     private void setImports(Set imports) {
         this.imports = imports;
     }
+        
 
 }
