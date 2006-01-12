@@ -312,6 +312,8 @@ public class RuleSetPersistenceTest extends PersistentCase {
 //    public void testLargeNumbers() {
 //        RuleSetDef large = new RuleSetDef("Large1", null);
 //        
+//        System.out.println("Starting " + System.currentTimeMillis());
+//        
 //        for (int i = 0; i < 4000; i++) {
 //            RuleDef def = new RuleDef("RuleNumber " + i, "Content");
 //            def.addTag("HR" + i);
@@ -320,11 +322,19 @@ public class RuleSetPersistenceTest extends PersistentCase {
 //        RepositoryImpl repo = getRepo();
 //        repo.save(large);
 //        
+//        System.out.println("Saved " + System.currentTimeMillis());
+//        
 //        large = repo.loadRuleSet("Large1", 1);
 //        assertEquals(4000, large.getRules().size());
+//        System.out.println("Loaded " + System.currentTimeMillis());
 //        
 //        List list = repo.findRulesByTag("HR1024");
 //        assertEquals(1, list.size());
+//        System.out.println("Searched " + System.currentTimeMillis());
+//        
+//        large.addTag("blah");
+//        repo.save(large);
+//        System.out.println("Change saved " + System.currentTimeMillis());
 //        
 //        
 //    }
