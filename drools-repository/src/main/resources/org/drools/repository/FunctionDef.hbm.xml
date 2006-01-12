@@ -10,7 +10,7 @@
         </id>
  		<property name="description" />
  		<property name="functionContent" />
- 		<property name="language" />
+ 		<property name="semantic" />
  		<property name="versionComment" />
  		<property name="versionNumber" /> 		 		 		
     </class>

@@ -86,10 +86,10 @@ public class RuleSetAttachment extends Persistent implements IVersionable {
     }
     
     public IVersionable copy() {
-        RuleSetAttachment copy = new RuleSetAttachment(this.typeOfAttachment, 
-                                                       this.name, 
-                                                       this.content, 
-                                                       this.originalFileName);
+        RuleSetAttachment copy = new RuleSetAttachment(this.getTypeOfAttachment(), 
+                                                       this.getName(), 
+                                                       this.getContent(), 
+                                                       this.getOriginalFileName());
         return copy;
     }
 

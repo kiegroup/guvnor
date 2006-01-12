@@ -1,6 +1,5 @@
 package org.drools.repository;
 
-import java.io.Serializable;
 
 /**
  * This represents a users tag for a rule, ruleset.
@@ -11,18 +10,9 @@ import java.io.Serializable;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  */
-public class Tag implements Serializable {
+public class Tag extends Persistent {
 
     private String tag;
-    private Long id;
-    
-    public Long getId(){
-        return id;
-    }
-
-    public void setId(Long id){
-        this.id = id;
-    }
 
     public Tag(String tag) {
         this.tag = tag;

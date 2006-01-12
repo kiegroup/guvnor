@@ -140,19 +140,19 @@ public class MetaData
      */
     MetaData copy(){
         MetaData copy = new MetaData();
-        copy.contributor = this.contributor;
-        copy.coverage = this.coverage;
-        copy.creator = this.creator;
-        copy.dateCreated = this.dateCreated;
-        copy.description = this.description;
-        copy.format = this.format;
-        copy.language = this.language;
-        copy.publisher = this.publisher;
-        copy.relation = this.relation;
-        copy.rights = this.rights;
-        copy.source = this.source;
-        copy.subject = this.subject;
-        copy.title = this.title;        
+        copy.contributor = this.getContributor();
+        copy.coverage = this.getCoverage();
+        copy.creator = this.getCreator();
+        copy.dateCreated = this.getDateCreated();
+        copy.description = this.getDescription();
+        copy.format = this.getFormat();
+        copy.language = this.getLanguage();
+        copy.publisher = this.getPublisher();
+        copy.relation = this.getRelation();
+        copy.rights = this.getRights();
+        copy.source = this.getSource();
+        copy.subject = this.getSubject();
+        copy.title = this.getTitle();        
         return copy;
     }
 

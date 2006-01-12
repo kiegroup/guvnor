@@ -370,6 +370,7 @@ public class RuleSetDef extends Persistent
     private void setImports(Set imports) {
         this.imports = imports;
     }
-        
+
+
 
 }

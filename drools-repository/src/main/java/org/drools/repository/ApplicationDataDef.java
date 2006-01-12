@@ -51,8 +51,8 @@ public class ApplicationDataDef extends Persistent
     }
 
     public IVersionable copy() {
-        ApplicationDataDef clone = new ApplicationDataDef( this.identifier,
-                                                           this.type );
+        ApplicationDataDef clone = new ApplicationDataDef( this.getIdentifier(),
+                                                           this.getType() );
         return clone;
     }
 

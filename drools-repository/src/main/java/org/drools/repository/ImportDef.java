@@ -47,8 +47,7 @@ public class ImportDef extends Persistent
     }
 
     public IVersionable copy() {
-        // TODO Auto-generated method stub
-        return new ImportDef(this.type);
+        return new ImportDef(this.getType());
     }
     
     

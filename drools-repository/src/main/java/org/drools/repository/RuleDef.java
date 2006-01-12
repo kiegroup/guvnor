@@ -175,7 +175,7 @@ public class RuleDef extends Persistent
      */
     private Set copyTags() {
         Set newTags = new HashSet();
-        for ( Iterator iter = this.tags.iterator(); iter.hasNext(); ) {
+        for ( Iterator iter = this.getTags().iterator(); iter.hasNext(); ) {
             Tag tag = (Tag) iter.next();
             newTags.add( new Tag( tag.getTag() ) );
         }
@@ -187,18 +187,18 @@ public class RuleDef extends Persistent
      */
     public IVersionable copy() {
         RuleDef newVersion = new RuleDef();
-        newVersion.content = this.content;
-        newVersion.documentation = this.documentation;
-        newVersion.effectiveDate = this.effectiveDate;
-        newVersion.expiryDate = this.expiryDate;
+        newVersion.content = this.getContent();
+        newVersion.documentation = this.getDocumentation();
+        newVersion.effectiveDate = this.getEffectiveDate();
+        newVersion.expiryDate = this.getExpiryDate();
         if ( this.metaData != null ) {
-            newVersion.metaData = this.metaData.copy();
+            newVersion.metaData = this.getMetaData().copy();
         }
-        newVersion.name = this.name;
-        newVersion.status = this.status;
+        newVersion.name = this.getName();
+        newVersion.status = this.getStatus();
         newVersion.tags = this.copyTags();
-        newVersion.versionNumber = this.versionNumber;
-        newVersion.versionComment = this.versionComment;
+        newVersion.versionNumber = this.getVersionNumber();
+        newVersion.versionComment = this.getVersionComment();
         return newVersion;
     }
 

@@ -16,29 +16,29 @@ public class FunctionDef extends Persistent
     private String versionComment;
     private String functionContent;
     private String description;
-    private String language;
+    private String semantic;
     
-    public String getLanguage(){
-        return language;
+    public String getSemantic(){
+        return semantic;
     }
 
-    public void setLanguage(String language){
-        this.language = language;
+    public void setSemantic(String language){
+        this.semantic = language;
     }
 
     public FunctionDef(String functionContent, String description) {
         this.functionContent = functionContent;
         this.description = description;
-        this.language = "";
+        this.semantic = "";
     }
     
     FunctionDef() {}
     
     public IVersionable copy(){
         FunctionDef clone = new FunctionDef(this.functionContent, this.description);
-        clone.language = this.language;
-        clone.versionNumber = this.versionNumber;
-        clone.versionComment = this.versionComment;
+        clone.semantic = this.getSemantic();
+        clone.versionNumber = this.getVersionNumber();
+        clone.versionComment = this.getVersionComment();
         return clone;
     }    
 
