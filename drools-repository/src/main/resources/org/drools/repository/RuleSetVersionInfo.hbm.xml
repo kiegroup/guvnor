@@ -6,7 +6,7 @@
 
 <hibernate-mapping>
 
-    <class name="org.drools.repository.RuleSetVersionInfo" table="RULESET_VERSION_INFO">
+    <class name="org.drools.repository.RuleSetVersionInfo" table="RULESET_VERSION_INFO" select-before-update="true">
     	
     	<id name="id" column="RULESET_VERSION_ID">
     		<generator class="native" />

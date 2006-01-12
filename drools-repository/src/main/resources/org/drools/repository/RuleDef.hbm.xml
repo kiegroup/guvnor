@@ -8,7 +8,7 @@
 
     <class name="org.drools.repository.RuleDef" 
     	table="RULE_DEFINITIONS" 
-    	entity-name="org.drools.repository.RuleDef">
+    	entity-name="org.drools.repository.RuleDef" select-before-update="true">
         <id name="id" column="RULE_ID">
             <generator class="native"/>
         </id>

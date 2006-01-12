@@ -63,7 +63,9 @@ public class RepositoryImpl implements Repository {
     
     public List findRulesByTag(String tag) {
         Session session = getSessionNewTx();
-        List result = session.createQuery("from RuleDef as rule where rule.tags.tag = :tag")
+        List result = session.createQuery("from RuleDef as rule " +
+                                        "join rule.tags as tags " +
+                                        "where tags.tag = :tag")
             .setString("tag", tag)
             .list();              
         commit( session );

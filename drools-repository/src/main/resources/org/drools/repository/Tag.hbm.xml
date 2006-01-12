@@ -12,7 +12,7 @@
 		TODO: probably best to have a method with top 1000 tags cached - they re-use identity.
 		Then can look it up as needed.
 		-->
-    <class name="org.drools.repository.Tag" table="DROOLS_TAGS">
+    <class name="org.drools.repository.Tag" table="DROOLS_TAGS" select-before-update="true">
     	<id name="id" column="TAG_ID">
     		<generator class="native" />
     	</id>

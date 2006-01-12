@@ -4,7 +4,7 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="org.drools.repository.ImportDef" table="IMPORT_DEFINITIONS">
+    <class name="org.drools.repository.ImportDef" table="IMPORT_DEFINITIONS" select-before-update="true">
         <id name="id" column="IMPORT_ID">
             <generator class="native"/>
         </id>
