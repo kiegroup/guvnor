@@ -1,7 +1,6 @@
 package org.drools.repository;
 
 import org.drools.repository.db.PersistentCase;
-import org.drools.repository.db.RepositoryImpl;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -17,7 +16,7 @@ public class LocalPersistTest extends PersistentCase {
         
         def = (RuleSetDef) xstream.fromXML(xml);
 
-        RepositoryImpl repo = getRepo();
+        RepositoryManager repo = getRepo();
         repo.save(def);
         
         def = repo.loadRuleSet("xstream1", 1);

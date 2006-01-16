@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.repository.db.PersistentCase;
-import org.drools.repository.db.RepositoryImpl;
 
 /**
  * Some quasi unit tests, and some quasi integration tests including versioning.
@@ -23,7 +22,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         RuleSetDef def = new RuleSetDef("my ruleset", meta);
         def.addTag("ME");
         def.addRule(new RuleDef("simple", "x"));
-        RepositoryImpl repo = getRepo();
+        RepositoryManager repo = getRepo();
         repo.save(def);
         
         RuleSetDef def2 = repo.loadRuleSet("my ruleset", 1);
@@ -64,7 +63,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         ruleSet.addRule(def);
         ruleSet.addTag("HR");
         
-        RepositoryImpl repo = getRepo();
+        RepositoryManager repo = getRepo();
         repo.save(ruleSet);
         
         RuleSetDef loaded = repo.loadRuleSet("Uber 1", 1);
@@ -83,7 +82,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
                                                              "file.txt");
         ruleSet.addAttachment(attachment);
         
-        RepositoryImpl repo = getRepo();
+        RepositoryManager repo = getRepo();
         repo.save(ruleSet);
         
         RuleSetDef result = repo.loadRuleSet("Attachmate", 1);             
@@ -102,7 +101,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         history.add(info2);
         
         def.setVersionHistory(history);
-        RepositoryImpl repo = getRepo();
+        RepositoryManager repo = getRepo();
         repo.save(def);
         
         RuleSetDef def2 = repo.loadRuleSet("WithHistory", 1);
@@ -114,7 +113,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         RuleDef rule = new RuleDef("addRemove Rule", "xxx");
         def.addRule(rule);
                 
-        RepositoryImpl repo = getRepo();
+        RepositoryManager repo = getRepo();
         
         //save and load it fresh
         repo.save(def);               
@@ -175,7 +174,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         }
         
         
-        RepositoryImpl repo = getRepo();
+        RepositoryManager repo = getRepo();
         repo.save(set);
         
         //now when we load it, the filter only loads the workingVersion that we specify
@@ -226,7 +225,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         RuleSetDef def = new RuleSetDef("para", null);
         def.addRule(new RuleDef("para1","sss"));
         
-        RepositoryImpl repo = getRepo();
+        RepositoryManager repo = getRepo();
         repo.save(def);
         
         //create a new version
@@ -266,7 +265,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
     public void testSaveHistoryFromCascade() {
         
         RuleSetDef old = new RuleSetDef("something old", null);
-        RepositoryImpl repo = getRepo();
+        RepositoryManager repo = getRepo();
         RuleDef newRule = new RuleDef("save history 2", "ABC");        
         old.addRule(newRule);
         
@@ -286,7 +285,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
     public void testRuleSetWithFunction() {
         RuleSetDef def = new RuleSetDef("with functions", null);
         def.addFunction(new FunctionDef("abc", "123"));
-        RepositoryImpl repo = getRepo();
+        RepositoryManager repo = getRepo();
         repo.save(def);
         
         def = repo.loadRuleSet("with functions", 1);
@@ -311,7 +310,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
     }
     
     public void testRuleSetSearchRuleTags() {
-        RepositoryImpl repo = getRepo();
+        RepositoryManager repo = getRepo();
         RuleSetDef def = new RuleSetDef("rules with tags", null);
         RuleDef rule = new RuleDef("search rule tags in set", "fdsfdsfds");
         rule.addTag("HR");

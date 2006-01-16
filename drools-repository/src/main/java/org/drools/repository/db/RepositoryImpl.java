@@ -2,7 +2,8 @@ package org.drools.repository.db;
 
 import java.util.List;
 
-import org.drools.repository.Repository;
+
+import org.drools.repository.RepositoryManager;
 import org.drools.repository.RuleDef;
 import org.drools.repository.RuleSetAttachment;
 import org.drools.repository.RuleSetDef;
@@ -17,89 +18,86 @@ import org.hibernate.Session;
  */
 public class RepositoryImpl
     implements
-    Repository {
+    RepositoryManager {
 
-    /** This will simply save the current version of the rule */
+    private Session session;
+    
+    public void injectSession(Session session) {
+        this.session = session;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.drools.repository.db.RepositoryManager#save(org.drools.repository.RuleDef)
+     */
     public void save(RuleDef newRule) {
-        Session session = getSessionNewTx();
-
         session.saveOrUpdate( newRule );
-
-        commit( session );
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.repository.db.RepositoryManager#loadRule(java.lang.String, long)
+     */
     public RuleDef loadRule(String ruleName,
                             long versionNumber) {
-        Session session = getSessionNewTx();
+        RuleDef result = (RuleDef) session.createQuery( "from RuleDef where name = :name and versionNumber = :version" )
+                            .setString( "name", ruleName )
+                            .setLong( "version", versionNumber )
+                            .uniqueResult();
 
-        RuleDef result = (RuleDef) session.createQuery( "from RuleDef where name = :name and versionNumber = :version" ).setString( "name",
-                                                                                                                                    ruleName ).setLong( "version",
-                                                                                                                                                        versionNumber ).uniqueResult();
-
-        commit( session );
         return result;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.repository.db.RepositoryManager#listRuleVersions(java.lang.String)
+     */
     public List listRuleVersions(String ruleName) {
-        Session session = getSessionNewTx();
-
-        List result = (List) session.createQuery( "from RuleDef where name = :name order by versionNumber" ).setString( "name",
-                                                                                                                        ruleName ).list();
-
-        commit( session );
+        List result = (List) session.createQuery( "from RuleDef where name = :name order by versionNumber" )
+                                .setString( "name", ruleName ).list();
         return result;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.repository.db.RepositoryManager#listRuleSaveHistory(org.drools.repository.RuleDef)
+     */
     public List listRuleSaveHistory(RuleDef rule) {
-        Session session = getSessionNewTx();
         disableHistoryFilter( session );
 
         List result = (List) session.createQuery( "from RuleDef where historicalId = :id" ).setLong( "id",
                                                                                                      rule.getId().longValue() ).list();
 
         enableHistoryFilter( session );
-        commit( session );
         return result;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.repository.db.RepositoryManager#findRulesByTag(java.lang.String)
+     */
     public List findRulesByTag(String tag) {
-        Session session = getSessionNewTx();
         List result = session.createQuery( "from RuleDef as rule " + 
                                            "join rule.tags as tags " + 
                                            "where tags.tag = :tag" ).setString( "tag", tag ).list();
-        commit( session );
         return result;
     }
 
-    /** Save the ruleset. The Ruleset will not be reloaded. */
+    /* (non-Javadoc)
+     * @see org.drools.repository.db.RepositoryManager#save(org.drools.repository.RuleSetDef)
+     */
     public void save(RuleSetDef ruleSet) {
-        Session session = getSessionNewTx();
         session.saveOrUpdate( ruleSet );
-        commit( session );
     }
 
-    /**
-     * This loads a RuleSet with the appropriate workingVersionNumber applied to
-     * its assets.
-     * 
-     * @param workingVersionNumber
-     *            The version of the ruleset and rules you want to work on.
-     * @param ruleSetName
-     *            The ruleset name to retrieve (ruleset names must be unique).
+    /* (non-Javadoc)
+     * @see org.drools.repository.db.RepositoryManager#loadRuleSet(java.lang.String, long)
      */
     public RuleSetDef loadRuleSet(String ruleSetName,
                                   long workingVersionNumber) {
-        Session session = getSessionNewTx();
-
-        enableVersionFilter( workingVersionNumber,
+        enableWorkingVersionFilter( workingVersionNumber,
                              session );
 
         RuleSetDef def = loadRuleSetByName( ruleSetName,
                                             session );
         def.setWorkingVersionNumber( workingVersionNumber );
 
-        disableVersionFilter( session );
-        commit( session );
+        disableWorkingVersionFilter( session );
         return def;
     }
 
@@ -110,83 +108,77 @@ public class RepositoryImpl
         return def;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.repository.db.RepositoryManager#loadAttachment(java.lang.String)
+     */
     public RuleSetAttachment loadAttachment(String name) {
-        Session session = getSessionNewTx();
-        RuleSetAttachment at = (RuleSetAttachment) session.createQuery( "from RuleSetAttachment where name = :name" ).setString( "name",
-                                                                                                                                 name ).uniqueResult();
-        commit( session );
+        RuleSetAttachment at = (RuleSetAttachment) session.createQuery( "from RuleSetAttachment where name = :name" )
+                                .setString( "name",name ).uniqueResult();
         return at;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.repository.db.RepositoryManager#save(org.drools.repository.RuleSetAttachment)
+     */
     public void save(RuleSetAttachment attachment) {
-        Session session = getSessionNewTx();
         session.saveOrUpdate( attachment );
-        commit( session );
     }
 
-    /** Returns List<String> of Rule set names */
+    /* (non-Javadoc)
+     * @see org.drools.repository.db.RepositoryManager#listRuleSets()
+     */
     public List listRuleSets() {
-        Session session = getSessionNewTx();
         List list = session.createQuery( "select distinct name from RuleSetDef where name is not null" ).list();
-        commit( session );
         return list;
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.repository.db.RepositoryManager#delete(org.drools.repository.RuleDef)
+     */
     public void delete(RuleDef rule) {
-        Session session = getSessionNewTx();
         session.delete( rule );
-        commit( session );
     }
 
-    /**
-     * Searches the ruleset for a rule with a certain tag. This will search ALL
-     * VERSIONS.
+    /* (non-Javadoc)
+     * @see org.drools.repository.db.RepositoryManager#searchRulesByTag(java.lang.String, java.lang.String)
      */
     public List searchRulesByTag(String ruleSetName,
                                  String tag) {
-        Session session = getSessionNewTx();
-
         RuleSetDef def = loadRuleSetByName( ruleSetName,
                                             session );
         List list = session.createFilter( def.getRules(),
                                           "where this.tags.tag = :tag" ).setString( "tag",
                                                                                     tag ).list();
-        commit( session );
-        session.close();
+      
         return list;
     }
 
-    private void commit(Session session) {
-        session.getTransaction().commit();
-    }
 
-    private Session getSessionNewTx() {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        
-        session.beginTransaction();
-        StoreEventListener.setCurrentConnection( session.connection() );        
-        enableHistoryFilter( session );
-        
-        return session;
-    }
-
-    private void enableHistoryFilter(Session session) {
+    //////////////////////////
+    // Filters follow
+    //////////////////////////
+    void enableHistoryFilter(Session session) {
         session.enableFilter( "historyFilter" ).setParameter( "viewHistory",
                                                               Boolean.FALSE );
     }
 
-    private void disableHistoryFilter(Session session) {
+    void disableHistoryFilter(Session session) {
         session.disableFilter( "historyFilter" );
     }
 
-    private void enableVersionFilter(long workingVersionNumber,
+    void enableWorkingVersionFilter(long workingVersionNumber,
                                      Session session) {
         session.enableFilter( "workingVersionFilter" ).setParameter( "filteredVersionNumber",
                                                                      new Long( workingVersionNumber ) );
     }
 
-    private void disableVersionFilter(Session session) {
+    void disableWorkingVersionFilter(Session session) {
         session.disableFilter( "workingVersionFilter" );
     }
+
+    
+    public void close() { /*implemented by the proxy */}
+    
+    
 
 }

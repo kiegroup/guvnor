@@ -6,12 +6,11 @@ import java.util.Set;
 import org.drools.repository.MetaData;
 import org.drools.repository.RuleDef;
 import org.drools.repository.db.PersistentCase;
-import org.drools.repository.db.RepositoryImpl;
 
 public class RulePersistenceTest extends PersistentCase {
 
     public void testStoreNewRuleDef() throws Exception {
-        RepositoryImpl repo = getRepo();
+        RepositoryManager repo = getRepo();
         RuleDef def = new RuleDef("myRule", "A rule"); 
             repo.save(def);
         assertNotNull(def.getId());        
@@ -35,7 +34,7 @@ public class RulePersistenceTest extends PersistentCase {
     }
         
     public void testRetreieveRuleWithTags() {
-        RepositoryImpl repo = getRepo();
+        RepositoryManager repo = getRepo();
         RuleDef newRule = new RuleDef("my rule", "content");
         newRule.addTag("HR").addTag("SALARY");
         repo.save(newRule);
@@ -54,7 +53,7 @@ public class RulePersistenceTest extends PersistentCase {
     }
     
     public void testRuleCopy() {
-        RepositoryImpl repo = getRepo();
+        RepositoryManager repo = getRepo();
         
         RuleDef rule1 = new RuleDef("newVersionTest", "XXX");
         rule1.addTag("HR").addTag("BOO");
@@ -77,7 +76,7 @@ public class RulePersistenceTest extends PersistentCase {
         rs.addRule(new RuleDef("rh2", "xxxxx"));
         rs.addRule(new RuleDef("rh3", "xxxxx"));
         
-        RepositoryImpl repo = getRepo();
+        RepositoryManager repo = getRepo();
         repo.save(rs);
         
         rs = repo.loadRuleSet("rule history", 1);

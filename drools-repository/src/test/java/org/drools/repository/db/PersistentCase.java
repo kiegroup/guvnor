@@ -1,5 +1,8 @@
 package org.drools.repository.db;
 
+import org.drools.repository.RepositoryFactory;
+import org.drools.repository.RepositoryManager;
+
 import junit.framework.TestCase;
 
 public class PersistentCase extends TestCase {
@@ -9,10 +12,8 @@ public class PersistentCase extends TestCase {
         getRepo();
     }
     
-    
-    public RepositoryImpl getRepo() {
-        RepositoryImpl repo = new RepositoryImpl();
-        return repo;
+    public RepositoryManager getRepo() {
+        return RepositoryFactory.getRepository();
     }
         
     
