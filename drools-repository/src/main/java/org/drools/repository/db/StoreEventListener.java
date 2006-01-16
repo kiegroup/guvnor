@@ -1,6 +1,7 @@
 package org.drools.repository.db;
 
 import java.io.Serializable;
+import java.sql.Connection;
 import java.util.Iterator;
 
 import org.drools.repository.ISaveHistory;
@@ -21,6 +22,10 @@ import org.hibernate.type.Type;
 public class StoreEventListener extends EmptyInterceptor {
 
     private static final long serialVersionUID = -5634072610999632779L;
+    
+    //use a threadlocal to get the currentConnection, 
+    //as we may not always use currentSession semantics.
+    private static ThreadLocal currentConnection = new ThreadLocal();
 
     public boolean onFlushDirty(Object entity,
                                 Serializable id,
@@ -37,8 +42,8 @@ public class StoreEventListener extends EmptyInterceptor {
     private void handleSaveHistory(Object entity) {
         ISaveHistory versionable = (ISaveHistory) entity;
 
-        Session current = getSessionFactory().getCurrentSession();
-        Session session = getSessionFactory().openSession( current.connection() );
+        
+        Session session = getSessionFactory().openSession( (Connection) currentConnection.get() );
 
         System.out.println( "POSSIBLY SAVING COPY" );
 
@@ -65,6 +70,14 @@ public class StoreEventListener extends EmptyInterceptor {
             Object element = (Object) iter.next();
             
         }
+    }
+    
+    /**
+     * Used to set the current session so the interceptor can access it.
+     * @param session
+     */
+    public static void setCurrentConnection(Connection conn) {
+        currentConnection.set(conn);
     }
 
     // public boolean onFlushDirty(Object entity,
