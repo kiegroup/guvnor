@@ -25,6 +25,18 @@ public class IntegrationTest extends TestCase {
      * so that is acceptable.
      */
     public void testBootstrap() {
+        runVersioningTests();
+        
+        
+        
+    }
+
+
+    /**
+     * These tests show how it all hangs together.
+     * You can see versioning in action, save history etc.
+     */
+    private void runVersioningTests() {
         RepositoryManager repo = RepositoryFactory.getStatefulRepository();
         
         // In the beginning there was a rule
@@ -135,9 +147,6 @@ public class IntegrationTest extends TestCase {
 
         
         repo.close();
-        
-        
-        
     }
     
     
