@@ -139,13 +139,16 @@ public class IntegrationTest extends TestCase {
         
        //lets add a rule to it (making 3 rules in total)
         ruleSet.addRule(new RuleDef("Integration rule 3", "content"));
+         
         repo.save(ruleSet);
         
         //lets load up the old version, check that there is still only 2 rules
         ruleSet = repo.loadRuleSet("Integration ruleset 1", 1);
         assertEquals(2, ruleSet.getRules().size());        
         assertEquals("draft", ruleSet.getVersionInfoWorking().getStatus());        
-
+        
+        //ooh look, the new one has 3, and they are all different rules !
+        assertEquals(3, repo.loadRuleSet("Integration ruleset 1", 2).getRules().size());
         
         repo.close();
     }
