@@ -26,8 +26,9 @@ public class IntegrationTest extends TestCase {
      */
     public void testBootstrap() {
         runVersioningTests();
-        
-        
+//        runAttachmentTests();
+//        runConcurrentTests();
+//        runLocalPersistTests();
         
     }
 
@@ -59,7 +60,7 @@ public class IntegrationTest extends TestCase {
         meta.setDescription("A test ruleset");
         
         RuleSetDef ruleSet = new RuleSetDef("Integration ruleset 1", meta);
-        RuleSetVersionInfo info = ruleSet.getCurrentVersionInfo();
+        RuleSetVersionInfo info = ruleSet.getVersionInfoWorking();
         info.setStatus("draft");
         
         //time to save it
@@ -72,7 +73,7 @@ public class IntegrationTest extends TestCase {
         repo = RepositoryFactory.getStatefulRepository();
         assertTrue(repo.listRuleSets().size() > 0);
         ruleSet = repo.loadRuleSet("Integration ruleset 1", 1);
-        assertEquals("draft", ruleSet.getCurrentVersionInfo().getStatus());
+        assertEquals("draft", ruleSet.getVersionInfoWorking().getStatus());
         
         //now lets work "disconnected" for a while
         repo.close();
@@ -132,8 +133,8 @@ public class IntegrationTest extends TestCase {
         repo = RepositoryFactory.getStatefulRepository();
         ruleSet = repo.loadRuleSet("Integration ruleset 1", 2);
         assertEquals(2, ruleSet.getVersionHistory().size());
-        assertEquals("New version", ruleSet.getCurrentVersionInfo().getVersionComment());
-        assertEquals("pending", ruleSet.getCurrentVersionInfo().getStatus());        
+        assertEquals("New version", ruleSet.getVersionInfoWorking().getVersionComment());
+        assertEquals("pending", ruleSet.getVersionInfoWorking().getStatus());        
         
         
        //lets add a rule to it (making 3 rules in total)
@@ -143,7 +144,7 @@ public class IntegrationTest extends TestCase {
         //lets load up the old version, check that there is still only 2 rules
         ruleSet = repo.loadRuleSet("Integration ruleset 1", 1);
         assertEquals(2, ruleSet.getRules().size());        
-        assertEquals("draft", ruleSet.getCurrentVersionInfo().getStatus());        
+        assertEquals("draft", ruleSet.getVersionInfoWorking().getStatus());        
 
         
         repo.close();

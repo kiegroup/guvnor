@@ -53,7 +53,7 @@ public class RuleSetDef extends Persistent
         this.applicationData = new HashSet();
         this.imports = new HashSet();
         this.workingVersionNumber = 1;
-        this.versionHistory.add(new RuleSetVersionInfo(1, "New"));
+        addNewVersionHistory("new", "created");        
     }
 
     /**
@@ -97,7 +97,7 @@ public class RuleSetDef extends Persistent
     }
     
     /** Find the current working version info. */
-    public RuleSetVersionInfo getCurrentVersionInfo() {        
+    public RuleSetVersionInfo getVersionInfoWorking() {        
         for ( Iterator iter = this.versionHistory.iterator(); iter.hasNext(); ) {
             RuleSetVersionInfo info = (RuleSetVersionInfo) iter.next();
             if (info.getVersionNumber() == this.getWorkingVersionNumber()) {

@@ -323,7 +323,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
     
     public void testFindWorkingVersionInfo() {
         RuleSetDef ruleset = new RuleSetDef("nothing", null);
-        RuleSetVersionInfo info = ruleset.getCurrentVersionInfo();
+        RuleSetVersionInfo info = ruleset.getVersionInfoWorking();
         assertNotNull(info);
         assertEquals(1, info.getVersionNumber());
     }
