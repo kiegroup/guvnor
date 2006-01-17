@@ -55,7 +55,7 @@
 			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />			
 		</set>
 		
-		<set name="imports" lazy="false" table="RULESET_IMPORS" cascade="all" optimistic-lock="false">
+		<set name="imports" lazy="false" table="RULESET_IMPORTS" cascade="all" optimistic-lock="false">
 			<key column="RULESET_ID"/>
 			<one-to-many class="org.drools.repository.ImportDef"/>
 			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />			

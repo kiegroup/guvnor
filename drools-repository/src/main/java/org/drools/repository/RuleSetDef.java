@@ -96,7 +96,9 @@ public class RuleSetDef extends Persistent
                               this.applicationData );
     }
     
-    /** Find the current working version info. */
+    /** 
+     * Find the current working version info.
+     * This includes the status of this version of the ruleset. */
     public RuleSetVersionInfo getVersionInfoWorking() {        
         for ( Iterator iter = this.versionHistory.iterator(); iter.hasNext(); ) {
             RuleSetVersionInfo info = (RuleSetVersionInfo) iter.next();
