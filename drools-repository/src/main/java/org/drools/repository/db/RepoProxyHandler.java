@@ -14,6 +14,10 @@ import org.hibernate.Transaction;
  * This is the glue between the actual implementation and the interface.
  * Kind of like poor mans aspects. But I couldn't justify AOP for this little thing.
  * 
+ * This provides the stateful and stateless behaviour.
+ * It can also be extended to provide user context to the implementation class 
+ * (for auditing, access control and locking for instance).
+ * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  */
 public class RepoProxyHandler
@@ -32,6 +36,7 @@ public class RepoProxyHandler
      * work with the current session. 
      */
     public RepoProxyHandler() {
+        this(false);
     }
     
     /**
@@ -39,9 +44,9 @@ public class RepoProxyHandler
      * @param stateful True if stateful operation is desired.
      */
     public RepoProxyHandler(boolean stateful) {
+        this.stateful = stateful;
         if (stateful) {
             this.session = HibernateUtil.getSessionFactory().openSession();
-            this.stateful = true;
         }
     }
     
@@ -58,6 +63,7 @@ public class RepoProxyHandler
 
         if (this.stateful && method.getName().equals("close")) {
             session.close();
+            StoreEventListener.setCurrentConnection(null);
             return null;
         }
         
@@ -68,6 +74,10 @@ public class RepoProxyHandler
             Object result = method.invoke(repoImpl, args);
             session.flush();
             tx.commit();
+            
+            if (!stateful) {
+                this.repoImpl.injectSession(null); //not really needed, but to prove it is stateless !
+            }
             return result;
         }
         catch (InvocationTargetException e) {

@@ -26,30 +26,35 @@ public class RulePersistenceTest extends PersistentCase {
         def.setContent("new content");
         repo.save(def);
         
-        
         def = repo.loadRule("myRule3", 1);
         assertEquals(id, def.getId());
         
         assertEquals("new content", def.getContent());
+        def.removeTag("tag1");
+        repo.save(def);
+        def = repo.loadRule("myRule3", 1);
+        assertEquals(2, def.getTags().size());
     }
         
     public void testRetreieveRuleWithTags() {
         RepositoryManager repo = getRepo();
-        RuleDef newRule = new RuleDef("my rule", "content");
-        newRule.addTag("HR").addTag("SALARY");
+        RuleDef newRule = new RuleDef("my rule RWT", "content");
+        newRule.addTag("RWT").addTag("RWT2");
         repo.save(newRule);
         
-        RuleDef rule = repo.loadRule("my rule", 1);
+        RuleDef rule = repo.loadRule("my rule RWT", 1);
         assertNotNull(rule);
-        assertEquals("my rule", rule.getName());
+        assertEquals("my rule RWT", rule.getName());
 
         Set tags = rule.getTags();
         assertEquals(2, tags.size());
         String[] tagList = rule.listTags();
-        assertTrue(tagList[0].equals("HR") || tagList[0].equals("SALARY"));
+        assertTrue(tagList[0].equals("RWT") || tagList[0].equals("RWT2"));
         
-        List rules = repo.findRulesByTag("HR");
-        assertTrue(rules.size() > 0);        
+        List rules = repo.findRulesByTag("RWT");
+        assertEquals(1, rules.size());
+        rule = (RuleDef) rules.get(0);
+        assertEquals("my rule RWT", rule.getName());
     }
     
     public void testRuleCopy() {

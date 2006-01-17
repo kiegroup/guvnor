@@ -72,7 +72,7 @@ public class RepositoryImpl
      * @see org.drools.repository.db.RepositoryManager#findRulesByTag(java.lang.String)
      */
     public List findRulesByTag(String tag) {
-        List result = session.createQuery( "from RuleDef as rule " + 
+        List result = session.createQuery( "select rule from RuleDef as rule " + 
                                            "join rule.tags as tags " + 
                                            "where tags.tag = :tag" ).setString( "tag", tag ).list();
         return result;
@@ -90,9 +90,9 @@ public class RepositoryImpl
      */
     public RuleSetDef loadRuleSet(String ruleSetName,
                                   long workingVersionNumber) {
+        session.clear(); //to make sure latest is loaded up, not stale
         enableWorkingVersionFilter( workingVersionNumber,
-                             session );
-
+                             session );        
         RuleSetDef def = loadRuleSetByName( ruleSetName,
                                             session );
         def.setWorkingVersionNumber( workingVersionNumber );

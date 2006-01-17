@@ -29,6 +29,22 @@ public class MetaData
     private String coverage;
     private String rights;
 
+    public MetaData() {        
+    }
+    
+    public MetaData(String title,
+                    String creator,
+                    String subject,
+                    String description,
+                    String format) {
+        super();
+        this.title = title;
+        this.creator = creator;
+        this.subject = subject;
+        this.description = description;
+        this.format = format;
+    }    
+    
     public String getContributor(){
         return contributor;
     }
@@ -155,5 +171,7 @@ public class MetaData
         copy.title = this.getTitle();        
         return copy;
     }
+
+
 
 }

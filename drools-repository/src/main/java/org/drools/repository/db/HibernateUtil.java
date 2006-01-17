@@ -20,23 +20,33 @@ import org.hibernate.cfg.Configuration;
  */
 public class HibernateUtil {
 
-    private static final SessionFactory sessionFactory;
+    private static SessionFactory sessionFactory;
 
     static {
         try {
-            
-            Configuration cfg = new Configuration();            
-            cfg.setInterceptor( new StoreEventListener() );
-            registerPersistentClasses( cfg );
-            cfg.configure("drools-repository-db.cfg.xml");
-            
-            sessionFactory = cfg.buildSessionFactory();
+            configureSessionFactory();
         }
         catch ( Throwable ex ) {
             // Make sure you log the exception, as it might be swallowed
             System.err.println( "Initial SessionFactory creation failed." + ex );
             throw new ExceptionInInitializerError( ex );
         }
+    }
+
+    /**
+     * This will setup the session factory with paramaters 
+     * that are available.
+     * May be called again to re-establish the factory if needed.
+     */
+    public static void configureSessionFactory() {
+        Configuration cfg = new Configuration();            
+        cfg.setInterceptor( new StoreEventListener() );
+        registerPersistentClasses( cfg );
+//            cfg.setProperty("connection.username", "sa");
+//            cfg.setProperty("connection.password", "");
+        cfg.configure("drools-repository-db.cfg.xml");
+        
+        sessionFactory = cfg.buildSessionFactory();
     }
 
     /**

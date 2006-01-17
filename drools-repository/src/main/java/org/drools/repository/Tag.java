@@ -5,7 +5,7 @@ package org.drools.repository;
  * This represents a users tag for a rule, ruleset.
  * This aids with classification of rules in an ad-hoc fashion.
  * 
- * A tag it its own entity as tags should be shared as much as possible.
+ * A tag is its own entity as tags should be shared as much as possible.
  * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *

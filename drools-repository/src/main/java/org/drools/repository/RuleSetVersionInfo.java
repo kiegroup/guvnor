@@ -74,6 +74,9 @@ public class RuleSetVersionInfo extends Persistent implements Comparable {
         return 0;
     }
     
+    public String toString() {
+        return "{ versionComment=" + this.versionComment + " versionNumber=" + this.versionNumber + " }";
+    }
     
     
     

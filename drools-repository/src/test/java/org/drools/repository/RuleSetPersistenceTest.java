@@ -321,6 +321,13 @@ public class RuleSetPersistenceTest extends PersistentCase {
         assertEquals("search rule tags in set", ((RuleDef) list.get(0)).getName());
     }
     
+    public void testFindWorkingVersionInfo() {
+        RuleSetDef ruleset = new RuleSetDef("nothing", null);
+        RuleSetVersionInfo info = ruleset.getCurrentVersionInfo();
+        assertNotNull(info);
+        assertEquals(1, info.getVersionNumber());
+    }
+    
     
     
 //    public void testLargeNumbers() {

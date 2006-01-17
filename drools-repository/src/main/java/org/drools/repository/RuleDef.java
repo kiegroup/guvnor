@@ -28,7 +28,6 @@ public class RuleDef extends Persistent
 
     /**
      * Use tagging to aid with searching and sorting of large numbers of rules.
-     * Tags should not effect the versioning of the rules.
      */
     public RuleDef addTag(String tag) {
         this.tags.add( new Tag( tag ) );
@@ -38,6 +37,20 @@ public class RuleDef extends Persistent
     public RuleDef addTag(Tag tag) {
         this.tags.add( tag );
         return this;
+    }
+    
+    public void removeTag(Tag tag) {
+        this.tags.remove(tag);
+    }
+    
+    public void removeTag(String tagVal) {
+        for ( Iterator iter = this.tags.iterator(); iter.hasNext(); ) {
+            Tag tag = (Tag) iter.next();
+            if (tag.getTag().equals(tagVal)) {
+                iter.remove();
+                return;
+            }            
+        }        
     }
 
     RuleDef() {
@@ -177,7 +190,8 @@ public class RuleDef extends Persistent
         Set newTags = new HashSet();
         for ( Iterator iter = this.getTags().iterator(); iter.hasNext(); ) {
             Tag tag = (Tag) iter.next();
-            newTags.add( new Tag( tag.getTag() ) );
+            newTags.add( new Tag( tag.getTag() ) );            
+            
         }
         return newTags;
     }
@@ -203,7 +217,7 @@ public class RuleDef extends Persistent
     }
 
     public String toString() {
-        return "{ id = " + this.getId() + " name = (" + this.name + ") version = " + this.getVersionNumber() + " }";
+        return "{ id = " + this.getId() + " name = '" + this.name + "' version = " + this.getVersionNumber() + " }";
     }
 
     public Long getHistoricalId() {

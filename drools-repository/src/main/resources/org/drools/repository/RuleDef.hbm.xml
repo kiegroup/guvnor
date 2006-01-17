@@ -15,7 +15,7 @@
         
        	<property name="name"/>
        	<property name="versionNumber" />
-		<property name="content" />   
+		<property name="content" type="text" />   
 		<property name="status" />	
 		<property name="checkedOut" />	
 		<property name="checkedOutBy" />	

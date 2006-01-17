@@ -96,13 +96,24 @@ public class RuleSetDef extends Persistent
                               this.applicationData );
     }
     
+    /** Find the current working version info. */
+    public RuleSetVersionInfo getCurrentVersionInfo() {        
+        for ( Iterator iter = this.versionHistory.iterator(); iter.hasNext(); ) {
+            RuleSetVersionInfo info = (RuleSetVersionInfo) iter.next();
+            if (info.getVersionNumber() == this.getWorkingVersionNumber()) {
+                return info;
+            }
+        }
+        return null;
+    }
+    
     /** 
      * Removes a rule from the current ruleset. This
      * DOES NOT delete the rule, and DOES NOT effect any other versions
      * of the ruleset. 
      * 
      * Note that assets are removed by setting their version number to
-     * IVersionable.NO_VERSION (-1) so that the do not show up.
+     * IVersionable.NO_VERSION (-1) so that they do not show up.
      * This may be changed so they are archived in future, and deleted.
      * 
      * The repository API has a delete(RuleDef rule) method
@@ -255,7 +266,7 @@ public class RuleSetDef extends Persistent
      * so on without effecting any previous versions of rules and the ruleset.
      * 
      * Previous rules can be retrieved by changing the value of
-     * workingVersionNumber.
+     * workingVersionNumber when loading the ruleset.
      * 
      * Note that further to this, rules themselves will be versioned on save
      * (think of that versioning as "minor" versions, and this sort of ruleset
@@ -263,13 +274,12 @@ public class RuleSetDef extends Persistent
      * 
      * Ideally once a new version is created, the RuleSet should be stored and
      * then loaded fresh, which will hide the non working versions of the rules.
-     * 
      */
     public void createNewVersion(String comment,
                                  String newStatus) {
 
         this.workingVersionNumber++;
-        addNewVersionHistory( newStatus );
+        addNewVersionHistory( newStatus, comment );
 
         createAndAddNewVersions( this.rules,
                                  comment,
@@ -294,10 +304,11 @@ public class RuleSetDef extends Persistent
 
     }
 
-    private void addNewVersionHistory(String newStatus) {
+    private void addNewVersionHistory(String newStatus, String comment) {
         RuleSetVersionInfo newVersion = new RuleSetVersionInfo();
         newVersion.setStatus( newStatus );
         newVersion.setVersionNumber( this.workingVersionNumber );
+        newVersion.setVersionComment( comment );
         this.versionHistory.add( newVersion );
     }
 
