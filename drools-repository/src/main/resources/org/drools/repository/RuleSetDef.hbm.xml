@@ -61,7 +61,7 @@
 			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />			
 		</set>		
 		
-		<set name="functions" lazy="false" cascade="all" optimistic-lock="false">
+		<set name="functions" lazy="false" table="RULESET_FUNCTIONS" cascade="all" optimistic-lock="false">
 			<key column="RULESET_ID"/>
 			<one-to-many class="org.drools.repository.FunctionDef"/>
 			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />			

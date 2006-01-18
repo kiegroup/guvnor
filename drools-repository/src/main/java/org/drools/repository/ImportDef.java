@@ -1,5 +1,8 @@
 package org.drools.repository;
 
+import org.drools.repository.db.IVersionable;
+import org.drools.repository.db.Persistent;
+
 /**
  * This holds a type import for a ruleset. 
  * TODO: This probably does not need to be versioned this granular.

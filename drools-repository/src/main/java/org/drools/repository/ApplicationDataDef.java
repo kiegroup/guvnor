@@ -1,5 +1,8 @@
 package org.drools.repository;
 
+import org.drools.repository.db.IVersionable;
+import org.drools.repository.db.Persistent;
+
 /**
  * Application data contains a definition of objects that may be provided to the
  * rule engine to support the execution of rules.

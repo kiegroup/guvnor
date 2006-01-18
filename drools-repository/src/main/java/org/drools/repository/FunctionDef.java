@@ -1,5 +1,8 @@
 package org.drools.repository;
 
+import org.drools.repository.db.IVersionable;
+import org.drools.repository.db.Persistent;
+
 /**
  * A FunctionDef contains the definition of a function that is used in one or more rules.
  * Functions can be written in any language that is supported by the semantic framework.

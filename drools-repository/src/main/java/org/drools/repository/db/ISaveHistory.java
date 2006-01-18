@@ -1,4 +1,4 @@
-package org.drools.repository;
+package org.drools.repository.db;
 
 /** 
  * Assets that implement this will have their history saved.

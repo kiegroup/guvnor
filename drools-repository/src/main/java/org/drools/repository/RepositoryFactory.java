@@ -4,6 +4,7 @@ import java.lang.reflect.Proxy;
 
 import org.drools.repository.db.RepoProxyHandler;
 
+
 /**
  * This factory class provides instances of the repository in various flavours.
  * 

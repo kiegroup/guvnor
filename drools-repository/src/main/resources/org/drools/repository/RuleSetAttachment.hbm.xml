@@ -11,13 +11,17 @@
 			<generator class="native"/>
         </id>
 		
-		<property name="name" />		
+		<property name="name" not-null="true" />		
 		<property name="typeOfAttachment" />
 		<property name="content" />
 		<property name="originalFileName" />
 		<property name="versionNumber" />
 		<property name="versionComment" />
-		 
+		
+		<set name="tags" table="RULESET_ATTACHMENT_TAGS" lazy="false" cascade="all" optimistic-lock="false">
+		    <key column="RULESET_ATTACHMENT_ID"/>
+		    <one-to-many class="org.drools.repository.Tag"/>
+		</set>
 		
     </class>
 

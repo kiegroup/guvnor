@@ -30,6 +30,7 @@ public class RulePersistenceTest extends PersistentCase {
         assertEquals(id, def.getId());
         
         assertEquals("new content", def.getContent());
+        assertEquals(3, def.getTags().size());
         def.removeTag("tag1");
         repo.save(def);
         def = repo.loadRule("myRule3", 1);
@@ -48,8 +49,9 @@ public class RulePersistenceTest extends PersistentCase {
 
         Set tags = rule.getTags();
         assertEquals(2, tags.size());
-        String[] tagList = rule.listTags();
-        assertTrue(tagList[0].equals("RWT") || tagList[0].equals("RWT2"));
+
+        Tag firstTag = (Tag) rule.getTags().iterator().next();
+        assertTrue(firstTag.getTag().equals("RWT") || firstTag.getTag().equals("RWT2"));
         
         List rules = repo.findRulesByTag("RWT");
         assertEquals(1, rules.size());
@@ -85,7 +87,7 @@ public class RulePersistenceTest extends PersistentCase {
         repo.save(rs);
         
         rs = repo.loadRuleSet("rule history", 1);
-        rs.createNewVersion("yeah", "new version");
+        rs.createNewVersion("yeah");
         repo.save(rs);
         
         
@@ -111,6 +113,29 @@ public class RulePersistenceTest extends PersistentCase {
         
         list = repo.listRuleSaveHistory(rule);
         assertEquals(2, list.size());
+        
+    }
+    
+    public void testCheckinOut() {
+        RuleDef rule = new RuleDef("checkin", "some rule");
+        
+        RepositoryManager repo = getRepo();
+        repo.save(rule);
+        
+        repo.checkOutRule(rule, "u=Michael.Neale");
+        rule = repo.loadRule("checkin", 1);
+        
+        assertEquals(true, rule.isCheckedOut());
+        assertEquals("u=Michael.Neale", rule.getCheckedOutBy());
+        
+        try {
+            repo.checkInRule(rule, "u=Rohit.Mathur");
+        } catch (RepositoryException e) {
+            assertNotNull(e.getMessage());
+        }
+        
+        repo.checkInRule(rule, "u=Michael.Neale");
+        assertEquals(false, rule.isCheckedOut());
         
     }
     

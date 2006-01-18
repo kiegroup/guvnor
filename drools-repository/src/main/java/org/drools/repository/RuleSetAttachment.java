@@ -1,5 +1,11 @@
 package org.drools.repository;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.drools.repository.db.IVersionable;
+import org.drools.repository.db.Persistent;
+
 
 /**
  * A RuleSetAttachment may contain a ruleset that is stored in a non-normalised format.
@@ -25,10 +31,18 @@ public class RuleSetAttachment extends Persistent implements IVersionable {
     private String typeOfAttachment;
     
     private String name;
-    private long versionNumber = 1;
+    private long versionNumber;
     private String versionComment;
+    private Set               tags;
     
-    
+    /**
+     * 
+     * @param typeOfAttachment The type of the content, eg XLS, CSV, HTML.
+     * @param name The unique name of this attachment. Incorporate ruleset name if you like.
+     * @param content The data in byte[] form. If it is text, use UTF-8 encoding.
+     * @param originalFileName The original filename, if applicable. In some cases, people like
+     * to think of things in terms of files. Feel free to include the pathname. 
+     */
     public RuleSetAttachment(String typeOfAttachment,
                              String name, 
                              byte[] content, 
@@ -38,11 +52,34 @@ public class RuleSetAttachment extends Persistent implements IVersionable {
         this.name = name;
         this.content = content;
         this.originalFileName = originalFileName;
-        
+        this.versionNumber = 1;
+        this.versionComment = "new";
+        this.tags = new HashSet();
     }
 
     RuleSetAttachment() {
     }
+    
+    /**
+     * Use tagging to aid with searching and sorting of large numbers of rules.
+     */
+    public RuleSetAttachment addTag(String tag) {
+        this.tags.add( new Tag( tag ) );
+        return this;
+    }
+
+    public RuleSetAttachment addTag(Tag tag) {
+        this.tags.add( tag );
+        return this;
+    }
+    
+    public void removeTag(Tag tag) {
+        this.tags.remove(tag);
+    }
+    
+    public void removeTag(String tagVal) {
+        Tag.removeTagFromCollection(tagVal, this.tags);
+    }    
     
     public String getName(){
         return name;
@@ -90,6 +127,7 @@ public class RuleSetAttachment extends Persistent implements IVersionable {
                                                        this.getName(), 
                                                        this.getContent(), 
                                                        this.getOriginalFileName());
+        copy.setTags(Tag.copyTags(this.tags));
         return copy;
     }
 
@@ -99,6 +137,14 @@ public class RuleSetAttachment extends Persistent implements IVersionable {
     
     public String getVersionComment() {
         return this.versionComment;
+    }
+
+    public Set getTags() {
+        return tags;
+    }
+
+    private void setTags(Set tags) {
+        this.tags = tags;
     }
     
     

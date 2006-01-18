@@ -3,7 +3,6 @@ package org.drools.repository.db;
 import java.io.Serializable;
 import java.sql.Connection;
 
-import org.drools.repository.ISaveHistory;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
@@ -38,9 +37,13 @@ public class StoreEventListener extends EmptyInterceptor {
         return false;
     }
 
+    /**
+     * This will load up the old copy, and save it as a history record
+     * (with a different identity).
+     * Filters stop the history records from popping up in unwanted places .
+     */
     private void handleSaveHistory(Object entity) {
         ISaveHistory versionable = (ISaveHistory) entity;
-
         
         Session session = getSessionFactory().openSession( (Connection) currentConnection.get() );
         ISaveHistory prev = (ISaveHistory) session.load( entity.getClass(),
@@ -52,15 +55,15 @@ public class StoreEventListener extends EmptyInterceptor {
             copy.setHistoricalRecord( true );
             session.save( copy );
             session.flush();
-            session.close();
-            System.out.println( "SAVING HISTORY COPY" );
+            session.close();            
         }
 
     }
     
     /**
      * Used to set the current session so the interceptor can access it.
-     * @param session
+     * The idea is to share the same connection that any current transactions 
+     * are using.
      */
     public static void setCurrentConnection(Connection conn) {
         currentConnection.set(conn);

@@ -121,7 +121,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         assertEquals(1, def.getRules().size());
         
         //create a new version
-        def.createNewVersion("new version", null);        
+        def.createNewVersion("new version");        
         repo.save(def);
         
         //load it fresh, and the remove the only rule
@@ -157,7 +157,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         assertEquals(1, set.getWorkingVersionNumber());
         
         //once we create a new version, we double the asset counts, one for each version
-        set.createNewVersion("New version", "Draft");
+        set.createNewVersion("New version");
         assertEquals(4, set.getRules().size());
         assertEquals(2, set.getAttachments().size());
         assertEquals(1, def1.getVersionNumber());
@@ -230,7 +230,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         
         //create a new version
         def = repo.loadRuleSet("para", 1);
-        def.createNewVersion("yeah", null);        
+        def.createNewVersion("yeah");        
         repo.save(def);
         
         //load em up

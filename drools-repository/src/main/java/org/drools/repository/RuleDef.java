@@ -5,6 +5,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.drools.repository.db.ISaveHistory;
+import org.drools.repository.db.IVersionable;
+import org.drools.repository.db.Persistent;
+
 public class RuleDef extends Persistent
     implements
     ISaveHistory {
@@ -25,6 +29,15 @@ public class RuleDef extends Persistent
     private Date              expiryDate;
     private Long              historicalId;
     private boolean           historicalRecord = false;
+    private int              lockingVersion = 0;
+    
+    private int getLockingVersion() {
+        return lockingVersion;
+    }
+
+    private void setLockingVersion(int lockingVersion) {
+        this.lockingVersion = lockingVersion;
+    }
 
     /**
      * Use tagging to aid with searching and sorting of large numbers of rules.
@@ -44,13 +57,7 @@ public class RuleDef extends Persistent
     }
     
     public void removeTag(String tagVal) {
-        for ( Iterator iter = this.tags.iterator(); iter.hasNext(); ) {
-            Tag tag = (Tag) iter.next();
-            if (tag.getTag().equals(tagVal)) {
-                iter.remove();
-                return;
-            }            
-        }        
+        Tag.removeTagFromCollection(tagVal, this.tags);
     }
 
     RuleDef() {
@@ -100,7 +107,7 @@ public class RuleDef extends Persistent
         return checkedOut;
     }
 
-    public void setCheckedOut(boolean checkedOut) {
+    void setCheckedOut(boolean checkedOut) {
         this.checkedOut = checkedOut;
     }
 
@@ -108,7 +115,7 @@ public class RuleDef extends Persistent
         return checkedOutBy;
     }
 
-    public void setCheckedOutBy(String checkOutBy) {
+    void setCheckedOutBy(String checkOutBy) {
         this.checkedOutBy = checkOutBy;
     }
 
@@ -183,17 +190,8 @@ public class RuleDef extends Persistent
         return tagList;
     }
 
-    /**
-     * Copy the tags. It is allowable to reuse the same Tag identities.
-     */
     private Set copyTags() {
-        Set newTags = new HashSet();
-        for ( Iterator iter = this.getTags().iterator(); iter.hasNext(); ) {
-            Tag tag = (Tag) iter.next();
-            newTags.add( new Tag( tag.getTag() ) );            
-            
-        }
-        return newTags;
+        return Tag.copyTags(this.tags);
     }
 
     /**

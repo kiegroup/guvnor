@@ -1,8 +1,13 @@
 package org.drools.repository;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import org.drools.repository.db.IVersionable;
+import org.drools.repository.db.Persistent;
 
 /**
  * The ruleset definition contains a grouping of rules for editing/release. The
@@ -53,7 +58,7 @@ public class RuleSetDef extends Persistent
         this.applicationData = new HashSet();
         this.imports = new HashSet();
         this.workingVersionNumber = 1;
-        addNewVersionHistory("new", "created");        
+        addNewVersionHistory("new");        
     }
 
     /**
@@ -277,11 +282,10 @@ public class RuleSetDef extends Persistent
      * Ideally once a new version is created, the RuleSet should be stored and
      * then loaded fresh, which will hide the non working versions of the rules.
      */
-    public void createNewVersion(String comment,
-                                 String newStatus) {
+    public void createNewVersion(String comment) {
 
         this.workingVersionNumber++;
-        addNewVersionHistory( newStatus, comment );
+        addNewVersionHistory( comment );
 
         createAndAddNewVersions( this.rules,
                                  comment,
@@ -305,10 +309,9 @@ public class RuleSetDef extends Persistent
 
 
     }
-
-    private void addNewVersionHistory(String newStatus, String comment) {
+    
+    private void addNewVersionHistory( String comment) {
         RuleSetVersionInfo newVersion = new RuleSetVersionInfo();
-        newVersion.setStatus( newStatus );
         newVersion.setVersionNumber( this.workingVersionNumber );
         newVersion.setVersionComment( comment );
         this.versionHistory.add( newVersion );

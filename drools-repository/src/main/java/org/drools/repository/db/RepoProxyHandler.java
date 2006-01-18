@@ -4,17 +4,25 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.drools.repository.RepositoryException;
+import org.drools.repository.RepositoryManagerImpl;
 import org.hibernate.Session;
+import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
 
 /**
  * Dynamic proxy handler for all persistence operations.
  * Keeps the hibernate session and transaction handling away from the repository implementation.
  * 
- * This is the glue between the actual implementation and the interface.
- * Kind of like poor mans aspects. But I couldn't justify AOP for this little thing.
+ * It will enable the history filter before invoking any methods.
  * 
- * This provides the stateful and stateless behaviour.
+ * This is the glue between the actual implementation and the interface.
+ * 
+ * It also provides the stateful and stateless behaviour.
+ * Stateful simple means that a session instance is created the first time, and 
+ * kept around (long running sessions).
+ * 
+ * 
  * It can also be extended to provide user context to the implementation class 
  * (for auditing, access control and locking for instance).
  * 
@@ -25,7 +33,7 @@ public class RepoProxyHandler
     InvocationHandler {
     
 
-    private RepositoryImpl repoImpl = new RepositoryImpl();
+    private RepositoryManagerImpl repoImpl = new RepositoryManagerImpl();
     private Session session = null;
     private boolean stateful = false;
     
@@ -53,6 +61,13 @@ public class RepoProxyHandler
     /**
      * This will initialise the session to the correct state.
      * Allows both stateless and stateful repository options.
+     * 
+     * If an exception occurs in the Repo Impl, it will rollback
+     * the transaction.
+     * If the exception is of type RepositoryException, the session will be left
+     * alone.
+     * If the exception is of any other type then the session will be closed.
+     * 
      */
     public Object invoke(Object proxy,
                          Method method,
@@ -62,17 +77,14 @@ public class RepoProxyHandler
         Session session = getCurrentSession();
 
         if (this.stateful && method.getName().equals("close")) {
-            session.close();
-            StoreEventListener.setCurrentConnection(null);
-            return null;
+            return handleCloseSession( session );
         }
         
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
             configureSession( session );            
-            Object result = method.invoke(repoImpl, args);
-            session.flush();
+            Object result = method.invoke(repoImpl, args);            
             tx.commit();
             
             if (!stateful) {
@@ -82,16 +94,37 @@ public class RepoProxyHandler
         }
         catch (InvocationTargetException e) {
             rollback( tx );
+            checkForRepositoryException( session, e );
             throw e.getTargetException();
         }
-        catch (Exception e) {
-            rollback( tx );
-            throw e;
+
+    }
+
+    /**
+     * If its an instance of RepositoryException, we don't want to close the session.
+     * It may just be a validation message being thrown.
+     */
+    private void checkForRepositoryException(Session session,
+                                             InvocationTargetException e) {
+        if (! (e.getTargetException() instanceof RepositoryException)) {
+            try { 
+                repoImpl.injectSession(null);
+                session.close(); 
+            } catch (Exception e2) { /*ignore*/ }
         }
     }
 
+    /**
+     * Should really only be called for stateful repository instances.
+     */
+    private Object handleCloseSession(Session session) {
+        session.close();
+        StoreEventListener.setCurrentConnection(null);
+        return null;
+    }
+
     private void rollback(Transaction tx) {
-        if (tx !=null) {
+        if (tx != null) {
             tx.rollback();
         }
     }

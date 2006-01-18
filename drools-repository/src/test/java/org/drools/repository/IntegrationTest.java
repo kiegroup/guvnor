@@ -2,11 +2,17 @@ package org.drools.repository;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
+
+import org.hibernate.StaleObjectStateException;
 
 import junit.framework.TestCase;
 
 /**
  * This integration test aims to do a full suite of scenarios.
+ * 
+ * It also may take a lot longer to run then the other "unit" tests.
+ * 
  * Including concurrent editing of rules, simulating multiple rules in parallel.
  * 
  * Note that I am using stateful repository instances as it makes it easier to test.
@@ -17,8 +23,6 @@ import junit.framework.TestCase;
  */
 public class IntegrationTest extends TestCase {
 
-    
-    
     /**
      * This will all execute as one JUnit test. 
      * Any failure will cause the test to stop, but this is not a unit test,
@@ -26,15 +30,162 @@ public class IntegrationTest extends TestCase {
      */
     public void testBootstrap() {
         runVersioningTests();
-//        runAttachmentTests();
-//        runConcurrentTests();
+        runAttachmentTests();
+        
+        runConcurrentTests();
 //        runLocalPersistTests();
         
     }
 
 
     /**
-     * These tests show how it all hangs together.
+     * The purpose of this test is to simulate 2 different users editing rules
+     * in different session. Detached and all.
+     */
+    private void runConcurrentTests() {
+        //2 repos, representing different users.
+        RepositoryManager repoA = RepositoryFactory.getStatefulRepository();
+        RepositoryManager repoB = RepositoryFactory.getStatefulRepository();
+        
+        
+        //Lets try a simple rule
+        RuleDef ruleA = new RuleDef("Concurrent 1", "content1");
+        repoA.save(ruleA);
+        repoA.close();
+        repoA = RepositoryFactory.getStatefulRepository();
+        
+        //Bob loads it up, decides he wants to edit it.
+        RuleDef ruleB = repoB.loadRule("Concurrent 1", 1);
+        assertEquals("content1", ruleB.getContent());
+        ruleB.setContent("bobs version");
+        
+        //Michael also is editing his version.
+        ruleA.setContent("michaels version");
+        
+        //oh dear, we can't both be write can we?
+        //but Bob is just a bit quicker ...
+        repoB.save(ruleB);
+        try {
+            repoA.save(ruleA);
+            fail();
+        } catch (StaleObjectStateException e) {
+            assertNotNull(e.getMessage());
+        }
+        
+        repoA = RepositoryFactory.getStatefulRepository();
+        
+        
+        //now try some rulesets.
+        RuleSetDef ruleSet = new RuleSetDef("Integration concurrent 1", null);
+        ruleSet.addRule(new RuleDef("Concurrent 2", "abc").addTag("yeah"));
+        repoA.save(ruleSet);
+        repoA.close();
+        
+        //we will add a rule to each one
+        repoA = RepositoryFactory.getStatefulRepository();
+        repoB = RepositoryFactory.getStatefulRepository();
+        
+        RuleSetDef ruleSetA = repoA.loadRuleSet("Integration concurrent 1", 1);
+        RuleSetDef ruleSetB = repoB.loadRuleSet("Integration concurrent 1", 1);
+        
+        ruleA = new RuleDef("Concurrent 3", "content");
+        ruleSetA.addRule(ruleA);
+        ruleSetB.addRule(new RuleDef("Concurrent 4", "content"));
+        
+        //should have no problems.
+        repoA.save(ruleSetA);
+        repoB.save(ruleSetB);
+        
+        ruleSetA.addFunction(new FunctionDef("abc", "yeah"));
+        repoA.save(ruleSetA);
+        
+        ruleA.setContent("new content");
+        repoA.save(ruleSetA);
+        repoA.close();
+        repoB.close();
+        
+        repoA = RepositoryFactory.getStatefulRepository();
+        ruleSetA = repoA.loadRuleSet("Integration concurrent 1", 1);
+        assertEquals(3, ruleSetA.getRules().size());
+        ruleA = ruleSetA.findRuleByName("Concurrent 3");
+        assertEquals("new content", ruleA.getContent());
+        
+        repoA.close();
+        
+        
+    }
+
+
+    private void runAttachmentTests() {
+        RepositoryManager repo = RepositoryFactory.getStatefulRepository();
+        
+        byte[] data = new byte[4096];
+        Random rand = new Random(System.currentTimeMillis());
+        rand.nextBytes(data);
+        
+        RuleSetAttachment attachment = new RuleSetAttachment("spreadsheet", "something", data, "something.xls");
+        attachment.addTag("BLAH");
+        repo.save(attachment);
+        
+        repo.close();
+        repo = RepositoryFactory.getStatefulRepository();
+        
+        RuleSetDef ruleSet = new RuleSetDef("Integration attachments 1", null);
+        ruleSet.addAttachment(attachment);
+        ruleSet.addAttachment(new RuleSetAttachment("nothing", "boo", data, "nothing.txt"));
+        ruleSet.getVersionInfoWorking().setStatus("draft");
+        repo.save(ruleSet);
+        repo.close();
+        
+        repo = RepositoryFactory.getStatefulRepository();
+        ruleSet = repo.loadRuleSet("Integration attachments 1", 1);
+        assertEquals(2, ruleSet.getAttachments().size());
+        
+        //lets create a new version, must reload it after doing this
+        ruleSet.createNewVersion("going to remove");
+        ruleSet.getVersionInfoWorking().setStatus("latest");
+        repo.save(ruleSet);
+        assertEquals(2, ruleSet.getVersionInfoWorking().getVersionNumber());
+        assertEquals("going to remove", ruleSet.getVersionInfoWorking().getVersionComment());
+        assertEquals("latest", ruleSet.getVersionInfoWorking().getStatus());
+        
+        //now lets load the old one.
+        ruleSet = repo.loadRuleSet("Integration attachments 1", 1);
+        assertEquals("draft", ruleSet.getVersionInfoWorking().getStatus());
+        //and remove an attachment
+        RuleSetAttachment at = (RuleSetAttachment) ruleSet.getAttachments().iterator().next();
+        ruleSet.removeAttachment(at); //don't forget to reload it after save !!
+        repo.save(ruleSet);
+        ruleSet = repo.loadRuleSet("Integration attachments 1", 1);
+        assertEquals(1, ruleSet.getAttachments().size());
+        
+        //load up the new version, check that it has 2 attachments
+        ruleSet = repo.loadRuleSet("Integration attachments 1", 2);
+        assertEquals(2, ruleSet.getAttachments().size());
+        
+        repo.close();
+        repo = RepositoryFactory.getStatefulRepository();
+        
+        //now with a new session, lets load up the latest, and add an attachment
+        ruleSet = repo.loadRuleSet("Integration attachments 1", 2);
+        assertEquals(2, ruleSet.getAttachments().size());
+        ruleSet.addAttachment(new RuleSetAttachment("fdsfds", "blah2", data, "nothing.xyz"));
+        repo.save(ruleSet);
+        
+        //load up the old one
+        ruleSet = repo.loadRuleSet("Integration attachments 1", 1);
+        assertEquals(1, ruleSet.getAttachments().size());
+        
+        //and the new one, just to be sure
+        ruleSet = repo.loadRuleSet("Integration attachments 1", 2);
+        assertEquals(3, ruleSet.getAttachments().size());
+        
+        repo.close();
+    }
+
+
+    /**
+     * These tests show how it all hangs together regarding versioning.
      * You can see versioning in action, save history etc.
      */
     private void runVersioningTests() {
@@ -125,7 +276,8 @@ public class IntegrationTest extends TestCase {
         assertEquals(2, ruleSet.getRules().size());
         
         //now lets create a new major version of the ruleset.
-        ruleSet.createNewVersion("New version", "pending");
+        ruleSet.createNewVersion("New version");
+        ruleSet.getVersionInfoWorking().setStatus("pending");
         repo.save(ruleSet);
         repo.close();
         

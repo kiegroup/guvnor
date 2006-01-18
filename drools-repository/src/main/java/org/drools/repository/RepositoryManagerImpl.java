@@ -1,29 +1,32 @@
-package org.drools.repository.db;
+package org.drools.repository;
 
 import java.util.List;
 
 
-import org.drools.repository.RepositoryManager;
-import org.drools.repository.RuleDef;
-import org.drools.repository.RuleSetAttachment;
-import org.drools.repository.RuleSetDef;
 import org.hibernate.Session;
 
 /**
  * The repository manager takes care of storing and sychronising the repository
- * data with the repository database.
+ * data with the repository database, using hibernate.
  * 
- * @author <a href ="mailto:sujit.pal@comcast.net"> Sujit Pal </a>
+ * This should not be access directly, but via a proxy to configure the session correctly.
+ * 
+ * Use RepositoryFactory to get an instance of a repository manager.
+ * 
+ * @author <a href ="mailto:sujit.pal@comcast.net"> Sujit Pal</a>
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  */
-public class RepositoryImpl
+public class RepositoryManagerImpl
     implements
     RepositoryManager {
 
     private Session session;
     
+    /**
+     * Session is injected by the proxy.
+     */
     public void injectSession(Session session) {
-        this.session = session;
+        this.session = session;        
     }
     
     /* (non-Javadoc)
@@ -82,7 +85,7 @@ public class RepositoryImpl
      * @see org.drools.repository.db.RepositoryManager#save(org.drools.repository.RuleSetDef)
      */
     public void save(RuleSetDef ruleSet) {
-        session.saveOrUpdate( ruleSet );
+        session.saveOrUpdate( ruleSet );        
     }
 
     /* (non-Javadoc)
@@ -91,6 +94,17 @@ public class RepositoryImpl
     public RuleSetDef loadRuleSet(String ruleSetName,
                                   long workingVersionNumber) {
         session.clear(); //to make sure latest is loaded up, not stale
+        RuleSetDef def = loadRuleSetFiltered( ruleSetName,
+                                              workingVersionNumber );
+        return def;
+    }
+
+    /** 
+     * This is put here for internal re-use. Internally the public methods should
+     * not be called.
+     */
+    private RuleSetDef loadRuleSetFiltered(String ruleSetName,
+                                           long workingVersionNumber) {
         enableWorkingVersionFilter( workingVersionNumber,
                              session );        
         RuleSetDef def = loadRuleSetByName( ruleSetName,
@@ -105,15 +119,20 @@ public class RepositoryImpl
                                          Session session) {
         RuleSetDef def = (RuleSetDef) session.createQuery( "from RuleSetDef where name = :name" ).setString( "name",
                                                                                                              ruleSetName ).uniqueResult();
+        if (def == null) {
+            throw new RepositoryException("Unable to find RuleSet with name: [" + ruleSetName + "]");
+        }
         return def;
     }
 
     /* (non-Javadoc)
      * @see org.drools.repository.db.RepositoryManager#loadAttachment(java.lang.String)
      */
-    public RuleSetAttachment loadAttachment(String name) {
-        RuleSetAttachment at = (RuleSetAttachment) session.createQuery( "from RuleSetAttachment where name = :name" )
-                                .setString( "name",name ).uniqueResult();
+    public RuleSetAttachment loadAttachment(String name, long workingVersionNumber) {
+        RuleSetAttachment at = (RuleSetAttachment) session.createQuery( "from RuleSetAttachment where name = :name and versionNumber = :versionNumber" )
+                                .setString( "name", name )
+                                .setLong( "versionNumber", workingVersionNumber)
+                                .uniqueResult();
         return at;
     }
 
@@ -152,12 +171,30 @@ public class RepositoryImpl
       
         return list;
     }
+    
+    public void checkOutRule(RuleDef rule,
+                                String userId) {
+        rule.setCheckedOut(true);
+        rule.setCheckedOutBy(userId);
+        session.update(rule);
+    }
+
+    public void checkInRule(RuleDef rule, String userId) {
+        if (!userId.equals(rule.getCheckedOutBy())) {
+            throw new RepositoryException("Unable to check in the rule, as it is currently checked out by " + rule.getCheckedOutBy());
+        }
+        rule.setCheckedOut(false);
+        rule.setCheckedOutBy(null);
+        session.update(rule);
+    }    
+    
+    public void close() { /*implemented by the proxy */}    
 
 
     //////////////////////////
     // Filters follow
     //////////////////////////
-    void enableHistoryFilter(Session session) {
+    public void enableHistoryFilter(Session session) {
         session.enableFilter( "historyFilter" ).setParameter( "viewHistory",
                                                               Boolean.FALSE );
     }
@@ -177,7 +214,7 @@ public class RepositoryImpl
     }
 
     
-    public void close() { /*implemented by the proxy */}
+
     
     
 

@@ -1,4 +1,4 @@
-package org.drools.repository;
+package org.drools.repository.db;
 
 /** 
  * All assets that support versioning must implement this.

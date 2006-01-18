@@ -1,5 +1,12 @@
 package org.drools.repository;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import org.drools.repository.db.Persistent;
+
 
 /**
  * This represents a users tag for a rule, ruleset.
@@ -32,14 +39,31 @@ public class Tag extends Persistent {
         return tag;
     }
 
-    public boolean equals(Object arg0){
-        return tag.equals( arg0 );
-    }
-
-    public int hashCode(){
-        return tag.hashCode();
+    /** 
+     * Wrangles the tag out of the collection.
+     * TODO: move all tags to maps rather then sets. Probably better.
+     */
+    static void removeTagFromCollection(String tagValue, Collection tags) {
+        for ( Iterator iter = tags.iterator(); iter.hasNext(); ) {
+            Tag tag = (Tag) iter.next();
+            if (tag.getTag().equals(tagValue)) {
+                iter.remove();
+                return;
+            }            
+        }           
     }
     
+    /**
+     * Copy the tags as new instances.
+     */
+    static Set copyTags(Set originalSet) {
+        Set newTags = new HashSet();
+        for ( Iterator iter = originalSet.iterator(); iter.hasNext(); ) {
+            Tag tag = (Tag) iter.next();
+            newTags.add( new Tag( tag.getTag() ) );                        
+        }
+        return newTags;        
+    }
     
     
     

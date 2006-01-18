@@ -8,12 +8,13 @@
 
     <class name="org.drools.repository.RuleDef" 
     	table="RULE_DEFINITIONS" 
-    	entity-name="org.drools.repository.RuleDef" select-before-update="true">
+		select-before-update="true" optimistic-lock="version">
         <id name="id" column="RULE_ID">
             <generator class="native"/>
         </id>
         
-       	<property name="name"/>
+        <version name="lockingVersion" />
+       	<property name="name" />
        	<property name="versionNumber" />
 		<property name="content" type="text" />   
 		<property name="status" />	

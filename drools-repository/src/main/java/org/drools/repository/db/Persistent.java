@@ -1,7 +1,8 @@
-package org.drools.repository;
+package org.drools.repository.db;
 
 import java.io.Serializable;
 
+/** The layer supertype for repository persistable classes. */ 
 public class Persistent implements Serializable {
     
     private Long id;

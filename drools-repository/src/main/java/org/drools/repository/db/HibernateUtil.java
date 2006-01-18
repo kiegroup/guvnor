@@ -14,12 +14,16 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 /**
- * The usual hibernate helper, with a few tweaks.
+ * The usual infamous hibernate helper, with a few tweaks.
+ * I have made the sessionFactory non final to allow reconfiguration if necessary.
+ * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  */
 public class HibernateUtil {
 
+    public static final String DROOLS_REPOSITORY_CONFIG = "drools-repository-db.cfg.xml";
+    
     private static SessionFactory sessionFactory;
 
     static {
@@ -44,7 +48,7 @@ public class HibernateUtil {
         registerPersistentClasses( cfg );
 //            cfg.setProperty("connection.username", "sa");
 //            cfg.setProperty("connection.password", "");
-        cfg.configure("drools-repository-db.cfg.xml");
+        cfg.configure(DROOLS_REPOSITORY_CONFIG);
         
         sessionFactory = cfg.buildSessionFactory();
     }
