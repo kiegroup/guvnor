@@ -32,6 +32,8 @@
 		    <one-to-many class="org.drools.repository.Tag"  />
 		</set>       
 		
+		<many-to-one name="owningRuleSet" />
+		
 		<component name="metaData">
 			<property name="title" />
 			<property name="creator" />

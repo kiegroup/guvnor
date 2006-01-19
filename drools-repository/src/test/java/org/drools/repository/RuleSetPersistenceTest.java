@@ -328,8 +328,45 @@ public class RuleSetPersistenceTest extends PersistentCase {
         assertEquals(1, info.getVersionNumber());
     }
     
+    public void testAddRemoveCopyRules() {
+        RuleSetDef ruleset = new RuleSetDef("another one", null);
+        RepositoryManager repo = getRepo();
+        
+        RuleDef preExist = new RuleDef("preexist", "yeah");
+        repo.save(preExist);
+        repo.save(ruleset);
+        
+        ruleset.addRule(preExist);
+        assertEquals(ruleset, preExist.getOwningRuleSet());
+        
+        repo.save(ruleset);
+        
+        RuleSetDef newruleset = new RuleSetDef("yao", null);
+        repo.save(ruleset);
+        
+        newruleset.addRule(preExist);
+        RuleDef other = newruleset.findRuleByName("yao" + ":" + preExist.getName());
+        assertEquals(null, other.getId()); //so we know it is a copy
+        assertEquals(newruleset, other.getOwningRuleSet());
+        repo.save(newruleset);
+        
+        newruleset = repo.loadRuleSet("yao", 1);
+        assertEquals(1, newruleset.getRules().size());
+        other = (RuleDef) newruleset.getRules().iterator().next();
+        assertTrue(other.getName().startsWith("yao"));
+        
+        newruleset.removeRule(other);
+        repo.save(newruleset);
+        
+        newruleset = repo.loadRuleSet("yao", 1);
+        ruleset = repo.loadRuleSet("another one", 1);
+        assertEquals(1, ruleset.getRules().size());
+        assertEquals(0, newruleset.getRules().size());
+        
+    }
     
     
+//    
 //    public void testLargeNumbers() {
 //        RuleSetDef large = new RuleSetDef("Large1", null);
 //        
@@ -340,9 +377,11 @@ public class RuleSetPersistenceTest extends PersistentCase {
 //            def.addTag("HR" + i);
 //            large.addRule(def);
 //        }
-//        RepositoryImpl repo = getRepo();
+//        RepositoryManager repo = RepositoryFactory.getStatefulRepository();
 //        repo.save(large);
+//        repo.close();
 //        
+//        repo = RepositoryFactory.getStatefulRepository();
 //        System.out.println("Saved " + System.currentTimeMillis());
 //        
 //        large = repo.loadRuleSet("Large1", 1);
@@ -356,7 +395,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
 //        large.addTag("blah");
 //        repo.save(large);
 //        System.out.println("Change saved " + System.currentTimeMillis());
-//        
+//        repo.close();
 //        
 //    }
     

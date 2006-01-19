@@ -81,9 +81,32 @@ public class RuleSetDef extends Asset
         this.versionHistory = versionHistory;
     }
 
+    /** 
+     * Adds a rule to the ruleset.
+     * If the rule belongs to another ruleset already, it will be copied, and the name
+     * prepended with the ruleset name (to ensure it is unique).
+     * 
+     *  ie: rulesetName:originalRuleName
+     *  
+     * (if you don't like that, then copy() the rule before adding it).
+     * 
+     * If a rule is new, obviously there is no copying, and the name is "as is".
+     * The rule may have been stored previously, "unattached" which is also fine (won't be copied).
+     */
     public RuleSetDef addRule(RuleDef rule) {
-        return addAssetToSet( rule,
-                              this.rules );
+        if (rule.getOwningRuleSet() == null) {
+            rule.setOwningRuleSet(this);
+            return addAssetToSet( rule,
+                                  this.rules );
+        } else {         
+            //we have to make a copy
+            RuleDef newRule = (RuleDef) rule.copy();  
+            newRule.setName(this.getName() + ":" + rule.getName()); 
+            newRule.setOwningRuleSet(this);
+            return addAssetToSet( newRule,
+                                  this.rules );
+            
+        }
     }
 
     public RuleSetDef addAttachment(RuleSetAttachment attachmentFile) {
@@ -127,6 +150,7 @@ public class RuleSetDef extends Asset
      * 
      */
     public void removeRule(RuleDef rule) {
+        rule.setOwningRuleSet(null);
         rule.setVersionNumber(IVersionable.NO_VERSION);
     }
     
@@ -175,22 +199,13 @@ public class RuleSetDef extends Asset
      */
     RuleSetDef addAssetToSet(IVersionable asset,
                              Set set) {
+        asset.setVersionNumber( this.workingVersionNumber );
         if ( asset.getId() == null ) {
-            asset.setVersionNumber( this.workingVersionNumber );
-            asset.setVersionComment( "New" );
+            asset.setVersionComment( "new" );
             set.add( asset );
         }
         else {
-            asset.setVersionNumber( this.workingVersionNumber );
             set.add( asset );
-//            throw new RepositoryException("The repo does not support sharing of rules across rulesets at this time." +
-//                    "Assets must be copied, and given a unique " +
-//                    "name before being added to the RuleSet. This asset already has a name and identity.");
-////            IVersionable copy = asset.copy();
-////            copy.setVersionNumber( this.workingVersionNumber );
-////            copy.setVersionComment( "Copied for this version from version: " 
-////                                    + asset.getVersionNumber() );
-////            set.add( copy );
         }
         return this;
     }

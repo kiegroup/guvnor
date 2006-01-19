@@ -34,6 +34,7 @@ public class RulePersistenceTest extends PersistentCase {
         def.removeTag("tag1");
         repo.save(def);
         def = repo.loadRule("myRule3", 1);
+        assertEquals(null, def.getOwningRuleSet());
         assertEquals(2, def.getTags().size());
     }
         

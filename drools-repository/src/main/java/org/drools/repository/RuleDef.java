@@ -29,15 +29,10 @@ public class RuleDef extends Asset
     private Date              expiryDate;
     private Long              historicalId;
     private boolean           historicalRecord = false;
-    private int              lockingVersion = 0;
+    private int               lockingVersion = 0;
+    private RuleSetDef        owningRuleSet = null;
     
-    private int getLockingVersion() {
-        return lockingVersion;
-    }
 
-    private void setLockingVersion(int lockingVersion) {
-        this.lockingVersion = lockingVersion;
-    }
 
     /**
      * Use tagging to aid with searching and sorting of large numbers of rules.
@@ -171,7 +166,7 @@ public class RuleDef extends Asset
         return name;
     }
 
-    private void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -243,9 +238,31 @@ public class RuleDef extends Asset
         }
     }
     
+    /**
+     * When a rule is allocated to a ruleset, it is "owned" by that ruleset.
+     * If it is added to another ruleset, a copy is added.
+     * 
+     * This may be null, meaning that it is a free floating rule.
+     */
+    public RuleSetDef getOwningRuleSet() {
+        return owningRuleSet;
+    }
+
+    void setOwningRuleSet(RuleSetDef owningRuleSet) {
+        this.owningRuleSet = owningRuleSet;
+    }
+
     /** return true if different */
     private boolean diffStr(String left, String right) {
         return !left.equals(right);
     }
+    
+    private int getLockingVersion() {
+        return lockingVersion;
+    }
+
+    private void setLockingVersion(int lockingVersion) {
+        this.lockingVersion = lockingVersion;
+    }    
 
 }
