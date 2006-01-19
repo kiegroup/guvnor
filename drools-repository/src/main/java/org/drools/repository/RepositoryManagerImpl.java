@@ -3,6 +3,7 @@ package org.drools.repository;
 import java.util.List;
 
 
+import org.drools.repository.db.Asset;
 import org.hibernate.Session;
 
 /**
@@ -29,12 +30,7 @@ public class RepositoryManagerImpl
         this.session = session;        
     }
     
-    /* (non-Javadoc)
-     * @see org.drools.repository.db.RepositoryManager#save(org.drools.repository.RuleDef)
-     */
-    public void save(RuleDef newRule) {
-        session.saveOrUpdate( newRule );
-    }
+
 
     /* (non-Javadoc)
      * @see org.drools.repository.db.RepositoryManager#loadRule(java.lang.String, long)
@@ -81,11 +77,8 @@ public class RepositoryManagerImpl
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.repository.db.RepositoryManager#save(org.drools.repository.RuleSetDef)
-     */
-    public void save(RuleSetDef ruleSet) {
-        session.saveOrUpdate( ruleSet );        
+    public void save(Asset asset) {
+        session.saveOrUpdate( asset );        
     }
 
     /* (non-Javadoc)
@@ -136,12 +129,7 @@ public class RepositoryManagerImpl
         return at;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.repository.db.RepositoryManager#save(org.drools.repository.RuleSetAttachment)
-     */
-    public void save(RuleSetAttachment attachment) {
-        session.saveOrUpdate( attachment );
-    }
+
 
     /* (non-Javadoc)
      * @see org.drools.repository.db.RepositoryManager#listRuleSets()
@@ -154,7 +142,7 @@ public class RepositoryManagerImpl
     /* (non-Javadoc)
      * @see org.drools.repository.db.RepositoryManager#delete(org.drools.repository.RuleDef)
      */
-    public void delete(RuleDef rule) {
+    public void delete(Asset rule) {
         session.delete( rule );
     }
 
@@ -174,6 +162,9 @@ public class RepositoryManagerImpl
     
     public void checkOutRule(RuleDef rule,
                                 String userId) {
+        if (rule.isCheckedOut()) {
+            throw new RepositoryException("Rule is already checked out to " + userId);
+        }
         rule.setCheckedOut(true);
         rule.setCheckedOutBy(userId);
         session.update(rule);
@@ -187,6 +178,28 @@ public class RepositoryManagerImpl
         rule.setCheckedOutBy(null);
         session.update(rule);
     }    
+    
+    public void checkOutAttachment(RuleSetAttachment attachment,
+                                   String userId) {
+        if (attachment.isCheckedOut()) {
+            throw new RepositoryException("Rule is already checked out to " + userId);
+        }        
+        attachment.setCheckedOut(true);
+        attachment.setCheckedOutBy(userId);
+        session.update(attachment);
+        
+    }
+
+    public void checkInAttachment(RuleSetAttachment attachment,
+                            String userId) {
+        if (!userId.equals(attachment.getCheckedOutBy())) {
+            throw new RepositoryException("Unable to check in the attachment, as it is currently checked out by " + attachment.getCheckedOutBy());
+        }
+        attachment.setCheckedOut(false);
+        attachment.setCheckedOutBy(null);
+        session.update(attachment);
+    }
+    
     
     public void close() { /*implemented by the proxy */}    
 
@@ -212,6 +225,7 @@ public class RepositoryManagerImpl
     void disableWorkingVersionFilter(Session session) {
         session.disableFilter( "workingVersionFilter" );
     }
+
 
     
 

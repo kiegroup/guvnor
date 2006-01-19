@@ -13,19 +13,19 @@
             <generator class="native"/>
         </id>
         
-        <version name="lockingVersion" />
-       	<property name="name" />
-       	<property name="versionNumber" />
-		<property name="content" type="text" />   
-		<property name="status" />	
-		<property name="checkedOut" />	
-		<property name="checkedOutBy" />	
-		<property name="versionComment" />
-		<property name="documentation" />		
-		<property name="effectiveDate" />		
-		<property name="expiryDate" />					
-		<property name="historicalId" />
-		<property name="historicalRecord" />
+        <version name="lockingVersion" column="LOCKING_VERSION" />
+       	<property name="name" column="RULE_NAME" length="64" />
+       	<property name="versionNumber" column="VERSION_NUMBER" />
+		<property name="content" type="text" column="RULE_CONTENT" />   
+		<property name="status" column="STATUS" length="32" />	
+		<property name="checkedOut" column="CHECKED_OUT" />	
+		<property name="checkedOutBy" column="CHECKED_OUT_BY" length="64"/>	
+		<property name="versionComment" column="VERSION_COMMENT" length="128"/>
+		<property name="documentation" column="DOCUMENTATION" type="text"/>		
+		<property name="effectiveDate" column="EFFECTIVE_DATE" />		
+		<property name="expiryDate" column="EXPIRY_DATE"/>					
+		<property name="historicalId" column="HISTORICAL_ID"/>
+		<property name="historicalRecord" column="HISTORICAL_RECORD_FLAG"/>
 		
 		<set name="tags" table="RULE_TAGS" lazy="false" cascade="all" optimistic-lock="false">
 		    <key column="RULE_ID"/>
@@ -48,7 +48,7 @@
 			<property name="rights" />
 		</component>		 
  
-		<filter name="historyFilter" condition=":viewHistory = historicalRecord" />
+		<filter name="historyFilter" condition=":viewHistory = HISTORICAL_RECORD_FLAG" />
     </class>
 
 	<filter-def name="historyFilter">

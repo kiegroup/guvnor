@@ -22,7 +22,8 @@ import junit.framework.TestCase;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  */
 public class IntegrationTest extends TestCase {
-
+    
+    
     /**
      * This will all execute as one JUnit test. 
      * Any failure will cause the test to stop, but this is not a unit test,
@@ -92,7 +93,7 @@ public class IntegrationTest extends TestCase {
         ruleSetA.addRule(ruleA);
         ruleSetB.addRule(new RuleDef("Concurrent 4", "content"));
         
-        //should have no problems.
+        //should have no problems, as we are not touching the same rules.
         repoA.save(ruleSetA);
         repoB.save(ruleSetB);
         
@@ -179,6 +180,12 @@ public class IntegrationTest extends TestCase {
         //and the new one, just to be sure
         ruleSet = repo.loadRuleSet("Integration attachments 1", 2);
         assertEquals(3, ruleSet.getAttachments().size());
+        
+        RuleSetAttachment att = (RuleSetAttachment) ruleSet.getAttachments().iterator().next();
+        repo.checkOutAttachment(att, "Michael");
+        assertEquals(true, att.isCheckedOut());
+        repo.checkInAttachment(att, "Michael");
+        assertEquals(false, att.isCheckedOut());
         
         repo.close();
     }

@@ -46,7 +46,7 @@
 		<set name="rules" lazy="false" table="RULESET_RULES" cascade="all" optimistic-lock="false">		
 			<key column="RULESET_ID"/>
 			<one-to-many class="org.drools.repository.RuleDef"/>
-			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />
+			<filter name="workingVersionFilter" condition=":filteredVersionNumber = VERSION_NUMBER" />
 		</set>
 				
 		<set name="attachments" lazy="false" table="RULESET_ATTACHMENTS" cascade="all" optimistic-lock="false">
@@ -58,19 +58,19 @@
 		<set name="imports" lazy="false" table="RULESET_IMPORTS" cascade="all" optimistic-lock="false">
 			<key column="RULESET_ID"/>
 			<one-to-many class="org.drools.repository.ImportDef"/>
-			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />			
+			<filter name="workingVersionFilter" condition=":filteredVersionNumber = VERSION_NUMBER" />			
 		</set>		
 		
 		<set name="functions" lazy="false" table="RULESET_FUNCTIONS" cascade="all" optimistic-lock="false">
 			<key column="RULESET_ID"/>
 			<one-to-many class="org.drools.repository.FunctionDef"/>
-			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />			
+			<filter name="workingVersionFilter" condition=":filteredVersionNumber = VERSION_NUMBER" />			
 		</set>		
 		
-		<set name="applicationData" lazy="false" cascade="all" optimistic-lock="false">
+		<set name="applicationData" table="RULESET_APP_DATA" lazy="false" cascade="all" optimistic-lock="false">
 			<key column="RULESET_ID"/>
 			<one-to-many class="org.drools.repository.ApplicationDataDef"/>
-			<filter name="workingVersionFilter" condition=":filteredVersionNumber = versionNumber" />			
+			<filter name="workingVersionFilter" condition=":filteredVersionNumber = VERSION_NUMBER" />			
 		</set>		
 		
     </class>

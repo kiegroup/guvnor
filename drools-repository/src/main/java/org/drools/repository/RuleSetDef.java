@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.repository.db.IVersionable;
-import org.drools.repository.db.Persistent;
+import org.drools.repository.db.Asset;
 
 /**
  * The ruleset definition contains a grouping of rules for editing/release. The
@@ -30,7 +30,7 @@ import org.drools.repository.db.Persistent;
  * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  */
-public class RuleSetDef extends Persistent
+public class RuleSetDef extends Asset
     implements
     Comparable {
     private static final long serialVersionUID = 608068118653708104L;

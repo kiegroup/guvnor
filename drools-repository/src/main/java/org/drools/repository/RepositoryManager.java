@@ -2,6 +2,8 @@ package org.drools.repository;
 
 import java.util.List;
 
+import org.drools.repository.db.Asset;
+
 /**
  * The repository manager takes care of storing and sychronising the repository
  * data with the repository database.
@@ -16,12 +18,6 @@ import java.util.List;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  */
 public interface RepositoryManager {
-
-    /** 
-     * This will simply save the current version of the rule.
-     * If there is a previous saved version of the rule, it will be stored as a historical record.
-     */
-    public abstract void save(RuleDef newRule);
 
     /**
      * Load a rule based on a workingVersionNumber.
@@ -46,8 +42,6 @@ public interface RepositoryManager {
 
     public abstract List findRulesByTag(String tag);
 
-    /** Save the ruleset. The Ruleset will not be reloaded. */
-    public abstract void save(RuleSetDef ruleSet);
 
     /**
      * This loads a RuleSet with the appropriate workingVersionNumber applied to
@@ -66,12 +60,18 @@ public interface RepositoryManager {
      */
     public abstract RuleSetAttachment loadAttachment(String name, long workingVersionNumber);
 
-    public abstract void save(RuleSetAttachment attachment);
+    /** 
+     * Saves an asset. Most assets are saved automatically when you save the parent, so
+     * for instance when you save a ruleset, you should not need to save any of its assets as well.
+     * 
+     * Some assets, such as rules and ruleset attachments have history items created on each save.
+     */
+    public abstract void save(Asset asset);
 
     /** Returns List<String> of Rule set names */
     public abstract List listRuleSets();
 
-    public abstract void delete(RuleDef rule);
+    public abstract void delete(Asset rule);
 
     /**
      * Searches the ruleset for a rule with a certain tag. This will search ALL
@@ -99,6 +99,28 @@ public interface RepositoryManager {
      * in the correct username. It is up to client applications to enforce this behaviour.
      */
     public abstract void checkInRule(RuleDef rule, String userId);
+    
+    
+    /** 
+     * This will check out an for the given user id.
+     * This can be used to enforce "locking" of rule edits.
+     * 
+     * This will save the attachment as it stands, including any changes.
+     */
+    public abstract void checkOutAttachment(RuleSetAttachment attachment, String userId);
+
+    /**
+     * This removes the check out flag.
+     * 
+     * The userId must be supplied to confirm that the correct user 
+     * is checking it in, an exception will be thrown if this is not correct.
+     * 
+     * This can effectively be "overridden" by either just saving the rule, or passing
+     * in the correct username. It is up to client applications to enforce this behaviour.
+     */
+    public abstract void checkInAttachment(RuleSetAttachment attachment, String userId);
+     
+    
     
     /** This is only required for stateful Repository session. It will be ignored for stateless ones. */
     public abstract void close();

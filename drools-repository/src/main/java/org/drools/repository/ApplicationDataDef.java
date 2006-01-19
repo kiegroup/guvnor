@@ -1,7 +1,7 @@
 package org.drools.repository;
 
 import org.drools.repository.db.IVersionable;
-import org.drools.repository.db.Persistent;
+import org.drools.repository.db.Asset;
 
 /**
  * Application data contains a definition of objects that may be provided to the
@@ -10,7 +10,7 @@ import org.drools.repository.db.Persistent;
  * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  */
-public class ApplicationDataDef extends Persistent
+public class ApplicationDataDef extends Asset
     implements
     IVersionable {
 

@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drools.repository.db.IVersionable;
-import org.drools.repository.db.Persistent;
+import org.drools.repository.db.Asset;
 
 
 /**
@@ -20,7 +20,7 @@ import org.drools.repository.db.Persistent;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  */
-public class RuleSetAttachment extends Persistent implements IVersionable {
+public class RuleSetAttachment extends Asset implements IVersionable {
 
 
     private static final long serialVersionUID = 7474038734785975202L;    
@@ -34,7 +34,12 @@ public class RuleSetAttachment extends Persistent implements IVersionable {
     private long versionNumber;
     private String versionComment;
     private Set               tags;
+    private int              lockingVersion = 0;
+    private boolean checkedOut;
+    private String checkedOutBy; 
     
+
+
     /**
      * 
      * @param typeOfAttachment The type of the content, eg XLS, CSV, HTML.
@@ -55,6 +60,7 @@ public class RuleSetAttachment extends Persistent implements IVersionable {
         this.versionNumber = 1;
         this.versionComment = "new";
         this.tags = new HashSet();
+        this.checkedOut = false;        
     }
 
     RuleSetAttachment() {
@@ -146,6 +152,30 @@ public class RuleSetAttachment extends Persistent implements IVersionable {
     private void setTags(Set tags) {
         this.tags = tags;
     }
+    
+    private int getLockingVersion() {
+        return lockingVersion;
+    }
+
+    private void setLockingVersion(int lockingVersion) {
+        this.lockingVersion = lockingVersion;
+    }
+
+    public boolean isCheckedOut() {
+        return checkedOut;
+    }
+
+    void setCheckedOut(boolean checkedOut) {
+        this.checkedOut = checkedOut;
+    }
+
+    public String getCheckedOutBy() {
+        return checkedOutBy;
+    }
+
+    void setCheckedOutBy(String checkedOutBy) {
+        this.checkedOutBy = checkedOutBy;
+    }    
     
     
     

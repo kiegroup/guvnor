@@ -8,10 +8,10 @@
         <id name="id" column="FUNCTION_ID">
             <generator class="native"/>
         </id>
- 		<property name="description" />
- 		<property name="functionContent" />
- 		<property name="semantic" />
- 		<property name="versionComment" />
- 		<property name="versionNumber" /> 		 		 		
+ 		<property name="description" column="DESCRIPTION" length="256" />
+ 		<property name="functionContent" column="FUNCTION_CONTENT" type="text"/>
+ 		<property name="semantic" column="SEMANTIC" length="32" />
+ 		<property name="versionComment" column="VERSION_COMMENT" length="128" />
+ 		<property name="versionNumber" column="VERSION_NUMBER" /> 		 		 		
     </class>
 </hibernate-mapping>        

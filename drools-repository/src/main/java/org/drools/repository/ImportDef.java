@@ -1,7 +1,7 @@
 package org.drools.repository;
 
 import org.drools.repository.db.IVersionable;
-import org.drools.repository.db.Persistent;
+import org.drools.repository.db.Asset;
 
 /**
  * This holds a type import for a ruleset. 
@@ -10,7 +10,7 @@ import org.drools.repository.db.Persistent;
  * (same argument for ApplicationDataDef). 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  */
-public class ImportDef extends Persistent
+public class ImportDef extends Asset
     implements
     IVersionable {
     

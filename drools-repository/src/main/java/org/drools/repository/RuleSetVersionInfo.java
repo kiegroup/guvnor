@@ -2,7 +2,7 @@ package org.drools.repository;
 
 import java.util.Date;
 
-import org.drools.repository.db.Persistent;
+import org.drools.repository.db.Asset;
 
 /**
  * This records information about a particular version of a ruleset.
@@ -15,7 +15,7 @@ import org.drools.repository.db.Persistent;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  */
-public class RuleSetVersionInfo extends Persistent implements Comparable {
+public class RuleSetVersionInfo extends Asset implements Comparable {
 
 
     private static final long serialVersionUID = 53728327711138178L;

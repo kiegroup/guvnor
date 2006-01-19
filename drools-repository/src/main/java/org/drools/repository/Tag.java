@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.drools.repository.db.Persistent;
+import org.drools.repository.db.Asset;
 
 
 /**
@@ -17,7 +17,7 @@ import org.drools.repository.db.Persistent;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  */
-public class Tag extends Persistent {
+public class Tag extends Asset {
 
     private String tag;
 

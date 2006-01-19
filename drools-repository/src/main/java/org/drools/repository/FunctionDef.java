@@ -1,7 +1,7 @@
 package org.drools.repository;
 
 import org.drools.repository.db.IVersionable;
-import org.drools.repository.db.Persistent;
+import org.drools.repository.db.Asset;
 
 /**
  * A FunctionDef contains the definition of a function that is used in one or more rules.
@@ -9,7 +9,7 @@ import org.drools.repository.db.Persistent;
  *  
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  */
-public class FunctionDef extends Persistent
+public class FunctionDef extends Asset
     implements
     IVersionable {
 

@@ -8,9 +8,9 @@
         <id name="id" column="APP_DATA_ID">
             <generator class="native" />
         </id>    
-    	<property name="type" />
-    	<property name="identifier" />    
- 		<property name="versionComment" />
- 		<property name="versionNumber" /> 		 		 		
+    	<property name="type" column="CLASS_TYPE" length="64" />
+    	<property name="identifier" column="DATA_IDENTIFIER" length="32" />    
+ 		<property name="versionComment" column="VERSION_COMMENT" length="64" />
+ 		<property name="versionNumber" column="VERSION_NUMBER" /> 		 		 		
     </class>
 </hibernate-mapping>        
