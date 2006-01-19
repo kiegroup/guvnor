@@ -20,6 +20,7 @@ public class FunctionDef extends Asset
     private String functionContent;
     private String description;
     private String semantic;
+    private int               lockingVersion = 0;    
     
     public String getSemantic(){
         return semantic;
@@ -79,5 +80,13 @@ public class FunctionDef extends Asset
     public String getVersionComment(){        
         return this.versionComment;
     }
+    
+    private int getLockingVersion() {
+        return lockingVersion;
+    }
+
+    private void setLockingVersion(int lockingVersion) {
+        this.lockingVersion = lockingVersion;
+    }    
 
 }

@@ -1,10 +1,15 @@
 package org.drools.repository;
 
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 
 import org.drools.repository.db.Asset;
 import org.drools.repository.db.ISaveHistory;
+import org.hibernate.Query;
 import org.hibernate.Session;
 
 /**
@@ -224,6 +229,20 @@ public class RepositoryManagerImpl
 
     void disableWorkingVersionFilter(Session session) {
         session.disableFilter( "workingVersionFilter" );
+    }
+
+
+
+    public List query(String query,
+                      Map parameters) {
+        Query q = session.createQuery(query);
+        
+        for ( Iterator iter = parameters.keySet().iterator(); iter.hasNext(); ) {
+            String key = (String) iter.next();
+            q.setParameter(key, parameters.get(key));
+        }
+        
+        return q.list();
     }
 
 

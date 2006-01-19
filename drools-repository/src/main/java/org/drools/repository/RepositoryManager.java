@@ -1,6 +1,8 @@
 package org.drools.repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.drools.repository.db.Asset;
 import org.drools.repository.db.ISaveHistory;
@@ -131,4 +133,30 @@ public interface RepositoryManager {
     /** This is only required for stateful Repository session. It will be ignored for stateless ones. */
     public abstract void close();
     
+    
+    /**
+     * A very powerful generic query utility.
+     * This allows you to query the entire repository, and return lists of object, fields etc.
+     * Even individual objects.
+     * 
+     * The Query language is HQL (hibernate query language).
+     * 
+     * The properties should be (key, value) where value is the appropriate type of the field to query on.
+     * The key maps to a " :key" item in your query string.
+     *  
+     * For instance, <code>query = "from RuleDef where versionNumber > :max and name = :name";</code>
+     * will have a map:
+     * <code>
+     *              map.put("max", new Long(42));
+     *              map.put("name", "This is a String");
+     *              //note the appropriate type to match the properties you want to search !
+     * </code>             
+     * 
+     * @param query HQL query. Can be of the format "from ClassName where propertyName = :variableInMap"
+     *              You can also do "select name from RuleSetDef where ..." and so on. It will then return a list
+     *              of strings. If you do "select name, Id from RuleDef .." it will return a list of Object[] "tuples".
+     * @param parameters A map of name => value (in appropriate type) to mix in with the query.
+     *              
+     */
+    public abstract List query(String query, Map parameters);
 }

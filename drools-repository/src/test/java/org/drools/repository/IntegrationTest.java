@@ -1,7 +1,9 @@
 package org.drools.repository;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.hibernate.StaleObjectStateException;
@@ -309,7 +311,19 @@ public class IntegrationTest extends TestCase {
         //ooh look, the new one has 3, and they are all different rules !
         assertEquals(3, repo.loadRuleSet("Integration ruleset 1", 2).getRules().size());
         
+        runTestQueryAPI( repo );
+        
         repo.close();
+    }
+
+
+    private void runTestQueryAPI(RepositoryManager repo) {
+        Map params = new HashMap();
+        params.put("fragment", "%Integration%");
+        params.put("version", new Long(1));
+        List query = repo.query("from RuleDef where name like :fragment and versionNumber = :version", params);
+        assertNotNull(query);
+        assertTrue(query.size() > 0);
     }
     
     
