@@ -11,6 +11,13 @@
   <version>3.0-M1-dev</version>  
   <packaging>jar</packaging>
 
+  <repositories>
+    <repository>
+      <id>basedir</id>
+      <url>file://${basedir}/../repository</url>
+    </repository>
+  </repositories>  
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
