@@ -273,7 +273,7 @@ public class IntegrationTest extends TestCase {
         
         //just to prove the save history, lets check the history of a rule
         rule = ruleSet.findRuleByName("Integration rule 2");
-        List history = repo.listRuleSaveHistory(rule);
+        List history = repo.listSaveHistory(rule);
         assertEquals(1, history.size());
         RuleDef historicalRule = (RuleDef) history.get(0);
         String oldContent = historicalRule.getContent();        

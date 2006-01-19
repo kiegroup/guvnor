@@ -4,6 +4,7 @@ import java.util.List;
 
 
 import org.drools.repository.db.Asset;
+import org.drools.repository.db.ISaveHistory;
 import org.hibernate.Session;
 
 /**
@@ -54,15 +55,14 @@ public class RepositoryManagerImpl
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.repository.db.RepositoryManager#listRuleSaveHistory(org.drools.repository.RuleDef)
-     */
-    public List listRuleSaveHistory(RuleDef rule) {
+    public List listSaveHistory(ISaveHistory asset) {
         disableHistoryFilter( session );
 
-        List result = (List) session.createQuery( "from RuleDef where historicalId = :id" ).setLong( "id",
-                                                                                                     rule.getId().longValue() ).list();
-
+//        List result = (List) session.createQuery( "from RuleDef where historicalId = :id" ).setLong( "id",
+//                                                                                                     rule.getId().longValue() ).list();
+        String query = "from " + asset.getClass().getName() + " where historicalId = :id";
+        List result = (List) session.createQuery(query)
+                            .setLong("id", asset.getId().longValue()).list();
         enableHistoryFilter( session );
         return result;
     }

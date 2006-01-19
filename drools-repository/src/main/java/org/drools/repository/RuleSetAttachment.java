@@ -3,6 +3,7 @@ package org.drools.repository;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.drools.repository.db.ISaveHistory;
 import org.drools.repository.db.IVersionable;
 import org.drools.repository.db.Asset;
 
@@ -20,7 +21,7 @@ import org.drools.repository.db.Asset;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  */
-public class RuleSetAttachment extends Asset implements IVersionable {
+public class RuleSetAttachment extends Asset implements ISaveHistory {
 
 
     private static final long serialVersionUID = 7474038734785975202L;    
@@ -37,6 +38,8 @@ public class RuleSetAttachment extends Asset implements IVersionable {
     private int              lockingVersion = 0;
     private boolean checkedOut;
     private String checkedOutBy; 
+    private Long              historicalId;
+    private boolean           historicalRecord = false;
     
 
 
@@ -175,6 +178,26 @@ public class RuleSetAttachment extends Asset implements IVersionable {
 
     void setCheckedOutBy(String checkedOutBy) {
         this.checkedOutBy = checkedOutBy;
+    }    
+    
+    public Long getHistoricalId() {
+        return historicalId;
+    }
+
+    public void setHistoricalId(Long historicalId) {
+        this.historicalId = historicalId;
+    }
+
+    public boolean isHistoricalRecord() {
+        return historicalRecord;
+    }
+
+    public void setHistoricalRecord(boolean historicalRecord) {
+        this.historicalRecord = historicalRecord;
+    }
+
+    public boolean isStateChanged(ISaveHistory oldObject) {
+        return true;
     }    
     
     

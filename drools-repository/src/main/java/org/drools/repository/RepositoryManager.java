@@ -3,6 +3,7 @@ package org.drools.repository;
 import java.util.List;
 
 import org.drools.repository.db.Asset;
+import org.drools.repository.db.ISaveHistory;
 
 /**
  * The repository manager takes care of storing and sychronising the repository
@@ -32,13 +33,18 @@ public interface RepositoryManager {
     public abstract List listRuleVersions(String ruleName);
 
     /** 
-     * Find and return all the historical versions of a rule.
-     * Historcal versions are previous versions of the rules stored when
-     * a change to the rule was saved.
+     * Find and return all the historical versions of an asset.
+     * Historcal versions are previous versions of the asset stored when
+     * a change was saved.
      * 
      * This is distinct from Versions which are related to RuleSet versioning.
-=     */
-    public abstract List listRuleSaveHistory(RuleDef rule);
+     * Save history is provided for "unlimited undo" facilities. Normally the historical items are 
+     * hidden away.
+     * 
+     * @param The latest version of an asset (ie NOT a historical record !)
+     * @return A list of the historical items for your viewing pleasure.
+=    */
+    public abstract List listSaveHistory(ISaveHistory asset);
 
     public abstract List findRulesByTag(String tag);
 

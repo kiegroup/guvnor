@@ -271,13 +271,13 @@ public class RuleSetPersistenceTest extends PersistentCase {
         
         repo.save(old);
         
-        assertEquals(0, repo.listRuleSaveHistory(newRule).size());
+        assertEquals(0, repo.listSaveHistory(newRule).size());
         old.addTag("yeah");
         repo.save(old);
-        assertEquals(0, repo.listRuleSaveHistory(newRule).size());
+        assertEquals(0, repo.listSaveHistory(newRule).size());
         newRule.setContent("CHANGED CONTENT");
         repo.save(old);
-        assertEquals(1, repo.listRuleSaveHistory(newRule).size());
+        assertEquals(1, repo.listSaveHistory(newRule).size());
         
     }
     

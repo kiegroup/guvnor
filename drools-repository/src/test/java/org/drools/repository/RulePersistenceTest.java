@@ -111,7 +111,7 @@ public class RulePersistenceTest extends PersistentCase {
         list = repo.listRuleVersions("rh1");
         assertEquals(2, list.size());
         
-        list = repo.listRuleSaveHistory(rule);
+        list = repo.listSaveHistory(rule); 
         assertEquals(2, list.size());
         
     }
