@@ -1,6 +1,8 @@
 package org.drools.repository;
 
 import java.lang.reflect.Proxy;
+import java.security.Principal;
+import java.security.acl.Permission;
 
 import org.drools.repository.db.RepoProxyHandler;
 
@@ -17,7 +19,7 @@ public final class RepositoryFactory {
     /**
      * The default repository. This is stateless, meaning that a continuous connection is not required.
      */
-    public static RepositoryManager getRepository() {        
+    public static RepositoryManager getRepository() {      
         RepoProxyHandler handler = new RepoProxyHandler();        
         RepositoryManager manager = getProxy( handler );
         return manager;        

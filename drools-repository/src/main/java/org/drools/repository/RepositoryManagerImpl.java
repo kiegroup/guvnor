@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Properties;
 
 
-import org.drools.repository.db.Asset;
 import org.drools.repository.db.ISaveHistory;
 import org.hibernate.Query;
 import org.hibernate.Session;

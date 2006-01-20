@@ -44,7 +44,7 @@
 
 		<!-- now come the versioned assets -->
 		<set name="rules" lazy="false" table="RULESET_RULES" cascade="all" optimistic-lock="false">		
-			<key column="RULESET_ID"/>
+			<key column="OWNING_RULESET_ID" />
 			<one-to-many class="org.drools.repository.RuleDef"/>
 			<filter name="workingVersionFilter" condition=":filteredVersionNumber = VERSION_NUMBER" />
 		</set>

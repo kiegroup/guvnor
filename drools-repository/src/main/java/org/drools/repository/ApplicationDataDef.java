@@ -1,7 +1,6 @@
 package org.drools.repository;
 
 import org.drools.repository.db.IVersionable;
-import org.drools.repository.db.Asset;
 
 /**
  * Application data contains a definition of objects that may be provided to the

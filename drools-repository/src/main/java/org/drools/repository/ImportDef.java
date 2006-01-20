@@ -1,7 +1,6 @@
 package org.drools.repository;
 
 import org.drools.repository.db.IVersionable;
-import org.drools.repository.db.Asset;
 
 /**
  * This holds a type import for a ruleset. 

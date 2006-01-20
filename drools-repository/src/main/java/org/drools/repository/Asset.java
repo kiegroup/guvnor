@@ -1,4 +1,4 @@
-package org.drools.repository.db;
+package org.drools.repository;
 
 import java.io.Serializable;
 

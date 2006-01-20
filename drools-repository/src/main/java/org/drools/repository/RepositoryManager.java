@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.drools.repository.db.Asset;
 import org.drools.repository.db.ISaveHistory;
 
 /**
@@ -19,6 +18,7 @@ import org.drools.repository.db.ISaveHistory;
  * If it is a stateful Repository, then it will need to be created from the factory fresh.
  * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
+ * @author <a href ="mailto:sujit.pal@comcast.net"> Sujit Pal</a>
  */
 public interface RepositoryManager {
 

@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.repository.db.IVersionable;
-import org.drools.repository.db.Asset;
 
 /**
  * The ruleset definition contains a grouping of rules for editing/release. The

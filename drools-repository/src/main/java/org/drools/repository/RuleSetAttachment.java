@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.drools.repository.db.ISaveHistory;
 import org.drools.repository.db.IVersionable;
-import org.drools.repository.db.Asset;
 
 
 /**

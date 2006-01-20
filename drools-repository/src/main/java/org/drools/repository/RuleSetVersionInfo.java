@@ -2,7 +2,6 @@ package org.drools.repository;
 
 import java.util.Date;
 
-import org.drools.repository.db.Asset;
 
 /**
  * This records information about a particular version of a ruleset.

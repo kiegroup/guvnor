@@ -1,7 +1,6 @@
 package org.drools.repository;
 
 import org.drools.repository.db.IVersionable;
-import org.drools.repository.db.Asset;
 
 /**
  * A FunctionDef contains the definition of a function that is used in one or more rules.
