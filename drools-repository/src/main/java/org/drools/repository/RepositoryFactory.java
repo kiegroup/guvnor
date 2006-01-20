@@ -42,6 +42,7 @@ public final class RepositoryFactory {
         RepositoryManager manager = (RepositoryManager) Proxy.newProxyInstance(RepositoryFactory.class.getClassLoader(), 
                                new Class[] {RepositoryManager.class},
                                handler);
+        
         return manager;
     }
     

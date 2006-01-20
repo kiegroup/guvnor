@@ -155,7 +155,7 @@ public interface RepositoryManager {
      * @param query HQL query. Can be of the format "from ClassName where propertyName = :variableInMap"
      *              You can also do "select name from RuleSetDef where ..." and so on. It will then return a list
      *              of strings. If you do "select name, Id from RuleDef .." it will return a list of Object[] "tuples".
-     * @param parameters A map of name => value (in appropriate type) to mix in with the query.
+     * @param parameters A map of {name => value} (in appropriate type) to mix in with the query.
      *              
      */
     public abstract List query(String query, Map parameters);
