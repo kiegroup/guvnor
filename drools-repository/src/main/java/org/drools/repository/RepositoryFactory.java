@@ -20,9 +20,7 @@ public final class RepositoryFactory {
      * The default repository. This is stateless, meaning that a continuous connection is not required.
      */
     public static RepositoryManager getRepository() {      
-        RepoProxyHandler handler = new RepoProxyHandler();        
-        RepositoryManager manager = getProxy( handler );
-        return manager;        
+        return getRepo(null, false);
     }
     
     /**
@@ -33,9 +31,16 @@ public final class RepositoryFactory {
      * This version can have performance benefits in some cases.
      */
     public static RepositoryManager getStatefulRepository() {        
-        RepoProxyHandler handler = new RepoProxyHandler(true);        
-        RepositoryManager manager = getProxy( handler );
-        return manager;        
+        return getRepo(null, true);        
+    }
+    
+    /**
+     * User this factory if you want to have audited, controlled access to the repository.
+     * @param currentUser the user accessing the repository.
+     * @param stateful If the session is to be stateful or not (generally false is ideal).
+     */
+    public static RepositoryManager getRepository(Principal currentUser, boolean stateful) {
+        return getRepo(currentUser, stateful);
     }
 
     private static RepositoryManager getProxy(RepoProxyHandler handler) {
@@ -46,6 +51,12 @@ public final class RepositoryFactory {
         return manager;
     }
     
+    
+    private static RepositoryManager getRepo(Principal user, boolean stateful) {
+        RepoProxyHandler handler = new RepoProxyHandler(stateful);
+        handler.setCurrentUser(user);
+        return getProxy(handler);
+    }
     
 
 }

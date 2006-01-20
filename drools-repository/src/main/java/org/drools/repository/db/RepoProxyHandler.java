@@ -3,6 +3,7 @@ package org.drools.repository.db;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.Principal;
 
 import org.drools.repository.RepositoryException;
 import org.drools.repository.RepositoryManagerImpl;
@@ -151,6 +152,11 @@ public class RepoProxyHandler
         } else {
             return HibernateUtil.getSessionFactory().getCurrentSession();
         }
+    }
+    
+    /** Pass through the current user for auditing and control purposes. */
+    public void setCurrentUser(Principal user) {
+        this.repoImpl.setCurrentUser(user);
     }
         
 

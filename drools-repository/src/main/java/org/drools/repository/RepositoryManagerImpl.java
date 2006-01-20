@@ -1,5 +1,6 @@
 package org.drools.repository;
 
+import java.security.Principal;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,7 @@ public class RepositoryManagerImpl
     RepositoryManager {
 
     private Session session;
+    private Principal currentUser;
     
     /**
      * Session is injected by the proxy.
@@ -245,9 +247,10 @@ public class RepositoryManagerImpl
     }
 
 
-    
+    /** Sets the current user principal for auditing, and access control purposes */
+    public void setCurrentUser(Principal user) {
+        this.currentUser = user;
+    }
 
-    
-    
 
 }
