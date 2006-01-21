@@ -216,6 +216,7 @@ public class RuleDef extends Asset
         newVersion.tags = this.copyTags();
         newVersion.versionNumber = this.getVersionNumber();
         newVersion.versionComment = this.getVersionComment();
+        newVersion.owningRuleSetName = this.getOwningRuleSetName();
         return newVersion;
     }
 
