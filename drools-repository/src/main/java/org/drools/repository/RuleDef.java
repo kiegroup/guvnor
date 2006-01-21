@@ -29,7 +29,20 @@ public class RuleDef extends Asset
     private Long              historicalId;
     private boolean           historicalRecord = false;
     private int               lockingVersion = 0;
+    private String            owningRuleSetName;
 
+
+    /** 
+     * If a rule belongs to a ruleset, this will have its name. 
+     * Rulenames should be unique, but at a minimum unique in a ruleset.
+     * */
+    public String getOwningRuleSetName() {
+        return owningRuleSetName;
+    }
+
+    void setOwningRuleSetName(String owningRuleSetName) {
+        this.owningRuleSetName = owningRuleSetName;
+    }
 
     /**
      * Use tagging to aid with searching and sorting of large numbers of rules.

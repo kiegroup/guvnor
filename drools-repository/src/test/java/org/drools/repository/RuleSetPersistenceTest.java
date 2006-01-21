@@ -49,7 +49,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         repo.save(def2);
         def2 = repo.loadRuleSet("my ruleset", 1);
         
-        newRule = def2.findRuleByName("my ruleset:pre-existing");
+        newRule = def2.findRuleByName("pre-existing");
         assertEquals("ABC", newRule.getContent());
         assertEquals(1, newRule.getTags().size());
     }
@@ -347,8 +347,11 @@ public class RuleSetPersistenceTest extends PersistentCase {
         repo.save(ruleset);
         
         RuleDef copied = newruleset.addRule(preExist);
-        RuleDef other = newruleset.findRuleByName("yao" + ":" + preExist.getName());
+        RuleDef other = newruleset.findRuleByName(preExist.getName());
         assertEquals(null, other.getId()); //so we know it is a copy
+        assertEquals(newruleset.getName(), other.getOwningRuleSetName());
+        assertEquals(null, preExist.getOwningRuleSetName());
+        
         repo.save(newruleset);
         
         assertFalse(other == preExist);
@@ -357,7 +360,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         newruleset = repo.loadRuleSet("yao", 1);
         assertEquals(1, newruleset.getRules().size());
         other = (RuleDef) newruleset.getRules().iterator().next();
-        assertTrue(other.getName().startsWith("yao"));
+        assertEquals(newruleset.getName(), other.getOwningRuleSetName());
         
         newruleset.removeRule(other);
         repo.save(newruleset);

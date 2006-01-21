@@ -26,6 +26,7 @@
 		<property name="expiryDate" column="EXPIRY_DATE"/>					
 		<property name="historicalId" column="HISTORICAL_ID"/>
 		<property name="historicalRecord" column="HISTORICAL_RECORD_FLAG"/>
+		<property name="owningRuleSetName" column="OWNING_RULESET_NAME" />
 		
 		<set name="tags" table="RULE_TAGS" lazy="false" cascade="all" optimistic-lock="false">
 		    <key column="RULE_ID"/>

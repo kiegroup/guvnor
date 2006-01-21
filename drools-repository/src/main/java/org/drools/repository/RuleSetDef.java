@@ -96,12 +96,13 @@ public class RuleSetDef extends Asset
     public RuleDef addRule(RuleDef rule) {
         RuleDef returnVal = rule;
         if (rule.getId() == null) {
+            rule.setOwningRuleSetName(this.name);
             addAssetToSet( rule,
                                   this.rules );
         } else {         
             //we have to make a copy
             RuleDef newRule = (RuleDef) rule.copy();  
-            newRule.setName(this.getName() + ":" + rule.getName()); 
+            newRule.setOwningRuleSetName(this.name);
             addAssetToSet( newRule,
                                   this.rules );
             returnVal = newRule;
