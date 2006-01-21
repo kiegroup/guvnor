@@ -51,7 +51,7 @@ public class IntegrationTest extends TestCase {
         RepositoryManager repoB = RepositoryFactory.getStatefulRepository();
         
         
-        //Lets try a simple rule
+        //Lets try a simple rule, which will stay stand alone
         RuleDef ruleA = new RuleDef("Concurrent 1", "content1");
         repoA.save(ruleA);
         repoA.close();
@@ -84,13 +84,13 @@ public class IntegrationTest extends TestCase {
         repoA.save(ruleSet);
         repoA.close();
         
-        //we will add a rule to each one
+        //we will add a rule to each one, concurrently
         repoA = RepositoryFactory.getStatefulRepository();
         repoB = RepositoryFactory.getStatefulRepository();
         
         RuleSetDef ruleSetA = repoA.loadRuleSet("Integration concurrent 1", 1);
         RuleSetDef ruleSetB = repoB.loadRuleSet("Integration concurrent 1", 1);
-        
+
         ruleA = new RuleDef("Concurrent 3", "content");
         ruleSetA.addRule(ruleA);
         ruleSetB.addRule(new RuleDef("Concurrent 4", "content"));
@@ -104,6 +104,7 @@ public class IntegrationTest extends TestCase {
         
         ruleA.setContent("new content");
         repoA.save(ruleSetA);
+        
         repoA.close();
         repoB.close();
         
@@ -114,6 +115,26 @@ public class IntegrationTest extends TestCase {
         assertEquals("new content", ruleA.getContent());
         
         repoA.close();
+        
+        //now lets have bob and michael both edit to different rules at once
+        repoA = RepositoryFactory.getStatefulRepository();
+        repoB = RepositoryFactory.getStatefulRepository();
+        ruleSetA = repoA.loadRuleSet("Integration concurrent 1", 1);
+        ruleSetB = repoB.loadRuleSet("Integration concurrent 1", 1);
+        
+        ruleA = ruleSetA.findRuleByName("Concurrent 3");
+        ruleB = ruleSetB.findRuleByName("Concurrent 4");
+        
+        ruleA.setContent("something wild");
+        ruleB.setContent("something simple");
+        
+        //should be fine, as different rules.
+        repoA.save(ruleSetA);
+        repoB.save(ruleSetB);
+        
+        repoA.close();
+        repoB.close();
+       
         
         
     }
