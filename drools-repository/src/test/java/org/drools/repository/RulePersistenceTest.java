@@ -131,22 +131,28 @@ public class RulePersistenceTest extends PersistentCase {
     public void testCheckinOut() {
         RuleDef rule = new RuleDef("checkin", "some rule");
         
-        RepositoryManager repo = getRepo();
+        RepositoryManager repo = RepositoryFactory.getRepository(new MockUser("michael"), false);
         repo.save(rule);
         
-        repo.checkOutRule(rule, "u=Michael.Neale");
+        repo.checkOutRule(rule);
         rule = repo.loadRule("checkin", 1);
         
         assertEquals(true, rule.isCheckedOut());
-        assertEquals("u=Michael.Neale", rule.getCheckedOutBy());
+        assertEquals("michael", rule.getCheckedOutBy());
+        
+        repo = RepositoryFactory.getRepository(new MockUser("rohit"), false);
         
         try {
-            repo.checkInRule(rule, "u=Rohit.Mathur");
+            //whoops we cant check it in
+            repo.checkInRule(rule);
         } catch (RepositoryException e) {
             assertNotNull(e.getMessage());
         }
         
-        repo.checkInRule(rule, "u=Michael.Neale");
+        //now we can check it in
+        repo = RepositoryFactory.getRepository(new MockUser("michael"), false);
+        
+        repo.checkInRule(rule);
         assertEquals(false, rule.isCheckedOut());
         
     }

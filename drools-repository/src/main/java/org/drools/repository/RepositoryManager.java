@@ -95,7 +95,7 @@ public interface RepositoryManager {
      * 
      * This will save the rule as it stands, including any changes.
      */
-    public abstract void checkOutRule(RuleDef rule, String userId);
+    public abstract void checkOutRule(RuleDef rule);
 
     /**
      * This removes the check out flag.
@@ -106,7 +106,7 @@ public interface RepositoryManager {
      * This can effectively be "overridden" by either just saving the rule, or passing
      * in the correct username. It is up to client applications to enforce this behaviour.
      */
-    public abstract void checkInRule(RuleDef rule, String userId);
+    public abstract void checkInRule(RuleDef rule);
     
     
     /** 
@@ -115,7 +115,7 @@ public interface RepositoryManager {
      * 
      * This will save the attachment as it stands, including any changes.
      */
-    public abstract void checkOutAttachment(RuleSetAttachment attachment, String userId);
+    public abstract void checkOutAttachment(RuleSetAttachment attachment);
 
     /**
      * This removes the check out flag.
@@ -126,7 +126,7 @@ public interface RepositoryManager {
      * This can effectively be "overridden" by either just saving the rule, or passing
      * in the correct username. It is up to client applications to enforce this behaviour.
      */
-    public abstract void checkInAttachment(RuleSetAttachment attachment, String userId);
+    public abstract void checkInAttachment(RuleSetAttachment attachment);
      
     
     

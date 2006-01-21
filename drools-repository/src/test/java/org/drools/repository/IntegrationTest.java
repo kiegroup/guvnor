@@ -1,5 +1,6 @@
 package org.drools.repository;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -188,7 +189,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(2, ruleSet.getAttachments().size());
         
         repo.close();
-        repo = RepositoryFactory.getStatefulRepository();
+        repo = RepositoryFactory.getRepository(new MockUser("Michael"), false);
         
         //now with a new session, lets load up the latest, and add an attachment
         ruleSet = repo.loadRuleSet("Integration attachments 1", 2);
@@ -205,9 +206,9 @@ public class IntegrationTest extends TestCase {
         assertEquals(3, ruleSet.getAttachments().size());
         
         RuleSetAttachment att = (RuleSetAttachment) ruleSet.getAttachments().iterator().next();
-        repo.checkOutAttachment(att, "Michael");
+        repo.checkOutAttachment(att);
         assertEquals(true, att.isCheckedOut());
-        repo.checkInAttachment(att, "Michael");
+        repo.checkInAttachment(att);
         assertEquals(false, att.isCheckedOut());
         
         repo.close();
@@ -372,5 +373,7 @@ public class IntegrationTest extends TestCase {
         
         repo.close();
     }
+    
+
     
 }

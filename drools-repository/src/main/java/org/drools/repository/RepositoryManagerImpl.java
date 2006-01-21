@@ -166,17 +166,30 @@ public class RepositoryManagerImpl
         return list;
     }
     
-    public void checkOutRule(RuleDef rule,
-                                String userId) {
+    public void checkOutRule(RuleDef rule) {
+        
+        String userId = getUserId();
         if (rule.isCheckedOut()) {
-            throw new RepositoryException("Rule is already checked out to " + userId);
+            throw new RepositoryException("Rule is already checked out to " + rule.getCheckedOutBy());
         }
         rule.setCheckedOut(true);
         rule.setCheckedOutBy(userId);
         session.update(rule);
     }
 
-    public void checkInRule(RuleDef rule, String userId) {
+
+
+    private String getUserId() {
+        if (this.currentUser == null) {
+            throw new RepositoryException("No current user context was provided to the repository.");
+        }
+        String userId = this.currentUser.getName();
+        return userId;
+    }
+
+    public void checkInRule(RuleDef rule) {
+        String userId = getUserId();
+
         if (!userId.equals(rule.getCheckedOutBy())) {
             throw new RepositoryException("Unable to check in the rule, as it is currently checked out by " + rule.getCheckedOutBy());
         }
@@ -185,10 +198,10 @@ public class RepositoryManagerImpl
         session.update(rule);
     }    
     
-    public void checkOutAttachment(RuleSetAttachment attachment,
-                                   String userId) {
+    public void checkOutAttachment(RuleSetAttachment attachment) {
+        String userId = getUserId();
         if (attachment.isCheckedOut()) {
-            throw new RepositoryException("Rule is already checked out to " + userId);
+            throw new RepositoryException("Rule is already checked out to " + attachment.getCheckedOutBy());
         }        
         attachment.setCheckedOut(true);
         attachment.setCheckedOutBy(userId);
@@ -196,8 +209,8 @@ public class RepositoryManagerImpl
         
     }
 
-    public void checkInAttachment(RuleSetAttachment attachment,
-                            String userId) {
+    public void checkInAttachment(RuleSetAttachment attachment) {
+        String userId = getUserId();
         if (!userId.equals(attachment.getCheckedOutBy())) {
             throw new RepositoryException("Unable to check in the attachment, as it is currently checked out by " + attachment.getCheckedOutBy());
         }

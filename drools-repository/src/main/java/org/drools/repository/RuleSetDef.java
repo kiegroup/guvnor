@@ -83,13 +83,10 @@ public class RuleSetDef extends Asset
     /** 
      * Adds a rule to the ruleset.
      * If the rule has already been saved, then it will be copied for this ruleset.
-     * (the rulesetname will be prepended to the rule name to keep it unique).
      * 
-     *  ie: rulesetName:originalRuleName
-     *  
-     * (if you don't like that, then copy() the rule before adding it).
+     * If a rule is new, obviously there is no copying.
      * 
-     * If a rule is new, obviously there is no copying, and the name is "as is".
+     * The owningRuleSetName property is set to the name of this ruleset.
      * 
      * @return The rule that was just added (which may be a copy).
      */
