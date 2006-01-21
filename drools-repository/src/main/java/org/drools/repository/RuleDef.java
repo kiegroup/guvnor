@@ -29,8 +29,6 @@ public class RuleDef extends Asset
     private Long              historicalId;
     private boolean           historicalRecord = false;
     private int               lockingVersion = 0;
-    private RuleSetDef        owningRuleSet = null;
-    
 
 
     /**
@@ -237,19 +235,6 @@ public class RuleDef extends Asset
         }
     }
     
-    /**
-     * When a rule is allocated to a ruleset, it is "owned" by that ruleset.
-     * If it is added to another ruleset, a copy is added.
-     * 
-     * This may be null, meaning that it is a free floating rule.
-     */
-    public RuleSetDef getOwningRuleSet() {
-        return owningRuleSet;
-    }
-
-    void setOwningRuleSet(RuleSetDef owningRuleSet) {
-        this.owningRuleSet = owningRuleSet;
-    }
 
     /** return true if different */
     private boolean diffStr(String left, String right) {
@@ -262,6 +247,8 @@ public class RuleDef extends Asset
 
     private void setLockingVersion(int lockingVersion) {
         this.lockingVersion = lockingVersion;
-    }    
+    }
+
+ 
 
 }

@@ -48,7 +48,8 @@ public class RuleSetPersistenceTest extends PersistentCase {
         def2.addRule(newRule);
         repo.save(def2);
         def2 = repo.loadRuleSet("my ruleset", 1);
-        newRule = def2.findRuleByName("pre-existing");
+        
+        newRule = def2.findRuleByName("my ruleset:pre-existing");
         assertEquals("ABC", newRule.getContent());
         assertEquals(1, newRule.getTags().size());
     }
@@ -148,7 +149,8 @@ public class RuleSetPersistenceTest extends PersistentCase {
         RuleDef def2 = new RuleDef("Rule2", "blah2");
         
         def1.addTag("S").addTag("A");
-        set.addRule(def1).addRule(def2);
+        set.addRule(def1);
+        set.addRule(def2);
         set.addAttachment(new RuleSetAttachment("x", "x", "x".getBytes(), "x"));
         
         assertEquals(2, set.getRules().size());
@@ -337,18 +339,20 @@ public class RuleSetPersistenceTest extends PersistentCase {
         repo.save(ruleset);
         
         ruleset.addRule(preExist);
-        assertEquals(ruleset, preExist.getOwningRuleSet());
+        
         
         repo.save(ruleset);
         
         RuleSetDef newruleset = new RuleSetDef("yao", null);
         repo.save(ruleset);
         
-        newruleset.addRule(preExist);
+        RuleDef copied = newruleset.addRule(preExist);
         RuleDef other = newruleset.findRuleByName("yao" + ":" + preExist.getName());
         assertEquals(null, other.getId()); //so we know it is a copy
-        assertEquals(newruleset, other.getOwningRuleSet());
         repo.save(newruleset);
+        
+        assertFalse(other == preExist);
+        assertEquals(other, copied);
         
         newruleset = repo.loadRuleSet("yao", 1);
         assertEquals(1, newruleset.getRules().size());

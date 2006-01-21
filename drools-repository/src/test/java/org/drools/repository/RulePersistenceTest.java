@@ -34,7 +34,7 @@ public class RulePersistenceTest extends PersistentCase {
         def.removeTag("tag1");
         repo.save(def);
         def = repo.loadRule("myRule3", 1);
-        assertEquals(null, def.getOwningRuleSet());
+        
         assertEquals(2, def.getTags().size());
     }
         
@@ -80,7 +80,7 @@ public class RulePersistenceTest extends PersistentCase {
     
     public void testRuleRuleSetHistory() {
         RuleSetDef rs = new RuleSetDef("rule history", null);
-        rs.addRule(new RuleDef("rh1", "xxxxx"));
+        RuleDef first = rs.addRule(new RuleDef("rh1", "xxxxx"));
         rs.addRule(new RuleDef("rh2", "xxxxx"));
         rs.addRule(new RuleDef("rh3", "xxxxx"));
         
@@ -114,6 +114,16 @@ public class RulePersistenceTest extends PersistentCase {
         
         list = repo.listSaveHistory(rule); 
         assertEquals(2, list.size());
+
+        rs = repo.loadRuleSet("rule history", 1);
+        RuleDef firstLoaded = rs.findRuleByName("rh1");
+        firstLoaded.setContent("new again");
+        repo.save(rs);
+        
+        rs = repo.loadRuleSet("rule history", 1);
+        RuleDef loadedAgain = rs.findRuleByName("rh1");
+        
+        assertEquals(firstLoaded.getContent(), loadedAgain.getContent());
         
     }
     

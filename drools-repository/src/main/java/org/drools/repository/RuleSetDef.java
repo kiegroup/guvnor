@@ -82,30 +82,32 @@ public class RuleSetDef extends Asset
 
     /** 
      * Adds a rule to the ruleset.
-     * If the rule belongs to another ruleset already, it will be copied, and the name
-     * prepended with the ruleset name (to ensure it is unique).
+     * If the rule has already been saved, then it will be copied for this ruleset.
+     * (the rulesetname will be prepended to the rule name to keep it unique).
      * 
      *  ie: rulesetName:originalRuleName
      *  
      * (if you don't like that, then copy() the rule before adding it).
      * 
      * If a rule is new, obviously there is no copying, and the name is "as is".
-     * The rule may have been stored previously, "unattached" which is also fine (won't be copied).
+     * 
+     * @return The rule that was just added (which may be a copy).
      */
-    public RuleSetDef addRule(RuleDef rule) {
-        if (rule.getOwningRuleSet() == null) {
-            rule.setOwningRuleSet(this);
-            return addAssetToSet( rule,
+    public RuleDef addRule(RuleDef rule) {
+        RuleDef returnVal = rule;
+        if (rule.getId() == null) {
+            addAssetToSet( rule,
                                   this.rules );
         } else {         
             //we have to make a copy
             RuleDef newRule = (RuleDef) rule.copy();  
             newRule.setName(this.getName() + ":" + rule.getName()); 
-            newRule.setOwningRuleSet(this);
-            return addAssetToSet( newRule,
+            addAssetToSet( newRule,
                                   this.rules );
+            returnVal = newRule;
             
         }
+        return returnVal;
     }
 
     public RuleSetDef addAttachment(RuleSetAttachment attachmentFile) {
@@ -149,7 +151,6 @@ public class RuleSetDef extends Asset
      * 
      */
     public void removeRule(RuleDef rule) {
-        rule.setOwningRuleSet(null);
         rule.setVersionNumber(IVersionable.NO_VERSION);
     }
     
@@ -201,11 +202,8 @@ public class RuleSetDef extends Asset
         asset.setVersionNumber( this.workingVersionNumber );
         if ( asset.getId() == null ) {
             asset.setVersionComment( "new" );
-            set.add( asset );
         }
-        else {
-            set.add( asset );
-        }
+        set.add( asset );
         return this;
     }
 
