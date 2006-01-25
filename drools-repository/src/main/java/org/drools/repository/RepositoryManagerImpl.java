@@ -9,6 +9,7 @@ import java.util.Properties;
 
 
 import org.drools.repository.db.ISaveHistory;
+import org.drools.repository.db.IVersionable;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -37,8 +38,6 @@ public class RepositoryManagerImpl
         this.session = session;        
     }
     
-
-
     /* (non-Javadoc)
      * @see org.drools.repository.db.RepositoryManager#loadRule(java.lang.String, long)
      */
@@ -83,8 +82,20 @@ public class RepositoryManagerImpl
         return result;
     }
 
+    /** We will "manually" cascade changes to the ruleset */
     public void save(Asset asset) {
+        if (asset instanceof RuleSetDef) {
+            cascadeChanges( (RuleSetDef) asset);
+        }
         session.saveOrUpdate( asset );        
+    }
+    
+    public void cascadeChanges(RuleSetDef ruleSet) {
+        for ( Iterator iter = ruleSet.getModified().iterator(); iter.hasNext(); ) {
+            Asset asset = (Asset) iter.next();
+            session.saveOrUpdate(asset);
+            iter.remove();
+        } 
     }
 
     /* (non-Javadoc)
@@ -219,6 +230,18 @@ public class RepositoryManagerImpl
         session.update(attachment);
     }
     
+
+    public List query(String query,
+                      Map parameters) {
+        Query q = session.createQuery(query);
+        
+        for ( Iterator iter = parameters.keySet().iterator(); iter.hasNext(); ) {
+            String key = (String) iter.next();
+            q.setParameter(key, parameters.get(key));
+        }
+        
+        return q.list();
+    }    
     
     public void close() { /*implemented by the proxy */}    
 
@@ -244,21 +267,6 @@ public class RepositoryManagerImpl
     void disableWorkingVersionFilter(Session session) {
         session.disableFilter( "workingVersionFilter" );
     }
-
-
-
-    public List query(String query,
-                      Map parameters) {
-        Query q = session.createQuery(query);
-        
-        for ( Iterator iter = parameters.keySet().iterator(); iter.hasNext(); ) {
-            String key = (String) iter.next();
-            q.setParameter(key, parameters.get(key));
-        }
-        
-        return q.list();
-    }
-
 
     /** Sets the current user principal for auditing, and access control purposes */
     public void setCurrentUser(Principal user) {

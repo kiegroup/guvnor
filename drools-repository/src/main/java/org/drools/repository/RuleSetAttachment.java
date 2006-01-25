@@ -194,11 +194,6 @@ public class RuleSetAttachment extends Asset implements ISaveHistory {
     public void setHistoricalRecord(boolean historicalRecord) {
         this.historicalRecord = historicalRecord;
     }
-
-    public boolean isStateChanged(ISaveHistory oldObject) {
-        return true;
-    }    
-    
     
     
 }

@@ -1,7 +1,5 @@
 package org.drools.repository;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -44,7 +42,11 @@ public class RuleSetDef extends Asset
     private Set               imports;
     private Set               applicationData;
     private Set               functions;
+    
+    private Set               modifiedAssets = new HashSet();
 
+    
+    
     public RuleSetDef(String name,
                       MetaData meta) {
         this.name = name;
@@ -57,6 +59,7 @@ public class RuleSetDef extends Asset
         this.applicationData = new HashSet();
         this.imports = new HashSet();
         this.workingVersionNumber = 1;
+        
         addNewVersionHistory("new");        
     }
 
@@ -148,24 +151,30 @@ public class RuleSetDef extends Asset
      * The repository API has a delete(RuleDef rule) method
      * 
      */
-    public void removeRule(RuleDef rule) {
-        rule.setVersionNumber(IVersionable.NO_VERSION);
+    public void removeRule(RuleDef rule) {        
+        rule.setOwningRuleSetName(null);
+        removeAsset(rule);
     }
     
     public void removeFunction(FunctionDef function) {
-        function.setVersionNumber(IVersionable.NO_VERSION);        
+        removeAsset(function);        
     }
     
     public void removeApplicationData(ApplicationDataDef appData) {
-        appData.setVersionNumber(IVersionable.NO_VERSION);        
+        removeAsset(appData);        
     }
     
     public void removeImport(ImportDef imp) {
-        imp.setVersionNumber(IVersionable.NO_VERSION);
+        removeAsset(imp);
     }
     
     public void removeAttachment(RuleSetAttachment attachment) {
-        attachment.setVersionNumber(IVersionable.NO_VERSION);
+        removeAsset(attachment);
+    }
+    
+    private void removeAsset(IVersionable asset) {
+        asset.setVersionNumber(IVersionable.NO_VERSION);
+        modifiedAssets.add(asset);
     }
     
     /** 
@@ -202,7 +211,25 @@ public class RuleSetDef extends Asset
             asset.setVersionComment( "new" );
         }
         set.add( asset );
+        
+        //don't forget this for cascasing !
+        this.modifiedAssets.add( asset );
         return this;
+    }
+    
+    /** 
+     * Call this so the repository knows what assets to save 
+     * when the time comes to sync with the repository.
+     * 
+     * This is only needed if you change the content of a rule for instance.
+     * Adding and removing things is automatic.
+     * 
+     * This can be done so the ruleset temporarily remembers changes,
+     * or you can save the changes one by one yourself.
+     * @param A versionable asset (like a RuleDef, Function etc).
+     */
+    public void modify(IVersionable asset) {
+        this.modifiedAssets.add( asset );
     }
 
     public MetaData getMetaData() {
@@ -289,7 +316,7 @@ public class RuleSetDef extends Asset
      * (think of that versioning as "minor" versions, and this sort of ruleset
      * versions as major versions).
      * 
-     * Ideally once a new version is created, the RuleSet should be stored and
+     * IMPORTANT: once a new version is created, the RuleSet should be saved and
      * then loaded fresh, which will hide the non working versions of the rules.
      */
     public void createNewVersion(String comment) {
@@ -350,6 +377,7 @@ public class RuleSetDef extends Asset
             }
         }
         assets.addAll( newVersions );
+        modifiedAssets.addAll( newVersions );
     }
 
     public String toString() {
@@ -397,6 +425,8 @@ public class RuleSetDef extends Asset
         this.imports = imports;
     }
 
-
+    Set getModified() {
+        return this.modifiedAssets;
+    }
 
 }

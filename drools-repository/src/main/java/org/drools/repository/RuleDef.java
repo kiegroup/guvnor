@@ -240,21 +240,6 @@ public class RuleDef extends Asset
         this.historicalRecord = historicalRecord;
     }
 
-    public boolean isStateChanged(ISaveHistory oldObject) {
-        RuleDef old = (RuleDef) oldObject;
-        if (diffStr(this.getContent(), old.getContent())) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
-
-    /** return true if different */
-    private boolean diffStr(String left, String right) {
-        return !left.equals(right);
-    }
-    
     private int getLockingVersion() {
         return lockingVersion;
     }

@@ -19,11 +19,6 @@ public interface ISaveHistory extends IVersionable {
     boolean isHistoricalRecord();
     void setHistoricalRecord(boolean b);
     
-    /** 
-     * 
-     * @param oldObject Previous version of the object of this type.
-     * @return
-     */
-    boolean isStateChanged(ISaveHistory oldObject);
+
     
 }

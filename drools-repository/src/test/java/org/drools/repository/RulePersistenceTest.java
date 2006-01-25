@@ -119,6 +119,7 @@ public class RulePersistenceTest extends PersistentCase {
         rs = repo.loadRuleSet("rule history", 1);
         RuleDef firstLoaded = rs.findRuleByName("rh1");
         firstLoaded.setContent("new again");
+        rs.modify(firstLoaded);
         repo.save(rs);
         
         rs = repo.loadRuleSet("rule history", 1);

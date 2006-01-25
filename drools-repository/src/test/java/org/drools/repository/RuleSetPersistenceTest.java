@@ -33,6 +33,8 @@ public class RuleSetPersistenceTest extends PersistentCase {
         //now modify the content of a rule, ensure it is saved
         RuleDef rule = (RuleDef) def2.getRules().iterator().next();
         rule.setContent("Something new");
+        def2.modify(rule);
+        
         repo.save(def2);
         
         def2 = repo.loadRuleSet("my ruleset", 1);
@@ -129,6 +131,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         def = repo.loadRuleSet("addRemove", 2);
         RuleDef onlyRule = (RuleDef) def.getRules().iterator().next();
         def.removeRule(onlyRule);
+        assertEquals(null, onlyRule.getOwningRuleSetName());
         //assertEquals(0, def.getRules().size());
         repo.save(def);
         
@@ -278,6 +281,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         repo.save(old);
         assertEquals(0, repo.listSaveHistory(newRule).size());
         newRule.setContent("CHANGED CONTENT");
+        old.modify(newRule);
         repo.save(old);
         assertEquals(1, repo.listSaveHistory(newRule).size());
         
@@ -296,6 +300,7 @@ public class RuleSetPersistenceTest extends PersistentCase {
         
         //just make sure it preserves content, and same ID (now new versions).
         func.setFunctionContent("xyz");
+        def.modify(func);
         Long id = func.getId();
         repo.save(def);
         def = repo.loadRuleSet("with functions", 1);

@@ -1,5 +1,7 @@
 package org.drools.repository;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,12 +34,64 @@ public class IntegrationTest extends TestCase {
      * Any failure will cause the test to stop, but this is not a unit test,
      * so that is acceptable.
      */
-    public void testBootstrap() {
+    public void testBootstrap() throws Exception {
         runVersioningTests();
         runAttachmentTests();
-        
+        runLocalOfflineTests();
         runConcurrentTests();
-//        runLocalPersistTests();
+        
+    }
+
+
+    /**
+     * Test local store features, simulating 2 users running offline.
+     */
+    private void runLocalOfflineTests() throws Exception {
+        
+        RuleSetDef setA = new RuleSetDef("offline1", null);
+        setA.addRule(new RuleDef("offline1", "blah"));
+        setA.addRule(new RuleDef("offline2", "blah"));
+        
+        RepositoryManager repo = RepositoryFactory.getStatefulRepository();
+        repo.save(setA);
+        repo.close();
+        
+        repo = RepositoryFactory.getStatefulRepository();
+        //load up copy A
+        setA = repo.loadRuleSet("offline1", 1);
+        repo.close();
+        
+        //now load up copy B
+        repo = RepositoryFactory.getStatefulRepository();
+        RuleSetDef setB = repo.loadRuleSet("offline1", 1);
+        repo.close();
+
+        //now store them locally
+        LocalStore store = new LocalStore();
+        ByteArrayOutputStream outA = new ByteArrayOutputStream();
+        ByteArrayOutputStream outB = new ByteArrayOutputStream();
+        store.save(setA, outA);
+        store.save(setB, outB);
+        
+        
+        setA = (RuleSetDef) store.load(new ByteArrayInputStream(outA.toByteArray()));
+        setB = (RuleSetDef) store.load(new ByteArrayInputStream(outB.toByteArray()));
+        //setA.addRule(new RuleDef("yeah", "boo"));
+        //setB.addRule(new RuleDef("goo", "ya"));
+        RuleDef rule1 = setA.findRuleByName("offline1");
+        RuleDef rule2 = setB.findRuleByName("offline2");
+        rule1.setContent("something");
+        //setA.addApplicationData(new ApplicationDataDef("dsadsa", "dfsads"));
+        //setB.setMetaData(new MetaData());
+        
+        //no problems expected, as they were editing different rules
+        repo = RepositoryFactory.getStatefulRepository();
+        repo.save(setA);
+        repo.close();
+        
+        repo = RepositoryFactory.getStatefulRepository();
+        repo.save(setB);
+        repo.close();
         
     }
 
@@ -285,6 +339,7 @@ public class IntegrationTest extends TestCase {
         for ( Iterator iter = ruleSet.getRules().iterator(); iter.hasNext(); ) {
             RuleDef myRule = (RuleDef) iter.next();
             myRule.setContent("CHANGED RULE TEXT");   
+            ruleSet.modify(myRule);
             //this should cause us to have some rule history saved.
             //this has nothing to do with ruleset versioning.
         } 

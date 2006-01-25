@@ -8,7 +8,6 @@ import java.security.Principal;
 import org.drools.repository.RepositoryException;
 import org.drools.repository.RepositoryManagerImpl;
 import org.hibernate.Session;
-import org.hibernate.StaleObjectStateException;
 import org.hibernate.Transaction;
 
 /**
@@ -20,9 +19,9 @@ import org.hibernate.Transaction;
  * This is the glue between the actual implementation and the interface.
  * 
  * It also provides the stateful and stateless behaviour.
- * Stateful simple means that a session instance is created the first time, and 
+ * Stateful simple means that a new session instance is created the first time, and 
  * kept around (long running sessions).
- * 
+ * Stateless uses getCurrentSession functionality in hibernate 3.
  * 
  * It can also be extended to provide user context to the implementation class 
  * (for auditing, access control and locking for instance).
@@ -109,7 +108,7 @@ public class RepoProxyHandler
                                              InvocationTargetException e) {
         if (! (e.getTargetException() instanceof RepositoryException)) {
             try { 
-                repoImpl.injectSession(null);
+                repoImpl.injectSession(null); //not really needed... but anyway
                 session.close(); 
             } catch (Exception e2) { /*ignore*/ }
         }

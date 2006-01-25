@@ -49,15 +49,14 @@ public class StoreEventListener extends EmptyInterceptor {
         ISaveHistory prev = (ISaveHistory) session.load( entity.getClass(),
                                                          versionable.getId(),
                                                          LockMode.NONE );
-        if ( versionable.isStateChanged( prev ) ) {
-            ISaveHistory copy = (ISaveHistory) prev.copy();
-            copy.setHistoricalId( versionable.getId() );
-            copy.setHistoricalRecord( true );
-            session.save( copy );
-            session.flush();
-            session.close();            
-        }
-
+        ISaveHistory copy = (ISaveHistory) prev.copy();
+        copy.setHistoricalId( versionable.getId() );
+        copy.setHistoricalRecord( true );
+        //session.beginTransaction();
+        session.save( copy );
+        //session.getTransaction().commit();
+        session.flush();                        
+        session.close();
     }
     
     /**

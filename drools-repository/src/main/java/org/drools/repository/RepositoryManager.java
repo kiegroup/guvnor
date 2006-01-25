@@ -143,15 +143,15 @@ public interface RepositoryManager {
      * 
      * The properties should be (key, value) where value is the appropriate type of the field to query on.
      * The key maps to a " :key" item in your query string.
-     *  
+     * <p/> 
      * For instance, <code>query = "from RuleDef where versionNumber > :max and name = :name";</code>
-     * will have a map:
+     * will have a map:<p/>
      * <code>
      *              map.put("max", new Long(42));
      *              map.put("name", "This is a String");
      *              //note the appropriate type to match the properties you want to search !
      * </code>             
-     * 
+     * <p/>
      * @param query HQL query. Can be of the format "from ClassName where propertyName = :variableInMap"
      *              You can also do "select name from RuleSetDef where ..." and so on. It will then return a list
      *              of strings. If you do "select name, Id from RuleDef .." it will return a list of Object[] "tuples".

@@ -42,6 +42,17 @@ public final class RepositoryFactory {
     public static RepositoryManager getRepository(Principal currentUser, boolean stateful) {
         return getRepo(currentUser, stateful);
     }
+    
+    /**
+     * User this factory if you want to have audited, controlled access to the repository.
+     * 
+     * @param currentUser the user accessing the repository.
+     */
+    public static RepositoryManager getRepository(Principal currentUser) {
+        return getRepo(currentUser, false);
+    }    
+    
+    
 
     private static RepositoryManager getProxy(RepoProxyHandler handler) {
         RepositoryManager manager = (RepositoryManager) Proxy.newProxyInstance(RepositoryFactory.class.getClassLoader(), 
