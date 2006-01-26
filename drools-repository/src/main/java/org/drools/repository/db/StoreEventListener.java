@@ -1,6 +1,7 @@
 package org.drools.repository.db;
 
 import java.io.Serializable;
+import java.security.Principal;
 import java.sql.Connection;
 
 import org.hibernate.EmptyInterceptor;
@@ -25,6 +26,8 @@ public class StoreEventListener extends EmptyInterceptor {
     //as we may not always use currentSession semantics.
     private static ThreadLocal currentConnection = new ThreadLocal();
 
+    private static ThreadLocal currentUser = new ThreadLocal();
+    
     public boolean onFlushDirty(Object entity,
                                 Serializable id,
                                 Object[] currentState,
@@ -66,6 +69,14 @@ public class StoreEventListener extends EmptyInterceptor {
      */
     public static void setCurrentConnection(Connection conn) {
         currentConnection.set(conn);
+    }
+    
+    /**
+     * Set the current user for auditing purposes.
+     * This is backed by a threadlocal.
+     */
+    public static void setCurrentUser(Principal user) {
+        currentUser.set(user);
     }
 
     private SessionFactory getSessionFactory() {

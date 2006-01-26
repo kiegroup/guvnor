@@ -34,9 +34,9 @@ public class RepoProxyHandler
     
 
     private RepositoryManagerImpl repoImpl = new RepositoryManagerImpl();
-    private Session session = null;
+    private Session session = null; //for stateful sessions
     private boolean stateful = false;
-    
+    private Principal currentUser; //the user context, for auditing (optional)
     
     /** 
      * This is essentially for stateless repository access.
@@ -76,30 +76,38 @@ public class RepoProxyHandler
         
         Session session = getCurrentSession();
 
+        //here we implement the "close"
         if (this.stateful && method.getName().equals("close")) {
-            return handleCloseSession( session );
+            handleCloseSession( session );
+            return null;
         }
         
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            configureSession( session );            
+            configure( session, currentUser );
             Object result = method.invoke(repoImpl, args);            
             tx.commit();
-            
-            if (!stateful) {
-                this.repoImpl.injectSession(null); //not really needed, but to prove it is stateless !
-            }
             return result;
         }
         catch (InvocationTargetException e) {
             rollback( tx );
             checkForRepositoryException( session, e );
             throw e.getTargetException();
+        } 
+        finally {
+           cleanup( );
         }
 
     }
 
+
+    private void cleanup() {
+        this.repoImpl.injectSession(null);
+        StoreEventListener.setCurrentConnection(null);
+        StoreEventListener.setCurrentUser(null);
+    }
+    
     /**
      * If its an instance of RepositoryException, we don't want to close the session.
      * It may just be a validation message being thrown.
@@ -108,7 +116,7 @@ public class RepoProxyHandler
                                              InvocationTargetException e) {
         if (! (e.getTargetException() instanceof RepositoryException)) {
             try { 
-                repoImpl.injectSession(null); //not really needed... but anyway
+               
                 session.close(); 
             } catch (Exception e2) { /*ignore*/ }
         }
@@ -117,10 +125,10 @@ public class RepoProxyHandler
     /**
      * Should really only be called for stateful repository instances.
      */
-    private Object handleCloseSession(Session session) {
+    private void handleCloseSession(Session session) {
         session.close();
         StoreEventListener.setCurrentConnection(null);
-        return null;
+        StoreEventListener.setCurrentUser(null);
     }
 
     private void rollback(Transaction tx) {
@@ -134,11 +142,14 @@ public class RepoProxyHandler
      * Set the connection for the listeners to use (they use their own session).
      * Enable the default filters for historical stuff
      * and then provide the session to the repo implementation.
+     * Inject the currentUser for auditing etc as well.
      */
-    private void configureSession(Session session) {
+    private void configure(Session session, Principal user) {
         StoreEventListener.setCurrentConnection( session.connection() );
+        StoreEventListener.setCurrentUser( user );
         repoImpl.enableHistoryFilter( session );
-        repoImpl.injectSession( session );        
+        repoImpl.injectSession( session );           
+        this.repoImpl.setCurrentUser(currentUser);        
     }
     
 
@@ -153,9 +164,9 @@ public class RepoProxyHandler
         }
     }
     
-    /** Pass through the current user for auditing and control purposes. */
+    /** The current user for auditing and control purposes. */
     public void setCurrentUser(Principal user) {
-        this.repoImpl.setCurrentUser(user);
+        this.currentUser = user;        
     }
         
 
