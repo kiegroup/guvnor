@@ -49,7 +49,10 @@ public class ImportDef extends Asset
     }
 
     public IVersionable copy() {
-        return new ImportDef(this.getType());
+        ImportDef copy = new ImportDef(this.getType());
+        copy.setLastSavedByUser(this.getLastSavedByUser());
+        copy.setLastSavedDate(this.getLastSavedDate());
+        return copy;
     }
     
     

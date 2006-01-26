@@ -217,6 +217,8 @@ public class RuleDef extends Asset
         newVersion.versionNumber = this.getVersionNumber();
         newVersion.versionComment = this.getVersionComment();
         newVersion.owningRuleSetName = this.getOwningRuleSetName();
+        newVersion.setLastSavedByUser(this.getLastSavedByUser());
+        newVersion.setLastSavedDate(this.getLastSavedDate());
         return newVersion;
     }
 

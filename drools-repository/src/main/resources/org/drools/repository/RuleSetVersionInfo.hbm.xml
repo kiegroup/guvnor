@@ -16,6 +16,8 @@
         <property name="versionComment"/>
         <property name="createdOn"/>
         <property name="status" />
+ 		<property name="lastSavedByUser" column="LAST_SAVED_USER" /> 		 		
+ 		<property name="lastSavedDate" column="LAST_SAVED_DATE" />        
         
     </class>
 

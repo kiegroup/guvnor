@@ -104,8 +104,8 @@ public class RepoProxyHandler
 
     private void cleanup() {
         this.repoImpl.injectSession(null);
-        StoreEventListener.setCurrentConnection(null);
-        StoreEventListener.setCurrentUser(null);
+        StoreInterceptor.setCurrentConnection(null);
+        StoreInterceptor.setCurrentUser(null);
     }
     
     /**
@@ -127,8 +127,8 @@ public class RepoProxyHandler
      */
     private void handleCloseSession(Session session) {
         session.close();
-        StoreEventListener.setCurrentConnection(null);
-        StoreEventListener.setCurrentUser(null);
+        StoreInterceptor.setCurrentConnection(null);
+        StoreInterceptor.setCurrentUser(null);
     }
 
     private void rollback(Transaction tx) {
@@ -145,8 +145,8 @@ public class RepoProxyHandler
      * Inject the currentUser for auditing etc as well.
      */
     private void configure(Session session, Principal user) {
-        StoreEventListener.setCurrentConnection( session.connection() );
-        StoreEventListener.setCurrentUser( user );
+        StoreInterceptor.setCurrentConnection( session.connection() );
+        StoreInterceptor.setCurrentUser( user );
         repoImpl.enableHistoryFilter( session );
         repoImpl.injectSession( session );           
         this.repoImpl.setCurrentUser(currentUser);        

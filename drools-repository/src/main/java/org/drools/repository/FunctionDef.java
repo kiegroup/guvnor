@@ -38,11 +38,13 @@ public class FunctionDef extends Asset
     FunctionDef() {}
     
     public IVersionable copy(){
-        FunctionDef clone = new FunctionDef(this.functionContent, this.description);
-        clone.semantic = this.getSemantic();
-        clone.versionNumber = this.getVersionNumber();
-        clone.versionComment = this.getVersionComment();
-        return clone;
+        FunctionDef copy = new FunctionDef(this.functionContent, this.description);
+        copy.semantic = this.getSemantic();
+        copy.versionNumber = this.getVersionNumber();
+        copy.versionComment = this.getVersionComment();
+        copy.setLastSavedByUser(this.getLastSavedByUser());
+        copy.setLastSavedDate(this.getLastSavedDate());
+        return copy;
     }    
 
     public String getDescription(){

@@ -23,6 +23,8 @@
 		<property name="checkedOutBy" />
 		<property name="historicalRecord" column="HISTORICAL_RECORD_FLAG" />
 		<property name="historicalId" />
+ 		<property name="lastSavedByUser" column="LAST_SAVED_USER" /> 		 		
+ 		<property name="lastSavedDate" column="LAST_SAVED_DATE" />		
 		
 		<set name="tags" table="RULESET_ATTACHMENT_TAGS" lazy="false" cascade="all" optimistic-lock="false">
 		    <key column="RULESET_ATTACHMENT_ID"/>

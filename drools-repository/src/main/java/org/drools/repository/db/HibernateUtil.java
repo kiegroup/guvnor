@@ -51,7 +51,7 @@ public class HibernateUtil {
     /** Return the hibernate configuration as it stands */
     public static Configuration getConfiguration() {
         Configuration cfg = new Configuration();            
-        cfg.setInterceptor( new StoreEventListener() );
+        cfg.setInterceptor( new StoreInterceptor() );
         registerPersistentClasses( cfg );
 //            cfg.setProperty("connection.username", "sa");
 //            cfg.setProperty("connection.password", "");

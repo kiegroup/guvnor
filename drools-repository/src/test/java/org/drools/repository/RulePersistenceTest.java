@@ -1,5 +1,6 @@
 package org.drools.repository;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
@@ -33,10 +34,33 @@ public class RulePersistenceTest extends PersistentCase {
         assertEquals(3, def.getTags().size());
         def.removeTag("tag1");
         repo.save(def);
-        def = repo.loadRule("myRule3", 1);
-        assertEquals(null, def.getOwningRuleSetName());
         
+        def = repo.loadRule("myRule3", 1);
+        assertEquals(null, def.getOwningRuleSetName());        
         assertEquals(2, def.getTags().size());
+        
+        repo = RepositoryFactory.getRepository(getUserPrincipal(), true);
+        
+        def = repo.loadRule("myRule3", 1);
+        def.setContent("something else");
+        repo.save(def);
+
+        
+        assertNotNull(def.getLastSavedDate());
+        assertEquals("michael", def.getLastSavedByUser());
+        
+        repo.close();
+    }
+
+    private Principal getUserPrincipal() {
+        return new Principal() {
+
+                public String getName() {
+                    return "michael";
+                } 
+                
+                
+            };
     }
         
     public void testRetreieveRuleWithTags() {
@@ -66,7 +90,7 @@ public class RulePersistenceTest extends PersistentCase {
         
         RuleDef rule1 = new RuleDef("newVersionTest", "XXX");
         rule1.addTag("HR").addTag("BOO");
-        
+        rule1.setLastSavedByUser("blah");
         MetaData meta = new MetaData();
         meta.setCreator("Peter Jackson");
         rule1.setMetaData(meta);
@@ -76,7 +100,7 @@ public class RulePersistenceTest extends PersistentCase {
         assertEquals(null, ruleCopy.getId());
         assertEquals(2, ruleCopy.getTags().size());
         assertEquals("Peter Jackson", ruleCopy.getMetaData().getCreator());
-        
+        assertEquals("blah", ruleCopy.getLastSavedByUser());
     }
     
     public void testRuleRuleSetHistory() {

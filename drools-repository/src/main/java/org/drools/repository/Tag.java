@@ -1,5 +1,6 @@
 package org.drools.repository;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -16,8 +17,13 @@ import java.util.Set;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  */
-public class Tag extends Asset {
+public class Tag implements Serializable {
 
+
+    private static final long serialVersionUID = 3830081066595663015L;
+
+    private Long id;
+    
     private String tag;
 
     public Tag(String tag) {
@@ -62,6 +68,14 @@ public class Tag extends Asset {
             newTags.add( new Tag( tag.getTag() ) );                        
         }
         return newTags;        
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    void setId(Long id) {
+        this.id = id;
     }
     
     

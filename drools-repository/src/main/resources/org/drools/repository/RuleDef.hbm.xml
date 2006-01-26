@@ -27,6 +27,8 @@
 		<property name="historicalId" column="HISTORICAL_ID"/>
 		<property name="historicalRecord" column="HISTORICAL_RECORD_FLAG"/>
 		<property name="owningRuleSetName" column="OWNING_RULESET_NAME" />
+ 		<property name="lastSavedByUser" column="LAST_SAVED_USER" /> 		 		
+ 		<property name="lastSavedDate" column="LAST_SAVED_DATE" />		
 		
 		<set name="tags" table="RULE_TAGS" lazy="false" cascade="all" optimistic-lock="false">
 		    <key column="RULE_ID"/>

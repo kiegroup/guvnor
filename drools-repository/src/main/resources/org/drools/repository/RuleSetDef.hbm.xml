@@ -12,7 +12,9 @@
         </id>
         
                 
-		<property name="name" not-null="true" />			
+		<property name="name" not-null="true" />	
+ 		<property name="lastSavedByUser" column="LAST_SAVED_USER" /> 		 		
+ 		<property name="lastSavedDate" column="LAST_SAVED_DATE" />				
 		
 		<component name="metaData">
 			<property name="title" />

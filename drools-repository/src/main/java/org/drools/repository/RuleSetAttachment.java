@@ -136,6 +136,8 @@ public class RuleSetAttachment extends Asset implements ISaveHistory {
                                                        this.getContent(), 
                                                        this.getOriginalFileName());
         copy.setTags(Tag.copyTags(this.tags));
+        copy.setLastSavedByUser(this.getLastSavedByUser());
+        copy.setLastSavedDate(this.getLastSavedDate());
         return copy;
     }
 

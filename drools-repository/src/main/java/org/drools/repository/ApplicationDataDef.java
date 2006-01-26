@@ -19,6 +19,7 @@ public class ApplicationDataDef extends Asset
     private long              versionNumber;
     private String            identifier;
     private String            type;
+    
 
     /**
      * @param identifier
@@ -53,9 +54,11 @@ public class ApplicationDataDef extends Asset
     }
 
     public IVersionable copy() {
-        ApplicationDataDef clone = new ApplicationDataDef( this.getIdentifier(),
+        ApplicationDataDef copy = new ApplicationDataDef( this.getIdentifier(),
                                                            this.getType() );
-        return clone;
+        copy.setLastSavedByUser(this.getLastSavedByUser());
+        copy.setLastSavedDate(this.getLastSavedDate());
+        return copy;
     }
 
     public String getVersionComment() {
