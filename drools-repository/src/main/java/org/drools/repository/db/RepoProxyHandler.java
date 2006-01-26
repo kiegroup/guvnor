@@ -4,6 +4,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.Principal;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
 
 import org.drools.repository.RepositoryException;
 import org.drools.repository.RepositoryManagerImpl;
@@ -55,6 +58,20 @@ public class RepoProxyHandler
         this.stateful = stateful;
         if (stateful) {
             this.session = HibernateUtil.getSessionFactory().openSession();
+        }
+    }
+    
+    /**
+     * This version creates a new session from the given datasource. 
+     * In this case, close() will need to be called, ideally.
+     */
+    public RepoProxyHandler(DataSource datasource) {
+        this.stateful = true;
+        try {
+            this.session = HibernateUtil.getSessionFactory().openSession(datasource.getConnection());
+        }
+        catch ( SQLException e ) {
+            throw new RepositoryException("Unable to get connection from datasource.", e);
         }
     }
     

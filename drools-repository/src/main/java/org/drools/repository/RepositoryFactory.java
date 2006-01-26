@@ -4,6 +4,8 @@ import java.lang.reflect.Proxy;
 import java.security.Principal;
 import java.security.acl.Permission;
 
+import javax.sql.DataSource;
+
 import org.drools.repository.db.RepoProxyHandler;
 
 
@@ -52,7 +54,15 @@ public final class RepositoryFactory {
         return getRepo(currentUser, false);
     }    
     
-    
+    /**
+     * This creates a repository manager session based on the JDBC datasource passed in.
+     * In this case, the close() method should be called when finished.
+     */
+    public static RepositoryManager getRepository(Principal currentUser, DataSource dataSource) {
+        RepoProxyHandler handler = new RepoProxyHandler(dataSource);
+        handler.setCurrentUser(currentUser);
+        return getProxy(handler);
+    }
 
     private static RepositoryManager getProxy(RepoProxyHandler handler) {
         RepositoryManager manager = (RepositoryManager) Proxy.newProxyInstance(RepositoryFactory.class.getClassLoader(), 
@@ -68,6 +78,8 @@ public final class RepositoryFactory {
         handler.setCurrentUser(user);
         return getProxy(handler);
     }
+    
+
     
 
 }
