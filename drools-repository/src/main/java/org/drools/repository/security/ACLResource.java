@@ -7,4 +7,6 @@ package org.drools.repository.security;
  */
 public interface ACLResource {
 
+    //This may be modified to allow surrogate IDs for permissioning purposes.
+    
 }
