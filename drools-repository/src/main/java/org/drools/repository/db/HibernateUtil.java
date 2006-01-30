@@ -10,6 +10,9 @@ import org.drools.repository.RuleSetAttachment;
 import org.drools.repository.RuleSetDef;
 import org.drools.repository.RuleSetVersionInfo;
 import org.drools.repository.Tag;
+import org.drools.repository.security.AssetPermission;
+import org.drools.repository.security.RepositoryUser;
+import org.drools.repository.security.PermissionGroup;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -52,9 +55,8 @@ public class HibernateUtil {
     public static Configuration getConfiguration() {
         Configuration cfg = new Configuration();            
         cfg.setInterceptor( new StoreInterceptor() );
+        
         registerPersistentClasses( cfg );
-//            cfg.setProperty("connection.username", "sa");
-//            cfg.setProperty("connection.password", "");
         cfg.configure(DROOLS_REPOSITORY_CONFIG);
         return cfg;
     }
@@ -71,7 +73,11 @@ public class HibernateUtil {
             .addClass(RuleSetDef.class)
             .addClass(RuleSetAttachment.class)
             .addClass(RuleSetVersionInfo.class)
-            .addClass(ImportDef.class);
+            .addClass(ImportDef.class)
+            .addClass(AssetPermission.class)
+            .addClass(PermissionGroup.class)
+            .addClass(RepositoryUser.class)
+            .addClass(RepositoryConfig.class);
     }
 
     public static SessionFactory getSessionFactory() {

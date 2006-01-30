@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.repository.db.IVersionable;
+import org.drools.repository.security.ACLResource;
 
 /**
  * The ruleset definition contains a grouping of rules for editing/release. The
@@ -29,7 +30,7 @@ import org.drools.repository.db.IVersionable;
  */
 public class RuleSetDef extends Asset
     implements
-    Comparable {
+    Comparable, ACLResource {
     private static final long serialVersionUID = 608068118653708104L;
 
     private String            name;

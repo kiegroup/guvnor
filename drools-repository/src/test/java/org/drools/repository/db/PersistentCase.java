@@ -1,9 +1,9 @@
 package org.drools.repository.db;
 
+import junit.framework.TestCase;
+
 import org.drools.repository.RepositoryFactory;
 import org.drools.repository.RepositoryManager;
-
-import junit.framework.TestCase;
 
 public class PersistentCase extends TestCase {
 

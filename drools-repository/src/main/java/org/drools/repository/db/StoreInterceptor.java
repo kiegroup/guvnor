@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.util.Date;
 
 import org.drools.repository.Asset;
+import org.drools.repository.security.ACLEnforcer;
+import org.drools.repository.security.ACLResource;
+import org.drools.repository.security.AssetPermission;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
@@ -21,8 +24,7 @@ import org.hibernate.type.Type;
  * 
  * Note that it will also save audit information about whom saved the data.
  * 
- * This can be extended in future to provide additional audit trail information, or instance based security
- * (to enforce ACLs on save etc).
+ * ACLs are also enforced here.
  * 
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  */
@@ -37,6 +39,9 @@ public class StoreInterceptor extends EmptyInterceptor {
     //we also need the current user if it has been set.
     private static ThreadLocal currentUser = new ThreadLocal();
     
+    //for enforcing ACLs
+    private static ThreadLocal currentACLEnforcer = new ThreadLocal();
+    
     /**
      * Create historical records, and log events.
      */
@@ -46,27 +51,86 @@ public class StoreInterceptor extends EmptyInterceptor {
                                 Object[] previousState,
                                 String[] propertyNames,
                                 Type[] types) {
+        
+        checkACLAllowed( entity, id, "You are not authorized to save this asset.",
+                         AssetPermission.WRITE );
+        checkACLDenied( entity, id, "You have been denied authority to save this asset.", 
+                         AssetPermission.DENY_WRITE);
+        
         if ( entity instanceof ISaveHistory ) {
             handleSaveHistory( entity );
         }
-        
         return handleUserSaveInfo( entity,
                                    currentState,
                                    propertyNames );        
     }
+
+    public boolean onLoad(Object entity,
+                          Serializable id,
+                          Object[] state,
+                          String[] propertyNames,
+                          Type[] types)
+                    {
+        checkACLAllowed(entity, id, "You are not authorized to load this asset.", 
+                        AssetPermission.READ);
+        checkACLDenied(entity, id, "You have been blocked from loading this asset.", 
+                       AssetPermission.DENY_READ);
+        return false;
+    }
     
+
     /** record who and when */
     public boolean onSave(Object entity,
                           Serializable id,
                           Object[] currentState,
                           String[] propertyNames,
                           Type[] types) {
-
+        
         return handleUserSaveInfo( entity,
                                    currentState,
                                    propertyNames );
         
     }    
+    
+    public void onDelete(Object entity,
+                         Serializable id,
+                         Object[] arg2,
+                         String[] arg3,
+                         Type[] arg4) {
+        checkACLAllowed(entity, id, "You are not authorized to delete this asset.", 
+                        AssetPermission.DELETE);
+        checkACLDenied(entity, id, "You have been disallowed from deleting this asset.", 
+                       AssetPermission.DENY_DELETE);
+    }
+    
+    
+    
+    /**
+     * Check that the ACL allows the user the appropriate permission.
+     */
+    private void checkACLAllowed(Object entity,
+                          Serializable assetId, String failMessage, int permission) {
+        if (! (entity instanceof ACLResource)) return;
+        ACLEnforcer enforcer = (ACLEnforcer) currentACLEnforcer.get();
+        if (enforcer != null) {
+            //TODO: make it more flexible in what the "ID" is - may be rulename for instance??
+            enforcer.checkAllowed(entity, assetId, permission, failMessage);
+        }
+    }
+    
+    /**
+     * Check for explicitly denied ACL entries.
+     */
+    private void checkACLDenied(Object entity,
+                          Serializable assetId, String failMessage, int permission) {
+        if (! (entity instanceof ACLResource)) return;
+        ACLEnforcer enforcer = (ACLEnforcer) currentACLEnforcer.get();
+        if (enforcer != null) {
+            enforcer.checkDenied(entity, assetId, permission, failMessage);
+        }
+    }
+    
+    
 
     /**
      * This will load up the old copy, and save it as a history record
@@ -83,9 +147,9 @@ public class StoreInterceptor extends EmptyInterceptor {
         ISaveHistory copy = (ISaveHistory) prev.copy();
         copy.setHistoricalId( versionable.getId() );
         copy.setHistoricalRecord( true );
-        //session.beginTransaction();
+        
         session.save( copy );
-        //session.getTransaction().commit();
+        
         session.flush();                        
         session.close();
     }
@@ -105,6 +169,11 @@ public class StoreInterceptor extends EmptyInterceptor {
      */
     public static void setCurrentUser(Principal user) {
         currentUser.set(user);
+    }
+
+    /** Set the ACL enforcer to enforce access rules for the current user */
+    public static void setCurrentACLEnforcer(ACLEnforcer enforcer) {
+        currentACLEnforcer.set(enforcer);
     }
 
     private SessionFactory getSessionFactory() {
@@ -137,4 +206,7 @@ public class StoreInterceptor extends EmptyInterceptor {
         
     }
 
+
+
+    
 }

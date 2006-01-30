@@ -10,6 +10,8 @@ import javax.sql.DataSource;
 
 import org.drools.repository.RepositoryException;
 import org.drools.repository.RepositoryManagerImpl;
+import org.drools.repository.security.ACLEnforcer;
+import org.drools.repository.security.RepositorySecurityManager;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -40,6 +42,7 @@ public class RepoProxyHandler
     private Session session = null; //for stateful sessions
     private boolean stateful = false;
     private Principal currentUser; //the user context, for auditing (optional)
+    private ACLEnforcer aclEnforcer; //the users ACL rights, if applicable.
     
     /** 
      * This is essentially for stateless repository access.
@@ -120,9 +123,11 @@ public class RepoProxyHandler
 
 
     private void cleanup() {
+        
         this.repoImpl.injectSession(null);
         StoreInterceptor.setCurrentConnection(null);
         StoreInterceptor.setCurrentUser(null);
+        StoreInterceptor.setCurrentACLEnforcer(null);
     }
     
     /**
@@ -164,6 +169,8 @@ public class RepoProxyHandler
     private void configure(Session session, Principal user) {
         StoreInterceptor.setCurrentConnection( session.connection() );
         StoreInterceptor.setCurrentUser( user );
+        StoreInterceptor.setCurrentACLEnforcer( aclEnforcer );
+        
         repoImpl.enableHistoryFilter( session );
         repoImpl.injectSession( session );           
         this.repoImpl.setCurrentUser(currentUser);        
@@ -181,9 +188,18 @@ public class RepoProxyHandler
         }
     }
     
-    /** The current user for auditing and control purposes. */
+    /** 
+     * The current user for auditing and control purposes.
+     * Also loads the ACL if applicable. */
     public void setCurrentUser(Principal user) {
         this.currentUser = user;        
+        if (user != null) {
+            RepositorySecurityManager mgr = new RepositorySecurityManager();
+            if (mgr.isSecurityEnabled()) {
+                
+                aclEnforcer = mgr.getEnforcerForUser(user.getName());
+            }
+        }        
     }
         
 

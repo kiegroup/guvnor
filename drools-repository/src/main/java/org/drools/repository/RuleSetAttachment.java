@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.drools.repository.db.ISaveHistory;
 import org.drools.repository.db.IVersionable;
+import org.drools.repository.security.ACLResource;
 
 
 /**
@@ -20,7 +21,7 @@ import org.drools.repository.db.IVersionable;
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  */
-public class RuleSetAttachment extends Asset implements ISaveHistory {
+public class RuleSetAttachment extends Asset implements ISaveHistory, ACLResource {
 
 
     private static final long serialVersionUID = 7474038734785975202L;    

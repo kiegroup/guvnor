@@ -1,6 +1,7 @@
 package org.drools.repository;
 
 import org.drools.repository.db.IVersionable;
+import org.drools.repository.security.ACLResource;
 
 /**
  * A FunctionDef contains the definition of a function that is used in one or more rules.
@@ -10,7 +11,7 @@ import org.drools.repository.db.IVersionable;
  */
 public class FunctionDef extends Asset
     implements
-    IVersionable {
+    IVersionable, ACLResource {
 
     private static final long serialVersionUID = -7585928690157539970L;
     

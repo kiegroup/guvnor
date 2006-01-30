@@ -2,11 +2,15 @@ package org.drools.repository;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import org.drools.repository.MetaData;
 import org.drools.repository.RuleDef;
 import org.drools.repository.db.PersistentCase;
+import org.drools.repository.security.AssetPermission;
+import org.drools.repository.security.RepositorySecurityManager;
+import org.drools.repository.security.PermissionGroup;
 
 public class RulePersistenceTest extends PersistentCase {
 
@@ -30,6 +34,10 @@ public class RulePersistenceTest extends PersistentCase {
         def = repo.loadRule("myRule3", 1);
         assertEquals(id, def.getId());
         
+        Properties q = new Properties();
+        q.setProperty("name", "myRule3");
+        List list = repo.query("select name from RuleDef where name = :name", q);
+        
         assertEquals("new content", def.getContent());
         assertEquals(3, def.getTags().size());
         def.removeTag("tag1");
@@ -39,17 +47,31 @@ public class RulePersistenceTest extends PersistentCase {
         assertEquals(null, def.getOwningRuleSetName());        
         assertEquals(2, def.getTags().size());
         
+        
+        RepositorySecurityManager mgr = new RepositorySecurityManager();
+        mgr.enableSecurity(true);
+        //setup a group for security
+        PermissionGroup group = new PermissionGroup("michaelhome");
+        group.addUserIdentity(getUserPrincipal().getName());
+        
+        
+        mgr.saveGroup(group);
+        String clazz = def.getClass().getName();
+        mgr.addPermissionToGroup("michaelhome", new AssetPermission(clazz, def.getId(), AssetPermission.WRITE));
+        mgr.addPermissionToGroup("michaelhome", new AssetPermission(clazz, AssetPermission.ALL_INSTANCES, AssetPermission.READ));
         repo = RepositoryFactory.getRepository(getUserPrincipal(), true);
         
         def = repo.loadRule("myRule3", 1);
         def.setContent("something else");
         repo.save(def);
-
+        mgr.enableSecurity(false);
         
         assertNotNull(def.getLastSavedDate());
         assertEquals("michael", def.getLastSavedByUser());
         
+        
         repo.close();
+        mgr.commitAndClose();
     }
 
     private Principal getUserPrincipal() {

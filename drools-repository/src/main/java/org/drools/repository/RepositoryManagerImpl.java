@@ -268,7 +268,7 @@ public class RepositoryManagerImpl
         session.disableFilter( "workingVersionFilter" );
     }
 
-    /** Sets the current user principal for auditing, and access control purposes */
+    /** Sets the current user principal for checkin/out purposes. */
     public void setCurrentUser(Principal user) {
         this.currentUser = user;
     }

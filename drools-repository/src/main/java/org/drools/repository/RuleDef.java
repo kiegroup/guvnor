@@ -7,10 +7,11 @@ import java.util.Set;
 
 import org.drools.repository.db.ISaveHistory;
 import org.drools.repository.db.IVersionable;
+import org.drools.repository.security.ACLResource;
 
 public class RuleDef extends Asset
     implements
-    ISaveHistory {
+    ISaveHistory, ACLResource {
 
     private static final long serialVersionUID = -677781085801764266L;
 
