@@ -319,6 +319,8 @@ public class RuleSetDef extends Asset
      * 
      * IMPORTANT: once a new version is created, the RuleSet should be saved and
      * then loaded fresh, which will hide the non working versions of the rules.
+     * 
+     * TODO: refactor this to only be called from the manager, and also for it to copy old permissions.
      */
     public void createNewVersion(String comment) {
 
