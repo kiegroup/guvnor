@@ -94,6 +94,8 @@ public class RepositorySecurityManager {
      * 
      * If the user belongs to a group with the name "admin" then they 
      * automatically get full rights.
+     * 
+     * NOTE: THIS WILL BE ACCESSED BY THE NON ADMIN API. MUST BE ALLOWED TO BE ACCESSED AS SUCH.
      */
     public ACLEnforcer getEnforcerForUser(String userId) {
 
