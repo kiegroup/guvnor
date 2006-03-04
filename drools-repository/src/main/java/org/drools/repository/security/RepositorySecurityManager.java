@@ -127,7 +127,7 @@ public class RepositorySecurityManager {
         
         RepositoryConfig config = (RepositoryConfig) session.get(RepositoryConfig.class, SECURITY_ENABLED);
         if (config == null) return false;
-        return (Boolean.parseBoolean(config.getValue()));
+        return (new Boolean(config.getValue())).booleanValue();
     }
     
     public void commitAndClose() {
