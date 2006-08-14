@@ -1,0 +1,26 @@
+/*  The node type definition for the ruleset node type.  
+    See http://jackrabbit.apache.org/doc/nodetype/cnd.html for an explanation
+*/
+
+// The namespace declaration
+<drools = 'http://www.jboss.org/drools-repository/1.0'>
+<nt='http://www.jcp.org/jcr/nt/1.0'>
+<mix='http://www.jcp.org/jcr/mix/1.0'>
+
+// Node type name
+[drools:rulepackage_node_type]
+
+// Supertypes
+> nt:hierarchyNode,'mix:versionable'
+
+// Nodes of this node type have a property called 'drools:rule_reference' of type reference
+- drools:rule_reference (reference)
+
+// and multi-valued
+multiple
+
+// It has an on-parent-version setting of ...
+copy
+
+// the reference must be of one of these types...
+< 'drools:rule_node_type','nt:version'

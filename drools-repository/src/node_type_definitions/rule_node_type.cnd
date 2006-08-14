@@ -1,0 +1,44 @@
+/*  The node type definition for the rule node type.  
+    See http://jackrabbit.apache.org/doc/nodetype/cnd.html for an explanation
+*/
+
+// The namespace declaration
+<drools = 'http://www.jboss.org/drools-repository/1.0'>
+<nt='http://www.jcp.org/jcr/nt/1.0'>
+<mix='http://www.jcp.org/jcr/mix/1.0'>
+
+// Node type name
+[drools:rule_node_type]
+
+// Supertypes
+> 'nt:file','mix:versionable'
+
+// Nodes of this node type have a property called 'drools:dsl_reference' of type reference
+- drools:dsl_reference (reference)
+
+// It has an on-parent-version setting of ...
+copy
+
+// the reference must be of one of these types...
+< 'drools:dsl_node_type','nt:version'
+
+// Nodes of this node type have a property called 'drools:tag_reference' of type reference
+- drools:tag_reference (reference)
+
+// It is a multi-value property
+multiple
+
+// It has an on-parent-version setting of ...
+copy
+
+// the reference must be of one of these types...
+< 'drools:tag_node_type'
+
+// Nodes of this node type have a property called 'drools:state_reference' of type reference
+- drools:state_reference (reference)
+
+// It has an on-parent-version setting of ...
+copy
+
+// the reference must be of one of these types...
+< 'drools:state_node_type'
