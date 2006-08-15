@@ -163,7 +163,7 @@ public class RuleItem extends Item {
                 throw new RulesRepositoryException(message);
             }                                       
             
-            TagItem tagItem = this.rulesRepository.getTag(tag);
+            CategoryItem tagItem = this.rulesRepository.getOrCreateCategory(tag);
                                     
             //now set the tag property of the rule
             Property tagReferenceProperty;
@@ -301,7 +301,7 @@ public class RuleItem extends Item {
                 Value[] tagValues = tagReferenceProperty.getValues();                
                 for(int i=0; i<tagValues.length; i++) {
                     Node tagNode = this.node.getSession().getNodeByUUID(tagValues[i].getString());
-                    TagItem tagItem = new TagItem(this.rulesRepository, tagNode);
+                    CategoryItem tagItem = new CategoryItem(this.rulesRepository, tagNode);
                     returnList.add(tagItem);
                 }
             }
@@ -430,7 +430,7 @@ public class RuleItem extends Item {
             
             returnString.append("Rule tags:\n");
             for(Iterator it=this.getTags().iterator(); it.hasNext();) {
-                TagItem currentTag = (TagItem)it.next();
+                CategoryItem currentTag = (CategoryItem)it.next();
                 returnString.append(currentTag.getName() + "\n");
             }
             returnString.append("--------------\n");

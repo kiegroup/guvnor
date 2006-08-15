@@ -3,11 +3,11 @@ package org.drools.repository.test;
 import java.util.List;
 
 import org.drools.repository.RulesRepository;
-import org.drools.repository.TagItem;
+import org.drools.repository.CategoryItem;
 
 import junit.framework.TestCase;
 
-public class TagItemTestCase extends TestCase {
+public class CategoryItemTestCase extends TestCase {
     private RulesRepository rulesRepository = null;
     
     protected void setUp() throws Exception {
@@ -22,14 +22,23 @@ public class TagItemTestCase extends TestCase {
 
     public void testTagItem() {
         try {            
-            TagItem tagItem1 = rulesRepository.getTag("TestTag");
+            CategoryItem tagItem1 = rulesRepository.getOrCreateCategory("TestTag");
             assertNotNull(tagItem1);
             assertEquals("TestTag", tagItem1.getName());                        
             
-            TagItem tagItem2 = rulesRepository.getTag("TestTag");
+            CategoryItem tagItem2 = rulesRepository.getOrCreateCategory("TestTag");
             assertNotNull(tagItem2);
             assertEquals("TestTag", tagItem2.getName());
             assertEquals(tagItem1, tagItem2);
+            
+            rulesRepository.getOrCreateCategory( "Foo" );
+            
+            List cats = rulesRepository.listCategoryNames();
+            assertEquals(2, cats.size());
+            
+            assertEquals("TestTag", cats.get( 0 ));
+            assertEquals("Foo", cats.get( 1 ));
+            
         }
         catch(Exception e) {
             fail("Unexpected Exception caught: " + e);
@@ -38,7 +47,7 @@ public class TagItemTestCase extends TestCase {
     
     public void testGetChildTags() {
         try {            
-            TagItem tagItem1 = rulesRepository.getTag("TestTag");
+            CategoryItem tagItem1 = rulesRepository.getOrCreateCategory("TestTag");
             assertNotNull(tagItem1);
             assertEquals("TestTag", tagItem1.getName());                        
             
@@ -46,16 +55,16 @@ public class TagItemTestCase extends TestCase {
             assertNotNull(childTags);
             assertEquals(0, childTags.size());
             
-            TagItem childTagItem1 = tagItem1.getChildTag("TestChildTag1");
+            CategoryItem childTagItem1 = tagItem1.getChildTag("TestChildTag1");
             assertNotNull(childTagItem1);
             assertEquals("TestChildTag1", childTagItem1.getName());
             
             childTags = tagItem1.getChildTags();
             assertNotNull(childTags);
             assertEquals(1, childTags.size());
-            assertEquals("TestChildTag1", ((TagItem)childTags.get(0)).getName());
+            assertEquals("TestChildTag1", ((CategoryItem)childTags.get(0)).getName());
             
-            TagItem childTagItem2 = tagItem1.getChildTag("TestChildTag2");
+            CategoryItem childTagItem2 = tagItem1.getChildTag("TestChildTag2");
             assertNotNull(childTagItem2);
             assertEquals("TestChildTag2", childTagItem2.getName());
             
@@ -70,7 +79,7 @@ public class TagItemTestCase extends TestCase {
     
     public void testGetChildTag() {
         try {            
-            TagItem tagItem1 = rulesRepository.getTag("TestTag");
+            CategoryItem tagItem1 = rulesRepository.getOrCreateCategory("TestTag");
             assertNotNull(tagItem1);
             assertEquals("TestTag", tagItem1.getName());                        
             
@@ -79,12 +88,12 @@ public class TagItemTestCase extends TestCase {
             assertNotNull(childTags);
             assertEquals(0, childTags.size());
             
-            TagItem childTagItem1 = tagItem1.getChildTag("TestChildTag1");
+            CategoryItem childTagItem1 = tagItem1.getChildTag("TestChildTag1");
             assertNotNull(childTagItem1);
             assertEquals("TestChildTag1", childTagItem1.getName());
                         
             //test that if already there, it is returned
-            TagItem childTagItem2 = tagItem1.getChildTag("TestChildTag1");
+            CategoryItem childTagItem2 = tagItem1.getChildTag("TestChildTag1");
             assertNotNull(childTagItem2);
             assertEquals("TestChildTag1", childTagItem2.getName());
             assertEquals(childTagItem1, childTagItem2);
@@ -96,17 +105,19 @@ public class TagItemTestCase extends TestCase {
     
     public void testGetFullPath() {
         try {            
-            TagItem tagItem1 = rulesRepository.getTag("TestTag");
+            CategoryItem tagItem1 = rulesRepository.getOrCreateCategory("TestTag");
             assertNotNull(tagItem1);
             assertEquals("TestTag", tagItem1.getFullPath());                        
                                     
-            TagItem childTagItem1 = tagItem1.getChildTag("TestChildTag1");
+            CategoryItem childTagItem1 = tagItem1.getChildTag("TestChildTag1");
             assertNotNull(childTagItem1);
             assertEquals("TestTag/TestChildTag1", childTagItem1.getFullPath());
                         
-            TagItem childTagItem2 = childTagItem1.getChildTag("TestChildTag2");
+            CategoryItem childTagItem2 = childTagItem1.getChildTag("TestChildTag2");
             assertNotNull(childTagItem2);
             assertEquals("TestTag/TestChildTag1/TestChildTag2", childTagItem2.getFullPath());
+            
+            
         }
         catch(Exception e) {
             fail("Unexpected Exception caught: " + e);

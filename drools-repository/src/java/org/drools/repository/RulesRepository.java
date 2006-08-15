@@ -630,7 +630,7 @@ public class RulesRepository {
      * @return a TagItem object encapsulating the node for the tag in the repository
      * @throws RulesRepositoryException 
      */
-    public TagItem getTag(String tagName) throws RulesRepositoryException {
+    public CategoryItem getOrCreateCategory(String tagName) throws RulesRepositoryException {
         log.debug("getting tag with name: " + tagName);
         
         try {
@@ -641,11 +641,11 @@ public class RulesRepository {
             while(tok.hasMoreTokens()) {                                
                 String currentTagName = tok.nextToken();
                 
-                tagNode = this.addNodeIfNew(folderNode, currentTagName, TagItem.TAG_NODE_TYPE_NAME);
+                tagNode = this.addNodeIfNew(folderNode, currentTagName, CategoryItem.TAG_NODE_TYPE_NAME);
                 folderNode = tagNode;
             }             
                                     
-            return new TagItem(this, tagNode);
+            return new CategoryItem(this, tagNode);
         }
         catch(Exception e) {
             log.error("Caught Exception: " + e);
@@ -653,9 +653,15 @@ public class RulesRepository {
         }
     }
 
+    /**
+     * This will retrieve a list of RuleItem objects - that are allocated to the 
+     * provided category.
+     * Only the latest versions of each RuleItem will be returned (you will have 
+     * to delve into the rules deepest darkest history yourself... mahahahaha).
+     */
     public List findRulesByTag(String categoryTag) throws RulesRepositoryException {
         
-        TagItem item = this.getTag( categoryTag );
+        CategoryItem item = this.getOrCreateCategory( categoryTag );
         List results = new ArrayList();
         try {
             PropertyIterator it = item.getNode().getReferences();
@@ -667,5 +673,40 @@ public class RulesRepository {
         } catch ( RepositoryException e ) {            
             throw new RulesRepositoryException(e);
         }        
+    }
+    
+    /**
+     * @return an Iterator which will provide RulePackageItem's.
+     * This will show ALL the packages, only returning latest versions, by default.
+     */
+    public Iterator listPackages()  {
+        Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
+        try {
+            return new RulePackageIterator(this, folderNode.getNodes());
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /** 
+     * This will provide a list of top level category strings. 
+     * Use getCategory to get a specific category to drill down into it.
+     */
+    public List listCategoryNames() throws RulesRepositoryException {
+        try {
+            
+            Node folderNode = this.getAreaNode(TAG_AREA);
+            NodeIterator it = folderNode.getNodes();            
+            
+            List nodeNames = new ArrayList();
+            while(it.hasNext()) {
+                Node catNode = (Node) it.next();
+                nodeNames.add( catNode.getName() );
+            }
+            
+            return nodeNames;
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException(e);
+        }
     }
 }

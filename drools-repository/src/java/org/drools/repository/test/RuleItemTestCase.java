@@ -89,7 +89,7 @@ public class RuleItemTestCase extends TestCase {
             ruleItem1.addTag("TestTag");
             List tags = ruleItem1.getTags();
             assertEquals(1, tags.size());
-            assertEquals("TestTag", ((TagItem)tags.get(0)).getName());
+            assertEquals("TestTag", ((CategoryItem)tags.get(0)).getName());
             
             ruleItem1.addTag("TestTag2");
             tags = ruleItem1.getTags();
@@ -97,12 +97,8 @@ public class RuleItemTestCase extends TestCase {
             
             
             //now test retrieve by tags
-            
-            System.out.println(System.currentTimeMillis());
-            List result = this.rulesRepository.findRulesByTag("TestTag");
-            System.out.println(System.currentTimeMillis());
-            assertEquals(1, result.size());
-            
+            List result = this.rulesRepository.findRulesByTag("TestTag");            
+            assertEquals(1, result.size());            
             RuleItem retItem = (RuleItem) result.get( 0 );
             assertEquals("drl1.drl", retItem.getName());
             
@@ -127,7 +123,7 @@ public class RuleItemTestCase extends TestCase {
             ruleItem1.removeTag("TestTag2");
             tags = ruleItem1.getTags();
             assertEquals(1, tags.size());
-            assertEquals("TestTag3", ((TagItem)tags.get(0)).getName());            
+            assertEquals("TestTag3", ((CategoryItem)tags.get(0)).getName());            
         }
         catch(Exception e) {
             fail("Caught unexpected exception: " + e);
@@ -146,7 +142,7 @@ public class RuleItemTestCase extends TestCase {
             ruleItem1.addTag("TestTag");                                    
             tags = ruleItem1.getTags();
             assertEquals(1, tags.size());
-            assertEquals("TestTag", ((TagItem)tags.get(0)).getName());
+            assertEquals("TestTag", ((CategoryItem)tags.get(0)).getName());
         }
         catch(Exception e) {
             fail("Caught unexpected exception: " + e);

@@ -200,7 +200,7 @@ public class RulePackageItem extends Item {
         try {                       
             Value[] valueArray = this.node.getProperty(RULE_REFERENCE_PROPERTY_NAME).getValues();
             List returnList = new ArrayList();
-            
+           
             for(int i=0; i<valueArray.length; i++) {
                 Node ruleNode = this.node.getSession().getNodeByUUID(valueArray[i].getString());
                 returnList.add(new RuleItem(this.rulesRepository, ruleNode));

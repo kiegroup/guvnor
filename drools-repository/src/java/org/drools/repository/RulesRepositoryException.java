@@ -6,7 +6,7 @@ package org.drools.repository;
  * 
  * @author btruitt
  */
-public class RulesRepositoryException extends Exception {
+public class RulesRepositoryException extends RuntimeException {
 
     /**
      * version id for serialization purposes

@@ -12,7 +12,7 @@ public class AllTests {
         suite.addTestSuite(RulePackageItemTestCase.class);
         suite.addTestSuite(DslItemTestCase.class);
         suite.addTestSuite(RuleItemTestCase.class);
-        suite.addTestSuite(TagItemTestCase.class);
+        suite.addTestSuite(CategoryItemTestCase.class);
         suite.addTestSuite(RulesRepositoryTestCase.class);
         //$JUnit-END$
         return suite;

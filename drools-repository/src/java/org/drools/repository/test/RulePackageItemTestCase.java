@@ -1,6 +1,7 @@
 package org.drools.repository.test;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.repository.*;
@@ -77,7 +78,13 @@ public class RulePackageItemTestCase extends TestCase {
             
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
-            assertEquals(2, rules.size());            
+            assertEquals(2, rules.size());  
+            
+            Iterator it = rulesRepository.listPackages();
+            assertTrue(it.hasNext());
+            
+            RulePackageItem pack = (RulePackageItem) it.next();
+            assertEquals("testRulePackage", pack.getName());
         }
         catch(Exception e) {
             e.printStackTrace();

@@ -14,8 +14,8 @@ import org.apache.log4j.Logger;
  * 
  * @author btruitt
  */
-public class TagItem extends Item {
-    private Logger log = Logger.getLogger(TagItem.class);
+public class CategoryItem extends Item {
+    private Logger log = Logger.getLogger(CategoryItem.class);
     
     /**
      * The name of the tag node type
@@ -28,7 +28,7 @@ public class TagItem extends Item {
      * @param node the node to which this object corresponds
      * @throws RulesRepositoryException 
      */
-    public TagItem(RulesRepository rulesRepository, Node node) throws RulesRepositoryException {
+    public CategoryItem(RulesRepository rulesRepository, Node node) throws RulesRepositoryException {
         super(rulesRepository, node);
         
         try {
@@ -79,7 +79,7 @@ public class TagItem extends Item {
             NodeIterator it = this.node.getNodes();
             while(it.hasNext()) {
                 Node currentNode = it.nextNode();
-                children.add(new TagItem(this.rulesRepository, currentNode));
+                children.add(new CategoryItem(this.rulesRepository, currentNode));
             }
         }
         catch(Exception e) {
@@ -98,9 +98,9 @@ public class TagItem extends Item {
      * @return a TagItem encapsulating the specified child tag
      * @throws RulesRepositoryException
      */
-    public TagItem getChildTag(String tagName) throws RulesRepositoryException {
+    public CategoryItem getChildTag(String tagName) throws RulesRepositoryException {
         try {
-            return this.rulesRepository.getTag(this.getFullPath() + "/" + tagName);
+            return this.rulesRepository.getOrCreateCategory(this.getFullPath() + "/" + tagName);
         }
         catch(Exception e) {
             log.error("Caught Exception: " + e);

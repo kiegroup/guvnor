@@ -188,18 +188,18 @@ public class RulesRepositoryTestCase extends TestCase {
         try {
             rulesRepository = new RulesRepository(true);
             
-            TagItem tagItem1 = rulesRepository.getTag("TestTag");
+            CategoryItem tagItem1 = rulesRepository.getOrCreateCategory("TestTag");
             assertNotNull(tagItem1);
             assertEquals("TestTag", tagItem1.getName());
             assertEquals("TestTag", tagItem1.getFullPath());
             
-            TagItem tagItem2 = rulesRepository.getTag("TestTag");
+            CategoryItem tagItem2 = rulesRepository.getOrCreateCategory("TestTag");
             assertNotNull(tagItem2);
             assertEquals("TestTag", tagItem2.getName());
             assertEquals(tagItem1, tagItem2);
             
             //now test getting a tag down in the tag hierarchy
-            TagItem tagItem3 = rulesRepository.getTag("TestTag/TestChildTag1");
+            CategoryItem tagItem3 = rulesRepository.getOrCreateCategory("TestTag/TestChildTag1");
             assertNotNull(tagItem3);
             assertEquals("TestChildTag1", tagItem3.getName());
             assertEquals("TestTag/TestChildTag1", tagItem3.getFullPath());                                   
