@@ -106,7 +106,11 @@ public class RulesRepositoryTestCase extends TestCase {
             
             //test that this follows the head version
             File dslFile2 = new File("./src/java/org/drools/repository/test/test_data/dsl2.dsl");
+            
             dslItem1.updateContentFromFile(dslFile2);
+            
+            
+            
             assertNotNull(ruleItem1.getNode());
             assertNotNull(ruleItem1.getDsl());
             assertEquals(ruleItem1.getDsl(), dslItem1);                                   

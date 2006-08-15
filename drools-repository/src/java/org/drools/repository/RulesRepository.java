@@ -3,6 +3,7 @@ package org.drools.repository;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -650,5 +651,21 @@ public class RulesRepository {
             log.error("Caught Exception: " + e);
             throw new RulesRepositoryException(e);
         }
+    }
+
+    public List findRulesByTag(String categoryTag) throws RulesRepositoryException {
+        
+        TagItem item = this.getTag( categoryTag );
+        List results = new ArrayList();
+        try {
+            PropertyIterator it = item.getNode().getReferences();
+            while(it.hasNext()) {
+                Property ruleLink = (Property) it.next();
+                results.add( new RuleItem(this, ruleLink.getParent()) );
+            }
+            return results;
+        } catch ( RepositoryException e ) {            
+            throw new RulesRepositoryException(e);
+        }        
     }
 }

@@ -93,7 +93,19 @@ public class RuleItemTestCase extends TestCase {
             
             ruleItem1.addTag("TestTag2");
             tags = ruleItem1.getTags();
-            assertEquals(2, tags.size());            
+            assertEquals(2, tags.size());   
+            
+            
+            //now test retrieve by tags
+            
+            System.out.println(System.currentTimeMillis());
+            List result = this.rulesRepository.findRulesByTag("TestTag");
+            System.out.println(System.currentTimeMillis());
+            assertEquals(1, result.size());
+            
+            RuleItem retItem = (RuleItem) result.get( 0 );
+            assertEquals("drl1.drl", retItem.getName());
+            
         }
         catch(Exception e) {
             fail("Caught unexpected exception: " + e);
