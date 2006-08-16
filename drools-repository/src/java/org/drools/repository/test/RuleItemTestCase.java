@@ -1,6 +1,8 @@
 package org.drools.repository.test;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -21,15 +23,13 @@ public class RuleItemTestCase extends TestCase {
     }
 
     public void testRuleItem() {
-        try {
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");
-            
+        try {            
             //calls constructor
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
             
             assertNotNull(ruleItem1);
             assertNotNull(ruleItem1.getNode());
-            assertEquals("drl1.drl", ruleItem1.getName());
+            assertEquals("test rule", ruleItem1.getName());
         }
         catch(Exception e) {
             fail("Caught unexpected exception: " + e);
@@ -50,31 +50,56 @@ public class RuleItemTestCase extends TestCase {
         }
     }
 
-    public void testGetContent() {
-        try {
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl3.drl");            
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+    public void testGetLhs() {
+        try {            
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
             
             assertNotNull(ruleItem1);
             assertNotNull(ruleItem1.getNode());
-            assertEquals("package org.drools.examples", ruleItem1.getContent());
+            assertEquals("test lhs content", ruleItem1.getLhs());
         }
         catch(Exception e) {
             fail("Caught unexpected exception: " + e);
         }
     }
 
-    public void testUpdateContentFromFile() {
+    public void testGetRhs() {
+        try {            
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            
+            assertNotNull(ruleItem1);
+            assertNotNull(ruleItem1.getNode());
+            assertEquals("test rhs content", ruleItem1.getRhs());
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }
+    }
+    
+    public void testUpdateLhs() {
         //TODO: maybe add some testing on the versioning stuff more - check the content of the
         //      previous version, etc.
-        try {
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");            
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+        try {                        
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+                        
+            ruleItem1.updateLhs("new lhs content");
             
-            File drlFile2 = new File("./src/java/org/drools/repository/test/test_data/drl3.drl");
-            ruleItem1.updateContentFromFile(drlFile2);
+            assertEquals("new lhs content", ruleItem1.getLhs());
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }
+    }
+    
+    public void testUpdateRhs() {
+        //TODO: maybe add some testing on the versioning stuff more - check the content of the
+        //      previous version, etc.
+        try {                        
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+                        
+            ruleItem1.updateRhs("new rhs content");
             
-            assertEquals("package org.drools.examples", ruleItem1.getContent());
+            assertEquals("new rhs content", ruleItem1.getRhs());
         }
         catch(Exception e) {
             fail("Caught unexpected exception: " + e);
@@ -83,8 +108,7 @@ public class RuleItemTestCase extends TestCase {
 
     public void testAddTag() {
         try {
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");            
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
             
             ruleItem1.addTag("TestTag");
             List tags = ruleItem1.getTags();
@@ -100,7 +124,7 @@ public class RuleItemTestCase extends TestCase {
             List result = this.rulesRepository.findRulesByTag("TestTag");            
             assertEquals(1, result.size());            
             RuleItem retItem = (RuleItem) result.get( 0 );
-            assertEquals("drl1.drl", retItem.getName());
+            assertEquals("test rule", retItem.getName());
             
         }
         catch(Exception e) {
@@ -110,8 +134,7 @@ public class RuleItemTestCase extends TestCase {
 
     public void testRemoveTag() {
         try {
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");            
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
             
             ruleItem1.addTag("TestTag");                                    
             ruleItem1.removeTag("TestTag");
@@ -132,8 +155,7 @@ public class RuleItemTestCase extends TestCase {
 
     public void testGetTags() {
         try {
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");            
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
            
             List tags = ruleItem1.getTags();
             assertNotNull(tags);
@@ -151,8 +173,7 @@ public class RuleItemTestCase extends TestCase {
 
     public void testSetStateString() {
         try {
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");            
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
            
             ruleItem1.setState("TestState1");
             assertNotNull(ruleItem1.getState());
@@ -169,8 +190,7 @@ public class RuleItemTestCase extends TestCase {
 
     public void testSetStateStateItem() {
         try {
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");            
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
            
             StateItem stateItem1 = rulesRepository.getState("TestState1");
             ruleItem1.setState(stateItem1);            
@@ -189,8 +209,7 @@ public class RuleItemTestCase extends TestCase {
 
     public void testGetState() {
         try {
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");            
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
            
             StateItem stateItem1 = ruleItem1.getState();
             assertNull(stateItem1);
@@ -206,14 +225,84 @@ public class RuleItemTestCase extends TestCase {
 
     public void testToString() {
         try {
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");            
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
            
             assertNotNull(ruleItem1.toString());                        
         }
         catch(Exception e) {
             fail("Caught unexpected exception: " + e);
         }
-
+    }
+    
+    public void testGetLastModified() {
+        try {
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+           
+            Calendar cal = Calendar.getInstance();
+            long before = cal.getTimeInMillis();           
+            
+            ruleItem1.updateLhs("new lhs");
+            Calendar cal2 = ruleItem1.getLastModified();
+            long lastMod = cal2.getTimeInMillis();           
+            
+            cal = Calendar.getInstance();
+            long after = cal.getTimeInMillis();
+            assertTrue(before < after);
+            assertTrue(before < lastMod);
+            assertTrue(lastMod < after);
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }
+    }
+    
+    public void testGetDateEffective() {
+        try {
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+           
+            //it should be initialized to null
+            assertTrue(ruleItem1.getDateEffective() == null);
+            
+            //now try setting it, then retrieving it
+            Calendar cal = Calendar.getInstance();
+            ruleItem1.updateDateEffective(cal);
+            Calendar cal2 = ruleItem1.getDateEffective();
+            
+            assertEquals(cal, cal2);            
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }
+    }
+    
+    public void testGetDateExpired() {
+        try {
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+           
+            //it should be initialized to null
+            assertTrue(ruleItem1.getDateExpired() == null);
+            
+            //now try setting it, then retrieving it
+            Calendar cal = Calendar.getInstance();
+            ruleItem1.updateDateExpired(cal);
+            Calendar cal2 = ruleItem1.getDateExpired();
+            
+            assertEquals(cal, cal2);            
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }
+    }
+    
+    public void testGetRuleLanguage() {
+        try {
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+           
+            //it should be initialized to 'DRL'
+            assertEquals("DRL", ruleItem1.getRuleLanguage());                        
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }
     }
 }

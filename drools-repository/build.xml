@@ -1,4 +1,4 @@
-<project name="repository" default="main" basedir=".">        
+<project name="drools-repository" default="main" basedir=".">        
     <property file="build.properties"/>        
     
     <!-- default jdk location -->

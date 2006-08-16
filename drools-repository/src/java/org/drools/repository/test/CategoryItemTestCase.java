@@ -8,7 +8,7 @@ import org.drools.repository.CategoryItem;
 import junit.framework.TestCase;
 
 public class CategoryItemTestCase extends TestCase {
-    private RulesRepository rulesRepository = null;
+    private RulesRepository rulesRepository = null;    
     
     protected void setUp() throws Exception {
         super.setUp();

@@ -1,6 +1,7 @@
 package org.drools.repository.test;
 
 import java.io.File;
+import java.util.Calendar;
 
 import org.drools.repository.*;
 
@@ -44,11 +45,11 @@ public class RulesRepositoryTestCase extends TestCase {
         //this is covered by the DslItemTestCase
     }
 
-    public void testAddRuleFromFileFile() {
+    public void testAddRule() {
         //this is covered by the RuleItemTestCase
     }
 
-    public void testAddRuleFromFileFileDslItem() {
+    public void testAddRuleDslItemBoolean() {
         RulesRepository rulesRepository = null;
         try {
             rulesRepository = new RulesRepository(true);
@@ -57,8 +58,7 @@ public class RulesRepositoryTestCase extends TestCase {
             DslItem dslItem1 = rulesRepository.addDslFromFile(dslFile1);
             assertNotNull(dslItem1);
             
-            File ruleFile1 = new File("./src/java/org/drools/repository/test/test_data/drl2.drl");
-            RuleItem ruleItem1 = rulesRepository.addRuleFromFile(ruleFile1, dslItem1);
+            RuleItem ruleItem1 = rulesRepository.addRule("test rule", "test lhs content", "test rhs content", dslItem1, true);
             
             assertNotNull(ruleItem1);
             assertNotNull(ruleItem1.getNode());
@@ -70,7 +70,22 @@ public class RulesRepositoryTestCase extends TestCase {
             dslItem1.updateContentFromFile(dslFile2);
             assertNotNull(ruleItem1.getNode());
             assertNotNull(ruleItem1.getDsl());
-            assertEquals(dslItem1.getContent(), ruleItem1.getDsl().getContent());                                   
+            assertEquals(dslItem1.getContent(), ruleItem1.getDsl().getContent());
+            
+            //now do the same thing, but test not following head:                                    
+            RuleItem ruleItem2 = rulesRepository.addRule("test rule 2", "test lhs content", "test rhs content", dslItem1, false);
+            
+            assertNotNull(ruleItem2);
+            assertNotNull(ruleItem2.getNode());
+            assertNotNull(ruleItem2.getDsl());
+            assertEquals(dslItem1.getContent(), ruleItem2.getDsl().getContent());
+            
+            //test that this stays tied to the specific revision of the DSL node
+            String originalContent = ruleItem2.getDsl().getContent();
+            dslItem1.updateContentFromFile(dslFile2);
+            assertNotNull(ruleItem2.getNode());
+            assertNotNull(ruleItem2.getDsl());
+            assertEquals(originalContent, ruleItem2.getDsl().getContent());
         }
         catch(Exception e) {
             fail("Unexpected Exception caught: " + e);
@@ -86,54 +101,21 @@ public class RulesRepositoryTestCase extends TestCase {
             }
         }
     }
-
-    public void testAddRuleFromFileFileDslItemBoolean() {
+    
+    public void testAddRuleCalendarCalendar() {
         RulesRepository rulesRepository = null;
         try {
             rulesRepository = new RulesRepository(true);
-            File dslFile1 = new File("./src/java/org/drools/repository/test/test_data/dsl1.dsl");
-            
-            DslItem dslItem1 = rulesRepository.addDslFromFile(dslFile1);
-            assertNotNull(dslItem1);
-            
-            File ruleFile1 = new File("./src/java/org/drools/repository/test/test_data/drl2.drl");
-            RuleItem ruleItem1 = rulesRepository.addRuleFromFile(ruleFile1, dslItem1, true);
+                        
+            Calendar effectiveDate = Calendar.getInstance();
+            Calendar expiredDate = Calendar.getInstance();
+            expiredDate.setTimeInMillis(effectiveDate.getTimeInMillis() + (1000 * 60 * 60 * 24));
+            RuleItem ruleItem1 = rulesRepository.addRule("test rule", "test lhs content", "test rhs content", effectiveDate, expiredDate);
             
             assertNotNull(ruleItem1);
             assertNotNull(ruleItem1.getNode());
-            assertNotNull(ruleItem1.getDsl());
-            assertEquals(dslItem1, ruleItem1.getDsl());
-            
-            //test that this follows the head version
-            File dslFile2 = new File("./src/java/org/drools/repository/test/test_data/dsl2.dsl");
-            
-            dslItem1.updateContentFromFile(dslFile2);
-            
-            
-            
-            assertNotNull(ruleItem1.getNode());
-            assertNotNull(ruleItem1.getDsl());
-            assertEquals(ruleItem1.getDsl(), dslItem1);                                   
-            
-            //now test not following the head revision
-            rulesRepository.logout();
-            rulesRepository = new RulesRepository(true);
-            
-            dslItem1 = rulesRepository.addDslFromFile(dslFile1);
-            assertNotNull(dslItem1);
-            
-            ruleItem1 = rulesRepository.addRuleFromFile(ruleFile1, dslItem1, false);
-            
-            assertNotNull(ruleItem1);
-            assertNotNull(ruleItem1.getNode());
-            assertNotNull(ruleItem1.getDsl());
-            assertEquals(dslItem1.getContent(), ruleItem1.getDsl().getContent());
-            
-            //test that this follows the head version
-            dslItem1.updateContentFromFile(dslFile2);
-            assertNotNull(ruleItem1.getNode());
-            assertNotNull(ruleItem1.getDsl());
-            assertFalse(ruleItem1.getDsl().equals(dslItem1));
+            assertEquals(effectiveDate, ruleItem1.getDateEffective());
+            assertEquals(expiredDate, ruleItem1.getDateExpired());                       
         }
         catch(Exception e) {
             fail("Unexpected Exception caught: " + e);
@@ -149,7 +131,68 @@ public class RulesRepositoryTestCase extends TestCase {
             }
         }
     }
-
+    
+    public void testAddRuleDslItemBooleanCalendarCalendar() {
+        RulesRepository rulesRepository = null;
+        try {
+            rulesRepository = new RulesRepository(true);
+            File dslFile1 = new File("./src/java/org/drools/repository/test/test_data/dsl1.dsl");
+            
+            DslItem dslItem1 = rulesRepository.addDslFromFile(dslFile1);
+            assertNotNull(dslItem1);
+            
+            Calendar effectiveDate = Calendar.getInstance();
+            Calendar expiredDate = Calendar.getInstance();
+            expiredDate.setTimeInMillis(effectiveDate.getTimeInMillis() + (1000 * 60 * 60 * 24));
+            
+            RuleItem ruleItem1 = rulesRepository.addRule("test rule", "test lhs content", "test rhs content", dslItem1, true, effectiveDate, expiredDate);
+            
+            assertNotNull(ruleItem1);
+            assertNotNull(ruleItem1.getNode());
+            assertNotNull(ruleItem1.getDsl());
+            assertEquals(dslItem1.getContent(), ruleItem1.getDsl().getContent());
+            assertEquals(effectiveDate, ruleItem1.getDateEffective());
+            assertEquals(expiredDate, ruleItem1.getDateExpired());
+            
+            //test that this follows the head version
+            File dslFile2 = new File("./src/java/org/drools/repository/test/test_data/dsl2.dsl");
+            dslItem1.updateContentFromFile(dslFile2);
+            assertNotNull(ruleItem1.getNode());
+            assertNotNull(ruleItem1.getDsl());
+            assertEquals(dslItem1.getContent(), ruleItem1.getDsl().getContent());
+            
+            //now do the same thing, but test not following head:                                    
+            RuleItem ruleItem2 = rulesRepository.addRule("test rule 2", "test lhs content", "test rhs content", dslItem1, false, effectiveDate, expiredDate);
+            
+            assertNotNull(ruleItem2);
+            assertNotNull(ruleItem2.getNode());
+            assertNotNull(ruleItem2.getDsl());
+            assertEquals(dslItem1.getContent(), ruleItem2.getDsl().getContent());
+            assertEquals(effectiveDate, ruleItem1.getDateEffective());
+            assertEquals(expiredDate, ruleItem1.getDateExpired());
+            
+            //test that this stays tied to the specific revision of the DSL node
+            String originalContent = ruleItem2.getDsl().getContent();
+            dslItem1.updateContentFromFile(dslFile2);
+            assertNotNull(ruleItem2.getNode());
+            assertNotNull(ruleItem2.getDsl());
+            assertEquals(originalContent, ruleItem2.getDsl().getContent());
+        }
+        catch(Exception e) {
+            fail("Unexpected Exception caught: " + e);
+        }
+        finally {
+            if(rulesRepository != null) {
+                try {
+                    rulesRepository.logout();
+                }
+                catch(Exception e) {
+                    fail("Caught unexpected Exception: " + e);
+                }
+            }
+        }
+    }
+    
     public void testCreateRulePackage() {
         //this is covered by RulePackageItemTestCase
     }

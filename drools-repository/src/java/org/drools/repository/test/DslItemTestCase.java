@@ -43,7 +43,7 @@ public class DslItemTestCase extends TestCase {
             File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/rule1.drl");
             
             //Get a reference to a node of the incorrect type
-            RuleItem ruleItem1 = rulesRepository.addRuleFromFile(drlFile1);
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
             
             //this should fail
             DslItem dslItem2 = new DslItem(rulesRepository, ruleItem1.getNode());

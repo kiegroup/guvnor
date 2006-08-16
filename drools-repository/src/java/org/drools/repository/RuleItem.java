@@ -46,6 +46,36 @@ public class RuleItem extends Item {
     public static final String STATE_PROPERTY_NAME = "drools:state_reference";
     
     /**
+     * The name of the last modified property on the rule node type
+     */
+    public static final String LAST_MODIFIED_PROPERTY_NAME = "drools:last_modified"; 
+    
+    /**
+     * The name of the name property on the rule node type
+     */
+    public static final String NAME_PROPERTY_NAME = "drools:name";
+    
+    /**
+     * The name of the lhs property on the rule node type
+     */
+    public static final String LHS_PROPERTY_NAME = "drools:lhs";
+    
+    /**
+     * The name of the lhs property on the rule node type
+     */
+    public static final String RHS_PROPERTY_NAME = "drools:rhs";
+    
+    /**
+     * The name of the date effective property on the rule node type
+     */
+    public static final String DATE_EFFECTIVE_PROPERTY_NAME = "drools:date_effective";
+    
+    /**
+     * The name of the date expired property on the rule node type
+     */
+    public static final String DATE_EXPIRED_PROPERTY_NAME = "drools:date_expired";
+    
+    /**
      * Constructs a RuleItem object, setting its node attribute to the specified node.
      * 
      * @param rulesRepository the rulesRepository that instantiated this object
@@ -71,12 +101,12 @@ public class RuleItem extends Item {
     }
     
     /**
-     * returns the content of this object's rule node
+     * returns the lhs of this object's rule node
      * 
-     * @return the content of this object's rule node
+     * @return the lhs of this object's rule node
      * @throws RulesRepositoryException
      */
-    public String getContent() throws RulesRepositoryException {
+    public String getLhs() throws RulesRepositoryException {
         try {                        
             Node ruleNode;
             if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
@@ -86,9 +116,8 @@ public class RuleItem extends Item {
                 ruleNode = this.node;
             }
             
-            //grab the content of the node and dump it into a string
-            Node contentNode = ruleNode.getNode("jcr:content");
-            Property data = contentNode.getProperty("jcr:data");
+            //grab the lhs of the node and dump it into a string            
+            Property data = ruleNode.getProperty(LHS_PROPERTY_NAME);
             return data.getValue().getString();
         }
         catch(Exception e) {
@@ -98,14 +127,89 @@ public class RuleItem extends Item {
     }
     
     /**
-     * Creates a new version of this object's rule node, using the content and attributes of the
-     * specified file.
+     * returns the rhs of this object's rule node
      * 
-     * @param file the file from which to get the content and attributes for the new version of the
-     *             rule node
+     * @return the rhs of this object's rule node
      * @throws RulesRepositoryException
      */
-    public void updateContentFromFile(File file) throws RulesRepositoryException {
+    public String getRhs() throws RulesRepositoryException {
+        try {                        
+            Node ruleNode;
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                ruleNode = this.node.getNode("jcr:frozenNode");
+            }
+            else {
+                ruleNode = this.node;
+            }
+            
+            //grab the lhs of the node and dump it into a string            
+            Property data = ruleNode.getProperty(RHS_PROPERTY_NAME);
+            return data.getValue().getString();
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * @return the date the rule node (this version) was last modified
+     * @throws RulesRepositoryException
+     */
+    public Calendar getLastModified() throws RulesRepositoryException {
+        try {                        
+            Node ruleNode;
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                ruleNode = this.node.getNode("jcr:frozenNode");
+            }
+            else {
+                ruleNode = this.node;
+            }
+                        
+            Property lastModifiedProperty = ruleNode.getProperty("drools:last_modified");
+            return lastModifiedProperty.getDate();
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * @return the date the rule becomes effective
+     * @throws RulesRepositoryException
+     */
+    public Calendar getDateEffective() throws RulesRepositoryException {
+        try {                        
+            Node ruleNode;
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                ruleNode = this.node.getNode("jcr:frozenNode");
+            }
+            else {
+                ruleNode = this.node;
+            }
+                        
+            Property dateEffectiveProperty = ruleNode.getProperty(DATE_EFFECTIVE_PROPERTY_NAME);
+            return dateEffectiveProperty.getDate();
+        }
+        catch(PathNotFoundException e) {
+            // doesn't have this property
+            return null;
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * Creates a new version of this object's rule node, updating the effective date for the
+     * rule node. 
+     *  
+     * @param newDateEffective the new effective date for the rule 
+     * @throws RulesRepositoryException
+     */
+    public void updateDateEffective(Calendar newDateEffective) throws RulesRepositoryException {
         try {
             this.node.checkout();
         }
@@ -126,15 +230,193 @@ public class RuleItem extends Item {
             throw new RulesRepositoryException(e);
         }
         
-        try {
-            //create the mandatory child node - jcr:content
-            Node resNode = this.node.getNode("jcr:content");
-            resNode.setProperty("jcr:mimeType", "text/plain");
-            resNode.setProperty("jcr:encoding", System.getProperty("file.encoding")); //TODO: is this right?
-            resNode.setProperty("jcr:data", new FileInputStream(file));
+        try {                                    
+            this.node.setProperty(DATE_EFFECTIVE_PROPERTY_NAME, newDateEffective);
+            
             Calendar lastModified = Calendar.getInstance();
-            lastModified.setTimeInMillis(file.lastModified());
-            resNode.setProperty("jcr:lastModified", lastModified);
+            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            
+            this.node.getSession().save();
+            
+            this.node.checkin();
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * @return the date the rule becomes expired
+     * @throws RulesRepositoryException
+     */
+    public Calendar getDateExpired() throws RulesRepositoryException {
+        try {                        
+            Node ruleNode;
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                ruleNode = this.node.getNode("jcr:frozenNode");
+            }
+            else {
+                ruleNode = this.node;
+            }
+                        
+            Property dateExpiredProperty = ruleNode.getProperty(DATE_EXPIRED_PROPERTY_NAME);
+            return dateExpiredProperty.getDate();
+        }
+        catch(PathNotFoundException e) {
+            // doesn't have this property
+            return null;
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * Creates a new version of this object's rule node, updating the expired date for the
+     * rule node. 
+     *  
+     * @param newDateExpired the new expired date for the rule 
+     * @throws RulesRepositoryException
+     */
+    public void updateDateExpired(Calendar newDateExpired) throws RulesRepositoryException {
+        try {
+            this.node.checkout();
+        }
+        catch(UnsupportedRepositoryOperationException e) {
+            String message = "";
+            try {
+                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
+                log.error(message + e);
+            }
+            catch (RepositoryException e1) {
+                log.error("Caught Exception", e);
+                throw new RulesRepositoryException(e1);
+            }
+            throw new RulesRepositoryException(message, e);
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+        
+        try {                                    
+            this.node.setProperty(DATE_EXPIRED_PROPERTY_NAME, newDateExpired);
+            
+            Calendar lastModified = Calendar.getInstance();
+            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            
+            this.node.getSession().save();
+            
+            this.node.checkin();
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * @return the date the rule becomes expired
+     * @throws RulesRepositoryException
+     */
+    public String getRuleLanguage() throws RulesRepositoryException {
+        try {                        
+            Node ruleNode;
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                ruleNode = this.node.getNode("jcr:frozenNode");
+            }
+            else {
+                ruleNode = this.node;
+            }
+                        
+            Property ruleLanguageProperty = ruleNode.getProperty("drools:rule_language");
+            return ruleLanguageProperty.getValue().getString();
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * Creates a new version of this object's rule node, updating the lhs content for the
+     * rule node. 
+     * 
+     * @param lhs the new lhs content for the rule
+     * @throws RulesRepositoryException
+     */
+    public void updateLhs(String newLhsContent) throws RulesRepositoryException {
+        try {
+            this.node.checkout();
+        }
+        catch(UnsupportedRepositoryOperationException e) {
+            String message = "";
+            try {
+                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
+                log.error(message + e);
+            }
+            catch (RepositoryException e1) {
+                log.error("Caught Exception", e);
+                throw new RulesRepositoryException(e1);
+            }
+            throw new RulesRepositoryException(message, e);
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+        
+        try {                                    
+            this.node.setProperty(LHS_PROPERTY_NAME, newLhsContent);
+            
+            Calendar lastModified = Calendar.getInstance();
+            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            
+            this.node.getSession().save();
+            
+            this.node.checkin();
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * Creates a new version of this object's rule node, updating the rhs content for the
+     * rule node. 
+     * 
+     * @param lhs the new rhs content for the rule
+     * @throws RulesRepositoryException
+     */
+    public void updateRhs(String newRhsContent) throws RulesRepositoryException {
+        try {
+            this.node.checkout();
+        }
+        catch(UnsupportedRepositoryOperationException e) {
+            String message = "";
+            try {
+                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
+                log.error(message + e);
+            }
+            catch (RepositoryException e1) {
+                log.error("Caught Exception", e);
+                throw new RulesRepositoryException(e1);
+            }
+            throw new RulesRepositoryException(message, e);
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+        
+        try {                                    
+            this.node.setProperty(RHS_PROPERTY_NAME, newRhsContent);
+            
+            Calendar lastModified = Calendar.getInstance();
+            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
             
             this.node.getSession().save();
             
@@ -415,7 +697,13 @@ public class RuleItem extends Item {
         try {
             StringBuffer returnString = new StringBuffer();
             returnString.append("Content of rule node named " + this.node.getName() + ":\n");
-            returnString.append(this.getContent() + "\n");
+            returnString.append("LHS: " + this.getLhs() + "\n");
+            returnString.append("RHS: " + this.getRhs() + "\n");
+            returnString.append("------\n");
+            
+            returnString.append("Date Effective: " + this.getDateEffective() + "\n");
+            returnString.append("Date Expired: " + this.getDateExpired() + "\n");
+            returnString.append("Rule Language: " + this.getRuleLanguage() + "\n");
             returnString.append("------\n");
             
             returnString.append("Rule state: ");

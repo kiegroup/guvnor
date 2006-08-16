@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  Log4j Configuration                                                  -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!--
+   | For more configuration infromation and examples see the Jakarta Log4j
+   | owebsite: http://jakarta.apache.org/log4j
+ -->
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+
+   <!-- ================================= -->
+   <!-- Preserve messages in a local file -->
+   <!-- ================================= -->
+
+   <!-- ============================== -->
+   <!-- Append messages to the console -->
+   <!-- ============================== -->
+
+   <appender name="REPOSITORY_CONSOLE" class="org.apache.log4j.ConsoleAppender">
+      <param name="Target" value="System.out"/>
+      <param name="Threshold" value="DEBUG"/>
+
+      <layout class="org.apache.log4j.PatternLayout">
+         <!-- The default pattern: Date Priority [Category] Message\n -->
+         <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c{1}] %m%n"/>
+      </layout>
+   </appender>
+
+   <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+      <param name="Target" value="System.out"/>
+      <param name="Threshold" value="INFO"/>
+
+      <layout class="org.apache.log4j.PatternLayout">
+         <!-- The default pattern: Date Priority [Category] Message\n -->
+         <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c{1}] %m%n"/>
+      </layout>
+   </appender>
+
+   <!-- ====================== -->
+   <!-- More Appender examples -->
+   <!-- ====================== -->
+
+   <!-- Buffer events and log them asynchronously
+   <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
+     <errorHandler class="org.jboss.logging.util.OnlyOnceErrorHandler"/>
+     <appender-ref ref="FILE"/>
+     <appender-ref ref="CONSOLE"/>
+     <appender-ref ref="SMTP"/>
+   </appender>
+   -->
+
+   <!-- EMail events to an administrator
+   <appender name="SMTP" class="org.apache.log4j.net.SMTPAppender">
+     <errorHandler class="org.jboss.logging.util.OnlyOnceErrorHandler"/>
+     <param name="Threshold" value="ERROR"/>
+     <param name="To" value="admin@myhost.domain.com"/>
+     <param name="From" value="nobody@myhost.domain.com"/>
+     <param name="Subject" value="JBoss Sever Errors"/>
+     <param name="SMTPHost" value="localhost"/>
+     <param name="BufferSize" value="10"/>
+     <layout class="org.apache.log4j.PatternLayout">
+       <param name="ConversionPattern" value="[%d{ABSOLUTE},%c{1}] %m%n"/>
+     </layout>
+   </appender>
+   -->
+
+   <!-- Syslog events
+   <appender name="SYSLOG" class="org.apache.log4j.net.SyslogAppender">
+     <errorHandler class="org.jboss.logging.util.OnlyOnceErrorHandler"/>
+     <param name="Facility" value="LOCAL7"/>
+     <param name="FacilityPrinting" value="true"/>
+     <param name="SyslogHost" value="localhost"/>
+     <layout class="org.apache.log4j.PatternLayout">
+       <param name="ConversionPattern" value="[%d{ABSOLUTE},%c{1}] %m%n"/>
+     </layout>
+   </appender>
+   -->
+
+   <!-- Log events to JMS (requires a topic to be created)
+   <appender name="JMS" class="org.apache.log4j.net.JMSAppender">
+     <errorHandler class="org.jboss.logging.util.OnlyOnceErrorHandler"/>
+     <param name="Threshold" value="ERROR"/>
+     <param name="TopicConnectionFactoryBindingName" value="java:/ConnectionFactory"/>
+     <param name="TopicBindingName" value="topic/MyErrorsTopic"/>
+   </appender>
+   -->
+
+   <!-- Log events through SNMP
+   <appender name="TRAP_LOG" class="org.apache.log4j.ext.SNMPTrapAppender">
+     <errorHandler class="org.jboss.logging.util.OnlyOnceErrorHandler"/>
+     <param name="ImplementationClassName" value="org.apache.log4j.ext.JoeSNMPTrapSender"/>
+     <param name="ManagementHost" value="127.0.0.1"/>
+     <param name="ManagementHostTrapListenPort" value="162"/>
+     <param name="EnterpriseOID" value="1.3.6.1.4.1.24.0"/>
+     <param name="LocalIPAddress" value="127.0.0.1"/>
+     <param name="LocalTrapSendPort" value="161"/>
+     <param name="GenericTrapType" value="6"/>
+     <param name="SpecificTrapType" value="12345678"/>
+     <param name="CommunityString" value="public"/>
+     <param name="ForwardStackTraceWithTrap" value="true"/>
+     <param name="Threshold" value="DEBUG"/>
+     <param name="ApplicationTrapOID" value="1.3.6.1.4.1.24.12.10.22.64"/>
+     <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d,%p,[%t],[%c],%m%n"/>
+     </layout>
+   </appender>
+   -->
+
+   <!--  Emit events as JMX notifications
+   <appender name="JMX" class="org.jboss.monitor.services.JMXNotificationAppender">
+      <errorHandler class="org.jboss.logging.util.OnlyOnceErrorHandler"/>
+      
+      <param name="Threshold" value="WARN"/>
+      <param name="ObjectName" value="jboss.system:service=Logging,type=JMXNotificationAppender"/>
+      
+      <layout class="org.apache.log4j.PatternLayout">
+         <param name="ConversionPattern" value="%d %-5p [%c] %m"/>
+      </layout>
+   </appender>
+   -->
+   
+   <!-- ================ -->
+   <!-- Limit categories -->
+   <!-- ================ -->
+
+   <!-- Limit the org.apache category to INFO as its DEBUG is verbose -->
+   <category name="org.apache">
+      <priority value="INFO"/>
+   </category>
+
+   <!-- ======================= -->
+   <!-- Drools Repository       -->
+   <!-- ======================= -->
+   <category name="org.drools.repository">
+     <priority value="DEBUG" />
+     <appender-ref ref="REPOSITORY_CONSOLE"/>
+   </category>
+
+   <!-- ======================= -->
+   <!-- Setup the Root category -->
+   <!-- ======================= -->
+
+   <root>
+      <appender-ref ref="CONSOLE"/>
+   </root>
+</log4j:configuration>

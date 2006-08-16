@@ -53,27 +53,24 @@ public class RulePackageItemTestCase extends TestCase {
         try {
             RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
             
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
             
             rulePackageItem1.addRule(ruleItem1);
             
             List rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
-            assertEquals("drl1.drl", ((RuleItem)rules.get(0)).getName());
+            assertEquals("test rule", ((RuleItem)rules.get(0)).getName());
             
             //test that it is following the head revision                        
-            File drlFile2 = new File("./src/java/org/drools/repository/test/test_data/drl3.drl");
-            ruleItem1.updateContentFromFile(drlFile2);
+            ruleItem1.updateLhs("new lhs");
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
-            assertEquals("drl1.drl", ((RuleItem)rules.get(0)).getName());
-            assertEquals("package org.drools.examples", ((RuleItem)rules.get(0)).getContent());
-            
-            File drlFile3 = new File("./src/java/org/drools/repository/test/test_data/drl2.drl");
-            RuleItem ruleItem2 = this.rulesRepository.addRuleFromFile(drlFile3);
+            assertEquals("test rule", ((RuleItem)rules.get(0)).getName());
+            assertEquals("new lhs", ((RuleItem)rules.get(0)).getLhs());
+                        
+            RuleItem ruleItem2 = this.rulesRepository.addRule("test rule 2", "test lhs content", "test rhs content");
             rulePackageItem1.addRule(ruleItem2);
             
             rules = rulePackageItem1.getRules();
@@ -96,27 +93,24 @@ public class RulePackageItemTestCase extends TestCase {
         try {
             RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
             
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
             
             rulePackageItem1.addRule(ruleItem1, true);
             
             List rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
-            assertEquals("drl1.drl", ((RuleItem)rules.get(0)).getName());
+            assertEquals("test rule", ((RuleItem)rules.get(0)).getName());
             
             //test that it is following the head revision                        
-            File drlFile2 = new File("./src/java/org/drools/repository/test/test_data/drl3.drl");
-            ruleItem1.updateContentFromFile(drlFile2);
+            ruleItem1.updateLhs("new lhs");
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
-            assertEquals("drl1.drl", ((RuleItem)rules.get(0)).getName());
-            assertEquals("package org.drools.examples", ((RuleItem)rules.get(0)).getContent());
+            assertEquals("test rule", ((RuleItem)rules.get(0)).getName());
+            assertEquals("new lhs", ((RuleItem)rules.get(0)).getLhs());
             
-            File drlFile3 = new File("./src/java/org/drools/repository/test/test_data/drl2.drl");
-            RuleItem ruleItem2 = this.rulesRepository.addRuleFromFile(drlFile3);
+            RuleItem ruleItem2 = this.rulesRepository.addRule("test rule 2", "test lhs content", "test rhs content");
             rulePackageItem1.addRule(ruleItem2);
             
             rules = rulePackageItem1.getRules();
@@ -125,20 +119,20 @@ public class RulePackageItemTestCase extends TestCase {
             
             //test not following the head revision
             rulePackageItem1.removeAllRules();
-            RuleItem ruleItem3 = this.rulesRepository.addRuleFromFile(drlFile2);
+            RuleItem ruleItem3 = this.rulesRepository.addRule("test rule 3", "test lhs content", "test rhs content");
             
-            rulePackageItem1.addRule(ruleItem1, false);
+            rulePackageItem1.addRule(ruleItem3, false);
             
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
-            assertEquals("package org.drools.examples", ((RuleItem)rules.get(0)).getContent());
+            assertEquals("test lhs content", ((RuleItem)rules.get(0)).getLhs());
                                     
-            ruleItem1.updateContentFromFile(drlFile1);
+            ruleItem3.updateLhs("new lhs");
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
-            assertEquals("package org.drools.examples", ((RuleItem)rules.get(0)).getContent());
+            assertEquals("test lhs content", ((RuleItem)rules.get(0)).getLhs());
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -149,19 +143,17 @@ public class RulePackageItemTestCase extends TestCase {
     public void testGetRules() {
         try {
             RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
-            
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+                        
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
             
             rulePackageItem1.addRule(ruleItem1);
             
             List rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
-            assertEquals("drl1.drl", ((RuleItem)rules.get(0)).getName());
+            assertEquals("test rule", ((RuleItem)rules.get(0)).getName());
                                   
-            File drlFile3 = new File("./src/java/org/drools/repository/test/test_data/drl2.drl");
-            RuleItem ruleItem2 = this.rulesRepository.addRuleFromFile(drlFile3);
+            RuleItem ruleItem2 = this.rulesRepository.addRule("test rule 2", "test lhs content", "test rhs content");
             rulePackageItem1.addRule(ruleItem2);
             
             rules = rulePackageItem1.getRules();
@@ -178,8 +170,7 @@ public class RulePackageItemTestCase extends TestCase {
         try {
             RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
             
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
             
             rulePackageItem1.addRule(ruleItem1);
             assertNotNull(rulePackageItem1.toString());                        
@@ -194,33 +185,30 @@ public class RulePackageItemTestCase extends TestCase {
         try {
             RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
             
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
             
             rulePackageItem1.addRule(ruleItem1);
             
             List rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
-            assertEquals("drl1.drl", ((RuleItem)rules.get(0)).getName());
+            assertEquals("test rule", ((RuleItem)rules.get(0)).getName());
                                     
-            File drlFile2 = new File("./src/java/org/drools/repository/test/test_data/drl3.drl");
-            ruleItem1.updateContentFromFile(drlFile2);
+            ruleItem1.updateLhs("new lhs");
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
-            assertEquals("drl1.drl", ((RuleItem)rules.get(0)).getName());
-            assertEquals("package org.drools.examples", ((RuleItem)rules.get(0)).getContent());
+            assertEquals("test rule", ((RuleItem)rules.get(0)).getName());
+            assertEquals("new lhs", ((RuleItem)rules.get(0)).getLhs());
             
-            File drlFile3 = new File("./src/java/org/drools/repository/test/test_data/drl2.drl");
-            RuleItem ruleItem2 = this.rulesRepository.addRuleFromFile(drlFile3);
+            RuleItem ruleItem2 = this.rulesRepository.addRule("test rule 2", "test lhs content", "test rhs content");
             rulePackageItem1.addRule(ruleItem2);
             
-            //remove the rule, make sure the other rule int the pacakge stays around
+            //remove the rule, make sure the other rule in the pacakge stays around
             rulePackageItem1.removeRule(ruleItem1);
             rules = rulePackageItem1.getRules();
             assertEquals(1, rules.size());
-            assertEquals("drl2.drl", ((RuleItem)rules.get(0)).getName());
+            assertEquals("test rule 2", ((RuleItem)rules.get(0)).getName());
             
             //remove the rule that is following the head revision, make sure the pacakge is now empty
             rulePackageItem1.removeRule(ruleItem2);
@@ -239,15 +227,14 @@ public class RulePackageItemTestCase extends TestCase {
         try {
             RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
             
-            File drlFile1 = new File("./src/java/org/drools/repository/test/test_data/drl1.drl");
-            RuleItem ruleItem1 = this.rulesRepository.addRuleFromFile(drlFile1);
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
             
             rulePackageItem1.addRule(ruleItem1);
             
             List rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
-            assertEquals("drl1.drl", ((RuleItem)rules.get(0)).getName());
+            assertEquals("test rule", ((RuleItem)rules.get(0)).getName());
             
             rulePackageItem1.removeAllRules();
             

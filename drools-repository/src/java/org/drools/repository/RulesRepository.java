@@ -31,16 +31,6 @@ import org.apache.jackrabbit.core.nodetype.NodeTypeRegistry;
 import org.apache.jackrabbit.core.nodetype.compact.CompactNodeTypeDefReader;
 import org.apache.log4j.Logger;
 
-//TODO: fix logging
-//TODO: make imports and globals attributes of a rulepackage
-//TODO: functions have their own area, like rules, packages also reference these
-//TODO: add support for authentication / permissions / ownership ( http://dublincore.org/documents/dces/)
-//TODO: add ability to lock a node to prevent concurrent editing
-//TODO: add support for exporting / importing
-//TODO: add support for observation
-//TODO: make the rule node have a child node of type nt:file for documentation
-//TODO: add support for searching
-//TODO: rename tag to category
 
 /**
  * RulesRepository is the class that defines the bahavior for the JBoss Rules (drools) rule repository
@@ -120,7 +110,7 @@ public class RulesRepository {
      * @param clearRepository whether or not to erase the contents of the rules repository
      *                        portion of the JCR repository 
      */
-    public RulesRepository(boolean clearRepository) {
+    public RulesRepository(boolean clearRepository) {       
         try {
             //TODO: probably want to do something more serious than automatic creation of a 
             //      transientRepository here.  (e.g. manual creation of the repository to be 
@@ -191,7 +181,7 @@ public class RulesRepository {
                 ntreg.registerNodeType(ntd);
             }
         }
-        catch(InvalidNodeTypeDefException e) {            
+        catch(InvalidNodeTypeDefException e) {
             log.warn("InvalidNodeTypeDefinitionException caught when trying to add node from CND file: " + cndFileName + ". This will happen if the node type was already registered. " + e);
             throw e;
         }
@@ -465,30 +455,41 @@ public class RulesRepository {
             log.error("Caught Exception", e);
             throw new RulesRepositoryException(e);
         }                
-    }
+    }    
     
     /**
-     * Adds a Rule node in the repository using the content and attributes of the specified file
+     * Adds a Rule node in the repository using the content specified, associating it with
+     * the specified DSL node
      * 
-     * @param file the file to use to import the DSL content and attributes
+     * @param ruleName the name of the rule
+     * @param lhsContent the lhs of the rule
+     * @param rhsContent the rhs of the rule
+     * @param dslItem the dslItem encapsulting the dsl node to associate this rule node with
+     * @paaram followDslHead whether or not to follow the head revision of the dsl node
      * @return a RuleItem object encapsulating the node that gets added
      * @throws RulesRepositoryException
      */
-    public RuleItem addRuleFromFile(File file) throws RulesRepositoryException {
+    public RuleItem addRule(String ruleName, String lhsContent, String rhsContent, DslItem dslItem, boolean followDslHead) throws RulesRepositoryException {
         Node folderNode = this.getAreaNode(RULE_AREA);        
         
         try {        
             //create the node - see section 6.7.22.6 of the spec
-            Node ruleNode = folderNode.addNode(file.getName(), RuleItem.RULE_NODE_TYPE_NAME);
+            Node ruleNode = folderNode.addNode(ruleName, RuleItem.RULE_NODE_TYPE_NAME);
+                        
+            ruleNode.setProperty(RuleItem.NAME_PROPERTY_NAME, ruleName);
+            ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, lhsContent);
+            ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, rhsContent);
             
-            //create the mandatory child node - jcr:content
-            Node resNode = ruleNode.addNode("jcr:content", "nt:resource");
-            resNode.setProperty("jcr:mimeType", "text/plain");
-            resNode.setProperty("jcr:encoding", System.getProperty("file.encoding")); //TODO: is this right?
-            resNode.setProperty("jcr:data", new FileInputStream(file));
+            if(followDslHead) {
+                ruleNode.setProperty(RuleItem.DSL_PROPERTY_NAME, dslItem.getNode());
+            }
+            else {
+                //tie the ruleNode to specifically the current version of the dslNode
+                ruleNode.setProperty(RuleItem.DSL_PROPERTY_NAME, dslItem.getNode().getBaseVersion());
+            }
+            
             Calendar lastModified = Calendar.getInstance();
-            lastModified.setTimeInMillis(file.lastModified());
-            resNode.setProperty("jcr:lastModified", lastModified);
+            ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
             
             session.save();
             
@@ -508,71 +509,145 @@ public class RulesRepository {
             throw new RulesRepositoryException(e);
         }
     }
-
-    /**
-     * Adds a Rule node in the repository using the content and attributes of the specified file. 
-     * Links the newly created node with the specified DSL node within the repository. This link
-     * will follow the head verion of the DSL node.
-     * 
-     * @param file the file to use to import the DSL content and attributes
-     * @param dslItem the DslItem containing the node to link the newly created rule node with
-     * @return a RuleItem object encapsulting the node that gets added
-     * @throws RulesRepositoryException
-     */
-    public RuleItem addRuleFromFile(File file, DslItem dslItem) throws RulesRepositoryException {
-        return this.addRuleFromFile(file, dslItem, true);
-    }
     
     /**
-     * Adds a Rule node in the repository using the content and attributes of the specified file. 
-     * Links the newly created node with the specified DSL node within the repository.
+     * Adds a Rule node in the repository using the content specified, with the specified
+     * effective and expiration dates, and referencing the specified dsl node
      * 
-     * @param file the file to use to import the DSL content and attributes
-     * @param dslItem the DslItem containing the node to link the newly created rule node with
-     * @param followDslHead if true, the link to the DSL node will follow the head revision of that 
-     *                      node. if false, it will continue to refer to the specified version even
-     *                      if a new version of the DSL node is checked in
+     * @param ruleName the name of the rule
+     * @param lhsContent the lhs of the rule
+     * @param rhsContent the rhs of the rule
+     * @param dslItem the DslItem object encapsuling the dsl node to assocaite this node with
+     * @param followDslHead whether or not to follow the head revision of the DSL node
+     * @param effectiveDate the date the rule becomes effective
+     * @param expiredDate the date teh rule expires
      * @return a RuleItem object encapsulating the node that gets added
-     * @throws RulesRepositoryException 
+     * @throws RulesRepositoryException
      */
-    public RuleItem addRuleFromFile(File file, DslItem dslItem, boolean followDslHead) throws RulesRepositoryException {
-        RuleItem ruleItem = addRuleFromFile(file);
-        Node ruleNode = ruleItem.getNode();
+    public RuleItem addRule(String ruleName, String lhsContent, String rhsContent, DslItem dslItem, boolean followDslHead, Calendar effectiveDate, Calendar expiredDate) throws RulesRepositoryException {
+        Node folderNode = this.getAreaNode(RULE_AREA);        
         
-        try {
-            //Now associate the dsl node with this rule
-            ruleNode.checkout();
+        try {        
+            //create the node - see section 6.7.22.6 of the spec
+            Node ruleNode = folderNode.addNode(ruleName, RuleItem.RULE_NODE_TYPE_NAME);
+                        
+            ruleNode.setProperty(RuleItem.NAME_PROPERTY_NAME, ruleName);
+            ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, lhsContent);
+            ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, rhsContent);            
+            ruleNode.setProperty(RuleItem.DSL_PROPERTY_NAME, dslItem.getNode());
+            ruleNode.setProperty(RuleItem.DATE_EFFECTIVE_PROPERTY_NAME, effectiveDate);
+            ruleNode.setProperty(RuleItem.DATE_EXPIRED_PROPERTY_NAME, expiredDate);
             
-            if(followDslHead) {
-                ruleNode.setProperty(RuleItem.DSL_PROPERTY_NAME, dslItem.getNode());
-            }
-            else {
-                //tie the ruleNode to specifically the current version of the dslNode
-                ruleNode.setProperty(RuleItem.DSL_PROPERTY_NAME, dslItem.getNode().getBaseVersion());                
-            }
+            Calendar lastModified = Calendar.getInstance();
+            ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
             
-            this.session.save();
-            ruleNode.checkin();
-        }
-        catch(UnsupportedRepositoryOperationException e) {
-            String message = "";
+            session.save();
+            
             try {
-                message = "Error: Caught UnsupportedRepositoryOperationException for the rule: " + ruleNode.getName() + ". Are you sure your JCR repository supports versioning? ";
+                ruleNode.checkin();
+            }
+            catch(UnsupportedRepositoryOperationException e) {
+                String message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkin rule: " + ruleNode.getName() + ". Are you sure your JCR repository supports versioning? ";
                 log.error(message + e);
+                throw new RulesRepositoryException(message, e);
             }
-            catch (RepositoryException e1) {
-                log.error("Caught Exception", e);
-                throw new RulesRepositoryException(e1);
-            }
-            throw new RulesRepositoryException(message, e);
-        }        
+            
+            return new RuleItem(this, ruleNode);
+        }
         catch(Exception e) {
             log.error("Caught Exception", e);
             throw new RulesRepositoryException(e);
         }
-        
-        return ruleItem;
     }
+    
+    /**
+     * Adds a Rule node in the repository using the content specified
+     * 
+     * @param ruleName the name of the rule
+     * @param lhsContent the lhs of the rule
+     * @param rhsContent the rhs of the rule
+     * @return a RuleItem object encapsulating the node that gets added
+     * @throws RulesRepositoryException
+     */
+    public RuleItem addRule(String ruleName, String lhsContent, String rhsContent) throws RulesRepositoryException {
+        Node folderNode = this.getAreaNode(RULE_AREA);        
+        
+        try {        
+            //create the node - see section 6.7.22.6 of the spec
+            Node ruleNode = folderNode.addNode(ruleName, RuleItem.RULE_NODE_TYPE_NAME);
+                        
+            ruleNode.setProperty(RuleItem.NAME_PROPERTY_NAME, ruleName);
+            ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, lhsContent);
+            ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, rhsContent);
+            
+            Calendar lastModified = Calendar.getInstance();
+            ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            
+            session.save();
+            
+            try {
+                ruleNode.checkin();
+            }
+            catch(UnsupportedRepositoryOperationException e) {
+                String message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkin rule: " + ruleNode.getName() + ". Are you sure your JCR repository supports versioning? ";
+                log.error(message + e);
+                throw new RulesRepositoryException(message, e);
+            }
+            
+            return new RuleItem(this, ruleNode);
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * Adds a Rule node in the repository using the content specified, with the specified
+     * effective and expiration dates
+     * 
+     * @param ruleName the name of the rule
+     * @param lhsContent the lhs of the rule
+     * @param rhsContent the rhs of the rule
+     * @param effectiveDate the date the rule becomes effective
+     * @param expiredDate the date teh rule expires
+     * @return a RuleItem object encapsulating the node that gets added
+     * @throws RulesRepositoryException
+     */
+    public RuleItem addRule(String ruleName, String lhsContent, String rhsContent, Calendar effectiveDate, Calendar expiredDate) throws RulesRepositoryException {
+        Node folderNode = this.getAreaNode(RULE_AREA);        
+        
+        try {        
+            //create the node - see section 6.7.22.6 of the spec
+            Node ruleNode = folderNode.addNode(ruleName, RuleItem.RULE_NODE_TYPE_NAME);
+                        
+            ruleNode.setProperty(RuleItem.NAME_PROPERTY_NAME, ruleName);
+            ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, lhsContent);
+            ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, rhsContent);            
+            ruleNode.setProperty(RuleItem.DATE_EFFECTIVE_PROPERTY_NAME, effectiveDate);
+            ruleNode.setProperty(RuleItem.DATE_EXPIRED_PROPERTY_NAME, expiredDate);
+            
+            Calendar lastModified = Calendar.getInstance();
+            ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            
+            session.save();
+            
+            try {
+                ruleNode.checkin();
+            }
+            catch(UnsupportedRepositoryOperationException e) {
+                String message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkin rule: " + ruleNode.getName() + ". Are you sure your JCR repository supports versioning? ";
+                log.error(message + e);
+                throw new RulesRepositoryException(message, e);
+            }
+            
+            return new RuleItem(this, ruleNode);
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }    
     
     /**
      * Adds a rule package node in the repository. This node has a property called 
