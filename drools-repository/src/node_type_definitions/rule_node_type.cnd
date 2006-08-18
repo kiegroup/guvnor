@@ -33,6 +33,8 @@
 - drools:rule_language (string)
   = 'DRL'
   mandatory autocreated
+  
+- drools:description (string)
 
 - drools:dsl_reference (reference)
   copy 

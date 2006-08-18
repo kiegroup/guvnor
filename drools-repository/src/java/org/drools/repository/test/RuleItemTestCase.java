@@ -305,4 +305,19 @@ public class RuleItemTestCase extends TestCase {
             fail("Caught unexpected exception: " + e);
         }
     }
+    
+    public void testGetDescription() {
+        try {
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            
+            //it should be null to begin with
+            assertTrue(ruleItem1.getDescription() == null);
+            
+            ruleItem1.updateDescription("test description");
+            assertEquals("test description", ruleItem1.getDescription());
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }
+    }
 }

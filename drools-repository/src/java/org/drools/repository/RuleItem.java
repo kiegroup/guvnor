@@ -2,6 +2,7 @@ package org.drools.repository;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -74,6 +75,17 @@ public class RuleItem extends Item {
      * The name of the date expired property on the rule node type
      */
     public static final String DATE_EXPIRED_PROPERTY_NAME = "drools:date_expired";
+    
+    /**
+     * The name of the description property on the rule node type
+     */
+    public static final String DESCRIPTION_PROPERTY_NAME = "drools:description";    
+        
+    /**
+     * The name of the additional docuementation child node on the rule node type
+     */
+    public static final String ADDITIONAL_DOCUMENTATION_NODE_NAME = "drools:additional_documentation";
+    
     
     /**
      * Constructs a RuleItem object, setting its node attribute to the specified node.
@@ -151,6 +163,36 @@ public class RuleItem extends Item {
             throw new RulesRepositoryException(e);
         }
     }
+    
+    /**
+     * returns the description of this object's rule node
+     * 
+     * @return the description of this object's rule node
+     * @throws RulesRepositoryException
+     */
+    public String getDescription() throws RulesRepositoryException {
+        try {                        
+            Node ruleNode;
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                ruleNode = this.node.getNode("jcr:frozenNode");
+            }
+            else {
+                ruleNode = this.node;
+            }
+            
+            //grab the description of the node and dump it into a string            
+            Property data = ruleNode.getProperty(DESCRIPTION_PROPERTY_NAME);
+            return data.getValue().getString();
+        }
+        catch(PathNotFoundException e) {
+            //no description set yet
+            return null;
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }       
     
     /**
      * @return the date the rule node (this version) was last modified
@@ -414,6 +456,50 @@ public class RuleItem extends Item {
         
         try {                                    
             this.node.setProperty(RHS_PROPERTY_NAME, newRhsContent);
+            
+            Calendar lastModified = Calendar.getInstance();
+            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            
+            this.node.getSession().save();
+            
+            this.node.checkin();
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * Creates a new version of this object's rule node, updating the description content 
+     * for the rule node. 
+     * 
+     * @param newDescriptionContent the new description content for the rule
+     * @throws RulesRepositoryException
+     */
+    public void updateDescription(String newDescriptionContent) throws RulesRepositoryException {
+        try {
+            this.node.checkout();
+        }
+        catch(UnsupportedRepositoryOperationException e) {
+            String message = "";
+            try {
+                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
+                log.error(message + e);
+            }
+            catch (RepositoryException e1) {
+                log.error("Caught Exception", e);
+                throw new RulesRepositoryException(e1);
+            }
+            throw new RulesRepositoryException(message, e);
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+        
+        try {                                    
+            this.node.setProperty(DESCRIPTION_PROPERTY_NAME, newDescriptionContent);
             
             Calendar lastModified = Calendar.getInstance();
             this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
