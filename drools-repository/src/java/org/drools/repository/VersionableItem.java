@@ -1,8 +1,12 @@
 package org.drools.repository;
 
+import java.util.Calendar;
+
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 
 import org.drools.repository.Item;
@@ -10,9 +14,37 @@ import org.drools.repository.Item;
 public abstract class VersionableItem extends Item {
     
     /**
-     * The name of the name property on the node type
+     * The name of the title property on the node type
      */
-    public static final String NAME_PROPERTY_NAME = "drools:name";
+    public static final String TITLE_PROPERTY_NAME = "drools:title";
+    
+    /**
+     * The name of the contributor property on the node type
+     */
+    public static final String CONTRIBUTOR_PROPERTY_NAME = "drools:contributor";
+    
+    /**
+     * The name of the description property on the rule node type
+     */
+    public static final String DESCRIPTION_PROPERTY_NAME = "drools:description";
+    
+    /**
+     * The name of the last modified property on the rule node type
+     */
+    public static final String LAST_MODIFIED_PROPERTY_NAME = "drools:last_modified";
+    
+    /**
+     * The name of the last modified property on the rule node type
+     */
+    public static final String FORMAT_PROPERTY_NAME = "drools:format";
+
+    
+    /**
+     * The possible formats for the format property of the node
+     */
+    public static final String RULE_FORMAT = "Rule";    
+    public static final String DSL_FORMAT = "DSL";
+    public static final String RULE_PACKAGE_FORMAT = "Rule Package";
     
     /**
      * Sets this object's node attribute to the specified node
@@ -134,18 +166,24 @@ public abstract class VersionableItem extends Item {
      */
     public abstract VersionableItem getSucceedingVersion() throws RulesRepositoryException; 
     
-    @Override
-    public String getName() throws RulesRepositoryException {
+    /** 
+     * Gets the Title of the versionable node.  See the Dublin Core documentation for more
+     * explanation: http://dublincore.org/documents/dces/
+     * 
+     * @return the title of the node this object encapsulates
+     * @throws RulesRepositoryException
+     */
+    public String getTitle() throws RulesRepositoryException {
         try {                        
-            Node ruleNode;
+            Node theNode;
             if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-                ruleNode = this.node.getNode("jcr:frozenNode");
+                theNode = this.node.getNode("jcr:frozenNode");
             }
             else {
-                ruleNode = this.node;
+                theNode = this.node;
             }
                         
-            Property data = ruleNode.getProperty(NAME_PROPERTY_NAME);
+            Property data = theNode.getProperty(TITLE_PROPERTY_NAME);
             return data.getValue().getString();
         }
         catch(Exception e) {
@@ -153,4 +191,164 @@ public abstract class VersionableItem extends Item {
             throw new RulesRepositoryException(e);
         }
     }
+
+    /** 
+     * Creates a new version of this object's node, updating the title content 
+     * for the node.
+     * <br>
+     * See the Dublin Core documentation for more
+     * explanation: http://dublincore.org/documents/dces/
+     * 
+     * @param title the new title for the node
+     * @throws RulesRepositoryException
+     */
+    public void updateTitle(String title) throws RulesRepositoryException {
+        try {                        
+            Node theNode;
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                theNode = this.node.getNode("jcr:frozenNode");
+            }
+            else {
+                theNode = this.node;
+            }
+            
+            theNode.checkout();
+            theNode.setProperty(TITLE_PROPERTY_NAME, title);
+            
+            Calendar lastModified = Calendar.getInstance();
+            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
+
+            theNode.save();
+            theNode.checkin();            
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /** 
+     * Gets the Contributor of the versionable node.  See the Dublin Core documentation for more
+     * explanation: http://dublincore.org/documents/dces/
+     * 
+     * @return the contributor of the node this object encapsulates
+     * @throws RulesRepositoryException
+     */
+    public String getContributor() {
+        try {                        
+            Node theNode;
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                theNode = this.node.getNode("jcr:frozenNode");
+            }
+            else {
+                theNode = this.node;
+            }
+                        
+            Property data = theNode.getProperty(CONTRIBUTOR_PROPERTY_NAME);
+            return data.getValue().getString();
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * See the Dublin Core documentation for more
+     * explanation: http://dublincore.org/documents/dces/
+     * 
+     * @return the description of this object's node.
+     * @throws RulesRepositoryException
+     */
+    public String getDescription() throws RulesRepositoryException {
+        try {                        
+            Node theNode;
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                theNode = this.node.getNode("jcr:frozenNode");
+            }
+            else {
+                theNode = this.node;
+            }
+                        
+            Property data = theNode.getProperty(DESCRIPTION_PROPERTY_NAME);
+            return data.getValue().getString();
+        }        
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }       
+
+    /**
+     * Creates a new version of this object's node, updating the description content 
+     * for the node.
+     * <br>
+     * See the Dublin Core documentation for more
+     * explanation: http://dublincore.org/documents/dces/ 
+     * 
+     * @param newDescriptionContent the new description content for the rule
+     * @throws RulesRepositoryException
+     */
+    public void updateDescription(String newDescriptionContent) throws RulesRepositoryException {
+        try {
+            this.node.checkout();
+        }
+        catch(UnsupportedRepositoryOperationException e) {
+            String message = "";
+            try {
+                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout node: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
+                log.error(message, e);
+            }
+            catch (RepositoryException e1) {
+                log.error("Caught Exception", e);
+                throw new RulesRepositoryException(e1);
+            }
+            throw new RulesRepositoryException(message, e);
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+        
+        try {                                    
+            this.node.setProperty(DESCRIPTION_PROPERTY_NAME, newDescriptionContent);
+            
+            Calendar lastModified = Calendar.getInstance();
+            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            
+            this.node.getSession().save();
+            
+            this.node.checkin();
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * See the Dublin Core documentation for more
+     * explanation: http://dublincore.org/documents/dces/
+     * 
+     * @return the format of this object's node
+     * @throws RulesRepositoryException
+     */
+    public String getFormat() throws RulesRepositoryException {
+        try {                        
+            Node theNode;
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                theNode = this.node.getNode("jcr:frozenNode");
+            }
+            else {
+                theNode = this.node;
+            }
+                        
+            Property data = theNode.getProperty(FORMAT_PROPERTY_NAME);
+            return data.getValue().getString();
+        }        
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }           
 }

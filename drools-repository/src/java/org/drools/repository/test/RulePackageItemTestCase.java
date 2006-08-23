@@ -265,4 +265,25 @@ public class RulePackageItemTestCase extends TestCase {
         //This is covered by the test in RuleItemTestCase - all functionality under test
         // resides in the common subclass, VersionableItem
     }
+    
+    public void testGetTitle() {
+        //This is covered by the test in RuleItemTestCase - all functionality under test
+        // resides in the common subclass, VersionableItem
+    }
+    
+    public void testGetContributor() {
+        //This is covered by the test in RuleItemTestCase - all functionality under test
+        // resides in the common subclass, VersionableItem        
+    }
+    
+    public void testGetFormat() {        
+        try {
+            RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
+            assertNotNull(rulePackageItem1);
+            assertEquals("Rule Package", rulePackageItem1.getFormat());    
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }
+    }        
 }

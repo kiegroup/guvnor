@@ -1,8 +1,5 @@
 package org.drools.repository;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -14,8 +11,6 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
-import javax.jcr.version.Version;
-import javax.jcr.version.VersionIterator;
 
 import org.apache.log4j.Logger;
 
@@ -46,12 +41,7 @@ public class RuleItem extends VersionableItem {
     /**
      * The name of the state property on the rule node type
      */
-    public static final String STATE_PROPERTY_NAME = "drools:state_reference";
-    
-    /**
-     * The name of the last modified property on the rule node type
-     */
-    public static final String LAST_MODIFIED_PROPERTY_NAME = "drools:last_modified";         
+    public static final String STATE_PROPERTY_NAME = "drools:state_reference";                 
     
     /**
      * The name of the lhs property on the rule node type
@@ -71,17 +61,7 @@ public class RuleItem extends VersionableItem {
     /**
      * The name of the date expired property on the rule node type
      */
-    public static final String DATE_EXPIRED_PROPERTY_NAME = "drools:date_expired";
-    
-    /**
-     * The name of the description property on the rule node type
-     */
-    public static final String DESCRIPTION_PROPERTY_NAME = "drools:description";    
-        
-    /**
-     * The name of the additional docuementation child node on the rule node type
-     */
-    public static final String ADDITIONAL_DOCUMENTATION_NODE_NAME = "drools:additional_documentation";
+    public static final String DATE_EXPIRED_PROPERTY_NAME = "drools:date_expired";                        
     
     
     /**
@@ -160,37 +140,7 @@ public class RuleItem extends VersionableItem {
             throw new RulesRepositoryException(e);
         }
     }
-    
-    /**
-     * returns the description of this object's rule node
-     * 
-     * @return the description of this object's rule node
-     * @throws RulesRepositoryException
-     */
-    public String getDescription() throws RulesRepositoryException {
-        try {                        
-            Node ruleNode;
-            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-                ruleNode = this.node.getNode("jcr:frozenNode");
-            }
-            else {
-                ruleNode = this.node;
-            }
-            
-            //grab the description of the node and dump it into a string            
-            Property data = ruleNode.getProperty(DESCRIPTION_PROPERTY_NAME);
-            return data.getValue().getString();
-        }
-        catch(PathNotFoundException e) {
-            //no description set yet
-            return null;
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RulesRepositoryException(e);
-        }
-    }       
-    
+        
     /**
      * @return the date the rule node (this version) was last modified
      * @throws RulesRepositoryException
@@ -465,51 +415,7 @@ public class RuleItem extends VersionableItem {
             log.error("Caught Exception", e);
             throw new RulesRepositoryException(e);
         }
-    }
-    
-    /**
-     * Creates a new version of this object's rule node, updating the description content 
-     * for the rule node. 
-     * 
-     * @param newDescriptionContent the new description content for the rule
-     * @throws RulesRepositoryException
-     */
-    public void updateDescription(String newDescriptionContent) throws RulesRepositoryException {
-        try {
-            this.node.checkout();
-        }
-        catch(UnsupportedRepositoryOperationException e) {
-            String message = "";
-            try {
-                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message, e);
-            }
-            catch (RepositoryException e1) {
-                log.error("Caught Exception", e);
-                throw new RulesRepositoryException(e1);
-            }
-            throw new RulesRepositoryException(message, e);
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RulesRepositoryException(e);
-        }
-        
-        try {                                    
-            this.node.setProperty(DESCRIPTION_PROPERTY_NAME, newDescriptionContent);
-            
-            Calendar lastModified = Calendar.getInstance();
-            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
-            
-            this.node.getSession().save();
-            
-            this.node.checkin();
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RulesRepositoryException(e);
-        }
-    }
+    }        
     
     /**
      * Adds the specified tag to this object's rule node. Tags are stored as nodes in a tag area of
@@ -650,6 +556,7 @@ public class RuleItem extends VersionableItem {
      * @return a list of TagItem objects for each tag on the rule. If there are no tags, an empty list. 
      * @throws RulesRepositoryException
      */
+    @SuppressWarnings("unchecked")
     public List getTags() throws RulesRepositoryException {
         try {                            
             Node ruleNode;

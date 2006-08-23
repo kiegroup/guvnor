@@ -2,7 +2,6 @@ package org.drools.repository.test;
 
 import java.io.File;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -311,8 +310,8 @@ public class RuleItemTestCase extends TestCase {
         try {
             RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
             
-            //it should be null to begin with
-            assertTrue(ruleItem1.getDescription() == null);
+            //it should be "" to begin with
+            assertEquals("", ruleItem1.getDescription());
             
             ruleItem1.updateDescription("test description");
             assertEquals("test description", ruleItem1.getDescription());
@@ -441,4 +440,31 @@ public class RuleItemTestCase extends TestCase {
             fail("Caught unexpected exception: " + e);
         }
     }
+    
+    public void testGetTitle() {    
+        try {
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");            
+                        
+            assertEquals("test rule", ruleItem1.getTitle());
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }
+    }
+    
+    public void testGetContributor() {
+        //can't implement this until we figure out login / JAAS stuff.
+        fail("not yet implemented");        
+    }
+    
+    public void testGetFormat() {        
+        try {
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            
+            assertEquals("Rule", ruleItem1.getFormat());            
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }
+    }        
 }

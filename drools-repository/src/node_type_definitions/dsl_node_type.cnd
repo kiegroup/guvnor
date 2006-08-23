@@ -11,4 +11,4 @@
 [drools:dsl_node_type]
 
 // Supertypes
-> 'nt:file','mix:versionable'
+> 'drools:versionable_node_type','nt:file'

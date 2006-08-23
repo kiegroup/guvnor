@@ -90,4 +90,27 @@ public class DslItemTestCase extends TestCase {
         //This is covered by the test in RuleItemTestCase - all functionality under test
         // resides in the common subclass, VersionableItem
     }
+    
+    public void testGetTitle() {
+        //This is covered by the test in RuleItemTestCase - all functionality under test
+        // resides in the common subclass, VersionableItem
+    }
+    
+    public void testGetContributor() {
+        //This is covered by the test in RuleItemTestCase - all functionality under test
+        // resides in the common subclass, VersionableItem        
+    }
+    
+    public void testGetFormat() {        
+        try {
+            File dslFile1 = new File("./src/java/org/drools/repository/test/test_data/dsl1.dsl");
+            
+            DslItem dslItem1 = rulesRepository.addDslFromFile(dslFile1);
+            
+            assertEquals("DSL", dslItem1.getFormat());            
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }
+    }        
 }

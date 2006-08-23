@@ -218,6 +218,15 @@ public class RulesRepository {
                 log.info("drools namespace already registered");
             }        
             
+            // Setup the versionable node type
+            try {                                
+                //TODO: remove hard-coded path
+                this.registerNodeTypesFromCndFile("./src/node_type_definitions/versionable_node_type.cnd", ws);
+            }
+            catch(InvalidNodeTypeDefException e) {
+                //This will happen in the node type is already registered, so ignore it                
+            }
+            
             // Setup the dsl node type
             try {                                
                 //TODO: remove hard-coded path
@@ -436,6 +445,14 @@ public class RulesRepository {
             //create the node - see section 6.7.22.6 of the spec
             Node dslNode = folderNode.addNode(file.getName(), DslItem.DSL_NODE_TYPE_NAME);
             
+            dslNode.setProperty(DslItem.TITLE_PROPERTY_NAME, file.getName());
+            
+            //TODO: set this property correctly once we've figured out logging in / JAAS
+            dslNode.setProperty(DslItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
+                        
+            dslNode.setProperty(DslItem.DESCRIPTION_PROPERTY_NAME, "");
+            dslNode.setProperty(DslItem.FORMAT_PROPERTY_NAME, DslItem.DSL_FORMAT);
+            
             //create the mandatory child node - jcr:content
             Node resNode = dslNode.addNode("jcr:content", "nt:resource");
             resNode.setProperty("jcr:mimeType", "text/plain");
@@ -444,6 +461,8 @@ public class RulesRepository {
             Calendar lastModified = Calendar.getInstance();
             lastModified.setTimeInMillis(file.lastModified());
             resNode.setProperty("jcr:lastModified", lastModified);                
+                        
+            dslNode.setProperty(DslItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
             
             this.session.save();
             
@@ -483,7 +502,7 @@ public class RulesRepository {
             //create the node - see section 6.7.22.6 of the spec
             Node ruleNode = folderNode.addNode(ruleName, RuleItem.RULE_NODE_TYPE_NAME);
                         
-            ruleNode.setProperty(RuleItem.NAME_PROPERTY_NAME, ruleName);
+            ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, ruleName);
             ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, lhsContent);
             ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, rhsContent);
             
@@ -528,17 +547,24 @@ public class RulesRepository {
      * @param followDslHead whether or not to follow the head revision of the DSL node
      * @param effectiveDate the date the rule becomes effective
      * @param expiredDate the date teh rule expires
+     * @param description the description of the rule
      * @return a RuleItem object encapsulating the node that gets added
      * @throws RulesRepositoryException
      */
-    public RuleItem addRule(String ruleName, String lhsContent, String rhsContent, DslItem dslItem, boolean followDslHead, Calendar effectiveDate, Calendar expiredDate) throws RulesRepositoryException {
+    public RuleItem addRule(String ruleName, String lhsContent, String rhsContent, DslItem dslItem, boolean followDslHead, Calendar effectiveDate, Calendar expiredDate, String description) throws RulesRepositoryException {
         Node folderNode = this.getAreaNode(RULE_AREA);        
         
         try {        
             //create the node - see section 6.7.22.6 of the spec
             Node ruleNode = folderNode.addNode(ruleName, RuleItem.RULE_NODE_TYPE_NAME);
                         
-            ruleNode.setProperty(RuleItem.NAME_PROPERTY_NAME, ruleName);
+            ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, ruleName);
+            
+            //TODO: set this property correctly once we've figured out logging in / JAAS
+            ruleNode.setProperty(RuleItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
+                        
+            ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, description);
+            ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_FORMAT);
             ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, lhsContent);
             ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, rhsContent);            
             ruleNode.setProperty(RuleItem.DSL_PROPERTY_NAME, dslItem.getNode());
@@ -583,9 +609,15 @@ public class RulesRepository {
             //create the node - see section 6.7.22.6 of the spec
             Node ruleNode = folderNode.addNode(ruleName, RuleItem.RULE_NODE_TYPE_NAME);
                         
-            ruleNode.setProperty(RuleItem.NAME_PROPERTY_NAME, ruleName);
+            ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, ruleName);
+            
+            //TODO: set this property correctly once we've figured out logging in / JAAS
+            ruleNode.setProperty(RuleItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
+                        
+            ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, "");
+            ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_FORMAT);
             ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, lhsContent);
-            ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, rhsContent);
+            ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, rhsContent);                        
             
             Calendar lastModified = Calendar.getInstance();
             ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
@@ -628,7 +660,14 @@ public class RulesRepository {
             //create the node - see section 6.7.22.6 of the spec
             Node ruleNode = folderNode.addNode(ruleName, RuleItem.RULE_NODE_TYPE_NAME);
                         
-            ruleNode.setProperty(RuleItem.NAME_PROPERTY_NAME, ruleName);
+            ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, ruleName);
+
+            //TODO: set this property correctly once we've figured out logging in / JAAS
+            ruleNode.setProperty(RuleItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
+                        
+            ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, "");
+            ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_FORMAT);
+            
             ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, lhsContent);
             ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, rhsContent);            
             ruleNode.setProperty(RuleItem.DATE_EFFECTIVE_PROPERTY_NAME, effectiveDate);
@@ -670,7 +709,57 @@ public class RulesRepository {
                  
         try {
             //create the node - see section 6.7.22.6 of the spec
-            Node rulePackageNode = folderNode.addNode(name, RulePackageItem.RULE_PACKAGE_TYPE_NAME);           
+            Node rulePackageNode = folderNode.addNode(name, RulePackageItem.RULE_PACKAGE_TYPE_NAME);
+            
+            rulePackageNode.setProperty(RulePackageItem.TITLE_PROPERTY_NAME, name);
+            
+            //TODO: set this property correctly once we've figured out logging in / JAAS
+            rulePackageNode.setProperty(RulePackageItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
+                        
+            rulePackageNode.setProperty(RulePackageItem.DESCRIPTION_PROPERTY_NAME, "");
+            rulePackageNode.setProperty(RulePackageItem.FORMAT_PROPERTY_NAME, RulePackageItem.RULE_PACKAGE_FORMAT);
+            
+            Calendar lastModified = Calendar.getInstance();
+            rulePackageNode.setProperty(RulePackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            
+            this.session.save();
+            rulePackageNode.checkin();
+            return new RulePackageItem(this, rulePackageNode);
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }                                       
+
+    /**
+     * Adds a rule package node in the repository. This node has a property called 
+     * drools:rule_reference that is a multi-value reference property.  It will hold an array of 
+     * references to rule nodes that are subsequently added.
+     *   
+     * @param name what to name the node added
+     * @param description what description to use for the node
+     * @return a RulePackageItem, encapsulating the created node
+     * @throws RulesRepositoryException
+     */
+    public RulePackageItem createRulePackage(String name, String description) throws RulesRepositoryException {
+        Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
+                 
+        try {
+            //create the node - see section 6.7.22.6 of the spec
+            Node rulePackageNode = folderNode.addNode(name, RulePackageItem.RULE_PACKAGE_TYPE_NAME);
+            
+            rulePackageNode.setProperty(RulePackageItem.TITLE_PROPERTY_NAME, name);
+            
+            //TODO: set this property correctly once we've figured out logging in / JAAS
+            rulePackageNode.setProperty(RuleItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
+                        
+            rulePackageNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, description);
+            rulePackageNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_PACKAGE_FORMAT);
+            
+            Calendar lastModified = Calendar.getInstance();
+            rulePackageNode.setProperty(RulePackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            
             this.session.save();
             rulePackageNode.checkin();
             return new RulePackageItem(this, rulePackageNode);
@@ -741,6 +830,7 @@ public class RulesRepository {
      * Only the latest versions of each RuleItem will be returned (you will have 
      * to delve into the rules deepest darkest history yourself... mahahahaha).
      */
+    @SuppressWarnings("unchecked")
     public List findRulesByTag(String categoryTag) throws RulesRepositoryException {
         
         CategoryItem item = this.getOrCreateCategory( categoryTag );
@@ -774,6 +864,7 @@ public class RulesRepository {
      * This will provide a list of top level category strings. 
      * Use getCategory to get a specific category to drill down into it.
      */
+    @SuppressWarnings("unchecked")
     public List listCategoryNames() throws RulesRepositoryException {
         try {
             

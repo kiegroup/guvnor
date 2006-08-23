@@ -11,19 +11,13 @@
 [drools:rule_node_type]
 
 // Supertypes
-> 'nt:hierarchyNode','mix:versionable'
+> 'drools:versionable_node_type'
 
 // Properties:
-- drools:name (string)
-  mandatory
-
 - drools:lhs (string)
   mandatory
 
 - drools:rhs (string)
-  mandatory
-
-- drools:last_modified (date)
   mandatory
 
 - drools:date_effective (date)
@@ -33,8 +27,6 @@
 - drools:rule_language (string)
   = 'DRL'
   mandatory autocreated
-  
-- drools:description (string)
 
 - drools:dsl_reference (reference)
   copy 
