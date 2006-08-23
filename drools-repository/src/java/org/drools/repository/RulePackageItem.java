@@ -10,6 +10,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
+import javax.jcr.version.Version;
+import javax.jcr.version.VersionIterator;
 
 import org.apache.log4j.Logger;
 
@@ -27,7 +29,7 @@ import org.apache.log4j.Logger;
  * 
  * @author btruitt
  */
-public class RulePackageItem extends Item {       
+public class RulePackageItem extends VersionableItem {       
     private static Logger log = Logger.getLogger(RulePackageItem.class);
     
     /**
@@ -263,4 +265,58 @@ public class RulePackageItem extends Item {
             return null;
         }
     }
+
+    /**
+     * @return a List of RulePackageItem objects encapsulating each Version node in the 
+     *         VersionHistory of this Item's node
+     * @throws RulesRepositoryException
+     */
+    public List getHistory() throws RulesRepositoryException {
+        List returnList = new ArrayList();
+        try {
+            VersionIterator it = this.node.getVersionHistory().getAllVersions();
+            while(it.hasNext()) {
+                Version currentVersion = it.nextVersion();
+                RulePackageItem item = new RulePackageItem(this.rulesRepository, currentVersion);
+                returnList.add(item);
+            }
+        }
+        catch(Exception e) {
+            log.error("Caught exception: " + e);
+            throw new RulesRepositoryException(e);
+        }
+        return returnList;
+    }
+    
+    public VersionableItem getPrecedingVersion() throws RulesRepositoryException {
+        try {
+            Node precedingVersionNode = this.getPrecedingVersionNode();
+            if(precedingVersionNode != null) {
+                return new RulePackageItem(this.rulesRepository, precedingVersionNode);
+            }
+            else {
+                return null;
+            }
+        }        
+        catch(Exception e) {
+            log.error("Caught exception", e);
+            throw new RulesRepositoryException(e);
+        }               
+    }
+
+    public VersionableItem getSucceedingVersion() throws RulesRepositoryException {
+        try {
+            Node succeedingVersionNode = this.getSucceedingVersionNode();
+            if(succeedingVersionNode != null) {
+                return new RulePackageItem(this.rulesRepository, succeedingVersionNode);
+            }
+            else {
+                return null;
+            }
+        }        
+        catch(Exception e) {
+            log.error("Caught exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }          
 }

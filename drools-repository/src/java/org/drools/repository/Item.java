@@ -1,13 +1,13 @@
 package org.drools.repository;
 
+import java.util.List;
+
 import javax.jcr.Node;
+import javax.jcr.version.Version;
+import javax.jcr.version.VersionIterator;
 
 import org.apache.log4j.Logger;
 
-//TODO: may need to change this so that it has the path as its attribute rather than the 
-//      node reference itself. Then add a getNode() convenience function for getting a reference
-//      to the node from the rulesRepository attribute.  This is potentially a better design
-//      for passing this object around.
 
 /**
  * The item class is used to abstract away the underlying details of the JCR repository.
@@ -48,7 +48,8 @@ public abstract class Item {
     }    
     
     /**
-     * gets the name of the node that this item encapsulates
+     * gets the name of this item (unless overridden in a subclass, this just returns the
+     * name of the node that this Item encapsulates.
      * 
      * @return the name of the node that this item encapsultes
      * @throws RulesRepositoryException 
@@ -82,5 +83,24 @@ public abstract class Item {
 
     public int hashCode() {
         return this.node.hashCode();
+    }        
+    
+    /**
+     * @return the name of the version for this node in the version history
+     * @throws RulesRepositoryException
+     */
+    public String getVersionName() throws RulesRepositoryException {
+        try {
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                return this.node.getName();
+            }
+            else {
+                return this.node.getBaseVersion().getName();
+            }            
+        }
+        catch(Exception e) {
+            log.error("Caught exception", e);
+            throw new RulesRepositoryException(e);
+        }
     }
 }

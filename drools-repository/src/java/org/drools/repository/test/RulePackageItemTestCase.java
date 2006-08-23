@@ -247,4 +247,22 @@ public class RulePackageItemTestCase extends TestCase {
             fail("Caught unexpected exception: " + e);
         }
     }
+    
+    public void testGetPrecedingVersion() {
+        //not bothering to implement this test since it is pretty much covered by the RuleItemTestCase   
+    }
+    
+    public void testGetSucceedingVersion() {
+        //not bothering to implement this test since it is pretty much covered by the RuleItemTestCase   
+    } 
+    
+    public void testGetSuccessorVersionsIterator() {
+        //This is covered by the test in RuleItemTestCase - all functionality under test
+        // resides in the common subclass, VersionableItem
+    }
+    
+    public void testGetPredecessorVersionsIterator() {
+        //This is covered by the test in RuleItemTestCase - all functionality under test
+        // resides in the common subclass, VersionableItem
+    }
 }

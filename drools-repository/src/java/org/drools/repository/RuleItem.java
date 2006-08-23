@@ -14,6 +14,8 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
+import javax.jcr.version.Version;
+import javax.jcr.version.VersionIterator;
 
 import org.apache.log4j.Logger;
 
@@ -23,7 +25,7 @@ import org.apache.log4j.Logger;
  * 
  * @author btruitt
  */
-public class RuleItem extends Item {
+public class RuleItem extends VersionableItem {
     private Logger log = Logger.getLogger(RuleItem.class);
     
     /**
@@ -49,12 +51,7 @@ public class RuleItem extends Item {
     /**
      * The name of the last modified property on the rule node type
      */
-    public static final String LAST_MODIFIED_PROPERTY_NAME = "drools:last_modified"; 
-    
-    /**
-     * The name of the name property on the rule node type
-     */
-    public static final String NAME_PROPERTY_NAME = "drools:name";
+    public static final String LAST_MODIFIED_PROPERTY_NAME = "drools:last_modified";         
     
     /**
      * The name of the lhs property on the rule node type
@@ -107,7 +104,7 @@ public class RuleItem extends Item {
             }    
         }
         catch(Exception e) {
-            log.error("Caught exception: " + e);
+            log.error("Caught exception", e);
             throw new RulesRepositoryException(e);
         }
     }
@@ -259,7 +256,7 @@ public class RuleItem extends Item {
             String message = "";
             try {
                 message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message + e);
+                log.error(message, e);
             }
             catch (RepositoryException e1) {
                 log.error("Caught Exception", e);
@@ -330,7 +327,7 @@ public class RuleItem extends Item {
             String message = "";
             try {
                 message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message + e);
+                log.error(message, e);
             }
             catch (RepositoryException e1) {
                 log.error("Caught Exception", e);
@@ -397,7 +394,7 @@ public class RuleItem extends Item {
             String message = "";
             try {
                 message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message + e);
+                log.error(message, e);
             }
             catch (RepositoryException e1) {
                 log.error("Caught Exception", e);
@@ -441,7 +438,7 @@ public class RuleItem extends Item {
             String message = "";
             try {
                 message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message + e);
+                log.error(message, e);
             }
             catch (RepositoryException e1) {
                 log.error("Caught Exception", e);
@@ -485,7 +482,7 @@ public class RuleItem extends Item {
             String message = "";
             try {
                 message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message + e);
+                log.error(message, e);
             }
             catch (RepositoryException e1) {
                 log.error("Caught Exception", e);
@@ -569,7 +566,7 @@ public class RuleItem extends Item {
             }
         }
         catch(Exception e) {
-            log.error("Caught exception " + e);
+            log.error("Caught exception", e);
             throw new RulesRepositoryException(e);
         }
     }
@@ -642,7 +639,7 @@ public class RuleItem extends Item {
             }
         }
         catch(Exception e) {
-            log.error("Caught exception " + e);
+            log.error("Caught exception", e);
             throw new RulesRepositoryException(e);
         }
     }
@@ -679,7 +676,7 @@ public class RuleItem extends Item {
             return returnList;
         }
         catch(Exception e) {
-            log.error("Caught exception: " + e);
+            log.error("Caught exception", e);
             throw new RulesRepositoryException(e);
         }
     }
@@ -696,7 +693,7 @@ public class RuleItem extends Item {
             this.setState(stateItem);
         }
         catch(Exception e) {
-            log.error("Caught exception: " + e);
+            log.error("Caught exception", e);
             throw new RulesRepositoryException(e);
         }
     }
@@ -724,7 +721,7 @@ public class RuleItem extends Item {
             this.node.checkin();        
         }
         catch(Exception e) {
-            log.error("Caught exception " + e);
+            log.error("Caught exception", e);
             throw new RulesRepositoryException(e);
         }
     }
@@ -747,7 +744,7 @@ public class RuleItem extends Item {
             return null;
         }
         catch(Exception e) {
-            log.error("Caught exception: " + e);
+            log.error("Caught exception", e);
             throw new RulesRepositoryException(e);
         }
     }
@@ -771,7 +768,7 @@ public class RuleItem extends Item {
             return null;
         }
         catch(Exception e) {
-            log.error("Caught exception: " + e);
+            log.error("Caught exception", e);
             throw new RulesRepositoryException(e);
         }
     }
@@ -782,7 +779,7 @@ public class RuleItem extends Item {
     public String toString() {                
         try {
             StringBuffer returnString = new StringBuffer();
-            returnString.append("Content of rule node named " + this.node.getName() + ":\n");
+            returnString.append("Content of rule item named '" + this.getName() + "':\n");
             returnString.append("LHS: " + this.getLhs() + "\n");
             returnString.append("RHS: " + this.getRhs() + "\n");
             returnString.append("------\n");
@@ -790,6 +787,7 @@ public class RuleItem extends Item {
             returnString.append("Date Effective: " + this.getDateEffective() + "\n");
             returnString.append("Date Expired: " + this.getDateExpired() + "\n");
             returnString.append("Rule Language: " + this.getRuleLanguage() + "\n");
+            returnString.append("Version Name: " + this.getVersionName() + "\n");
             returnString.append("------\n");
             
             returnString.append("Rule state: ");
@@ -798,7 +796,7 @@ public class RuleItem extends Item {
                 returnString.append(this.getState().getName() + "\n");
             }
             else {
-                returnString.append("NO STATE SET FOR THIS NODE");
+                returnString.append("NO STATE SET FOR THIS NODE\n");
             }            
             returnString.append("------\n");
             
@@ -815,4 +813,36 @@ public class RuleItem extends Item {
             return null;
         }
     }
+        
+    public VersionableItem getPrecedingVersion() throws RulesRepositoryException {
+        try {
+            Node precedingVersionNode = this.getPrecedingVersionNode();
+            if(precedingVersionNode != null) {
+                return new RuleItem(this.rulesRepository, precedingVersionNode);
+            }
+            else {
+                return null;
+            }
+        }        
+        catch(Exception e) {
+            log.error("Caught exception", e);
+            throw new RulesRepositoryException(e);
+        }               
+    }
+
+    public VersionableItem getSucceedingVersion() throws RulesRepositoryException {
+        try {
+            Node succeedingVersionNode = this.getSucceedingVersionNode();
+            if(succeedingVersionNode != null) {
+                return new RuleItem(this.rulesRepository, succeedingVersionNode);
+            }
+            else {
+                return null;
+            }
+        }        
+        catch(Exception e) {
+            log.error("Caught exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }           
 }

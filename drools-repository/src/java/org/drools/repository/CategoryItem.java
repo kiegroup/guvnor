@@ -6,6 +6,8 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.version.Version;
+import javax.jcr.version.VersionIterator;
 
 import org.apache.log4j.Logger;
 
@@ -106,5 +108,5 @@ public class CategoryItem extends Item {
             log.error("Caught Exception: " + e);
             throw new RulesRepositoryException(e);
         }
-    }
+    }        
 }

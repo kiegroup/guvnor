@@ -3,6 +3,7 @@ package org.drools.repository.test;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -315,6 +316,126 @@ public class RuleItemTestCase extends TestCase {
             
             ruleItem1.updateDescription("test description");
             assertEquals("test description", ruleItem1.getDescription());
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }
+    }
+    
+    public void testGetPrecedingVersion() {
+        try {
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            
+            RuleItem predecessorRuleItem = (RuleItem) ruleItem1.getPrecedingVersion();
+            assertTrue(predecessorRuleItem == null);            
+            
+            ruleItem1.updateLhs("new lhs");
+            
+            predecessorRuleItem = (RuleItem) ruleItem1.getPrecedingVersion();
+            assertNotNull(predecessorRuleItem);
+            assertEquals("test lhs content", predecessorRuleItem.getLhs());
+            
+            ruleItem1.updateLhs("newer lhs");
+            
+            predecessorRuleItem = (RuleItem) ruleItem1.getPrecedingVersion();
+            assertNotNull(predecessorRuleItem);
+            assertEquals("new lhs", predecessorRuleItem.getLhs());
+            predecessorRuleItem = (RuleItem) predecessorRuleItem.getPrecedingVersion();
+            assertNotNull(predecessorRuleItem);
+            assertEquals("test lhs content", predecessorRuleItem.getLhs());
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }   
+    }
+    
+    public void testGetSucceedingVersion() {
+        try {
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            
+            RuleItem succeedingRuleItem = (RuleItem) ruleItem1.getSucceedingVersion();
+            assertTrue(succeedingRuleItem == null);            
+            
+            ruleItem1.updateLhs("new lhs");
+            
+            RuleItem predecessorRuleItem = (RuleItem) ruleItem1.getPrecedingVersion();
+            assertEquals("test lhs content", predecessorRuleItem.getLhs());
+            succeedingRuleItem = (RuleItem) predecessorRuleItem.getSucceedingVersion();
+            assertNotNull(succeedingRuleItem);
+            assertEquals(ruleItem1.getLhs(), succeedingRuleItem.getLhs());                       
+        }        
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }   
+    } 
+    
+    public void testGetSuccessorVersionsIterator() {
+        try {
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");                        
+            
+            Iterator iterator = ruleItem1.getSuccessorVersionsIterator();            
+            assertNotNull(iterator);
+            assertFalse(iterator.hasNext());
+            
+            ruleItem1.updateLhs("new lhs");
+            
+            iterator = ruleItem1.getSuccessorVersionsIterator();            
+            assertNotNull(iterator);
+            assertFalse(iterator.hasNext());
+            
+            RuleItem predecessorRuleItem = (RuleItem) ruleItem1.getPrecedingVersion();
+            iterator = predecessorRuleItem.getSuccessorVersionsIterator();
+            assertNotNull(iterator);
+            assertTrue(iterator.hasNext());
+            RuleItem nextRuleItem = (RuleItem) iterator.next();
+            assertEquals("new lhs", nextRuleItem.getLhs());
+            assertFalse(iterator.hasNext());
+            
+            ruleItem1.updateLhs("newer lhs");
+                        
+            iterator = predecessorRuleItem.getSuccessorVersionsIterator();
+            assertNotNull(iterator);
+            assertTrue(iterator.hasNext());
+            nextRuleItem = (RuleItem) iterator.next();
+            assertEquals("new lhs", nextRuleItem.getLhs());
+            assertTrue(iterator.hasNext());
+            nextRuleItem = (RuleItem)iterator.next();
+            assertEquals("newer lhs", nextRuleItem.getLhs());
+            assertFalse(iterator.hasNext());            
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }
+    }
+    
+    public void testGetPredecessorVersionsIterator() {
+        try {
+            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");                        
+            
+            Iterator iterator = ruleItem1.getPredecessorVersionsIterator();            
+            assertNotNull(iterator);
+            assertFalse(iterator.hasNext());
+            
+            ruleItem1.updateLhs("new lhs");
+            
+            iterator = ruleItem1.getPredecessorVersionsIterator();            
+            assertNotNull(iterator);
+            assertTrue(iterator.hasNext());
+            RuleItem nextRuleItem = (RuleItem) iterator.next();
+            assertFalse(iterator.hasNext());
+            assertEquals("test lhs content", nextRuleItem.getLhs());
+            
+            ruleItem1.updateLhs("newer lhs");
+            
+            iterator = ruleItem1.getPredecessorVersionsIterator();            
+            assertNotNull(iterator);
+            assertTrue(iterator.hasNext());
+            nextRuleItem = (RuleItem) iterator.next();
+            assertTrue(iterator.hasNext());            
+            assertEquals("new lhs", nextRuleItem.getLhs());
+            nextRuleItem = (RuleItem) iterator.next();
+            assertFalse(iterator.hasNext());
+            assertEquals("test lhs content", nextRuleItem.getLhs());
         }
         catch(Exception e) {
             fail("Caught unexpected exception: " + e);

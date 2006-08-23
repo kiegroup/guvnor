@@ -54,6 +54,13 @@ import org.apache.log4j.Logger;
  * Rules can be associated with 0 or 1 states.  States are created in a seperate area of the 
  * repository. States are intended to help track the progress of a rule as it traverses its life-
  * cycle. (e.g. draft, approved, deprecated, etc.)
+ * <p>
+ * The RulesRepository provides versioning of rules, rule packages, and DSLs.  This versioning works
+ * in a strictly linear fashion, with one version having at most 1 predecessor version (or none, if
+ * it is the first version), and at most 1 successor version (or none, if it is the most recently
+ * checked-in version).  The JCR specification supports a more complicated versioning system, and 
+ * if there is sufficient demand, we can modify our versioning scheme to be better aligned with JCR's
+ * versioning abilities.
  * 
  * @author btruitt
  */
