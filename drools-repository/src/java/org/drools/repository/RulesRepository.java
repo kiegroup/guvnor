@@ -78,6 +78,11 @@ public class RulesRepository {
     public final static String RULE_AREA = "drools:rule_area";
     
     /**
+     * The name of the rule area of the repository
+     */
+    public final static String FUNCTION_AREA = "drools:function_area";
+    
+    /**
      * The name of the DSL area of the repository
      */
     public final static String DSL_AREA = "drools:dsl_area";
@@ -263,6 +268,15 @@ public class RulesRepository {
                 //This will happen in the node type is already registered, so ignore it
             }
             
+            //Setup the function node type
+            try {
+                //TODO: remove hard-coded path
+                this.registerNodeTypesFromCndFile("./src/node_type_definitions/function_node_type.cnd", ws);
+            }
+            catch(InvalidNodeTypeDefException e) {
+                //This will happen in the node type is already registered, so ignore it
+            }
+            
             // Setup the rulepackage node type
             try {
                 //TODO: remove hard-coded path
@@ -277,6 +291,9 @@ public class RulesRepository {
                     
             // Setup the Rule area
             addNodeIfNew(repositoryNode, RULE_AREA, "nt:folder");
+            
+            //Setup the Rule area
+            addNodeIfNew(repositoryNode, FUNCTION_AREA, "nt:folder");
             
             // Setup the RulePackageItem area        
             addNodeIfNew(repositoryNode, RULE_PACKAGE_AREA, "nt:folder");
@@ -484,6 +501,98 @@ public class RulesRepository {
     }    
     
     /**
+     * Adds a Function node in the repository using the content specified.
+     * 
+     * @param functionName the name of the function
+     * @param content the content of the function
+     * @return a FunctionItem object encapsulating the node that gets added
+     * @throws RulesRepositoryException
+     */
+    public FunctionItem addFunction(String functionName, String content) throws RulesRepositoryException {
+        Node folderNode = this.getAreaNode(FUNCTION_AREA);        
+        
+        try {        
+            //create the node - see section 6.7.22.6 of the spec
+            Node functionNode = folderNode.addNode(functionName, FunctionItem.FUNCTION_NODE_TYPE_NAME);
+                        
+            functionNode.setProperty(FunctionItem.TITLE_PROPERTY_NAME, functionName);
+            functionNode.setProperty(FunctionItem.CONTENT_PROPERTY_NAME, content);
+            functionNode.setProperty(FunctionItem.DESCRIPTION_PROPERTY_NAME, "");
+            
+            //TODO: set contributor correctly
+            functionNode.setProperty(FunctionItem.CONTRIBUTOR_PROPERTY_NAME, "");
+            
+            functionNode.setProperty(FunctionItem.FORMAT_PROPERTY_NAME, FunctionItem.FUNCTION_FORMAT);
+            
+            Calendar lastModified = Calendar.getInstance();
+            functionNode.setProperty(FunctionItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            
+            session.save();
+            
+            try {
+                functionNode.checkin();
+            }
+            catch(UnsupportedRepositoryOperationException e) {
+                String message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkin node: " + functionNode.getName() + ". Are you sure your JCR repository supports versioning? ";
+                log.error(message + e);
+                throw new RulesRepositoryException(message, e);
+            }
+            
+            return new FunctionItem(this, functionNode);
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * Adds a Function node in the repository using the content specified.
+     * 
+     * @param functionName the name of the function
+     * @param content the content of the function
+     * @param description the description of the function
+     * @return a FunctionItem object encapsulating the node that gets added
+     * @throws RulesRepositoryException
+     */
+    public FunctionItem addFunction(String functionName, String content, String description) throws RulesRepositoryException {
+        Node folderNode = this.getAreaNode(FUNCTION_AREA);        
+        
+        try {        
+            //create the node - see section 6.7.22.6 of the spec
+            Node functionNode = folderNode.addNode(functionName, FunctionItem.FUNCTION_NODE_TYPE_NAME);
+                        
+            functionNode.setProperty(FunctionItem.TITLE_PROPERTY_NAME, functionName);
+            functionNode.setProperty(FunctionItem.CONTENT_PROPERTY_NAME, content);
+            functionNode.setProperty(FunctionItem.DESCRIPTION_PROPERTY_NAME, description);
+            functionNode.setProperty(FunctionItem.FORMAT_PROPERTY_NAME, FunctionItem.FUNCTION_FORMAT);
+            
+            //TODO: set contributor correctly
+            functionNode.setProperty(FunctionItem.CONTRIBUTOR_PROPERTY_NAME, "");
+            
+            Calendar lastModified = Calendar.getInstance();
+            functionNode.setProperty(FunctionItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            
+            session.save();
+            
+            try {
+                functionNode.checkin();
+            }
+            catch(UnsupportedRepositoryOperationException e) {
+                String message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkin node: " + functionNode.getName() + ". Are you sure your JCR repository supports versioning? ";
+                log.error(message + e);
+                throw new RulesRepositoryException(message, e);
+            }
+            
+            return new FunctionItem(this, functionNode);
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
      * Adds a Rule node in the repository using the content specified, associating it with
      * the specified DSL node
      * 
@@ -505,6 +614,11 @@ public class RulesRepository {
             ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, ruleName);
             ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, lhsContent);
             ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, rhsContent);
+            ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, "");
+            ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_FORMAT);
+            
+            //TODO: set this correctly
+            ruleNode.setProperty(RuleItem.CONTRIBUTOR_PROPERTY_NAME, "");
             
             if(followDslHead) {
                 ruleNode.setProperty(RuleItem.DSL_PROPERTY_NAME, dslItem.getNode());
@@ -825,6 +939,33 @@ public class RulesRepository {
     }
 
     /**
+     * This will retrieve a list of FunctionItem objects - that are allocated to the 
+     * provided category.
+     * Only the latest versions of each FunctionItem will be returned (you will have 
+     * to delve into the functions' deepest darkest history yourself... mahahahaha).
+     */
+    @SuppressWarnings("unchecked")
+    public List findFunctionsByTag(String categoryTag) throws RulesRepositoryException {        
+        CategoryItem item = this.getOrCreateCategory( categoryTag );
+        List results = new ArrayList();
+        try {
+            PropertyIterator it = item.getNode().getReferences();
+            while(it.hasNext()) {
+                Property ruleLink = (Property) it.next();
+                Node parentNode = ruleLink.getParent();
+                if(parentNode.getPrimaryNodeType().getName().equals(FunctionItem.FUNCTION_NODE_TYPE_NAME) ||
+                   (parentNode.getPrimaryNodeType().getName().equals("nt:version") && 
+                    parentNode.getProperty(VersionableItem.FORMAT_PROPERTY_NAME).getString().equals(VersionableItem.FUNCTION_FORMAT))) {
+                    results.add(new FunctionItem(this, parentNode));
+                }
+            }
+            return results;
+        } catch (RepositoryException e) {            
+            throw new RulesRepositoryException(e);
+        }        
+    }
+    
+    /**
      * This will retrieve a list of RuleItem objects - that are allocated to the 
      * provided category.
      * Only the latest versions of each RuleItem will be returned (you will have 
@@ -839,7 +980,12 @@ public class RulesRepository {
             PropertyIterator it = item.getNode().getReferences();
             while(it.hasNext()) {
                 Property ruleLink = (Property) it.next();
-                results.add( new RuleItem(this, ruleLink.getParent()) );
+                Node parentNode = ruleLink.getParent();
+                if(parentNode.getPrimaryNodeType().getName().equals(RuleItem.RULE_NODE_TYPE_NAME) ||
+                   (parentNode.getPrimaryNodeType().getName().equals("nt:version") && 
+                    parentNode.getProperty(VersionableItem.FORMAT_PROPERTY_NAME).getString().equals(VersionableItem.RULE_FORMAT))) {
+                    results.add(new RuleItem(this, parentNode));
+                }
             }
             return results;
         } catch ( RepositoryException e ) {            

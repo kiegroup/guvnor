@@ -49,7 +49,7 @@ public class RuleItem extends VersionableItem {
     public static final String LHS_PROPERTY_NAME = "drools:lhs";
     
     /**
-     * The name of the lhs property on the rule node type
+     * The name of the rhs property on the rule node type
      */
     public static final String RHS_PROPERTY_NAME = "drools:rhs";
     
@@ -63,6 +63,10 @@ public class RuleItem extends VersionableItem {
      */
     public static final String DATE_EXPIRED_PROPERTY_NAME = "drools:date_expired";                        
     
+    /**
+     * The name of the rule language property on the rule node type
+     */
+    public static final String RULE_LANGUAGE_PROPERTY_NAME = "drools:rule_language";    
     
     /**
      * Constructs a RuleItem object, setting its node attribute to the specified node.
@@ -141,29 +145,6 @@ public class RuleItem extends VersionableItem {
         }
     }
         
-    /**
-     * @return the date the rule node (this version) was last modified
-     * @throws RulesRepositoryException
-     */
-    public Calendar getLastModified() throws RulesRepositoryException {
-        try {                        
-            Node ruleNode;
-            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-                ruleNode = this.node.getNode("jcr:frozenNode");
-            }
-            else {
-                ruleNode = this.node;
-            }
-                        
-            Property lastModifiedProperty = ruleNode.getProperty("drools:last_modified");
-            return lastModifiedProperty.getDate();
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RulesRepositoryException(e);
-        }
-    }
-    
     /**
      * @return the date the rule becomes effective
      * @throws RulesRepositoryException
@@ -307,7 +288,7 @@ public class RuleItem extends VersionableItem {
     }
     
     /**
-     * @return the date the rule becomes expired
+     * @return the rule language of this object's rune node
      * @throws RulesRepositoryException
      */
     public String getRuleLanguage() throws RulesRepositoryException {
@@ -320,7 +301,7 @@ public class RuleItem extends VersionableItem {
                 ruleNode = this.node;
             }
                         
-            Property ruleLanguageProperty = ruleNode.getProperty("drools:rule_language");
+            Property ruleLanguageProperty = ruleNode.getProperty(RULE_LANGUAGE_PROPERTY_NAME);
             return ruleLanguageProperty.getValue().getString();
         }
         catch(Exception e) {

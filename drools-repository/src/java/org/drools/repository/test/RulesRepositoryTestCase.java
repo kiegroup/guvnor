@@ -2,6 +2,7 @@ package org.drools.repository.test;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.Iterator;
 
 import org.drools.repository.*;
 
@@ -251,6 +252,88 @@ public class RulesRepositoryTestCase extends TestCase {
         }
         catch(Exception e) {
             fail("Unexpected Exception caught: " + e);
+        }
+        finally {
+            if(rulesRepository != null) {
+                try {
+                    rulesRepository.logout();
+                }
+                catch(Exception e) {
+                    fail("Caught unexpected Exception: " + e);
+                }
+            }
+        }
+    }
+    
+    public void testAddFunctionStringString() {
+        RulesRepository rulesRepository = null;
+        try {
+            rulesRepository = new RulesRepository(true);
+                        
+            FunctionItem functionItem1 = rulesRepository.addFunction("test function", "test content");
+            
+            assertNotNull(functionItem1);
+            assertNotNull(functionItem1.getNode());
+            assertEquals("test function", functionItem1.getName());
+            assertEquals("test content", functionItem1.getContent());
+            assertEquals("", functionItem1.getDescription());
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }
+        finally {
+            if(rulesRepository != null) {
+                try {
+                    rulesRepository.logout();
+                }
+                catch(Exception e) {
+                    fail("Caught unexpected Exception: " + e);
+                }
+            }
+        }
+    }
+    
+    public void testAddFunctionStringStringString() {
+        RulesRepository rulesRepository = null;
+        try {
+            rulesRepository = new RulesRepository(true);
+                        
+            FunctionItem functionItem1 = rulesRepository.addFunction("test function", "test content", "test description");
+            
+            assertNotNull(functionItem1);
+            assertNotNull(functionItem1.getNode());
+            assertEquals("test function", functionItem1.getName());
+            assertEquals("test content", functionItem1.getContent());
+            assertEquals("test description", functionItem1.getDescription());
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
+        }
+        finally {
+            if(rulesRepository != null) {
+                try {
+                    rulesRepository.logout();
+                }
+                catch(Exception e) {
+                    fail("Caught unexpected Exception: " + e);
+                }
+            }
+        }
+    }
+    
+    public void testListPackages() {
+        RulesRepository rulesRepository = null;
+        try {
+            RulePackageItem rulePackageItem1 = rulesRepository.createRulePackage("testRulePacakge");
+            
+            Iterator it = rulesRepository.listPackages();
+            assertTrue(it.hasNext());
+            
+            RulePackageItem pack = (RulePackageItem) it.next();
+            assertEquals("testRulePackage", pack.getName());
+        }
+        catch(Exception e) {
+            fail("Caught unexpected exception: " + e);
         }
         finally {
             if(rulesRepository != null) {

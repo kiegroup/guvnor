@@ -1,0 +1,31 @@
+/*  The node type definition for the function node type.  
+    See http://jackrabbit.apache.org/doc/nodetype/cnd.html for an explanation
+*/
+
+// The namespace declaration
+<drools = 'http://www.jboss.org/drools-repository/1.0'>
+<nt='http://www.jcp.org/jcr/nt/1.0'>
+<mix='http://www.jcp.org/jcr/mix/1.0'>
+
+// Node type name
+[drools:function_node_type]
+
+// Supertypes
+> 'drools:versionable_node_type'
+
+// Properties:
+- drools:content (string)
+  mandatory
+  
+- drools:function_language (string)
+  = 'Java'
+  mandatory autocreated
+
+- drools:tag_reference (reference)
+  multiple 
+  copy
+  < 'drools:tag_node_type'
+
+- drools:state_reference (reference)
+  copy
+  < 'drools:state_node_type'

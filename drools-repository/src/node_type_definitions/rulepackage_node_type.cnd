@@ -17,3 +17,8 @@
   multiple
   copy
   < 'drools:rule_node_type','nt:version'
+  
+- drools:function_reference (reference)
+  multiple
+  copy
+  < 'drools:function_node_type','nt:version'

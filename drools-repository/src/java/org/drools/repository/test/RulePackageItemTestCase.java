@@ -140,6 +140,117 @@ public class RulePackageItemTestCase extends TestCase {
         }
     }
 
+    public void testAddFunctionFunctionItem() {
+        try {
+            RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
+            
+            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+            
+            rulePackageItem1.addFunction(functionItem1);
+            
+            List functions = rulePackageItem1.getFunctions();
+            assertNotNull(functions);
+            assertEquals(1, functions.size());
+            assertEquals("test function", ((FunctionItem)functions.get(0)).getName());
+            
+            //test that it is following the head revision                        
+            functionItem1.updateContent("new content");
+            functions = rulePackageItem1.getFunctions();
+            assertNotNull(functions);
+            assertEquals(1, functions.size());
+            assertEquals("test function", ((FunctionItem)functions.get(0)).getName());
+            assertEquals("new content", ((FunctionItem)functions.get(0)).getContent());
+                        
+            FunctionItem functionItem2 = this.rulesRepository.addFunction("test function 2", "test content");
+            rulePackageItem1.addFunction(functionItem2);
+            
+            functions = rulePackageItem1.getFunctions();
+            assertNotNull(functions);
+            assertEquals(2, functions.size());                          
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            fail("Caught unexpected exception: " + e);
+        }
+    }
+
+    public void testAddFunctionFunctionItemBoolean() {
+        try {
+            RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
+            
+            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+            
+            rulePackageItem1.addFunction(functionItem1, true);
+            
+            List functions = rulePackageItem1.getFunctions();
+            assertNotNull(functions);
+            assertEquals(1, functions.size());
+            assertEquals("test function", ((FunctionItem)functions.get(0)).getName());
+            
+            //test that it is following the head revision                        
+            functionItem1.updateContent("new content");
+            functions = rulePackageItem1.getFunctions();
+            assertNotNull(functions);
+            assertEquals(1, functions.size());
+            assertEquals("test function", ((FunctionItem)functions.get(0)).getName());
+            assertEquals("new content", ((FunctionItem)functions.get(0)).getContent());
+            
+            FunctionItem functionItem2 = this.rulesRepository.addFunction("test function 2", "test content");
+            rulePackageItem1.addFunction(functionItem2);
+            
+            functions = rulePackageItem1.getFunctions();
+            assertNotNull(functions);
+            assertEquals(2, functions.size());
+            
+            //test not following the head revision
+            rulePackageItem1.removeAllFunctions();
+            FunctionItem functionItem3 = this.rulesRepository.addFunction("test function 3", "test content");
+            
+            rulePackageItem1.addFunction(functionItem3, false);
+            
+            functions = rulePackageItem1.getFunctions();
+            assertNotNull(functions);
+            assertEquals(1, functions.size());
+            assertEquals("test content", ((FunctionItem)functions.get(0)).getContent());
+                                    
+            functionItem3.updateContent("new content");
+            functions = rulePackageItem1.getFunctions();
+            assertNotNull(functions);
+            assertEquals(1, functions.size());
+            assertEquals("test content", ((FunctionItem)functions.get(0)).getContent());
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            fail("Caught unexpected exception: " + e);
+        }
+    }
+
+    public void testGetFunctions() {
+        try {
+            RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
+                        
+            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+            
+            rulePackageItem1.addFunction(functionItem1);
+            
+            List functions = rulePackageItem1.getFunctions();
+            assertNotNull(functions);
+            assertEquals(1, functions.size());
+            assertEquals("test function", ((FunctionItem)functions.get(0)).getName());
+                                  
+            FunctionItem functionItem2 = this.rulesRepository.addFunction("test function 2", "test content");
+            rulePackageItem1.addFunction(functionItem2);
+            
+            functions = rulePackageItem1.getFunctions();
+            assertNotNull(functions);
+            assertEquals(2, functions.size());            
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            fail("Caught unexpected exception: " + e);
+        }
+    }
+    
     public void testGetRules() {
         try {
             RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
@@ -241,6 +352,73 @@ public class RulePackageItemTestCase extends TestCase {
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(0, rules.size());            
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            fail("Caught unexpected exception: " + e);
+        }
+    }    
+    
+    public void testRemoveFunction() {
+        try {
+            RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
+            
+            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+            
+            rulePackageItem1.addFunction(functionItem1);
+            
+            List functions = rulePackageItem1.getFunctions();
+            assertNotNull(functions);
+            assertEquals(1, functions.size());
+            assertEquals("test function", ((FunctionItem)functions.get(0)).getName());
+                                    
+            functionItem1.updateContent("new content");
+            functions = rulePackageItem1.getFunctions();
+            assertNotNull(functions);
+            assertEquals(1, functions.size());
+            assertEquals("test function", ((FunctionItem)functions.get(0)).getName());
+            assertEquals("new content", ((FunctionItem)functions.get(0)).getContent());
+            
+            FunctionItem functionItem2 = this.rulesRepository.addFunction("test function 2", "test content");
+            rulePackageItem1.addFunction(functionItem2);
+            
+            //remove the function, make sure the other function in the package stays around
+            rulePackageItem1.removeFunction(functionItem1);
+            functions = rulePackageItem1.getFunctions();
+            assertEquals(1, functions.size());
+            assertEquals("test function 2", ((FunctionItem)functions.get(0)).getName());
+            
+            //remove the function that is following the head revision, make sure the package is now empty
+            rulePackageItem1.removeFunction(functionItem2);
+            functions = rulePackageItem1.getFunctions();
+            assertNotNull(functions);
+            assertEquals(0, functions.size());
+                        
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            fail("Caught unexpected exception: " + e);
+        }
+    }
+    
+    public void testRemoveAllFunctions() {
+        try {
+            RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
+            
+            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+            
+            rulePackageItem1.addFunction(functionItem1);
+            
+            List functions = rulePackageItem1.getFunctions();
+            assertNotNull(functions);
+            assertEquals(1, functions.size());
+            assertEquals("test function", ((FunctionItem)functions.get(0)).getName());
+            
+            rulePackageItem1.removeAllFunctions();
+            
+            functions = rulePackageItem1.getFunctions();
+            assertNotNull(functions);
+            assertEquals(0, functions.size());            
         }
         catch(Exception e) {
             e.printStackTrace();

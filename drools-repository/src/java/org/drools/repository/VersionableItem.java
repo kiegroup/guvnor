@@ -45,6 +45,7 @@ public abstract class VersionableItem extends Item {
     public static final String RULE_FORMAT = "Rule";    
     public static final String DSL_FORMAT = "DSL";
     public static final String RULE_PACKAGE_FORMAT = "Rule Package";
+    public static final String FUNCTION_FORMAT = "Function";
     
     /**
      * Sets this object's node attribute to the specified node
@@ -279,6 +280,29 @@ public abstract class VersionableItem extends Item {
         }
     }       
 
+    /**
+     * @return the date the function node (this version) was last modified
+     * @throws RulesRepositoryException
+     */
+    public Calendar getLastModified() throws RulesRepositoryException {
+        try {                        
+            Node theNode;
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                theNode = this.node.getNode("jcr:frozenNode");
+            }
+            else {
+                theNode = this.node;
+            }
+                        
+            Property lastModifiedProperty = theNode.getProperty("drools:last_modified");
+            return lastModifiedProperty.getDate();
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+        
     /**
      * Creates a new version of this object's node, updating the description content 
      * for the node.
