@@ -329,8 +329,7 @@ public class RulePackageItem extends VersionableItem {
      * 
      * @return the List object holding the FunctionItem objects in this rule package
      * @throws RulesRepositoryException 
-     */
-    @SuppressWarnings("unchecked")
+     */   
     public List getFunctions() throws RulesRepositoryException {
         try {                       
             Value[] valueArray = this.node.getProperty(FUNCTION_REFERENCE_PROPERTY_NAME).getValues();
@@ -358,7 +357,6 @@ public class RulePackageItem extends VersionableItem {
      * @return the List object holding the RuleItem objects in this rule package
      * @throws RulesRepositoryException 
      */
-    @SuppressWarnings("unchecked")
     public List getRules() throws RulesRepositoryException {
         try {                       
             Value[] valueArray = this.node.getProperty(RULE_REFERENCE_PROPERTY_NAME).getValues();

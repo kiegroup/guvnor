@@ -944,7 +944,6 @@ public class RulesRepository {
      * Only the latest versions of each FunctionItem will be returned (you will have 
      * to delve into the functions' deepest darkest history yourself... mahahahaha).
      */
-    @SuppressWarnings("unchecked")
     public List findFunctionsByTag(String categoryTag) throws RulesRepositoryException {        
         CategoryItem item = this.getOrCreateCategory( categoryTag );
         List results = new ArrayList();
@@ -971,7 +970,6 @@ public class RulesRepository {
      * Only the latest versions of each RuleItem will be returned (you will have 
      * to delve into the rules deepest darkest history yourself... mahahahaha).
      */
-    @SuppressWarnings("unchecked")
     public List findRulesByTag(String categoryTag) throws RulesRepositoryException {
         
         CategoryItem item = this.getOrCreateCategory( categoryTag );
@@ -1010,7 +1008,6 @@ public class RulesRepository {
      * This will provide a list of top level category strings. 
      * Use getCategory to get a specific category to drill down into it.
      */
-    @SuppressWarnings("unchecked")
     public List listCategoryNames() throws RulesRepositoryException {
         try {
             

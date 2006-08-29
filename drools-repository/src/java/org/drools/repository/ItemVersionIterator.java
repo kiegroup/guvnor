@@ -53,7 +53,7 @@ public class ItemVersionIterator implements Iterator {
         else {
             //shouldn't reach this block
             log.error("Reached unexpected path of execution because iterationType is set to: " + this.iterationType);
-            return false;
+            return null;
         }
         
         if(this.currentVersionableItem == null) {

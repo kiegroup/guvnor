@@ -304,7 +304,6 @@ public class FunctionItem extends VersionableItem {
      * @return a list of TagItem objects for each tag on the node. If there are no tags, an empty list. 
      * @throws RulesRepositoryException
      */
-    @SuppressWarnings("unchecked")
     public List getTags() throws RulesRepositoryException {
         try {                            
             Node functionNode;

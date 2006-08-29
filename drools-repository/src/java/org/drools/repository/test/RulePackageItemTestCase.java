@@ -21,7 +21,7 @@ public class RulePackageItemTestCase extends TestCase {
         this.rulesRepository.logout();
     }
 
-    public void testRulePackageItem() {
+    public void testRulePackageItem() throws Exception {
         try {
             //calls constructor
             RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
@@ -252,7 +252,6 @@ public class RulePackageItemTestCase extends TestCase {
     }
     
     public void testGetRules() {
-        try {
             RulePackageItem rulePackageItem1 = this.rulesRepository.createRulePackage("testRulePackage");
                         
             RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
@@ -270,11 +269,7 @@ public class RulePackageItemTestCase extends TestCase {
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(2, rules.size());            
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-            fail("Caught unexpected exception: " + e);
-        }
+
     }
 
     public void testToString() {

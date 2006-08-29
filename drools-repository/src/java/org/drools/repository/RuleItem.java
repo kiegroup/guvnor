@@ -537,7 +537,6 @@ public class RuleItem extends VersionableItem {
      * @return a list of TagItem objects for each tag on the rule. If there are no tags, an empty list. 
      * @throws RulesRepositoryException
      */
-    @SuppressWarnings("unchecked")
     public List getTags() throws RulesRepositoryException {
         try {                            
             Node ruleNode;
