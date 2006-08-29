@@ -322,15 +322,15 @@ public class RulesRepositoryTestCase extends TestCase {
     }
     
     public void testListPackages() {
-        RulesRepository rulesRepository = null;
+        RulesRepository rulesRepository = RepositorySession.getRepository();
         try {
-            RulePackageItem rulePackageItem1 = rulesRepository.createRulePackage("testRulePacakge");
+            RulePackageItem rulePackageItem1 = rulesRepository.createRulePackage("testListPackages");
             
             Iterator it = rulesRepository.listPackages();
             assertTrue(it.hasNext());
             
             RulePackageItem pack = (RulePackageItem) it.next();
-            assertEquals("testRulePackage", pack.getName());
+            assertEquals("testListPackages", pack.getName());
         }
         catch(Exception e) {
             fail("Caught unexpected exception: " + e);

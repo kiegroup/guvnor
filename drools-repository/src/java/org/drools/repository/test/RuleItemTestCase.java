@@ -10,26 +10,20 @@ import junit.framework.TestCase;
 import org.drools.repository.*;
 
 public class RuleItemTestCase extends TestCase {
-    private RulesRepository rulesRepository;
+
+
+    public RulesRepository getRepo() {
+        return RepositorySession.getRepository();
+    }
     
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.rulesRepository = new RulesRepository(true);
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        rulesRepository.logout();
-    }
-
     public void testRuleItem() {
         try {            
             //calls constructor
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testRuleItem", "test lhs content", "test rhs content");
             
             assertNotNull(ruleItem1);
             assertNotNull(ruleItem1.getNode());
-            assertEquals("test rule", ruleItem1.getName());
+            assertEquals("testRuleItem", ruleItem1.getName());
         }
         catch(Exception e) {
             fail("Caught unexpected exception: " + e);
@@ -38,8 +32,8 @@ public class RuleItemTestCase extends TestCase {
         //try constructing with node of wrong type
         try {
             File dslFile1 = new File("./src/java/org/drools/repository/test/test_data/dsl1.dsl");
-            DslItem dslItem = rulesRepository.addDslFromFile(dslFile1);
-            RuleItem ruleItem = new RuleItem(this.rulesRepository, dslItem.getNode());
+            DslItem dslItem = getRepo().addDslFromFile(dslFile1);
+            RuleItem ruleItem = new RuleItem(getRepo(), dslItem.getNode());
             fail("Exception not thrown for node of type: " + dslItem.getNode().getPrimaryNodeType().getName());
         }
         catch(RulesRepositoryException e) {
@@ -51,90 +45,71 @@ public class RuleItemTestCase extends TestCase {
     }
 
     public void testGetLhs() {
-        try {            
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            
+            RuleItem ruleItem1 = getRepo().addRule("testGetLhs", "test lhs content", "test rhs content");
             
             assertNotNull(ruleItem1);
             assertNotNull(ruleItem1.getNode());
             assertEquals("test lhs content", ruleItem1.getLhs());
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }
 
     public void testGetRhs() {
-        try {            
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testGetRhs", "test lhs content", "test rhs content");
             
             assertNotNull(ruleItem1);
             assertNotNull(ruleItem1.getNode());
             assertEquals("test rhs content", ruleItem1.getRhs());
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
+
     }
     
     public void testUpdateLhs() {
-        //TODO: maybe add some testing on the versioning stuff more - check the content of the
-        //      previous version, etc.
-        try {                        
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testUpdateLhs", "test lhs content", "test rhs content");
                         
             ruleItem1.updateLhs("new lhs content");
             
             assertEquals("new lhs content", ruleItem1.getLhs());
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
+            
+            RuleItem prev = (RuleItem) ruleItem1.getPredecessorVersionsIterator().next();
+            assertEquals("test lhs content", prev.getLhs());
+            
+            assertEquals(prev, ruleItem1.getPrecedingVersion());
+
     }
     
     public void testUpdateRhs() {
-        //TODO: maybe add some testing on the versioning stuff more - check the content of the
-        //      previous version, etc.
-        try {                        
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
-                        
-            ruleItem1.updateRhs("new rhs content");
-            
+            RuleItem ruleItem1 = getRepo().addRule("testUpdateRhs", "test lhs content", "test rhs content");                        
+            ruleItem1.updateRhs("new rhs content");            
             assertEquals("new rhs content", ruleItem1.getRhs());
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
+            RuleItem prev = (RuleItem) ruleItem1.getPrecedingVersion();
+            assertEquals("test rhs content", prev.getRhs());
+            
     }
 
     public void testAddTag() {
-        try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testAddTag", "test lhs content", "test rhs content");
             
-            ruleItem1.addTag("TestTag");
+            ruleItem1.addTag("testAddTagTestTag");
             List tags = ruleItem1.getTags();
             assertEquals(1, tags.size());
-            assertEquals("TestTag", ((CategoryItem)tags.get(0)).getName());
+            assertEquals("testAddTagTestTag", ((CategoryItem)tags.get(0)).getName());
             
-            ruleItem1.addTag("TestTag2");
+            ruleItem1.addTag("testAddTagTestTag2");
             tags = ruleItem1.getTags();
             assertEquals(2, tags.size());   
             
             
             //now test retrieve by tags
-            List result = this.rulesRepository.findRulesByTag("TestTag");            
+            List result = getRepo().findRulesByTag("testAddTagTestTag");            
             assertEquals(1, result.size());            
             RuleItem retItem = (RuleItem) result.get( 0 );
-            assertEquals("test rule", retItem.getName());
+            assertEquals("testAddTag", retItem.getName());
             
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
+
     }
 
     public void testRemoveTag() {
         try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("test rule", "test lhs content", "test rhs content");
             
             ruleItem1.addTag("TestTag");                                    
             ruleItem1.removeTag("TestTag");
@@ -154,26 +129,21 @@ public class RuleItemTestCase extends TestCase {
     }
 
     public void testGetTags() {
-        try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testGetTags", "test lhs content", "test rhs content");
            
             List tags = ruleItem1.getTags();
             assertNotNull(tags);
             assertEquals(0, tags.size());
             
-            ruleItem1.addTag("TestTag");                                    
+            ruleItem1.addTag("testGetTagsTestTag");                                    
             tags = ruleItem1.getTags();
             assertEquals(1, tags.size());
-            assertEquals("TestTag", ((CategoryItem)tags.get(0)).getName());
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
+            assertEquals("testGetTagsTestTag", ((CategoryItem)tags.get(0)).getName());
+
     }
 
     public void testSetStateString() {
-        try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testSetStateString", "test lhs content", "test rhs content");
            
             ruleItem1.setState("TestState1");
             assertNotNull(ruleItem1.getState());
@@ -182,34 +152,26 @@ public class RuleItemTestCase extends TestCase {
             ruleItem1.setState("TestState2");
             assertNotNull(ruleItem1.getState());
             assertEquals("TestState2", ruleItem1.getState().getName());            
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
+
     }
 
     public void testSetStateStateItem() {
-        try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testSetStateStateItem", "test lhs content", "test rhs content");
            
-            StateItem stateItem1 = rulesRepository.getState("TestState1");
+            StateItem stateItem1 = getRepo().getState("TestState1");
             ruleItem1.setState(stateItem1);            
             assertNotNull(ruleItem1.getState());
             assertEquals(ruleItem1.getState().getName(), "TestState1");
             
-            StateItem stateItem2 = rulesRepository.getState("TestState2");
+            StateItem stateItem2 = getRepo().getState("TestState2");
             ruleItem1.setState(stateItem2);
             assertNotNull(ruleItem1.getState());
             assertEquals("TestState2", ruleItem1.getState().getName());            
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
+
     }
 
     public void testGetState() {
-        try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testGetState", "test lhs content", "test rhs content");
            
             StateItem stateItem1 = ruleItem1.getState();
             assertNull(stateItem1);
@@ -217,26 +179,17 @@ public class RuleItemTestCase extends TestCase {
             ruleItem1.setState("TestState1");
             assertNotNull(ruleItem1.getState());
             assertEquals("TestState1", ruleItem1.getState().getName());                        
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }
 
     public void testToString() {
-        try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testToString", "test lhs content", "test rhs content");
            
             assertNotNull(ruleItem1.toString());                        
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
+
     }
     
     public void testGetLastModified() {
-        try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testGetLastModified", "test lhs content", "test rhs content");
            
             Calendar cal = Calendar.getInstance();
             long before = cal.getTimeInMillis();           
@@ -250,15 +203,12 @@ public class RuleItemTestCase extends TestCase {
             assertTrue(before < after);
             assertTrue(before < lastMod);
             assertTrue(lastMod < after);
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
+
     }
     
     public void testGetDateEffective() {
-        try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+
+            RuleItem ruleItem1 = getRepo().addRule("testGetDateEffective", "test lhs content", "test rhs content");
            
             //it should be initialized to null
             assertTrue(ruleItem1.getDateEffective() == null);
@@ -269,15 +219,11 @@ public class RuleItemTestCase extends TestCase {
             Calendar cal2 = ruleItem1.getDateEffective();
             
             assertEquals(cal, cal2);            
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }
     
     public void testGetDateExpired() {
         try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testGetDateExpired", "test lhs content", "test rhs content");
            
             //it should be initialized to null
             assertTrue(ruleItem1.getDateExpired() == null);
@@ -296,7 +242,7 @@ public class RuleItemTestCase extends TestCase {
     
     public void testGetRuleLanguage() {
         try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testGetRuleLanguage", "test lhs content", "test rhs content");
            
             //it should be initialized to 'DRL'
             assertEquals("DRL", ruleItem1.getRuleLanguage());                        
@@ -307,23 +253,17 @@ public class RuleItemTestCase extends TestCase {
     }
     
     public void testGetDescription() {
-        try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testGetDescription", "test lhs content", "test rhs content");
             
             //it should be "" to begin with
             assertEquals("", ruleItem1.getDescription());
             
             ruleItem1.updateDescription("test description");
             assertEquals("test description", ruleItem1.getDescription());
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }
     
     public void testGetPrecedingVersion() {
-        try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testGetPrecedingVersion", "test lhs content", "test rhs content");
             
             RuleItem predecessorRuleItem = (RuleItem) ruleItem1.getPrecedingVersion();
             assertTrue(predecessorRuleItem == null);            
@@ -342,15 +282,12 @@ public class RuleItemTestCase extends TestCase {
             predecessorRuleItem = (RuleItem) predecessorRuleItem.getPrecedingVersion();
             assertNotNull(predecessorRuleItem);
             assertEquals("test lhs content", predecessorRuleItem.getLhs());
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }   
+ 
     }
     
     public void testGetSucceedingVersion() {
         try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testGetSucceedingVersion", "test lhs content", "test rhs content");
             
             RuleItem succeedingRuleItem = (RuleItem) ruleItem1.getSucceedingVersion();
             assertTrue(succeedingRuleItem == null);            
@@ -370,7 +307,7 @@ public class RuleItemTestCase extends TestCase {
     
     public void testGetSuccessorVersionsIterator() {
         try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");                        
+            RuleItem ruleItem1 = getRepo().addRule("testGetSuccessorVersionsIterator", "test lhs content", "test rhs content");                        
             
             Iterator iterator = ruleItem1.getSuccessorVersionsIterator();            
             assertNotNull(iterator);
@@ -409,7 +346,7 @@ public class RuleItemTestCase extends TestCase {
     
     public void testGetPredecessorVersionsIterator() {
         try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");                        
+            RuleItem ruleItem1 = getRepo().addRule("testGetPredecessorVersionsIterator", "test lhs content", "test rhs content");                        
             
             Iterator iterator = ruleItem1.getPredecessorVersionsIterator();            
             assertNotNull(iterator);
@@ -443,23 +380,18 @@ public class RuleItemTestCase extends TestCase {
     
     public void testGetTitle() {    
         try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");            
+            RuleItem ruleItem1 = getRepo().addRule("testGetTitle", "test lhs content", "test rhs content");            
                         
-            assertEquals("test rule", ruleItem1.getTitle());
+            assertEquals("testGetTitle", ruleItem1.getTitle());
         }
         catch(Exception e) {
             fail("Caught unexpected exception: " + e);
         }
     }
     
-    public void testGetContributor() {
-        //can't implement this until we figure out login / JAAS stuff.
-        fail("not yet implemented");        
-    }
-    
     public void testGetFormat() {        
         try {
-            RuleItem ruleItem1 = this.rulesRepository.addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testGetFormat", "test lhs content", "test rhs content");
             
             assertEquals("Rule", ruleItem1.getFormat());            
         }
