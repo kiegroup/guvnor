@@ -406,7 +406,7 @@ public class RuleItem extends VersionableItem {
      * @param tag the tag to add to the rule. rules can have multiple tags
      * @throws RulesRepositoryException 
      */
-    public void addTag(String tag) throws RulesRepositoryException {
+    public void addCategory(String tag) throws RulesRepositoryException {
         try {
             //make sure this object's node is the head version
             if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
@@ -464,7 +464,7 @@ public class RuleItem extends VersionableItem {
      * @param tag the tag to remove from the rule
      * @throws RulesRepositoryException 
      */
-    public void removeTag(String tag) throws RulesRepositoryException {
+    public void removeCategory(String tag) throws RulesRepositoryException {
         //TODO: implement if the removed tag no longer has anyone referencing it, remove the tag (are we sure we want to do this, for versioning's sake?)
         try {
             //make sure this object's node is the head version
@@ -537,7 +537,7 @@ public class RuleItem extends VersionableItem {
      * @return a list of TagItem objects for each tag on the rule. If there are no tags, an empty list. 
      * @throws RulesRepositoryException
      */
-    public List getTags() throws RulesRepositoryException {
+    public List getCategories() throws RulesRepositoryException {
         try {                            
             Node ruleNode;
             if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
@@ -688,7 +688,7 @@ public class RuleItem extends VersionableItem {
             returnString.append("------\n");
             
             returnString.append("Rule tags:\n");
-            for(Iterator it=this.getTags().iterator(); it.hasNext();) {
+            for(Iterator it=this.getCategories().iterator(); it.hasNext();) {
                 CategoryItem currentTag = (CategoryItem)it.next();
                 returnString.append(currentTag.getName() + "\n");
             }

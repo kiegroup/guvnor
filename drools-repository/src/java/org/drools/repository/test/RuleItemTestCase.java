@@ -31,8 +31,8 @@ public class RuleItemTestCase extends TestCase {
         
         //try constructing with node of wrong type
         try {
-            File dslFile1 = new File("./src/java/org/drools/repository/test/test_data/dsl1.dsl");
-            DslItem dslItem = getRepo().addDslFromFile(dslFile1);
+            
+            DslItem dslItem = getRepo().addDsl("testRuleItem", "content here");
             RuleItem ruleItem = new RuleItem(getRepo(), dslItem.getNode());
             fail("Exception not thrown for node of type: " + dslItem.getNode().getPrimaryNodeType().getName());
         }
@@ -88,13 +88,13 @@ public class RuleItemTestCase extends TestCase {
     public void testAddTag() {
             RuleItem ruleItem1 = getRepo().addRule("testAddTag", "test lhs content", "test rhs content");
             
-            ruleItem1.addTag("testAddTagTestTag");
-            List tags = ruleItem1.getTags();
+            ruleItem1.addCategory("testAddTagTestTag");
+            List tags = ruleItem1.getCategories();
             assertEquals(1, tags.size());
             assertEquals("testAddTagTestTag", ((CategoryItem)tags.get(0)).getName());
             
-            ruleItem1.addTag("testAddTagTestTag2");
-            tags = ruleItem1.getTags();
+            ruleItem1.addCategory("testAddTagTestTag2");
+            tags = ruleItem1.getCategories();
             assertEquals(2, tags.size());   
             
             
@@ -108,35 +108,31 @@ public class RuleItemTestCase extends TestCase {
     }
 
     public void testRemoveTag() {
-        try {
-            RuleItem ruleItem1 = getRepo().addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testRemoveTag", "test lhs content", "test rhs content");
             
-            ruleItem1.addTag("TestTag");                                    
-            ruleItem1.removeTag("TestTag");
-            List tags = ruleItem1.getTags();
+            ruleItem1.addCategory("TestTag");                                    
+            ruleItem1.removeCategory("TestTag");
+            List tags = ruleItem1.getCategories();
             assertEquals(0, tags.size());
             
-            ruleItem1.addTag("TestTag2");                                    
-            ruleItem1.addTag("TestTag3");
-            ruleItem1.removeTag("TestTag2");
-            tags = ruleItem1.getTags();
+            ruleItem1.addCategory("TestTag2");                                    
+            ruleItem1.addCategory("TestTag3");
+            ruleItem1.removeCategory("TestTag2");
+            tags = ruleItem1.getCategories();
             assertEquals(1, tags.size());
             assertEquals("TestTag3", ((CategoryItem)tags.get(0)).getName());            
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
+
     }
 
     public void testGetTags() {
             RuleItem ruleItem1 = getRepo().addRule("testGetTags", "test lhs content", "test rhs content");
            
-            List tags = ruleItem1.getTags();
+            List tags = ruleItem1.getCategories();
             assertNotNull(tags);
             assertEquals(0, tags.size());
             
-            ruleItem1.addTag("testGetTagsTestTag");                                    
-            tags = ruleItem1.getTags();
+            ruleItem1.addCategory("testGetTagsTestTag");                                    
+            tags = ruleItem1.getCategories();
             assertEquals(1, tags.size());
             assertEquals("testGetTagsTestTag", ((CategoryItem)tags.get(0)).getName());
 

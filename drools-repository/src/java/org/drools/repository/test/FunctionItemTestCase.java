@@ -10,26 +10,18 @@ import junit.framework.TestCase;
 import org.drools.repository.*;
 
 public class FunctionItemTestCase extends TestCase {
-    private RulesRepository rulesRepository;
-    
-    protected void setUp() throws Exception {
-        super.setUp();
-        this.rulesRepository = new RulesRepository(true);
-    }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        rulesRepository.logout();
-    }
+    
+    
 
     public void testFunctionItem() {
         try {            
             //calls constructor
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+            FunctionItem functionItem1 = this.getRepo().addFunction("testFunctionItem", "test content");
             
             assertNotNull(functionItem1);
             assertNotNull(functionItem1.getNode());
-            assertEquals("test function", functionItem1.getName());            
+            assertEquals("testFunctionItem", functionItem1.getName());            
         }
         catch(Exception e) {
             fail("Caught unexpected exception: " + e);
@@ -37,9 +29,9 @@ public class FunctionItemTestCase extends TestCase {
         
         //try constructing with node of wrong type
         try {
-            File dslFile1 = new File("./src/java/org/drools/repository/test/test_data/dsl1.dsl");
-            DslItem dslItem = rulesRepository.addDslFromFile(dslFile1);
-            FunctionItem functionItem = new FunctionItem(this.rulesRepository, dslItem.getNode());
+            
+            DslItem dslItem = getRepo().addDsl("testFunctionItem", "content here");
+            FunctionItem functionItem = new FunctionItem(this.getRepo(), dslItem.getNode());
             fail("Exception not thrown for node of type: " + dslItem.getNode().getPrimaryNodeType().getName());
         }
         catch(RulesRepositoryException e) {
@@ -51,60 +43,42 @@ public class FunctionItemTestCase extends TestCase {
     }
 
     public void testGetContent() {
-        try {            
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+            FunctionItem functionItem1 = this.getRepo().addFunction("testGetContent", "test content");
             
             assertNotNull(functionItem1);
             assertNotNull(functionItem1.getNode());
             assertEquals("test content", functionItem1.getContent());
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }
     
     public void testUpdateContent() {
-        //TODO: maybe add some testing on the versioning stuff more - check the content of the
-        //      previous version, etc.
-        try {                        
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+            FunctionItem functionItem1 = this.getRepo().addFunction("testUpdateContent", "test content");
                         
             functionItem1.updateContent("new content");
             
             assertEquals("new content", functionItem1.getContent());
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }
         
-    public void testAddTag() {
-        try {
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+    public void testAddCategory() {
+            FunctionItem functionItem1 = this.getRepo().addFunction("testAddCategory", "test content");
             
-            functionItem1.addTag("TestTag");
+            functionItem1.addTag("testAddCategoryTestTag");
             List tags = functionItem1.getTags();
             assertEquals(1, tags.size());
-            assertEquals("TestTag", ((CategoryItem)tags.get(0)).getName());
+            assertEquals("testAddCategoryTestTag", ((CategoryItem)tags.get(0)).getName());
             
-            functionItem1.addTag("TestTag2");
+            functionItem1.addTag("testAddCategoryTestTag2");
             tags = functionItem1.getTags();
             assertEquals(2, tags.size());   
                         
             //now test retrieve by tags
-            List result = this.rulesRepository.findFunctionsByTag("TestTag");            
+            List result = this.getRepo().findFunctionsByTag("testAddCategoryTestTag");            
             assertEquals(1, result.size());            
             FunctionItem retItem = (FunctionItem) result.get(0);
-            assertEquals("test function", retItem.getName());            
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
+            assertEquals("testAddCategory", retItem.getName());            
     }
 
     public void testRemoveTag() {
-        try {
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+            FunctionItem functionItem1 = this.getRepo().addFunction("testRemoveTag", "test content");
             
             functionItem1.addTag("TestTag");                                    
             functionItem1.removeTag("TestTag");
@@ -117,15 +91,10 @@ public class FunctionItemTestCase extends TestCase {
             tags = functionItem1.getTags();
             assertEquals(1, tags.size());
             assertEquals("TestTag3", ((CategoryItem)tags.get(0)).getName());            
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }
 
     public void testGetTags() {
-        try {
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+            FunctionItem functionItem1 = this.getRepo().addFunction("testGetTags", "test content");
            
             List tags = functionItem1.getTags();
             assertNotNull(tags);
@@ -135,15 +104,10 @@ public class FunctionItemTestCase extends TestCase {
             tags = functionItem1.getTags();
             assertEquals(1, tags.size());
             assertEquals("TestTag", ((CategoryItem)tags.get(0)).getName());
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }
 
     public void testSetStateString() {
-        try {
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+            FunctionItem functionItem1 = this.getRepo().addFunction("testSetStateString", "test content");
            
             functionItem1.setState("TestState1");
             assertNotNull(functionItem1.getState());
@@ -152,34 +116,24 @@ public class FunctionItemTestCase extends TestCase {
             functionItem1.setState("TestState2");
             assertNotNull(functionItem1.getState());
             assertEquals("TestState2", functionItem1.getState().getName());            
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }
 
     public void testSetStateStateItem() {
-        try {
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test content", "test content");
+            FunctionItem functionItem1 = this.getRepo().addFunction("testSetStateStateItem", "test content");
            
-            StateItem stateItem1 = rulesRepository.getState("TestState1");
+            StateItem stateItem1 = getRepo().getState("TestState1");
             functionItem1.setState(stateItem1);            
             assertNotNull(functionItem1.getState());
             assertEquals(functionItem1.getState().getName(), "TestState1");
             
-            StateItem stateItem2 = rulesRepository.getState("TestState2");
+            StateItem stateItem2 = getRepo().getState("TestState2");
             functionItem1.setState(stateItem2);
             assertNotNull(functionItem1.getState());
             assertEquals("TestState2", functionItem1.getState().getName());            
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }
 
     public void testGetState() {
-        try {
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+            FunctionItem functionItem1 = this.getRepo().addFunction("testGetState", "test content");
            
             StateItem stateItem1 = functionItem1.getState();
             assertNull(stateItem1);
@@ -187,46 +141,24 @@ public class FunctionItemTestCase extends TestCase {
             functionItem1.setState("TestState1");
             assertNotNull(functionItem1.getState());
             assertEquals("TestState1", functionItem1.getState().getName());                        
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }
 
     public void testToString() {
-        try {
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
-           
+            FunctionItem functionItem1 = this.getRepo().addFunction("testToString", "test content");           
             assertNotNull(functionItem1.toString());                        
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }
     
-    public void testGetLastModified() {
-        //common functionality with FunctionItem - tested there
-    }
         
     public void testFunctionRuleLanguage() {
-        try {
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+            FunctionItem functionItem1 = this.getRepo().addFunction("testFunctionRuleLanguage", "test content");
            
             //it should be initialized to 'Java'
             assertEquals("Java", functionItem1.getFunctionLanguage());                        
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }
     
-    public void testGetDescription() {
-        //common functionality with FunctionItem - tested there
-    }
     
     public void testGetPrecedingVersion() {
-        try {
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+            FunctionItem functionItem1 = this.getRepo().addFunction("testGetPrecedingVersion", "test content");
             
             FunctionItem predecessorFunctionItem = (FunctionItem) functionItem1.getPrecedingVersion();
             assertTrue(predecessorFunctionItem == null);            
@@ -245,15 +177,10 @@ public class FunctionItemTestCase extends TestCase {
             predecessorFunctionItem = (FunctionItem) predecessorFunctionItem.getPrecedingVersion();
             assertNotNull(predecessorFunctionItem);
             assertEquals("test content", predecessorFunctionItem.getContent());
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }   
     }
     
     public void testGetSucceedingVersion() {
-        try {
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
+            FunctionItem functionItem1 = this.getRepo().addFunction("testGetSucceedingVersion", "test content");
             
             FunctionItem succeedingFunctionItem = (FunctionItem) functionItem1.getSucceedingVersion();
             assertTrue(succeedingFunctionItem == null);            
@@ -265,15 +192,10 @@ public class FunctionItemTestCase extends TestCase {
             succeedingFunctionItem = (FunctionItem) predecessorFunctionItem.getSucceedingVersion();
             assertNotNull(succeedingFunctionItem);
             assertEquals(functionItem1.getContent(), succeedingFunctionItem.getContent());                       
-        }        
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }   
     } 
     
     public void testGetSuccessorVersionsIterator() {
-        try {
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");                        
+            FunctionItem functionItem1 = this.getRepo().addFunction("testGetSuccessorVersionsIterator", "test content");                        
             
             Iterator iterator = functionItem1.getSuccessorVersionsIterator();            
             assertNotNull(iterator);
@@ -304,15 +226,10 @@ public class FunctionItemTestCase extends TestCase {
             nextFunctionItem = (FunctionItem)iterator.next();
             assertEquals("newer content", nextFunctionItem.getContent());
             assertFalse(iterator.hasNext());            
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }
     
     public void testGetPredecessorVersionsIterator() {
-        try {
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");                        
+            FunctionItem functionItem1 = this.getRepo().addFunction("testGetPredecessorVersionsIterator", "test content");                        
             
             Iterator iterator = functionItem1.getPredecessorVersionsIterator();            
             assertNotNull(iterator);
@@ -338,36 +255,21 @@ public class FunctionItemTestCase extends TestCase {
             nextFunctionItem = (FunctionItem) iterator.next();
             assertFalse(iterator.hasNext());
             assertEquals("test content", nextFunctionItem.getContent());
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }
     
     public void testGetTitle() {    
-        try {
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");            
-                        
-            assertEquals("test function", functionItem1.getTitle());
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
+            FunctionItem functionItem1 = this.getRepo().addFunction("testGetTitle", "test content");            
+            assertEquals("testGetTitle", functionItem1.getTitle());
     }
     
-    public void testGetContributor() {
-        //can't implement this until we figure out login / JAAS stuff.
-        fail("not yet implemented");        
-    }
     
     public void testGetFormat() {        
-        try {
-            FunctionItem functionItem1 = this.rulesRepository.addFunction("test function", "test content");
-            
+            FunctionItem functionItem1 = this.getRepo().addFunction("testGetFormat", "test content");
             assertEquals("Function", functionItem1.getFormat());            
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
+    }
+
+    private RulesRepository getRepo() {
+
+        return RepositorySession.getRepository();
     }        
 }

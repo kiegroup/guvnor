@@ -88,7 +88,7 @@ public class DslItem extends VersionableItem {
      *             dsl node
      * @throws RulesRepositoryException
      */
-    public void updateContentFromFile(File file) throws RulesRepositoryException {
+    public void updateContent(String content) throws RulesRepositoryException {
         try {
             this.node.checkout();
         }
@@ -114,9 +114,9 @@ public class DslItem extends VersionableItem {
             Node resNode = this.node.getNode("jcr:content");
             resNode.setProperty("jcr:mimeType", "text/plain");
             resNode.setProperty("jcr:encoding", System.getProperty("file.encoding")); //TODO: is this right?
-            resNode.setProperty("jcr:data", new FileInputStream(file));
+            resNode.setProperty("jcr:data", content);
             Calendar lastModified = Calendar.getInstance();
-            lastModified.setTimeInMillis(file.lastModified());
+            lastModified.setTimeInMillis(System.currentTimeMillis());
             resNode.setProperty("jcr:lastModified", lastModified);
             
             this.node.getSession().save();                      

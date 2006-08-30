@@ -9,17 +9,6 @@ import org.drools.repository.*;
 import junit.framework.TestCase;
 
 public class RulePackageItemTestCase extends TestCase {
-//    private RulesRepository rulesRepository;
-//    
-//    protected void setUp() throws Exception {
-//        super.setUp();
-//        getRepo() = new RulesRepository(true);        
-//    }
-//
-//    protected void tearDown() throws Exception {
-//        super.tearDown();
-//        getRepo().logout();
-//    }
 
     public void testRulePackageItem() throws Exception {
         RulesRepository repo = getRepo();
@@ -29,6 +18,20 @@ public class RulePackageItemTestCase extends TestCase {
             RulePackageItem rulePackageItem1 = repo.createRulePackage("testRulePackage");
             assertNotNull(rulePackageItem1);
             assertEquals("testRulePackage", rulePackageItem1.getName());
+            
+            Iterator it = getRepo().listPackages();
+            assertTrue(it.hasNext());
+
+            while (it.hasNext()) {
+                RulePackageItem pack = (RulePackageItem) it.next();
+                if (pack.getName().equals( "testRulePackage" )) {
+                    return;
+                }
+                
+               
+            }
+            fail("should have picked up the testRulePackage but didnt.");
+            
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -36,9 +39,8 @@ public class RulePackageItemTestCase extends TestCase {
         }
         
         //try constructing with node of wrong type
-        try {
-            File dslFile1 = new File("./src/java/org/drools/repository/test/test_data/dsl1.dsl");
-            DslItem dslItem = repo.addDslFromFile(dslFile1);
+        try {            
+            DslItem dslItem = repo.addDsl("testRulePackageItem", "content");
             RulePackageItem rulePackageItem2 = new RulePackageItem(repo, dslItem.getNode());
             fail("Exception not thrown for node of type: " + dslItem.getNode().getPrimaryNodeType().getName());
         }
@@ -58,35 +60,29 @@ public class RulePackageItemTestCase extends TestCase {
     public void testAddRuleRuleItem() {
             RulePackageItem rulePackageItem1 = getRepo().createRulePackage("testAddRuleRuleItem");
             
-            RuleItem ruleItem1 = getRepo().addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testAddRuleRuleItem", "test lhs content", "test rhs content");
             
             rulePackageItem1.addRule(ruleItem1);
             
             List rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
-            assertEquals("test rule", ((RuleItem)rules.get(0)).getName());
+            assertEquals("testAddRuleRuleItem", ((RuleItem)rules.get(0)).getName());
             
             //test that it is following the head revision                        
             ruleItem1.updateLhs("new lhs");
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
-            assertEquals("test rule", ((RuleItem)rules.get(0)).getName());
+            assertEquals("testAddRuleRuleItem", ((RuleItem)rules.get(0)).getName());
             assertEquals("new lhs", ((RuleItem)rules.get(0)).getLhs());
                         
-            RuleItem ruleItem2 = getRepo().addRule("test rule 2", "test lhs content", "test rhs content");
+            RuleItem ruleItem2 = getRepo().addRule("testAddRuleRuleItem2", "test lhs content", "test rhs content");
             rulePackageItem1.addRule(ruleItem2);
             
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(2, rules.size());  
-            
-            Iterator it = getRepo().listPackages();
-            assertTrue(it.hasNext());
-            
-            RulePackageItem pack = (RulePackageItem) it.next();
-            assertEquals("testRulePackage", pack.getName());
 
     }
 
@@ -254,9 +250,9 @@ public class RulePackageItemTestCase extends TestCase {
     }
 
     public void testToString() {
-            RulePackageItem rulePackageItem1 = getRepo().createRulePackage("testToString");
+            RulePackageItem rulePackageItem1 = getRepo().createRulePackage("testToStringPackage");
             
-            RuleItem ruleItem1 = getRepo().addRule("testToString", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testToStringPackage", "test lhs content", "test rhs content");
             
             rulePackageItem1.addRule(ruleItem1);
             assertNotNull(rulePackageItem1.toString());                        

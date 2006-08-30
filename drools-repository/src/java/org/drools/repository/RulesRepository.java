@@ -455,14 +455,14 @@ public class RulesRepository {
      * @return a DslItem object encapsulating the node that gets added
      * @throws RulesRepositoryException 
      */
-    public DslItem addDslFromFile(File file) throws RulesRepositoryException { 
+    public DslItem addDsl(String name, String content) throws RulesRepositoryException { 
         Node folderNode = this.getAreaNode(DSL_AREA);            
         
         try {
             //create the node - see section 6.7.22.6 of the spec
-            Node dslNode = folderNode.addNode(file.getName(), DslItem.DSL_NODE_TYPE_NAME);
+            Node dslNode = folderNode.addNode(name, DslItem.DSL_NODE_TYPE_NAME);
             
-            dslNode.setProperty(DslItem.TITLE_PROPERTY_NAME, file.getName());
+            dslNode.setProperty(DslItem.TITLE_PROPERTY_NAME, name);
             
             //TODO: set this property correctly once we've figured out logging in / JAAS
             dslNode.setProperty(DslItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
@@ -474,9 +474,9 @@ public class RulesRepository {
             Node resNode = dslNode.addNode("jcr:content", "nt:resource");
             resNode.setProperty("jcr:mimeType", "text/plain");
             resNode.setProperty("jcr:encoding", System.getProperty("file.encoding")); //TODO: is this right?
-            resNode.setProperty("jcr:data", new FileInputStream(file));
+            resNode.setProperty("jcr:data", content);
             Calendar lastModified = Calendar.getInstance();
-            lastModified.setTimeInMillis(file.lastModified());
+            lastModified.setTimeInMillis(System.currentTimeMillis());
             resNode.setProperty("jcr:lastModified", lastModified);                
                         
             dslNode.setProperty(DslItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
