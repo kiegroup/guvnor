@@ -470,16 +470,8 @@ public class RulesRepository {
             dslNode.setProperty(DslItem.DESCRIPTION_PROPERTY_NAME, "");
             dslNode.setProperty(DslItem.FORMAT_PROPERTY_NAME, DslItem.DSL_FORMAT);
             
-            //create the mandatory child node - jcr:content
-            Node resNode = dslNode.addNode("jcr:content", "nt:resource");
-            resNode.setProperty("jcr:mimeType", "text/plain");
-            resNode.setProperty("jcr:encoding", System.getProperty("file.encoding")); //TODO: is this right?
-            resNode.setProperty("jcr:data", content);
-            Calendar lastModified = Calendar.getInstance();
-            lastModified.setTimeInMillis(System.currentTimeMillis());
-            resNode.setProperty("jcr:lastModified", lastModified);                
-                        
-            dslNode.setProperty(DslItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            dslNode.setProperty( DslItem.DSL_CONTENT, content );
+            dslNode.setProperty(DslItem.LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance());
             
             this.session.save();
             

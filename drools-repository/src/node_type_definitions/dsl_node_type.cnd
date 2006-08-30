@@ -11,4 +11,7 @@
 [drools:dsl_node_type]
 
 // Supertypes
-> 'drools:versionable_node_type','nt:file'
+> 'drools:versionable_node_type'
+
+// Properties
+- drools:dsl_content (string)

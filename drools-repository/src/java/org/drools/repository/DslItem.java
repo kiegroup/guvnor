@@ -27,6 +27,8 @@ public class DslItem extends VersionableItem {
      * The name of the DSL node type
      */
     public static final String DSL_NODE_TYPE_NAME = "drools:dsl_node_type";
+
+    public static final String DSL_CONTENT = "drools:dsl_content";
     
     /**
      * Constructs a DslItem object with the specified node as its node attribute
@@ -69,9 +71,7 @@ public class DslItem extends VersionableItem {
                 dslNode = this.node;
             }
             
-            //grab the content of the node and dump it into a string
-            Node contentNode = dslNode.getNode("jcr:content");
-            Property data = contentNode.getProperty("jcr:data");
+            Property data = dslNode.getProperty( DSL_CONTENT );
             return data.getValue().getString();
         }
         catch(Exception e) {
@@ -110,14 +110,10 @@ public class DslItem extends VersionableItem {
         }
         
         try {
-            //create the mandatory child node - jcr:content
-            Node resNode = this.node.getNode("jcr:content");
-            resNode.setProperty("jcr:mimeType", "text/plain");
-            resNode.setProperty("jcr:encoding", System.getProperty("file.encoding")); //TODO: is this right?
-            resNode.setProperty("jcr:data", content);
+            
             Calendar lastModified = Calendar.getInstance();
-            lastModified.setTimeInMillis(System.currentTimeMillis());
-            resNode.setProperty("jcr:lastModified", lastModified);
+            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            this.node.setProperty( DSL_CONTENT, content );
             
             this.node.getSession().save();                      
         }
@@ -151,28 +147,6 @@ public class DslItem extends VersionableItem {
             log.error("Caught Exception", e);
             return null;
         }
-    }
-    
-    /**
-     * @return a List of DslItem objects encapsulating each Version node in the VersionHistory 
-     *         of this Item's node
-     * @throws RulesRepositoryException
-     */
-    public List getHistory() throws RulesRepositoryException {
-        List returnList = new ArrayList();
-        try {
-            VersionIterator it = this.node.getVersionHistory().getAllVersions();
-            while(it.hasNext()) {
-                Version currentVersion = it.nextVersion();
-                DslItem item = new DslItem(this.rulesRepository, currentVersion);
-                returnList.add(item);
-            }
-        }
-        catch(Exception e) {
-            log.error("Caught exception: " + e);
-            throw new RulesRepositoryException(e);
-        }
-        return returnList;
     }
     
     public VersionableItem getPrecedingVersion() throws RulesRepositoryException {
