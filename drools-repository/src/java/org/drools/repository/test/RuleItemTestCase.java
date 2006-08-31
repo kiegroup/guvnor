@@ -69,8 +69,14 @@ public class RuleItemTestCase extends TestCase {
             
             assertEquals("new lhs content", ruleItem1.getLhs());
             
+            ruleItem1.checkin( "yeah !" );
+            
+            assertEquals("yeah !", ruleItem1.getCheckinComment());
+            
             RuleItem prev = (RuleItem) ruleItem1.getPredecessorVersionsIterator().next();
             assertEquals("test lhs content", prev.getLhs());
+            assertFalse("yeah !".equals(prev.getCheckinComment()));
+            
             
             assertEquals(prev, ruleItem1.getPrecedingVersion());
 
@@ -80,6 +86,7 @@ public class RuleItemTestCase extends TestCase {
             RuleItem ruleItem1 = getRepo().addRule("testUpdateRhs", "test lhs content", "test rhs content");                        
             ruleItem1.updateRhs("new rhs content");            
             assertEquals("new rhs content", ruleItem1.getRhs());
+            ruleItem1.checkin( "la" );
             RuleItem prev = (RuleItem) ruleItem1.getPrecedingVersion();
             assertEquals("test rhs content", prev.getRhs());
             
@@ -97,6 +104,7 @@ public class RuleItemTestCase extends TestCase {
             tags = ruleItem1.getCategories();
             assertEquals(2, tags.size());   
             
+            ruleItem1.checkin( "woot" );
             
             //now test retrieve by tags
             List result = getRepo().findRulesByTag("testAddTagTestTag");            
@@ -191,6 +199,7 @@ public class RuleItemTestCase extends TestCase {
             long before = cal.getTimeInMillis();           
             
             ruleItem1.updateLhs("new lhs");
+            ruleItem1.checkin( "woot" );
             Calendar cal2 = ruleItem1.getLastModified();
             long lastMod = cal2.getTimeInMillis();           
             
@@ -265,12 +274,19 @@ public class RuleItemTestCase extends TestCase {
             assertTrue(predecessorRuleItem == null);            
             
             ruleItem1.updateLhs("new lhs");
+            ruleItem1.updateRhs( "hola" );
+            ruleItem1.checkin( "two changes" );
+            
             
             predecessorRuleItem = (RuleItem) ruleItem1.getPrecedingVersion();
             assertNotNull(predecessorRuleItem);
             assertEquals("test lhs content", predecessorRuleItem.getLhs());
+            assertEquals("test rhs content", predecessorRuleItem.getRhs());
+            
+            
             
             ruleItem1.updateLhs("newer lhs");
+            ruleItem1.checkin( "another" );
             
             predecessorRuleItem = (RuleItem) ruleItem1.getPrecedingVersion();
             assertNotNull(predecessorRuleItem);
@@ -289,6 +305,8 @@ public class RuleItemTestCase extends TestCase {
             assertTrue(succeedingRuleItem == null);            
             
             ruleItem1.updateLhs("new lhs");
+            ruleItem1.checkin( "la" );
+            
             
             RuleItem predecessorRuleItem = (RuleItem) ruleItem1.getPrecedingVersion();
             assertEquals("test lhs content", predecessorRuleItem.getLhs());
@@ -309,7 +327,8 @@ public class RuleItemTestCase extends TestCase {
             assertNotNull(iterator);
             assertFalse(iterator.hasNext());
             
-            ruleItem1.updateLhs("new lhs");
+            ruleItem1.updateLhs("new lhs").checkin( "ya" );
+            
             
             iterator = ruleItem1.getSuccessorVersionsIterator();            
             assertNotNull(iterator);
@@ -324,6 +343,7 @@ public class RuleItemTestCase extends TestCase {
             assertFalse(iterator.hasNext());
             
             ruleItem1.updateLhs("newer lhs");
+            ruleItem1.checkin( "boo" );
                         
             iterator = predecessorRuleItem.getSuccessorVersionsIterator();
             assertNotNull(iterator);
@@ -349,6 +369,7 @@ public class RuleItemTestCase extends TestCase {
             assertFalse(iterator.hasNext());
             
             ruleItem1.updateLhs("new lhs");
+            ruleItem1.checkin( "boo" );
             
             iterator = ruleItem1.getPredecessorVersionsIterator();            
             assertNotNull(iterator);
@@ -358,6 +379,8 @@ public class RuleItemTestCase extends TestCase {
             assertEquals("test lhs content", nextRuleItem.getLhs());
             
             ruleItem1.updateLhs("newer lhs");
+            ruleItem1.checkin( "wee" );
+            
             
             iterator = ruleItem1.getPredecessorVersionsIterator();            
             assertNotNull(iterator);

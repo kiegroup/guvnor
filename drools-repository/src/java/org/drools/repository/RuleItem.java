@@ -169,10 +169,7 @@ public class RuleItem extends VersionableItem {
             
             Calendar lastModified = Calendar.getInstance();
             this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
-            
-            this.node.getSession().save();
-            
-            this.node.checkin();
+
         }
         catch(Exception e) {
             log.error("Caught Exception", e);
@@ -180,27 +177,7 @@ public class RuleItem extends VersionableItem {
         }
     }
 
-    private void checkout() {
-        try {
-            this.node.checkout();
-        }
-        catch(UnsupportedRepositoryOperationException e) {
-            String message = "";
-            try {
-                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message, e);
-            }
-            catch (RepositoryException e1) {
-                log.error("Caught Exception", e);
-                throw new RulesRepositoryException(e1);
-            }
-            throw new RulesRepositoryException(message, e);
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RulesRepositoryException(e);
-        }
-    }
+
     
     /**
      * @return the date the rule becomes expired
@@ -223,17 +200,7 @@ public class RuleItem extends VersionableItem {
         }
     }
 
-    private Node getVersionContentNode() throws RepositoryException,
-                                        PathNotFoundException {
-        Node ruleNode;
-        if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-            ruleNode = this.node.getNode("jcr:frozenNode");
-        }
-        else {
-            ruleNode = this.node;
-        }
-        return ruleNode;
-    }
+
     
     /**
      * Creates a new version of this object's rule node, updating the expired date for the
@@ -250,10 +217,7 @@ public class RuleItem extends VersionableItem {
             
             Calendar lastModified = Calendar.getInstance();
             this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
-            
-            this.node.getSession().save();
-            
-            this.node.checkin();
+;
         }
         catch(Exception e) {
             log.error("Caught Exception", e);
@@ -285,7 +249,7 @@ public class RuleItem extends VersionableItem {
      * @param lhs the new lhs content for the rule
      * @throws RulesRepositoryException
      */
-    public void updateLhs(String newLhsContent) throws RulesRepositoryException {
+    public RuleItem updateLhs(String newLhsContent) throws RulesRepositoryException {
         checkout();
         
         try {                                    
@@ -293,10 +257,7 @@ public class RuleItem extends VersionableItem {
             
             Calendar lastModified = Calendar.getInstance();
             this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
-            
-            this.node.getSession().save();
-            
-            this.node.checkin();
+            return this;
         }
         catch(Exception e) {
             log.error("Caught Exception", e);
@@ -319,10 +280,7 @@ public class RuleItem extends VersionableItem {
             
             Calendar lastModified = Calendar.getInstance();
             this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
-            
-            this.node.getSession().save();
-            
-            this.node.checkin();
+
         }
         catch(Exception e) {
             log.error("Caught Exception", e);
@@ -376,8 +334,7 @@ public class RuleItem extends VersionableItem {
                     newTagValues[i] = this.node.getSession().getValueFactory().createValue(tagItem.getNode());
                     this.node.checkout();
                     this.node.setProperty(TAG_PROPERTY_NAME, newTagValues);
-                    this.node.getSession().save();
-                    this.node.checkin();
+                    //this.node.getSession().save();
                 }
                 else {
                     log.error("reached expected path of execution when adding tag '" + tag + "' to ruleNode: " + this.node.getName());
@@ -446,10 +403,8 @@ public class RuleItem extends VersionableItem {
             }
             finally {   
                 if(newTagValues != null) {
-                    this.node.checkout();
+                    checkout();
                     this.node.setProperty(TAG_PROPERTY_NAME, newTagValues);
-                    this.node.getSession().save();
-                    this.node.checkin();
                 }
                 else {
                     log.error("reached expected path of execution when removing tag '" + tag + "' from ruleNode: " + this.node.getName());
@@ -533,10 +488,8 @@ public class RuleItem extends VersionableItem {
             } 
             
             //now set the state property of the rule                              
-            this.node.checkout();
+            checkout();
             this.node.setProperty(STATE_PROPERTY_NAME, stateItem.getNode());
-            this.node.getSession().save();
-            this.node.checkin();        
         }
         catch(Exception e) {
             log.error("Caught exception", e);

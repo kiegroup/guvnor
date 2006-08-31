@@ -5,8 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.jcr.NamespaceException;
@@ -417,35 +419,42 @@ public class RulesRepository {
         }
     }                
     
+    private Map areaNodeCache = new HashMap();
+    
     private Node getAreaNode(String areaName) throws RulesRepositoryException {
-        Node folderNode = null;
-        int tries = 0;
-        while(folderNode == null && tries < 2) {
-            try {
-                tries++;                                                
-                folderNode = this.session.getRootNode().getNode(RULES_REPOSITORY_NAME + "/" + areaName);
-            }
-            catch(PathNotFoundException e) {
-                if(tries == 1) {
-                    //hmm..repository must have gotten screwed up.  set it up again                
-                    log.warn("The repository appears to have become corrupted. It will be re-setup now.");
-                    this.setupRepository();
+        if (areaNodeCache.containsKey( areaName )) {
+            return (Node) areaNodeCache.get( areaName );
+        } else {
+            Node folderNode = null;
+            int tries = 0;
+            while(folderNode == null && tries < 2) {
+                try {
+                    tries++;                                                
+                    folderNode = this.session.getRootNode().getNode(RULES_REPOSITORY_NAME + "/" + areaName);
                 }
-                else {
-                    log.error("Unable to correct repository corruption");
+                catch(PathNotFoundException e) {
+                    if(tries == 1) {
+                        //hmm..repository must have gotten screwed up.  set it up again                
+                        log.warn("The repository appears to have become corrupted. It will be re-setup now.");
+                        this.setupRepository();
+                    }
+                    else {
+                        log.error("Unable to correct repository corruption");
+                    }
+                }
+                catch(Exception e) {
+                    log.error("Caught Exception", e);
+                    throw new RulesRepositoryException("Caught exception " + e.getClass().getName(), e);
                 }
             }
-            catch(Exception e) {
-                log.error("Caught Exception", e);
-                throw new RulesRepositoryException("Caught exception " + e.getClass().getName(), e);
+            if(folderNode == null) {
+                String message = "Could not get a reference to a node for " + RULES_REPOSITORY_NAME + "/" + areaName;
+                log.error(message);
+                throw new RulesRepositoryException(message);
             }
+            areaNodeCache.put( areaName, folderNode );
+            return folderNode;
         }
-        if(folderNode == null) {
-            String message = "Could not get a reference to a node for " + RULES_REPOSITORY_NAME + "/" + areaName;
-            log.error(message);
-            throw new RulesRepositoryException(message);
-        }
-        return folderNode;
     }
     
     /**
@@ -724,6 +733,8 @@ public class RulesRepository {
             ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_FORMAT);
             ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, lhsContent);
             ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, rhsContent);                        
+            ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT, "Initial" );
+            
             
             Calendar lastModified = Calendar.getInstance();
             ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);

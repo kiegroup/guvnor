@@ -30,3 +30,5 @@
 
   - drools:format (string)
   mandatory 
+  
+  - drools:checkin_comment (string)
