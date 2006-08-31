@@ -101,13 +101,7 @@ public class RuleItem extends VersionableItem {
      */
     public String getLhs() throws RulesRepositoryException {
         try {                        
-            Node ruleNode;
-            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-                ruleNode = this.node.getNode("jcr:frozenNode");
-            }
-            else {
-                ruleNode = this.node;
-            }
+            Node ruleNode = getVersionContentNode();
             
             //grab the lhs of the node and dump it into a string            
             Property data = ruleNode.getProperty(LHS_PROPERTY_NAME);
@@ -127,13 +121,7 @@ public class RuleItem extends VersionableItem {
      */
     public String getRhs() throws RulesRepositoryException {
         try {                        
-            Node ruleNode;
-            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-                ruleNode = this.node.getNode("jcr:frozenNode");
-            }
-            else {
-                ruleNode = this.node;
-            }
+            Node ruleNode = getVersionContentNode();
             
             //grab the lhs of the node and dump it into a string            
             Property data = ruleNode.getProperty(RHS_PROPERTY_NAME);
@@ -151,13 +139,7 @@ public class RuleItem extends VersionableItem {
      */
     public Calendar getDateEffective() throws RulesRepositoryException {
         try {                        
-            Node ruleNode;
-            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-                ruleNode = this.node.getNode("jcr:frozenNode");
-            }
-            else {
-                ruleNode = this.node;
-            }
+            Node ruleNode = getVersionContentNode();
                         
             Property dateEffectiveProperty = ruleNode.getProperty(DATE_EFFECTIVE_PROPERTY_NAME);
             return dateEffectiveProperty.getDate();
@@ -180,25 +162,7 @@ public class RuleItem extends VersionableItem {
      * @throws RulesRepositoryException
      */
     public void updateDateEffective(Calendar newDateEffective) throws RulesRepositoryException {
-        try {
-            this.node.checkout();
-        }
-        catch(UnsupportedRepositoryOperationException e) {
-            String message = "";
-            try {
-                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message, e);
-            }
-            catch (RepositoryException e1) {
-                log.error("Caught Exception", e);
-                throw new RulesRepositoryException(e1);
-            }
-            throw new RulesRepositoryException(message, e);
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RulesRepositoryException(e);
-        }
+        checkout();
         
         try {                                    
             this.node.setProperty(DATE_EFFECTIVE_PROPERTY_NAME, newDateEffective);
@@ -215,42 +179,8 @@ public class RuleItem extends VersionableItem {
             throw new RulesRepositoryException(e);
         }
     }
-    
-    /**
-     * @return the date the rule becomes expired
-     * @throws RulesRepositoryException
-     */
-    public Calendar getDateExpired() throws RulesRepositoryException {
-        try {                        
-            Node ruleNode;
-            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-                ruleNode = this.node.getNode("jcr:frozenNode");
-            }
-            else {
-                ruleNode = this.node;
-            }
-                        
-            Property dateExpiredProperty = ruleNode.getProperty(DATE_EXPIRED_PROPERTY_NAME);
-            return dateExpiredProperty.getDate();
-        }
-        catch(PathNotFoundException e) {
-            // doesn't have this property
-            return null;
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RulesRepositoryException(e);
-        }
-    }
-    
-    /**
-     * Creates a new version of this object's rule node, updating the expired date for the
-     * rule node. 
-     *  
-     * @param newDateExpired the new expired date for the rule 
-     * @throws RulesRepositoryException
-     */
-    public void updateDateExpired(Calendar newDateExpired) throws RulesRepositoryException {
+
+    private void checkout() {
         try {
             this.node.checkout();
         }
@@ -270,6 +200,50 @@ public class RuleItem extends VersionableItem {
             log.error("Caught Exception", e);
             throw new RulesRepositoryException(e);
         }
+    }
+    
+    /**
+     * @return the date the rule becomes expired
+     * @throws RulesRepositoryException
+     */
+    public Calendar getDateExpired() throws RulesRepositoryException {
+        try {                        
+            Node ruleNode = getVersionContentNode();
+                        
+            Property dateExpiredProperty = ruleNode.getProperty(DATE_EXPIRED_PROPERTY_NAME);
+            return dateExpiredProperty.getDate();
+        }
+        catch(PathNotFoundException e) {
+            // doesn't have this property
+            return null;
+        }
+        catch(Exception e) {
+            log.error("Caught Exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+
+    private Node getVersionContentNode() throws RepositoryException,
+                                        PathNotFoundException {
+        Node ruleNode;
+        if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+            ruleNode = this.node.getNode("jcr:frozenNode");
+        }
+        else {
+            ruleNode = this.node;
+        }
+        return ruleNode;
+    }
+    
+    /**
+     * Creates a new version of this object's rule node, updating the expired date for the
+     * rule node. 
+     *  
+     * @param newDateExpired the new expired date for the rule 
+     * @throws RulesRepositoryException
+     */
+    public void updateDateExpired(Calendar newDateExpired) throws RulesRepositoryException {
+        checkout();
         
         try {                                    
             this.node.setProperty(DATE_EXPIRED_PROPERTY_NAME, newDateExpired);
@@ -293,13 +267,7 @@ public class RuleItem extends VersionableItem {
      */
     public String getRuleLanguage() throws RulesRepositoryException {
         try {                        
-            Node ruleNode;
-            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-                ruleNode = this.node.getNode("jcr:frozenNode");
-            }
-            else {
-                ruleNode = this.node;
-            }
+            Node ruleNode = getVersionContentNode();
                         
             Property ruleLanguageProperty = ruleNode.getProperty(RULE_LANGUAGE_PROPERTY_NAME);
             return ruleLanguageProperty.getValue().getString();
@@ -318,25 +286,7 @@ public class RuleItem extends VersionableItem {
      * @throws RulesRepositoryException
      */
     public void updateLhs(String newLhsContent) throws RulesRepositoryException {
-        try {
-            this.node.checkout();
-        }
-        catch(UnsupportedRepositoryOperationException e) {
-            String message = "";
-            try {
-                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message, e);
-            }
-            catch (RepositoryException e1) {
-                log.error("Caught Exception", e);
-                throw new RulesRepositoryException(e1);
-            }
-            throw new RulesRepositoryException(message, e);
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RulesRepositoryException(e);
-        }
+        checkout();
         
         try {                                    
             this.node.setProperty(LHS_PROPERTY_NAME, newLhsContent);
@@ -362,25 +312,7 @@ public class RuleItem extends VersionableItem {
      * @throws RulesRepositoryException
      */
     public void updateRhs(String newRhsContent) throws RulesRepositoryException {
-        try {
-            this.node.checkout();
-        }
-        catch(UnsupportedRepositoryOperationException e) {
-            String message = "";
-            try {
-                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message, e);
-            }
-            catch (RepositoryException e1) {
-                log.error("Caught Exception", e);
-                throw new RulesRepositoryException(e1);
-            }
-            throw new RulesRepositoryException(message, e);
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RulesRepositoryException(e);
-        }
+        checkout();
         
         try {                                    
             this.node.setProperty(RHS_PROPERTY_NAME, newRhsContent);
@@ -465,7 +397,6 @@ public class RuleItem extends VersionableItem {
      * @throws RulesRepositoryException 
      */
     public void removeCategory(String tag) throws RulesRepositoryException {
-        //TODO: implement if the removed tag no longer has anyone referencing it, remove the tag (are we sure we want to do this, for versioning's sake?)
         try {
             //make sure this object's node is the head version
             if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
