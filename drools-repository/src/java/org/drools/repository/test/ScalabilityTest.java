@@ -15,47 +15,98 @@ import org.apache.jackrabbit.core.TransientRepository;
 import org.drools.repository.RuleItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.VersionableItem;
 
 import junit.framework.TestCase;
 
+
+/** 
+ * This is a bit of a hacked scalability test. 
+ * It will add 5000 odd rule nodes, and then do some basic operations.
+ * It will take a LONG time to add these nodes, and does it in batches.
+ *
+ */
 public class ScalabilityTest extends TestCase {
 
     private static final int NUM = 5000;
+    private RulesRepository repo;
     
-    
-    public void xxtestRun() throws Exception {
+    public void testDummy() {
         
-        RulesRepository repo = new RulesRepository(false);   
-
+    }
+    
+    public void xxtestRun() throws Exception {        
+        repo = new RulesRepository(false);   
         
         long start = System.currentTimeMillis();
-        setupData( repo );
+        //setupData( repo );
         System.out.println("time to add, version and tag 5000: " + (System.currentTimeMillis() - start));
         List list = listACat(repo);
         System.out.println("list size is: " + list.size());
         
         start = System.currentTimeMillis();
         RuleItem item = (RuleItem) list.get( 0 );
-        item.updateDescription( "this is a description" );
+        item.updateLhs( "this is a description" );
+        item.checkin( "newer" );
+        System.out.println("time to update and version: " + (System.currentTimeMillis() - start));
+        
+        start = System.currentTimeMillis();
+        item = (RuleItem) list.get( 42 );
+        item.updateLhs( "this is a description" );
+        item.updateRhs( "wooooooooooooooooooooooooooooooooooot" );
+        item.checkin( "latest" );
         System.out.println("time to update and version: " + (System.currentTimeMillis() - start));        
+        
+    }
+    
+    public void xxxtestBare() throws Exception {
+        hackit();
     }
 
     private List listACat(RulesRepository repo) {
         long start = System.currentTimeMillis();
         List results = repo.findRulesByTag( "HR/CAT_1" );
         System.out.println("Time for listing a cat: " + (System.currentTimeMillis() - start));
+        
+        start = System.currentTimeMillis();
+        List results2 = repo.findRulesByTag( "HR/CAT_1" );
+        System.out.println("Time for listing a cat: " + (System.currentTimeMillis() - start));
+
+
+        start = System.currentTimeMillis();
+        results2 = repo.findRulesByTag( "HR/CAT_100" );
+        System.out.println("Time for listing a cat: " + (System.currentTimeMillis() - start));
+
+        start = System.currentTimeMillis();
+        results2 = repo.findRulesByTag( "HR/CAT_100" );
+        System.out.println("Time for listing a cat: " + (System.currentTimeMillis() - start));
+
+        
         return results;
     }
 
+    /** To run this, need to hack the addRule method to not save a session */
     private void setupData(RulesRepository repo) throws Exception {
         
 
         int count = 1;
         
+        List list = new ArrayList();
+        
         String prefix = "HR/";
         String cat = prefix + "CAT_1";
         for (int i=1; i <= NUM; i++ ) {
-
+            
+            if (i % 500 == 0) {
+                repo.getSession().save();
+                for ( Iterator iter = list.iterator(); iter.hasNext(); ) {
+                    RuleItem element = (RuleItem) iter.next();                    
+                    element.getNode().checkin();                    
+                }
+                list.clear();
+            }
+            
+            
             if (i > 2500) {
                 prefix = "FINANCE/";
             }
@@ -74,21 +125,55 @@ public class ScalabilityTest extends TestCase {
             System.out.println("ADDING rule: " + ruleName);
                         
             
-            RuleItem item = repo.addRule( ruleName, "Foo(bar == " + i + ")", "panic(" + i + ");" );
-            //item.addCategory( cat );
-
+            RuleItem item = repo.addRule( ruleName, "Foo(bar == " + i + ")", "panic(" + i + ");" );            
+            item.addCategory( cat );
+            list.add( item );
+            
         }
         
+        
+        
 
     }
     
-    static void hacked() throws Exception {
-        Repository repository = new TransientRepository();
-        Session session = repository.login(
-                                   new SimpleCredentials("username", "password".toCharArray()));
+
+    private void hackit() throws Exception {
+        
+        
+        RulesRepository repo = new RulesRepository(true);
+        Session session = repo.getSession();
+        
+        
+        Node folderNode = session.getRootNode().getNode("drools:repository/drools:rule_area");
+        
+        for (int i=1 ; i <= 5000; i++) {
+            
+            System.out.println("doing: Rule " + i);
+            
+            //create the node - see section 6.7.22.6 of the spec
+            Node ruleNode = folderNode.addNode("Rule_" + i, RuleItem.RULE_NODE_TYPE_NAME );
+                        
+            ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, "Rule_" + i);
+            
+            //TODO: set this property correctly once we've figured out logging in / JAAS
+            ruleNode.setProperty(RuleItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
+                        
+            ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, "");
+            ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_FORMAT);
+            ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, "LHS_" + i);
+            ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, "RHS_" + i);                        
+            ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT, "Initial" );
+            
+            
+            Calendar lastModified = Calendar.getInstance();
+            ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            if (i % 500 == 0) {
+                System.out.println("saving......");
+                session.save();
+                System.out.println("finished.");                
+            }
+        }
         
     }
-
-    
     
 }

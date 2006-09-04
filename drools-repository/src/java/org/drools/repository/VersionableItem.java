@@ -209,12 +209,7 @@ public abstract class VersionableItem extends Item {
      */
     public void updateTitle(String title) throws RulesRepositoryException {
         try {
-            Node theNode;
-            if ( this.node.getPrimaryNodeType().getName().equals( "nt:version" ) ) {
-                theNode = this.node.getNode( "jcr:frozenNode" );
-            } else {
-                theNode = this.node;
-            }
+            Node theNode = getVersionContentNode();
 
             theNode.checkout();
             theNode.setProperty( TITLE_PROPERTY_NAME,

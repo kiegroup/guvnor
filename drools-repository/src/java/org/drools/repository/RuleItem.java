@@ -334,7 +334,6 @@ public class RuleItem extends VersionableItem {
                     newTagValues[i] = this.node.getSession().getValueFactory().createValue(tagItem.getNode());
                     this.node.checkout();
                     this.node.setProperty(TAG_PROPERTY_NAME, newTagValues);
-                    //this.node.getSession().save();
                 }
                 else {
                     log.error("reached expected path of execution when adding tag '" + tag + "' to ruleNode: " + this.node.getName());

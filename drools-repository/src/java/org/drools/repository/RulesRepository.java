@@ -794,15 +794,8 @@ public class RulesRepository {
             ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
             
             session.save();
-            
-            try {
-                ruleNode.checkin();
-            }
-            catch(UnsupportedRepositoryOperationException e) {
-                String message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkin rule: " + ruleNode.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message + e);
-                throw new RulesRepositoryException(message, e);
-            }
+            ruleNode.checkin();
+
             
             return new RuleItem(this, ruleNode);
         }
@@ -1027,5 +1020,12 @@ public class RulesRepository {
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException(e);
         }
+    }
+    
+    /**
+     * @return The JCR session that this repository is using.
+     */
+    public Session getSession() {
+        return this.session;
     }
 }
