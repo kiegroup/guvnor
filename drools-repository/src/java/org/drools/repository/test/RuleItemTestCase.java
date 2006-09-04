@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.jcr.RepositoryException;
+
 import junit.framework.TestCase;
 
 import org.drools.repository.*;
@@ -257,7 +259,7 @@ public class RuleItemTestCase extends TestCase {
         }
     }
     
-    public void testGetDescription() {
+    public void testSaveAndCheckinDescriptionAndTitle() throws Exception {
             RuleItem ruleItem1 = getRepo().addRule("testGetDescription", "test lhs content", "test rhs content");
             
             //it should be "" to begin with
@@ -265,6 +267,30 @@ public class RuleItemTestCase extends TestCase {
             
             ruleItem1.updateDescription("test description");
             assertEquals("test description", ruleItem1.getDescription());
+            
+            
+            
+            
+            assertFalse(getRepo().getSession().hasPendingChanges());
+            
+            ruleItem1.updateTitle( "This is a title" );
+            assertTrue(getRepo().getSession().hasPendingChanges());
+            ruleItem1.checkin( "ya" );
+
+            
+            //we can save without a checkin
+            getRepo().getSession().save();
+
+            assertFalse(getRepo().getSession().hasPendingChanges());
+
+            
+            try {
+                ruleItem1.getPrecedingVersion().updateTitle( "baaad" );
+                fail("should not be able to do this");
+            } catch (RulesRepositoryException e) {
+                assertNotNull(e.getMessage());
+            }
+            
     }
     
     public void testGetPrecedingVersion() {

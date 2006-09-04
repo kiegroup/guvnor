@@ -299,11 +299,7 @@ public class RuleItem extends VersionableItem {
     public void addCategory(String tag) throws RulesRepositoryException {
         try {
             //make sure this object's node is the head version
-            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-                String message = "Error. Tags can only be added to the head version of a rule node";
-                log.error(message);
-                throw new RulesRepositoryException(message);
-            }                                       
+            checkIsUpdateable();                                       
             
             CategoryItem tagItem = this.rulesRepository.getOrCreateCategory(tag);
                                     
@@ -345,6 +341,8 @@ public class RuleItem extends VersionableItem {
             throw new RulesRepositoryException(e);
         }
     }
+
+
 
     /**
      * Removes the specified tag from this object's rule node.

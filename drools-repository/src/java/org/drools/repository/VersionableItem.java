@@ -50,6 +50,7 @@ public abstract class VersionableItem extends Item {
     public static final String RULE_PACKAGE_FORMAT         = "Rule Package";
     public static final String FUNCTION_FORMAT             = "Function";
 
+    /** this is what is referred to when reading content from a versioned node */
     private Node               contentNode                 = null;
 
     /**
@@ -181,12 +182,7 @@ public abstract class VersionableItem extends Item {
      */
     public String getTitle() throws RulesRepositoryException {
         try {
-            Node theNode;
-            if ( this.node.getPrimaryNodeType().getName().equals( "nt:version" ) ) {
-                theNode = this.node.getNode( "jcr:frozenNode" );
-            } else {
-                theNode = this.node;
-            }
+            Node theNode = getVersionContentNode();
 
             Property data = theNode.getProperty( TITLE_PROPERTY_NAME );
             return data.getValue().getString();
@@ -209,18 +205,15 @@ public abstract class VersionableItem extends Item {
      */
     public void updateTitle(String title) throws RulesRepositoryException {
         try {
-            Node theNode = getVersionContentNode();
+            checkIsUpdateable();
 
-            theNode.checkout();
-            theNode.setProperty( TITLE_PROPERTY_NAME,
+            node.checkout();
+            node.setProperty( TITLE_PROPERTY_NAME,
                                  title );
-
             Calendar lastModified = Calendar.getInstance();
             this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME,
                                    lastModified );
 
-            theNode.save();
-            theNode.checkin();
         } catch ( Exception e ) {
             log.error( "Caught Exception",
                        e );
@@ -430,4 +423,17 @@ public abstract class VersionableItem extends Item {
             throw new RulesRepositoryException("Unable to checkin.", e);
         }
     }
+
+    /**
+     * This will check to see if the node is the "head" and
+     * so can be updated (you can't update historical nodes ).
+     * @throws RepositoryException
+     */
+    protected void checkIsUpdateable() throws RepositoryException {
+        if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+            String message = "Error. Tags can only be added to the head version of a rule node";
+            log.error(message);
+            throw new RulesRepositoryException(message);
+        }
+    }    
 }

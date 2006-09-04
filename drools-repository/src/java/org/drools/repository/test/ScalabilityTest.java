@@ -59,6 +59,7 @@ public class ScalabilityTest extends TestCase {
         
     }
     
+    /** This tests it "bare" just setting properties on node types directly. */
     public void xxxtestBare() throws Exception {
         hackit();
     }
@@ -146,7 +147,7 @@ public class ScalabilityTest extends TestCase {
         
         Node folderNode = session.getRootNode().getNode("drools:repository/drools:rule_area");
         
-        for (int i=1 ; i <= 5000; i++) {
+        for (int i=1 ; i <= 50; i++) {
             
             System.out.println("doing: Rule " + i);
             
