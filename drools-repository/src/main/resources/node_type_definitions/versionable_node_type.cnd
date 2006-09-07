@@ -1,0 +1,34 @@
+/*  The node type definition for the rule node type.  
+    See http://jackrabbit.apache.org/doc/nodetype/cnd.html for an explanation
+    
+    See the Dublin Core documentation for more explanation: http://dublincore.org/documents/dces/
+*/
+
+// The namespace declaration
+<drools = 'http://www.jboss.org/drools-repository/1.0'>
+<nt='http://www.jcp.org/jcr/nt/1.0'>
+<mix='http://www.jcp.org/jcr/mix/1.0'>
+
+// Node type name
+[drools:versionableNodeType]
+
+// Supertypes
+> 'nt:hierarchyNode','mix:versionable'
+
+// Properties:
+- drools:title (string)
+  mandatory
+  
+- drools:contributor (string)
+  mandatory
+
+- drools:lastModified (date)
+  mandatory
+  
+- drools:description (string)
+  mandatory
+
+  - drools:format (string)
+  mandatory 
+  
+  - drools:checkinComment (string)

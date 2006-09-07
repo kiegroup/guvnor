@@ -1,0 +1,24 @@
+/*  The node type definition for the ruleset node type.  
+    See http://jackrabbit.apache.org/doc/nodetype/cnd.html for an explanation
+*/
+
+// The namespace declaration
+<drools = 'http://www.jboss.org/drools-repository/1.0'>
+<nt='http://www.jcp.org/jcr/nt/1.0'>
+<mix='http://www.jcp.org/jcr/mix/1.0'>
+
+// Node type name
+[drools:rulepackageNodeType]
+
+// Supertypes
+> 'drools:versionableNodeType'
+  
+- drools:ruleReference (reference)
+  multiple
+  copy
+  < 'drools:ruleNodeType','nt:version'
+  
+- drools:functionReference (reference)
+  multiple
+  copy
+  < 'drools:functionNodeType','nt:version'

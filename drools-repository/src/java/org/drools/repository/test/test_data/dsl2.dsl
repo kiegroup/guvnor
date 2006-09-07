@@ -1,1 +1,0 @@
-[then]Send escalation email=sendEscalationEmail( customer, ticket );
