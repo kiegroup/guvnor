@@ -35,8 +35,9 @@ public class ScalabilityTest extends TestCase {
         
     }
     
-    public void xxtestRun() throws Exception {        
-        repo = new RulesRepository(false);   
+    public void xxtestRun() throws Exception {
+        RepositoryConfigurator config = new RepositoryConfigurator(false);
+        repo = new RulesRepository(config.login());   
         
         long start = System.currentTimeMillis();
         //setupData( repo );
@@ -59,10 +60,10 @@ public class ScalabilityTest extends TestCase {
         
     }
     
-    /** This tests it "bare" just setting properties on node types directly. */
-    public void xxxtestBare() throws Exception {
-        hackit();
-    }
+//    /** This tests it "bare" just setting properties on node types directly. */
+//    public void xxxtestBare() throws Exception {
+//        hackit();
+//    }
 
     private List listACat(RulesRepository repo) {
         long start = System.currentTimeMillis();
@@ -138,43 +139,43 @@ public class ScalabilityTest extends TestCase {
     }
     
 
-    private void hackit() throws Exception {
-        
-        
-        RulesRepository repo = new RulesRepository(true);
-        Session session = repo.getSession();
-        
-        
-        Node folderNode = session.getRootNode().getNode("drools:repository/drools:rule_area");
-        
-        for (int i=1 ; i <= 50; i++) {
-            
-            System.out.println("doing: Rule " + i);
-            
-            //create the node - see section 6.7.22.6 of the spec
-            Node ruleNode = folderNode.addNode("Rule_" + i, RuleItem.RULE_NODE_TYPE_NAME );
-                        
-            ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, "Rule_" + i);
-            
-            //TODO: set this property correctly once we've figured out logging in / JAAS
-            ruleNode.setProperty(RuleItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
-                        
-            ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, "");
-            ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_FORMAT);
-            ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, "LHS_" + i);
-            ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, "RHS_" + i);                        
-            ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT, "Initial" );
-            
-            
-            Calendar lastModified = Calendar.getInstance();
-            ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
-            if (i % 500 == 0) {
-                System.out.println("saving......");
-                session.save();
-                System.out.println("finished.");                
-            }
-        }
-        
-    }
+//    private void hackit() throws Exception {
+//        
+//        
+//        RulesRepository repo = new RulesRepository(true);
+//        Session session = repo.getSession();
+//        
+//        
+//        Node folderNode = session.getRootNode().getNode("drools:repository/drools:rule_area");
+//        
+//        for (int i=1 ; i <= 50; i++) {
+//            
+//            System.out.println("doing: Rule " + i);
+//            
+//            //create the node - see section 6.7.22.6 of the spec
+//            Node ruleNode = folderNode.addNode("Rule_" + i, RuleItem.RULE_NODE_TYPE_NAME );
+//                        
+//            ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, "Rule_" + i);
+//            
+//            //TODO: set this property correctly once we've figured out logging in / JAAS
+//            ruleNode.setProperty(RuleItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
+//                        
+//            ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, "");
+//            ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_FORMAT);
+//            ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, "LHS_" + i);
+//            ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, "RHS_" + i);                        
+//            ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT, "Initial" );
+//            
+//            
+//            Calendar lastModified = Calendar.getInstance();
+//            ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
+//            if (i % 500 == 0) {
+//                System.out.println("saving......");
+//                session.save();
+//                System.out.println("finished.");                
+//            }
+//        }
+//        
+//    }
     
 }

@@ -1,11 +1,5 @@
 package org.drools.repository;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -14,26 +8,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.jcr.NamespaceException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
-import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
-import javax.jcr.Workspace;
 
-import org.apache.jackrabbit.core.TransientRepository;
-import org.apache.jackrabbit.core.nodetype.InvalidNodeTypeDefException;
-import org.apache.jackrabbit.core.nodetype.NodeTypeDef;
-import org.apache.jackrabbit.core.nodetype.NodeTypeManagerImpl;
-import org.apache.jackrabbit.core.nodetype.NodeTypeRegistry;
-import org.apache.jackrabbit.core.nodetype.compact.CompactNodeTypeDefReader;
 import org.apache.log4j.Logger;
 
 
@@ -67,10 +51,10 @@ import org.apache.log4j.Logger;
  * if there is sufficient demand, we can modify our versioning scheme to be better aligned with JCR's
  * versioning abilities.
  * 
- * @author btruitt
+ * @author Ben Truitt
  */
 public class RulesRepository {
-    private static final String DROOLS_URI = "http://www.jboss.org/drools-repository/1.0";
+    public static final String DROOLS_URI = "http://www.jboss.org/drools-repository/1.0";
 
     private static final Logger log = Logger.getLogger(RulesRepository.class);
     
@@ -108,169 +92,17 @@ public class RulesRepository {
      * The name of the rules repository within the JCR repository
      */
     public final static String RULES_REPOSITORY_NAME = "drools:repository";
-    
-    private Repository repository;
+
     private Session session;
 
     /**
-     * This will create the JCR repository automatically if it does not already exist.  
-     * It will call setupRepository() to attempt to setup the repository, in case
-     * it has not already been setup.  
+     * This requires a JCR session be setup, and the repository be configured.
      */
-    public RulesRepository() {
-        this(false);
+    public RulesRepository(Session session) {
+        this.session = session;
     }
-    
-    /**
-     * This will create the JCR repository automatically if it does not already exist.  
-     * It will call setupRepository() to attempt to setup the repository, in case
-     * it has not already been setup.
-     *   
-     * @param clearRepository whether or not to erase the contents of the rules repository
-     *                        portion of the JCR repository 
-     */
-    public RulesRepository(boolean clearRepository) {       
-        try {
-            //TODO: probably want to do something more serious than automatic creation of a 
-            //      transientRepository here.  (e.g. manual creation of the repository to be 
-            //      JCR implementation neutral). be sure to update the javadoc
-            repository = new TransientRepository();
-            session = repository.login(
-                                       new SimpleCredentials("username", "password".toCharArray()));
 
-            if(this.session == null) {
-                log.error("LOGIN FAILED! SESSION IS NULL!");
-            }                  
-            
-            if(clearRepository) {
-                this.clearRepository();
-            }
-            
-            setupRepository();            
-        }
-        catch (Exception e) {
-            log.error("Caught Exception", e);
-        }    
-    }
     
-    /**
-     * Clears out the entire tree below the rules repository node of the JCR repository.
-     */
-    public void clearRepository() {
-        try {
-            log.info("Clearing rules repository");
-            Node node = session.getRootNode().getNode(RULES_REPOSITORY_NAME);
-            node.remove();
-        }
-        catch(PathNotFoundException e) {                
-            //doesn't exist yet. no biggie.
-        }          
-        catch(RepositoryException e) {
-            //this will happen on the first setup. no biggie.
-        }
-    }
-    
-    private void registerNodeTypesFromCndFile(String cndFileName, Workspace ws) throws RulesRepositoryException, InvalidNodeTypeDefException {
-        try {
-            //Read in the CND file
-            Reader in = new InputStreamReader(this.getClass().getResourceAsStream( cndFileName ));
-            
-            // Create a CompactNodeTypeDefReader
-            CompactNodeTypeDefReader cndReader = new CompactNodeTypeDefReader(in, cndFileName);
-            
-            // Get the List of NodeTypeDef objects
-            List ntdList = cndReader.getNodeTypeDefs();
-            
-            // Get the NodeTypeManager from the Workspace.
-            // Note that it must be cast from the generic JCR NodeTypeManager to the
-            // Jackrabbit-specific implementation.
-            NodeTypeManagerImpl ntmgr = (NodeTypeManagerImpl)ws.getNodeTypeManager();
-            
-            // Acquire the NodeTypeRegistry
-            NodeTypeRegistry ntreg = ntmgr.getNodeTypeRegistry();
-            
-            // Loop through the prepared NodeTypeDefs
-            for(Iterator i = ntdList.iterator(); i.hasNext();) {                               
-                // Get the NodeTypeDef...
-                NodeTypeDef ntd = (NodeTypeDef)i.next();                                        
-                
-                log.debug("Attempting to regsiter node type named: " + ntd.getName());
-                
-                // ...and register it            
-                ntreg.registerNodeType(ntd);
-            }
-        }
-        catch(InvalidNodeTypeDefException e) {
-            log.warn("InvalidNodeTypeDefinitionException caught when trying to add node from CND file: " + cndFileName + ". This will happen if the node type was already registered. " + e);
-            throw e;
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RulesRepositoryException(e);
-        }
-    }
-    
-    /**
-     * Attempts to setup the repository.  If the work that it tries to do has already been done, it 
-     * will return with modifying the repository.
-     * 
-     * @throws RulesRepositoryException     
-     */
-    protected void setupRepository() throws RulesRepositoryException {
-        try {
-            Node root = session.getRootNode();
-            Workspace ws = session.getWorkspace();
-
-            //no need to set it up again, skip it if it has.
-            boolean registered = false;
-            String uris[] = ws.getNamespaceRegistry().getURIs();            
-            for ( int i = 0; i < uris.length; i++ ) {
-                if (DROOLS_URI.equals( uris[i]) ) {
-                    registered = true;
-                }
-            }
-
-            if (!registered) {
-                ws.getNamespaceRegistry().registerNamespace("drools", DROOLS_URI);
-                
-                this.registerNodeTypesFromCndFile("/node_type_definitions/versionable_node_type.cnd", ws);
-                this.registerNodeTypesFromCndFile("/node_type_definitions/dsl_node_type.cnd", ws);            
-                this.registerNodeTypesFromCndFile("/node_type_definitions/tag_node_type.cnd", ws);
-                this.registerNodeTypesFromCndFile("/node_type_definitions/state_node_type.cnd", ws);
-                this.registerNodeTypesFromCndFile("/node_type_definitions/rule_node_type.cnd", ws);
-                this.registerNodeTypesFromCndFile("/node_type_definitions/function_node_type.cnd", ws);
-                this.registerNodeTypesFromCndFile("/node_type_definitions/rulepackage_node_type.cnd", ws);
-            }
-            
-            // Setup the rule repository node
-            Node repositoryNode = addNodeIfNew(root, RULES_REPOSITORY_NAME, "nt:folder");
-                    
-            // Setup the Rule area
-            addNodeIfNew(repositoryNode, RULE_AREA, "nt:folder");
-            
-            //Setup the Rule area
-            addNodeIfNew(repositoryNode, FUNCTION_AREA, "nt:folder");
-            
-            // Setup the RulePackageItem area        
-            addNodeIfNew(repositoryNode, RULE_PACKAGE_AREA, "nt:folder");
-            
-            // Setup the DSL area                
-            addNodeIfNew(repositoryNode, DSL_AREA, "nt:folder");
-            
-            //Setup the DSL area                
-            addNodeIfNew(repositoryNode, TAG_AREA, "nt:folder");
-            
-            //Setup the State area                
-            addNodeIfNew(repositoryNode, STATE_AREA, "nt:folder");
-            
-            session.save();                        
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            System.err.println(e.getMessage());
-            throw new RulesRepositoryException(e);
-        }
-    }
     
     /**
      * Will add a node named 'nodeName' of type 'type' to 'parent' if such a node does not already
@@ -283,7 +115,7 @@ public class RulesRepository {
      *         existed, a reference to the pre-existant node.
      * @throws RulesRepositoryException
      */
-    protected Node addNodeIfNew(Node parent, String nodeName, String type) throws RulesRepositoryException {              
+    protected static Node addNodeIfNew(Node parent, String nodeName, String type) throws RulesRepositoryException {              
         Node node;
         try {
             node = parent.getNode(nodeName);                
@@ -391,7 +223,7 @@ public class RulesRepository {
                     if(tries == 1) {
                         //hmm..repository must have gotten screwed up.  set it up again                
                         log.warn("The repository appears to have become corrupted. It will be re-setup now.");
-                        this.setupRepository();
+                        throw new RulesRepositoryException("Unable to get the main rule repo node. Repository is not setup correctly.", e);
                     }
                     else {
                         log.error("Unable to correct repository corruption");
