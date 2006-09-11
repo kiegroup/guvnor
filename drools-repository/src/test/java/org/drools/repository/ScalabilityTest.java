@@ -36,8 +36,9 @@ public class ScalabilityTest extends TestCase {
     }
     
     public void xxtestRun() throws Exception {
-        RepositoryConfigurator config = new RepositoryConfigurator(false);
-        repo = new RulesRepository(config.login());   
+        RepositoryConfigurator config = new RepositoryConfigurator();
+        
+        repo = new RulesRepository(config.login(config.createRepository()));   
         
         long start = System.currentTimeMillis();
         //setupData( repo );

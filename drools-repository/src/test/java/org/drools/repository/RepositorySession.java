@@ -1,11 +1,11 @@
 package org.drools.repository;
 
 import javax.jcr.LoginException;
+import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import junit.framework.Assert;
-
-import org.drools.repository.RulesRepository;
 
 public class RepositorySession {
 
@@ -14,16 +14,28 @@ public class RepositorySession {
     public static RulesRepository getRepository() {
         Object repoInstance = repo.get();
         if ( repoInstance == null ) {
-            RepositoryConfigurator config = new RepositoryConfigurator(true);
+            RepositoryConfigurator config = new RepositoryConfigurator();
             
+            //create a repo instance (startup)
+            Repository repository = config.createRepository();
+            
+            //create a session
+            Session session;
             try {
-                repoInstance = new RulesRepository( config.login() );
-            } catch ( LoginException e ) {
-                Assert.fail( "Unable to login " + e.getMessage() );
-            } catch ( RepositoryException e ) {
-                Assert.fail("Repo exception when logging in: " + e.getMessage());
+                session = config.login( repository );
+                //clear out and setup
+                config.clearRulesRepository( session );
+                config.setupRulesRepository( session );
+                
+                
+                repoInstance = new RulesRepository( session );
+                
+                repo.set( repoInstance );                
+            } catch ( Exception e) {
+                Assert.fail("Unable to initialise repository :" + e.getMessage());
             }
-            repo.set( repoInstance );
+            
+
             
         }
         return (RulesRepository) repoInstance;        

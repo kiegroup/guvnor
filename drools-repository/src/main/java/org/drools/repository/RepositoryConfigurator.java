@@ -1,5 +1,6 @@
 package org.drools.repository;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Iterator;
@@ -22,41 +23,33 @@ import org.apache.jackrabbit.core.nodetype.NodeTypeRegistry;
 import org.apache.jackrabbit.core.nodetype.compact.CompactNodeTypeDefReader;
 import org.apache.log4j.Logger;
 
-/** This contains code to initialise the repository for jackrabbit */
+/** 
+ * This contains code to initialise the repository for jackrabbit.
+ * This is mostly a collection of utilities. 
+ * Any jackrabbit specific code needs to go in here.
+ */
 public class RepositoryConfigurator {
 
     private static final Logger log = Logger.getLogger(RepositoryConfigurator.class);        
-    private Repository repository;
     
-    
-    /**
-     * This will create a new repository (or clear an existing one)
-     * @param clearRepository True if you want it to wipe the contents and set it up.
+    /** 
+     * @return a new Repository instance. 
+     * There should only be one instance of this in an application.
+     * Generally, one repository (which may be bineded to JNDI) can spawn multiple sessions
+     * for each user as needed.
+     * Typically this would be created on application startup.
      */
-    public RepositoryConfigurator(boolean clearRepository) {
+    public Repository createRepository() {
         try {
-
-            repository = new TransientRepository();
-            
-            if(clearRepository) {    
-                Session session = login();
-                this.clearRepository(session);
-                this.setupRepository(session); 
-            }
-            
-                       
+            return new TransientRepository();
+        } catch ( IOException e ) {
+            throw new RulesRepositoryException("Unable to create a Repository instance.", e);
         }
-        catch (Exception e) {
-            log.error("Caught Exception", e);
-        }         
     }
     
-    public RepositoryConfigurator() {
-        this(false);
-    }
-
-    /** Create a new user session */
-    public Session login() throws LoginException,
+    
+    /** Create a new user session for the given repository instance. */
+    public Session login(Repository repository) throws LoginException,
                         RepositoryException {
         Session session = repository.login(
                                    new SimpleCredentials("username", "password".toCharArray()));
@@ -71,7 +64,7 @@ public class RepositoryConfigurator {
     /**
      * Clears out the entire tree below the rules repository node of the JCR repository.
      */
-    public void clearRepository(Session session) {
+    public void clearRulesRepository(Session session) {
         try {
             
             if (session.getRootNode().hasNode( RulesRepository.RULES_REPOSITORY_NAME )) {
@@ -92,11 +85,12 @@ public class RepositoryConfigurator {
     
     /**
      * Attempts to setup the repository.  If the work that it tries to do has already been done, it 
-     * will return with modifying the repository.
+     * will return without modifying the repository.
+     * This will not erase any data.
      * 
      * @throws RulesRepositoryException     
      */
-    protected void setupRepository(Session session) throws RulesRepositoryException {
+    public void setupRulesRepository(Session session) throws RulesRepositoryException {
         System.out.println("Setting up the repository, registering node types etc.");
         try {
             Node root = session.getRootNode();

@@ -54,6 +54,7 @@ import org.apache.log4j.Logger;
  * @author Ben Truitt
  */
 public class RulesRepository {
+
     public static final String DROOLS_URI = "http://www.jboss.org/drools-repository/1.0";
 
     private static final Logger log = Logger.getLogger(RulesRepository.class);
@@ -678,7 +679,7 @@ public class RulesRepository {
     public StateItem getState(String name) throws RulesRepositoryException {
         try {
             Node folderNode = this.getAreaNode(STATE_AREA);
-            Node stateNode = this.addNodeIfNew(folderNode, name, StateItem.STATE_NODE_TYPE_NAME);
+            Node stateNode = RulesRepository.addNodeIfNew(folderNode, name, StateItem.STATE_NODE_TYPE_NAME);
             return new StateItem(this, stateNode);
         }
         catch(Exception e) {
@@ -699,6 +700,9 @@ public class RulesRepository {
      * @throws RulesRepositoryException 
      */
     public CategoryItem getOrCreateCategory(String tagName) throws RulesRepositoryException {
+        if (tagName == null || "".equals( tagName )) {
+            throw new RuntimeException("Empty category name not permitted.");
+        }
         log.debug("getting tag with name: " + tagName);
         
         try {
@@ -709,7 +713,7 @@ public class RulesRepository {
             while(tok.hasMoreTokens()) {                                
                 String currentTagName = tok.nextToken();
                 
-                tagNode = this.addNodeIfNew(folderNode, currentTagName, CategoryItem.TAG_NODE_TYPE_NAME);
+                tagNode = RulesRepository.addNodeIfNew(folderNode, currentTagName, CategoryItem.TAG_NODE_TYPE_NAME);
                 folderNode = tagNode;
             }             
                                     
