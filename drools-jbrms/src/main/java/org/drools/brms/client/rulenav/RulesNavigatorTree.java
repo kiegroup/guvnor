@@ -15,6 +15,7 @@
  */
 package org.drools.brms.client.rulenav;
 
+import org.drools.brms.client.ErrorPopup;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
@@ -51,7 +52,11 @@ public class RulesNavigatorTree
                                      new AsyncCallback() {
 
                                          public void onFailure(Throwable caught) {
-                                             //TODO: work out how to handle it.
+                                             ErrorPopup popup = ErrorPopup.getInstance();
+                                             popup.setMessage( "Unable to load categories" );
+                                             popup.setPopupPosition( 0, 0 );
+                                             popup.show();
+                                             
                                          }
 
                                          public void onSuccess(Object result) {

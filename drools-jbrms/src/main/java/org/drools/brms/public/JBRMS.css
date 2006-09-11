@@ -239,6 +239,13 @@ a:visited {
   padding: 4px;
 }
 
+.rule-error-Popup {
+  background-color: red;
+  border: 1px solid #87B3FF;
+  padding: 4px;
+}
+
+
 .rule-ListHeader {
 	background-image: url(images/gray_gradient.gif);
 	background-repeat: repeat-x;
