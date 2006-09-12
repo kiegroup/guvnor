@@ -22,19 +22,14 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
 
     private static final long serialVersionUID = 3150768417428383474L;
 
-    public String[] loadChildCategories(String categoryPath) {
+    public String[] loadChildCategories(String categoryPath) {        
         RulesRepository repo = this.getRepositoryFrom( getSession() );
         CategoryItem item = repo.getOrCreateCategory( categoryPath );
         List children = item.getChildTags();
-
         String[] list = new String[children.size()];
-
         for ( int i = 0; i < list.length; i++ ) {
             list[i] = ((CategoryItem) children.get( i )).getName();
         }
-
-        log( "loadChildCategories",
-             "loading cat path: " + categoryPath );
         return list;
     }
 

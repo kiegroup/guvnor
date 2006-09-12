@@ -8,10 +8,10 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
 
-import org.drools.repository.RulesRepository;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.drools.repository.RulesRepository;
 
 public class JBRMSServiceServletTest extends TestCase {
 

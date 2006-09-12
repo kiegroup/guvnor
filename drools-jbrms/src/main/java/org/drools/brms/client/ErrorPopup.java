@@ -9,7 +9,10 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
-/** Generic error dialog popup */
+/** 
+ * Generic error dialog popup.
+ * This is a lazy singleton, only really need one to be shown at time. 
+ */
 public class ErrorPopup extends PopupPanel {
     
     public static ErrorPopup instance = null;

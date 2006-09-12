@@ -48,15 +48,11 @@ public class RulesNavigatorTree
 
     public RulesNavigatorTree(CategorySelectHandler handler) {
         this.categorySelectHandler = handler;
-        service.loadChildCategories( "",
+        service.loadChildCategories( "/",
                                      new AsyncCallback() {
 
                                          public void onFailure(Throwable caught) {
-                                             ErrorPopup popup = ErrorPopup.getInstance();
-                                             popup.setMessage( "Unable to load categories" );
-                                             popup.setPopupPosition( 0, 0 );
-                                             popup.show();
-                                             
+                                             ErrorPopup.showMessage( "Unable to load categories" );                                             
                                          }
 
                                          public void onSuccess(Object result) {
