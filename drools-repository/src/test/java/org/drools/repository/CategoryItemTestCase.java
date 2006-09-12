@@ -22,19 +22,22 @@ public class CategoryItemTestCase extends TestCase {
             assertEquals("TestTag", tagItem2.getName());
             assertEquals(tagItem1, tagItem2);
             
-            List originalCats = getRepo().listCategoryNames();
+            List originalCats = getRepo().getOrCreateCategory( "/" ).getChildTags(); //listCategoryNames();
+            assertTrue(originalCats.size() > 0);            
             
+            CategoryItem root = (CategoryItem) originalCats.get( 0 );
+            assertNotNull(root.getName());
+            assertNotNull(root.getFullPath());
             
             getRepo().getOrCreateCategory( "FootestTagItem" );
             
-            List cats = getRepo().listCategoryNames();
-            assertEquals(originalCats.size() + 1, cats.size());
-            
+            List cats = getRepo().getOrCreateCategory( "/" ).getChildTags();
+            assertEquals(originalCats.size() + 1, cats.size());            
             
             boolean found = false;
             for ( Iterator iter = cats.iterator(); iter.hasNext(); ) {
-                String element = (String) iter.next();
-                if (element.equals( "FootestTagItem" )) {
+                CategoryItem element = (CategoryItem) iter.next();
+                if (element.getName().equals( "FootestTagItem" )) {
                     found = true; break;
                 }
             }

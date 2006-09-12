@@ -89,7 +89,7 @@ public class RuleItemTestCase extends TestCase {
             
     }
 
-    public void testAddTag() {
+    public void testCategories() {
             RuleItem ruleItem1 = getRepo().addRule("testAddTag", "test lhs content", "test rhs content");
             
             ruleItem1.addCategory("testAddTagTestTag");
@@ -109,7 +109,20 @@ public class RuleItemTestCase extends TestCase {
             RuleItem retItem = (RuleItem) result.get( 0 );
             assertEquals("testAddTag", retItem.getName());
             
+            ruleItem1.updateLhs( "foo" );
+            ruleItem1.checkin( "latest" );
+            
+            result = getRepo().findRulesByTag( "testAddTagTestTag" );
+            
+            assertEquals(1, result.size());
 
+            ruleItem1 = (RuleItem) result.get( 0 );
+            assertEquals(2, ruleItem1.getCategories().size());
+            
+            assertEquals("foo", ruleItem1.getLhs());
+            RuleItem prev = (RuleItem) ruleItem1.getPrecedingVersion();
+            assertNotNull(prev);
+            
     }
 
     public void testRemoveTag() {

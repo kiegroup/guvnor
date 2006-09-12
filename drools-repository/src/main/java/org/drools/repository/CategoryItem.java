@@ -33,18 +33,18 @@ public class CategoryItem extends Item {
     public CategoryItem(RulesRepository rulesRepository, Node node) throws RulesRepositoryException {
         super(rulesRepository, node);
         
-        try {
-            //make sure this node is a tag node       
-            if(!(this.node.getPrimaryNodeType().getName().equals(TAG_NODE_TYPE_NAME))) {
-                String message = this.node.getName() + " is not a node of type " + TAG_NODE_TYPE_NAME + ". It is a node of type: " + this.node.getPrimaryNodeType().getName();
-                log.error(message);
-                throw new RulesRepositoryException(message);
-            }    
-        }
-        catch(Exception e) {
-            log.error("Caught exception: " + e);
-            throw new RulesRepositoryException(e);
-        }
+//        try {
+//            //make sure this node is a tag node       
+//            if(!(this.node.getPrimaryNodeType().getName().equals(TAG_NODE_TYPE_NAME))) {
+//                String message = this.node.getName() + " is not a node of type " + TAG_NODE_TYPE_NAME + ". It is a node of type: " + this.node.getPrimaryNodeType().getName();
+//                log.error(message);
+//                throw new RulesRepositoryException(message);
+//            }    
+//        }
+//        catch(Exception e) {
+//            log.error("Caught exception: " + e);
+//            throw new RulesRepositoryException(e);
+//        }
     }
 
     /**

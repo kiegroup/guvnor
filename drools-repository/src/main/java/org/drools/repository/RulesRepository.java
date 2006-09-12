@@ -707,7 +707,7 @@ public class RulesRepository {
         
         try {
             Node folderNode = this.getAreaNode(TAG_AREA);
-            Node tagNode = null;
+            Node tagNode = folderNode;
             
             StringTokenizer tok = new StringTokenizer(tagName, "/");
             while(tok.hasMoreTokens()) {                                
@@ -790,28 +790,7 @@ public class RulesRepository {
             throw new RulesRepositoryException(e);
         }
     }
-    
-    /** 
-     * This will provide a list of top level category strings. 
-     * Use getCategory to get a specific category to drill down into it.
-     */
-    public List listCategoryNames() throws RulesRepositoryException {
-        try {
-            
-            Node folderNode = this.getAreaNode(TAG_AREA);
-            NodeIterator it = folderNode.getNodes();            
-            
-            List nodeNames = new ArrayList();
-            while(it.hasNext()) {
-                Node catNode = (Node) it.next();
-                nodeNames.add( catNode.getName() );
-            }
-            
-            return nodeNames;
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException(e);
-        }
-    }
+
     
     /**
      * @return The JCR session that this repository is using.

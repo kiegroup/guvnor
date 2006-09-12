@@ -422,13 +422,7 @@ public class RuleItem extends VersionableItem {
      */
     public List getCategories() throws RulesRepositoryException {
         try {                            
-            Node ruleNode;
-            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-                ruleNode = this.node.getNode("jcr:frozenNode");
-            }
-            else {
-                ruleNode = this.node;
-            }
+            Node ruleNode = getVersionContentNode();
             
             List returnList = new ArrayList();
             try {
