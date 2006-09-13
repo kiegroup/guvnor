@@ -725,31 +725,6 @@ public class RulesRepository {
         }
     }
 
-    /**
-     * This will retrieve a list of FunctionItem objects - that are allocated to the 
-     * provided category.
-     * Only the latest versions of each FunctionItem will be returned (you will have 
-     * to delve into the functions' deepest darkest history yourself... mahahahaha).
-     */
-    public List findFunctionsByTag(String categoryTag) throws RulesRepositoryException {        
-        CategoryItem item = this.getOrCreateCategory( categoryTag );
-        List results = new ArrayList();
-        try {
-            PropertyIterator it = item.getNode().getReferences();
-            while(it.hasNext()) {
-                Property ruleLink = (Property) it.next();
-                Node parentNode = ruleLink.getParent();
-                if(parentNode.getPrimaryNodeType().getName().equals(FunctionItem.FUNCTION_NODE_TYPE_NAME) ||
-                   (parentNode.getPrimaryNodeType().getName().equals("nt:version") && 
-                    parentNode.getProperty(VersionableItem.FORMAT_PROPERTY_NAME).getString().equals(VersionableItem.FUNCTION_FORMAT))) {
-                    results.add(new FunctionItem(this, parentNode));
-                }
-            }
-            return results;
-        } catch (RepositoryException e) {            
-            throw new RulesRepositoryException(e);
-        }        
-    }
     
     /**
      * This will retrieve a list of RuleItem objects - that are allocated to the 
@@ -766,9 +741,7 @@ public class RulesRepository {
             while(it.hasNext()) {
                 Property ruleLink = (Property) it.next();
                 Node parentNode = ruleLink.getParent();
-                if(parentNode.getPrimaryNodeType().getName().equals(RuleItem.RULE_NODE_TYPE_NAME) ||
-                   (parentNode.getPrimaryNodeType().getName().equals("nt:version") && 
-                    parentNode.getProperty(VersionableItem.FORMAT_PROPERTY_NAME).getString().equals(VersionableItem.RULE_FORMAT))) {
+                if(parentNode.getPrimaryNodeType().getName().equals(RuleItem.RULE_NODE_TYPE_NAME)) {
                     results.add(new RuleItem(this, parentNode));
                 }
             }

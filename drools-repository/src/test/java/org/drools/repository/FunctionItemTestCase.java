@@ -57,54 +57,7 @@ public class FunctionItemTestCase extends TestCase {
             
             assertEquals("new content", functionItem1.getContent());
     }
-        
-    public void testAddCategory() {
-            FunctionItem functionItem1 = this.getRepo().addFunction("testAddCategory", "test content");
-            
-            functionItem1.addTag("testAddCategoryTestTag");
-            List tags = functionItem1.getTags();
-            assertEquals(1, tags.size());
-            assertEquals("testAddCategoryTestTag", ((CategoryItem)tags.get(0)).getName());
-            
-            functionItem1.addTag("testAddCategoryTestTag2");
-            tags = functionItem1.getTags();
-            assertEquals(2, tags.size());   
-                        
-            //now test retrieve by tags
-            List result = this.getRepo().findFunctionsByTag("testAddCategoryTestTag");            
-            assertEquals(1, result.size());            
-            FunctionItem retItem = (FunctionItem) result.get(0);
-            assertEquals("testAddCategory", retItem.getName());            
-    }
 
-    public void testRemoveTag() {
-            FunctionItem functionItem1 = this.getRepo().addFunction("testRemoveTag", "test content");
-            
-            functionItem1.addTag("TestTag");                                    
-            functionItem1.removeTag("TestTag");
-            List tags = functionItem1.getTags();
-            assertEquals(0, tags.size());
-            
-            functionItem1.addTag("TestTag2");                                    
-            functionItem1.addTag("TestTag3");
-            functionItem1.removeTag("TestTag2");
-            tags = functionItem1.getTags();
-            assertEquals(1, tags.size());
-            assertEquals("TestTag3", ((CategoryItem)tags.get(0)).getName());            
-    }
-
-    public void testGetTags() {
-            FunctionItem functionItem1 = this.getRepo().addFunction("testGetTags", "test content");
-           
-            List tags = functionItem1.getTags();
-            assertNotNull(tags);
-            assertEquals(0, tags.size());
-            
-            functionItem1.addTag("TestTag");                                    
-            tags = functionItem1.getTags();
-            assertEquals(1, tags.size());
-            assertEquals("TestTag", ((CategoryItem)tags.get(0)).getName());
-    }
 
     public void testSetStateString() {
             FunctionItem functionItem1 = this.getRepo().addFunction("testSetStateString", "test content");
