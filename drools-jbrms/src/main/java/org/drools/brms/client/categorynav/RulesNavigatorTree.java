@@ -13,16 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.brms.client.rulenav;
+package org.drools.brms.client.categorynav;
 
 import org.drools.brms.client.ErrorPopup;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeListener;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
  * This is a rule/resource navigator that uses the server side categories to 
@@ -30,32 +38,74 @@ import com.google.gwt.user.client.ui.TreeListener;
  * Uses the the {@link com.google.gwt.user.client.ui.Tree} widget.
  */
 public class RulesNavigatorTree
-    implements
-    TreeListener {
+    extends Composite implements TreeListener
+    {
 
+     
+    
     private Tree                   navTreeWidget = new Tree();
+    private FlexTable              table         = new FlexTable();
     private RepositoryServiceAsync service       = RepositoryServiceFactory.getService();
     private CategorySelectHandler  categorySelectHandler;
+    private String selectedPath;
 
     public void setTreeSize(String width) {
         navTreeWidget.setWidth( width );
     }
 
-    /** Return the actual widget so the composite can use it */
-    public Tree getTree() {
-        return navTreeWidget;
+    public RulesNavigatorTree(CategorySelectHandler handler) {
+        table.setWidget( 0, 0, navTreeWidget );
+        
+        FlexCellFormatter formatter = table.getFlexCellFormatter();
+        formatter.setColSpan( 0, 0, 2 );
+        
+        Image refresh = new Image("images/refresh.gif");
+        refresh.setTitle( "Refresh categories" );        
+        refresh.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                navTreeWidget.removeItems();
+                loadInitialTree();
+            }            
+        });
+                
+        Image newCat = new Image("images/new.gif");
+        newCat.setTitle( "Create a new category" );
+        newCat.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                CategoryEditor newCat = new CategoryEditor(selectedPath);
+                newCat.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() - 10  );
+                newCat.show();
+            }            
+        });
+        
+        
+        table.setWidget( 1, 0, newCat);
+        table.setWidget( 1, 1, refresh );
+        formatter.setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE );
+        formatter.setAlignment( 1, 1, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
+        
+        this.categorySelectHandler = handler;
+        loadInitialTree();
+        
+        initWidget( table );
+        navTreeWidget.addTreeListener( this );
     }
 
-    public RulesNavigatorTree(CategorySelectHandler handler) {
-        this.categorySelectHandler = handler;
+    /** This will refresh the tree and restore it back to the original state */
+    private void loadInitialTree() {
+        navTreeWidget.addItem( "Please wait..." );
         service.loadChildCategories( "/",
                                      new AsyncCallback() {
 
-                                         public void onFailure(Throwable caught) {
-                                             ErrorPopup.showMessage( "Unable to load categories" );                                             
+                                         public void onFailure(Throwable caught) {                                             
+                                             ErrorPopup.showMessage( "A server error occurred loading categories." );
+                                             navTreeWidget.removeItems();
+                                             navTreeWidget.addItem( "Unable to load categories." );
                                          }
 
                                          public void onSuccess(Object result) {
+                                             selectedPath = null;
+                                             navTreeWidget.removeItems();
                                              String[] categories = (String[]) result;
                                              for ( int i = 0; i < categories.length; i++ ) {
                                                  navTreeWidget.addItem( categories[i] ).addItem( new PendingItem() );
@@ -65,17 +115,20 @@ public class RulesNavigatorTree
 
                                      } );
 
-        navTreeWidget.addTreeListener( this );
-
+        
     }
+    
+    
 
     public void onShow() {
         //move along... these are not the droids you're looking for...
     }
 
     public void onTreeItemSelected(TreeItem item) {
-        this.categorySelectHandler.selected( getPath( item ) );
+        this.selectedPath = getPath( item );        
+        this.categorySelectHandler.selected( selectedPath );
     }
+    
 
     public void onTreeItemStateChanged(TreeItem item) {
 
@@ -86,15 +139,15 @@ public class RulesNavigatorTree
         final TreeItem root = item;
 
         //walk back up to build a tree
-        String categoryPath = getPath( item );
+        this.selectedPath = getPath( item );
 
         item.setUserObject( new Boolean( true ) );
 
-        service.loadChildCategories( categoryPath,
+        service.loadChildCategories( selectedPath,
                                      new AsyncCallback() {
 
                                          public void onFailure(Throwable caught) {
-                                             // TODO Auto-generated method stub            
+                                             ErrorPopup.showMessage( "Unable to load categories for [" + selectedPath + "]");            
                                          }
 
                                          public void onSuccess(Object result) {

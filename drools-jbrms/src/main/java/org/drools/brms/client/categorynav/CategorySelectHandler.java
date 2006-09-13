@@ -1,4 +1,4 @@
-package org.drools.brms.client.rulenav;
+package org.drools.brms.client.categorynav;
 
 /**
  * This represents an event of a category being selected.

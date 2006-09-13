@@ -26,5 +26,10 @@ public interface RepositoryService extends RemoteService {
      * This will return a TableConfig of header names.
      * @param listName The name of the list that we are going to render.
      */
-    public TableConfig loadTableConfig(String listName);  
+    public TableConfig loadTableConfig(String listName);
+    
+    /**
+     * This will create a new category at the specified path.
+     */
+    public Boolean createCategory(String path, String name, String description);
 }

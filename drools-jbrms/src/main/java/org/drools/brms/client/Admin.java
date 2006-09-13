@@ -47,7 +47,7 @@ public class Admin extends JBRMSFeature {
 
     fTabs.setWidth("100%");
     fTabs.setHeight("100%");
-    setWidget(fTabs);
+    initWidget(fTabs);
   }
 
   public void onShow() {

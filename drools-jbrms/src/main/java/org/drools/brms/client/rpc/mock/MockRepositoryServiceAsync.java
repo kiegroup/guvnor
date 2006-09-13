@@ -71,4 +71,14 @@ public class MockRepositoryServiceAsync
         
     }
 
+
+
+    public void createCategory(String path,
+                               String name,
+                               String description,
+                               AsyncCallback callback) {
+        callback.onSuccess( new Boolean(true) );
+        
+    }
+
 }

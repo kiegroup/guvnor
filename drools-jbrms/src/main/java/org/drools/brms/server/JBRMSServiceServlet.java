@@ -16,12 +16,17 @@ import org.drools.repository.RulesRepository;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+/** 
+ * This is the implementation of the repository service to drive the GWT based front end.
+ * @author Michael Neale
+ */
 public class JBRMSServiceServlet extends RemoteServiceServlet
     implements
     RepositoryService {
 
     private static final long serialVersionUID = 3150768417428383474L;
-
+    public static Repository repository;
+    
     public String[] loadChildCategories(String categoryPath) {        
         RulesRepository repo = this.getRepositoryFrom( getSession() );
         CategoryItem item = repo.getOrCreateCategory( categoryPath );
@@ -121,7 +126,14 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         return session;
     }
     
-    public static Repository repository;
+    
+
+    public Boolean createCategory(String path,
+                                  String name,
+                                  String description) {
+        // TODO Auto-generated method stub
+        return new Boolean(false);
+    }
 
 
 

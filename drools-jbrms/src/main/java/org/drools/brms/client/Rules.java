@@ -1,13 +1,11 @@
 package org.drools.brms.client;
 
-import org.drools.brms.client.rpc.RepositoryServiceFactory;
+import org.drools.brms.client.categorynav.CategorySelectHandler;
+import org.drools.brms.client.categorynav.RulesNavigatorTree;
 import org.drools.brms.client.ruleeditor.RuleView;
 import org.drools.brms.client.rulelist.EditItemEvent;
 import org.drools.brms.client.rulelist.RuleListView;
-import org.drools.brms.client.rulenav.CategorySelectHandler;
-import org.drools.brms.client.rulenav.RulesNavigatorTree;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TabPanel;
@@ -33,7 +31,7 @@ public class Rules extends JBRMSFeature {
 		TabPanel tab = new TabPanel();
 		tab.setWidth("100%");
 		tab.setHeight("100%");
-		setWidget(tab);
+		initWidget(tab);
 		
 		
 		HorizontalPanel explorePanel = doExplore(tab);
@@ -73,7 +71,7 @@ public class Rules extends JBRMSFeature {
             }
             
         });			
-		panel.add(nav.getTree());
+		panel.add(nav);
         
 
 		panel.add(list);

@@ -31,4 +31,6 @@ public interface RepositoryServiceAsync {
      * @param listName The name of the list that we are going to render.
      */
     public void loadTableConfig(String listName, AsyncCallback callback);
+    
+    public void createCategory(String path, String name, String description, AsyncCallback callback);
 }
