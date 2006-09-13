@@ -32,13 +32,13 @@ a:visited {
 }
 
 .gwt-DialogBox {
-  sborder: 8px solid #C3D9FF;
+  sborder: 8px solid #B8B8B8;
   border: 2px outset;
   background-color: white;
 }
 
 .gwt-DialogBox .Caption {
-  background-color: #C3D9FF;
+  background-color: #B8B8B8;
   padding: 3px;
   margin: 2px;
   font-weight: bold;
@@ -53,12 +53,12 @@ a:visited {
 
 .gwt-HorizontalSplitter .Bar {
   width: 8px;
-  background-color: #C3D9FF;
+  background-color: #B8B8B8;
 }
 
 .gwt-VerticalSplitter .Bar {
   height: 8px;
-  background-color: #C3D9FF;
+  background-color: #B8B8B8;
 }
 
 .gwt-HTML {
@@ -79,7 +79,7 @@ a:visited {
 }
 
 .gwt-MenuBar {
-  background-color: #C3D9FF;
+  background-color: #B8B8B8;
   border: 1px solid #87B3FF;
   cursor: default;
 }
@@ -91,7 +91,7 @@ a:visited {
 }
 
 .gwt-MenuBar .gwt-MenuItem-selected {
-  background-color: #E8EEF7;
+  background-color: #F6F9ED;
 }
 
 .gwt-PasswordTextBox {
@@ -109,7 +109,7 @@ a:visited {
 }
 
 .gwt-TabBar {
-  background-color: #C3D9FF;
+  background-color: #B8B8B8;
   font-size: smaller;
 }
 
@@ -125,7 +125,7 @@ a:visited {
 }
 
 .gwt-TabBar .gwt-TabBarItem {
-  border-top: 1px solid #C3D9FF;
+  border-top: 1px solid #B8B8B8;
   border-bottom: 1px solid #87B3FF;
   padding: 2px;
   cursor: pointer;
@@ -134,11 +134,11 @@ a:visited {
 
 .gwt-TabBar .gwt-TabBarItem-selected {
   font-weight: bold;
-  background-color: #E8EEF7;
+  background-color: #F6F9ED;
   border-top: 1px solid #87B3FF;
   border-left: 1px solid #87B3FF;
   border-right: 1px solid #87B3FF;
-  border-bottom: 1px solid #E8EEF7;
+  border-bottom: 1px solid #F6F9ED;
   padding: 2px;
   cursor: default;
 }
@@ -157,14 +157,14 @@ a:visited {
 }
 
 .gwt-Tree .gwt-TreeItem-selected {
-  background-color: #C3D9FF;
+  background-color: #B8B8B8;
 }
 
 .gwt-StackPanel {
 }
 
 .gwt-StackPanel .gwt-StackPanelItem {
-  background-color: #C3D9FF;
+  background-color: #B8B8B8;
   cursor: pointer;
   cursor: hand;
 }
@@ -173,15 +173,18 @@ a:visited {
 }
 
 /* -------------------------------------------------------------------------- */
+
+/* -- orig border: #C3D9FF  replaced with #B8B8B8 
+  orig background: #E8EEF7 replaced with #F6F9ED -- */
 .ks-Sink {
-  border: 8px solid #C3D9FF;
-  background-color: #E8EEF7;
+  border: 8px solid #B8B8B8;
+  background-color: #F6F9ED;
   width: 100%;
   height: 24em;
 }
 
 .ks-Info {
-  background-color: #C3D9FF;
+  background-color: #B8B8B8;
   padding: 10px 10px 2px 10px;
   font-size: smaller;
 }
@@ -201,7 +204,7 @@ a:visited {
 }
 
 .ks-List .ks-SinkItem-selected {
-  background-color: #C3D9FF;
+  background-color: #B8B8B8;
 }
 
 .ks-images-Image {
@@ -219,7 +222,7 @@ a:visited {
 }
 
 .ks-layouts-Label {
-  background-color: #C3D9FF;
+  background-color: #B8B8B8;
   font-weight: bold;
   margin-top: 1em;
   padding: 2px 0px 2px 0px;
@@ -228,7 +231,7 @@ a:visited {
 
 .ks-layouts-Scroller {
   height: 128px;
-  border: 2px solid #C3D9FF;
+  border: 2px solid #B8B8B8;
   padding: 8px;
   margin: 8px;
 }
@@ -241,6 +244,12 @@ a:visited {
 
 .rule-error-Popup {
   background-color: red;
+  border: 1px solid #87B3FF;
+  padding: 4px;
+}
+
+.rule-breditor-Table {
+  background-color: #FDFCDC;
   border: 1px solid #87B3FF;
   padding: 4px;
 }

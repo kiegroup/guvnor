@@ -81,8 +81,6 @@ public class Packages extends JBRMSFeature
         panel.add( new BREditor() );
         
         EditableLine line = new EditableLine();
-        line.makeEditable();
-        line.makeReadOnly();
         panel.add( line );
         
         panel.setSpacing( 8 );

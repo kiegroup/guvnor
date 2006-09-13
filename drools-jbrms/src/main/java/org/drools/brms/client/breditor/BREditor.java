@@ -12,6 +12,9 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * This is the editor for "business" rules via a DSL.
+ */
 public class BREditor extends Composite {
 
     final int DESC_COLUMN = 0;
@@ -30,6 +33,8 @@ public class BREditor extends Composite {
         
         initData();
         populateTable();
+        
+        
         
         initWidget( panel );
     }
@@ -63,6 +68,7 @@ public class BREditor extends Composite {
         
         table.setWidget( 0, ACTION_COLUMN, addLhs );
         
+        
         int rowOffset = 1;
         
         //setup LHS
@@ -80,12 +86,7 @@ public class BREditor extends Composite {
         
         //setup RHS
         populateContent( rowOffset, rhs );
-        
-//        //setup RHS
-//        for ( int i = 0; i < rhs.size(); i++ ) {
-//            Widget w = (Widget) rhs.get( 0 );
-//            table.setWidget( i+rowOffset, CONTENT_COLUMN, w );
-//        }
+
 
     }
 
@@ -94,7 +95,7 @@ public class BREditor extends Composite {
         for ( int i = 0; i < dataList.size(); i++ ) {
             Widget w = (Widget) dataList.get( i );
             int row = i + rowOffset;
-            table.setWidget( row, CONTENT_COLUMN, w );
+            table.setWidget( row, CONTENT_COLUMN, w );            
             Button removeButton = new Button("-");
             final int idx = i;
             removeButton.addClickListener( new ClickListener() {
@@ -117,10 +118,12 @@ public class BREditor extends Composite {
         
         //now add the new
         table = new FlexTable();
+        table.setStyleName( "rule-breditor-Table" );
         panel.add( table );
     }
 
     private void initData() {
+        
         lhs.add( new Label("Hello this is {foo}"));
         lhs.add( new Label("Hello this is {foo}"));
         rhs.add(new Label("panic all is lost") );

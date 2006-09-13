@@ -21,13 +21,15 @@ import java.util.ArrayList;
 import org.drools.brms.client.JBRMSFeature.ComponentInfo;
 
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * The left panel that contains all of the sinks, along with a short description
+ * This is the list of features that make up the rule management console.
+ * Refer to the JBRMSFeatureConfigurator which actually sets up the individual features.
+ * 
+ * This is the left panel that contains all of the features, along with a short description
  * of each.
  */
 public class JBRMSFeatureList extends Composite {
@@ -37,7 +39,7 @@ public class JBRMSFeatureList extends Composite {
   private int selectedSink = -1;
 
   public JBRMSFeatureList() {
-    setWidget(list);
+    initWidget(list);
     setStyleName("ks-List");
   }
 
