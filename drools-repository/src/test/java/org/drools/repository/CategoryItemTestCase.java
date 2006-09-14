@@ -13,25 +13,31 @@ public class CategoryItemTestCase extends TestCase {
     
     
     public void testTagItem() {
-            CategoryItem tagItem1 = getRepo().getOrCreateCategory("TestTag");
+        
+            final CategoryItem root = getRepo().loadCategory( "/" );
+            
+            root.addCategory( "TestTag", "nothing to see" );
+            
+            
+            CategoryItem tagItem1 = getRepo().loadCategory("TestTag");
             assertNotNull(tagItem1);
             assertEquals("TestTag", tagItem1.getName());                        
             
-            CategoryItem tagItem2 = getRepo().getOrCreateCategory("TestTag");
+            CategoryItem tagItem2 = getRepo().loadCategory("TestTag");
             assertNotNull(tagItem2);
             assertEquals("TestTag", tagItem2.getName());
             assertEquals(tagItem1, tagItem2);
             
-            List originalCats = getRepo().getOrCreateCategory( "/" ).getChildTags(); //listCategoryNames();
+            List originalCats = getRepo().loadCategory( "/" ).getChildTags(); //listCategoryNames();
             assertTrue(originalCats.size() > 0);            
             
-            CategoryItem root = (CategoryItem) originalCats.get( 0 );
-            assertNotNull(root.getName());
-            assertNotNull(root.getFullPath());
+            CategoryItem rootCat = (CategoryItem) originalCats.get( 0 );
+            assertNotNull(rootCat.getName());
+            assertNotNull(rootCat.getFullPath());
             
-            getRepo().getOrCreateCategory( "FootestTagItem" );
+            root.addCategory( "FootestTagItem", "nothing" );
             
-            List cats = getRepo().getOrCreateCategory( "/" ).getChildTags();
+            List cats = root.getChildTags();
             assertEquals(originalCats.size() + 1, cats.size());            
             
             boolean found = false;
@@ -46,41 +52,48 @@ public class CategoryItemTestCase extends TestCase {
     
     }    
     
-    public void testGetChildTags() {
-        try {            
-            CategoryItem tagItem1 = getRepo().getOrCreateCategory("TestTag");
+    public void testCreateCateories() throws Exception {
+        RulesRepository repo = getRepo();
+        
+        //load the root
+        CategoryItem root = repo.loadCategory( "/" );
+        
+        CategoryItem item = root.addCategory("testCreateCategories", "this is a top level one");
+        assertEquals("testCreateCategories", item.getName());
+        assertEquals("testCreateCategories", item.getFullPath());
+        
+        item = repo.loadCategory( "testCreateCategories" );
+        assertEquals("testCreateCategories", item.getName());
+        
+        
+    }
+    
+    public void testGetChildTags() {        
+            CategoryItem tagItem1 = getRepo().loadCategory("TestTag");
             assertNotNull(tagItem1);
             assertEquals("TestTag", tagItem1.getName());                        
             
             List childTags = tagItem1.getChildTags();
             assertNotNull(childTags);
-            assertEquals(0, childTags.size());
-            
-            CategoryItem childTagItem1 = tagItem1.getChildTag("TestChildTag1");
-            assertNotNull(childTagItem1);
-            assertEquals("TestChildTag1", childTagItem1.getName());
+            assertEquals(0, childTags.size());            
+
+            tagItem1.addCategory( "TestChildTag1", "description" );            
             
             childTags = tagItem1.getChildTags();
             assertNotNull(childTags);
             assertEquals(1, childTags.size());
             assertEquals("TestChildTag1", ((CategoryItem)childTags.get(0)).getName());
             
-            CategoryItem childTagItem2 = tagItem1.getChildTag("TestChildTag2");
-            assertNotNull(childTagItem2);
-            assertEquals("TestChildTag2", childTagItem2.getName());
+            tagItem1.addCategory( "AnotherChild", "ignore me" );
             
             childTags = tagItem1.getChildTags();
             assertNotNull(childTags);
             assertEquals(2, childTags.size());
-        }
-        catch(Exception e) {
-            fail("Unexpected Exception caught: " + e);
-        }
     }
     
     public void testGetChildTag() {
-        try {            
-            CategoryItem tagItem1 = getRepo().getOrCreateCategory("testGetChildTag");
+            CategoryItem root = getRepo().loadCategory( "/" );
+            CategoryItem tagItem1 = root.addCategory("testGetChildTag", "yeah");
             assertNotNull(tagItem1);
             assertEquals("testGetChildTag", tagItem1.getName());                        
             
@@ -89,40 +102,35 @@ public class CategoryItemTestCase extends TestCase {
             assertNotNull(childTags);
             assertEquals(0, childTags.size());
             
-            CategoryItem childTagItem1 = tagItem1.getChildTag("TestChildTag1");
+            CategoryItem childTagItem1 = tagItem1.addCategory("TestChildTag1", "woo");
             assertNotNull(childTagItem1);
             assertEquals("TestChildTag1", childTagItem1.getName());
                         
             //test that if already there, it is returned
-            CategoryItem childTagItem2 = tagItem1.getChildTag("TestChildTag1");
+            CategoryItem childTagItem2 = getRepo().loadCategory( "testGetChildTag/TestChildTag1");
             assertNotNull(childTagItem2);
             assertEquals("TestChildTag1", childTagItem2.getName());
             assertEquals(childTagItem1, childTagItem2);
-        }
-        catch(Exception e) {
-            fail("Unexpected Exception caught: " + e);
-        }
     }
     
     public void testGetFullPath() {
-        try {            
-            CategoryItem tagItem1 = getRepo().getOrCreateCategory("TestTag");
+        
+            CategoryItem root = getRepo().loadCategory( "/" );
+        
+            CategoryItem tagItem1 = root.addCategory("testGetFullPath", "foo");
             assertNotNull(tagItem1);
-            assertEquals("TestTag", tagItem1.getFullPath());                        
+            assertEquals("testGetFullPath", tagItem1.getFullPath());                        
                                     
-            CategoryItem childTagItem1 = tagItem1.getChildTag("TestChildTag1");
+            CategoryItem childTagItem1 = tagItem1.addCategory("TestChildTag1", "foo");
             assertNotNull(childTagItem1);
-            assertEquals("TestTag/TestChildTag1", childTagItem1.getFullPath());
+            assertEquals("testGetFullPath/TestChildTag1", childTagItem1.getFullPath());
                         
-            CategoryItem childTagItem2 = childTagItem1.getChildTag("TestChildTag2");
+            CategoryItem childTagItem2 = childTagItem1.addCategory("TestChildTag2", "wee");
             assertNotNull(childTagItem2);
-            assertEquals("TestTag/TestChildTag1/TestChildTag2", childTagItem2.getFullPath());
+            assertEquals("testGetFullPath/TestChildTag1/TestChildTag2", childTagItem2.getFullPath());
             
             
-        }
-        catch(Exception e) {
-            fail("Unexpected Exception caught: " + e);
-        }
+
     }
 
     private RulesRepository getRepo() {

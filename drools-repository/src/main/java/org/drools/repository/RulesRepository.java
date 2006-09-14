@@ -689,9 +689,7 @@ public class RulesRepository {
     }
         
     /**
-     * Gets a TagItem object that encapsulates the node for the specified tag name.  If the tag does
-     * not already exist in the repository when this is called, it is first added to the repository
-     * and then returned.
+     * This will return a category for the given category path.
      * 
      * @param tagName the name of the tag to get. If the tag to get is within a heirarchy of
      *                tag nodes, specify the full path to the tag node of interest (e.g. if
@@ -699,7 +697,7 @@ public class RulesRepository {
      * @return a TagItem object encapsulating the node for the tag in the repository
      * @throws RulesRepositoryException 
      */
-    public CategoryItem getOrCreateCategory(String tagName) throws RulesRepositoryException {
+    public CategoryItem loadCategory(String tagName) throws RulesRepositoryException {
         if (tagName == null || "".equals( tagName )) {
             throw new RuntimeException("Empty category name not permitted.");
         }
@@ -713,14 +711,17 @@ public class RulesRepository {
             while(tok.hasMoreTokens()) {                                
                 String currentTagName = tok.nextToken();
                 
-                tagNode = RulesRepository.addNodeIfNew(folderNode, currentTagName, CategoryItem.TAG_NODE_TYPE_NAME);
+                tagNode = folderNode.getNode( currentTagName ) ; 
+                //MN was this: RulesRepository.addNodeIfNew(folderNode, currentTagName, CategoryItem.TAG_NODE_TYPE_NAME);
                 folderNode = tagNode;
             }             
                                     
             return new CategoryItem(this, tagNode);
         }
         catch(Exception e) {
-            log.error("Caught Exception: " + e);
+            if (e instanceof PathNotFoundException) {
+                throw new RulesRepositoryException("Unable to load the category : [" + tagName + "] does not exist.", e);
+            }
             throw new RulesRepositoryException(e);
         }
     }
@@ -734,7 +735,7 @@ public class RulesRepository {
      */
     public List findRulesByTag(String categoryTag) throws RulesRepositoryException {
         
-        CategoryItem item = this.getOrCreateCategory( categoryTag );
+        CategoryItem item = this.loadCategory( categoryTag );
         List results = new ArrayList();
         try {
             PropertyIterator it = item.getNode().getReferences();
@@ -771,4 +772,7 @@ public class RulesRepository {
     public Session getSession() {
         return this.session;
     }
+
+
+
 }

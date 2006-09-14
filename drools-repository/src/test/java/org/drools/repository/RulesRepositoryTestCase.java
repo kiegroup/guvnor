@@ -132,19 +132,21 @@ public class RulesRepositoryTestCase extends TestCase {
     }
 
     public void testGetTag() {
-        RulesRepository rulesRepository = RepositorySession.getRepository();
-            CategoryItem tagItem1 = rulesRepository.getOrCreateCategory("testGetTag");
+            RulesRepository rulesRepository = RepositorySession.getRepository();
+            
+            CategoryItem root = rulesRepository.loadCategory( "/" );
+            CategoryItem tagItem1 = root.addCategory( "testGetTag", "ho");
             assertNotNull(tagItem1);
             assertEquals("testGetTag", tagItem1.getName());
             assertEquals("testGetTag", tagItem1.getFullPath());
             
-            CategoryItem tagItem2 = rulesRepository.getOrCreateCategory("testGetTag");
+            CategoryItem tagItem2 = rulesRepository.loadCategory("testGetTag");
             assertNotNull(tagItem2);
             assertEquals("testGetTag", tagItem2.getName());
             assertEquals(tagItem1, tagItem2);
             
             //now test getting a tag down in the tag hierarchy
-            CategoryItem tagItem3 = rulesRepository.getOrCreateCategory("testGetTag/TestChildTag1");
+            CategoryItem tagItem3 = tagItem2.addCategory( "TestChildTag1", "ka");
             assertNotNull(tagItem3);
             assertEquals("TestChildTag1", tagItem3.getName());
             assertEquals("testGetTag/TestChildTag1", tagItem3.getFullPath());                                   

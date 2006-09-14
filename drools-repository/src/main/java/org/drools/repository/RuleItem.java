@@ -301,7 +301,7 @@ public class RuleItem extends VersionableItem {
             //make sure this object's node is the head version
             checkIsUpdateable();                                       
             
-            CategoryItem tagItem = this.rulesRepository.getOrCreateCategory(tag);
+            CategoryItem tagItem = this.rulesRepository.loadCategory(tag);
                                     
             //now set the tag property of the rule
             Property tagReferenceProperty;

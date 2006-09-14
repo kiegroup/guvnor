@@ -5,9 +5,6 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.version.Version;
-import javax.jcr.version.VersionIterator;
 
 import org.apache.log4j.Logger;
 
@@ -93,20 +90,22 @@ public class CategoryItem extends Item {
     }
 
     /**
-     * Gets a TagItem object encapsulating the specified child tag. If the child tag 
-     * doesn't exist, it is created.
-     * 
-     * @param tagName the name of the child tag to get or add
-     * @return a TagItem encapsulating the specified child tag
-     * @throws RulesRepositoryException
+     * This will create a child category under this one
      */
-    public CategoryItem getChildTag(String tagName) throws RulesRepositoryException {
+    public CategoryItem addCategory(String name,
+                                    String description) {
         try {
-            return this.rulesRepository.getOrCreateCategory(this.getFullPath() + "/" + tagName);
+            Node child = this.node.addNode( name, CategoryItem.TAG_NODE_TYPE_NAME );
+            this.rulesRepository.getSession().save();
+            return new CategoryItem(this.rulesRepository, child);
+        } catch (Exception e) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            } else {
+                throw new RulesRepositoryException(e);
+            }
         }
-        catch(Exception e) {
-            log.error("Caught Exception: " + e);
-            throw new RulesRepositoryException(e);
-        }
-    }        
+
+    }
+    
 }

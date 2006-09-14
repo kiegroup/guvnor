@@ -92,11 +92,14 @@ public class RuleItemTestCase extends TestCase {
     public void testCategories() {
             RuleItem ruleItem1 = getRepo().addRule("testAddTag", "test lhs content", "test rhs content");
             
+            getRepo().loadCategory( "/" ).addCategory( "testAddTagTestTag", "description" );
+            
             ruleItem1.addCategory("testAddTagTestTag");
             List tags = ruleItem1.getCategories();
             assertEquals(1, tags.size());
             assertEquals("testAddTagTestTag", ((CategoryItem)tags.get(0)).getName());
             
+            getRepo().loadCategory( "/" ).addCategory( "testAddTagTestTag2", "description" );            
             ruleItem1.addCategory("testAddTagTestTag2");
             tags = ruleItem1.getCategories();
             assertEquals(2, tags.size());   
@@ -128,17 +131,23 @@ public class RuleItemTestCase extends TestCase {
     public void testRemoveTag() {
             RuleItem ruleItem1 = getRepo().addRule("testRemoveTag", "test lhs content", "test rhs content");
             
-            ruleItem1.addCategory("TestTag");                                    
-            ruleItem1.removeCategory("TestTag");
-            List tags = ruleItem1.getCategories();
-            assertEquals(0, tags.size());
+            getRepo().loadCategory( "/" ).addCategory( "TestRemoveCategory", "description" );
             
-            ruleItem1.addCategory("TestTag2");                                    
-            ruleItem1.addCategory("TestTag3");
-            ruleItem1.removeCategory("TestTag2");
+            ruleItem1.addCategory("TestRemoveCategory");   
+            List tags = ruleItem1.getCategories();
+            assertEquals(1, tags.size());
+            ruleItem1.removeCategory("TestRemoveCategory");
+            tags = ruleItem1.getCategories();
+            assertEquals(0, tags.size());
+
+            getRepo().loadCategory( "/" ).addCategory( "TestRemoveCategory2", "description" );
+            getRepo().loadCategory( "/" ).addCategory( "TestRemoveCategory3", "description" );
+            ruleItem1.addCategory("TestRemoveCategory2");                                    
+            ruleItem1.addCategory("TestRemoveCategory3");
+            ruleItem1.removeCategory("TestRemoveCategory2");
             tags = ruleItem1.getCategories();
             assertEquals(1, tags.size());
-            assertEquals("TestTag3", ((CategoryItem)tags.get(0)).getName());            
+            assertEquals("TestRemoveCategory3", ((CategoryItem)tags.get(0)).getName());            
 
     }
 
@@ -148,6 +157,8 @@ public class RuleItemTestCase extends TestCase {
             List tags = ruleItem1.getCategories();
             assertNotNull(tags);
             assertEquals(0, tags.size());
+            
+            getRepo().loadCategory( "/" ).addCategory( "testGetTagsTestTag", "description" );
             
             ruleItem1.addCategory("testGetTagsTestTag");                                    
             tags = ruleItem1.getCategories();
