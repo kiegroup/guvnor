@@ -28,6 +28,14 @@ public class JBRMSServiceServletTest extends TestCase {
         
     }
     
+    public void testGetRepository() throws Exception {
+        JBRMSServiceServlet serv = new JBRMSServiceServlet();
+        RulesRepository repo = serv.createRuleRepositoryInstance();
+        assertNotNull(repo);
+    }
+    
+
+    
     
     static class MockHttpSession implements HttpSession {
 

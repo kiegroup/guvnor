@@ -1,11 +1,5 @@
 package org.drools.brms.client.breditor;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -13,6 +7,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+/** This encapsulates a DSL line component of a rule */
 public class EditableLine extends Composite {
     
     /** The main panel of the composite */
@@ -21,65 +16,48 @@ public class EditableLine extends Composite {
     /** This is the list of widgets that are used to display/capture data 
      * Should be Label, TextBox or Button (for editing mode)
      */
-    private List widgets = new ArrayList();
+    private Widget[] widgets;
     
     /**
      * Obviously to keep state of the widget when switching modes.
      */
     private boolean readOnly = true;
     
-    public EditableLine() {
-        initData();
+    public EditableLine(Widget[] items) {
+        widgets = items;
+        
         
         panel = new HorizontalPanel();
         initWidget( panel ); 
         makeReadOnly();
     }
 
-    private void initData() {
-        widgets.add( new Label("The persons name is ") );
-        TextBox box = new TextBox();
-        box.setVisibleLength( 4 );        
-        widgets.add( box );
         
-        Button edit = new Button(".");
-        edit.addClickListener( new ClickListener() {
-
-            public void onClick(Widget w) {
-                if (readOnly) {
-                    readOnly = false;
-                    makeEditable();
-                } else {
-                    readOnly = true;
-                    makeReadOnly();
-                }
-            }
-            
-        });
-        widgets.add( edit );
-    }
     
     public void makeReadOnly() {
+        readOnly = true;
         panel.clear();
-        for ( Iterator iter = widgets.iterator(); iter.hasNext(); ) {
-            Widget element = (Widget) iter.next();
-            if (element instanceof Label) {                
-                panel.add( element );
-            } else if (element instanceof TextBox) {
-                TextBox box = (TextBox) element;
-                panel.add( new Label(box.getText()) );
-            } else {
-                panel.add( element );
-            }
-        }
+        
+        panel.add( new Label(toString()) );
+//        for ( Iterator iter = widgets.iterator(); iter.hasNext(); ) {
+//            Widget element = (Widget) iter.next();
+//            if (element instanceof Label) {                
+//                panel.add( element );
+//            } else if (element instanceof TextBox) {
+//                TextBox box = (TextBox) element;
+//                panel.add( new Label(box.getText()) );
+//            } else {
+//                panel.add( element );
+//            }
+//        }
     }
     
     public void makeEditable() {
+        readOnly = false;
         panel.clear();
-        for ( Iterator iter = widgets.iterator(); iter.hasNext(); ) {
-            Widget element = (Widget) iter.next();
-            panel.add( element );
-        }        
+        for ( int i = 0; i < widgets.length; i++ ) {
+            panel.add( widgets[i] );
+        }
     }
     
     /**
@@ -87,11 +65,11 @@ public class EditableLine extends Composite {
      */
     public String toString() {
         String result = "";
-        for ( Iterator iter = widgets.iterator(); iter.hasNext(); ) {
-            Widget element = (Widget) iter.next();
+        for ( int i=0; i < widgets.length; i++ ) {
+            Widget element = widgets[i];
             if (element instanceof Label) {
                 result = result + ((Label) element).getText();
-            } else {
+            } else if (element instanceof TextBox){
                 result = result + ((TextBox) element).getText();
             }            
         }

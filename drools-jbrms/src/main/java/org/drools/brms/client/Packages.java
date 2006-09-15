@@ -22,8 +22,10 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -80,7 +82,7 @@ public class Packages extends JBRMSFeature
         panel.add( fPopupButton );
         panel.add( new BREditor() );
         
-        EditableLine line = new EditableLine();
+        EditableLine line = new EditableLine(new Widget[] {new Label("this is pretty "), new TextBox()});
         panel.add( line );
         
         panel.setSpacing( 8 );

@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class CategoryEditor extends PopupPanel {
 
     private String path;
-    private FlexTable table = new FlexTable();
+    private FlexTable table = new FlexTable(); //Using this table for the form layout
     private TextBox name = new TextBox();
     private TextArea description = new TextArea();
     
@@ -76,20 +76,29 @@ public class CategoryEditor extends PopupPanel {
     }
     
     void ok() {
-        System.out.println("Creating: " + name.getText());
+        
         AsyncCallback cb = new AsyncCallback() {
 
             public void onFailure(Throwable arg0) {
                 ErrorPopup.showMessage( "Unable to create new category (server error). ");
             }
 
-            public void onSuccess(Object result) {                
-                hide();
-            }
-            
+            public void onSuccess(Object result) {  
+                if (((Boolean) result).booleanValue()) {
+                    hide();
+                } else {
+                    ErrorPopup.showMessage( "Unable to create new category (server error). ");
+                    
+                }
+            }            
         };
-        RepositoryServiceFactory.getService().createCategory( path, name.getText(), description.getText(), cb );        
-        this.table.setWidget( 0, 1, new Label("Please wait ..." ));
+        
+        if (this.name.equals( "" )) {
+            ErrorPopup.showMessage( "Can't have an empty category name." );
+        } else {
+            RepositoryServiceFactory.getService().createCategory( path, name.getText(), description.getText(), cb );        
+            //this.table.setWidget( 0, 1, new Label("Please wait ..." ));
+        }
     }
     
     void cancel() {

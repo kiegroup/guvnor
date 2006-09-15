@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -53,7 +54,7 @@ public class BREditor extends Composite {
             }            
         });
         
-        Button addLhs = new Button("+");
+        Image addLhs = new Image("images/new_item.gif");
         addLhs.addClickListener( new ClickListener() {
             public void onClick(Widget sender) {
                 
@@ -65,6 +66,8 @@ public class BREditor extends Composite {
                 listPopup.show();                
             }            
         });
+        
+        
         
         table.setWidget( 0, ACTION_COLUMN, addLhs );
         
@@ -80,7 +83,7 @@ public class BREditor extends Composite {
         table.setText( rowOffset, DESC_COLUMN, "THEN" );
         
        
-        table.setWidget( rowOffset, ACTION_COLUMN, new Button("+") );
+        table.setWidget( rowOffset, ACTION_COLUMN, new Image("images/new_item.gif") );
         
         rowOffset++;
         
@@ -124,9 +127,9 @@ public class BREditor extends Composite {
 
     private void initData() {
         
-        lhs.add( new Label("Hello this is {foo}"));
-        lhs.add( new Label("Hello this is {foo}"));
-        rhs.add(new Label("panic all is lost") );
+        lhs.add( new EditableLine(new Label[] {new Label("Hello this is {foo}")}));
+        lhs.add( new EditableLine(new Label[] {new Label("Hello this is {foo}")}));
+        rhs.add( new EditableLine(new Label[] {new Label("Hello this is {foo}")}));
     }
     
 }

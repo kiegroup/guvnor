@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  * navigate the repository.
  * Uses the the {@link com.google.gwt.user.client.ui.Tree} widget.
  */
-public class RulesNavigatorTree
+public class CategoryExplorerWidget
     extends Composite implements TreeListener
     {
 
@@ -53,7 +53,7 @@ public class RulesNavigatorTree
         navTreeWidget.setWidth( width );
     }
 
-    public RulesNavigatorTree(CategorySelectHandler handler) {
+    public CategoryExplorerWidget(CategorySelectHandler handler) {
         table.setWidget( 0, 0, navTreeWidget );
         
         FlexCellFormatter formatter = table.getFlexCellFormatter();

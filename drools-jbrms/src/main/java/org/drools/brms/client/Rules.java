@@ -1,7 +1,7 @@
 package org.drools.brms.client;
 
 import org.drools.brms.client.categorynav.CategorySelectHandler;
-import org.drools.brms.client.categorynav.RulesNavigatorTree;
+import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.ruleeditor.RuleView;
 import org.drools.brms.client.rulelist.EditItemEvent;
 import org.drools.brms.client.rulelist.RuleListView;
@@ -63,7 +63,7 @@ public class Rules extends JBRMSFeature {
         });         
         
         //setup the nav, which will drive the list
-		RulesNavigatorTree nav = new RulesNavigatorTree(new CategorySelectHandler() {
+		CategoryExplorerWidget nav = new CategoryExplorerWidget(new CategorySelectHandler() {
 
             public void selected(String selectedPath) {
                 System.out.println("Selected path: " + selectedPath);  

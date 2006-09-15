@@ -1,7 +1,5 @@
 package org.drools.brms.server;
 
-import java.util.List;
-
 import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -10,7 +8,6 @@ import javax.servlet.http.HttpSession;
 
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.TableConfig;
-import org.drools.repository.CategoryItem;
 import org.drools.repository.RepositoryConfigurator;
 import org.drools.repository.RulesRepository;
 
@@ -18,6 +15,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /** 
  * This is the implementation of the repository service to drive the GWT based front end.
+ * 
  * @author Michael Neale
  */
 public class JBRMSServiceServlet extends RemoteServiceServlet
@@ -25,18 +23,18 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     RepositoryService {
 
     private static final long serialVersionUID = 3150768417428383474L;
+    
+    /**
+     * The shared repository instance. This could be bound to JNDI eventually.
+     */
     public static Repository repository;
     
-    public String[] loadChildCategories(String categoryPath) {        
-        RulesRepository repo = this.getRepositoryFrom( getSession() );
-        CategoryItem item = repo.getOrCreateCategory( categoryPath );
-        List children = item.getChildTags();
-        String[] list = new String[children.size()];
-        for ( int i = 0; i < list.length; i++ ) {
-            list[i] = ((CategoryItem) children.get( i )).getName();
-        }
-        return list;
+    public String[] loadChildCategories(String categoryPath) {   
+        ServiceImpl handler = new ServiceImpl(getRulesRepository());
+        return handler.loadChildCategories( categoryPath );
     }
+
+
 
     public String[][] loadRuleListForCategories(String categoryPath,
                                                 String status) {
@@ -49,7 +47,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     public TableConfig loadTableConfig(String listName) {
         log( "loading table config",
              listName );
-        sleep( 300 );
+       
         final TableConfig config = new TableConfig();
 
         config.headers = new String[]{"name", "status", "last updated by", "version"};
@@ -57,27 +55,30 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         return config;
     }
 
-    private void sleep(int ms) {
-        try {
-            Thread.sleep( ms );
-        } catch ( InterruptedException e ) {
-            e.printStackTrace();
-        }
-    }
+
 
     private void log(String serviceName,
                      String message) {
         System.out.println( "[" + serviceName + "] " + message );
+    }
+    
+    /** Get the rule repository for the "current" user */
+    private RulesRepository getRulesRepository() {
+        return this.getRepositoryFrom( getSession() );
     }
 
     private HttpSession getSession() {
         return this.getThreadLocalRequest().getSession();
     }
 
+    /**
+     * Pull or create the repository from session.
+     * If it is not found, it will create one and then bind it to the session.
+     */
     RulesRepository getRepositoryFrom(HttpSession session) {
         Object obj = session.getAttribute( "drools.repository" );
         if ( obj == null ) {
-            obj = createNewSession();
+            obj = createRuleRepositoryInstance();
             session.setAttribute( "drools.repository",
                                   obj );
         }
@@ -85,7 +86,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     }
 
     /** Initialse the repository, set it up if it is brand new */
-    private RulesRepository createNewSession() {
+    RulesRepository createRuleRepositoryInstance() {
         
         RepositoryConfigurator config = new RepositoryConfigurator();
 
@@ -117,10 +118,11 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     private Session initialiseRepo(RepositoryConfigurator config) throws LoginException,
                                                                  RepositoryException {
         Session session;
-        repository = config.createRepository();
+        if (repository == null) {
+            repository = config.createRepository();
+        }
         
         session = config.login( repository );
-        
         
         config.setupRulesRepository( session );
         return session;
@@ -131,8 +133,9 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     public Boolean createCategory(String path,
                                   String name,
                                   String description) {
-        // TODO Auto-generated method stub
-        return new Boolean(false);
+        ServiceImpl serv = new ServiceImpl(getRulesRepository());
+        return serv.createCategory( path, name, description );
+        
     }
 
 

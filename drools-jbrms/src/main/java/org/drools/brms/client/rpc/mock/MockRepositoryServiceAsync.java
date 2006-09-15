@@ -77,6 +77,7 @@ public class MockRepositoryServiceAsync
                                String name,
                                String description,
                                AsyncCallback callback) {
+        log( "createCategory", "Creating cat in " + path + " called " + name );
         callback.onSuccess( new Boolean(true) );
         
     }
