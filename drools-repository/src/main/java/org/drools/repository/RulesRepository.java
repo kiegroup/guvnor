@@ -261,8 +261,6 @@ public class RulesRepository {
             
             dslNode.setProperty(DslItem.TITLE_PROPERTY_NAME, name);
             
-            //TODO: set this property correctly once we've figured out logging in / JAAS
-            dslNode.setProperty(DslItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
                         
             dslNode.setProperty(DslItem.DESCRIPTION_PROPERTY_NAME, "");
             dslNode.setProperty(DslItem.FORMAT_PROPERTY_NAME, DslItem.DSL_FORMAT);
@@ -308,8 +306,6 @@ public class RulesRepository {
             functionNode.setProperty(FunctionItem.CONTENT_PROPERTY_NAME, content);
             functionNode.setProperty(FunctionItem.DESCRIPTION_PROPERTY_NAME, "");
             
-            //TODO: set contributor correctly
-            functionNode.setProperty(FunctionItem.CONTRIBUTOR_PROPERTY_NAME, "");
             
             functionNode.setProperty(FunctionItem.FORMAT_PROPERTY_NAME, FunctionItem.FUNCTION_FORMAT);
             
@@ -356,9 +352,6 @@ public class RulesRepository {
             functionNode.setProperty(FunctionItem.DESCRIPTION_PROPERTY_NAME, description);
             functionNode.setProperty(FunctionItem.FORMAT_PROPERTY_NAME, FunctionItem.FUNCTION_FORMAT);
             
-            //TODO: set contributor correctly
-            functionNode.setProperty(FunctionItem.CONTRIBUTOR_PROPERTY_NAME, "");
-            
             Calendar lastModified = Calendar.getInstance();
             functionNode.setProperty(FunctionItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
             
@@ -393,7 +386,7 @@ public class RulesRepository {
      * @return a RuleItem object encapsulating the node that gets added
      * @throws RulesRepositoryException
      */
-    public RuleItem addRule(String ruleName, String lhsContent, String rhsContent, DslItem dslItem, boolean followDslHead) throws RulesRepositoryException {
+    public RuleItem addRule(String ruleName, String ruleContent, DslItem dslItem, boolean followDslHead) throws RulesRepositoryException {
         Node folderNode = this.getAreaNode(RULE_AREA);        
         
         try {        
@@ -401,13 +394,10 @@ public class RulesRepository {
             Node ruleNode = folderNode.addNode(ruleName, RuleItem.RULE_NODE_TYPE_NAME);
                         
             ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, ruleName);
-            ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, lhsContent);
-            ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, rhsContent);
+            ruleNode.setProperty(RuleItem.RULE_CONTENT_PROPERTY_NAME, ruleContent);
             ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, "");
             ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_FORMAT);
             
-            //TODO: set this correctly
-            ruleNode.setProperty(RuleItem.CONTRIBUTOR_PROPERTY_NAME, "");
             
             if(followDslHead) {
                 ruleNode.setProperty(RuleItem.DSL_PROPERTY_NAME, dslItem.getNode());
@@ -439,62 +429,6 @@ public class RulesRepository {
         }
     }
     
-    /**
-     * Adds a Rule node in the repository using the content specified, with the specified
-     * effective and expiration dates, and referencing the specified dsl node
-     * 
-     * @param ruleName the name of the rule
-     * @param lhsContent the lhs of the rule
-     * @param rhsContent the rhs of the rule
-     * @param dslItem the DslItem object encapsuling the dsl node to assocaite this node with
-     * @param followDslHead whether or not to follow the head revision of the DSL node
-     * @param effectiveDate the date the rule becomes effective
-     * @param expiredDate the date teh rule expires
-     * @param description the description of the rule
-     * @return a RuleItem object encapsulating the node that gets added
-     * @throws RulesRepositoryException
-     */
-    public RuleItem addRule(String ruleName, String lhsContent, String rhsContent, DslItem dslItem, boolean followDslHead, Calendar effectiveDate, Calendar expiredDate, String description) throws RulesRepositoryException {
-        Node folderNode = this.getAreaNode(RULE_AREA);        
-        
-        try {        
-            //create the node - see section 6.7.22.6 of the spec
-            Node ruleNode = folderNode.addNode(ruleName, RuleItem.RULE_NODE_TYPE_NAME);
-                        
-            ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, ruleName);
-            
-            //TODO: set this property correctly once we've figured out logging in / JAAS
-            ruleNode.setProperty(RuleItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
-                        
-            ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, description);
-            ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_FORMAT);
-            ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, lhsContent);
-            ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, rhsContent);            
-            ruleNode.setProperty(RuleItem.DSL_PROPERTY_NAME, dslItem.getNode());
-            ruleNode.setProperty(RuleItem.DATE_EFFECTIVE_PROPERTY_NAME, effectiveDate);
-            ruleNode.setProperty(RuleItem.DATE_EXPIRED_PROPERTY_NAME, expiredDate);
-            
-            Calendar lastModified = Calendar.getInstance();
-            ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
-            
-            session.save();
-            
-            try {
-                ruleNode.checkin();
-            }
-            catch(UnsupportedRepositoryOperationException e) {
-                String message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkin rule: " + ruleNode.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message + e);
-                throw new RulesRepositoryException(message, e);
-            }
-            
-            return new RuleItem(this, ruleNode);
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RulesRepositoryException(e);
-        }
-    }
     
     /**
      * Adds a Rule node in the repository using the content specified
@@ -505,7 +439,7 @@ public class RulesRepository {
      * @return a RuleItem object encapsulating the node that gets added
      * @throws RulesRepositoryException
      */
-    public RuleItem addRule(String ruleName, String lhsContent, String rhsContent) throws RulesRepositoryException {
+    public RuleItem addRule(String ruleName, String ruleContent) throws RulesRepositoryException {
         Node folderNode = this.getAreaNode(RULE_AREA);        
         
         try {        
@@ -514,13 +448,11 @@ public class RulesRepository {
                         
             ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, ruleName);
             
-            //TODO: set this property correctly once we've figured out logging in / JAAS
-            ruleNode.setProperty(RuleItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
                         
             ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, "");
             ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_FORMAT);
-            ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, lhsContent);
-            ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, rhsContent);                        
+            ruleNode.setProperty(RuleItem.RULE_CONTENT_PROPERTY_NAME, ruleContent);
+                                    
             ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT, "Initial" );
             
             
@@ -547,53 +479,6 @@ public class RulesRepository {
     }
     
     /**
-     * Adds a Rule node in the repository using the content specified, with the specified
-     * effective and expiration dates
-     * 
-     * @param ruleName the name of the rule
-     * @param lhsContent the lhs of the rule
-     * @param rhsContent the rhs of the rule
-     * @param effectiveDate the date the rule becomes effective
-     * @param expiredDate the date teh rule expires
-     * @return a RuleItem object encapsulating the node that gets added
-     * @throws RulesRepositoryException
-     */
-    public RuleItem addRule(String ruleName, String lhsContent, String rhsContent, Calendar effectiveDate, Calendar expiredDate) throws RulesRepositoryException {
-        Node folderNode = this.getAreaNode(RULE_AREA);        
-        
-        try {        
-            //create the node - see section 6.7.22.6 of the spec
-            Node ruleNode = folderNode.addNode(ruleName, RuleItem.RULE_NODE_TYPE_NAME);
-                        
-            ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, ruleName);
-
-            //TODO: set this property correctly once we've figured out logging in / JAAS
-            ruleNode.setProperty(RuleItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
-                        
-            ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, "");
-            ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_FORMAT);
-            
-            ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, lhsContent);
-            ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, rhsContent);            
-            ruleNode.setProperty(RuleItem.DATE_EFFECTIVE_PROPERTY_NAME, effectiveDate);
-            ruleNode.setProperty(RuleItem.DATE_EXPIRED_PROPERTY_NAME, expiredDate);
-            
-            Calendar lastModified = Calendar.getInstance();
-            ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
-            
-            session.save();
-            ruleNode.checkin();
-
-            
-            return new RuleItem(this, ruleNode);
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RulesRepositoryException(e);
-        }
-    }    
-    
-    /**
      * Adds a rule package node in the repository. This node has a property called 
      * drools:rule_reference that is a multi-value reference property.  It will hold an array of 
      * references to rule nodes that are subsequently added.
@@ -611,8 +496,6 @@ public class RulesRepository {
             
             rulePackageNode.setProperty(RulePackageItem.TITLE_PROPERTY_NAME, name);
             
-            //TODO: set this property correctly once we've figured out logging in / JAAS
-            rulePackageNode.setProperty(RulePackageItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
                         
             rulePackageNode.setProperty(RulePackageItem.DESCRIPTION_PROPERTY_NAME, "");
             rulePackageNode.setProperty(RulePackageItem.FORMAT_PROPERTY_NAME, RulePackageItem.RULE_PACKAGE_FORMAT);
@@ -649,8 +532,6 @@ public class RulesRepository {
             
             rulePackageNode.setProperty(RulePackageItem.TITLE_PROPERTY_NAME, name);
             
-            //TODO: set this property correctly once we've figured out logging in / JAAS
-            rulePackageNode.setProperty(RuleItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
                         
             rulePackageNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, description);
             rulePackageNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_PACKAGE_FORMAT);

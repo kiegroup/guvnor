@@ -18,9 +18,6 @@
 // Properties:
 - drools:title (string)
   mandatory
-  
-- drools:contributor (string)
-  mandatory
 
 - drools:lastModified (date)
   mandatory

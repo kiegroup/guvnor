@@ -8,8 +8,6 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 
 import org.apache.log4j.Logger;
@@ -38,20 +36,15 @@ public class RuleItem extends VersionableItem {
      */
     public static final String RULE_NODE_TYPE_NAME = "drools:ruleNodeType";
     
+    public static final String RULE_CONTENT_PROPERTY_NAME = "drools:content";
+
+    public static final String RULE_CONTENT_URI_PROPERTY_NAME = "drools:contentURI";
+        
+    
     /**
      * The name of the state property on the rule node type
      */
     public static final String STATE_PROPERTY_NAME = "drools:stateReference";                 
-    
-    /**
-     * The name of the lhs property on the rule node type
-     */
-    public static final String LHS_PROPERTY_NAME = "drools:lhs";
-    
-    /**
-     * The name of the rhs property on the rule node type
-     */
-    public static final String RHS_PROPERTY_NAME = "drools:rhs";
     
     /**
      * The name of the date effective property on the rule node type
@@ -94,17 +87,12 @@ public class RuleItem extends VersionableItem {
     }
     
     /**
-     * returns the lhs of this object's rule node
-     * 
-     * @return the lhs of this object's rule node
-     * @throws RulesRepositoryException
+     * returns the contents of the rule node
      */
-    public String getLhs() throws RulesRepositoryException {
+    public String getRuleContent() throws RulesRepositoryException {
         try {                        
             Node ruleNode = getVersionContentNode();
-            
-            //grab the lhs of the node and dump it into a string            
-            Property data = ruleNode.getProperty(LHS_PROPERTY_NAME);
+            Property data = ruleNode.getProperty(RULE_CONTENT_PROPERTY_NAME);
             return data.getValue().getString();
         }
         catch(Exception e) {
@@ -114,18 +102,21 @@ public class RuleItem extends VersionableItem {
     }
     
     /**
-     * returns the rhs of this object's rule node
-     * 
-     * @return the rhs of this object's rule node
-     * @throws RulesRepositoryException
+     * returns the URI for where the rules content is stored.
+     * Rule content may be stored in an external repository, 
+     * such as subversion. This URI will contain information for
+     * how to get to the exact version that maps to this rule node.
      */
-    public String getRhs() throws RulesRepositoryException {
+    public String getRuleContentURI() throws RulesRepositoryException {
         try {                        
             Node ruleNode = getVersionContentNode();
+            if (ruleNode.hasProperty( RULE_CONTENT_URI_PROPERTY_NAME )) {
+                Property data = ruleNode.getProperty(RULE_CONTENT_URI_PROPERTY_NAME);
+                return data.getValue().getString();
+            } else {
+                return "";
+            }
             
-            //grab the lhs of the node and dump it into a string            
-            Property data = ruleNode.getProperty(RHS_PROPERTY_NAME);
-            return data.getValue().getString();
         }
         catch(Exception e) {
             log.error("Caught Exception", e);
@@ -243,20 +234,15 @@ public class RuleItem extends VersionableItem {
     }
     
     /**
-     * Creates a new version of this object's rule node, updating the lhs content for the
-     * rule node. 
-     * 
-     * @param lhs the new lhs content for the rule
-     * @throws RulesRepositoryException
+     * This will update the rules content (checking it out if it is not already).
+     * This will not save the session or create a new version of the node 
+     * (this has to be done seperately, as several properties may change as part of one edit).
      */
-    public RuleItem updateLhs(String newLhsContent) throws RulesRepositoryException {
-        checkout();
-        
+    public RuleItem updateRuleContent(String newRuleContent) throws RulesRepositoryException {
+        checkout();        
         try {                                    
-            this.node.setProperty(LHS_PROPERTY_NAME, newLhsContent);
-            
-            Calendar lastModified = Calendar.getInstance();
-            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            this.node.setProperty(RULE_CONTENT_PROPERTY_NAME, newRuleContent);
+            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance());
             return this;
         }
         catch(Exception e) {
@@ -265,21 +251,13 @@ public class RuleItem extends VersionableItem {
         }
     }
     
-    /**
-     * Creates a new version of this object's rule node, updating the rhs content for the
-     * rule node. 
-     * 
-     * @param lhs the new rhs content for the rule
-     * @throws RulesRepositoryException
-     */
-    public void updateRhs(String newRhsContent) throws RulesRepositoryException {
+
+    public void updateRuleContentURI(String newURI) throws RulesRepositoryException {
         checkout();
         
         try {                                    
-            this.node.setProperty(RHS_PROPERTY_NAME, newRhsContent);
-            
-            Calendar lastModified = Calendar.getInstance();
-            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            this.node.setProperty(RULE_CONTENT_URI_PROPERTY_NAME, newURI);
+            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance());
 
         }
         catch(Exception e) {
@@ -300,6 +278,8 @@ public class RuleItem extends VersionableItem {
         try {
             //make sure this object's node is the head version
             checkIsUpdateable();                                       
+            
+            
             
             CategoryItem tagItem = this.rulesRepository.loadCategory(tag);
                                     
@@ -415,7 +395,7 @@ public class RuleItem extends VersionableItem {
     }
     
     /**
-     * Gets a list of TagItem objects for this object's rule node.
+     * Gets a list of CategoryItem objects for this object's rule node.
      * 
      * @return a list of TagItem objects for each tag on the rule. If there are no tags, an empty list. 
      * @throws RulesRepositoryException
@@ -542,8 +522,8 @@ public class RuleItem extends VersionableItem {
         try {
             StringBuffer returnString = new StringBuffer();
             returnString.append("Content of rule item named '" + this.getName() + "':\n");
-            returnString.append("LHS: " + this.getLhs() + "\n");
-            returnString.append("RHS: " + this.getRhs() + "\n");
+            returnString.append("Content: " + this.getRuleContent() + "\n");
+            returnString.append("Content URI: " + this.getRuleContentURI() + "\n");
             returnString.append("------\n");
             
             returnString.append("Date Effective: " + this.getDateEffective() + "\n");
@@ -571,8 +551,7 @@ public class RuleItem extends VersionableItem {
             return returnString.toString();
         }
         catch(Exception e) {         
-            log.error("Caught Exception", e);
-            return null;
+            throw new RulesRepositoryException(e);
         }
     }
         

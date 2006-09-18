@@ -13,12 +13,14 @@
 // Supertypes
 > 'drools:versionableNodeType'
 
-// Properties:
-- drools:lhs (string)
-  mandatory
 
-- drools:rhs (string)
-  mandatory
+
+// Properties:
+- drools:content (string)
+- drools:contentURI (string)
+  
+// use this to capture fields which are not known ahead of time 
+- * (undefined)
 
 - drools:dateEffective (date)
 

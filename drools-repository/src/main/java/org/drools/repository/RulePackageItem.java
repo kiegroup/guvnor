@@ -431,7 +431,6 @@ public class RulePackageItem extends VersionableItem {
         try {            
             StringBuffer returnString = new StringBuffer();
             returnString.append("Content of the rule package named " + this.node.getName() + ":");
-            returnString.append("Contributor: " + this.getContributor() + "\n");
             returnString.append("Description: " + this.getDescription() + "\n");
             returnString.append("Format: " + this.getFormat() + "\n");
             returnString.append("Last modified: " + this.getLastModified() + "\n");

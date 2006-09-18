@@ -26,7 +26,7 @@ public class RulesRepositoryTestCase extends TestCase {
             DslItem dslItem1 = rulesRepository.addDsl("testAddRuleDslItemBoolean", "original content");
             assertNotNull(dslItem1);
             
-            RuleItem ruleItem1 = rulesRepository.addRule("testAddRuleDslItemBoolean", "test lhs content", "test rhs content", dslItem1, true);
+            RuleItem ruleItem1 = rulesRepository.addRule("testAddRuleDslItemBoolean", "test lhs content", dslItem1, true);
             
             assertNotNull(ruleItem1);
             assertNotNull(ruleItem1.getNode());
@@ -41,7 +41,7 @@ public class RulesRepositoryTestCase extends TestCase {
             assertEquals(dslItem1.getContent(), ruleItem1.getDsl().getContent());
             
             //now do the same thing, but test not following head:                                    
-            RuleItem ruleItem2 = rulesRepository.addRule("testAddRuleDslItemBoolean2", "test lhs content", "test rhs content", dslItem1, false);
+            RuleItem ruleItem2 = rulesRepository.addRule("testAddRuleDslItemBoolean2", "test lhs content", dslItem1, false);
             
             assertNotNull(ruleItem2);
             assertNotNull(ruleItem2.getNode());
@@ -63,59 +63,15 @@ public class RulesRepositoryTestCase extends TestCase {
             Calendar effectiveDate = Calendar.getInstance();
             Calendar expiredDate = Calendar.getInstance();
             expiredDate.setTimeInMillis(effectiveDate.getTimeInMillis() + (1000 * 60 * 60 * 24));
-            RuleItem ruleItem1 = rulesRepository.addRule("testAddRuleCalendarCalendar", "test lhs content", "test rhs content", effectiveDate, expiredDate);
+            RuleItem ruleItem1 = rulesRepository.addRule("testAddRuleCalendarCalendar", "test lhs content");
+            ruleItem1.updateDateEffective( effectiveDate );
+            ruleItem1.updateDateExpired( expiredDate );
             
             assertNotNull(ruleItem1);
             assertNotNull(ruleItem1.getNode());
             assertEquals(effectiveDate, ruleItem1.getDateEffective());
             assertEquals(expiredDate, ruleItem1.getDateExpired());                       
     }
-    
-    public void testAddRuleDslItemBooleanCalendarCalendar() {
-        RulesRepository rulesRepository = RepositorySession.getRepository();
-            DslItem dslItem1 = rulesRepository.addDsl("testAddRuleDslItemBooleanCalendarCalendar", "content here");
-            assertNotNull(dslItem1);
-            
-            Calendar effectiveDate = Calendar.getInstance();
-            Calendar expiredDate = Calendar.getInstance();
-            expiredDate.setTimeInMillis(effectiveDate.getTimeInMillis() + (1000 * 60 * 60 * 24));
-            
-            RuleItem ruleItem1 = rulesRepository.addRule("testAddRuleDslItemBooleanCalendarCalendar", "test lhs content", "test rhs content", dslItem1, true, effectiveDate, expiredDate, "test description");
-            
-            assertNotNull(ruleItem1);
-            assertNotNull(ruleItem1.getNode());
-            assertNotNull(ruleItem1.getDsl());
-            assertEquals(dslItem1.getContent(), ruleItem1.getDsl().getContent());
-            assertEquals(effectiveDate, ruleItem1.getDateEffective());
-            assertEquals(expiredDate, ruleItem1.getDateExpired());
-            assertEquals("test description", ruleItem1.getDescription());
-            
-            //test that this follows the head version
-            
-            dslItem1.updateContent("more content");
-            assertNotNull(ruleItem1.getNode());
-            assertNotNull(ruleItem1.getDsl());
-            assertEquals(dslItem1.getContent(), ruleItem1.getDsl().getContent());
-            
-            //now do the same thing, but test not following head:                                    
-            RuleItem ruleItem2 = rulesRepository.addRule("testAddRuleDslItemBooleanCalendarCalendar2", "test lhs content", "test rhs content", dslItem1, false, effectiveDate, expiredDate, "test description 2");
-            
-            assertNotNull(ruleItem2);
-            assertNotNull(ruleItem2.getNode());
-            assertNotNull(ruleItem2.getDsl());
-            assertEquals(dslItem1.getContent(), ruleItem2.getDsl().getContent());
-            assertEquals(effectiveDate, ruleItem2.getDateEffective());
-            assertEquals(expiredDate, ruleItem2.getDateExpired());
-            assertEquals("test description 2", ruleItem2.getDescription());
-            
-            //test that this stays tied to the specific revision of the DSL node
-            String originalContent = ruleItem2.getDsl().getContent();
-            dslItem1.updateContent("more content");
-            assertNotNull(ruleItem2.getNode());
-            assertNotNull(ruleItem2.getDsl());
-            assertEquals(originalContent, ruleItem2.getDsl().getContent());
-    }
-    
 
     public void testGetState() {
         RulesRepository rulesRepository = RepositorySession.getRepository();

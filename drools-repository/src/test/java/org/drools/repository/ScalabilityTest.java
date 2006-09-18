@@ -48,14 +48,14 @@ public class ScalabilityTest extends TestCase {
         
         start = System.currentTimeMillis();
         RuleItem item = (RuleItem) list.get( 0 );
-        item.updateLhs( "this is a description" );
+        item.updateRuleContent( "this is a description" );
         item.checkin( "newer" );
         System.out.println("time to update and version: " + (System.currentTimeMillis() - start));
         
         start = System.currentTimeMillis();
         item = (RuleItem) list.get( 42 );
-        item.updateLhs( "this is a description" );
-        item.updateRhs( "wooooooooooooooooooooooooooooooooooot" );
+        item.updateRuleContent( "this is a description" );
+        item.updateRuleContent( "wooooooooooooooooooooooooooooooooooot" );
         item.checkin( "latest" );
         System.out.println("time to update and version: " + (System.currentTimeMillis() - start));        
         
@@ -128,7 +128,7 @@ public class ScalabilityTest extends TestCase {
             System.out.println("ADDING rule: " + ruleName);
                         
             
-            RuleItem item = repo.addRule( ruleName, "Foo(bar == " + i + ")", "panic(" + i + ");" );            
+            RuleItem item = repo.addRule( ruleName, "Foo(bar == " + i + ")panic(" + i + ");" );            
             item.addCategory( cat );
             list.add( item );
             

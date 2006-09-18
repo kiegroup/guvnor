@@ -60,7 +60,7 @@ public class RulePackageItemTestCase extends TestCase {
     public void testAddRuleRuleItem() {
             RulePackageItem rulePackageItem1 = getRepo().createRulePackage("testAddRuleRuleItem");
             
-            RuleItem ruleItem1 = getRepo().addRule("testAddRuleRuleItem", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testAddRuleRuleItem", "test content");
             
             rulePackageItem1.addRule(ruleItem1);
             
@@ -70,14 +70,14 @@ public class RulePackageItemTestCase extends TestCase {
             assertEquals("testAddRuleRuleItem", ((RuleItem)rules.get(0)).getName());
             
             //test that it is following the head revision                        
-            ruleItem1.updateLhs("new lhs");
+            ruleItem1.updateRuleContent("new lhs");
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
             assertEquals("testAddRuleRuleItem", ((RuleItem)rules.get(0)).getName());
-            assertEquals("new lhs", ((RuleItem)rules.get(0)).getLhs());
+            assertEquals("new lhs", ((RuleItem)rules.get(0)).getRuleContent());
                         
-            RuleItem ruleItem2 = getRepo().addRule("testAddRuleRuleItem2", "test lhs content", "test rhs content");
+            RuleItem ruleItem2 = getRepo().addRule("testAddRuleRuleItem2", "test content");
             rulePackageItem1.addRule(ruleItem2);
             
             rules = rulePackageItem1.getRules();
@@ -89,7 +89,7 @@ public class RulePackageItemTestCase extends TestCase {
     public void testAddRuleRuleItemBoolean() {
             RulePackageItem rulePackageItem1 = getRepo().createRulePackage("testAddRuleRuleItemBoolean");
             
-            RuleItem ruleItem1 = getRepo().addRule("testAddRuleRuleItemBoolean", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testAddRuleRuleItemBoolean", "test content");
             
             rulePackageItem1.addRule(ruleItem1, true);
             
@@ -99,14 +99,14 @@ public class RulePackageItemTestCase extends TestCase {
             assertEquals("testAddRuleRuleItemBoolean", ((RuleItem)rules.get(0)).getName());
             
             //test that it is following the head revision                        
-            ruleItem1.updateLhs("new lhs");
+            ruleItem1.updateRuleContent("new lhs");
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
             assertEquals("testAddRuleRuleItemBoolean", ((RuleItem)rules.get(0)).getName());
-            assertEquals("new lhs", ((RuleItem)rules.get(0)).getLhs());
+            assertEquals("new lhs", ((RuleItem)rules.get(0)).getRuleContent());
             
-            RuleItem ruleItem2 = getRepo().addRule("testAddRuleRuleItemBoolean2", "test lhs content", "test rhs content");
+            RuleItem ruleItem2 = getRepo().addRule("testAddRuleRuleItemBoolean2", "test lhs content");
             rulePackageItem1.addRule(ruleItem2);
             
             rules = rulePackageItem1.getRules();
@@ -115,20 +115,20 @@ public class RulePackageItemTestCase extends TestCase {
             
             //test not following the head revision
             rulePackageItem1.removeAllRules();
-            RuleItem ruleItem3 = getRepo().addRule("testAddRuleRuleItemBoolean3", "test lhs content", "test rhs content");
+            RuleItem ruleItem3 = getRepo().addRule("testAddRuleRuleItemBoolean3", "test lhs content");
             
             rulePackageItem1.addRule(ruleItem3, false);
             
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
-            assertEquals("test lhs content", ((RuleItem)rules.get(0)).getLhs());
+            assertEquals("test lhs content", ((RuleItem)rules.get(0)).getRuleContent());
                                     
-            ruleItem3.updateLhs("new lhs");
+            ruleItem3.updateRuleContent("new lhs");
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
-            assertEquals("test lhs content", ((RuleItem)rules.get(0)).getLhs());
+            assertEquals("test lhs content", ((RuleItem)rules.get(0)).getRuleContent());
 
     }
 
@@ -231,7 +231,7 @@ public class RulePackageItemTestCase extends TestCase {
     public void testGetRules() {
             RulePackageItem rulePackageItem1 = getRepo().createRulePackage("testGetRules");
                         
-            RuleItem ruleItem1 = getRepo().addRule("testGetRules", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testGetRules", "test lhs content" );
             
             rulePackageItem1.addRule(ruleItem1);
             
@@ -240,7 +240,7 @@ public class RulePackageItemTestCase extends TestCase {
             assertEquals(1, rules.size());
             assertEquals("testGetRules", ((RuleItem)rules.get(0)).getName());
                                   
-            RuleItem ruleItem2 = getRepo().addRule("testGetRules2", "test lhs content", "test rhs content");
+            RuleItem ruleItem2 = getRepo().addRule("testGetRules2", "test lhs content" );
             rulePackageItem1.addRule(ruleItem2);
             
             rules = rulePackageItem1.getRules();
@@ -252,7 +252,7 @@ public class RulePackageItemTestCase extends TestCase {
     public void testToString() {
             RulePackageItem rulePackageItem1 = getRepo().createRulePackage("testToStringPackage");
             
-            RuleItem ruleItem1 = getRepo().addRule("testToStringPackage", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testToStringPackage", "test lhs content" );
             
             rulePackageItem1.addRule(ruleItem1);
             assertNotNull(rulePackageItem1.toString());                        
@@ -262,7 +262,7 @@ public class RulePackageItemTestCase extends TestCase {
     public void testRemoveRule() {
             RulePackageItem rulePackageItem1 = getRepo().createRulePackage("testRemoveRule");
             
-            RuleItem ruleItem1 = getRepo().addRule("testRemoveRule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testRemoveRule", "test lhs content" );
             
             rulePackageItem1.addRule(ruleItem1);
             
@@ -271,14 +271,14 @@ public class RulePackageItemTestCase extends TestCase {
             assertEquals(1, rules.size());
             assertEquals("testRemoveRule", ((RuleItem)rules.get(0)).getName());
                                     
-            ruleItem1.updateLhs("new lhs");
+            ruleItem1.updateRuleContent("new lhs");
             rules = rulePackageItem1.getRules();
             assertNotNull(rules);
             assertEquals(1, rules.size());
             assertEquals("testRemoveRule", ((RuleItem)rules.get(0)).getName());
-            assertEquals("new lhs", ((RuleItem)rules.get(0)).getLhs());
+            assertEquals("new lhs", ((RuleItem)rules.get(0)).getRuleContent());
             
-            RuleItem ruleItem2 = getRepo().addRule("testRemoveRule2", "test lhs content", "test rhs content");
+            RuleItem ruleItem2 = getRepo().addRule("testRemoveRule2", "test lhs content" );
             rulePackageItem1.addRule(ruleItem2);
             
             //remove the rule, make sure the other rule in the pacakge stays around
@@ -298,7 +298,7 @@ public class RulePackageItemTestCase extends TestCase {
     public void testRemoveAllRules() {
             RulePackageItem rulePackageItem1 = getRepo().createRulePackage("testRemoveAllRules");
             
-            RuleItem ruleItem1 = getRepo().addRule("testRemoveAllRules", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = getRepo().addRule("testRemoveAllRules", "test lhs content" );
             
             rulePackageItem1.addRule(ruleItem1);
             

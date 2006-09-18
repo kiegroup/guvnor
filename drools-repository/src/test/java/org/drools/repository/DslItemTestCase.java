@@ -32,7 +32,7 @@ public class DslItemTestCase extends TestCase {
         //try constructing a DslItem object with the wrong node type
         try {
             //Get a reference to a node of the incorrect type
-            RuleItem ruleItem1 = this.getRepo().addRule("test rule", "test lhs content", "test rhs content");
+            RuleItem ruleItem1 = this.getRepo().addRule("test rule", "test guts");
             
             //this should fail
             DslItem dslItem2 = new DslItem(getRepo(), ruleItem1.getNode());

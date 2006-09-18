@@ -19,11 +19,6 @@ public abstract class VersionableItem extends Item {
     public static final String TITLE_PROPERTY_NAME         = "drools:title";
 
     /**
-     * The name of the contributor property on the node type
-     */
-    public static final String CONTRIBUTOR_PROPERTY_NAME   = "drools:contributor";
-
-    /**
      * The name of the description property on the rule node type
      */
     public static final String DESCRIPTION_PROPERTY_NAME   = "drools:description";
@@ -221,23 +216,6 @@ public abstract class VersionableItem extends Item {
         }
     }
 
-    /** 
-     * Gets the Contributor of the versionable node.  See the Dublin Core documentation for more
-     * explanation: http://dublincore.org/documents/dces/
-     * 
-     * @return the contributor of the node this object encapsulates
-     * @throws RulesRepositoryException
-     */
-    public String getContributor() {
-        try {
-            Property data = getVersionContentNode().getProperty( CONTRIBUTOR_PROPERTY_NAME );
-            return data.getValue().getString();
-        } catch ( Exception e ) {
-            log.error( "Caught Exception",
-                       e );
-            throw new RulesRepositoryException( e );
-        }
-    }
 
     /**
      * See the Dublin Core documentation for more
@@ -301,26 +279,7 @@ public abstract class VersionableItem extends Item {
     public void updateDescription(String newDescriptionContent) throws RulesRepositoryException {
         try {
             this.node.checkout();
-        } catch ( UnsupportedRepositoryOperationException e ) {
-            String message = "";
-            try {
-                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout node: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error( message,
-                           e );
-            } catch ( RepositoryException e1 ) {
-                log.error( "Caught Exception",
-                           e );
-                throw new RulesRepositoryException( e1 );
-            }
-            throw new RulesRepositoryException( message,
-                                                e );
-        } catch ( Exception e ) {
-            log.error( "Caught Exception",
-                       e );
-            throw new RulesRepositoryException( e );
-        }
 
-        try {
             this.node.setProperty( DESCRIPTION_PROPERTY_NAME,
                                    newDescriptionContent );
 
@@ -328,15 +287,13 @@ public abstract class VersionableItem extends Item {
             this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME,
                                    lastModified );
 
-            this.node.getSession().save();
-
-            this.node.checkin();
         } catch ( Exception e ) {
             log.error( "Caught Exception",
                        e );
             throw new RulesRepositoryException( e );
         }
     }
+
 
     /**
      * See the Dublin Core documentation for more
@@ -347,13 +304,7 @@ public abstract class VersionableItem extends Item {
      */
     public String getFormat() throws RulesRepositoryException {
         try {
-            Node theNode;
-            if ( this.node.getPrimaryNodeType().getName().equals( "nt:version" ) ) {
-                theNode = this.node.getNode( "jcr:frozenNode" );
-            } else {
-                theNode = this.node;
-            }
-
+            Node theNode = getVersionContentNode();
             Property data = theNode.getProperty( FORMAT_PROPERTY_NAME );
             return data.getValue().getString();
         } catch ( Exception e ) {
