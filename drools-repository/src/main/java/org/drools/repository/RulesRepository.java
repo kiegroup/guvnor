@@ -511,7 +511,51 @@ public class RulesRepository {
             log.error("Caught Exception", e);
             throw new RulesRepositoryException(e);
         }
-    }                                       
+    }   
+    
+    /**
+     * Loads a RulePackage for the specified package name. Will throw
+     * an exception if the specified rule package does not exist.
+     * @param name the name of the package to load 
+     * @return a RulePackageItem object
+     */
+    public RulePackageItem loadRulePackage(String name) throws RulesRepositoryException {
+        try {
+            Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
+            Node rulePackageNode = folderNode.getNode(name);
+
+            return new  RulePackageItem(this, rulePackageNode);
+        }
+        catch(Exception e) {
+            log.error("Unable to load a rule package. ", e);
+            if (e instanceof RuntimeException ) {
+                throw (RuntimeException) e;                
+            } else {
+                throw new RulesRepositoryException("Unable to load a rule package. ", e);
+            }
+        }
+    }    
+    
+    /**
+     * Similar to above. Loads a RulePackage for the specified uuid. 
+     * @param uuid the uuid of the package to load 
+     * @return a RulePackageItem object
+     * @throws RulesRepositoryException
+     */
+    public RulePackageItem loadRulePackageByUUID(String uuid) throws RulesRepositoryException {
+        try {
+            Node rulePackageNode = this.session.getNodeByUUID(uuid);
+            return new RulePackageItem(this, rulePackageNode);
+        }
+        catch (Exception e) {
+            log.error("Unable to load a rule package by UUID. ", e);
+            if (e instanceof RuntimeException ) {
+                throw (RuntimeException) e;                
+            } else {
+                throw new RulesRepositoryException("Unable to load a rule package. ", e);
+            }
+        }
+    }    
 
     /**
      * Adds a rule package node in the repository. This node has a property called 
@@ -591,7 +635,6 @@ public class RulesRepository {
             StringTokenizer tok = new StringTokenizer(tagName, "/");
             while(tok.hasMoreTokens()) {                                
                 String currentTagName = tok.nextToken();
-                
                 tagNode = folderNode.getNode( currentTagName ) ; 
                 //MN was this: RulesRepository.addNodeIfNew(folderNode, currentTagName, CategoryItem.TAG_NODE_TYPE_NAME);
                 folderNode = tagNode;

@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.jcr.UnsupportedRepositoryOperationException;
+
 import org.drools.repository.*;
 
 import junit.framework.TestCase;
@@ -57,6 +59,46 @@ public class RulePackageItemTestCase extends TestCase {
         return RepositorySession.getRepository();
     }
 
+    public void testLoadRulePackageItem() {
+
+        RulePackageItem rulePackageItem = getRepo().createRulePackage("testLoadRuleRuleItem");
+
+        rulePackageItem = getRepo().loadRulePackage("testLoadRuleRuleItem");
+        assertNotNull(rulePackageItem);
+        assertEquals("testLoadRuleRuleItem", rulePackageItem.getName());
+        
+        // try loading rule package that was not created 
+        try {
+            rulePackageItem = getRepo().loadRulePackage("anotherRuleRuleItem");
+            fail("Exception not thrown loading rule package that was not created.");
+        } catch (RulesRepositoryException e) {
+            // that is OK!
+            assertNotNull(e.getMessage());
+        }
+    }    
+    
+    public void testLoadRulePackageItemByUUID() throws Exception {
+
+        RulePackageItem rulePackageItem = getRepo().createRulePackage("testLoadRuleRuleItemByUUID");
+
+        String uuid = null;
+            uuid = rulePackageItem.getNode().getUUID();
+
+
+        rulePackageItem = getRepo().loadRulePackageByUUID(uuid);
+        assertNotNull(rulePackageItem);
+        assertEquals("testLoadRuleRuleItemByUUID", rulePackageItem.getName());
+        
+        // try loading rule package that was not created 
+        try {
+            rulePackageItem = getRepo().loadRulePackageByUUID("01010101-0101-0101-0101-010101010101");
+            fail("Exception not thrown loading rule package that was not created.");
+        } catch (RulesRepositoryException e) {
+            // that is OK!
+            assertNotNull(e.getMessage());
+        }
+    }    
+    
     public void testAddRuleRuleItem() {
             RulePackageItem rulePackageItem1 = getRepo().createRulePackage("testAddRuleRuleItem");
             
