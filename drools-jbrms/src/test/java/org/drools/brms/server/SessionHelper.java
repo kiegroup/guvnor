@@ -5,6 +5,10 @@ import javax.jcr.Session;
 
 import org.drools.repository.RepositoryConfigurator;
 
+/**
+ * A simple utility to create a single session for the unit tests.
+ * This is not used by the servlet test, only by all the other ones.
+ */
 public class SessionHelper {
 
     public static Session testSession;
@@ -12,7 +16,7 @@ public class SessionHelper {
     public static Session getSession() throws Exception {
         if (testSession == null) {
             RepositoryConfigurator config = new RepositoryConfigurator();
-            Repository repo = config.createRepository();
+            Repository repo = JBRMSServiceServlet.getJCRRepository( config );
             testSession = config.login( repo );
             config.clearRulesRepository( testSession );
             config.setupRulesRepository( testSession );

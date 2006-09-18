@@ -117,15 +117,19 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     /** This will create a new repository instance (should only happen once after startup) */
     private Session initialiseRepo(RepositoryConfigurator config) throws LoginException,
                                                                  RepositoryException {
-        Session session;
-        if (repository == null) {
-            repository = config.createRepository();
-        }
-        
-        session = config.login( repository );
+        Session session = config.login( getJCRRepository( config ) );
         
         config.setupRulesRepository( session );
         return session;
+    }
+
+
+
+    synchronized static Repository getJCRRepository(RepositoryConfigurator config) {
+        if (repository == null) {
+            repository = config.createRepository();
+        }
+        return repository;
     }
     
     

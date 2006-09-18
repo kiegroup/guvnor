@@ -87,7 +87,7 @@ public class CategoryEditor extends PopupPanel {
                 if (((Boolean) result).booleanValue()) {
                     hide();
                 } else {
-                    ErrorPopup.showMessage( "Unable to create new category (server error). ");
+                    ErrorPopup.showMessage( "Category was not successfully created. ");
                     
                 }
             }            

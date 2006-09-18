@@ -18,10 +18,6 @@ public class EditableLine extends Composite {
      */
     private Widget[] widgets;
     
-    /**
-     * Obviously to keep state of the widget when switching modes.
-     */
-    private boolean readOnly = true;
     
     public EditableLine(Widget[] items) {
         widgets = items;
@@ -35,7 +31,6 @@ public class EditableLine extends Composite {
         
     
     public void makeReadOnly() {
-        readOnly = true;
         panel.clear();
         
         panel.add( new Label(toString()) );
@@ -53,7 +48,6 @@ public class EditableLine extends Composite {
     }
     
     public void makeEditable() {
-        readOnly = false;
         panel.clear();
         for ( int i = 0; i < widgets.length; i++ ) {
             panel.add( widgets[i] );
