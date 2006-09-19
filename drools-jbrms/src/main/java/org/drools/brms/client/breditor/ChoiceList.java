@@ -14,7 +14,6 @@ public class ChoiceList extends PopupPanel {
     
     public ChoiceList(ClickListener okClickListener) {
         super( true );
-        
         this.okClickListener = okClickListener;
         
         list = new ListBox();
