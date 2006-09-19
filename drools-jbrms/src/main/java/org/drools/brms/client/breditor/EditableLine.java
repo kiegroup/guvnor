@@ -14,12 +14,6 @@ public class EditableLine extends Composite {
     /** The main panel of the composite. */
     private Panel panel;
    
-    /**
-     * These buttons are for use by the host panel only.
-     */
-    public Image removeButton = new Image("images/clear_item.gif");
-    public Image shuffleUpButton = new Image("images/shuffle_up.gif");
-    public Image shuffleDownButton = new Image("images/shuffle_down.gif");
     /** 
      * This is the list of widgets that are used to display/capture data 
      * Should be Label, TextBox or Button (for editing mode).
@@ -37,9 +31,6 @@ public class EditableLine extends Composite {
     public void makeReadOnly() {
         panel.clear();
         panel.add( new Label(toString()) );
-        this.removeButton.setVisible( false );
-        this.shuffleUpButton.setVisible( false );
-        this.shuffleDownButton.setVisible( false );
     }
     
     public void makeEditable() {
@@ -47,9 +38,6 @@ public class EditableLine extends Composite {
         for ( int i = 0; i < widgets.length; i++ ) {
             panel.add( widgets[i] );            
         }
-        this.removeButton.setVisible( true );
-        this.shuffleDownButton.setVisible( true );
-        this.shuffleUpButton.setVisible( true );        
     }
     
     /**
@@ -68,12 +56,7 @@ public class EditableLine extends Composite {
         return result;
     }
 
-//    public void refreshButtons() {
-//        removeButton = new Image("images/clear_item.gif");
-//        shuffleUpButton = new Image("images/shuffle_up.gif");
-//        shuffleDownButton = new Image("images/shuffle_down.gif");
-//        
-//    }
+
     
 
 

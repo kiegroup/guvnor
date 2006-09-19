@@ -74,6 +74,7 @@ public class BREditor extends Composite {
             public void onClick(Widget w) {
                 switchModes(lhs, editMode);
                 switchModes(rhs, editMode);
+                showHideLineEditorWidgets( editMode );
                 editMode = !editMode;
             }            
         });
@@ -97,7 +98,9 @@ public class BREditor extends Composite {
         displayEditorWidgets( rowOffset, rhs );
     }
     
-    private void switchModes(List list, boolean readOnly) {   
+    private void switchModes(List list, boolean readOnly) {  
+        
+        
         for ( int i = 0; i < list.size(); i++ ) {
             EditableLine line = (EditableLine) list.get( i );
             if (readOnly) {                
@@ -109,6 +112,28 @@ public class BREditor extends Composite {
         
     }
 
+    /** Switch all the line editor widgets on or off */
+    private void showHideLineEditorWidgets(boolean readOnly) {
+        for (int row = 1; row <= lhs.size(); row++ ) {
+            showHideLineEditorWidget( readOnly, row );
+        }
+        int rhsStart = lhs.size() + 2;
+        int rhsEnd = rhs.size() + rhsStart;
+        for (int row = rhsStart; row < rhsEnd; row++ ) {
+            showHideLineEditorWidget( readOnly, row );
+        }        
+    }
+
+    /** Show or hide all the widgets for a line */
+    private void showHideLineEditorWidget(boolean readOnly, int row) {
+        Image img = (Image) table.getWidget( row, ACTION_COLUMN );
+        img.setVisible( !readOnly );
+        img = (Image) table.getWidget( row, ACTION_COLUMN + 1 );
+        img.setVisible( !readOnly );
+        img = (Image) table.getWidget( row, ACTION_COLUMN + 2 );
+        img.setVisible( !readOnly );
+    }
+
     /** 
      * This processes the individual LHS or RHS items. 
      */
@@ -118,15 +143,22 @@ public class BREditor extends Composite {
             EditableLine w = (EditableLine) dataList.get( i );
             int row = i + rowOffset;
             
-            table.setWidget( row, CONTENT_COLUMN, w );   
-            table.setWidget( row, ACTION_COLUMN, w.removeButton );
-            table.setWidget( row, ACTION_COLUMN + 1, w.shuffleUpButton);
-            table.setWidget( row, ACTION_COLUMN + 2, w.shuffleDownButton );
+            table.setWidget( row, CONTENT_COLUMN, w );  
+            
+            Image removeButton = new Image("images/clear_item.gif");
+            Image shuffleUpButton = new Image("images/shuffle_up.gif");
+            Image shuffleDownButton = new Image("images/shuffle_down.gif");
+            removeButton.setVisible( editMode);
+            shuffleUpButton.setVisible( editMode );
+            shuffleDownButton.setVisible( editMode );
+            table.setWidget( row, ACTION_COLUMN, removeButton );
+            table.setWidget( row, ACTION_COLUMN + 1, shuffleUpButton);
+            table.setWidget( row, ACTION_COLUMN + 2, shuffleDownButton );
             final int idx = i;
 
             
 
-            w.removeButton.addClickListener( new ClickListener()  {
+            removeButton.addClickListener( new ClickListener()  {
                 public void onClick(Widget wid) {
                   dataList.remove( idx );
                   editor.refreshLayoutTable();
@@ -134,16 +166,16 @@ public class BREditor extends Composite {
                 
             });
             
-            //setup shuffle button
-            w.shuffleUpButton.addClickListener( new ClickListener() {
+            //setup shuffle button up
+            shuffleUpButton.addClickListener( new ClickListener() {
                 public void onClick(Widget wid) {
                     shuffle( dataList, idx, true );
                     editor.refreshLayoutTable();
                 }
             });
 
-            //setup shuffle button
-            w.shuffleDownButton.addClickListener( new ClickListener() {
+            //setup shuffle button down
+            shuffleDownButton.addClickListener( new ClickListener() {
                 public void onClick(Widget wid) {
                     shuffle( dataList, idx, false );
                     editor.refreshLayoutTable();
