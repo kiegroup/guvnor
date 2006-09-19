@@ -48,8 +48,8 @@ public class EditableLine extends Composite {
             panel.add( widgets[i] );            
         }
         this.removeButton.setVisible( true );
-        //this.shuffleDownButton.setVisible( true );
-        //this.shuffleUpButton.setVisible( true );        
+        this.shuffleDownButton.setVisible( true );
+        this.shuffleUpButton.setVisible( true );        
     }
     
     /**
@@ -67,6 +67,13 @@ public class EditableLine extends Composite {
         }
         return result;
     }
+
+//    public void refreshButtons() {
+//        removeButton = new Image("images/clear_item.gif");
+//        shuffleUpButton = new Image("images/shuffle_up.gif");
+//        shuffleDownButton = new Image("images/shuffle_down.gif");
+//        
+//    }
     
 
 

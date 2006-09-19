@@ -117,13 +117,15 @@ public class BREditor extends Composite {
         for ( int i = 0; i < dataList.size(); i++ ) {
             EditableLine w = (EditableLine) dataList.get( i );
             int row = i + rowOffset;
+            
             table.setWidget( row, CONTENT_COLUMN, w );   
             table.setWidget( row, ACTION_COLUMN, w.removeButton );
             table.setWidget( row, ACTION_COLUMN + 1, w.shuffleUpButton);
             table.setWidget( row, ACTION_COLUMN + 2, w.shuffleDownButton );
             final int idx = i;
+
             
-            //setup remove button
+
             w.removeButton.addClickListener( new ClickListener()  {
                 public void onClick(Widget wid) {
                   dataList.remove( idx );
