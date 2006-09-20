@@ -1,5 +1,7 @@
 package org.drools.brms.client.breditor;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.ListBox;
@@ -7,21 +9,32 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * This is a popup list for "content assistance" - although on the web, 
+ * its not assistance - its mandatory ;)
+ */
 public class ChoiceList extends PopupPanel {
 
     private ListBox list;    
     private ClickListener okClickListener;
     
-    public ChoiceList(ClickListener okClickListener) {
+    public void setOKClickListener(ClickListener listener) {
+        this.okClickListener = listener;
+    }
+    
+    /**
+     * Pass in a list of suggestions for the popup lists.
+     * Set a click listener to get notified when the OK button is clicked.
+     */
+    public ChoiceList(List data) {
         super( true );
-        this.okClickListener = okClickListener;
         
         list = new ListBox();
         list.setVisibleItemCount( 5 );
-        list.addItem( "There is a person {bob} who is blah" );
-        list.addItem( "There is a cheese {bob} who is {type}" );
-        list.addItem( "- age is less then {number}" );
-        list.addItem( "- likes doing '{number}'" );
+        
+        for (int i = 0; i < data.size(); i++) {
+            list.addItem((String) data.get( i ));
+        }        
         
         VerticalPanel panel = new VerticalPanel();
         panel.add( list );

@@ -7,9 +7,7 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -25,8 +23,16 @@ public class BREditor extends Composite {
     
     
     private Panel panel;
+    
+    /** these lists contain the guts of the rule */
     private List lhs = new ArrayList(); //these will be populated with EditableLine widget
     private List rhs = new ArrayList();
+    
+    /** these lists contain the "popup data" for the content assistance */
+    private List lhsSuggestions = new ArrayList();
+    private List rhsSuggestions = new ArrayList();
+    
+    
     private FlexTable table = null;
     private boolean editMode = false;
     
@@ -45,17 +51,7 @@ public class BREditor extends Composite {
         table.setText( 0, DESC_COLUMN, "IF" );
         
         //DSL suggestions/pick list
-        final ChoiceList listPopup = new ChoiceList(new ClickListener() {
-            public void onClick(Widget popup) {
-                //need up add to the LHS list
-                ChoiceList c = (ChoiceList) popup;
-                EditableLine editLine = new EditableLine(new Label[] {new Label(c.getSelectedItem())} );
-                if (editMode) editLine.makeEditable();
-                
-                lhs.add( editLine );
-                refreshLayoutTable();
-            }            
-        });
+        final ChoiceList lhsSuggestionPopup = getLHSChoiceList();
         
         //button to add a new item for lhs (using the choice list).
         Image addLhs = new Image("images/new_item.gif");
@@ -63,8 +59,8 @@ public class BREditor extends Composite {
             public void onClick(Widget sender) {
                 int left = sender.getAbsoluteLeft() + 10;
                 int top = sender.getAbsoluteTop() + 10;
-                listPopup.setPopupPosition( left, top );
-                listPopup.show();                
+                lhsSuggestionPopup.setPopupPosition( left, top );
+                lhsSuggestionPopup.show();                
             }            
         });
         
@@ -89,15 +85,61 @@ public class BREditor extends Composite {
         rowOffset = lhs.size() + 1;        
         table.setText( rowOffset, DESC_COLUMN, "THEN" );
         
+        final ChoiceList rhsSuggestionPopup = getRhsChoiceList();
+        
         //the new button for the RHS
-        table.setWidget( rowOffset, ACTION_COLUMN, new Image("images/new_item.gif") );
+        Image newRhsPopup = new Image("images/new_item.gif");
+        newRhsPopup.addClickListener( new ClickListener() {
+
+            public void onClick(Widget sender) {
+                int left = sender.getAbsoluteLeft() + 10;
+                int top = sender.getAbsoluteTop() + 10;
+                rhsSuggestionPopup.setPopupPosition( left, top );
+                rhsSuggestionPopup.show();              
+            }
+            
+        });
+        table.setWidget( rowOffset, ACTION_COLUMN, newRhsPopup );
         
         rowOffset++;
         
         //setup RHS
         displayEditorWidgets( rowOffset, rhs );
     }
+
+    private ChoiceList getRhsChoiceList() {
+        final ChoiceList rhsSuggestionPopup = new ChoiceList(rhsSuggestions);
+        rhsSuggestionPopup.setOKClickListener( new ClickListener() {
+            public void onClick(Widget popup) {
+                //need up add to the LHS list
+                ChoiceList c = (ChoiceList) popup;
+                EditableLine editLine = new EditableLine(c.getSelectedItem());
+                if (editMode) editLine.makeEditable();
+                
+                rhs.add( editLine );
+                refreshLayoutTable();
+            }            
+        } );
+        return rhsSuggestionPopup;
+    }
+
+    private ChoiceList getLHSChoiceList() {
+        final ChoiceList lhsSuggestionPopup = new ChoiceList(lhsSuggestions);
+        lhsSuggestionPopup.setOKClickListener( new ClickListener() {
+            public void onClick(Widget popup) {
+                //need up add to the LHS list
+                ChoiceList c = (ChoiceList) popup;
+                EditableLine editLine = new EditableLine(c.getSelectedItem());
+                if (editMode) editLine.makeEditable();
+                
+                lhs.add( editLine );
+                refreshLayoutTable();
+            }            
+        } );
+        return lhsSuggestionPopup;
+    }
     
+
     private void switchModes(List list, boolean readOnly) {  
         
         
@@ -202,15 +244,21 @@ public class BREditor extends Composite {
     /**
      * This will setup the data
      * TODO: this is only mockup data.
+     * TODO: When populading the lhs and rhs lists, need to have "{" stuffed in there
+     * so that the text fields will be created for you. When reading the value out of the 
+     * EditableLine, they will be removed (as they won't actually show up on screen, 
+     * they are just place holders).
      */
     private void initData() {
-        
-        Widget[] w = new Widget[] {new Label("hello cruel "), new TextBox()};
-        Widget[] w2 = new Widget[] {new Label("hello cruel "), new TextBox()};
-        Widget[] w3 = new Widget[] {new Label("hello cruel "), new TextBox()};
-        lhs.add( new EditableLine(w));
-        lhs.add( new EditableLine(w2));
-        rhs.add( new EditableLine(w3));
+
+        lhsSuggestions.add( "Hello {world}" );
+        lhsSuggestions.add( "Goodbye {world}" );
+        rhsSuggestions.add( "Log '{message}'" );
+        rhsSuggestions.add( "Do nothing" );
+
+        lhs.add( new EditableLine("this is a {bam}"));
+        lhs.add( new EditableLine("this is a {bam}"));
+        rhs.add( new EditableLine("this is a {bam}"));
     }
 
     /** Adjust items up and down in a list.

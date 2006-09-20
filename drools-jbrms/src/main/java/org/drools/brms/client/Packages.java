@@ -82,9 +82,6 @@ public class Packages extends JBRMSFeature
         panel.add( fPopupButton );
         panel.add( new BREditor() );
         
-        EditableLine line = new EditableLine(new Widget[] {new Label("this is pretty "), new TextBox()});
-        panel.add( line );
-        
         panel.setSpacing( 8 );
         initWidget( panel );
     }
