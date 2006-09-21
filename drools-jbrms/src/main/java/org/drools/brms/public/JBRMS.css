@@ -254,6 +254,12 @@ a:visited {
   padding: 4px;
 }
 
+.rule-viewer-Documentation {
+  background-color: #FDFCDC;
+  font-family: Arial, sans-serif;
+  font-size: smaller;
+  width: 70%;
+}
 
 .rule-ListHeader {
 	background-image: url(images/gray_gradient.gif);

@@ -16,7 +16,7 @@ public class RepositoryServiceFactory {
      * versus full RPC (which requires the back end be running in some form).
      * Can set it to DEBUG if you want to run it client side only.
      */
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
     
     public static RepositoryServiceAsync getService() {
         if (DEBUG)
