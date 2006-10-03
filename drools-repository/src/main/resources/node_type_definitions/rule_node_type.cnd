@@ -18,6 +18,7 @@
 // Properties:
 - drools:content (string)
 - drools:contentURI (string)
+
   
 // use this to capture fields which are not known ahead of time 
 - * (undefined)

@@ -92,8 +92,13 @@ public class RuleItem extends VersionableItem {
     public String getRuleContent() throws RulesRepositoryException {
         try {                        
             Node ruleNode = getVersionContentNode();
-            Property data = ruleNode.getProperty(RULE_CONTENT_PROPERTY_NAME);
-            return data.getValue().getString();
+            if (ruleNode.hasProperty( RULE_CONTENT_PROPERTY_NAME ) ) {
+                Property data = ruleNode.getProperty(RULE_CONTENT_PROPERTY_NAME);
+                return data.getValue().getString();
+                
+            } else {
+                return null;
+            }
         }
         catch(Exception e) {
             log.error("Caught Exception", e);

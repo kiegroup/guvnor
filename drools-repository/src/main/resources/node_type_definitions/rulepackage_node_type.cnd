@@ -12,11 +12,23 @@
 
 // Supertypes
 > 'drools:versionableNodeType'
-  
+
+// Multiple rules etc are children of one physical package definition
+// ergo this has many rule nodes under it
+//+ * (drools:versionableNodeType)
+// 	version
+
++ * (nt:folder)
+  version
+
+
+/* MN: retiring this structure  
 - drools:ruleReference (reference)
   multiple
   copy
   < 'drools:ruleNodeType','nt:version'
+*/
+
   
 - drools:functionReference (reference)
   multiple

@@ -128,7 +128,7 @@ public class ScalabilityTest extends TestCase {
             System.out.println("ADDING rule: " + ruleName);
                         
             
-            RuleItem item = repo.addRule( ruleName, "Foo(bar == " + i + ")panic(" + i + ");" );            
+            RuleItem item = repo.loadDefaultRulePackage().addRule( ruleName, "Foo(bar == " + i + ")panic(" + i + ");" );            
             item.addCategory( cat );
             list.add( item );
             

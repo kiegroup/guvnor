@@ -1,17 +1,24 @@
 package org.drools.repository;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.Version;
+import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionIterator;
 
 import org.apache.log4j.Logger;
@@ -74,83 +81,123 @@ public class RulePackageItem extends VersionableItem {
     }    
     
     /**
-     * Adds a rule to the rule package node this object represents.  The reference to the rule 
-     * will follow the head version of the specified rule's node.
-     * 
-     * @param ruleItem the ruleItem corresponding to the node to add to the rule package this
-     *                 object represents
-     * @throws RulesRepositoryException
+     * This adds a rule to the current physical package (you can move it later).
      */
-    public void addRule(RuleItem ruleItem) throws RulesRepositoryException {
-        this.addRule(ruleItem, true);        
+    public RuleItem addRule(String ruleName, String description) {
+        Node ruleNode;
+        try {
+            
+            Node rulesFolder = this.node.getNode( "rules" );
+            ruleNode = rulesFolder.addNode( ruleName, RuleItem.RULE_NODE_TYPE_NAME);
+            ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, ruleName);
+            
+            
+            ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, description);
+            ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_FORMAT);
+            //ruleNode.setProperty(RuleItem.RULE_CONTENT_PROPERTY_NAME, "");
+                                    
+            ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT, "Initial" );
+            
+            Calendar lastModified = Calendar.getInstance();
+            ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            
+            this.rulesRepository.save();
+            
+            RuleItem rule = new RuleItem(this.rulesRepository, ruleNode);
+            rule.checkin( "Initial" );
+            return rule;
+            
+        } catch ( Exception e ) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            } else if (e instanceof ItemExistsException ) {
+                throw new RulesRepositoryException("A rule of that name already exists in that package.", e);
+            } else {
+                throw new RulesRepositoryException(e);
+            }
+        } 
+        
+        
     }
     
-    /**
-     * Adds a rule to the rule package node this object represents.  The reference to the rule
-     * will optionally follow the head version of the specified rule's node or the specific 
-     * current version.
-     * 
-     * @param ruleItem the ruleItem corresponding to the node to add to the rule package this 
-     *                 object represents
-     * @param followRuleHead if true, the reference to the rule node will follow the head version 
-     *                       of the node, even if new versions are added. If false, will refer 
-     *                       specifically to the current version.
-     * @throws RulesRepositoryException
-     */
-    public void addRule(RuleItem ruleItem, boolean followRuleHead) throws RulesRepositoryException {        
+    /** Remove a rule by name */
+    public void removeRule(String name) {
         try {
-            ValueFactory factory = this.node.getSession().getValueFactory();
-            int i = 0;
-            Value[] newValueArray = null;
-            
-            try {
-                Value[] oldValueArray = this.node.getProperty(RULE_REFERENCE_PROPERTY_NAME).getValues();
-                newValueArray = new Value[oldValueArray.length + 1];                
-                
-                for(i=0; i<oldValueArray.length; i++) {
-                    newValueArray[i] = oldValueArray[i];
-                }
-            }
-            catch(PathNotFoundException e) {
-                //the property has not been created yet. do so now
-                newValueArray = new Value[1];
-            }
-            finally {
-                if(newValueArray != null) { //just here to make the compiler happy
-                    if(followRuleHead) {                    
-                        newValueArray[i] = factory.createValue(ruleItem.getNode());
-                    }
-                    else {
-                        newValueArray[i] = factory.createValue(ruleItem.getNode().getBaseVersion());
-                    }
-                    this.node.checkout();
-                    this.node.setProperty(RULE_REFERENCE_PROPERTY_NAME, newValueArray);                
-                    this.node.getSession().save();
-                    this.node.checkin();
-                }
-                else {
-                    throw new RulesRepositoryException("Unexpected null pointer for newValueArray");
-                }
-            }                    
-        }
-        catch(UnsupportedRepositoryOperationException e) {
-            String message = "";
-            try {
-                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to get base version for rule: " + ruleItem.getNode().getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message + e);
-            }
-            catch (RepositoryException e1) {
-                log.error("Caught exception: " + e1);
-                throw new RulesRepositoryException(message, e1);
-            }
-            log.error("Caught exception: " + e);
-            throw new RulesRepositoryException(e);
-        }
-        catch(Exception e) {
-            log.error("Caught exception: " + e);
+            this.node.getNode( "rules/" + name ).remove();
+        } catch ( RepositoryException e) {
             throw new RulesRepositoryException(e);
         }
     }
+    
+//The following should be kept for reference on how to add a reference that 
+//is either locked to a version or follows head
+//    /**
+//     * Adds a rule to the rule package node this object represents.  The reference to the rule
+//     * will optionally follow the head version of the specified rule's node or the specific 
+//     * current version.
+//     * 
+//     * @param ruleItem the ruleItem corresponding to the node to add to the rule package this 
+//     *                 object represents
+//     * @param followRuleHead if true, the reference to the rule node will follow the head version 
+//     *                       of the node, even if new versions are added. If false, will refer 
+//     *                       specifically to the current version.
+//     * @throws RulesRepositoryException
+//     */
+//    public void addRuleReference(RuleItem ruleItem, boolean followRuleHead) throws RulesRepositoryException {        
+//        try {
+//            ValueFactory factory = this.node.getSession().getValueFactory();
+//            int i = 0;
+//            Value[] newValueArray = null;
+//            
+//            try {
+//                Value[] oldValueArray = this.node.getProperty(RULE_REFERENCE_PROPERTY_NAME).getValues();
+//                newValueArray = new Value[oldValueArray.length + 1];                
+//                
+//                for(i=0; i<oldValueArray.length; i++) {
+//                    newValueArray[i] = oldValueArray[i];
+//                }
+//            }
+//            catch(PathNotFoundException e) {
+//                //the property has not been created yet. do so now
+//                newValueArray = new Value[1];
+//            }
+//            finally {
+//                if(newValueArray != null) { //just here to make the compiler happy
+//                    if(followRuleHead) {                    
+//                        newValueArray[i] = factory.createValue(ruleItem.getNode());
+//                    }
+//                    else {
+//                        //this is the magic that ties it to a specific version
+//                        newValueArray[i] = factory.createValue(ruleItem.getNode().getBaseVersion());
+//                    }
+//                    this.node.checkout();
+//                    this.node.setProperty(RULE_REFERENCE_PROPERTY_NAME, newValueArray);                
+//                    this.node.getSession().save();
+//                    this.node.checkin();
+//                }
+//                else {
+//                    throw new RulesRepositoryException("Unexpected null pointer for newValueArray");
+//                }
+//            }                    
+//        }
+//        catch(UnsupportedRepositoryOperationException e) {
+//            String message = "";
+//            try {
+//                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to get base version for rule: " + ruleItem.getNode().getName() + ". Are you sure your JCR repository supports versioning? ";
+//                log.error(message + e);
+//            }
+//            catch (RepositoryException e1) {
+//                log.error("Caught exception: " + e1);
+//                throw new RulesRepositoryException(message, e1);
+//            }
+//            log.error("Caught exception: " + e);
+//            throw new RulesRepositoryException(e);
+//        }
+//        catch(Exception e) {
+//            log.error("Caught exception: " + e);
+//            throw new RulesRepositoryException(e);
+//        }
+//    }
 
     /**
      * Adds a function to the rule package node this object represents.  The reference to the 
@@ -237,7 +284,7 @@ public class RulePackageItem extends VersionableItem {
      *                 this object represents
      * @throws RulesRepositoryException
      */
-    public void removeRule(RuleItem ruleItem) throws RulesRepositoryException {                
+    public void removeRuleReference(RuleItem ruleItem) throws RulesRepositoryException {                
         try {
             Value[] oldValueArray = this.node.getProperty(RULE_REFERENCE_PROPERTY_NAME).getValues();
             Value[] newValueArray = new Value[oldValueArray.length - 1];
@@ -351,78 +398,60 @@ public class RulePackageItem extends VersionableItem {
         }
     }
     
-    /**
-     * Gets a list of RuleItem objects for each rule node in this rule package
-     * 
-     * @return the List object holding the RuleItem objects in this rule package
-     * @throws RulesRepositoryException 
-     */
-    public List getRules() throws RulesRepositoryException {
-        try {                       
-            Value[] valueArray = this.node.getProperty(RULE_REFERENCE_PROPERTY_NAME).getValues();
-            List returnList = new ArrayList();
-           
-            for(int i=0; i<valueArray.length; i++) {
-                Node ruleNode = this.node.getSession().getNodeByUUID(valueArray[i].getString());
-                returnList.add(new RuleItem(this.rulesRepository, ruleNode));
-            }
-            return returnList;
-        }
-        catch(PathNotFoundException e) {
-            //the property has not been created yet. 
-            return new ArrayList();
-        }                                       
-        catch(Exception e) {
-            log.error("Caught exception: " + e);
-            throw new RulesRepositoryException(e);
-        }
-    }    
+//    /**
+//     * Gets a list of RuleItem objects for each rule node in this rule package
+//     * 
+//     * @return the List object holding the RuleItem objects in this rule package
+//     * @throws RulesRepositoryException 
+//     */
+//    public List getRules() throws RulesRepositoryException {
+//        try {                       
+//            Value[] valueArray = this.node.getProperty(RULE_REFERENCE_PROPERTY_NAME).getValues();
+//            List returnList = new ArrayList();
+//           
+//            for(int i=0; i<valueArray.length; i++) {
+//                Node ruleNode = this.node.getSession().getNodeByUUID(valueArray[i].getString());
+//                returnList.add(new RuleItem(this.rulesRepository, ruleNode));
+//            }
+//            return returnList;
+//        }
+//        catch(PathNotFoundException e) {
+//            //the property has not been created yet. 
+//            return new ArrayList();
+//        }                                       
+//        catch(Exception e) {
+//            log.error("Caught exception: " + e);
+//            throw new RulesRepositoryException(e);
+//        }
+//    }   
     
-    /**
-     * Removes all functions from the rule package
-     * 
-     * @throws RulesRepositoryException
-     */
-    public void removeAllFunctions() throws RulesRepositoryException {
+    
+    /** Return an iterator for the rules in this package */
+    public Iterator getRules() {
+        
         try {
-            Property functionsProperty = this.node.getProperty(FUNCTION_REFERENCE_PROPERTY_NAME);
-            this.node.checkout();
-            functionsProperty.remove();
-            this.node.save();
-            this.node.checkin();
-        }
-        catch(PathNotFoundException e) {
-            //the property has not been created yet. 
-            return;
-        }                                       
-        catch(Exception e) {
-            log.error("Caught exception: " + e);
+            final NodeIterator it = this.node.getNode( "rules" ).getNodes();
+            return new Iterator() {
+                public boolean hasNext() {
+                    return it.hasNext();
+                }
+                public Object next() {               
+                    return new RuleItem(rulesRepository, (Node) it.next());
+                }
+                public void remove() {
+                    throw new UnsupportedOperationException("You can't remove a rule this way.");                
+                }
+            };
+            
+        } catch ( PathNotFoundException e ) {
+            throw new RulesRepositoryException(e);
+        } catch ( RepositoryException e ) {
             throw new RulesRepositoryException(e);
         }
+        
     }
     
-    /**
-     * Removes all rules from the rule package
-     * 
-     * @throws RulesRepositoryException
-     */
-    public void removeAllRules() throws RulesRepositoryException {
-        try {
-            Property rulesProperty = this.node.getProperty(RULE_REFERENCE_PROPERTY_NAME);
-            this.node.checkout();
-            rulesProperty.remove();
-            this.node.save();
-            this.node.checkin();
-        }
-        catch(PathNotFoundException e) {
-            //the property has not been created yet. 
-            return;
-        }                                       
-        catch(Exception e) {
-            log.error("Caught exception: " + e);
-            throw new RulesRepositoryException(e);
-        }
-    }
+
     
     /**
      * Nicely formats the information contained by the node that this object encapsulates    
@@ -438,25 +467,6 @@ public class RulePackageItem extends VersionableItem {
             returnString.append("Version Name: " + this.getVersionName() + "\n");
             returnString.append("----\n");
             
-            //iterate over the rules in this rule package and dump them
-            returnString.append("Rules in rule package: \n");
-            List ruleItems = this.getRules();
-            Iterator it = ruleItems.iterator();
-            while(it.hasNext()) {
-                RuleItem currentRuleItem = (RuleItem)it.next();
-                returnString.append(currentRuleItem.toString() + "\n");
-            }
-            returnString.append("----\n");
-            
-            //iterate over the functions in this rule package and dump them
-            returnString.append("Functions in rule package: \n");
-            List functionItems = this.getFunctions();
-            it = functionItems.iterator();
-            while(it.hasNext()) {
-                FunctionItem currentFunctionItem = (FunctionItem)it.next();
-                returnString.append(currentFunctionItem.toString() + "\n");
-            }
-            returnString.append("--------\n");
             
             return returnString.toString();
         }

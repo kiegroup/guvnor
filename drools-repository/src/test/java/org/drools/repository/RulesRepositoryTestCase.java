@@ -1,10 +1,9 @@
 package org.drools.repository;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.Iterator;
 
-import org.drools.repository.*;
+import javax.jcr.NodeIterator;
 
 import junit.framework.TestCase;
 
@@ -17,60 +16,62 @@ public class RulesRepositoryTestCase extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
     }
-
-    public void testAddRuleDslItemBoolean() {
-        RulesRepository rulesRepository = RepositorySession.getRepository();
-            
-            
-            
-            DslItem dslItem1 = rulesRepository.addDsl("testAddRuleDslItemBoolean", "original content");
-            assertNotNull(dslItem1);
-            
-            RuleItem ruleItem1 = rulesRepository.addRule("testAddRuleDslItemBoolean", "test lhs content", dslItem1, true);
-            
-            assertNotNull(ruleItem1);
-            assertNotNull(ruleItem1.getNode());
-            assertNotNull(ruleItem1.getDsl());
-            assertEquals(dslItem1.getContent(), ruleItem1.getDsl().getContent());
-            
-            //test that this follows the head version
-            
-            dslItem1.updateContent("new content");
-            assertNotNull(ruleItem1.getNode());
-            assertNotNull(ruleItem1.getDsl());
-            assertEquals(dslItem1.getContent(), ruleItem1.getDsl().getContent());
-            
-            //now do the same thing, but test not following head:                                    
-            RuleItem ruleItem2 = rulesRepository.addRule("testAddRuleDslItemBoolean2", "test lhs content", dslItem1, false);
-            
-            assertNotNull(ruleItem2);
-            assertNotNull(ruleItem2.getNode());
-            assertNotNull(ruleItem2.getDsl());
-            assertEquals(dslItem1.getContent(), ruleItem2.getDsl().getContent());
-            
-            //test that this stays tied to the specific revision of the DSL node
-            String originalContent = ruleItem2.getDsl().getContent();
-            dslItem1.updateContent("new content");
-            assertNotNull(ruleItem2.getNode());
-            assertNotNull(ruleItem2.getDsl());
-            assertEquals(originalContent, ruleItem2.getDsl().getContent());
+    
+    public void testDefaultPackage() throws Exception {
+        RulesRepository repo = RepositorySession.getRepository();
+        RulePackageItem def = repo.loadDefaultRulePackage();
+        assertNotNull(def);
+        assertEquals("default", def.getName());
     }
     
-    public void testAddRuleCalendarCalendar() {
+    public void testAddVersionARule() throws Exception {
+        RulesRepository repo = RepositorySession.getRepository();
+        RulePackageItem pack = repo.createRulePackage( "testAddVersionARule", "description" );
+        repo.save();
+        
+        RuleItem rule = pack.addRule( "my rule", "foobar" );
+        assertEquals("my rule", rule.getName());
+        
+        rule.updateRuleContent( "foo foo" );
+        rule.checkin( "foobar" );
+        
+        pack.addRule( "other rule", "description" );
+        
+        RulePackageItem pack2 =  repo.loadRulePackage( "testAddVersionARule" );
+        
+        Iterator it =  pack2.getRules();
+        
+        it.next();
+        it.next();
+        
+        assertFalse(it.hasNext());
+        
+        RuleItem prev = (RuleItem) rule.getPrecedingVersion();
+       
+        assertEquals("foo foo", rule.getRuleContent());
+        assertFalse("foo foo".equals( prev.getRuleContent() ));
+        
+        
+        
+    }
+
+    public void testAddRuleCalendarWithDates() {
         RulesRepository rulesRepository = RepositorySession.getRepository();
 
                         
             Calendar effectiveDate = Calendar.getInstance();
             Calendar expiredDate = Calendar.getInstance();
             expiredDate.setTimeInMillis(effectiveDate.getTimeInMillis() + (1000 * 60 * 60 * 24));
-            RuleItem ruleItem1 = rulesRepository.addRule("testAddRuleCalendarCalendar", "test lhs content");
+            RuleItem ruleItem1 = rulesRepository.loadDefaultRulePackage().addRule("testAddRuleCalendarCalendar", "desc");
             ruleItem1.updateDateEffective( effectiveDate );
             ruleItem1.updateDateExpired( expiredDate );
-            
+     
             assertNotNull(ruleItem1);
             assertNotNull(ruleItem1.getNode());
             assertEquals(effectiveDate, ruleItem1.getDateEffective());
-            assertEquals(expiredDate, ruleItem1.getDateExpired());                       
+            assertEquals(expiredDate, ruleItem1.getDateExpired());
+            
+            ruleItem1.checkin( "ho " );            
     }
 
     public void testGetState() {
@@ -135,7 +136,7 @@ public class RulesRepositoryTestCase extends TestCase {
         RulesRepository rulesRepository = RepositorySession.getRepository();
         
         
-            RulePackageItem rulePackageItem1 = rulesRepository.createRulePackage("testListPackages");
+            RulePackageItem rulePackageItem1 = rulesRepository.createRulePackage("testListPackages", "desc");
             
             Iterator it = rulesRepository.listPackages();
             assertTrue(it.hasNext());
