@@ -284,8 +284,6 @@ public class RuleItem extends VersionableItem {
             //make sure this object's node is the head version
             checkIsUpdateable();                                       
             
-            
-            
             CategoryItem tagItem = this.rulesRepository.loadCategory(tag);
                                     
             //now set the tag property of the rule
@@ -438,6 +436,16 @@ public class RuleItem extends VersionableItem {
      */
     public void setState(String stateName) throws RulesRepositoryException {
         try {
+            //make sure this node is a rule node
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                String message = "Error. States can only be set for the head version of a rule node";
+                log.error(message);
+                throw new RulesRepositoryException(message);
+            } 
+            
+            //now set the state property of the rule                              
+            checkout();
+            
             StateItem stateItem = this.rulesRepository.getState(stateName);
             this.setState(stateItem);
         }
@@ -482,8 +490,9 @@ public class RuleItem extends VersionableItem {
      */
     public StateItem getState() throws RulesRepositoryException {
         try {
-            Property stateProperty = this.node.getProperty(STATE_PROPERTY_NAME);
-            Node stateNode = this.node.getSession().getNodeByUUID(stateProperty.getString());
+            Node content = getVersionContentNode();
+            Property stateProperty = content.getProperty(STATE_PROPERTY_NAME);
+            Node stateNode = this.rulesRepository.getSession().getNodeByUUID(stateProperty.getString());
             return new StateItem(this.rulesRepository, stateNode);
         }
         catch(PathNotFoundException e) {
@@ -493,6 +502,18 @@ public class RuleItem extends VersionableItem {
         catch(Exception e) {
             log.error("Caught exception", e);
             throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /** Compare this rules state with some other state */
+    public boolean sameState(StateItem other) {
+        StateItem thisState = getState();
+        if (thisState == other) {
+            return true;
+        } else if (thisState != null){
+            return thisState.equals( other );
+        } else {
+            return false;
         }
     }
 
@@ -506,7 +527,7 @@ public class RuleItem extends VersionableItem {
      */
     public DslItem getDsl() throws RulesRepositoryException {
         try {
-            Property dslProperty = this.node.getProperty(DSL_PROPERTY_NAME);
+            Property dslProperty = getVersionContentNode().getProperty(DSL_PROPERTY_NAME);
             Node dslNode = this.node.getSession().getNodeByUUID(dslProperty.getString());
             return new DslItem(this.rulesRepository, dslNode);
         }

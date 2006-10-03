@@ -40,4 +40,21 @@ public class StateItem extends Item {
             throw new RulesRepositoryException(e);
         }
     }
+    
+    public boolean equals(Object in) {
+        if (!(in instanceof StateItem)) {
+            return false;
+        } else if (in == this) {
+            return true;
+        } else if (in == null) {
+            return false;
+        } else {
+            StateItem other = (StateItem) in;
+            return this.getName().equals( other.getName() );
+        }
+    }
+    
+    public int hashCode() {
+        return 42;
+    }
 }

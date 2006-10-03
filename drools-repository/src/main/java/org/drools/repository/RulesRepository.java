@@ -572,8 +572,8 @@ public class RulesRepository {
             //create the node - see section 6.7.22.6 of the spec
             Node rulePackageNode = folderNode.addNode(name, RulePackageItem.RULE_PACKAGE_TYPE_NAME);
             
-            rulePackageNode.addNode( "rules", "nt:folder" );
-            rulePackageNode.addNode( "functions", "nt:folder" );
+            rulePackageNode.addNode( RulePackageItem.RULES_FOLDER_NAME, "nt:folder" );
+            rulePackageNode.addNode( RulePackageItem.FUNCTION_FOLDER_NAME, "nt:folder" );
             
             
             rulePackageNode.setProperty(RulePackageItem.TITLE_PROPERTY_NAME, name);
@@ -588,11 +588,13 @@ public class RulesRepository {
             this.session.save();
 
             return new RulePackageItem(this, rulePackageNode);
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
+        } catch (ItemExistsException e) {
+            throw new RulesRepositoryException("A package name must be unique.", e);
+        } catch (RepositoryException e) {
+            log.error( "Error when creating a new rule package", e );
             throw new RulesRepositoryException(e);
         }
+        
     }                                       
     
     /**

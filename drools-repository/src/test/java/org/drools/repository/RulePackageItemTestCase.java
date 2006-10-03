@@ -1,18 +1,26 @@
 package org.drools.repository;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.jcr.UnsupportedRepositoryOperationException;
-
-import org.drools.repository.*;
 
 import junit.framework.TestCase;
 
 public class RulePackageItemTestCase extends TestCase {
 
+    public void testListPackages() throws Exception {
+        RulesRepository repo = getRepo();
+        repo.createRulePackage( "testListPackages1", "lalalala" );
+        
+        List list = iteratorToList( repo.listPackages() );
+        int prevSize = list.size();
+        repo.createRulePackage( "testListPackages2", "abc" );
+        
+        list = iteratorToList( repo.listPackages() );
+        
+        assertEquals(prevSize + 1, list.size());
+    }
+    
     public void testRulePackageItem() throws Exception {
         RulesRepository repo = getRepo();
         try {
@@ -78,6 +86,76 @@ public class RulePackageItemTestCase extends TestCase {
             assertNotNull(e.getMessage());
         }
     }    
+    
+    /**
+     * This will test getting rules of specific versions out of a package.
+     */
+    public void testPackageRuleVersionExtraction() throws Exception {
+        RulePackageItem pack = getRepo().createRulePackage( "package extractor", "foo" );
+        
+        
+        RuleItem rule1 = pack.addRule( "rule number 1", "yeah man" );
+        RuleItem rule2 = pack.addRule( "rule number 2", "no way" );
+        RuleItem rule3 = pack.addRule( "rule number 3", "yes way" );
+        
+        getRepo().save();
+        
+        pack = getRepo().loadRulePackage( "package extractor" );
+        List rules = iteratorToList( pack.getRules() );
+        assertEquals(3, rules.size());
+        
+        StateItem state = getRepo().getState( "foobar" );
+        
+        rule1.setState( "foobar" );
+        rule1.checkin( "yeah" );
+        
+        pack = getRepo().loadRulePackage( "package extractor" );
+        
+        rules = iteratorToList( pack.getRules(state) );
+        
+        assertEquals(1, rules.size());
+        
+        //now lets try an invalid state tag
+        rules = iteratorToList( pack.getRules( getRepo().getState( "whee" ) ) );
+        assertEquals(0, rules.size());
+        
+        //and null, as we start with null, should be able to get all three back
+        //although an older version of one of them
+        rules = iteratorToList( pack.getRules(null) );
+        assertEquals(3, rules.size());
+        
+        //now do an update, and pull it out via state
+        rule1.updateRuleContent( "new content" );
+        rule1.setState( "draft" );
+        rule1.checkin( "latest" );
+        
+        rules = iteratorToList( pack.getRules(getRepo().getState( "draft" )) );
+        assertEquals(1, rules.size());
+        RuleItem rule = (RuleItem) rules.get( 0 );
+        assertEquals("new content", rule.getRuleContent());
+        
+        //get the previous one via state
+        
+        rules = iteratorToList( pack.getRules(getRepo().getState( "foobar" )) );
+        assertEquals(1, rules.size());
+        RuleItem prior = (RuleItem) rules.get( 0 );
+        
+        assertFalse("new content".equals( prior.getRuleContent() ));
+        
+    }
+    
+    public void testDuplicatePackageName() throws Exception {
+        RulePackageItem pack = getRepo().createRulePackage( "dupePackageTest", "testing for dupe" );        
+        assertNotNull(pack.getName());
+        
+        try {
+            getRepo().createRulePackage( "dupePackageTest", "this should fail" );
+            fail("Should not be able to add a package of the same name.");
+        } catch (RulesRepositoryException e) {
+            assertNotNull(e.getMessage());
+        }
+        
+    }
     
     public void testLoadRulePackageItemByUUID() throws Exception {
 

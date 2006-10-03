@@ -11,6 +11,10 @@ import org.apache.jackrabbit.core.NodeId;
 import org.apache.jackrabbit.core.security.AMContext;
 import org.apache.jackrabbit.core.security.AccessManager;
 
+/**
+ * This is just an experimental access manager for proof of concept. Don't
+ * actually use it or you are insane !
+ */
 public class MyAccessManager
     implements
     AccessManager {
