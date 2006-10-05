@@ -572,8 +572,8 @@ public class RulesRepository {
             //create the node - see section 6.7.22.6 of the spec
             Node rulePackageNode = folderNode.addNode(name, RulePackageItem.RULE_PACKAGE_TYPE_NAME);
             
-            rulePackageNode.addNode( RulePackageItem.RULES_FOLDER_NAME, "nt:folder" );
-            rulePackageNode.addNode( RulePackageItem.FUNCTION_FOLDER_NAME, "nt:folder" );
+            rulePackageNode.addNode( RulePackageItem.RULES_FOLDER_NAME, "drools:versionableAssetFolder" );
+            rulePackageNode.addNode( RulePackageItem.FUNCTION_FOLDER_NAME, "drools:versionableAssetFolder" );
             
             
             rulePackageNode.setProperty(RulePackageItem.TITLE_PROPERTY_NAME, name);
@@ -585,8 +585,10 @@ public class RulesRepository {
             Calendar lastModified = Calendar.getInstance();
             rulePackageNode.setProperty(RulePackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
             
+            
             this.session.save();
-
+            
+            
             return new RulePackageItem(this, rulePackageNode);
         } catch (ItemExistsException e) {
             throw new RulesRepositoryException("A package name must be unique.", e);

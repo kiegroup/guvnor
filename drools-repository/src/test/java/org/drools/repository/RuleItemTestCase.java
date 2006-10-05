@@ -168,11 +168,11 @@ public class RuleItemTestCase extends TestCase {
     public void testSetStateString() {
             RuleItem ruleItem1 = getDefaultPackage().addRule("testSetStateString", "test content");
            
-            ruleItem1.setState("TestState1");
+            ruleItem1.updateState("TestState1");
             assertNotNull(ruleItem1.getState());
             assertEquals("TestState1", ruleItem1.getState().getName());
             
-            ruleItem1.setState("TestState2");
+            ruleItem1.updateState("TestState2");
             assertNotNull(ruleItem1.getState());
             assertEquals("TestState2", ruleItem1.getState().getName());            
 
@@ -182,12 +182,12 @@ public class RuleItemTestCase extends TestCase {
             RuleItem ruleItem1 = getDefaultPackage().addRule("foobar", "test description");
            
             StateItem stateItem1 = getRepo().getState("TestState1");
-            ruleItem1.setState(stateItem1);            
+            ruleItem1.updateState(stateItem1);            
             assertNotNull(ruleItem1.getState());
             assertEquals(ruleItem1.getState().getName(), "TestState1");
             
             StateItem stateItem2 = getRepo().getState("TestState2");
-            ruleItem1.setState(stateItem2);
+            ruleItem1.updateState(stateItem2);
             assertNotNull(ruleItem1.getState());
             assertEquals("TestState2", ruleItem1.getState().getName());            
 
@@ -199,7 +199,7 @@ public class RuleItemTestCase extends TestCase {
             StateItem stateItem1 = ruleItem1.getState();
             assertNull(stateItem1);
             
-            ruleItem1.setState("TestState1");
+            ruleItem1.updateState("TestState1");
             assertNotNull(ruleItem1.getState());
             assertEquals("TestState1", ruleItem1.getState().getName());                        
     }

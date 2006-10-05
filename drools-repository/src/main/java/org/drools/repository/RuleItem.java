@@ -8,6 +8,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 import org.apache.log4j.Logger;
@@ -74,7 +75,7 @@ public class RuleItem extends VersionableItem {
         try {
             //make sure this node is a rule node       
             if(!(this.node.getPrimaryNodeType().getName().equals(RULE_NODE_TYPE_NAME) ||
-                 this.node.getPrimaryNodeType().getName().equals("nt:version"))) {
+                 isHistoricalVersion())) {
                 String message = this.node.getName() + " is not a node of type " + RULE_NODE_TYPE_NAME + " nor nt:version. It is a node of type: " + this.node.getPrimaryNodeType().getName();
                 log.error(message);
                 throw new RulesRepositoryException(message);
@@ -158,16 +159,12 @@ public class RuleItem extends VersionableItem {
      * @throws RulesRepositoryException
      */
     public void updateDateEffective(Calendar newDateEffective) throws RulesRepositoryException {
-        checkout();
-        
+        checkIsUpdateable();
+        checkout();        
         try {                                    
             this.node.setProperty(DATE_EFFECTIVE_PROPERTY_NAME, newDateEffective);
-            
-            Calendar lastModified = Calendar.getInstance();
-            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
-
         }
-        catch(Exception e) {
+        catch(RepositoryException e) {
             log.error("Caught Exception", e);
             throw new RulesRepositoryException(e);
         }
@@ -210,10 +207,6 @@ public class RuleItem extends VersionableItem {
         
         try {                                    
             this.node.setProperty(DATE_EXPIRED_PROPERTY_NAME, newDateExpired);
-            
-            Calendar lastModified = Calendar.getInstance();
-            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
-;
         }
         catch(Exception e) {
             log.error("Caught Exception", e);
@@ -247,25 +240,23 @@ public class RuleItem extends VersionableItem {
         checkout();        
         try {                                    
             this.node.setProperty(RULE_CONTENT_PROPERTY_NAME, newRuleContent);
-            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance());
             return this;
         }
-        catch(Exception e) {
+        catch(RepositoryException e) {
             log.error("Caught Exception", e);
             throw new RulesRepositoryException(e);
         }
     }
     
-
+    /**
+     * The URI represents a location for 
+     */
     public void updateRuleContentURI(String newURI) throws RulesRepositoryException {
-        checkout();
-        
+        checkout();        
         try {                                    
             this.node.setProperty(RULE_CONTENT_URI_PROPERTY_NAME, newURI);
-            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance());
-
         }
-        catch(Exception e) {
+        catch(RepositoryException e) {
             log.error("Caught Exception", e);
             throw new RulesRepositoryException(e);
         }
@@ -372,13 +363,11 @@ public class RuleItem extends VersionableItem {
                     }
                 }
                 else {
-                    //TODO: remove the tag if it isn't used by anyone else
                     return;
                 }
             }
             catch(PathNotFoundException e) {
                 //the property doesn't exist yet
-                //TODO: first remove the tag if it isn't used by anyone else
                 return;             
             }
             finally {   
@@ -434,20 +423,14 @@ public class RuleItem extends VersionableItem {
      * @param stateName the name of the state to set the rule node to
      * @throws RulesRepositoryException 
      */
-    public void setState(String stateName) throws RulesRepositoryException {
+    public void updateState(String stateName) throws RulesRepositoryException {
         try {
-            //make sure this node is a rule node
-            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-                String message = "Error. States can only be set for the head version of a rule node";
-                log.error(message);
-                throw new RulesRepositoryException(message);
-            } 
             
             //now set the state property of the rule                              
             checkout();
             
             StateItem stateItem = this.rulesRepository.getState(stateName);
-            this.setState(stateItem);
+            this.updateState(stateItem);
         }
         catch(Exception e) {
             log.error("Caught exception", e);
@@ -462,7 +445,8 @@ public class RuleItem extends VersionableItem {
      *                  property
      * @throws RulesRepositoryException 
      */
-    public void setState(StateItem stateItem) throws RulesRepositoryException {
+    public void updateState(StateItem stateItem) throws RulesRepositoryException {
+        checkIsUpdateable();
         try {
             //make sure this node is a rule node
             if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {

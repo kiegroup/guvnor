@@ -13,16 +13,15 @@
 // Supertypes
 > 'drools:versionableNodeType'
 
-// Multiple rules etc are children of one physical package definition
-// ergo this has many rule nodes under it
-//+ * (drools:versionableNodeType)
-// 	version
+// Multiple assets are children of one physical package definition
+// ergo this has many "versionable asset folders".
+// a specific named folder will exist for rules, functions etc.
+// these folders contain the actual assets
++ * (drools:versionableAssetFolder)
+  copy
 
-+ * (nt:folder)
-  version
 
-
-/* MN: retiring this structure  
+/* MN: retiring this structure  - may use it in future for shared rules
 - drools:ruleReference (reference)
   multiple
   copy

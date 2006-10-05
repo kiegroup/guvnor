@@ -63,6 +63,75 @@ public class RulePackageItemTestCase extends TestCase {
             fail("Caught unexpected exception: " + e);
         }
     }
+    
+    /**
+     * This tests creating a "baseline" of a RulePackage,
+     * basically updating all the resources, and checking it in as a version.
+     * This is showing off "multi dimensional versioning".
+     */
+    public void testBaselinePackage() throws Exception {
+        RulesRepository repo = getRepo();
+        
+        RulePackageItem pack = repo.createRulePackage( "testBaselinePackage", "for testing baselines" );
+        
+        RuleItem rule1 = pack.addRule( "rule 1", "yeah" );
+        RuleItem rule2 = pack.addRule( "rule 2", "foobar" );
+        
+        StateItem state = repo.getState( "deployed" );
+        
+        repo.save();
+        
+        assertNull(pack.getPrecedingVersion());
+        
+        //the first version, frozen with 2 rules
+        pack.createBaseline("commit comment", state);
+        
+        //check head
+        pack = repo.loadRulePackage( "testBaselinePackage" );
+        assertEquals(2, iteratorToList(pack.getRules()).size());
+        
+        //now remove a rule from head
+        pack.removeRule( "rule 1" );
+        repo.save();
+        assertEquals(1, iteratorToList( pack.getRules() ).size());
+        
+        pack.createBaseline( "another", state );
+        
+        RulePackageItem prev = (RulePackageItem) pack.getPrecedingVersion();
+        assertEquals(2, iteratorToList( prev.getRules() ).size());
+        
+    }
+
+    /** Continues to show how multi dimensional versioning works */
+    public void testPackageBaselineWithRuleChanges() throws Exception {
+        String packName = StackUtil.getCurrentMethodName();
+        RulePackageItem pack = getRepo().createRulePackage( packName, "yeah" );
+        
+        RuleItem rule = pack.addRule( "foobar", "waah" );        
+        rule.updateRuleContent( "this is something" );        
+        rule.checkin( "something" );
+        
+        StateItem state = getRepo().getState( "something" );
+        
+        pack.createBaseline( "another one", state );
+        
+        pack = getRepo().loadRulePackage( packName );
+        
+        rule = (RuleItem) pack.getRules().next();
+        rule.updateRuleContent( "blah" );
+        rule.checkin( "woot" );
+        
+        pack.createBaseline( "yeah", state );
+        
+        pack = getRepo().loadRulePackage( packName );
+        rule = (RuleItem) pack.getRules().next();
+        assertEquals("blah", rule.getRuleContent());
+        
+        RulePackageItem prev = (RulePackageItem) pack.getPrecedingVersion();
+        rule = (RuleItem) prev.getRules().next();
+        assertEquals("this is something", rule.getRuleContent());
+        
+    }
 
     private RulesRepository getRepo() {
         return RepositorySession.getRepository();
@@ -106,7 +175,7 @@ public class RulePackageItemTestCase extends TestCase {
         
         StateItem state = getRepo().getState( "foobar" );
         
-        rule1.setState( "foobar" );
+        rule1.updateState( "foobar" );
         rule1.checkin( "yeah" );
         
         pack = getRepo().loadRulePackage( "package extractor" );
@@ -126,7 +195,7 @@ public class RulePackageItemTestCase extends TestCase {
         
         //now do an update, and pull it out via state
         rule1.updateRuleContent( "new content" );
-        rule1.setState( "draft" );
+        rule1.updateState( "draft" );
         rule1.checkin( "latest" );
         
         rules = iteratorToList( pack.getRules(getRepo().getState( "draft" )) );

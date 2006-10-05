@@ -13,6 +13,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
+import javax.jcr.lock.LockException;
 
 import org.apache.log4j.Logger;
 
@@ -70,7 +71,8 @@ public class RulePackageItem extends VersionableItem {
 
         try {
             //make sure this node is a rule package node       
-            if ( !(this.node.getPrimaryNodeType().getName().equals( RULE_PACKAGE_TYPE_NAME )) ) {
+            if ( !(this.node.getPrimaryNodeType().getName().equals( RULE_PACKAGE_TYPE_NAME ) ||
+                    isHistoricalVersion())  ) {
                 String message = this.node.getName() + " is not a node of type " + RULE_PACKAGE_TYPE_NAME + ". It is a node of type: " + this.node.getPrimaryNodeType().getName();
                 log.error( message );
                 throw new RulesRepositoryException( message );
@@ -80,6 +82,8 @@ public class RulePackageItem extends VersionableItem {
             throw new RulesRepositoryException( e );
         }
     }
+
+
 
     /**
      * This adds a rule to the current physical package (you can move it later).
@@ -434,7 +438,8 @@ public class RulePackageItem extends VersionableItem {
     /** Return an iterator for the rules in this package */
     public Iterator getRules() {
         try {
-            RuleItemIterator it = new RuleItemIterator( this.node.getNode( RULES_FOLDER_NAME ).getNodes(),
+            Node content = getVersionContentNode();
+            RuleItemIterator it = new RuleItemIterator( content.getNode( RULES_FOLDER_NAME ).getNodes(),
                                                         this.rulesRepository );
             return it;
         } catch ( PathNotFoundException e ) {
@@ -570,5 +575,28 @@ public class RulePackageItem extends VersionableItem {
             }
         }
         return result.iterator();
+    }
+
+    /**
+     * This will create a new version of a package, effectively freezing the state.
+     * This means in the "head" version of the package, rules can be added
+     * removed, without effecting the baseline that was created.
+     */
+    public void createBaseline(String comment,
+                               StateItem state) {
+        Iterator rules = getRules();
+        while(rules.hasNext()) {
+            RuleItem rule = (RuleItem) rules.next();
+            rule.updateState( state );
+            rule.checkin( comment );
+        }
+        
+        checkin( comment );
+        try {
+            this.node.checkout();
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException("Unable to check out package node after creating a new baseline.", e);
+        }
+        
     }
 }

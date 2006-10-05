@@ -61,6 +61,14 @@ public abstract class VersionableItem extends Item {
     }
 
     /**
+     * This will return true if the current entity is actually a
+     * historical version (which means is effectively read only).
+     */
+    public boolean isHistoricalVersion() throws RepositoryException {
+        return this.node.getPrimaryNodeType().getName().equals("nt:version") || node.getPrimaryNodeType().getName().equals( "nt:frozenNode" );
+    }    
+    
+    /**
      * @return the predessor node of this node in the version history, or null if no predecessor version exists
      * @throws RulesRepositoryException
      */
@@ -333,6 +341,18 @@ public abstract class VersionableItem extends Item {
 
         return contentNode;
     }
+    
+    /** 
+     * Need to get the name from the content node, not the version node
+     * if it is in fact a version ! 
+     */
+    public String getName() {
+        try {
+            return getVersionContentNode().getName();
+        } catch ( RepositoryException e) {
+            throw new RulesRepositoryException(e);
+        }
+    }
 
     /**
      * This will check out the node prior to editing.
@@ -364,13 +384,15 @@ public abstract class VersionableItem extends Item {
     /** 
      * This will save the content (if it hasn't been already) and 
      * then check it in to create a new version.
+     * It will also set the last modified property.
      */
     public void checkin(String comment)  {
         try {
-        this.node.setProperty( VersionableItem.CHECKIN_COMMENT, comment);
-        this.node.getSession().save();        
-        this.node.checkin();
-        } catch (Exception e) {
+            this.node.setProperty( VersionableItem.LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance() );
+            this.node.setProperty( VersionableItem.CHECKIN_COMMENT, comment);
+            this.node.getSession().save();        
+            this.node.checkin();
+        } catch (RepositoryException e) {
             throw new RulesRepositoryException("Unable to checkin.", e);
         }
     }
@@ -378,13 +400,18 @@ public abstract class VersionableItem extends Item {
     /**
      * This will check to see if the node is the "head" and
      * so can be updated (you can't update historical nodes ).
-     * @throws RepositoryException
+     * @throws RulesRepositoryException if it is not allowed
+     * (means a programming error !).
      */
-    protected void checkIsUpdateable() throws RepositoryException {
-        if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-            String message = "Error. Tags can only be added to the head version of a rule node";
-            log.error(message);
-            throw new RulesRepositoryException(message);
+    protected void checkIsUpdateable() {
+        try {
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                String message = "Error. Tags can only be added to the head version of a rule node";
+                log.error(message);
+                throw new RulesRepositoryException(message);
+            }
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException(e);
         }
     }    
 }
