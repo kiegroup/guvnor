@@ -26,6 +26,8 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
 
 import org.apache.log4j.Logger;
+import org.drools.repository.util.DefaultVersionNumberGenerator;
+import org.drools.repository.util.VersionNumberGenerator;
 
 
 /**
@@ -65,6 +67,11 @@ public class RulesRepository {
     public static final String DROOLS_URI = "http://www.jboss.org/drools-repository/1.0";
 
     private static final Logger log = Logger.getLogger(RulesRepository.class);
+
+    private Map areaNodeCache = new HashMap();
+
+    protected VersionNumberGenerator versionNumberGenerator = new DefaultVersionNumberGenerator();
+    
     
     /**
      * The name of the rulepackage area of the repository
@@ -214,7 +221,6 @@ public class RulesRepository {
         }
     }                
     
-    private Map areaNodeCache = new HashMap();
     
     private Node getAreaNode(String areaName) throws RulesRepositoryException {
         if (areaNodeCache.containsKey( areaName )) {
@@ -336,6 +342,15 @@ public class RulesRepository {
             log.error("Caught Exception", e);
             throw new RulesRepositoryException(e);
         }
+    }
+    
+    /**
+     * Optionally override the default version number generator with a custom
+     * number generator.
+     * The default one is incremental.
+     */
+    public void setVersionNumberGenerator(VersionNumberGenerator gen) {
+        this.versionNumberGenerator = gen;
     }
     
     /**
@@ -719,6 +734,9 @@ public class RulesRepository {
         }
         
     }
+
+
+
 
 
 

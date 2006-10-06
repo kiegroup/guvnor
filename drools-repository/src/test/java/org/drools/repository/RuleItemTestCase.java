@@ -317,6 +317,7 @@ public class RuleItemTestCase extends TestCase {
             ruleItem1.updateRuleContent( "test content" );
             ruleItem1.checkin( "boo" );
             
+            
             RuleItem predecessorRuleItem = (RuleItem) ruleItem1.getPrecedingVersion();
             assertNotNull(predecessorRuleItem);            
             
@@ -344,8 +345,9 @@ public class RuleItemTestCase extends TestCase {
     }
     
     public void testGetSucceedingVersion() {
-        try {
             RuleItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetSucceedingVersion", "test description");
+
+            assertEquals("1", ruleItem1.getVersionNumber());
             
             RuleItem succeedingRuleItem = (RuleItem) ruleItem1.getSucceedingVersion();
             assertTrue(succeedingRuleItem == null);            
@@ -353,16 +355,13 @@ public class RuleItemTestCase extends TestCase {
             ruleItem1.updateRuleContent("new content");
             ruleItem1.checkin( "la" );
             
+            assertEquals("2", ruleItem1.getVersionNumber());
             
             RuleItem predecessorRuleItem = (RuleItem) ruleItem1.getPrecedingVersion();
             assertEquals(null, predecessorRuleItem.getRuleContent());
             succeedingRuleItem = (RuleItem) predecessorRuleItem.getSucceedingVersion();
             assertNotNull(succeedingRuleItem);
             assertEquals(ruleItem1.getRuleContent(), succeedingRuleItem.getRuleContent());                       
-        }        
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }   
     } 
     
     public void testGetSuccessorVersionsIterator() {

@@ -8,8 +8,10 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
 
 import org.drools.repository.Item;
+import org.drools.repository.util.VersionNumberGenerator;
 
 public abstract class VersionableItem extends Item {
 
@@ -36,6 +38,8 @@ public abstract class VersionableItem extends Item {
     
     /** The name of the checkin/change comment for change tracking */
     public static final String CHECKIN_COMMENT              = "drools:checkinComment";
+    
+    public static final String VERSION_NUMBER_PROPERTY_NAME = "drools:versionNumber";
     
     /**
      * The possible formats for the format property of the node
@@ -243,6 +247,22 @@ public abstract class VersionableItem extends Item {
             throw new RulesRepositoryException( e );
         }
     }
+    
+    /**
+     * get this version number (default is incrementing integer, but you
+     * can provide an implementation of VersionNumberGenerator if needed).
+     */
+    public String getVersionNumber() {
+        try {
+            if (getVersionContentNode().hasProperty( VERSION_NUMBER_PROPERTY_NAME )) {           
+                return getVersionContentNode().getProperty( VERSION_NUMBER_PROPERTY_NAME ).getString();
+            } else {
+                return null;
+            }
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException(e);
+        }
+    }
 
     /**
      * This will return the checkin comment for the latest revision.
@@ -388,8 +408,11 @@ public abstract class VersionableItem extends Item {
      */
     public void checkin(String comment)  {
         try {
-            this.node.setProperty( VersionableItem.LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance() );
-            this.node.setProperty( VersionableItem.CHECKIN_COMMENT, comment);
+            this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance() );
+            this.node.setProperty( CHECKIN_COMMENT, comment);
+            VersionNumberGenerator gen = rulesRepository.versionNumberGenerator;
+            String nextVersion = gen.calculateNextVersion( getVersionNumber(), this);
+            this.node.setProperty( VERSION_NUMBER_PROPERTY_NAME, nextVersion );
             this.node.getSession().save();        
             this.node.checkin();
         } catch (RepositoryException e) {

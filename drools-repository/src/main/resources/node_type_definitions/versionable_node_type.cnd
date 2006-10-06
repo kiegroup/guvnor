@@ -21,6 +21,9 @@
 
 - drools:lastModified (date)
   mandatory
+
+//for incrementing (or user defined) unique version numbers
+- drools:versionNumber (string)
   
 - drools:description (string)
   mandatory
@@ -29,3 +32,5 @@
   mandatory 
   
   - drools:checkinComment (string)
+  
+  
