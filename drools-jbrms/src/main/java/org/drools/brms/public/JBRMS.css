@@ -254,6 +254,11 @@ a:visited {
   padding: 4px;
 }
 
+.dsl-field-TextBox {
+  border: 1px solid #87B3FF;
+  padding: 0px;	
+}
+
 .rule-viewer-Documentation {
   background-color: #FDFCDC;
   font-family: Arial, sans-serif;

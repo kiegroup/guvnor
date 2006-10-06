@@ -73,10 +73,12 @@ public class EditableLine extends Composite {
             char c = chars[i];
             if (c == '{') {
                 currentLabel = null;
-                currentBox = new TextBox();
-                currentBox.setVisibleLength( 3 );
+                currentBox = new TextBox(); 
+                currentBox.setStyleName( "dsl-field-TextBox" );
                 widgets.add( currentBox );
+                
             } else if (c == '}') {
+                currentBox.setVisibleLength( currentBox.getText().length() );
                 currentBox = null;
             } else {
                 if (currentBox == null && currentLabel == null) {

@@ -35,27 +35,32 @@ public class BREditor extends Composite {
     
     private FlexTable table = null;
     private boolean editMode = false;
+    private ChoiceList lhsSuggestionPopup;
+    private ChoiceList rhsSuggestionPopup;
+    private Image addLhsPopupButton;
+    private Image editButton;
+    private Image addRhsPopupButton;
     
     
     public BREditor() {
         panel = new VerticalPanel();
+        
         initData();
+        initEditorActions();        
         refreshLayoutTable();
         initWidget( panel );
+                
     }
 
-    /** This will populate and refresh the overall layout table. */
-    private void refreshLayoutTable() {
-        
-        resetTableWidget();
-        table.setText( 0, DESC_COLUMN, "IF" );
-        
+    private void initEditorActions() {
         //DSL suggestions/pick list
-        final ChoiceList lhsSuggestionPopup = getLHSChoiceList();
+        lhsSuggestionPopup = getLHSChoiceList();
+        rhsSuggestionPopup = getRhsChoiceList();
+
         
         //button to add a new item for lhs (using the choice list).
-        Image addLhs = new Image("images/new_item.gif");
-        addLhs.addClickListener( new ClickListener() {
+        addLhsPopupButton = new Image("images/new_item.gif");
+        addLhsPopupButton.addClickListener( new ClickListener() {
             public void onClick(Widget sender) {
                 int left = sender.getAbsoluteLeft() + 10;
                 int top = sender.getAbsoluteTop() + 10;
@@ -63,33 +68,22 @@ public class BREditor extends Composite {
                 lhsSuggestionPopup.show();                
             }            
         });
+        addLhsPopupButton.setVisible( false );
         
         //button to toggle edit mode
-        Image edit = new Image("images/edit.gif");
-        edit.addClickListener( new ClickListener() {
+        editButton = new Image("images/edit.gif");
+        editButton.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 switchModes(lhs, editMode);
                 switchModes(rhs, editMode);
-                showHideLineEditorWidgets( editMode );
+                showHideLineEditorWidgets( editMode );                
                 editMode = !editMode;
             }            
-        });
-        
-        table.setWidget( 0, ACTION_COLUMN, addLhs );
-        table.setWidget( 0, ACTION_COLUMN + 1, edit );
-        
-        int rowOffset = 1;
-        
-        //setup LHS
-        displayEditorWidgets( rowOffset, lhs );        
-        rowOffset = lhs.size() + 1;        
-        table.setText( rowOffset, DESC_COLUMN, "THEN" );
-        
-        final ChoiceList rhsSuggestionPopup = getRhsChoiceList();
+        });        
         
         //the new button for the RHS
-        Image newRhsPopup = new Image("images/new_item.gif");
-        newRhsPopup.addClickListener( new ClickListener() {
+        addRhsPopupButton = new Image("images/new_item.gif");
+        addRhsPopupButton.addClickListener( new ClickListener() {
 
             public void onClick(Widget sender) {
                 int left = sender.getAbsoluteLeft() + 10;
@@ -99,7 +93,27 @@ public class BREditor extends Composite {
             }
             
         });
-        table.setWidget( rowOffset, ACTION_COLUMN, newRhsPopup );
+        addRhsPopupButton.setVisible( false );
+    }
+
+    /** This will populate and refresh the overall layout table. */
+    private void refreshLayoutTable() {
+        
+        resetTableWidget();
+        table.setText( 0, DESC_COLUMN, "IF" );
+        
+        table.setWidget( 0, ACTION_COLUMN, addLhsPopupButton );
+        table.setWidget( 0, ACTION_COLUMN + 1, editButton );
+        
+        int rowOffset = 1;
+        
+        //setup LHS
+        displayEditorWidgets( rowOffset, lhs );        
+        rowOffset = lhs.size() + 1;        
+        table.setText( rowOffset, DESC_COLUMN, "THEN" );
+        
+
+        table.setWidget( rowOffset, ACTION_COLUMN, addRhsPopupButton );
         
         rowOffset++;
         
@@ -156,6 +170,10 @@ public class BREditor extends Composite {
 
     /** Switch all the line editor widgets on or off */
     private void showHideLineEditorWidgets(boolean readOnly) {
+        
+        this.addLhsPopupButton.setVisible(!readOnly);
+        this.addRhsPopupButton.setVisible( !readOnly );
+        
         for (int row = 1; row <= lhs.size(); row++ ) {
             showHideLineEditorWidget( readOnly, row );
         }
@@ -251,14 +269,27 @@ public class BREditor extends Composite {
      */
     private void initData() {
 
-        lhsSuggestions.add( "Hello {world}" );
-        lhsSuggestions.add( "Goodbye {world}" );
+        //the suggestion data
+        lhsSuggestions.add("There is a Driver");
+        lhsSuggestions.add("- age less than {age} years old");
+        lhsSuggestions.add("- age greater than {age} years old");
+        lhsSuggestions.add("- has had more than {number} prior claims");
+        lhsSuggestions.add("- has a location risk profile of '{risk}'");
+        lhsSuggestions.add("- age is at least {age}");
+        lhsSuggestions.add("- age is between {lower} and {upper} years old");
+        lhsSuggestions.add("- has had exactly {number} prior claims");
+        lhsSuggestions.add("Policy type is '{type}'");
+        lhsSuggestions.add("Policy has not been rejected");
+        
+        rhsSuggestions.add("Reject Policy with explanation : '{reason}'");        
+        rhsSuggestions.add("Approve Policy with the reason : '{reason}'");                
         rhsSuggestions.add( "Log '{message}'" );
-        rhsSuggestions.add( "Do nothing" );
-
-        lhs.add( new EditableLine("this is a {bam}"));
-        lhs.add( new EditableLine("this is a {bam}"));
-        rhs.add( new EditableLine("this is a {bam}"));
+        
+        //now the actual data, which in reality would have to be parsed out
+//        lhs.add( new EditableLine("this is a {bam}"));
+//        lhs.add( new EditableLine("this is a {bam}"));
+//        rhs.add( new EditableLine("this is a {bam}"));
+        
     }
 
     /** Adjust items up and down in a list.
