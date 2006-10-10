@@ -22,8 +22,12 @@ public class MockRepositoryServiceAsync
         Timer t = new Timer() {
             public void run() {
                 log("loadChildCategories", "loading cat path: " + cat);
-                String[] result = new String[] { "Cat 1", "Cat 2", "Cat 3"};
-                cb.onSuccess( result );                
+                if (cat.indexOf( "HR" ) > -1 ) {
+                    cb.onSuccess( new String[] { "Leave", "Payroll", "Draft"} );
+                } else {
+
+                    cb.onSuccess( new String[] { "HR", "Finance", "Procurement"} );
+                }
             }            
         };        
         t.schedule( 500 );
