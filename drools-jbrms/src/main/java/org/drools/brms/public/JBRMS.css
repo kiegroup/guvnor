@@ -254,6 +254,19 @@ a:visited {
   padding: 4px;
 }
 
+.dt-editor-Grid {
+  background-color: #FDFCDC;
+  border: 1px solid #87B3FF;  
+  border-spacing: 0px;
+  border-collapse: collapse
+}
+
+.dt-editor-Cell {
+  background-color: #FDFCDC;
+  border: 1px solid #87B3FF; 
+  font-size: smaller;
+}
+
 .dsl-field-TextBox {
   border: 1px solid #87B3FF;
   padding: 0px;	
