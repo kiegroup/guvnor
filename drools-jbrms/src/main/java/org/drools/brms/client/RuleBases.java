@@ -44,7 +44,7 @@ public class RuleBases extends JBRMSFeature {
   public RuleBases() {
     VerticalPanel panel = new VerticalPanel();
     panel.setSpacing(8);
-    panel.add( new EditableDTGrid() );
+    panel.add( new EditableDTGrid("Pricing rules") );
     initWidget(panel);
   }
 

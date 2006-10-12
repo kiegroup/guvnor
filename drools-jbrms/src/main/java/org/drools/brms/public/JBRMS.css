@@ -262,9 +262,20 @@ a:visited {
 }
 
 .dt-editor-Cell {
-  background-color: #FDFCDC;
+  background-color: white;
   border: 1px solid #87B3FF; 
   font-size: smaller;
+  padding: 2px;
+}
+
+.dt-editor-DescriptionCell {
+  background-color: #FDFCDC;
+  font-size: smaller;
+  padding: 3px;
+}
+
+.dt-editor-Title {
+  font-size: larger;
 }
 
 .dsl-field-TextBox {
