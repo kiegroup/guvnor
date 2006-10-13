@@ -1,18 +1,3 @@
-/*
- * Copyright 2006 Google Inc.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package org.drools.brms.client.categorynav;
 
 import org.drools.brms.client.ErrorPopup;
@@ -29,6 +14,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeListener;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
@@ -44,7 +30,7 @@ public class CategoryExplorerWidget
      
     
     private Tree                   navTreeWidget = new Tree();
-    private FlexTable              table         = new FlexTable();
+    private VerticalPanel          panel = new VerticalPanel();
     private RepositoryServiceAsync service       = RepositoryServiceFactory.getService();
     private CategorySelectHandler  categorySelectHandler;
     private String selectedPath;
@@ -54,10 +40,8 @@ public class CategoryExplorerWidget
     }
 
     public CategoryExplorerWidget(CategorySelectHandler handler) {
-        table.setWidget( 0, 0, navTreeWidget );
+        panel.add( navTreeWidget );
         
-        FlexCellFormatter formatter = table.getFlexCellFormatter();
-        formatter.setColSpan( 0, 0, 2 );
         
         Image refresh = new Image("images/refresh.gif");
         refresh.setTitle( "Refresh categories" );        
@@ -78,16 +62,22 @@ public class CategoryExplorerWidget
             }            
         });
         
+        FlexTable actionTable = new FlexTable();
+        FlexCellFormatter formatter = actionTable.getFlexCellFormatter();
         
-        table.setWidget( 1, 0, newCat);
-        table.setWidget( 1, 1, refresh );
-        formatter.setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE );
-        formatter.setAlignment( 1, 1, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
+        actionTable.setStyleName( "global-Font" );
+        actionTable.setText( 0, 0, "Manage categories:" );
+        actionTable.setWidget( 0, 1, newCat );
+        actionTable.setWidget( 0, 2, refresh );
+        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
+
+        panel.add( actionTable );
         
         this.categorySelectHandler = handler;
         loadInitialTree();
         
-        initWidget( table );
+        
+        initWidget( panel );
         navTreeWidget.addTreeListener( this );
     }
 

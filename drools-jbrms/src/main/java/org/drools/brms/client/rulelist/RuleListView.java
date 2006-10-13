@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SourcesTableEvents;
 import com.google.gwt.user.client.ui.TableListener;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -44,8 +45,6 @@ public class RuleListView extends Composite
     protected int numberOfColumns;
     private EditItemEvent editEvent;
 
-    private long timer;
-
     public RuleListView(EditItemEvent event) {
 
         service = RepositoryServiceFactory.getService();
@@ -67,10 +66,12 @@ public class RuleListView extends Composite
         HorizontalPanel innerNavBar = new HorizontalPanel();
         innerNavBar.setStyleName( "rule-ListNavBar" );
         innerNavBar.setSpacing( 8 );
+        
         innerNavBar.add( prevButton );
         innerNavBar.add( countLabel );
         innerNavBar.add( nextButton );
         innerNavBar.add( editButton );
+        
         navBar.setHorizontalAlignment( HorizontalPanel.ALIGN_RIGHT );
         navBar.add( innerNavBar );
         navBar.setWidth( "100%" );
@@ -204,13 +205,7 @@ public class RuleListView extends Composite
     
     
     
-    private void startTime() {
-        this.timer = System.currentTimeMillis();
-    }
-    
-    private void finish(String message) {
-        System.out.println("time taken for " + message + " was: " + (System.currentTimeMillis() - timer));
-    }
+
     
 
     private void update() {
@@ -259,21 +254,13 @@ public class RuleListView extends Composite
 //                           item.version );
         }
 
-        
-        startTime();
-        
-        System.out.println("i is " + visibleItemCount);
-        
         // Clear any remaining slots.
         for ( ; i < visibleItemCount; ++i ) {
             table.setHTML( i + 1, 0, "&nbsp;" );
         }
-
-        finish( "update( )");
         
         // Select the first row if none is selected.
         if ( selectedRow == -1 ) selectRow( 0 );
-        
         
     }
 

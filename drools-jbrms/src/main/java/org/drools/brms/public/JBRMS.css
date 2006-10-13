@@ -172,6 +172,10 @@ a:visited {
 .gwt-StackPanel .gwt-StackPanelItem-selected {
 }
 
+.global-Font {
+	font-size: smaller;
+}
+
 /* -------------------------------------------------------------------------- */
 
 /* -- orig border: #C3D9FF  replaced with #B8B8B8 
@@ -252,6 +256,11 @@ a:visited {
   background-color: #FDFCDC;
   border: 1px solid #87B3FF;
   padding: 4px;
+}
+
+.rule-explorer-NewPopups  {
+  border: 1px solid #87B3FF;
+  background-color: #FDFCDC;
 }
 
 .dt-editor-Grid {
