@@ -86,7 +86,7 @@ public class RuleListView extends Composite
         table.setWidth( "100%" );
         
         // needed for composite to work
-        setWidget( vert );
+        initWidget( vert );
         setStyleName( "rule-List" );
         initTable();
 
