@@ -10,12 +10,20 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 
 /**
  * The decision table viewer and editor.
  * @author Michael Neale
  * @author Stephen Williams
- *
+ * 
+ * TODO: add editors for header stuff,
+ * and ability to add rows/cols and shift rows around
+ * This probably can be done from a seperate "editor" such that it is re-rendered 
+ * when you need to add/move a col or row.
+ * 
+ * Should be able to add/shift stuff around by entering a row number to deal with.
+ * 
  */
 public class EditableDTGrid extends Composite {
 
@@ -38,7 +46,6 @@ public class EditableDTGrid extends Composite {
         header.add( title );
         
         vert.add( header );
-        
         vert.add( table );
         
         FlexCellFormatter cellFormatter = table.getFlexCellFormatter();
@@ -51,77 +58,97 @@ public class EditableDTGrid extends Composite {
         //and the data follows
         populateDataGrid( cellFormatter );
         
-        //and this is how you span things, FYI
+        //and this is how you span/merge things, FYI
         //table.getFlexCellFormatter().setColSpan( 2, 3, 4 );
 
-        
-        
+        //needed for Composite
         initWidget( vert );
-
     }
 
 
     private void populateHeader(FlexCellFormatter cellFormatter) {
-        for (int col = 0; col < numCols(); col++) {
+        
+        //for the count column
+        cellFormatter.setStyleName( 0, 0, "dt-editor-DescriptionCell" );
+        
+        for (int col = 1; col < numCols() + 1; col++) {
             table.setText( 0, col, "some header " + col );
             cellFormatter.setStyleName( 0, col, "dt-editor-DescriptionCell" );
         }
     }
 
 
+    /**
+     * This populates the "data" part of the decision table (not the header bits).
+     * It starts at the row offset. 
+     * @param cellFormatter So it can set the style of each cell that is created.
+     */
     private void populateDataGrid(FlexCellFormatter cellFormatter) {
+
         for ( int i = 0; i < numRows(); i++ ) {
-            int column = 0;
+            
+            int rowCount = i + 1;
+            
+            int column = 1;
             int row = i + START_DATA_ROW;
-            for ( ; column < numCols(); column++ ) {
+            
+            //now do the count column
+            table.setText( row, 0, Integer.toString( rowCount) );
+            cellFormatter.setStyleName( row, 0, "dt-editor-CountColumn" );
+            for ( ; column < numCols() + 1; column++ ) {
                 table.setText( row,
                                column,
                                "boo " + column );
                 cellFormatter.setStyleName( row, column, "dt-editor-Cell" );
             }
-            
+                        
             final int currentRow = row;
-            Image editButton = new Image("images/edit.gif");
-            editButton.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
-                    editRow(currentRow);
-                    
-                }
-            });   
             
-            
-            table.setWidget( row, column, editButton );
+            //the action magic
+            final EditActions actions = new EditActions(new ClickListener() {
+                    public void onClick(Widget w) {editRow( currentRow );}               
+                },
+                new ClickListener() {
+                    public void onClick(Widget w) {updateRow( currentRow );}                
+                });
+            table.setWidget( currentRow, column, actions );
             
         }
     }
     
-    
+    /**
+     * Apply the changes to the row.
+     */
+    private void updateRow(int row) {
+        for (int column = 1; column < numCols() + 1; column++) {
+            TextBox text = (TextBox) table.getWidget( row, column );
+            table.setText( row, column, text.getText() );                
+        }
+    }
+
+
+    /**
+     * This switches the given row into edit mode.
+     * @param row
+     */
     private void editRow(int row) {
-        for (int column = 0; column < numCols(); column++) {
+        for (int column = 1; column < numCols() + 1; column++) {
             String text = table.getText( row, column );
-            Widget w = table.getWidget( row, column );
-            if (w == null) {
                 TextBox box = new TextBox();
                 box.setText( text );
                 box.setStyleName( "dsl-field-TextBox" );
-                box.setVisibleLength( 3 );
+                box.setVisibleLength( 3 );                
+                table.setWidget( row, column, box );   
                 
-                table.setWidget( row, column, box );
-                
-            } else {
-                table.setText( row, column, ((TextBox ) w).getText());
-            }
         }
-        
-        
     }
 
     private int numCols() {
-        return 7;
+        return 6;
     }
 
     private int numRows() {
-        return 12;
+        return 14;
     }
 
 }

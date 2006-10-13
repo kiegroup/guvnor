@@ -274,6 +274,13 @@ a:visited {
   padding: 3px;
 }
 
+.dt-editor-CountColumn {
+  background-color: #FDFCDC;
+  font-size: smaller;
+  padding: 3px;
+}
+
+
 .dt-editor-Title {
   font-size: larger;
 }
