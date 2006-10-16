@@ -1,5 +1,8 @@
 package org.drools.brms.client;
 
+import java.util.ArrayList;
+
+import org.drools.brms.client.breditor.ChoiceList;
 import org.drools.brms.client.categorynav.CategoryEditor;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
@@ -10,6 +13,7 @@ import org.drools.brms.client.rulelist.RuleListView;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -81,7 +85,7 @@ public class Rules extends JBRMSFeature {
 		CategoryExplorerWidget nav = new CategoryExplorerWidget(new CategorySelectHandler() {
 
             public void selected(String selectedPath) {
-                System.out.println("Selected path: " + selectedPath);  
+                  
                 list.loadRulesForCategoryPath(selectedPath);
             }
             
@@ -104,26 +108,23 @@ public class Rules extends JBRMSFeature {
 
         table.setText( 2, 0, "" );
         
-        //new rule stuff
-        final ListBox listBox = new ListBox();
-        listBox.addItem( "-- Create new --" );
-        listBox.addItem( "Rule", "rule" );
-        listBox.addItem( "Decision Table", "decisionTable" );
-        listBox.addItem( "Document", "document" );
-        
-        listBox.addChangeListener( new ChangeListener() {
+        Image newRule = new Image("images/new_rule.gif");
+        newRule.setTitle( "Create new rule" );
+        newRule.addClickListener( new ClickListener() {
 
-            public void onChange(Widget w) {                
-                String type = listBox.getValue( listBox.getSelectedIndex() );
-                NewRuleWizard newRule = new NewRuleWizard(type);
-                newRule.setPopupPosition( w.getAbsoluteLeft() - 10, w.getAbsoluteTop() - 50  );
-                newRule.show();                
+            public void onClick(Widget w) {
+                int left = 70;//w.getAbsoluteLeft() - 10;
+                int top = 100; //w.getAbsoluteTop() - 10;
+                
+              NewRuleWizard pop = new NewRuleWizard();
+              pop.setPopupPosition( left, top );
+              
+              pop.show();
             }
             
         });
         
-        
-        table.setWidget( 1, 0, listBox);
+        table.setWidget( 1, 0, newRule);
         formatter.setHeight( 1, 0, "5%" );
         formatter.setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP);
         formatter.setStyleName( 1, 0, "rule-explorer-NewPopups" );

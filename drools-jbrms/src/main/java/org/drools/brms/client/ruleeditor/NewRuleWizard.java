@@ -16,26 +16,26 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class NewRuleWizard extends PopupPanel {
 
-    private String type;
+
     private FlexTable table = new FlexTable(); //Using this table for the form layout
     private TextBox name = new TextBox();
     private TextArea description = new TextArea();
     
     
     /** This is used when creating a new category */
-    public NewRuleWizard(String type) {
+    public NewRuleWizard() {
         super(true);
-        this.type = type;
         
-        table.setWidget( 0, 0, new Image("images/edit_category.gif") );
+        table.setWidget( 0, 0, new Image("images/new_wiz.gif") );
         
-        table.setWidget( 0, 1, new Label(getTitle( type )));
+        table.setWidget( 0, 1, new Label("Create a new rule"));
         
         
         table.setWidget( 1, 0, new Label("Rule name") );
         table.setWidget( 1, 1, name );
         
         description.setVisibleLines( 4 );
+        description.setWidth( "100%" );
         table.setWidget( 2, 0, new Label("Initial Description") );
         table.setWidget( 2, 1, description );
         
@@ -63,9 +63,7 @@ public class NewRuleWizard extends PopupPanel {
         setStyleName( "ks-popups-Popup" );
     }
 
-    private String getTitle(String type) {
-            return "Create a new " + type;
-    }
+
     
     void ok() {
         
