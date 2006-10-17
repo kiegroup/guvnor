@@ -64,6 +64,8 @@ import org.drools.repository.util.VersionNumberGenerator;
  */
 public class RulesRepository {
 
+    static final String DEFAULT_PACKAGE = "default";
+
     public static final String DROOLS_URI = "http://www.jboss.org/drools-repository/1.0";
 
     private static final Logger log = Logger.getLogger(RulesRepository.class);
@@ -530,10 +532,10 @@ public class RulesRepository {
     public RulePackageItem loadDefaultRulePackage() throws RulesRepositoryException {
         Node folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
         try {
-            if (folderNode.hasNode( "default" )) {
-                return loadRulePackage( "default" );
+            if (folderNode.hasNode( DEFAULT_PACKAGE )) {
+                return loadRulePackage( DEFAULT_PACKAGE );
             } else {
-                return createRulePackage( "default", "" );
+                return createRulePackage( DEFAULT_PACKAGE, "" );
             }
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException(e);
@@ -703,7 +705,12 @@ public class RulesRepository {
      */
     public Iterator listPackages()  {
         Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
+
         try {
+            if (!folderNode.hasNode(DEFAULT_PACKAGE)) {
+                createRulePackage( DEFAULT_PACKAGE, "" );
+                folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
+            }            
             return new RulePackageIterator(this, folderNode.getNodes());
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException(e);

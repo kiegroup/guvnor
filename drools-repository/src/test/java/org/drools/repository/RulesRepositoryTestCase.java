@@ -19,9 +19,22 @@ public class RulesRepositoryTestCase extends TestCase {
     
     public void testDefaultPackage() throws Exception {
         RulesRepository repo = RepositorySession.getRepository();
+        
+        Iterator it = repo.listPackages();
+        boolean foundDefault = false;
+        while(it.hasNext()) {
+            RulePackageItem item = (RulePackageItem) it.next();
+            if (item.getName().equals( RulesRepository.DEFAULT_PACKAGE )) {
+                foundDefault = true;
+            }
+        }
+        assertTrue(foundDefault);
+        
         RulePackageItem def = repo.loadDefaultRulePackage();
         assertNotNull(def);
         assertEquals("default", def.getName());
+        
+        
     }
     
     public void testAddVersionARule() throws Exception {
