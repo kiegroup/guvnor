@@ -105,7 +105,7 @@ public class RuleItemTestCase extends TestCase {
             ruleItem1.checkin( "woot" );
             
             //now test retrieve by tags
-            List result = getRepo().findRulesByTag("testAddTagTestTag");            
+            List result = getRepo().findRulesByCategory("testAddTagTestTag");            
             assertEquals(1, result.size());            
             RuleItem retItem = (RuleItem) result.get( 0 );
             assertEquals("testAddTag", retItem.getName());
@@ -113,7 +113,7 @@ public class RuleItemTestCase extends TestCase {
             ruleItem1.updateRuleContent( "foo" );
             ruleItem1.checkin( "latest" );
             
-            result = getRepo().findRulesByTag( "testAddTagTestTag" );
+            result = getRepo().findRulesByCategory( "testAddTagTestTag" );
             
             assertEquals(1, result.size());
 
@@ -225,9 +225,9 @@ public class RuleItemTestCase extends TestCase {
             
             cal = Calendar.getInstance();
             long after = cal.getTimeInMillis();
-            assertTrue(before < after);
-            assertTrue(before < lastMod);
-            assertTrue(lastMod < after);
+            assertTrue(before <= after);
+            assertTrue(before <= lastMod);
+            assertTrue(lastMod <= after);
 
     }
     

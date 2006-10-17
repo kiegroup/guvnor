@@ -680,7 +680,7 @@ public class RulesRepository {
      * Only the latest versions of each RuleItem will be returned (you will have 
      * to delve into the rules deepest darkest history yourself... mahahahaha).
      */
-    public List findRulesByTag(String categoryTag) throws RulesRepositoryException {
+    public List findRulesByCategory(String categoryTag) throws RulesRepositoryException {
         
         CategoryItem item = this.loadCategory( categoryTag );
         List results = new ArrayList();
