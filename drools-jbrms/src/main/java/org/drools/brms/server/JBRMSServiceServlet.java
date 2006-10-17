@@ -1,5 +1,9 @@
 package org.drools.brms.server;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -8,7 +12,10 @@ import javax.servlet.http.HttpSession;
 
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.TableConfig;
+import org.drools.repository.CategoryItem;
 import org.drools.repository.RepositoryConfigurator;
+import org.drools.repository.RuleItem;
+import org.drools.repository.RulePackageItem;
 import org.drools.repository.RulesRepository;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -28,11 +35,55 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
      * The shared repository instance. This could be bound to JNDI eventually.
      */
     public static Repository repository;
+
     
-    public String[] loadChildCategories(String categoryPath) {   
-        ServiceImpl handler = new ServiceImpl(getRulesRepository());
-        return handler.loadChildCategories( categoryPath );
+    public String[] loadChildCategories(String categoryPath) {
+
+        CategoryItem item = getRulesRepository().loadCategory( categoryPath );
+        List children = item.getChildTags();
+        String[] list = new String[children.size()];
+        for ( int i = 0; i < list.length; i++ ) {
+            list[i] = ((CategoryItem) children.get( i )).getName();
+        }
+        return list;
+
     }
+
+    public Boolean createCategory(String path,
+                                  String name,
+                                  String description) {
+        
+        if (path == null || "".equals(path)) {
+            path = "/";
+        }
+        CategoryItem item = getRulesRepository().loadCategory( path );
+        item.addCategory( name, description );
+        return Boolean.TRUE;
+    }
+    
+    
+    public Boolean createNewRule(String ruleName,
+                                 String description,
+                                 String initialCategory,
+                                 String initialPackage) {
+        RulePackageItem pkg = getRulesRepository().loadRulePackage( initialPackage );
+        RuleItem rule = pkg.addRule( ruleName, description );
+        rule.addCategory( initialCategory );
+        
+        return Boolean.TRUE;
+    }
+
+    public String[] listRulePackages() {
+        Iterator pkgs = getRulesRepository().listPackages();
+        List result = new ArrayList();
+        while(pkgs.hasNext()) {
+            RulePackageItem pkg = (RulePackageItem) pkgs.next();
+            result.add( pkg.getName() );
+        }
+        return (String[]) result.toArray( new String[result.size()] );
+    }
+    
+
 
 
 
@@ -63,7 +114,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     }
     
     /** Get the rule repository for the "current" user */
-    private RulesRepository getRulesRepository() {
+    RulesRepository getRulesRepository() {
         return this.getRepositoryFrom( getSession() );
     }
 
@@ -133,15 +184,6 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     }
     
     
-
-    public Boolean createCategory(String path,
-                                  String name,
-                                  String description) {
-        ServiceImpl serv = new ServiceImpl(getRulesRepository());
-        return serv.createCategory( path, name, description );
-        
-    }
-
 
 
 }

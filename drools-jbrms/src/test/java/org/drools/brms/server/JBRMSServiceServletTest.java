@@ -13,6 +13,9 @@ import junit.framework.TestCase;
 
 import org.drools.repository.RulesRepository;
 
+/**
+ * This tests the basic http stuff for the servlet.
+ */
 public class JBRMSServiceServletTest extends TestCase {
 
     public void testInit() throws Exception {

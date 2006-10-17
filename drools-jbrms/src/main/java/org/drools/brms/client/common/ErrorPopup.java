@@ -1,4 +1,4 @@
-package org.drools.brms.client;
+package org.drools.brms.client.common;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -47,7 +47,7 @@ public class ErrorPopup extends PopupPanel {
     
     public static ErrorPopup getInstance() {
         if (instance == null) {
-            instance = new ErrorPopup();
+            instance = new ErrorPopup();            
         }
         return instance;
     }
@@ -55,9 +55,12 @@ public class ErrorPopup extends PopupPanel {
     /** Convenience method to popup the message. */
     public static void showMessage(String message) {
         ErrorPopup p = getInstance();
+        
         p.errorMessage.setText( message );
         p.show();
     }
+    
+
     
      
     

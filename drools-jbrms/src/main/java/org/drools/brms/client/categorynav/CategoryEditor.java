@@ -1,6 +1,6 @@
 package org.drools.brms.client.categorynav;
 
-import org.drools.brms.client.ErrorPopup;
+import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;

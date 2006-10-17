@@ -32,4 +32,14 @@ public interface RepositoryService extends RemoteService {
      * This will create a new category at the specified path.
      */
     public Boolean createCategory(String path, String name, String description);
+    
+    /**
+     * Creates a brand new rule with the initial category.
+     */
+    public Boolean createNewRule(String ruleName, String description, String initialCategory, String initialPackage);
+    
+    /**
+     * This returns a list of packages where rules may be added.
+     */
+    public String[] listRulePackages();
 }

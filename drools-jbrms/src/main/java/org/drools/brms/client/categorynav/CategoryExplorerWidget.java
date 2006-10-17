@@ -1,6 +1,6 @@
 package org.drools.brms.client.categorynav;
 
-import org.drools.brms.client.ErrorPopup;
+import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
@@ -23,62 +23,89 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  * navigate the repository.
  * Uses the the {@link com.google.gwt.user.client.ui.Tree} widget.
  */
-public class CategoryExplorerWidget
-    extends Composite implements TreeListener
-    {
+public class CategoryExplorerWidget extends Composite
+    implements
+    TreeListener {
 
-     
-    
     private Tree                   navTreeWidget = new Tree();
-    private VerticalPanel          panel = new VerticalPanel();
+    private VerticalPanel          panel         = new VerticalPanel();
     private RepositoryServiceAsync service       = RepositoryServiceFactory.getService();
     private CategorySelectHandler  categorySelectHandler;
-    private String selectedPath;
+    private String                 selectedPath;
 
     public void setTreeSize(String width) {
         navTreeWidget.setWidth( width );
     }
 
+    /**
+     * Creates a category widget with edit buttons enabled.
+     * @param handler A call back interface.
+     */
     public CategoryExplorerWidget(CategorySelectHandler handler) {
+        this( handler,
+              true );
+    }
+
+    /**
+     * 
+     * @param handler
+     * @param showEditing true if you want to be able to edit categories.
+     */
+    public CategoryExplorerWidget(CategorySelectHandler handler,
+                                  boolean showEditing) {
         panel.add( navTreeWidget );
-        
-        
-        Image refresh = new Image("images/refresh.gif");
-        refresh.setTitle( "Refresh categories" );        
+
+        if ( showEditing ) {
+            doEditButtons();
+        }
+        this.categorySelectHandler = handler;
+        loadInitialTree();
+
+        initWidget( panel );
+        navTreeWidget.addTreeListener( this );
+    }
+
+    private void doEditButtons() {
+        FlexTable actionTable = new FlexTable();
+        FlexCellFormatter formatter = actionTable.getFlexCellFormatter();
+
+        actionTable.setStyleName( "global-Font" );
+        actionTable.setText( 0,
+                             0,
+                             "Manage categories:" );
+
+        Image refresh = new Image( "images/refresh.gif" );
+        refresh.setTitle( "Refresh categories" );
         refresh.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 navTreeWidget.removeItems();
                 loadInitialTree();
-            }            
-        });
-                
-        Image newCat = new Image("images/new.gif");
+            }
+        } );
+
+        Image newCat = new Image( "images/new.gif" );
         newCat.setTitle( "Create a new category" );
         newCat.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                CategoryEditor newCat = new CategoryEditor(selectedPath);
-                newCat.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() - 10  );
+                CategoryEditor newCat = new CategoryEditor( selectedPath );
+                newCat.setPopupPosition( w.getAbsoluteLeft(),
+                                         w.getAbsoluteTop() - 10 );
                 newCat.show();
-            }            
-        });
-        
-        FlexTable actionTable = new FlexTable();
-        FlexCellFormatter formatter = actionTable.getFlexCellFormatter();
-        
-        actionTable.setStyleName( "global-Font" );
-        actionTable.setText( 0, 0, "Manage categories:" );
-        actionTable.setWidget( 0, 1, newCat );
-        actionTable.setWidget( 0, 2, refresh );
-        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
+            }
+        } );
+
+        actionTable.setWidget( 0,
+                               1,
+                               newCat );
+        actionTable.setWidget( 0,
+                               2,
+                               refresh );
+        formatter.setAlignment( 0,
+                                0,
+                                HasHorizontalAlignment.ALIGN_RIGHT,
+                                HasVerticalAlignment.ALIGN_MIDDLE );
 
         panel.add( actionTable );
-        
-        this.categorySelectHandler = handler;
-        loadInitialTree();
-        
-        
-        initWidget( panel );
-        navTreeWidget.addTreeListener( this );
     }
 
     /** This will refresh the tree and restore it back to the original state */
@@ -87,7 +114,7 @@ public class CategoryExplorerWidget
         service.loadChildCategories( "/",
                                      new AsyncCallback() {
 
-                                         public void onFailure(Throwable caught) {                                             
+                                         public void onFailure(Throwable caught) {
                                              ErrorPopup.showMessage( "A server error occurred loading categories." );
                                              navTreeWidget.removeItems();
                                              navTreeWidget.addItem( "Unable to load categories." );
@@ -105,20 +132,16 @@ public class CategoryExplorerWidget
 
                                      } );
 
-        
     }
-    
-    
 
     public void onShow() {
         //move along... these are not the droids you're looking for...
     }
 
     public void onTreeItemSelected(TreeItem item) {
-        this.selectedPath = getPath( item );        
+        this.selectedPath = getPath( item );
         this.categorySelectHandler.selected( selectedPath );
     }
-    
 
     public void onTreeItemStateChanged(TreeItem item) {
 
@@ -137,7 +160,7 @@ public class CategoryExplorerWidget
                                      new AsyncCallback() {
 
                                          public void onFailure(Throwable caught) {
-                                             ErrorPopup.showMessage( "Unable to load categories for [" + selectedPath + "]");            
+                                             ErrorPopup.showMessage( "Unable to load categories for [" + selectedPath + "]" );
                                          }
 
                                          public void onSuccess(Object result) {

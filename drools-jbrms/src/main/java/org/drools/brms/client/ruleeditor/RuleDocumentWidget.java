@@ -16,10 +16,10 @@ public class RuleDocumentWidget extends Composite {
 	public RuleDocumentWidget(String content) {
 		text = new TextArea();
         text.setVisibleLines( 10 );
-		//text.setWidth("100%");
-		//text.setHeight("100%");
 		text.setText(content);
         text.setStyleName( "rule-viewer-Documentation" );
+        
+        
 		initWidget(text);
 	}
 	

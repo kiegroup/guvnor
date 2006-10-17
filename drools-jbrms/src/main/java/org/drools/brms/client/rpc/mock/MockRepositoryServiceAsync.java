@@ -5,6 +5,7 @@ import org.drools.brms.client.rpc.TableConfig;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.SerializableException;
 
 /**
  * This is a repository back end simulator. 
@@ -85,5 +86,33 @@ public class MockRepositoryServiceAsync
         callback.onSuccess( new Boolean(true) );
         
     }
+
+
+
+    public void createNewRule(String name,
+                           String description,
+                           String initialCategory, String initialPackage, AsyncCallback callback) {
+        
+        System.out.println("creating rule:" + name);
+        System.out.println("creating rule description:" + description);
+        System.out.println("creating rule initialCategory:" + initialCategory);
+        System.out.println("creating rule initialPackage:" + initialPackage);
+        
+        if (name.equals( "foo" )) {
+            callback.onFailure( new SerializableException("thats naughty") );
+        } else {
+            callback.onSuccess( new Boolean(true) );
+        }
+        
+        
+    }
+
+
+
+    public void listRulePackages(AsyncCallback callback) {
+        callback.onSuccess( new String[] {"a package"} );        
+    }
+    
+    
 
 }
