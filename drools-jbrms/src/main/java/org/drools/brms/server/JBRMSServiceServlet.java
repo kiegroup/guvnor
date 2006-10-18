@@ -12,12 +12,16 @@ import javax.servlet.http.HttpSession;
 
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.TableConfig;
+import org.drools.brms.client.rpc.TableDataResult;
+import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.RepositoryConfigurator;
 import org.drools.repository.RuleItem;
 import org.drools.repository.RulePackageItem;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
 
+import com.google.gwt.user.client.rpc.SerializableException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /** 
@@ -65,11 +69,15 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     public Boolean createNewRule(String ruleName,
                                  String description,
                                  String initialCategory,
-                                 String initialPackage) {
-        RulePackageItem pkg = getRulesRepository().loadRulePackage( initialPackage );
-        RuleItem rule = pkg.addRule( ruleName, description );
-        rule.addCategory( initialCategory );
-        
+                                 String initialPackage) throws SerializableException {        
+        try {
+            RulePackageItem pkg = getRulesRepository().loadRulePackage( initialPackage );
+            pkg.addRule( ruleName,
+                                         description, initialCategory );
+
+        } catch (RulesRepositoryException e) {
+            throw new SerializableException(e.getMessage());
+        }
         return Boolean.TRUE;
     }
 
@@ -87,31 +95,23 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
 
 
 
-    public String[][] loadRuleListForCategories(String categoryPath,
-                                                String status) {
-        log( "loading rule list",
-             "for cat path: " + categoryPath );
-        String[][] data = {{"Rule 1", "Production", "mark", "2"}, {"Rule 2", "Production", "mark", "2"}, {"Rule 3", "Production", "mark", "2"}};
-        return data;
+    public TableDataResult loadRuleListForCategories(String categoryPath,           
+                                                String status) throws SerializableException {
+        RulesRepository repo = getRulesRepository();
+
+        List list = repo.findRulesByCategory( categoryPath );
+        TableDisplayHandler handler = new TableDisplayHandler();
+        return handler.loadRuleListTable( list );
+        
     }
 
     public TableConfig loadTableConfig(String listName) {
-        log( "loading table config",
-             listName );
-       
-        final TableConfig config = new TableConfig();
-
-        config.headers = new String[]{"name", "status", "last updated by", "version"};
-        config.rowsPerPage = 30;
-        return config;
+        TableDisplayHandler handler = new TableDisplayHandler();
+        return handler.loadTableConfig(listName);
+        
     }
 
 
-
-    private void log(String serviceName,
-                     String message) {
-        System.out.println( "[" + serviceName + "] " + message );
-    }
     
     /** Get the rule repository for the "current" user */
     RulesRepository getRulesRepository() {

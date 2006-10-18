@@ -25,6 +25,8 @@ public class RuleListView extends Composite
     ClickListener {
 
     
+    public static final String RULE_LIST_TABLE_ID = "ruleList";
+
     private int                    visibleItemCount = -1;
 
     private HTML                   countLabel         = new HTML();
@@ -145,7 +147,7 @@ public class RuleListView extends Composite
         table.getRowFormatter().setStyleName( 0, "rule-ListHeader" );  
         table.setText( 0, 0, "Please wait..." );    
         
-        service.loadTableConfig( "ruleList", new AsyncCallback() {
+        service.loadTableConfig( RULE_LIST_TABLE_ID, new AsyncCallback() {
 
             public void onFailure(Throwable caught) {
                 //TODO

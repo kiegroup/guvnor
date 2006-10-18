@@ -46,11 +46,13 @@ public class MockRepositoryServiceAsync
 
     public void loadRuleListForCategories(String categoryPath,
                                           String status,
-                                          AsyncCallback callback) {
+                                          AsyncCallback callback)  {
         log("loading rule list", "for cat path: " + categoryPath);
         String[][] data = { { "Rule 1", "Production", "mark", "2" },
                             { "Rule 2", "Production", "mark", "2" },
                             { "Rule 3", "Production", "mark", "2" }};
+        
+        
         callback.onSuccess( data );
         
     }

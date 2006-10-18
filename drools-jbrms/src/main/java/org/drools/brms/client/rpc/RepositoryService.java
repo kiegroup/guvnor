@@ -1,6 +1,7 @@
 package org.drools.brms.client.rpc;
 
 import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.SerializableException;
 
 /**
  * This is what the remote service will implement, as a servlet.
@@ -20,7 +21,7 @@ public interface RepositoryService extends RemoteService {
      * @param A "/" delimited path to a category.
      * @param status The status flag. Leave blank to be all.
      */
-    public String[][] loadRuleListForCategories(String categoryPath, String status);
+    public TableDataResult loadRuleListForCategories(String categoryPath, String status) throws SerializableException;
     
     /**
      * This will return a TableConfig of header names.
@@ -36,7 +37,7 @@ public interface RepositoryService extends RemoteService {
     /**
      * Creates a brand new rule with the initial category.
      */
-    public Boolean createNewRule(String ruleName, String description, String initialCategory, String initialPackage);
+    public Boolean createNewRule(String ruleName, String description, String initialCategory, String initialPackage) throws SerializableException;
     
     /**
      * This returns a list of packages where rules may be added.

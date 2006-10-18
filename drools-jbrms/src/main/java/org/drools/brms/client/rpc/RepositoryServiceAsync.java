@@ -1,12 +1,7 @@
-
 package org.drools.brms.client.rpc;
-
-
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
-
-
 
 /**
 
@@ -16,9 +11,9 @@ import com.google.gwt.user.client.rpc.RemoteService;
 
  */
 
-public interface RepositoryServiceAsync extends RemoteService {
-
-
+public interface RepositoryServiceAsync
+    extends
+    RemoteService {
 
     /**
 
@@ -28,10 +23,8 @@ public interface RepositoryServiceAsync extends RemoteService {
 
      */
 
-        public void loadChildCategories(String categoryPath, AsyncCallback callback);
- 
-
-    
+    public void loadChildCategories(String categoryPath,
+                                    AsyncCallback callback);
 
     /**
 
@@ -43,8 +36,8 @@ public interface RepositoryServiceAsync extends RemoteService {
 
      */
 
-        public void loadRuleListForCategories(String categoryPath, String status, AsyncCallback callback);
-    
+    public void loadRuleListForCategories(String categoryPath,
+                                                     String status, AsyncCallback callback);
 
     /**
 
@@ -54,8 +47,8 @@ public interface RepositoryServiceAsync extends RemoteService {
 
      */
 
-        public void loadTableConfig(String listName, AsyncCallback callback);
-    
+    public void loadTableConfig(String listName,
+                                AsyncCallback callback);
 
     /**
 
@@ -63,8 +56,10 @@ public interface RepositoryServiceAsync extends RemoteService {
 
      */
 
-        public void createCategory(String path, String name, String description, AsyncCallback callback);
-    
+    public void createCategory(String path,
+                               String name,
+                               String description,
+                               AsyncCallback callback);
 
     /**
 
@@ -72,8 +67,11 @@ public interface RepositoryServiceAsync extends RemoteService {
 
      */
 
-        public void createNewRule(String ruleName, String description, String initialCategory, String initialPackage, AsyncCallback callback);
-    
+    public void createNewRule(String ruleName,
+                                 String description,
+                                 String initialCategory,
+                                 String initialPackage,
+                                 AsyncCallback callBack);
 
     /**
 
@@ -81,5 +79,5 @@ public interface RepositoryServiceAsync extends RemoteService {
 
      */
 
-        public void listRulePackages(AsyncCallback callback);
+    public void listRulePackages(AsyncCallback callback);
 }

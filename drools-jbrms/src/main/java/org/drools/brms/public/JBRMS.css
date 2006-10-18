@@ -314,9 +314,10 @@ a:visited {
   width: 100%;
 }
 
+/* And the rule list stuff */
+
 .rule-ListHeader {
-	background-image: url(images/gray_gradient.gif);
-	background-repeat: repeat-x;
+	background-color: #F6F9ED;
 	font-weight: bold;
 }
 
@@ -325,17 +326,28 @@ a:visited {
 	background-repeat: repeat-x;
 }
 
+.rule-ListEvenRow {
+	background-color: #FDFCDC;
+}
+
+
+.rule-List {
+	border: 1px solid #87B3FF;
+	background-color: white;
+        font-family: Arial, sans-serif;
+        font-size: smaller;
+	/*cursor: pointer;*/
+	cursor: hand;
+        border-spacing: 0px;
+        border-collapse: collapse
+}
+
+/* end the rule list stuff */
+
 
 .infoProse {
   margin: 8px;
 }
 
 
-.rule-List {
-	border: 1px solid #AAAAAA;
-	background-color: white;
-	font-size: 70%;
-	cursor: pointer;
-	cursor: hand;
-}
 
