@@ -1,5 +1,7 @@
 package org.drools.brms.client.decisiontable;
 
+import org.drools.brms.client.decisiontable.EditableDTGrid.RowClickListener;
+
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -15,6 +17,7 @@ public class EditActions extends Composite {
     private HorizontalPanel panel = new HorizontalPanel();
     private Image edit;
     private Image ok;
+	private int row;
     
 
     
@@ -24,16 +27,17 @@ public class EditActions extends Composite {
      * @param editClickListener
      * @param okClickListener
      */
-    public EditActions(final ClickListener editClickListener, 
-                       final ClickListener okClickListener) {
-        
+    public EditActions(final int currentRow,
+    				   final RowClickListener editClickListener, 
+                       final RowClickListener okClickListener) {
+        row = currentRow;
         edit = new Image("images/edit.gif");
         edit.setTitle( "Edit this row" );
         edit.addClickListener( new ClickListener() {
 
             public void onClick(Widget w) {
                 makeEditable();
-                editClickListener.onClick( w );
+                editClickListener.onClick( w, row );
             }
             
         });
@@ -44,7 +48,7 @@ public class EditActions extends Composite {
 
             public void onClick(Widget w) {
                 makeReadOnly();
-                okClickListener.onClick( w );                
+                okClickListener.onClick( w, row );                
             }
             
         });
@@ -66,6 +70,14 @@ public class EditActions extends Composite {
         edit.setVisible( true );
         ok.setVisible( false );
     }
+
+	public int getRow() {
+		return row;
+	}
+
+	public void setRow(int row) {
+		this.row = row;
+	}
     
     
     
