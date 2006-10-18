@@ -125,6 +125,24 @@ public class RuleItemTestCase extends TestCase {
             assertNotNull(prev);
             
     }
+    
+    public void testFindRulesByCategory() throws Exception {
+        
+        getRepo().loadCategory( "/" ).addCategory( "testFindRulesByCat", "yeah" );
+        getDefaultPackage().addRule( "testFindRulesByCategory1", "ya", "testFindRulesByCat" );
+        getDefaultPackage().addRule( "testFindRulesByCategory2", "ya", "testFindRulesByCat" );
+  
+        
+        List rules = getRepo().findRulesByCategory( "testFindRulesByCat" );
+        assertEquals(2, rules.size());
+        
+        for ( Iterator iter = rules.iterator(); iter.hasNext(); ) {
+            RuleItem element = (RuleItem) iter.next();
+            assertTrue(element.getName().startsWith( "testFindRulesByCategory" ));
+        }
+        
+    }
+    
 
     public void testRemoveTag() {
             RuleItem ruleItem1 = getDefaultPackage().addRule("testRemoveTag", "test content");
@@ -201,7 +219,11 @@ public class RuleItemTestCase extends TestCase {
             
             ruleItem1.updateState("TestState1");
             assertNotNull(ruleItem1.getState());
-            assertEquals("TestState1", ruleItem1.getState().getName());                        
+            assertEquals("TestState1", ruleItem1.getState().getName());    
+            
+            ruleItem1 = getDefaultPackage().addRule( "testGetState2", "wa" );
+            assertEquals("", ruleItem1.getStateDescription());
+            assertNull(ruleItem1.getState());
     }
     
 

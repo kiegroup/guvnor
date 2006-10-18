@@ -13,7 +13,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import javax.jcr.lock.LockException;
 
 import org.apache.log4j.Logger;
 
@@ -84,12 +83,22 @@ public class RulePackageItem extends VersionableItem {
     }
 
 
+    /**
+     * Adds a rule to the current package with no category (not recommended !).
+     * Without categories, its going to be hard to find rules later on
+     * (unless packages are enough for you).
+     */
+    public RuleItem addRule(String ruleName, String description) {
+        return addRule(ruleName, description, null);
+    }
+    
 
     /**
      * This adds a rule to the current physical package (you can move it later).
+     * With the given category
      */
     public RuleItem addRule(String ruleName,
-                            String description) {
+                            String description, String initialCategory) {
         Node ruleNode;
         try {
 
@@ -117,6 +126,9 @@ public class RulePackageItem extends VersionableItem {
 
             RuleItem rule = new RuleItem( this.rulesRepository,
                                           ruleNode );
+            if (initialCategory != null) {
+                rule.addCategory( initialCategory );
+            }
             //rule.setState( "Draft" );
             this.rulesRepository.save();
             

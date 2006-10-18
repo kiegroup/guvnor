@@ -88,6 +88,19 @@ public class RuleItem extends VersionableItem {
     }
     
     /**
+     * This will return the current state item as a displayable thing.
+     * If there is no state, it will be an empty string.
+     */
+    public String getStateDescription() {
+        StateItem state = this.getState();
+        if (state == null) {
+            return "";
+        } else {
+            return state.getName();
+        }
+    }
+    
+    /**
      * returns the contents of the rule node
      */
     public String getRuleContent() throws RulesRepositoryException {
