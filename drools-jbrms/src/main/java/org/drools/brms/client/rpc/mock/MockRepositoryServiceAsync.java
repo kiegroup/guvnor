@@ -2,6 +2,8 @@ package org.drools.brms.client.rpc.mock;
 
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.TableConfig;
+import org.drools.brms.client.rpc.TableDataResult;
+import org.drools.brms.client.rpc.TableDataRow;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -48,12 +50,21 @@ public class MockRepositoryServiceAsync
                                           String status,
                                           AsyncCallback callback)  {
         log("loading rule list", "for cat path: " + categoryPath);
-        String[][] data = { { "Rule 1", "Production", "mark", "2" },
-                            { "Rule 2", "Production", "mark", "2" },
-                            { "Rule 3", "Production", "mark", "2" }};
+        TableDataResult result = new TableDataResult();
+        result.numberOfRows = 42;
+        
+        result.data = new TableDataRow[42];
+        
+        for (int i = 0; i < 42; i++) {
+            TableDataRow row = new TableDataRow();
+            row.key = "woozle";
+            row.values = new String[] {"name", "another", "yeah", "blah"};        
+            result.data[i] = row;
+        }
+
         
         
-        callback.onSuccess( data );
+        callback.onSuccess( result );
         
     }
 

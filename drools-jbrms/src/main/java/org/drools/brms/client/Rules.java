@@ -9,6 +9,7 @@ import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.ruleeditor.NewRuleWizard;
 import org.drools.brms.client.ruleeditor.RuleView;
 import org.drools.brms.client.rulelist.EditItemEvent;
+import org.drools.brms.client.rulelist.RuleItemListViewer;
 import org.drools.brms.client.rulelist.RuleListView;
 
 import com.google.gwt.user.client.ui.Button;
@@ -73,13 +74,26 @@ public class Rules extends JBRMSFeature {
 		FlexTable  table = new FlexTable();
         
         //setup the list
-        final RuleListView list = new RuleListView(new EditItemEvent() {
+//        final RuleListView list = new RuleListView(new EditItemEvent() {
+//
+//            public void open(String[] rowData) {
+//                tab.selectTab( EDITOR_TAB );                
+//            }
+//            
+//        });         
+        
+        final RuleItemListViewer list = new RuleItemListViewer(new EditItemEvent() {
 
-            public void open(String[] rowData) {
-                tab.selectTab( EDITOR_TAB );                
+            public void open(String key) {
+                System.out.println("opening key " + key);
+                //tab.selectTab( EDITOR_TAB );
+                RuleView view = new RuleView();
+                
+                tab.add( view, "Rule: " + key );
+                tab.selectTab( tab.getWidgetIndex( view ) );
             }
             
-        });         
+        });    
         
         //setup the nav, which will drive the list
 		CategoryExplorerWidget nav = new CategoryExplorerWidget(new CategorySelectHandler() {
@@ -104,6 +118,7 @@ public class Rules extends JBRMSFeature {
         formatter.setRowSpan( 0, 1, 3 );
         formatter.setWidth( 0, 0, "30%" );
         formatter.setWidth( 0, 1, "70%" );
+
         formatter.setHeight( 0, 0, "90%" );
 
         table.setText( 2, 0, "" );

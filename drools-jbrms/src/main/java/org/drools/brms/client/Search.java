@@ -16,7 +16,7 @@
 package org.drools.brms.client;
 
 import org.drools.brms.client.rpc.TableConfig;
-import org.drools.brms.client.rulelist.NewView;
+import org.drools.brms.client.rulelist.RuleItemListViewer;
 import org.drools.brms.client.table.SortableTable;
 
 import com.google.gwt.user.client.ui.Image;
@@ -180,8 +180,8 @@ public class Search extends JBRMSFeature {
         TableConfig conf = new TableConfig();
         conf.headers = new String[] {"name", "last modified", "status", "version" };
         
-        NewView view = new NewView(conf);
-        initWidget( view );
+//        NewView view = new NewView(conf);
+//        initWidget( view );
   }
 
   public void onShow() {

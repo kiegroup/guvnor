@@ -21,6 +21,7 @@ public class SortableTable extends Grid implements TableListener {
     public static String styleListHeader = "rule-ListHeader";
     public static String styleSelectedRow = "rule-SelectedRow";
     public static String styleEvenRow = "rule-ListEvenRow";
+    
     public static String styleList = "rule-List";
     
     
@@ -92,9 +93,8 @@ public class SortableTable extends Grid implements TableListener {
 		}
         
         //and do the zebra striping
-        if (rowIndex % 2 == 0) {           
-            getCellFormatter().setStyleName( rowIndex, colIndex, styleEvenRow  );
-        }
+        resetStyle( rowIndex,
+                    colIndex );
         
 		if((rowIndex-1) >= this.tableRows.size() || null == tableRows.get(rowIndex-1)){
 			tableRows.add(rowIndex-1, new RowData());
@@ -102,13 +102,20 @@ public class SortableTable extends Grid implements TableListener {
 		
 		RowData rowData = (RowData)this.tableRows.get(rowIndex-1); 
 		rowData.addColumnValue(colIndex, value);
-		this.setHTML(rowIndex, colIndex, "" + value.toString()+ "");
+		this.setText(rowIndex, colIndex, "" + value.toString()+ "");
         
         //and hiding the required column
         if (colIndex == hideColumnIndex) {
             getCellFormatter().setVisible( rowIndex, colIndex, false );
         }
 	}
+
+    private void resetStyle(int rowIndex,
+                            int colIndex) {
+        if (rowIndex % 2 == 0) {           
+            getCellFormatter().setStyleName( rowIndex, colIndex, styleEvenRow  );
+        } 
+    }
     
 
     /** This performs the sorting */
@@ -144,8 +151,17 @@ public class SortableTable extends Grid implements TableListener {
      */
     private void styleSelectedRow(int row) {
         if (row != 0) {
-            getRowFormatter().addStyleName( row , styleSelectedRow );
-            getRowFormatter().removeStyleName( selectedRow, styleSelectedRow );
+            CellFormatter formatter = getCellFormatter();
+            for (int i=1; i < this.getColumnCount(); i++ ) {
+                formatter.setStyleName( row, i, styleSelectedRow );
+                
+                if (selectedRow % 2 == 0 && selectedRow != 0) {
+                    formatter.setStyleName( selectedRow, i, styleEvenRow );
+                } else {
+                    formatter.removeStyleName( selectedRow, i, styleSelectedRow );
+                }
+            }
+            
             selectedRow = row;
         }
     }
@@ -155,6 +171,13 @@ public class SortableTable extends Grid implements TableListener {
      */
     public int getSelectedRow() {
         return this.selectedRow;
+    }
+    
+    /**
+     * This will return the key of the selected row.
+     */
+    public String getSelectedKey() {
+        return this.getText( selectedRow, this.hideColumnIndex );
     }
          
     /**
@@ -280,7 +303,7 @@ public class SortableTable extends Grid implements TableListener {
 				for(int colIndex=0; colIndex<columns.getColumnValues().size(); colIndex++){
 					Object value = columns.getColumnValue(colIndex);
 					if(null != value){
-						this.setHTML(rowIndex+1, colIndex, value.toString());
+						this.setText(rowIndex+1, colIndex, value.toString());
 					}
 				}
 			}
@@ -291,7 +314,7 @@ public class SortableTable extends Grid implements TableListener {
 				for(int colIndex=0; colIndex<columns.getColumnValues().size(); colIndex++){
 					Object value = columns.getColumnValue(colIndex);
 					if(null != value){
-						this.setHTML(rowNum, colIndex, value.toString());
+						this.setText(rowNum, colIndex, value.toString());
 					}
 				}
 			}

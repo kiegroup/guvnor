@@ -17,6 +17,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
+ * NOTE: this is not currently used, but it worked OK.
+ * It did NOT have sorting, but did have paging, and performed reasonably well.
+ * 
+ * SO KEEP THIS AROUND IN CASE THE OTHER ONE BLOWS CHUNKS !
+ * This one is based on the mail app example.
+ * 
  * A composite that displays an explorer and a list view.
  */
 public class RuleListView extends Composite
@@ -133,7 +139,7 @@ public class RuleListView extends Composite
      */
     private void openEditor() {
         if (selectedRow < data.length) {
-            this.editEvent.open( data[selectedRow] );
+            this.editEvent.open( data[selectedRow][0] );
         }
     }
 
