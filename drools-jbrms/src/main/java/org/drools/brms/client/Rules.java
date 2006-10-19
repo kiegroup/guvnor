@@ -1,29 +1,18 @@
 package org.drools.brms.client;
 
-import java.util.ArrayList;
-
-import org.drools.brms.client.breditor.ChoiceList;
-import org.drools.brms.client.categorynav.CategoryEditor;
-import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
+import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.ruleeditor.NewRuleWizard;
 import org.drools.brms.client.ruleeditor.RuleView;
 import org.drools.brms.client.rulelist.EditItemEvent;
 import org.drools.brms.client.rulelist.RuleItemListViewer;
-import org.drools.brms.client.rulelist.RuleListView;
 
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
@@ -86,10 +75,10 @@ public class Rules extends JBRMSFeature {
 
             public void open(String key) {
                 System.out.println("opening key " + key);
-                //tab.selectTab( EDITOR_TAB );
                 RuleView view = new RuleView();
-                
-                tab.add( view, "Rule: " + key );
+
+                String ruleName = "some rule";
+                tab.add( view, "<img src='images/drools_tiny.gif'>" + ruleName, true );
                 tab.selectTab( tab.getWidgetIndex( view ) );
             }
             
