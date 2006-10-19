@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  */
 public class RuleItemListViewer extends Composite {
 
+    private static final int DEFAULT_ROWS = 100;
     private FlexTable     outer = new FlexTable();
     private SortableTable table;
     private TableConfig   tableConfig;
@@ -101,20 +102,25 @@ public class RuleItemListViewer extends Composite {
                          0,
                          null );
 
-        if ( data == null ) {
+        //if no data, just fill it out
+        if ( data == null || data.data.length == 0) {
             table = new SortableTable( 100,
                                        this.tableConfig.headers.length + 1 );
             table.setValue( 1,
                             1,
                             "" );
         } else {
-            table = new SortableTable( data.numberOfRows,
+            int maxRows = data.numberOfRows;
+            if (data.numberOfRows < DEFAULT_ROWS) {
+                maxRows = 100;
+            }
+            table = new SortableTable( maxRows,
                                        this.tableConfig.headers.length + 1 );
             for ( int i = 0; i < data.data.length; i++ ) {
                 TableDataRow row = data.data[i];
                 table.setValue( i + 1,
                                 0,
-                                row.key );
+                                row.key ); //this is the key
                 for ( int j = 0; j < row.values.length; j++ ) {
                     String val = row.values[j];
                     table.setValue( i + 1,
