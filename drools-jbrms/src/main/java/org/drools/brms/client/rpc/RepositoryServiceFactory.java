@@ -35,8 +35,7 @@ public class RepositoryServiceFactory {
             (RepositoryServiceAsync) GWT.create(RepositoryService.class);
         ServiceDefTarget endpoint = (ServiceDefTarget) svc;
         
-        String endpointURL = GWT.getModuleBaseURL() + "jbrmsService";
-        System.out.println("Endpoint URL: " + endpointURL);
+        String endpointURL = GWT.getModuleBaseURL() + "jbrmsService";        
         
         endpoint.setServiceEntryPoint(endpointURL);
         return svc;

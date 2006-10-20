@@ -48,14 +48,13 @@ public class RuleListView extends Composite
     private HorizontalPanel        navBar             = new HorizontalPanel();
     
     
-    private final RepositoryServiceAsync service;
+    private static final RepositoryServiceAsync service = RepositoryServiceFactory.getService();
     private String[][] data;
     protected int numberOfColumns;
     private EditItemEvent editEvent;
 
     public RuleListView(EditItemEvent event) {
 
-        service = RepositoryServiceFactory.getService();
         this.editEvent = event;
         
 

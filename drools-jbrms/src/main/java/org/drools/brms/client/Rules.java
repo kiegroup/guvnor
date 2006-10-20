@@ -12,13 +12,14 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
-
+/**
+ * This controls the "Rules manager" top level feature.
+ * @author Michael Neale
+ */
 public class Rules extends JBRMSFeature {
 
     public static final int       EDITOR_TAB         = 1;
@@ -82,7 +83,7 @@ public class Rules extends JBRMSFeature {
             public void open(String key) {
                 
                 //TODO: this is where we really truly open things.
-                System.out.println("opening key " + key);
+                System.out.println("opening key [" + key + "]");
                 RuleView view = new RuleView();
 
                 String ruleName = "some rule";

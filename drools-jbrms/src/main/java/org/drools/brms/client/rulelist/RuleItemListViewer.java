@@ -1,6 +1,7 @@
 package org.drools.brms.client.rulelist;
 
 import org.drools.brms.client.common.ErrorPopup;
+import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
@@ -32,12 +33,13 @@ public class RuleItemListViewer extends Composite {
     private EditItemEvent openItemEvent;
     private String currentSelectedPath;
     private Image refreshIcon;
+    private static RepositoryServiceAsync service = RepositoryServiceFactory.getService();
 
     public RuleItemListViewer(EditItemEvent event) {
 
         init();
 
-        RepositoryServiceFactory.getService().loadTableConfig( "ruleList",
+        service.loadTableConfig( "ruleList",
                                                                new AsyncCallback() {
 
                                                                    public void onFailure(Throwable w) {
@@ -179,7 +181,7 @@ public class RuleItemListViewer extends Composite {
         
 
         
-        RepositoryServiceFactory.getService().loadRuleListForCategories( selectedPath,
+        service .loadRuleListForCategories( selectedPath,
                                                                          "",
                                                                          new AsyncCallback() {
 
