@@ -35,10 +35,7 @@
   copy 
   < 'drools:dslNodeType','nt:version'
 
-- drools:categoryReference (reference)
-  multiple 
-  copy
-  < 'drools:categoryNodeType'
+
 
 - drools:stateReference (reference)
   copy

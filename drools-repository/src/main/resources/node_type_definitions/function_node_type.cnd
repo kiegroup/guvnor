@@ -21,10 +21,6 @@
   = 'Java'
   mandatory autocreated
 
-- drools:categoryReference (reference)
-  multiple 
-  copy
-  < 'drools:categoryNodeType'
 
 - drools:stateReference (reference)
   copy

@@ -28,9 +28,14 @@
 - drools:description (string)
   mandatory
 
-  - drools:format (string)
+- drools:format (string)
   mandatory 
   
-  - drools:checkinComment (string)
-  
+- drools:checkinComment (string)
+
+//for taxonomies/asset classification  
+- drools:categoryReference (reference)
+  multiple 
+  copy
+  < 'drools:categoryNodeType'  
   
