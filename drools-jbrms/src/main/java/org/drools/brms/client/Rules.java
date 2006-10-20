@@ -44,10 +44,10 @@ public class Rules extends JBRMSFeature {
         tab.setHeight("100%");        
 
         FlexTable explorePanel = doExplore(tab);        
-        RuleView ruleViewer = doRuleViewer();
+        //RuleView ruleViewer = doRuleViewer();
         
         tab.add(explorePanel, "Explore");
-        tab.add(ruleViewer, "Author");
+        //tab.add(ruleViewer, "Author");
         
         tab.selectTab(0);
         
@@ -82,13 +82,14 @@ public class Rules extends JBRMSFeature {
 
             public void open(String key) {
                 
-                //TODO: this is where we really truly open things.
+                
                 System.out.println("opening key [" + key + "]");
                 RuleView view = new RuleView();
-
+                
                 String ruleName = "some rule";
                 tab.add( view, "<img src='images/drools.gif'>" + ruleName, true );
                 tab.selectTab( tab.getWidgetIndex( view ) );
+                view.loadUUID(key);
             }
             
         });    

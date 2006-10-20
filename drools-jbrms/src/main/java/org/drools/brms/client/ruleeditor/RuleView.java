@@ -7,19 +7,21 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
- * The main layout for the rule viewer.
+ * The main layout parent/controller the rule viewer.
  * 
  * @author Michael Neale
  */
 public class RuleView extends Composite {
 	
-	public RuleView() {
+	private String resourceUUID;
+
+    public RuleView() {
 		HorizontalPanel horiz = new HorizontalPanel();	
 		horiz.setWidth("100%");
 		horiz.setHeight("100%");
 		VerticalPanel ruleAndDoc = new VerticalPanel();
 		
-		horiz.add(new RuleMetaDataWidget("Foobar", "mic", "testing"));
+		horiz.add(new RuleMetaDataWidget());
 		horiz.add(ruleAndDoc);
 		
 		ruleAndDoc.setWidth("100%");
@@ -32,5 +34,14 @@ public class RuleView extends Composite {
 		
 		initWidget(horiz);
 	}
+
+    /**
+     * This UUID indicates what versionable asset to load.
+     * @param key a UUID to the repository.
+     */
+    public void loadUUID(String key) {
+        this.resourceUUID = key;
+        
+    }
 
 }
