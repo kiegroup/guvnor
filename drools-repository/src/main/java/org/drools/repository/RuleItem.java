@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * 
  * @author btruitt
  */
-public class RuleItem extends VersionableItem {
+public class RuleItem extends CategorisableItem {
     private Logger log = Logger.getLogger(RuleItem.class);
     
     /**
