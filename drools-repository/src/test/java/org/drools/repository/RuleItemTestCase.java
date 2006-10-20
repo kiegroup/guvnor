@@ -234,12 +234,13 @@ public class RuleItemTestCase extends TestCase {
 
     }
     
-    public void testGetLastModified() {
+    public void testGetLastModifiedOnCheckin() throws Exception  {
             RuleItem ruleItem1 = getDefaultPackage().addRule("testGetLastModified", "test content");
            
             Calendar cal = Calendar.getInstance();
             long before = cal.getTimeInMillis();           
             
+            Thread.sleep( 100 );
             ruleItem1.updateRuleContent("new lhs");
             ruleItem1.checkin( "woot" );
             Calendar cal2 = ruleItem1.getLastModified();
@@ -247,9 +248,11 @@ public class RuleItemTestCase extends TestCase {
             
             cal = Calendar.getInstance();
             long after = cal.getTimeInMillis();
-            assertTrue(before <= after);
-            assertTrue(before <= lastMod);
-            assertTrue(lastMod <= after);
+            
+            
+            
+            assertTrue(before < lastMod);
+            assertTrue(lastMod < after);
 
     }
     
