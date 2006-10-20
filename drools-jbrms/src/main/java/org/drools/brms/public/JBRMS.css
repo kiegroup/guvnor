@@ -101,7 +101,10 @@ a:visited {
   font-size: smaller;
 }
 
+
+
 .gwt-TabPanel {
+  
 }
 
 .gwt-TabPanelBottom {
@@ -125,12 +128,12 @@ a:visited {
 }
 
 .gwt-TabBar .gwt-TabBarItem {
-  border-top: 1px solid #B8B8B8;
-  border-bottom: 1px solid #87B3FF;
+  border: 1px solid #87B3FF;
   padding: 2px;
-  cursor: pointer;
   cursor: hand;
 }
+
+
 
 .gwt-TabBar .gwt-TabBarItem-selected {
   font-weight: bold;

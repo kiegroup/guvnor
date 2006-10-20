@@ -1,6 +1,9 @@
 package org.drools.brms.server;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,10 +35,12 @@ public class TableDisplayHandler {
             RuleItem rule = (RuleItem) iter.next();
             TableDataRow row = new TableDataRow();
             try {
+
+                
                 row.key = rule.getNode().getUUID();
                 row.values = new String[4];
                 row.values[0] = rule.getName();
-                row.values[1] = rule.getLastModified().toString();
+                row.values[1] = formatDate(rule.getLastModified());
                 row.values[2] = rule.getStateDescription();                
                 row.values[3] = rule.getVersionNumber();
                 data.add( row );
@@ -49,6 +54,12 @@ public class TableDisplayHandler {
         return result;        
     }
     
+    String formatDate(Calendar cal) {
+        DateFormat localFormat = DateFormat.getDateInstance();
+        
+        return localFormat.format( cal.getTime() );
+    }
+
     public TableConfig loadTableConfig(String listName) {
         final TableConfig config = new TableConfig();
 

@@ -12,6 +12,8 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
@@ -32,24 +34,28 @@ public class Rules extends JBRMSFeature {
 			}
 		};
 	}
+
+    private TabPanel tab;
 	
 	public Rules() {
-		TabPanel tab = new TabPanel();
-		tab.setWidth("100%");
-		tab.setHeight("100%");
+        tab = new TabPanel();
+        tab.setWidth("100%");
+        tab.setHeight("100%");        
+
+        FlexTable explorePanel = doExplore(tab);        
+        RuleView ruleViewer = doRuleViewer();
+        
+        tab.add(explorePanel, "Explore");
+        tab.add(ruleViewer, "Author");
+        
+        tab.selectTab(0);
+        
 		initWidget(tab);
-		
-		
-		FlexTable explorePanel = doExplore(tab);		
-		RuleView ruleViewer = doRuleViewer();
-		
-		tab.add(explorePanel, "Explore");
-		tab.add(ruleViewer, "Author");
-		
-		tab.selectTab(0);
-		
-		
 	}
+    
+    
+    
+    
 
     private RuleView doRuleViewer() {
         RuleView ruleViewer = new RuleView();
@@ -74,11 +80,13 @@ public class Rules extends JBRMSFeature {
         final RuleItemListViewer list = new RuleItemListViewer(new EditItemEvent() {
 
             public void open(String key) {
+                
+                //TODO: this is where we really truly open things.
                 System.out.println("opening key " + key);
                 RuleView view = new RuleView();
 
                 String ruleName = "some rule";
-                tab.add( view, "<img src='images/drools_tiny.gif'>" + ruleName, true );
+                tab.add( view, "<img src='images/drools.gif'>" + ruleName, true );
                 tab.selectTab( tab.getWidgetIndex( view ) );
             }
             

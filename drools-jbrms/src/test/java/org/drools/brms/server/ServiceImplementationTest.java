@@ -1,5 +1,7 @@
 package org.drools.brms.server;
 
+import java.util.Calendar;
+
 import junit.framework.TestCase;
 
 import org.drools.brms.client.rpc.RepositoryService;
@@ -107,6 +109,19 @@ public class ServiceImplementationTest extends TestCase {
       String key = result.data[0].key;
       assertFalse(key.startsWith( "testRule" ));
       assertTrue(result.data[0].values[0].startsWith( "testRule" ));
+      
+      
+      
+  }
+  
+  public void testDateFormatting() throws Exception {
+      Calendar cal = Calendar.getInstance();
+      TableDisplayHandler handler = new TableDisplayHandler();
+      String fmt = handler.formatDate( cal );
+      assertNotNull(fmt);
+      
+      assertTrue(fmt.length() > 8);
+      System.out.println(fmt);
   }
   
     

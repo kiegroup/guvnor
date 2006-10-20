@@ -31,6 +31,7 @@ public class RuleItemListViewer extends Composite {
     private TableConfig   tableConfig;
     private EditItemEvent openItemEvent;
     private String currentSelectedPath;
+    private Image refreshIcon;
 
     public RuleItemListViewer(EditItemEvent event) {
 
@@ -130,7 +131,7 @@ public class RuleItemListViewer extends Composite {
             }
             
             //now the refresh icon and the number of rows.
-            Image refreshIcon = new Image("images/refresh.gif");
+            refreshIcon = new Image("images/refresh.gif");
             refreshIcon.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {                    
                     loadRulesForCategoryPath( currentSelectedPath );
@@ -175,6 +176,9 @@ public class RuleItemListViewer extends Composite {
     public void loadRulesForCategoryPath(final String selectedPath) {
 
         this.currentSelectedPath = selectedPath;
+        
+
+        
         RepositoryServiceFactory.getService().loadRuleListForCategories( selectedPath,
                                                                          "",
                                                                          new AsyncCallback() {
@@ -190,6 +194,9 @@ public class RuleItemListViewer extends Composite {
 
                                                                          } );
 
+        
     }
 
+
+    
 }
