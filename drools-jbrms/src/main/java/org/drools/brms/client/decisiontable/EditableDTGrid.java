@@ -33,6 +33,7 @@ public class EditableDTGrid extends Composite {
 	private static final int DELETE_COLUMN_OFFSET = INSERT_COLUMN_OFFSET + 1;
 	private static final int SHUFFLE_UP_COLUMN_OFFSET = DELETE_COLUMN_OFFSET + 1;
 	private static final int SHUFFLE_DOWN_COLUMN_OFFSET = SHUFFLE_UP_COLUMN_OFFSET + 1;
+	private static final int MERGE_COLUMN_OFFSET = SHUFFLE_DOWN_COLUMN_OFFSET + 1;
 
 	private FlexTable table = new FlexTable();
 
@@ -120,6 +121,7 @@ public class EditableDTGrid extends Composite {
 		addDeleteAction(currentRow);
 		addShuffleUpAction(currentRow);
 		addShuffleDownAction(currentRow);
+		addMergeAction(currentRow);
 	}
 
 	private void addShuffleDownAction(final int currentRow) {
@@ -163,6 +165,22 @@ public class EditableDTGrid extends Composite {
 		table.setWidget(currentRow, numCols() + DELETE_COLUMN_OFFSET, deleteAction);
 	}
 
+	private void addMergeAction(final int currentRow) {
+		final MergeAction mergeAction = new MergeAction(currentRow,
+				new RowClickListener() {
+			public void onClick(Widget w, int row) {
+				showMergeRowDialog(row);
+			}
+		});
+		table.setWidget(currentRow, numCols() + MERGE_COLUMN_OFFSET, mergeAction);
+	}
+	
+	protected void showMergeRowDialog(int row) {
+		MergeDialog dialog = new MergeDialog(this, row);
+		dialog.setPopupPosition(200, 200);
+		dialog.show();		
+	}
+	
 	private void addInsertAction(final int currentRow) {
 		final InsertAction insertAction = new InsertAction(currentRow,
 				new RowClickListener() {
@@ -171,6 +189,15 @@ public class EditableDTGrid extends Composite {
 					}
 				});
 		table.setWidget(currentRow, numCols() + INSERT_COLUMN_OFFSET, insertAction);
+	}
+
+	protected void merge(int row, String startCol, String endCol) {
+		int startColumn = Integer.parseInt(startCol);
+		int endColumn = Integer.parseInt(endCol) + 1;
+		cellFormatter.setColSpan(row, startColumn, endColumn - startColumn);
+		for (int i = startColumn + 1; i < endColumn; i++) {
+			table.removeCell(row, i);
+		}
 	}
 
 	private void addEditActions(final int currentRow, boolean newRow) {
