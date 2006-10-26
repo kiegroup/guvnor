@@ -1,8 +1,6 @@
 package org.drools.repository;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -10,55 +8,62 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
-import javax.jcr.ValueFormatException;
 
-import org.drools.repository.Item;
 import org.drools.repository.util.VersionNumberGenerator;
 
+/**
+ * This is the parent class for versionable assets.
+ * Contains standard fields based on Dublin Core, and 
+ * stuff required for versioning.
+ * For dublin core, refer to <a href="http://dublincore.org/documents/dces/">Here</a>
+ * 
+ * @see CategorisableItem for more attributes to do with BRMS resources.
+ * @author Ben Truitt, Michael Neale
+ *
+ */
 public abstract class VersionableItem extends Item {
 
     /**
-     * The name of the title property on the node type
+     * Property names for this node type.
      */
-    public static final String TITLE_PROPERTY_NAME         = "drools:title";
+    public static final String TITLE_PROPERTY_NAME            = "drools:title";
+    public static final String DESCRIPTION_PROPERTY_NAME      = "drools:description";
+    public static final String LAST_MODIFIED_PROPERTY_NAME    = "drools:lastModified";
+    public static final String FORMAT_PROPERTY_NAME           = "drools:format";
+    public static final String CHECKIN_COMMENT                = "drools:checkinComment";
+    public static final String VERSION_NUMBER_PROPERTY_NAME   = "drools:versionNumber";
+
+    /** Dublin core based fields. */
+    public static final String LAST_CONTRIBUTOR_PROPERTY_NAME = "drools:lastContributor";
+    public static final String CREATOR_PROPERTY_NAME          = "drools:creator";
+    public static final String TYPE_PROPERTY_NAME             = "drools:type";
+    public static final String SOURCE_PROPERTY_NAME           = "drools:source";
+    public static final String SUBJECT_PROPERTY_NAME          = "drools:subject";
+    public static final String RELATION_PROPERTY_NAME         = "drools:relation";
+    public static final String RIGHTS_PROPERTY_NAME           = "drools:rights";
+    public static final String COVERAGE_PROPERTY_NAME         = "drools:coverage";
+    public static final String PUBLISHER_PROPERTY_NAME        = "drools:publisher";
 
     /**
-     * The name of the description property on the rule node type
+     * The name of the state property on the rule node type
      */
-    public static final String DESCRIPTION_PROPERTY_NAME   = "drools:description";
-
-    /**
-     * The name of the last modified property on the rule node type
-     */
-    public static final String LAST_MODIFIED_PROPERTY_NAME = "drools:lastModified";
-
-    /**
-     * The name of the last modified property on the rule node type
-     */
-    public static final String FORMAT_PROPERTY_NAME        = "drools:format";
-
-    
-    /** The name of the checkin/change comment for change tracking */
-    public static final String CHECKIN_COMMENT              = "drools:checkinComment";
-    
-    public static final String VERSION_NUMBER_PROPERTY_NAME = "drools:versionNumber";
+    public static final String STATE_PROPERTY_NAME = "drools:stateReference";
     
     /**
      * The name of the tag property on the rule node type
      */
-    public static final String TAG_PROPERTY_NAME = "drools:categoryReference";
-        
-    
+    public static final String CATEGORY_PROPERTY_NAME              = "drools:categoryReference";
+
     /**
      * The possible formats for the format property of the node
      */
-    public static final String RULE_FORMAT                 = "Rule";
-    public static final String DSL_FORMAT                  = "DSL";
-    public static final String RULE_PACKAGE_FORMAT         = "Rule Package";
-    public static final String FUNCTION_FORMAT             = "Function";
+    public static final String RULE_FORMAT                    = "Rule";
+    public static final String DSL_FORMAT                     = "DSL";
+    public static final String RULE_PACKAGE_FORMAT            = "Rule Package";
+    public static final String FUNCTION_FORMAT                = "Function";
 
     /** this is what is referred to when reading content from a versioned node */
-    private Node               contentNode                 = null;
+    private Node               contentNode                    = null;
 
     /**
      * Sets this object's node attribute to the specified node
@@ -77,9 +82,9 @@ public abstract class VersionableItem extends Item {
      * historical version (which means is effectively read only).
      */
     public boolean isHistoricalVersion() throws RepositoryException {
-        return this.node.getPrimaryNodeType().getName().equals("nt:version") || node.getPrimaryNodeType().getName().equals( "nt:frozenNode" );
-    }    
-    
+        return this.node.getPrimaryNodeType().getName().equals( "nt:version" ) || node.getPrimaryNodeType().getName().equals( "nt:frozenNode" );
+    }
+
     /**
      * @return the predessor node of this node in the version history, or null if no predecessor version exists
      * @throws RulesRepositoryException
@@ -219,23 +224,67 @@ public abstract class VersionableItem extends Item {
      * @throws RulesRepositoryException
      */
     public void updateTitle(String title) throws RulesRepositoryException {
+
+        updateStringProperty( title,
+                              TITLE_PROPERTY_NAME );
+    }
+
+
+    public void updateLastContributor(String contibName) {
+        updateStringProperty( contibName, LAST_CONTRIBUTOR_PROPERTY_NAME );
+    }
+
+    
+    public void updateType(String type) {
+        updateStringProperty( type, TYPE_PROPERTY_NAME );
+    }
+    
+    public void updateExternalSource(String source) {
+        updateStringProperty( source, SOURCE_PROPERTY_NAME );
+    }
+    
+    public void updateSubject(String sub) {
+        updateStringProperty( sub, SUBJECT_PROPERTY_NAME );
+    }
+    
+    public void updateExternalRelation(String rel) {
+        updateStringProperty( rel, RELATION_PROPERTY_NAME );
+    }
+    
+    public void updateRights(String rights) {
+        updateStringProperty( rights, RIGHTS_PROPERTY_NAME );
+    }
+    
+    public void updateCoverage(String cov) {
+        updateStringProperty( cov, COVERAGE_PROPERTY_NAME );
+    }
+    
+    public void updatePublisher(String pub) {
+        updateStringProperty( pub, PUBLISHER_PROPERTY_NAME );
+    }
+    
+    /**
+     * update a text field.
+     */
+    private void updateStringProperty(String value,
+                                      String prop) {
         try {
             checkIsUpdateable();
 
             node.checkout();
-            node.setProperty( TITLE_PROPERTY_NAME,
-                                 title );
+            node.setProperty( prop,
+                              value );
             Calendar lastModified = Calendar.getInstance();
             this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME,
                                    lastModified );
 
         } catch ( Exception e ) {
-            log.error( "Caught Exception",
-                       e );
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
             throw new RulesRepositoryException( e );
         }
     }
-
 
     /**
      * See the Dublin Core documentation for more
@@ -246,7 +295,7 @@ public abstract class VersionableItem extends Item {
      */
     public String getDescription() throws RulesRepositoryException {
         try {
-            
+
             Property data = getVersionContentNode().getProperty( DESCRIPTION_PROPERTY_NAME );
             return data.getValue().getString();
         } catch ( Exception e ) {
@@ -255,20 +304,20 @@ public abstract class VersionableItem extends Item {
             throw new RulesRepositoryException( e );
         }
     }
-    
+
     /**
      * get this version number (default is incrementing integer, but you
      * can provide an implementation of VersionNumberGenerator if needed).
      */
     public String getVersionNumber() {
         try {
-            if (getVersionContentNode().hasProperty( VERSION_NUMBER_PROPERTY_NAME )) {           
+            if ( getVersionContentNode().hasProperty( VERSION_NUMBER_PROPERTY_NAME ) ) {
                 return getVersionContentNode().getProperty( VERSION_NUMBER_PROPERTY_NAME ).getString();
             } else {
                 return null;
             }
         } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException(e);
+            throw new RulesRepositoryException( e );
         }
     }
 
@@ -276,7 +325,7 @@ public abstract class VersionableItem extends Item {
      * This will return the checkin comment for the latest revision.
      */
     public String getCheckinComment() throws RulesRepositoryException {
-        try {            
+        try {
             Property data = getVersionContentNode().getProperty( CHECKIN_COMMENT );
             return data.getValue().getString();
         } catch ( Exception e ) {
@@ -284,8 +333,8 @@ public abstract class VersionableItem extends Item {
                        e );
             throw new RulesRepositoryException( e );
         }
-    }    
-    
+    }
+
     /**
      * @return the date the function node (this version) was last modified
      * @throws RulesRepositoryException
@@ -330,7 +379,6 @@ public abstract class VersionableItem extends Item {
         }
     }
 
-
     /**
      * See the Dublin Core documentation for more
      * explanation: http://dublincore.org/documents/dces/
@@ -341,6 +389,7 @@ public abstract class VersionableItem extends Item {
     public String getFormat() throws RulesRepositoryException {
         try {
             Node theNode = getVersionContentNode();
+
             Property data = theNode.getProperty( FORMAT_PROPERTY_NAME );
             return data.getValue().getString();
         } catch ( Exception e ) {
@@ -358,18 +407,18 @@ public abstract class VersionableItem extends Item {
     public Node getVersionContentNode() throws RepositoryException,
                                        PathNotFoundException {
         if ( this.contentNode == null ) {
-            
+
             if ( this.node.getPrimaryNodeType().getName().equals( "nt:version" ) ) {
                 contentNode = this.node.getNode( "jcr:frozenNode" );
             } else {
                 contentNode = this.node;
             }
-            
+
         }
 
         return contentNode;
     }
-    
+
     /** 
      * Need to get the name from the content node, not the version node
      * if it is in fact a version ! 
@@ -377,8 +426,8 @@ public abstract class VersionableItem extends Item {
     public String getName() {
         try {
             return getVersionContentNode().getName();
-        } catch ( RepositoryException e) {
-            throw new RulesRepositoryException(e);
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
         }
     }
 
@@ -408,23 +457,28 @@ public abstract class VersionableItem extends Item {
             throw new RulesRepositoryException( e );
         }
     }
-    
+
     /** 
      * This will save the content (if it hasn't been already) and 
      * then check it in to create a new version.
      * It will also set the last modified property.
      */
-    public void checkin(String comment)  {
+    public void checkin(String comment) {
         try {
-            this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance() );
-            this.node.setProperty( CHECKIN_COMMENT, comment);
+            this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME,
+                                   Calendar.getInstance() );
+            this.node.setProperty( CHECKIN_COMMENT,
+                                   comment );
             VersionNumberGenerator gen = rulesRepository.versionNumberGenerator;
-            String nextVersion = gen.calculateNextVersion( getVersionNumber(), this);
-            this.node.setProperty( VERSION_NUMBER_PROPERTY_NAME, nextVersion );
-            this.node.getSession().save();        
+            String nextVersion = gen.calculateNextVersion( getVersionNumber(),
+                                                           this );
+            this.node.setProperty( VERSION_NUMBER_PROPERTY_NAME,
+                                   nextVersion );
+            this.node.getSession().save();
             this.node.checkin();
-        } catch (RepositoryException e) {
-            throw new RulesRepositoryException("Unable to checkin.", e);
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( "Unable to checkin.",
+                                                e );
         }
     }
 
@@ -436,15 +490,197 @@ public abstract class VersionableItem extends Item {
      */
     protected void checkIsUpdateable() {
         try {
-            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+            if ( this.node.getPrimaryNodeType().getName().equals( "nt:version" ) ) {
                 String message = "Error. Tags can only be added to the head version of a rule node";
-                log.error(message);
-                throw new RulesRepositoryException(message);
+                log.error( message );
+                throw new RulesRepositoryException( message );
             }
         } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
+        }
+    }
+
+    
+    /**
+     * Sets this object's rule node's state property to refer to the specified state node
+     * 
+     * @param stateName the name of the state to set the rule node to
+     * @throws RulesRepositoryException 
+     */
+    public void updateState(String stateName) throws RulesRepositoryException {
+        try {
+            
+            //now set the state property of the rule                              
+            checkout();
+            
+            StateItem stateItem = this.rulesRepository.getState(stateName);
+            this.updateState(stateItem);
+        }
+        catch(Exception e) {
+            log.error("Caught exception", e);
             throw new RulesRepositoryException(e);
         }
-    }   
+    }
     
-  
+    /**
+     * Sets this object's rule node's state property to refer to the specified StateItem's node
+     * 
+     * @param stateItem the StateItem encapsulating the node to refer to from this object's node's state 
+     *                  property
+     * @throws RulesRepositoryException 
+     */
+    public void updateState(StateItem stateItem) throws RulesRepositoryException {
+        checkIsUpdateable();
+        try {
+            //make sure this node is a rule node
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                String message = "Error. States can only be set for the head version of a rule node";
+                log.error(message);
+                throw new RulesRepositoryException(message);
+            } 
+            
+            //now set the state property of the rule                              
+            checkout();
+            this.node.setProperty(STATE_PROPERTY_NAME, stateItem.getNode());
+        }
+        catch(Exception e) {
+            log.error("Caught exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * Gets StateItem object corresponding to the state property of this object's node
+     * 
+     * @return a StateItem object corresponding to the state property of this object's node, or null
+     *         if the state property is not set
+     * @throws RulesRepositoryException
+     */
+    public StateItem getState() throws RulesRepositoryException {
+        try {
+            Node content = getVersionContentNode();
+            Property stateProperty = content.getProperty(STATE_PROPERTY_NAME);
+            Node stateNode = this.rulesRepository.getSession().getNodeByUUID(stateProperty.getString());
+            return new StateItem(this.rulesRepository, stateNode);
+        }
+        catch(PathNotFoundException e) {
+            //not set
+            return null;
+        }
+        catch(Exception e) {
+            log.error("Caught exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * This will return the current state item as a displayable thing.
+     * If there is no state, it will be an empty string.
+     */
+    public String getStateDescription() {
+        StateItem state = this.getState();
+        if (state == null) {
+            return "";
+        } else {
+            return state.getName();
+        }
+    }    
+    
+    /** Compare this rules state with some other state */
+    public boolean sameState(StateItem other) {
+        StateItem thisState = getState();
+        if (thisState == other) {
+            return true;
+        } else if (thisState != null){
+            return thisState.equals( other );
+        } else {
+            return false;
+        }
+    }
+    
+    
+    /**
+     * Returns the last contributors name.
+     */
+    public String getLastContributor() {
+        return getStringProperty( LAST_CONTRIBUTOR_PROPERTY_NAME );
+    }
+    
+    /**
+     * This is the person who initially created the resource.
+     */
+    public String getCreator() {
+        return getStringProperty( CREATOR_PROPERTY_NAME );
+    }
+    
+    /**
+     * This is the Dublin Core field of type (a broad classification of resource type).
+     */
+    public String getType() {
+       return getStringProperty( TYPE_PROPERTY_NAME ); 
+    }
+    
+    /**
+     * This is the source of the asset/rule. Ie a human description of where it came from.
+     */
+    public String getExternalSource() {
+        return getStringProperty( SOURCE_PROPERTY_NAME );       
+    }
+    
+    /**
+     * Typically, 
+     * Subject will be expressed as keywords, 
+     * key phrases or classification codes that describe a topic of the resource.
+     */
+    public String getSubject() {
+        return getStringProperty( SUBJECT_PROPERTY_NAME );
+    }
+
+    /**
+     * A reference to a EXTERNAL related resource.
+     */
+    public String getExternalRelation() {
+        return getStringProperty( RELATION_PROPERTY_NAME );
+    }
+    
+    /**
+     * Optionally contains any copyright/ownership rights for the asset.
+     */
+    public String getRights() {
+        return getStringProperty( RIGHTS_PROPERTY_NAME );
+    }
+    
+    /**
+     * Typically, Coverage will include spatial location 
+     * (a place name or geographic coordinates), temporal period (a period label, date, or date range) or jurisdiction (such as a named administrative entity). Recommended best practice is to select a value from a controlled vocabulary (for example, the Thesaurus of Geographic Names [TGN]) and to use, where appropriate, named places or time periods in preference to numeric identifiers such as sets of coordinates or date ranges.
+     */
+    public String getCoverage() {
+        return getStringProperty( COVERAGE_PROPERTY_NAME );        
+    }
+    
+    
+    /**
+     *  Examples of Publisher include a person, an organization, or a service. 
+     *  Typically, the name of a Publisher should be used to indicate the entity.
+     */
+    public String getPublisher() {
+        return getStringProperty( PUBLISHER_PROPERTY_NAME );
+    }
+
+    private String getStringProperty(String property) {
+        try {
+            Node theNode = getVersionContentNode();
+            Property data = theNode.getProperty( property );
+            return data.getValue().getString();
+
+        } catch ( Exception e ) {
+            if ( e instanceof RuntimeException ) {
+                throw (RuntimeException) e;
+
+            } else {
+                throw new RulesRepositoryException( e );
+            }
+        }
+    }
+
 }

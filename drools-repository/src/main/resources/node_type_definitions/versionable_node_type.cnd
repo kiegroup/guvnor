@@ -15,21 +15,35 @@
 // Supertypes
 > 'nt:hierarchyNode','mix:versionable'
 
-// Properties:
+// Properties (some are from Dublin Core):
 - drools:title (string)
   mandatory
 
 - drools:lastModified (date)
   mandatory
-
-//for incrementing (or user defined) unique version numbers
-- drools:versionNumber (string)
   
+- drools:lastContributor (string)
+  = ''    
+- drools:creator (string)
+- drools:type (string)
+- drools:source (string)
+- drools:subject (string)
+- drools:relation (string)
+- drools:rights (string)  
+- drools:coverage (string)
+- drools:publisher (string)
+  
+
 - drools:description (string)
   mandatory
 
 - drools:format (string)
   mandatory 
+
+//for incrementing (or user defined) unique version numbers
+- drools:versionNumber (string)
+  
+
   
 - drools:checkinComment (string)
 
@@ -38,4 +52,9 @@
   multiple 
   copy
   < 'drools:categoryNodeType'  
+
+//for approval/workflow/lifecycle  
+- drools:stateReference (reference)
+  copy
+  < 'drools:stateNodeType'  
   

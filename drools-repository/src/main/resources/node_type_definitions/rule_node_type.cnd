@@ -36,7 +36,3 @@
   < 'drools:dslNodeType','nt:version'
 
 
-
-- drools:stateReference (reference)
-  copy
-  < 'drools:stateNodeType'

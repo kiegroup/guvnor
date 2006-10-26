@@ -38,10 +38,7 @@ public class RuleItem extends CategorisableItem {
     public static final String RULE_CONTENT_URI_PROPERTY_NAME = "drools:contentURI";
         
     
-    /**
-     * The name of the state property on the rule node type
-     */
-    public static final String STATE_PROPERTY_NAME = "drools:stateReference";                 
+                 
     
     /**
      * The name of the date effective property on the rule node type
@@ -83,18 +80,7 @@ public class RuleItem extends CategorisableItem {
         }
     }
     
-    /**
-     * This will return the current state item as a displayable thing.
-     * If there is no state, it will be an empty string.
-     */
-    public String getStateDescription() {
-        StateItem state = this.getState();
-        if (state == null) {
-            return "";
-        } else {
-            return state.getName();
-        }
-    }
+
     
     /**
      * returns the contents of the rule node
@@ -275,159 +261,9 @@ public class RuleItem extends CategorisableItem {
 
 
 
-    /**
-     * Removes the specified tag from this object's rule node.
-     * 
-     * @param tag the tag to remove from the rule
-     * @throws RulesRepositoryException 
-     */
-    public void removeCategory(String tag) throws RulesRepositoryException {
-        try {
-            //make sure this object's node is the head version
-            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-                String message = "Error. Tags can only be removed from the head version of a rule node";
-                log.error(message);
-                throw new RulesRepositoryException(message);
-            }                                                   
-                                    
-            //now set the tag property of the rule
-            Property tagReferenceProperty;
-            int i = 0;
-            int j = 0;
-            Value[] newTagValues = null;
-            try {
-                tagReferenceProperty = this.node.getProperty(TAG_PROPERTY_NAME);
-                Value[] oldTagValues = tagReferenceProperty.getValues();
-                
-                //see if the tag was even there
-                boolean wasThere = false;
-                for(i=0; i<oldTagValues.length; i++) {
-                    Node tagNode = this.node.getSession().getNodeByUUID(oldTagValues[i].getString());
-                    if(tagNode.getName().equals(tag)) {                                                
-                        wasThere = true;
-                    }
-                }
-                
-                if(wasThere) {
-                    //copy the array, minus the specified tag
-                    newTagValues = new Value[oldTagValues.length + 1];                
-                    for(i=0; i<oldTagValues.length; i++) {
-                        Node tagNode = this.node.getSession().getNodeByUUID(oldTagValues[i].getString());
-                        if(!tagNode.getName().equals(tag)) {                                                         
-                            newTagValues[j] = oldTagValues[i];
-                            j++;
-                        }
-                    }
-                }
-                else {
-                    return;
-                }
-            }
-            catch(PathNotFoundException e) {
-                //the property doesn't exist yet
-                return;             
-            }
-            finally {   
-                if(newTagValues != null) {
-                    checkout();
-                    this.node.setProperty(TAG_PROPERTY_NAME, newTagValues);
-                }
-                else {
-                    log.error("reached expected path of execution when removing tag '" + tag + "' from ruleNode: " + this.node.getName());
-                }
-            }
-        }
-        catch(Exception e) {
-            log.error("Caught exception", e);
-            throw new RulesRepositoryException(e);
-        }
-    }
     
 
     
-    /**
-     * Sets this object's rule node's state property to refer to the specified state node
-     * 
-     * @param stateName the name of the state to set the rule node to
-     * @throws RulesRepositoryException 
-     */
-    public void updateState(String stateName) throws RulesRepositoryException {
-        try {
-            
-            //now set the state property of the rule                              
-            checkout();
-            
-            StateItem stateItem = this.rulesRepository.getState(stateName);
-            this.updateState(stateItem);
-        }
-        catch(Exception e) {
-            log.error("Caught exception", e);
-            throw new RulesRepositoryException(e);
-        }
-    }
-    
-    /**
-     * Sets this object's rule node's state property to refer to the specified StateItem's node
-     * 
-     * @param stateItem the StateItem encapsulating the node to refer to from this object's node's state 
-     *                  property
-     * @throws RulesRepositoryException 
-     */
-    public void updateState(StateItem stateItem) throws RulesRepositoryException {
-        checkIsUpdateable();
-        try {
-            //make sure this node is a rule node
-            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-                String message = "Error. States can only be set for the head version of a rule node";
-                log.error(message);
-                throw new RulesRepositoryException(message);
-            } 
-            
-            //now set the state property of the rule                              
-            checkout();
-            this.node.setProperty(STATE_PROPERTY_NAME, stateItem.getNode());
-        }
-        catch(Exception e) {
-            log.error("Caught exception", e);
-            throw new RulesRepositoryException(e);
-        }
-    }
-    
-    /**
-     * Gets StateItem object corresponding to the state property of this object's node
-     * 
-     * @return a StateItem object corresponding to the state property of this object's node, or null
-     *         if the state property is not set
-     * @throws RulesRepositoryException
-     */
-    public StateItem getState() throws RulesRepositoryException {
-        try {
-            Node content = getVersionContentNode();
-            Property stateProperty = content.getProperty(STATE_PROPERTY_NAME);
-            Node stateNode = this.rulesRepository.getSession().getNodeByUUID(stateProperty.getString());
-            return new StateItem(this.rulesRepository, stateNode);
-        }
-        catch(PathNotFoundException e) {
-            //not set
-            return null;
-        }
-        catch(Exception e) {
-            log.error("Caught exception", e);
-            throw new RulesRepositoryException(e);
-        }
-    }
-    
-    /** Compare this rules state with some other state */
-    public boolean sameState(StateItem other) {
-        StateItem thisState = getState();
-        if (thisState == other) {
-            return true;
-        } else if (thisState != null){
-            return thisState.equals( other );
-        } else {
-            return false;
-        }
-    }
 
     /**
      * Gets a DslItem object corresponding to the DSL reference from the node that this object

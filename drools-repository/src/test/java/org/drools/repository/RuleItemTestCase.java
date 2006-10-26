@@ -1,15 +1,10 @@
 package org.drools.repository;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.jcr.RepositoryException;
-
 import junit.framework.TestCase;
-
-import org.drools.repository.*;
 
 public class RuleItemTestCase extends TestCase {
 
@@ -24,6 +19,7 @@ public class RuleItemTestCase extends TestCase {
     
     public void testRuleItem() {
             //calls constructor
+        
             RuleItem ruleItem1 = getDefaultPackage().addRule("testRuleItem", "test content");
             
             assertNotNull(ruleItem1);
@@ -478,24 +474,32 @@ public class RuleItemTestCase extends TestCase {
     }
     
     public void testGetTitle() {    
-        try {
             RuleItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetTitle", "test content");            
                         
             assertEquals("testGetTitle", ruleItem1.getTitle());
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
+    }
+    
+    public void testDublinCoreProperties() {
+        RulePackageItem pkg = getRepo().createRulePackage( "testDublinCore", "wa" );
+        
+        RuleItem ruleItem = pkg.addRule( "testDublinCoreProperties", "yeah yeah yeah" );
+        ruleItem.updateCoverage( "b" );
+        assertEquals("b",ruleItem.getCoverage());
+        
+        ruleItem.updateLastContributor( "me" );
+        ruleItem.checkin( "woo" );
+        
+        pkg = getRepo().loadRulePackage( "testDublinCore" );
+        ruleItem = (RuleItem) pkg.getRules().next();
+        
+        assertEquals("b", ruleItem.getCoverage());
+        assertEquals("me", ruleItem.getLastContributor());
+        
     }
     
     public void testGetFormat() {        
-        try {
             RuleItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetFormat", "test content");
             
             assertEquals("Rule", ruleItem1.getFormat());            
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
     }        
 }

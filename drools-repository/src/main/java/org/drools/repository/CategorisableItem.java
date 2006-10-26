@@ -46,7 +46,7 @@ public abstract class CategorisableItem extends VersionableItem {
             int i = 0;
             Value[] newTagValues = null;
             try {
-                tagReferenceProperty = this.node.getProperty(TAG_PROPERTY_NAME);
+                tagReferenceProperty = this.node.getProperty(CATEGORY_PROPERTY_NAME);
                 Value[] oldTagValues = tagReferenceProperty.getValues();
                 
                 //first, make sure this tag wasn't already there. while we're at it, lets copy the array
@@ -67,7 +67,7 @@ public abstract class CategorisableItem extends VersionableItem {
                 if(newTagValues != null) {
                     newTagValues[i] = this.node.getSession().getValueFactory().createValue(tagItem.getNode());
                     this.node.checkout();
-                    this.node.setProperty(TAG_PROPERTY_NAME, newTagValues);
+                    this.node.setProperty(CATEGORY_PROPERTY_NAME, newTagValues);
                 }
                 else {
                     log.error("reached expected path of execution when adding tag '" + tag + "' to ruleNode: " + this.node.getName());
@@ -92,7 +92,7 @@ public abstract class CategorisableItem extends VersionableItem {
             
             List returnList = new ArrayList();
             try {
-                Property tagReferenceProperty = ruleNode.getProperty(TAG_PROPERTY_NAME);
+                Property tagReferenceProperty = ruleNode.getProperty(CATEGORY_PROPERTY_NAME);
                 Value[] tagValues = tagReferenceProperty.getValues();                
                 for(int i=0; i<tagValues.length; i++) {
                     Node tagNode = this.node.getSession().getNodeByUUID(tagValues[i].getString());
@@ -110,6 +110,75 @@ public abstract class CategorisableItem extends VersionableItem {
             throw new RulesRepositoryException(e);
         }
     }  
+    
+    /**
+     * Removes the specified tag from this object's rule node.
+     * 
+     * @param tag the tag to remove from the rule
+     * @throws RulesRepositoryException 
+     */
+    public void removeCategory(String tag) throws RulesRepositoryException {
+        try {
+            //make sure this object's node is the head version
+            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+                String message = "Error. Tags can only be removed from the head version of a rule node";
+                log.error(message);
+                throw new RulesRepositoryException(message);
+            }                                                   
+                                    
+            //now set the tag property of the rule
+            Property tagReferenceProperty;
+            int i = 0;
+            int j = 0;
+            Value[] newTagValues = null;
+            try {
+                tagReferenceProperty = this.node.getProperty(CATEGORY_PROPERTY_NAME);
+                Value[] oldTagValues = tagReferenceProperty.getValues();
+                
+                //see if the tag was even there
+                boolean wasThere = false;
+                for(i=0; i<oldTagValues.length; i++) {
+                    Node tagNode = this.node.getSession().getNodeByUUID(oldTagValues[i].getString());
+                    if(tagNode.getName().equals(tag)) {                                                
+                        wasThere = true;
+                    }
+                }
+                
+                if(wasThere) {
+                    //copy the array, minus the specified tag
+                    newTagValues = new Value[oldTagValues.length + 1];                
+                    for(i=0; i<oldTagValues.length; i++) {
+                        Node tagNode = this.node.getSession().getNodeByUUID(oldTagValues[i].getString());
+                        if(!tagNode.getName().equals(tag)) {                                                         
+                            newTagValues[j] = oldTagValues[i];
+                            j++;
+                        }
+                    }
+                }
+                else {
+                    return;
+                }
+            }
+            catch(PathNotFoundException e) {
+                //the property doesn't exist yet
+                return;             
+            }
+            finally {   
+                if(newTagValues != null) {
+                    checkout();
+                    this.node.setProperty(CATEGORY_PROPERTY_NAME, newTagValues);
+                }
+                else {
+                    log.error("reached expected path of execution when removing tag '" + tag + "' from ruleNode: " + this.node.getName());
+                }
+            }
+        }
+        catch(Exception e) {
+            log.error("Caught exception", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
 
 
 }
