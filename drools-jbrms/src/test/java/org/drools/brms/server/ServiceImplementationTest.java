@@ -7,7 +7,8 @@ import junit.framework.TestCase;
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
-import org.drools.brms.client.rulelist.RuleListView;
+import org.drools.brms.client.rulelist.RuleItemListViewer;
+
 import org.drools.repository.CategoryItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
@@ -92,7 +93,7 @@ public class ServiceImplementationTest extends TestCase {
   
   public void testRuleTableLoad() throws Exception {
       MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
-      TableConfig conf = impl.loadTableConfig( RuleListView.RULE_LIST_TABLE_ID );
+      TableConfig conf = impl.loadTableConfig( RuleItemListViewer.RULE_LIST_TABLE_ID );
       assertNotNull(conf.headers);
       
       CategoryItem cat = impl.repo.loadCategory( "/" );
@@ -106,8 +107,10 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals(2, result.numberOfRows);
       assertEquals(2, result.data.length);
       
-      String key = result.data[0].key;
+      String key = result.data[0].id;
       assertFalse(key.startsWith( "testRule" ));
+      
+      assertEquals(result.data[0].format, "DRL");
       assertTrue(result.data[0].values[0].startsWith( "testRule" ));
       
       

@@ -37,7 +37,8 @@ public class TableDisplayHandler {
             try {
 
                 
-                row.key = rule.getNode().getUUID();
+                row.id = rule.getNode().getUUID();
+                row.format = rule.getFormat();
                 row.values = new String[4];
                 row.values[0] = rule.getName();
                 row.values[1] = formatDate(rule.getLastModified());

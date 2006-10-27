@@ -57,8 +57,9 @@ public class MockRepositoryServiceAsync
         
         for (int i = 0; i < 42; i++) {
             TableDataRow row = new TableDataRow();
-            row.key = "woozle";
-            row.values = new String[] {"name", "another", "yeah", "blah"};        
+            row.id = "woozle" + i;
+            row.format = "Rule";
+            row.values = new String[] {"name " + i, "another", "yeah", "blah"};        
             result.data[i] = row;
         }
 

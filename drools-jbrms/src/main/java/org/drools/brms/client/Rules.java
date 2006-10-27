@@ -80,16 +80,22 @@ public class Rules extends JBRMSFeature {
         
         final RuleItemListViewer list = new RuleItemListViewer(new EditItemEvent() {
 
-            public void open(String key) {
-                
-                
+            
+
+            public void open(String key,
+                             String type,
+                             String name) {
+
                 System.out.println("opening key [" + key + "]");
+                System.out.println("opening type [" + type + "]");
+                System.out.println("opening name [" + name + "]");
                 RuleView view = new RuleView();
                 
-                String ruleName = "some rule";
+                String ruleName = name;
                 tab.add( view, "<img src='images/drools.gif'>" + ruleName, true );
                 tab.selectTab( tab.getWidgetIndex( view ) );
                 view.loadUUID(key);
+                
             }
             
         });    

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -39,7 +40,7 @@ public class EditableLine extends Composite {
     public void makeEditable() {
         panel.clear();        
         for ( int i = 0; i < widgets.length; i++ ) {
-            panel.add( widgets[i] );            
+            panel.add( widgets[i] );  
         }
     }
     
@@ -52,8 +53,8 @@ public class EditableLine extends Composite {
             Widget element = widgets[i];
             if (element instanceof Label) {
                 result = result + ((Label) element).getText();
-            } else if (element instanceof TextBox){
-                result = result + ((TextBox) element).getText();
+            } else if (element instanceof FieldEditor){
+                result = result + ((FieldEditor) element).getText();
             }            
         }
         return result;
@@ -67,14 +68,13 @@ public class EditableLine extends Composite {
     public static Widget[] makeWidgets(String dslLine) {
         List widgets = new ArrayList();
         char[] chars = dslLine.toCharArray();
-        TextBox currentBox = null;
+        FieldEditor currentBox = null;
         Label currentLabel = null;
         for ( int i = 0; i < chars.length; i++ ) {
             char c = chars[i];
             if (c == '{') {
                 currentLabel = null;
-                currentBox = new TextBox(); 
-                currentBox.setStyleName( "dsl-field-TextBox" );
+                currentBox = new FieldEditor(); 
                 widgets.add( currentBox );
                 
             } else if (c == '}') {
@@ -101,61 +101,6 @@ public class EditableLine extends Composite {
     }
 
 
-    /** 
-     * This represents a little element of a DSL line - ie a label or a text box widget
-     * or whatever it grows up into being.
-     *
-     */
-    static interface DSLLineAtom {
-    
-        Widget getWidget();
-        String getValue();
-    }
 
-//    /**
-//     * This represents the read only part of a DSL line item. 
-//     */
-//    static class DSLText implements DSLLineAtom {
-//
-//        private Label label;
-//        private String value;
-//
-//        public Widget getWidget() {
-//            if (label == null) 
-//                this.label = new Label(value);
-//            return this.label;
-//        }
-//
-//        public DSLText(String txt) {
-//            this.value = txt;
-//        }
-//        
-//        public String getValue() {
-//            
-//            return this.value;
-//        }
-//        
-//    }
-//    
-//    static class DSLTextBox implements DSLLineAtom {
-//
-//        private TextBox textBox;
-//
-//        public String getValue() {
-//            return this.value;
-//        }
-//
-//        public DSLTextBox(String initialValue) {
-//            
-//        }
-//        
-//        public Widget getWidget() {
-//            if (this.textBox == null) {
-//                  this.textBox = new TextBox();
-//            }
-//            return this.textBox;
-//        }
-//        
-//    }
      
 }

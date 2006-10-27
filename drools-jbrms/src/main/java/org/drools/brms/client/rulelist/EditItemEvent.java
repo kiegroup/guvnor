@@ -5,7 +5,7 @@ package org.drools.brms.client.rulelist;
  * @author Michael Neale
  */
 public interface EditItemEvent {
-
-    public void open(String key);
+    
+    public void open(String key, String type, String name);
     
 }

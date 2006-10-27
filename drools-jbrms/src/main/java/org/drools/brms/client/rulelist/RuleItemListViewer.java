@@ -26,7 +26,10 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  */
 public class RuleItemListViewer extends Composite {
 
-    private static final int DEFAULT_ROWS = 100;
+    /** The number of rows to "fill out" */
+    private static final int FILLER_ROWS = 100;
+    public static final String RULE_LIST_TABLE_ID = "ruleList";
+    
     private FlexTable     outer = new FlexTable();
     private SortableTable table;
     private TableConfig   tableConfig;
@@ -74,7 +77,7 @@ public class RuleItemListViewer extends Composite {
         Image openIcon = new Image( "images/open_item.gif" );
         openIcon.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                openItemEvent.open( table.getSelectedKey() );
+                openItemEvent.open( TableDataRow.getId( table.getSelectedKey()), TableDataRow.getFormat( table.getSelectedKey() ), table.getText( table.getSelectedRow(), 1 ) );
             }
         } );
         openIcon.setTitle( "Open item" );
@@ -107,15 +110,15 @@ public class RuleItemListViewer extends Composite {
 
         //if no data, just fill it out
         if ( data == null || data.data.length == 0) {
-            table = new SortableTable( 100,
+            table = new SortableTable( FILLER_ROWS,
                                        this.tableConfig.headers.length + 1 );
             table.setValue( 1,
                             1,
                             "" );
         } else {
             int maxRows = data.numberOfRows;
-            if (data.numberOfRows < DEFAULT_ROWS) {
-                maxRows = 100;
+            if (data.numberOfRows < FILLER_ROWS) {
+                maxRows = FILLER_ROWS;
             }
             table = new SortableTable( maxRows,
                                        this.tableConfig.headers.length + 1 );
@@ -123,7 +126,7 @@ public class RuleItemListViewer extends Composite {
                 TableDataRow row = data.data[i];
                 table.setValue( i + 1,
                                 0,
-                                row.key ); //this is the key
+                                row.getKeyValue() ); //this is the key
                 for ( int j = 0; j < row.values.length; j++ ) {
                     String val = row.values[j];
                     table.setValue( i + 1,
