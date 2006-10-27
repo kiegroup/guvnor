@@ -3,7 +3,7 @@ package org.drools.brms.client;
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.ruleeditor.NewRuleWizard;
-import org.drools.brms.client.ruleeditor.RuleView;
+import org.drools.brms.client.ruleeditor.RuleViewer;
 import org.drools.brms.client.rulelist.EditItemEvent;
 import org.drools.brms.client.rulelist.RuleItemListViewer;
 
@@ -55,46 +55,29 @@ public class Rules extends JBRMSFeature {
 	}
     
     
-    
-    
-
-    private RuleView doRuleViewer() {
-        RuleView ruleViewer = new RuleView();
-		ruleViewer.setWidth("100%");
-		ruleViewer.setHeight("100%");
-        return ruleViewer;
-    }
 
     /** This will setup the explorer tab */
 	private FlexTable doExplore(final TabPanel tab) {
 		FlexTable  table = new FlexTable();
         
-        //setup the list
-//        final RuleListView list = new RuleListView(new EditItemEvent() {
-//
-//            public void open(String[] rowData) {
-//                tab.selectTab( EDITOR_TAB );                
-//            }
-//            
-//        });         
-        
+        //and the the delegate to open an editor for a rule resource when
+        //chosen to
         final RuleItemListViewer list = new RuleItemListViewer(new EditItemEvent() {
-
             
 
             public void open(String key,
                              String type,
                              String name) {
-
-                System.out.println("opening key [" + key + "]");
-                System.out.println("opening type [" + type + "]");
-                System.out.println("opening name [" + name + "]");
-                RuleView view = new RuleView();
+ 
+                RuleViewer view = new RuleViewer(key, type, name);
                 
-                String ruleName = name;
-                tab.add( view, "<img src='images/drools.gif'>" + ruleName, true );
+                String displayName = name;
+                if (name.length() > 10) {
+                    displayName = name.substring( 0, 7 ) + "...";
+                }
+                tab.add( view, "<img src='images/drools.gif'>" + displayName, true );
                 tab.selectTab( tab.getWidgetIndex( view ) );
-                view.loadUUID(key);
+                view.load();
                 
             }
             

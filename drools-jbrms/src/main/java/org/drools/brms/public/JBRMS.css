@@ -147,9 +147,13 @@ a:visited {
 }
 
 .gwt-TextArea {
+  border: 1px solid #87B3FF;
+  padding: 0px;
 }
 
 .gwt-TextBox {
+  border: 1px solid #87B3FF;
+  padding: 0px;	
 }
 
 .gwt-Tree {
@@ -347,6 +351,10 @@ a:visited {
 
 /* end the rule list stuff */
 
+.resource-name-Label {
+	font-size: larger;
+ 	font-weight: bold;
+}
 
 .infoProse {
   margin: 8px;

@@ -18,6 +18,6 @@ public class DefaultRuleContentWidget extends Composite {
 		text.setHeight("100%");
 		text.setVisibleLines(10);
 		text.setText(content);		
-		setWidget(text);
+		initWidget(text);
 	}
 }
