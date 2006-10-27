@@ -500,6 +500,9 @@ public class RuleItemTestCase extends TestCase {
     public void testGetFormat() {        
             RuleItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetFormat", "test content");
             
-            assertEquals("Rule", ruleItem1.getFormat());            
+            assertEquals("DRL", ruleItem1.getFormat());     
+            
+            ruleItem1.updateFormat( "blah" );
+            assertEquals("blah", ruleItem1.getFormat());
     }        
 }

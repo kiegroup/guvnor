@@ -112,7 +112,7 @@ public class RulePackageItem extends VersionableItem {
                                   description );
             ruleNode.setProperty( RuleItem.FORMAT_PROPERTY_NAME,
                                   RuleItem.RULE_FORMAT );
-            //ruleNode.setProperty(RuleItem.RULE_CONTENT_PROPERTY_NAME, "");
+            
 
             ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT,
                                   "Initial" );

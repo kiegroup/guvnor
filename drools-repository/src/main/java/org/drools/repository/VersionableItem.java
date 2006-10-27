@@ -57,7 +57,7 @@ public abstract class VersionableItem extends Item {
     /**
      * The possible formats for the format property of the node
      */
-    public static final String RULE_FORMAT                    = "Rule";
+    public static final String RULE_FORMAT                    = "DRL";
     public static final String DSL_FORMAT                     = "DSL";
     public static final String RULE_PACKAGE_FORMAT            = "Rule Package";
     public static final String FUNCTION_FORMAT                = "Function";
@@ -397,6 +397,10 @@ public abstract class VersionableItem extends Item {
                        e );
             throw new RulesRepositoryException( e );
         }
+    }
+    
+    public void updateFormat(String newFormat) {
+        this.updateStringProperty( newFormat, FORMAT_PROPERTY_NAME );
     }
 
     /**

@@ -22,6 +22,8 @@ import org.apache.log4j.Logger;
 public class RuleItem extends CategorisableItem {
     private Logger log = Logger.getLogger(RuleItem.class);
     
+    
+    
     /**
      * The name of the DSL property on the rule node type
      */
