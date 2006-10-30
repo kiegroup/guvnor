@@ -6,6 +6,11 @@ package org.drools.brms.client.rulelist;
  */
 public interface EditItemEvent {
     
+    /**
+     * @param key - the UUID to open.
+     * @param type - the resource type.
+     * @param name - the name to display on the open tab.
+     */
     public void open(String key, String type, String name);
     
 }

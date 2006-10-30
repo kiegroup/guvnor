@@ -76,6 +76,8 @@ a:visited {
 }
 
 .gwt-ListBox {
+  border: 1px solid #87B3FF;
+  padding: 0px;	
 }
 
 .gwt-MenuBar {
@@ -338,6 +340,7 @@ a:visited {
 }
 
 
+
 .rule-List {
 	border: 1px solid #87B3FF;
 	background-color: white;
@@ -351,8 +354,7 @@ a:visited {
 
 /* end the rule list stuff */
 
-.resource-name-Label {
-	font-size: larger;
+.resource-name-Label {	
  	font-weight: bold;
 }
 

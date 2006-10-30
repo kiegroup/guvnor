@@ -9,7 +9,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -22,15 +21,14 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  */
 public class MetaDataWidget extends Composite {
 
-    
-    
 	private FlexTable layout = new FlexTable();
     private FlexCellFormatter formatter = layout.getFlexCellFormatter();
 	private int numInLayout = 0;
     private MetaData data;
-	
+    private boolean readOnly;
 	
 	public MetaDataWidget(MetaData d, boolean readOnly) {
+        this.readOnly = readOnly;
         this.data = d;
         initWidget( layout );
         
@@ -47,8 +45,6 @@ public class MetaDataWidget extends Composite {
         }));
         
         
-        //addAttribute("Description", description());
-        
         addAttribute("Categories", categories());
         
         addAttribute("Package", new Label(data.packageName));
@@ -57,10 +53,7 @@ public class MetaDataWidget extends Composite {
         addAttribute("Created by:", new Label(data.creator));
         addAttribute("Version number:", new Label("" + data.versionNumber));
         
-        //addAttribute("Status", status());
-        
         addAttribute("Type", editableText(new FieldBinding() {
-
             public String getValue() {
                 return data.type;
             }
@@ -83,45 +76,29 @@ public class MetaDataWidget extends Composite {
 
     private Widget categories() {
         
-        ListBox box = new ListBox();
-        for ( int i = 0; i < data.categories.length; i++ ) {
-            String cat = data.categories[i];
-            box.addItem( cat );
-        }
-        
-        return box;
+        AssetCategoryEditor ed = new AssetCategoryEditor(this.data, this.readOnly);
+        return ed;
         
     }
-
-
-
-
-
 
 
     /** This binds a field, and returns a text editor for it */
     private Widget editableText(final FieldBinding bind) {
-        final TextBox box = new TextBox();
-        box.setText( bind.getValue() );
-        ChangeListener listener = new ChangeListener() {
-
-            public void onChange(Widget w) {   
-                data.dirty = true;     
-                bind.setValue( box.getText() );                
-            }
-            
-        };
-        
-        box.addChangeListener( listener );
-        return box;        
+        if (!readOnly) {
+            final TextBox box = new TextBox();
+            box.setText( bind.getValue() );
+            ChangeListener listener = new ChangeListener() {    
+                public void onChange(Widget w) {   
+                    data.dirty = true;     
+                    bind.setValue( box.getText() );                
+                }                
+            };            
+            box.addChangeListener( listener );
+            return box;
+        } else {
+            return new Label(bind.getValue());
+        }
     }
-
-    
-
-
-    
-
-
 
 
 
