@@ -15,69 +15,11 @@ public interface RepositoryServiceAsync
     extends
     RemoteService {
 
-    /**
-
-     * @param categoryPath A "/" delimited path to a category. 
-
-     * @param callback
-
-     */
-
-    public void loadChildCategories(String categoryPath,
-                                    AsyncCallback callback);
-
-    /**
-
-     * Return a a 2d array/grid of results for rules.
-
-     * @param A "/" delimited path to a category.
-
-     * @param status The status flag. Leave blank to be all.
-
-     */
-
-    public void loadRuleListForCategories(String categoryPath,
-                                                     String status, AsyncCallback callback);
-
-    /**
-
-     * This will return a TableConfig of header names.
-
-     * @param listName The name of the list that we are going to render.
-
-     */
-
-    public void loadTableConfig(String listName,
-                                AsyncCallback callback);
-
-    /**
-
-     * This will create a new category at the specified path.
-
-     */
-
-    public void createCategory(String path,
-                               String name,
-                               String description,
-                               AsyncCallback callback);
-
-    /**
-
-     * Creates a brand new rule with the initial category.
-
-     */
-
-    public void createNewRule(String ruleName,
-                                 String description,
-                                 String initialCategory,
-                                 String initialPackage,
-                                 AsyncCallback callBack);
-
-    /**
-
-     * This returns a list of packages where rules may be added.
-
-     */
-
-    public void listRulePackages(AsyncCallback callback);
+    public void loadChildCategories(java.lang.String p0, AsyncCallback cb);
+    public void loadRuleListForCategories(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
+    public void loadTableConfig(java.lang.String p0, AsyncCallback cb);
+    public void createCategory(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback cb);
+    public void createNewRule(java.lang.String p0, java.lang.String p1, java.lang.String p2, java.lang.String p3, AsyncCallback cb);
+    public void listRulePackages(AsyncCallback cb);
+    public void loadAsset(java.lang.String p0, AsyncCallback cb);
 }

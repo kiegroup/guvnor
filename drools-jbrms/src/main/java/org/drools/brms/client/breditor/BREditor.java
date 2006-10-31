@@ -12,6 +12,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
+ * A basic DSL based BUSINESS rule editor.
+ * 
  * This is the editor for "business" rules via a DSL.
  * This uses the EditableLine widget.
  */
@@ -22,7 +24,7 @@ public class BREditor extends Composite {
     final int ACTION_COLUMN = 2; //this contains "action" buttons
     
     
-    private Panel panel;
+    private final Panel panel;
     
     /** these lists contain the guts of the rule */
     private List lhs = new ArrayList(); //these will be populated with EditableLine widget
@@ -45,11 +47,13 @@ public class BREditor extends Composite {
     public BREditor() {
         panel = new VerticalPanel();
         
+        
         initData();
         initEditorActions();        
         refreshLayoutTable();
         initWidget( panel );
-                
+        setWidth( "100%" );
+        
     }
 
     private void initEditorActions() {
@@ -62,7 +66,7 @@ public class BREditor extends Composite {
         addLhsPopupButton = new Image("images/new_item.gif");
         addLhsPopupButton.addClickListener( new ClickListener() {
             public void onClick(Widget sender) {
-                int left = sender.getAbsoluteLeft() + 10;
+                int left = sender.getAbsoluteLeft() - 40;
                 int top = sender.getAbsoluteTop() + 10;
                 lhsSuggestionPopup.setPopupPosition( left, top );
                 lhsSuggestionPopup.show();                
@@ -86,7 +90,7 @@ public class BREditor extends Composite {
         addRhsPopupButton.addClickListener( new ClickListener() {
 
             public void onClick(Widget sender) {
-                int left = sender.getAbsoluteLeft() + 10;
+                int left = sender.getAbsoluteLeft() - 40;
                 int top = sender.getAbsoluteTop() + 10;
                 rhsSuggestionPopup.setPopupPosition( left, top );
                 rhsSuggestionPopup.show();              
@@ -255,6 +259,8 @@ public class BREditor extends Composite {
         
         //now add the new
         table = new FlexTable();
+        table.setWidth( "100%" );
+        
         table.setStyleName( "rule-breditor-Table" );
         panel.add( table );
     }

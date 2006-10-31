@@ -77,7 +77,7 @@ public class Rules extends JBRMSFeature {
                 }
                 tab.add( view, "<img src='images/drools.gif'>" + displayName, true );
                 tab.selectTab( tab.getWidgetIndex( view ) );
-                view.load();
+                
                 
             }
             

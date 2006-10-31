@@ -1,9 +1,12 @@
 package org.drools.brms.client.rpc.mock;
 
+import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
+import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
+import org.drools.brms.client.rpc.TextData;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -125,6 +128,40 @@ public class MockRepositoryServiceAsync
 
     public void listRulePackages(AsyncCallback callback) {
         callback.onSuccess( new String[] {"a package"} );        
+    }
+
+
+
+    public void loadAsset(String uuid,
+                          AsyncCallback cb) {
+        
+        log( "loadAsset", "loading UUID"  + uuid);
+        final RuleAsset asset = new RuleAsset();
+        MetaData meta = new MetaData();
+        meta.categories = new String[] {"Approval", "Age related"};
+        meta.name = "age rejection 1";
+        if (uuid.endsWith( "1" )) {
+            meta.format = "DRL";
+            TextData text = new TextData();
+            asset.ruleAsset = text;
+            text.content = "rule la\n\twhen\n\t\tSomething() ...";
+            
+        } else {
+            meta.format = "DSL";
+        }
+        
+        asset.metaData = meta;
+        final AsyncCallback finalCb = cb;
+        Timer t = new Timer() {
+
+            public void run() {
+                finalCb.onSuccess( asset );
+            }
+            
+        };
+        t.schedule( 400 );
+        
+        
     }
     
     

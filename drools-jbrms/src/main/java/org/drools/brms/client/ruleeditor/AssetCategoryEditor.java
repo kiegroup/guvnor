@@ -1,15 +1,10 @@
 package org.drools.brms.client.ruleeditor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
-import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.rpc.MetaData;
 
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -47,7 +42,6 @@ public class AssetCategoryEditor extends Composite {
         box.setVisibleItemCount( 3 );
         box.setWidth( "100%" );
         
-        box.setMultipleSelect( true );
         loadData( box );        
         panel.add( box );
         

@@ -43,4 +43,11 @@ public interface RepositoryService extends RemoteService {
      * This returns a list of packages where rules may be added.
      */
     public String[] listRulePackages();
+    
+    /**
+     * This loads up a rule asset based on the UUID (always head version)
+     */
+    public RuleAsset loadAsset(String UUID) throws SerializableException;     
+    
+    
 }

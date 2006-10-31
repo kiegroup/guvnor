@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This holds the editor and viewer for rule documentation.
- * 
+ * It will update the model when the text is changed.
  * @author Michael Neale
  *
  */
@@ -17,20 +17,24 @@ public class RuleDocumentWidget extends Composite {
 
 	private TextArea text;
 	
-	public RuleDocumentWidget(final MetaData data) {
-        
+	public RuleDocumentWidget() {
 		text = new TextArea();
         text.setVisibleLines( 10 );
-		text.setText(data.description);
         text.setStyleName( "rule-viewer-Documentation" );        
-        
-        text.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                data.description = text.getText();
-            }            
-        });
-        
+        text.setTitle( "This is rule documentation. Human friendly descriptions of the business logic.");
 		initWidget(text);
 	}
+
+    public void loadData(final MetaData data) {
+        text.setText(data.description);
+        text.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {                
+                data.description = text.getText();
+                data.dirty = true;
+            }            
+        });
+    }
+    
+    
 	
 }

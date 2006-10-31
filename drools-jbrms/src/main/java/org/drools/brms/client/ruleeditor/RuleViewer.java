@@ -1,11 +1,17 @@
 package org.drools.brms.client.ruleeditor;
 
 import org.drools.brms.client.breditor.BREditor;
+import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.rpc.MetaData;
+import org.drools.brms.client.rpc.RepositoryServiceFactory;
+import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.rpc.TextData;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
  * The main layout parent/controller the rule viewer.
@@ -14,10 +20,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class RuleViewer extends Composite {
 	
-	private String resourceUUID;
-    private String name;
-    private String format;
+	private final String resourceUUID;
+    private final String name;
+    private final String format;
+    private MetaData metaData;
     
+    
+    private FlexTable layout = new FlexTable();
+    protected RuleAsset asset;
     
     /**
      * @param UUID The resource to open.
@@ -29,38 +39,65 @@ public class RuleViewer extends Composite {
         this.name = name;
         this.format = format;
         
-		HorizontalPanel horiz = new HorizontalPanel();	
-		horiz.setWidth("100%");
-		horiz.setHeight("100%");
-		VerticalPanel ruleAndDoc = new VerticalPanel();
-		
-        MetaData data = loadMetaData();
-        data.name = name;
+        //just pad it out a bit, so it gets the layout right - it will be loaded later.
+        layout.setWidget( 0, 0, new Label("Loading ...") );
+        layout.setWidget( 0, 1, new Label("") );
+        layout.setWidget( 1, 0, new Label("") );
+        layout.setWidget( 1, 1, new Label("") );
+        layout.setWidget( 2, 0, new Label("") );
+        layout.setWidget( 2, 1, new Label("") );
         
-		horiz.add(new MetaDataWidget(data, false));
-		horiz.add(ruleAndDoc);
-		
-		ruleAndDoc.setWidth("100%");
-		ruleAndDoc.setHeight("100%");
-		//ruleAndDoc.add(new DefaultRuleContentWidget("when\n\tPerson(age < 42)\nthen\n\tpanic();"));
-        BREditor ed = new BREditor();
-        ed.setWidth( "100%" );
-        ruleAndDoc.add( ed);
-		ruleAndDoc.add(new RuleDocumentWidget(data));
-		
-		initWidget(horiz);
+        RepositoryServiceFactory.getService().loadAsset( this.resourceUUID, new AsyncCallback() {
+            public void onFailure(Throwable e) {
+                ErrorPopup.showMessage( e.getMessage() );
+            }
+            public void onSuccess(Object o) {
+                asset = (RuleAsset) o;                
+                loadAssetData();
+            }
+            
+        });
+        
+		initWidget(layout);
 	}
-
-    private MetaData loadMetaData() {
-        return new MetaData();
-    }
-
+    
+    
     /**
-     * This will kick off the loading of the data.
+     * This will actually load up the data (this is called by the callback 
+     * when we get the data back from the server,
+     * also determines what widgets to load up).
      */
-    public void load() {
+    private void loadAssetData() {
+        metaData = asset.metaData;
         
         
+        final MetaDataWidget metaWidget = new MetaDataWidget(this.name, false);
+        
+        //now the layout table
+        FlexCellFormatter formatter =  layout.getFlexCellFormatter();
+        layout.setWidget( 0, 0, metaWidget );
+        formatter.setRowSpan( 0, 0, 3 );
+        formatter.setWidth( 0, 0, "40%" );        
+        
+        layout.setWidget( 0, 1, new Label("") );
+        
+        if (metaData.format.equals( "DSL" )) {
+            BREditor ed = new BREditor();
+            layout.setWidget( 1, 1, ed );
+        } else {
+            DefaultRuleContentWidget ed = new DefaultRuleContentWidget((TextData) asset.ruleAsset);
+            layout.setWidget( 1, 1, ed );
+        }
+
+        final RuleDocumentWidget doco = new RuleDocumentWidget();
+        layout.setWidget( 2, 1, doco );
+        metaWidget.loadData( metaData );
+        doco.loadData( metaData );
     }
+    
+
+
+
+
 
 }

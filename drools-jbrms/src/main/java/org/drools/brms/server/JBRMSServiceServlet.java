@@ -11,6 +11,7 @@ import javax.jcr.Session;
 import javax.servlet.http.HttpSession;
 
 import org.drools.brms.client.rpc.RepositoryService;
+import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
@@ -182,6 +183,8 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         }
         return repository;
     }
+
+
     
     
 

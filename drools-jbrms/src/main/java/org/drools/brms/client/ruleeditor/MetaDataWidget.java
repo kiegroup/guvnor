@@ -27,14 +27,23 @@ public class MetaDataWidget extends Composite {
     private MetaData data;
     private boolean readOnly;
 	
-	public MetaDataWidget(MetaData d, boolean readOnly) {
+	public MetaDataWidget(String name, boolean readOnly) {
         this.readOnly = readOnly;
-        this.data = d;
+        
         initWidget( layout );
         
-        addHeader("images/meta_data.gif", data.name);
+        addHeader("images/meta_data.gif", name);
 
-        addAttribute("Subject", editableText(new FieldBinding() {
+              
+        
+	}
+
+
+    public void loadData(MetaData d) {
+        this.data = d;
+        addAttribute("Categories:", categories());
+        
+        addAttribute("Subject:", editableText(new FieldBinding() {
             public String getValue() {
                 return data.subject;
             }
@@ -42,18 +51,16 @@ public class MetaDataWidget extends Composite {
             public void setValue(String val) {
                 data.subject = val;                
             }            
-        }));
+        }, "A short description of the subject matter."));            
         
-        
-        addAttribute("Categories", categories());
-        
-        addAttribute("Package", new Label(data.packageName));
-        addAttribute("Last modified on:", new Label(data.lastModifiedDate));
-        addAttribute("Last modified by:", new Label(data.lastContributor));
-        addAttribute("Created by:", new Label(data.creator));
-        addAttribute("Version number:", new Label("" + data.versionNumber));
-        
-        addAttribute("Type", editableText(new FieldBinding() {
+        addAttribute("Last modified on:", readOnlyText(data.lastModifiedDate));
+        addAttribute("Last modified by:", readOnlyText(data.lastContributor));
+        addAttribute("Created by:", readOnlyText(data.creator));
+        addAttribute("Version number:", readOnlyText("" + data.versionNumber));
+        addAttribute("Package:", readOnlyText(data.packageName));
+                
+            
+        addAttribute("Type:", editableText(new FieldBinding() {
             public String getValue() {
                 return data.type;
             }
@@ -62,30 +69,52 @@ public class MetaDataWidget extends Composite {
                 data.type = val;
             }
             
-        }));
+        }, "This is for classification purposes."));
         
+        addAttribute("External link:", editableText(new FieldBinding() {
+            public String getValue() {
+                return data.externalRelation;
+            }
+
+            public void setValue(String val) {
+                data.externalRelation = val;
+            }
+            
+        }, "This is for relating the asset to an external system."));    
         
-        
-	}
+        addAttribute("Source:", editableText(new FieldBinding() {
+            public String getValue() {
+                return data.externalSource;
+            }
 
-    
+            public void setValue(String val) {
+                data.externalSource = val;
+            }
+            
+        }, "A short description or code indicating the source of the rule."));
+    }
 
 
+
+    private Label readOnlyText(String text) {
+        Label lbl = new Label(text);
+        lbl.setWidth( "100%" );
+        return lbl;
+    }
 
 
 
     private Widget categories() {
-        
         AssetCategoryEditor ed = new AssetCategoryEditor(this.data, this.readOnly);
         return ed;
-        
     }
 
 
     /** This binds a field, and returns a text editor for it */
-    private Widget editableText(final FieldBinding bind) {
+    private Widget editableText(final FieldBinding bind, String toolTip) {
         if (!readOnly) {
             final TextBox box = new TextBox();
+            box.setTitle( toolTip );
             box.setText( bind.getValue() );
             ChangeListener listener = new ChangeListener() {    
                 public void onChange(Widget w) {   
