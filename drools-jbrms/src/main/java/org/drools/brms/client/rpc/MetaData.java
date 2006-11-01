@@ -19,7 +19,9 @@ public class MetaData
     public String lastModifiedDate = "";
     public String lastContributor = "";
     public int versionNumber;
-
+    public String   lastCheckinComment = "";
+    
+    
     public String packageName = "";
     public String[] categories = new String[0];
     

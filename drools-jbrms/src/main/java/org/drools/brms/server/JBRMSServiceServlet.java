@@ -96,8 +96,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
 
 
 
-    public TableDataResult loadRuleListForCategories(String categoryPath,           
-                                                String status) throws SerializableException {
+    public TableDataResult loadRuleListForCategories(String categoryPath) throws SerializableException {
         RulesRepository repo = getRulesRepository();
 
         List list = repo.findRulesByCategory( categoryPath );
@@ -182,6 +181,10 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
             repository = config.createRepository();
         }
         return repository;
+    }
+
+    public RuleAsset loadRuleAsset(String uuid) throws SerializableException {
+        return null;
     }
 
 

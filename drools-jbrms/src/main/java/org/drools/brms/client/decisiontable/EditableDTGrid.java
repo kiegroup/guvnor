@@ -332,7 +332,7 @@ public class EditableDTGrid extends Composite {
 	private void editColumn(int row, int column, String text) {
 		TextBox box = new TextBox();
 		box.setText(text);
-		box.setStyleName("dsl-field-TextBox");
+		box.setStyleName("dt-field-TextBox");
 		table.setWidget(row, column, box);
 		box.setFocus(true);
 	}

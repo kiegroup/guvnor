@@ -50,7 +50,6 @@ public class MockRepositoryServiceAsync
 
 
     public void loadRuleListForCategories(String categoryPath,
-                                          String status,
                                           AsyncCallback callback)  {
         log("loading rule list", "for cat path: " + categoryPath);
         TableDataResult result = new TableDataResult();
@@ -132,7 +131,7 @@ public class MockRepositoryServiceAsync
 
 
 
-    public void loadAsset(String uuid,
+    public void loadRuleAsset(String uuid,
                           AsyncCallback cb) {
         
         log( "loadAsset", "loading UUID"  + uuid);

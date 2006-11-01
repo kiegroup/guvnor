@@ -185,7 +185,6 @@ public class RuleItemListViewer extends Composite {
 
         
         service .loadRuleListForCategories( selectedPath,
-                                                                         "",
                                                                          new AsyncCallback() {
 
                                                                              public void onFailure(Throwable t) {

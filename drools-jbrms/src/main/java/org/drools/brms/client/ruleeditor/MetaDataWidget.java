@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.StackPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,13 +30,8 @@ public class MetaDataWidget extends Composite {
 	
 	public MetaDataWidget(String name, boolean readOnly) {
         this.readOnly = readOnly;
-        
         initWidget( layout );
-        
         addHeader("images/meta_data.gif", name);
-
-              
-        
 	}
 
 
@@ -55,10 +51,11 @@ public class MetaDataWidget extends Composite {
         
         addAttribute("Last modified on:", readOnlyText(data.lastModifiedDate));
         addAttribute("Last modified by:", readOnlyText(data.lastContributor));
+        addAttribute("Checkin note:", readOnlyText( data.lastCheckinComment ));
         addAttribute("Created by:", readOnlyText(data.creator));
         addAttribute("Version number:", readOnlyText("" + data.versionNumber));
         addAttribute("Package:", readOnlyText(data.packageName));
-                
+        
             
         addAttribute("Type:", editableText(new FieldBinding() {
             public String getValue() {

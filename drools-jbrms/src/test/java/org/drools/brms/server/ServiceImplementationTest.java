@@ -5,8 +5,10 @@ import java.util.Calendar;
 import junit.framework.TestCase;
 
 import org.drools.brms.client.rpc.RepositoryService;
+import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
+import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.rulelist.RuleItemListViewer;
 
 import org.drools.repository.CategoryItem;
@@ -103,7 +105,7 @@ public class ServiceImplementationTest extends TestCase {
       impl.createNewRule( "testRuleTableLoad", "ya", "testRuleTableLoad", "testRuleTableLoad" );
       impl.createNewRule( "testRuleTableLoad2", "ya", "testRuleTableLoad", "testRuleTableLoad" );
 
-      TableDataResult result = impl.loadRuleListForCategories( "testRuleTableLoad", null );
+      TableDataResult result = impl.loadRuleListForCategories( "testRuleTableLoad" );
       assertEquals(2, result.numberOfRows);
       assertEquals(2, result.data.length);
       
@@ -125,6 +127,29 @@ public class ServiceImplementationTest extends TestCase {
       
       assertTrue(fmt.length() > 8);
       System.out.println(fmt);
+  }
+  
+  public void testLoadRuleAsset() throws Exception {
+      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      impl.repo.createRulePackage( "testLoadRuleAsset", "desc" );
+      impl.createCategory( "", "testLoadRuleAsset", "this is a cat" );
+      
+      
+      impl.createNewRule( "testLoadRuleAsset", "description", "testLoadRuleAsset", "testLoadRuleAsset" );
+      
+      TableDataResult res = impl.loadRuleListForCategories( "testLoadRuleAsset" );
+      assertEquals(1, res.data.length);
+      
+      TableDataRow row = res.data[0];
+      String uuid = row.id;
+      
+      System.out.println("UUID: " + uuid);
+      
+      RuleAsset asset = impl.loadRuleAsset( uuid );
+      assertNotNull(asset);
+      assertNotNull(asset.ruleAsset);
+      
+      
   }
   
     

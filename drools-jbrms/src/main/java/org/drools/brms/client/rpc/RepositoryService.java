@@ -19,9 +19,8 @@ public interface RepositoryService extends RemoteService {
     /**
      * Return a a 2d array/grid of results for rules.
      * @param A "/" delimited path to a category.
-     * @param status The status flag. Leave blank to be all.
      */
-    public TableDataResult loadRuleListForCategories(String categoryPath, String status) throws SerializableException;
+    public TableDataResult loadRuleListForCategories(String categoryPath) throws SerializableException;
     
     /**
      * This will return a TableConfig of header names.
@@ -45,9 +44,10 @@ public interface RepositoryService extends RemoteService {
     public String[] listRulePackages();
     
     /**
-     * This loads up a rule asset based on the UUID (always head version)
+     * This loads up all the stuff for a 
+     * rule asset based on the UUID (always latest and editable version).
      */
-    public RuleAsset loadAsset(String UUID) throws SerializableException;     
+    public RuleAsset loadRuleAsset(String UUID) throws SerializableException;     
     
     
 }

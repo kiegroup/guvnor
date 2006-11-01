@@ -47,7 +47,7 @@ public class RuleViewer extends Composite {
         layout.setWidget( 2, 0, new Label("") );
         layout.setWidget( 2, 1, new Label("") );
         
-        RepositoryServiceFactory.getService().loadAsset( this.resourceUUID, new AsyncCallback() {
+        RepositoryServiceFactory.getService().loadRuleAsset( this.resourceUUID, new AsyncCallback() {
             public void onFailure(Throwable e) {
                 ErrorPopup.showMessage( e.getMessage() );
             }
