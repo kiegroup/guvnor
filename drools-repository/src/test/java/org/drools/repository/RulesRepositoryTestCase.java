@@ -68,6 +68,32 @@ public class RulesRepositoryTestCase extends TestCase {
         
     }
 
+    
+    public void testLoadRuleByUUID() throws Exception {
+        RulesRepository repo = RepositorySession.getRepository();
+        
+        RulePackageItem rulePackageItem = repo.loadDefaultRulePackage();
+        RuleItem rule = rulePackageItem.addRule( "testLoadRuleByUUID", "this is a description");
+        
+        repo.save();
+                
+        String uuid = rule.getNode().getUUID();
+
+        RuleItem loaded = repo.loadRuleByUUID(uuid);
+        assertNotNull(loaded);
+        assertEquals("testLoadRuleByUUID", loaded.getName());
+        assertEquals( "this is a description", loaded.getDescription());
+        
+        // try loading rule package that was not created 
+        try {
+            repo.loadRuleByUUID("01010101-0101-0101-0101-010101010101");
+            fail("Exception not thrown loading rule package that was not created.");
+        } catch (RulesRepositoryException e) {
+            // that is OK!
+            assertNotNull(e.getMessage());
+        }        
+    }
+    
     public void testAddRuleCalendarWithDates() {
         RulesRepository rulesRepository = RepositorySession.getRepository();
 

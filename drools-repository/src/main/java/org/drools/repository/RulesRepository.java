@@ -543,13 +543,6 @@ public class RulesRepository {
         
     }
     
-//    /**
-//     * This will add a rule to the default package.
-//     * Normally you should load the specific package you want to store the rule in.
-//     */
-//    public RuleItem addRule(String name, String description) {
-//        return loadDefaultRulePackage().addRule( name, description );
-//    }
     
     /**
      * Similar to above. Loads a RulePackage for the specified uuid. 
@@ -571,6 +564,24 @@ public class RulesRepository {
             }
         }
     }    
+    
+    
+    /**
+     * Loads a rule by its UUID (generally the fastest way to load something).
+     */
+    public RuleItem loadRuleByUUID(String uuid) {
+        try {
+            Node rulePackageNode = this.session.getNodeByUUID(uuid);
+            return new RuleItem(this, rulePackageNode);
+        }
+        catch (RepositoryException e) {
+            log.error("Unable to load a rule asset by UUID.", e);
+            throw new RulesRepositoryException(e);
+        }
+        
+    }    
+    
+    
 
     /**
      * Adds a rule package node in the repository. This node has a property called 
@@ -741,6 +752,10 @@ public class RulesRepository {
         }
         
     }
+
+
+
+
 
 
 
