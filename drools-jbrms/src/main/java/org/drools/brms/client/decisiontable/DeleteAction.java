@@ -29,7 +29,7 @@ public class DeleteAction extends Composite {
     public DeleteAction(final int currentRow, final RowClickListener clickListener) {
         row = currentRow;
         delete = new Image("images/clear_item.gif");
-        delete.setTitle( "Delete this row" );
+        delete.setTitle( "Delete row " + row );
         delete.addClickListener( new ClickListener() {
 			public void onClick(final Widget w) {
 				clickListener.onClick(w, row);
@@ -43,6 +43,7 @@ public class DeleteAction extends Composite {
     
     public void setRow(final int row) {
     	this.row = row;
+    	delete.setTitle("Delete row " + row);
     }
     
     public int getRow() {

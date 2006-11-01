@@ -29,7 +29,7 @@ public class InsertAction extends Composite {
     public InsertAction(final int currentRow, final RowClickListener clickListener) {
         row = currentRow;
         insert = new Image("images/new_item.gif");
-        insert.setTitle( "Insert row after this row" );
+        insert.setTitle( "Insert row after row " + row );
         insert.addClickListener( new ClickListener() {
 			public void onClick(final Widget w) {
 				clickListener.onClick(w, row);
@@ -43,6 +43,8 @@ public class InsertAction extends Composite {
     
     public void setRow(final int row) {
     	this.row = row;
+    	insert.setTitle( "Insert row after row " + row );
+    	
     }
     
     public int getRow() {

@@ -293,8 +293,28 @@ a:visited {
   padding: 2px;
 }
 
+.dt-editor-Toolbar {
+  background-color: white;
+  border: 1px solid #87B3FF; 
+  padding: 2px;
+}
+
+.dt-editor-Cell-selected {
+  background-color: white;
+  border: 2px solid #87B3FF; 
+  font-size: smaller;
+  padding: 2px;
+}
+
 .dt-editor-DescriptionCell {
   background-color: #FDFCDC;
+  font-size: smaller;
+  padding: 3px;
+}
+
+.dt-editor-DescriptionCell-selected {
+  background-color: #87B3FF;
+  color : #FFFFFF;
   font-size: smaller;
   padding: 3px;
 }
@@ -304,15 +324,21 @@ a:visited {
   font-size: smaller;
   padding: 3px;
 }
-
+.dt-editor-CountColumn-selected {
+  background-color: #87B3FF;
+  color : #FFFFFF;
+  font-size: smaller;
+  padding: 3px;
+}
 
 .dt-editor-Title {
   font-size: larger;
 }
 
 .dsl-field-TextBox {
-  border: 1px solid #87B3FF;
+  border: none;
   padding: 0px;	
+  width: 100%;
 }
 
 .rule-viewer-Documentation {
