@@ -151,8 +151,6 @@ public class EditableDTGrid extends Composite {
 		cellFormatter.setStyleName(row, column, "dt-editor-Cell");
 	}
 
-
-
 	public void mergeCell(int row, int col) {
 		int currentSpan = cellFormatter.getColSpan(row, col);
 		if (col + currentSpan <= numCols()) {
@@ -187,19 +185,21 @@ public class EditableDTGrid extends Composite {
 	 * @param row
 	 */
 	void moveUp() {
-		// create a new row above the given row
-		// remember that insertRow will insert above the given row
-		// so this is two above the original row
-		int newRow = addNewRow(currentRow - 1);
+		if (currentRow > START_DATA_ROW) {
+			// create a new row above the given row
+			// remember that insertRow will insert above the given row
+			// so this is two above the original row
+			int newRow = addNewRow(currentRow - 1);
 
-		copyRow(currentRow + 1, newRow);
+			copyRow(currentRow + 1, newRow);
 
-		// remove the original row
-		table.removeRow(currentRow + 1);
+			// remove the original row
+			table.removeRow(currentRow + 1);
 
-		renumberRow(currentRow);
-		currentRow = -1;
-		setCurrentCell(newRow, currentCol);
+			renumberRow(currentRow);
+			currentRow = -1;
+			setCurrentCell(newRow, currentCol);
+		}
 
 	}
 
@@ -244,20 +244,22 @@ public class EditableDTGrid extends Composite {
 	 * @param row
 	 */
 	void moveDown() {
-		// create a new row below the given row
-		// remember that insertRow will insert above the given row
-		// so this is two below the original row
-		int newRow = addNewRow(currentRow + 2);
+		if (currentRow < numRows) {
+			// create a new row below the given row
+			// remember that insertRow will insert above the given row
+			// so this is two below the original row
+			int newRow = addNewRow(currentRow + 2);
 
-		copyRow(currentRow, newRow);
-		// remove row before adding action widgets so that the row number
-		// is correct (otherwise the shuffle down button may not be displayed
-		table.removeRow(currentRow);
-		renumberRow(currentRow);
-		renumberRow(currentRow + 1);
-		currentRow = -1;
-		setCurrentCell(newRow - 1, currentCol);
-
+			copyRow(currentRow, newRow);
+			// remove row before adding action widgets so that the row number
+			// is correct (otherwise the shuffle down button may not be
+			// displayed
+			table.removeRow(currentRow);
+			renumberRow(currentRow);
+			renumberRow(currentRow + 1);
+			currentRow = -1;
+			setCurrentCell(newRow - 1, currentCol);
+		}
 	}
 
 	/**
