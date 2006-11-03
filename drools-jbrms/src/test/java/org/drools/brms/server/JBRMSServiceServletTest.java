@@ -1,5 +1,6 @@
 package org.drools.brms.server;
 
+import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpSessionContext;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.drools.brms.client.rpc.RuleContentText;
 import org.drools.repository.RulesRepository;
 
 /**
@@ -38,6 +40,17 @@ public class JBRMSServiceServletTest extends TestCase {
     }
     
 
+    public void testFormattingDates() {
+        JBRMSServiceServlet serv = new JBRMSServiceServlet();
+        assertEquals("", serv.formatDate( null ));
+        
+        Calendar cal = Calendar.getInstance();
+        String d = serv.formatDate( cal );
+        assertNotNull(d);
+        assertTrue(d.length() > 5);
+        System.out.println(d);
+        
+    }
     
     
     static class MockHttpSession implements HttpSession {

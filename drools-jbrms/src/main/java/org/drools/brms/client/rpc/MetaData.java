@@ -18,13 +18,12 @@ public class MetaData
 
     public String lastModifiedDate = "";
     public String lastContributor = "";
-    public int versionNumber;
+    public String versionNumber;
     public String   lastCheckinComment = "";
-    
+    public String createdDate = "";
     
     public String packageName = "";
     public String[] categories = new String[0];
-    
     
     public String format = "";
     public String type = "";
@@ -35,7 +34,6 @@ public class MetaData
     public String rights = ""; 
     public String coverage = "";
     public String publisher = "";   
-    
     
     /** used to flag dirty - ie needs to be spanked. Or saved to the repo, whatever */
     public boolean dirty = false;

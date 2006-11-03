@@ -13,6 +13,8 @@ public class RuleAsset
     IsSerializable {
     
     public MetaData metaData;
-    public IsSerializable ruleAsset;
+    public IsSerializable content;
+    public String dateEffective;
+    public String dateExpired;
 
 }

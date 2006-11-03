@@ -53,6 +53,7 @@ public class MetaDataWidget extends Composite {
         addAttribute("Last modified by:", readOnlyText(data.lastContributor));
         addAttribute("Checkin note:", readOnlyText( data.lastCheckinComment ));
         addAttribute("Created by:", readOnlyText(data.creator));
+        addAttribute("Created on:", readOnlyText( data.createdDate ));
         addAttribute("Version number:", readOnlyText("" + data.versionNumber));
         addAttribute("Package:", readOnlyText(data.packageName));
         

@@ -85,7 +85,7 @@ public class RuleViewer extends Composite {
             BREditor ed = new BREditor();
             layout.setWidget( 1, 1, ed );
         } else {
-            DefaultRuleContentWidget ed = new DefaultRuleContentWidget((TextData) asset.ruleAsset);
+            DefaultRuleContentWidget ed = new DefaultRuleContentWidget((TextData) asset.content);
             layout.setWidget( 1, 1, ed );
         }
 

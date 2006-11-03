@@ -6,12 +6,14 @@ import junit.framework.TestCase;
 
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.rpc.RuleContentText;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.rulelist.RuleItemListViewer;
 
 import org.drools.repository.CategoryItem;
+import org.drools.repository.RuleItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -147,8 +149,15 @@ public class ServiceImplementationTest extends TestCase {
       
       RuleAsset asset = impl.loadRuleAsset( uuid );
       assertNotNull(asset);
-      assertNotNull(asset.ruleAsset);
       
+      assertEquals("description", asset.metaData.description);
+      
+      
+      assertNotNull(asset.content);
+      assertTrue(asset.content instanceof RuleContentText);
+      assertEquals("testLoadRuleAsset", asset.metaData.name);
+      assertEquals("testLoadRuleAsset", asset.metaData.title);
+      assertEquals("testLoadRuleAsset", asset.metaData.packageName);
       
   }
   

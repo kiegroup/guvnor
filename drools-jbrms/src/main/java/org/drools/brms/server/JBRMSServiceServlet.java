@@ -1,6 +1,8 @@
 package org.drools.brms.server;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,17 +12,21 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.servlet.http.HttpSession;
 
+import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.rpc.RuleContentText;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
+import org.drools.repository.CategorisableItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.RepositoryConfigurator;
 import org.drools.repository.RuleItem;
 import org.drools.repository.RulePackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.StateItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -183,8 +189,87 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         return repository;
     }
 
+    /**
+     * This actually does the hard work of loading up an asset based
+     * on its format.
+     */
     public RuleAsset loadRuleAsset(String uuid) throws SerializableException {
-        return null;
+        RulesRepository repo = getRulesRepository();
+        RuleItem item = repo.loadRuleByUUID( uuid );
+        RuleAsset asset = new RuleAsset();
+        
+        asset.metaData = popuplateMetaData( item );
+        
+        
+        asset.dateEffective = formatDate( item.getDateEffective() );
+        asset.dateExpired = formatDate( item.getDateExpired() );
+        
+        
+        if (item.getFormat().equals( "DSL" )) {
+            //ok here is where we do DSLs...
+            throw new SerializableException("Can't load DSL rules just yet.");
+
+        } else if (item.getFormat().equals( "DSL" )) {
+        } else if (item.getFormat().equals( "DT" )) {
+            //and here we do decision tables
+            throw new SerializableException("Still working on this...");
+        } else {
+            //default to text, goode olde texte, just like mum used to make.
+            RuleContentText text = new RuleContentText();
+            text.content = item.getRuleContent();
+            asset.content = text;
+
+        }
+        
+        asset.metaData.packageName = item.getPackageName();
+        
+        
+        return asset;
+    }
+    
+    /** pretty print the date. */
+    String formatDate(Calendar date) {
+        if (date == null) {
+            return "";
+        }
+        DateFormat f = DateFormat.getDateTimeInstance();
+        return f.format( date.getTime() );
+    }
+
+    /** 
+     * read in the meta data.
+     * @param item
+     * @return
+     */
+    MetaData popuplateMetaData(CategorisableItem item) {
+        MetaData meta = new MetaData();
+        meta.name = item.getName();
+        meta.title = item.getTitle();
+        
+        List cats = item.getCategories();
+        meta.categories = new String[cats.size()];
+        for ( int i = 0; i < meta.categories.length; i++ ) {
+            CategoryItem cat = (CategoryItem) cats.get(i);
+            meta.categories[i] = cat.getName();            
+        }
+        
+        meta.state = (item.getState() != null) ? item.getState().getName() : "";
+        
+        meta.coverage = item.getCoverage();
+        meta.creator = item.getCreator();
+        meta.description = item.getDescription();
+        meta.externalRelation = item.getExternalRelation();
+        meta.externalSource = item.getExternalSource();
+        meta.format = item.getFormat();
+        meta.lastCheckinComment = item.getCheckinComment();
+        meta.lastContributor = item.getLastContributor();
+        meta.lastModifiedDate = formatDate(item.getLastModified());
+        meta.createdDate = formatDate( item.getCreatedDate() );
+        meta.versionNumber = item.getVersionNumber();
+        
+        
+        
+        return meta;
     }
 
 

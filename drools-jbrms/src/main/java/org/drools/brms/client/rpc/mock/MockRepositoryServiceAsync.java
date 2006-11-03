@@ -139,10 +139,11 @@ public class MockRepositoryServiceAsync
         MetaData meta = new MetaData();
         meta.categories = new String[] {"Approval", "Age related"};
         meta.name = "age rejection 1";
+        meta.versionNumber = "2";
         if (uuid.endsWith( "1" )) {
             meta.format = "DRL";
             TextData text = new TextData();
-            asset.ruleAsset = text;
+            asset.content = text;
             text.content = "rule la\n\twhen\n\t\tSomething() ...";
             
         } else {
