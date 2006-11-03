@@ -465,6 +465,22 @@ public class RulePackageItem extends VersionableItem {
         }
 
     }
+    
+    /**
+     * Load a specific rule asset by name.
+     */
+    public RuleItem loadRule(String name) {
+
+        try {
+            Node content = getVersionContentNode();
+            return new RuleItem(
+                        this.rulesRepository, 
+                        content.getNode( RULES_FOLDER_NAME ).getNode( name ));
+        } catch ( RepositoryException e ) {
+             throw new RulesRepositoryException(e);
+       }
+        
+    }
 
     /**
      * Nicely formats the information contained by the node that this object encapsulates    

@@ -38,11 +38,8 @@ public class RulePackageItemTestCase extends TestCase {
                 if (pack.getName().equals( "testRulePackage" )) {
                     return;
                 }
-                
-               
             }
             fail("should have picked up the testRulePackage but didnt.");
-            
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -389,6 +386,13 @@ public class RulePackageItemTestCase extends TestCase {
             assertNotNull(rules);
             assertEquals(2, rules.size());            
 
+            //now lets test loading rule
+            RuleItem loaded = rulePackageItem1.loadRule( "testGetRules" );
+            assertNotNull(loaded);
+            assertEquals("testGetRules", loaded.getName());
+            assertEquals("desc", loaded.getDescription());
+           
+            
     }
 
     public void testToString() {
