@@ -43,7 +43,8 @@
 //for incrementing (or user defined) unique version numbers
 - drools:versionNumber (string)
   
-
+//to remember when it was created  
+- drools:createdDate (date)  
   
 - drools:checkinComment (string)
 

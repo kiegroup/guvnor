@@ -282,7 +282,7 @@ public class RulePackageItemTestCase extends TestCase {
     }
 
     
-    private List iteratorToList(Iterator it) {
+    List iteratorToList(Iterator it) {
         List list = new ArrayList();
         while(it.hasNext()) {
             list.add( it.next() );

@@ -1,7 +1,9 @@
 package org.drools.repository;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.jcr.NodeIterator;
 
@@ -191,5 +193,44 @@ public class RulesRepositoryTestCase extends TestCase {
             }
             assertTrue(found);
             
+    }
+    
+    public void testMoveRulePackage() throws Exception {
+        RulesRepository repo = RepositorySession.getRepository();
+        RulePackageItem pkg = repo.createRulePackage( "testMove", "description" );
+        RuleItem r = pkg.addRule( "testMove", "description" );
+        
+        assertEquals("testMove", r.getPackageName());
+        
+        repo.save();
+        
+        assertEquals(1, iteratorToList( pkg.getRules()).size());
+        
+        repo.createRulePackage( "testMove2", "description" );
+        repo.moveRuleItemPackage( "testMove2", r.node.getUUID(), "explanation" );
+        
+        pkg = repo.loadRulePackage( "testMove" );
+        assertEquals(0, iteratorToList( pkg.getRules() ).size());
+        
+        pkg = repo.loadRulePackage( "testMove2" );
+        assertEquals(1, iteratorToList( pkg.getRules() ).size());
+        
+        r = (RuleItem) pkg.getRules().next();
+        assertEquals("testMove", r.getName());
+        assertEquals("testMove2", r.getPackageName());
+        assertEquals("explanation", r.getCheckinComment());
+        
+        RuleItem p = (RuleItem) r.getPrecedingVersion();
+        assertEquals("testMove", p.getPackageName());
+        assertEquals("Initial", p.getCheckinComment());
+        
+    }
+    
+    List iteratorToList(Iterator it) {
+        List list = new ArrayList();
+        while(it.hasNext()) {
+            list.add( it.next() );
+        }
+        return list;
     }
 }

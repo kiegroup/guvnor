@@ -17,8 +17,9 @@ public class RuleItemTestCase extends TestCase {
         return getRepo().loadDefaultRulePackage();
     }
     
-    public void testRuleItem() {
-            //calls constructor
+    public void testRuleItemCreation() throws Exception {
+                
+            Calendar now = Calendar.getInstance();
         
             RuleItem ruleItem1 = getDefaultPackage().addRule("testRuleItem", "test content");
             
@@ -26,6 +27,14 @@ public class RuleItemTestCase extends TestCase {
             assertNotNull(ruleItem1.getNode());
             assertEquals("testRuleItem", ruleItem1.getName());
         
+            assertNotNull(ruleItem1.getCreatedDate());
+            assertTrue(now.before( ruleItem1.getCreatedDate() ));
+            
+            String packName = getDefaultPackage().getName();
+
+            assertEquals(packName, ruleItem1.getPackageName());
+            
+            
         //try constructing with node of wrong type
         try {
             
@@ -286,17 +295,6 @@ public class RuleItemTestCase extends TestCase {
         }
     }
     
-    public void testGetRuleLanguage() {
-        try {
-            RuleItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetRuleLanguage", "test content");
-           
-            //it should be initialized to 'DRL'
-            assertEquals("DRL", ruleItem1.getRuleLanguage());                        
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
-    }
     
     public void testSaveAndCheckinDescriptionAndTitle() throws Exception {
             RuleItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetDescription", "");
@@ -333,8 +331,14 @@ public class RuleItemTestCase extends TestCase {
     }
     
     public void testGetPrecedingVersion() {
+        
+            getRepo().loadCategory( "/" ).addCategory( "foo", "ka" );
             RuleItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetPrecedingVersion", "descr");
-            assertTrue(ruleItem1.getPrecedingVersion() == null);   
+            assertTrue(ruleItem1.getPrecedingVersion() == null);
+            
+            
+            
+            ruleItem1.addCategory( "foo" );
             ruleItem1.updateRuleContent( "test content" );
             ruleItem1.checkin( "boo" );
             
@@ -342,14 +346,24 @@ public class RuleItemTestCase extends TestCase {
             RuleItem predecessorRuleItem = (RuleItem) ruleItem1.getPrecedingVersion();
             assertNotNull(predecessorRuleItem);            
             
+            
+            
             ruleItem1.updateRuleContent("new content");
             ruleItem1.updateRuleContentURI( "foobar" );
             ruleItem1.checkin( "two changes" );
             
             predecessorRuleItem = (RuleItem) ruleItem1.getPrecedingVersion();
             assertNotNull(predecessorRuleItem);
+            assertEquals(1, predecessorRuleItem.getCategories().size());
+            CategoryItem cat = (CategoryItem) predecessorRuleItem.getCategories().get( 0 );
+            assertEquals("foo", cat.getName());
+            
+            
             assertEquals("test content", predecessorRuleItem.getRuleContent());
             
+            assertEquals("descr", predecessorRuleItem.getDescription());
+            
+            assertEquals("default", predecessorRuleItem.getPackageName());
             
             
             
@@ -494,6 +508,9 @@ public class RuleItemTestCase extends TestCase {
         
         assertEquals("b", ruleItem.getCoverage());
         assertEquals("me", ruleItem.getLastContributor());
+        
+        assertEquals("", ruleItem.getExternalRelation());
+        assertEquals("", ruleItem.getExternalSource());
         
     }
     

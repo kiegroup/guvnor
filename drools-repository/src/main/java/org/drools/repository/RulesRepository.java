@@ -613,6 +613,7 @@ public class RulesRepository {
             Calendar lastModified = Calendar.getInstance();
             rulePackageNode.setProperty(RulePackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
             
+            rulePackageNode.setProperty( RulePackageItem.CREATION_DATE_PROPERTY, lastModified );
             
             this.session.save();
             
@@ -685,6 +686,8 @@ public class RulesRepository {
     }
 
     
+    
+    
     /**
      * This will retrieve a list of RuleItem objects - that are allocated to the 
      * provided category.
@@ -754,6 +757,38 @@ public class RulesRepository {
     }
 
 
+    /**
+     * This moves a rule asset from one package to another, preserving history etc etc.
+     * 
+     * @param newPackage The destination package.
+     * @param uuid The UUID of the rule
+     * @param explanation The reason (which will be added as the checkin message).
+     */
+    public void moveRuleItemPackage(String newPackage, String uuid, String explanation) {
+        try {
+            RuleItem item = loadRuleByUUID( uuid );
+            String oldPackage = item.getPackageName();
+            RulePackageItem sourcePkg = loadRulePackage( oldPackage );
+            RulePackageItem destPkg = loadRulePackage( newPackage );
+            
+            String sourcePath = item.node.getPath();
+            String destPath = destPkg.node.getPath() + "/" + RulePackageItem.RULES_FOLDER_NAME + "/" + item.getName(); 
+            
+            this.session.move(sourcePath , destPath );
+            
+            item.checkout();
+            item.node.setProperty( RuleItem.PACKAGE_NAME_PROPERTY, newPackage );
+            
+            item.checkin( explanation );            
+            sourcePkg.checkin( explanation );
+            destPkg.checkin( explanation );
+            
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException(e);
+        }
+        
+        
+    }
 
 
 

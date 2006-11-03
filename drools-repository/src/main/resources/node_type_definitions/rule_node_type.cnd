@@ -27,9 +27,9 @@
 
 - drools:dateExpired (date)
   
-- drools:ruleLanguage (string)
-  = 'DRL'
-  mandatory autocreated
+- drools:packageName (string)
+  mandatory  
+  
 
 - drools:dslReference (reference)
   copy 

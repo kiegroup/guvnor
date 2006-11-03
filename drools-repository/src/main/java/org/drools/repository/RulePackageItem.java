@@ -118,18 +118,20 @@ public class RulePackageItem extends VersionableItem {
                                   "Initial" );
 
             Calendar lastModified = Calendar.getInstance();
-            ruleNode.setProperty( RuleItem.LAST_MODIFIED_PROPERTY_NAME,
-                                  lastModified );
             
+            ruleNode.setProperty( RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified );            
+            ruleNode.setProperty( RuleItem.CREATION_DATE_PROPERTY, lastModified );
             
+            ruleNode.setProperty( RuleItem.PACKAGE_NAME_PROPERTY, this.getName() );
             
-
-            RuleItem rule = new RuleItem( this.rulesRepository,
-                                          ruleNode );
+            RuleItem rule = new RuleItem( this.rulesRepository, ruleNode );
+            
             if (initialCategory != null) {
                 rule.addCategory( initialCategory );
             }
-            //rule.setState( "Draft" );
+            
+            
+            
             this.rulesRepository.save();
             
             rule.checkin( "Initial" );
@@ -157,6 +159,8 @@ public class RulePackageItem extends VersionableItem {
         }
     }
 
+    
+    
     // The following should be kept for reference on how to add a reference that 
     //is either locked to a version or follows head - FOR SHARING RULES
     //    /**

@@ -8,6 +8,7 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
+import javax.jcr.version.Version;
 
 import org.drools.repository.util.VersionNumberGenerator;
 
@@ -47,12 +48,14 @@ public abstract class VersionableItem extends Item {
     /**
      * The name of the state property on the rule node type
      */
-    public static final String STATE_PROPERTY_NAME = "drools:stateReference";
-    
+    public static final String STATE_PROPERTY_NAME            = "drools:stateReference";
+
     /**
      * The name of the tag property on the rule node type
      */
-    public static final String CATEGORY_PROPERTY_NAME              = "drools:categoryReference";
+    public static final String CATEGORY_PROPERTY_NAME         = "drools:categoryReference";
+
+    public static final String CREATION_DATE_PROPERTY         = "drools:createdDate";
 
     /**
      * The possible formats for the format property of the node
@@ -229,44 +232,50 @@ public abstract class VersionableItem extends Item {
                               TITLE_PROPERTY_NAME );
     }
 
-
     public void updateLastContributor(String contibName) {
-        updateStringProperty( contibName, LAST_CONTRIBUTOR_PROPERTY_NAME );
+        updateStringProperty( contibName,
+                              LAST_CONTRIBUTOR_PROPERTY_NAME );
     }
 
-    
     public void updateType(String type) {
-        updateStringProperty( type, TYPE_PROPERTY_NAME );
+        updateStringProperty( type,
+                              TYPE_PROPERTY_NAME );
     }
-    
+
     public void updateExternalSource(String source) {
-        updateStringProperty( source, SOURCE_PROPERTY_NAME );
+        updateStringProperty( source,
+                              SOURCE_PROPERTY_NAME );
     }
-    
+
     public void updateSubject(String sub) {
-        updateStringProperty( sub, SUBJECT_PROPERTY_NAME );
+        updateStringProperty( sub,
+                              SUBJECT_PROPERTY_NAME );
     }
-    
+
     public void updateExternalRelation(String rel) {
-        updateStringProperty( rel, RELATION_PROPERTY_NAME );
+        updateStringProperty( rel,
+                              RELATION_PROPERTY_NAME );
     }
-    
+
     public void updateRights(String rights) {
-        updateStringProperty( rights, RIGHTS_PROPERTY_NAME );
+        updateStringProperty( rights,
+                              RIGHTS_PROPERTY_NAME );
     }
-    
+
     public void updateCoverage(String cov) {
-        updateStringProperty( cov, COVERAGE_PROPERTY_NAME );
+        updateStringProperty( cov,
+                              COVERAGE_PROPERTY_NAME );
     }
-    
+
     public void updatePublisher(String pub) {
-        updateStringProperty( pub, PUBLISHER_PROPERTY_NAME );
+        updateStringProperty( pub,
+                              PUBLISHER_PROPERTY_NAME );
     }
-    
+
     /**
      * update a text field.
      */
-    private void updateStringProperty(String value,
+    protected void updateStringProperty(String value,
                                       String prop) {
         try {
             checkIsUpdateable();
@@ -279,7 +288,7 @@ public abstract class VersionableItem extends Item {
                                    lastModified );
 
         } catch ( Exception e ) {
-            if (e instanceof RuntimeException) {
+            if ( e instanceof RuntimeException ) {
                 throw (RuntimeException) e;
             }
             throw new RulesRepositoryException( e );
@@ -294,15 +303,7 @@ public abstract class VersionableItem extends Item {
      * @throws RulesRepositoryException
      */
     public String getDescription() throws RulesRepositoryException {
-        try {
-
-            Property data = getVersionContentNode().getProperty( DESCRIPTION_PROPERTY_NAME );
-            return data.getValue().getString();
-        } catch ( Exception e ) {
-            log.error( "Caught Exception",
-                       e );
-            throw new RulesRepositoryException( e );
-        }
+            return getStringProperty( DESCRIPTION_PROPERTY_NAME );
     }
 
     /**
@@ -310,15 +311,17 @@ public abstract class VersionableItem extends Item {
      * can provide an implementation of VersionNumberGenerator if needed).
      */
     public String getVersionNumber() {
-        try {
-            if ( getVersionContentNode().hasProperty( VERSION_NUMBER_PROPERTY_NAME ) ) {
-                return getVersionContentNode().getProperty( VERSION_NUMBER_PROPERTY_NAME ).getString();
-            } else {
-                return null;
-            }
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
-        }
+//        try {
+//            if ( getVersionContentNode().hasProperty( VERSION_NUMBER_PROPERTY_NAME ) ) {
+//                return getVersionContentNode().getProperty( VERSION_NUMBER_PROPERTY_NAME ).getString();
+//            } else {
+//                return null;
+//            }
+//        } catch ( RepositoryException e ) {
+//            throw new RulesRepositoryException( e );
+//        }
+        
+        return getStringProperty( VERSION_NUMBER_PROPERTY_NAME );
     }
 
     /**
@@ -341,7 +344,6 @@ public abstract class VersionableItem extends Item {
      */
     public Calendar getLastModified() throws RulesRepositoryException {
         try {
-
             Property lastModifiedProperty = getVersionContentNode().getProperty( LAST_MODIFIED_PROPERTY_NAME );
             return lastModifiedProperty.getDate();
         } catch ( Exception e ) {
@@ -398,9 +400,10 @@ public abstract class VersionableItem extends Item {
             throw new RulesRepositoryException( e );
         }
     }
-    
+
     public void updateFormat(String newFormat) {
-        this.updateStringProperty( newFormat, FORMAT_PROPERTY_NAME );
+        this.updateStringProperty( newFormat,
+                                   FORMAT_PROPERTY_NAME );
     }
 
     /**
@@ -411,16 +414,21 @@ public abstract class VersionableItem extends Item {
     public Node getVersionContentNode() throws RepositoryException,
                                        PathNotFoundException {
         if ( this.contentNode == null ) {
-
-            if ( this.node.getPrimaryNodeType().getName().equals( "nt:version" ) ) {
-                contentNode = this.node.getNode( "jcr:frozenNode" );
-            } else {
-                contentNode = this.node;
-            }
-
+            this.contentNode = getRealContentFromVersion(this.node);
         }
-
         return contentNode;
+    }
+
+    /**
+     * This deals with a node which *may* be a version, if it is, it grabs the frozen copy.
+     */
+    protected Node getRealContentFromVersion(Node node) throws RepositoryException,
+                                            PathNotFoundException {
+        if ( node.getPrimaryNodeType().getName().equals( "nt:version" ) ) {
+            return node.getNode( "jcr:frozenNode" );
+        } else {
+            return node;
+        }
     }
 
     /** 
@@ -504,7 +512,6 @@ public abstract class VersionableItem extends Item {
         }
     }
 
-    
     /**
      * Sets this object's rule node's state property to refer to the specified state node
      * 
@@ -513,19 +520,19 @@ public abstract class VersionableItem extends Item {
      */
     public void updateState(String stateName) throws RulesRepositoryException {
         try {
-            
+
             //now set the state property of the rule                              
             checkout();
-            
-            StateItem stateItem = this.rulesRepository.getState(stateName);
-            this.updateState(stateItem);
-        }
-        catch(Exception e) {
-            log.error("Caught exception", e);
-            throw new RulesRepositoryException(e);
+
+            StateItem stateItem = this.rulesRepository.getState( stateName );
+            this.updateState( stateItem );
+        } catch ( Exception e ) {
+            log.error( "Caught exception",
+                       e );
+            throw new RulesRepositoryException( e );
         }
     }
-    
+
     /**
      * Sets this object's rule node's state property to refer to the specified StateItem's node
      * 
@@ -537,22 +544,23 @@ public abstract class VersionableItem extends Item {
         checkIsUpdateable();
         try {
             //make sure this node is a rule node
-            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+            if ( this.node.getPrimaryNodeType().getName().equals( "nt:version" ) ) {
                 String message = "Error. States can only be set for the head version of a rule node";
-                log.error(message);
-                throw new RulesRepositoryException(message);
-            } 
-            
+                log.error( message );
+                throw new RulesRepositoryException( message );
+            }
+
             //now set the state property of the rule                              
             checkout();
-            this.node.setProperty(STATE_PROPERTY_NAME, stateItem.getNode());
-        }
-        catch(Exception e) {
-            log.error("Caught exception", e);
-            throw new RulesRepositoryException(e);
+            this.node.setProperty( STATE_PROPERTY_NAME,
+                                   stateItem.getNode() );
+        } catch ( Exception e ) {
+            log.error( "Caught exception",
+                       e );
+            throw new RulesRepositoryException( e );
         }
     }
-    
+
     /**
      * Gets StateItem object corresponding to the state property of this object's node
      * 
@@ -563,74 +571,73 @@ public abstract class VersionableItem extends Item {
     public StateItem getState() throws RulesRepositoryException {
         try {
             Node content = getVersionContentNode();
-            Property stateProperty = content.getProperty(STATE_PROPERTY_NAME);
-            Node stateNode = this.rulesRepository.getSession().getNodeByUUID(stateProperty.getString());
-            return new StateItem(this.rulesRepository, stateNode);
-        }
-        catch(PathNotFoundException e) {
+            Property stateProperty = content.getProperty( STATE_PROPERTY_NAME );
+            Node stateNode = this.rulesRepository.getSession().getNodeByUUID( stateProperty.getString() );
+            return new StateItem( this.rulesRepository,
+                                  stateNode );
+        } catch ( PathNotFoundException e ) {
             //not set
             return null;
-        }
-        catch(Exception e) {
-            log.error("Caught exception", e);
-            throw new RulesRepositoryException(e);
+        } catch ( Exception e ) {
+            log.error( "Caught exception",
+                       e );
+            throw new RulesRepositoryException( e );
         }
     }
-    
+
     /**
      * This will return the current state item as a displayable thing.
      * If there is no state, it will be an empty string.
      */
     public String getStateDescription() {
         StateItem state = this.getState();
-        if (state == null) {
+        if ( state == null ) {
             return "";
         } else {
             return state.getName();
         }
-    }    
-    
+    }
+
     /** Compare this rules state with some other state */
     public boolean sameState(StateItem other) {
         StateItem thisState = getState();
-        if (thisState == other) {
+        if ( thisState == other ) {
             return true;
-        } else if (thisState != null){
+        } else if ( thisState != null ) {
             return thisState.equals( other );
         } else {
             return false;
         }
     }
-    
-    
+
     /**
      * Returns the last contributors name.
      */
     public String getLastContributor() {
         return getStringProperty( LAST_CONTRIBUTOR_PROPERTY_NAME );
     }
-    
+
     /**
      * This is the person who initially created the resource.
      */
     public String getCreator() {
         return getStringProperty( CREATOR_PROPERTY_NAME );
     }
-    
+
     /**
      * This is the Dublin Core field of type (a broad classification of resource type).
      */
     public String getType() {
-       return getStringProperty( TYPE_PROPERTY_NAME ); 
+        return getStringProperty( TYPE_PROPERTY_NAME );
     }
-    
+
     /**
      * This is the source of the asset/rule. Ie a human description of where it came from.
      */
     public String getExternalSource() {
-        return getStringProperty( SOURCE_PROPERTY_NAME );       
+        return getStringProperty( SOURCE_PROPERTY_NAME );
     }
-    
+
     /**
      * Typically, 
      * Subject will be expressed as keywords, 
@@ -646,23 +653,22 @@ public abstract class VersionableItem extends Item {
     public String getExternalRelation() {
         return getStringProperty( RELATION_PROPERTY_NAME );
     }
-    
+
     /**
      * Optionally contains any copyright/ownership rights for the asset.
      */
     public String getRights() {
         return getStringProperty( RIGHTS_PROPERTY_NAME );
     }
-    
+
     /**
      * Typically, Coverage will include spatial location 
      * (a place name or geographic coordinates), temporal period (a period label, date, or date range) or jurisdiction (such as a named administrative entity). Recommended best practice is to select a value from a controlled vocabulary (for example, the Thesaurus of Geographic Names [TGN]) and to use, where appropriate, named places or time periods in preference to numeric identifiers such as sets of coordinates or date ranges.
      */
     public String getCoverage() {
-        return getStringProperty( COVERAGE_PROPERTY_NAME );        
+        return getStringProperty( COVERAGE_PROPERTY_NAME );
     }
-    
-    
+
     /**
      *  Examples of Publisher include a person, an organization, or a service. 
      *  Typically, the name of a Publisher should be used to indicate the entity.
@@ -671,20 +677,32 @@ public abstract class VersionableItem extends Item {
         return getStringProperty( PUBLISHER_PROPERTY_NAME );
     }
 
-    private String getStringProperty(String property) {
+    /**
+     * This returns the date/time on which the asset was "ORIGINALLY CREATED".
+     * Kinda handy if you want to know how old something is.
+     */
+    public Calendar getCreatedDate() {
+        Property prop;
         try {
-            Node theNode = getVersionContentNode();
-            Property data = theNode.getProperty( property );
-            return data.getValue().getString();
-
-        } catch ( Exception e ) {
-            if ( e instanceof RuntimeException ) {
-                throw (RuntimeException) e;
-
-            } else {
-                throw new RulesRepositoryException( e );
-            }
+            prop = getVersionContentNode().getProperty( CREATION_DATE_PROPERTY );
+            return prop.getDate();
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
         }
+
     }
 
+    protected String getStringProperty(String property) {
+        try {
+            Node theNode = getVersionContentNode();
+            if ( theNode.hasProperty( property ) ) {
+                Property data = theNode.getProperty( property );
+                return data.getValue().getString();
+            } else {
+                return "";
+            }
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
+        }
+    }
 }
