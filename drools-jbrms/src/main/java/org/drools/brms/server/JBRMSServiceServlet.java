@@ -204,7 +204,9 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         asset.dateEffective = formatDate( item.getDateEffective() );
         asset.dateExpired = formatDate( item.getDateExpired() );
         
-        
+        //TODO: this could be refactored to there are different loadXXX methods, or 
+        //use polymorphism or something, in any case avoiding this dirty if statement...
+        //as we know at the "client" what we should be loaded from the format string.
         if (item.getFormat().equals( "DSL" )) {
             //ok here is where we do DSLs...
             throw new SerializableException("Can't load DSL rules just yet.");

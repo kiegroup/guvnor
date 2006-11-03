@@ -128,7 +128,6 @@ public class ServiceImplementationTest extends TestCase {
       assertNotNull(fmt);
       
       assertTrue(fmt.length() > 8);
-      System.out.println(fmt);
   }
   
   public void testLoadRuleAsset() throws Exception {
@@ -145,7 +144,7 @@ public class ServiceImplementationTest extends TestCase {
       TableDataRow row = res.data[0];
       String uuid = row.id;
       
-      System.out.println("UUID: " + uuid);
+
       
       RuleAsset asset = impl.loadRuleAsset( uuid );
       assertNotNull(asset);
@@ -158,6 +157,14 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals("testLoadRuleAsset", asset.metaData.name);
       assertEquals("testLoadRuleAsset", asset.metaData.title);
       assertEquals("testLoadRuleAsset", asset.metaData.packageName);
+   
+      RuleItem rule = impl.repo.loadRulePackage( "testLoadRuleAsset" ).loadRule( "testLoadRuleAsset" );
+      rule.updateState( "whee" );
+      rule.checkin( "changed state" );
+      asset = impl.loadRuleAsset( uuid );
+      
+      assertEquals("whee", asset.metaData.state);
+      
       
   }
   
