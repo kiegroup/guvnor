@@ -26,23 +26,64 @@ public class Toolbar extends Composite {
      * @param direction
      */
     public Toolbar(final EditableDTGrid grid) {
-		Image insert = new Image("images/new_item.gif");
-		insert.addClickListener(new ClickListener() {
+		toolbar.add(createInsertRow(grid));
+		toolbar.add(createDeleteRow(grid));
+		toolbar.add(createMoveUp(grid));
+		toolbar.add(createMoveDown(grid));
+		toolbar.add(createMergeCol(grid));
+		toolbar.add(createSplitCol(grid));
+		toolbar.add(createMergeRow(grid));
+		toolbar.add(createSplitRow(grid));
+		toolbar.setStyleName("dt-editor-Toolbar");
+        
+        initWidget( toolbar );
+    }
+	private Image createSplitRow(final EditableDTGrid grid) {
+		Image split = new Image("images/split_row.gif");
+		split.addClickListener(new ClickListener() {
 
 			public void onClick(Widget w) {
-				grid.insertRow();
-			}
-		});
-		toolbar.add(insert);
-        Image delete = new Image("images/clear_item.gif");
-        delete.setTitle( "Delete row" );
-		delete.addClickListener(new ClickListener() {
+				grid.splitRow();
+			}});
+		return split;
+	}
+	private Image createMergeRow(final EditableDTGrid grid) {
+		Image merge = new Image("images/merge_row.gif");
+		merge.addClickListener(new ClickListener() {
 			
 			public void onClick(Widget w) {
-				grid.deleteRow();
-			}
-		});
-		toolbar.add(delete);
+				grid.mergeRow();
+			}});
+		return merge;
+	}
+	private Image createSplitCol(final EditableDTGrid grid) {
+		Image split = new Image("images/split_col.gif");
+		split.addClickListener(new ClickListener() {
+			
+			public void onClick(Widget w) {
+				grid.splitCol();
+			}});
+		return split;
+	}
+	private Image createMergeCol(final EditableDTGrid grid) {
+		Image merge = new Image("images/merge_col.gif");
+		merge.addClickListener(new ClickListener() {
+			
+			public void onClick(Widget w) {
+				grid.mergeCol();
+			}});
+		return merge;
+	}
+	private Image createMoveDown(final EditableDTGrid grid) {
+		Image moveDown = new Image("images/shuffle_down.gif");
+		moveDown.addClickListener(new ClickListener() {
+			
+			public void onClick(Widget w) {
+				grid.moveDown();
+			}});
+		return moveDown;
+	}
+	private Image createMoveUp(final EditableDTGrid grid) {
 		Image moveUp = new Image("images/shuffle_up.gif");
 		moveUp.addClickListener(new ClickListener() {
 			
@@ -50,18 +91,29 @@ public class Toolbar extends Composite {
 				grid.moveUp();
 			}
 		});
-		toolbar.add(moveUp);
-		Image moveDown = new Image("images/shuffle_down.gif");
-		toolbar.add(moveDown);
-		moveDown.addClickListener(new ClickListener() {
+		return moveUp;
+	}
+	private Image createDeleteRow(final EditableDTGrid grid) {
+		Image delete = new Image("images/clear_item.gif");
+        delete.setTitle( "Delete row" );
+		delete.addClickListener(new ClickListener() {
+			
+			public void onClick(Widget w) {
+				grid.deleteRow();
+			}
+		});
+		return delete;
+	}
+	private Image createInsertRow(final EditableDTGrid grid) {
+		Image insert = new Image("images/new_item.gif");
+		insert.addClickListener(new ClickListener() {
 
 			public void onClick(Widget w) {
-				grid.moveDown();
-			}});
-		toolbar.setStyleName("dt-editor-Toolbar");
-        
-        initWidget( toolbar );
-    }
+				grid.insertRow();
+			}
+		});
+		return insert;
+	}
     
     public void setRow(final int row) {
     	this.row = row;

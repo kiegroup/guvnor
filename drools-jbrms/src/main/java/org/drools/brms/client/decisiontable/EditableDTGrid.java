@@ -1,5 +1,12 @@
 package org.drools.brms.client.decisiontable;
 
+import java.util.Iterator;
+
+import org.drools.brms.client.decisiontable.model.Cell;
+import org.drools.brms.client.decisiontable.model.Column;
+import org.drools.brms.client.decisiontable.model.DecisionTable;
+import org.drools.brms.client.decisiontable.model.Row;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -29,6 +36,8 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 public class EditableDTGrid extends Composite {
 
 	private static final int START_DATA_ROW = 1;
+	
+	private DecisionTable dt;
 
 	private FlexTable table = new FlexTable();
 
@@ -39,10 +48,35 @@ public class EditableDTGrid extends Composite {
 	private FlexCellFormatter cellFormatter = table.getFlexCellFormatter();
 
 	public EditableDTGrid(String dtName) {
-		// for if I switch to a Grid
-		// table.resizeColumns( numCols() + 1 );
-		// table.resizeRows( numRows() );
+		this(dtName, createDecisionTable());
+	}
 
+	private static DecisionTable createDecisionTable() {
+		DecisionTable dt = new DecisionTable();
+		Column[] columns = { dt.createColumn(), dt.createColumn(),
+				dt.createColumn(), dt.createColumn(), dt.createColumn(),
+				dt.createColumn() };
+		createHeader(dt, columns);
+		for (int i = 0; i < 15; i++) {
+			Row row = dt.createRow();
+			for (int j = 0; j < columns.length; j++) {
+				Cell cell = dt.createCell(row, columns[j]);
+				cell.setValue("boo " + i + ":" + j);
+			}
+		}
+		return dt;
+	}
+
+	private static void createHeader(DecisionTable dt, Column[] columns) {
+		Row row = dt.getHeaderRow();
+		for (int i = 0; i < 6; i++) {
+			Cell cell = dt.createCell(row, columns[i]);
+			cell.setValue("some header " + i);
+		}
+	}
+
+	public EditableDTGrid(final String dtName, final DecisionTable dt) {
+		this.dt = dt;
 		VerticalPanel vert = new VerticalPanel();
 
 		Label title = new Label(dtName);
@@ -76,11 +110,14 @@ public class EditableDTGrid extends Composite {
 		initWidget(vert);
 	}
 
-	protected void setCurrentCell(int row, int col) {
-
+	protected void setCurrentCell(int row, int column) {
+		System.out.println("row: " + row + ", col: " + column);
+		Cell cell = dt.getRow(row - 1).getCell(column - 1);
+		System.out.println("cell: " + cell);
+		int col = cell.getColumnIndex() + 1;
 		if (col > 0 && col <= numCols() && row >= START_DATA_ROW
 				&& (row != currentRow || col != currentCol)) {
-			if (currentRow > START_DATA_ROW) {
+			if (currentRow >= START_DATA_ROW) {
 				TextBox text = (TextBox) table
 						.getWidget(currentRow, currentCol);
 				newCell(currentRow, currentCol, text.getText());
@@ -109,14 +146,18 @@ public class EditableDTGrid extends Composite {
 	}
 
 	private void populateHeader() {
-
+		Row row = dt.getHeaderRow();
 		// for the count column
 		cellFormatter.setStyleName(0, 0, "dt-editor-DescriptionCell");
+		
+		table.setText(0, 0, "");
+		cellFormatter.setStyleName(0, 0, "dt-editor-CountColumn");
 
-		for (int col = 1; col < numCols() + 1; col++) {
-			table.setText(0, col, "some header " + col);
-			cellFormatter.setStyleName(0, col, "dt-editor-DescriptionCell");
+		for (Iterator it = dt.getColumns().iterator(); it.hasNext();) {
+			Column column = (Column) it.next();
+			newHeaderCell(row.getCell(column));
 		}
+		
 	}
 
 	/**
@@ -127,46 +168,105 @@ public class EditableDTGrid extends Composite {
 	 *            So it can set the style of each cell that is created.
 	 */
 	private void populateDataGrid() {
-
-		for (int i = 0; i < numRows(); i++) {
-
-			int rowCount = i + 1;
-
-			int column = 1;
-			int row = i + START_DATA_ROW;
-
-			// now do the count column
-			table.setText(row, 0, Integer.toString(rowCount));
-			cellFormatter.setStyleName(row, 0, "dt-editor-CountColumn");
-			for (; column < numCols() + 1; column++) {
-				String text = "boo " + column;
-				newCell(row, column, text);
+		int i = 1;
+		for (Iterator it = dt.getRows().iterator(); it.hasNext();i++) {
+			Row row = (Row) it.next();
+			table.setText(i, 0, Integer.toString(i));
+			cellFormatter.setStyleName(i, 0, "dt-editor-CountColumn");
+			for (Iterator it2 = dt.getColumns().iterator(); it2.hasNext();) {
+				Column column = (Column) it2.next();
+				newCell(row.getCell(column));
 			}
-
+			
 		}
 	}
 
+	private void newCell(Cell cell) {
+		int rowIndex = cell.getRowIndex() + START_DATA_ROW;
+		int columnIndex = cell.getColumnIndex() + 1;
+		newCell(cell, rowIndex, columnIndex, "dt-editor-Cell");
+	}
+
+	private void newHeaderCell(Cell cell) {
+		int columnIndex = cell.getColumnIndex() + 1;
+		newCell(cell, 0, columnIndex, "dt-editor-DescriptionCell");
+	}
+
+	private void newCell(Cell cell, int rowIndex, int columnIndex, String style) {
+		table.setText(rowIndex, columnIndex, cell.getValue());
+		cellFormatter.setStyleName(rowIndex, columnIndex, style);
+		cellFormatter.setColSpan(rowIndex, columnIndex, cell.getColspan());
+		cellFormatter.setRowSpan(rowIndex, columnIndex, cell.getRowspan());
+	}
+	
 	private void newCell(int row, int column, String text) {
 		table.setText(row, column, text);
 		cellFormatter.setStyleName(row, column, "dt-editor-Cell");
 	}
 
-	public void mergeCell(int row, int col) {
-		int currentSpan = cellFormatter.getColSpan(row, col);
-		if (col + currentSpan <= numCols()) {
-			int nextSpan = cellFormatter.getColSpan(row, col + 1);
-			table.removeCell(row, col + 1);
-			cellFormatter.setColSpan(row, col, currentSpan + nextSpan);
+	public void mergeCol() {
+		if (currentRow >= START_DATA_ROW && currentCol > 0) {
+			int currentSpan = cellFormatter.getColSpan(currentRow, currentCol);
+			if (currentCol + currentSpan <= numCols()) {
+				int nextSpan = cellFormatter.getColSpan(currentRow,
+						currentCol + 1);
+				int currentRowSpan = cellFormatter.getRowSpan(currentRow,
+						currentCol);
+				int nextRowSpan = cellFormatter.getRowSpan(currentRow,
+						currentCol + 1);
+				while (nextRowSpan < currentRowSpan) {
+					mergeRow(currentRow, currentCol + 1);
+					nextRowSpan++;
+				}
+				table.removeCell(currentRow, currentCol + 1);
+				cellFormatter.setColSpan(currentRow, currentCol, currentSpan
+						+ nextSpan);
+			}
 		}
 	}
 
-	public void splitCell(int row, int col) {
-		int currentSpan = cellFormatter.getColSpan(row, col);
-		if (currentSpan > 1) {
-			cellFormatter.setColSpan(row, col++, currentSpan - 1);
-			table.insertCell(row, col);
-			newCell(row, col, "");
-			cellFormatter.setStyleName(row, col, "dt-editor-Cell");
+	public void mergeRow() {
+		if (currentRow >= START_DATA_ROW && currentCol > 0) {
+			mergeRow(currentRow, currentCol);
+		}
+	}
+
+	private void mergeRow(int row, int col) {
+		int currentSpan = cellFormatter.getRowSpan(row, col);
+		if (row + currentSpan <= numRows) {
+			int nextSpan = cellFormatter.getRowSpan(row + currentSpan, col);
+			table.removeCell(row + currentSpan, col);
+			cellFormatter.setRowSpan(row, col, currentSpan + nextSpan);
+		}
+	}
+
+	public void splitCol() {
+		if (currentRow >= START_DATA_ROW && currentCol > 0) {
+			int currentSpan = cellFormatter.getColSpan(currentRow, currentCol);
+			if (currentSpan > 1) {
+				cellFormatter.setColSpan(currentRow, currentCol,
+						currentSpan - 1);
+				int newCol = currentCol + 1;
+				table.insertCell(currentRow, newCol);
+				newCell(currentRow, newCol, "");
+				cellFormatter
+						.setStyleName(currentRow, newCol, "dt-editor-Cell");
+			}
+		}
+	}
+
+	public void splitRow() {
+		if (currentRow >= START_DATA_ROW && currentCol > 0) {
+			int currentSpan = cellFormatter.getRowSpan(currentRow, currentCol);
+			if (currentSpan > 1) {
+				cellFormatter.setRowSpan(currentRow, currentCol,
+						currentSpan - 1);
+				int newRow = currentRow + currentSpan - 1;
+				table.insertCell(newRow, currentCol);
+				newCell(newRow, currentCol, "");
+				cellFormatter
+						.setStyleName(newRow, currentCol, "dt-editor-Cell");
+			}
 		}
 	}
 
