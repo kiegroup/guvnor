@@ -44,6 +44,8 @@ public class EditableDTGrid extends Composite {
 	private int currentRow;
 
 	private int currentCol;
+	
+	private Cell currentCell;
 
 	private FlexCellFormatter cellFormatter = table.getFlexCellFormatter();
 
@@ -112,11 +114,12 @@ public class EditableDTGrid extends Composite {
 
 	protected void setCurrentCell(int row, int column) {
 		System.out.println("row: " + row + ", col: " + column);
-		Cell cell = dt.getRow(row - 1).getCell(column - 1);
-		System.out.println("cell: " + cell);
-		int col = cell.getColumnIndex() + 1;
-		if (col > 0 && col <= numCols() && row >= START_DATA_ROW
-				&& (row != currentRow || col != currentCol)) {
+		if (column > 0 && column <= numCols() && row >= START_DATA_ROW
+				&& (row != currentRow || column != currentCol)) {
+			Cell selectedCell = dt.getRow(row - 1).getCell(column - 1);
+			int col = selectedCell.getColumnIndex() + 1;
+			System.out.println("cell: " + selectedCell);
+
 			if (currentRow >= START_DATA_ROW) {
 				TextBox text = (TextBox) table
 						.getWidget(currentRow, currentCol);
@@ -132,16 +135,17 @@ public class EditableDTGrid extends Composite {
 			}
 			if (currentCol != col) {
 				if (currentCol > 0) {
-					cellFormatter.setStyleName(0, currentCol,
+					cellFormatter.setStyleName(0, currentCell.getColumnIndex() + 1,
 							"dt-editor-DescriptionCell");
 				}
 				cellFormatter.setStyleName(0, col,
 						"dt-editor-DescriptionCell-selected");
 			}
-			cellFormatter.setStyleName(row, col, "dt-editor-Cell-selected");
+			cellFormatter.setStyleName(row, column, "dt-editor-Cell-selected");
 			currentRow = row;
-			currentCol = col;
-			editColumn(row, col);
+			currentCol = column;
+			currentCell = selectedCell;
+			editColumn(row, column);
 		}
 	}
 
@@ -205,7 +209,9 @@ public class EditableDTGrid extends Composite {
 	}
 
 	public void mergeCol() {
-		if (currentRow >= START_DATA_ROW && currentCol > 0) {
+		if (currentCell != null) {
+			dt.mergeCol(currentCell);
+//		if (currentRow >= START_DATA_ROW && currentCol > 0) {
 			int currentSpan = cellFormatter.getColSpan(currentRow, currentCol);
 			if (currentCol + currentSpan <= numCols()) {
 				int nextSpan = cellFormatter.getColSpan(currentRow,
@@ -441,8 +447,5 @@ public class EditableDTGrid extends Composite {
 		return 6;
 	}
 
-	private int numRows() {
-		return numRows;
-	}
 
 }

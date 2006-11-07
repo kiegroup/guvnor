@@ -17,4 +17,7 @@ public class Column {
 	public int getIndex() {
 		return parent.getColumnIndex(this);
 	}
+	public void removeCell(Cell cell) {
+		cells.remove(cell);
+	}
 }

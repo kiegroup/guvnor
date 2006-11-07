@@ -50,6 +50,9 @@ class Cell {
 	public String toString() {
 		return "Cell[" + getRowIndex() + ", " + getColumnIndex() + ", " + getValue() + "]";
 	}
+	public void setColspan(int colspan) {
+		this.colspan = colspan;
+	}
 	
 	
 }

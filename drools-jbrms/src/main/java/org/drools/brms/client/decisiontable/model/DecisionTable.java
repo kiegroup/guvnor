@@ -56,4 +56,19 @@ public class DecisionTable {
 	public int getColumnIndex(Column column) {
 		return columns.indexOf(column);
 	}
+
+	public void mergeCol(Cell currentCell) {
+		Row row = currentCell.getRow();
+		System.err.println("currentCell.getColumnIndex(): "
+				+ currentCell.getColumnIndex());
+		int currentColspan = currentCell.getColspan();
+		System.err.println("currentCell.getColspan(): "
+				+ currentColspan);
+		int nextCellColumnIndex = currentCell.getColumnIndex() + currentColspan;
+		Column nextColumn = (Column) columns.get(nextCellColumnIndex);
+		Cell nextCell = row.getCell(nextColumn);
+		currentCell.setColspan(currentColspan + nextCell.getColspan());
+		row.removeColumn(nextColumn);
+		nextColumn.removeCell(nextCell);
+	}
 }

@@ -33,4 +33,7 @@ public class Row {
 		}
 		return getCell(column);
 	}
+	public void removeColumn(Column nextColumn) {
+		cells.remove(nextColumn);
+	}
 }
