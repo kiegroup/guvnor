@@ -59,16 +59,23 @@ public class DecisionTable {
 
 	public void mergeCol(Cell currentCell) {
 		Row row = currentCell.getRow();
-		System.err.println("currentCell.getColumnIndex(): "
-				+ currentCell.getColumnIndex());
 		int currentColspan = currentCell.getColspan();
-		System.err.println("currentCell.getColspan(): "
-				+ currentColspan);
 		int nextCellColumnIndex = currentCell.getColumnIndex() + currentColspan;
 		Column nextColumn = (Column) columns.get(nextCellColumnIndex);
 		Cell nextCell = row.getCell(nextColumn);
 		currentCell.setColspan(currentColspan + nextCell.getColspan());
 		row.removeColumn(nextColumn);
 		nextColumn.removeCell(nextCell);
+	}
+	
+	public void mergeRow(Cell currentCell) {
+		Column column = currentCell.getColumn();
+		int currentRowspan = currentCell.getRowspan();
+		int nextCellRowIndex = currentCell.getRowIndex() + currentRowspan;
+		Row nextRow = (Row) rows.get(nextCellRowIndex);
+		Cell nextCell = nextRow.getCell(column);
+		currentCell.setRowspan(currentRowspan + nextCell.getRowspan());
+		nextRow.removeColumn(column);
+		column.removeCell(nextCell);
 	}
 }

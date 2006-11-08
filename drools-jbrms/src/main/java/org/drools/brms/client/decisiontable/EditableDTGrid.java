@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 public class EditableDTGrid extends Composite {
 
 	private static final int START_DATA_ROW = 1;
-	
+
 	private DecisionTable dt;
 
 	private FlexTable table = new FlexTable();
@@ -44,7 +44,7 @@ public class EditableDTGrid extends Composite {
 	private int currentRow;
 
 	private int currentCol;
-	
+
 	private Cell currentCell;
 
 	private FlexCellFormatter cellFormatter = table.getFlexCellFormatter();
@@ -113,39 +113,40 @@ public class EditableDTGrid extends Composite {
 	}
 
 	protected void setCurrentCell(int row, int column) {
-		System.out.println("row: " + row + ", col: " + column);
-		if (column > 0 && column <= numCols() && row >= START_DATA_ROW
-				&& (row != currentRow || column != currentCol)) {
+		if (column > 0 && column <= numCols() && row >= START_DATA_ROW) {
 			Cell selectedCell = dt.getRow(row - 1).getCell(column - 1);
-			int col = selectedCell.getColumnIndex() + 1;
-			System.out.println("cell: " + selectedCell);
+			if (selectedCell != currentCell) {
+				int col = selectedCell.getColumnIndex() + 1;
 
-			if (currentRow >= START_DATA_ROW) {
-				TextBox text = (TextBox) table
-						.getWidget(currentRow, currentCol);
-				newCell(currentRow, currentCol, text.getText());
-			}
-			if (currentRow != row) {
-				if (currentRow > START_DATA_ROW) {
-					cellFormatter.setStyleName(currentRow, 0,
-							"dt-editor-CountColumn");
+				if (currentRow >= START_DATA_ROW) {
+					TextBox text = (TextBox) table.getWidget(currentRow,
+							currentCol);
+					newCell(currentRow, currentCol, text.getText());
 				}
-				cellFormatter.setStyleName(row, 0,
-						"dt-editor-CountColumn-selected");
-			}
-			if (currentCol != col) {
-				if (currentCol > 0) {
-					cellFormatter.setStyleName(0, currentCell.getColumnIndex() + 1,
-							"dt-editor-DescriptionCell");
+				if (currentCell == null || currentRow != row) {
+					if (currentCell != null) {
+						cellFormatter.setStyleName(currentRow, 0,
+								"dt-editor-CountColumn");
+					}
+					cellFormatter.setStyleName(row, 0,
+							"dt-editor-CountColumn-selected");
 				}
-				cellFormatter.setStyleName(0, col,
-						"dt-editor-DescriptionCell-selected");
+				if (currentCell == null || (currentCell.getColumnIndex() + 1) != col) {
+					if (currentCell != null) {
+						cellFormatter.setStyleName(0, currentCell
+								.getColumnIndex() + 1,
+								"dt-editor-DescriptionCell");
+					}
+					cellFormatter.setStyleName(0, col,
+							"dt-editor-DescriptionCell-selected");
+				}
+				cellFormatter.setStyleName(row, column,
+						"dt-editor-Cell-selected");
+				currentRow = row;
+				currentCol = column;
+				currentCell = selectedCell;
+				editColumn(row, column);
 			}
-			cellFormatter.setStyleName(row, column, "dt-editor-Cell-selected");
-			currentRow = row;
-			currentCol = column;
-			currentCell = selectedCell;
-			editColumn(row, column);
 		}
 	}
 
@@ -153,7 +154,7 @@ public class EditableDTGrid extends Composite {
 		Row row = dt.getHeaderRow();
 		// for the count column
 		cellFormatter.setStyleName(0, 0, "dt-editor-DescriptionCell");
-		
+
 		table.setText(0, 0, "");
 		cellFormatter.setStyleName(0, 0, "dt-editor-CountColumn");
 
@@ -161,7 +162,7 @@ public class EditableDTGrid extends Composite {
 			Column column = (Column) it.next();
 			newHeaderCell(row.getCell(column));
 		}
-		
+
 	}
 
 	/**
@@ -173,7 +174,7 @@ public class EditableDTGrid extends Composite {
 	 */
 	private void populateDataGrid() {
 		int i = 1;
-		for (Iterator it = dt.getRows().iterator(); it.hasNext();i++) {
+		for (Iterator it = dt.getRows().iterator(); it.hasNext(); i++) {
 			Row row = (Row) it.next();
 			table.setText(i, 0, Integer.toString(i));
 			cellFormatter.setStyleName(i, 0, "dt-editor-CountColumn");
@@ -181,7 +182,7 @@ public class EditableDTGrid extends Composite {
 				Column column = (Column) it2.next();
 				newCell(row.getCell(column));
 			}
-			
+
 		}
 	}
 
@@ -202,7 +203,7 @@ public class EditableDTGrid extends Composite {
 		cellFormatter.setColSpan(rowIndex, columnIndex, cell.getColspan());
 		cellFormatter.setRowSpan(rowIndex, columnIndex, cell.getRowspan());
 	}
-	
+
 	private void newCell(int row, int column, String text) {
 		table.setText(row, column, text);
 		cellFormatter.setStyleName(row, column, "dt-editor-Cell");
@@ -211,7 +212,7 @@ public class EditableDTGrid extends Composite {
 	public void mergeCol() {
 		if (currentCell != null) {
 			dt.mergeCol(currentCell);
-//		if (currentRow >= START_DATA_ROW && currentCol > 0) {
+			// if (currentRow >= START_DATA_ROW && currentCol > 0) {
 			int currentSpan = cellFormatter.getColSpan(currentRow, currentCol);
 			if (currentCol + currentSpan <= numCols()) {
 				int nextSpan = cellFormatter.getColSpan(currentRow,
@@ -232,12 +233,14 @@ public class EditableDTGrid extends Composite {
 	}
 
 	public void mergeRow() {
-		if (currentRow >= START_DATA_ROW && currentCol > 0) {
+		if (currentCell != null) {
+			// if (currentRow >= START_DATA_ROW && currentCol > 0) {
 			mergeRow(currentRow, currentCol);
 		}
 	}
 
 	private void mergeRow(int row, int col) {
+		dt.mergeRow(currentCell);
 		int currentSpan = cellFormatter.getRowSpan(row, col);
 		if (row + currentSpan <= numRows) {
 			int nextSpan = cellFormatter.getRowSpan(row + currentSpan, col);
@@ -446,6 +449,5 @@ public class EditableDTGrid extends Composite {
 	private int numCols() {
 		return 6;
 	}
-
 
 }
