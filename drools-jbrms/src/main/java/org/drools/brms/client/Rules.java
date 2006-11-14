@@ -67,17 +67,15 @@ public class Rules extends JBRMSFeature {
 
             public void open(String key,
                              String type,
-                             String name) {
- 
+                             String name) { 
                 RuleViewer view = new RuleViewer(key, type, name);
                 
                 String displayName = name;
                 if (name.length() > 10) {
                     displayName = name.substring( 0, 7 ) + "...";
                 }
-                tab.add( view, "<img src='images/drools.gif'>" + displayName, true );
+                tab.add( view, "<img src='images/rule_asset.gif'>" + displayName, true );
                 tab.selectTab( tab.getWidgetIndex( view ) );
-                
                 
             }
             
