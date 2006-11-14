@@ -250,6 +250,10 @@ a:visited {
   margin: 8px;
 }
 
+.outline-Debug {
+  border: 2px solid #87B3FF;
+}
+
 .ks-popups-Popup {
   background-color: #FDFCDC;
   border: 1px solid #87B3FF;

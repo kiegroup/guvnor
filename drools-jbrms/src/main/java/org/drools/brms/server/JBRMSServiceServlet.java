@@ -222,9 +222,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
             asset.content = text;
 
         }
-        
         asset.metaData.packageName = item.getPackageName();
-        
         
         return asset;
     }

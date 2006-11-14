@@ -41,7 +41,7 @@
     <dependency>
       <groupId>google</groupId>
       <artifactId>gwt-servlet</artifactId>
-      <version>1.1.10</version>
+      <version>1.2.11</version>
     </dependency>
 
   </dependencies>
