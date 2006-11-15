@@ -3,6 +3,7 @@ package org.drools.brms.client.ruleeditor;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.rpc.MetaData;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -127,13 +128,6 @@ public class MetaDataWidget extends FormStyleLayout {
 
 
 
-
-    /**
-     * This is used if the data is dirty, ie change pending save.
-     */
-    public boolean isDirty() {
-        return data.dirty;
-    }
     
     /**
      * Return the data if it is to be saved.

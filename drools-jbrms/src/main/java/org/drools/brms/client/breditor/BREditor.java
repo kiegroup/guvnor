@@ -3,6 +3,9 @@ package org.drools.brms.client.breditor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.brms.client.rpc.MetaData;
+import org.drools.brms.client.rpc.RuleAsset;
+
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -43,8 +46,11 @@ public class BREditor extends Composite {
     private Image editButton;
     private Image addRhsPopupButton;
     
+    private MetaData meta;
     
-    public BREditor() {
+    
+    public BREditor(RuleAsset asset) {
+        this.meta = asset.metaData;
         panel = new VerticalPanel();
         
         
@@ -82,6 +88,7 @@ public class BREditor extends Composite {
                 switchModes(rhs, editMode);
                 showHideLineEditorWidgets( editMode );                
                 editMode = !editMode;
+                meta.dirty = true;
             }            
         });        
         
@@ -322,5 +329,7 @@ public class BREditor extends Composite {
         lst.set(  targetIdx, source );
         lst.set( idx, target );        
     }
+
+
     
 }

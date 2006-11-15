@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -32,23 +33,20 @@ public class ActionToolbar extends Composite {
     private Command closeCommand;
     
     private MetaData      metaData;
+    private Command checkin;
     /**
      * TODO: 
-     *  * Maybe move current state to here from meta data?
-     *  * add check for dirty before closing?
      *  * need to somehow refresh on checkin? (or just close?)
      * 
      */
     public ActionToolbar(final MetaData meta, 
-                         final ClickListener checkin,
+                         final Command checkin,
                          final ClickListener changeState) {
 
         this.metaData = meta;
-        
+        this.checkin = checkin;
         String status = metaData.state;
 
-
-        
         Label state = new Label("Status: [" + status + "]   ");
         panel.add( state );
         
@@ -58,8 +56,16 @@ public class ActionToolbar extends Composite {
         
         Image save = new Image("images/save_edit.gif");
         save.setTitle( "Check in changes." );        
+        save.addClickListener( new ClickListener() {
+
+            public void onClick(Widget w) {
+                doCheckinConfirm();
+            }
+            
+        });
         
-        Image closeImg = new Image("images/remove_item.gif");
+        
+        Image closeImg = new Image("images/close.gif");
         closeImg.setTitle( "Close." );
         closeImg.addClickListener( new ClickListener() {
 
@@ -81,10 +87,36 @@ public class ActionToolbar extends Composite {
         initWidget( panel );
     }
     
+    /**
+     * Called when user wants to checkin.
+     */
+    protected void doCheckinConfirm() {
+        final FormStylePopup pop = new FormStylePopup("images/checkin.gif", "Check in a new version.");
+        TextArea comment = new TextArea();
+        Button save = new Button("Save");
+        pop.addAttribute( "Comment", comment );
+        pop.addAttribute( "", save);
+        
+        save.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                checkin.execute();
+                pop.hide();
+            }
+        });
+        
+        pop.setStyleName( "ks-popups-Popup" );
+        pop.setPopupPosition( 200, getAbsoluteTop() );
+        pop.show();        
+        
+    }
+
+    /**
+     * Called when user wants to close, but there is "dirtyness".
+     */
     protected void doCloseUnsavedWarning() {
         final FormStylePopup pop = new FormStylePopup("images/warning-large.png", "WARNING: Un-committed changes.");
         Button dis = new Button("Discard");
-        pop.addAttribute( "Are you sure you want to disgard changes?", dis );
+        pop.addAttribute( "Are you sure you want to discard changes?", dis );
         
         dis.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -94,7 +126,8 @@ public class ActionToolbar extends Composite {
         });
         
         pop.setStyleName( "warning-Popup" );
-        pop.setPopupPosition( 100, 200 );
+        
+        pop.setPopupPosition( 200, getAbsoluteTop() );
         pop.show();
         
     }

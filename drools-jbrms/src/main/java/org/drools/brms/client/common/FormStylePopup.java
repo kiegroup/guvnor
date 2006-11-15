@@ -2,6 +2,7 @@ package org.drools.brms.client.common;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -14,32 +15,34 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FormStylePopup extends PopupPanel {
 
+    
     private FormStyleLayout form;
-    private VerticalPanel   vert;
 
     public FormStylePopup(String image,
                           String title) {
         super( true );
         form = new FormStyleLayout( image, title );
-        vert = new VerticalPanel();
         
-        vert.add( form );
+
         
-        Button close = new Button("Close");
-        
-        close.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                hide();                
-            }            
-        });
-        
-        vert.add( close );
-        
-        add( vert );
+        add( form );
     }
     
     public void addAttribute(String label, Widget wid) {
         form.addAttribute( label, wid );
     }
+
+    public void show() {        
+        Image close = new Image("images/close.gif");
+        close.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                hide();                
+            }            
+        });
+        addAttribute("", close);
+        
+        super.show();
+    }
+    
 
 }

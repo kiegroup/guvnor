@@ -105,10 +105,10 @@ public class RuleViewer extends Composite {
         
         //depending on the format, load the appropriate editor
         if (asset.metaData.format.equals( "DSL" )) {
-            BREditor ed = new BREditor();
+            BREditor ed = new BREditor(asset);
             layout.setWidget( 1, 0, ed );
         } else {
-            DefaultRuleContentWidget ed = new DefaultRuleContentWidget((TextData) asset.content);
+            DefaultRuleContentWidget ed = new DefaultRuleContentWidget(asset);
             layout.setWidget( 1, 0, ed );
         }
                 

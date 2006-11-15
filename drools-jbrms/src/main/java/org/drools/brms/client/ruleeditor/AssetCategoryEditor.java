@@ -39,9 +39,9 @@ public class AssetCategoryEditor extends Composite {
 
         box = new ListBox();
         
-        box.setVisibleItemCount( 3 );
+        box.setVisibleItemCount( 4 );
         box.setWidth( "100%" );
-        
+        box.setMultipleSelect( false );
         loadData( box );        
         panel.add( box );
         
@@ -49,8 +49,8 @@ public class AssetCategoryEditor extends Composite {
             doActions();
         }
         
-        initWidget( panel );
-        
+        panel.setWidth( "100%" );
+        initWidget( panel );        
     }
 
     private void doActions() {
@@ -58,24 +58,20 @@ public class AssetCategoryEditor extends Composite {
         Image add = new Image("images/new_item.gif");
         add.setTitle( "Add a new category." );
         
-        
         add.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 doOKClick();
             }            
         });
         
-        Image remove = new Image("images/remove_item.gif");
+        Image remove = new Image("images/delete_obj.gif");
         remove.setTitle( "Remove the currently selected category." );
         remove.addClickListener( new ClickListener() {
-
             public void onClick(Widget w) {
                  if (box.getSelectedIndex() != -1) {
                      removeCategory(box.getItemText( box.getSelectedIndex()));
                  }
-                
             }
-            
         });
         
         

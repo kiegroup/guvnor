@@ -1,5 +1,7 @@
 package org.drools.brms.client.ruleeditor;
 
+import org.drools.brms.client.rpc.MetaData;
+import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.TextData;
 
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -15,8 +17,15 @@ import com.google.gwt.user.client.ui.Widget;
 public class DefaultRuleContentWidget extends Composite {
 	
 	private TextArea text;
-	
-	public DefaultRuleContentWidget(final TextData data) {
+	final private TextData data;
+    final private MetaData meta;
+    final private RuleAsset asset;
+    
+	public DefaultRuleContentWidget(RuleAsset a) {
+        asset = a;
+        data = (TextData) asset.content;
+        
+        meta = asset.metaData;
 		text = new TextArea();
 		text.setWidth("100%");
 		text.setHeight("100%");
@@ -27,9 +36,11 @@ public class DefaultRuleContentWidget extends Composite {
             public void onChange(Widget w) {
                 data.content = text.getText();
                 data.dirty = true;
+                meta.dirty = true;
             }
         });
         
 		initWidget(text);
 	}
+
 }

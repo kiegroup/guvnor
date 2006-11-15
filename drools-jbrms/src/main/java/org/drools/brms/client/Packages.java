@@ -1,7 +1,5 @@
 package org.drools.brms.client;
 
-import org.drools.brms.client.breditor.BREditor;
-
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -29,8 +27,7 @@ public class Packages extends JBRMSFeature {
 
     public Packages() {
         VerticalPanel panel = new VerticalPanel();
-        panel.add( new BREditor() );
-        
+
         panel.setSpacing( 8 );
         initWidget( panel );
     }
