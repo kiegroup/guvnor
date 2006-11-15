@@ -1,13 +1,23 @@
 package org.drools.brms.client.ruleeditor;
 
+import org.drools.brms.client.common.FormStyleLayout;
+import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.rpc.MetaData;
+
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -19,10 +29,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class ActionToolbar extends Composite {
 
     private HorizontalPanel panel = new HorizontalPanel();
-    private ClickListener changeState;
-    private ClickListener close;
-    private ClickListener checkin;
+    private Command closeCommand;
     
+    private MetaData      metaData;
     /**
      * TODO: 
      *  * Maybe move current state to here from meta data?
@@ -30,31 +39,73 @@ public class ActionToolbar extends Composite {
      *  * need to somehow refresh on checkin? (or just close?)
      * 
      */
-    public ActionToolbar(ClickListener checkin, ClickListener close, ClickListener changeState) {
-        this.checkin = checkin;
-        this.close = close;
-        this.changeState = changeState;
+    public ActionToolbar(final MetaData meta, 
+                         final ClickListener checkin,
+                         final ClickListener changeState) {
 
-        ListBox actions = new ListBox();
-        actions.addItem( "-- actions --" );
-        actions.addItem( "Check in changes", "checkin" );
-        actions.addItem( "Change status", "status" );
+        this.metaData = meta;
         
-        panel.add( actions );
-        
-        panel.add( new Label("Current status: ") );
-        panel.add( new TextBox() );
+        String status = metaData.state;
 
-        panel.add( new HTML("&nbsp;") );
-        
-        panel.add( new Label("Close: ") );
-        panel.add( new Image("images/remove_item.gif") );
-        
-        
-        
 
+        
+        Label state = new Label("Status: [" + status + "]   ");
+        panel.add( state );
+        
+        Image editState = new Image("images/edit.gif");
+        editState.setTitle( "Change state." );
+        panel.add( editState );
+        
+        Image save = new Image("images/save_edit.gif");
+        save.setTitle( "Check in changes." );        
+        
+        Image closeImg = new Image("images/remove_item.gif");
+        closeImg.setTitle( "Close." );
+        closeImg.addClickListener( new ClickListener() {
+
+            public void onClick(Widget w) {
+                if (metaData.dirty) {
+                    doCloseUnsavedWarning( );
+                } else {
+                    //we can actually close
+                    closeCommand.execute(  );
+                }
+                
+            }
+            
+        });
+        
+        
+        panel.add( save );
+        panel.add( closeImg );
         initWidget( panel );
     }
     
+    protected void doCloseUnsavedWarning() {
+        final FormStylePopup pop = new FormStylePopup("images/warning-large.png", "WARNING: Un-committed changes.");
+        Button dis = new Button("Discard");
+        pop.addAttribute( "Are you sure you want to disgard changes?", dis );
+        
+        dis.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                closeCommand.execute();
+                pop.hide();
+            }
+        });
+        
+        pop.setStyleName( "warning-Popup" );
+        pop.setPopupPosition( 100, 200 );
+        pop.show();
+        
+    }
+
+    /**
+     * This needs to be set to allow the current viewer to be closed.
+     */
+    public void setCloseCommand(Command c) {
+        this.closeCommand = c;
+    }
+    
+
     
 }

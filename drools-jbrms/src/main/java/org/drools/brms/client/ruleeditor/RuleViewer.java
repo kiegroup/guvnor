@@ -3,6 +3,7 @@ package org.drools.brms.client.ruleeditor;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.brms.client.RulesFeature;
 import org.drools.brms.client.breditor.BREditor;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.rpc.MetaData;
@@ -10,6 +11,7 @@ import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.TextData;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -34,8 +36,10 @@ public class RuleViewer extends Composite {
 	private final String resourceUUID;
     private final String name;
     private final String format;
-    private MetaData metaData;
-    private SimplePanel   panel = new SimplePanel();
+    private Command closeCommand;
+    
+    
+    final private SimplePanel   panel = new SimplePanel();
     protected RuleAsset asset;
     
     /**
@@ -43,11 +47,11 @@ public class RuleViewer extends Composite {
      * @param format The type of resource (may determine what editor is used).
      * @param name The name to be displayed.
      */
-    public RuleViewer(String UUID, String format,  String name) {
+    public RuleViewer(RulesFeature parent, String UUID, String format,  String name) {
         this.resourceUUID = UUID;
         this.name = name;
         this.format = format;
-                
+        
         //just pad it out a bit, so it gets the layout right - it will be loaded later.
         FlexTable layout = new FlexTable();
         layout.setWidget( 0, 0, new Label("Loading ...") );
@@ -75,46 +79,46 @@ public class RuleViewer extends Composite {
      * also determines what widgets to load up).
      */
     private void doWidgets() {
-        metaData = asset.metaData;
-        
         final MetaDataWidget metaWidget = new MetaDataWidget(this.name, false);
         
-        FlexTable layout = new FlexTable();
+        final FlexTable layout = new FlexTable();
         
         //now the main layout table
         FlexCellFormatter formatter =  layout.getFlexCellFormatter();
         layout.setWidget( 0, 0, metaWidget );
-        formatter.setRowSpan( 0, 0, 4 );
+        formatter.setRowSpan( 0, 0, 3 );
         formatter.setWidth( 0, 0, "40%" );        
-
         
         //and now the action widgets (checkin/close etc).
-        layout.setWidget( 1, 1, new ActionToolbar(null, null, null) );
+        ActionToolbar toolbar = new ActionToolbar(asset.metaData, null, null);
+        toolbar.setCloseCommand(new Command() {
+            public void execute() {
+                closeCommand.execute();
+            }            
+        });
+        
+        layout.setWidget( 0, 1, toolbar );
         formatter.setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
-//        formatter.setWidth( 0, 1, "60%");
-
-//        formatter.setStyleName( 0, 1, "outline-Debug" );
-//        formatter.setStyleName( 1, 1, "outline-Debug" );
-//        formatter.setStyleName( 2, 1, "outline-Debug" );
-//        formatter.setStyleName( 0, 0, "outline-Debug" );
+        
+        //REMEMBER: subsequent rows have only one column, doh that is confusing ! 
+        //GAAAAAAAAAAAAAAAAAAAAAAAAAAH
         
         //depending on the format, load the appropriate editor
-        if (metaData.format.equals( "DSL" )) {
+        if (asset.metaData.format.equals( "DSL" )) {
             BREditor ed = new BREditor();
-            layout.setWidget( 2, 1, ed );
+            layout.setWidget( 1, 0, ed );
         } else {
             DefaultRuleContentWidget ed = new DefaultRuleContentWidget((TextData) asset.content);
-            layout.setWidget( 2, 1, ed );
+            layout.setWidget( 1, 0, ed );
         }
-        
-        
+                
         
         //the document widget
         final RuleDocumentWidget doco = new RuleDocumentWidget();
-        layout.setWidget( 3, 1, doco );
+        layout.setWidget( 2, 0, doco );
         
-        metaWidget.loadData( metaData );
-        doco.loadData( metaData );
+        metaWidget.loadData( asset.metaData );
+        doco.loadData( asset.metaData );
         
         
         panel.clear();
@@ -122,7 +126,13 @@ public class RuleViewer extends Composite {
     }
     
 
-
+    /**
+     * This needs to be called to allow the opened viewer to close itself.
+     * @param c
+     */
+    public void setCloseCommand(Command c) {
+        this.closeCommand = c;
+    }
 
 
 

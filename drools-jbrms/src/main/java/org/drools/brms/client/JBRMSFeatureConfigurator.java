@@ -17,7 +17,7 @@ public class JBRMSFeatureConfigurator {
 	 */
 	public static void configure(JBRMSFeatureList list) {
 		list.addSink(Info.init());
-		list.addSink(Rules.init());
+		list.addSink(RulesFeature.init());
 //		list.addSink(Buttons.init());
 //		list.addSink(Menus.init());
 //		list.addSink(Images.init());

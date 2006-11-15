@@ -7,6 +7,7 @@ import org.drools.brms.client.ruleeditor.RuleViewer;
 import org.drools.brms.client.rulelist.EditItemEvent;
 import org.drools.brms.client.rulelist.RuleItemListViewer;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -20,14 +21,14 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  * This controls the "Rules manager" top level feature.
  * @author Michael Neale
  */
-public class Rules extends JBRMSFeature {
+public class RulesFeature extends JBRMSFeature {
 
     public static final int       EDITOR_TAB         = 1;
     
 	public static ComponentInfo init() {
 		return new ComponentInfo("Rules", "Find and edit rules.") {
 			public JBRMSFeature createInstance() {
-				return new Rules();
+				return new RulesFeature();
 			}
 
 			public Image getImage() {
@@ -38,7 +39,7 @@ public class Rules extends JBRMSFeature {
 
     private TabPanel tab;
 	
-	public Rules() {
+	public RulesFeature() {
         tab = new TabPanel();
         tab.setWidth("100%");
         tab.setHeight("100%");        
@@ -59,7 +60,7 @@ public class Rules extends JBRMSFeature {
     /** This will setup the explorer tab */
 	private FlexTable doExplore(final TabPanel tab) {
 		FlexTable  table = new FlexTable();
-        
+        final RulesFeature parent = this;
         //and the the delegate to open an editor for a rule resource when
         //chosen to
         final RuleItemListViewer list = new RuleItemListViewer(new EditItemEvent() {
@@ -67,15 +68,23 @@ public class Rules extends JBRMSFeature {
 
             public void open(String key,
                              String type,
-                             String name) { 
-                RuleViewer view = new RuleViewer(key, type, name);
+                             String name) {                  
+                RuleViewer view = new RuleViewer(parent, key, type, name);
                 
                 String displayName = name;
                 if (name.length() > 10) {
                     displayName = name.substring( 0, 7 ) + "...";
                 }
                 tab.add( view, "<img src='images/rule_asset.gif'>" + displayName, true );
-                tab.selectTab( tab.getWidgetIndex( view ) );
+                
+                final int i = tab.getWidgetIndex( view );
+                view.setCloseCommand( new Command() {
+                    public void execute() {
+                      tab.remove( i ); 
+                      tab.selectTab( 0 );
+                    }
+                });
+                tab.selectTab( i );
                 
             }
             
@@ -83,21 +92,15 @@ public class Rules extends JBRMSFeature {
         
         //setup the nav, which will drive the list
 		CategoryExplorerWidget nav = new CategoryExplorerWidget(new CategorySelectHandler() {
-
             public void selected(String selectedPath) {
-                  
                 list.loadRulesForCategoryPath(selectedPath);
             }
-            
         });		
         
         FlexCellFormatter formatter = table.getFlexCellFormatter();
         
         table.setWidget( 0, 0, nav );
 		table.setWidget( 0, 1, list);
-
-        
-        
         
         formatter.setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
         formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );        

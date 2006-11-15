@@ -1,37 +1,27 @@
 package org.drools.brms.client.ruleeditor;
 
+import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.rpc.MetaData;
 
 import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.StackPanel;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
  * This displays the metadata for a versionable asset.
  * It also captures edits, but it does not load or save anything itself.
  * @author Michael Neale
  */
-public class MetaDataWidget extends Composite {
+public class MetaDataWidget extends FormStyleLayout {
 
-	private FlexTable layout = new FlexTable();
-    private FlexCellFormatter formatter = layout.getFlexCellFormatter();
-	private int numInLayout = 0;
+
     private MetaData data;
     private boolean readOnly;
 	
 	public MetaDataWidget(String name, boolean readOnly) {
+        super("images/meta_data.gif", name);
         this.readOnly = readOnly;
-        initWidget( layout );
-        addHeader("images/meta_data.gif", name);
 	}
 
 
@@ -129,62 +119,13 @@ public class MetaDataWidget extends Composite {
 
 
 
-    private Widget description() {
-        final TextArea box = new TextArea();
-        box.setText( data.description );
-        box.setVisibleLines( 10 );
-        box.setWidth( "100%" );
-        box.setStyleName( "rule-viewer-Documentation" );
-        ChangeListener listener = new ChangeListener() {
-
-            public void onChange(Widget w) {   
-                data.dirty = true;     
-                data.description = box.getText();                
-            }
-            
-        };
-        
-        box.addChangeListener( listener );
-        return box;        
-    }    
-
-
-
     /** used to bind fields in the meta data DTO to the form */
     static interface FieldBinding {
         void setValue(String val);
         String getValue();
     }
 
-    /**
-     * Adds a header at the top.
-     */
-    private void addHeader(String image, String title) {
-        layout.setWidget( 0, 0, new Image(image) );
-        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
-        
-        Label name = new Label(title);
-        name.setStyleName( "resource-name-Label" );
-        
-        layout.setWidget( 0, 1, name );
-        numInLayout++;
-    }
 
-
-    /**
-     * Add a widget to the "form".
-     */
-    private void addAttribute(String lbl,
-                     Widget editor) {
-        Label label = new Label(lbl);
-        layout.setWidget( numInLayout, 0, label );
-        formatter.setAlignment( numInLayout, 0, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_TOP );
-        layout.setWidget( numInLayout, 1, editor );
-        formatter.setAlignment( numInLayout, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
-        
-        numInLayout++;
-        
-    }
 
 
     /**
