@@ -245,7 +245,6 @@ public class FunctionItem extends VersionableItem {
             returnString.append("------\n");
                         
             returnString.append("Function Language: " + this.getFunctionLanguage() + "\n");
-            returnString.append("Version Name: " + this.getVersionName() + "\n");
             returnString.append("------\n");
             
             returnString.append("Function state: ");

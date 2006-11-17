@@ -493,7 +493,6 @@ public class RulePackageItem extends VersionableItem {
             returnString.append( "Format: " + this.getFormat() + "\n" );
             returnString.append( "Last modified: " + this.getLastModified() + "\n" );
             returnString.append( "Title: " + this.getTitle() + "\n" );
-            returnString.append( "Version Name: " + this.getVersionName() + "\n" );
             returnString.append( "----\n" );
 
             return returnString.toString();

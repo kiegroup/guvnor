@@ -275,7 +275,6 @@ public class RuleItem extends CategorisableItem {
 
             returnString.append( "Date Effective: " + this.getDateEffective() + "\n" );
             returnString.append( "Date Expired: " + this.getDateExpired() + "\n" );
-            returnString.append( "Version Name: " + this.getVersionName() + "\n" );
             returnString.append( "------\n" );
 
             returnString.append( "Rule state: " );

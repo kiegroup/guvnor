@@ -85,22 +85,5 @@ public abstract class Item {
         return this.node.hashCode();
     }        
     
-    /**
-     * @return the name of the version for this node in the version history
-     * @throws RulesRepositoryException
-     */
-    public String getVersionName() throws RulesRepositoryException {
-        try {
-            if(this.node.getPrimaryNodeType().getName().equals("nt:version")) {
-                return this.node.getName();
-            }
-            else {
-                return this.node.getBaseVersion().getName();
-            }            
-        }
-        catch(Exception e) {
-            log.error("Caught exception", e);
-            throw new RulesRepositoryException(e);
-        }
-    }
+
 }

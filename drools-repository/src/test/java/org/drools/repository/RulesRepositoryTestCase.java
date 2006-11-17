@@ -86,6 +86,22 @@ public class RulesRepositoryTestCase extends TestCase {
         assertEquals("testLoadRuleByUUID", loaded.getName());
         assertEquals( "this is a description", loaded.getDescription());
         
+        String oldVersionNumber = loaded.getVersionNumber();
+        
+        loaded.updateRuleContent( "xxx" );
+        loaded.checkin( "woo" );
+        
+        
+        
+        
+        RuleItem reload = repo.loadRuleByUUID( uuid );
+        assertEquals("testLoadRuleByUUID", reload.getName());
+        assertEquals("xxx", reload.getRuleContent());
+        System.out.println(reload.getVersionNumber());
+        System.out.println(loaded.getVersionNumber());
+        assertFalse(reload.getVersionNumber().equals( oldVersionNumber ));
+        
+
         // try loading rule package that was not created 
         try {
             repo.loadRuleByUUID("01010101-0101-0101-0101-010101010101");
