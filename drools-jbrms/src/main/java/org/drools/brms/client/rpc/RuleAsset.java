@@ -16,5 +16,6 @@ public class RuleAsset
     public IsSerializable content;
     public String dateEffective;
     public String dateExpired;
+    public String uuid;
 
 }

@@ -211,7 +211,6 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
             //ok here is where we do DSLs...
             throw new SerializableException("Can't load DSL rules just yet.");
 
-        } else if (item.getFormat().equals( "DSL" )) {
         } else if (item.getFormat().equals( "DT" )) {
             //and here we do decision tables
             throw new SerializableException("Still working on this...");
@@ -223,6 +222,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
 
         }
         asset.metaData.packageName = item.getPackageName();
+        asset.uuid = uuid;
         
         return asset;
     }
@@ -270,6 +270,15 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         
         
         return meta;
+    }
+
+    public void checkinVersion(RuleAsset asset) throws SerializableException {
+        
+        
+        RulesRepository repo = getRulesRepository();
+        RuleItem rule = repo.loadRuleByUUID( asset.uuid );
+        rule.checkout();
+        throw new UnsupportedOperationException("Not implemented yet !");
     }
 
 

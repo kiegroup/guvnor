@@ -39,13 +39,13 @@ public class Info extends JBRMSFeature {
 
   public Info() {
 	  	
-    setWidget(new HTML(
+    initWidget(new HTML(
       "<div class='infoProse'>"
         + "Welcome to the JBoss Rules Management System console."
-        + "<p>Currently very much a WIP."
+        + "<p>"
         + "</div>"
         + "<div>"
-        + "<img src='images/drools_logo.png'"
+        + "<img src='images/front_icon.gif'"
         + "</div>"
         ,
       true));

@@ -50,4 +50,9 @@ public interface RepositoryService extends RemoteService {
     public RuleAsset loadRuleAsset(String UUID) throws SerializableException;     
     
     
+    /**
+     * This checks in a new version of an asset.
+     */
+    public void checkinVersion(RuleAsset asset) throws SerializableException;
+    
 }

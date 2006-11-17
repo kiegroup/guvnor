@@ -149,6 +149,8 @@ public class ServiceImplementationTest extends TestCase {
       RuleAsset asset = impl.loadRuleAsset( uuid );
       assertNotNull(asset);
       
+      assertEquals(uuid, asset.uuid);
+      
       assertEquals("description", asset.metaData.description);
       
       

@@ -163,6 +163,19 @@ public class MockRepositoryServiceAsync
         
         
     }
+
+
+
+    public void checkinVersion(RuleAsset a,
+                               AsyncCallback cb) {
+        if (a.metaData.coverage.equals( "fail" )) {
+            cb.onFailure( new SerializableException("This is an error") );
+        } else {
+            cb.onSuccess( null );
+        }
+        
+        
+    }
     
     
 

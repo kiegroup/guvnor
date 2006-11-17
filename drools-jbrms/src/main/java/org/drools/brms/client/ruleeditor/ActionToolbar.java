@@ -1,6 +1,5 @@
 package org.drools.brms.client.ruleeditor;
 
-import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.rpc.MetaData;
 
@@ -8,18 +7,10 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.MenuItem;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -93,6 +84,7 @@ public class ActionToolbar extends Composite {
     protected void doCheckinConfirm() {
         final FormStylePopup pop = new FormStylePopup("images/checkin.gif", "Check in a new version.");
         TextArea comment = new TextArea();
+        comment.setWidth( "100%" );
         Button save = new Button("Save");
         pop.addAttribute( "Comment", comment );
         pop.addAttribute( "", save);
