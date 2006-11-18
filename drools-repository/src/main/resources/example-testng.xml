@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
+
+<suite name="Resource Handler Test Suite" verbose="2" parallel="false">
+   <test name="Resource Handler Tests">
+     <classes>
+       <class name="org.drools.resource.test.SvnResourceHandlerTest"/>       
+     </classes>
+   </test>	
+</suite>

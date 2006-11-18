@@ -29,6 +29,12 @@
            <artifactId>jackrabbit-core</artifactId>
            <version>1.0.1</version>
     </dependency>
+    
+    <dependency>
+           <groupId>org.tmatesoft</groupId>
+           <artifactId>javasvn</artifactId>
+           <version>1.1-beta5</version>
+    </dependency>    
   </dependencies>
   
   <build>
