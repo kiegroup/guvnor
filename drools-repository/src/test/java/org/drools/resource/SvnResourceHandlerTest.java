@@ -2,6 +2,7 @@ package org.drools.resource;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URL;
 
 import junit.framework.TestCase;
 
@@ -24,7 +25,16 @@ public class SvnResourceHandlerTest extends TestCase {
     
     public void setUp() {
         // First we need to find the absolute path
-        File file = new File ( getClass().getClassLoader().getSystemClassLoader().getResource( "svn_repo" ).getFile() );        
+        URL url = getClass().getResource( "/svn_repo" );
+        
+//        ClassLoader cl = getClass().getClassLoader();
+//        assertNotNull( cl );
+//        ClassLoader sys = cl.getSystemClassLoader();
+//        assertNotNull(sys);
+//        
+//        URL url = sys.getResource( "svn_repo" );
+        assertNotNull(url);
+        File file = new File ( url.getFile() );        
 
         // Now set the two path roots
         svnUrl       = "file:///" + file.getAbsolutePath().replaceAll( "\\\\", "/" );        
@@ -35,9 +45,12 @@ public class SvnResourceHandlerTest extends TestCase {
         ResourceHandler rHandler = new SvnResourceHandler();
         rHandler.setCredentials( "mrtrout",
                                  "drools" );
-        boolean authRtnPass = rHandler.authenticate( "file:///D:/dev/trunk2/rule-resource-handler/target/test-classes/svn_repo" );
-        boolean authRtnFail = rHandler.authenticate( "file:///D:/dev/trunk2/rule-resource-handler/target/test-classes/svn_repo2" );
+        
+        boolean authRtnPass = rHandler.authenticate( svnUrl ) ;//"file:///D:/dev/trunk2/rule-resource-handler/target/test-classes/svn_repo" );
+        boolean authRtnFail = rHandler.authenticate( svnUrl + "2" );//"file:///D:/dev/trunk2/rule-resource-handler/target/test-classes/svn_repo2" );
 
+        System.out.println(svnUrl);
+        
         assertEquals( true,
                       authRtnPass );
         assertEquals( false,
