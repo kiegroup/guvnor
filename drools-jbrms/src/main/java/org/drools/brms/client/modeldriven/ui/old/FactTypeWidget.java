@@ -1,4 +1,4 @@
-package org.drools.brms.client.modeldriven.ui;
+package org.drools.brms.client.modeldriven.ui.old;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 

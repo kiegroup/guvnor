@@ -1,4 +1,4 @@
-package org.drools.brms.client.modeldriven.ui;
+package org.drools.brms.client.modeldriven.ui.old;
 
 import java.util.ArrayList;
 import java.util.List;
