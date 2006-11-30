@@ -51,9 +51,8 @@ public class FactPatternWidget extends Composite {
             inner.setWidget( row, 3, connectives(c) );
 
         }
-        layout.setStyleName( "model-builder-Background" );
+        layout.setStyleName( "model-builderInner-Background" );
         initWidget( layout );
-        
         
     }
 

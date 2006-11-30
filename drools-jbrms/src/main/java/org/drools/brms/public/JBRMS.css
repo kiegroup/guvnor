@@ -118,6 +118,11 @@ a:visited {
   border: 1px solid #87B3FF;
 }
 
+.model-builderInner-Background {
+  background-color: #FDFCDC;
+  border: 1px solid #87B3FF;
+}
+
 .gwt-TabBar {
   background-color: #B8B8B8;
   font-size: smaller;

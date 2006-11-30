@@ -1,11 +1,13 @@
 package org.drools.brms.client;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.model.CompositeFactPattern;
 import org.drools.brms.client.modeldriven.model.ConnectiveConstraint;
 import org.drools.brms.client.modeldriven.model.Constraint;
 import org.drools.brms.client.modeldriven.model.FactPattern;
 import org.drools.brms.client.modeldriven.model.IPattern;
 import org.drools.brms.client.modeldriven.model.RuleModel;
+import org.drools.brms.client.modeldriven.ui.CompositeFactPatternWidget;
 import org.drools.brms.client.modeldriven.ui.RuleModeller;
 
 import com.google.gwt.user.client.ui.Image;
@@ -65,13 +67,16 @@ public class Packages extends JBRMSFeature {
     private RuleModel getDummyData() {
         RuleModel model = new RuleModel();
         
-        model.lhs = new IPattern[2];
+        model.lhs = new IPattern[3];
         
         FactPattern p1 = new FactPattern();
         FactPattern p2 = new FactPattern();
+        CompositeFactPattern p3 = new CompositeFactPattern();
+        
         
         model.lhs[0] = p1;
         model.lhs[1] = p2;
+        model.lhs[2] = p3;
         
         p1.factType = "Person";
         p1.constraints = new Constraint[2];
@@ -97,7 +102,15 @@ public class Packages extends JBRMSFeature {
         p2.constraints[0].fieldName = "type";
         p2.constraints[0].operator = "!=";
         
+        p3.type = "Not";
+        p3.patterns = new FactPattern[1];
+        FactPattern i1 = new FactPattern("Vehicle");
+        i1.constraints = new Constraint[1];
+        i1.constraints[0] = new Constraint();
+        i1.constraints[0].fieldName = "type";
+        i1.constraints[0].operator = "==";
         
+        p3.patterns[0] = i1;
         
         return model;
         
