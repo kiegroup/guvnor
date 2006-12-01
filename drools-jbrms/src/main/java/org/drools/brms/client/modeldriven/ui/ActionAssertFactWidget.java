@@ -1,10 +1,8 @@
 package org.drools.brms.client.modeldriven.ui;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.model.ActionAssertFact;
 import org.drools.brms.client.modeldriven.model.ActionFieldValue;
-import org.drools.brms.client.modeldriven.model.ActionSetField;
-import org.drools.brms.client.modeldriven.model.FactPattern;
-import org.drools.brms.client.modeldriven.model.RuleModel;
 
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -15,41 +13,34 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * This widget is for setting fields on a bound fact or global variable.
+ * This is used when asserting a new fact into working memory. 
  * 
  * @author Michael Neale
+ *
  */
-public class ActionSetFieldWidget extends Composite {
+public class ActionAssertFactWidget extends Composite {
 
-    final private ActionSetField model;
-    final private SuggestionCompletionEngine completions;
-    final private FlexTable layout;
-    private boolean isBoundFact = false;
-    final private String[] fieldCompletions;
+    private FlexTable layout;
+    private ActionAssertFact model;
+    private SuggestionCompletionEngine completions;
+    private String[] fieldCompletions;
     
-    
-    public ActionSetFieldWidget(RuleModel rule, ActionSetField set, SuggestionCompletionEngine com) {
+    public ActionAssertFactWidget(ActionAssertFact set, SuggestionCompletionEngine com) {
         this.model = set;
         this.completions = com;
         this.layout = new FlexTable();
+        this.fieldCompletions = this.completions.getFieldCompletions( set.factType );
+        
         layout.setStyleName( "model-builderInner-Background" );
-        if (completions.isGlobalVariable( set.variable )) {
-            this.fieldCompletions = completions.getFieldCompletionsForGlobalVariable( set.variable );            
-        } else {
-            FactPattern pattern = rule.getBoundFact( set.variable );
-            this.fieldCompletions = completions.getFieldCompletions( pattern.factType );
-            this.isBoundFact = true;
-        }
         
         doLayout();
         
-        initWidget( this.layout );
+        initWidget(this.layout);
     }
-
 
     private void doLayout() {
         layout.clear();
-        layout.setWidget( 0, 0, getSetterLabel() );
+        layout.setWidget( 0, 0, getAssertLabel() );
         
         FlexTable inner = new FlexTable();
         
@@ -63,14 +54,8 @@ public class ActionSetFieldWidget extends Composite {
         
         layout.setWidget( 0, 1, inner );
         
-        
+                
     }
-
-
-    private Label getSetterLabel() {
-        return new Label("Set " + model.variable);
-    }
-
 
     private Widget valueEditor(final ActionFieldValue val) {
         final TextBox box = new TextBox();
@@ -83,9 +68,7 @@ public class ActionSetFieldWidget extends Composite {
         return box;
     }
 
-
     private Widget fieldSelector(final ActionFieldValue val) {
-
         final ListBox box = new ListBox();
         for ( int i = 0; i < this.fieldCompletions.length; i++ ) {
             box.addItem( this.fieldCompletions[i] );
@@ -102,7 +85,10 @@ public class ActionSetFieldWidget extends Composite {
         });
         
         return box;    
-        
-   }
+    }
+
+    private Widget getAssertLabel() {        
+        return new Label("Assert new "  + this.model.factType);
+    }
     
 }

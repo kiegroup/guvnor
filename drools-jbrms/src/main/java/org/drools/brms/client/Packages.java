@@ -1,6 +1,7 @@
 package org.drools.brms.client;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.model.ActionAssertFact;
 import org.drools.brms.client.modeldriven.model.ActionFieldValue;
 import org.drools.brms.client.modeldriven.model.ActionSetField;
 import org.drools.brms.client.modeldriven.model.CompositeFactPattern;
@@ -122,8 +123,16 @@ public class Packages extends JBRMSFeature {
         set.fieldValues[0] = new ActionFieldValue();
         set.fieldValues[0].field = "type";
         
-        model.rhs = new IAction[1];
+        ActionAssertFact fact = new ActionAssertFact();
+        fact.factType = "Person";
+        fact.fieldValues = new ActionFieldValue[2];
+        fact.fieldValues[0] = new ActionFieldValue("name", "Mike");
+        fact.fieldValues[1] = new ActionFieldValue("age", "42");
+        
+        
+        model.rhs = new IAction[2];
         model.rhs[0] = set;
+        model.rhs[1] = fact;
         
         return model;
         

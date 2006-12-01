@@ -2,6 +2,7 @@ package org.drools.brms.client.modeldriven.ui;
 
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.model.ActionAssertFact;
 import org.drools.brms.client.modeldriven.model.ActionSetField;
 import org.drools.brms.client.modeldriven.model.CompositeFactPattern;
 import org.drools.brms.client.modeldriven.model.FactPattern;
@@ -74,7 +75,9 @@ public class RuleModeller extends Composite {
             IAction action = model.rhs[i];
             if (action instanceof ActionSetField) {                
                 vert.add( new ActionSetFieldWidget(this.model, (ActionSetField) action, completions ) ); 
-            } 
+            } else if (action instanceof ActionAssertFact) {
+                vert.add( new ActionAssertFactWidget((ActionAssertFact) action, completions ));
+            }
         }
         
         return vert;
