@@ -114,14 +114,17 @@ a:visited {
 }
 
 .model-builder-Background {
-  background-color: white;
+  background-color: #FDFCDC;
   border: 1px solid #87B3FF;
 }
 
 .model-builderInner-Background {
-  background-color: #FDFCDC;
-  border: 1px solid #87B3FF;
+  background-color: white;
+  //border: 1px solid #87B3FF;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
 }
+
 
 .gwt-TabBar {
   background-color: #B8B8B8;

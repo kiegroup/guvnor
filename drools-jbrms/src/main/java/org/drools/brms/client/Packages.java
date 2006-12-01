@@ -96,9 +96,9 @@ public class Packages extends JBRMSFeature {
         p1.constraints[1].operator = "==";
         p1.constraints[1].value = "Bob";
         p1.constraints[1].fieldBinding = "n";
-        p1.constraints[1].connectives = new ConnectiveConstraint[2];
-        p1.constraints[1].connectives[0] = new ConnectiveConstraint("|=", "Michael");
-        p1.constraints[1].connectives[1] = new ConnectiveConstraint("|=", "Mark");
+//        p1.constraints[1].connectives = new ConnectiveConstraint[2];
+//        p1.constraints[1].connectives[0] = new ConnectiveConstraint("|=", "Michael");
+//        p1.constraints[1].connectives[1] = new ConnectiveConstraint("|=", "Mark");
 
         
         p2.factType = "Vehicle";

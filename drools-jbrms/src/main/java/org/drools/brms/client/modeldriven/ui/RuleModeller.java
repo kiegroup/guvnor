@@ -1,5 +1,6 @@
 package org.drools.brms.client.modeldriven.ui;
 
+import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.model.ActionAssertFact;
@@ -15,6 +16,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -69,19 +71,39 @@ public class RuleModeller extends Composite {
     /**
      * Do the widgets for the RHS.
      */
-    private Widget renderRhs(RuleModel model) {
+    private Widget renderRhs(final RuleModel model) {
         VerticalPanel vert = new VerticalPanel();
         
         for ( int i = 0; i < model.rhs.length; i++ ) {
             IAction action = model.rhs[i];
+            
+            Widget w = null;            
             if (action instanceof ActionSetField) {                
-                vert.add( new ActionSetFieldWidget(this.model, (ActionSetField) action, completions ) ); 
+                w =  new ActionSetFieldWidget(this.model, (ActionSetField) action, completions ) ; 
             } else if (action instanceof ActionAssertFact) {
-                vert.add( new ActionAssertFactWidget((ActionAssertFact) action, completions ));
+                w = new ActionAssertFactWidget((ActionAssertFact) action, completions );
             } else if (action instanceof ActionRetractFact) {
-                vert.add(new ActionRetractFactWidget((ActionRetractFact) action));
+                w = new ActionRetractFactWidget((ActionRetractFact) action);
             }
+            
+            HorizontalPanel horiz = new HorizontalPanel();
+            
+            Image remove = new Image("images/delete_obj.gif");
+            final int idx = i;
+            remove.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                    model.removeRhsItem(idx);
+                    doLayout();
+                }
+            } );
+            horiz.add( w );
+            horiz.add( remove );
+            
+            vert.add( horiz );
+            
         }
+        
+        
         
         return vert;
     }
@@ -131,19 +153,39 @@ public class RuleModeller extends Composite {
         doLayout();
     }
 
-    private Widget renderLhs(RuleModel model) {
+    private Widget renderLhs(final RuleModel model) {
         VerticalPanel vert = new VerticalPanel();
+        
         for ( int i = 0; i < model.lhs.length; i++ ) {
             IPattern pattern = model.lhs[i];
-            if (pattern instanceof FactPattern) {                
-                vert.add( new FactPatternWidget(pattern, completions) );
+            Widget w;
+            if (pattern instanceof FactPattern) {  
+                
+                w =  new FactPatternWidget(pattern, completions) ;
             } else if (pattern instanceof CompositeFactPattern) {
-                vert.add( new CompositeFactPatternWidget((CompositeFactPattern) pattern, completions) );
+                w = new CompositeFactPatternWidget((CompositeFactPattern) pattern, completions) ;
             } else {
                 throw new RuntimeException("I don't know what type of pattern that is.");
             }
-            //TODO: add stuff for removing pattern here.
             
+            HorizontalPanel horiz = new HorizontalPanel();
+            
+            Image remove = new Image("images/delete_obj.gif");
+            final int idx = i;
+            remove.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                    if (model.removeLhsItem(idx)) {
+                        doLayout();
+                    } else {
+                        ErrorPopup.showMessage( "Can't remove that item as it is used in the action part of the rule." );
+                    }
+                }
+            } );
+            horiz.add( w );
+            horiz.add( remove );
+
+
+            vert.add( horiz );
         }
         
         return vert;
