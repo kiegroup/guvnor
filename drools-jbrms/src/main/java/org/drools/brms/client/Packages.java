@@ -1,10 +1,13 @@
 package org.drools.brms.client;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.model.ActionFieldValue;
+import org.drools.brms.client.modeldriven.model.ActionSetField;
 import org.drools.brms.client.modeldriven.model.CompositeFactPattern;
 import org.drools.brms.client.modeldriven.model.ConnectiveConstraint;
 import org.drools.brms.client.modeldriven.model.Constraint;
 import org.drools.brms.client.modeldriven.model.FactPattern;
+import org.drools.brms.client.modeldriven.model.IAction;
 import org.drools.brms.client.modeldriven.model.IPattern;
 import org.drools.brms.client.modeldriven.model.RuleModel;
 import org.drools.brms.client.modeldriven.ui.CompositeFactPatternWidget;
@@ -60,6 +63,7 @@ public class Packages extends JBRMSFeature {
 
         
         com.addConnectiveOperators( "Vehicle", "make", new String[] {"|="});
+        
         return com;
     }
 
@@ -111,6 +115,15 @@ public class Packages extends JBRMSFeature {
         i1.constraints[0].operator = "==";
         
         p3.patterns[0] = i1;
+        
+        ActionSetField set = new ActionSetField();
+        set.variable = "car1";
+        set.fieldValues = new ActionFieldValue[1];
+        set.fieldValues[0] = new ActionFieldValue();
+        set.fieldValues[0].field = "type";
+        
+        model.rhs = new IAction[1];
+        model.rhs[0] = set;
         
         return model;
         

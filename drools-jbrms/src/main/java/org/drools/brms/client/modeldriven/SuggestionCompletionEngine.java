@@ -1,9 +1,7 @@
 package org.drools.brms.client.modeldriven;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,32 +17,31 @@ public class SuggestionCompletionEngine {
     private Map factToFields = new HashMap();
     private Map factFieldToOperator = new HashMap();
     private Map factFieldToConnectiveOperator = new HashMap();
-    private Map boundFacts = new HashMap();
-    private List boundFields = new ArrayList();
     private Map globals = new HashMap();
 
     /**
      * For bulk loading up the data (from a previous rule save)
      * 
      * @param factToFields A map of "FactType" (key - String) to String[] (value) 
-     * @param factFieldToOperator A map of "<FactType>.<field>" (key - String) to String[] operators
-     * @param factFieldToConnectiveOperator A map of "<FactType>.<field>" (key -String) to String[] operators 
+     * @param factFieldToOperator A map of "FactType.field" (key - String) to String[] operators
+     * @param factFieldToConnectiveOperator A map of "FactType.field" (key -String) to String[] operators 
      *                                  that are valid CONNECTIVE operators.
      *                                  
      * @param globals A map of global variable name to its fields (String[]).
-                                      
+     *                                       
      */
     public void load( 
                       Map factToFields, 
                       Map factFieldToOperator, 
                       Map factFieldToConnectiveOperator,
-                      Map globals                                     
+                      Map globals,
+                      Map boundFacts
                     ) {
         this.factToFields = factToFields;
         this.factFieldToOperator = factFieldToOperator;
         this.factFieldToConnectiveOperator = factFieldToConnectiveOperator;
         this.globals = globals;
-        
+
     }
     
     public SuggestionCompletionEngine() {        
@@ -93,8 +90,7 @@ public class SuggestionCompletionEngine {
         return toStringArray( this.factToFields.keySet() );
     }
 
-    public String[] getFieldCompletions(String factType) {
-        
+    public String[] getFieldCompletions(String factType) {        
         return (String[]) this.factToFields.get( factType );
     }
 
@@ -102,18 +98,9 @@ public class SuggestionCompletionEngine {
                                            String fieldName) {
         return (String[]) this.factFieldToOperator.get( factType + "." + fieldName );        
     }
-
-
-
-    /**
-     * This adds a bound field which may be used later on (fields values cannot be set this way).
-     */
-    public void addBoundField(String fieldName) {
-        this.boundFields.add(fieldName);
-    }
     
-    public String[] getBoundFacts() {
-        return toStringArray( boundFacts.keySet() );
+    public boolean isGlobalVariable(String variable) {
+        return globals.containsKey( variable );
     }
     
     private String[] toStringArray(Set set) {
@@ -124,32 +111,6 @@ public class SuggestionCompletionEngine {
             i++;
         }
         return f;                
-    }
-
-
-    private String[] toStringArray(List list) { 
-        String[] result = new String[list.size()];    
-        for(int i = 0; i < list.size(); i ++) {
-            result[i] = (String) list.get( i );
-        }
-        return result;
-    }
-
-
-    public String[] getBoundFields() {
-        return toStringArray( boundFields );
-    }
-
-
-    public void addBoundFact(String varName,
-                             String factType) {        
-        this.boundFacts.put(varName, factType);
-    }
-
-
-    public String[] getFieldCompletionsForBoundFact(String varName) {
-        String factType = (String) this.boundFacts.get( varName );
-        return this.getFieldCompletions( factType );
     }
 
 

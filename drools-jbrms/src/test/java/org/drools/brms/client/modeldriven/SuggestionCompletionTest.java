@@ -26,7 +26,11 @@ public class SuggestionCompletionTest extends TestCase {
                      }},
                      new HashMap() {{
                          put("foo", new String[] {"bar", "baz"});
+                     }}, 
+                     new HashMap() {{
+                         put("x", "Person");
                      }}
+                     
         );
         
         String[] c =com.getConditionalElements();
@@ -74,12 +78,7 @@ public class SuggestionCompletionTest extends TestCase {
         assertEquals("bar", c[0]);
         assertEquals("baz", c[1]);
         
-        com.addBoundFact( "myFact", "Person" );
-        
-        c = com.getFieldCompletionsForBoundFact( "myFact" );
-        assertEquals(2, c.length);
-        assertEquals("age", c[0]);
-        assertEquals("name", c[1]);
+
         
     }
     
@@ -107,24 +106,19 @@ public class SuggestionCompletionTest extends TestCase {
         
     }
 
-    public void testBoundVariables() {
+
+    
+    public void testGlobalAndFacts() {
         SuggestionCompletionEngine com = new SuggestionCompletionEngine();
-        com.addBoundFact( "foo", "Person" );
-        com.addBoundFact( "bar", "Vehicle" );
-        assertEquals(0, com.getBoundFields().length);
-        assertEquals(2, com.getBoundFacts().length);
+
+        com.addGlobal( "y", new String[] {"a"} );
         
-        com.addBoundField( "x" );
-        assertEquals(1, com.getBoundFields().length);
+        assertFalse(com.isGlobalVariable( "x" ));
         
-        assertEquals( "foo", com.getBoundFacts()[0]);
-        assertEquals( "bar", com.getBoundFacts()[1]);
-        
-        assertEquals( "x", com.getBoundFields()[0]);
-        
-        
-        
+        assertTrue(com.isGlobalVariable( "y" ));
     }
+    
+    
     
     
     

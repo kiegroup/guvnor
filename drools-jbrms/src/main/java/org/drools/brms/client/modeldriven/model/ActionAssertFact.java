@@ -7,6 +7,6 @@ public class ActionAssertFact
     public String factType;
     
     /** tuples of field = value */
-    public String[][] fieldValues; 
+    public ActionFieldValue[] fieldValues;
     
 }

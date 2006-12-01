@@ -2,8 +2,10 @@ package org.drools.brms.client.modeldriven.ui;
 
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.model.ActionSetField;
 import org.drools.brms.client.modeldriven.model.CompositeFactPattern;
 import org.drools.brms.client.modeldriven.model.FactPattern;
+import org.drools.brms.client.modeldriven.model.IAction;
 import org.drools.brms.client.modeldriven.model.IPattern;
 import org.drools.brms.client.modeldriven.model.RuleModel;
 
@@ -45,9 +47,6 @@ public class RuleModeller extends Composite {
     private void doLayout() {
         layout.clear();
         
-        
-        
-        
         Image addPattern = new Image( "images/new_item.gif" );
         addPattern.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -62,7 +61,23 @@ public class RuleModeller extends Composite {
         
         layout.setWidget( 1, 1, renderLhs(this.model) );
         layout.setWidget( 2, 0, new Label("THEN") );
-        layout.setWidget( 3, 1, new Label("<Rhs here>") );
+        layout.setWidget( 3, 1, renderRhs(this.model) );
+    }
+
+    /**
+     * Do the widgets for the RHS.
+     */
+    private Widget renderRhs(RuleModel model) {
+        VerticalPanel vert = new VerticalPanel();
+        
+        for ( int i = 0; i < model.rhs.length; i++ ) {
+            IAction action = model.rhs[i];
+            if (action instanceof ActionSetField) {                
+                vert.add( new ActionSetFieldWidget(this.model, (ActionSetField) action, completions ) ); 
+            } 
+        }
+        
+        return vert;
     }
 
     /**
