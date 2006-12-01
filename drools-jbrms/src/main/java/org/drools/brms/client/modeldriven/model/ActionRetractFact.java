@@ -4,6 +4,11 @@ public class ActionRetractFact
     implements
     IAction {
     
+    
+    public ActionRetractFact(String var) {
+        this.variableName = var;
+    }
+    
     public String variableName;
 
 }

@@ -3,6 +3,7 @@ package org.drools.brms.client;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.model.ActionAssertFact;
 import org.drools.brms.client.modeldriven.model.ActionFieldValue;
+import org.drools.brms.client.modeldriven.model.ActionRetractFact;
 import org.drools.brms.client.modeldriven.model.ActionSetField;
 import org.drools.brms.client.modeldriven.model.CompositeFactPattern;
 import org.drools.brms.client.modeldriven.model.ConnectiveConstraint;
@@ -129,10 +130,12 @@ public class Packages extends JBRMSFeature {
         fact.fieldValues[0] = new ActionFieldValue("name", "Mike");
         fact.fieldValues[1] = new ActionFieldValue("age", "42");
         
+        ActionRetractFact retract = new ActionRetractFact("car1");
         
-        model.rhs = new IAction[2];
+        model.rhs = new IAction[3];
         model.rhs[0] = set;
         model.rhs[1] = fact;
+        model.rhs[2] = retract;
         
         return model;
         
