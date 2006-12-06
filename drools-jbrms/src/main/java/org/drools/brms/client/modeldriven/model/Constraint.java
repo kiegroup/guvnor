@@ -10,4 +10,11 @@ public class Constraint implements IsSerializable {
     
     public ConnectiveConstraint[] connectives;
     
+    public Constraint(String field) {
+        this.fieldName = field;
+    }
+    
+    public Constraint() {}
+    
+    
 }

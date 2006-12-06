@@ -16,4 +16,21 @@ public class FactPattern implements IPattern {
     public String boundName;
     
     
+    public void addConstraint(Constraint constraint) {
+        if (constraints == null) {
+            constraints = new Constraint[1];            
+            constraints[0] = constraint;            
+        } else {
+            Constraint[] newList = new Constraint[constraints.length + 1];
+            for ( int i = 0; i < constraints.length; i++ ) {            
+                newList[i] = constraints[i];
+            }
+            newList[constraints.length] = constraint;
+            constraints = newList;
+        }
+    }
+    
+    
+    
+    
 }

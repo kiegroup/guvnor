@@ -1,5 +1,6 @@
 package org.drools.brms.client.modeldriven.ui;
 
+import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.model.ConnectiveConstraint;
 import org.drools.brms.client.modeldriven.model.Constraint;
@@ -8,9 +9,11 @@ import org.drools.brms.client.modeldriven.model.IPattern;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -26,11 +29,13 @@ public class FactPatternWidget extends Composite {
     private FactPattern pattern;
     private FlexTable layout = new FlexTable();
     private SuggestionCompletionEngine completions;
+    private RuleModeller modeller;
     
     
-    public FactPatternWidget(IPattern p, SuggestionCompletionEngine com) {
+    public FactPatternWidget(RuleModeller modeller, IPattern p, SuggestionCompletionEngine com) {
         this.pattern = (FactPattern) p;
         this.completions = com;
+        this.modeller = modeller;
         layout.setWidget( 0, 0, getPatternLabel() );
         
         final FlexTable inner = new FlexTable();
@@ -57,12 +62,54 @@ public class FactPatternWidget extends Composite {
     }
 
 
-    private Label getPatternLabel() {
+    /**
+     * This returns the pattern label.
+     */
+    private Widget getPatternLabel() {
+        HorizontalPanel horiz = new HorizontalPanel();
+        
+        Image edit = new Image("images/edit.gif");
+        horiz.add( edit );
+        edit.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                showPatternPopup(w);
+            }
+        } );
+        
         if (pattern.boundName != null) {
-            return new Label(pattern.factType + " [" + pattern.boundName + "]" );
+            horiz.add( new Label(pattern.factType + " [" + pattern.boundName + "]" ));
         } else {
-            return new Label(pattern.factType);
+            horiz.add( new Label(pattern.factType));
         }
+        
+        return horiz;
+        
+    }
+
+
+    protected void showPatternPopup(Widget w) {
+        final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", "Modify constraints");
+        popup.setStyleName( "ks-popups-Popup" );
+        final ListBox box = new ListBox();
+        box.addItem( "..." );
+        String[] fields = this.completions.getFieldCompletions( this.pattern.factType );
+        for ( int i = 0; i < fields.length; i++ ) {
+            box.addItem( fields[i] );
+        }
+        
+        box.setSelectedIndex( 0 );
+        
+        popup.addAttribute( "Add field", box );
+        box.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+                pattern.addConstraint( new Constraint(box.getItemText( box.getSelectedIndex() )) );
+                modeller.refreshWidget();
+                popup.hide();
+            }
+        });
+        
+        popup.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+        popup.show();
     }
 
 

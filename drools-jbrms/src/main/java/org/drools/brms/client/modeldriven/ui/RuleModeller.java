@@ -41,14 +41,17 @@ public class RuleModeller extends Composite {
         
         layout = new FlexTable();
         
-        doLayout();
+        refreshWidget();
         
         layout.setStyleName( "model-builder-Background" );
         initWidget( layout );
         
     }
 
-    private void doLayout() {
+    /**
+     * This updates the widget to reflect the state of the model.
+     */
+    public void refreshWidget() {
         layout.clear();
         
         Image addPattern = new Image( "images/new_item.gif" );
@@ -93,7 +96,7 @@ public class RuleModeller extends Composite {
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     model.removeRhsItem(idx);
-                    doLayout();
+                    refreshWidget();
                 }
             } );
             horiz.add( w );
@@ -150,7 +153,7 @@ public class RuleModeller extends Composite {
         
         this.model.lhs = newList;
         
-        doLayout();
+        refreshWidget();
     }
 
     private Widget renderLhs(final RuleModel model) {
@@ -161,9 +164,9 @@ public class RuleModeller extends Composite {
             Widget w;
             if (pattern instanceof FactPattern) {  
                 
-                w =  new FactPatternWidget(pattern, completions) ;
+                w =  new FactPatternWidget(this, pattern, completions) ;
             } else if (pattern instanceof CompositeFactPattern) {
-                w = new CompositeFactPatternWidget((CompositeFactPattern) pattern, completions) ;
+                w = new CompositeFactPatternWidget(this, (CompositeFactPattern) pattern, completions) ;
             } else {
                 throw new RuntimeException("I don't know what type of pattern that is.");
             }
@@ -175,7 +178,7 @@ public class RuleModeller extends Composite {
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     if (model.removeLhsItem(idx)) {
-                        doLayout();
+                        refreshWidget();
                     } else {
                         ErrorPopup.showMessage( "Can't remove that item as it is used in the action part of the rule." );
                     }
