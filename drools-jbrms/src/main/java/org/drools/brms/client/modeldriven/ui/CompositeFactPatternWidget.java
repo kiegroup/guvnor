@@ -38,7 +38,7 @@ public class CompositeFactPatternWidget extends Composite {
         
         FactPattern[] facts = pattern.patterns;
         for ( int i = 0; i < facts.length; i++ ) {
-            vert.add( new FactPatternWidget(modeller, facts[i], this.completions) );
+            vert.add( new FactPatternWidget(modeller, facts[i], this.completions, false) );
         }
         
         this.layout.setWidget( 0, 0, new Label(pattern.type) );

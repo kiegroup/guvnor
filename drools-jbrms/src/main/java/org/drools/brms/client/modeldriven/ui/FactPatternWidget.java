@@ -8,6 +8,7 @@ import org.drools.brms.client.modeldriven.model.FactPattern;
 import org.drools.brms.client.modeldriven.model.IPattern;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -30,12 +31,14 @@ public class FactPatternWidget extends Composite {
     private FlexTable layout = new FlexTable();
     private SuggestionCompletionEngine completions;
     private RuleModeller modeller;
+    private boolean bindable;
     
     
-    public FactPatternWidget(RuleModeller modeller, IPattern p, SuggestionCompletionEngine com) {
+    public FactPatternWidget(RuleModeller modeller, IPattern p, SuggestionCompletionEngine com, boolean canBind) {
         this.pattern = (FactPattern) p;
         this.completions = com;
         this.modeller = modeller;
+        this.bindable = canBind;
         layout.setWidget( 0, 0, getPatternLabel() );
         
         final FlexTable inner = new FlexTable();
@@ -88,7 +91,7 @@ public class FactPatternWidget extends Composite {
 
 
     protected void showPatternPopup(Widget w) {
-        final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", "Modify constraints");
+        final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", "Modify constraints for " + pattern.factType);
         popup.setStyleName( "ks-popups-Popup" );
         final ListBox box = new ListBox();
         box.addItem( "..." );
@@ -107,6 +110,26 @@ public class FactPatternWidget extends Composite {
                 popup.hide();
             }
         });
+        
+        if (bindable) {
+            HorizontalPanel varName = new HorizontalPanel();
+            final TextBox varTxt = new TextBox();
+            varTxt.setText( pattern.boundName );
+            varTxt.setVisibleLength( 3 );
+            varName.add( varTxt );
+            Button bindVar = new Button("Set");
+            bindVar.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                    pattern.boundName = varTxt.getText();
+                    modeller.refreshWidget();
+                    popup.hide();
+                }
+            } );
+            
+            varName.add( bindVar );
+            popup.addAttribute("Variable name", varName);
+            
+        }
         
         popup.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
         popup.show();

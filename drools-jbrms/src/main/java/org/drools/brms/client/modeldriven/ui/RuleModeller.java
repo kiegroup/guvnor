@@ -164,7 +164,7 @@ public class RuleModeller extends Composite {
             Widget w;
             if (pattern instanceof FactPattern) {  
                 
-                w =  new FactPatternWidget(this, pattern, completions) ;
+                w =  new FactPatternWidget(this, pattern, completions, true) ;
             } else if (pattern instanceof CompositeFactPattern) {
                 w = new CompositeFactPatternWidget(this, (CompositeFactPattern) pattern, completions) ;
             } else {
