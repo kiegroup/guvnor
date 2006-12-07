@@ -1,6 +1,7 @@
 package org.drools.brms.client.modeldriven.ui;
 
 import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.model.ConnectiveConstraint;
 import org.drools.brms.client.modeldriven.model.Constraint;
@@ -34,10 +35,10 @@ public class FactPatternWidget extends Composite {
     private boolean bindable;
     
     
-    public FactPatternWidget(RuleModeller modeller, IPattern p, SuggestionCompletionEngine com, boolean canBind) {
+    public FactPatternWidget(RuleModeller mod, IPattern p, SuggestionCompletionEngine com, boolean canBind) {
         this.pattern = (FactPattern) p;
         this.completions = com;
-        this.modeller = modeller;
+        this.modeller = mod;
         this.bindable = canBind;
         layout.setWidget( 0, 0, getPatternLabel() );
         
@@ -48,18 +49,41 @@ public class FactPatternWidget extends Composite {
         for ( int row = 0; row < pattern.constraints.length; row++ ) {
             final Constraint c = pattern.constraints[row];
             final int currentRow = row;
+
             inner.setWidget( row, 0, fieldDropDown(c, new Command() {
                 public void execute() {
                     inner.setWidget( currentRow, 1, operatorDropDown( c ));
-                }
-                
-            }) );
+                }                
+            }));
+            
             inner.setWidget( row, 1, operatorDropDown(c) );
             inner.setWidget( row, 2, valueEditor(c) );            
             inner.setWidget( row, 3, connectives(c) );
+            
+            Image clear = new Image("images/clear_item.gif");
+            clear.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                    YesNoDialog d = new YesNoDialog("Remove this item?", new Command() {
+
+                        public void execute() {
+                            pattern.removeConstraint( currentRow );
+                            modeller.refreshWidget();
+                        }
+                        
+                    });
+                    d.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop());
+                    d.show();
+                }
+            } );
+            
+            inner.setWidget( row, 4, clear );
 
         }
-        layout.setStyleName( "model-builderInner-Background" );
+        if (bindable) {
+            layout.setStyleName( "model-builderInner-Background" );
+        } else {
+            layout.setStyleName( "model-builderInnerInner-Background" );
+        }
         initWidget( layout );
         
     }
@@ -111,7 +135,21 @@ public class FactPatternWidget extends Composite {
             }
         });
         
-        if (bindable) {
+        doBindingEditor( popup );
+        
+        popup.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+        popup.show();
+    }
+
+
+    /**
+     * This adds in (optionally) the editor for changing the bound variable name.
+     * If its a bindable pattern, it will show the editor,
+     * if it is already bound, and the name is used, it should 
+     * not be editable.
+     */
+    private void doBindingEditor(final FormStylePopup popup) {
+        if (bindable && !(modeller.getModel().isBoundFactUsed( pattern.boundName ))) {
             HorizontalPanel varName = new HorizontalPanel();
             final TextBox varTxt = new TextBox();
             varTxt.setText( pattern.boundName );
@@ -130,9 +168,6 @@ public class FactPatternWidget extends Composite {
             popup.addAttribute("Variable name", varName);
             
         }
-        
-        popup.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
-        popup.show();
     }
 
 

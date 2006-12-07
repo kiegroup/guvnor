@@ -29,6 +29,24 @@ public class FactPattern implements IPattern {
             constraints = newList;
         }
     }
+
+    public void removeConstraint(int idx) {
+        //Unfortunately, this is kinda duplicate code with other methods, 
+        //but with typed arrays, and GWT, its not really possible to do anything "better" 
+        //at this point in time. 
+        Constraint[] newList = new Constraint[constraints.length - 1];
+        int newIdx = 0;
+        for ( int i = 0; i < constraints.length; i++ ) {
+            
+            if (i != idx) {
+                newList[newIdx] = constraints[i];
+                newIdx++;
+            }
+            
+        }
+        this.constraints = newList;        
+        
+    }
     
     
     

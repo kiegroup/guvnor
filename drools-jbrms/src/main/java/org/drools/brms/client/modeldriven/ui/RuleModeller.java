@@ -2,6 +2,7 @@ package org.drools.brms.client.modeldriven.ui;
 
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.model.ActionAssertFact;
 import org.drools.brms.client.modeldriven.model.ActionRetractFact;
@@ -12,6 +13,7 @@ import org.drools.brms.client.modeldriven.model.IAction;
 import org.drools.brms.client.modeldriven.model.IPattern;
 import org.drools.brms.client.modeldriven.model.RuleModel;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -44,8 +46,7 @@ public class RuleModeller extends Composite {
         refreshWidget();
         
         layout.setStyleName( "model-builder-Background" );
-        initWidget( layout );
-        
+        initWidget( layout );        
     }
 
     /**
@@ -82,7 +83,7 @@ public class RuleModeller extends Composite {
             
             Widget w = null;            
             if (action instanceof ActionSetField) {                
-                w =  new ActionSetFieldWidget(this.model, (ActionSetField) action, completions ) ; 
+                w =  new ActionSetFieldWidget(this, this.model, (ActionSetField) action, completions ) ; 
             } else if (action instanceof ActionAssertFact) {
                 w = new ActionAssertFactWidget((ActionAssertFact) action, completions );
             } else if (action instanceof ActionRetractFact) {
@@ -95,8 +96,14 @@ public class RuleModeller extends Composite {
             final int idx = i;
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                    model.removeRhsItem(idx);
-                    refreshWidget();
+                    YesNoDialog diag = new YesNoDialog("Remove this item?", new Command() {
+                        public void execute() {
+                            model.removeRhsItem(idx);
+                            refreshWidget();                            
+                        }
+                    });
+                    diag.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+                    diag.show();
                 }
             } );
             horiz.add( w );
@@ -162,9 +169,8 @@ public class RuleModeller extends Composite {
         for ( int i = 0; i < model.lhs.length; i++ ) {
             IPattern pattern = model.lhs[i];
             Widget w;
-            if (pattern instanceof FactPattern) {  
-                
-                w =  new FactPatternWidget(this, pattern, completions, true) ;
+            if (pattern instanceof FactPattern) {                  
+                w = new FactPatternWidget(this, pattern, completions, true) ;
             } else if (pattern instanceof CompositeFactPattern) {
                 w = new CompositeFactPatternWidget(this, (CompositeFactPattern) pattern, completions) ;
             } else {
@@ -177,11 +183,20 @@ public class RuleModeller extends Composite {
             final int idx = i;
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                    if (model.removeLhsItem(idx)) {
-                        refreshWidget();
-                    } else {
-                        ErrorPopup.showMessage( "Can't remove that item as it is used in the action part of the rule." );
-                    }
+                    YesNoDialog diag = new YesNoDialog("Remove this item?", new Command() {
+
+                        public void execute() {
+                            if (model.removeLhsItem(idx)) {
+                                refreshWidget();
+                            } else {
+                                ErrorPopup.showMessage( "Can't remove that item as it is used in the action part of the rule." );
+                            }
+                            
+                        }
+                        
+                    });
+                    diag.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+                    diag.show();
                 }
             } );
             horiz.add( w );
@@ -196,7 +211,9 @@ public class RuleModeller extends Composite {
 
 
     
-    
+    public RuleModel getModel() {
+        return model;
+    }
     
     
 }

@@ -48,6 +48,11 @@ public class RuleModelTest extends TestCase {
         assertEquals(3, model.lhs.length);
         assertFalse(model.removeLhsItem( 0 ));
         assertEquals(3, model.lhs.length);
+        
+        ActionRetractFact fact = new ActionRetractFact("q");
+        model.rhs[0] = fact;
+        assertTrue(model.isBoundFactUsed( "q" ));
+        assertFalse(model.isBoundFactUsed( "x" ));
     }
     
     public void testBindingList() {

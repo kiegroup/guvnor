@@ -77,7 +77,6 @@ public class RuleModel implements IsSerializable {
     }
 
     /**
-     * 
      * @param binding The name of the LHS fact binding.
      * @return Returns true if the specified binding is used on the RHS.
      */
@@ -87,6 +86,11 @@ public class RuleModel implements IsSerializable {
             if (rhs[i] instanceof ActionSetField) {
                 ActionSetField set = (ActionSetField) rhs[i];
                 if (set.variable.equals( binding )) {
+                    return true;
+                }
+            } else if (rhs[i] instanceof ActionRetractFact) {
+                ActionRetractFact ret = (ActionRetractFact) rhs[i];
+                if (ret.variableName.equals( binding )) {
                     return true;
                 }
             }

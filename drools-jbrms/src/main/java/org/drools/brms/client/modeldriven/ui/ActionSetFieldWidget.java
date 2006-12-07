@@ -1,14 +1,21 @@
 package org.drools.brms.client.modeldriven.ui;
 
+import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.model.ActionFieldValue;
 import org.drools.brms.client.modeldriven.model.ActionSetField;
+import org.drools.brms.client.modeldriven.model.Constraint;
 import org.drools.brms.client.modeldriven.model.FactPattern;
 import org.drools.brms.client.modeldriven.model.RuleModel;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -26,12 +33,14 @@ public class ActionSetFieldWidget extends Composite {
     final private FlexTable layout;
     private boolean isBoundFact = false;
     final private String[] fieldCompletions;
+    private RuleModeller modeller;
     
     
-    public ActionSetFieldWidget(RuleModel rule, ActionSetField set, SuggestionCompletionEngine com) {
+    public ActionSetFieldWidget(RuleModeller mod, RuleModel rule, ActionSetField set, SuggestionCompletionEngine com) {
         this.model = set;
         this.completions = com;
         this.layout = new FlexTable();
+        this.modeller = mod;
         layout.setStyleName( "model-builderInner-Background" );
         if (completions.isGlobalVariable( set.variable )) {
             this.fieldCompletions = completions.getFieldCompletionsForGlobalVariable( set.variable );            
@@ -59,6 +68,21 @@ public class ActionSetFieldWidget extends Composite {
             
             inner.setWidget( i, 0, fieldSelector(val) );
             inner.setWidget( i, 1, valueEditor(val) );
+            final int idx = i;
+            Image remove = new Image("images/clear_item.gif");
+            remove.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                    YesNoDialog diag = new YesNoDialog("Remove this item?", new Command() {
+                        public void execute() {
+                            model.removeField( idx );
+                            modeller.refreshWidget();
+                        }                        
+                    });
+                    diag.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+                    diag.show();
+                }                
+            });
+            inner.setWidget( i, 2, remove );
         }
         
         layout.setWidget( 0, 1, inner );
@@ -67,8 +91,51 @@ public class ActionSetFieldWidget extends Composite {
     }
 
 
-    private Label getSetterLabel() {
-        return new Label("Set " + model.variable);
+    private Widget getSetterLabel() {
+        
+        HorizontalPanel horiz = new HorizontalPanel();
+        
+        
+        Image edit = new Image("images/edit.gif");
+        edit.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                showAddFieldPopup(w);
+            }
+        } );
+        
+        horiz.add( edit );
+        horiz.add( new Label("Set " + model.variable) );
+        
+        return horiz;
+    }
+
+
+    protected void showAddFieldPopup(Widget w) {
+        final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", "Add a field");
+        popup.setStyleName( "ks-popups-Popup" );
+        final ListBox box = new ListBox();
+        box.addItem( "..." );
+
+        for ( int i = 0; i < fieldCompletions.length; i++ ) {
+            box.addItem( fieldCompletions[i] );
+        }
+        
+        box.setSelectedIndex( 0 );
+        
+        popup.addAttribute( "Add field", box );
+        box.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+                model.addFieldValue( new ActionFieldValue(box.getItemText( box.getSelectedIndex() ), "") );
+                modeller.refreshWidget();
+                popup.hide();
+            }
+        });
+        
+
+        
+        popup.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+        popup.show();
+ 
     }
 
 
@@ -86,22 +153,24 @@ public class ActionSetFieldWidget extends Composite {
 
     private Widget fieldSelector(final ActionFieldValue val) {
 
-        final ListBox box = new ListBox();
-        for ( int i = 0; i < this.fieldCompletions.length; i++ ) {
-            box.addItem( this.fieldCompletions[i] );
-            if (this.fieldCompletions[i].equals( val.field )) {
-                box.setSelectedIndex( i );
-            }
-
-        }
+//        final ListBox box = new ListBox();
+//        for ( int i = 0; i < this.fieldCompletions.length; i++ ) {
+//            box.addItem( this.fieldCompletions[i] );
+//            if (this.fieldCompletions[i].equals( val.field )) {
+//                box.setSelectedIndex( i );
+//            }
+//
+//        }
+//        
+//        box.addChangeListener( new ChangeListener() {
+//            public void onChange(Widget w) {
+//                val.field = box.getItemText( box.getSelectedIndex() );                
+//            }            
+//        });
         
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                val.field = box.getItemText( box.getSelectedIndex() );                
-            }            
-        });
+        //return box;
         
-        return box;    
+        return new Label(val.field);
         
    }
     

@@ -24,6 +24,23 @@ public class FactPatternTest extends TestCase {
         
     }
     
+    public void testRemoveConstraint() {
+        FactPattern p = new FactPattern();
+        Constraint x = new Constraint("x");
+        p.addConstraint(x);
+        Constraint y = new Constraint("y");        
+        p.addConstraint( y );
+
+        assertEquals(2, p.constraints.length);
+        
+        p.removeConstraint(1);
+        
+        assertEquals(1, p.constraints.length);
+        
+        assertEquals(x, p.constraints[0]);
+        
+    }
+    
     
     
 }
