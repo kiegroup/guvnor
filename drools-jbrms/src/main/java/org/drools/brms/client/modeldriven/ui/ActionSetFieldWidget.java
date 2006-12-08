@@ -5,7 +5,6 @@ import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.model.ActionFieldValue;
 import org.drools.brms.client.modeldriven.model.ActionSetField;
-import org.drools.brms.client.modeldriven.model.Constraint;
 import org.drools.brms.client.modeldriven.model.FactPattern;
 import org.drools.brms.client.modeldriven.model.RuleModel;
 
@@ -32,6 +31,7 @@ public class ActionSetFieldWidget extends Composite {
     final private SuggestionCompletionEngine completions;
     final private FlexTable layout;
     private boolean isBoundFact = false;
+    
     final private String[] fieldCompletions;
     private RuleModeller modeller;
     
@@ -151,27 +151,15 @@ public class ActionSetFieldWidget extends Composite {
     }
 
 
-    private Widget fieldSelector(final ActionFieldValue val) {
-
-//        final ListBox box = new ListBox();
-//        for ( int i = 0; i < this.fieldCompletions.length; i++ ) {
-//            box.addItem( this.fieldCompletions[i] );
-//            if (this.fieldCompletions[i].equals( val.field )) {
-//                box.setSelectedIndex( i );
-//            }
-//
-//        }
-//        
-//        box.addChangeListener( new ChangeListener() {
-//            public void onChange(Widget w) {
-//                val.field = box.getItemText( box.getSelectedIndex() );                
-//            }            
-//        });
-        
-        //return box;
-        
-        return new Label(val.field);
-        
-   }
+    private Widget fieldSelector(final ActionFieldValue val) {        
+        return new Label(val.field);        
+    }
+    
+    /**
+     * This returns true if the values being set are on a fact.
+     */
+    public boolean isBoundFact() {
+        return isBoundFact;
+    }
     
 }

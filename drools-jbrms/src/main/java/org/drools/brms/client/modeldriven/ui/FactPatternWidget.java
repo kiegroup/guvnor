@@ -50,11 +50,12 @@ public class FactPatternWidget extends Composite {
             final Constraint c = pattern.constraints[row];
             final int currentRow = row;
 
-            inner.setWidget( row, 0, fieldDropDown(c, new Command() {
+            inner.setWidget( row, 0, fieldDropDown(c));/*, new Command() {
                 public void execute() {
                     inner.setWidget( currentRow, 1, operatorDropDown( c ));
                 }                
             }));
+            */
             
             inner.setWidget( row, 1, operatorDropDown(c) );
             inner.setWidget( row, 2, valueEditor(c) );            
@@ -257,34 +258,39 @@ public class FactPatternWidget extends Composite {
     }
 
 
-    private Widget fieldDropDown(final Constraint con, final Command onChange) {
-        HorizontalPanel horiz = new HorizontalPanel();
-
-        final ListBox box = new ListBox();
+    private Widget fieldDropDown(final Constraint con) {//, final Command onChange) {
+//MN: don't really need drop downs here. No idea why I did it initially.        
+//        HorizontalPanel horiz = new HorizontalPanel();
+//
+//        final ListBox box = new ListBox();
+//        
+//        String[] com = completions.getFieldCompletions( this.pattern.factType );
+//        for ( int i = 0; i < com.length; i++ ) {
+//            box.addItem( com[i] );
+//            if (com[i].equals( con.fieldName )) {
+//                box.setSelectedIndex( i );
+//            }
+//        }
+//        
+//        box.addChangeListener( new ChangeListener() {
+//
+//            public void onChange(Widget w) {
+//                con.fieldName = box.getItemText( box.getSelectedIndex() );
+//                onChange.execute();
+//            }
+//            
+//        });
+//        horiz.add( box );
+//        
+//        if (con.fieldBinding != null) {
+//            horiz.add( new Label( "[" + con.fieldBinding + "]") );
+//        }
+//        
+//        return horiz;
+//        
         
-        String[] com = completions.getFieldCompletions( this.pattern.factType );
-        for ( int i = 0; i < com.length; i++ ) {
-            box.addItem( com[i] );
-            if (com[i].equals( con.fieldName )) {
-                box.setSelectedIndex( i );
-            }
-        }
+        return new Label(con.fieldName);
         
-        box.addChangeListener( new ChangeListener() {
-
-            public void onChange(Widget w) {
-                con.fieldName = box.getItemText( box.getSelectedIndex() );
-                onChange.execute();
-            }
-            
-        });
-        horiz.add( box );
-        
-        if (con.fieldBinding != null) {
-            horiz.add( new Label( "[" + con.fieldBinding + "]") );
-        }
-        
-        return horiz;
     }
     
 }

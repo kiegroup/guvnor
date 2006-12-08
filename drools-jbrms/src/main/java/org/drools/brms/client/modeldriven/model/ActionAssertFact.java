@@ -1,12 +1,15 @@
 package org.drools.brms.client.modeldriven.model;
 
+/**
+ * This is used when asserting a new fact.
+ * @author Michael Neale
+ *
+ */
 public class ActionAssertFact
-    implements
-    IAction {
+    extends
+    ActionFieldList {
 
     public String factType;
     
-    /** tuples of field = value */
-    public ActionFieldValue[] fieldValues;
-    
+
 }

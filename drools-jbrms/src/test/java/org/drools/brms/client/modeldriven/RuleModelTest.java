@@ -77,8 +77,6 @@ public class RuleModelTest extends TestCase {
         assertEquals("x", b.get( 0 ));
         assertEquals("y", b.get( 1 ));
         
-        
-        
     }
     
     public void testRemoveItemLhs() {
@@ -102,8 +100,7 @@ public class RuleModelTest extends TestCase {
         model.removeLhsItem( 0 );
         
         assertEquals(2, model.lhs.length);
-        assertEquals(y, model.lhs[0]);
-        
+        assertEquals(y, model.lhs[0]);        
     }
     
     public void testRemoveItemRhs() {
@@ -122,9 +119,25 @@ public class RuleModelTest extends TestCase {
         
         assertEquals(2, model.rhs.length);
         assertEquals(r0, model.rhs[0]);
-        assertEquals(r2, model.rhs[1]);
+        assertEquals(r2, model.rhs[1]);        
+    }
+    
+    public void testAddItemLhs() {
+        RuleModel model = new RuleModel();
+        FactPattern x = new FactPattern();
+        model.addLhsItem( x );
+        assertEquals(1, model.lhs.length);
+        
+        FactPattern y = new FactPattern();
+        model.addLhsItem( y );
+        
+        assertEquals(2, model.lhs.length);
+        assertEquals(x, model.lhs[0]);
+        assertEquals(y, model.lhs[1]);
         
     }
+    
+    
     
     
 }

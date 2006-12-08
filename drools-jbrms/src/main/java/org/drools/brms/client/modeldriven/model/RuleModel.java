@@ -98,6 +98,20 @@ public class RuleModel implements IsSerializable {
         return false;
     }
     
+    public void addLhsItem(IPattern pat) {
+        if (this.lhs == null) this.lhs = new IPattern[0];
+        
+        IPattern[] list = this.lhs;
+        IPattern[] newList = new IPattern[list.length + 1];
+        
+        for ( int i = 0; i < list.length; i++ ) {
+            newList[i] =  list[i];
+        }
+        newList[list.length] = pat; 
+        
+        this.lhs = newList;        
+    }
+    
     public void removeRhsItem(int idx) {
         IAction[] newList = new IAction[rhs.length - 1];
         int newIdx = 0;

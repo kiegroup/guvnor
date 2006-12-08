@@ -65,8 +65,6 @@ public class RuleModeller extends Composite {
         layout.setWidget( 0, 0, new Label("IF") );
         layout.setWidget( 0, 2, addPattern );
         
-        
-        
         layout.setWidget( 1, 1, renderLhs(this.model) );
         layout.setWidget( 2, 0, new Label("THEN") );
         layout.setWidget( 3, 1, renderRhs(this.model) );
@@ -85,7 +83,7 @@ public class RuleModeller extends Composite {
             if (action instanceof ActionSetField) {                
                 w =  new ActionSetFieldWidget(this, this.model, (ActionSetField) action, completions ) ; 
             } else if (action instanceof ActionAssertFact) {
-                w = new ActionAssertFactWidget((ActionAssertFact) action, completions );
+                w = new ActionAssertFactWidget(this, (ActionAssertFact) action, completions );
             } else if (action instanceof ActionRetractFact) {
                 w = new ActionRetractFactWidget((ActionRetractFact) action);
             }
@@ -124,9 +122,11 @@ public class RuleModeller extends Composite {
     protected void showFactTypeSelector(final Widget w) {
         final ListBox box = new ListBox();
         String[] facts = completions.getFactTypes();
+        
         for ( int i = 0; i < facts.length; i++ ) {
             box.addItem( facts[i] );
         }
+
         final FormStylePopup popup = new FormStylePopup("images/new_fact.gif", "New fact pattern...");
         popup.addAttribute( "choose type", box );
         Button ok = new Button("OK");
@@ -135,31 +135,21 @@ public class RuleModeller extends Composite {
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 addNewFact(box.getItemText( box.getSelectedIndex() ));
-                popup.hide();
-                
+                popup.hide();                
             }
         });
         popup.setStyleName( "ks-popups-Popup" );
         
         popup.setPopupPosition( w.getAbsoluteLeft() - 400, w.getAbsoluteTop() );
         popup.show();
+
     }
 
     /**
      * Adds a fact to the model, and then refreshes the display.
      */
     protected void addNewFact(String itemText) {
-        IPattern[] list = this.model.lhs;
-        IPattern[] newList = new IPattern[list.length + 1];
-        
-        
-        for ( int i = 0; i < list.length; i++ ) {
-            newList[i] =  list[i];
-        }
-        newList[list.length] = new FactPattern(itemText); 
-        
-        this.model.lhs = newList;
-        
+        this.model.addLhsItem( new FactPattern(itemText) );
         refreshWidget();
     }
 
