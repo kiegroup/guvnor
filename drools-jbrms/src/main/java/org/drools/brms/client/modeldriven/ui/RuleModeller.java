@@ -1,5 +1,8 @@
 package org.drools.brms.client.modeldriven.ui;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.YesNoDialog;
@@ -14,7 +17,7 @@ import org.drools.brms.client.modeldriven.model.IPattern;
 import org.drools.brms.client.modeldriven.model.RuleModel;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -58,7 +61,7 @@ public class RuleModeller extends Composite {
         Image addPattern = new Image( "images/new_item.gif" );
         addPattern.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                showFactTypeSelector(w);               
+                showPatternSelector(w);               
             }            
         });
         
@@ -67,8 +70,18 @@ public class RuleModeller extends Composite {
         
         layout.setWidget( 1, 1, renderLhs(this.model) );
         layout.setWidget( 2, 0, new Label("THEN") );
+        
+        Image addAction = new Image("images/new_item.gif");
+        addAction.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                showActionSelector(w);
+            }            
+        });
+        layout.setWidget( 2, 2, addAction );
+        
         layout.setWidget( 3, 1, renderRhs(this.model) );
     }
+
 
     /**
      * Do the widgets for the RHS.
@@ -90,7 +103,8 @@ public class RuleModeller extends Composite {
             
             HorizontalPanel horiz = new HorizontalPanel();
             
-            Image remove = new Image("images/delete_obj.gif");
+            Image remove = new Image("images/delete_item_small.gif");
+            remove.setTitle( "Remove this action." );
             final int idx = i;
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
@@ -111,38 +125,124 @@ public class RuleModeller extends Composite {
             
         }
         
-        
-        
         return vert;
     }
 
     /**
      * Pops up the fact selector.
      */
-    protected void showFactTypeSelector(final Widget w) {
-        final ListBox box = new ListBox();
-        String[] facts = completions.getFactTypes();
-        
-        for ( int i = 0; i < facts.length; i++ ) {
-            box.addItem( facts[i] );
-        }
-
+    protected void showPatternSelector(final Widget w) {
         final FormStylePopup popup = new FormStylePopup("images/new_fact.gif", "New fact pattern...");
-        popup.addAttribute( "choose type", box );
-        Button ok = new Button("OK");
-        popup.addAttribute( "", ok );
+
         
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                addNewFact(box.getItemText( box.getSelectedIndex() ));
-                popup.hide();                
+
+        //
+        // The list of facts 
+        //
+        String[] facts = completions.getFactTypes();
+        final ListBox factTypeBox = new ListBox();
+        factTypeBox.addItem( "Choose fact type...", "IGNORE" );  
+        for ( int i = 0; i < facts.length; i++ ) {
+            factTypeBox.addItem( facts[i] );
+        }
+        factTypeBox.setSelectedIndex( 0 );
+        popup.addAttribute( "Fact", factTypeBox );
+        factTypeBox.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+                String s = factTypeBox.getItemText( factTypeBox.getSelectedIndex() );
+                if (!s.equals( "IGNORE" )) {
+                    addNewFact(s);
+                    popup.hide();
+                }
             }
         });
         popup.setStyleName( "ks-popups-Popup" );
         
+        //
+        // The list of top level CEs
+        //
+        String ces[]  = completions.getListOfCEs();
+        final ListBox ceBox = new ListBox();
+        ceBox.addItem( "Choose condition type...", "IGNORE" ); 
+        for ( int i = 0; i < ces.length; i++ ) {
+            ceBox.addItem( ces[i] );
+        }
+        ceBox.setSelectedIndex( 0 );
+        
+        popup.addAttribute( "Condition type", ceBox );
+        ceBox.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+                String s = ceBox.getItemText( ceBox.getSelectedIndex() );
+                if (!s.equals( "IGNORE" )) {
+                    addNewCE(s);
+                    popup.hide();
+                }
+            }
+        });        
+        
         popup.setPopupPosition( w.getAbsoluteLeft() - 400, w.getAbsoluteTop() );
         popup.show();
 
+    }
+    
+    protected void showActionSelector(Widget w) {
+        final FormStylePopup popup = new FormStylePopup("images/new_fact.gif", "Add a new action...");
+        
+        popup.setStyleName( "ks-popups-Popup" );
+        
+        List vars = model.getBoundFacts();
+        
+        final ListBox varBox = new ListBox();
+        final ListBox retractBox = new ListBox();
+        varBox.addItem( "Choose ..." );        
+        retractBox.addItem( "Choose..." );
+        for ( Iterator iter = vars.iterator(); iter.hasNext(); ) {
+            String v = (String) iter.next();
+            varBox.addItem( v );
+            retractBox.addItem( v );
+        }
+        String[] globals = this.completions.getGlobalVariables();
+        for ( int i = 0; i < globals.length; i++ ) {
+            varBox.addItem( globals[i] );
+        }
+        
+        varBox.setSelectedIndex( 0 );
+        varBox.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+                addModifyVar(varBox.getItemText( varBox.getSelectedIndex() ));
+                popup.hide();
+            }
+        });
+        
+        retractBox.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+                addRetract(retractBox.getItemText( retractBox.getItemCount() ));
+                popup.hide();
+            }            
+        });
+        
+        popup.addAttribute( "Modify a field on", varBox );
+        popup.addAttribute( "Retract a fact", retractBox );
+
+        popup.setPopupPosition( w.getAbsoluteLeft() - 400, w.getAbsoluteTop() );
+        popup.show();
+    }
+    
+
+
+    protected void addRetract(String var) {
+        this.model.addRhsItem( new ActionRetractFact(var) );
+        refreshWidget();        
+    }
+
+    protected void addModifyVar(String itemText) {        
+        this.model.addRhsItem(new ActionSetField(itemText));
+        refreshWidget();        
+    }
+
+    protected void addNewCE(String s) {
+        this.model.addLhsItem( new CompositeFactPattern(s) );
+        refreshWidget();        
     }
 
     /**
@@ -169,21 +269,19 @@ public class RuleModeller extends Composite {
             
             HorizontalPanel horiz = new HorizontalPanel();
             
-            Image remove = new Image("images/delete_obj.gif");
+            Image remove = new Image("images/delete_item_small.gif");
+            remove.setTitle( "Remove this condition, and all the field constraints that belong to it." );
             final int idx = i;
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     YesNoDialog diag = new YesNoDialog("Remove this item?", new Command() {
-
                         public void execute() {
                             if (model.removeLhsItem(idx)) {
                                 refreshWidget();
                             } else {
                                 ErrorPopup.showMessage( "Can't remove that item as it is used in the action part of the rule." );
-                            }
-                            
-                        }
-                        
+                            }                            
+                        }                        
                     });
                     diag.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
                     diag.show();

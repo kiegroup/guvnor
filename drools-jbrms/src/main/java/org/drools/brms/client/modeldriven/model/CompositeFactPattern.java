@@ -14,6 +14,14 @@ public class CompositeFactPattern implements IPattern {
     public String type;
     public FactPattern[] patterns;
     
+    
+    public CompositeFactPattern(String type) {
+        this.type = type;
+    }
+    
+    public CompositeFactPattern() {}
+    
+    
     public void addFactPattern(FactPattern pat) {
         if (this.patterns == null) this.patterns = new FactPattern[0];
         

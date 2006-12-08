@@ -12,7 +12,7 @@ public abstract class ActionFieldList
     implements
     IAction {
 
-    public ActionFieldValue[] fieldValues;
+    public ActionFieldValue[] fieldValues = new ActionFieldValue[0];
 
     public void removeField(int idx) {
         //Unfortunately, this is kinda duplicate code with other methods, 

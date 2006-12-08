@@ -9,6 +9,11 @@ import java.util.Set;
  * An suggestion completion processor. This should be usable in both GWT/Web and the IDE.
  * The data for this can be loaded into this from simple string lists.
  *  
+ * TODO: make this i18n friendly, either at this level, or the data
+ * being fed into it.
+ * TODO: also make this include type info for the fields (for display, but may be needed
+ * for rendering DRL).
+ *  
  * @author Michael Neale
  */
 public class SuggestionCompletionEngine {
@@ -123,4 +128,11 @@ public class SuggestionCompletionEngine {
         return toStringArray( this.globals.keySet() );
     }
 
+    /**
+     * Returns a list of First order logic prefixes
+     */
+    public String[] getListOfCEs() {
+        return new String[] {"There is no", "There exists", "Any one of"};
+    }
+    
 }

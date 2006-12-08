@@ -7,6 +7,11 @@ package org.drools.brms.client.modeldriven.model;
  */
 public class ActionSetField extends ActionFieldList {
 
+    public ActionSetField(String var) {
+        this.variable = var;
+    }
+    
+    public ActionSetField() {}
     public String variable;
     public boolean modify;
 

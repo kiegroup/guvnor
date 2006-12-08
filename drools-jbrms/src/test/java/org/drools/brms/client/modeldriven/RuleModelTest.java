@@ -137,7 +137,21 @@ public class RuleModelTest extends TestCase {
         
     }
     
-    
+    public void testAddItemRhs() {
+        RuleModel model = new RuleModel();
+        IAction a0 = new ActionSetField();
+        IAction a1 = new ActionSetField();
+        
+        model.addRhsItem( a0 );
+        
+        assertEquals(1, model.rhs.length);
+        model.addRhsItem( a1 );
+        
+        assertEquals(2, model.rhs.length);
+        
+        assertEquals(a0, model.rhs[0]);
+        assertEquals(a1, model.rhs[1]);
+    }
     
     
 }

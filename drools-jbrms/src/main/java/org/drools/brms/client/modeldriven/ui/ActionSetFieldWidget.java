@@ -62,6 +62,7 @@ public class ActionSetFieldWidget extends Composite {
         
         FlexTable inner = new FlexTable();
         
+
         
         for ( int i = 0; i < model.fieldValues.length; i++ ) {
             ActionFieldValue val = model.fieldValues[i];

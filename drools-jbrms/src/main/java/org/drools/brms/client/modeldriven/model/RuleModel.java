@@ -112,6 +112,20 @@ public class RuleModel implements IsSerializable {
         this.lhs = newList;        
     }
     
+    public void addRhsItem(IAction action) {
+        if (this.rhs == null) this.rhs = new IAction[0];
+        
+        IAction[] list = this.rhs;
+        IAction[] newList = new IAction[list.length + 1];
+        
+        for ( int i = 0; i < list.length; i++ ) {
+            newList[i] =  list[i];
+        }
+        newList[list.length] = action; 
+        
+        this.rhs = newList;         
+    }
+    
     public void removeRhsItem(int idx) {
         IAction[] newList = new IAction[rhs.length - 1];
         int newIdx = 0;

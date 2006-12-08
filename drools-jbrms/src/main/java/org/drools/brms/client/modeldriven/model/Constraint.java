@@ -16,5 +16,22 @@ public class Constraint implements IsSerializable {
     
     public Constraint() {}
     
+    /**
+     * This adds a new connective.
+     *
+     */
+    public void addNewConnective() {
+        if (connectives == null) {
+            connectives = new ConnectiveConstraint[] {new ConnectiveConstraint()};                      
+        } else {
+            ConnectiveConstraint[] newList = new ConnectiveConstraint[connectives.length + 1];
+            for ( int i = 0; i < connectives.length; i++ ) {            
+                newList[i] = connectives[i];
+            }
+            newList[connectives.length] = new ConnectiveConstraint();
+            connectives = newList;
+        }          
+    }
+    
     
 }
