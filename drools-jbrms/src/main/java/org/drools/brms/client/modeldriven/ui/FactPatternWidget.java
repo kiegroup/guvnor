@@ -78,6 +78,7 @@ public class FactPatternWidget extends Composite {
             } );
 
             Image addConnective = new Image("images/add_connective.gif");
+            addConnective.setTitle( "Add more options to this fields values." );            
             addConnective.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     c.addNewConnective();
