@@ -137,8 +137,8 @@ public class RuleItemTestCase extends TestCase {
     public void testFindRulesByCategory() throws Exception {
         
         getRepo().loadCategory( "/" ).addCategory( "testFindRulesByCat", "yeah" );
-        getDefaultPackage().addRule( "testFindRulesByCategory1", "ya", "testFindRulesByCat" );
-        getDefaultPackage().addRule( "testFindRulesByCategory2", "ya", "testFindRulesByCat" );
+        getDefaultPackage().addRule( "testFindRulesByCategory1", "ya", "testFindRulesByCat" ).checkin( "version0" );
+        getDefaultPackage().addRule( "testFindRulesByCategory2", "ya", "testFindRulesByCat" ).checkin( "version0" );
   
         
         List rules = getRepo().findRulesByCategory( "testFindRulesByCat" );
@@ -301,6 +301,7 @@ public class RuleItemTestCase extends TestCase {
     
     public void testSaveAndCheckinDescriptionAndTitle() throws Exception {
             RuleItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetDescription", "");
+            ruleItem1.checkin( "version0" );
             
             //it should be "" to begin with
             assertEquals("", ruleItem1.getDescription());
@@ -337,6 +338,7 @@ public class RuleItemTestCase extends TestCase {
         
             getRepo().loadCategory( "/" ).addCategory( "foo", "ka" );
             RuleItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetPrecedingVersion", "descr");
+            ruleItem1.checkin( "version0" );
             assertTrue(ruleItem1.getPrecedingVersion() == null);
             
             
@@ -384,6 +386,7 @@ public class RuleItemTestCase extends TestCase {
     
     public void testGetSucceedingVersion() {
             RuleItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetSucceedingVersion", "test description");
+            ruleItem1.checkin( "version0" );
 
             assertEquals("1", ruleItem1.getVersionNumber());
             
@@ -404,7 +407,8 @@ public class RuleItemTestCase extends TestCase {
     
     public void testGetSuccessorVersionsIterator() {
         try {
-            RuleItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetSuccessorVersionsIterator", "test content");                        
+            RuleItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetSuccessorVersionsIterator", "test content");
+            ruleItem1.checkin( "version0" );
             
             Iterator iterator = ruleItem1.getSuccessorVersionsIterator();            
             assertNotNull(iterator);
@@ -446,6 +450,7 @@ public class RuleItemTestCase extends TestCase {
     public void testGetPredecessorVersionsIterator() {
         try {
             RuleItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetPredecessorVersionsIterator", "test description");
+            ruleItem1.checkin( "version0" );
             
             Iterator iterator = ruleItem1.getPredecessorVersionsIterator();            
             assertNotNull(iterator);

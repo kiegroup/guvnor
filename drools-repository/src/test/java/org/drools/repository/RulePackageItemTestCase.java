@@ -161,8 +161,13 @@ public class RulePackageItemTestCase extends TestCase {
         
         
         RuleItem rule1 = pack.addRule( "rule number 1", "yeah man" );
+        rule1.checkin( "version0" );
+        
         RuleItem rule2 = pack.addRule( "rule number 2", "no way" );
+        rule2.checkin( "version0" );
+        
         RuleItem rule3 = pack.addRule( "rule number 3", "yes way" );
+        rule3.checkin( "version0" );
         
         getRepo().save();
         

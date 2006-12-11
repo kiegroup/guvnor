@@ -130,11 +130,6 @@ public class RulePackageItem extends VersionableItem {
                 rule.addCategory( initialCategory );
             }
             
-            
-            
-            this.rulesRepository.save();
-            
-            rule.checkin( "Initial" );
             return rule;
 
         } catch ( Exception e ) {

@@ -48,9 +48,12 @@ public class RulesRepositoryTestCase extends TestCase {
         assertEquals("my rule", rule.getName());
         
         rule.updateRuleContent( "foo foo" );
-        rule.checkin( "foobar" );
+        rule.checkin( "version0" );
         
         pack.addRule( "other rule", "description" );
+        
+        rule.updateRuleContent( "foo bar" );
+        rule.checkin( "version1" );
         
         RulePackageItem pack2 =  repo.loadRulePackage( "testAddVersionARule" );
         
@@ -63,8 +66,8 @@ public class RulesRepositoryTestCase extends TestCase {
         
         RuleItem prev = (RuleItem) rule.getPrecedingVersion();
        
-        assertEquals("foo foo", rule.getRuleContent());
-        assertFalse("foo foo".equals( prev.getRuleContent() ));
+        assertEquals("foo bar", rule.getRuleContent());
+        assertEquals("foo foo", prev.getRuleContent());
         
         
         
@@ -215,6 +218,7 @@ public class RulesRepositoryTestCase extends TestCase {
         RulesRepository repo = RepositorySession.getRepository();
         RulePackageItem pkg = repo.createRulePackage( "testMove", "description" );
         RuleItem r = pkg.addRule( "testMove", "description" );
+        r.checkin( "version0" );
         
         assertEquals("testMove", r.getPackageName());
         
@@ -238,7 +242,7 @@ public class RulesRepositoryTestCase extends TestCase {
         
         RuleItem p = (RuleItem) r.getPrecedingVersion();
         assertEquals("testMove", p.getPackageName());
-        assertEquals("Initial", p.getCheckinComment());
+        assertEquals("version0", p.getCheckinComment());
         
     }
     
