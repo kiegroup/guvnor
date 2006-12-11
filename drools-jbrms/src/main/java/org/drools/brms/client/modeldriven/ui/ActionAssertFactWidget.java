@@ -107,7 +107,7 @@ public class ActionAssertFactWidget extends Composite {
         } );
         
         horiz.add( edit );
-        horiz.add( new Label("Assert " + this.model.factType) );
+        horiz.add( new Label(completions.getActionDisplayName("assert") + " " + this.model.factType) );
         return horiz;
         
     }

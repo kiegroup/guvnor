@@ -61,7 +61,7 @@ public class RuleModeller extends Composite {
         Image addPattern = new Image( "images/new_item.gif" );
         addPattern.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                showPatternSelector(w);               
+                showAddConditionSelector(w);               
             }            
         });
         
@@ -98,7 +98,7 @@ public class RuleModeller extends Composite {
             } else if (action instanceof ActionAssertFact) {
                 w = new ActionAssertFactWidget(this, (ActionAssertFact) action, completions );
             } else if (action instanceof ActionRetractFact) {
-                w = new ActionRetractFactWidget((ActionRetractFact) action);
+                w = new ActionRetractFactWidget(this.completions, (ActionRetractFact) action);
             }
             
             HorizontalPanel horiz = new HorizontalPanel();
@@ -131,8 +131,8 @@ public class RuleModeller extends Composite {
     /**
      * Pops up the fact selector.
      */
-    protected void showPatternSelector(final Widget w) {
-        final FormStylePopup popup = new FormStylePopup("images/new_fact.gif", "New fact pattern...");
+    protected void showAddConditionSelector(final Widget w) {
+        final FormStylePopup popup = new FormStylePopup("images/new_fact.gif", "Add a condition to the rule...");
 
         
 
@@ -165,14 +165,15 @@ public class RuleModeller extends Composite {
         final ListBox ceBox = new ListBox();
         ceBox.addItem( "Choose condition type...", "IGNORE" ); 
         for ( int i = 0; i < ces.length; i++ ) {
-            ceBox.addItem( ces[i] );
+            String ce = ces[i];
+            ceBox.addItem( completions.getCEDisplayName( ce ), ce );
         }
         ceBox.setSelectedIndex( 0 );
         
         popup.addAttribute( "Condition type", ceBox );
         ceBox.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-                String s = ceBox.getItemText( ceBox.getSelectedIndex() );
+                String s = ceBox.getValue( ceBox.getSelectedIndex() );
                 if (!s.equals( "IGNORE" )) {
                     addNewCE(s);
                     popup.hide();

@@ -107,14 +107,35 @@ public class SuggestionCompletionTest extends TestCase {
     }
 
 
+    public void testOperatorMapping() {
+        SuggestionCompletionEngine com = new SuggestionCompletionEngine();
+        assertEquals("is not", com.getOperatorDisplayName("!="));
+        assertEquals("is", com.getOperatorDisplayName("=="));        
+        assertEquals("xxx", com.getOperatorDisplayName("xxx"));
+    }
+    
+    public void testCEMapping() {
+        SuggestionCompletionEngine com = new SuggestionCompletionEngine();
+        assertEquals("There is no", com.getCEDisplayName( "not" ));
+        assertEquals("There exists", com.getCEDisplayName( "exists" ));
+        assertEquals("Any of", com.getCEDisplayName( "or" ));
+        assertEquals("xxx", com.getCEDisplayName( "xxx" ));
+        
+    }
+    
+    public void testActionMapping() {
+        SuggestionCompletionEngine com = new SuggestionCompletionEngine();
+        assertEquals("Assert", com.getActionDisplayName( "assert" ));
+        assertEquals("foo", com.getActionDisplayName( "foo" ));
+    }
+    
     
     public void testGlobalAndFacts() {
         SuggestionCompletionEngine com = new SuggestionCompletionEngine();
 
         com.addGlobal( "y", new String[] {"a"} );
         
-        assertFalse(com.isGlobalVariable( "x" ));
-        
+        assertFalse(com.isGlobalVariable( "x" ));        
         assertTrue(com.isGlobalVariable( "y" ));
     }
     

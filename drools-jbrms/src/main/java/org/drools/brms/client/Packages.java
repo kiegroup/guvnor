@@ -108,7 +108,7 @@ public class Packages extends JBRMSFeature {
         p2.constraints[0].fieldName = "type";
         p2.constraints[0].operator = "!=";
         
-        p3.type = "Not";
+        p3.type = "not";
         p3.patterns = new FactPattern[1];
         FactPattern i1 = new FactPattern("Vehicle");
         i1.constraints = new Constraint[1];

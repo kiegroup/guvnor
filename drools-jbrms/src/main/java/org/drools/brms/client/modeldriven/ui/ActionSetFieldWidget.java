@@ -105,7 +105,7 @@ public class ActionSetFieldWidget extends Composite {
         } );
         
         horiz.add( edit );
-        horiz.add( new Label("Set " + model.variable) );
+        horiz.add( new Label(completions.getActionDisplayName("set") + " " + model.variable) );
         
         return horiz;
     }

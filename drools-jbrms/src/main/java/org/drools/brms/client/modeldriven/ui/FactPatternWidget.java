@@ -217,8 +217,9 @@ public class FactPatternWidget extends Composite {
         String[] ops = completions.getConnectiveOperatorCompletions( pattern.factType, fieldName );
         final ListBox box = new ListBox();
         for ( int i = 0; i < ops.length; i++ ) {
-            box.addItem( ops[i] );
-            if (ops[i].equals( con.operator )) {
+            String op = ops[i];
+            box.addItem(completions.getOperatorDisplayName( op ), op );
+            if (op.equals( con.operator )) {
                 box.setSelectedIndex( i );
             }
 
@@ -226,7 +227,7 @@ public class FactPatternWidget extends Composite {
         
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-                con.operator = box.getItemText( box.getSelectedIndex() );                
+                con.operator = box.getValue( box.getSelectedIndex() );                
             }            
         });
         
@@ -251,8 +252,9 @@ public class FactPatternWidget extends Composite {
         String[] ops = completions.getOperatorCompletions( pattern.factType, c.fieldName );
         final ListBox box = new ListBox();
         for ( int i = 0; i < ops.length; i++ ) {
-            box.addItem( ops[i] );
-            if (ops[i].equals( c.operator )) {
+            String op = ops[i];
+            box.addItem( completions.getOperatorDisplayName( op ) , op );
+            if (op.equals( c.operator )) {
                 box.setSelectedIndex( i );
             }
 
@@ -260,7 +262,7 @@ public class FactPatternWidget extends Composite {
         
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-                c.operator = box.getItemText( box.getSelectedIndex() );                
+                c.operator = box.getValue( box.getSelectedIndex() );                
             }            
         });
         

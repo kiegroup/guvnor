@@ -1,5 +1,6 @@
 package org.drools.brms.client.modeldriven.ui;
 
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.model.ActionRetractFact;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -16,12 +17,12 @@ public class ActionRetractFactWidget extends Composite {
     private FlexTable layout;
 
     
-    public ActionRetractFactWidget(ActionRetractFact model) {
+    public ActionRetractFactWidget(SuggestionCompletionEngine com, ActionRetractFact model) {
         layout = new FlexTable();
         
         layout.setStyleName( "model-builderInner-Background" );
         
-        layout.setWidget( 0, 0, new Label("Retract ") );
+        layout.setWidget( 0, 0, new Label(com.getActionDisplayName( "retract" )) );
         layout.setWidget( 0, 1, new Label(model.variableName) );
         
         initWidget( layout );
