@@ -1,7 +1,6 @@
 package org.drools.brms.server;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -12,7 +11,7 @@ import javax.jcr.RepositoryException;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
-import org.drools.repository.RuleItem;
+import org.drools.repository.AssetItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -32,7 +31,7 @@ public class TableDisplayHandler {
         List data = new ArrayList();
         
         for ( Iterator iter = list.iterator(); iter.hasNext(); ) {
-            RuleItem rule = (RuleItem) iter.next();
+            AssetItem rule = (AssetItem) iter.next();
             TableDataRow row = new TableDataRow();
             try {
 

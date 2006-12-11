@@ -18,15 +18,13 @@ import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleContentText;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
-import org.drools.brms.client.rpc.TableDataRow;
+import org.drools.repository.AssetItem;
 import org.drools.repository.CategorisableItem;
 import org.drools.repository.CategoryItem;
+import org.drools.repository.PackageItem;
 import org.drools.repository.RepositoryConfigurator;
-import org.drools.repository.RuleItem;
-import org.drools.repository.RulePackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-import org.drools.repository.StateItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -78,7 +76,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
                                  String initialCategory,
                                  String initialPackage) throws SerializableException {        
         try {
-            RulePackageItem pkg = getRulesRepository().loadRulePackage( initialPackage );
+            PackageItem pkg = getRulesRepository().loadRulePackage( initialPackage );
             pkg.addRule( ruleName,
                                          description, initialCategory );
 
@@ -92,7 +90,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         Iterator pkgs = getRulesRepository().listPackages();
         List result = new ArrayList();
         while(pkgs.hasNext()) {
-            RulePackageItem pkg = (RulePackageItem) pkgs.next();
+            PackageItem pkg = (PackageItem) pkgs.next();
             result.add( pkg.getName() );
         }
         return (String[]) result.toArray( new String[result.size()] );
@@ -195,7 +193,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
      */
     public RuleAsset loadRuleAsset(String uuid) throws SerializableException {
         RulesRepository repo = getRulesRepository();
-        RuleItem item = repo.loadRuleByUUID( uuid );
+        AssetItem item = repo.loadRuleByUUID( uuid );
         RuleAsset asset = new RuleAsset();
         
         asset.metaData = popuplateMetaData( item );
@@ -276,7 +274,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         
         
         RulesRepository repo = getRulesRepository();
-        RuleItem rule = repo.loadRuleByUUID( asset.uuid );
+        AssetItem rule = repo.loadRuleByUUID( asset.uuid );
         rule.checkout();
         throw new UnsupportedOperationException("Not implemented yet !");
     }

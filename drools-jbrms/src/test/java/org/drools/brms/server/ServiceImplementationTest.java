@@ -11,9 +11,8 @@ import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.rulelist.RuleItemListViewer;
-
+import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
-import org.drools.repository.RuleItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -160,7 +159,7 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals("testLoadRuleAsset", asset.metaData.title);
       assertEquals("testLoadRuleAsset", asset.metaData.packageName);
    
-      RuleItem rule = impl.repo.loadRulePackage( "testLoadRuleAsset" ).loadRule( "testLoadRuleAsset" );
+      AssetItem rule = impl.repo.loadRulePackage( "testLoadRuleAsset" ).loadRule( "testLoadRuleAsset" );
       rule.updateState( "whee" );
       rule.checkin( "changed state" );
       asset = impl.loadRuleAsset( uuid );
