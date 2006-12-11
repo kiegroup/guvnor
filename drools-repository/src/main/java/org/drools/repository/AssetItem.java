@@ -25,8 +25,8 @@ import org.apache.log4j.Logger;
  * 
  * @author btruitt
  */
-public class RuleItem extends CategorisableItem {
-    private Logger             log                            = Logger.getLogger( RuleItem.class );
+public class AssetItem extends CategorisableItem {
+    private Logger             log                            = Logger.getLogger( AssetItem.class );
 
     /**
      * The name of the DSL property on the rule node type
@@ -61,7 +61,7 @@ public class RuleItem extends CategorisableItem {
      * @param node the node in the repository that this RuleItem corresponds to
      * @throws RulesRepositoryException 
      */
-    public RuleItem(RulesRepository rulesRepository,
+    public AssetItem(RulesRepository rulesRepository,
                     Node node) throws RulesRepositoryException {
         super( rulesRepository,
                node );
@@ -210,7 +210,7 @@ public class RuleItem extends CategorisableItem {
      * This will not save the session or create a new version of the node 
      * (this has to be done seperately, as several properties may change as part of one edit).
      */
-    public RuleItem updateRuleContent(String newRuleContent) throws RulesRepositoryException {
+    public AssetItem updateRuleContent(String newRuleContent) throws RulesRepositoryException {
         checkout();
         try {
             this.node.setProperty( RULE_CONTENT_PROPERTY_NAME,
@@ -302,7 +302,7 @@ public class RuleItem extends CategorisableItem {
         try {
             Node precedingVersionNode = this.getPrecedingVersionNode();
             if ( precedingVersionNode != null ) {
-                return new RuleItem( this.rulesRepository,
+                return new AssetItem( this.rulesRepository,
                                      precedingVersionNode );
             } else {
                 return null;
@@ -318,7 +318,7 @@ public class RuleItem extends CategorisableItem {
         try {
             Node succeedingVersionNode = this.getSucceedingVersionNode();
             if ( succeedingVersionNode != null ) {
-                return new RuleItem( this.rulesRepository,
+                return new AssetItem( this.rulesRepository,
                                      succeedingVersionNode );
             } else {
                 return null;

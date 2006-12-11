@@ -25,14 +25,14 @@ public class RulesRepositoryTestCase extends TestCase {
         Iterator it = repo.listPackages();
         boolean foundDefault = false;
         while(it.hasNext()) {
-            RulePackageItem item = (RulePackageItem) it.next();
+            PackageItem item = (PackageItem) it.next();
             if (item.getName().equals( RulesRepository.DEFAULT_PACKAGE )) {
                 foundDefault = true;
             }
         }
         assertTrue(foundDefault);
         
-        RulePackageItem def = repo.loadDefaultRulePackage();
+        PackageItem def = repo.loadDefaultRulePackage();
         assertNotNull(def);
         assertEquals("default", def.getName());
         
@@ -41,10 +41,10 @@ public class RulesRepositoryTestCase extends TestCase {
     
     public void testAddVersionARule() throws Exception {
         RulesRepository repo = RepositorySession.getRepository();
-        RulePackageItem pack = repo.createRulePackage( "testAddVersionARule", "description" );
+        PackageItem pack = repo.createRulePackage( "testAddVersionARule", "description" );
         repo.save();
         
-        RuleItem rule = pack.addRule( "my rule", "foobar" );
+        AssetItem rule = pack.addRule( "my rule", "foobar" );
         assertEquals("my rule", rule.getName());
         
         rule.updateRuleContent( "foo foo" );
@@ -55,7 +55,7 @@ public class RulesRepositoryTestCase extends TestCase {
         rule.updateRuleContent( "foo bar" );
         rule.checkin( "version1" );
         
-        RulePackageItem pack2 =  repo.loadRulePackage( "testAddVersionARule" );
+        PackageItem pack2 =  repo.loadRulePackage( "testAddVersionARule" );
         
         Iterator it =  pack2.getRules();
         
@@ -64,7 +64,7 @@ public class RulesRepositoryTestCase extends TestCase {
         
         assertFalse(it.hasNext());
         
-        RuleItem prev = (RuleItem) rule.getPrecedingVersion();
+        AssetItem prev = (AssetItem) rule.getPrecedingVersion();
        
         assertEquals("foo bar", rule.getRuleContent());
         assertEquals("foo foo", prev.getRuleContent());
@@ -77,14 +77,14 @@ public class RulesRepositoryTestCase extends TestCase {
     public void testLoadRuleByUUID() throws Exception {
         RulesRepository repo = RepositorySession.getRepository();
         
-        RulePackageItem rulePackageItem = repo.loadDefaultRulePackage();
-        RuleItem rule = rulePackageItem.addRule( "testLoadRuleByUUID", "this is a description");
+        PackageItem rulePackageItem = repo.loadDefaultRulePackage();
+        AssetItem rule = rulePackageItem.addRule( "testLoadRuleByUUID", "this is a description");
         
         repo.save();
                 
         String uuid = rule.getNode().getUUID();
 
-        RuleItem loaded = repo.loadRuleByUUID(uuid);
+        AssetItem loaded = repo.loadRuleByUUID(uuid);
         assertNotNull(loaded);
         assertEquals("testLoadRuleByUUID", loaded.getName());
         assertEquals( "this is a description", loaded.getDescription());
@@ -97,7 +97,7 @@ public class RulesRepositoryTestCase extends TestCase {
         
         
         
-        RuleItem reload = repo.loadRuleByUUID( uuid );
+        AssetItem reload = repo.loadRuleByUUID( uuid );
         assertEquals("testLoadRuleByUUID", reload.getName());
         assertEquals("xxx", reload.getRuleContent());
         System.out.println(reload.getVersionNumber());
@@ -122,7 +122,7 @@ public class RulesRepositoryTestCase extends TestCase {
             Calendar effectiveDate = Calendar.getInstance();
             Calendar expiredDate = Calendar.getInstance();
             expiredDate.setTimeInMillis(effectiveDate.getTimeInMillis() + (1000 * 60 * 60 * 24));
-            RuleItem ruleItem1 = rulesRepository.loadDefaultRulePackage().addRule("testAddRuleCalendarCalendar", "desc");
+            AssetItem ruleItem1 = rulesRepository.loadDefaultRulePackage().addRule("testAddRuleCalendarCalendar", "desc");
             ruleItem1.updateDateEffective( effectiveDate );
             ruleItem1.updateDateExpired( expiredDate );
      
@@ -196,14 +196,14 @@ public class RulesRepositoryTestCase extends TestCase {
         RulesRepository rulesRepository = RepositorySession.getRepository();
         
         
-            RulePackageItem rulePackageItem1 = rulesRepository.createRulePackage("testListPackages", "desc");
+            PackageItem rulePackageItem1 = rulesRepository.createRulePackage("testListPackages", "desc");
             
             Iterator it = rulesRepository.listPackages();
             assertTrue(it.hasNext());
             
             boolean found = false;
             while ( it.hasNext() ) {
-                RulePackageItem element = (RulePackageItem) it.next();
+                PackageItem element = (PackageItem) it.next();
                 if (element.getName().equals( "testListPackages" ))
                 {
                     found = true;
@@ -216,8 +216,8 @@ public class RulesRepositoryTestCase extends TestCase {
     
     public void testMoveRulePackage() throws Exception {
         RulesRepository repo = RepositorySession.getRepository();
-        RulePackageItem pkg = repo.createRulePackage( "testMove", "description" );
-        RuleItem r = pkg.addRule( "testMove", "description" );
+        PackageItem pkg = repo.createRulePackage( "testMove", "description" );
+        AssetItem r = pkg.addRule( "testMove", "description" );
         r.checkin( "version0" );
         
         assertEquals("testMove", r.getPackageName());
@@ -235,12 +235,12 @@ public class RulesRepositoryTestCase extends TestCase {
         pkg = repo.loadRulePackage( "testMove2" );
         assertEquals(1, iteratorToList( pkg.getRules() ).size());
         
-        r = (RuleItem) pkg.getRules().next();
+        r = (AssetItem) pkg.getRules().next();
         assertEquals("testMove", r.getName());
         assertEquals("testMove2", r.getPackageName());
         assertEquals("explanation", r.getCheckinComment());
         
-        RuleItem p = (RuleItem) r.getPrecedingVersion();
+        AssetItem p = (AssetItem) r.getPrecedingVersion();
         assertEquals("testMove", p.getPackageName());
         assertEquals("version0", p.getCheckinComment());
         

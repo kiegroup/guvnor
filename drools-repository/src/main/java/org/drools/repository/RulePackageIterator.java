@@ -27,7 +27,7 @@ public class RulePackageIterator
     }
 
     public Object next() {        
-        return new RulePackageItem(this.repository, (Node) this.packageNodeIterator.next());
+        return new PackageItem(this.repository, (Node) this.packageNodeIterator.next());
     }
 
     public void remove() {

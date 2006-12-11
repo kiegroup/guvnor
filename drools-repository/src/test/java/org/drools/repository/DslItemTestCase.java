@@ -4,7 +4,7 @@ package org.drools.repository;
 import junit.framework.TestCase;
 
 import org.drools.repository.DslItem;
-import org.drools.repository.RuleItem;
+import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 
@@ -32,7 +32,7 @@ public class DslItemTestCase extends TestCase {
         //try constructing a DslItem object with the wrong node type
         try {
             //Get a reference to a node of the incorrect type
-            RuleItem ruleItem1 = this.getRepo().loadDefaultRulePackage().addRule("test rule", "test guts");
+            AssetItem ruleItem1 = this.getRepo().loadDefaultRulePackage().addRule("test rule", "test guts");
             
             //this should fail
             DslItem dslItem2 = new DslItem(getRepo(), ruleItem1.getNode());

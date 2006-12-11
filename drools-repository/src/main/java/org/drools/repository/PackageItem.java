@@ -17,17 +17,17 @@ import javax.jcr.ValueFactory;
 import org.apache.log4j.Logger;
 
 /**
- * A ruleSet object aggregates a set of rules. This is advantageous for systems using the JBoss Rules
+ * A PackageItem object aggregates a set of assets (for example, rules). This is advantageous for systems using the JBoss Rules
  * engine where the application might make use of many related rules.  
  * <p>
- * A rule set refers to rule nodes within the RulesRepository.  It can either have the reference to a 
- * specific rule follow the head version of that rule, or have this reference continue to refer to 
- * a specific version of that rule even when a new version of the rule is checked into the repository
+ * A PackageItem refers to rule nodes within the RulesRepository.  It contains the "master copy" of assets (which may be linked
+ * into other packages or other types of containers).
+ * This is a container "node".
  * 
  * @author btruitt
  */
-public class RulePackageItem extends VersionableItem {
-    private static Logger      log                              = Logger.getLogger( RulePackageItem.class );
+public class PackageItem extends VersionableItem {
+    private static Logger      log                              = Logger.getLogger( PackageItem.class );
 
     /**
      * This is the name of the rules "subfolder" where rules are kept
@@ -63,7 +63,7 @@ public class RulePackageItem extends VersionableItem {
      * @param node the node to which this object corresponds
      * @throws RulesRepositoryException 
      */
-    public RulePackageItem(RulesRepository rulesRepository,
+    public PackageItem(RulesRepository rulesRepository,
                            Node node) throws RulesRepositoryException {
         super( rulesRepository,
                node );
@@ -88,7 +88,7 @@ public class RulePackageItem extends VersionableItem {
      * Without categories, its going to be hard to find rules later on
      * (unless packages are enough for you).
      */
-    public RuleItem addRule(String ruleName, String description) {
+    public AssetItem addRule(String ruleName, String description) {
         return addRule(ruleName, description, null);
     }
     
@@ -97,21 +97,21 @@ public class RulePackageItem extends VersionableItem {
      * This adds a rule to the current physical package (you can move it later).
      * With the given category
      */
-    public RuleItem addRule(String ruleName,
+    public AssetItem addRule(String ruleName,
                             String description, String initialCategory) {
         Node ruleNode;
         try {
 
             Node rulesFolder = this.node.getNode( RULES_FOLDER_NAME );
             ruleNode = rulesFolder.addNode( ruleName,
-                                            RuleItem.RULE_NODE_TYPE_NAME );
-            ruleNode.setProperty( RuleItem.TITLE_PROPERTY_NAME,
+                                            AssetItem.RULE_NODE_TYPE_NAME );
+            ruleNode.setProperty( AssetItem.TITLE_PROPERTY_NAME,
                                   ruleName );
 
-            ruleNode.setProperty( RuleItem.DESCRIPTION_PROPERTY_NAME,
+            ruleNode.setProperty( AssetItem.DESCRIPTION_PROPERTY_NAME,
                                   description );
-            ruleNode.setProperty( RuleItem.FORMAT_PROPERTY_NAME,
-                                  RuleItem.RULE_FORMAT );
+            ruleNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME,
+                                  AssetItem.RULE_FORMAT );
             
 
             ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT,
@@ -119,12 +119,12 @@ public class RulePackageItem extends VersionableItem {
 
             Calendar lastModified = Calendar.getInstance();
             
-            ruleNode.setProperty( RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified );            
-            ruleNode.setProperty( RuleItem.CREATION_DATE_PROPERTY, lastModified );
+            ruleNode.setProperty( AssetItem.LAST_MODIFIED_PROPERTY_NAME, lastModified );            
+            ruleNode.setProperty( AssetItem.CREATION_DATE_PROPERTY, lastModified );
             
-            ruleNode.setProperty( RuleItem.PACKAGE_NAME_PROPERTY, this.getName() );
+            ruleNode.setProperty( AssetItem.PACKAGE_NAME_PROPERTY, this.getName() );
             
-            RuleItem rule = new RuleItem( this.rulesRepository, ruleNode );
+            AssetItem rule = new AssetItem( this.rulesRepository, ruleNode );
             
             if (initialCategory != null) {
                 rule.addCategory( initialCategory );
@@ -308,7 +308,7 @@ public class RulePackageItem extends VersionableItem {
      *                 this object represents
      * @throws RulesRepositoryException
      */
-    public void removeRuleReference(RuleItem ruleItem) throws RulesRepositoryException {
+    public void removeRuleReference(AssetItem ruleItem) throws RulesRepositoryException {
         try {
             Value[] oldValueArray = this.node.getProperty( RULE_REFERENCE_PROPERTY_NAME ).getValues();
             Value[] newValueArray = new Value[oldValueArray.length - 1];
@@ -318,7 +318,7 @@ public class RulePackageItem extends VersionableItem {
             int j = 0;
             for ( int i = 0; i < oldValueArray.length; i++ ) {
                 Node ruleNode = this.node.getSession().getNodeByUUID( oldValueArray[i].getString() );
-                RuleItem currentRuleItem = new RuleItem( this.rulesRepository,
+                AssetItem currentRuleItem = new AssetItem( this.rulesRepository,
                                                          ruleNode );
                 if ( currentRuleItem.equals( ruleItem ) ) {
                     wasThere = true;
@@ -464,11 +464,11 @@ public class RulePackageItem extends VersionableItem {
     /**
      * Load a specific rule asset by name.
      */
-    public RuleItem loadRule(String name) {
+    public AssetItem loadRule(String name) {
 
         try {
             Node content = getVersionContentNode();
-            return new RuleItem(
+            return new AssetItem(
                         this.rulesRepository, 
                         content.getNode( RULES_FOLDER_NAME ).getNode( name ));
         } catch ( RepositoryException e ) {
@@ -502,7 +502,7 @@ public class RulePackageItem extends VersionableItem {
         try {
             Node precedingVersionNode = this.getPrecedingVersionNode();
             if ( precedingVersionNode != null ) {
-                return new RulePackageItem( this.rulesRepository,
+                return new PackageItem( this.rulesRepository,
                                             precedingVersionNode );
             } else {
                 return null;
@@ -518,7 +518,7 @@ public class RulePackageItem extends VersionableItem {
         try {
             Node succeedingVersionNode = this.getSucceedingVersionNode();
             if ( succeedingVersionNode != null ) {
-                return new RulePackageItem( this.rulesRepository,
+                return new PackageItem( this.rulesRepository,
                                             succeedingVersionNode );
             } else {
                 return null;
@@ -553,7 +553,7 @@ public class RulePackageItem extends VersionableItem {
         }
 
         public Object next() {
-            return new RuleItem( rulesRepository,
+            return new AssetItem( rulesRepository,
                                  (Node) it.next() );
         }
 
@@ -586,13 +586,13 @@ public class RulePackageItem extends VersionableItem {
         
         List result = new ArrayList();
         while(rules.hasNext()) {
-            RuleItem head = (RuleItem) rules.next();
+            AssetItem head = (AssetItem) rules.next();
             if (head.sameState( state )) {
                 result.add( head );
             } else {
                 Iterator prev = head.getPredecessorVersionsIterator();
                 while (prev.hasNext()) {
-                    RuleItem prevRule = (RuleItem) prev.next();
+                    AssetItem prevRule = (AssetItem) prev.next();
                     if (prevRule.sameState( state )) {
                         result.add( prevRule );
                         break;
@@ -612,7 +612,7 @@ public class RulePackageItem extends VersionableItem {
                                StateItem state) {
         Iterator rules = getRules();
         while(rules.hasNext()) {
-            RuleItem rule = (RuleItem) rules.next();
+            AssetItem rule = (AssetItem) rules.next();
             rule.updateState( state );
             rule.checkin( comment );
         }

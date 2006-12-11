@@ -12,7 +12,7 @@ import javax.jcr.SimpleCredentials;
 import javax.jcr.UnsupportedRepositoryOperationException;
 
 import org.apache.jackrabbit.core.TransientRepository;
-import org.drools.repository.RuleItem;
+import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.VersionableItem;
@@ -47,13 +47,13 @@ public class ScalabilityTest extends TestCase {
         System.out.println("list size is: " + list.size());
         
         start = System.currentTimeMillis();
-        RuleItem item = (RuleItem) list.get( 0 );
+        AssetItem item = (AssetItem) list.get( 0 );
         item.updateRuleContent( "this is a description" );
         item.checkin( "newer" );
         System.out.println("time to update and version: " + (System.currentTimeMillis() - start));
         
         start = System.currentTimeMillis();
-        item = (RuleItem) list.get( 42 );
+        item = (AssetItem) list.get( 42 );
         item.updateRuleContent( "this is a description" );
         item.updateRuleContent( "wooooooooooooooooooooooooooooooooooot" );
         item.checkin( "latest" );
@@ -103,7 +103,7 @@ public class ScalabilityTest extends TestCase {
             if (i % 500 == 0) {
                 repo.getSession().save();
                 for ( Iterator iter = list.iterator(); iter.hasNext(); ) {
-                    RuleItem element = (RuleItem) iter.next();                    
+                    AssetItem element = (AssetItem) iter.next();                    
                     element.getNode().checkin();                    
                 }
                 list.clear();
@@ -128,7 +128,7 @@ public class ScalabilityTest extends TestCase {
             System.out.println("ADDING rule: " + ruleName);
                         
             
-            RuleItem item = repo.loadDefaultRulePackage().addRule( ruleName, "Foo(bar == " + i + ")panic(" + i + ");" );            
+            AssetItem item = repo.loadDefaultRulePackage().addRule( ruleName, "Foo(bar == " + i + ")panic(" + i + ");" );            
             item.addCategory( cat );
             list.add( item );
             

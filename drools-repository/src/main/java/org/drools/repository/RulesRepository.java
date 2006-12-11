@@ -509,12 +509,12 @@ public class RulesRepository {
      * @param name the name of the package to load 
      * @return a RulePackageItem object
      */
-    public RulePackageItem loadRulePackage(String name) throws RulesRepositoryException {
+    public PackageItem loadRulePackage(String name) throws RulesRepositoryException {
         try {
             Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
             Node rulePackageNode = folderNode.getNode(name);
 
-            return new  RulePackageItem(this, rulePackageNode);
+            return new  PackageItem(this, rulePackageNode);
         }
         catch(Exception e) {
             log.error("Unable to load a rule package. ", e);
@@ -529,7 +529,7 @@ public class RulesRepository {
     /**
      * This will return or create the default package for rules that have no home yet.
      */
-    public RulePackageItem loadDefaultRulePackage() throws RulesRepositoryException {
+    public PackageItem loadDefaultRulePackage() throws RulesRepositoryException {
         Node folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
         try {
             if (folderNode.hasNode( DEFAULT_PACKAGE )) {
@@ -550,10 +550,10 @@ public class RulesRepository {
      * @return a RulePackageItem object
      * @throws RulesRepositoryException
      */
-    public RulePackageItem loadRulePackageByUUID(String uuid) throws RulesRepositoryException {
+    public PackageItem loadRulePackageByUUID(String uuid) throws RulesRepositoryException {
         try {
             Node rulePackageNode = this.session.getNodeByUUID(uuid);
-            return new RulePackageItem(this, rulePackageNode);
+            return new PackageItem(this, rulePackageNode);
         }
         catch (Exception e) {
             log.error("Unable to load a rule package by UUID. ", e);
@@ -569,10 +569,10 @@ public class RulesRepository {
     /**
      * Loads a rule by its UUID (generally the fastest way to load something).
      */
-    public RuleItem loadRuleByUUID(String uuid) {
+    public AssetItem loadRuleByUUID(String uuid) {
         try {
             Node rulePackageNode = this.session.getNodeByUUID(uuid);
-            return new RuleItem(this, rulePackageNode);
+            return new AssetItem(this, rulePackageNode);
         }
         catch (RepositoryException e) {
             log.error("Unable to load a rule asset by UUID.", e);
@@ -593,32 +593,32 @@ public class RulesRepository {
      * @return a RulePackageItem, encapsulating the created node
      * @throws RulesRepositoryException
      */
-    public RulePackageItem createRulePackage(String name, String description) throws RulesRepositoryException {
+    public PackageItem createRulePackage(String name, String description) throws RulesRepositoryException {
         Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
                  
         try {
             //create the node - see section 6.7.22.6 of the spec
-            Node rulePackageNode = folderNode.addNode(name, RulePackageItem.RULE_PACKAGE_TYPE_NAME);
+            Node rulePackageNode = folderNode.addNode(name, PackageItem.RULE_PACKAGE_TYPE_NAME);
             
-            rulePackageNode.addNode( RulePackageItem.RULES_FOLDER_NAME, "drools:versionableAssetFolder" );
-            rulePackageNode.addNode( RulePackageItem.FUNCTION_FOLDER_NAME, "drools:versionableAssetFolder" );
+            rulePackageNode.addNode( PackageItem.RULES_FOLDER_NAME, "drools:versionableAssetFolder" );
+            rulePackageNode.addNode( PackageItem.FUNCTION_FOLDER_NAME, "drools:versionableAssetFolder" );
             
             
-            rulePackageNode.setProperty(RulePackageItem.TITLE_PROPERTY_NAME, name);
+            rulePackageNode.setProperty(PackageItem.TITLE_PROPERTY_NAME, name);
             
                         
-            rulePackageNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, description);
-            rulePackageNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_PACKAGE_FORMAT);
+            rulePackageNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME, description);
+            rulePackageNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME, AssetItem.RULE_PACKAGE_FORMAT);
             
             Calendar lastModified = Calendar.getInstance();
-            rulePackageNode.setProperty(RulePackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            rulePackageNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
             
-            rulePackageNode.setProperty( RulePackageItem.CREATION_DATE_PROPERTY, lastModified );
+            rulePackageNode.setProperty( PackageItem.CREATION_DATE_PROPERTY, lastModified );
             
             this.session.save();
             
             
-            return new RulePackageItem(this, rulePackageNode);
+            return new PackageItem(this, rulePackageNode);
         } catch (ItemExistsException e) {
             throw new RulesRepositoryException("A package name must be unique.", e);
         } catch (RepositoryException e) {
@@ -703,8 +703,8 @@ public class RulesRepository {
             while(it.hasNext()) {
                 Property ruleLink = (Property) it.next();
                 Node parentNode = ruleLink.getParent();
-                if(parentNode.getPrimaryNodeType().getName().equals(RuleItem.RULE_NODE_TYPE_NAME)) {
-                    results.add(new RuleItem(this, parentNode));
+                if(parentNode.getPrimaryNodeType().getName().equals(AssetItem.RULE_NODE_TYPE_NAME)) {
+                    results.add(new AssetItem(this, parentNode));
                 }
             }
             return results;
@@ -766,18 +766,18 @@ public class RulesRepository {
      */
     public void moveRuleItemPackage(String newPackage, String uuid, String explanation) {
         try {
-            RuleItem item = loadRuleByUUID( uuid );
+            AssetItem item = loadRuleByUUID( uuid );
             String oldPackage = item.getPackageName();
-            RulePackageItem sourcePkg = loadRulePackage( oldPackage );
-            RulePackageItem destPkg = loadRulePackage( newPackage );
+            PackageItem sourcePkg = loadRulePackage( oldPackage );
+            PackageItem destPkg = loadRulePackage( newPackage );
             
             String sourcePath = item.node.getPath();
-            String destPath = destPkg.node.getPath() + "/" + RulePackageItem.RULES_FOLDER_NAME + "/" + item.getName(); 
+            String destPath = destPkg.node.getPath() + "/" + PackageItem.RULES_FOLDER_NAME + "/" + item.getName(); 
             
             this.session.move(sourcePath , destPath );
             
             item.checkout();
-            item.node.setProperty( RuleItem.PACKAGE_NAME_PROPERTY, newPackage );
+            item.node.setProperty( AssetItem.PACKAGE_NAME_PROPERTY, newPackage );
             
             item.checkin( explanation );            
             sourcePkg.checkin( explanation );
