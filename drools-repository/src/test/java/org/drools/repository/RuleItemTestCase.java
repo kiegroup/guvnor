@@ -21,6 +21,8 @@ public class RuleItemTestCase extends TestCase {
                 
             Calendar now = Calendar.getInstance();
         
+            Thread.sleep(500); //MN: need this sleep to get the correct date
+            
             RuleItem ruleItem1 = getDefaultPackage().addRule("testRuleItem", "test content");
             
             assertNotNull(ruleItem1);
@@ -28,6 +30,7 @@ public class RuleItemTestCase extends TestCase {
             assertEquals("testRuleItem", ruleItem1.getName());
         
             assertNotNull(ruleItem1.getCreatedDate());
+            
             assertTrue(now.before( ruleItem1.getCreatedDate() ));
             
             String packName = getDefaultPackage().getName();
