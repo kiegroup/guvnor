@@ -76,7 +76,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
                                  String initialCategory,
                                  String initialPackage) throws SerializableException {        
         try {
-            PackageItem pkg = getRulesRepository().loadRulePackage( initialPackage );
+            PackageItem pkg = getRulesRepository().loadPackage( initialPackage );
             pkg.addAsset( ruleName,
                                          description, initialCategory );
 
@@ -103,7 +103,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     public TableDataResult loadRuleListForCategories(String categoryPath) throws SerializableException {
         RulesRepository repo = getRulesRepository();
 
-        List list = repo.findRulesByCategory( categoryPath );
+        List list = repo.findAssetsByCategory( categoryPath );
         TableDisplayHandler handler = new TableDisplayHandler();
         return handler.loadRuleListTable( list );
         
@@ -193,7 +193,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
      */
     public RuleAsset loadRuleAsset(String uuid) throws SerializableException {
         RulesRepository repo = getRulesRepository();
-        AssetItem item = repo.loadRuleByUUID( uuid );
+        AssetItem item = repo.loadAssetByUUID( uuid );
         RuleAsset asset = new RuleAsset();
         
         asset.metaData = popuplateMetaData( item );
@@ -274,7 +274,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         
         
         RulesRepository repo = getRulesRepository();
-        AssetItem rule = repo.loadRuleByUUID( asset.uuid );
+        AssetItem rule = repo.loadAssetByUUID( asset.uuid );
         rule.checkout();
         throw new UnsupportedOperationException("Not implemented yet !");
     }

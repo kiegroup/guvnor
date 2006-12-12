@@ -52,8 +52,8 @@ public class ServiceImplementationTest extends TestCase {
       
       MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
       
-      impl.repo.loadDefaultRulePackage();
-      impl.repo.createRulePackage( "another", "woot" );
+      impl.repo.loadDefaultPackage();
+      impl.repo.createPackage( "another", "woot" );
       
       
       CategoryItem cat = impl.repo.loadCategory( "/" );
@@ -81,7 +81,7 @@ public class ServiceImplementationTest extends TestCase {
       CategoryItem cat = impl.repo.loadCategory( "/" );
       cat.addCategory( "testAttemptDupeRule", "yeah" );
       
-      impl.repo.createRulePackage("dupes", "yeah");
+      impl.repo.createPackage("dupes", "yeah");
       
       impl.createNewRule( "testAttemptDupeRule", "ya", "testAttemptDupeRule", "dupes" );
       
@@ -102,7 +102,7 @@ public class ServiceImplementationTest extends TestCase {
       CategoryItem cat = impl.repo.loadCategory( "/" );
       cat.addCategory( "testRuleTableLoad", "yeah" );
             
-      impl.repo.createRulePackage("testRuleTableLoad", "yeah");      
+      impl.repo.createPackage("testRuleTableLoad", "yeah");      
       impl.createNewRule( "testRuleTableLoad", "ya", "testRuleTableLoad", "testRuleTableLoad" );
       impl.createNewRule( "testRuleTableLoad2", "ya", "testRuleTableLoad", "testRuleTableLoad" );
 
@@ -131,7 +131,7 @@ public class ServiceImplementationTest extends TestCase {
   
   public void testLoadRuleAsset() throws Exception {
       MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
-      impl.repo.createRulePackage( "testLoadRuleAsset", "desc" );
+      impl.repo.createPackage( "testLoadRuleAsset", "desc" );
       impl.createCategory( "", "testLoadRuleAsset", "this is a cat" );
       
       
@@ -159,7 +159,7 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals("testLoadRuleAsset", asset.metaData.title);
       assertEquals("testLoadRuleAsset", asset.metaData.packageName);
    
-      AssetItem rule = impl.repo.loadRulePackage( "testLoadRuleAsset" ).loadRule( "testLoadRuleAsset" );
+      AssetItem rule = impl.repo.loadPackage( "testLoadRuleAsset" ).loadRule( "testLoadRuleAsset" );
       rule.updateState( "whee" );
       rule.checkin( "changed state" );
       asset = impl.loadRuleAsset( uuid );
