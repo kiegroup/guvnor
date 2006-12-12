@@ -77,7 +77,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
                                  String initialPackage) throws SerializableException {        
         try {
             PackageItem pkg = getRulesRepository().loadRulePackage( initialPackage );
-            pkg.addRule( ruleName,
+            pkg.addAsset( ruleName,
                                          description, initialCategory );
 
         } catch (RulesRepositoryException e) {
@@ -215,7 +215,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         } else {
             //default to text, goode olde texte, just like mum used to make.
             RuleContentText text = new RuleContentText();
-            text.content = item.getRuleContent();
+            text.content = item.getContent();
             asset.content = text;
 
         }
