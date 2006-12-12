@@ -99,7 +99,8 @@ public class ActionAssertFactWidget extends Composite {
         HorizontalPanel horiz = new HorizontalPanel();
         
         
-        Image edit = new Image("images/edit.gif");
+        Image edit = new Image("images/add_field_to_fact.gif");
+        edit.setTitle( "Add another field to this so you can set its value." );
         edit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showAddFieldPopup(w);

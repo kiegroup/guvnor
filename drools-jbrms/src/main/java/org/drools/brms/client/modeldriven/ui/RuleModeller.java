@@ -59,6 +59,7 @@ public class RuleModeller extends Composite {
         layout.clear();
         
         Image addPattern = new Image( "images/new_item.gif" );
+        addPattern.setTitle( "Add a condition to this rule." );
         addPattern.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showAddConditionSelector(w);               
@@ -72,6 +73,7 @@ public class RuleModeller extends Composite {
         layout.setWidget( 2, 0, new Label("THEN") );
         
         Image addAction = new Image("images/new_item.gif");
+        addAction.setTitle( "Add an action to this rule." );
         addAction.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showActionSelector(w);
@@ -222,8 +224,26 @@ public class RuleModeller extends Composite {
             }            
         });
         
+        
+        final ListBox factsToAssert = new ListBox();
+        factsToAssert.addItem( "Choose..." );
+        for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
+            factsToAssert.addItem( completions.getFactTypes()[i] );
+        }
+        
+        factsToAssert.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+               String fact = factsToAssert.getItemText( factsToAssert.getSelectedIndex() );
+               model.addRhsItem( new ActionAssertFact(fact) );
+               refreshWidget();
+               popup.hide();
+                
+            }            
+        });
+        
         popup.addAttribute( "Modify a field on", varBox );
         popup.addAttribute( "Retract a fact", retractBox );
+        popup.addAttribute( "Assert a new fact", factsToAssert );
 
         popup.setPopupPosition( w.getAbsoluteLeft() - 400, w.getAbsoluteTop() );
         popup.show();

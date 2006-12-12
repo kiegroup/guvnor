@@ -106,7 +106,8 @@ public class FactPatternWidget extends Composite {
     private Widget getPatternLabel() {
         HorizontalPanel horiz = new HorizontalPanel();
         
-        Image edit = new Image("images/edit.gif");
+        Image edit = new Image("images/add_field_to_fact.gif");
+        edit.setTitle( "Add a field to this condition, or bind a varible to this fact." );
         horiz.add( edit );
         edit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {

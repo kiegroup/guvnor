@@ -11,5 +11,11 @@ public class ActionAssertFact
 
     public String factType;
     
+    public ActionAssertFact(String type) {
+        this.factType = type;
+    }
+    
+    public ActionAssertFact() {}
+    
 
 }

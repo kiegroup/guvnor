@@ -67,7 +67,8 @@ public class CompositeFactPatternWidget extends Composite {
     private Widget getCompositeLabel() {
 
         HorizontalPanel horiz = new HorizontalPanel();
-        Image edit = new Image( "images/edit.gif" );
+        Image edit = new Image( "images/add_field_to_fact.gif" );
+        edit.setTitle( "Add a fact to this constraint. If it is an 'or' type, it will need at least 2." );
         edit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showFactTypeSelector( w );
