@@ -88,8 +88,8 @@ public class PackageItem extends VersionableItem {
      * Without categories, its going to be hard to find rules later on
      * (unless packages are enough for you).
      */
-    public AssetItem addRule(String ruleName, String description) {
-        return addRule(ruleName, description, null);
+    public AssetItem addAsset(String assetName, String description) {
+        return addAsset(assetName, description, null);
     }
     
 
@@ -97,16 +97,16 @@ public class PackageItem extends VersionableItem {
      * This adds a rule to the current physical package (you can move it later).
      * With the given category
      */
-    public AssetItem addRule(String ruleName,
+    public AssetItem addAsset(String assetName,
                             String description, String initialCategory) {
         Node ruleNode;
         try {
 
             Node rulesFolder = this.node.getNode( RULES_FOLDER_NAME );
-            ruleNode = rulesFolder.addNode( ruleName,
+            ruleNode = rulesFolder.addNode( assetName,
                                             AssetItem.RULE_NODE_TYPE_NAME );
             ruleNode.setProperty( AssetItem.TITLE_PROPERTY_NAME,
-                                  ruleName );
+                                  assetName );
 
             ruleNode.setProperty( AssetItem.DESCRIPTION_PROPERTY_NAME,
                                   description );

@@ -44,15 +44,15 @@ public class RulesRepositoryTestCase extends TestCase {
         PackageItem pack = repo.createRulePackage( "testAddVersionARule", "description" );
         repo.save();
         
-        AssetItem rule = pack.addRule( "my rule", "foobar" );
+        AssetItem rule = pack.addAsset( "my rule", "foobar" );
         assertEquals("my rule", rule.getName());
         
-        rule.updateRuleContent( "foo foo" );
+        rule.updateContent( "foo foo" );
         rule.checkin( "version0" );
         
-        pack.addRule( "other rule", "description" );
+        pack.addAsset( "other rule", "description" );
         
-        rule.updateRuleContent( "foo bar" );
+        rule.updateContent( "foo bar" );
         rule.checkin( "version1" );
         
         PackageItem pack2 =  repo.loadRulePackage( "testAddVersionARule" );
@@ -66,8 +66,8 @@ public class RulesRepositoryTestCase extends TestCase {
         
         AssetItem prev = (AssetItem) rule.getPrecedingVersion();
        
-        assertEquals("foo bar", rule.getRuleContent());
-        assertEquals("foo foo", prev.getRuleContent());
+        assertEquals("foo bar", rule.getContent());
+        assertEquals("foo foo", prev.getContent());
         
         
         
@@ -78,7 +78,7 @@ public class RulesRepositoryTestCase extends TestCase {
         RulesRepository repo = RepositorySession.getRepository();
         
         PackageItem rulePackageItem = repo.loadDefaultRulePackage();
-        AssetItem rule = rulePackageItem.addRule( "testLoadRuleByUUID", "this is a description");
+        AssetItem rule = rulePackageItem.addAsset( "testLoadRuleByUUID", "this is a description");
         
         repo.save();
                 
@@ -91,7 +91,7 @@ public class RulesRepositoryTestCase extends TestCase {
         
         String oldVersionNumber = loaded.getVersionNumber();
         
-        loaded.updateRuleContent( "xxx" );
+        loaded.updateContent( "xxx" );
         loaded.checkin( "woo" );
         
         
@@ -99,7 +99,7 @@ public class RulesRepositoryTestCase extends TestCase {
         
         AssetItem reload = repo.loadRuleByUUID( uuid );
         assertEquals("testLoadRuleByUUID", reload.getName());
-        assertEquals("xxx", reload.getRuleContent());
+        assertEquals("xxx", reload.getContent());
         System.out.println(reload.getVersionNumber());
         System.out.println(loaded.getVersionNumber());
         assertFalse(reload.getVersionNumber().equals( oldVersionNumber ));
@@ -122,7 +122,7 @@ public class RulesRepositoryTestCase extends TestCase {
             Calendar effectiveDate = Calendar.getInstance();
             Calendar expiredDate = Calendar.getInstance();
             expiredDate.setTimeInMillis(effectiveDate.getTimeInMillis() + (1000 * 60 * 60 * 24));
-            AssetItem ruleItem1 = rulesRepository.loadDefaultRulePackage().addRule("testAddRuleCalendarCalendar", "desc");
+            AssetItem ruleItem1 = rulesRepository.loadDefaultRulePackage().addAsset("testAddRuleCalendarCalendar", "desc");
             ruleItem1.updateDateEffective( effectiveDate );
             ruleItem1.updateDateExpired( expiredDate );
      
@@ -217,7 +217,7 @@ public class RulesRepositoryTestCase extends TestCase {
     public void testMoveRulePackage() throws Exception {
         RulesRepository repo = RepositorySession.getRepository();
         PackageItem pkg = repo.createRulePackage( "testMove", "description" );
-        AssetItem r = pkg.addRule( "testMove", "description" );
+        AssetItem r = pkg.addAsset( "testMove", "description" );
         r.checkin( "version0" );
         
         assertEquals("testMove", r.getPackageName());

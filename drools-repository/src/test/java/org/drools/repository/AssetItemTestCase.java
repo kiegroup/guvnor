@@ -6,7 +6,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-public class RuleItemTestCase extends TestCase {
+public class AssetItemTestCase extends TestCase {
 
 
     private RulesRepository getRepo() {
@@ -23,7 +23,7 @@ public class RuleItemTestCase extends TestCase {
         
             Thread.sleep(500); //MN: need this sleep to get the correct date
             
-            AssetItem ruleItem1 = getDefaultPackage().addRule("testRuleItem", "test content");
+            AssetItem ruleItem1 = getDefaultPackage().addAsset("testRuleItem", "test content");
             
             assertNotNull(ruleItem1);
             assertNotNull(ruleItem1.getNode());
@@ -55,38 +55,39 @@ public class RuleItemTestCase extends TestCase {
 
     public void testGetContent() {
             
-            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetContent", "test content");
-            ruleItem1.updateRuleContent( "test content" );
+            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addAsset("testGetContent", "test content");
+            ruleItem1.updateContent( "test content" );
             
             assertNotNull(ruleItem1);
             assertNotNull(ruleItem1.getNode());
-            assertEquals("test content", ruleItem1.getRuleContent());
+            assertEquals("test content", ruleItem1.getContent());
     }
 
     public void testGetURI() {
-            AssetItem ruleItem1 = getDefaultPackage().addRule("testGetURI", "blah");
-            ruleItem1.updateRuleContentURI( "foo/bar" );
+            AssetItem ruleItem1 = getDefaultPackage().addAsset("testGetURI", "blah");
+            ruleItem1.checkin( "version0" );
+            ruleItem1.updateContentURI( "foo/bar" );
             ruleItem1.checkin( "ha !" );
             assertNotNull(ruleItem1);
             assertNotNull(ruleItem1.getNode());
-            assertEquals("foo/bar", ruleItem1.getRuleContentURI());
+            assertEquals("foo/bar", ruleItem1.getContentURI());
     }
     
     public void testUpdateContent() {
-            AssetItem ruleItem1 = getDefaultPackage().addRule("testUpdateContent", "test description");
-            ruleItem1.updateRuleContent( "test content" );            
+            AssetItem ruleItem1 = getDefaultPackage().addAsset("testUpdateContent", "test description");
+            ruleItem1.updateContent( "test content" );            
             ruleItem1.checkin( "yeah" );
             
-            ruleItem1.updateRuleContent( "new rule content");
+            ruleItem1.updateContent( "new rule content");
             
-            assertEquals("new rule content", ruleItem1.getRuleContent());
+            assertEquals("new rule content", ruleItem1.getContent());
             
             ruleItem1.checkin( "yeah !" );
             
             assertEquals("yeah !", ruleItem1.getCheckinComment());
             
             AssetItem prev = (AssetItem) ruleItem1.getPredecessorVersionsIterator().next();
-            assertEquals("test content", prev.getRuleContent());
+            assertEquals("test content", prev.getContent());
             assertFalse("yeah !".equals(prev.getCheckinComment()));
             
             
@@ -96,7 +97,7 @@ public class RuleItemTestCase extends TestCase {
     
 
     public void testCategories() {
-            AssetItem ruleItem1 = getDefaultPackage().addRule("testAddTag", "test content");
+            AssetItem ruleItem1 = getDefaultPackage().addAsset("testAddTag", "test content");
             
             getRepo().loadCategory( "/" ).addCategory( "testAddTagTestTag", "description" );
             
@@ -118,7 +119,7 @@ public class RuleItemTestCase extends TestCase {
             AssetItem retItem = (AssetItem) result.get( 0 );
             assertEquals("testAddTag", retItem.getName());
             
-            ruleItem1.updateRuleContent( "foo" );
+            ruleItem1.updateContent( "foo" );
             ruleItem1.checkin( "latest" );
             
             result = getRepo().findRulesByCategory( "testAddTagTestTag" );
@@ -128,7 +129,7 @@ public class RuleItemTestCase extends TestCase {
             ruleItem1 = (AssetItem) result.get( 0 );
             assertEquals(2, ruleItem1.getCategories().size());
             
-            assertEquals("foo", ruleItem1.getRuleContent());
+            assertEquals("foo", ruleItem1.getContent());
             AssetItem prev = (AssetItem) ruleItem1.getPrecedingVersion();
             assertNotNull(prev);
             
@@ -137,8 +138,8 @@ public class RuleItemTestCase extends TestCase {
     public void testFindRulesByCategory() throws Exception {
         
         getRepo().loadCategory( "/" ).addCategory( "testFindRulesByCat", "yeah" );
-        getDefaultPackage().addRule( "testFindRulesByCategory1", "ya", "testFindRulesByCat" ).checkin( "version0" );
-        getDefaultPackage().addRule( "testFindRulesByCategory2", "ya", "testFindRulesByCat" ).checkin( "version0" );
+        getDefaultPackage().addAsset( "testFindRulesByCategory1", "ya", "testFindRulesByCat" ).checkin( "version0" );
+        getDefaultPackage().addAsset( "testFindRulesByCategory2", "ya", "testFindRulesByCat" ).checkin( "version0" );
   
         
         List rules = getRepo().findRulesByCategory( "testFindRulesByCat" );
@@ -153,7 +154,7 @@ public class RuleItemTestCase extends TestCase {
     
 
     public void testRemoveTag() {
-            AssetItem ruleItem1 = getDefaultPackage().addRule("testRemoveTag", "test content");
+            AssetItem ruleItem1 = getDefaultPackage().addAsset("testRemoveTag", "test content");
             
             getRepo().loadCategory( "/" ).addCategory( "TestRemoveCategory", "description" );
             
@@ -176,7 +177,7 @@ public class RuleItemTestCase extends TestCase {
     }
 
     public void testGetTags() {
-            AssetItem ruleItem1 = getDefaultPackage().addRule("testGetTags", "test content");
+            AssetItem ruleItem1 = getDefaultPackage().addAsset("testGetTags", "test content");
            
             List tags = ruleItem1.getCategories();
             assertNotNull(tags);
@@ -192,7 +193,7 @@ public class RuleItemTestCase extends TestCase {
     }
 
     public void testSetStateString() {
-            AssetItem ruleItem1 = getDefaultPackage().addRule("testSetStateString", "test content");
+            AssetItem ruleItem1 = getDefaultPackage().addAsset("testSetStateString", "test content");
            
             ruleItem1.updateState("TestState1");
             assertNotNull(ruleItem1.getState());
@@ -205,7 +206,7 @@ public class RuleItemTestCase extends TestCase {
     }
 
     public void testSetStateStateItem() {
-            AssetItem ruleItem1 = getDefaultPackage().addRule("foobar", "test description");
+            AssetItem ruleItem1 = getDefaultPackage().addAsset("foobar", "test description");
            
             StateItem stateItem1 = getRepo().getState("TestState1");
             ruleItem1.updateState(stateItem1);            
@@ -220,7 +221,7 @@ public class RuleItemTestCase extends TestCase {
     }
 
     public void testGetState() {
-            AssetItem ruleItem1 = getDefaultPackage().addRule("testGetState", "test content");
+            AssetItem ruleItem1 = getDefaultPackage().addAsset("testGetState", "test content");
            
             StateItem stateItem1 = ruleItem1.getState();
             assertNull(stateItem1);
@@ -229,27 +230,27 @@ public class RuleItemTestCase extends TestCase {
             assertNotNull(ruleItem1.getState());
             assertEquals("TestState1", ruleItem1.getState().getName());    
             
-            ruleItem1 = getDefaultPackage().addRule( "testGetState2", "wa" );
+            ruleItem1 = getDefaultPackage().addAsset( "testGetState2", "wa" );
             assertEquals("", ruleItem1.getStateDescription());
             assertNull(ruleItem1.getState());
     }
     
 
     public void testToString() {
-            AssetItem ruleItem1 = getDefaultPackage().addRule("testToString", "test content");
+            AssetItem ruleItem1 = getDefaultPackage().addAsset("testToString", "test content");
            
             assertNotNull(ruleItem1.toString());                        
 
     }
     
     public void testGetLastModifiedOnCheckin() throws Exception  {
-            AssetItem ruleItem1 = getDefaultPackage().addRule("testGetLastModified", "test content");
+            AssetItem ruleItem1 = getDefaultPackage().addAsset("testGetLastModified", "test content");
            
             Calendar cal = Calendar.getInstance();
             long before = cal.getTimeInMillis();           
             
             Thread.sleep( 100 );
-            ruleItem1.updateRuleContent("new lhs");
+            ruleItem1.updateContent("new lhs");
             ruleItem1.checkin( "woot" );
             Calendar cal2 = ruleItem1.getLastModified();
             long lastMod = cal2.getTimeInMillis();           
@@ -266,7 +267,7 @@ public class RuleItemTestCase extends TestCase {
     
     public void testGetDateEffective() {
 
-            AssetItem ruleItem1 = getDefaultPackage().addRule("testGetDateEffective", "test content");
+            AssetItem ruleItem1 = getDefaultPackage().addAsset("testGetDateEffective", "test content");
            
             //it should be initialized to null
             assertTrue(ruleItem1.getDateEffective() == null);
@@ -281,7 +282,7 @@ public class RuleItemTestCase extends TestCase {
     
     public void testGetDateExpired() {
         try {
-            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetDateExpired", "test content");
+            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addAsset("testGetDateExpired", "test content");
            
             //it should be initialized to null
             assertTrue(ruleItem1.getDateExpired() == null);
@@ -300,7 +301,7 @@ public class RuleItemTestCase extends TestCase {
     
     
     public void testSaveAndCheckinDescriptionAndTitle() throws Exception {
-            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetDescription", "");
+            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addAsset("testGetDescription", "");
             ruleItem1.checkin( "version0" );
             
             //it should be "" to begin with
@@ -337,14 +338,14 @@ public class RuleItemTestCase extends TestCase {
     public void testGetPrecedingVersion() {
         
             getRepo().loadCategory( "/" ).addCategory( "foo", "ka" );
-            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetPrecedingVersion", "descr");
+            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addAsset("testGetPrecedingVersion", "descr");
             ruleItem1.checkin( "version0" );
             assertTrue(ruleItem1.getPrecedingVersion() == null);
             
             
             
             ruleItem1.addCategory( "foo" );
-            ruleItem1.updateRuleContent( "test content" );
+            ruleItem1.updateContent( "test content" );
             ruleItem1.checkin( "boo" );
             
             
@@ -353,8 +354,8 @@ public class RuleItemTestCase extends TestCase {
             
             
             
-            ruleItem1.updateRuleContent("new content");
-            ruleItem1.updateRuleContentURI( "foobar" );
+            ruleItem1.updateContent("new content");
+            ruleItem1.updateContentURI( "foobar" );
             ruleItem1.checkin( "two changes" );
             
             predecessorRuleItem = (AssetItem) ruleItem1.getPrecedingVersion();
@@ -364,7 +365,7 @@ public class RuleItemTestCase extends TestCase {
             assertEquals("foo", cat.getName());
             
             
-            assertEquals("test content", predecessorRuleItem.getRuleContent());
+            assertEquals("test content", predecessorRuleItem.getContent());
             
             assertEquals("descr", predecessorRuleItem.getDescription());
             
@@ -372,20 +373,20 @@ public class RuleItemTestCase extends TestCase {
             
             
             
-            ruleItem1.updateRuleContent("newer lhs");
+            ruleItem1.updateContent("newer lhs");
             ruleItem1.checkin( "another" );
             
             predecessorRuleItem = (AssetItem) ruleItem1.getPrecedingVersion();
             assertNotNull(predecessorRuleItem);
-            assertEquals("new content", predecessorRuleItem.getRuleContent());
+            assertEquals("new content", predecessorRuleItem.getContent());
             predecessorRuleItem = (AssetItem) predecessorRuleItem.getPrecedingVersion();
             assertNotNull(predecessorRuleItem);
-            assertEquals("test content", predecessorRuleItem.getRuleContent());
+            assertEquals("test content", predecessorRuleItem.getContent());
  
     }
     
     public void testGetSucceedingVersion() {
-            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetSucceedingVersion", "test description");
+            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addAsset("testGetSucceedingVersion", "test description");
             ruleItem1.checkin( "version0" );
 
             assertEquals("1", ruleItem1.getVersionNumber());
@@ -393,28 +394,28 @@ public class RuleItemTestCase extends TestCase {
             AssetItem succeedingRuleItem = (AssetItem) ruleItem1.getSucceedingVersion();
             assertTrue(succeedingRuleItem == null);            
             
-            ruleItem1.updateRuleContent("new content");
+            ruleItem1.updateContent("new content");
             ruleItem1.checkin( "la" );
             
             assertEquals("2", ruleItem1.getVersionNumber());
             
             AssetItem predecessorRuleItem = (AssetItem) ruleItem1.getPrecedingVersion();
-            assertEquals(null, predecessorRuleItem.getRuleContent());
+            assertEquals(null, predecessorRuleItem.getContent());
             succeedingRuleItem = (AssetItem) predecessorRuleItem.getSucceedingVersion();
             assertNotNull(succeedingRuleItem);
-            assertEquals(ruleItem1.getRuleContent(), succeedingRuleItem.getRuleContent());                       
+            assertEquals(ruleItem1.getContent(), succeedingRuleItem.getContent());                       
     } 
     
     public void testGetSuccessorVersionsIterator() {
         try {
-            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetSuccessorVersionsIterator", "test content");
+            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addAsset("testGetSuccessorVersionsIterator", "test content");
             ruleItem1.checkin( "version0" );
             
             Iterator iterator = ruleItem1.getSuccessorVersionsIterator();            
             assertNotNull(iterator);
             assertFalse(iterator.hasNext());
             
-            ruleItem1.updateRuleContent("new content").checkin( "ya" );
+            ruleItem1.updateContent("new content").checkin( "ya" );
             
             
             iterator = ruleItem1.getSuccessorVersionsIterator();            
@@ -426,20 +427,20 @@ public class RuleItemTestCase extends TestCase {
             assertNotNull(iterator);
             assertTrue(iterator.hasNext());
             AssetItem nextRuleItem = (AssetItem) iterator.next();
-            assertEquals("new content", nextRuleItem.getRuleContent());
+            assertEquals("new content", nextRuleItem.getContent());
             assertFalse(iterator.hasNext());
             
-            ruleItem1.updateRuleContent("newer content");
+            ruleItem1.updateContent("newer content");
             ruleItem1.checkin( "boo" );
                         
             iterator = predecessorRuleItem.getSuccessorVersionsIterator();
             assertNotNull(iterator);
             assertTrue(iterator.hasNext());
             nextRuleItem = (AssetItem) iterator.next();
-            assertEquals("new content", nextRuleItem.getRuleContent());
+            assertEquals("new content", nextRuleItem.getContent());
             assertTrue(iterator.hasNext());
             nextRuleItem = (AssetItem)iterator.next();
-            assertEquals("newer content", nextRuleItem.getRuleContent());
+            assertEquals("newer content", nextRuleItem.getContent());
             assertFalse(iterator.hasNext());            
         }
         catch(Exception e) {
@@ -448,22 +449,21 @@ public class RuleItemTestCase extends TestCase {
     }
     
     public void testGetPredecessorVersionsIterator() {
-        try {
-            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetPredecessorVersionsIterator", "test description");
+            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addAsset("testGetPredecessorVersionsIterator", "test description");
             ruleItem1.checkin( "version0" );
             
             Iterator iterator = ruleItem1.getPredecessorVersionsIterator();            
             assertNotNull(iterator);
             assertFalse(iterator.hasNext());            
             
-            ruleItem1.updateRuleContent( "test content" );
+            ruleItem1.updateContent( "test content" );
             ruleItem1.checkin( "lalalalala" );
             
             iterator = ruleItem1.getPredecessorVersionsIterator();            
             assertNotNull(iterator);
             assertTrue(iterator.hasNext());
             
-            ruleItem1.updateRuleContent("new content");
+            ruleItem1.updateContent("new content");
             ruleItem1.checkin( "boo" );
             
             iterator = ruleItem1.getPredecessorVersionsIterator();            
@@ -471,9 +471,9 @@ public class RuleItemTestCase extends TestCase {
             assertTrue(iterator.hasNext());
             AssetItem nextRuleItem = (AssetItem) iterator.next();
             
-            assertEquals("test content", nextRuleItem.getRuleContent());
+            assertEquals("test content", nextRuleItem.getContent());
             
-            ruleItem1.updateRuleContent("newer content");
+            ruleItem1.updateContent("newer content");
             ruleItem1.checkin( "wee" );
             
             
@@ -482,21 +482,17 @@ public class RuleItemTestCase extends TestCase {
             assertTrue(iterator.hasNext());
             nextRuleItem = (AssetItem) iterator.next();
             assertTrue(iterator.hasNext());            
-            assertEquals("new content", nextRuleItem.getRuleContent());
+            assertEquals("new content", nextRuleItem.getContent());
             nextRuleItem = (AssetItem) iterator.next();
             
-            assertEquals("test content", nextRuleItem.getRuleContent());
+            assertEquals("test content", nextRuleItem.getContent());
             
-            assertEquals(null, ((AssetItem) iterator.next()).getRuleContent());
-            
-        }
-        catch(Exception e) {
-            fail("Caught unexpected exception: " + e);
-        }
+            assertEquals(null, ((AssetItem) iterator.next()).getContent());
+
     }
     
     public void testGetTitle() {    
-            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetTitle", "test content");            
+            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addAsset("testGetTitle", "test content");            
                         
             assertEquals("testGetTitle", ruleItem1.getTitle());
     }
@@ -504,7 +500,7 @@ public class RuleItemTestCase extends TestCase {
     public void testDublinCoreProperties() {
         PackageItem pkg = getRepo().createRulePackage( "testDublinCore", "wa" );
         
-        AssetItem ruleItem = pkg.addRule( "testDublinCoreProperties", "yeah yeah yeah" );
+        AssetItem ruleItem = pkg.addAsset( "testDublinCoreProperties", "yeah yeah yeah" );
         ruleItem.updateCoverage( "b" );
         assertEquals("b",ruleItem.getCoverage());
         
@@ -523,11 +519,30 @@ public class RuleItemTestCase extends TestCase {
     }
     
     public void testGetFormat() {        
-            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addRule("testGetFormat", "test content");
+            AssetItem ruleItem1 = getRepo().loadDefaultRulePackage().addAsset("testGetFormat", "test content");
             
             assertEquals("DRL", ruleItem1.getFormat());     
             
             ruleItem1.updateFormat( "blah" );
             assertEquals("blah", ruleItem1.getFormat());
     }        
+    
+    public void testAnonymousProperties() {
+        AssetItem item = getRepo().loadDefaultRulePackage().addAsset( "anonymousproperty", "lalalalala" );
+        item.updateUserProperty( "fooBar", "value");
+        assertEquals("value", item.getUserProperty("fooBar"));
+        
+        
+        
+        item.checkin( "lalalala" );
+        try {
+            item.updateUserProperty( "drools:content", "whee" );
+            fail("should not be able to set build in properties this way.");
+        }
+        catch (IllegalArgumentException e) {
+            assertNotNull(e.getMessage());
+        }
+
+        
+    }
 }

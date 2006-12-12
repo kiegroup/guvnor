@@ -273,7 +273,9 @@ public abstract class VersionableItem extends Item {
     }
 
     /**
-     * update a text field.
+     * update a text field. This is a convenience method that just
+     * uses the JCR node to set a property.
+     * This will also update the timestamp.
      */
     protected void updateStringProperty(String value,
                                       String prop) {
@@ -294,6 +296,7 @@ public abstract class VersionableItem extends Item {
             throw new RulesRepositoryException( e );
         }
     }
+    
 
     /**
      * See the Dublin Core documentation for more
@@ -705,4 +708,5 @@ public abstract class VersionableItem extends Item {
             throw new RulesRepositoryException( e );
         }
     }
+    
 }

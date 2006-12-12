@@ -13,6 +13,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
@@ -26,33 +27,27 @@ import org.apache.log4j.Logger;
  * @author btruitt
  */
 public class AssetItem extends CategorisableItem {
-    private Logger             log                            = Logger.getLogger( AssetItem.class );
-
-    /**
-     * The name of the DSL property on the rule node type
-     */
-    public static final String DSL_PROPERTY_NAME              = "drools:dslReference";
-
+    private Logger             log                          = Logger.getLogger( AssetItem.class );
     /**
      * The name of the rule node type
      */
-    public static final String RULE_NODE_TYPE_NAME            = "drools:ruleNodeType";
+    public static final String RULE_NODE_TYPE_NAME          = "drools:ruleNodeType";
 
-    public static final String RULE_CONTENT_PROPERTY_NAME     = "drools:content";
+    public static final String CONTENT_PROPERTY_NAME        = "drools:content";
 
-    public static final String RULE_CONTENT_URI_PROPERTY_NAME = "drools:contentURI";
+    public static final String CONTENT_URI_PROPERTY_NAME    = "drools:contentURI";
 
     /**
      * The name of the date effective property on the rule node type
      */
-    public static final String DATE_EFFECTIVE_PROPERTY_NAME   = "drools:dateEffective";
+    public static final String DATE_EFFECTIVE_PROPERTY_NAME = "drools:dateEffective";
 
     /**
      * The name of the date expired property on the rule node type
      */
-    public static final String DATE_EXPIRED_PROPERTY_NAME     = "drools:dateExpired";
+    public static final String DATE_EXPIRED_PROPERTY_NAME   = "drools:dateExpired";
 
-    public static final String PACKAGE_NAME_PROPERTY = "drools:packageName";
+    public static final String PACKAGE_NAME_PROPERTY        = "drools:packageName";
 
     /**
      * Constructs a RuleItem object, setting its node attribute to the specified node.
@@ -62,7 +57,7 @@ public class AssetItem extends CategorisableItem {
      * @throws RulesRepositoryException 
      */
     public AssetItem(RulesRepository rulesRepository,
-                    Node node) throws RulesRepositoryException {
+                     Node node) throws RulesRepositoryException {
         super( rulesRepository,
                node );
 
@@ -85,11 +80,11 @@ public class AssetItem extends CategorisableItem {
      * It there is a URI, this may need to access the external resource
      * to grab/sync the latest, but in any case, it should be the real content.
      */
-    public String getRuleContent() throws RulesRepositoryException {
+    public String getContent() throws RulesRepositoryException {
         try {
             Node ruleNode = getVersionContentNode();
-            if ( ruleNode.hasProperty( RULE_CONTENT_PROPERTY_NAME ) ) {
-                Property data = ruleNode.getProperty( RULE_CONTENT_PROPERTY_NAME );
+            if ( ruleNode.hasProperty( CONTENT_PROPERTY_NAME ) ) {
+                Property data = ruleNode.getProperty( CONTENT_PROPERTY_NAME );
                 return data.getValue().getString();
 
             } else {
@@ -108,11 +103,11 @@ public class AssetItem extends CategorisableItem {
      * such as subversion. This URI will contain information for
      * how to get to the exact version that maps to this rule node.
      */
-    public String getRuleContentURI() throws RulesRepositoryException {
+    public String getContentURI() throws RulesRepositoryException {
         try {
             Node ruleNode = getVersionContentNode();
-            if ( ruleNode.hasProperty( RULE_CONTENT_URI_PROPERTY_NAME ) ) {
-                Property data = ruleNode.getProperty( RULE_CONTENT_URI_PROPERTY_NAME );
+            if ( ruleNode.hasProperty( CONTENT_URI_PROPERTY_NAME ) ) {
+                Property data = ruleNode.getProperty( CONTENT_URI_PROPERTY_NAME );
                 return data.getValue().getString();
             } else {
                 return "";
@@ -210,10 +205,10 @@ public class AssetItem extends CategorisableItem {
      * This will not save the session or create a new version of the node 
      * (this has to be done seperately, as several properties may change as part of one edit).
      */
-    public AssetItem updateRuleContent(String newRuleContent) throws RulesRepositoryException {
+    public AssetItem updateContent(String newRuleContent) throws RulesRepositoryException {
         checkout();
         try {
-            this.node.setProperty( RULE_CONTENT_PROPERTY_NAME,
+            this.node.setProperty( CONTENT_PROPERTY_NAME,
                                    newRuleContent );
             return this;
         } catch ( RepositoryException e ) {
@@ -226,10 +221,10 @@ public class AssetItem extends CategorisableItem {
     /**
      * The URI represents a location for 
      */
-    public void updateRuleContentURI(String newURI) throws RulesRepositoryException {
+    public void updateContentURI(String newURI) throws RulesRepositoryException {
         checkout();
         try {
-            this.node.setProperty( RULE_CONTENT_URI_PROPERTY_NAME,
+            this.node.setProperty( CONTENT_URI_PROPERTY_NAME,
                                    newURI );
         } catch ( RepositoryException e ) {
             log.error( "Caught Exception",
@@ -238,30 +233,19 @@ public class AssetItem extends CategorisableItem {
         }
     }
 
-    /**
-     * Gets a DslItem object corresponding to the DSL reference from the node that this object
-     * encapsulates.
-     * 
-     * @return a DslItem object corresponding to the DSL reference for this rule node. If there is
-     *         no DSL node referenced from this object's node, then null.
-     * @throws RulesRepositoryException 
-     */
-    public DslItem getDsl() throws RulesRepositoryException {
-        try {
-            Property dslProperty = getVersionContentNode().getProperty( DSL_PROPERTY_NAME );
-            Node dslNode = this.node.getSession().getNodeByUUID( dslProperty.getString() );
-            return new DslItem( this.rulesRepository,
-                                dslNode );
-        } catch ( PathNotFoundException e ) {
-            //not set
-            return null;
-        } catch ( Exception e ) {
-            log.error( "Caught exception",
-                       e );
-            throw new RulesRepositoryException( e );
-        }
-    }
 
+    /**
+     * This updates a user defined property (not one of the intrinsic ones).
+     */
+    public void updateUserProperty(String propertyName, String value) {
+        if (propertyName.startsWith( "drools:" )) { 
+            throw new IllegalArgumentException("Can only set the pre defined fields using the appropriate methods.");
+        }
+        updateStringProperty( value, propertyName );        
+        
+    }
+    
+    
     /**
      * Nicely formats the information contained by the node that this object encapsulates
      */
@@ -269,8 +253,8 @@ public class AssetItem extends CategorisableItem {
         try {
             StringBuffer returnString = new StringBuffer();
             returnString.append( "Content of rule item named '" + this.getName() + "':\n" );
-            returnString.append( "Content: " + this.getRuleContent() + "\n" );
-            returnString.append( "Content URI: " + this.getRuleContentURI() + "\n" );
+            returnString.append( "Content: " + this.getContent() + "\n" );
+            returnString.append( "Content URI: " + this.getContentURI() + "\n" );
             returnString.append( "------\n" );
 
             returnString.append( "Date Effective: " + this.getDateEffective() + "\n" );
@@ -303,7 +287,7 @@ public class AssetItem extends CategorisableItem {
             Node precedingVersionNode = this.getPrecedingVersionNode();
             if ( precedingVersionNode != null ) {
                 return new AssetItem( this.rulesRepository,
-                                     precedingVersionNode );
+                                      precedingVersionNode );
             } else {
                 return null;
             }
@@ -319,7 +303,7 @@ public class AssetItem extends CategorisableItem {
             Node succeedingVersionNode = this.getSucceedingVersionNode();
             if ( succeedingVersionNode != null ) {
                 return new AssetItem( this.rulesRepository,
-                                     succeedingVersionNode );
+                                      succeedingVersionNode );
             } else {
                 return null;
             }
@@ -336,7 +320,17 @@ public class AssetItem extends CategorisableItem {
      * hierarchy to get to the enclosing "package" node.
      */
     public String getPackageName() {
-            return super.getStringProperty( PACKAGE_NAME_PROPERTY );
+        return super.getStringProperty( PACKAGE_NAME_PROPERTY );
     }
+
+    /**
+     * @return A property value (for a user defined property).
+     */
+    public String getUserProperty(String property) {
+        return getStringProperty( property );        
+    }
+    
+
+    
 
 }
