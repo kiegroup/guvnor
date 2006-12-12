@@ -157,7 +157,7 @@ public class PackageItem extends VersionableItem {
     
     
     // The following should be kept for reference on how to add a reference that 
-    //is either locked to a version or follows head - FOR SHARING RULES
+    //is either locked to a version or follows head - FOR SHARING ASSETS
     //    /**
     //     * Adds a rule to the rule package node this object represents.  The reference to the rule
     //     * will optionally follow the head version of the specified rule's node or the specific 
@@ -226,199 +226,57 @@ public class PackageItem extends VersionableItem {
     //        }
     //    }
 
-    /**
-     * Adds a function to the rule package node this object represents.  The reference to the 
-     * function node will follow the head version of the specified node.
-     * 
-     * @param functionItem the functionItem corresponding to the node to add to the rule package this
-     *                 object represents
-     * @throws RulesRepositoryException
-     */
-    public void addFunction(FunctionItem functionItem) throws RulesRepositoryException {
-        this.addFunction( functionItem,
-                          true );
-    }
 
-    /**
-     * Adds a function to the rule package node this object represents.  The reference to the function
-     * will optionally follow the head version of the specified node or the specific current version.
-     * 
-     * @param functionItem the functionItem corresponding to the node to add to the rule package this 
-     *                 object represents
-     * @param followRuleHead if true, the reference to the function node will follow the head version 
-     *                       of the node, even if new versions are added. If false, will refer 
-     *                       specifically to the current version.
-     * @throws RulesRepositoryException
-     */
-    public void addFunction(FunctionItem functionItem,
-                            boolean followFunctionHead) throws RulesRepositoryException {
-        try {
-            ValueFactory factory = this.node.getSession().getValueFactory();
-            int i = 0;
-            Value[] newValueArray = null;
+//MN: The following should be kept as a reference on how to remove a version tracking reference
+//as a compliment to the above method (which is also commented out !).     
+//    /**
+//     * Removes the specified rule from the rule package node this object represents.  
+//     * 
+//     * @param ruleItem the ruleItem corresponding to the node to remove from the rule package 
+//     *                 this object represents
+//     * @throws RulesRepositoryException
+//     */
+//    public void removeRuleReference(AssetItem ruleItem) throws RulesRepositoryException {
+//        try {
+//            Value[] oldValueArray = this.node.getProperty( RULE_REFERENCE_PROPERTY_NAME ).getValues();
+//            Value[] newValueArray = new Value[oldValueArray.length - 1];
+//
+//            boolean wasThere = false;
+//
+//            int j = 0;
+//            for ( int i = 0; i < oldValueArray.length; i++ ) {
+//                Node ruleNode = this.node.getSession().getNodeByUUID( oldValueArray[i].getString() );
+//                AssetItem currentRuleItem = new AssetItem( this.rulesRepository,
+//                                                         ruleNode );
+//                if ( currentRuleItem.equals( ruleItem ) ) {
+//                    wasThere = true;
+//                } else {
+//                    newValueArray[j] = oldValueArray[i];
+//                    j++;
+//                }
+//            }
+//
+//            if ( !wasThere ) {
+//                return;
+//            } else {
+//                this.node.checkout();
+//                this.node.setProperty( RULE_REFERENCE_PROPERTY_NAME,
+//                                       newValueArray );
+//                this.node.getSession().save();
+//                this.node.checkin();
+//            }
+//        } catch ( PathNotFoundException e ) {
+//            //the property has not been created yet. 
+//            return;
+//        } catch ( Exception e ) {
+//            log.error( "Caught exception",
+//                       e );
+//            throw new RulesRepositoryException( e );
+//        }
+//    }
 
-            try {
-                Value[] oldValueArray = this.node.getProperty( FUNCTION_REFERENCE_PROPERTY_NAME ).getValues();
-                newValueArray = new Value[oldValueArray.length + 1];
 
-                for ( i = 0; i < oldValueArray.length; i++ ) {
-                    newValueArray[i] = oldValueArray[i];
-                }
-            } catch ( PathNotFoundException e ) {
-                //the property has not been created yet. do so now
-                newValueArray = new Value[1];
-            } finally {
-                if ( newValueArray != null ) { //just here to make the compiler happy
-                    if ( followFunctionHead ) {
-                        newValueArray[i] = factory.createValue( functionItem.getNode() );
-                    } else {
-                        newValueArray[i] = factory.createValue( functionItem.getNode().getBaseVersion() );
-                    }
-                    this.node.checkout();
-                    this.node.setProperty( FUNCTION_REFERENCE_PROPERTY_NAME,
-                                           newValueArray );
-                    this.node.getSession().save();
-                    this.node.checkin();
-                } else {
-                    throw new RulesRepositoryException( "Unexpected null pointer for newValueArray" );
-                }
-            }
-        } catch ( UnsupportedRepositoryOperationException e ) {
-            String message = "";
-            try {
-                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to get base version for function: " + functionItem.getNode().getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error( message + e );
-            } catch ( RepositoryException e1 ) {
-                log.error( "Caught exception: " + e1 );
-                throw new RulesRepositoryException( message,
-                                                    e1 );
-            }
-            log.error( "Caught exception: " + e );
-            throw new RulesRepositoryException( e );
-        } catch ( Exception e ) {
-            log.error( "Caught exception: " + e );
-            throw new RulesRepositoryException( e );
-        }
-    }
-
-    /**
-     * Removes the specified rule from the rule package node this object represents.  
-     * 
-     * @param ruleItem the ruleItem corresponding to the node to remove from the rule package 
-     *                 this object represents
-     * @throws RulesRepositoryException
-     */
-    public void removeRuleReference(AssetItem ruleItem) throws RulesRepositoryException {
-        try {
-            Value[] oldValueArray = this.node.getProperty( RULE_REFERENCE_PROPERTY_NAME ).getValues();
-            Value[] newValueArray = new Value[oldValueArray.length - 1];
-
-            boolean wasThere = false;
-
-            int j = 0;
-            for ( int i = 0; i < oldValueArray.length; i++ ) {
-                Node ruleNode = this.node.getSession().getNodeByUUID( oldValueArray[i].getString() );
-                AssetItem currentRuleItem = new AssetItem( this.rulesRepository,
-                                                         ruleNode );
-                if ( currentRuleItem.equals( ruleItem ) ) {
-                    wasThere = true;
-                } else {
-                    newValueArray[j] = oldValueArray[i];
-                    j++;
-                }
-            }
-
-            if ( !wasThere ) {
-                return;
-            } else {
-                this.node.checkout();
-                this.node.setProperty( RULE_REFERENCE_PROPERTY_NAME,
-                                       newValueArray );
-                this.node.getSession().save();
-                this.node.checkin();
-            }
-        } catch ( PathNotFoundException e ) {
-            //the property has not been created yet. 
-            return;
-        } catch ( Exception e ) {
-            log.error( "Caught exception",
-                       e );
-            throw new RulesRepositoryException( e );
-        }
-    }
-
-    /**
-     * Removes the specified function from the rule package node this object represents.  
-     * 
-     * @param functionItem the functionItem corresponding to the node to remove from the rule package 
-     *                 this object represents
-     * @throws RulesRepositoryException
-     */
-    public void removeFunction(FunctionItem functionItem) throws RulesRepositoryException {
-        try {
-            Value[] oldValueArray = this.node.getProperty( FUNCTION_REFERENCE_PROPERTY_NAME ).getValues();
-            Value[] newValueArray = new Value[oldValueArray.length - 1];
-
-            boolean wasThere = false;
-
-            int j = 0;
-            for ( int i = 0; i < oldValueArray.length; i++ ) {
-                Node functionNode = this.node.getSession().getNodeByUUID( oldValueArray[i].getString() );
-                FunctionItem currentFunctionItem = new FunctionItem( this.rulesRepository,
-                                                                     functionNode );
-                if ( currentFunctionItem.equals( functionItem ) ) {
-                    wasThere = true;
-                } else {
-                    newValueArray[j] = oldValueArray[i];
-                    j++;
-                }
-            }
-
-            if ( !wasThere ) {
-                return;
-            } else {
-                this.node.checkout();
-                this.node.setProperty( FUNCTION_REFERENCE_PROPERTY_NAME,
-                                       newValueArray );
-                this.node.getSession().save();
-                this.node.checkin();
-            }
-        } catch ( PathNotFoundException e ) {
-            //the property has not been created yet. 
-            return;
-        } catch ( Exception e ) {
-            log.error( "Caught exception",
-                       e );
-            throw new RulesRepositoryException( e );
-        }
-    }
-
-    /**
-     * Gets a list of FunctionItem objects for each function node in this rule package
-     * 
-     * @return the List object holding the FunctionItem objects in this rule package
-     * @throws RulesRepositoryException 
-     */
-    public List getFunctions() throws RulesRepositoryException {
-        try {
-            Value[] valueArray = this.node.getProperty( FUNCTION_REFERENCE_PROPERTY_NAME ).getValues();
-            List returnList = new ArrayList();
-
-            for ( int i = 0; i < valueArray.length; i++ ) {
-                Node functionNode = this.node.getSession().getNodeByUUID( valueArray[i].getString() );
-                returnList.add( new FunctionItem( this.rulesRepository,
-                                                  functionNode ) );
-            }
-            return returnList;
-        } catch ( PathNotFoundException e ) {
-            //the property has not been created yet. 
-            return new ArrayList();
-        } catch ( Exception e ) {
-            log.error( "Caught exception: " + e );
-            throw new RulesRepositoryException( e );
-        }
-    }
-
+    //MN: This should be kept as a reference for 
     //    /**
     //     * Gets a list of RuleItem objects for each rule node in this rule package
     //     * 

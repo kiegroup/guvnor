@@ -10,11 +10,11 @@ public class RulePackageItemTestCase extends TestCase {
 
     public void testListPackages() throws Exception {
         RulesRepository repo = getRepo();
-        repo.createRulePackage( "testListPackages1", "lalalala" );
+        repo.createPackage( "testListPackages1", "lalalala" );
         
         List list = iteratorToList( repo.listPackages() );
         int prevSize = list.size();
-        repo.createRulePackage( "testListPackages2", "abc" );
+        repo.createPackage( "testListPackages2", "abc" );
         
         list = iteratorToList( repo.listPackages() );
         
@@ -26,7 +26,7 @@ public class RulePackageItemTestCase extends TestCase {
         try {
             
             //calls constructor
-            PackageItem rulePackageItem1 = repo.createRulePackage("testRulePackage", "desc");
+            PackageItem rulePackageItem1 = repo.createPackage("testRulePackage", "desc");
             assertNotNull(rulePackageItem1);
             assertEquals("testRulePackage", rulePackageItem1.getName());
             
@@ -46,19 +46,6 @@ public class RulePackageItemTestCase extends TestCase {
             fail("Caught unexpected exception: " + e);
         }
         
-        //try constructing with node of wrong type
-        try {            
-            DslItem dslItem = repo.addDsl("testRulePackageItem", "content");
-            PackageItem rulePackageItem2 = new PackageItem(repo, dslItem.getNode());
-            fail("Exception not thrown for node of type: " + dslItem.getNode().getPrimaryNodeType().getName());
-        }
-        catch(RulesRepositoryException e) {
-            //this is good
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-            fail("Caught unexpected exception: " + e);
-        }
     }
     
     /**
@@ -69,7 +56,7 @@ public class RulePackageItemTestCase extends TestCase {
     public void testBaselinePackage() throws Exception {
         RulesRepository repo = getRepo();
         
-        PackageItem pack = repo.createRulePackage( "testBaselinePackage", "for testing baselines" );
+        PackageItem pack = repo.createPackage( "testBaselinePackage", "for testing baselines" );
         
         AssetItem rule1 = pack.addAsset( "rule 1", "yeah" );
         AssetItem rule2 = pack.addAsset( "rule 2", "foobar" );
@@ -84,7 +71,7 @@ public class RulePackageItemTestCase extends TestCase {
         pack.createBaseline("commit comment", state);
         
         //check head
-        pack = repo.loadRulePackage( "testBaselinePackage" );
+        pack = repo.loadPackage( "testBaselinePackage" );
         assertEquals(2, iteratorToList(pack.getRules()).size());
         
         //now remove a rule from head
@@ -102,7 +89,7 @@ public class RulePackageItemTestCase extends TestCase {
     /** Continues to show how multi dimensional versioning works */
     public void testPackageBaselineWithRuleChanges() throws Exception {
         String packName = StackUtil.getCurrentMethodName();
-        PackageItem pack = getRepo().createRulePackage( packName, "yeah" );
+        PackageItem pack = getRepo().createPackage( packName, "yeah" );
         
         AssetItem rule = pack.addAsset( "foobar", "waah" );        
         rule.updateContent( "this is something" );        
@@ -112,7 +99,7 @@ public class RulePackageItemTestCase extends TestCase {
         
         pack.createBaseline( "another one", state );
         
-        pack = getRepo().loadRulePackage( packName );
+        pack = getRepo().loadPackage( packName );
         
         rule = (AssetItem) pack.getRules().next();
         rule.updateContent( "blah" );
@@ -120,7 +107,7 @@ public class RulePackageItemTestCase extends TestCase {
         
         pack.createBaseline( "yeah", state );
         
-        pack = getRepo().loadRulePackage( packName );
+        pack = getRepo().loadPackage( packName );
         rule = (AssetItem) pack.getRules().next();
         assertEquals("blah", rule.getContent());
         
@@ -136,16 +123,16 @@ public class RulePackageItemTestCase extends TestCase {
 
     public void testLoadRulePackageItem() {
 
-        PackageItem rulePackageItem = getRepo().createRulePackage("testLoadRuleRuleItem", "desc");
+        PackageItem rulePackageItem = getRepo().createPackage("testLoadRuleRuleItem", "desc");
 
-        rulePackageItem = getRepo().loadRulePackage("testLoadRuleRuleItem");
+        rulePackageItem = getRepo().loadPackage("testLoadRuleRuleItem");
         assertNotNull(rulePackageItem);
         assertEquals("testLoadRuleRuleItem", rulePackageItem.getName());
         
         assertEquals("desc", rulePackageItem.getDescription());
         // try loading rule package that was not created 
         try {
-            rulePackageItem = getRepo().loadRulePackage("anotherRuleRuleItem");
+            rulePackageItem = getRepo().loadPackage("anotherRuleRuleItem");
             fail("Exception not thrown loading rule package that was not created.");
         } catch (RulesRepositoryException e) {
             // that is OK!
@@ -157,7 +144,7 @@ public class RulePackageItemTestCase extends TestCase {
      * This will test getting rules of specific versions out of a package.
      */
     public void testPackageRuleVersionExtraction() throws Exception {
-        PackageItem pack = getRepo().createRulePackage( "package extractor", "foo" );
+        PackageItem pack = getRepo().createPackage( "package extractor", "foo" );
         
         
         AssetItem rule1 = pack.addAsset( "rule number 1", "yeah man" );
@@ -171,7 +158,7 @@ public class RulePackageItemTestCase extends TestCase {
         
         getRepo().save();
         
-        pack = getRepo().loadRulePackage( "package extractor" );
+        pack = getRepo().loadPackage( "package extractor" );
         List rules = iteratorToList( pack.getRules() );
         assertEquals(3, rules.size());
         
@@ -180,7 +167,7 @@ public class RulePackageItemTestCase extends TestCase {
         rule1.updateState( "foobar" );
         rule1.checkin( "yeah" );
         
-        pack = getRepo().loadRulePackage( "package extractor" );
+        pack = getRepo().loadPackage( "package extractor" );
         
         rules = iteratorToList( pack.getRules(state) );
         
@@ -216,11 +203,11 @@ public class RulePackageItemTestCase extends TestCase {
     }
     
     public void testDuplicatePackageName() throws Exception {
-        PackageItem pack = getRepo().createRulePackage( "dupePackageTest", "testing for dupe" );        
+        PackageItem pack = getRepo().createPackage( "dupePackageTest", "testing for dupe" );        
         assertNotNull(pack.getName());
         
         try {
-            getRepo().createRulePackage( "dupePackageTest", "this should fail" );
+            getRepo().createPackage( "dupePackageTest", "this should fail" );
             fail("Should not be able to add a package of the same name.");
         } catch (RulesRepositoryException e) {
             assertNotNull(e.getMessage());
@@ -230,19 +217,19 @@ public class RulePackageItemTestCase extends TestCase {
     
     public void testLoadRulePackageItemByUUID() throws Exception {
 
-        PackageItem rulePackageItem = getRepo().createRulePackage("testLoadRuleRuleItemByUUID", "desc");
+        PackageItem rulePackageItem = getRepo().createPackage("testLoadRuleRuleItemByUUID", "desc");
 
         String uuid = null;
             uuid = rulePackageItem.getNode().getUUID();
 
 
-        rulePackageItem = getRepo().loadRulePackageByUUID(uuid);
+        rulePackageItem = getRepo().loadPackageByUUID(uuid);
         assertNotNull(rulePackageItem);
         assertEquals("testLoadRuleRuleItemByUUID", rulePackageItem.getName());
         
         // try loading rule package that was not created 
         try {
-            rulePackageItem = getRepo().loadRulePackageByUUID("01010101-0101-0101-0101-010101010101");
+            rulePackageItem = getRepo().loadPackageByUUID("01010101-0101-0101-0101-010101010101");
             fail("Exception not thrown loading rule package that was not created.");
         } catch (RulesRepositoryException e) {
             // that is OK!
@@ -251,7 +238,7 @@ public class RulePackageItemTestCase extends TestCase {
     }    
     
     public void testAddRuleRuleItem() {
-            PackageItem rulePackageItem1 = getRepo().createRulePackage("testAddRuleRuleItem","desc");
+            PackageItem rulePackageItem1 = getRepo().createPackage("testAddRuleRuleItem","desc");
 
             
             AssetItem ruleItem1 = rulePackageItem1.addAsset("testAddRuleRuleItem", "test description");
@@ -292,88 +279,14 @@ public class RulePackageItemTestCase extends TestCase {
         return list;
     }
 
-    public void testAddFunctionFunctionItem() {
-            PackageItem rulePackageItem1 = getRepo().createRulePackage("testAddFunctionFunctionItem", "desc");
-            
-            FunctionItem functionItem1 = getRepo().addFunction("test function", "test content");
-            
-            rulePackageItem1.addFunction(functionItem1);
-            
-            List functions = rulePackageItem1.getFunctions();
-            assertNotNull(functions);
-            assertEquals(1, functions.size());
-            assertEquals("test function", ((FunctionItem)functions.get(0)).getName());
-            
-            //test that it is following the head revision                        
-            functionItem1.updateContent("new content");
-            functions = rulePackageItem1.getFunctions();
-            assertNotNull(functions);
-            assertEquals(1, functions.size());
-            assertEquals("test function", ((FunctionItem)functions.get(0)).getName());
-            assertEquals("new content", ((FunctionItem)functions.get(0)).getContent());
-                        
-            FunctionItem functionItem2 = getRepo().addFunction("test function 2", "test content");
-            rulePackageItem1.addFunction(functionItem2);
-            
-            functions = rulePackageItem1.getFunctions();
-            assertNotNull(functions);
-            assertEquals(2, functions.size());                          
 
-    }
 
-    public void testAddFunctionFunctionItemBoolean() {
-            PackageItem rulePackageItem1 = getRepo().createRulePackage("testAddFunctionFunctionItemBoolean", "desc");
-            
-            FunctionItem functionItem1 = getRepo().addFunction("testAddFunctionFunctionItemBoolean", "test content");
-            
-            rulePackageItem1.addFunction(functionItem1, true);
-            
-            List functions = rulePackageItem1.getFunctions();
-            assertNotNull(functions);
-            assertEquals(1, functions.size());
-            assertEquals("testAddFunctionFunctionItemBoolean", ((FunctionItem)functions.get(0)).getName());
-            
-            //test that it is following the head revision                        
-            functionItem1.updateContent("new content");
-            functions = rulePackageItem1.getFunctions();
-            assertNotNull(functions);
-            assertEquals(1, functions.size());
-            assertEquals("testAddFunctionFunctionItemBoolean", ((FunctionItem)functions.get(0)).getName());
-            assertEquals("new content", ((FunctionItem)functions.get(0)).getContent());
-            
-            FunctionItem functionItem2 = getRepo().addFunction("testAddFunctionFunctionItemBoolean2", "test content");
-            rulePackageItem1.addFunction(functionItem2);
-            
-            functions = rulePackageItem1.getFunctions();
-            assertNotNull(functions);
-            assertEquals(2, functions.size());
-            
 
-    }
 
-    public void testGetFunctions() {
-            PackageItem rulePackageItem1 = getRepo().createRulePackage("testGetFunctions", "desc");
-                        
-            FunctionItem functionItem1 = getRepo().addFunction("testGetFunctions", "test content");
-            
-            rulePackageItem1.addFunction(functionItem1);
-            
-            List functions = rulePackageItem1.getFunctions();
-            assertNotNull(functions);
-            assertEquals(1, functions.size());
-            assertEquals("testGetFunctions", ((FunctionItem)functions.get(0)).getName());
-                                  
-            FunctionItem functionItem2 = getRepo().addFunction("testGetFunctions2", "test content");
-            rulePackageItem1.addFunction(functionItem2);
-            
-            functions = rulePackageItem1.getFunctions();
-            assertNotNull(functions);
-            assertEquals(2, functions.size());            
 
-    }
     
     public void testGetRules() {
-            PackageItem rulePackageItem1 = getRepo().createRulePackage("testGetRules", "desc");
+            PackageItem rulePackageItem1 = getRepo().createPackage("testGetRules", "desc");
                         
             AssetItem ruleItem1 = rulePackageItem1.addAsset("testGetRules", "desc" );
             ruleItem1.updateContent( "test lhs content" );
@@ -401,7 +314,7 @@ public class RulePackageItemTestCase extends TestCase {
     }
 
     public void testToString() {
-            PackageItem rulePackageItem1 = getRepo().createRulePackage("testToStringPackage", "desc");
+            PackageItem rulePackageItem1 = getRepo().createPackage("testToStringPackage", "desc");
             
             AssetItem ruleItem1 = rulePackageItem1.addAsset("testToStringPackage", "test lhs content" );
             ruleItem1.updateContent( "test lhs content" );
@@ -411,7 +324,7 @@ public class RulePackageItemTestCase extends TestCase {
     }
     
     public void testRemoveRule() {
-            PackageItem rulePackageItem1 = getRepo().createRulePackage("testRemoveRule", "desc");
+            PackageItem rulePackageItem1 = getRepo().createPackage("testRemoveRule", "desc");
             
             AssetItem ruleItem1 = rulePackageItem1.addAsset("testRemoveRule", "test lhs content" );
             ruleItem1.updateContent( "test lhs content" ); 
@@ -449,48 +362,11 @@ public class RulePackageItemTestCase extends TestCase {
             assertEquals(0, rules.size());
 
     }
-    
- 
-    
-    public void testRemoveFunction() {
-            PackageItem rulePackageItem1 = getRepo().createRulePackage("testRemoveFunction", "yayayaya");
-            
-            FunctionItem functionItem1 = getRepo().addFunction("testRemoveFunction", "test content");
-            
-            rulePackageItem1.addFunction(functionItem1);
-            
-            List functions = rulePackageItem1.getFunctions();
-            assertNotNull(functions);
-            assertEquals(1, functions.size());
-            assertEquals("testRemoveFunction", ((FunctionItem)functions.get(0)).getName());
-                                    
-            functionItem1.updateContent("new content");
-            functions = rulePackageItem1.getFunctions();
-            assertNotNull(functions);
-            assertEquals(1, functions.size());
-            assertEquals("testRemoveFunction", ((FunctionItem)functions.get(0)).getName());
-            assertEquals("new content", ((FunctionItem)functions.get(0)).getContent());
-            
-            FunctionItem functionItem2 = getRepo().addFunction("testRemoveFunction2", "test content");
-            rulePackageItem1.addFunction(functionItem2);
-            
-            //remove the function, make sure the other function in the package stays around
-            rulePackageItem1.removeFunction(functionItem1);
-            functions = rulePackageItem1.getFunctions();
-            assertEquals(1, functions.size());
-            assertEquals("testRemoveFunction2", ((FunctionItem)functions.get(0)).getName());
-            
-            //remove the function that is following the head revision, make sure the package is now empty
-            rulePackageItem1.removeFunction(functionItem2);
-            functions = rulePackageItem1.getFunctions();
-            assertNotNull(functions);
-            assertEquals(0, functions.size());
 
-    }
     
     
     public void testGetFormat() {        
-            PackageItem rulePackageItem1 = getRepo().createRulePackage("testGetFormat", "woot");
+            PackageItem rulePackageItem1 = getRepo().createPackage("testGetFormat", "woot");
             assertNotNull(rulePackageItem1);
             assertEquals("Rule Package", rulePackageItem1.getFormat());    
 

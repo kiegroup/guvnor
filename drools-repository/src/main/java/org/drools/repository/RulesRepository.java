@@ -260,91 +260,8 @@ public class RulesRepository {
         }
     }
     
-    /**
-     * Adds a DSL node in the repository using the content and attributes of the specified file
-     * 
-     * @param file the file to use to import the DSL content and attributes
-     * @return a DslItem object encapsulating the node that gets added
-     * @throws RulesRepositoryException 
-     */
-    public DslItem addDsl(String name, String content) throws RulesRepositoryException { 
-        Node folderNode = this.getAreaNode(DSL_AREA);            
-        
-        try {
-            //create the node - see section 6.7.22.6 of the spec
-            Node dslNode = folderNode.addNode(name, DslItem.DSL_NODE_TYPE_NAME);
-            
-            dslNode.setProperty(DslItem.TITLE_PROPERTY_NAME, name);
-            
-                        
-            dslNode.setProperty(DslItem.DESCRIPTION_PROPERTY_NAME, "");
-            dslNode.setProperty(DslItem.FORMAT_PROPERTY_NAME, DslItem.DSL_FORMAT);
-            
-            dslNode.setProperty( DslItem.DSL_CONTENT, content );
-            dslNode.setProperty(DslItem.LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance());
-            
-            this.session.save();
-            
-            try {
-                dslNode.checkin();
-            }
-            catch(UnsupportedRepositoryOperationException e) {
-                String message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkin dsl: " + dslNode.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message + e);
-                throw new RulesRepositoryException(message, e);
-            }
-            
-            return new DslItem(this, dslNode);
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RulesRepositoryException(e);
-        }                
-    }    
+  
     
-    /**
-     * Adds a Function node in the repository using the content specified.
-     * 
-     * @param functionName the name of the function
-     * @param content the content of the function
-     * @return a FunctionItem object encapsulating the node that gets added
-     * @throws RulesRepositoryException
-     */
-    public FunctionItem addFunction(String functionName, String content) throws RulesRepositoryException {
-        Node folderNode = this.getAreaNode(FUNCTION_AREA);        
-        
-        try {        
-            //create the node - see section 6.7.22.6 of the spec
-            Node functionNode = folderNode.addNode(functionName, FunctionItem.FUNCTION_NODE_TYPE_NAME);
-                        
-            functionNode.setProperty(FunctionItem.TITLE_PROPERTY_NAME, functionName);
-            functionNode.setProperty(FunctionItem.CONTENT_PROPERTY_NAME, content);
-            functionNode.setProperty(FunctionItem.DESCRIPTION_PROPERTY_NAME, "");
-            
-            
-            functionNode.setProperty(FunctionItem.FORMAT_PROPERTY_NAME, FunctionItem.FUNCTION_FORMAT);
-            
-            Calendar lastModified = Calendar.getInstance();
-            functionNode.setProperty(FunctionItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
-            
-            session.save();
-            
-            try {
-                functionNode.checkin();
-            }
-            catch(UnsupportedRepositoryOperationException e) {
-                String message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkin node: " + functionNode.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message + e);
-                throw new RulesRepositoryException(message, e);
-            }
-            
-            return new FunctionItem(this, functionNode);
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RulesRepositoryException(e);
-        }
-    }
     
     /**
      * Optionally override the default version number generator with a custom
@@ -355,49 +272,11 @@ public class RulesRepository {
         this.versionNumberGenerator = gen;
     }
     
-    /**
-     * Adds a Function node in the repository using the content specified.
-     * 
-     * @param functionName the name of the function
-     * @param content the content of the function
-     * @param description the description of the function
-     * @return a FunctionItem object encapsulating the node that gets added
-     * @throws RulesRepositoryException
-     */
-    public FunctionItem addFunction(String functionName, String content, String description) throws RulesRepositoryException {
-        Node folderNode = this.getAreaNode(FUNCTION_AREA);        
-        
-        try {        
-            //create the node - see section 6.7.22.6 of the spec
-            Node functionNode = folderNode.addNode(functionName, FunctionItem.FUNCTION_NODE_TYPE_NAME);
-                        
-            functionNode.setProperty(FunctionItem.TITLE_PROPERTY_NAME, functionName);
-            functionNode.setProperty(FunctionItem.CONTENT_PROPERTY_NAME, content);
-            functionNode.setProperty(FunctionItem.DESCRIPTION_PROPERTY_NAME, description);
-            functionNode.setProperty(FunctionItem.FORMAT_PROPERTY_NAME, FunctionItem.FUNCTION_FORMAT);
-            
-            Calendar lastModified = Calendar.getInstance();
-            functionNode.setProperty(FunctionItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
-            
-            session.save();
-            
-            try {
-                functionNode.checkin();
-            }
-            catch(UnsupportedRepositoryOperationException e) {
-                String message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkin node: " + functionNode.getName() + ". Are you sure your JCR repository supports versioning? ";
-                log.error(message + e);
-                throw new RulesRepositoryException(message, e);
-            }
-            
-            return new FunctionItem(this, functionNode);
-        }
-        catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RulesRepositoryException(e);
-        }
-    }
+
     
+//  MN: This is kept for future reference showing how to tie references to a specific version when 
+//      sharing assets.
+//    
 //    /**
 //     * Adds a Rule node in the repository using the content specified, associating it with
 //     * the specified DSL node
@@ -509,7 +388,7 @@ public class RulesRepository {
      * @param name the name of the package to load 
      * @return a RulePackageItem object
      */
-    public PackageItem loadRulePackage(String name) throws RulesRepositoryException {
+    public PackageItem loadPackage(String name) throws RulesRepositoryException {
         try {
             Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
             Node rulePackageNode = folderNode.getNode(name);
@@ -529,13 +408,13 @@ public class RulesRepository {
     /**
      * This will return or create the default package for rules that have no home yet.
      */
-    public PackageItem loadDefaultRulePackage() throws RulesRepositoryException {
+    public PackageItem loadDefaultPackage() throws RulesRepositoryException {
         Node folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
         try {
             if (folderNode.hasNode( DEFAULT_PACKAGE )) {
-                return loadRulePackage( DEFAULT_PACKAGE );
+                return loadPackage( DEFAULT_PACKAGE );
             } else {
-                return createRulePackage( DEFAULT_PACKAGE, "" );
+                return createPackage( DEFAULT_PACKAGE, "" );
             }
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException(e);
@@ -550,7 +429,7 @@ public class RulesRepository {
      * @return a RulePackageItem object
      * @throws RulesRepositoryException
      */
-    public PackageItem loadRulePackageByUUID(String uuid) throws RulesRepositoryException {
+    public PackageItem loadPackageByUUID(String uuid) throws RulesRepositoryException {
         try {
             Node rulePackageNode = this.session.getNodeByUUID(uuid);
             return new PackageItem(this, rulePackageNode);
@@ -569,7 +448,7 @@ public class RulesRepository {
     /**
      * Loads a rule by its UUID (generally the fastest way to load something).
      */
-    public AssetItem loadRuleByUUID(String uuid) {
+    public AssetItem loadAssetByUUID(String uuid) {
         try {
             Node rulePackageNode = this.session.getNodeByUUID(uuid);
             return new AssetItem(this, rulePackageNode);
@@ -593,7 +472,7 @@ public class RulesRepository {
      * @return a RulePackageItem, encapsulating the created node
      * @throws RulesRepositoryException
      */
-    public PackageItem createRulePackage(String name, String description) throws RulesRepositoryException {
+    public PackageItem createPackage(String name, String description) throws RulesRepositoryException {
         Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
                  
         try {
@@ -694,7 +573,7 @@ public class RulesRepository {
      * Only the latest versions of each RuleItem will be returned (you will have 
      * to delve into the rules deepest darkest history yourself... mahahahaha).
      */
-    public List findRulesByCategory(String categoryTag) throws RulesRepositoryException {
+    public List findAssetsByCategory(String categoryTag) throws RulesRepositoryException {
         
         CategoryItem item = this.loadCategory( categoryTag );
         List results = new ArrayList();
@@ -722,7 +601,7 @@ public class RulesRepository {
 
         try {
             if (!folderNode.hasNode(DEFAULT_PACKAGE)) {
-                createRulePackage( DEFAULT_PACKAGE, "" );
+                createPackage( DEFAULT_PACKAGE, "" );
                 folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
             }            
             return new RulePackageIterator(this, folderNode.getNodes());
@@ -766,10 +645,10 @@ public class RulesRepository {
      */
     public void moveRuleItemPackage(String newPackage, String uuid, String explanation) {
         try {
-            AssetItem item = loadRuleByUUID( uuid );
+            AssetItem item = loadAssetByUUID( uuid );
             String oldPackage = item.getPackageName();
-            PackageItem sourcePkg = loadRulePackage( oldPackage );
-            PackageItem destPkg = loadRulePackage( newPackage );
+            PackageItem sourcePkg = loadPackage( oldPackage );
+            PackageItem destPkg = loadPackage( newPackage );
             
             String sourcePath = item.node.getPath();
             String destPath = destPkg.node.getPath() + "/" + PackageItem.RULES_FOLDER_NAME + "/" + item.getName(); 

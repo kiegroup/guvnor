@@ -68,20 +68,20 @@ public class ScalabilityTest extends TestCase {
 
     private List listACat(RulesRepository repo) {
         long start = System.currentTimeMillis();
-        List results = repo.findRulesByCategory( "HR/CAT_1" );
+        List results = repo.findAssetsByCategory( "HR/CAT_1" );
         System.out.println("Time for listing a cat: " + (System.currentTimeMillis() - start));
         
         start = System.currentTimeMillis();
-        List results2 = repo.findRulesByCategory( "HR/CAT_1" );
+        List results2 = repo.findAssetsByCategory( "HR/CAT_1" );
         System.out.println("Time for listing a cat: " + (System.currentTimeMillis() - start));
 
 
         start = System.currentTimeMillis();
-        results2 = repo.findRulesByCategory( "HR/CAT_100" );
+        results2 = repo.findAssetsByCategory( "HR/CAT_100" );
         System.out.println("Time for listing a cat: " + (System.currentTimeMillis() - start));
 
         start = System.currentTimeMillis();
-        results2 = repo.findRulesByCategory( "HR/CAT_100" );
+        results2 = repo.findAssetsByCategory( "HR/CAT_100" );
         System.out.println("Time for listing a cat: " + (System.currentTimeMillis() - start));
 
         
@@ -128,7 +128,7 @@ public class ScalabilityTest extends TestCase {
             System.out.println("ADDING rule: " + ruleName);
                         
             
-            AssetItem item = repo.loadDefaultRulePackage().addAsset( ruleName, "Foo(bar == " + i + ")panic(" + i + ");" );            
+            AssetItem item = repo.loadDefaultPackage().addAsset( ruleName, "Foo(bar == " + i + ")panic(" + i + ");" );            
             item.addCategory( cat );
             list.add( item );
             

@@ -32,7 +32,7 @@ public class RulesRepositoryTestCase extends TestCase {
         }
         assertTrue(foundDefault);
         
-        PackageItem def = repo.loadDefaultRulePackage();
+        PackageItem def = repo.loadDefaultPackage();
         assertNotNull(def);
         assertEquals("default", def.getName());
         
@@ -41,7 +41,7 @@ public class RulesRepositoryTestCase extends TestCase {
     
     public void testAddVersionARule() throws Exception {
         RulesRepository repo = RepositorySession.getRepository();
-        PackageItem pack = repo.createRulePackage( "testAddVersionARule", "description" );
+        PackageItem pack = repo.createPackage( "testAddVersionARule", "description" );
         repo.save();
         
         AssetItem rule = pack.addAsset( "my rule", "foobar" );
@@ -55,7 +55,7 @@ public class RulesRepositoryTestCase extends TestCase {
         rule.updateContent( "foo bar" );
         rule.checkin( "version1" );
         
-        PackageItem pack2 =  repo.loadRulePackage( "testAddVersionARule" );
+        PackageItem pack2 =  repo.loadPackage( "testAddVersionARule" );
         
         Iterator it =  pack2.getRules();
         
@@ -77,14 +77,14 @@ public class RulesRepositoryTestCase extends TestCase {
     public void testLoadRuleByUUID() throws Exception {
         RulesRepository repo = RepositorySession.getRepository();
         
-        PackageItem rulePackageItem = repo.loadDefaultRulePackage();
+        PackageItem rulePackageItem = repo.loadDefaultPackage();
         AssetItem rule = rulePackageItem.addAsset( "testLoadRuleByUUID", "this is a description");
         
         repo.save();
                 
         String uuid = rule.getNode().getUUID();
 
-        AssetItem loaded = repo.loadRuleByUUID(uuid);
+        AssetItem loaded = repo.loadAssetByUUID(uuid);
         assertNotNull(loaded);
         assertEquals("testLoadRuleByUUID", loaded.getName());
         assertEquals( "this is a description", loaded.getDescription());
@@ -97,7 +97,7 @@ public class RulesRepositoryTestCase extends TestCase {
         
         
         
-        AssetItem reload = repo.loadRuleByUUID( uuid );
+        AssetItem reload = repo.loadAssetByUUID( uuid );
         assertEquals("testLoadRuleByUUID", reload.getName());
         assertEquals("xxx", reload.getContent());
         System.out.println(reload.getVersionNumber());
@@ -107,7 +107,7 @@ public class RulesRepositoryTestCase extends TestCase {
 
         // try loading rule package that was not created 
         try {
-            repo.loadRuleByUUID("01010101-0101-0101-0101-010101010101");
+            repo.loadAssetByUUID("01010101-0101-0101-0101-010101010101");
             fail("Exception not thrown loading rule package that was not created.");
         } catch (RulesRepositoryException e) {
             // that is OK!
@@ -122,7 +122,7 @@ public class RulesRepositoryTestCase extends TestCase {
             Calendar effectiveDate = Calendar.getInstance();
             Calendar expiredDate = Calendar.getInstance();
             expiredDate.setTimeInMillis(effectiveDate.getTimeInMillis() + (1000 * 60 * 60 * 24));
-            AssetItem ruleItem1 = rulesRepository.loadDefaultRulePackage().addAsset("testAddRuleCalendarCalendar", "desc");
+            AssetItem ruleItem1 = rulesRepository.loadDefaultPackage().addAsset("testAddRuleCalendarCalendar", "desc");
             ruleItem1.updateDateEffective( effectiveDate );
             ruleItem1.updateDateExpired( expiredDate );
      
@@ -169,34 +169,13 @@ public class RulesRepositoryTestCase extends TestCase {
             assertEquals("testGetTag/TestChildTag1", tagItem3.getFullPath());                                   
     }
     
-    public void testAddFunctionStringString() {
-        RulesRepository rulesRepository = RepositorySession.getRepository();
-            FunctionItem functionItem1 = rulesRepository.addFunction("testAddFunctionStringString", "test content");
-            
-            assertNotNull(functionItem1);
-            assertNotNull(functionItem1.getNode());
-            assertEquals("testAddFunctionStringString", functionItem1.getName());
-            assertEquals("test content", functionItem1.getContent());
-            assertEquals("", functionItem1.getDescription());
-    }
-    
-    public void testAddFunctionStringStringString() {
-        RulesRepository rulesRepository = RepositorySession.getRepository();
-                        
-            FunctionItem functionItem1 = rulesRepository.addFunction("testAddFunctionStringStringString", "test content", "test description");
-            
-            assertNotNull(functionItem1);
-            assertNotNull(functionItem1.getNode());
-            assertEquals("testAddFunctionStringStringString", functionItem1.getName());
-            assertEquals("test content", functionItem1.getContent());
-            assertEquals("test description", functionItem1.getDescription());
-    }
+
     
     public void testListPackages() {
         RulesRepository rulesRepository = RepositorySession.getRepository();
         
         
-            PackageItem rulePackageItem1 = rulesRepository.createRulePackage("testListPackages", "desc");
+            PackageItem rulePackageItem1 = rulesRepository.createPackage("testListPackages", "desc");
             
             Iterator it = rulesRepository.listPackages();
             assertTrue(it.hasNext());
@@ -216,7 +195,7 @@ public class RulesRepositoryTestCase extends TestCase {
     
     public void testMoveRulePackage() throws Exception {
         RulesRepository repo = RepositorySession.getRepository();
-        PackageItem pkg = repo.createRulePackage( "testMove", "description" );
+        PackageItem pkg = repo.createPackage( "testMove", "description" );
         AssetItem r = pkg.addAsset( "testMove", "description" );
         r.checkin( "version0" );
         
@@ -226,13 +205,13 @@ public class RulesRepositoryTestCase extends TestCase {
         
         assertEquals(1, iteratorToList( pkg.getRules()).size());
         
-        repo.createRulePackage( "testMove2", "description" );
+        repo.createPackage( "testMove2", "description" );
         repo.moveRuleItemPackage( "testMove2", r.node.getUUID(), "explanation" );
         
-        pkg = repo.loadRulePackage( "testMove" );
+        pkg = repo.loadPackage( "testMove" );
         assertEquals(0, iteratorToList( pkg.getRules() ).size());
         
-        pkg = repo.loadRulePackage( "testMove2" );
+        pkg = repo.loadPackage( "testMove2" );
         assertEquals(1, iteratorToList( pkg.getRules() ).size());
         
         r = (AssetItem) pkg.getRules().next();
