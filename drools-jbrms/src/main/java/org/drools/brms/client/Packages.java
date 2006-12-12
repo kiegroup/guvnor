@@ -1,5 +1,6 @@
 package org.drools.brms.client;
 
+import org.drools.brms.client.common.DatePicker;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.model.ActionAssertFact;
 import org.drools.brms.client.modeldriven.model.ActionFieldValue;
@@ -47,6 +48,10 @@ public class Packages extends JBRMSFeature {
         panel.add( new RuleModeller(getDummySuggestionEngine(), getDummyData() ) );
         
         panel.setSpacing( 8 );
+        
+        DatePicker pick = new DatePicker();
+        panel.add( pick );
+        
         initWidget( panel );
     }
 

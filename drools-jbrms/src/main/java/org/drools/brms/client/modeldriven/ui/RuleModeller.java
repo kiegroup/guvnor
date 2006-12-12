@@ -148,7 +148,7 @@ public class RuleModeller extends Composite {
             factTypeBox.addItem( facts[i] );
         }
         factTypeBox.setSelectedIndex( 0 );
-        popup.addAttribute( "Fact", factTypeBox );
+        if (facts.length > 0) popup.addAttribute( "Fact", factTypeBox );
         factTypeBox.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 String s = factTypeBox.getItemText( factTypeBox.getSelectedIndex() );
@@ -172,7 +172,7 @@ public class RuleModeller extends Composite {
         }
         ceBox.setSelectedIndex( 0 );
         
-        popup.addAttribute( "Condition type", ceBox );
+        if (ces.length > 0) popup.addAttribute( "Condition type", ceBox );
         ceBox.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 String s = ceBox.getValue( ceBox.getSelectedIndex() );
@@ -193,8 +193,10 @@ public class RuleModeller extends Composite {
         
         popup.setStyleName( "ks-popups-Popup" );
         
-        List vars = model.getBoundFacts();
-        
+        //
+        // First load up the stuff to do with bound variables or globals
+        //
+        List vars = model.getBoundFacts();        
         final ListBox varBox = new ListBox();
         final ListBox retractBox = new ListBox();
         varBox.addItem( "Choose ..." );        
@@ -217,9 +219,18 @@ public class RuleModeller extends Composite {
             }
         });
         
+        if (varBox.getItemCount() > 1) {
+            popup.addAttribute( "Modify a field on", varBox );
+            
+        }
+        if (retractBox.getItemCount() > 1) {
+            popup.addAttribute( "Retract a fact", retractBox );
+        }
+        
+        
         retractBox.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-                addRetract(retractBox.getItemText( retractBox.getItemCount() ));
+                addRetract(retractBox.getItemText( retractBox.getSelectedIndex() ));
                 popup.hide();
             }            
         });
@@ -241,9 +252,10 @@ public class RuleModeller extends Composite {
             }            
         });
         
-        popup.addAttribute( "Modify a field on", varBox );
-        popup.addAttribute( "Retract a fact", retractBox );
-        popup.addAttribute( "Assert a new fact", factsToAssert );
+        
+        if (factsToAssert.getItemCount() > 1) {
+            popup.addAttribute( "Assert a new fact", factsToAssert );
+        }
 
         popup.setPopupPosition( w.getAbsoluteLeft() - 400, w.getAbsoluteTop() );
         popup.show();
