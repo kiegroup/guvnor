@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
  * @author btruitt
  */
 public class StateItem extends Item {
+
     private Logger log = Logger.getLogger(StateItem.class);
 
     /**
@@ -54,7 +55,11 @@ public class StateItem extends Item {
         }
     }
     
+    public String toString() {
+        return "Current status: [" + getName() + "]  (" + super.toString() + ")";
+    }
+    
     public int hashCode() {
-        return 42;
+        return getName().hashCode();
     }
 }

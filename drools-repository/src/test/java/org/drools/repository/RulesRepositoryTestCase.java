@@ -57,7 +57,7 @@ public class RulesRepositoryTestCase extends TestCase {
         
         PackageItem pack2 =  repo.loadPackage( "testAddVersionARule" );
         
-        Iterator it =  pack2.getRules();
+        Iterator it =  pack2.getAssets();
         
         it.next();
         it.next();
@@ -203,18 +203,18 @@ public class RulesRepositoryTestCase extends TestCase {
         
         repo.save();
         
-        assertEquals(1, iteratorToList( pkg.getRules()).size());
+        assertEquals(1, iteratorToList( pkg.getAssets()).size());
         
         repo.createPackage( "testMove2", "description" );
         repo.moveRuleItemPackage( "testMove2", r.node.getUUID(), "explanation" );
         
         pkg = repo.loadPackage( "testMove" );
-        assertEquals(0, iteratorToList( pkg.getRules() ).size());
+        assertEquals(0, iteratorToList( pkg.getAssets() ).size());
         
         pkg = repo.loadPackage( "testMove2" );
-        assertEquals(1, iteratorToList( pkg.getRules() ).size());
+        assertEquals(1, iteratorToList( pkg.getAssets() ).size());
         
-        r = (AssetItem) pkg.getRules().next();
+        r = (AssetItem) pkg.getAssets().next();
         assertEquals("testMove", r.getName());
         assertEquals("testMove2", r.getPackageName());
         assertEquals("explanation", r.getCheckinComment());

@@ -604,7 +604,7 @@ public class RulesRepository {
                 createPackage( DEFAULT_PACKAGE, "" );
                 folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
             }            
-            return new RulePackageIterator(this, folderNode.getNodes());
+            return new PackageIterator(this, folderNode.getNodes());
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException(e);
         }

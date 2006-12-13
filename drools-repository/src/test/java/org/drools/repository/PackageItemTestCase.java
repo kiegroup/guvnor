@@ -6,7 +6,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-public class RulePackageItemTestCase extends TestCase {
+public class PackageItemTestCase extends TestCase {
 
     public void testListPackages() throws Exception {
         RulesRepository repo = getRepo();
@@ -72,17 +72,17 @@ public class RulePackageItemTestCase extends TestCase {
         
         //check head
         pack = repo.loadPackage( "testBaselinePackage" );
-        assertEquals(2, iteratorToList(pack.getRules()).size());
+        assertEquals(2, iteratorToList(pack.getAssets()).size());
         
         //now remove a rule from head
-        pack.removeRule( "rule 1" );
+        pack.removeAsset( "rule 1" );
         repo.save();
-        assertEquals(1, iteratorToList( pack.getRules() ).size());
+        assertEquals(1, iteratorToList( pack.getAssets() ).size());
         
         pack.createBaseline( "another", state );
         
         PackageItem prev = (PackageItem) pack.getPrecedingVersion();
-        assertEquals(2, iteratorToList( prev.getRules() ).size());
+        assertEquals(2, iteratorToList( prev.getAssets() ).size());
         
     }
 
@@ -101,18 +101,18 @@ public class RulePackageItemTestCase extends TestCase {
         
         pack = getRepo().loadPackage( packName );
         
-        rule = (AssetItem) pack.getRules().next();
+        rule = (AssetItem) pack.getAssets().next();
         rule.updateContent( "blah" );
         rule.checkin( "woot" );
         
         pack.createBaseline( "yeah", state );
         
         pack = getRepo().loadPackage( packName );
-        rule = (AssetItem) pack.getRules().next();
+        rule = (AssetItem) pack.getAssets().next();
         assertEquals("blah", rule.getContent());
         
         PackageItem prev = (PackageItem) pack.getPrecedingVersion();
-        rule = (AssetItem) prev.getRules().next();
+        rule = (AssetItem) prev.getAssets().next();
         assertEquals("this is something", rule.getContent());
         
     }
@@ -159,7 +159,7 @@ public class RulePackageItemTestCase extends TestCase {
         getRepo().save();
         
         pack = getRepo().loadPackage( "package extractor" );
-        List rules = iteratorToList( pack.getRules() );
+        List rules = iteratorToList( pack.getAssets() );
         assertEquals(3, rules.size());
         
         StateItem state = getRepo().getState( "foobar" );
@@ -169,17 +169,17 @@ public class RulePackageItemTestCase extends TestCase {
         
         pack = getRepo().loadPackage( "package extractor" );
         
-        rules = iteratorToList( pack.getRules(state) );
+        rules = iteratorToList( pack.getAssetsWithStatus(state) );
         
         assertEquals(1, rules.size());
         
         //now lets try an invalid state tag
-        rules = iteratorToList( pack.getRules( getRepo().getState( "whee" ) ) );
+        rules = iteratorToList( pack.getAssetsWithStatus( getRepo().getState( "whee" ) ) );
         assertEquals(0, rules.size());
         
         //and null, as we start with null, should be able to get all three back
         //although an older version of one of them
-        rules = iteratorToList( pack.getRules(null) );
+        rules = iteratorToList( pack.getAssetsWithStatus(null) );
         assertEquals(3, rules.size());
         
         //now do an update, and pull it out via state
@@ -187,19 +187,44 @@ public class RulePackageItemTestCase extends TestCase {
         rule1.updateState( "draft" );
         rule1.checkin( "latest" );
         
-        rules = iteratorToList( pack.getRules(getRepo().getState( "draft" )) );
+        rules = iteratorToList( pack.getAssetsWithStatus(getRepo().getState( "draft" )) );
         assertEquals(1, rules.size());
         AssetItem rule = (AssetItem) rules.get( 0 );
         assertEquals("new content", rule.getContent());
         
         //get the previous one via state
         
-        rules = iteratorToList( pack.getRules(getRepo().getState( "foobar" )) );
+        rules = iteratorToList( pack.getAssetsWithStatus(getRepo().getState( "foobar" )) );
         assertEquals(1, rules.size());
         AssetItem prior = (AssetItem) rules.get( 0 );
         
         assertFalse("new content".equals( prior.getContent() ));
         
+    }
+    
+    public void testIgnoreState() throws Exception {
+        PackageItem pack = getRepo().createPackage( "package testIgnoreState", "foo" );
+        
+        
+        AssetItem rule1 = pack.addAsset( "rule number 1", "yeah man" );
+        rule1.updateState( "x" );
+        rule1.checkin( "version0" );
+        
+        
+        AssetItem rule2 = pack.addAsset( "rule number 2", "no way" );
+        rule2.updateState( "x" );
+        rule2.checkin( "version0" );
+        
+        AssetItem rule3 = pack.addAsset( "rule number 3", "yes way" );
+        rule3.updateState( "disabled" );
+        rule3.checkin( "version0" );
+        
+        getRepo().save();
+        
+        
+        Iterator result = pack.getAssetsWithStatus( getRepo().getState( "x" ), getRepo().getState( "disabled" ) );
+        List l = iteratorToList( result );
+        assertEquals(2, l.size());
     }
     
     public void testDuplicatePackageName() throws Exception {
@@ -245,7 +270,7 @@ public class RulePackageItemTestCase extends TestCase {
             ruleItem1.updateContent( "test content" );
             ruleItem1.checkin( "updated the rule content" );
             
-            Iterator rulesIt = rulePackageItem1.getRules();
+            Iterator rulesIt = rulePackageItem1.getAssets();
             assertNotNull(rulesIt);
             AssetItem first = (AssetItem) rulesIt.next();
             assertFalse(rulesIt.hasNext());
@@ -254,7 +279,7 @@ public class RulePackageItemTestCase extends TestCase {
             //test that it is following the head revision                        
             ruleItem1.updateContent("new lhs");
             ruleItem1.checkin( "updated again" );
-            rulesIt = rulePackageItem1.getRules();
+            rulesIt = rulePackageItem1.getAssets();
             assertNotNull(rulesIt);
             
             List rules = iteratorToList( rulesIt );
@@ -264,7 +289,7 @@ public class RulePackageItemTestCase extends TestCase {
                         
             AssetItem ruleItem2 = rulePackageItem1.addAsset("testAddRuleRuleItem2", "test content");
             
-            rules = iteratorToList(rulePackageItem1.getRules());
+            rules = iteratorToList(rulePackageItem1.getAssets());
             assertNotNull(rules);
             assertEquals(2, rules.size());  
 
@@ -292,7 +317,7 @@ public class RulePackageItemTestCase extends TestCase {
             ruleItem1.updateContent( "test lhs content" );
 
             
-            List rules = iteratorToList(rulePackageItem1.getRules());
+            List rules = iteratorToList(rulePackageItem1.getAssets());
             assertNotNull(rules);
             assertEquals(1, rules.size());
             assertEquals("testGetRules", ((AssetItem)rules.get(0)).getName());
@@ -300,12 +325,12 @@ public class RulePackageItemTestCase extends TestCase {
             AssetItem ruleItem2 = rulePackageItem1.addAsset("testGetRules2", "desc" );
             ruleItem2.updateContent( "test lhs content" );
             
-            rules = iteratorToList(rulePackageItem1.getRules());
+            rules = iteratorToList(rulePackageItem1.getAssets());
             assertNotNull(rules);
             assertEquals(2, rules.size());            
 
             //now lets test loading rule
-            AssetItem loaded = rulePackageItem1.loadRule( "testGetRules" );
+            AssetItem loaded = rulePackageItem1.loadAsset( "testGetRules" );
             assertNotNull(loaded);
             assertEquals("testGetRules", loaded.getName());
             assertEquals("desc", loaded.getDescription());
@@ -331,7 +356,7 @@ public class RulePackageItemTestCase extends TestCase {
             
             
             
-            Iterator rulesIt = rulePackageItem1.getRules();
+            Iterator rulesIt = rulePackageItem1.getAssets();
             AssetItem next = (AssetItem) rulesIt.next();
             
             assertFalse(rulesIt.hasNext());
@@ -340,7 +365,7 @@ public class RulePackageItemTestCase extends TestCase {
             
             
             ruleItem1.updateContent("new lhs");
-            List rules = iteratorToList(rulePackageItem1.getRules());
+            List rules = iteratorToList(rulePackageItem1.getAssets());
             assertNotNull(rules);
             assertEquals(1, rules.size());
             assertEquals("testRemoveRule", ((AssetItem)rules.get(0)).getName());
@@ -349,18 +374,42 @@ public class RulePackageItemTestCase extends TestCase {
             AssetItem ruleItem2 = rulePackageItem1.addAsset("testRemoveRule2", "test lhs content");
             
             //remove the rule, make sure the other rule in the pacakge stays around
-            rulePackageItem1.removeRule(ruleItem1.getName());
+            rulePackageItem1.removeAsset(ruleItem1.getName());
             rulePackageItem1.rulesRepository.save();
-            rules = iteratorToList(rulePackageItem1.getRules());
+            rules = iteratorToList(rulePackageItem1.getAssets());
             assertEquals(1, rules.size());
             assertEquals("testRemoveRule2", ((AssetItem)rules.get(0)).getName());
             
             //remove the rule that is following the head revision, make sure the pacakge is now empty
-            rulePackageItem1.removeRule(ruleItem2.getName());
-            rules = iteratorToList(rulePackageItem1.getRules());
+            rulePackageItem1.removeAsset(ruleItem2.getName());
+            rules = iteratorToList(rulePackageItem1.getAssets());
             assertNotNull(rules);
             assertEquals(0, rules.size());
 
+    }
+        
+    public void testSearchByFormat() throws Exception {
+        PackageItem pkg = getRepo().createPackage( "searchByFormat", "" );
+        getRepo().save();
+        
+        
+        AssetItem item = pkg.addAsset( "searchByFormatAsset1", "" );
+        item.updateFormat( "xyz" );
+        item.checkin( "la" );
+        
+        item = pkg.addAsset( "searchByFormatAsset2", "wee" );
+        item.updateFormat( "xyz" );
+        item.checkin( "la" );
+        
+        item = pkg.addAsset( "searchByFormatAsset3", "wee" );
+        item.updateFormat( "ABC" );
+        item.checkin( "la" );
+        
+        AssetItemIterator it = pkg.queryAssets( "drools:format='xyz'" );        
+        List list = iteratorToList( it );
+        assertEquals(2, list.size());
+        
+        
     }
 
     

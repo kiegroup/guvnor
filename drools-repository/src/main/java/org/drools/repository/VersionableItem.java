@@ -385,6 +385,11 @@ public abstract class VersionableItem extends Item {
     }
 
     /**
+     * This returns the format of an item.
+     * This is analagous to a file extension 
+     * if the resource was a file (it may contain more information 
+     * then a pure file extension could, however). 
+     * 
      * See the Dublin Core documentation for more
      * explanation: http://dublincore.org/documents/dces/
      * 
@@ -404,6 +409,13 @@ public abstract class VersionableItem extends Item {
         }
     }
 
+    /**
+     * This sets the format (or "file extension" of the resource). 
+     * In some cases this is critical, and generally should not be changed
+     * after the initial version is checked in.
+     * 
+     * @param newFormat
+     */
     public void updateFormat(String newFormat) {
         this.updateStringProperty( newFormat,
                                    FORMAT_PROPERTY_NAME );

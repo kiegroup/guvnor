@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
@@ -13,6 +14,9 @@ import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
+import javax.jcr.query.InvalidQueryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 
 import org.apache.log4j.Logger;
 
@@ -92,6 +96,11 @@ public class PackageItem extends VersionableItem {
         return addAsset(assetName, description, null);
     }
     
+    
+//    public void searchAssets() {
+//        this.node.getPath();
+//        Query = this.node.getSession().getWorkspace().getQueryManager().createQuery( arg0, arg1 );
+//    }
 
     /**
      * This adds a rule to the current physical package (you can move it later).
@@ -145,8 +154,12 @@ public class PackageItem extends VersionableItem {
 
     }
 
-    /** Remove a rule by name */
-    public void removeRule(String name) {
+    /** 
+     * Remove an asset by name 
+     * After doing this, you will need to check in the package 
+     * as removing an item effects the parent package.
+     */
+    public void removeAsset(String name) {
         try {
             this.node.getNode( RULES_FOLDER_NAME + "/" + name ).remove();
         } catch ( RepositoryException e ) {
@@ -305,10 +318,10 @@ public class PackageItem extends VersionableItem {
     //    }   
 
     /** Return an iterator for the rules in this package */
-    public Iterator getRules() {
+    public Iterator getAssets() {
         try {
             Node content = getVersionContentNode();
-            RuleItemIterator it = new RuleItemIterator( content.getNode( RULES_FOLDER_NAME ).getNodes(),
+            AssetItemIterator it = new AssetItemIterator( content.getNode( RULES_FOLDER_NAME ).getNodes(),
                                                         this.rulesRepository );
             return it;
         } catch ( PathNotFoundException e ) {
@@ -320,9 +333,35 @@ public class PackageItem extends VersionableItem {
     }
     
     /**
+     * This will query any assets stored under this package.
+     * For example, you can pass in <code>"drools:format = 'drl'"</code> to get a list of 
+     * only a certain type of asset.
+     * 
+     * @param fieldPredicates A predicate string (SQL style).
+     * @return A list of matches. 
+     */
+    public AssetItemIterator queryAssets(String fieldPredicates) {
+        try {
+            
+            //String sql = "SELECT * FROM drools:ruleNodeType WHERE jcr:path LIKE '/drools:repository/drools:rulepackage_area/searchByFormat/rules[%]/%'";
+            String sql = "SELECT * FROM " + AssetItem.RULE_NODE_TYPE_NAME;
+            sql += " WHERE jcr:path LIKE '" + getVersionContentNode().getPath() + "/" + RULES_FOLDER_NAME + "[%]/%'";
+            
+            sql += " and " + fieldPredicates;
+            
+            Query q = node.getSession().getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
+            QueryResult res = q.execute();            
+            return new AssetItemIterator(res.getNodes(), this.rulesRepository);        
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException(e);
+        }
+        
+    }
+    
+    /**
      * Load a specific rule asset by name.
      */
-    public AssetItem loadRule(String name) {
+    public AssetItem loadAsset(String name) {
 
         try {
             Node content = getVersionContentNode();
@@ -388,66 +427,38 @@ public class PackageItem extends VersionableItem {
         }
     }
 
-    /**
-     * This iterates over nodes and produces RuleItem's.
-     * Also allows "skipping" of results to jump to certain items,
-     * as per JCRs "skip".
-     */
-    static class RuleItemIterator
-        implements
-        Iterator {
 
-        private NodeIterator    it;
-        private RulesRepository rulesRepository;
-
-        public RuleItemIterator(NodeIterator nodes,
-                                RulesRepository repo) {
-            this.it = nodes;
-            this.rulesRepository = repo;
-        }
-
-        public boolean hasNext() {
-            return it.hasNext();
-        }
-
-        public Object next() {
-            return new AssetItem( rulesRepository,
-                                 (Node) it.next() );
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException( "You can't remove a rule this way." );
-        }
-
-        /**
-         * @param i The number of rules to skip.
-         */
-        public void skip(int i) {
-            it.skip( i );
-        }
-
-    }
 
     
     /**
-     * This will return a list of rules for a given state.
-     * It works through the rules that belong to this package, and 
+     * This will return a list of assets for a given state.
+     * It works through the assets that belong to this package, and 
      * if they are not in the correct state, walks backwards until it finds one
      * in the correct state. 
      * 
      * If it walks all the way back up the versions looking for the "latest" 
      * version with the appropriate state, and can't find one, 
      * that asset is not included in the result.
+     * 
+     * This will exclude any items that have the "ignoreState" set
+     * (so for example, retired items, invalid items etc).
+     * 
+     *  @param state The state of assets to retrieve.
+     *  @param ignoreState The statuses to not include in the results (it will look
+     *  at the status of the latest one).
      */
-    public Iterator getRules(final StateItem state) {
-        final Iterator rules = getRules();
+    public Iterator getAssetsWithStatus(final StateItem state, final StateItem ignoreState) {
+        final Iterator rules = getAssets();
         
         List result = new ArrayList();
         while(rules.hasNext()) {
             AssetItem head = (AssetItem) rules.next();
             if (head.sameState( state )) {
                 result.add( head );
-            } else {
+            } else if (head.sameState( ignoreState )) { 
+                //ignore this one
+            } 
+            else {
                 Iterator prev = head.getPredecessorVersionsIterator();
                 while (prev.hasNext()) {
                     AssetItem prevRule = (AssetItem) prev.next();
@@ -460,7 +471,21 @@ public class PackageItem extends VersionableItem {
         }
         return result.iterator();
     }
-
+    
+    /**
+     * This will return a list of assets for a given state.
+     * It works through the assets that belong to this package, and 
+     * if they are not in the correct state, walks backwards until it finds one
+     * in the correct state. 
+     * 
+     * If it walks all the way back up the versions looking for the "latest" 
+     * version with the appropriate state, and can't find one, 
+     * that asset is not included in the result.
+     */    
+    public Iterator getAssetsWithStatus(final StateItem state) {
+        return getAssetsWithStatus( state, null );
+    }
+    
     /**
      * This will create a new version of a package, effectively freezing the state.
      * This means in the "head" version of the package, rules can be added
@@ -468,7 +493,7 @@ public class PackageItem extends VersionableItem {
      */
     public void createBaseline(String comment,
                                StateItem state) {
-        Iterator rules = getRules();
+        Iterator rules = getAssets();
         while(rules.hasNext()) {
             AssetItem rule = (AssetItem) rules.next();
             rule.updateState( state );

@@ -508,7 +508,7 @@ public class AssetItemTestCase extends TestCase {
         ruleItem.checkin( "woo" );
         
         pkg = getRepo().loadPackage( "testDublinCore" );
-        ruleItem = (AssetItem) pkg.getRules().next();
+        ruleItem = (AssetItem) pkg.getAssets().next();
         
         assertEquals("b", ruleItem.getCoverage());
         assertEquals("me", ruleItem.getLastContributor());

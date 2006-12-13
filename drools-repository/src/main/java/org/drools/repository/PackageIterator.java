@@ -6,19 +6,17 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 
 /**
- * This wraps a node iterator, and provides RulePackageItems when requested.
+ * This wraps a node iterator, and provides PackageItems when requested.
  * This supports lazy loading if needed.
  */
-public class RulePackageIterator
+public class PackageIterator
     implements
     Iterator {
-    
-    
     
     private NodeIterator packageNodeIterator;
     private RulesRepository repository;
 
-    public RulePackageIterator(RulesRepository repository, NodeIterator packageNodes) {
+    public PackageIterator(RulesRepository repository, NodeIterator packageNodes) {
         this.packageNodeIterator = packageNodes;
     }
 
@@ -31,7 +29,7 @@ public class RulePackageIterator
     }
 
     public void remove() {
-        this.packageNodeIterator.remove();
+        throw new UnsupportedOperationException("You can not remove items this way.");
     }
 
 }
