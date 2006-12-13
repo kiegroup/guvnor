@@ -1,12 +1,20 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.drools</groupId>
-  <artifactId>drools-brms</artifactId>
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+	  <version>3.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>drools-jbrms</artifactId>
   <packaging>war</packaging>
-  <version>1.0-SNAPSHOT</version>
   <name>Drools :: Business Rule Management System</name>
-  <url>http://www.jboss.com/products/rules</url>
+
+  <build>
+    <finalName>drools-jbrms</finalName>
+  </build>
 
   <repositories>
     <repository>
@@ -16,38 +24,28 @@
   </repositories> 
 
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-
+    <!-- Internal dependencies -->
     <!-- first the deps for the repo API itself (Jackrabbit based) -->
     <dependency>
-           <groupId>org.drools</groupId>
-           <artifactId>drools-repository</artifactId>
-           <version>3.2</version>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-repository</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-repository</artifactId>
+      <type>test-jar</type>
     </dependency>
 
+    <!-- External dependencies -->
     <!-- now the deps for the repo web app -->
     <dependency>
-      <groupId>servletapi</groupId>
-      <artifactId>servletapi</artifactId>
-      <version>2.3</version>
-      <scope>provided</scope>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>google</groupId>
       <artifactId>gwt-servlet</artifactId>
-      <version>1.2.11</version>
     </dependency>
-
   </dependencies>
 
-
-  <build>
-    <finalName>drools-jbrms</finalName>
-  </build>
 </project>

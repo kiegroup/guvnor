@@ -1,12 +1,20 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>drools-repository</artifactId>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>drools</artifactId>
     <groupId>org.drools</groupId>
-    <version>3.2</version>
-    <name>Drools :: Repository</name>
+	  <version>3.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>drools-repository</artifactId>
+  <packaging>jar</packaging>
+  <name>Drools :: Repository</name>
+
+  <build>
+    <finalName>drools-repository</finalName>
+  </build>
 
   <repositories>
     <repository>
@@ -16,28 +24,18 @@
   </repositories> 
 
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
+    <!-- Internal dependencies -->
 
+    <!-- External dependencies -->
     <!-- first the deps for the repo API itself (Jackrabbit based) -->
     <dependency>
-           <groupId>org.apache.jackrabbit</groupId>
-           <artifactId>jackrabbit-core</artifactId>
-           <version>1.1</version>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>jackrabbit-core</artifactId>
     </dependency>
-    
     <dependency>
-           <groupId>org.tmatesoft</groupId>
-           <artifactId>javasvn</artifactId>
-           <version>1.1-beta5</version>
+      <groupId>org.tmatesoft</groupId>
+      <artifactId>javasvn</artifactId>
     </dependency>    
   </dependencies>
-  
-  <build>
-    <finalName>drools-repository</finalName>
-  </build>
+
 </project>
