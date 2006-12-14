@@ -1,5 +1,6 @@
 package org.drools.brms.client.modeldriven;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import junit.framework.TestCase;
@@ -29,6 +30,12 @@ public class SuggestionCompletionTest extends TestCase {
                      }}, 
                      new HashMap() {{
                          put("x", "Person");
+                     }}, 
+                     new ArrayList() {{
+                         
+                     }}, 
+                     new ArrayList() {{
+                         
                      }}
                      
         );
@@ -109,8 +116,8 @@ public class SuggestionCompletionTest extends TestCase {
 
     public void testOperatorMapping() {
         SuggestionCompletionEngine com = new SuggestionCompletionEngine();
-        assertEquals("is not", com.getOperatorDisplayName("!="));
-        assertEquals("is", com.getOperatorDisplayName("=="));        
+        assertEquals("is not equal to", com.getOperatorDisplayName("!="));
+        assertEquals("is equal to", com.getOperatorDisplayName("=="));        
         assertEquals("xxx", com.getOperatorDisplayName("xxx"));
     }
     

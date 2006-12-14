@@ -11,6 +11,7 @@ import org.drools.brms.client.modeldriven.model.ActionAssertFact;
 import org.drools.brms.client.modeldriven.model.ActionRetractFact;
 import org.drools.brms.client.modeldriven.model.ActionSetField;
 import org.drools.brms.client.modeldriven.model.CompositeFactPattern;
+import org.drools.brms.client.modeldriven.model.DSLSentence;
 import org.drools.brms.client.modeldriven.model.FactPattern;
 import org.drools.brms.client.modeldriven.model.IAction;
 import org.drools.brms.client.modeldriven.model.IPattern;
@@ -62,7 +63,7 @@ public class RuleModeller extends Composite {
         addPattern.setTitle( "Add a condition to this rule." );
         addPattern.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                showAddConditionSelector(w);               
+                showConditionSelector(w);               
             }            
         });
         
@@ -86,7 +87,7 @@ public class RuleModeller extends Composite {
 
 
     /**
-     * Do the widgets for the RHS.
+     * Do all the widgets for the RHS.
      */
     private Widget renderRhs(final RuleModel model) {
         VerticalPanel vert = new VerticalPanel();
@@ -100,7 +101,9 @@ public class RuleModeller extends Composite {
             } else if (action instanceof ActionAssertFact) {
                 w = new ActionAssertFactWidget(this, (ActionAssertFact) action, completions );
             } else if (action instanceof ActionRetractFact) {
-                w = new ActionRetractFactWidget(this.completions, (ActionRetractFact) action);
+                w = new ActionRetractFactWidget(this.completions, (ActionRetractFact) action );
+            } else if (action instanceof DSLSentence) {
+                w = new DSLSentenceWidget((DSLSentence) action);
             }
             
             HorizontalPanel horiz = new HorizontalPanel();
@@ -133,10 +136,8 @@ public class RuleModeller extends Composite {
     /**
      * Pops up the fact selector.
      */
-    protected void showAddConditionSelector(final Widget w) {
+    protected void showConditionSelector(final Widget w) {
         final FormStylePopup popup = new FormStylePopup("images/new_fact.gif", "Add a condition to the rule...");
-
-        
 
         //
         // The list of facts 
@@ -182,12 +183,40 @@ public class RuleModeller extends Composite {
                 }
             }
         });        
+
+        
+        //
+        // The list of DSL sentences
+        //
+        if (completions.getDSLConditions().size() > 0) {
+            final ListBox dsls = new ListBox();
+            dsls.addItem( "Choose..." );
+            for(int i = 0; i < completions.getDSLConditions().size(); i++ ) {
+                DSLSentence sen = (DSLSentence) completions.getDSLConditions().get( i );
+                dsls.addItem( sen.toString(), Integer.toString( i ) );
+            }
+            
+            dsls.addChangeListener( new ChangeListener() {
+                public void onChange(Widget w) {
+                    int idx = Integer.parseInt( dsls.getValue( dsls.getSelectedIndex() ) );
+                    addNewDSLLhs( (DSLSentence) completions.getDSLConditions().get( idx ) );
+                    popup.hide();
+                }
+            });
+            popup.addAttribute( "Template conditions", dsls );
+        }
         
         popup.setPopupPosition( w.getAbsoluteLeft() - 400, w.getAbsoluteTop() );
         popup.show();
 
     }
     
+    protected void addNewDSLLhs(DSLSentence sentence) {
+        model.addLhsItem( sentence );
+        refreshWidget();
+        
+    }
+
     protected void showActionSelector(Widget w) {
         final FormStylePopup popup = new FormStylePopup("images/new_fact.gif", "Add a new action...");
         
@@ -256,12 +285,40 @@ public class RuleModeller extends Composite {
         if (factsToAssert.getItemCount() > 1) {
             popup.addAttribute( "Assert a new fact", factsToAssert );
         }
+        
+        
+        //
+        // The list of DSL sentences
+        //
+        if (completions.getDSLActions().size() > 0) {
+            final ListBox dsls = new ListBox();
+            dsls.addItem( "Choose..." );
+            for(int i = 0; i < completions.getDSLActions().size(); i++ ) {
+                DSLSentence sen = (DSLSentence) completions.getDSLActions().get( i );
+                dsls.addItem( sen.toString(), Integer.toString( i ) );
+            }
+            
+            dsls.addChangeListener( new ChangeListener() {
+                public void onChange(Widget w) {
+                    int idx = Integer.parseInt( dsls.getValue( dsls.getSelectedIndex() ) );
+                    addNewDSLRhs( (DSLSentence) completions.getDSLActions().get( idx ) );
+                    popup.hide();
+                }
+            });
+            popup.addAttribute( "Template actions", dsls );
+        }
+        
 
         popup.setPopupPosition( w.getAbsoluteLeft() - 400, w.getAbsoluteTop() );
         popup.show();
     }
     
 
+
+    protected void addNewDSLRhs(DSLSentence sentence) {
+        this.model.addRhsItem( sentence );
+        refreshWidget();        
+    }
 
     protected void addRetract(String var) {
         this.model.addRhsItem( new ActionRetractFact(var) );
@@ -286,48 +343,90 @@ public class RuleModeller extends Composite {
         refreshWidget();
     }
 
+    /**
+     * Builds all the condition widgets.
+     */
     private Widget renderLhs(final RuleModel model) {
         VerticalPanel vert = new VerticalPanel();
-        
+         
         for ( int i = 0; i < model.lhs.length; i++ ) {
             IPattern pattern = model.lhs[i];
-            Widget w;
+            Widget w = null;
             if (pattern instanceof FactPattern) {                  
                 w = new FactPatternWidget(this, pattern, completions, true) ;
+                addLhsWidget( model,
+                              vert,
+                              i,
+                              w );
             } else if (pattern instanceof CompositeFactPattern) {
                 w = new CompositeFactPatternWidget(this, (CompositeFactPattern) pattern, completions) ;
+                addLhsWidget( model,
+                              vert,
+                              i,
+                              w );
+            } else if (pattern instanceof DSLSentence) {
+                //ignore this time                
             } else {
                 throw new RuntimeException("I don't know what type of pattern that is.");
             }
             
-            HorizontalPanel horiz = new HorizontalPanel();
+
+        }
+        
+        boolean startedDSLSection = false;
+        for ( int i = 0; i < model.lhs.length; i++ ) {
+            IPattern pattern = model.lhs[i];
+            Widget w = null;
             
-            Image remove = new Image("images/delete_item_small.gif");
-            remove.setTitle( "Remove this condition, and all the field constraints that belong to it." );
-            final int idx = i;
-            remove.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
-                    YesNoDialog diag = new YesNoDialog("Remove this item?", new Command() {
-                        public void execute() {
-                            if (model.removeLhsItem(idx)) {
-                                refreshWidget();
-                            } else {
-                                ErrorPopup.showMessage( "Can't remove that item as it is used in the action part of the rule." );
-                            }                            
-                        }                        
-                    });
-                    diag.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
-                    diag.show();
+            if (pattern instanceof DSLSentence) {
+                if (!startedDSLSection) {
+                    w = new DSLSentenceWidget((DSLSentence) pattern, false, true);
+                    startedDSLSection = true;
+                } else if (i == model.lhs.length - 1) {
+                    w = new DSLSentenceWidget((DSLSentence) pattern, true, false);
+                } else {
+                    w = new DSLSentenceWidget((DSLSentence) pattern, false, false);
                 }
-            } );
-            horiz.add( w );
-            horiz.add( remove );
-
-
-            vert.add( horiz );
+                addLhsWidget( model, vert, i, w );
+                
+            }
         }
         
         return vert;
+    }
+
+    /**
+     * This adds the widget to the UI, also adding the  
+     */
+    private void addLhsWidget(final RuleModel model,
+                              VerticalPanel vert,
+                              int i,
+                              Widget w) {
+        HorizontalPanel horiz = new HorizontalPanel();
+        
+        Image remove = new Image("images/delete_item_small.gif");
+        remove.setTitle( "Remove this condition, and all the field constraints that belong to it." );
+        final int idx = i;
+        remove.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                YesNoDialog diag = new YesNoDialog("Remove this item?", new Command() {
+                    public void execute() {
+                        if (model.removeLhsItem(idx)) {
+                            refreshWidget();
+                        } else {
+                            ErrorPopup.showMessage( "Can't remove that item as it is used in the action part of the rule." );
+                        }                            
+                    }                        
+                });
+                diag.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+                diag.show();
+            }
+        } );
+        horiz.add( w );
+        horiz.add( remove );
+
+
+        vert.add( horiz );
     }
 
 

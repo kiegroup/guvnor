@@ -1,19 +1,18 @@
 package org.drools.brms.client;
 
-import org.drools.brms.client.common.DatePicker;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.model.ActionAssertFact;
 import org.drools.brms.client.modeldriven.model.ActionFieldValue;
 import org.drools.brms.client.modeldriven.model.ActionRetractFact;
 import org.drools.brms.client.modeldriven.model.ActionSetField;
 import org.drools.brms.client.modeldriven.model.CompositeFactPattern;
-import org.drools.brms.client.modeldriven.model.ConnectiveConstraint;
 import org.drools.brms.client.modeldriven.model.Constraint;
+import org.drools.brms.client.modeldriven.model.DSLSentence;
+import org.drools.brms.client.modeldriven.model.DSLSentenceFragment;
 import org.drools.brms.client.modeldriven.model.FactPattern;
 import org.drools.brms.client.modeldriven.model.IAction;
 import org.drools.brms.client.modeldriven.model.IPattern;
 import org.drools.brms.client.modeldriven.model.RuleModel;
-import org.drools.brms.client.modeldriven.ui.CompositeFactPatternWidget;
 import org.drools.brms.client.modeldriven.ui.RuleModeller;
 
 import com.google.gwt.user.client.ui.Image;
@@ -48,9 +47,7 @@ public class Packages extends JBRMSFeature {
         panel.add( new RuleModeller(getDummySuggestionEngine(), getDummyData() ) );
         
         panel.setSpacing( 8 );
-        
-        DatePicker pick = new DatePicker();
-        panel.add( pick );
+
         
         initWidget( panel );
     }
@@ -71,6 +68,27 @@ public class Packages extends JBRMSFeature {
         
         com.addConnectiveOperators( "Vehicle", "make", new String[] {"|="});
         
+        DSLSentence sen = new DSLSentence();
+        sen.elements = new DSLSentenceFragment[2];
+        sen.elements[0] = new DSLSentenceFragment("This is a dsl expression", false);
+        sen.elements[1] = new DSLSentenceFragment("(something)", true);
+        com.addDSLCondition( sen );
+
+        
+        sen = new DSLSentence();
+        sen.elements = new DSLSentenceFragment[3];
+        sen.elements[0] = new DSLSentenceFragment("Send an email to [", false);
+        sen.elements[1] = new DSLSentenceFragment("(someone)", true);
+        sen.elements[2] = new DSLSentenceFragment("]", false);
+        com.addDSLAction( sen );
+        
+        sen = new DSLSentence();
+        sen.elements = new DSLSentenceFragment[1];
+        sen.elements[0] = new DSLSentenceFragment("do nothing", false);        
+        com.addDSLAction( sen );
+        
+        
+        
         return com;
     }
 
@@ -89,6 +107,23 @@ public class Packages extends JBRMSFeature {
         model.lhs[1] = p2;
         model.lhs[2] = p3;
         
+        DSLSentence dsl = new DSLSentence();
+        dsl.elements = new DSLSentenceFragment[2];
+        dsl.elements[0] = new DSLSentenceFragment("There is a Storm alert of type", false);
+        dsl.elements[1] = new DSLSentenceFragment("(code here)", true);
+        
+        model.addLhsItem( dsl );
+        
+        dsl = new DSLSentence();
+        dsl.elements = new DSLSentenceFragment[2];
+        dsl.elements[0] = new DSLSentenceFragment("- severity rating is not more than", false);
+        dsl.elements[1] = new DSLSentenceFragment("(code here)", true);
+        
+        model.addLhsItem( dsl );
+            
+        
+        
+        
         p1.factType = "Person";
         p1.constraints = new Constraint[2];
         p1.constraints[0] = new Constraint();
@@ -101,10 +136,8 @@ public class Packages extends JBRMSFeature {
         p1.constraints[1].operator = "==";
         p1.constraints[1].value = "Bob";
         p1.constraints[1].fieldBinding = "n";
-//        p1.constraints[1].connectives = new ConnectiveConstraint[2];
-//        p1.constraints[1].connectives[0] = new ConnectiveConstraint("|=", "Michael");
-//        p1.constraints[1].connectives[1] = new ConnectiveConstraint("|=", "Mark");
-
+  
+        
         
         p2.factType = "Vehicle";
         p2.boundName = "car1";

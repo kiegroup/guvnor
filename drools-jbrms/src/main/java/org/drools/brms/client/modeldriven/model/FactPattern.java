@@ -1,7 +1,18 @@
 package org.drools.brms.client.modeldriven.model;
 
+/**
+ * A fact pattern is a declaration of a fact type, and its constraint,
+ * and perhaps a variable that is it bound to
+ * It is the equivalent of a "column" in drools terms. 
+ * @author Michael Neale
+ *
+ */
 public class FactPattern implements IPattern {
 
+    public Constraint[] constraints;
+    public String factType;
+    public String boundName;
+    
     public FactPattern() {
         this.constraints = new Constraint[0];
     }
@@ -11,9 +22,7 @@ public class FactPattern implements IPattern {
         this.constraints = new Constraint[0];
     }
     
-    public Constraint[] constraints;
-    public String factType;
-    public String boundName;
+
     
     
     public void addConstraint(Constraint constraint) {

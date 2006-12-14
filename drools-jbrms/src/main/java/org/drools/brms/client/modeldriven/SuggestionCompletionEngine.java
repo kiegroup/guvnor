@@ -1,9 +1,13 @@
 package org.drools.brms.client.modeldriven;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.brms.client.modeldriven.model.DSLSentence;
 
 /**
  * An suggestion completion processor. This should be usable in both GWT/Web and the IDE.
@@ -26,7 +30,10 @@ public class SuggestionCompletionEngine {
     private Map operatorMap = new HashMap();
     private HashMap ceMap = new HashMap();
     private HashMap actionMap = new HashMap();
-
+    private List conditionDSLSentences = new ArrayList();
+    private List actionDSLSentences = new ArrayList();
+    
+    
     /**
      * For bulk loading up the data (from a previous rule save)
      * 
@@ -36,6 +43,9 @@ public class SuggestionCompletionEngine {
      *                                  that are valid CONNECTIVE operators.
      *                                  
      * @param globals A map of global variable name to its fields (String[]).
+     * @param boundFacts A map of bound facts to types.
+     * @param conditionDSLs a list of DSLSentence suggestions for the LHS
+     * @param actionDSLs a list of DSLSentence suggestions for the RHS                          
      *                                       
      */
     public void load( 
@@ -43,11 +53,15 @@ public class SuggestionCompletionEngine {
                       Map factFieldToOperator, 
                       Map factFieldToConnectiveOperator,
                       Map globals,
-                      Map boundFacts
+                      Map boundFacts,
+                      List conditionDSLs,
+                      List actionDSLs
                     ) {
         this.factToFields = factToFields;
         this.factFieldToOperator = factFieldToOperator;
         this.factFieldToConnectiveOperator = factFieldToConnectiveOperator;
+        this.actionDSLSentences = actionDSLs;
+        this.conditionDSLSentences = conditionDSLs;
         this.globals = globals;
 
     }
@@ -97,7 +111,21 @@ public class SuggestionCompletionEngine {
     }
     
     
+    /**
+     * Add a DSL suggestion for the LHS.
+     * @param sentence
+     */
+    public void addDSLCondition(DSLSentence sentence) {
+        this.conditionDSLSentences.add( sentence );
+    }
     
+    /**
+     * Add a DSL suggestion for the RHS.
+     * @param sentence
+     */
+    public void addDSLAction(DSLSentence sentence) {
+        this.actionDSLSentences.add( sentence );
+    }
     
     
     /**
@@ -131,6 +159,14 @@ public class SuggestionCompletionEngine {
 
     public String[] getConditionalElements() {       
         return new String[] {"not", "exists", "or"};
+    }
+    
+    public List getDSLConditions() {
+        return conditionDSLSentences;
+    }
+    
+    public List getDSLActions() {
+        return actionDSLSentences;
     }
 
     public String[] getConnectiveOperatorCompletions(String factType,
