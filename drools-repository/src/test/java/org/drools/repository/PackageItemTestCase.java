@@ -61,6 +61,8 @@ public class PackageItemTestCase extends TestCase {
         AssetItem rule1 = pack.addAsset( "rule 1", "yeah" );
         AssetItem rule2 = pack.addAsset( "rule 2", "foobar" );
         
+        assertEquals(StateItem.DRAFT_STATE_NAME, rule1.getState().getName());
+        
         StateItem state = repo.getState( "deployed" );
         
         repo.save();
@@ -179,7 +181,7 @@ public class PackageItemTestCase extends TestCase {
         
         //and null, as we start with null, should be able to get all three back
         //although an older version of one of them
-        rules = iteratorToList( pack.getAssetsWithStatus(null) );
+        rules = iteratorToList( pack.getAssetsWithStatus(getRepo().getState( StateItem.DRAFT_STATE_NAME )) );
         assertEquals(3, rules.size());
         
         //now do an update, and pull it out via state

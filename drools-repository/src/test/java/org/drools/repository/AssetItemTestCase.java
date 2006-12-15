@@ -220,19 +220,19 @@ public class AssetItemTestCase extends TestCase {
 
     }
 
-    public void testGetState() {
+    public void testStatusStuff() {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testGetState", "test content");
            
             StateItem stateItem1 = ruleItem1.getState();
-            assertNull(stateItem1);
+            assertEquals(StateItem.DRAFT_STATE_NAME, stateItem1.getName());
             
             ruleItem1.updateState("TestState1");
             assertNotNull(ruleItem1.getState());
             assertEquals("TestState1", ruleItem1.getState().getName());    
             
             ruleItem1 = getDefaultPackage().addAsset( "testGetState2", "wa" );
-            assertEquals("", ruleItem1.getStateDescription());
-            assertNull(ruleItem1.getState());
+            assertEquals(StateItem.DRAFT_STATE_NAME, ruleItem1.getStateDescription());
+            assertEquals(getRepo().getState( StateItem.DRAFT_STATE_NAME ), ruleItem1.getState());
     }
     
 

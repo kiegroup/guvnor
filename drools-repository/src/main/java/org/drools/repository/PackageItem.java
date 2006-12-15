@@ -135,6 +135,8 @@ public class PackageItem extends VersionableItem {
             
             AssetItem rule = new AssetItem( this.rulesRepository, ruleNode );
             
+            rule.updateState( StateItem.DRAFT_STATE_NAME );
+            
             if (initialCategory != null) {
                 rule.addCategory( initialCategory );
             }

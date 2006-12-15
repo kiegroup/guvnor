@@ -558,12 +558,6 @@ public abstract class VersionableItem extends Item {
     public void updateState(StateItem stateItem) throws RulesRepositoryException {
         checkIsUpdateable();
         try {
-            //make sure this node is a rule node
-            if ( this.node.getPrimaryNodeType().getName().equals( "nt:version" ) ) {
-                String message = "Error. States can only be set for the head version of a rule node";
-                log.error( message );
-                throw new RulesRepositoryException( message );
-            }
 
             //now set the state property of the rule                              
             checkout();

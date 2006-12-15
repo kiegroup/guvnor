@@ -5,7 +5,9 @@ import javax.jcr.Node;
 import org.apache.log4j.Logger;
 
 /**
- * The StateItem class abstracts away details of the underlying JCR repository.
+ * The StateItem represents the status of an asset.
+ * An asset can only be in 1 state at a time. Kind of for workflow.
+ * 
  * 
  * @author btruitt
  */
@@ -13,6 +15,11 @@ public class StateItem extends Item {
 
     private Logger log = Logger.getLogger(StateItem.class);
 
+    /**
+     * All assets when created, or a new version saved, have a status of Draft.
+     */
+    public static String DRAFT_STATE_NAME = "Draft";
+    
     /**
      * The name of the state node type
      */
