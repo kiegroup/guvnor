@@ -239,6 +239,12 @@ public class FactPatternWidget extends Composite {
     private Widget valueEditor(final Constraint c) {
         final TextBox box = new TextBox();
         box.setText( c.value );
+        if (c.value == null || c.value.length() < 5) {
+            box.setVisibleLength( 3 );
+        } else {
+            box.setVisibleLength( c.value.length() - 1 );
+        }
+        
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 c.value = box.getText();                

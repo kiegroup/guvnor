@@ -1,30 +1,20 @@
 package org.drools.brms.client.ruleeditor;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.brms.client.RulesFeature;
 import org.drools.brms.client.breditor.BREditor;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.WarningPopup;
-import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
-import org.drools.brms.client.rpc.TextData;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
@@ -36,7 +26,6 @@ public class RuleViewer extends Composite {
 
     private final String      resourceUUID;
     private final String      name;
-    private final String      format;
     private Command           closeCommand;
 
     final private SimplePanel panel = new SimplePanel();
@@ -49,11 +38,9 @@ public class RuleViewer extends Composite {
      */
     public RuleViewer(RulesFeature parent,
                       String UUID,
-                      String format,
                       String name) {
         this.resourceUUID = UUID;
         this.name = name;
-        this.format = format;
 
         //just pad it out a bit, so it gets the layout right - it will be loaded later.
         FlexTable layout = new FlexTable();
@@ -127,18 +114,8 @@ public class RuleViewer extends Composite {
         //REMEMBER: subsequent rows have only one column, doh that is confusing ! 
         //GAAAAAAAAAAAAAAAAAAAAAAAAAAH
 
-        //depending on the format, load the appropriate editor
-        if ( asset.metaData.format.equals( "DSL" ) ) {
-            BREditor ed = new BREditor( asset );
-            layout.setWidget( 1,
-                              0,
-                              ed );
-        } else {
-            DefaultRuleContentWidget ed = new DefaultRuleContentWidget( asset );
-            layout.setWidget( 1,
-                              0,
-                              ed );
-        }
+        layout.setWidget( 1, 0, EditorLauncher.getWidget(asset));
+        
 
         //the document widget
         final RuleDocumentWidget doco = new RuleDocumentWidget();

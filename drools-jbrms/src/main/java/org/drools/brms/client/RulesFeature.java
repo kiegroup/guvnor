@@ -69,7 +69,7 @@ public class RulesFeature extends JBRMSFeature {
             public void open(String key,
                              String type,
                              String name) {                  
-                RuleViewer view = new RuleViewer(parent, key, type, name);
+                RuleViewer view = new RuleViewer(parent, key, name);
                 
                 String displayName = name;
                 if (name.length() > 10) {

@@ -50,7 +50,8 @@ public class RuleModeller extends Composite {
         refreshWidget();
         
         layout.setStyleName( "model-builder-Background" );
-        initWidget( layout );        
+        initWidget( layout );  
+        setWidth( "100%" );
     }
 
     /**
