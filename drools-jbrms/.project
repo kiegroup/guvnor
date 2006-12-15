@@ -1,6 +1,6 @@
 <projectDescription>
-  <name>drools-brms</name>
-  <comment/>
+  <name>drools-jbrms</name>
+  <comment>A rule production system</comment>
   <projects/>
   <buildSpec>
     <buildCommand>

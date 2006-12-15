@@ -52,8 +52,7 @@ public class SuggestionCompletionEngine {
                       Map factToFields, 
                       Map factFieldToOperator, 
                       Map factFieldToConnectiveOperator,
-                      Map globals,
-                      Map boundFacts,
+                      Map globals,                      
                       List conditionDSLs,
                       List actionDSLs
                     ) {

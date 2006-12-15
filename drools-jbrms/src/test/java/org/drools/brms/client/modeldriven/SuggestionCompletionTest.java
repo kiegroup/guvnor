@@ -27,10 +27,7 @@ public class SuggestionCompletionTest extends TestCase {
                      }},
                      new HashMap() {{
                          put("foo", new String[] {"bar", "baz"});
-                     }}, 
-                     new HashMap() {{
-                         put("x", "Person");
-                     }}, 
+                     }},  
                      new ArrayList() {{
                          
                      }}, 
