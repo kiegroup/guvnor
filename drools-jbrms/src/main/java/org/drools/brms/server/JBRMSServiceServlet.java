@@ -31,6 +31,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /** 
  * This is the implementation of the repository service to drive the GWT based front end.
+ * TODO: refactor this to use "Action" pattern or SSB pattern for 
+ * transaction demarcation.
  * 
  * @author Michael Neale
  */
@@ -71,15 +73,18 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     }
     
     
+    /**
+     * This will create a new asset. It will be saved, but not checked in.
+     * The initial state will be the draft state.
+     */
     public Boolean createNewRule(String ruleName,
                                  String description,
                                  String initialCategory,
                                  String initialPackage) throws SerializableException {        
         try {
             PackageItem pkg = getRulesRepository().loadPackage( initialPackage );
-            pkg.addAsset( ruleName,
-                                         description, initialCategory );
-
+            pkg.addAsset( ruleName, description, initialCategory );            
+            getRulesRepository().save();            
         } catch (RulesRepositoryException e) {
             throw new SerializableException(e.getMessage());
         }
