@@ -61,7 +61,7 @@ public class FactPatternWidget extends Composite {
             inner.setWidget( row, 2, valueEditor(c) );            
             inner.setWidget( row, 3, connectives(c) );
             
-            Image clear = new Image("images/clear_item.gif");
+            Image clear = new Image("images/delete_item_small.gif");
             clear.setTitle( "Remove this field constraint" );
             
             clear.addClickListener( new ClickListener() {

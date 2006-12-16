@@ -58,7 +58,7 @@ public class ActionAssertFactWidget extends Composite {
             inner.setWidget( i, 0, fieldSelector(val) );
             inner.setWidget( i, 1, valueEditor(val) );
             final int idx = i;
-            Image remove = new Image("images/clear_item.gif");
+            Image remove = new Image("images/delete_item_small.gif");
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     YesNoDialog diag = new YesNoDialog("Remove this item?", new Command() {

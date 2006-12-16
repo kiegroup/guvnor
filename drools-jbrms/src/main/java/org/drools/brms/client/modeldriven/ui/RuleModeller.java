@@ -127,6 +127,7 @@ public class RuleModeller extends Composite {
             horiz.add( w );
             horiz.add( remove );
             
+            
             vert.add( horiz );
             
         }
@@ -405,12 +406,14 @@ public class RuleModeller extends Composite {
                               Widget w) {
         HorizontalPanel horiz = new HorizontalPanel();
         
+        
+        
         Image remove = new Image("images/delete_item_small.gif");
-        remove.setTitle( "Remove this condition, and all the field constraints that belong to it." );
+        remove.setTitle( "Remove this ENTIRE condition, and all the field constraints that belong to it." );
         final int idx = i;
         remove.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                YesNoDialog diag = new YesNoDialog("Remove this item?", new Command() {
+                YesNoDialog diag = new YesNoDialog("Remove this entire condition?", new Command() {
                     public void execute() {
                         if (model.removeLhsItem(idx)) {
                             refreshWidget();
@@ -423,9 +426,11 @@ public class RuleModeller extends Composite {
                 diag.show();
             }
         } );
+        
+
         horiz.add( w );
         horiz.add( remove );
-
+        
 
         vert.add( horiz );
     }
