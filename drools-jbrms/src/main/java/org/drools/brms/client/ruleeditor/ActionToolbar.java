@@ -7,6 +7,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -32,7 +33,8 @@ public class ActionToolbar extends Composite {
      */
     public ActionToolbar(final MetaData meta, 
                          final Command checkin,
-                         final ClickListener changeState) {
+                         final ClickListener changeState, 
+                         final Command minimiseMaximise) {
 
         this.metaData = meta;
         this.checkin = checkin;
@@ -72,9 +74,18 @@ public class ActionToolbar extends Composite {
             
         });
         
+        Image maxMinImage = new Image("images/max_min.gif");
+        maxMinImage.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                minimiseMaximise.execute();                
+            }            
+        });
+        
         
         panel.add( save );
         panel.add( closeImg );
+        panel.add( new HTML("&nbsp;") );
+        panel.add( maxMinImage );
         initWidget( panel );
     }
     

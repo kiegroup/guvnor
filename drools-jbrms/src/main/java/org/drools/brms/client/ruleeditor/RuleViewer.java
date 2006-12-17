@@ -1,7 +1,6 @@
 package org.drools.brms.client.ruleeditor;
 
 import org.drools.brms.client.RulesFeature;
-import org.drools.brms.client.breditor.BREditor;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.WarningPopup;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
@@ -30,6 +29,7 @@ public class RuleViewer extends Composite {
 
     final private SimplePanel panel = new SimplePanel();
     protected RuleAsset       asset;
+    private FlexTable layout;
 
     /**
      * @param UUID The resource to open.
@@ -85,6 +85,7 @@ public class RuleViewer extends Composite {
         formatter.setRowSpan( 0,
                               0,
                               3 );
+        formatter.setVerticalAlignment( 0, 0, HasVerticalAlignment.ALIGN_TOP );
         formatter.setWidth( 0,
                             0,
                             "40%" );
@@ -95,8 +96,13 @@ public class RuleViewer extends Composite {
                                                        public void execute() {
                                                            doCheckin();
                                                        }
-                                                   },
-                                                   null );
+                                                   },                                                   
+                                                   null,
+                                                   new Command() {
+                                                       public void execute() {
+                                                           toggleMetaDataWidget();
+                                                       }
+                                                   });
         toolbar.setCloseCommand( new Command() {
             public void execute() {
                 closeCommand.execute();
@@ -126,6 +132,8 @@ public class RuleViewer extends Composite {
         metaWidget.loadData( asset.metaData );
         doco.loadData( asset.metaData );
 
+        this.layout = layout;
+        
         panel.clear();
         panel.setWidget( layout );
     }
@@ -145,6 +153,15 @@ public class RuleViewer extends Composite {
         });
     }
 
+    
+    /**
+     * Calling this will toggle the visibility of the meta-data widget (effectively zooming
+     * in the rule asset).
+     */
+    public void toggleMetaDataWidget() {
+       boolean vis = layout.getFlexCellFormatter().isVisible( 0, 0 );
+       this.layout.getFlexCellFormatter().setVisible( 0, 0, !vis ); 
+    }
     
 
     /**

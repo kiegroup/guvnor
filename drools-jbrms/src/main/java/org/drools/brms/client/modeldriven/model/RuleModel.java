@@ -7,6 +7,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class RuleModel implements IsSerializable {
 
+    public RuleAttribute[] attributes = new RuleAttribute[0];
+    
     public IPattern[] lhs;
     public IAction[] rhs;
     
@@ -138,6 +140,36 @@ public class RuleModel implements IsSerializable {
             
         }
         this.rhs = newList;
+    }
+
+    public void addAttribute(RuleAttribute attribute) {
+        
+        
+        RuleAttribute[] list = this.attributes;
+        RuleAttribute[] newList = new RuleAttribute[list.length + 1];
+        
+        for ( int i = 0; i < list.length; i++ ) {
+            newList[i] =  list[i];
+        }
+        newList[list.length] = attribute; 
+        
+        this.attributes = newList;        
+        
+    }
+    
+    public void removeAttribute(int idx) {
+        RuleAttribute[] newList = new RuleAttribute[attributes.length - 1];
+        int newIdx = 0;
+        for ( int i = 0; i < attributes.length; i++ ) {
+            
+            if (i != idx) {
+                newList[newIdx] = attributes[i];
+                newIdx++;
+            }
+            
+        }
+        this.attributes = newList;
+
     }
     
 }

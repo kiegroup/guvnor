@@ -7,6 +7,7 @@ import org.drools.brms.client.modeldriven.model.ActionSetField;
 import org.drools.brms.client.modeldriven.model.FactPattern;
 import org.drools.brms.client.modeldriven.model.IAction;
 import org.drools.brms.client.modeldriven.model.IPattern;
+import org.drools.brms.client.modeldriven.model.RuleAttribute;
 import org.drools.brms.client.modeldriven.model.RuleModel;
 
 import junit.framework.TestCase;
@@ -151,6 +152,23 @@ public class RuleModelTest extends TestCase {
         
         assertEquals(a0, model.rhs[0]);
         assertEquals(a1, model.rhs[1]);
+    }
+    
+    public void testAttributes() {
+        RuleModel m = new RuleModel();
+        RuleAttribute at = new RuleAttribute("salience", "42");
+        m.addAttribute(at);
+        assertEquals(1, m.attributes.length);
+        assertEquals(at, m.attributes[0]);
+        
+        RuleAttribute at2 = new RuleAttribute("agenda-group", "x");
+        m.addAttribute( at2 );
+        assertEquals(2, m.attributes.length);
+        assertEquals(at2, m.attributes[1]);
+        
+        m.removeAttribute( 0 );
+        assertEquals(1, m.attributes.length);
+        assertEquals(at2, m.attributes[0]);
     }
     
     

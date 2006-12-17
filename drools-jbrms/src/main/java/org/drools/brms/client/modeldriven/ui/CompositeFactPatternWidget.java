@@ -5,7 +5,7 @@ import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.model.CompositeFactPattern;
 import org.drools.brms.client.modeldriven.model.FactPattern;
 
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
@@ -87,20 +87,19 @@ public class CompositeFactPatternWidget extends Composite {
         final ListBox box = new ListBox();
         String[] facts = completions.getFactTypes();
 
+        box.addItem( "Choose..." );
         for ( int i = 0; i < facts.length; i++ ) {
             box.addItem( facts[i] );
         }
-
+        box.setSelectedIndex( 0 );
+        
         final FormStylePopup popup = new FormStylePopup( "images/new_fact.gif",
                                                          "New fact pattern..." );
-        popup.addAttribute( "choose type",
+        popup.addAttribute( "choose fact type",
                             box );
-        Button ok = new Button( "OK" );
-        popup.addAttribute( "",
-                            ok );
 
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        box.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
                 pattern.addFactPattern( new FactPattern( box.getItemText( box.getSelectedIndex() ) ) );
                 modeller.refreshWidget();
                 popup.hide();
