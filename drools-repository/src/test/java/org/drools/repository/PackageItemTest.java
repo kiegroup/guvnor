@@ -6,7 +6,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-public class PackageItemTestCase extends TestCase {
+public class PackageItemTest extends TestCase {
 
     public void testListPackages() throws Exception {
         RulesRepository repo = getRepo();
@@ -23,28 +23,23 @@ public class PackageItemTestCase extends TestCase {
     
     public void testRulePackageItem() throws Exception {
         RulesRepository repo = getRepo();
-        try {
             
-            //calls constructor
-            PackageItem rulePackageItem1 = repo.createPackage("testRulePackage", "desc");
-            assertNotNull(rulePackageItem1);
-            assertEquals("testRulePackage", rulePackageItem1.getName());
-            
-            Iterator it = getRepo().listPackages();
-            assertTrue(it.hasNext());
+        //calls constructor
+        PackageItem rulePackageItem1 = repo.createPackage("testRulePackage", "desc");
+        assertNotNull(rulePackageItem1);
+        assertEquals("testRulePackage", rulePackageItem1.getName());
+        
+        Iterator it = getRepo().listPackages();
+        assertTrue(it.hasNext());
 
-            while (it.hasNext()) {
-                PackageItem pack = (PackageItem) it.next();
-                if (pack.getName().equals( "testRulePackage" )) {
-                    return;
-                }
+        while (it.hasNext()) {
+            PackageItem pack = (PackageItem) it.next();
+            if (pack.getName().equals( "testRulePackage" )) {
+                return;
             }
-            fail("should have picked up the testRulePackage but didnt.");
         }
-        catch(Exception e) {
-            e.printStackTrace();
-            fail("Caught unexpected exception: " + e);
-        }
+        fail("should have picked up the testRulePackage but didnt.");
+
         
     }
     
@@ -86,6 +81,12 @@ public class PackageItemTestCase extends TestCase {
         PackageItem prev = (PackageItem) pack.getPrecedingVersion();
         assertEquals(2, iteratorToList( prev.getAssets() ).size());
         
+        assertNotNull(prev.getSucceedingVersion());
+        
+        PackageItem succ = (PackageItem) prev.getSucceedingVersion();
+        
+        assertEquals(1, iteratorToList( succ.getAssets() ).size());
+        
     }
 
     /** Continues to show how multi dimensional versioning works */
@@ -120,7 +121,7 @@ public class PackageItemTestCase extends TestCase {
     }
 
     private RulesRepository getRepo() {
-        return RepositorySession.getRepository();
+        return RepositorySessionUtil.getRepository();
     }
 
     public void testLoadRulePackageItem() {
@@ -147,7 +148,6 @@ public class PackageItemTestCase extends TestCase {
      */
     public void testPackageRuleVersionExtraction() throws Exception {
         PackageItem pack = getRepo().createPackage( "package extractor", "foo" );
-        
         
         AssetItem rule1 = pack.addAsset( "rule number 1", "yeah man" );
         rule1.checkin( "version0" );
@@ -179,7 +179,7 @@ public class PackageItemTestCase extends TestCase {
         rules = iteratorToList( pack.getAssetsWithStatus( getRepo().getState( "whee" ) ) );
         assertEquals(0, rules.size());
         
-        //and null, as we start with null, should be able to get all three back
+        //and Draft, as we start with Draft, should be able to get all three back
         //although an older version of one of them
         rules = iteratorToList( pack.getAssetsWithStatus(getRepo().getState( StateItem.DRAFT_STATE_NAME )) );
         assertEquals(3, rules.size());
@@ -241,6 +241,20 @@ public class PackageItemTestCase extends TestCase {
         }
         
     }
+    
+    public void testPackageInstanceWrongNodeType() throws Exception {
+        PackageItem pack = getRepo().loadDefaultPackage();        
+        AssetItem rule = pack.addAsset( "packageInstanceWrongNodeType", "" );
+        
+        try {
+            new PackageItem(this.getRepo(), rule.getNode());
+            fail("Can't create a package from a rule node.");
+        } catch (RulesRepositoryException e) {
+            assertNotNull(e.getMessage());
+        }
+        
+    }
+    
     
     public void testLoadRulePackageItemByUUID() throws Exception {
 

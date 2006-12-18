@@ -6,11 +6,11 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-public class AssetItemTestCase extends TestCase {
+public class AssetItemTest extends TestCase {
 
 
     private RulesRepository getRepo() {
-        return RepositorySession.getRepository();
+        return RepositorySessionUtil.getRepository();
     }
     
     private PackageItem getDefaultPackage() {

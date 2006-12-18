@@ -1,13 +1,16 @@
 package org.drools.repository;
 
-import javax.jcr.LoginException;
 import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import junit.framework.Assert;
 
-public class RepositorySession {
+/**
+ * This is a utility to simulate session behavior for the test suite.
+ * @author Michael Neale
+ *
+ */
+public class RepositorySessionUtil {
 
     private static ThreadLocal repo = new ThreadLocal();
 

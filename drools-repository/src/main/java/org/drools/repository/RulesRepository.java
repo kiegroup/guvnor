@@ -479,7 +479,7 @@ public class RulesRepository {
             //create the node - see section 6.7.22.6 of the spec
             Node rulePackageNode = folderNode.addNode(name, PackageItem.RULE_PACKAGE_TYPE_NAME);
             
-            rulePackageNode.addNode( PackageItem.RULES_FOLDER_NAME, "drools:versionableAssetFolder" );
+            rulePackageNode.addNode( PackageItem.ASSET_FOLDER_NAME, "drools:versionableAssetFolder" );
             rulePackageNode.addNode( PackageItem.FUNCTION_FOLDER_NAME, "drools:versionableAssetFolder" );
             
             
@@ -556,7 +556,7 @@ public class RulesRepository {
                                     
             return new CategoryItem(this, tagNode);
         }
-        catch(Exception e) {
+        catch(RepositoryException e) {
             if (e instanceof PathNotFoundException) {
                 throw new RulesRepositoryException("Unable to load the category : [" + tagName + "] does not exist.", e);
             }
@@ -651,7 +651,7 @@ public class RulesRepository {
             PackageItem destPkg = loadPackage( newPackage );
             
             String sourcePath = item.node.getPath();
-            String destPath = destPkg.node.getPath() + "/" + PackageItem.RULES_FOLDER_NAME + "/" + item.getName(); 
+            String destPath = destPkg.node.getPath() + "/" + PackageItem.ASSET_FOLDER_NAME + "/" + item.getName(); 
             
             this.session.move(sourcePath , destPath );
             

@@ -8,7 +8,7 @@ import org.drools.repository.CategoryItem;
 
 import junit.framework.TestCase;
 
-public class CategoryItemTestCase extends TestCase {
+public class CategoryItemTest extends TestCase {
 
     
     
@@ -134,6 +134,6 @@ public class CategoryItemTestCase extends TestCase {
     }
 
     private RulesRepository getRepo() {
-        return RepositorySession.getRepository();
+        return RepositorySessionUtil.getRepository();
     }
 }

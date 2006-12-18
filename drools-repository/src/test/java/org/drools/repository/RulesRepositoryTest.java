@@ -5,11 +5,9 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.jcr.NodeIterator;
-
 import junit.framework.TestCase;
 
-public class RulesRepositoryTestCase extends TestCase {
+public class RulesRepositoryTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -20,7 +18,7 @@ public class RulesRepositoryTestCase extends TestCase {
     }
     
     public void testDefaultPackage() throws Exception {
-        RulesRepository repo = RepositorySession.getRepository();
+        RulesRepository repo = RepositorySessionUtil.getRepository();
         
         Iterator it = repo.listPackages();
         boolean foundDefault = false;
@@ -40,7 +38,7 @@ public class RulesRepositoryTestCase extends TestCase {
     }
     
     public void testAddVersionARule() throws Exception {
-        RulesRepository repo = RepositorySession.getRepository();
+        RulesRepository repo = RepositorySessionUtil.getRepository();
         PackageItem pack = repo.createPackage( "testAddVersionARule", "description" );
         repo.save();
         
@@ -75,7 +73,7 @@ public class RulesRepositoryTestCase extends TestCase {
 
     
     public void testLoadRuleByUUID() throws Exception {
-        RulesRepository repo = RepositorySession.getRepository();
+        RulesRepository repo = RepositorySessionUtil.getRepository();
         
         PackageItem rulePackageItem = repo.loadDefaultPackage();
         AssetItem rule = rulePackageItem.addAsset( "testLoadRuleByUUID", "this is a description");
@@ -116,7 +114,7 @@ public class RulesRepositoryTestCase extends TestCase {
     }
     
     public void testAddRuleCalendarWithDates() {
-        RulesRepository rulesRepository = RepositorySession.getRepository();
+        RulesRepository rulesRepository = RepositorySessionUtil.getRepository();
 
                         
             Calendar effectiveDate = Calendar.getInstance();
@@ -135,7 +133,7 @@ public class RulesRepositoryTestCase extends TestCase {
     }
 
     public void testGetState() {
-        RulesRepository rulesRepository = RepositorySession.getRepository();
+        RulesRepository rulesRepository = RepositorySessionUtil.getRepository();
             
             
             StateItem stateItem1 = rulesRepository.getState("testGetState");
@@ -149,7 +147,7 @@ public class RulesRepositoryTestCase extends TestCase {
     }
 
     public void testGetTag() {
-            RulesRepository rulesRepository = RepositorySession.getRepository();
+            RulesRepository rulesRepository = RepositorySessionUtil.getRepository();
             
             CategoryItem root = rulesRepository.loadCategory( "/" );
             CategoryItem tagItem1 = root.addCategory( "testGetTag", "ho");
@@ -172,7 +170,7 @@ public class RulesRepositoryTestCase extends TestCase {
 
     
     public void testListPackages() {
-        RulesRepository rulesRepository = RepositorySession.getRepository();
+        RulesRepository rulesRepository = RepositorySessionUtil.getRepository();
         
         
             PackageItem rulePackageItem1 = rulesRepository.createPackage("testListPackages", "desc");
@@ -194,7 +192,7 @@ public class RulesRepositoryTestCase extends TestCase {
     }
     
     public void testMoveRulePackage() throws Exception {
-        RulesRepository repo = RepositorySession.getRepository();
+        RulesRepository repo = RepositorySessionUtil.getRepository();
         PackageItem pkg = repo.createPackage( "testMove", "description" );
         AssetItem r = pkg.addAsset( "testMove", "description" );
         r.checkin( "version0" );

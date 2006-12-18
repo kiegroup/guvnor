@@ -37,7 +37,7 @@ public class PackageItem extends VersionableItem {
      * This is the name of the rules "subfolder" where rules are kept
      * for this package.
      */
-    public static final String RULES_FOLDER_NAME                = "rules";
+    public static final String ASSET_FOLDER_NAME                = "assets";
 
     /**
      * The name of the reference property on the rulepackage_node_type type node that objects of
@@ -111,7 +111,7 @@ public class PackageItem extends VersionableItem {
         Node ruleNode;
         try {
 
-            Node rulesFolder = this.node.getNode( RULES_FOLDER_NAME );
+            Node rulesFolder = this.node.getNode( ASSET_FOLDER_NAME );
             ruleNode = rulesFolder.addNode( assetName,
                                             AssetItem.RULE_NODE_TYPE_NAME );
             ruleNode.setProperty( AssetItem.TITLE_PROPERTY_NAME,
@@ -143,10 +143,8 @@ public class PackageItem extends VersionableItem {
             
             return rule;
 
-        } catch ( Exception e ) {
-            if ( e instanceof RuntimeException ) {
-                throw (RuntimeException) e;
-            } else if ( e instanceof ItemExistsException ) {
+        } catch ( RepositoryException e ) {
+            if ( e instanceof ItemExistsException ) {
                 throw new RulesRepositoryException( "A rule of that name already exists in that package.",
                                                     e );
             } else {
@@ -163,7 +161,7 @@ public class PackageItem extends VersionableItem {
      */
     public void removeAsset(String name) {
         try {
-            this.node.getNode( RULES_FOLDER_NAME + "/" + name ).remove();
+            this.node.getNode( ASSET_FOLDER_NAME + "/" + name ).remove();
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
@@ -323,11 +321,9 @@ public class PackageItem extends VersionableItem {
     public Iterator getAssets() {
         try {
             Node content = getVersionContentNode();
-            AssetItemIterator it = new AssetItemIterator( content.getNode( RULES_FOLDER_NAME ).getNodes(),
+            AssetItemIterator it = new AssetItemIterator( content.getNode( ASSET_FOLDER_NAME ).getNodes(),
                                                         this.rulesRepository );
-            return it;
-        } catch ( PathNotFoundException e ) {
-            throw new RulesRepositoryException( e );
+            return it;        
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
@@ -347,7 +343,7 @@ public class PackageItem extends VersionableItem {
             
             //String sql = "SELECT * FROM drools:ruleNodeType WHERE jcr:path LIKE '/drools:repository/drools:rulepackage_area/searchByFormat/rules[%]/%'";
             String sql = "SELECT * FROM " + AssetItem.RULE_NODE_TYPE_NAME;
-            sql += " WHERE jcr:path LIKE '" + getVersionContentNode().getPath() + "/" + RULES_FOLDER_NAME + "[%]/%'";
+            sql += " WHERE jcr:path LIKE '" + getVersionContentNode().getPath() + "/" + ASSET_FOLDER_NAME + "[%]/%'";
             
             sql += " and " + fieldPredicates;
             
@@ -369,7 +365,7 @@ public class PackageItem extends VersionableItem {
             Node content = getVersionContentNode();
             return new AssetItem(
                         this.rulesRepository, 
-                        content.getNode( RULES_FOLDER_NAME ).getNode( name ));
+                        content.getNode( ASSET_FOLDER_NAME ).getNode( name ));
         } catch ( RepositoryException e ) {
              throw new RulesRepositoryException(e);
        }
