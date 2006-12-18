@@ -1,5 +1,7 @@
 package org.drools.brms.client.rpc.mock;
 
+import java.util.Date;
+
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.RuleAsset;
@@ -140,6 +142,7 @@ public class MockRepositoryServiceAsync
         meta.categories = new String[] {"Approval", "Age related"};
         meta.name = "age rejection 1";
         meta.versionNumber = "2";
+        meta.createdDate = new Date();
         if (uuid.endsWith( "1" )) {
             meta.format = "DRL";
             TextData text = new TextData();
@@ -151,6 +154,7 @@ public class MockRepositoryServiceAsync
         }
         
         asset.metaData = meta;
+        
         final AsyncCallback finalCb = cb;
         Timer t = new Timer() {
 

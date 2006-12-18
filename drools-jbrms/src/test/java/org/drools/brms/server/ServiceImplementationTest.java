@@ -158,7 +158,9 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals("testLoadRuleAsset", asset.metaData.name);
       assertEquals("testLoadRuleAsset", asset.metaData.title);
       assertEquals("testLoadRuleAsset", asset.metaData.packageName);
-   
+      assertNotNull(asset.metaData.createdDate);
+      
+      
       AssetItem rule = impl.repo.loadPackage( "testLoadRuleAsset" ).loadAsset( "testLoadRuleAsset" );
       rule.updateState( "whee" );
       rule.checkin( "changed state" );

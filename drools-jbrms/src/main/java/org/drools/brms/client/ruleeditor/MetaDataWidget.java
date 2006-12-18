@@ -1,5 +1,7 @@
 package org.drools.brms.client.ruleeditor;
 
+import java.util.Date;
+
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.rpc.MetaData;
 
@@ -40,11 +42,11 @@ public class MetaDataWidget extends FormStyleLayout {
             }            
         }, "A short description of the subject matter."));            
         
-        addAttribute("Last modified on:", readOnlyText(data.lastModifiedDate));
+        addAttribute("Last modified on:", readOnlyDate(data.lastModifiedDate));
         addAttribute("Last modified by:", readOnlyText(data.lastContributor));
         addAttribute("Checkin note:", readOnlyText( data.lastCheckinComment ));
         addAttribute("Created by:", readOnlyText(data.creator));
-        addAttribute("Created on:", readOnlyText( data.createdDate ));
+        addAttribute("Created on:", readOnlyDate( data.createdDate ));
         addAttribute("Version number:", readOnlyText("" + data.versionNumber));
         addAttribute("Package:", readOnlyText(data.packageName));
         
@@ -85,11 +87,22 @@ public class MetaDataWidget extends FormStyleLayout {
 
 
 
+    private Widget readOnlyDate(Date lastModifiedDate) {
+        if (lastModifiedDate == null) {
+            return null;
+        } else {
+            return new Label(lastModifiedDate.toLocaleString());
+        }
+    }
+
+
     private Label readOnlyText(String text) {
         Label lbl = new Label(text);
         lbl.setWidth( "100%" );
         return lbl;
     }
+    
+    
 
 
 

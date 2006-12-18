@@ -3,6 +3,7 @@ package org.drools.brms.server;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleContentText;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
+import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategorisableItem;
 import org.drools.repository.CategoryItem;
@@ -46,6 +48,8 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
      * The shared repository instance. This could be bound to JNDI eventually.
      */
     public static Repository repository;
+
+    private MetaDataMapper metaDataMapper;
 
     
     public String[] loadChildCategories(String categoryPath) {
@@ -203,10 +207,6 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         
         asset.metaData = popuplateMetaData( item );
         
-        
-        asset.dateEffective = formatDate( item.getDateEffective() );
-        asset.dateExpired = formatDate( item.getDateExpired() );
-        
         //TODO: this could be refactored to there are different loadXXX methods, or 
         //use polymorphism or something, in any case avoiding this dirty if statement...
         //as we know at the "client" what we should be loaded from the format string.
@@ -244,10 +244,9 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
      * @param item
      * @return
      */
-    MetaData popuplateMetaData(CategorisableItem item) {
+    MetaData popuplateMetaData(AssetItem item) {
         MetaData meta = new MetaData();
-        meta.name = item.getName();
-        meta.title = item.getTitle();
+
         
         List cats = item.getCategories();
         meta.categories = new String[cats.size()];
@@ -257,22 +256,29 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         }
         
         meta.state = (item.getState() != null) ? item.getState().getName() : "";
+
+        getMetaDataMapper().copyToMetaData( meta, item );
         
-        meta.coverage = item.getCoverage();
-        meta.creator = item.getCreator();
-        meta.description = item.getDescription();
-        meta.externalRelation = item.getExternalRelation();
-        meta.externalSource = item.getExternalSource();
-        meta.format = item.getFormat();
-        meta.lastCheckinComment = item.getCheckinComment();
-        meta.lastContributor = item.getLastContributor();
-        meta.lastModifiedDate = formatDate(item.getLastModified());
-        meta.createdDate = formatDate( item.getCreatedDate() );
-        meta.versionNumber = item.getVersionNumber();
+        meta.createdDate = calendarToDate(item.getCreatedDate());
+        meta.dateEffective = calendarToDate( item.getDateEffective() );
+        meta.dateExpired = calendarToDate( item.getDateExpired() );
         
+
         
         
         return meta;
+    }
+
+    private Date calendarToDate(Calendar createdDate) {
+        if (createdDate == null) return null;
+        return createdDate.getTime();
+    }
+
+    private MetaDataMapper getMetaDataMapper() {
+        if (this.metaDataMapper == null) {
+            this.metaDataMapper = new MetaDataMapper();
+        }
+        return this.metaDataMapper;
     }
 
     public void checkinVersion(RuleAsset asset) throws SerializableException {

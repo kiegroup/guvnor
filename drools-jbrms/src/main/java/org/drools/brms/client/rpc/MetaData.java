@@ -1,5 +1,7 @@
 package org.drools.brms.client.rpc;
 
+import java.util.Date;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -16,11 +18,11 @@ public class MetaData
     public String title = "";
     public String state = "";
 
-    public String lastModifiedDate = "";
+    public Date lastModifiedDate;
     public String lastContributor = "";
     public String versionNumber;
     public String   lastCheckinComment = "";
-    public String createdDate = "";
+    public Date createdDate;
     
     public String packageName = "";
     public String[] categories = new String[0];
@@ -34,6 +36,9 @@ public class MetaData
     public String rights = ""; 
     public String coverage = "";
     public String publisher = "";   
+    
+    public Date dateEffective;
+    public Date dateExpired;
     
     /** used to flag dirty - ie needs to be spanked. Or saved to the repo, whatever */
     public boolean dirty = false;
