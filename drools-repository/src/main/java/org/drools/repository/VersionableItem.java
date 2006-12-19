@@ -59,10 +59,7 @@ public abstract class VersionableItem extends Item {
     /**
      * The possible formats for the format property of the node
      */
-    public static final String RULE_FORMAT                    = "DRL";
-    public static final String DSL_FORMAT                     = "DSL";
-    public static final String RULE_PACKAGE_FORMAT            = "Rule Package";
-    public static final String FUNCTION_FORMAT                = "Function";
+    public static final String DEFAULT_CONTENT_FORMAT         = "txt";
 
     /** this is what is referred to when reading content from a versioned node */
     private Node               contentNode                    = null;

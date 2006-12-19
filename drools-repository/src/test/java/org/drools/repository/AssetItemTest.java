@@ -138,9 +138,12 @@ public class AssetItemTest extends TestCase {
     public void testFindRulesByCategory() throws Exception {
         
         getRepo().loadCategory( "/" ).addCategory( "testFindRulesByCat", "yeah" );
-        getDefaultPackage().addAsset( "testFindRulesByCategory1", "ya", "testFindRulesByCat" ).checkin( "version0" );
-        getDefaultPackage().addAsset( "testFindRulesByCategory2", "ya", "testFindRulesByCat" ).checkin( "version0" );
+        AssetItem as1 = getDefaultPackage().addAsset( "testFindRulesByCategory1", "ya", "testFindRulesByCat", "drl" );
+        getDefaultPackage().addAsset( "testFindRulesByCategory2", "ya", "testFindRulesByCat", AssetItem.DEFAULT_CONTENT_FORMAT ).checkin( "version0" );
   
+        as1.checkin( "version0" );
+        
+        assertEquals("drl", as1.getFormat());
         
         List rules = getRepo().findAssetsByCategory( "testFindRulesByCat" );
         assertEquals(2, rules.size());
@@ -521,7 +524,7 @@ public class AssetItemTest extends TestCase {
     public void testGetFormat() {        
             AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetFormat", "test content");
             
-            assertEquals("DRL", ruleItem1.getFormat());     
+            assertEquals(AssetItem.DEFAULT_CONTENT_FORMAT, ruleItem1.getFormat());     
             
             ruleItem1.updateFormat( "blah" );
             assertEquals("blah", ruleItem1.getFormat());

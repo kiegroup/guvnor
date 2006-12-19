@@ -487,7 +487,7 @@ public class RulesRepository {
             
                         
             rulePackageNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME, description);
-            rulePackageNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME, AssetItem.RULE_PACKAGE_FORMAT);
+            rulePackageNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME, PackageItem.PACKAGE_FORMAT);
             
             Calendar lastModified = Calendar.getInstance();
             rulePackageNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);

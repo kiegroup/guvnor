@@ -133,6 +133,7 @@ public class PackageItemTest extends TestCase {
         assertEquals("testLoadRuleRuleItem", rulePackageItem.getName());
         
         assertEquals("desc", rulePackageItem.getDescription());
+        assertEquals(PackageItem.PACKAGE_FORMAT, rulePackageItem.getFormat());
         // try loading rule package that was not created 
         try {
             rulePackageItem = getRepo().loadPackage("anotherRuleRuleItem");
@@ -433,7 +434,7 @@ public class PackageItemTest extends TestCase {
     public void testGetFormat() {        
             PackageItem rulePackageItem1 = getRepo().createPackage("testGetFormat", "woot");
             assertNotNull(rulePackageItem1);
-            assertEquals("Rule Package", rulePackageItem1.getFormat());    
+            assertEquals(PackageItem.PACKAGE_FORMAT, rulePackageItem1.getFormat());    
 
     }        
 }

@@ -38,7 +38,11 @@ public class PackageItem extends VersionableItem {
      * for this package.
      */
     public static final String ASSET_FOLDER_NAME                = "assets";
-
+    
+    /**
+     * The dublin core format attribute.
+     */
+    public static final String PACKAGE_FORMAT                    = "package";
     /**
      * The name of the reference property on the rulepackage_node_type type node that objects of
      * this type hold a reference to
@@ -93,21 +97,20 @@ public class PackageItem extends VersionableItem {
      * (unless packages are enough for you).
      */
     public AssetItem addAsset(String assetName, String description) {
-        return addAsset(assetName, description, null);
+        return addAsset(assetName, description, null, null);
     }
     
-    
-//    public void searchAssets() {
-//        this.node.getPath();
-//        Query = this.node.getSession().getWorkspace().getQueryManager().createQuery( arg0, arg1 );
-//    }
 
     /**
      * This adds a rule to the current physical package (you can move it later).
      * With the given category
+     * @param assetName The name of the asset (the file name minus the extension)
+     * @param description A description of the asset.
+     * @param initialCategory The initial category the asset is placed in (can belong to multiple ones later).
+     * @param format The dublin core format (which also determines what editor is used) - this is effectively the file extension.
      */
     public AssetItem addAsset(String assetName,
-                            String description, String initialCategory) {
+                            String description, String initialCategory, String format) {
         Node ruleNode;
         try {
 
@@ -119,8 +122,13 @@ public class PackageItem extends VersionableItem {
 
             ruleNode.setProperty( AssetItem.DESCRIPTION_PROPERTY_NAME,
                                   description );
-            ruleNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME,
-                                  AssetItem.RULE_FORMAT );
+            if (format != null) {
+                ruleNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME,
+                                      format );
+            } else {
+                ruleNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME,
+                                      AssetItem.DEFAULT_CONTENT_FORMAT );
+            }
             
 
             ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT,
