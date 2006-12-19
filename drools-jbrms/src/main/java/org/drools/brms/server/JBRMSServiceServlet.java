@@ -84,10 +84,11 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     public Boolean createNewRule(String ruleName,
                                  String description,
                                  String initialCategory,
-                                 String initialPackage) throws SerializableException {        
+                                 String initialPackage,
+                                 String format) throws SerializableException {        
         try {
             PackageItem pkg = getRulesRepository().loadPackage( initialPackage );
-            pkg.addAsset( ruleName, description, initialCategory );            
+            pkg.addAsset( ruleName, description, initialCategory, format );            
             getRulesRepository().save();            
         } catch (RulesRepositoryException e) {
             throw new SerializableException(e.getMessage());

@@ -36,7 +36,7 @@ public interface RepositoryService extends RemoteService {
     /**
      * Creates a brand new rule with the initial category.
      */
-    public Boolean createNewRule(String ruleName, String description, String initialCategory, String initialPackage) throws SerializableException;
+    public Boolean createNewRule(String ruleName, String description, String initialCategory, String initialPackage, String format) throws SerializableException;
     
     /**
      * This returns a list of packages where rules may be added.

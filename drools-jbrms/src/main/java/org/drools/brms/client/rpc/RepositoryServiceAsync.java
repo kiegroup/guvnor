@@ -20,7 +20,7 @@ public interface RepositoryServiceAsync
     public void loadRuleListForCategories(java.lang.String p0, AsyncCallback cb);
     public void loadTableConfig(java.lang.String p0, AsyncCallback cb);
     public void createCategory(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback cb);
-    public void createNewRule(java.lang.String p0, java.lang.String p1, java.lang.String p2, java.lang.String p3, AsyncCallback cb);
+    public void createNewRule(java.lang.String p0, java.lang.String p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, AsyncCallback cb);
     public void listRulePackages(AsyncCallback cb);
     public void loadRuleAsset(java.lang.String p0, AsyncCallback cb);
     public void checkinVersion(org.drools.brms.client.rpc.RuleAsset p0, AsyncCallback cb);

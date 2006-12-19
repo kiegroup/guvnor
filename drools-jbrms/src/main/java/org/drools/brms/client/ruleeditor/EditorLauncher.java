@@ -25,7 +25,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class EditorLauncher {
 
-    public static Widget getWidget(RuleAsset asset) {
+    /**
+     * This will return the appropriate viewer for the asset.
+     */
+    public static Widget getEditorViewer(RuleAsset asset) {
         //depending on the format, load the appropriate editor
         if ( asset.metaData.format.equals( "DSL" ) ) {
 

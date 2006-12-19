@@ -109,12 +109,13 @@ public class MockRepositoryServiceAsync
 
     public void createNewRule(String name,
                            String description,
-                           String initialCategory, String initialPackage, AsyncCallback callback) {
+                           String initialCategory, String initialPackage, String format, AsyncCallback callback) {
         
         System.out.println("creating rule:" + name);
         System.out.println("creating rule description:" + description);
         System.out.println("creating rule initialCategory:" + initialCategory);
         System.out.println("creating rule initialPackage:" + initialPackage);
+        System.out.println("creating rule format:" + format);
         
         if (name.equals( "foo" )) {
             callback.onFailure( new SerializableException("thats naughty") );

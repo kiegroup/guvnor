@@ -120,7 +120,7 @@ public class RuleViewer extends Composite {
         //REMEMBER: subsequent rows have only one column, doh that is confusing ! 
         //GAAAAAAAAAAAAAAAAAAAAAAAAAAH
 
-        layout.setWidget( 1, 0, EditorLauncher.getWidget(asset));
+        layout.setWidget( 1, 0, EditorLauncher.getEditorViewer(asset));
         
 
         //the document widget

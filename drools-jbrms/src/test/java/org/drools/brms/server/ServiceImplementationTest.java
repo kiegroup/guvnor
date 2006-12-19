@@ -60,7 +60,7 @@ public class ServiceImplementationTest extends TestCase {
       cat.addCategory( "testAddRule", "yeah" );
       
       
-      Boolean result = impl.createNewRule( "testAddRule", "a description", "testAddRule", "another" );
+      Boolean result = impl.createNewRule( "testAddRule", "a description", "testAddRule", "another", "txt" );
       assertTrue(result.booleanValue());
       
       String[] packages = impl.listRulePackages();
@@ -83,10 +83,10 @@ public class ServiceImplementationTest extends TestCase {
       
       impl.repo.createPackage("dupes", "yeah");
       
-      impl.createNewRule( "testAttemptDupeRule", "ya", "testAttemptDupeRule", "dupes" );
+      impl.createNewRule( "testAttemptDupeRule", "ya", "testAttemptDupeRule", "dupes", "rule" );
       
       try {
-          impl.createNewRule( "testAttemptDupeRule", "ya", "testAttemptDupeRule", "dupes" );
+          impl.createNewRule( "testAttemptDupeRule", "ya", "testAttemptDupeRule", "dupes", "rule" );
           fail("should not allow duplicates.");
       } catch (SerializableException e) {
           assertNotNull(e.getMessage());
@@ -103,8 +103,8 @@ public class ServiceImplementationTest extends TestCase {
       cat.addCategory( "testRuleTableLoad", "yeah" );
             
       impl.repo.createPackage("testRuleTableLoad", "yeah");      
-      impl.createNewRule( "testRuleTableLoad", "ya", "testRuleTableLoad", "testRuleTableLoad" );
-      impl.createNewRule( "testRuleTableLoad2", "ya", "testRuleTableLoad", "testRuleTableLoad" );
+      impl.createNewRule( "testRuleTableLoad", "ya", "testRuleTableLoad", "testRuleTableLoad", "rule" );
+      impl.createNewRule( "testRuleTableLoad2", "ya", "testRuleTableLoad", "testRuleTableLoad", "rule" );
 
       TableDataResult result = impl.loadRuleListForCategories( "testRuleTableLoad" );
       assertEquals(2, result.numberOfRows);
@@ -113,7 +113,7 @@ public class ServiceImplementationTest extends TestCase {
       String key = result.data[0].id;
       assertFalse(key.startsWith( "testRule" ));
       
-      assertEquals(result.data[0].format, "DRL");
+      assertEquals(result.data[0].format, "rule");
       assertTrue(result.data[0].values[0].startsWith( "testRule" ));
       
       
@@ -135,7 +135,7 @@ public class ServiceImplementationTest extends TestCase {
       impl.createCategory( "", "testLoadRuleAsset", "this is a cat" );
       
       
-      impl.createNewRule( "testLoadRuleAsset", "description", "testLoadRuleAsset", "testLoadRuleAsset" );
+      impl.createNewRule( "testLoadRuleAsset", "description", "testLoadRuleAsset", "testLoadRuleAsset", "rule" );
       
       TableDataResult res = impl.loadRuleListForCategories( "testLoadRuleAsset" );
       assertEquals(1, res.data.length);

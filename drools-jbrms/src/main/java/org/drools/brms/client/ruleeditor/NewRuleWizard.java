@@ -2,6 +2,7 @@ package org.drools.brms.client.ruleeditor;
 
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
+import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.common.WarningPopup;
@@ -13,6 +14,7 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
@@ -33,6 +35,8 @@ public class NewRuleWizard extends PopupPanel {
                                                        initialCategory = selectedPath;
                                                    }
                                                }, false );
+    private ListBox                 formatChooser = getFormatChooser();
+    
     private RulePackageSelector packageSelector = new RulePackageSelector();
 
     /** This is used when creating a new rule. */
@@ -60,15 +64,18 @@ public class NewRuleWizard extends PopupPanel {
         table.setWidget( 2, 0, new Label("Initial category") );
         table.setWidget( 2, 1, catChooser );
         
-        table.setWidget( 3, 0, new Label("Package") );
-        table.setWidget( 3, 1, packageSelector );
+        table.setWidget( 3, 0, new Label("Type (format) of rule" ));
+        table.setWidget( 3, 1, this.formatChooser );
+        
+        table.setWidget( 4, 0, new Label("Package") );
+        table.setWidget( 4, 1, packageSelector );
 
         description.setVisibleLines( 4 );
         description.setWidth( "100%" );
-        table.setWidget( 4,
+        table.setWidget( 5,
                          0,
                          new Label( "Initial Description" ) );
-        table.setWidget( 4,
+        table.setWidget( 5,
                          1,
                          description );
 
@@ -80,7 +87,7 @@ public class NewRuleWizard extends PopupPanel {
 
         } );
 
-        table.setWidget( 5,
+        table.setWidget( 6,
                          0,
                          ok );
 
@@ -92,12 +99,25 @@ public class NewRuleWizard extends PopupPanel {
 
         } );
 
-        table.setWidget( 5,
+        table.setWidget( 6,
                          1,
                          cancel );
 
         add( table );
         setStyleName( "ks-popups-Popup" );
+    }
+
+    private ListBox getFormatChooser() {
+        
+        ListBox box = new ListBox();
+        
+        box.addItem( "Business rule", AssetFormats.BUSINESS_RULE );
+        box.addItem( "DRL file", AssetFormats.DRL );        
+        box.addItem( "Technical rule", AssetFormats.TECHNICAL_RULE );
+        
+        box.setSelectedIndex( 0 );
+        
+        return box;
     }
 
     /**
@@ -135,6 +155,7 @@ public class NewRuleWizard extends PopupPanel {
                                                               description.getText(),
                                                               initialCategory,
                                                               packageSelector.getSelectedPackage(),
+                                                              formatChooser.getValue( formatChooser.getSelectedIndex() ),
                                                               cb );
 
         }
