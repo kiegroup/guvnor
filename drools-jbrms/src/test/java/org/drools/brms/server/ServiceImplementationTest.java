@@ -136,7 +136,7 @@ public class ServiceImplementationTest extends TestCase {
       impl.createCategory( "", "testLoadRuleAsset", "this is a cat" );
       
       
-      impl.createNewRule( "testLoadRuleAsset", "description", "testLoadRuleAsset", "testLoadRuleAsset", "rule" );
+      impl.createNewRule( "testLoadRuleAsset", "description", "testLoadRuleAsset", "testLoadRuleAsset", "txt" );
       
       TableDataResult res = impl.loadRuleListForCategories( "testLoadRuleAsset" );
       assertEquals(1, res.data.length);
@@ -159,6 +159,7 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals("testLoadRuleAsset", asset.metaData.name);
       assertEquals("testLoadRuleAsset", asset.metaData.title);
       assertEquals("testLoadRuleAsset", asset.metaData.packageName);
+      assertEquals("txt", asset.metaData.format);
       assertNotNull(asset.metaData.createdDate);
       
       

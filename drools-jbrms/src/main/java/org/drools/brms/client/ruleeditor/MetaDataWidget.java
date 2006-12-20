@@ -21,13 +21,15 @@ public class MetaDataWidget extends FormStyleLayout {
     private MetaData data;
     private boolean readOnly;
 	
-	public MetaDataWidget(String name, boolean readOnly) {
-        super("images/meta_data.gif", name);
+	public MetaDataWidget(MetaData d, boolean readOnly) {
+        super("images/meta_data.gif", d.name);
+        this.data = d;
         this.readOnly = readOnly;
+        loadData(d);
 	}
 
 
-    public void loadData(MetaData d) {
+    private void loadData(MetaData d) {
         this.data = d;
         addAttribute("Categories:", categories());
         

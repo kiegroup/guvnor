@@ -305,6 +305,12 @@ a:visited {
   padding: 4px;
 }
 
+.loading-Popup {
+  background-color: #CC6666;
+  border: 1px solid #B8B8B8;
+  padding: 4px;
+}
+
 .rule-warning-Popup {
   background-color: yellow;
   border: 1px solid #B8B8B8;

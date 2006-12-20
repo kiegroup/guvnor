@@ -1,5 +1,6 @@
 package org.drools.brms.client.ruleeditor;
 
+import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.WarningPopup;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
@@ -11,8 +12,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
@@ -22,46 +21,42 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  */
 public class RuleViewer extends Composite {
 
-    private final String      resourceUUID;
-    private final String      name;
     private Command           closeCommand;
 
-    final private SimplePanel panel = new SimplePanel();
-    protected RuleAsset       asset;
-    private FlexTable layout;
+    protected final RuleAsset       asset;
+
+    private final FlexTable layout;
 
     /**
      * @param UUID The resource to open.
      * @param format The type of resource (may determine what editor is used).
      * @param name The name to be displayed.
      */
-    public RuleViewer(String UUID,
-                      String name) {
-        this.resourceUUID = UUID;
-        this.name = name;
+    public RuleViewer(RuleAsset asset) {
+        this.asset = asset;
+        
+        doWidgets();
+        
 
-        //just pad it out a bit, so it gets the layout right - it will be loaded later.
-        FlexTable layout = new FlexTable();
-        layout.setWidget( 0,
-                          0,
-                          new Label( "Loading ..." ) );
 
-        //may use format here to determine which service to use in future
-        RepositoryServiceFactory.getService().loadRuleAsset( this.resourceUUID,
-                                                             new AsyncCallback() {
-                                                                 public void onFailure(Throwable e) {
-                                                                     ErrorPopup.showMessage( e.getMessage() );
-                                                                 }
+//        RepositoryServiceFactory.getService().loadRuleAsset( this.resourceUUID,
+//                                                             new AsyncCallback() {
+//                                                                 public void onFailure(Throwable e) {
+//                                                                     ErrorPopup.showMessage( e.getMessage() );
+//                                                                 }
+//
+//                                                                 public void onSuccess(Object o) {
+//                                                                     asset = (RuleAsset) o;
+//                                                                     doWidgets();
+//                                                                 }
+//
+//                                                             } );
 
-                                                                 public void onSuccess(Object o) {
-                                                                     asset = (RuleAsset) o;
-                                                                     doWidgets();
-                                                                 }
-
-                                                             } );
-
-        panel.add( layout );
-        initWidget( panel );
+        this.layout = doWidgets();
+        
+        initWidget( this.layout );
+        
+        LoadingPopup.close();
     }
 
     /**
@@ -69,8 +64,8 @@ public class RuleViewer extends Composite {
      * when we get the data back from the server,
      * also determines what widgets to load up).
      */
-    private void doWidgets() {
-        final MetaDataWidget metaWidget = new MetaDataWidget( this.name,
+    private FlexTable doWidgets() {
+        final MetaDataWidget metaWidget = new MetaDataWidget( this.asset.metaData,
                                                               false );
 
         final FlexTable layout = new FlexTable();
@@ -122,18 +117,15 @@ public class RuleViewer extends Composite {
         
 
         //the document widget
-        final RuleDocumentWidget doco = new RuleDocumentWidget();
+        final RuleDocumentWidget doco = new RuleDocumentWidget(asset.metaData);
         layout.setWidget( 2,
                           0,
                           doco );
 
-        metaWidget.loadData( asset.metaData );
-        doco.loadData( asset.metaData );
+        //metaWidget.loadData( asset.metaData );
+        //doco.loadData( asset.metaData );
 
-        this.layout = layout;
-        
-        panel.clear();
-        panel.setWidget( layout );
+        return layout;
     }
 
     void doCheckin() {

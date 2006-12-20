@@ -277,9 +277,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     }
 
     private MetaDataMapper getMetaDataMapper() {
-        if (this.metaDataMapper == null) {
-            this.metaDataMapper = new MetaDataMapper();
-        }
+        if (this.metaDataMapper == null)  this.metaDataMapper = new MetaDataMapper();
         return this.metaDataMapper;
     }
 

@@ -1,8 +1,8 @@
 package org.drools.brms.client.common;
 
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -10,53 +10,54 @@ import com.google.gwt.user.client.ui.Widget;
 
 
 /** 
- * Generic error dialog popup.
+ * Generic "busy" dialog popup.
  * This is a lazy singleton, only really need one to be shown at time. 
  */
-public class ErrorPopup extends PopupPanel {
+public class LoadingPopup extends PopupPanel {
     
-    public static ErrorPopup instance = null;
+    public static LoadingPopup instance = null;
     
     Label errorMessage = new Label();
     Panel panel = new HorizontalPanel();
-    Button ok = new Button("OK");
+    Image ok = new Image("images/close.gif");
     
-    public ErrorPopup() {        
+    public LoadingPopup() {        
         super(true);
         panel.add( errorMessage );
         panel.add( ok );
-        final PopupPanel self = this;
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget arg0) {                
-                self.hide();
+                hide();
             }            
         });
         this.add( panel );
         this.setPopupPosition( 0, 0 );
-        setStyleName( "rule-error-Popup" );        
-    }
-    
-    public void setMessage(String message) {
-        errorMessage.setText( message );        
+        setStyleName( "loading-Popup" );        
     }
     
 
+    /**
+     * Close the single instance of this dialog...
+     */
+    public static void close() {
+        getInstance().hide();
+    }
+    
     public void hide() {
         errorMessage.setText( "" );
         super.hide();
     }
     
-    public static ErrorPopup getInstance() {
+    public static LoadingPopup getInstance() {
         if (instance == null) {
-            instance = new ErrorPopup();            
+            instance = new LoadingPopup();            
         }
         return instance;
     }
     
     /** Convenience method to popup the message. */
     public static void showMessage(String message) {
-        ErrorPopup p = getInstance();
-        LoadingPopup.close();
+        LoadingPopup p = getInstance();
         
         p.errorMessage.setText( message );
         p.show();

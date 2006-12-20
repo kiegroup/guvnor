@@ -17,15 +17,16 @@ public class RuleDocumentWidget extends Composite {
 
 	private TextArea text;
 	
-	public RuleDocumentWidget() {
+	public RuleDocumentWidget(MetaData data) {
 		text = new TextArea();
         text.setVisibleLines( 10 );
         text.setStyleName( "rule-viewer-Documentation" );        
         text.setTitle( "This is rule documentation. Human friendly descriptions of the business logic.");
 		initWidget(text);
+        loadData(data);
 	}
 
-    public void loadData(final MetaData data) {
+    private void loadData(final MetaData data) {
         text.setText(data.description);
         text.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {                

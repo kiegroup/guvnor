@@ -1,5 +1,6 @@
 package org.drools.brms.client.rulelist;
 
+import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
@@ -77,7 +78,9 @@ public class RuleItemListViewer extends Composite {
         Image openIcon = new Image( "images/open_item.gif" );
         openIcon.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
+                LoadingPopup.showMessage( "Loading item, please wait ..." );
                 openItemEvent.open( TableDataRow.getId( table.getSelectedKey()), table.getText( table.getSelectedRow(), 1 ) );
+                
             }
         } );
         openIcon.setTitle( "Open item" );

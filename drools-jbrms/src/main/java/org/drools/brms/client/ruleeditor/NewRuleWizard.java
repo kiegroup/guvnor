@@ -1,13 +1,17 @@
 package org.drools.brms.client.ruleeditor;
 
+import org.drools.brms.client.RulesFeature;
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.ErrorPopup;
+import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.common.WarningPopup;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
+import org.drools.brms.client.rpc.RuleAsset;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -38,11 +42,12 @@ public class NewRuleWizard extends PopupPanel {
     private ListBox                 formatChooser = getFormatChooser();
     
     private RulePackageSelector packageSelector = new RulePackageSelector();
+    private RulesFeature feature;
 
     /** This is used when creating a new rule. */
-    public NewRuleWizard() {
+    public NewRuleWizard(RulesFeature feature) {
         super( true );
-        
+        this.feature = feature;
         super.setWidth( "60%" );
         table.setWidth( "100%" );
         name.setWidth( "100%" );
@@ -152,6 +157,7 @@ public class NewRuleWizard extends PopupPanel {
         if ( this.name.equals( "" ) ) {
             ErrorPopup.showMessage( "You must choose a Category." );
         } else {
+            LoadingPopup.showMessage( "Please wait ..." );
             RepositoryServiceFactory.getService().createNewRule( name.getText(),
                                                               description.getText(),
                                                               initialCategory,
@@ -162,9 +168,12 @@ public class NewRuleWizard extends PopupPanel {
         }
     }
 
+    /**
+     * After creating the item we open it in the editor.
+     * @param uuid
+     */
     protected void openEditor(String uuid) {
-        // TODO Auto-generated method stub
-        
+        feature.showLoadEditor( uuid );        
     }
 
     void cancel() {
