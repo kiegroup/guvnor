@@ -120,7 +120,7 @@ public class MockRepositoryServiceAsync
         if (name.equals( "foo" )) {
             callback.onFailure( new SerializableException("thats naughty") );
         } else {
-            callback.onSuccess( new Boolean(true) );
+            callback.onSuccess( "UUID-1234567890" );
         }
         
         

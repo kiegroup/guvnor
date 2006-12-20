@@ -81,19 +81,20 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
      * This will create a new asset. It will be saved, but not checked in.
      * The initial state will be the draft state.
      */
-    public Boolean createNewRule(String ruleName,
+    public String createNewRule(String ruleName,
                                  String description,
                                  String initialCategory,
                                  String initialPackage,
                                  String format) throws SerializableException {        
         try {
             PackageItem pkg = getRulesRepository().loadPackage( initialPackage );
-            pkg.addAsset( ruleName, description, initialCategory, format );            
-            getRulesRepository().save();            
+            AssetItem asset = pkg.addAsset( ruleName, description, initialCategory, format );            
+            getRulesRepository().save();
+            return asset.getUUID();
         } catch (RulesRepositoryException e) {
             throw new SerializableException(e.getMessage());
         }
-        return Boolean.TRUE;
+
     }
 
     public String[] listRulePackages() {

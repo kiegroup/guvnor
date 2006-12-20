@@ -115,13 +115,14 @@ a:visited {
 
 .model-builder-Background {
   background-color: #FDFCDC;
-  border: 1px solid #87B3FF;
+  border: 1px solid #B8B8B8;
 }
 
 .model-builderInner-Background {
 	background-color: white;
-	border-top: 1px solid gray;
-	border-bottom: 1px solid gray;
+	border: 1px solid #B8B8B8;
+	//border-top: 1px solid gray;
+	//border-bottom: 1px solid gray;
 }
 
 .model-builderInnerInner-Background {
@@ -130,23 +131,7 @@ a:visited {
 	border-bottom: 0px solid gray;
 }
 
-.model-builderInnerFirstRow-Background {
-        background-color: white;
-	border-top: 1px solid gray;
-	border-bottom: 0px solid gray;
-}
 
-.model-builderInnerNoBorders-Background {
-        background-color: white;
-	border-top: 0px solid gray;
-	border-bottom: 0px solid gray;
-}
-
-.model-builderInnerLastRow-Background {
-        background-color: white;
-	border-top: 0px solid gray;
-	border-bottom: 1px solid gray;
-}
 .gwt-DialogBox { 
 	border: 1px solid #B8B8B8;
 }

@@ -77,7 +77,7 @@ public class RuleItemListViewer extends Composite {
         Image openIcon = new Image( "images/open_item.gif" );
         openIcon.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                openItemEvent.open( TableDataRow.getId( table.getSelectedKey()), TableDataRow.getFormat( table.getSelectedKey() ), table.getText( table.getSelectedRow(), 1 ) );
+                openItemEvent.open( TableDataRow.getId( table.getSelectedKey()), table.getText( table.getSelectedRow(), 1 ) );
             }
         } );
         openIcon.setTitle( "Open item" );

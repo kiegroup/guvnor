@@ -44,7 +44,7 @@ public class RulesFeature extends JBRMSFeature {
         tab.setWidth("100%");
         tab.setHeight("100%");        
 
-        FlexTable explorePanel = doExplore(tab);        
+        FlexTable explorePanel = doExplore();        
         //RuleView ruleViewer = doRuleViewer();
         
         tab.add(explorePanel, "Explore");
@@ -58,7 +58,7 @@ public class RulesFeature extends JBRMSFeature {
     
 
     /** This will setup the explorer tab */
-	private FlexTable doExplore(final TabPanel tab) {
+	private FlexTable doExplore() {
 		FlexTable  table = new FlexTable();
         final RulesFeature parent = this;
         //and the the delegate to open an editor for a rule resource when
@@ -67,9 +67,8 @@ public class RulesFeature extends JBRMSFeature {
             
 
             public void open(String key,
-                             String type,
                              String name) {                  
-                RuleViewer view = new RuleViewer(parent, key, name);
+                RuleViewer view = new RuleViewer(key, name);
                 
                 String displayName = name;
                 if (name.length() > 10) {
@@ -117,8 +116,8 @@ public class RulesFeature extends JBRMSFeature {
         newRule.addClickListener( new ClickListener() {
 
             public void onClick(Widget w) {
-                int left = 70;//w.getAbsoluteLeft() - 10;
-                int top = 100; //w.getAbsoluteTop() - 10;
+              int left = 70;//w.getAbsoluteLeft() - 10;
+              int top = 100; //w.getAbsoluteTop() - 10;
                 
               NewRuleWizard pop = new NewRuleWizard();
               pop.setPopupPosition( left, top );
@@ -133,8 +132,6 @@ public class RulesFeature extends JBRMSFeature {
         formatter.setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP);
         formatter.setStyleName( 1, 0, "rule-explorer-NewPopups" );
         
-        
-
 		return table;
 	}
 

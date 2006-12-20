@@ -1,6 +1,5 @@
 package org.drools.brms.client.ruleeditor;
 
-import org.drools.brms.client.RulesFeature;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.WarningPopup;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
@@ -36,8 +35,7 @@ public class RuleViewer extends Composite {
      * @param format The type of resource (may determine what editor is used).
      * @param name The name to be displayed.
      */
-    public RuleViewer(RulesFeature parent,
-                      String UUID,
+    public RuleViewer(String UUID,
                       String name) {
         this.resourceUUID = UUID;
         this.name = name;

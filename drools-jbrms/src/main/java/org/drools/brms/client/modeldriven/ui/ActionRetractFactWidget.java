@@ -23,7 +23,7 @@ public class ActionRetractFactWidget extends Composite {
         layout.setStyleName( "model-builderInner-Background" );
         
         layout.setWidget( 0, 0, new Label(com.getActionDisplayName( "retract" )) );
-        layout.setWidget( 0, 1, new Label(model.variableName) );
+        layout.setWidget( 0, 1, new Label( "[" + model.variableName + "]") );
         
         initWidget( layout );
     }

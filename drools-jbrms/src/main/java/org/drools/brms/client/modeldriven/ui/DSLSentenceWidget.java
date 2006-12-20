@@ -13,39 +13,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This displays a widget to edit a DSL sentence.
- * 
  * @author Michael Neale
- *
  */
 public class DSLSentenceWidget extends Composite {
 
     private HorizontalPanel horiz = new HorizontalPanel();
     
-    /**
-     * @param sentence The sentence to render/bind to.
-     * @param lastOne true if this is the last one to render.
-     * @param firstOne true if this is the first one to render.
-     */
-    public DSLSentenceWidget(DSLSentence sentence, boolean lastOne, boolean firstOne) {
-        
-        
-        if (lastOne) {
-            this.horiz.setStyleName( "model-builderInnerLastRow-Background" );
-        }
-        if (firstOne) {
-            this.horiz.setStyleName( "model-builderInnerFirstRow-Background" );
-        }
-        if (!lastOne && !firstOne) {
-            this.horiz.setStyleName( "model-builderInnerNoBorders-Background" );
-        }
-        
-        init( sentence );
-        
-        
-    }
-    
     public DSLSentenceWidget(DSLSentence sentence) {
-        this.horiz.setStyleName( "model-builderInner-Background" );
         init( sentence );
     }
 

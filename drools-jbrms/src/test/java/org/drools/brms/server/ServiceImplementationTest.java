@@ -60,8 +60,9 @@ public class ServiceImplementationTest extends TestCase {
       cat.addCategory( "testAddRule", "yeah" );
       
       
-      Boolean result = impl.createNewRule( "testAddRule", "a description", "testAddRule", "another", "txt" );
-      assertTrue(result.booleanValue());
+      String result = impl.createNewRule( "testAddRule", "a description", "testAddRule", "another", "txt" );
+      assertNotNull(result);
+      assertFalse("".equals( result ));
       
       String[] packages = impl.listRulePackages();
       assertTrue(packages.length > 0);

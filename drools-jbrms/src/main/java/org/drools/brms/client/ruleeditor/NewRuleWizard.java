@@ -140,16 +140,17 @@ public class NewRuleWizard extends PopupPanel {
             }
 
             public void onSuccess(Object result) {
-                if ( ((Boolean) result).booleanValue() ) {
+                if ( result != null ) {
+                    openEditor((String) result);
                     hide();
                 } else {
-                    ErrorPopup.showMessage( "Unable to create the rule." );
+                    ErrorPopup.showMessage( "Unable to create the item. Please contact your system administrator." );
                 }
             }
         };
 
         if ( this.name.equals( "" ) ) {
-            ErrorPopup.showMessage( "Can't have an empty category name." );
+            ErrorPopup.showMessage( "You must choose a Category." );
         } else {
             RepositoryServiceFactory.getService().createNewRule( name.getText(),
                                                               description.getText(),
@@ -159,6 +160,11 @@ public class NewRuleWizard extends PopupPanel {
                                                               cb );
 
         }
+    }
+
+    protected void openEditor(String uuid) {
+        // TODO Auto-generated method stub
+        
     }
 
     void cancel() {

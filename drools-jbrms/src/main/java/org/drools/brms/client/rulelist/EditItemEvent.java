@@ -11,6 +11,6 @@ public interface EditItemEvent {
      * @param type - the resource type.
      * @param name - the name to display on the open tab.
      */
-    public void open(String key, String type, String name);
+    public void open(String key, String name);
     
 }

@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -106,7 +107,10 @@ public class RuleModeller extends Composite {
                 w = new ActionRetractFactWidget(this.completions, (ActionRetractFact) action );
             } else if (action instanceof DSLSentence) {
                 w = new DSLSentenceWidget((DSLSentence) action);
+                w.setStyleName( "model-builderInner-Background" );
             }
+            
+            vert.add( spacerWidget() );
             
             HorizontalPanel horiz = new HorizontalPanel();
             
@@ -357,16 +361,14 @@ public class RuleModeller extends Composite {
             Widget w = null;
             if (pattern instanceof FactPattern) {                  
                 w = new FactPatternWidget(this, pattern, completions, true) ;
-                addLhsWidget( model,
-                              vert,
+                vert.add( addLhsWidget( model,
                               i,
-                              w );
+                              w ) );
+                vert.add( spacerWidget() );
             } else if (pattern instanceof CompositeFactPattern) {
                 w = new CompositeFactPatternWidget(this, (CompositeFactPattern) pattern, completions) ;
-                addLhsWidget( model,
-                              vert,
-                              i,
-                              w );
+                vert.add( addLhsWidget( model, i, w ));
+                vert.add( spacerWidget() );
             } else if (pattern instanceof DSLSentence) {
                 //ignore this time                
             } else {
@@ -376,33 +378,36 @@ public class RuleModeller extends Composite {
 
         }
         
-        boolean startedDSLSection = false;
+        
+        VerticalPanel dsls = new VerticalPanel();
         for ( int i = 0; i < model.lhs.length; i++ ) {
             IPattern pattern = model.lhs[i];
             Widget w = null;
             
             if (pattern instanceof DSLSentence) {
-                if (!startedDSLSection) {
-                    w = new DSLSentenceWidget((DSLSentence) pattern, false, true);
-                    startedDSLSection = true;
-                } else if (i == model.lhs.length - 1) {
-                    w = new DSLSentenceWidget((DSLSentence) pattern, true, false);
-                } else {
-                    w = new DSLSentenceWidget((DSLSentence) pattern, false, false);
-                }
-                addLhsWidget( model, vert, i, w );
-                
+                w = new DSLSentenceWidget((DSLSentence) pattern);
+
+                dsls.add( addLhsWidget( model, i, w ) );
+                dsls.setStyleName( "model-builderInner-Background" );
             }
         }
+        vert.add( dsls );
+        
+        
         
         return vert;
+    }
+
+    private HTML spacerWidget() {
+        HTML h = new HTML("&nbsp;");
+        h.setHeight( "2px" );
+        return h;
     }
 
     /**
      * This adds the widget to the UI, also adding the  
      */
-    private void addLhsWidget(final RuleModel model,
-                              VerticalPanel vert,
+    private Widget addLhsWidget(final RuleModel model,
                               int i,
                               Widget w) {
         HorizontalPanel horiz = new HorizontalPanel();
@@ -431,9 +436,10 @@ public class RuleModeller extends Composite {
 
         horiz.add( w );
         horiz.add( remove );
-        
 
-        vert.add( horiz );
+        return horiz;
+
+        //vert.add( horiz );
     }
 
 
