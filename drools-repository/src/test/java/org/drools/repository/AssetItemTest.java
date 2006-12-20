@@ -17,7 +17,7 @@ public class AssetItemTest extends TestCase {
         return getRepo().loadDefaultPackage();
     }
     
-    public void testRuleItemCreation() throws Exception {
+    public void testAssetItemCreation() throws Exception {
                 
             Calendar now = Calendar.getInstance();
         
@@ -37,6 +37,7 @@ public class AssetItemTest extends TestCase {
 
             assertEquals(packName, ruleItem1.getPackageName());
             
+            assertNotNull(ruleItem1.getUUID());
             
         //try constructing with node of wrong type
         try {
@@ -345,17 +346,12 @@ public class AssetItemTest extends TestCase {
             ruleItem1.checkin( "version0" );
             assertTrue(ruleItem1.getPrecedingVersion() == null);
             
-            
-            
             ruleItem1.addCategory( "foo" );
             ruleItem1.updateContent( "test content" );
             ruleItem1.checkin( "boo" );
             
-            
             AssetItem predecessorRuleItem = (AssetItem) ruleItem1.getPrecedingVersion();
             assertNotNull(predecessorRuleItem);            
-            
-            
             
             ruleItem1.updateContent("new content");
             ruleItem1.updateContentURI( "foobar" );
@@ -367,14 +363,9 @@ public class AssetItemTest extends TestCase {
             CategoryItem cat = (CategoryItem) predecessorRuleItem.getCategories().get( 0 );
             assertEquals("foo", cat.getName());
             
-            
             assertEquals("test content", predecessorRuleItem.getContent());
-            
             assertEquals("descr", predecessorRuleItem.getDescription());
-            
             assertEquals("default", predecessorRuleItem.getPackageName());
-            
-            
             
             ruleItem1.updateContent("newer lhs");
             ruleItem1.checkin( "another" );

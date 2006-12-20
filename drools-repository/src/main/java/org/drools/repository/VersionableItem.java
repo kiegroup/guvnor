@@ -77,6 +77,17 @@ public abstract class VersionableItem extends Item {
     }
 
     /**
+     * @return A unique identifier for this items content node.
+     */
+    public String getUUID() {
+        try {
+            return this.getVersionContentNode().getUUID();
+        } catch (  RepositoryException e ) {            
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
      * This will return true if the current entity is actually a
      * historical version (which means is effectively read only).
      */
@@ -488,15 +499,11 @@ public abstract class VersionableItem extends Item {
      */
     public void checkin(String comment) {
         try {
-            this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME,
-                                   Calendar.getInstance() );
-            this.node.setProperty( CHECKIN_COMMENT,
-                                   comment );
+            this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance() );
+            this.node.setProperty( CHECKIN_COMMENT, comment );
             VersionNumberGenerator gen = rulesRepository.versionNumberGenerator;
-            String nextVersion = gen.calculateNextVersion( getVersionNumber(),
-                                                           this );
-            this.node.setProperty( VERSION_NUMBER_PROPERTY_NAME,
-                                   nextVersion );
+            String nextVersion = gen.calculateNextVersion( getVersionNumber(), this );
+            this.node.setProperty( VERSION_NUMBER_PROPERTY_NAME,  nextVersion );
             this.node.getSession().save();
             this.node.checkin();
         } catch ( RepositoryException e ) {
