@@ -15,6 +15,7 @@ import org.drools.brms.client.modeldriven.model.DSLSentence;
 import org.drools.brms.client.modeldriven.model.FactPattern;
 import org.drools.brms.client.modeldriven.model.IAction;
 import org.drools.brms.client.modeldriven.model.IPattern;
+import org.drools.brms.client.modeldriven.model.RuleAttribute;
 import org.drools.brms.client.modeldriven.model.RuleModel;
 
 import com.google.gwt.user.client.Command;
@@ -86,8 +87,54 @@ public class RuleModeller extends Composite {
         layout.setWidget( 2, 2, addAction );
         
         layout.setWidget( 3, 1, renderRhs(this.model) );
+        
+        layout.setWidget( 4, 0, new Label("(options)") );
+        layout.setWidget( 4, 2, getAddAttribute() );
+        layout.setWidget( 5, 1, new RuleAttributeWidget(this, this.model) );
+        
     }
 
+
+    private Widget getAddAttribute() {
+        Image add = new Image("images/new_item.gif");
+        add.setTitle( "Add an option to the rule, to modify its behavior when evaluated or executed." );
+        
+        add.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                showAttributeSelector(w);
+            }            
+        });
+        return add;
+    }
+
+    protected void showAttributeSelector(Widget w) {
+        final FormStylePopup pop = new FormStylePopup("images/config.png", "Add an option to the rule");
+        final ListBox list = new ListBox();
+        list.addItem( "Choose..." );
+        
+        list.addItem( "salience" );
+        list.addItem( "no-loop" );
+        list.addItem( "agenda-group" );
+        list.addItem( "activation-group" );
+        list.addItem( "duration" );
+        list.addItem( "auto-focus" );        
+        
+        list.setSelectedIndex( 0 );
+        
+        list.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+              model.addAttribute( new RuleAttribute(list.getItemText( list.getSelectedIndex() ), "") );
+              refreshWidget();
+              pop.hide();
+            }            
+        });
+
+        pop.setStyleName( "ks-popups-Popup" );
+        
+        pop.addAttribute( "Attribute", list );
+        pop.setPopupPosition( w.getAbsoluteLeft() - 400, w.getAbsoluteTop() );
+        pop.show();
+    }
 
     /**
      * Do all the widgets for the RHS.

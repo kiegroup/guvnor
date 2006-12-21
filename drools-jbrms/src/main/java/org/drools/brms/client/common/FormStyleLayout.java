@@ -21,15 +21,24 @@ public class FormStyleLayout extends Composite {
     private FlexCellFormatter formatter = layout.getFlexCellFormatter();
     private int numInLayout = 0;
 
+    /**
+     * Create a new layout with a header and and icon.
+     */
     public FormStyleLayout(String image, String title) {
         addHeader( image, title );
+        initWidget( layout );
+    }
+    
+    
+    /** This has no header */
+    public FormStyleLayout() {
         initWidget( layout );
     }
     
     /**
      * Add a widget to the "form".
      */
-    protected void addAttribute(String lbl,
+    public void addAttribute(String lbl,
                      Widget editor) {
         Label label = new Label(lbl);
         layout.setWidget( numInLayout, 0, label );
