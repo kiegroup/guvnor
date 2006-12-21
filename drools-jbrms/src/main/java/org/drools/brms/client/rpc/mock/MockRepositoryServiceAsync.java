@@ -5,10 +5,10 @@ import java.util.Date;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.rpc.RuleContentText;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
-import org.drools.brms.client.rpc.TextData;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -146,7 +146,7 @@ public class MockRepositoryServiceAsync
         meta.createdDate = new Date();
         if (uuid.endsWith( "1" )) {
             meta.format = "DRL";
-            TextData text = new TextData();
+            RuleContentText text = new RuleContentText();
             asset.content = text;
             text.content = "rule la\n\twhen\n\t\tSomething() ...";
             

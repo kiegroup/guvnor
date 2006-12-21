@@ -13,6 +13,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.servlet.http.HttpSession;
 
+import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.RuleAsset;
@@ -209,10 +210,8 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         
         asset.metaData = popuplateMetaData( item );
         
-        //TODO: this could be refactored to there are different loadXXX methods, or 
-        //use polymorphism or something, in any case avoiding this dirty if statement...
-        //as we know at the "client" what we should be loaded from the format string.
-        if (item.getFormat().equals( "DSL" )) {
+        //TODO: possibly move this to a different structure, perhaps even into the drools-repository itself.
+        if (item.getFormat().equals( AssetFormats.DSL_TEMPLATE_RULE)) {
             //ok here is where we do DSLs...
             throw new SerializableException("Can't load DSL rules just yet.");
 

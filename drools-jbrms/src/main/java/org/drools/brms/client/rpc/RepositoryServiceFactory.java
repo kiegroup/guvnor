@@ -17,14 +17,24 @@ public class RepositoryServiceFactory {
      * Can set it to DEBUG if you want to run it client side only.
      */
     public static boolean DEBUG = true;
+    public static RepositoryServiceAsync SERVICE;
     
     public static RepositoryServiceAsync getService() {
-        if (DEBUG)
-            return getMockService();
-        return getRealService(); 
+        if (SERVICE == null) {
+            loadService();
+        } 
+        return SERVICE;
             
     }
     
+    private static void loadService() {
+        if (DEBUG)
+            SERVICE = getMockService();
+        else 
+            SERVICE = getRealService(); 
+        
+    }
+
     private static RepositoryServiceAsync getMockService() {
         return new MockRepositoryServiceAsync();
     }
