@@ -110,7 +110,13 @@ public class RuleViewer extends Composite {
 
     }
 
+    /**
+     * This responds to the checkin command.
+     */
     void doCheckin() {
+        this.layout.clear();
+        
+        LoadingPopup.showMessage( "Saving, please wait..." );
         RepositoryServiceFactory.getService().checkinVersion( this.asset, new AsyncCallback() {
 
             public void onFailure(Throwable err) {

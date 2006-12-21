@@ -104,7 +104,7 @@ public class ActionToolbar extends Composite {
         
         save.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                LoadingPopup.showMessage( "Saving, please wait..." );
+                
                 checkin.execute();
                 pop.hide();
             }
