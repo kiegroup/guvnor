@@ -52,8 +52,10 @@ public interface RepositoryService extends RemoteService {
     
     
     /**
-     * This checks in a new version of an asset.
+     * This checks in a new version of an asset. 
+     * @return the UUID of the asset you are checking in, 
+     * null if there was some problem (and an exception was not thrown).
      */
-    public void checkinVersion(RuleAsset asset) throws SerializableException;
+    public String checkinVersion(RuleAsset asset) throws SerializableException;
     
 }

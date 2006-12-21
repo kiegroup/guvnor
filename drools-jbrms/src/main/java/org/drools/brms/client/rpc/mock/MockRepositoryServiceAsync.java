@@ -176,7 +176,7 @@ public class MockRepositoryServiceAsync
         if (a.metaData.coverage.equals( "fail" )) {
             cb.onFailure( new SerializableException("This is an error") );
         } else {
-            cb.onSuccess( null );
+            cb.onSuccess( "alanparsons" );
         }
         
         

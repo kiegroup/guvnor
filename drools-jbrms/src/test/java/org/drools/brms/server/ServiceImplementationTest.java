@@ -173,5 +173,13 @@ public class ServiceImplementationTest extends TestCase {
       
   }
   
+  public void testCheckin() throws Exception {
+//      MockJBRMSServiceServlet serv = new MockJBRMSServiceServlet();
+//      serv.createNewRule( "", description, initialCategory, "default", format )
+//      
+//      serv.checkinVersion( asset )
+  }
+  
+  
     
 }

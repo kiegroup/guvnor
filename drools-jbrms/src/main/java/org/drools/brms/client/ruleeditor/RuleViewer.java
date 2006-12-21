@@ -23,7 +23,7 @@ public class RuleViewer extends Composite {
 
     private Command           closeCommand;
 
-    protected final RuleAsset       asset;
+    protected RuleAsset       asset;
 
     private final FlexTable layout;
 
@@ -34,25 +34,9 @@ public class RuleViewer extends Composite {
      */
     public RuleViewer(RuleAsset asset) {
         this.asset = asset;
+        layout = new FlexTable();
         
         doWidgets();
-        
-
-
-//        RepositoryServiceFactory.getService().loadRuleAsset( this.resourceUUID,
-//                                                             new AsyncCallback() {
-//                                                                 public void onFailure(Throwable e) {
-//                                                                     ErrorPopup.showMessage( e.getMessage() );
-//                                                                 }
-//
-//                                                                 public void onSuccess(Object o) {
-//                                                                     asset = (RuleAsset) o;
-//                                                                     doWidgets();
-//                                                                 }
-//
-//                                                             } );
-
-        this.layout = doWidgets();
         
         initWidget( this.layout );
         
@@ -64,11 +48,13 @@ public class RuleViewer extends Composite {
      * when we get the data back from the server,
      * also determines what widgets to load up).
      */
-    private FlexTable doWidgets() {
+    private void doWidgets() {
+        this.layout.clear();
+        
         final MetaDataWidget metaWidget = new MetaDataWidget( this.asset.metaData,
                                                               false );
 
-        final FlexTable layout = new FlexTable();
+
 
         //now the main layout table
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
@@ -122,10 +108,6 @@ public class RuleViewer extends Composite {
                           0,
                           doco );
 
-        //metaWidget.loadData( asset.metaData );
-        //doco.loadData( asset.metaData );
-
-        return layout;
     }
 
     void doCheckin() {
@@ -136,7 +118,22 @@ public class RuleViewer extends Composite {
             }
 
             public void onSuccess(Object o) {
-                WarningPopup.showMessage( "Michael still needs to think about what to do after checking in re the UI !", 200, 200 );
+                String uuid = (String)o;
+                if (uuid == null) {
+                    ErrorPopup.showMessage( "Failed to check in the item. Please contact your system administrator." );
+                    return;
+                }
+                
+                RepositoryServiceFactory.getService().loadRuleAsset( uuid, new AsyncCallback() {
+                    public void onFailure(Throwable t) {
+                        ErrorPopup.showMessage( t.getMessage() );
+                    }
+                    public void onSuccess(Object a) {
+                        asset = (RuleAsset) a;
+                        doWidgets();
+                        LoadingPopup.close();
+                    }
+                });
                 
             }
             

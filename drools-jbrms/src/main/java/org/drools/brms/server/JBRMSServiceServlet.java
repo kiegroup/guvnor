@@ -280,8 +280,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         return this.metaDataMapper;
     }
 
-    public void checkinVersion(RuleAsset asset) throws SerializableException {
-        
+    public String checkinVersion(RuleAsset asset) throws SerializableException {
         
         RulesRepository repo = getRulesRepository();
         AssetItem rule = repo.loadAssetByUUID( asset.uuid );

@@ -1,6 +1,7 @@
 package org.drools.brms.client.ruleeditor;
 
 import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.MetaData;
 
 import com.google.gwt.user.client.Command;
@@ -44,7 +45,7 @@ public class ActionToolbar extends Composite {
         panel.add( state );
         
         Image editState = new Image("images/edit.gif");
-        editState.setTitle( "Change state." );
+        editState.setTitle( "Change state (NOT IMPLEMENTED YET)." );
         panel.add( editState );
         
         Image save = new Image("images/save_edit.gif");
@@ -52,6 +53,7 @@ public class ActionToolbar extends Composite {
         save.addClickListener( new ClickListener() {
 
             public void onClick(Widget w) {
+                
                 doCheckinConfirm();
             }
             
@@ -93,7 +95,7 @@ public class ActionToolbar extends Composite {
      * Called when user wants to checkin.
      */
     protected void doCheckinConfirm() {
-        final FormStylePopup pop = new FormStylePopup("images/checkin.gif", "Check in a new version.");
+        final FormStylePopup pop = new FormStylePopup("images/checkin.gif", "Check in changes.");
         TextArea comment = new TextArea();
         comment.setWidth( "100%" );
         Button save = new Button("Save");
@@ -102,6 +104,7 @@ public class ActionToolbar extends Composite {
         
         save.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
+                LoadingPopup.showMessage( "Saving, please wait..." );
                 checkin.execute();
                 pop.hide();
             }

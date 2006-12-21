@@ -150,6 +150,7 @@ public class RulesFeature extends JBRMSFeature {
                   public void execute() {
                     tab.remove( i ); 
                     tab.selectTab( 0 );
+                    
                   }
               });
               tab.selectTab( i );
