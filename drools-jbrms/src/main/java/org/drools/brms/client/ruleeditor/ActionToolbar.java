@@ -6,6 +6,7 @@ import org.drools.brms.client.rpc.MetaData;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -96,11 +97,14 @@ public class ActionToolbar extends Composite {
      */
     protected void doCheckinConfirm() {
         final FormStylePopup pop = new FormStylePopup("images/checkin.gif", "Check in changes.");
-        TextArea comment = new TextArea();
+        final TextArea comment = new TextArea();
         comment.setWidth( "100%" );
         Button save = new Button("Save");
         pop.addAttribute( "Comment", comment );
         pop.addAttribute( "", save);
+        
+        bindCommentField( comment );
+        
         
         save.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -114,6 +118,14 @@ public class ActionToolbar extends Composite {
         pop.setPopupPosition( 200, getAbsoluteTop() );
         pop.show();        
         
+    }
+
+    private void bindCommentField(final TextArea comment) {
+        comment.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+                metaData.checkinComment = comment.getText();
+            }
+        });
     }
 
     /**

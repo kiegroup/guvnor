@@ -174,10 +174,39 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testCheckin() throws Exception {
-//      MockJBRMSServiceServlet serv = new MockJBRMSServiceServlet();
-//      serv.createNewRule( "", description, initialCategory, "default", format )
-//      
-//      serv.checkinVersion( asset )
+          MockJBRMSServiceServlet serv = new MockJBRMSServiceServlet();
+          
+          serv.listRulePackages();
+          
+          serv.createCategory( "/", "testCheckinCategory", "this is a description" );
+          String uuid = serv.createNewRule( "testChecking", "this is a description", "testCheckinCategory", "default", "drl" );
+          
+          RuleAsset asset = serv.loadRuleAsset( uuid );
+          
+          asset.metaData.coverage = "boo";
+          asset.content = new RuleContentText();
+          ((RuleContentText) asset.content).content = "yeah !";
+          
+          
+          String uuid2 = serv.checkinVersion( asset );
+          assertEquals(uuid, uuid2);
+          
+          RuleAsset asset2 = serv.loadRuleAsset( uuid );
+          
+          assertEquals("boo", asset2.metaData.coverage);
+          assertEquals("1", asset2.metaData.versionNumber);
+          
+          assertEquals("yeah !", ((RuleContentText) asset2.content).content);
+          
+          asset2.metaData.coverage = "ya";
+          asset2.metaData.checkinComment = "checked in";
+          serv.checkinVersion( asset2 );
+          
+          asset2 = serv.loadRuleAsset( uuid );
+          assertEquals("ya", asset2.metaData.coverage);
+          assertEquals("2", asset2.metaData.versionNumber);
+          assertEquals("checked in", asset2.metaData.checkinComment);
+          
   }
   
   

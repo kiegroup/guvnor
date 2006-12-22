@@ -36,6 +36,8 @@ public class MetaData
     public String rights = ""; 
     public String coverage = "";
     public String publisher = "";   
+    public String checkinComment = "";
+    
     
     public Date dateEffective;
     public Date dateExpired;

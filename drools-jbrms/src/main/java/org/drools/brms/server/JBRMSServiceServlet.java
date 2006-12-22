@@ -1,6 +1,5 @@
 package org.drools.brms.server;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,13 +21,13 @@ import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.repository.AssetItem;
-import org.drools.repository.CategorisableItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RepositoryConfigurator;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.rpc.SerializableException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -231,14 +230,6 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         return asset;
     }
     
-    /** pretty print the date. */
-    String formatDate(Calendar date) {
-        if (date == null) {
-            return "";
-        }
-        DateFormat f = DateFormat.getDateTimeInstance();
-        return f.format( date.getTime() );
-    }
 
     /** 
      * read in the meta data.
@@ -274,18 +265,42 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         if (createdDate == null) return null;
         return createdDate.getTime();
     }
+    
+    private Calendar dateToCalendar(Date date) {
+        if (date == null) return null;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime( date );
+        return cal;
+    }    
 
     private MetaDataMapper getMetaDataMapper() {
         if (this.metaDataMapper == null)  this.metaDataMapper = new MetaDataMapper();
         return this.metaDataMapper;
     }
 
-    public String checkinVersion(RuleAsset asset) throws SerializableException {
-        
+    public String checkinVersion(RuleAsset asset) throws SerializableException {        
         RulesRepository repo = getRulesRepository();
+        
         AssetItem rule = repo.loadAssetByUUID( asset.uuid );
-        rule.checkout();
-        throw new UnsupportedOperationException("Not implemented yet !");
+        
+        MetaData meta = asset.metaData;
+        getMetaDataMapper().copyFromMetaData( meta, rule );
+        rule.updateDateEffective( dateToCalendar( meta.dateEffective ) );
+        rule.updateDateExpired( dateToCalendar( meta.dateExpired ) );        
+        updateContentToAsset( rule, asset.content );
+        
+        rule.checkin( meta.checkinComment );
+        
+        return rule.getUUID();
+    }
+    
+
+    private void updateContentToAsset(AssetItem repoAsset, IsSerializable content) throws SerializableException {
+        if (content instanceof RuleContentText) {
+            repoAsset.updateContent( ((RuleContentText)content).content );        
+        } else {
+            throw new SerializableException("Not able to handle that type of content just yet...");
+        }
     }
 
 

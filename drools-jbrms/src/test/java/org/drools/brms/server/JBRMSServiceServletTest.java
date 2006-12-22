@@ -40,17 +40,7 @@ public class JBRMSServiceServletTest extends TestCase {
     }
     
 
-    public void testFormattingDates() {
-        JBRMSServiceServlet serv = new JBRMSServiceServlet();
-        assertEquals("", serv.formatDate( null ));
-        
-        Calendar cal = Calendar.getInstance();
-        String d = serv.formatDate( cal );
-        assertNotNull(d);
-        assertTrue(d.length() > 5);
-        System.out.println(d);
-        
-    }
+
     
     
     static class MockHttpSession implements HttpSession {
