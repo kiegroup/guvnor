@@ -601,7 +601,7 @@ public class RulesRepository {
 
         try {
             if (!folderNode.hasNode(DEFAULT_PACKAGE)) {
-                createPackage( DEFAULT_PACKAGE, "" );
+                createPackage( DEFAULT_PACKAGE, "The default rule package" );
                 folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
             }            
             return new PackageIterator(this, folderNode.getNodes());
