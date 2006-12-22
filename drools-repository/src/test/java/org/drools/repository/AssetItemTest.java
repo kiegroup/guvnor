@@ -136,6 +136,26 @@ public class AssetItemTest extends TestCase {
             
     }
     
+    public void testUpdateCategories() {
+        getRepo().loadCategory( "/" ).addCategory( "testUpdateCategoriesOnAsset", "la" );
+        getRepo().loadCategory( "/" ).addCategory( "testUpdateCategoriesOnAsset2", "la" );
+        
+        AssetItem item = getRepo().loadDefaultPackage().addAsset( "testUpdateCategoriesOnAsset", "huhuhu" );
+        String[] cats = new String[] {"testUpdateCategoriesOnAsset", "testUpdateCategoriesOnAsset2"};
+        item.updateCategoryList( cats );
+        
+        item.checkin( "aaa" );
+        
+        item = getRepo().loadDefaultPackage().loadAsset( "testUpdateCategoriesOnAsset" );
+        assertEquals(2, item.getCategories().size());
+        
+        for ( Iterator iter = item.getCategories().iterator(); iter.hasNext(); ) {
+            CategoryItem cat = (CategoryItem) iter.next();            
+            assertTrue(cat.getName().startsWith( "testUpdateCategoriesOnAsset" ));            
+        }
+        
+    }
+    
     public void testFindRulesByCategory() throws Exception {
         
         getRepo().loadCategory( "/" ).addCategory( "testFindRulesByCat", "yeah" );
