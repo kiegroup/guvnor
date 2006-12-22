@@ -10,7 +10,7 @@ window["provider$user.agent"] = function() {
   if (ua.indexOf('opera') != -1) {
     return 'opera';
   }
-   else if (ua.indexOf('safari') != -1) {
+   else if (ua.indexOf('webkit') != -1) {
     return 'safari';
   }
    else if (ua.indexOf('msie 6.0') != -1 || ua.indexOf('msie 7.0') != -1) {
@@ -69,11 +69,11 @@ function selectScript() {
     var F;
     var I = ["true", (F=window["prop$user.agent"],F(1))];
 
-    O(["true","gecko1_8"],"02D55B6C17D8CB9E4B314EBA74D96176");
-    O(["true","gecko"],"51020A54662D0F6A5C82585118050747");
-    O(["true","safari"],"927D95ADAE7773515D708EDC0F78069F");
-    O(["true","opera"],"B577C14457C333C21850C7B7CE292ECD");
-    O(["true","ie6"],"D0B8925E97A067A562D3A74CD0E4C548");
+    O(["true","gecko1_8"],"22DB0BD1B7220A130CD171C0F8E3AA34");
+    O(["true","safari"],"22E115AE099C4776A499616329CDED32");
+    O(["true","gecko"],"408100B98485EFFBF2B46403D5B91A10");
+    O(["true","opera"],"748A00DB7042609F7149D38649C440B7");
+    O(["true","ie6"],"790B026AFB75510B0FD342E3A2D1D02B");
 
     var strongName = O.answers[I[0]][I[1]];
     var query = location.search;

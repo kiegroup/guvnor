@@ -244,7 +244,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         meta.categories = new String[cats.size()];
         for ( int i = 0; i < meta.categories.length; i++ ) {
             CategoryItem cat = (CategoryItem) cats.get(i);
-            meta.categories[i] = cat.getName();            
+            meta.categories[i] = cat.getFullPath();          
         }
         
         meta.state = (item.getState() != null) ? item.getState().getName() : "";

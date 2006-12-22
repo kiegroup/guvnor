@@ -60,7 +60,7 @@ public class ServiceImplementationTest extends TestCase {
       cat.addCategory( "testAddRule", "yeah" );
       
       
-      String result = impl.createNewRule( "testAddRule", "a description", "testAddRule", "another", "txt" );
+      String result = impl.createNewRule( "test AddRule", "a description", "testAddRule", "another", "txt" );
       assertNotNull(result);
       assertFalse("".equals( result ));
       
@@ -182,6 +182,7 @@ public class ServiceImplementationTest extends TestCase {
           
           serv.createCategory( "/", "testCheckinCategory", "this is a description" );
           serv.createCategory( "/", "testCheckinCategory2", "this is a description" );
+          serv.createCategory( "testCheckinCategory", "deeper", "description" );
           
           String uuid = serv.createNewRule( "testChecking", "this is a description", "testCheckinCategory", "default", "drl" );
           
@@ -206,10 +207,10 @@ public class ServiceImplementationTest extends TestCase {
           asset2.metaData.checkinComment = "checked in";
           
           String cat = asset2.metaData.categories[0];
-          asset2.metaData.categories = new String[2];
+          asset2.metaData.categories = new String[3];
           asset2.metaData.categories[0] = cat;          
           asset2.metaData.categories[1] = "testCheckinCategory2";
-          
+          asset2.metaData.categories[2] = "testCheckinCategory/deeper";
           
           serv.checkinVersion( asset2 );
           
@@ -217,9 +218,10 @@ public class ServiceImplementationTest extends TestCase {
           assertEquals("ya", asset2.metaData.coverage);
           assertEquals("2", asset2.metaData.versionNumber);
           assertEquals("checked in", asset2.metaData.checkinComment);
-          assertEquals(2, asset2.metaData.categories.length);
+          assertEquals(3, asset2.metaData.categories.length);
           assertEquals("testCheckinCategory", asset2.metaData.categories[0]);
           assertEquals("testCheckinCategory2", asset2.metaData.categories[1]);
+          assertEquals("testCheckinCategory/deeper", asset2.metaData.categories[2]);
           
   }
   
