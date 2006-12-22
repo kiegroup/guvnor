@@ -28,8 +28,7 @@ public class Packages extends JBRMSFeature {
 
     public static ComponentInfo init() {
         return new ComponentInfo( "Packages",
-                                  "This is where you configure packages of rules." + "You select rules to belong to packages, and what version they are. A rule can "
-                                          + "appear in more then one package, and possibly even different versions of the rule." ) {
+                                  "This currently shows a demo of the rule modeller." ) {
             public JBRMSFeature createInstance() {
                 return new Packages();
             }

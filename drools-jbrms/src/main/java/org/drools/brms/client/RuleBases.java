@@ -28,8 +28,7 @@ public class RuleBases extends JBRMSFeature {
   public static ComponentInfo init() {
     return new ComponentInfo(
       "RuleBases",
-      "Here you select packages to assemble rulebases. Rulebases are the executable unit that the " +
-      "runtime engine uses.") {
+      "A temporary place holder for DTs.") {
       public JBRMSFeature createInstance() {
         return new RuleBases();
       }

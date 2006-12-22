@@ -41,13 +41,7 @@ public class Admin extends JBRMSFeature {
   private TabPanel fTabs = new TabPanel();
 
   public Admin() {
-    fTabs.add(createImage("rembrandt/TheReturnOfTheProdigalSon.jpg"), "Security");
-    fTabs.add(createImage("rembrandt/TheReturnOfTheProdigalSon.jpg"), "Preferences");
-    fTabs.selectTab(0);
 
-    fTabs.setWidth("100%");
-    fTabs.setHeight("100%");
-    initWidget(fTabs);
   }
 
   public void onShow() {
