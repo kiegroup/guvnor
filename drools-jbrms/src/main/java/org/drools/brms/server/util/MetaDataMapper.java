@@ -38,9 +38,6 @@ public class MetaDataMapper {
             Method m = (Method) e.getValue();
 
             try {
-                if (f.getType() == Date.class) {
-                    
-                }
                 m.invoke( target, new Object[] {f.get( data )} ) ;
             } catch ( IllegalArgumentException e1 ) {
                 throw new RulesRepositoryException(e1);

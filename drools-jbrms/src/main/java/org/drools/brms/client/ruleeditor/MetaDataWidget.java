@@ -6,6 +6,7 @@ import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.rpc.MetaData;
 
 import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -48,7 +49,7 @@ public class MetaDataWidget extends FormStyleLayout {
         addAttribute("Checkin note:", readOnlyText( data.lastCheckinComment ));
         addAttribute("Created by:", readOnlyText(data.creator));
         addAttribute("Created on:", readOnlyDate( data.createdDate ));
-        addAttribute("Version number:", readOnlyText("" + data.versionNumber));
+        addAttribute("Version number:", getVersionNumberLabel());
         addAttribute("Package:", readOnlyText(data.packageName));
         
             
@@ -84,6 +85,16 @@ public class MetaDataWidget extends FormStyleLayout {
             }
             
         }, "A short description or code indicating the source of the rule."));
+    }
+
+
+    private Widget getVersionNumberLabel() {
+        if (data.versionNumber == null || "".equals(data.versionNumber )) {
+            return new HTML("<i>Not checked in yet</i>");
+        } else {
+            return readOnlyText(data.versionNumber);    
+        }
+        
     }
 
 

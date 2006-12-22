@@ -162,6 +162,8 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals("txt", asset.metaData.format);
       assertNotNull(asset.metaData.createdDate);
       
+      assertEquals(1, asset.metaData.categories.length);
+      assertEquals("testLoadRuleAsset", asset.metaData.categories[0]);
       
       AssetItem rule = impl.repo.loadPackage( "testLoadRuleAsset" ).loadAsset( "testLoadRuleAsset" );
       rule.updateState( "whee" );
@@ -179,6 +181,8 @@ public class ServiceImplementationTest extends TestCase {
           serv.listRulePackages();
           
           serv.createCategory( "/", "testCheckinCategory", "this is a description" );
+          serv.createCategory( "/", "testCheckinCategory2", "this is a description" );
+          
           String uuid = serv.createNewRule( "testChecking", "this is a description", "testCheckinCategory", "default", "drl" );
           
           RuleAsset asset = serv.loadRuleAsset( uuid );
@@ -200,12 +204,22 @@ public class ServiceImplementationTest extends TestCase {
           
           asset2.metaData.coverage = "ya";
           asset2.metaData.checkinComment = "checked in";
+          
+          String cat = asset2.metaData.categories[0];
+          asset2.metaData.categories = new String[2];
+          asset2.metaData.categories[0] = cat;          
+          asset2.metaData.categories[1] = "testCheckinCategory2";
+          
+          
           serv.checkinVersion( asset2 );
           
           asset2 = serv.loadRuleAsset( uuid );
           assertEquals("ya", asset2.metaData.coverage);
           assertEquals("2", asset2.metaData.versionNumber);
           assertEquals("checked in", asset2.metaData.checkinComment);
+          assertEquals(2, asset2.metaData.categories.length);
+          assertEquals("testCheckinCategory", asset2.metaData.categories[0]);
+          assertEquals("testCheckinCategory2", asset2.metaData.categories[1]);
           
   }
   

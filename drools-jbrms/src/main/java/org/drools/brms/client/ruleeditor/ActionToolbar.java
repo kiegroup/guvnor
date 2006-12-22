@@ -42,7 +42,7 @@ public class ActionToolbar extends Composite {
         this.checkin = checkin;
         String status = metaData.state;
 
-        Label state = new Label("Status: [" + status + "]   ");
+        HTML state = new HTML("<b>Status: <i>[" + status + "]</i></b>");
         panel.add( state );
         
         Image editState = new Image("images/edit.gif");
@@ -52,19 +52,14 @@ public class ActionToolbar extends Composite {
         Image save = new Image("images/save_edit.gif");
         save.setTitle( "Check in changes." );        
         save.addClickListener( new ClickListener() {
-
             public void onClick(Widget w) {
-                
                 doCheckinConfirm();
             }
-            
         });
-        
         
         Image closeImg = new Image("images/close.gif");
         closeImg.setTitle( "Close." );
         closeImg.addClickListener( new ClickListener() {
-
             public void onClick(Widget w) {
                 if (metaData.dirty) {
                     doCloseUnsavedWarning( );
@@ -72,9 +67,7 @@ public class ActionToolbar extends Composite {
                     //we can actually close
                     closeCommand.execute(  );
                 }
-                
             }
-            
         });
         
         Image maxMinImage = new Image("images/max_min.gif");

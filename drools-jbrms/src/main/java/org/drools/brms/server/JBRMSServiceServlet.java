@@ -284,10 +284,16 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         AssetItem rule = repo.loadAssetByUUID( asset.uuid );
         
         MetaData meta = asset.metaData;
+        
         getMetaDataMapper().copyFromMetaData( meta, rule );
+        
         rule.updateDateEffective( dateToCalendar( meta.dateEffective ) );
         rule.updateDateExpired( dateToCalendar( meta.dateExpired ) );        
+        
+        rule.updateCategoryList( meta.categories );
         updateContentToAsset( rule, asset.content );
+        
+        
         
         rule.checkin( meta.checkinComment );
         
