@@ -11,6 +11,7 @@ import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.rulelist.RuleItemListViewer;
+import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 

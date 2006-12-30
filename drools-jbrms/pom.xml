@@ -59,6 +59,11 @@
       <groupId>google</groupId>
       <artifactId>gwt-servlet</artifactId>
     </dependency>
+    <dependency>
+     <groupId>xstream</groupId>
+     <artifactId>xstream</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>

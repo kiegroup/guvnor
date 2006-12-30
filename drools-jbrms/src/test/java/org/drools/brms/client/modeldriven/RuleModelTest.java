@@ -10,6 +10,8 @@ import org.drools.brms.client.modeldriven.model.IPattern;
 import org.drools.brms.client.modeldriven.model.RuleAttribute;
 import org.drools.brms.client.modeldriven.model.RuleModel;
 
+import com.thoughtworks.xstream.XStream;
+
 import junit.framework.TestCase;
 
 public class RuleModelTest extends TestCase {
@@ -54,6 +56,16 @@ public class RuleModelTest extends TestCase {
         model.rhs[0] = fact;
         assertTrue(model.isBoundFactUsed( "q" ));
         assertFalse(model.isBoundFactUsed( "x" ));
+        
+        XStream xt = new XStream();
+        xt.alias( "rule", RuleModel.class );
+        xt.alias( "fact", FactPattern.class );
+        xt.alias( "retract", ActionRetractFact.class );
+        
+        
+        String brl = xt.toXML( model );
+        
+        System.out.println(brl);
     }
     
     public void testBindingList() {

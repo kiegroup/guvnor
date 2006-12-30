@@ -20,6 +20,7 @@ import org.drools.brms.client.rpc.RuleContentText;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.server.util.MetaDataMapper;
+import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;

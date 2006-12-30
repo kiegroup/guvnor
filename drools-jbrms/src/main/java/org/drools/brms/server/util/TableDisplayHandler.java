@@ -1,4 +1,4 @@
-package org.drools.brms.server;
+package org.drools.brms.server.util;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class TableDisplayHandler {
         return result;        
     }
     
-    String formatDate(Calendar cal) {
+    public String formatDate(Calendar cal) {
         DateFormat localFormat = DateFormat.getDateInstance();
         
         return localFormat.format( cal.getTime() );

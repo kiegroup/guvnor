@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class RuleModel implements IsSerializable {
 
+    public String name;
     public RuleAttribute[] attributes = new RuleAttribute[0];
     
     public IPattern[] lhs;
