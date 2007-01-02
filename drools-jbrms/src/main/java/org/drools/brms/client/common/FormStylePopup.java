@@ -15,7 +15,7 @@ public class FormStylePopup extends PopupPanel {
 
     
     private FormStyleLayout form;
-
+ 
     public FormStylePopup(String image,
                           String title) {
         super( true );

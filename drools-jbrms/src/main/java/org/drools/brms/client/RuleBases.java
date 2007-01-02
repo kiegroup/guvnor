@@ -33,9 +33,6 @@ public class RuleBases extends JBRMSFeature {
         return new RuleBases();
       }
 
-	public Image getImage() {
-		return new Image("images/config.png");
-	}
     };
   }
 

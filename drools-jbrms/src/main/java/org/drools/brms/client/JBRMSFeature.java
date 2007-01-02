@@ -37,8 +37,6 @@ public abstract class JBRMSFeature extends Composite {
       description = desc;
     }
 
-    public abstract Image getImage();
-    
     public abstract JBRMSFeature createInstance();
 
     public String getDescription() {

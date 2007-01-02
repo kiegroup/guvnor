@@ -13,12 +13,14 @@ import javax.jcr.Session;
 import javax.servlet.http.HttpSession;
 
 import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.client.modeldriven.model.RuleModel;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleContentText;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
+import org.drools.brms.server.util.BRLPersistence;
 import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.repository.AssetItem;
@@ -215,9 +217,9 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
             //ok here is where we do DSLs...
             throw new SerializableException("Can't load DSL rules just yet.");
 
-        } else if (item.getFormat().equals( "DT" )) {
-            //and here we do decision tables
-            throw new SerializableException("Still working on this...");
+        } else if (item.getFormat().equals( AssetFormats.BUSINESS_RULE )) { 
+            RuleModel model = BRLPersistence.getInstance().toModel( item.getContent() );
+            //asset.content = model;
         } else {
             //default to text, goode olde texte, just like mum used to make.
             RuleContentText text = new RuleContentText();

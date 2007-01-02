@@ -30,9 +30,6 @@ public class Deployment extends JBRMSFeature {
         return new Deployment();
       }
 
-	public Image getImage() {	
-		return new Image("images/deploy.gif");
-	}
     };
   }
 

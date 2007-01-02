@@ -1,8 +1,12 @@
 package org.drools.brms.client;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.common.ErrorPopup;
+import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.ruleeditor.NewRuleWizard;
@@ -28,6 +32,9 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 public class RulesFeature extends JBRMSFeature {
 
     public static final int       EDITOR_TAB         = 1;
+    private TabPanel tab;
+    private Map openedViewers = new HashMap();
+    
     
 	public static ComponentInfo init() {
 		return new ComponentInfo("Rules", "Find and edit rules.") {
@@ -35,13 +42,10 @@ public class RulesFeature extends JBRMSFeature {
 				return new RulesFeature();
 			}
 
-			public Image getImage() {
-				return new Image("images/rules.gif");
-			}
 		};
 	}
 
-    private TabPanel tab;
+
 	
 	public RulesFeature() {
         tab = new TabPanel();
@@ -49,11 +53,8 @@ public class RulesFeature extends JBRMSFeature {
         tab.setHeight("100%");        
 
         FlexTable explorePanel = doExplore();        
-        //RuleView ruleViewer = doRuleViewer();
         
         tab.add(explorePanel, "Explore");
-        //tab.add(ruleViewer, "Author");
-        
         tab.selectTab(0);
         
 		initWidget(tab);
@@ -127,7 +128,18 @@ public class RulesFeature extends JBRMSFeature {
 
 
 
-    public void showLoadEditor(String uuid) {
+    /**
+     * This will show the rule viewer. If it was previously opened, it will show that dialog instead
+     * of opening it again.
+     */
+    public void showLoadEditor(final String uuid) {
+      
+        
+      if (this.openedViewers.containsKey( uuid )) {
+          tab.selectTab( tab.getWidgetIndex( (Widget) this.openedViewers.get( uuid ) ));
+          LoadingPopup.close();
+          return;
+      }
         
       RepositoryServiceFactory.getService().loadRuleAsset( uuid,
       new AsyncCallback() {
@@ -137,7 +149,7 @@ public class RulesFeature extends JBRMSFeature {
 
           public void onSuccess(Object o) {
               RuleAsset asset = (RuleAsset) o;
-              RuleViewer view = new RuleViewer(asset);
+              final RuleViewer view = new RuleViewer(asset);
               
               String displayName = asset.metaData.name;
               if (displayName.length() > 10) {
@@ -145,15 +157,17 @@ public class RulesFeature extends JBRMSFeature {
               }
               tab.add( view, "<img src='images/rule_asset.gif'>" + displayName, true );
               
-              final int i = tab.getWidgetIndex( view );
+              openedViewers.put(uuid, view);
+              
               view.setCloseCommand( new Command() {
                   public void execute() {
-                    tab.remove( i ); 
+                    tab.remove( tab.getWidgetIndex( view ) ); 
                     tab.selectTab( 0 );
+                    openedViewers.remove( uuid );
                     
                   }
               });
-              tab.selectTab( i );
+              tab.selectTab( tab.getWidgetIndex( view ) );
           }
 
       } );

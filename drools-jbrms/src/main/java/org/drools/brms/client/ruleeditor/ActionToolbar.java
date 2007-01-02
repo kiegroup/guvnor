@@ -9,12 +9,16 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
  * This contains the widgets used to action a rule asset
@@ -23,7 +27,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ActionToolbar extends Composite {
 
-    private HorizontalPanel panel = new HorizontalPanel();
+    private FlexTable layout = new FlexTable();
     private Command closeCommand;
     
     private MetaData      metaData;
@@ -42,12 +46,19 @@ public class ActionToolbar extends Composite {
         this.checkin = checkin;
         String status = metaData.state;
 
+        FlexCellFormatter formatter = layout.getFlexCellFormatter();
+        HorizontalPanel saveControls = new HorizontalPanel();
         HTML state = new HTML("<b>Status: <i>[" + status + "]</i></b>");
-        panel.add( state );
-        
+        saveControls.add( state );
         Image editState = new Image("images/edit.gif");
         editState.setTitle( "Change state (NOT IMPLEMENTED YET)." );
-        panel.add( editState );
+        saveControls.add( editState );
+        
+        
+        layout.setWidget( 0, 0, saveControls );
+        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE );
+        
+        
         
         Image save = new Image("images/save_edit.gif");
         save.setTitle( "Check in changes." );        
@@ -56,6 +67,21 @@ public class ActionToolbar extends Composite {
                 doCheckinConfirm();
             }
         });
+        
+        saveControls.add( save );
+        
+        HorizontalPanel windowControls = new HorizontalPanel();
+        
+        Image maxMinImage = new Image("images/max_min.gif");
+        maxMinImage.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                minimiseMaximise.execute();                
+            }            
+        });
+        
+        windowControls.add( maxMinImage );
+        
+        
         
         Image closeImg = new Image("images/close.gif");
         closeImg.setTitle( "Close." );
@@ -70,19 +96,15 @@ public class ActionToolbar extends Composite {
             }
         });
         
-        Image maxMinImage = new Image("images/max_min.gif");
-        maxMinImage.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                minimiseMaximise.execute();                
-            }            
-        });
+        windowControls.add( closeImg );
+        
+        layout.setWidget( 0, 1, windowControls );
+        formatter.setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
+
         
         
-        panel.add( save );
-        panel.add( closeImg );
-        panel.add( new HTML("&nbsp;") );
-        panel.add( maxMinImage );
-        initWidget( panel );
+        initWidget( layout );
+        setWidth( "100%" );
     }
     
     /**

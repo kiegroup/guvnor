@@ -32,9 +32,6 @@ public class Admin extends JBRMSFeature {
         return new Admin();
       }
 
-	public Image getImage() { 
-		return new Image("images/config.png");
-	}
     };
   }
 

@@ -289,7 +289,7 @@ a:visited {
 
 .warning-Popup {
   border: 2px solid #B8B8B8;
-  background-color: white;		
+  background-color: #FDFCDC;		
 }
 
 
@@ -306,7 +306,7 @@ a:visited {
 }
 
 .loading-Popup {
-  background-color: #CCFFCC;
+  background-color: #FDFCDC;
   border: 1px solid #B8B8B8;
   padding: 4px;
 }

@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import org.drools.brms.client.JBRMSFeature.ComponentInfo;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,19 +49,8 @@ public class JBRMSFeatureList extends Composite {
     String name = info.getName();
     Hyperlink link = new Hyperlink(name, name);
     link.setStyleName("ks-SinkItem");
-
-    Widget w = link;
-//this puts little icons next to the left hand labels    
-//    if (info.getImage() != null) {
-//    	HorizontalPanel panel = new HorizontalPanel();
-//    	panel.setStyleName("ks-SinkItem");
-//    	panel.add(info.getImage());
-//    	panel.add(link);
-//    	w = panel;
-//    }
     
-    //list.add(link);
-    list.add(w);
+    list.add(link);
     sinks.add(info);
   }
 

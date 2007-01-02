@@ -33,9 +33,6 @@ public class Packages extends JBRMSFeature {
                 return new Packages();
             }
 
-            public Image getImage() {
-                return new Image( "images/package.gif" );
-            }
         };
     }
 

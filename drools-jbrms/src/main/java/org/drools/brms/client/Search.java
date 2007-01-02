@@ -30,10 +30,6 @@ public class Search extends JBRMSFeature {
         return new Search();
       }
 
-	public Image getImage() {
- 
-		return new Image("images/drools.gif");
-	}
     };
   }
 

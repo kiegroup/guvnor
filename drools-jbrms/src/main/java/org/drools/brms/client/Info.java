@@ -31,9 +31,6 @@ public class Info extends JBRMSFeature {
         return new Info();
       }
 
-	public Image getImage() {		
-		return new Image("images/drools.gif");
-	}
     };
   }
 
