@@ -66,6 +66,11 @@ public class BRLPersitenceTest extends TestCase {
         assertEquals(m.name, m2.name);
         assertEquals(m.lhs.length, m2.lhs.length);
         assertEquals(m.rhs.length, m2.rhs.length);
+        assertEquals(1, m.attributes.length);
+        
+        RuleAttribute at = m.attributes[0];
+        assertEquals("no-loop", at.attributeName);
+        assertEquals("true", at.value);
         
         String newXML = BRLPersistence.getInstance().toXML( m2 );
         assertEquals(xml, newXML);
@@ -74,6 +79,8 @@ public class BRLPersitenceTest extends TestCase {
 
     private RuleModel getComplexModel() {
         RuleModel m = new RuleModel();
+        
+        m.addAttribute( new RuleAttribute("no-loop", "true") );
         
         FactPattern pat = new FactPattern();
         pat.boundName = "p1";
