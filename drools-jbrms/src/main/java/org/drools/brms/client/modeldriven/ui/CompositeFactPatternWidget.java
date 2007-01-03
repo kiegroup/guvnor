@@ -2,8 +2,8 @@ package org.drools.brms.client.modeldriven.ui;
 
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.rpc.brxml.CompositeFactPattern;
-import org.drools.brms.client.rpc.brxml.FactPattern;
+import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
+import org.drools.brms.client.modeldriven.brxml.FactPattern;
 
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;

@@ -1,4 +1,4 @@
-package org.drools.brms.client.rpc.brxml;
+package org.drools.brms.client.modeldriven.brxml;
 
 /**
  * This class is the parent for field setting or assertion actions.

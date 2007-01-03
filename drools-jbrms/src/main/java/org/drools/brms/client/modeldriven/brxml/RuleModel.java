@@ -1,4 +1,4 @@
-package org.drools.brms.client.rpc.brxml;
+package org.drools.brms.client.modeldriven.brxml;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package org.drools.brms.client.modeldriven.ui;
 
-import org.drools.brms.client.rpc.brxml.DSLSentence;
-import org.drools.brms.client.rpc.brxml.DSLSentenceFragment;
+import org.drools.brms.client.modeldriven.brxml.DSLSentence;
+import org.drools.brms.client.modeldriven.brxml.DSLSentenceFragment;
 
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.Composite;
