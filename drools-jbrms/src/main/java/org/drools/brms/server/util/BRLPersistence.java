@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 /**
  * This class persists the rule model to XML and back.
  * 
- * This is the "brxml" xml format (Business Rule Language).
+ * This is the 'brxml' xml format (Business Rule Language).
  * 
  * @author Michael Neale
  */
@@ -58,6 +58,8 @@ public class BRLPersistence {
     }
 
     public RuleModel toModel(String xml) {
+        if (xml == null) return new RuleModel();    
+        if (xml.trim().equals( "" )) return new RuleModel();
         return (RuleModel) xt.fromXML( xml );
     }
 

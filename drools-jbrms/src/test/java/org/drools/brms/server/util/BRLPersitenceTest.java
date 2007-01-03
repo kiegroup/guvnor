@@ -118,4 +118,12 @@ public class BRLPersitenceTest extends TestCase {
         return m;
     }
     
+    public void testLoadEmpty() {
+        RuleModel m = BRLPersistence.getInstance().toModel( null );
+        assertNotNull(m);
+        
+        m = BRLPersistence.getInstance().toModel( "" );
+        assertNotNull(m);
+    }
+    
 }

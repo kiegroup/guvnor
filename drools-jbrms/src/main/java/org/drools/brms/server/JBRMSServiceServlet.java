@@ -211,13 +211,13 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         RuleAsset asset = new RuleAsset();
         
         asset.metaData = popuplateMetaData( item );
-        
-        //TODO: possibly move this to a different structure, perhaps even into the drools-repository itself.
+
         if (item.getFormat().equals( AssetFormats.DSL_TEMPLATE_RULE)) {
             //ok here is where we do DSLs...
             throw new SerializableException("Can't load DSL rules just yet.");
 
         } else if (item.getFormat().equals( AssetFormats.BUSINESS_RULE )) { 
+            System.out.println("Contents:" + item.getContent());
             RuleModel model = BRLPersistence.getInstance().toModel( item.getContent() );
             asset.content = model;
         } else {
@@ -257,8 +257,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         meta.createdDate = calendarToDate(item.getCreatedDate());
         meta.dateEffective = calendarToDate( item.getDateEffective() );
         meta.dateExpired = calendarToDate( item.getDateExpired() );
-        
-
+        meta.lastModifiedDate = calendarToDate( item.getLastModified() );
         
         
         return meta;
@@ -294,7 +293,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         rule.updateDateExpired( dateToCalendar( meta.dateExpired ) );        
         
         rule.updateCategoryList( meta.categories );
-        updateContentToAsset( rule, asset.content );
+        updateContentToAsset( rule, asset );
         
         
         
@@ -304,9 +303,12 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     }
     
 
-    private void updateContentToAsset(AssetItem repoAsset, IsSerializable content) throws SerializableException {
-        if (content instanceof RuleContentText) {
-            repoAsset.updateContent( ((RuleContentText)content).content );        
+    private void updateContentToAsset(AssetItem repoAsset, RuleAsset asset) throws SerializableException {
+        if (asset.content instanceof RuleContentText) {
+            repoAsset.updateContent( ((RuleContentText)asset.content).content );        
+        } else if (asset.content instanceof RuleModel) {
+            RuleModel model = (RuleModel) asset.content;
+            repoAsset.updateContent( BRLPersistence.getInstance().toXML( model ) );
         } else {
             throw new SerializableException("Not able to handle that type of content just yet...");
         }

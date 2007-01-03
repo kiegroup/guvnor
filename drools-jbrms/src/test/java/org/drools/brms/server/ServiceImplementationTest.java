@@ -1,6 +1,7 @@
 package org.drools.brms.server;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import junit.framework.TestCase;
 
@@ -189,15 +190,22 @@ public class ServiceImplementationTest extends TestCase {
           
           RuleAsset asset = serv.loadRuleAsset( uuid );
           
+          assertNotNull(asset.metaData.lastModifiedDate);
+          
           asset.metaData.coverage = "boo";
           asset.content = new RuleContentText();
           ((RuleContentText) asset.content).content = "yeah !";
           
+          Date start = new Date();
+          Thread.sleep( 100 );
           
           String uuid2 = serv.checkinVersion( asset );
           assertEquals(uuid, uuid2);
           
           RuleAsset asset2 = serv.loadRuleAsset( uuid );
+          assertNotNull(asset2.metaData.lastModifiedDate);
+          assertTrue(asset2.metaData.lastModifiedDate.after( start ));
+          
           
           assertEquals("boo", asset2.metaData.coverage);
           assertEquals("1", asset2.metaData.versionNumber);

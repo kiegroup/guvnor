@@ -10,8 +10,8 @@ public class RuleModel implements PortableObject {
     
     public RuleAttribute[] attributes = new RuleAttribute[0];
     
-    public IPattern[] lhs;
-    public IAction[] rhs;
+    public IPattern[] lhs = new IPattern[0];
+    public IAction[] rhs = new IAction[0];
     
     /**
      * This will return the fact pattern that a variable is bound to. 

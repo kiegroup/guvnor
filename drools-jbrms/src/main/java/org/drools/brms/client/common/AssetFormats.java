@@ -12,7 +12,7 @@ public class AssetFormats {
     public static String DRL = "drl";
     
     /** Use the rule modeller */
-    public static String BUSINESS_RULE = "brl";
+    public static String BUSINESS_RULE = "brxml";
     
     /** use vanilla text */
     public static String TECHNICAL_RULE    = "rule";

@@ -15,7 +15,6 @@ import org.drools.brms.client.modeldriven.brxml.IPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.brms.client.modeldriven.ui.RuleModeller;
 
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
