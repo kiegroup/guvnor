@@ -2,17 +2,17 @@ package org.drools.brms.server.util;
 
 import junit.framework.TestCase;
 
-import org.drools.brms.client.rpc.brxml.ActionAssertFact;
-import org.drools.brms.client.rpc.brxml.ActionFieldValue;
-import org.drools.brms.client.rpc.brxml.ActionRetractFact;
-import org.drools.brms.client.rpc.brxml.ActionSetField;
-import org.drools.brms.client.rpc.brxml.CompositeFactPattern;
-import org.drools.brms.client.rpc.brxml.Constraint;
-import org.drools.brms.client.rpc.brxml.DSLSentence;
-import org.drools.brms.client.rpc.brxml.DSLSentenceFragment;
-import org.drools.brms.client.rpc.brxml.FactPattern;
-import org.drools.brms.client.rpc.brxml.RuleAttribute;
-import org.drools.brms.client.rpc.brxml.RuleModel;
+import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
+import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
+import org.drools.brms.client.modeldriven.brxml.ActionSetField;
+import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
+import org.drools.brms.client.modeldriven.brxml.Constraint;
+import org.drools.brms.client.modeldriven.brxml.DSLSentence;
+import org.drools.brms.client.modeldriven.brxml.DSLSentenceFragment;
+import org.drools.brms.client.modeldriven.brxml.FactPattern;
+import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
+import org.drools.brms.client.modeldriven.brxml.RuleModel;
 
 public class BRLPersitenceTest extends TestCase {
 

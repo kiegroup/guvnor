@@ -1,7 +1,7 @@
 package org.drools.brms.client.modeldriven;
 
-import org.drools.brms.client.rpc.brxml.CompositeFactPattern;
-import org.drools.brms.client.rpc.brxml.FactPattern;
+import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
+import org.drools.brms.client.modeldriven.brxml.FactPattern;
 
 import junit.framework.TestCase;
 

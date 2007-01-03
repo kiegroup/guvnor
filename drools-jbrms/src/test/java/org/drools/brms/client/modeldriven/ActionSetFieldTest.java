@@ -1,7 +1,7 @@
 package org.drools.brms.client.modeldriven;
 
-import org.drools.brms.client.rpc.brxml.ActionFieldValue;
-import org.drools.brms.client.rpc.brxml.ActionSetField;
+import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 
 import junit.framework.TestCase;
 

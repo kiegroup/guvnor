@@ -2,13 +2,13 @@ package org.drools.brms.client.modeldriven;
 
 import java.util.List;
 
-import org.drools.brms.client.rpc.brxml.ActionRetractFact;
-import org.drools.brms.client.rpc.brxml.ActionSetField;
-import org.drools.brms.client.rpc.brxml.FactPattern;
-import org.drools.brms.client.rpc.brxml.IAction;
-import org.drools.brms.client.rpc.brxml.IPattern;
-import org.drools.brms.client.rpc.brxml.RuleAttribute;
-import org.drools.brms.client.rpc.brxml.RuleModel;
+import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
+import org.drools.brms.client.modeldriven.brxml.ActionSetField;
+import org.drools.brms.client.modeldriven.brxml.FactPattern;
+import org.drools.brms.client.modeldriven.brxml.IAction;
+import org.drools.brms.client.modeldriven.brxml.IPattern;
+import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
+import org.drools.brms.client.modeldriven.brxml.RuleModel;
 
 import com.thoughtworks.xstream.XStream;
 
