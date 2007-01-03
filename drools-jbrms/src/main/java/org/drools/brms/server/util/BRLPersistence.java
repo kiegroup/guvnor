@@ -1,18 +1,18 @@
 package org.drools.brms.server.util;
 
-import org.drools.brms.client.modeldriven.model.ActionAssertFact;
-import org.drools.brms.client.modeldriven.model.ActionFieldList;
-import org.drools.brms.client.modeldriven.model.ActionFieldValue;
-import org.drools.brms.client.modeldriven.model.ActionRetractFact;
-import org.drools.brms.client.modeldriven.model.ActionSetField;
-import org.drools.brms.client.modeldriven.model.CompositeFactPattern;
-import org.drools.brms.client.modeldriven.model.ConnectiveConstraint;
-import org.drools.brms.client.modeldriven.model.Constraint;
-import org.drools.brms.client.modeldriven.model.DSLSentence;
-import org.drools.brms.client.modeldriven.model.DSLSentenceFragment;
-import org.drools.brms.client.modeldriven.model.FactPattern;
-import org.drools.brms.client.modeldriven.model.RuleAttribute;
-import org.drools.brms.client.modeldriven.model.RuleModel;
+import org.drools.brms.client.rpc.brxml.ActionAssertFact;
+import org.drools.brms.client.rpc.brxml.ActionFieldList;
+import org.drools.brms.client.rpc.brxml.ActionFieldValue;
+import org.drools.brms.client.rpc.brxml.ActionRetractFact;
+import org.drools.brms.client.rpc.brxml.ActionSetField;
+import org.drools.brms.client.rpc.brxml.CompositeFactPattern;
+import org.drools.brms.client.rpc.brxml.ConnectiveConstraint;
+import org.drools.brms.client.rpc.brxml.Constraint;
+import org.drools.brms.client.rpc.brxml.DSLSentence;
+import org.drools.brms.client.rpc.brxml.DSLSentenceFragment;
+import org.drools.brms.client.rpc.brxml.FactPattern;
+import org.drools.brms.client.rpc.brxml.RuleAttribute;
+import org.drools.brms.client.rpc.brxml.RuleModel;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;

@@ -1,4 +1,4 @@
-package org.drools.brms.client.modeldriven.model;
+package org.drools.brms.client.rpc.brxml;
 
 /**
  * This is used to specify that the bound fact should be retracted
@@ -10,6 +10,7 @@ public class ActionRetractFact
     implements
     IAction {
     
+    public ActionRetractFact() {}
     
     public ActionRetractFact(String var) {
         this.variableName = var;

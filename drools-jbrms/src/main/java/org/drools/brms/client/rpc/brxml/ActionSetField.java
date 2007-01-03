@@ -1,4 +1,4 @@
-package org.drools.brms.client.modeldriven.model;
+package org.drools.brms.client.rpc.brxml;
 
 /**
  * For setting a field on a bound LHS variable or a global.
@@ -7,6 +7,7 @@ package org.drools.brms.client.modeldriven.model;
  */
 public class ActionSetField extends ActionFieldList {
 
+    
     public ActionSetField(String var) {
         this.variable = var;
     }

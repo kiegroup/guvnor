@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.brms.client.modeldriven.model.DSLSentence;
+import org.drools.brms.client.rpc.brxml.DSLSentence;
 
 /**
  * An suggestion completion processor. This should be usable in both GWT/Web and the IDE.

@@ -1,6 +1,5 @@
-package org.drools.brms.client.modeldriven.model;
+package org.drools.brms.client.rpc.brxml;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This holds the value of a fragment of a DSL.
@@ -12,7 +11,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class DSLSentenceFragment
     implements
-    IsSerializable {
+    PortableObject {
 
     public String  value;
     public boolean isEditableField;
@@ -26,5 +25,7 @@ public class DSLSentenceFragment
         value = fragment;
         this.isEditableField = isEditableField;
     }
+    
+    public DSLSentenceFragment() {}
 
 }

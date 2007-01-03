@@ -1,4 +1,4 @@
-package org.drools.brms.client.modeldriven.model;
+package org.drools.brms.client.rpc.brxml;
 
 
 /**

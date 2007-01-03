@@ -1,6 +1,5 @@
-package org.drools.brms.client.modeldriven.model;
+package org.drools.brms.client.rpc.brxml;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This is for a connective constraint that adds more options to a field constraint. 
@@ -8,7 +7,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class ConnectiveConstraint
     implements
-    IsSerializable {
+    PortableObject {
 
     public ConnectiveConstraint() {}
     

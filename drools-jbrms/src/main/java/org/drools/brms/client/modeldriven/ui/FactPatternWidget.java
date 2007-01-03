@@ -3,10 +3,10 @@ package org.drools.brms.client.modeldriven.ui;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.model.ConnectiveConstraint;
-import org.drools.brms.client.modeldriven.model.Constraint;
-import org.drools.brms.client.modeldriven.model.FactPattern;
-import org.drools.brms.client.modeldriven.model.IPattern;
+import org.drools.brms.client.rpc.brxml.ConnectiveConstraint;
+import org.drools.brms.client.rpc.brxml.Constraint;
+import org.drools.brms.client.rpc.brxml.FactPattern;
+import org.drools.brms.client.rpc.brxml.IPattern;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;

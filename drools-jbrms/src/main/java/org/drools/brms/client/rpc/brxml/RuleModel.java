@@ -1,13 +1,13 @@
-package org.drools.brms.client.modeldriven.model;
+package org.drools.brms.client.rpc.brxml;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-public class RuleModel implements IsSerializable {
+public class RuleModel implements PortableObject {
 
     public String name;
+    public String modelVersion = "1.0";
+    
     public RuleAttribute[] attributes = new RuleAttribute[0];
     
     public IPattern[] lhs;

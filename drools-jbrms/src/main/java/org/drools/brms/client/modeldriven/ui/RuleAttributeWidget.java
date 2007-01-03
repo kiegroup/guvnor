@@ -2,8 +2,8 @@ package org.drools.brms.client.modeldriven.ui;
 
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.YesNoDialog;
-import org.drools.brms.client.modeldriven.model.RuleAttribute;
-import org.drools.brms.client.modeldriven.model.RuleModel;
+import org.drools.brms.client.rpc.brxml.RuleAttribute;
+import org.drools.brms.client.rpc.brxml.RuleModel;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ChangeListener;

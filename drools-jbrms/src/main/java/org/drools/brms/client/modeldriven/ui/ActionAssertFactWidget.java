@@ -3,8 +3,8 @@ package org.drools.brms.client.modeldriven.ui;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.model.ActionAssertFact;
-import org.drools.brms.client.modeldriven.model.ActionFieldValue;
+import org.drools.brms.client.rpc.brxml.ActionAssertFact;
+import org.drools.brms.client.rpc.brxml.ActionFieldValue;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ChangeListener;

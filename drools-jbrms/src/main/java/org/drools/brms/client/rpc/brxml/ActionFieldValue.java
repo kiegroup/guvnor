@@ -1,15 +1,14 @@
-package org.drools.brms.client.modeldriven.model;
+package org.drools.brms.client.rpc.brxml;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * Holds field/values for "action" parts of the rule.
+ * Holds field and value for "action" parts of the rule.
  * 
  * @author Michael Neale
  */
 public class ActionFieldValue
     implements
-    IsSerializable {
+    PortableObject {
 
     public ActionFieldValue(String field, String value) {
         this.field = field;

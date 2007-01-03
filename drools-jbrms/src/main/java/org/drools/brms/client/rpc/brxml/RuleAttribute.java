@@ -1,6 +1,5 @@
-package org.drools.brms.client.modeldriven.model;
+package org.drools.brms.client.rpc.brxml;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This holds values for rule attributes (eg salience, agenda-group etc).
@@ -8,7 +7,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class RuleAttribute
     implements
-    IsSerializable {
+    PortableObject {
     
     public RuleAttribute(String name,
                          String value) {
@@ -18,4 +17,6 @@ public class RuleAttribute
     public String attributeName;
     public String value;
 
+    public RuleAttribute() {}
+    
 }

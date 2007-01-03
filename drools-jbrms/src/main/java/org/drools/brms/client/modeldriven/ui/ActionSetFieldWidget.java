@@ -3,10 +3,10 @@ package org.drools.brms.client.modeldriven.ui;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.model.ActionFieldValue;
-import org.drools.brms.client.modeldriven.model.ActionSetField;
-import org.drools.brms.client.modeldriven.model.FactPattern;
-import org.drools.brms.client.modeldriven.model.RuleModel;
+import org.drools.brms.client.rpc.brxml.ActionFieldValue;
+import org.drools.brms.client.rpc.brxml.ActionSetField;
+import org.drools.brms.client.rpc.brxml.FactPattern;
+import org.drools.brms.client.rpc.brxml.RuleModel;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ChangeListener;

@@ -1,20 +1,20 @@
 package org.drools.brms.client.ruleeditor;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.model.ActionAssertFact;
-import org.drools.brms.client.modeldriven.model.ActionFieldValue;
-import org.drools.brms.client.modeldriven.model.ActionRetractFact;
-import org.drools.brms.client.modeldriven.model.ActionSetField;
-import org.drools.brms.client.modeldriven.model.CompositeFactPattern;
-import org.drools.brms.client.modeldriven.model.Constraint;
-import org.drools.brms.client.modeldriven.model.DSLSentence;
-import org.drools.brms.client.modeldriven.model.DSLSentenceFragment;
-import org.drools.brms.client.modeldriven.model.FactPattern;
-import org.drools.brms.client.modeldriven.model.IAction;
-import org.drools.brms.client.modeldriven.model.IPattern;
-import org.drools.brms.client.modeldriven.model.RuleModel;
 import org.drools.brms.client.modeldriven.ui.RuleModeller;
 import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.rpc.brxml.ActionAssertFact;
+import org.drools.brms.client.rpc.brxml.ActionFieldValue;
+import org.drools.brms.client.rpc.brxml.ActionRetractFact;
+import org.drools.brms.client.rpc.brxml.ActionSetField;
+import org.drools.brms.client.rpc.brxml.CompositeFactPattern;
+import org.drools.brms.client.rpc.brxml.Constraint;
+import org.drools.brms.client.rpc.brxml.DSLSentence;
+import org.drools.brms.client.rpc.brxml.DSLSentenceFragment;
+import org.drools.brms.client.rpc.brxml.FactPattern;
+import org.drools.brms.client.rpc.brxml.IAction;
+import org.drools.brms.client.rpc.brxml.IPattern;
+import org.drools.brms.client.rpc.brxml.RuleModel;
 
 import com.google.gwt.user.client.ui.Widget;
 

@@ -1,4 +1,4 @@
-package org.drools.brms.client.modeldriven.model;
+package org.drools.brms.client.rpc.brxml;
 
 /**
  * A fact pattern is a declaration of a fact type, and its constraint,

@@ -1,8 +1,13 @@
-package org.drools.brms.client.modeldriven.model;
+package org.drools.brms.client.rpc.brxml;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class Constraint implements IsSerializable {
+/**
+ * This represents a contraint on a fact.
+ * Can also include optional "connective constraints" that extend the options for matches.
+ * @author Michael Neale
+ *
+ */
+public class Constraint implements PortableObject {
     public String fieldBinding;
     public String fieldName;
     public String operator;
