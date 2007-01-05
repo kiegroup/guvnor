@@ -169,7 +169,7 @@ public class PackageItem extends VersionableItem {
      */
     public void removeAsset(String name) {
         try {
-            this.node.getNode( ASSET_FOLDER_NAME + "/" + name ).remove();
+            this.node.getNode( ASSET_FOLDER_NAME + "/" + name ).remove();            
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
@@ -512,6 +512,20 @@ public class PackageItem extends VersionableItem {
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException("Unable to check out package node after creating a new baseline.", e);
         }
+        
+    }
+    
+    /**
+     * Create a new version of the package, but leave statuses the same.
+     */
+    public void createBaseline(String comment) {
+        
+        checkin( comment );
+        try {
+            this.node.checkout();
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException("Unable to check out package node after creating a new baseline.", e);
+        }        
         
     }
 }

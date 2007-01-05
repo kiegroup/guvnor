@@ -498,6 +498,7 @@ public abstract class VersionableItem extends Item {
      * It will also set the last modified property.
      */
     public void checkin(String comment) {
+        checkIsUpdateable();
         try {
             this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance() );
             this.node.setProperty( CHECKIN_COMMENT, comment );

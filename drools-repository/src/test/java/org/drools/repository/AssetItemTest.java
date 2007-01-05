@@ -551,12 +551,38 @@ public class AssetItemTest extends TestCase {
         item.checkin( "lalalala" );
         try {
             item.updateUserProperty( "drools:content", "whee" );
-            fail("should not be able to set build in properties this way.");
+            fail("should not be able to set built in properties this way.");
         }
         catch (IllegalArgumentException e) {
             assertNotNull(e.getMessage());
         }
 
+        
+    }
+    
+    public void testRemoveAssetAndVersion() throws Exception {
+        
+        
+        
+        AssetItem item = getRepo().loadDefaultPackage().addAsset( "testRemoveAsset", "lalalalala" );
+        getRepo().save();
+        getRepo().loadDefaultPackage().createBaseline( "la" );
+        String uuid = item.getUUID();
+        
+        AssetItem loaded = getRepo().loadAssetByUUID( uuid );//.loadPackage( "default" ).loadAsset( "testRemoveAsset" );
+        assertNotNull(loaded);
+        
+        item.remove();
+        getRepo().save();
+        getRepo().loadDefaultPackage().createBaseline( "la" );
+        
+        assertFalse(getRepo().loadPackage( "default" ).getNode().hasNode( "rules/testRemoveAsset" ));
+        
+        //now check that its in the old version
+        PackageItem old = (PackageItem) getRepo().loadDefaultPackage().getPrecedingVersion();
+        
+        AssetItem lazarus = old.loadAsset( "testRemoveAsset" );
+        assertNotNull(lazarus);
         
     }
 }

@@ -330,6 +330,26 @@ public class AssetItem extends CategorisableItem {
         return getStringProperty( property );        
     }
     
+    
+    /**
+     * This will remove the item. 
+     * The repository will need to be saved for this to take effect.
+     * Typically the package that contains this should be versioned before removing this, 
+     * to make it easy to roll back.
+     */
+    public void remove() {
+        checkIsUpdateable();
+        if (this.getDateExpired() != null) {
+            if (this.getDateExpired().before( Calendar.getInstance() )) {
+                throw new RulesRepositoryException("Can't delete an item before its expiry date.");
+            }
+        }
+        try {
+            this.node.remove();
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException(e);
+        }        
+    }
 
     
 
