@@ -30,7 +30,6 @@ import org.drools.repository.RepositoryConfigurator;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.rpc.SerializableException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -209,26 +208,15 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         RulesRepository repo = getRulesRepository();
         AssetItem item = repo.loadAssetByUUID( uuid );
         RuleAsset asset = new RuleAsset();
+        asset.uuid = item.getUUID();
+
         
+        //load standard meta data
         asset.metaData = popuplateMetaData( item );
-
-        if (item.getFormat().equals( AssetFormats.DSL_TEMPLATE_RULE)) {
-            //ok here is where we do DSLs...
-            throw new SerializableException("Can't load DSL rules just yet.");
-
-        } else if (item.getFormat().equals( AssetFormats.BUSINESS_RULE )) { 
-            System.out.println("Contents:" + item.getContent());
-            RuleModel model = BRLPersistence.getInstance().toModel( item.getContent() );
-            asset.content = model;
-        } else {
-            //default to text, goode olde texte, just like mum used to make.
-            RuleContentText text = new RuleContentText();
-            text.content = item.getContent();
-            asset.content = text;
-
-        }
-        asset.metaData.packageName = item.getPackageName();
-        asset.uuid = uuid;
+        
+        //load the content
+        AssetContentFormatHandler handler = new AssetContentFormatHandler();
+        handler.retrieveAssetContent(asset, item);
         
         return asset;
     }
@@ -242,6 +230,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     MetaData popuplateMetaData(AssetItem item) {
         MetaData meta = new MetaData();
 
+        meta.packageName = item.getPackageName();
         
         List cats = item.getCategories();
         meta.categories = new String[cats.size()];
@@ -283,36 +272,26 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     public String checkinVersion(RuleAsset asset) throws SerializableException {        
         RulesRepository repo = getRulesRepository();
         
-        AssetItem rule = repo.loadAssetByUUID( asset.uuid );
+        AssetItem repoAsset = repo.loadAssetByUUID( asset.uuid );
         
         MetaData meta = asset.metaData;
         
-        getMetaDataMapper().copyFromMetaData( meta, rule );
+        getMetaDataMapper().copyFromMetaData( meta, repoAsset );
         
-        rule.updateDateEffective( dateToCalendar( meta.dateEffective ) );
-        rule.updateDateExpired( dateToCalendar( meta.dateExpired ) );        
+        repoAsset.updateDateEffective( dateToCalendar( meta.dateEffective ) );
+        repoAsset.updateDateExpired( dateToCalendar( meta.dateExpired ) );        
         
-        rule.updateCategoryList( meta.categories );
-        updateContentToAsset( rule, asset );
+        repoAsset.updateCategoryList( meta.categories );
+        AssetContentFormatHandler handler = new AssetContentFormatHandler();
+        handler.storeAssetContent( asset, repoAsset );
         
+        repoAsset.checkin( meta.checkinComment );
         
-        
-        rule.checkin( meta.checkinComment );
-        
-        return rule.getUUID();
+        return repoAsset.getUUID();
     }
     
 
-    private void updateContentToAsset(AssetItem repoAsset, RuleAsset asset) throws SerializableException {
-        if (asset.content instanceof RuleContentText) {
-            repoAsset.updateContent( ((RuleContentText)asset.content).content );        
-        } else if (asset.content instanceof RuleModel) {
-            RuleModel model = (RuleModel) asset.content;
-            repoAsset.updateContent( BRLPersistence.getInstance().toXML( model ) );
-        } else {
-            throw new SerializableException("Not able to handle that type of content just yet...");
-        }
-    }
+
 
 
     
