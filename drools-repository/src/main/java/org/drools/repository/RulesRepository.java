@@ -492,8 +492,6 @@ public class RulesRepository {
             Calendar lastModified = Calendar.getInstance();
             rulePackageNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
             
-            rulePackageNode.setProperty( PackageItem.CREATION_DATE_PROPERTY, lastModified );
-            
             this.session.save();
             
             

@@ -54,7 +54,6 @@ public abstract class VersionableItem extends Item {
      */
     public static final String CATEGORY_PROPERTY_NAME         = "drools:categoryReference";
 
-    public static final String CREATION_DATE_PROPERTY         = "drools:createdDate";
 
     /**
      * The possible formats for the format property of the node
@@ -289,6 +288,10 @@ public abstract class VersionableItem extends Item {
         try {
             checkIsUpdateable();
 
+            if (value == null || value.trim().equals( "" )) {
+                return;
+            }
+            
             node.checkout();
             node.setProperty( prop,
                               value );
@@ -697,7 +700,7 @@ public abstract class VersionableItem extends Item {
     public Calendar getCreatedDate() {
         Property prop;
         try {
-            prop = getVersionContentNode().getProperty( CREATION_DATE_PROPERTY );
+            prop = getVersionContentNode().getProperty( "jcr:created" );
             return prop.getDate();
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
