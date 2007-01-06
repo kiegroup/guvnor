@@ -340,7 +340,7 @@ public class AssetItem extends CategorisableItem {
     public void remove() {
         checkIsUpdateable();
         if (this.getDateExpired() != null) {
-            if (this.getDateExpired().before( Calendar.getInstance() )) {
+            if (Calendar.getInstance().before( this.getDateExpired())) {
                 throw new RulesRepositoryException("Can't delete an item before its expiry date.");
             }
         }
