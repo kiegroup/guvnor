@@ -106,9 +106,9 @@ public class ActionAssertFactWidget extends Composite {
                 showAddFieldPopup(w);
             }
         } );
-        
-        horiz.add( edit );
+                
         horiz.add( new Label(completions.getActionDisplayName("assert") + " " + this.model.factType) );
+        horiz.add( edit );
         return horiz;
         
     }

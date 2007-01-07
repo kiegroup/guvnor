@@ -50,7 +50,7 @@ public class FactPatternWidget extends Composite {
             final Constraint c = pattern.constraints[row];
             final int currentRow = row;
 
-            inner.setWidget( row, 0, fieldDropDown(c));/*, new Command() {
+            inner.setWidget( row, 0, fieldLabel(c));/*, new Command() {
                 public void execute() {
                     inner.setWidget( currentRow, 1, operatorDropDown( c ));
                 }                
@@ -108,7 +108,7 @@ public class FactPatternWidget extends Composite {
         
         Image edit = new Image("images/add_field_to_fact.gif");
         edit.setTitle( "Add a field to this condition, or bind a varible to this fact." );
-        horiz.add( edit );
+        
         edit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showPatternPopup(w);
@@ -120,6 +120,7 @@ public class FactPatternWidget extends Composite {
         } else {
             horiz.add( new Label(pattern.factType));
         }
+        horiz.add( edit );
         
         return horiz;
         
@@ -277,7 +278,7 @@ public class FactPatternWidget extends Composite {
     }
 
 
-    private Widget fieldDropDown(final Constraint con) {//, final Command onChange) {
+    private Widget fieldLabel(final Constraint con) {//, final Command onChange) {
         return new Label(con.fieldName);
     }
     

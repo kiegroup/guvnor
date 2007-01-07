@@ -74,9 +74,9 @@ public class CompositeFactPatternWidget extends Composite {
                 showFactTypeSelector( w );
             }
         } );
-
-        horiz.add( edit );
+        
         horiz.add( new Label( completions.getCEDisplayName( pattern.type ) ) );
+        horiz.add( edit );
         return horiz;
     }
 
