@@ -157,7 +157,9 @@ public class RuleModeller extends Composite {
                 w.setStyleName( "model-builderInner-Background" );
             }
             
-            vert.add( spacerWidget() );
+            //w.setWidth( "100%" );            
+            vert.add( spacerWidget() );            
+            //vert.setWidth( "100%" );
             
             HorizontalPanel horiz = new HorizontalPanel();
             
@@ -177,9 +179,12 @@ public class RuleModeller extends Composite {
                 }
             } );
             horiz.add( w );
+            if (!(w instanceof ActionRetractFactWidget)) {
+                w.setWidth( "100%" );
+                horiz.setWidth( "100%" );
+            }
+            
             horiz.add( remove );
-            
-            
             vert.add( horiz );
             
         }
@@ -408,13 +413,13 @@ public class RuleModeller extends Composite {
             Widget w = null;
             if (pattern instanceof FactPattern) {                  
                 w = new FactPatternWidget(this, pattern, completions, true) ;
-                vert.add( addLhsWidget( model,
+                vert.add( wrapLHSWidget( model,
                               i,
                               w ) );
                 vert.add( spacerWidget() );
             } else if (pattern instanceof CompositeFactPattern) {
                 w = new CompositeFactPatternWidget(this, (CompositeFactPattern) pattern, completions) ;
-                vert.add( addLhsWidget( model, i, w ));
+                vert.add( wrapLHSWidget( model, i, w ));
                 vert.add( spacerWidget() );
             } else if (pattern instanceof DSLSentence) {
                 //ignore this time                
@@ -434,12 +439,12 @@ public class RuleModeller extends Composite {
             if (pattern instanceof DSLSentence) {
                 w = new DSLSentenceWidget((DSLSentence) pattern);
 
-                dsls.add( addLhsWidget( model, i, w ) );
+                dsls.add( wrapLHSWidget( model, i, w ) );
                 dsls.setStyleName( "model-builderInner-Background" );
             }
         }
         vert.add( dsls );
-        
+
         
         
         return vert;
@@ -452,9 +457,9 @@ public class RuleModeller extends Composite {
     }
 
     /**
-     * This adds the widget to the UI, also adding the  
+     * This adds the widget to the UI, also adding the remove icon.
      */
-    private Widget addLhsWidget(final RuleModel model,
+    private Widget wrapLHSWidget(final RuleModel model,
                               int i,
                               Widget w) {
         HorizontalPanel horiz = new HorizontalPanel();
@@ -481,12 +486,15 @@ public class RuleModeller extends Composite {
         } );
         
 
+        horiz.setWidth( "100%" );
+        w.setWidth( "100%" );
+        
         horiz.add( w );
         horiz.add( remove );
 
         return horiz;
 
-        //vert.add( horiz );
+
     }
 
 
