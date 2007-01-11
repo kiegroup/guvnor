@@ -6,6 +6,7 @@ import java.util.List;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.YesNoDialog;
+import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
@@ -223,12 +224,12 @@ public class RuleModeller extends Composite {
         //
         // The list of top level CEs
         //
-        String ces[]  = completions.getListOfCEs();
+        String ces[]  = HumanReadable.CONDITIONAL_ELEMENTS;
         final ListBox ceBox = new ListBox();
         ceBox.addItem( "Choose condition type...", "IGNORE" ); 
         for ( int i = 0; i < ces.length; i++ ) {
             String ce = ces[i];
-            ceBox.addItem( completions.getCEDisplayName( ce ), ce );
+            ceBox.addItem( HumanReadable.getCEDisplayName( ce ), ce );
         }
         ceBox.setSelectedIndex( 0 );
         
@@ -247,18 +248,18 @@ public class RuleModeller extends Composite {
         //
         // The list of DSL sentences
         //
-        if (completions.getDSLConditions().size() > 0) {
+        if (completions.getDSLConditions().length > 0) {
             final ListBox dsls = new ListBox();
             dsls.addItem( "Choose..." );
-            for(int i = 0; i < completions.getDSLConditions().size(); i++ ) {
-                DSLSentence sen = (DSLSentence) completions.getDSLConditions().get( i );
+            for(int i = 0; i < completions.getDSLConditions().length; i++ ) {
+                DSLSentence sen = completions.getDSLConditions()[i];
                 dsls.addItem( sen.toString(), Integer.toString( i ) );
             }
             
             dsls.addChangeListener( new ChangeListener() {
                 public void onChange(Widget w) {
                     int idx = Integer.parseInt( dsls.getValue( dsls.getSelectedIndex() ) );
-                    addNewDSLLhs( (DSLSentence) completions.getDSLConditions().get( idx ) );
+                    addNewDSLLhs( (DSLSentence) completions.getDSLConditions()[ idx ] );
                     popup.hide();
                 }
             });
@@ -349,18 +350,18 @@ public class RuleModeller extends Composite {
         //
         // The list of DSL sentences
         //
-        if (completions.getDSLActions().size() > 0) {
+        if (completions.getDSLActions().length > 0) {
             final ListBox dsls = new ListBox();
             dsls.addItem( "Choose..." );
-            for(int i = 0; i < completions.getDSLActions().size(); i++ ) {
-                DSLSentence sen = (DSLSentence) completions.getDSLActions().get( i );
+            for(int i = 0; i < completions.getDSLActions().length; i++ ) {
+                DSLSentence sen = (DSLSentence) completions.getDSLActions()[ i ];
                 dsls.addItem( sen.toString(), Integer.toString( i ) );
             }
             
             dsls.addChangeListener( new ChangeListener() {
                 public void onChange(Widget w) {
                     int idx = Integer.parseInt( dsls.getValue( dsls.getSelectedIndex() ) );
-                    addNewDSLRhs( (DSLSentence) completions.getDSLActions().get( idx ) );
+                    addNewDSLRhs( (DSLSentence) completions.getDSLActions()[ idx ] );
                     popup.hide();
                 }
             });

@@ -1,6 +1,5 @@
 package org.drools.brms.client.modeldriven;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import junit.framework.TestCase;
@@ -12,30 +11,24 @@ public class SuggestionCompletionTest extends TestCase {
         
         SuggestionCompletionEngine com = new SuggestionCompletionEngine();
 
-        com.load(
-                     new HashMap() {{
-                         put( "Person", new String[] {"age", "name"} );
-                         put( "Vehicle", new String[] {"type", "make"} );
-                     }},
-                     new HashMap() {{
-                         put( "Person.name", new String[] {"==", "!="});
-                         put( "Person.age", new String[] {"==", "!=", "<", ">"});
-                         
-                     }},
-                     new HashMap() {{
-                         put("Vehicle.make", new String[] {"|="});  
-                     }},
-                     new HashMap() {{
-                         put("foo", new String[] {"bar", "baz"});
-                     }},  
-                     new ArrayList() {{
-                         
-                     }}, 
-                     new ArrayList() {{
-                         
-                     }}
-                     
-        );
+        com.factTypes = new String[] {"Person", "Vehicle"};
+        com.fieldsForType = new HashMap() {{
+            put("Person", new String[] {"age", "name", "rank"});
+            put("Vehicle", new String[] {"type", "make"});
+        }};
+        com.fieldTypes = new HashMap() {{
+           put("Person.age", "Numeric");
+           put("Person.rank", "Comparable");
+           put("Person.name", "String");
+           put("Vehicle.make", "String");
+           put("Vehicle.type", "String");
+        }};
+        com.globalTypes = new HashMap() {{
+           put("bar", "Person");
+           put("baz", "Vehicle");
+        }};
+        
+
         
         String[] c =com.getConditionalElements();
         assertEquals("not", c[0]);
@@ -57,38 +50,58 @@ public class SuggestionCompletionTest extends TestCase {
         assertEquals( "make", c[1] );
         
         c = com.getOperatorCompletions( "Person", "name" );
-        assertEquals(2, c.length);
+        assertEquals(3, c.length);
         assertEquals("==", c[0]);
         assertEquals( "!=", c[1] );
+        assertEquals( "matches", c[2] );
         
         
         c = com.getOperatorCompletions( "Person", "age" );
-        assertEquals(4, c.length);
+        assertEquals(6, c.length);
+        assertEquals(c[0], "==");
+        assertEquals(c[1], "!=");
+        assertEquals(c[2], "<" );
+        assertEquals(c[3], ">" );
+        
+        c = com.getOperatorCompletions( "Person", "rank" );        
+        assertEquals(6, c.length);
         assertEquals(c[0], "==");
         assertEquals(c[1], "!=");
         assertEquals(c[2], "<" );
         assertEquals(c[3], ">" );
 
         c = com.getConnectiveOperatorCompletions( "Vehicle", "make" );
-        assertEquals(1, c.length);
-        assertEquals("|=", c[0]);
+        assertEquals(5, c.length);
+        assertEquals("| ==", c[0]);
         
         c = com.getGlobalVariables();
-        assertEquals(1, c.length);
-        assertEquals("foo", c[0]);
-        
-        c = com.getFieldCompletionsForGlobalVariable( "foo" );
         assertEquals(2, c.length);
-        assertEquals("bar", c[0]);
-        assertEquals("baz", c[1]);
+        assertEquals("baz", c[0]);
+        assertEquals("bar", c[1]);
         
+        c = com.getFieldCompletionsForGlobalVariable( "bar" );
+        assertEquals(3, c.length);
+        assertEquals("age", c[0]);
+        assertEquals("name", c[1]);
 
+        c = com.getFieldCompletionsForGlobalVariable( "baz" );
+        assertEquals(2, c.length);
+        assertEquals("type", c[0]);
+        assertEquals("make", c[1]);
+
+
+        //check that it has default operators for general objects
+        c = com.getOperatorCompletions( "Person", "wankle" );
+        assertEquals(2, c.length);        
         
     }
     
     public void testAdd() {
         SuggestionCompletionEngine com = new SuggestionCompletionEngine();
-        com.addFact( "Foo", new String[] {"a"});
+        com.factTypes = new String[] {"Foo"};
+        com.fieldsForType = new HashMap() {{
+           put("Foo", new String[] {"a"}); 
+        }};
         
         assertEquals(1, com.getFactTypes().length);
         assertEquals("Foo", com.getFactTypes()[0]);
@@ -112,32 +125,39 @@ public class SuggestionCompletionTest extends TestCase {
 
 
     public void testOperatorMapping() {
-        SuggestionCompletionEngine com = new SuggestionCompletionEngine();
-        assertEquals("is not equal to", com.getOperatorDisplayName("!="));
-        assertEquals("is equal to", com.getOperatorDisplayName("=="));        
-        assertEquals("xxx", com.getOperatorDisplayName("xxx"));
+
+        assertEquals("is not equal to", HumanReadable.getOperatorDisplayName("!="));
+        assertEquals("is equal to", HumanReadable.getOperatorDisplayName("=="));        
+        assertEquals("xxx", HumanReadable.getOperatorDisplayName("xxx"));
     }
     
     public void testCEMapping() {
-        SuggestionCompletionEngine com = new SuggestionCompletionEngine();
-        assertEquals("There is no", com.getCEDisplayName( "not" ));
-        assertEquals("There exists", com.getCEDisplayName( "exists" ));
-        assertEquals("Any of", com.getCEDisplayName( "or" ));
-        assertEquals("xxx", com.getCEDisplayName( "xxx" ));
+
+        assertEquals("There is no", HumanReadable.getCEDisplayName( "not" ));
+        assertEquals("There exists", HumanReadable.getCEDisplayName( "exists" ));
+        assertEquals("Any of", HumanReadable.getCEDisplayName( "or" ));
+        assertEquals("xxx", HumanReadable.getCEDisplayName( "xxx" ));
         
     }
     
     public void testActionMapping() {
-        SuggestionCompletionEngine com = new SuggestionCompletionEngine();
-        assertEquals("Assert", com.getActionDisplayName( "assert" ));
-        assertEquals("foo", com.getActionDisplayName( "foo" ));
+
+        assertEquals("Assert", HumanReadable.getActionDisplayName( "assert" ));
+        assertEquals("foo", HumanReadable.getActionDisplayName( "foo" ));
     }
     
     
     public void testGlobalAndFacts() {
         SuggestionCompletionEngine com = new SuggestionCompletionEngine();
 
-        com.addGlobal( "y", new String[] {"a"} );
+        com.globalTypes = new HashMap() {{
+            put("y", "Foo");
+        }};
+        com.fieldsForType = new HashMap() {{
+           put("Foo", new String[] {"a"}); 
+        }};
+        
+        
         
         assertFalse(com.isGlobalVariable( "x" ));        
         assertTrue(com.isGlobalVariable( "y" ));

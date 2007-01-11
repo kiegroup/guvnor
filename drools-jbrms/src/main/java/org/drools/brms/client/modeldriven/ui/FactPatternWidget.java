@@ -2,6 +2,7 @@ package org.drools.brms.client.modeldriven.ui;
 
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.YesNoDialog;
+import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ConnectiveConstraint;
 import org.drools.brms.client.modeldriven.brxml.Constraint;
@@ -220,7 +221,7 @@ public class FactPatternWidget extends Composite {
         final ListBox box = new ListBox();
         for ( int i = 0; i < ops.length; i++ ) {
             String op = ops[i];
-            box.addItem(completions.getOperatorDisplayName( op ), op );
+            box.addItem(HumanReadable.getOperatorDisplayName( op ), op );
             if (op.equals( con.operator )) {
                 box.setSelectedIndex( i );
             }
@@ -261,7 +262,7 @@ public class FactPatternWidget extends Composite {
         final ListBox box = new ListBox();
         for ( int i = 0; i < ops.length; i++ ) {
             String op = ops[i];
-            box.addItem( completions.getOperatorDisplayName( op ) , op );
+            box.addItem( HumanReadable.getOperatorDisplayName( op ) , op );
             if (op.equals( c.operator )) {
                 box.setSelectedIndex( i );
             }

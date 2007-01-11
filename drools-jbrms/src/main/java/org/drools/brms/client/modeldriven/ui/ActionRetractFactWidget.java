@@ -1,5 +1,6 @@
 package org.drools.brms.client.modeldriven.ui;
 
+import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 
@@ -22,7 +23,7 @@ public class ActionRetractFactWidget extends Composite {
         
         layout.setStyleName( "model-builderInner-Background" );
         
-        layout.setWidget( 0, 0, new Label(com.getActionDisplayName( "retract" )) );
+        layout.setWidget( 0, 0, new Label(HumanReadable.getActionDisplayName( "retract" )) );
         layout.setWidget( 0, 1, new Label( "[" + model.variableName + "]") );
         
         initWidget( layout );

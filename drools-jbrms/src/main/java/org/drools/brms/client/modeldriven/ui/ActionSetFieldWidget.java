@@ -2,6 +2,7 @@ package org.drools.brms.client.modeldriven.ui;
 
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.YesNoDialog;
+import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
@@ -106,7 +107,7 @@ public class ActionSetFieldWidget extends Composite {
         } );
         
         
-        horiz.add( new Label(completions.getActionDisplayName("set") + " [" + model.variable + "]") );
+        horiz.add( new Label(HumanReadable.getActionDisplayName("set") + " [" + model.variable + "]") );
         horiz.add( edit );
         
         return horiz;

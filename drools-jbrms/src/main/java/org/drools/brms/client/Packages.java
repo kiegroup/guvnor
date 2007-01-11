@@ -1,5 +1,7 @@
 package org.drools.brms.client;
 
+import java.util.HashMap;
+
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
@@ -51,23 +53,25 @@ public class Packages extends JBRMSFeature {
     private SuggestionCompletionEngine getDummySuggestionEngine() {
         SuggestionCompletionEngine com = new SuggestionCompletionEngine();
         
-        com.addFact( "Person", new String[] {"age", "name"}  );
-        com.addFact("Vehicle", new String[] {"type", "make"} );
-        com.addOperators( "Person", "name", new String[] {"==", "!="});
-        com.addOperators( "Person", "age", new String[] {"==", "!=", "<", ">", "<=", ">="});
-        com.addOperators( "Vehicle", "age", new String[] {"==", "!=", "<", ">"});
-        com.addOperators( "Vehicle", "type", new String[] {"==", "!=", "<", ">"});
+        com.factTypes = new String[] {"Person", "Vehicle"};
+        com.fieldTypes = new HashMap() {{
+            put("Person.age", SuggestionCompletionEngine.TYPE_NUMERIC);
+            put("Person.name", "String");
+            put("Vehicle.type", "String");
+            put("Vehcile.make", "String");
+        }};
 
-        com.addConnectiveOperators( "Person", "name", new String[] {"|=", "!="});
-
+        com.fieldsForType = new HashMap() {{
+           put("Person", new String[] {"age", "name"});
+           put("Vehicle", new String[] {"type", "make"});
+        }};
         
-        com.addConnectiveOperators( "Vehicle", "make", new String[] {"|="});
         
         DSLSentence sen = new DSLSentence();
         sen.elements = new DSLSentenceFragment[2];
         sen.elements[0] = new DSLSentenceFragment("This is a dsl expression", false);
         sen.elements[1] = new DSLSentenceFragment("(something)", true);
-        com.addDSLCondition( sen );
+        com.conditionDSLSentences = new DSLSentence[] {sen};
 
         
         sen = new DSLSentence();
@@ -75,13 +79,13 @@ public class Packages extends JBRMSFeature {
         sen.elements[0] = new DSLSentenceFragment("Send an email to [", false);
         sen.elements[1] = new DSLSentenceFragment("(someone)", true);
         sen.elements[2] = new DSLSentenceFragment("]", false);
-        com.addDSLAction( sen );
         
-        sen = new DSLSentence();
-        sen.elements = new DSLSentenceFragment[1];
-        sen.elements[0] = new DSLSentenceFragment("do nothing", false);        
-        com.addDSLAction( sen );
         
+        DSLSentence sen2 = new DSLSentence();
+        sen2.elements = new DSLSentenceFragment[1];
+        sen2.elements[0] = new DSLSentenceFragment("do nothing", false);        
+        
+        com.actionDSLSentences = new DSLSentence[] {sen, sen2};
         
         
         return com;
