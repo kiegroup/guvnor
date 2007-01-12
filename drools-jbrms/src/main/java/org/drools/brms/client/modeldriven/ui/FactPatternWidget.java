@@ -1,6 +1,7 @@
 package org.drools.brms.client.modeldriven.ui;
 
 import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.common.FieldEditListener;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
@@ -253,6 +254,13 @@ public class FactPatternWidget extends Composite {
             }
             
         });
+        
+        box.addKeyboardListener( new FieldEditListener(new Command() {
+            public void execute() {
+                box.setVisibleLength( box.getText().length() );
+            }            
+        }));
+        
         return box;
     }
 

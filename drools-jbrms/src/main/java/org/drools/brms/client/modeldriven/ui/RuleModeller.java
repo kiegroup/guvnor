@@ -118,7 +118,10 @@ public class RuleModeller extends Composite {
         list.addItem( "agenda-group" );
         list.addItem( "activation-group" );
         list.addItem( "duration" );
-        list.addItem( "auto-focus" );        
+        list.addItem( "auto-focus" ); 
+        list.addItem( "date-effective" );
+        list.addItem( "date-expires" );
+        list.addItem( "enabled" );
         
         list.setSelectedIndex( 0 );
         

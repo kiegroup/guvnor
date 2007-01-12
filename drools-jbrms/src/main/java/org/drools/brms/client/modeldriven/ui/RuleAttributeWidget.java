@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -54,6 +55,29 @@ public class RuleAttributeWidget extends Composite {
         HorizontalPanel horiz = new HorizontalPanel();
         horiz.add( box );
         horiz.add( getRemoveIcon( idx ) );
+        
+        box.addKeyboardListener( new KeyboardListener() {
+
+            public void onKeyDown(Widget arg0,
+                                  char arg1,
+                                  int arg2) {
+
+                
+            }
+
+            public void onKeyPress(Widget arg0,
+                                   char arg1,
+                                   int arg2) {
+                
+            }
+
+            public void onKeyUp(Widget arg0,
+                                char arg1,
+                                int arg2) {
+                box.setVisibleLength( box.getText().length() );
+            }
+            
+        });
         
         return horiz;
     }
