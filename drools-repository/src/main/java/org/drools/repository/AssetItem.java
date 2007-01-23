@@ -35,7 +35,6 @@ public class AssetItem extends CategorisableItem {
 
     public static final String CONTENT_PROPERTY_NAME        = "drools:content";
 
-    public static final String CONTENT_URI_PROPERTY_NAME    = "drools:contentURI";
 
     /**
      * The name of the date effective property on the rule node type
@@ -97,28 +96,6 @@ public class AssetItem extends CategorisableItem {
         }
     }
 
-    /**
-     * returns the URI for where the rules content is stored.
-     * Rule content may be stored in an external repository, 
-     * such as subversion. This URI will contain information for
-     * how to get to the exact version that maps to this rule node.
-     */
-    public String getContentURI() throws RulesRepositoryException {
-        try {
-            Node ruleNode = getVersionContentNode();
-            if ( ruleNode.hasProperty( CONTENT_URI_PROPERTY_NAME ) ) {
-                Property data = ruleNode.getProperty( CONTENT_URI_PROPERTY_NAME );
-                return data.getValue().getString();
-            } else {
-                return "";
-            }
-
-        } catch ( Exception e ) {
-            log.error( "Caught Exception",
-                       e );
-            throw new RulesRepositoryException( e );
-        }
-    }
 
     /**
      * @return the date the rule becomes effective
@@ -218,34 +195,21 @@ public class AssetItem extends CategorisableItem {
         }
     }
 
-    /**
-     * The URI represents a location for 
-     */
-    public void updateContentURI(String newURI) throws RulesRepositoryException {
-        checkout();
-        try {
-            this.node.setProperty( CONTENT_URI_PROPERTY_NAME,
-                                   newURI );
-        } catch ( RepositoryException e ) {
-            log.error( "Caught Exception",
-                       e );
-            throw new RulesRepositoryException( e );
-        }
-    }
 
 
     /**
      * This updates a user defined property (not one of the intrinsic ones).
      */
-    public void updateUserProperty(String propertyName, String value) {
-        if (propertyName.startsWith( "drools:" )) { 
-            throw new IllegalArgumentException("Can only set the pre defined fields using the appropriate methods.");
+    public void updateUserProperty(String propertyName,
+                                   String value) {
+        if ( propertyName.startsWith( "drools:" ) ) {
+            throw new IllegalArgumentException( "Can only set the pre defined fields using the appropriate methods." );
         }
-        updateStringProperty( value, propertyName );        
-        
+        updateStringProperty( value,
+                              propertyName );
+
     }
-    
-    
+
     /**
      * Nicely formats the information contained by the node that this object encapsulates
      */
@@ -254,7 +218,6 @@ public class AssetItem extends CategorisableItem {
             StringBuffer returnString = new StringBuffer();
             returnString.append( "Content of rule item named '" + this.getName() + "':\n" );
             returnString.append( "Content: " + this.getContent() + "\n" );
-            returnString.append( "Content URI: " + this.getContentURI() + "\n" );
             returnString.append( "------\n" );
 
             returnString.append( "Date Effective: " + this.getDateEffective() + "\n" );
@@ -327,10 +290,9 @@ public class AssetItem extends CategorisableItem {
      * @return A property value (for a user defined property).
      */
     public String getUserProperty(String property) {
-        return getStringProperty( property );        
+        return getStringProperty( property );
     }
-    
-    
+
     /**
      * This will remove the item. 
      * The repository will need to be saved for this to take effect.
@@ -339,18 +301,18 @@ public class AssetItem extends CategorisableItem {
      */
     public void remove() {
         checkIsUpdateable();
-        if (this.getDateExpired() != null) {
-            if (Calendar.getInstance().before( this.getDateExpired())) {
-                throw new RulesRepositoryException("Can't delete an item before its expiry date.");
+        if ( this.getDateExpired() != null ) {
+            if ( Calendar.getInstance().before( this.getDateExpired() ) ) {
+                throw new RulesRepositoryException( "Can't delete an item before its expiry date." );
             }
         }
         try {
             this.node.remove();
         } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException(e);
-        }        
+            throw new RulesRepositoryException( e );
+        }
     }
 
-    
+
 
 }

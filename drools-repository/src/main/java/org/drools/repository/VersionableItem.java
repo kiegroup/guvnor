@@ -77,6 +77,8 @@ public abstract class VersionableItem extends Item {
 
     /**
      * @return A unique identifier for this items content node.
+     * This UUID is constant even with new versions, it represents the asset, and 
+     * ALL its historical versions.
      */
     public String getUUID() {
         try {
@@ -721,5 +723,25 @@ public abstract class VersionableItem extends Item {
             throw new RulesRepositoryException( e );
         }
     }
+    
+    /**
+     * This returns the id of the exact version node (as opposed to the "main" node).
+     * Note that each asset has only one UUID the whole time, but there are also UUIDs 
+     * for each item in the history.
+     * So while the main UUID version remains constant, the version UUIDs change on each
+     * checkin, which is what this method provides.
+     */
+    public String getVersionSnapshotUUID() {
+        try {
+            if ( isHistoricalVersion() ) {
+                return this.node.getUUID();
+            } else {
+                throw new RulesRepositoryException( "This is the current version of the asset." );
+            }
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException(e);
+        }
+
+    }    
     
 }

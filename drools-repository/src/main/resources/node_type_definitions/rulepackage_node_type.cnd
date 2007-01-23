@@ -28,8 +28,3 @@
   < 'drools:ruleNodeType','nt:version'
 */
 
-//this will need to be removed eventually, best done like rules
-- drools:functionReference (reference)
-  multiple
-  copy
-  < 'drools:functionNodeType','nt:version'

@@ -17,7 +17,6 @@
 
 // Properties:
 - drools:content (string)
-- drools:contentURI (string)
 
   
 // use this to capture fields which are not known ahead of time 
@@ -27,12 +26,11 @@
 
 - drools:dateExpired (date)
   
+
+  
 - drools:packageName (string)
   mandatory  
   
 
-- drools:dslReference (reference)
-  copy 
-  < 'drools:dslNodeType','nt:version'
 
 

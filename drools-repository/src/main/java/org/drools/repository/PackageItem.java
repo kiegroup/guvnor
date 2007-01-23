@@ -43,17 +43,6 @@ public class PackageItem extends VersionableItem {
      * The dublin core format attribute.
      */
     public static final String PACKAGE_FORMAT                    = "package";
-    /**
-     * The name of the reference property on the rulepackage_node_type type node that objects of
-     * this type hold a reference to
-     */
-    public static final String RULE_REFERENCE_PROPERTY_NAME     = "drools:ruleReference";
-
-    /**
-     * The name of the reference property on the rulepackage_node_type type node that objects of
-     * this type hold a reference to
-     */
-    public static final String FUNCTION_REFERENCE_PROPERTY_NAME = "drools:functionReference";
 
     /**
      * The name of the rule package node type

@@ -114,9 +114,7 @@ public class RepositoryConfigurator {
                 this.registerNodeTypesFromCndFile("/node_type_definitions/versionable_node_type.cnd", ws);
                 this.registerNodeTypesFromCndFile("/node_type_definitions/versionable_asset_folder_node_type.cnd", ws);
                 
-                this.registerNodeTypesFromCndFile("/node_type_definitions/dsl_node_type.cnd", ws);            
                 this.registerNodeTypesFromCndFile("/node_type_definitions/rule_node_type.cnd", ws);
-                this.registerNodeTypesFromCndFile("/node_type_definitions/function_node_type.cnd", ws);
                 this.registerNodeTypesFromCndFile("/node_type_definitions/rulepackage_node_type.cnd", ws);
              
             }

@@ -67,15 +67,6 @@ public class AssetItemTest extends TestCase {
             assertEquals("test content", ruleItem1.getContent());
     }
 
-    public void testGetURI() {
-            AssetItem ruleItem1 = getDefaultPackage().addAsset("testGetURI", "blah");
-            ruleItem1.checkin( "version0" );
-            ruleItem1.updateContentURI( "foo/bar" );
-            ruleItem1.checkin( "ha !" );
-            assertNotNull(ruleItem1);
-            assertNotNull(ruleItem1.getNode());
-            assertEquals("foo/bar", ruleItem1.getContentURI());
-    }
     
     public void testUpdateContent() {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testUpdateContent", "test description");
@@ -362,8 +353,7 @@ public class AssetItemTest extends TestCase {
             
     }
     
-    public void testGetPrecedingVersion() {
-        
+    public void testGetPrecedingVersionAndRestore() throws Exception {
             getRepo().loadCategory( "/" ).addCategory( "foo", "ka" );
             AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetPrecedingVersion", "descr");
             ruleItem1.checkin( "version0" );
@@ -376,8 +366,15 @@ public class AssetItemTest extends TestCase {
             AssetItem predecessorRuleItem = (AssetItem) ruleItem1.getPrecedingVersion();
             assertNotNull(predecessorRuleItem);            
             
+            //check version handling
+            assertNotNull(predecessorRuleItem.getVersionSnapshotUUID());
+            assertFalse(predecessorRuleItem.getVersionSnapshotUUID().equals( ruleItem1.getUUID() ));            
+            
+            AssetItem loadedHistorical = getRepo().loadAssetByUUID( predecessorRuleItem.getVersionSnapshotUUID() );
+            assertTrue(loadedHistorical.isHistoricalVersion());
+            assertFalse(ruleItem1.getVersionNumber().equals(loadedHistorical.getVersionNumber()));
+            
             ruleItem1.updateContent("new content");
-            ruleItem1.updateContentURI( "foobar" );
             ruleItem1.checkin( "two changes" );
             
             predecessorRuleItem = (AssetItem) ruleItem1.getPrecedingVersion();
@@ -400,6 +397,15 @@ public class AssetItemTest extends TestCase {
             assertNotNull(predecessorRuleItem);
             assertEquals("test content", predecessorRuleItem.getContent());
  
+            //now try restoring
+            String oldVersionUUID = predecessorRuleItem.getVersionSnapshotUUID();
+            
+            getRepo().restoreHistoricalAsset( oldVersionUUID  );
+            
+            AssetItem restored = getRepo().loadDefaultPackage().loadAsset( "testGetPrecedingVersion" );
+
+            assertEquals( predecessorRuleItem.getCheckinComment(), restored.getCheckinComment());
+            
     }
     
     public void testGetSucceedingVersion() {

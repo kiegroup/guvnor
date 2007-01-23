@@ -23,6 +23,7 @@ import javax.jcr.Value;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 
 import org.apache.log4j.Logger;
@@ -443,6 +444,17 @@ public class RulesRepository {
             }
         }
     }    
+    
+    public void restoreHistoricalAsset(String uuid) {
+        AssetItem item = loadAssetByUUID( uuid );
+        Version v = (Version) item.getNode();
+        try {
+            this.session.getWorkspace().restore( new Version[] {v}, false );
+        } catch ( RepositoryException e ) {
+            log.error( "Unable to restore version of asset.", e );
+            throw new RulesRepositoryException(e);
+        }
+    }
     
     
     /**
