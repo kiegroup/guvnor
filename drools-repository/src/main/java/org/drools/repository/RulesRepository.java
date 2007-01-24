@@ -445,11 +445,17 @@ public class RulesRepository {
         }
     }    
     
-    public void restoreHistoricalAsset(String uuid) {
-        AssetItem item = loadAssetByUUID( uuid );
-        Version v = (Version) item.getNode();
+    public void restoreHistoricalAsset(String versionUUID, String assetUUID, String comment) {
+        AssetItem head = loadAssetByUUID( assetUUID );
+        String oldVersionNumber = head.getVersionNumber();
+        
+        AssetItem version = loadAssetByUUID( versionUUID );
+        Version v = (Version) version.getNode();
         try {
             this.session.getWorkspace().restore( new Version[] {v}, false );
+            AssetItem newHead = loadAssetByUUID( assetUUID );
+            newHead.updateStringProperty( oldVersionNumber, VersionableItem.VERSION_NUMBER_PROPERTY_NAME );
+            newHead.checkin( comment );
         } catch ( RepositoryException e ) {
             log.error( "Unable to restore version of asset.", e );
             throw new RulesRepositoryException(e);

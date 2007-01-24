@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.version.Version;
+import javax.jcr.version.VersionIterator;
 
 import junit.framework.TestCase;
 
@@ -68,7 +69,7 @@ public class AssetItemTest extends TestCase {
     }
 
     
-    public void testUpdateContent() {
+    public void testUpdateContent() throws Exception {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testUpdateContent", "test description");
             ruleItem1.updateContent( "test content" );            
             ruleItem1.checkin( "yeah" );
@@ -88,6 +89,20 @@ public class AssetItemTest extends TestCase {
             
             assertEquals(prev, ruleItem1.getPrecedingVersion());
 
+            
+            ruleItem1 = getDefaultPackage().loadAsset( "testUpdateContent" );
+            VersionIterator it = ruleItem1.getNode().getVersionHistory().getAllVersions();
+
+            // and this shows using a version iterator. 
+            // perhaps migrate to using this rather then next/prev methods.
+            //this way, we can skip.
+            assertTrue(it.hasNext());
+            while (it.hasNext()) {
+                Version n = it.nextVersion();
+                AssetItem item = new AssetItem(ruleItem1.getRulesRepository(), n);
+                assertNotNull(item);
+                
+            }
     }
     
 
@@ -361,6 +376,8 @@ public class AssetItemTest extends TestCase {
             
             ruleItem1.addCategory( "foo" );
             ruleItem1.updateContent( "test content" );
+            ruleItem1.updateDescription( "descr2" );
+            Thread.sleep( 100 );
             ruleItem1.checkin( "boo" );
             
             AssetItem predecessorRuleItem = (AssetItem) ruleItem1.getPrecedingVersion();
@@ -368,7 +385,16 @@ public class AssetItemTest extends TestCase {
             
             //check version handling
             assertNotNull(predecessorRuleItem.getVersionSnapshotUUID());
-            assertFalse(predecessorRuleItem.getVersionSnapshotUUID().equals( ruleItem1.getUUID() ));            
+            assertFalse(predecessorRuleItem.getVersionSnapshotUUID().equals( ruleItem1.getUUID() ));
+
+            
+            //assertEquals(predecessorRuleItem.getCreatedDate().getTimeInMillis(), ruleItem1.getCreatedDate().getTimeInMillis());
+            
+            
+            assertEquals(ruleItem1.getState().getName(), predecessorRuleItem.getState().getName());
+            //assertEquals(ruleItem1.getName(), predecessorRuleItem.getName());
+            
+            
             
             AssetItem loadedHistorical = getRepo().loadAssetByUUID( predecessorRuleItem.getVersionSnapshotUUID() );
             assertTrue(loadedHistorical.isHistoricalVersion());
@@ -384,7 +410,7 @@ public class AssetItemTest extends TestCase {
             assertEquals("foo", cat.getName());
             
             assertEquals("test content", predecessorRuleItem.getContent());
-            assertEquals("descr", predecessorRuleItem.getDescription());
+
             assertEquals("default", predecessorRuleItem.getPackageName());
             
             ruleItem1.updateContent("newer lhs");
@@ -399,13 +425,18 @@ public class AssetItemTest extends TestCase {
  
             //now try restoring
             String oldVersionUUID = predecessorRuleItem.getVersionSnapshotUUID();
+            String oldVersionNumber = ruleItem1.getVersionNumber();
             
-            getRepo().restoreHistoricalAsset( oldVersionUUID  );
+            getRepo().restoreHistoricalAsset( oldVersionUUID, ruleItem1.getUUID(), "cause I want to"  );
+            
             
             AssetItem restored = getRepo().loadDefaultPackage().loadAsset( "testGetPrecedingVersion" );
 
-            assertEquals( predecessorRuleItem.getCheckinComment(), restored.getCheckinComment());
-            
+            //assertEquals( predecessorRuleItem.getCheckinComment(), restored.getCheckinComment());
+            assertEquals(predecessorRuleItem.getDescription(), restored.getDescription());
+            assertEquals("cause I want to", restored.getCheckinComment());
+            assertEquals("5", restored.getVersionNumber());
+            assertFalse(oldVersionNumber.equals( restored.getVersionNumber() ));
     }
     
     public void testGetSucceedingVersion() {

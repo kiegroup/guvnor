@@ -8,6 +8,7 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
+import javax.jcr.version.Version;
 
 import org.drools.repository.util.VersionNumberGenerator;
 
@@ -464,7 +465,7 @@ public abstract class VersionableItem extends Item {
      */
     public String getName() {
         try {
-            return getVersionContentNode().getName();
+                return getVersionContentNode().getName();
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
@@ -702,7 +703,7 @@ public abstract class VersionableItem extends Item {
     public Calendar getCreatedDate() {
         Property prop;
         try {
-            prop = getVersionContentNode().getProperty( "jcr:created" );
+            prop = this.node.getProperty( "jcr:created" );
             return prop.getDate();
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
