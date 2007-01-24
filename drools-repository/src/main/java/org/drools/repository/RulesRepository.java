@@ -459,7 +459,7 @@ public class RulesRepository {
         
         Version v = (Version) versionToRestore.getNode();
         try {
-            this.session.getWorkspace().restore( new Version[] {v}, false );
+            headVersion.getNode().restore( v, true );
             AssetItem newHead = loadAssetByUUID( headVersion.getUUID() );
             newHead.updateStringProperty( oldVersionNumber, VersionableItem.VERSION_NUMBER_PROPERTY_NAME );
             newHead.checkin( comment );
