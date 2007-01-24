@@ -444,16 +444,23 @@ public class RulesRepository {
             }
         }
     }    
-    
-    public void restoreHistoricalAsset(String versionUUID, String assetUUID, String comment) {
-        AssetItem head = loadAssetByUUID( assetUUID );
-        String oldVersionNumber = head.getVersionNumber();
+
+    /**
+     * This will restore the historical version, save, and check it in as a new
+     * version with the given comment.
+     * 
+     * @param versionToRestore
+     * @param headVersion
+     * @param comment
+     */
+    public void restoreHistoricalAsset(AssetItem versionToRestore, AssetItem headVersion, String comment) {
         
-        AssetItem version = loadAssetByUUID( versionUUID );
-        Version v = (Version) version.getNode();
+        String oldVersionNumber = headVersion.getVersionNumber();
+        
+        Version v = (Version) versionToRestore.getNode();
         try {
             this.session.getWorkspace().restore( new Version[] {v}, false );
-            AssetItem newHead = loadAssetByUUID( assetUUID );
+            AssetItem newHead = loadAssetByUUID( headVersion.getUUID() );
             newHead.updateStringProperty( oldVersionNumber, VersionableItem.VERSION_NUMBER_PROPERTY_NAME );
             newHead.checkin( comment );
         } catch ( RepositoryException e ) {

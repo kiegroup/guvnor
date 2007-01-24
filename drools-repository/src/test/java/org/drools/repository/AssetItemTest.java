@@ -424,10 +424,11 @@ public class AssetItemTest extends TestCase {
             assertEquals("test content", predecessorRuleItem.getContent());
  
             //now try restoring
-            String oldVersionUUID = predecessorRuleItem.getVersionSnapshotUUID();
             String oldVersionNumber = ruleItem1.getVersionNumber();
             
-            getRepo().restoreHistoricalAsset( oldVersionUUID, ruleItem1.getUUID(), "cause I want to"  );
+            AssetItem toRestore = getRepo().loadAssetByUUID( predecessorRuleItem.getVersionSnapshotUUID() );
+            
+            getRepo().restoreHistoricalAsset( toRestore, ruleItem1, "cause I want to"  );
             
             
             AssetItem restored = getRepo().loadDefaultPackage().loadAsset( "testGetPrecedingVersion" );
