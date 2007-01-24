@@ -71,7 +71,6 @@ public class MockRepositoryServiceAsync
                                           AsyncCallback callback)  {
         log("loading rule list", "for cat path: " + categoryPath);
         TableDataResult result = new TableDataResult();
-        result.numberOfRows = 42;
         
         result.data = new TableDataRow[42];
         
@@ -328,6 +327,23 @@ public class MockRepositoryServiceAsync
             cb.onSuccess( "alanparsons" );
         }
         
+        
+    }
+
+
+
+    public void loadAssetHistory(String p0,
+                                 AsyncCallback cb) {
+        cb.onSuccess( null );
+    }
+
+
+
+    public void restoreVersion(String p0,
+                               String p1,
+                               String p2,
+                               AsyncCallback cb) {
+        cb.onSuccess( null );
         
     }
     

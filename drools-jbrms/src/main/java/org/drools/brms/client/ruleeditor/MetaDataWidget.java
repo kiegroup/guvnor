@@ -5,6 +5,7 @@ import java.util.Date;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.rpc.MetaData;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
@@ -21,11 +22,20 @@ public class MetaDataWidget extends FormStyleLayout {
 
     private MetaData data;
     private boolean readOnly;
+    private String uuid;
+    private Command refreshView;
 	
-	public MetaDataWidget(MetaData d, boolean readOnly) {
-        super("images/meta_data.gif", d.name);
+	public MetaDataWidget(MetaData d, boolean readOnly, String uuid, Command refreshView) {
+        
+        if (!readOnly) {
+            addHeader( "images/meta_data.gif", d.name );
+        } else {
+            addHeader( "images/asset_version.png", d.name );
+        }
+        this.uuid = uuid;
         this.data = d;
         this.readOnly = readOnly;
+        this.refreshView = refreshView;
         loadData(d);
 	}
 
@@ -33,6 +43,20 @@ public class MetaDataWidget extends FormStyleLayout {
     private void loadData(MetaData d) {
         this.data = d;
         addAttribute("Categories:", categories());
+           
+        
+        addAttribute("Last modified on:", readOnlyDate(data.lastModifiedDate));
+        addAttribute("Last modified by:", readOnlyText(data.lastContributor));
+        addAttribute("Checkin note:", readOnlyText( data.checkinComment ));
+        addAttribute("Created by:", readOnlyText(data.creator));
+        addAttribute("Version number:", getVersionNumberLabel());
+        addAttribute("Package:", readOnlyText(data.packageName));
+        if (!readOnly) {
+            addAttribute("Created on:", readOnlyDate( data.createdDate ));
+        }
+
+        
+        addRow(new HTML("<hr/>"));
         
         addAttribute("Subject:", editableText(new FieldBinding() {
             public String getValue() {
@@ -42,17 +66,8 @@ public class MetaDataWidget extends FormStyleLayout {
             public void setValue(String val) {
                 data.subject = val;                
             }            
-        }, "A short description of the subject matter."));            
+        }, "A short description of the subject matter."));         
         
-        addAttribute("Last modified on:", readOnlyDate(data.lastModifiedDate));
-        addAttribute("Last modified by:", readOnlyText(data.lastContributor));
-        addAttribute("Checkin note:", readOnlyText( data.lastCheckinComment ));
-        addAttribute("Created by:", readOnlyText(data.creator));
-        addAttribute("Created on:", readOnlyDate( data.createdDate ));
-        addAttribute("Version number:", getVersionNumberLabel());
-        addAttribute("Package:", readOnlyText(data.packageName));
-        
-            
         addAttribute("Type:", editableText(new FieldBinding() {
             public String getValue() {
                 return data.type;
@@ -85,6 +100,10 @@ public class MetaDataWidget extends FormStyleLayout {
             }
             
         }, "A short description or code indicating the source of the rule."));
+        
+        if (!readOnly) {
+            addRow( new VersionBrowser(this.uuid, this.data, refreshView) );
+        }
     }
 
 

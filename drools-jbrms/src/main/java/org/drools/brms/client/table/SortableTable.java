@@ -62,8 +62,7 @@ public class SortableTable extends Grid implements TableListener {
 	/** 
      * Adds a header, which will be at the zero index in the table.
 	 */
-	public void addColumnHeader(String name, int index){
-               
+	public void setColumnHeader(String name, int index){               
 		tableHeader.add(index, name);
 		this.renderTableHeader(name, index);
 	}

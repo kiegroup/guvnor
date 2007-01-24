@@ -26,14 +26,21 @@ public class RuleViewer extends Composite {
     protected RuleAsset       asset;
 
     private final FlexTable layout;
+    private boolean readOnly;
 
+    public RuleViewer(RuleAsset asset) {
+        this(asset, false);
+    }
+    
     /**
      * @param UUID The resource to open.
      * @param format The type of resource (may determine what editor is used).
      * @param name The name to be displayed.
+     * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
-    public RuleViewer(RuleAsset asset) {
+    public RuleViewer(RuleAsset asset, boolean historicalReadOnly) {
         this.asset = asset;
+        this.readOnly = historicalReadOnly;
         layout = new FlexTable();
         
         doWidgets();
@@ -52,7 +59,13 @@ public class RuleViewer extends Composite {
         this.layout.clear();
         
         final MetaDataWidget metaWidget = new MetaDataWidget( this.asset.metaData,
-                                                              false );
+                                                              readOnly, this.asset.uuid, new Command() {
+
+                                                                public void execute() {
+                                                                    refreshDataAndView();
+                                                                }
+            
+        });
 
 
 
@@ -75,13 +88,13 @@ public class RuleViewer extends Composite {
                                                        public void execute() {
                                                            doCheckin();
                                                        }
-                                                   },                                                   
-                                                   null,
+                                                   },
                                                    new Command() {
                                                        public void execute() {
                                                            toggleMetaDataWidget();
                                                        }
-                                                   });
+                                                   },
+                                                   readOnly);
         toolbar.setCloseCommand( new Command() {
             public void execute() {
                 closeCommand.execute();
@@ -130,22 +143,32 @@ public class RuleViewer extends Composite {
                     return;
                 }
                 
-                RepositoryServiceFactory.getService().loadRuleAsset( uuid, new AsyncCallback() {
-                    public void onFailure(Throwable t) {
-                        ErrorPopup.showMessage( t.getMessage() );
-                    }
-                    public void onSuccess(Object a) {
-                        asset = (RuleAsset) a;
-                        doWidgets();
-                        LoadingPopup.close();
-                    }
-                });
+                refreshDataAndView( );
                 
             }
+
+
             
         });
     }
 
+
+    /**
+     * This will reload the contents from the database, and refresh the widgets.
+     */
+    public void refreshDataAndView() {
+        
+        RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid, new AsyncCallback() {
+            public void onFailure(Throwable t) {
+                ErrorPopup.showMessage( t.getMessage() );
+            }
+            public void onSuccess(Object a) {
+                asset = (RuleAsset) a;
+                doWidgets();
+                LoadingPopup.close();
+            }
+        });
+    }
     
     /**
      * Calling this will toggle the visibility of the meta-data widget (effectively zooming

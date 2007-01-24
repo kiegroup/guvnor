@@ -32,15 +32,12 @@ public class ActionToolbar extends Composite {
     
     private MetaData      metaData;
     private Command checkin;
-    /**
-     * TODO: 
-     *  * need to somehow refresh on checkin? (or just close?)
-     * 
-     */
+
+    
     public ActionToolbar(final MetaData meta, 
-                         final Command checkin,
-                         final ClickListener changeState, 
-                         final Command minimiseMaximise) {
+                         final Command checkin, 
+                         final Command minimiseMaximise, 
+                         boolean readOnly) {
 
         this.metaData = meta;
         this.checkin = checkin;
@@ -50,6 +47,21 @@ public class ActionToolbar extends Composite {
         HorizontalPanel saveControls = new HorizontalPanel();
         HTML state = new HTML("<b>Status: <i>[" + status + "]</i></b>");
         saveControls.add( state );
+        
+        if (!readOnly) {
+        controls( minimiseMaximise,
+                  formatter,
+                  saveControls );
+
+        }
+        
+        initWidget( layout );
+        setWidth( "100%" );
+    }
+
+    private void controls(final Command minimiseMaximise,
+                          FlexCellFormatter formatter,
+                          HorizontalPanel saveControls) {
         Image editState = new Image("images/edit.gif");
         editState.setTitle( "Change state (NOT IMPLEMENTED YET)." );
         saveControls.add( editState );
@@ -100,48 +112,55 @@ public class ActionToolbar extends Composite {
         
         layout.setWidget( 0, 1, windowControls );
         formatter.setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
-
-        
-        
-        initWidget( layout );
-        setWidth( "100%" );
     }
     
     /**
      * Called when user wants to checkin.
      */
     protected void doCheckinConfirm() {
-        final FormStylePopup pop = new FormStylePopup("images/checkin.gif", "Check in changes.");
-        final TextArea comment = new TextArea();
-        comment.setWidth( "100%" );
-        Button save = new Button("Save");
-        pop.addAttribute( "Comment", comment );
-        pop.addAttribute( "", save);
         
-        bindCommentField( comment );
-        
-        
-        save.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                
+        final CheckinPopup pop = new CheckinPopup(200, getAbsoluteTop(), "Check in changes.");
+        pop.setCommand( new Command() {
+
+            public void execute() {
+                metaData.checkinComment = pop.getCheckinComment();
                 checkin.execute();
-                pop.hide();
+                
             }
+
         });
-        
-        pop.setStyleName( "ks-popups-Popup" );
-        pop.setPopupPosition( 200, getAbsoluteTop() );
-        pop.show();        
+        pop.show();
+//        final FormStylePopup pop = new FormStylePopup("images/checkin.gif", "Check in changes.");
+//        final TextArea comment = new TextArea();
+//        comment.setWidth( "100%" );
+//        Button save = new Button("Save");
+//        pop.addAttribute( "Comment", comment );
+//        pop.addAttribute( "", save);
+//        
+//        bindCommentField( comment );
+//        
+//        
+//        save.addClickListener( new ClickListener() {
+//            public void onClick(Widget w) {
+//                
+//                checkin.execute();
+//                pop.hide();
+//            }
+//        });
+//        
+//        pop.setStyleName( "ks-popups-Popup" );
+//        pop.setPopupPosition( 200, getAbsoluteTop() );
+//        pop.show();        
         
     }
 
-    private void bindCommentField(final TextArea comment) {
-        comment.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                metaData.checkinComment = comment.getText();
-            }
-        });
-    }
+//    private void bindCommentField(final TextArea comment) {
+//        comment.addChangeListener( new ChangeListener() {
+//            public void onChange(Widget w) {
+//                metaData.checkinComment = comment.getText();
+//            }
+//        });
+//    }
 
     /**
      * Called when user wants to close, but there is "dirtyness".

@@ -39,7 +39,8 @@ public class AssetCategoryEditor extends Composite {
 
         box = new ListBox();
         
-        box.setVisibleItemCount( 4 );
+        
+        box.setVisibleItemCount( 3 );
         box.setWidth( "100%" );
         box.setMultipleSelect( false );
         loadData( box );        
@@ -135,6 +136,13 @@ public class AssetCategoryEditor extends Composite {
      */
     public void addToCategory(String selectedPath) {
 
+        
+        //ignore already selected ones.
+        for ( int i = 0; i < data.categories.length; i++ ) {
+            if (data.categories[i].equals( selectedPath )) {
+                return;
+            }
+        }
         
         String[] newList = new String[data.categories.length + 1];
         for ( int i = 0; i < data.categories.length; i++ ) {

@@ -1,5 +1,6 @@
 package org.drools.brms.server;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,6 +11,7 @@ import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.servlet.http.HttpSession;
 
 import org.drools.brms.client.rpc.MetaData;
@@ -17,6 +19,7 @@ import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
+import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.repository.AssetItem;
@@ -41,6 +44,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     RepositoryService {
 
     private static final long serialVersionUID = 3150768417428383474L;
+    private static final DateFormat dateFormatter = DateFormat.getInstance();
     
     /**
      * The shared repository instance. This could be bound to JNDI eventually.
@@ -204,7 +208,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         RulesRepository repo = getRulesRepository();
         AssetItem item = repo.loadAssetByUUID( uuid );
         RuleAsset asset = new RuleAsset();
-        asset.uuid = item.getUUID();
+        asset.uuid = uuid;
 
         
         //load standard meta data
@@ -282,8 +286,47 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         handler.storeAssetContent( asset, repoAsset );
         
         repoAsset.checkin( meta.checkinComment );
+                
         
         return repoAsset.getUUID();
+    }
+
+    public TableDataResult loadAssetHistory(String uuid) throws SerializableException {
+        
+        List result = new ArrayList();
+        
+        RulesRepository repo = getRulesRepository();
+        
+        AssetItem item = repo.loadAssetByUUID( uuid );
+        Iterator versions = item.getPredecessorVersionsIterator();
+        while(versions.hasNext()) {
+            
+            TableDataRow row = new TableDataRow();
+            AssetItem historical = (AssetItem) versions.next();
+                row.id = historical.getVersionSnapshotUUID();
+                row.values = new String[4];
+                row.values[0] = historical.getVersionNumber();
+                row.values[1] = historical.getCheckinComment();                
+                row.values[2] = dateFormatter.format( historical.getLastModified().getTime() );
+                row.values[3] = historical.getStateDescription();
+                result.add( row );
+        }
+        
+        if (result.size() == 0) return null;
+        TableDataResult table = new TableDataResult();
+        table.data = (TableDataRow[]) result.toArray(new TableDataRow[result.size()]);
+        
+        return table;
+    }
+
+    public void restoreVersion(String versionUUID,
+                                 String assetUUID,
+                                 String comment) {
+        RulesRepository repo = getRulesRepository();        
+        repo.restoreHistoricalAsset( repo.loadAssetByUUID( versionUUID ), 
+                                     repo.loadAssetByUUID( assetUUID ), 
+                                     comment );
+        
     }
     
 

@@ -110,7 +110,6 @@ public class ServiceImplementationTest extends TestCase {
       impl.createNewRule( "testRuleTableLoad2", "ya", "testRuleTableLoad", "testRuleTableLoad", "rule" );
 
       TableDataResult result = impl.loadRuleListForCategories( "testRuleTableLoad" );
-      assertEquals(2, result.numberOfRows);
       assertEquals(2, result.data.length);
       
       String key = result.data[0].id;
@@ -173,9 +172,50 @@ public class ServiceImplementationTest extends TestCase {
       asset = impl.loadRuleAsset( uuid );
       
       assertEquals("whee", asset.metaData.state);
+      assertEquals("changed state", asset.metaData.checkinComment);
       
       
   }
+  
+  public void testLoadAssetHistoryAndRestore() throws Exception {
+      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      impl.repo.createPackage( "testLoadAssetHistory", "desc" );
+      impl.createCategory( "", "testLoadAssetHistory", "this is a cat" );
+      
+      
+      String uuid = impl.createNewRule( "testLoadAssetHistory", "description", "testLoadAssetHistory", "testLoadAssetHistory", "txt" );
+      RuleAsset asset = impl.loadRuleAsset( uuid );
+      impl.checkinVersion( asset ); //1
+      impl.checkinVersion( asset ); //2
+      impl.checkinVersion( asset ); //HEAD   
+      
+      TableDataResult result = impl.loadAssetHistory( uuid );
+      assertNotNull(result);
+      TableDataRow[] rows = result.data;
+      assertEquals(2, rows.length);
+      assertFalse(rows[0].id.equals( uuid ));
+      assertFalse(rows[1].id.equals( uuid ));
+      
+      RuleAsset old = impl.loadRuleAsset( rows[0].id );
+      RuleAsset newer = impl.loadRuleAsset( rows[1].id );
+      assertFalse(old.metaData.versionNumber.equals( newer.metaData.versionNumber ));
+            
+      RuleAsset head = impl.loadRuleAsset( uuid );
+      
+      String oldVersion = old.metaData.versionNumber;
+      assertFalse(oldVersion.equals( head.metaData.versionNumber ));
+      
+      impl.restoreVersion( old.uuid, head.uuid, "this was cause of a mistake" );
+      
+      RuleAsset newHead = impl.loadRuleAsset( uuid );
+      
+      
+      assertEquals("this was cause of a mistake", newHead.metaData.checkinComment);
+      
+      
+  }
+  
+  
   
   public void testCheckin() throws Exception {
           MockJBRMSServiceServlet serv = new MockJBRMSServiceServlet();

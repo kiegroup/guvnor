@@ -50,7 +50,6 @@ public class TableDisplayHandler {
         }
         TableDataResult result = new TableDataResult();
         result.data = (TableDataRow[]) data.toArray( new TableDataRow[data.size()] );
-        result.numberOfRows = data.size();
         return result;        
     }
     

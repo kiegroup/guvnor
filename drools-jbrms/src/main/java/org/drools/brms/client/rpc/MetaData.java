@@ -21,7 +21,7 @@ public class MetaData
     public Date lastModifiedDate;
     public String lastContributor = "";
     public String versionNumber;
-    public String   lastCheckinComment = "";
+
     public Date createdDate;
     
     public String packageName = "";

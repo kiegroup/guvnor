@@ -119,8 +119,8 @@ public class RuleItemListViewer extends Composite {
                             1,
                             "" );
         } else {
-            int maxRows = data.numberOfRows;
-            if (data.numberOfRows < FILLER_ROWS) {
+            int maxRows = data.data.length;
+            if (maxRows < FILLER_ROWS) {
                 maxRows = FILLER_ROWS;
             }
             table = new SortableTable( maxRows,
@@ -150,7 +150,7 @@ public class RuleItemListViewer extends Composite {
             
             HorizontalPanel panel = new HorizontalPanel();
             panel.add( refreshIcon );
-            panel.add( new Label( "  " + data.numberOfRows + " items." ));
+            panel.add( new Label( "  " + data.data.length + " items." ));
             
             outer.setWidget( 0,
                              0,
@@ -159,13 +159,13 @@ public class RuleItemListViewer extends Composite {
 
         //setup the "key" column
         table.setHiddenColumn( 0 );
-        table.addColumnHeader( "",
+        table.setColumnHeader( "",
                                0 );
         table.setWidth( "100%" );
 
         //add the headers
         for ( int i = 0; i < this.tableConfig.headers.length; i++ ) {
-            table.addColumnHeader( this.tableConfig.headers[i],
+            table.setColumnHeader( this.tableConfig.headers[i],
                                    i + 1 );
         }
 

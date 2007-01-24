@@ -52,10 +52,23 @@ public interface RepositoryService extends RemoteService {
     
     
     /**
+     * This will load the history of the given asset, in a summary format suitable
+     * for display in a table.
+     */
+    public TableDataResult loadAssetHistory(String uuid) throws SerializableException;
+    
+    /**
      * This checks in a new version of an asset. 
      * @return the UUID of the asset you are checking in, 
      * null if there was some problem (and an exception was not thrown).
      */
     public String checkinVersion(RuleAsset asset) throws SerializableException;
+    
+    
+    /**
+     * This will restore the specified version in the repository, saving, and creating
+     * a new version (with all the restored content).
+     */
+    public void restoreVersion(String versionUUID, String assetUUID, String comment);
     
 }

@@ -139,6 +139,16 @@ a:visited {
 	font-size: smaller;
 }
 
+.version-Popup {
+	background-color: white;
+	border: 1px solid #B8B8B8;
+}
+
+.version-Popup .Caption {
+  background-color: #B8B8B8;
+  font-color: white;
+  font-weight: bold;
+}
 
 
 .gwt-TabBar {
@@ -325,6 +335,10 @@ a:visited {
 .rule-explorer-NewPopups  {
   border: 1px solid #B8B8B8;
   background-color: #FDFCDC;
+}
+
+.version-browser-Border {
+  border: 1px solid #B8B8B8;
 }
 
 .dt-editor-Grid {

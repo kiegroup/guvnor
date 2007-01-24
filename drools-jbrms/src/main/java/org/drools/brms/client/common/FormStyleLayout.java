@@ -50,6 +50,13 @@ public class FormStyleLayout extends Composite {
         
     }
     
+    /** Adds a widget that takes up a whole row. */
+    public void addRow(Widget w) {
+        layout.setWidget( numInLayout, 0, w);
+        formatter.setColSpan( numInLayout, 0, 2 );
+        numInLayout++;
+    }
+    
     /**
      * Adds a header at the top.
      */

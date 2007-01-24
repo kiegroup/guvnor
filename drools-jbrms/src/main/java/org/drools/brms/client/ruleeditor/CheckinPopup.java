@@ -1,5 +1,8 @@
 package org.drools.brms.client.ruleeditor;
 
+import org.drools.brms.client.common.FormStylePopup;
+
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -18,41 +21,43 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  * @author Michael Neale
  *
  */
-public class CheckinPopup extends PopupPanel {
+public class CheckinPopup {
 
-    final private FlexTable layout = new FlexTable();
-    final private TextArea comment = new TextArea();
-    final private ClickListener okClick;    
     
-    public CheckinPopup(ClickListener click) {
-        super(true);        
-        this.okClick = click;
-        
-        this.setStyleName( "ks-popups-Popup" );
-        
-        FlexCellFormatter formatter = layout.getFlexCellFormatter();
-        
-        layout.setWidget( 0, 0, new Image() );
-        layout.setWidget( 1, 0, new Label("Comment:") );
-        formatter.setHorizontalAlignment( 1, 0, HasHorizontalAlignment.ALIGN_RIGHT );
-        
-        layout.setWidget( 1, 1, comment );
-        formatter.setHorizontalAlignment( 1, 1, HasHorizontalAlignment.ALIGN_LEFT );
+    private TextArea comment;
+    private Button save;
+    private FormStylePopup pop;
+
+    
+    public CheckinPopup(int left, int top, String message) {
+        pop = new FormStylePopup("images/checkin.gif", message);
+        comment = new TextArea();
         comment.setWidth( "100%" );
-        comment.setHeight( "100%" );
-        comment.setStyleName( "rule-viewer-Documentation" );        
+        save = new Button("Save");
+        pop.addAttribute( "Comment", comment );
+        pop.addAttribute( "", save);
+                
         
-        Button ok = new Button();
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                okClick.onClick( w );
-            }            
+        pop.setStyleName( "ks-popups-Popup" );
+        pop.setPopupPosition( left, top );
+    
+    }
+    
+    public void setCommand(final Command checkin) {
+        save.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {                
+                checkin.execute();
+                pop.hide();
+            }
         });
-        
-        layout.setWidget( 2, 0,  ok);
-        formatter.setHorizontalAlignment( 2, 0, HasHorizontalAlignment.ALIGN_LEFT );
-        
-        add( layout );
+    }
+
+    public void show() {
+        pop.show();
+    }
+    
+    public String getCheckinComment() {
+        return comment.getText();
     }
     
 }

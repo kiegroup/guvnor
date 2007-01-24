@@ -23,6 +23,8 @@ public interface RepositoryServiceAsync
     public void createNewRule(java.lang.String p0, java.lang.String p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, AsyncCallback cb);
     public void listRulePackages(AsyncCallback cb);
     public void loadRuleAsset(java.lang.String p0, AsyncCallback cb);
+    public void loadAssetHistory(java.lang.String p0, AsyncCallback cb);
     public void checkinVersion(org.drools.brms.client.rpc.RuleAsset p0, AsyncCallback cb);
+    public void restoreVersion(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback cb);
     
 }
