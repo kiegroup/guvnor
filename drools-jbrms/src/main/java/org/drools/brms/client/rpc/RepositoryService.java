@@ -71,4 +71,10 @@ public interface RepositoryService extends RemoteService {
      */
     public void restoreVersion(String versionUUID, String assetUUID, String comment);
     
+    /**
+     * This creates a package of the given name.
+     * @return UUID of the created item.
+     */
+    public String createPackage(String name, String description) throws SerializableException;
+    
 }

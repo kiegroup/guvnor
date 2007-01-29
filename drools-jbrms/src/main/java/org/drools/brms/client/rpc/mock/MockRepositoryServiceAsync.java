@@ -346,6 +346,15 @@ public class MockRepositoryServiceAsync
         cb.onSuccess( null );
         
     }
+
+
+
+    public void createPackage(String p0,
+                              String p1,
+                              AsyncCallback cb) {
+        cb.onSuccess( "UUIDHERE" );
+        
+    }
     
     
 

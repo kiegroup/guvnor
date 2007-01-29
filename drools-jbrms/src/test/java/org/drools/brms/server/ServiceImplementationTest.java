@@ -15,6 +15,7 @@ import org.drools.brms.client.rulelist.RuleItemListViewer;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
+import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -274,6 +275,19 @@ public class ServiceImplementationTest extends TestCase {
           
   }
   
+  
+  public void testCreatePackage() throws Exception {
+      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      String[] pkgs = impl.listRulePackages();
+      String uuid = impl.createPackage( "testCreatePackage", "this is a new package" );
+      assertNotNull( uuid );
+      
+      PackageItem item = impl.repo.loadPackage( "testCreatePackage" );
+      assertNotNull(item);
+      assertEquals("this is a new package", item.getDescription());
+      
+      assertEquals(pkgs.length + 1, impl.listRulePackages().length);
+  }
   
     
 }

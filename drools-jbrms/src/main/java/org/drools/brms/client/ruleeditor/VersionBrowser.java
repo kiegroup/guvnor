@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
@@ -115,6 +116,7 @@ public class VersionBrowser extends Composite {
                 
                 open.addClickListener( new ClickListener() {
                     public void onClick(Widget w) {
+                        if (tableWidget.getSelectedRow() == 0) return;
                         showVersion(tableWidget.getSelectedKey());                        
                     }
 
@@ -139,6 +141,7 @@ public class VersionBrowser extends Composite {
      * @param selectedUUID
      */
     private void showVersion(String selectedUUID) {
+        
         
         VersionViewer viewer = new VersionViewer(this.metaData, selectedUUID, uuid, refreshCommand);
         viewer.setPopupPosition( 100, 100 );

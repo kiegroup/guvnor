@@ -121,7 +121,7 @@ public class RulesFeature extends JBRMSFeature {
         table.setWidget( 1, 0, newRule);
         formatter.setHeight( 1, 0, "5%" );
         formatter.setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP);
-        formatter.setStyleName( 1, 0, "rule-explorer-NewPopups" );
+        formatter.setStyleName( 1, 0, "new-asset-Icons" );
         
 		return table;
 	}

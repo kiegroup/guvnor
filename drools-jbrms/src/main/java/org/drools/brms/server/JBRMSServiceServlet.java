@@ -2,6 +2,7 @@ package org.drools.brms.server;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -106,8 +107,11 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
             PackageItem pkg = (PackageItem) pkgs.next();
             result.add( pkg.getName() );
         }
-        return (String[]) result.toArray( new String[result.size()] );
+        String[] resultArr = (String[]) result.toArray( new String[result.size()] );
+        Arrays.sort( resultArr );
+        return resultArr;
     }
+
     
 
 
@@ -322,11 +326,33 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     public void restoreVersion(String versionUUID,
                                  String assetUUID,
                                  String comment) {
-        RulesRepository repo = getRulesRepository();        
-        repo.restoreHistoricalAsset( repo.loadAssetByUUID( versionUUID ), 
-                                     repo.loadAssetByUUID( assetUUID ), 
-                                     comment );
+        RulesRepository repo = getRulesRepository();    
+        try {
+            RuleAsset old = loadRuleAsset( versionUUID );
+            RuleAsset head = loadRuleAsset( assetUUID );
+            
+            old.uuid = assetUUID;
+            old.metaData.versionNumber = head.metaData.versionNumber;
+            old.metaData.checkinComment = comment;
+            
+            checkinVersion( old );
+            
+        } catch (SerializableException e) {
+            throw new RulesRepositoryException(e);
+        }
+
+//This uses JCR restore feature        
+//        repo.restoreHistoricalAsset( repo.loadAssetByUUID( versionUUID ), 
+//                                     repo.loadAssetByUUID( assetUUID ), 
+//                                     comment );
         
+    }
+
+    public String createPackage(String name,
+                                String description) throws SerializableException {
+        PackageItem item = getRulesRepository().createPackage( name, description );
+        
+        return item.getUUID();
     }
     
 
