@@ -8,7 +8,7 @@ import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
@@ -17,8 +17,8 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
  * Contains the explorer to view (and lazy load) the packages in a repository.
@@ -28,12 +28,12 @@ import com.google.gwt.user.client.ui.Widget;
 public class PackageExplorerWidget extends Composite {
 
     private Tree exTree;
-    private Grid layout;
+    private FlexTable layout;
     
     public PackageExplorerWidget() {
         
         exTree = new Tree();
-        layout = new Grid(2, 1);
+        layout = new FlexTable();
         
         
         refreshTreeView( );
@@ -50,6 +50,7 @@ public class PackageExplorerWidget extends Composite {
         
         layout.getCellFormatter().setStyleName( 1, 0, "new-asset-Icons" );
         layout.getCellFormatter().setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
+        
         initWidget( layout );
         
     }
@@ -70,7 +71,13 @@ public class PackageExplorerWidget extends Composite {
                 }
                 
                 layout.setWidget( 0, 0, exTree );
-              
+                FlexCellFormatter formatter = layout.getFlexCellFormatter();
+                formatter.setVerticalAlignment( 0, 0, HasVerticalAlignment.ALIGN_TOP );
+                
+                layout.setWidget( 0, 1, new PackageEditor("foo bar") );
+                layout.getFlexCellFormatter().setRowSpan( 0, 1, 2 );
+                layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP );
+                
             }
             
         });

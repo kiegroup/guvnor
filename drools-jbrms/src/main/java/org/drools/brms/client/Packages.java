@@ -25,7 +25,9 @@ public class Packages extends JBRMSFeature {
     public Packages() {
         final FlexTable layout = new FlexTable();
         
-        layout.setWidget( 0, 0, new PackageExplorerWidget() );
+        PackageExplorerWidget packages = new PackageExplorerWidget();
+        
+        layout.setWidget( 0, 0, packages );
         
         initWidget( layout );
     }
