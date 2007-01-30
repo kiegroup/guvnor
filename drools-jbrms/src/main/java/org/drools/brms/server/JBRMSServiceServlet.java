@@ -13,6 +13,8 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.version.Version;
+import javax.jcr.version.VersionIterator;
 import javax.servlet.http.HttpSession;
 
 import org.drools.brms.client.rpc.MetaData;
@@ -23,6 +25,7 @@ import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.TableDisplayHandler;
+import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
@@ -302,19 +305,49 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         RulesRepository repo = getRulesRepository();
         
         AssetItem item = repo.loadAssetByUUID( uuid );
-        Iterator versions = item.getPredecessorVersionsIterator();
-        while(versions.hasNext()) {
-            
-            TableDataRow row = new TableDataRow();
-            AssetItem historical = (AssetItem) versions.next();
-                row.id = historical.getVersionSnapshotUUID();
-                row.values = new String[4];
-                row.values[0] = historical.getVersionNumber();
-                row.values[1] = historical.getCheckinComment();                
-                row.values[2] = dateFormatter.format( historical.getLastModified().getTime() );
-                row.values[3] = historical.getStateDescription();
-                result.add( row );
+
+        AssetHistoryIterator it = item.getHistory();
+        //VersionIterator it = item.getNode().getVersionHistory().getAllVersions();
+        while ( it.hasNext() ) {
+            //Version element = (Version) it.next();
+            AssetItem historical = (AssetItem) it.next();//new AssetItem(repo, element);
+            String versionNumber = historical.getVersionNumber();
+            if (!versionNumber.equals( "" ) 
+                            && !versionNumber.equals( item.getVersionNumber() ))
+                {
+                TableDataRow row = new TableDataRow();
+                    row.id = historical.getVersionSnapshotUUID();
+                    row.values = new String[4];
+                    row.values[0] = historical.getVersionNumber();
+                    row.values[1] = historical.getCheckinComment();                
+                    row.values[2] = dateFormatter.format( historical.getLastModified().getTime() );
+                    row.values[3] = historical.getStateDescription();
+                    result.add( row );                    
+            }
         }
+
+        
+        
+//        Iterator versions = item.getPredecessorVersionsIterator();
+//        
+//        
+//        
+//        while(versions.hasNext()) {
+//            
+//            TableDataRow row = new TableDataRow();
+//            AssetItem historical = (AssetItem) versions.next();
+//                row.id = historical.getVersionSnapshotUUID();
+//                row.values = new String[4];
+//                row.values[0] = historical.getVersionNumber();
+//                row.values[1] = historical.getCheckinComment();                
+//                row.values[2] = dateFormatter.format( historical.getLastModified().getTime() );
+//                row.values[3] = historical.getStateDescription();
+//                result.add( row );
+//        }
+
+
+
+        
         
         if (result.size() == 0) return null;
         TableDataResult table = new TableDataResult();
@@ -327,24 +360,24 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
                                  String assetUUID,
                                  String comment) {
         RulesRepository repo = getRulesRepository();    
-        try {
-            RuleAsset old = loadRuleAsset( versionUUID );
-            RuleAsset head = loadRuleAsset( assetUUID );
-            
-            old.uuid = assetUUID;
-            old.metaData.versionNumber = head.metaData.versionNumber;
-            old.metaData.checkinComment = comment;
-            
-            checkinVersion( old );
-            
-        } catch (SerializableException e) {
-            throw new RulesRepositoryException(e);
-        }
+//        try {
+//            RuleAsset old = loadRuleAsset( versionUUID );
+//            RuleAsset head = loadRuleAsset( assetUUID );
+//            
+//            old.uuid = assetUUID;
+//            old.metaData.versionNumber = head.metaData.versionNumber;
+//            old.metaData.checkinComment = comment;
+//            
+//            checkinVersion( old );
+//            
+//        } catch (SerializableException e) {
+//            throw new RulesRepositoryException(e);
+//        }
 
 //This uses JCR restore feature        
-//        repo.restoreHistoricalAsset( repo.loadAssetByUUID( versionUUID ), 
-//                                     repo.loadAssetByUUID( assetUUID ), 
-//                                     comment );
+        repo.restoreHistoricalAsset( repo.loadAssetByUUID( versionUUID ), 
+                                     repo.loadAssetByUUID( assetUUID ), 
+                                     comment );
         
     }
 
