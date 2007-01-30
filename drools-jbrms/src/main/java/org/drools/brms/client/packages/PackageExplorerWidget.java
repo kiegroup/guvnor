@@ -39,6 +39,7 @@ public class PackageExplorerWidget extends Composite {
         refreshTreeView( );
         
         Image newPackage = new Image("images/new_package.gif");
+        newPackage.setTitle( "Create a new package" );
         newPackage.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showNewPackage(w);                

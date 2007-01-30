@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -48,7 +49,45 @@ public class PackageEditor extends FormStyleLayout {
         
         area.setCharacterWidth( 52 );
         
-        HorizontalPanel panel = expandableTextArea( area );
+        HorizontalPanel panel = new HorizontalPanel();
+        panel.add( area );
+
+        VerticalPanel vert = new VerticalPanel();
+
+        Image max = new Image("images/max_min.gif");
+        max.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                if (area.getVisibleLines() != 32) {
+                    area.setVisibleLines( 32 );
+                } else {
+                    area.setVisibleLines( 4 );
+                }
+            }
+        } );
+        max.setTitle( "Increase view area." );
+        vert.add( max );
+
+        Image newImport = new Image("images/new_import.gif");
+        newImport.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                area.setText( area.getText(  ) + "\n" + 
+                              "import <your class here>");
+            }
+        });
+        vert.add( newImport );
+        newImport.setTitle( "Add a new Type/Class import to the package." );
+        
+        Image newGlobal = new Image("images/new_global.gif");
+        newGlobal.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                area.setText( area.getText() + "\n" + 
+                              "global <your class here> <variable name>");
+            }
+        });
+        newGlobal.setTitle( "Add a new global variable declaration." );
+        vert.add( newGlobal );
+        
+        panel.add( vert );
         return panel;
     }
 
@@ -57,6 +96,7 @@ public class PackageEditor extends FormStyleLayout {
         panel.add( area );
         
         Image max = new Image("images/max_min.gif");
+        max.setTitle( "Increase view area" );
         
         panel.add( max );
         max.addClickListener( new ClickListener() {
