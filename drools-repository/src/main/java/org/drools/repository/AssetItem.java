@@ -73,6 +73,10 @@ public class AssetItem extends CategorisableItem {
             throw new RulesRepositoryException( e );
         }
     }
+    
+    public AssetItem() {
+        super(null, null);
+    }
 
     /**
      * returns the contents of the rule node.
@@ -311,6 +315,14 @@ public class AssetItem extends CategorisableItem {
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
+    }
+    
+    /**
+     * 
+     * @return An iterator over the nodes history.
+     */
+    public AssetHistoryIterator getHistory() {
+        return new AssetHistoryIterator(this.rulesRepository, this.node);
     }
 
 

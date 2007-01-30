@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
  * 
  * @author btruitt
  */
-public class ItemVersionIterator implements Iterator {
+class ItemVersionIterator implements Iterator {
     private static final Logger log = Logger.getLogger(ItemVersionIterator.class);
     
     private VersionableItem currentVersionableItem;

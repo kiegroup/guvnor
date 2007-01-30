@@ -82,7 +82,7 @@ public class AssetItemTest extends TestCase {
             
             assertEquals("yeah !", ruleItem1.getCheckinComment());
             
-            AssetItem prev = (AssetItem) ruleItem1.getPredecessorVersionsIterator().next();
+            AssetItem prev = (AssetItem) ruleItem1.getPrecedingVersion();
             assertEquals("test content", prev.getContent());
             assertFalse("yeah !".equals(prev.getCheckinComment()));
             
@@ -544,6 +544,26 @@ public class AssetItemTest extends TestCase {
             
             assertEquals(null, ((AssetItem) iterator.next()).getContent());
 
+    }
+    
+    public void testHistoryIterator() throws Exception {
+        AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testHistoryIterator", "test description");
+        ruleItem1.checkin( "version0" );
+        
+        ruleItem1 = getRepo().loadAssetByUUID( ruleItem1.getUUID() );
+        ruleItem1.updateContent( "wo" );
+        ruleItem1.checkin( "version1" );
+        
+        ruleItem1 = getRepo().loadAssetByUUID( ruleItem1.getUUID() );
+        ruleItem1.updateContent( "ya" );
+        ruleItem1.checkin( "version2" );
+
+        Iterator it = ruleItem1.getHistory();
+        for ( int i = 0; i < 2; i++ ) {
+            assertTrue(it.hasNext());
+            it.next();
+        }        
+        
     }
     
     public void testGetTitle() {    

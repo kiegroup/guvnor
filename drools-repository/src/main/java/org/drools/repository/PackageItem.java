@@ -2,6 +2,8 @@ package org.drools.repository;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -77,6 +79,10 @@ public class PackageItem extends VersionableItem {
             log.error( "Caught exception: " + e );
             throw new RulesRepositoryException( e );
         }
+    }
+    
+    PackageItem() {
+        super(null, null);
     }
 
 
@@ -453,7 +459,20 @@ public class PackageItem extends VersionableItem {
                 //ignore this one
             } 
             else {
-                Iterator prev = head.getPredecessorVersionsIterator();
+                
+                
+                List fullHistory = new ArrayList();
+                for ( Iterator iter = head.getHistory(); iter.hasNext(); ) {
+                    AssetItem element = (AssetItem) iter.next();
+                    if (!element.getVersionNumber().equals( "" )) {
+                        fullHistory.add( element );
+                    }
+                }
+                
+                sortHistoryByVersionNumber( fullHistory );
+                
+                
+                Iterator prev = fullHistory.iterator();
                 while (prev.hasNext()) {
                     AssetItem prevRule = (AssetItem) prev.next();
                     if (prevRule.sameState( state )) {
@@ -464,6 +483,20 @@ public class PackageItem extends VersionableItem {
             }
         }
         return result.iterator();
+    }
+
+
+    void sortHistoryByVersionNumber(List fullHistory) {
+        Collections.sort( fullHistory, new Comparator() {
+
+            public int compare(Object o1,
+                               Object o2) {
+                AssetItem a1 = (AssetItem) o1;
+                AssetItem a2 = (AssetItem) o2;
+                return a2.getVersionNumber().compareTo( a1.getVersionNumber() );
+            }
+            
+        });
     }
     
     /**

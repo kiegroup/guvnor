@@ -422,11 +422,30 @@ public class PackageItemTest extends TestCase {
         item.updateFormat( "ABC" );
         item.checkin( "la" );
         
+        Thread.sleep( 150 );
+        
         AssetItemIterator it = pkg.queryAssets( "drools:format='xyz'" );        
         List list = iteratorToList( it );
         assertEquals(2, list.size());
         
         
+    }
+    
+    public void testSortHistoryByVersionNumber() {
+        PackageItem item = new PackageItem();
+        List l = new ArrayList();
+        
+        AssetItem i1 = new MockAssetItem(42);
+        AssetItem i2 = new MockAssetItem(1);
+        
+        l.add( i2 );
+        l.add( i1 );
+        
+        assertEquals(i2, l.iterator().next());
+        
+        item.sortHistoryByVersionNumber( l );
+        
+        assertEquals(i1, l.iterator().next());
     }
 
     
@@ -437,4 +456,24 @@ public class PackageItemTest extends TestCase {
             assertEquals(PackageItem.PACKAGE_FORMAT, rulePackageItem1.getFormat());    
 
     }        
+    
+    static class MockAssetItem extends AssetItem {
+        private String version;
+
+        MockAssetItem(int ver) {
+            this.version = Integer.toString( ver ); 
+        }
+        
+        public String getVersionNumber() {
+            return this.version;
+        }
+        
+        public boolean equals(Object in) {
+            return in == this;        
+        }
+        
+        public String toString() {
+            return this.version;
+        }
+    }
 }

@@ -160,8 +160,9 @@ public abstract class VersionableItem extends Item {
      * @return an Iterator over VersionableItem objects encapsulating each successor node of this 
      *         Item's node
      * @throws RulesRepositoryException
+     * @Deprecated Until I can work out why it isn't quite kosher.
      */
-    public ItemVersionIterator getSuccessorVersionsIterator() throws RulesRepositoryException {
+    ItemVersionIterator getSuccessorVersionsIterator() throws RulesRepositoryException {
         return new ItemVersionIterator( this,
                                         ItemVersionIterator.ITERATION_TYPE_SUCCESSOR );
     }
@@ -170,8 +171,9 @@ public abstract class VersionableItem extends Item {
      * @return an Iterator over VersionableItem objects encapsulating each predecessor node of this 
      *         Item's node
      * @throws RulesRepositoryException
+     * @Deprecated Until I can work out why it isn't quite kosher.
      */
-    public ItemVersionIterator getPredecessorVersionsIterator() throws RulesRepositoryException {
+    ItemVersionIterator getPredecessorVersionsIterator() throws RulesRepositoryException {
         return new ItemVersionIterator( this,
                                         ItemVersionIterator.ITERATION_TYPE_PREDECESSOR );
     }
