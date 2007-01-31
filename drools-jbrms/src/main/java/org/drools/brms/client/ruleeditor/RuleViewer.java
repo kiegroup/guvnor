@@ -68,7 +68,8 @@ public class RuleViewer extends Composite {
         });
 
 
-
+        metaWidget.setWidth( "100%" );
+        metaWidget.setHeight( "100%" );
         //now the main layout table
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         layout.setWidget( 0,

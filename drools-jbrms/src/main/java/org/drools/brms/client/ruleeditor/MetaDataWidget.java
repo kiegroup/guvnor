@@ -27,6 +27,8 @@ public class MetaDataWidget extends FormStyleLayout {
 	
 	public MetaDataWidget(MetaData d, boolean readOnly, String uuid, Command refreshView) {
         
+        setStyleName( "editable-Surface" );
+        
         if (!readOnly) {
             addHeader( "images/meta_data.gif", d.name );
         } else {

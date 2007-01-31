@@ -23,7 +23,7 @@ public class PackageEditor extends FormStyleLayout {
     public PackageEditor(String name) {
         this.name = name;
         
-        setStyleName( "ks-popups-Popup" );
+        setStyleName( "editable-Surface" );
         
         setHeight( "100%" );
         setWidth( "100%" );

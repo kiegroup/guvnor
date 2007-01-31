@@ -308,6 +308,12 @@ a:visited {
   padding: 4px;
 }
 
+.editable-Surface {
+  background-color: #FDFCDC;
+  border: 1px solid #B8B8B8;
+//  padding: 4px;
+}
+
 .rule-error-Popup {
   background-color: red;
   border: 1px solid #B8B8B8;

@@ -75,7 +75,10 @@ public class PackageExplorerWidget extends Composite {
                 FlexCellFormatter formatter = layout.getFlexCellFormatter();
                 formatter.setVerticalAlignment( 0, 0, HasVerticalAlignment.ALIGN_TOP );
                 
-                layout.setWidget( 0, 1, new PackageEditor("foo bar") );
+                PackageEditor ed = new PackageEditor("foo bar");
+                ed.setWidth( "100%" );
+                ed.setHeight( "100%" );
+                layout.setWidget( 0, 1, ed );
                 layout.getFlexCellFormatter().setRowSpan( 0, 1, 2 );
                 layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP );
                 
