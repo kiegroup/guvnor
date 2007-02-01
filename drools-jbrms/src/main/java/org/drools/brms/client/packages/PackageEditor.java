@@ -1,7 +1,9 @@
 package org.drools.brms.client.packages;
 
 import org.drools.brms.client.common.FormStyleLayout;
+import org.drools.brms.client.rpc.PackageConfigData;
 
+import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -18,17 +20,17 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class PackageEditor extends FormStyleLayout {
 
-    private String name;
+    private PackageConfigData conf;
 
-    public PackageEditor(String name) {
-        this.name = name;
+    public PackageEditor(PackageConfigData data) {
+        this.conf = data;
         
         setStyleName( "editable-Surface" );
         
         setHeight( "100%" );
         setWidth( "100%" );
         
-        addHeader( "images/package_large.png", this.name );
+        addHeader( "images/package_large.png", this.conf.metaData.name );
         
         addAttribute( "Description:", description() );
         addAttribute( "Header:", header() );
@@ -48,6 +50,13 @@ public class PackageEditor extends FormStyleLayout {
         area.setVisibleLines( 4 );
         
         area.setCharacterWidth( 52 );
+        
+        area.setText( this.conf.header );
+        area.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+                 conf.header = area.getText();         
+            }            
+        });
         
         HorizontalPanel panel = new HorizontalPanel();
         panel.add( area );
@@ -112,9 +121,15 @@ public class PackageEditor extends FormStyleLayout {
     }
 
     private Widget description() {
-        TextArea area = new TextArea();
+        final TextArea area = new TextArea();
         area.setWidth( "100%" );
         area.setVisibleLines( 4 );
+        
+        area.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+                conf.metaData.description = area.getText();                 
+            }            
+        });
         
         area.setCharacterWidth( 52 );
         

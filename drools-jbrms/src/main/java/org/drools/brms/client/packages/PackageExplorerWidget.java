@@ -3,8 +3,11 @@ package org.drools.brms.client.packages;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
+import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -17,6 +20,7 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.TreeListener;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
@@ -27,14 +31,30 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  */
 public class PackageExplorerWidget extends Composite {
 
-    private Tree exTree;
-    private FlexTable layout;
+    private final Tree exTree;
+    private final FlexTable layout;
+    private final TreeListener treeListener;
+    
     
     public PackageExplorerWidget() {
         
         exTree = new Tree();
         layout = new FlexTable();
         
+        treeListener = new TreeListener() {
+
+            public void onTreeItemSelected(TreeItem selected) {
+                Command selectEvent = (Command) selected.getUserObject();
+                selectEvent.execute();
+            }
+
+            public void onTreeItemStateChanged(TreeItem arg0) {
+                //ignore                
+            }
+            
+        };
+        
+        exTree.addTreeListener( treeListener );
         
         refreshTreeView( );
         
@@ -46,15 +66,15 @@ public class PackageExplorerWidget extends Composite {
             }            
         });
         
-        
         layout.setWidget( 1, 0, newPackage );  
         
         layout.getCellFormatter().setStyleName( 1, 0, "new-asset-Icons" );
         layout.getCellFormatter().setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         
         initWidget( layout );
-        
     }
+
+
 
 
     private void refreshTreeView() {
@@ -74,11 +94,6 @@ public class PackageExplorerWidget extends Composite {
                 layout.setWidget( 0, 0, exTree );
                 FlexCellFormatter formatter = layout.getFlexCellFormatter();
                 formatter.setVerticalAlignment( 0, 0, HasVerticalAlignment.ALIGN_TOP );
-                
-                PackageEditor ed = new PackageEditor("foo bar");
-                ed.setWidth( "100%" );
-                ed.setHeight( "100%" );
-                layout.setWidget( 0, 1, ed );
                 layout.getFlexCellFormatter().setRowSpan( 0, 1, 2 );
                 layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP );
                 
@@ -135,10 +150,19 @@ public class PackageExplorerWidget extends Composite {
 
 
 
-    private void addPackage(String name) {
+    /**
+     * Add a package to the tree.
+     * @param name
+     */
+    private void addPackage(final String name) {
         
         TreeItem pkg = makeItem(name, "images/package.gif");
         
+        pkg.setUserObject( new Command() {
+            public void execute() {
+                loadPackageConfig(name);
+            }
+        });
         
         pkg.addItem( makeItem("Business rules", "images/rule_asset.gif") );
         pkg.addItem( makeItem("Technical rules", "images/technical_rule_assets.gif") );
@@ -149,6 +173,27 @@ public class PackageExplorerWidget extends Composite {
         exTree.addItem( pkg );
 
     }
+
+    /**
+     * Load up the package config data and display it.
+     */
+    private void loadPackageConfig(String name) {
+        RepositoryServiceFactory.getService().loadPackage( name, new GenericCallback() {
+
+            public void onSuccess(Object data) {
+                PackageConfigData conf = (PackageConfigData) data;
+                PackageEditor ed = new PackageEditor(conf);
+                ed.setWidth( "100%" );
+                ed.setHeight( "100%" );
+                layout.setWidget( 0, 1, ed );
+                layout.setWidget( 0, 1, ed );                
+            }            
+        });
+        
+    }
+
+
+
 
     private TreeItem makeItem(String name, String icon) {
         TreeItem item = new TreeItem();

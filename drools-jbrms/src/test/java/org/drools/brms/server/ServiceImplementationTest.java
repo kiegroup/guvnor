@@ -296,6 +296,7 @@ public class ServiceImplementationTest extends TestCase {
       assertNotNull(data);
       
       assertEquals("default", data.metaData.name);
+      assertNotNull(data.uuid);
       
   }
   
