@@ -2,6 +2,8 @@ package org.drools.brms.client.rpc;
 
 import java.util.Date;
 
+import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -44,5 +46,41 @@ public class MetaData
     
     /** used to flag dirty - ie needs to be spanked. Or saved to the repo, whatever */
     public boolean dirty = false;
+    
+    /**
+     * Remove a category.
+     * @param idx The index of the cat to remove.
+     */
+    public void removeCategory(int idx) {
+        String[] newList = new String[categories.length - 1];
+        int newIdx = 0;
+        for ( int i = 0; i < categories.length; i++ ) {
+            
+            if (i != idx) {
+                newList[newIdx] = categories[i];
+                newIdx++;
+            }
+            
+        }
+        this.categories = newList;
+    }
+    
+    /**
+     * Add the given cat to the end of the cat list.
+     */
+    public void addCategory(String cat) {
+        for ( int i = 0; i < this.categories.length; i++ ) {
+            if (categories[i].equals( cat )) return;
+        }
+        String[] list = this.categories;
+        String[] newList = new String[list.length + 1];
+        
+        for ( int i = 0; i < list.length; i++ ) {
+            newList[i] =  list[i];
+        }
+        newList[list.length] = cat; 
+        
+        this.categories = newList;           
+    }
 
 }

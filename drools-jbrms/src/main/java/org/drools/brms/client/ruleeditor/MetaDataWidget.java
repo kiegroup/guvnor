@@ -30,7 +30,7 @@ public class MetaDataWidget extends FormStyleLayout {
         setStyleName( "editable-Surface" );
         
         if (!readOnly) {
-            addHeader( "images/meta_data.gif", d.name );
+            addHeader( "images/meta_data.png", d.name );
         } else {
             addHeader( "images/asset_version.png", d.name );
         }

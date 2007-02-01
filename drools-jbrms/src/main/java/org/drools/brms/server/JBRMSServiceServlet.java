@@ -18,6 +18,7 @@ import javax.jcr.version.VersionIterator;
 import javax.servlet.http.HttpSession;
 
 import org.drools.brms.client.rpc.MetaData;
+import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.TableConfig;
@@ -32,6 +33,7 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.RepositoryConfigurator;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.VersionableItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -219,7 +221,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
 
         
         //load standard meta data
-        asset.metaData = popuplateMetaData( item );
+        asset.metaData = populateMetaData( item );
         
         //load the content
         AssetContentFormatHandler handler = new AssetContentFormatHandler();
@@ -230,13 +232,26 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     
 
     /** 
-     * read in the meta data.
-     * @param item
-     * @return
+     * read in the meta data, populating all dublin core and versioning stuff.
      */
-    MetaData popuplateMetaData(AssetItem item) {
+    MetaData populateMetaData(VersionableItem item) {
         MetaData meta = new MetaData();
+        
+        meta.state = (item.getState() != null) ? item.getState().getName() : "";
 
+        getMetaDataMapper().copyToMetaData( meta, item );
+        
+        meta.createdDate = calendarToDate(item.getCreatedDate());
+        meta.lastModifiedDate = calendarToDate( item.getLastModified() );
+        
+        return meta;
+    }
+    
+    /**
+     * Populate meta data with asset specific info.
+     */
+    MetaData populateMetaData(AssetItem item) {
+        MetaData meta = populateMetaData( (VersionableItem ) item);
         meta.packageName = item.getPackageName();
         
         List cats = item.getCategories();
@@ -245,18 +260,10 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
             CategoryItem cat = (CategoryItem) cats.get(i);
             meta.categories[i] = cat.getFullPath();          
         }
-        
-        meta.state = (item.getState() != null) ? item.getState().getName() : "";
-
-        getMetaDataMapper().copyToMetaData( meta, item );
-        
-        meta.createdDate = calendarToDate(item.getCreatedDate());
         meta.dateEffective = calendarToDate( item.getDateEffective() );
         meta.dateExpired = calendarToDate( item.getDateExpired() );
-        meta.lastModifiedDate = calendarToDate( item.getLastModified() );
-        
-        
         return meta;
+        
     }
 
     private Date calendarToDate(Calendar createdDate) {
@@ -386,6 +393,18 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         PackageItem item = getRulesRepository().createPackage( name, description );
         
         return item.getUUID();
+    }
+
+    public PackageConfigData loadPackage(String name) {
+        PackageItem item = getRulesRepository().loadPackage( name );
+        
+        PackageConfigData data = new PackageConfigData();
+        data.uuid = item.getUUID();
+        data.header = item.getHeader();
+        
+        data.metaData = this.populateMetaData( item );
+        
+        return data;
     }
     
 

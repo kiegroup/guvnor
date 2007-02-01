@@ -7,9 +7,10 @@ import org.drools.brms.client.rpc.MetaData;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -26,8 +27,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class AssetCategoryEditor extends Composite {
 
     private MetaData data;
-    private HorizontalPanel panel = new HorizontalPanel();
-    private ListBox box;
+    private Grid layout = new Grid(1, 2);
+    private FlexTable list;
+    
     
     /**
      * @param d The meta data.
@@ -37,21 +39,26 @@ public class AssetCategoryEditor extends Composite {
     public AssetCategoryEditor(MetaData d, boolean readOnly) {
         this.data = d;
 
-        box = new ListBox();
+        list = new FlexTable();
         
         
-        box.setVisibleItemCount( 3 );
-        box.setWidth( "100%" );
-        box.setMultipleSelect( false );
-        loadData( box );        
-        panel.add( box );
+        
+        loadData( list );  
+        list.setStyleName( "rule-List" );
+        layout.setWidget( 0, 0, list );
+        
         
         if (!readOnly) {
             doActions();
         }
+    
         
-        panel.setWidth( "100%" );
-        initWidget( panel );        
+        
+
+        
+        
+        
+        initWidget( layout );        
     }
 
     private void doActions() {
@@ -65,47 +72,42 @@ public class AssetCategoryEditor extends Composite {
             }            
         });
         
-        Image remove = new Image("images/delete_obj.gif");
-        remove.setTitle( "Remove the currently selected category." );
-        remove.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                 if (box.getSelectedIndex() != -1) {
-                     removeCategory(box.getItemText( box.getSelectedIndex()));
-                 }
-            }
-        });
-        
         
         actions.add( add );
-        actions.add( remove );
-        panel.add( actions );
+        layout.setWidget( 0, 1, actions );
+        
     }
 
-    protected void removeCategory(String category) {
+    protected void removeCategory(int idx) {
         
-        String[] newList = new String[data.categories.length - 1];
-        
-        for ( int i = 0, j = 0; i < data.categories.length; i++) {
-            if (! data.categories[i].equals( category )) {
-                newList[j] = data.categories[i];
-                j++;
-            } 
-        }
+        data.removeCategory( idx );
         
         data.dirty = true;
-        data.categories = newList;
         
         resetBox();
     }
 
     private void resetBox() {
-        box.clear();
-        loadData( box );
+        
+        list = new FlexTable();
+        list.setStyleName( "rule-List" );
+        layout.setWidget( 0, 0, list );        
+        loadData( list );
     }
 
-    private void loadData(ListBox box) {
+    private void loadData(FlexTable list) {
         for ( int i = 0; i < data.categories.length; i++ ) {
-            box.addItem( data.categories[i] );
+            final int idx = i;
+            
+            list.setText( i, 0, data.categories[i] );
+            Image del = new Image("images/trash.gif");
+            del.setTitle( "Remove this category" );
+            del.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                    removeCategory(idx);
+                }
+            } );
+            list.setWidget( i, 1, del );            
         }
     }
     
@@ -114,15 +116,7 @@ public class AssetCategoryEditor extends Composite {
 
     /** Handles the OK click on the selector popup */
     private void doOKClick() {
-//        final CategorySelector sel = new CategorySelector();
-//        sel.ok.addClickListener( new ClickListener() {
-//            public void onClick(Widget w) {                
-//                addToCategory(sel.selectedPath);   
-//                sel.hide();
-//            }            
-//        });
-//        sel.setPopupPosition( this.getAbsoluteLeft(), this.getAbsoluteTop() );
-//        sel.show();
+
         CategorySelector sel = new CategorySelector();
         sel.setPopupPosition( getAbsoluteLeft(), getAbsoluteTop() );
         sel.show();  
@@ -137,22 +131,7 @@ public class AssetCategoryEditor extends Composite {
     public void addToCategory(String selectedPath) {
 
         
-        //ignore already selected ones.
-        for ( int i = 0; i < data.categories.length; i++ ) {
-            if (data.categories[i].equals( selectedPath )) {
-                return;
-            }
-        }
-        
-        String[] newList = new String[data.categories.length + 1];
-        for ( int i = 0; i < data.categories.length; i++ ) {
-                newList[i] = data.categories[i];
-        }
-        newList[data.categories.length] = selectedPath;
-        
-        data.categories = newList;
-        data.dirty = true;
-        
+        data.addCategory( selectedPath );
         resetBox();
     }
 

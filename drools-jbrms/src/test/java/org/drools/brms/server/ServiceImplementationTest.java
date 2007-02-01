@@ -5,6 +5,7 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleContentText;
@@ -287,6 +288,15 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals("this is a new package", item.getDescription());
       
       assertEquals(pkgs.length + 1, impl.listRulePackages().length);
+  }
+  
+  public void testLoadPackageConfig() throws Exception {
+      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      PackageConfigData data = impl.loadPackage( "default" );
+      assertNotNull(data);
+      
+      assertEquals("default", data.metaData.name);
+      
   }
   
     

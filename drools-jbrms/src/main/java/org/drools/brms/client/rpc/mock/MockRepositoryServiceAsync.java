@@ -18,6 +18,7 @@ import org.drools.brms.client.modeldriven.brxml.IAction;
 import org.drools.brms.client.modeldriven.brxml.IPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.brms.client.rpc.MetaData;
+import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleContentText;
@@ -353,6 +354,14 @@ public class MockRepositoryServiceAsync
                               String p1,
                               AsyncCallback cb) {
         cb.onSuccess( "UUIDHERE" );
+        
+    }
+
+
+
+    public void loadPackage(String name,
+                            AsyncCallback cb) {
+        cb.onSuccess( new PackageConfigData() );
         
     }
     

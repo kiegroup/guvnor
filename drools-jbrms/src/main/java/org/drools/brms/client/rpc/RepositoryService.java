@@ -77,4 +77,11 @@ public interface RepositoryService extends RemoteService {
      */
     public String createPackage(String name, String description) throws SerializableException;
     
+    /**
+     * Loads a package by its name (NOT UUID !).
+     * @param name The name of the package (NOT THE UUID !).
+     * @return Well, its pretty obvious if you think about it for a minute. Really.
+     */
+    public PackageConfigData loadPackage(String name);
+    
 }
