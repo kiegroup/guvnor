@@ -346,14 +346,7 @@ public abstract class VersionableItem extends Item {
      * This will return the checkin comment for the latest revision.
      */
     public String getCheckinComment() throws RulesRepositoryException {
-        try {
-            Property data = getVersionContentNode().getProperty( CHECKIN_COMMENT );
-            return data.getValue().getString();
-        } catch ( Exception e ) {
-            log.error( "Caught Exception",
-                       e );
-            throw new RulesRepositoryException( e );
-        }
+        return getStringProperty( CHECKIN_COMMENT );
     }
 
     /**

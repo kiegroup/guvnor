@@ -14,10 +14,8 @@
 > 'drools:versionableNodeType'
 
 
-
 // Properties:
 - drools:content (string)
-
   
 // use this to capture fields which are not known ahead of time 
 - * (undefined)

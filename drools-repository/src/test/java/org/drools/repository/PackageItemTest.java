@@ -449,6 +449,15 @@ public class PackageItemTest extends TestCase {
     }
 
     
+    public void testHeader() {
+        PackageItem item = getRepo().createPackage( "testHeader", "ya" );
+        
+        item.updateHeader( "new header" );
+        getRepo().save();
+        assertEquals("new header", item.getHeader());
+        item = getRepo().loadPackage("testHeader");
+        assertEquals("new header", item.getHeader());
+    }
     
     public void testGetFormat() {        
             PackageItem rulePackageItem1 = getRepo().createPackage("testGetFormat", "woot");

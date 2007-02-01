@@ -55,6 +55,8 @@ public class PackageItem extends VersionableItem {
      * The folder where functions are kept
      */
     public static final String FUNCTION_FOLDER_NAME             = "functions";
+    
+    public static final String HEADER_PROPERTY_NAME             = "drools:header";
 
     /**
      * Constructs an object of type RulePackageItem corresponding the specified node
@@ -511,6 +513,22 @@ public class PackageItem extends VersionableItem {
      */    
     public Iterator getAssetsWithStatus(final StateItem state) {
         return getAssetsWithStatus( state, null );
+    }
+    
+    /**
+     * @return The header contents as pertains to a package of rule assets.
+     */
+    public String getHeader() {
+        return this.getStringProperty( HEADER_PROPERTY_NAME );
+    }
+    
+    /**
+     * Update the header property.
+     */
+    public void updateHeader(String header) {
+        checkIsUpdateable();
+        checkout();
+        updateStringProperty( header, HEADER_PROPERTY_NAME );
     }
     
     /**

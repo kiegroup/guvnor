@@ -20,8 +20,12 @@
 + * (drools:versionableAssetFolder)
   copy
 
+// this is for storing misc header info as pertains to rules, specifically imports
+- drools:header (string)
 
-/* MN: retiring this structure  - may use it in future for shared rules
+
+
+/* MN: retiring this structure  - use it in future for shared rules
 - drools:ruleReference (reference)
   multiple
   copy
