@@ -292,10 +292,20 @@ public class ServiceImplementationTest extends TestCase {
   
   public void testLoadPackageConfig() throws Exception {
       MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      PackageItem it = impl.repo.loadDefaultPackage();
+      it.updateCoverage( "xyz" );
+      it.updateExternalURI( "ext" );
+      it.updateHeader( "header" );
+      impl.repo.save();
+      
       PackageConfigData data = impl.loadPackage( "default" );
       assertNotNull(data);
       
       assertEquals("default", data.metaData.name);
+      assertEquals("header", data.header);
+      assertEquals("ext", data.externalURI);
+      assertEquals("xyz", data.metaData.coverage);
+      
       assertNotNull(data.uuid);
       
   }

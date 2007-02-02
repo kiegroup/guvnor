@@ -125,7 +125,11 @@ public class CategoryExplorerWidget extends Composite
                                              navTreeWidget.removeItems();
                                              String[] categories = (String[]) result;
                                              for ( int i = 0; i < categories.length; i++ ) {
-                                                 navTreeWidget.addItem( categories[i] ).addItem( new PendingItem() );
+                                                 TreeItem it = new TreeItem();
+                                                 it.setHTML( "<img src=\"images/category_small.gif\"/>" + categories[i] );
+                                                 it.setUserObject( categories[i] );
+                                                 it.addItem( new PendingItem() );
+                                                 navTreeWidget.addItem( it );
                                              }
 
                                          }
@@ -154,7 +158,7 @@ public class CategoryExplorerWidget extends Composite
         //walk back up to build a tree
         this.selectedPath = getPath( item );
 
-        item.setUserObject( new Boolean( true ) );
+        //item.setUserObject( new Boolean( true ) );
 
         service.loadChildCategories( selectedPath,
                                      new AsyncCallback() {
@@ -170,7 +174,12 @@ public class CategoryExplorerWidget extends Composite
                                              }
                                              String[] list = (String[]) result;
                                              for ( int i = 0; i < list.length; i++ ) {
-                                                 root.addItem( list[i] ).addItem( new PendingItem() );
+                                                 TreeItem it = new TreeItem();
+                                                 it.setHTML( "<img src=\"images/category_small.gif\"/>" + list[i] );
+                                                 it.setUserObject( list[i] );
+                                                 it.addItem( new PendingItem() );
+                                                 
+                                                 root.addItem( it );
                                              }
                                          }
 
@@ -179,15 +188,17 @@ public class CategoryExplorerWidget extends Composite
     }
 
     private boolean hasBeenLoaded(TreeItem item) {
-        if ( item.getUserObject() == null ) return false;
-        return (((Boolean) item.getUserObject()).booleanValue());
+        if (item.getChildCount() == 1 && item.getChild( 0 ) instanceof PendingItem) {
+            return false;
+        }        
+        return true;        
     }
 
     private String getPath(TreeItem item) {
-        String categoryPath = item.getText();
+        String categoryPath = (String) item.getUserObject();
         TreeItem parent = item.getParentItem();
         while ( parent != null ) {
-            categoryPath = parent.getText() + "/" + categoryPath;
+            categoryPath = ((String)parent.getUserObject()) + "/" + categoryPath;
             parent = parent.getParentItem();
         }
         return categoryPath;

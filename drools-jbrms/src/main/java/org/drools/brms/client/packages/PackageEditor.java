@@ -36,11 +36,18 @@ public class PackageEditor extends FormStyleLayout {
         addAttribute( "Header:", header() );
         addAttribute( "External URI:", externalURI() );
         
-        
     }
 
     private Widget externalURI() {
-        return new TextBox();
+        final TextBox box = new TextBox();
+        box.setWidth( "100%" );
+        box.setText( this.conf.externalURI );
+        box.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+                conf.externalURI = box.getText();
+            }            
+        });
+        return box;
     }
 
     private Widget header() {

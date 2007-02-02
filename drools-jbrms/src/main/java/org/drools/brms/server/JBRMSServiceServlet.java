@@ -367,21 +367,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
                                  String assetUUID,
                                  String comment) {
         RulesRepository repo = getRulesRepository();    
-//        try {
-//            RuleAsset old = loadRuleAsset( versionUUID );
-//            RuleAsset head = loadRuleAsset( assetUUID );
-//            
-//            old.uuid = assetUUID;
-//            old.metaData.versionNumber = head.metaData.versionNumber;
-//            old.metaData.checkinComment = comment;
-//            
-//            checkinVersion( old );
-//            
-//        } catch (SerializableException e) {
-//            throw new RulesRepositoryException(e);
-//        }
 
-//This uses JCR restore feature        
         repo.restoreHistoricalAsset( repo.loadAssetByUUID( versionUUID ), 
                                      repo.loadAssetByUUID( assetUUID ), 
                                      comment );
@@ -401,6 +387,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         PackageConfigData data = new PackageConfigData();
         data.uuid = item.getUUID();
         data.header = item.getHeader();
+        data.externalURI = item.getExternalURI();
         
         data.metaData = this.populateMetaData( item );
         

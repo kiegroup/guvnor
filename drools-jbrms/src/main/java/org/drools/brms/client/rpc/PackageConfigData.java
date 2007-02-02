@@ -13,6 +13,7 @@ public class PackageConfigData
 
     public String uuid;
     public String header;    
+    public String externalURI;
     public MetaData metaData;
     
 }
