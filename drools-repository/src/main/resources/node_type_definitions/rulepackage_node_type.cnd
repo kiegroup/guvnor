@@ -23,6 +23,9 @@
 // this is for storing misc header info as pertains to rules, specifically imports
 - drools:header (string)
 
+// this is for storing (optional) URI that will sync the repo with an external repository
+// for example SVN
+- drools:externalURI (string)
 
 
 /* MN: retiring this structure  - use it in future for shared rules

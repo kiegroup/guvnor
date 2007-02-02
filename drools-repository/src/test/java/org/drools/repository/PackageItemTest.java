@@ -449,14 +449,18 @@ public class PackageItemTest extends TestCase {
     }
 
     
-    public void testHeader() {
+    public void testMiscProperties() {
         PackageItem item = getRepo().createPackage( "testHeader", "ya" );
         
         item.updateHeader( "new header" );
+        item.updateExternalURI( "boo" );
         getRepo().save();
         assertEquals("new header", item.getHeader());
         item = getRepo().loadPackage("testHeader");
         assertEquals("new header", item.getHeader());
+        assertEquals("boo", item.getExternalURI());
+        
+        
     }
     
     public void testGetFormat() {        

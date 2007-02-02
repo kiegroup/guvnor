@@ -57,6 +57,7 @@ public class PackageItem extends VersionableItem {
     public static final String FUNCTION_FOLDER_NAME             = "functions";
     
     public static final String HEADER_PROPERTY_NAME             = "drools:header";
+    public static final String EXTERNAL_URI_PROPERTY_NAME             = "drools:externalURI";
 
     /**
      * Constructs an object of type RulePackageItem corresponding the specified node
@@ -523,12 +524,20 @@ public class PackageItem extends VersionableItem {
     }
     
     /**
-     * Update the header property.
+     * @return The external URI which will be used to sync this package to an external resource.
+     * Generally this will resolve to a directory in (for example) Subversion - with each asset
+     * being a file (with the format property as the file extension). 
      */
+    public String getExternalURI() {
+        return this.getStringProperty( EXTERNAL_URI_PROPERTY_NAME );
+    }
+    
     public void updateHeader(String header) {
-        checkIsUpdateable();
-        checkout();
         updateStringProperty( header, HEADER_PROPERTY_NAME );
+    }
+    
+    public void updateExternalURI(String uri) {
+        updateStringProperty( uri, EXTERNAL_URI_PROPERTY_NAME );
     }
     
     /**
