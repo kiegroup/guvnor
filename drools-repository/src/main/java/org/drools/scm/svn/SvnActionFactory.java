@@ -14,10 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.drools.resource.util.SvnUtil.CopyDirectory;
-import org.drools.resource.util.SvnUtil.CopyFile;
-import org.drools.resource.util.SvnUtil.DeleteDirectory;
-import org.drools.resource.util.SvnUtil.DeleteFile;
 import org.drools.scm.DefaultScmEntry;
 import org.drools.scm.ScmAction;
 import org.drools.scm.ScmActionFactory;
