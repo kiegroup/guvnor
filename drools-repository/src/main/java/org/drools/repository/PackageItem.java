@@ -544,6 +544,7 @@ public class PackageItem extends VersionableItem {
      * This will create a new version of a package, effectively freezing the state.
      * This means in the "head" version of the package, rules can be added
      * removed, without effecting the baseline that was created.
+     * @deprecated Use snapshot instead.
      */
     public void createBaseline(String comment,
                                StateItem state) {
@@ -565,15 +566,16 @@ public class PackageItem extends VersionableItem {
     
     /**
      * Create a new version of the package, but leave statuses the same.
+     * @deprecated Use snapshot instead.
      */
-    public void createBaseline(String comment) {
-        
+    public void createBaseline(String comment) {        
         checkin( comment );
         try {
             this.node.checkout();
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException("Unable to check out package node after creating a new baseline.", e);
-        }        
-        
+        }               
     }
+
+
 }

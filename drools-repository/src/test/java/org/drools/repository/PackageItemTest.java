@@ -97,6 +97,12 @@ public class PackageItemTest extends TestCase {
         AssetItem rule = pack.addAsset( "foobar", "waah" );        
         rule.updateContent( "this is something" );        
         rule.checkin( "something" );
+        rule.updateCoverage( "cov" );
+        rule.checkin( "woo" );
+        rule.updateCoverage( "cov" );
+        rule.checkin( "la" );
+        
+        List hist = iteratorToList( rule.getHistory() );
         
         StateItem state = getRepo().getState( "something" );
         
@@ -117,6 +123,76 @@ public class PackageItemTest extends TestCase {
         PackageItem prev = (PackageItem) pack.getPrecedingVersion();
         rule = (AssetItem) prev.getAssets().next();
         assertEquals("this is something", rule.getContent());
+        
+
+    }
+    
+    /**
+     * This is showing how to copy a package with standard JCR
+     */
+    public void testPackageCopy() throws Exception {
+        RulesRepository repo = getRepo();
+        
+        PackageItem pkg = repo.createPackage( "testPackageCopy", "this is something" );
+        
+        AssetItem it1 = pkg.addAsset( "testPackageCopy1", "la" );
+        AssetItem it2 = pkg.addAsset( "testPackageCopy2", "la" );
+        
+        it1.updateContent( "new content" );
+        it2.updateContent( "more content" );
+        it1.checkin( "c" );
+        it2.checkin( "c" );
+        
+        it1 = pkg.loadAsset( "testPackageCopy1" );
+        List hist1 = iteratorToList( it1.getHistory() );
+        System.out.println(hist1.size());
+        
+        
+        repo.getSession().getWorkspace().copy( pkg.getNode().getPath(), pkg.getNode().getPath() + "_");
+        
+        PackageItem pkg2 = repo.loadPackage( "testPackageCopy_" );
+        assertNotNull(pkg2);
+        
+        assertEquals(2, iteratorToList( pkg2.getAssets() ).size() );
+        AssetItem it1_ = pkg2.loadAsset( "testPackageCopy1" );
+
+        it1.updateContent( "new content2" );
+        it1.checkin( "la" );
+        it1_ = pkg2.loadAsset( "testPackageCopy1" );
+        assertEquals("new content", it1_.getContent());
+
+    }
+    
+    public void testPackageSnapshot() throws Exception {
+        RulesRepository repo = getRepo();
+        
+        PackageItem pkg = repo.createPackage( "testPackageSnapshot", "this is something" );
+        
+        AssetItem it1 = pkg.addAsset( "testPackageCopy1", "la" );
+        AssetItem it2 = pkg.addAsset( "testPackageCopy2", "la" );
+        
+        it1.updateContent( "new content" );
+        it2.updateContent( "more content" );
+        it1.checkin( "c" );
+        it2.checkin( "c" );
+        
+        repo.createPackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
+        
+        
+        PackageItem pkg2 = repo.loadPackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
+        assertNotNull(pkg2);
+        
+        assertEquals(2, iteratorToList( pkg2.getAssets() ).size());
+        assertFalse(pkg2.getUUID().equals( pkg.getUUID() ));
+        
+        //now check we can list the snappies
+        String[] res = repo.listPackageSnapshots("testPackageSnapshot");
+        
+        assertEquals(1, res.length);
+        assertEquals("PROD 2.0", res[0]);
+        
+        res = repo.listPackageSnapshots( "does not exist" );
+        assertEquals(0, res.length);
         
     }
 

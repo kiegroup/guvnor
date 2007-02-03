@@ -2,6 +2,8 @@ package org.drools.repository;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -80,6 +82,11 @@ public class RulesRepository {
      * The name of the rulepackage area of the repository
      */
     public final static String RULE_PACKAGE_AREA = "drools:rulepackage_area";
+    
+    /**
+     * The name of the rulepackage area of the repository
+     */
+    public final static String PACKAGE_SNAPSHOT_AREA = "drools:packagesnapshot_area";    
     
     /**
      * The name of the rule area of the repository
@@ -405,6 +412,46 @@ public class RulesRepository {
             }
         }
     }    
+    
+    public PackageItem loadPackageSnapshot(String packageName, String snapshotName) {
+        try {
+            Node n = this.getAreaNode( PACKAGE_SNAPSHOT_AREA ).getNode( packageName ).getNode( snapshotName );
+            return new PackageItem(this, n);
+        } catch (  RepositoryException e ) {
+            log.error( e );
+            throw new RulesRepositoryException( e );
+        }
+    }
+    
+    /**
+     * This will copy the package to the snapshot area.
+     * Creating a copy for deployment, etc.
+     */
+    public void createPackageSnapshot(String packageName, String snapshotName) {
+        log.info( "Creating snapshot for [" + packageName + "] called [" + snapshotName + "]");
+        try {
+            Node snaps = this.getAreaNode( PACKAGE_SNAPSHOT_AREA );
+            
+            if (!snaps.hasNode( packageName )) {
+                snaps.addNode( packageName, "nt:folder" );
+                save();
+            }
+            
+            Node pkgSnaps = snaps.getNode( packageName ); 
+            
+            String newName = pkgSnaps.getPath() + "/" +  snapshotName; 
+            
+            Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
+            Node rulePackageNode = folderNode.getNode(packageName);
+            
+            String source = rulePackageNode.getPath();
+            
+            this.session.getWorkspace().copy( source, newName );
+        } catch (RepositoryException e) {
+            log.error( "Unable to create snapshot", e );
+            throw new RulesRepositoryException(e);
+        }
+    }
 
     /**
      * This will return or create the default package for rules that have no home yet.
@@ -690,6 +737,30 @@ public class RulesRepository {
         }
         
         
+    }
+
+
+
+    /**
+     * Return a list of the snapshots available for the given package name.
+     */
+    public String[] listPackageSnapshots(String packageName) {
+        Node snaps = this.getAreaNode( PACKAGE_SNAPSHOT_AREA );
+        try {
+            if (!snaps.hasNode( packageName )) {
+                return new String[0];
+            } else {
+                List result = new ArrayList();
+                NodeIterator it = snaps.getNode( packageName ).getNodes();
+                while ( it.hasNext() ) {
+                    Node element = (Node) it.next();
+                    result.add( element.getName() );
+                }
+                return (String[]) result.toArray( new String[result.size()] );
+            }
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException( e );
+        }
     }
 
 

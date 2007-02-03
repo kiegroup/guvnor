@@ -131,10 +131,10 @@ public class RepositoryConfigurator {
             // Setup the RulePackageItem area        
             RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.RULE_PACKAGE_AREA, "nt:folder");
             
-            // Setup the DSL area                
-            RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.DSL_AREA, "nt:folder");
-            
-            //Setup the DSL area                
+            // Setup the Snapshot area        
+            RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.PACKAGE_SNAPSHOT_AREA, "nt:folder");
+                        
+            //Setup the Cateogry area                
             RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.TAG_AREA, "nt:folder");
             
             //Setup the State area                
