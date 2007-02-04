@@ -556,12 +556,13 @@ public class SvnActionFactoryTest extends TestCase {
             String list[] = src.list();
 
             for ( int i = 0; i < list.length; i++ ) {
-                String dest1 = dest.getPath() + "\\" + list[i];
-                String src1 = src.getPath() + "\\" + list[i];
+                String dest1 = dest.getPath() + File.separator + list[i];
+                String src1 = src.getPath() + File.separator + list[i];
                 copy( new File( src1 ),
                       new File( dest1 ) );
             }
         } else {
+            
             FileInputStream fin = new FileInputStream( src );
             FileOutputStream fout = new FileOutputStream( dest );
             int c;
@@ -577,7 +578,7 @@ public class SvnActionFactoryTest extends TestCase {
             String list[] = src.list();
 
             for ( int i = 0; i < list.length; i++ ) {
-                String src1 = src.getPath() + "\\" + list[i];
+                String src1 = src.getPath() + File.separator + list[i];
                 delete( new File( src1 ) );
             }
             src.delete();
