@@ -1,6 +1,7 @@
 package org.drools.brms.client.packages;
 
 import org.drools.brms.client.common.FormStyleLayout;
+import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.PackageConfigData;
@@ -11,6 +12,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -48,6 +50,7 @@ public class PackageEditor extends FormStyleLayout {
         addAttribute( "External URI:", externalURI() );
         addAttribute( "Last modified on:", new Label(this.conf.lastModified.toLocaleString())  );
         addAttribute( "Last modified by:", new Label(this.conf.lasContributor));
+        addRow(new HTML("<hr/>"));
         addRow( saveChangeWidget() );
     }
 
@@ -57,6 +60,10 @@ public class PackageEditor extends FormStyleLayout {
         save.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 doSaveAction();
+                FormStylePopup pop = new FormStylePopup("images/asset_version.png", "Change saved successfully...");
+                pop.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+                
+                pop.show();
             }
         } );
         

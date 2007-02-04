@@ -20,7 +20,7 @@ public class FormStylePopup extends PopupPanel {
                           String title) {
         super( true );
         form = new FormStyleLayout( image, title );
-        
+        this.setStyleName( "ks-popups-Popup" );
 
         
         add( form );
