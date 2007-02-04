@@ -1,13 +1,19 @@
 package org.drools.brms.client.packages;
 
 import org.drools.brms.client.common.FormStyleLayout;
+import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.PackageConfigData;
+import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -30,12 +36,55 @@ public class PackageEditor extends FormStyleLayout {
         setHeight( "100%" );
         setWidth( "100%" );
         
-        addHeader( "images/package_large.png", this.conf.metaData.name );
+        refreshWidgets();
+    }
+
+    private void refreshWidgets() {
+        clear();
+        addHeader( "images/package_large.png", this.conf.name );
         
         addAttribute( "Description:", description() );
         addAttribute( "Header:", header() );
         addAttribute( "External URI:", externalURI() );
+        addAttribute( "Last modified on:", new Label(this.conf.lastModified.toLocaleString())  );
+        addAttribute( "Last modified by:", new Label(this.conf.lasContributor));
+        addRow( saveChangeWidget() );
+    }
+
+    private Widget saveChangeWidget() {
         
+        Button save = new Button("Save configuration changes");
+        save.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                doSaveAction();
+            }
+        } );
+        
+        return save;
+    }
+
+    private void doSaveAction() {
+        LoadingPopup.showMessage( "Saving package configuration. Please wait ..." );
+        RepositoryServiceFactory.getService().savePackage( this.conf, new GenericCallback() {
+            public void onSuccess(Object data) {
+                reload();
+            }            
+        });
+        
+    }
+
+    /**
+     * Will refresh all the data.
+     */
+    private void reload() {
+        LoadingPopup.showMessage( "Refreshing package data..." );
+        RepositoryServiceFactory.getService().loadPackage( this.conf.name, new GenericCallback() {
+            public void onSuccess(Object data) {
+                LoadingPopup.close();
+                conf = (PackageConfigData) data;
+                refreshWidgets();
+            }
+        });
     }
 
     private Widget externalURI() {
@@ -65,6 +114,8 @@ public class PackageEditor extends FormStyleLayout {
             }            
         });
         
+        
+        
         HorizontalPanel panel = new HorizontalPanel();
         panel.add( area );
 
@@ -88,6 +139,7 @@ public class PackageEditor extends FormStyleLayout {
             public void onClick(Widget w) {
                 area.setText( area.getText(  ) + "\n" + 
                               "import <your class here>");
+                conf.header = area.getText();
             }
         });
         vert.add( newImport );
@@ -98,6 +150,7 @@ public class PackageEditor extends FormStyleLayout {
             public void onClick(Widget w) {
                 area.setText( area.getText() + "\n" + 
                               "global <your class here> <variable name>");
+                conf.header = area.getText();
             }
         });
         newGlobal.setTitle( "Add a new global variable declaration." );
@@ -131,10 +184,11 @@ public class PackageEditor extends FormStyleLayout {
         final TextArea area = new TextArea();
         area.setWidth( "100%" );
         area.setVisibleLines( 4 );
+        area.setText( conf.description );
         
         area.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-                conf.metaData.description = area.getText();                 
+                conf.description = area.getText();                 
             }            
         });
         

@@ -364,6 +364,13 @@ public class MockRepositoryServiceAsync
         cb.onSuccess( new PackageConfigData() );
         
     }
+
+
+
+    public void savePackage(PackageConfigData p0,
+                            AsyncCallback cb) {
+        cb.onSuccess( "UUID" );        
+    }
     
     
 

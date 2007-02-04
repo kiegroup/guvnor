@@ -84,12 +84,10 @@ public interface RepositoryService extends RemoteService {
      */
     public PackageConfigData loadPackage(String name);
     
-//    /**
-//     * This will save the package info. It will also 
-//     * checkin a new version (a baseline of the package) if needed.
-//     * If a state is provded, the status will be changed to that ot the package and all its
-//     * assets.
-//     */
-//    public String savePackageConfiguration(PackageConfigData config, boolean createBaseline, String newState);
-//    
+    /**
+     * Saves the package config data in place (does not create a new version of anything).
+     * @return The UUID of the saved item.
+     */
+    public String savePackage(PackageConfigData data) throws SerializableException;
+        
 }

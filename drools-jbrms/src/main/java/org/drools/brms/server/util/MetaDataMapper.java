@@ -22,15 +22,14 @@ import org.drools.repository.RulesRepositoryException;
  */
 public class MetaDataMapper {
 
-    private Map readMappings;
-    private Map writeMappings;
     
+    private Map writeMappingsForClass = new HashMap();
+
+    private Map readMappipngsForClass = new HashMap();
     
     public void copyFromMetaData(MetaData data, Object target) {
-        if ( this.writeMappings == null ) {
-            this.writeMappings = loadWriteMappings( data,
-                                              target.getClass() );
-        }
+        Map writeMappings = getWriteMappings( data,
+                          target );
         
         for ( Iterator iter = writeMappings.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry e = (Map.Entry) iter.next();
@@ -49,6 +48,16 @@ public class MetaDataMapper {
 
         }        
         
+    }
+
+    private Map getWriteMappings(MetaData data,
+                                  Object target) {
+        if (!this.writeMappingsForClass.containsKey( target.getClass() )) {
+            Map writeMappings = loadWriteMappings( data,
+                                                    target.getClass() );
+            writeMappingsForClass.put( target.getClass(), writeMappings );
+        }
+        return (Map) writeMappingsForClass.get( target.getClass() );
     }
     
     private Map loadWriteMappings(MetaData data,
@@ -81,10 +90,8 @@ public class MetaDataMapper {
 
     public void copyToMetaData(MetaData data,
                                Object source) {
-        if ( this.readMappings == null ) {
-            this.readMappings = loadReadMappings( data,
-                                              source.getClass() );
-        }
+        Map readMappings = getReadMappings( data,
+                         source );
 
         for ( Iterator iter = readMappings.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry e = (Map.Entry) iter.next();
@@ -103,6 +110,15 @@ public class MetaDataMapper {
 
         }
 
+    }
+
+    private Map getReadMappings(MetaData data,
+                                 Object source) {
+        if (!this.readMappipngsForClass.containsKey( source.getClass() )) {
+            this.readMappipngsForClass.put( source.getClass(), loadReadMappings( data,
+                                                                                 source.getClass() ) );
+        }
+        return (Map) this.readMappipngsForClass.get( source.getClass() );
     }
 
     private Map loadReadMappings(MetaData data,

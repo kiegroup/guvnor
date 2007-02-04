@@ -36,6 +36,14 @@ public class FormStyleLayout extends Composite {
     }
     
     /**
+     * Clears the layout table.
+     */
+    public void clear() {
+        numInLayout = 0;
+        this.layout.clear();
+    }
+    
+    /**
      * Add a widget to the "form".
      */
     public void addAttribute(String lbl,

@@ -287,7 +287,13 @@ public class ServiceImplementationTest extends TestCase {
       assertNotNull(item);
       assertEquals("this is a new package", item.getDescription());
       
+      
+      
       assertEquals(pkgs.length + 1, impl.listRulePackages().length);
+      
+      PackageConfigData conf = impl.loadPackage( "testCreatePackage" );
+      assertEquals("this is a new package", conf.description);
+      assertNotNull(conf.lastModified);
   }
   
   public void testLoadPackageConfig() throws Exception {
@@ -301,13 +307,32 @@ public class ServiceImplementationTest extends TestCase {
       PackageConfigData data = impl.loadPackage( "default" );
       assertNotNull(data);
       
-      assertEquals("default", data.metaData.name);
+      assertEquals("default", data.name);
       assertEquals("header", data.header);
       assertEquals("ext", data.externalURI);
-      assertEquals("xyz", data.metaData.coverage);
       
       assertNotNull(data.uuid);
       
+  }
+  
+  public void testPackageConfSave() throws Exception {
+      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      String uuid = impl.createPackage( "testPackageConfSave", "a desc" );
+      PackageConfigData data = impl.loadPackage( "testPackageConfSave" );
+      
+      data.description = "new desc";
+      data.header = "wa";
+      data.externalURI = "new URI";
+      
+      
+      String uuid2 = impl.savePackage( data );
+      assertNotNull(uuid);
+      assertEquals(uuid, uuid2);
+      
+      data = impl.loadPackage( "testPackageConfSave" );
+      assertEquals("new desc", data.description);
+      assertEquals("wa", data.header);
+      assertEquals("new URI", data.externalURI);      
   }
   
     

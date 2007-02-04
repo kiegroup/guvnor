@@ -28,4 +28,6 @@ public interface RepositoryServiceAsync
     public void restoreVersion(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback cb);
     public void createPackage(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
     public void loadPackage(java.lang.String p0, AsyncCallback cb);
+    public void savePackage(org.drools.brms.client.rpc.PackageConfigData p0, AsyncCallback cb);
+    
 }

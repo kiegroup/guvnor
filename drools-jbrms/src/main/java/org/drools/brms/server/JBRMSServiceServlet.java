@@ -388,10 +388,27 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         data.uuid = item.getUUID();
         data.header = item.getHeader();
         data.externalURI = item.getExternalURI();
+        data.description = item.getDescription();
+        data.name = item.getName();
+        data.lastModified = item.getLastModified().getTime();
+        data.lasContributor = item.getLastContributor();
         
-        data.metaData = this.populateMetaData( item );
         
         return data;
+    }
+
+    public String savePackage(PackageConfigData data) throws SerializableException {
+        
+        PackageItem item = getRulesRepository().loadPackage( data.name );
+        
+        
+        item.updateHeader( data.header );
+        item.updateExternalURI( data.externalURI );
+        item.updateDescription( data.description );
+        
+        getRulesRepository().save();
+        
+        return item.getUUID();
     }
     
 

@@ -1,5 +1,7 @@
 package org.drools.brms.client.rpc;
 
+import java.util.Date;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -14,6 +16,11 @@ public class PackageConfigData
     public String uuid;
     public String header;    
     public String externalURI;
-    public MetaData metaData;
+    public String name;
+    public String description;
+    public Date   lastModified;
+    public String lasContributor;
+    
+    
     
 }
