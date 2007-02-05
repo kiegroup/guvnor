@@ -1,35 +1,28 @@
 package org.drools.brms.client;
 
-import org.drools.brms.client.packages.PackageExplorerWidget;
-
-import com.google.gwt.user.client.ui.FlexTable;
+import org.drools.brms.client.packages.PackageManagerView;
 
 /**
  * This is the package management feature. 
  * For managing packages (namespaces, imports etc) for rule assets.
  * 
+ * This is also an alternative way of viewing packages.
  */
-public class Packages extends JBRMSFeature {
+public class PackageManagementFeature extends JBRMSFeature {
 
 
     public static ComponentInfo init() {
         return new ComponentInfo( "Packages",
                                   "Configure and view packages of business rule assets." ) {
             public JBRMSFeature createInstance() {
-                return new Packages();
+                return new PackageManagementFeature();
             }
         };
     }
 
 
-    public Packages() {
-        final FlexTable layout = new FlexTable();
-        
-        PackageExplorerWidget packages = new PackageExplorerWidget();
-        
-        layout.setWidget( 0, 0, packages );
-        
-        initWidget( layout );
+    public PackageManagementFeature() {
+        initWidget( new PackageManagerView() );
     }
 
 

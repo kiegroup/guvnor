@@ -178,7 +178,7 @@ public class PackageEditor extends FormStyleLayout {
         max.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 if (area.getVisibleLines() != 32) {
-                    area.setVisibleLines( 32 );
+                    area.setVisibleLines( 32 );                    
                 } else {
                     area.setVisibleLines( 4 );
                 }

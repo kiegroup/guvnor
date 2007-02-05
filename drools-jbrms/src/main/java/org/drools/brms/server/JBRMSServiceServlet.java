@@ -398,9 +398,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     }
 
     public String savePackage(PackageConfigData data) throws SerializableException {
-        
         PackageItem item = getRulesRepository().loadPackage( data.name );
-        
         
         item.updateHeader( data.header );
         item.updateExternalURI( data.externalURI );

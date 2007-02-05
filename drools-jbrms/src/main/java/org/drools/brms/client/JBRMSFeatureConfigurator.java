@@ -18,7 +18,7 @@ public class JBRMSFeatureConfigurator {
 	public static void configure(JBRMSFeatureList list) {
 		list.addSink(Info.init());
 		list.addSink(RulesFeature.init());
-		list.addSink(Packages.init());
+		list.addSink(PackageManagementFeature.init());
 		list.addSink(RuleBases.init());
 		list.addSink(Deployment.init());
 		list.addSink(Admin.init());
