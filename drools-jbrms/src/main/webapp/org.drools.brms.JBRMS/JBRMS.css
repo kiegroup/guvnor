@@ -121,8 +121,7 @@ a:visited {
 .model-builderInner-Background {
 	background-color: white;
 	border: 1px solid #B8B8B8;
-	//border-top: 1px solid gray;
-	//border-bottom: 1px solid gray;
+
 }
 
 .model-builderInnerInner-Background {
@@ -140,6 +139,16 @@ a:visited {
 	font-size: smaller;
 }
 
+.version-Popup {
+	background-color: white;
+	border: 1px solid #B8B8B8;
+}
+
+.version-Popup .Caption {
+  background-color: #B8B8B8;
+  font-color: white;
+  font-weight: bold;
+}
 
 
 .gwt-TabBar {
@@ -289,7 +298,7 @@ a:visited {
 
 .warning-Popup {
   border: 2px solid #B8B8B8;
-  background-color: white;		
+  background-color: #FDFCDC;		
 }
 
 
@@ -299,6 +308,12 @@ a:visited {
   padding: 4px;
 }
 
+.editable-Surface {
+  background-color: #FDFCDC;
+  border: 1px solid #B8B8B8;
+//  padding: 4px;
+}
+
 .rule-error-Popup {
   background-color: red;
   border: 1px solid #B8B8B8;
@@ -306,7 +321,7 @@ a:visited {
 }
 
 .loading-Popup {
-  background-color: #CCFFCC;
+  background-color: #FDFCDC;
   border: 1px solid #B8B8B8;
   padding: 4px;
 }
@@ -323,9 +338,13 @@ a:visited {
   padding: 4px;
 }
 
-.rule-explorer-NewPopups  {
+.new-asset-Icons  {
   border: 1px solid #B8B8B8;
   background-color: #FDFCDC;
+}
+
+.version-browser-Border {
+  border: 1px solid #B8B8B8;
 }
 
 .dt-editor-Grid {
