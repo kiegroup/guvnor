@@ -43,89 +43,8 @@ public class PackageItemTest extends TestCase {
         
     }
     
-    /**
-     * This tests creating a "baseline" of a RulePackage,
-     * basically updating all the resources, and checking it in as a version.
-     * This is showing off "multi dimensional versioning".
-     */
-    public void testBaselinePackage() throws Exception {
-        RulesRepository repo = getRepo();
-        
-        PackageItem pack = repo.createPackage( "testBaselinePackage", "for testing baselines" );
-        
-        AssetItem rule1 = pack.addAsset( "rule 1", "yeah" );
-        AssetItem rule2 = pack.addAsset( "rule 2", "foobar" );
-        
-        assertEquals(StateItem.DRAFT_STATE_NAME, rule1.getState().getName());
-        
-        StateItem state = repo.getState( "deployed" );
-        
-        repo.save();
-        
-        assertNull(pack.getPrecedingVersion());
-        
-        //the first version, frozen with 2 rules
-        pack.createBaseline("commit comment", state);
-        
-        //check head
-        pack = repo.loadPackage( "testBaselinePackage" );
-        assertEquals(2, iteratorToList(pack.getAssets()).size());
-        
-        //now remove a rule from head
-        pack.removeAsset( "rule 1" );
-        repo.save();
-        assertEquals(1, iteratorToList( pack.getAssets() ).size());
-        
-        pack.createBaseline( "another", state );
-        
-        PackageItem prev = (PackageItem) pack.getPrecedingVersion();
-        assertEquals(2, iteratorToList( prev.getAssets() ).size());
-        
-        assertNotNull(prev.getSucceedingVersion());
-        
-        PackageItem succ = (PackageItem) prev.getSucceedingVersion();
-        
-        assertEquals(1, iteratorToList( succ.getAssets() ).size());
-        
-    }
 
-    /** Continues to show how multi dimensional versioning works */
-    public void testPackageBaselineWithRuleChanges() throws Exception {
-        String packName = StackUtil.getCurrentMethodName();
-        PackageItem pack = getRepo().createPackage( packName, "yeah" );
-        
-        AssetItem rule = pack.addAsset( "foobar", "waah" );        
-        rule.updateContent( "this is something" );        
-        rule.checkin( "something" );
-        rule.updateCoverage( "cov" );
-        rule.checkin( "woo" );
-        rule.updateCoverage( "cov" );
-        rule.checkin( "la" );
-        
-        List hist = iteratorToList( rule.getHistory() );
-        
-        StateItem state = getRepo().getState( "something" );
-        
-        pack.createBaseline( "another one", state );
-        
-        pack = getRepo().loadPackage( packName );
-        
-        rule = (AssetItem) pack.getAssets().next();
-        rule.updateContent( "blah" );
-        rule.checkin( "woot" );
-        
-        pack.createBaseline( "yeah", state );
-        
-        pack = getRepo().loadPackage( packName );
-        rule = (AssetItem) pack.getAssets().next();
-        assertEquals("blah", rule.getContent());
-        
-        PackageItem prev = (PackageItem) pack.getPrecedingVersion();
-        rule = (AssetItem) prev.getAssets().next();
-        assertEquals("this is something", rule.getContent());
-        
 
-    }
     
     /**
      * This is showing how to copy a package with standard JCR
@@ -544,7 +463,33 @@ public class PackageItemTest extends TestCase {
             assertNotNull(rulePackageItem1);
             assertEquals(PackageItem.PACKAGE_FORMAT, rulePackageItem1.getFormat());    
 
-    }        
+    }
+    
+    public void testPackageCheckinConfig() {
+        PackageItem item = getRepo().createPackage( "testPackageCheckinConfig", "description" );
+        
+        AssetItem rule = item.addAsset( "testPackageCheckinConfig", "w" );
+        rule.checkin( "goo" );
+        
+        assertEquals(1, iteratorToList( item.getAssets() ).size());
+        item.updateHeader( "la" );
+        item.checkin( "woot" );
+        
+        item.updateHeader( "we" );
+        item.checkin( "gah" );
+        
+        
+        
+        
+        
+        PackageItem pre = (PackageItem) item.getPrecedingVersion();
+        assertNotNull(pre);        
+        assertEquals("la", pre.getHeader());
+        
+        AssetItem rule_ = getRepo().loadAssetByUUID( rule.getUUID() );
+        assertEquals(rule.getVersionNumber(), rule_.getVersionNumber());
+        
+    }
     
     static class MockAssetItem extends AssetItem {
         private String version;

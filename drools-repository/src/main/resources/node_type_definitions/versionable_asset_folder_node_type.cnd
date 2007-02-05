@@ -17,4 +17,4 @@
 
 // what it contains
 + * (drools:versionableNodeType)
-  copy
+  ignore
