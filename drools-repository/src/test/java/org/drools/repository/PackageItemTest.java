@@ -422,7 +422,15 @@ public class PackageItemTest extends TestCase {
         AssetItemIterator it = pkg.queryAssets( "drools:format='xyz'" );        
         List list = iteratorToList( it );
         assertEquals(2, list.size());
+        assertTrue(list.get( 0 ) instanceof AssetItem);
+        assertTrue(list.get( 1 ) instanceof AssetItem);
+
         
+        AssetItemIterator it2 = pkg.listAssetsByFormat( "xyz" );
+        List list2 = iteratorToList( it2 );
+        assertEquals(2, list.size());
+        assertTrue(list2.get( 0 ) instanceof AssetItem);
+        assertTrue(list2.get( 1 ) instanceof AssetItem);
         
     }
     

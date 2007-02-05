@@ -362,6 +362,13 @@ public class PackageItem extends VersionableItem {
     }
     
     /**
+     * This will load an iterator for assets of the given format type.
+     */
+    public AssetItemIterator listAssetsByFormat(String format) {
+        return queryAssets( "drools:format='" + format + "'" );
+    }
+    
+    /**
      * Load a specific rule asset by name.
      */
     public AssetItem loadAsset(String name) {
