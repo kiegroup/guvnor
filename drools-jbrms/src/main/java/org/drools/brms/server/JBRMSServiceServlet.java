@@ -406,7 +406,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         item.updateExternalURI( data.externalURI );
         item.updateDescription( data.description );
         
-        getRulesRepository().save();
+        item.checkin( data.description );
         
         return item.getUUID();
     }
