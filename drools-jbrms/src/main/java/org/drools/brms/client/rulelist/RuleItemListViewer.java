@@ -113,30 +113,36 @@ public class RuleItemListViewer extends Composite {
 
         //if no data, just fill it out
         if ( data == null || data.data.length == 0) {
-            table = new SortableTable( FILLER_ROWS,
-                                       this.tableConfig.headers.length + 1 );
-            table.setValue( 1,
-                            1,
-                            "" );
+            
+
+            table = SortableTable.createTableWidget( new TableDataRow[0], tableConfig.headers, FILLER_ROWS );
+            
+//            table = new SortableTable( FILLER_ROWS,
+//                                       this.tableConfig.headers.length + 1 );
+//            
+//            table.setValue( 1,
+//                            1,
+//                            "" );
         } else {
-            int maxRows = data.data.length;
-            if (maxRows < FILLER_ROWS) {
-                maxRows = FILLER_ROWS;
-            }
-            table = new SortableTable( maxRows,
-                                       this.tableConfig.headers.length + 1 );
-            for ( int i = 0; i < data.data.length; i++ ) {
-                TableDataRow row = data.data[i];
-                table.setValue( i + 1,
-                                0,
-                                row.getKeyValue() ); //this is the key
-                for ( int j = 0; j < row.values.length; j++ ) {
-                    String val = row.values[j];
-                    table.setValue( i + 1,
-                                    j + 1,
-                                    val );
-                }
-            }
+//            int maxRows = data.data.length;
+//            if (maxRows < FILLER_ROWS) {
+//                maxRows = FILLER_ROWS;
+//            }
+            table = SortableTable.createTableWidget( data.data, this.tableConfig.headers, FILLER_ROWS );
+//            table = new SortableTable( maxRows,
+//                                       this.tableConfig.headers.length + 1 );
+//            for ( int i = 0; i < data.data.length; i++ ) {
+//                TableDataRow row = data.data[i];
+//                table.setValue( i + 1,
+//                                0,
+//                                row.getKeyValue() ); //this is the key
+//                for ( int j = 0; j < row.values.length; j++ ) {
+//                    String val = row.values[j];
+//                    table.setValue( i + 1,
+//                                    j + 1,
+//                                    val );
+//                }
+//            }
             
             //now the refresh icon and the number of rows.
             refreshIcon = new Image("images/refresh.gif");
@@ -157,17 +163,17 @@ public class RuleItemListViewer extends Composite {
                               panel);
         }
 
-        //setup the "key" column
-        table.setHiddenColumn( 0 );
-        table.setColumnHeader( "",
-                               0 );
+//        //setup the "key" column
+//        table.setHiddenColumn( 0 );
+//        table.setColumnHeader( "",
+//                               0 );
         table.setWidth( "100%" );
 
-        //add the headers
-        for ( int i = 0; i < this.tableConfig.headers.length; i++ ) {
-            table.setColumnHeader( this.tableConfig.headers[i],
-                                   i + 1 );
-        }
+//        //add the headers
+//        for ( int i = 0; i < this.tableConfig.headers.length; i++ ) {
+//            table.setColumnHeader( this.tableConfig.headers[i],
+//                                   i + 1 );
+//        }
 
         outer.setWidget( 1,
                          0,

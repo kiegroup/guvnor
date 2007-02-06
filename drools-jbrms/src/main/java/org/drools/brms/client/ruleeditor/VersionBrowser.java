@@ -102,8 +102,7 @@ public class VersionBrowser extends Composite {
                 
                 String[] header = new String[] {"Version number", "Comment", "Date Modified", "Status"};
                 
-                final SortableTable tableWidget = populateTableData( rows,
-                                                               header );
+                final SortableTable tableWidget = SortableTable.createTableWidget( rows, header, 0 );
                 
                 tableWidget.setWidth( "100%" );
                 
@@ -154,34 +153,7 @@ public class VersionBrowser extends Composite {
 
 
 
-    /**
-     * This will return a sortable table ready to go.
-     * @param rows The data.
-     * @param header Headers.
-     * @return
-     */
-    private SortableTable populateTableData(TableDataRow[] rows,
-                                            String[] header) {
-        SortableTable tableWidget = new SortableTable(rows.length + 1, rows[0].values.length + 1);
-        
-        tableWidget.setColumnHeader( "", 0 );
-        
-        for ( int i = 0; i < header.length; i++ ) {
-            tableWidget.setColumnHeader( header[i], i + 1 );
-        }
-        
-        
-        tableWidget.setHiddenColumn( 0 );
-        for ( int i = 0; i < rows.length; i++ ) {
-            String[] cols = rows[i].values;
-            
-            tableWidget.setValue( i + 1, 0, rows[i].id );
-            for ( int j = 0; j < cols.length; j++ ) {
-                tableWidget.setValue( i + 1, j + 1, cols[j] );
-            }
-        }
-        return tableWidget;
-    }
+
 
     
     private void showStaticIcon() {

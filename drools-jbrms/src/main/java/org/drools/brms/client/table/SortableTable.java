@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.gwt.user.client.ui.ClickListener;
+import org.drools.brms.client.rpc.TableDataRow;
+
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.SourcesTableEvents;
 import com.google.gwt.user.client.ui.TableListener;
@@ -58,11 +59,46 @@ public class SortableTable extends Grid implements TableListener {
         setStyleName( styleList );
         
 	}
+    
+    /**
+     * This will return a sortable table ready to go.
+     * @param rows The data.
+     * @param header Headers.
+     * @param fillRows The number of rows to pad out, if needed
+     * @return A SortableTable ready to go !
+     */
+    public static SortableTable createTableWidget(TableDataRow[] rows, String[] header, int fillRows) {
+        SortableTable tableWidget = null;
+        if (fillRows > rows.length) {
+            tableWidget = new SortableTable(fillRows, header.length + 1);
+            tableWidget.setValue( 1, 1, "" );
+        } else {
+            tableWidget = new SortableTable(rows.length + 1, header.length + 1);    
+        }        
+        
+        tableWidget.setColumnHeader( "", 0 );
+        
+        for ( int i = 0; i < header.length; i++ ) {
+            tableWidget.setColumnHeader( header[i], i + 1 );
+        }
+        
+        
+        tableWidget.setHiddenColumn( 0 );
+        for ( int i = 0; i < rows.length; i++ ) {
+            String[] cols = rows[i].values;
+            
+            tableWidget.setValue( i + 1, 0, rows[i].id );
+            for ( int j = 0; j < cols.length; j++ ) {
+                tableWidget.setValue( i + 1, j + 1, cols[j] );
+            }
+        }
+        return tableWidget;
+    }    
 
 	/** 
      * Adds a header, which will be at the zero index in the table.
 	 */
-	public void setColumnHeader(String name, int index){               
+	private void setColumnHeader(String name, int index){               
 		tableHeader.add(index, name);
 		this.renderTableHeader(name, index);
 	}
@@ -74,7 +110,7 @@ public class SortableTable extends Grid implements TableListener {
      * You would use this to allow a "key" column to be stored with the data.
      * For example, a UUID for a rule. 
      */
-    public void setHiddenColumn(int colIndex) {
+    private void setHiddenColumn(int colIndex) {
         this.hideColumnIndex = colIndex;
         this.getCellFormatter().setVisible( 0, colIndex, false );
     }
@@ -82,30 +118,26 @@ public class SortableTable extends Grid implements TableListener {
 	/**
      * This will store the value in the x,y position.
      * Values must be comparable for sorting to work of course.
+     * Start with a row index of 1 otherwise as zero means header.
 	 */
-	public void setValue(int rowIndex, int colIndex, Comparable value){
-		// The rowIndex should begin with 1 as rowIndex 0 is for the Header
-		// Any row with index == 0 will not be displayed.
+	private void setValue(int row, int col, Comparable val){
         
-		if(rowIndex == 0){
-			return;
-		}
+		if(row == 0)return;
         
-        //and do the zebra striping
-        resetStyle( rowIndex,
-                    colIndex );
+        //for alternate for highlighting.
+        resetStyle( row,  col );
         
-		if((rowIndex-1) >= this.tableRows.size() || null == tableRows.get(rowIndex-1)){
-			tableRows.add(rowIndex-1, new RowData());
+		if((row-1) >= this.tableRows.size() || null == tableRows.get(row-1)){
+			tableRows.add(row-1, new RowData());
 		}
 		
-		RowData rowData = (RowData)this.tableRows.get(rowIndex-1); 
-		rowData.addColumnValue(colIndex, value);
-		this.setText(rowIndex, colIndex, "" + value.toString()+ "");
+		RowData rowData = (RowData)this.tableRows.get(row-1); 
+		rowData.addColumnValue(col, val);
+		this.setText(row, col, "" + val.toString()+ "");
         
         //and hiding the required column
-        if (colIndex == hideColumnIndex) {
-            getCellFormatter().setVisible( rowIndex, colIndex, false );
+        if (col == hideColumnIndex) {
+            getCellFormatter().setVisible( row, col, false );
         }
 	}
 
@@ -360,4 +392,6 @@ public class SortableTable extends Grid implements TableListener {
         getRowFormatter().setStyleName( 0, styleListHeader );
     
 	}
+    
+    
 }
