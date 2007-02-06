@@ -15,6 +15,7 @@ import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.rulelist.RuleItemListViewer;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 
@@ -333,6 +334,36 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals("new desc", data.description);
       assertEquals("wa", data.header);
       assertEquals("new URI", data.externalURI);      
+  }
+  
+  public void testListByFormat() throws Exception {
+      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      String cat = "testListByFormat";
+      impl.createCategory( "/", cat, "ya" );
+      impl.createPackage( "testListByFormat", "used for listing by format." );
+      
+      String uuid = impl.createNewRule( "testListByFormat", "x", cat, "testListByFormat", "testListByFormat" );
+      String uuid2 = impl.createNewRule( "testListByFormat2", "x", cat, "testListByFormat", "testListByFormat" );
+      String uuid3 = impl.createNewRule( "testListByFormat3", "x", cat, "testListByFormat", "testListByFormat" );
+      String uuid4 = impl.createNewRule( "testListByFormat4", "x", cat, "testListByFormat", "testListByFormat" );
+
+      TableDataResult res = impl.listAssetsByFormat( "testListByFormat", "testListByFormat", -1, 0 );
+      assertEquals(4, res.data.length);
+      assertEquals(uuid, res.data[0].id);
+      assertEquals("testListByFormat", res.data[0].values[0]);
+      
+      res = impl.listAssetsByFormat( "testListByFormat", "testListByFormat", 4, 0 );      
+      assertEquals(4, res.data.length);
+
+      res = impl.listAssetsByFormat( "testListByFormat", "testListByFormat", 2, 0 );      
+      assertEquals(2, res.data.length);
+      assertEquals(uuid, res.data[0].id);
+      
+      
+      res = impl.listAssetsByFormat( "testListByFormat", "testListByFormat", 2, 2 );      
+      assertEquals(2, res.data.length);
+      assertEquals(uuid3, res.data[0].id);
+      
   }
   
     

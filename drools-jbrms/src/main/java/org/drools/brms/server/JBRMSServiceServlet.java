@@ -28,6 +28,7 @@ import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RepositoryConfigurator;
@@ -127,7 +128,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
 
         List list = repo.findAssetsByCategory( categoryPath );
         TableDisplayHandler handler = new TableDisplayHandler();
-        return handler.loadRuleListTable( list );
+        return handler.loadRuleListTable( list.iterator(), -1 );
         
     }
 
@@ -407,6 +408,21 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         item.checkin( data.description );
         
         return item.getUUID();
+    }
+
+    public TableDataResult listAssetsByFormat(String packageName,
+                                              String format,
+                                              int numRows,
+                                              int startRow) throws SerializableException {
+        PackageItem pkg = getRulesRepository().loadPackage( packageName );
+        AssetItemIterator it = pkg.listAssetsByFormat( format );
+        if (numRows != -1) {
+            it.skip( startRow );
+        }
+        TableDisplayHandler handler = new TableDisplayHandler();
+        return handler.loadRuleListTable( it, numRows );
+        
+
     }
     
 

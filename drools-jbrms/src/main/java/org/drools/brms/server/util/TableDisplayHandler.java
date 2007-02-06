@@ -1,18 +1,14 @@
 package org.drools.brms.server.util;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.drools.brms.client.rpc.TableConfig;
@@ -37,25 +33,30 @@ public class TableDisplayHandler {
     
     private RowLoader ASSET_LIST = new RowLoader(TableDisplayHandler.class.getResourceAsStream( "/AssetListTable.properties" ));
     
-    public TableDataResult loadRuleListTable(List list) throws SerializableException {
+    /**
+     * Produce a table dataset for a given iterator.
+     * @param list The iterator.
+     * @param numRows The number of rows to go to. -1 means don't stop.
+     * @throws SerializableException
+     */
+    public TableDataResult loadRuleListTable(Iterator list, int numRows) throws SerializableException {
         List data = new ArrayList();
         
-        for ( Iterator iter = list.iterator(); iter.hasNext(); ) {
+        
+        
+        for ( Iterator iter = list; iter.hasNext(); ) {
             AssetItem rule = (AssetItem) iter.next();
             TableDataRow row = new TableDataRow();
                 
                 row.id = rule.getUUID();
                 row.format = rule.getFormat();
-                row.values = new String[4];
-
-                
                 row.values = ASSET_LIST.getRow( rule );
-//                row.values[0] = rule.getName();
-//                row.values[1] = formatDate(rule.getLastModified());
-//                row.values[2] = rule.getStateDescription();                
-//                row.values[3] = rule.getVersionNumber();
                 data.add( row );
-         
+                if (numRows != -1) {
+                    if (data.size() == numRows) {
+                        break;
+                    }
+                }
         }
         TableDataResult result = new TableDataResult();
         result.data = (TableDataRow[]) data.toArray( new TableDataRow[data.size()] );
@@ -88,7 +89,7 @@ public class TableDisplayHandler {
         
         
         private String[] headers;
-        private List extractors;
+        List extractors;
         
         public String[] getHeaders() {
             return headers;
@@ -101,7 +102,12 @@ public class TableDisplayHandler {
                 try {
                     Object val = meth.invoke( item, (Object[]) null );
                     if (val instanceof String) {
-                        row[i] = (String) val;
+                        String s = (String) val;
+                        if (s.length() > 64) {
+                            s = s.substring( 0, 61 ) + "...";
+                        }
+                        row[i] = s;
+                        
                     } else if (val instanceof Calendar) {
                         row[i] = DateFormat.getDateInstance().format( (( Calendar ) val).getTime() );
                     } else {
@@ -133,33 +139,6 @@ public class TableDisplayHandler {
                     final Method meth = AssetItem.class.getMethod( method, new Class[] {} );
                     
                     extractors.add( meth );
-//                    
-//                    if (meth.getReturnType() == String.class) {
-//                        extractors.add( new ValueExtractor() {
-//                            public String getValue(AssetItem obj) {
-//                                return (String) meth.invoke( obj, null );
-//                            }
-//                        });
-//                    } else if (meth.getReturnType() == Calendar.class) {
-//                        extractors.add( new ValueExtractor() {
-//                            public String getValue(AssetItem obj) {
-//                                Calendar cal = (Calendar) meth.invoke( obj, null );
-//                                return DateFormat.getDateInstance().format( cal.getTime() );
-//                                
-//                            }                            
-//                        });
-//                    } else {
-//                        extractors.add( new ValueExtractor() {
-//
-//                            public String getValue(AssetItem obj) {
-//                                Object r = meth.invoke( obj, null );
-//                                return r.toString();
-//                            }
-//                            
-//                        });
-//                    }
-                    
-                   
                     
                 }
             }
@@ -172,33 +151,6 @@ public class TableDisplayHandler {
             headers = (String[]) fields.toArray( new String[fields.size()] );            
         }
         
-        
-        
-    }
-    
-    static interface ValueExtractor {
-        public String getValue(AssetItem obj);
-    }
-    
-    static class StringExtractor implements ValueExtractor {
-
-        
-        private Method meth;
-
-        public StringExtractor(Method meth) {
-            this.meth = meth;
-        }
-        
-        public String getValue(AssetItem obj) {
-            try {
-                return (String) meth.invoke( obj, null );
-            } catch ( Exception e ) {
-                if (e instanceof RuntimeException) {
-                    throw (RuntimeException) e;
-                }
-                throw new RulesRepositoryException( e );
-            }
-        }
         
         
     }

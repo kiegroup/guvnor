@@ -90,4 +90,16 @@ public interface RepositoryService extends RemoteService {
      */
     public String savePackage(PackageConfigData data) throws SerializableException;
         
+    
+    /**
+     * Given a format, this will return assets that match.
+     * It can also be used for "pagination" by passing in start and 
+     * finish row numbers.
+     * @param packageName The package name to search inside.
+     * @param format The format to filter on.
+     * @param numRows The number of rows to return. -1 means all.
+     * @param startRow The starting row number if paging - if numRows is -1 then this is ignored.
+     */
+    public TableDataResult listAssetsByFormat(String packageName, String format, int numRows, int startRow) throws SerializableException;
+    
 }

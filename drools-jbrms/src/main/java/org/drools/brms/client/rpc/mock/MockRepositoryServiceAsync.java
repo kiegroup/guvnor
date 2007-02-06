@@ -371,6 +371,15 @@ public class MockRepositoryServiceAsync
                             AsyncCallback cb) {
         cb.onSuccess( "UUID" );        
     }
+
+
+
+    public void listAssetsByFormat(String p0, String p1,
+                                   int p2,
+                                   int p3,
+                                   AsyncCallback cb) {
+        loadRuleListForCategories( "/", cb );        
+    }
     
     
 
