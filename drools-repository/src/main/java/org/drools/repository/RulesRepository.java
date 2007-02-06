@@ -649,6 +649,7 @@ public class RulesRepository {
         List results = new ArrayList();
         try {
             PropertyIterator it = item.getNode().getReferences();
+            
             while(it.hasNext()) {
                 Property ruleLink = (Property) it.next();
                 Node parentNode = ruleLink.getParent();

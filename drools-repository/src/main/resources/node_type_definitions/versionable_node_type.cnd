@@ -48,11 +48,6 @@
   
 - drools:checkinComment (string)
 
-//for taxonomies/asset classification  
-- drools:categoryReference (reference)
-  multiple 
-  copy
-  < 'drools:categoryNodeType'  
 
 //for approval/workflow/lifecycle  
 - drools:stateReference (reference)

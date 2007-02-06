@@ -14,8 +14,6 @@
 > 'drools:versionableNodeType'
 
 // Multiple assets are children of one physical package definition
-// ergo this has many "versionable asset folders".
-// a specific named folder will exist for rules, functions etc.
 // these folders contain the actual assets
 + * (drools:versionableAssetFolder)
   ignore

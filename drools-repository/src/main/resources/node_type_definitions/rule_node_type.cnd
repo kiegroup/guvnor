@@ -24,10 +24,14 @@
 
 - drools:dateExpired (date)
   
-
-  
 - drools:packageName (string)
   mandatory  
+
+//for taxonomies/asset classification  
+- drools:categoryReference (reference)
+  multiple 
+  copy
+  < 'drools:categoryNodeType'  
   
 
 
