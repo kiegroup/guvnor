@@ -1,6 +1,5 @@
 package org.drools.brms.client.rulelist;
 
-import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
@@ -41,7 +40,9 @@ public class AssetItemListViewer extends Composite {
     private Image refreshIcon = new Image("images/refresh.gif");
     private Command refresh;
     private static RepositoryServiceAsync service = RepositoryServiceFactory.getService();
-
+    private Label itemCounter = new Label();
+    
+    
     public AssetItemListViewer(EditItemEvent event) {
 
         init();
@@ -133,14 +134,16 @@ public class AssetItemListViewer extends Composite {
         if ( data == null || data.data.length == 0) {
             
             table = SortableTable.createTableWidget( new TableDataRow[0], tableConfig.headers, FILLER_ROWS );
-            
+            itemCounter.setVisible( false );
         } else {
             table = SortableTable.createTableWidget( data.data, this.tableConfig.headers, FILLER_ROWS );
 
             
             HorizontalPanel panel = new HorizontalPanel();
             panel.add( refreshIcon );
-            panel.add( new Label( "  " + data.data.length + " items." ));
+            itemCounter.setVisible( true );
+            itemCounter.setText( "  " + data.data.length + " items." );
+            panel.add( itemCounter );
             
             outer.setWidget( 0, 0, panel);
         }

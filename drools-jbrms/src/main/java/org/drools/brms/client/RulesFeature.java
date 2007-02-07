@@ -149,17 +149,19 @@ public class RulesFeature extends JBRMSFeature {
         };
     }
 
-    
+    public void showLoadEditor(String uuid) {
+        showLoadEditor( openedViewers, tab, uuid );
+    }
 
     /**
      * This will show the rule viewer. If it was previously opened, it will show that dialog instead
      * of opening it again.
      */
-    public void showLoadEditor(final String uuid) {
+    public static void showLoadEditor(final Map openedViewers, final TabPanel tab,  final String uuid) {
       
         
-      if (this.openedViewers.containsKey( uuid )) {
-          tab.selectTab( tab.getWidgetIndex( (Widget) this.openedViewers.get( uuid ) ));
+      if (openedViewers.containsKey( uuid )) {
+          tab.selectTab( tab.getWidgetIndex( (Widget) openedViewers.get( uuid ) ));
           LoadingPopup.close();
           return;
       }

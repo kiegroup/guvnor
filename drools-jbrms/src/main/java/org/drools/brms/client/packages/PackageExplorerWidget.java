@@ -8,6 +8,7 @@ import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rulelist.AssetItemListViewer;
+import org.drools.brms.client.rulelist.EditItemEvent;
 import org.drools.brms.client.table.SortableTable;
 
 import com.google.gwt.user.client.Command;
@@ -43,7 +44,7 @@ public class PackageExplorerWidget extends Composite {
     private AssetItemListViewer listView;
     
     
-    public PackageExplorerWidget() {
+    public PackageExplorerWidget(EditItemEvent edit) {
         
         exTree = new Tree();
         layout = new FlexTable();
@@ -79,12 +80,12 @@ public class PackageExplorerWidget extends Composite {
         //layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         
         layout.setWidget( 1, 0, newPackage );
-        
+        layout.getFlexCellFormatter().setWidth( 0, 0, "20%" );
         
         layout.getCellFormatter().setStyleName( 1, 0, "new-asset-Icons" );
         layout.getCellFormatter().setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         
-        listView = new AssetItemListViewer(null);
+        listView = new AssetItemListViewer(edit);
         
         initWidget( layout );
     }
