@@ -12,7 +12,7 @@ import org.drools.brms.client.rpc.RuleContentText;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
-import org.drools.brms.client.rulelist.RuleItemListViewer;
+import org.drools.brms.client.rulelist.AssetItemListViewer;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -102,7 +102,7 @@ public class ServiceImplementationTest extends TestCase {
   
   public void testRuleTableLoad() throws Exception {
       MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
-      TableConfig conf = impl.loadTableConfig( RuleItemListViewer.RULE_LIST_TABLE_ID );
+      TableConfig conf = impl.loadTableConfig( AssetItemListViewer.RULE_LIST_TABLE_ID );
       assertNotNull(conf.headers);
       
       CategoryItem cat = impl.repo.loadCategory( "/" );

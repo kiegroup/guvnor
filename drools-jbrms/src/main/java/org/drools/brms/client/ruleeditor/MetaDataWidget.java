@@ -53,6 +53,8 @@ public class MetaDataWidget extends FormStyleLayout {
         addAttribute("Created by:", readOnlyText(data.creator));
         addAttribute("Version number:", getVersionNumberLabel());
         addAttribute("Package:", readOnlyText(data.packageName));
+        addAttribute("Format:", readOnlyText( data.format ));
+        
         if (!readOnly) {
             addAttribute("Created on:", readOnlyDate( data.createdDate ));
         }

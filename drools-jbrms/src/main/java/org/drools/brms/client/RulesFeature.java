@@ -6,15 +6,18 @@ import java.util.Map;
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.common.ErrorPopup;
+import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.ruleeditor.NewRuleWizard;
 import org.drools.brms.client.ruleeditor.RuleViewer;
 import org.drools.brms.client.rulelist.EditItemEvent;
-import org.drools.brms.client.rulelist.RuleItemListViewer;
+import org.drools.brms.client.rulelist.AssetItemListViewer;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -34,7 +37,8 @@ public class RulesFeature extends JBRMSFeature {
     public static final int       EDITOR_TAB         = 1;
     private TabPanel tab;
     private Map openedViewers = new HashMap();
-    
+    private AssetItemListViewer list;
+
     
 	public static ComponentInfo init() {
 		return new ComponentInfo("Rules", "Find and edit rules.") {
@@ -68,23 +72,26 @@ public class RulesFeature extends JBRMSFeature {
         final RulesFeature parent = this;
         //and the the delegate to open an editor for a rule resource when
         //chosen to
-        final RuleItemListViewer list = new RuleItemListViewer(new EditItemEvent() {
-            
-
+        list = new AssetItemListViewer(new EditItemEvent() {
             public void open(String key,
                              String name) {                  
                 showLoadEditor( key );
                 
             }
-            
         });    
+        //list.loadTableData( null );
         
         //setup the nav, which will drive the list
 		CategoryExplorerWidget nav = new CategoryExplorerWidget(new CategorySelectHandler() {
-            public void selected(String selectedPath) {
-                list.loadRulesForCategoryPath(selectedPath);
+            public void selected(final String selectedPath) {
+                Command load = getRuleListLoadingCommand( list,
+                                           selectedPath );
+                DeferredCommand.add( load );
+                list.setRefreshCommand(load);                
             }
+
         });		
+        
         
         FlexCellFormatter formatter = table.getFlexCellFormatter();
         
@@ -126,7 +133,23 @@ public class RulesFeature extends JBRMSFeature {
 		return table;
 	}
 
+    private Command getRuleListLoadingCommand(final AssetItemListViewer list,
+                                              final String selectedPath) {
+        return new Command() {
+            public void execute() {
+              RepositoryServiceFactory.getService().loadRuleListForCategories( selectedPath,
+              new GenericCallback() {
+                      public void onSuccess(Object o) {
+                          TableDataResult result = (TableDataResult) o;
+                          list.loadTableData( result );                                                                                 
+                      }
 
+                  } );                    
+              }                    
+        };
+    }
+
+    
 
     /**
      * This will show the rule viewer. If it was previously opened, it will show that dialog instead

@@ -1,12 +1,17 @@
 package org.drools.brms.client.packages;
 
+import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
+import org.drools.brms.client.rpc.TableDataResult;
+import org.drools.brms.client.rulelist.AssetItemListViewer;
+import org.drools.brms.client.table.SortableTable;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -34,6 +39,8 @@ public class PackageExplorerWidget extends Composite {
     private final Tree exTree;
     private final FlexTable layout;
     private final TreeListener treeListener;
+    private String currentPackage;
+    private AssetItemListViewer listView;
     
     
     public PackageExplorerWidget() {
@@ -44,8 +51,10 @@ public class PackageExplorerWidget extends Composite {
         treeListener = new TreeListener() {
 
             public void onTreeItemSelected(TreeItem selected) {
-                Command selectEvent = (Command) selected.getUserObject();
-                selectEvent.execute();
+                PackageTreeItem event = (PackageTreeItem) selected.getUserObject();
+                currentPackage = event.name;
+                Command selectEvent = event.command;
+                DeferredCommand.add( selectEvent );                
             }
 
             public void onTreeItemStateChanged(TreeItem arg0) {
@@ -67,13 +76,15 @@ public class PackageExplorerWidget extends Composite {
         });
         
         layout.setWidget( 0, 1, new HTML("<i>Please choose a package to edit, explore, or create a new package.</i>") );
-        layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
+        //layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         
         layout.setWidget( 1, 0, newPackage );
         
         
         layout.getCellFormatter().setStyleName( 1, 0, "new-asset-Icons" );
         layout.getCellFormatter().setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
+        
+        listView = new AssetItemListViewer(null);
         
         initWidget( layout );
     }
@@ -160,37 +171,68 @@ public class PackageExplorerWidget extends Composite {
      */
     private void addPackage(final String name) {
         
-        TreeItem pkg = makeItem(name, "images/package.gif");
-        
-        pkg.setUserObject( new Command() {
+        TreeItem pkg = makeItem(name, "images/package.gif", new PackageTreeItem(name,new Command() {
             public void execute() {
                 loadPackageConfig(name);
             }
-        });
+        }));
+
         
-        pkg.addItem( makeItem("Business rules", "images/rule_asset.gif") );
-        pkg.addItem( makeItem("Technical rules", "images/technical_rule_assets.gif") );
-        pkg.addItem( makeItem("Functions", "images/function_assets.gif") );
-        pkg.addItem( makeItem("Model", "images/model_asset.gif") );
+        pkg.addItem( makeItem("Business rules", "images/rule_asset.gif", showListEvent(name, AssetFormats.BUSINESS_RULE)) );
+        pkg.addItem( makeItem("Technical rules", "images/technical_rule_assets.gif", showListEvent(name, AssetFormats.TECHNICAL_RULE)) );
+        pkg.addItem( makeItem("Functions", "images/function_assets.gif", showListEvent(name, AssetFormats.FUNCTION)) );
+        pkg.addItem( makeItem("Model", "images/model_asset.gif", showListEvent(name, AssetFormats.MODEL) ) );
 
         
         exTree.addItem( pkg );
 
     }
 
+
+
+
+
+
+
+
+    /**
+     * This will create a "show list" event to be attached to the tree.
+     */
+    private PackageTreeItem showListEvent(final String name, final String format) {
+        final GenericCallback cb = new GenericCallback() {
+            public void onSuccess(Object data) {
+                final TableDataResult table = (TableDataResult) data;                
+                listView.loadTableData( table );      
+                listView.setWidth( "100%" );
+                listView.setHeight( "100%" );
+                layout.setWidget( 0, 1, listView );
+            }
+        };
+        
+        return new PackageTreeItem(name, new Command() {
+            public void execute() {
+                RepositoryServiceFactory.getService().listAssetsByFormat( currentPackage, format, 
+                                                                          -1, -1, cb);                
+            }            
+        });
+    }
+
+
+
+
     /**
      * Load up the package config data and display it.
      */
     private void loadPackageConfig(String name) {
+        this.currentPackage = name;
         RepositoryServiceFactory.getService().loadPackage( name, new GenericCallback() {
 
             public void onSuccess(Object data) {
                 PackageConfigData conf = (PackageConfigData) data;
                 PackageEditor ed = new PackageEditor(conf);
-                ed.setWidth( "100%" );
-                ed.setHeight( "100%" );
-                layout.setWidget( 0, 1, ed );
-                layout.setWidget( 0, 1, ed );                
+//                ed.setWidth( "100%" );
+//                ed.setHeight( "100%" );
+                layout.setWidget( 0, 1, ed );              
             }            
         });
         
@@ -199,10 +241,21 @@ public class PackageExplorerWidget extends Composite {
 
 
 
-    private TreeItem makeItem(String name, String icon) {
+    private TreeItem makeItem(String name, String icon, Object command) {
         TreeItem item = new TreeItem();
         item.setHTML( "<img src=\""+ icon + "\">" + name + "</a>" );
+        item.setUserObject( command );
         return item;
+    }
+    
+    static class PackageTreeItem {
+        Command command;
+        String name;   
+        public PackageTreeItem(String name, Command com) {
+            this.command = com;
+            this.name = name;
+        }
+                
     }
     
 }

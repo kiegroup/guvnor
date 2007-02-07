@@ -8,6 +8,11 @@ package org.drools.brms.client.common;
  */
 public class AssetFormats {
 
+    /** For functions */
+    public static final String FUNCTION = "function";
+
+    public static final String MODEL = "model";
+
     /** Vanilla DRL "file" */
     public static String DRL = "drl";
     
