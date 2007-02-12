@@ -99,7 +99,7 @@ public class AssetItemListViewer extends Composite {
         openIcon.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 LoadingPopup.showMessage( "Loading item, please wait ..." );
-                openItemEvent.open( TableDataRow.getId( table.getSelectedKey()), table.getText( table.getSelectedRow(), 1 ) );
+                openItemEvent.open( TableDataRow.getId( table.getSelectedKey()));
                 
             }
         } );

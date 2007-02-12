@@ -31,8 +31,7 @@ public class PackageManagerView extends Composite {
         
         PackageExplorerWidget explorer = new PackageExplorerWidget(new EditItemEvent() {
 
-            public void open(String key,
-                             String name) {
+            public void open(String key) {
                 RulesFeature.showLoadEditor( openedViewers, tab, key );
             }
             

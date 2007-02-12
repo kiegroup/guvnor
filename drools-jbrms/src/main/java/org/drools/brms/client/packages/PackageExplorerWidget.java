@@ -7,6 +7,7 @@ import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.TableDataResult;
+import org.drools.brms.client.ruleeditor.NewRuleWizard;
 import org.drools.brms.client.rulelist.AssetItemListViewer;
 import org.drools.brms.client.rulelist.EditItemEvent;
 import org.drools.brms.client.table.SortableTable;
@@ -20,6 +21,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
@@ -42,10 +44,12 @@ public class PackageExplorerWidget extends Composite {
     private final TreeListener treeListener;
     private String currentPackage;
     private AssetItemListViewer listView;
+    private EditItemEvent editEvent;
     
     
     public PackageExplorerWidget(EditItemEvent edit) {
         
+        this.editEvent = edit;
         exTree = new Tree();
         layout = new FlexTable();
         
@@ -68,6 +72,28 @@ public class PackageExplorerWidget extends Composite {
         
         refreshTreeView( );
         
+
+        layout.setWidget( 0, 1, new HTML("<i>Please choose a package to edit, explore, or create a new package.</i>") );
+        //layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
+        
+        layout.setWidget( 1, 0, getNewWizardButtons() );
+        layout.getFlexCellFormatter().setWidth( 0, 0, "20%" );
+        
+        layout.getCellFormatter().setStyleName( 1, 0, "new-asset-Icons" );
+        layout.getCellFormatter().setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
+        
+        listView = new AssetItemListViewer(this.editEvent);
+        
+        initWidget( layout );
+    }
+
+
+
+
+    /** Return all the new wizard buttons. */
+    private HorizontalPanel getNewWizardButtons() {
+        HorizontalPanel newWizards = new HorizontalPanel();
+        
         Image newPackage = new Image("images/new_package.gif");
         newPackage.setTitle( "Create a new package" );
         newPackage.addClickListener( new ClickListener() {
@@ -76,21 +102,32 @@ public class PackageExplorerWidget extends Composite {
             }            
         });
         
-        layout.setWidget( 0, 1, new HTML("<i>Please choose a package to edit, explore, or create a new package.</i>") );
-        //layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
+        Image newRule = new Image("images/new_rule.gif");
+        newRule.setTitle( "Create new rule" );
+
+        newRule.addClickListener( new ClickListener() {
+
+            public void onClick(Widget w) {
+              int left = 70;
+              int top = 100;
+                
+              NewRuleWizard pop = new NewRuleWizard(new EditItemEvent() {
+                  public void open(String key) {                  
+                      editEvent.open( key );                      
+                  }
+              });
+              pop.setPopupPosition( left, top );
+              
+              pop.show();
+            }
+            
+        });
         
-        layout.setWidget( 1, 0, newPackage );
-        layout.getFlexCellFormatter().setWidth( 0, 0, "20%" );
-        
-        layout.getCellFormatter().setStyleName( 1, 0, "new-asset-Icons" );
-        layout.getCellFormatter().setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
-        
-        listView = new AssetItemListViewer(edit);
-        
-        initWidget( layout );
+        newWizards.add( newRule );
+        newWizards.add( newPackage );
+        return newWizards;
+
     }
-
-
 
 
     private void refreshTreeView() {
@@ -151,6 +188,34 @@ public class PackageExplorerWidget extends Composite {
         
         pop.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() - 100 );
         pop.show();
+    }
+    
+    private void showNewFunction(Widget w) {
+        final FormStylePopup pop = new FormStylePopup("images/new_wiz.gif", "Create a new package");
+        final TextBox nameBox = new TextBox();
+        nameBox.setTitle( "The name of the package. Avoid spaces, use underscore instead." );
+        
+        pop.addAttribute( "Package name", nameBox );
+        final TextArea descBox = new TextArea();
+        pop.addAttribute( "Description", descBox );
+        
+        Button create = new Button("Create package");
+        create.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                pop.hide();
+            }
+
+        
+        });
+        
+        
+        pop.addAttribute( "", create );
+        
+        pop.setStyleName( "ks-popups-Popup" );
+        
+        pop.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() - 100 );
+        pop.show();
+        
     }
 
     private void createPackageAction(final String name, final String descr) {

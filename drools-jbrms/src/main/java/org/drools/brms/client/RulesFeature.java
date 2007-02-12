@@ -69,12 +69,10 @@ public class RulesFeature extends JBRMSFeature {
     /** This will setup the explorer tab */
 	private FlexTable doExplore() {
 		FlexTable  table = new FlexTable();
-        final RulesFeature parent = this;
         //and the the delegate to open an editor for a rule resource when
         //chosen to
         list = new AssetItemListViewer(new EditItemEvent() {
-            public void open(String key,
-                             String name) {                  
+            public void open(String key) {                  
                 showLoadEditor( key );
                 
             }
@@ -110,14 +108,19 @@ public class RulesFeature extends JBRMSFeature {
         
         Image newRule = new Image("images/new_rule.gif");
         newRule.setTitle( "Create new rule" );
-        final RulesFeature feature = this;
+
         newRule.addClickListener( new ClickListener() {
 
             public void onClick(Widget w) {
-              int left = 70;//w.getAbsoluteLeft() - 10;
-              int top = 100; //w.getAbsoluteTop() - 10;
+              int left = 70;
+              int top = 100;
                 
-              NewRuleWizard pop = new NewRuleWizard(feature);
+              NewRuleWizard pop = new NewRuleWizard(new EditItemEvent() {
+                  public void open(String key) {                  
+                      showLoadEditor( key );
+                      
+                  }
+              });
               pop.setPopupPosition( left, top );
               
               pop.show();

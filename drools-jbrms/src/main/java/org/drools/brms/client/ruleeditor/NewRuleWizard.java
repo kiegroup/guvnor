@@ -5,17 +5,20 @@ import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.ErrorPopup;
+import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.common.WarningPopup;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.rulelist.EditItemEvent;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -42,13 +45,15 @@ public class NewRuleWizard extends PopupPanel {
     private ListBox                 formatChooser = getFormatChooser();
     
     private RulePackageSelector packageSelector = new RulePackageSelector();
-    private RulesFeature feature;
+    private EditItemEvent afterCreate;
+
+   
 
     /** This is used when creating a new rule. */
-    public NewRuleWizard(RulesFeature feature) {
+    public NewRuleWizard(EditItemEvent afterCreate) {//, boolean showCats, String format, String title, String assetType) {
         super( true );
-        this.feature = feature;
-        super.setWidth( "60%" );
+        this.afterCreate = afterCreate;
+        super.setWidth( "40%" );
         table.setWidth( "100%" );
         name.setWidth( "100%" );
         
@@ -57,7 +62,7 @@ public class NewRuleWizard extends PopupPanel {
                          new Image( "images/new_wiz.gif" ) );
         table.setWidget( 0,
                          1,
-                         new Label( "Create a new rule" ) );        
+                         new HTML( "<b>Create a new rule</b>" ) );        
 
         table.setWidget( 1,
                          0,
@@ -139,19 +144,10 @@ public class NewRuleWizard extends PopupPanel {
             return;
         }
         
-        AsyncCallback cb = new AsyncCallback() {
-
-            public void onFailure(Throwable err) {
-                ErrorPopup.showMessage( err.getMessage() );
-            }
-
+        GenericCallback cb = new GenericCallback() {
             public void onSuccess(Object result) {
-                if ( result != null ) {
                     openEditor((String) result);
                     hide();
-                } else {
-                    ErrorPopup.showMessage( "Unable to create the item. Please contact your system administrator." );
-                }
             }
         };
 
@@ -174,7 +170,8 @@ public class NewRuleWizard extends PopupPanel {
      * @param uuid
      */
     protected void openEditor(String uuid) {
-        feature.showLoadEditor( uuid );        
+        afterCreate.open( uuid );
+                
     }
 
     void cancel() {
