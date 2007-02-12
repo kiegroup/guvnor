@@ -273,31 +273,6 @@ public class SvnActionFactory
         }
     }
 
-    public static class CompositeScmAction
-        implements
-        ScmAction {
-        private List actions;
-
-        public CompositeScmAction() {
-            this.actions = Collections.EMPTY_LIST;
-        }
-
-        public void addScmAction(ScmAction action) {
-            if ( actions == Collections.EMPTY_LIST ) {
-                this.actions = new ArrayList();
-            }
-            this.actions.add( action );
-        }
-
-        public void applyAction(Object context) throws SVNException {
-            ISVNEditor editor = ( ISVNEditor ) context;
-            for ( Iterator it = this.actions.iterator(); it.hasNext(); ) {
-                ScmAction action = (ScmAction) it.next();
-                action.applyAction( editor );
-            }
-        }
-    }
-
     public static class AddFile
         implements
         ScmAction {

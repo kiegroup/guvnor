@@ -28,7 +28,7 @@ public class CompositeSvnAction
         this.actions.add( action );
     }
 
-    public void applyAction(Object context) throws SVNException {
+    public void applyAction(Object context) throws Exception {
         ISVNEditor editor = ( ISVNEditor ) context;
         for ( Iterator it = this.actions.iterator(); it.hasNext(); ) {
             ScmAction action = (ScmAction) it.next();

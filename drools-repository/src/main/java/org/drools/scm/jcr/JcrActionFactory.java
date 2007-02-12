@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.repository.RulesRepository;
 import org.drools.scm.ScmAction;
 import org.drools.scm.ScmActionFactory;
 import org.drools.scm.log.ScmLogEntry;
@@ -17,6 +18,8 @@ import org.drools.scm.log.ScmLogEntry.Update;
 public class JcrActionFactory
     implements
     ScmActionFactory {
+    
+    private RulesRepository repository;
 
     public ScmAction addDirectory(String root,
                                   String path) {
@@ -172,5 +175,190 @@ public class JcrActionFactory
             }            
         }
     }
+    
+    public static class AddFile
+    implements
+    ScmAction {
+    private String file;
+    private String path;
+    private byte[] content;
+
+    public AddFile(String path,
+                   String file,
+                   byte[] content) {
+        this.path = path;
+        this.file = file;
+        this.content = content;
+    }
+
+    public void applyAction(Object context) throws Exception {
+        
+    }
+}
+
+/**
+ * root should be the last, previously created, parent folder. Each directory in the path
+ * will be created.
+ *
+ */
+public static class AddDirectory
+    implements
+    ScmAction {
+    private String root;
+    private String path;
+
+    public AddDirectory(String root,
+                        String path) {
+        this.root = root;
+        this.path = path;
+    }
+
+    public void applyAction(Object context) throws Exception {
+        
+    }
+}
+
+public static class UpdateFile
+    implements
+    ScmAction {
+    private String file;
+    private String path;
+    private byte[] oldContent;
+    private byte[] newContent;
+
+    public UpdateFile(String path,
+                      String file,
+                      byte[] oldContent,
+                      byte[] newContent) {
+        this.path = path;
+        this.file = file;
+        this.oldContent = oldContent;
+        this.newContent = newContent;
+    }
+
+    public void applyAction(Object context) throws Exception {
+        
+    }
+}
+
+public static class CopyFile
+    implements
+    ScmAction {
+    private String file;
+    private String path;
+    private String newPath;
+    private String newFile;
+    private long   revision;
+
+    public CopyFile(String path,
+                    String file,
+                    String newPath,
+                    String newFile,
+                    long revision) {
+        this.path = path;
+        this.file = file;
+        this.newPath = newPath;
+        this.newFile = newFile;
+        this.revision = revision;
+    }
+
+    public void applyAction(Object context) throws Exception {
+
+    }
+}
+
+public static class CopyDirectory
+    implements
+    ScmAction {
+    private String path;
+    private String newPath;
+    private long   revision;
+
+    public CopyDirectory(String path,
+                         String newPath,
+                         long revision) {
+        this.path = path;
+        this.newPath = newPath;
+        this.revision = revision;
+    }
+
+    public void applyAction(Object context) throws Exception {
+    }
+}
+
+public static class MoveFile
+    implements
+    ScmAction {
+    private String file;
+    private String path;
+    private String newPath;
+    private String newFile;
+    private long   revision;
+
+    public MoveFile(String path,
+                    String file,
+                    String newPath,
+                    String newFile,
+                    long revision) {
+        this.path = path;
+        this.file = file;
+        this.newPath = newPath;
+        this.newFile = newFile;
+        this.revision = revision;
+    }
+
+    public void applyAction(Object context) throws Exception {
+    }
+}
+
+public static class MoveDirectory
+    implements
+    ScmAction {
+    private String path;
+    private String newPath;
+    private long   revision;
+
+    public MoveDirectory(String path,
+                         String newPath,
+                         long revision) {
+        this.path = path;
+        this.newPath = newPath;
+        this.revision = revision;
+    }
+
+    public void applyAction(Object context) throws Exception {
+
+    }
+}
+
+public static class DeleteFile
+    implements
+    ScmAction {
+    private String path;
+    private String file;
+
+    public DeleteFile(String path,
+                      String file) {
+        this.path = path;
+        this.file = file;
+    }
+
+    public void applyAction(Object context) throws Exception {
+    }
+}
+
+public static class DeleteDirectory
+    implements
+    ScmAction {
+    private String path;
+
+    public DeleteDirectory(String path) {
+        this.path = path;
+    }
+
+    public void applyAction(Object context) throws Exception {
+    }
+}
+    
 
 }
