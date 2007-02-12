@@ -410,6 +410,13 @@ a:visited {
   height: 100%
 }
 
+.dsl-text-Editor {
+  font-family: Arial, sans-serif;
+  font-size: smaller;
+  border: 1px solid #B8B8B8;
+  padding: 0px;	
+}
+
 .dt-field-TextBox {
   border: none;
   padding: 0px;	

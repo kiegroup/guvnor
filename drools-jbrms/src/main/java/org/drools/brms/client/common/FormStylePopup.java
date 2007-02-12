@@ -29,6 +29,10 @@ public class FormStylePopup extends PopupPanel {
     public void addAttribute(String label, Widget wid) {
         form.addAttribute( label, wid );
     }
+    
+    public void addRow(Widget wid) {
+        form.addRow( wid );
+    }
 
     public void show() {        
         Image close = new Image("images/close.gif");

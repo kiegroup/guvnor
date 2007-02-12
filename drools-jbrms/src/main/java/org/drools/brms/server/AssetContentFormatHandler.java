@@ -9,6 +9,7 @@ import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.DSLSentence;
 import org.drools.brms.client.modeldriven.brxml.DSLSentenceFragment;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
+import org.drools.brms.client.rpc.DSLRuleData;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleContentText;
 import org.drools.brms.client.rpc.RuleModelData;
@@ -27,6 +28,8 @@ import com.google.gwt.user.client.rpc.SerializableException;
  * It uses the content attribute of asset nodes (drools:content) based
  * on the (drools:format) format key.
  * 
+ * NOTE: when enhancing this, don't forget to do the retrieve AND the store !
+ * 
  * @see AssetFormats
  * 
  * @author Michael Neale
@@ -41,11 +44,7 @@ public class AssetContentFormatHandler {
      */
     public void retrieveAssetContent(RuleAsset asset,
                                      AssetItem item) throws SerializableException {
-        if (item.getFormat().equals( AssetFormats.DSL_TEMPLATE_RULE)) {
-            //ok here is where we do DSLs...
-            throw new SerializableException("Can't load DSL rules just yet.");
-
-        } else if (item.getFormat().equals( AssetFormats.BUSINESS_RULE )) {             
+        if (item.getFormat().equals( AssetFormats.BUSINESS_RULE )) {             
             RuleModel model = BRLPersistence.getInstance().toModel( item.getContent() );
 
             RuleModelData data = new RuleModelData();
@@ -55,6 +54,15 @@ public class AssetContentFormatHandler {
             data.completionEngine = getDummySuggestionEngine();
             
             asset.content = data;
+        } else if (item.getFormat().equals( AssetFormats.DSL_TEMPLATE_RULE )) {
+            RuleContentText text = new RuleContentText();
+            text.content = item.getContent();
+            
+            //TODO: make this read in the DSL files in the current package.
+            DSLRuleData data = getDummyDSLSuggestions();
+            data.text = text;
+            
+            asset.content = data;            
         } else {
             //default to text, goode olde texte, just like mum used to make.
             RuleContentText text = new RuleContentText();
@@ -67,6 +75,13 @@ public class AssetContentFormatHandler {
         
     }
     
+    private DSLRuleData getDummyDSLSuggestions() {
+        DSLRuleData data = new DSLRuleData();
+        data.lhsSuggestions = new String[] {"The persons name is {name}", "- age is less than {age}"};
+        data.rhsSuggestions = new String[] {"Reject claim", "Send notification to [{email}]"};                                                   
+        return data;
+    }
+
     private SuggestionCompletionEngine getDummySuggestionEngine() {
         SuggestionCompletionEngine com = new SuggestionCompletionEngine();
         
@@ -118,6 +133,9 @@ public class AssetContentFormatHandler {
         } else if (asset.content instanceof RuleModelData) {
             RuleModelData data = (RuleModelData) asset.content;
             repoAsset.updateContent( BRLPersistence.getInstance().toXML( data.model ) );
+        } else if (asset.content instanceof DSLRuleData) {
+            DSLRuleData data = (DSLRuleData) asset.content;
+            repoAsset.updateContent( data.text.content );
         } else {
             throw new SerializableException("Not able to handle that type of content just yet...");
         }
