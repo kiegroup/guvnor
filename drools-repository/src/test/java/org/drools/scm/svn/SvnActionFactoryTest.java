@@ -616,44 +616,44 @@ public class SvnActionFactoryTest extends TestCase {
         assertTrue( list.contains( "folder2" ) );
     }
     
-    public void testHistory() throws Exception {
-        SvnActionFactory svn = new SvnActionFactory( svnUrl,
-                                                     "mrtrout",
-                                                     "drools" );
-
-        CompositeSvnAction actions = new CompositeSvnAction();
-
-        ScmAction addFolder = new AddDirectory( "",
-                                                "folder1" );
-        actions.addScmAction( addFolder );
-        byte[] content = new byte[]{1, 1, 1, 1};
-        ScmAction addFile = new AddFile( "folder1",
-                                         "file1.dat",
-                                         content );
-        actions.addScmAction( addFile );
-        svn.execute( actions,
-                     "test message" );
-
-        actions = new CompositeSvnAction();
-        MoveDirectory moveDirectory = new MoveDirectory( "folder1",
-                                                         "folder2",
-                                                         svn.getLatestRevision() );
-        actions.addScmAction( moveDirectory );
-        svn.execute( actions,
-                     "test message" );
-        
-        Collection collection = svn.log( new String[] { "" }, 0, -1 );
-        for ( Iterator it = collection.iterator(); it.hasNext(); ) {
-            SVNLogEntry logEntry = ( SVNLogEntry ) it.next();
-            Map map = logEntry.getChangedPaths();
-            Set changePathSet = map.keySet();
-            for ( Iterator it2 = changePathSet.iterator(); it2.hasNext(); ) {
-                SVNLogEntryPath entryPath = ( SVNLogEntryPath ) map.get( it2.next() );
-                System.out.println( entryPath );
-            }
-        }
-        
-    }    
+//    public void testHistory() throws Exception {
+//        SvnActionFactory svn = new SvnActionFactory( svnUrl,
+//                                                     "mrtrout",
+//                                                     "drools" );
+//
+//        CompositeSvnAction actions = new CompositeSvnAction();
+//
+//        ScmAction addFolder = new AddDirectory( "",
+//                                                "folder1" );
+//        actions.addScmAction( addFolder );
+//        byte[] content = new byte[]{1, 1, 1, 1};
+//        ScmAction addFile = new AddFile( "folder1",
+//                                         "file1.dat",
+//                                         content );
+//        actions.addScmAction( addFile );
+//        svn.execute( actions,
+//                     "test message" );
+//
+//        actions = new CompositeSvnAction();
+//        MoveDirectory moveDirectory = new MoveDirectory( "folder1",
+//                                                         "folder2",
+//                                                         svn.getLatestRevision() );
+//        actions.addScmAction( moveDirectory );
+//        svn.execute( actions,
+//                     "test message" );
+//        
+//        Collection collection = svn.log( new String[] { "" }, 0, -1 );
+//        for ( Iterator it = collection.iterator(); it.hasNext(); ) {
+//            SVNLogEntry logEntry = ( SVNLogEntry ) it.next();
+//            Map map = logEntry.getChangedPaths();
+//            Set changePathSet = map.keySet();
+//            for ( Iterator it2 = changePathSet.iterator(); it2.hasNext(); ) {
+//                SVNLogEntryPath entryPath = ( SVNLogEntryPath ) map.get( it2.next() );
+//                System.out.println( entryPath );
+//            }
+//        }
+//        
+//    }    
 
     public static void copy(File src,
                             File dest) throws IOException {
