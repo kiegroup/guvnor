@@ -37,7 +37,7 @@ public class DefaultRuleContentWidget extends Composite {
                 data.content = text.getText();
                 meta.dirty = true;
             }
-        });
+        }); 
         
 		initWidget(text);
 	}

@@ -5,13 +5,14 @@ import java.util.Map;
 
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
+import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.TableDataResult;
-import org.drools.brms.client.ruleeditor.NewRuleWizard;
+import org.drools.brms.client.ruleeditor.NewAssetWizard;
 import org.drools.brms.client.ruleeditor.RuleViewer;
 import org.drools.brms.client.rulelist.EditItemEvent;
 import org.drools.brms.client.rulelist.AssetItemListViewer;
@@ -115,12 +116,12 @@ public class RulesFeature extends JBRMSFeature {
               int left = 70;
               int top = 100;
                 
-              NewRuleWizard pop = new NewRuleWizard(new EditItemEvent() {
+              NewAssetWizard pop = new NewAssetWizard(new EditItemEvent() {
                   public void open(String key) {                  
                       showLoadEditor( key );
                       
                   }
-              });
+              }, true, null, "Create a new rule");
               pop.setPopupPosition( left, top );
               
               pop.show();
@@ -183,7 +184,15 @@ public class RulesFeature extends JBRMSFeature {
               if (displayName.length() > 10) {
                   displayName = displayName.substring( 0, 7 ) + "...";
               }
-              tab.add( view, "<img src='images/rule_asset.gif'>" + displayName, true );
+              String icon = "rule_asset.gif";
+              if (asset.metaData.format.equals( AssetFormats.DRL )) {
+                  icon = "technical_rule_assets.gif";
+              } else if (asset.metaData.format.equals( AssetFormats.DSL )) {
+                  icon = "dsl.gif";
+              } else if (asset.metaData.format.equals( AssetFormats.FUNCTION )) {
+                  icon = "function_assets.gif";
+              }
+              tab.add( view, "<img src='images/" + icon + "'>" + displayName, true );
               
               openedViewers.put(uuid, view);
               

@@ -314,6 +314,10 @@ a:visited {
 //  padding: 4px;
 }
 
+.metadata-Widget {
+  border: 1px solid #B8B8B8;
+}
+
 .rule-error-Popup {
   background-color: red;
   border: 1px solid #B8B8B8;
@@ -439,7 +443,7 @@ a:visited {
 }
 
 .rule-SelectedRow {
-	background-image: url(images/blue_gradient.gif);
+	background-image: url(images/gray_gradient.gif);
 	background-repeat: repeat-x;
 }
 

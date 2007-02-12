@@ -17,6 +17,7 @@ import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
 import javax.servlet.http.HttpSession;
 
+import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
@@ -97,7 +98,17 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
                                  String format) throws SerializableException {        
         try {
             PackageItem pkg = getRulesRepository().loadPackage( initialPackage );
-            AssetItem asset = pkg.addAsset( ruleName, description, initialCategory, format );            
+            AssetItem asset = pkg.addAsset( ruleName, description, initialCategory, format );
+            
+            if (format.equals( AssetFormats.DSL_TEMPLATE_RULE )) {
+                asset.updateContent( "when\n\nthen\n" );
+            } else if (format.equals( AssetFormats.FUNCTION )) {
+                asset.updateContent( "function " + ruleName + "(<args here>)\n\n\nend" );
+            } else if (format.equals( AssetFormats.DSL )) {
+                asset.updateContent( "[when]Condition sentence template {var}=" +
+                        "rule language mapping {var}\n" +
+                        "[then]Action sentence template=rule language mapping");
+            }
             getRulesRepository().save();
             return asset.getUUID();
         } catch (RulesRepositoryException e) {

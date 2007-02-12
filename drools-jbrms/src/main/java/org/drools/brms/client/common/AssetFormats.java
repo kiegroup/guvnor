@@ -21,6 +21,8 @@ public class AssetFormats {
     /** For "model" assets */
     public static final String MODEL = "model";
 
+    public static final String DSL = "dsl";
+
     /** Vanilla DRL "file" */
     public static String DRL = "drl";
     

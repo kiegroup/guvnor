@@ -27,7 +27,7 @@ public class MetaDataWidget extends FormStyleLayout {
 	
 	public MetaDataWidget(MetaData d, boolean readOnly, String uuid, Command refreshView) {
         
-        setStyleName( "editable-Surface" );
+        setStyleName( "metadata-Widget" );
         
         if (!readOnly) {
             addHeader( "images/meta_data.png", d.name );
@@ -53,7 +53,7 @@ public class MetaDataWidget extends FormStyleLayout {
         addAttribute("Created by:", readOnlyText(data.creator));
         addAttribute("Version number:", getVersionNumberLabel());
         addAttribute("Package:", readOnlyText(data.packageName));
-        addAttribute("Format:", readOnlyText( data.format ));
+        addAttribute("Format:", new HTML( "<b>" + data.format + "</b>" ));
         
         if (!readOnly) {
             addAttribute("Created on:", readOnlyDate( data.createdDate ));
@@ -130,6 +130,7 @@ public class MetaDataWidget extends FormStyleLayout {
         }
     }
 
+    
 
     private Label readOnlyText(String text) {
         Label lbl = new Label(text);

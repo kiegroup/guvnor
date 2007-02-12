@@ -7,10 +7,9 @@ import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.TableDataResult;
-import org.drools.brms.client.ruleeditor.NewRuleWizard;
+import org.drools.brms.client.ruleeditor.NewAssetWizard;
 import org.drools.brms.client.rulelist.AssetItemListViewer;
 import org.drools.brms.client.rulelist.EditItemEvent;
-import org.drools.brms.client.table.SortableTable;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -111,11 +110,11 @@ public class PackageExplorerWidget extends Composite {
               int left = 70;
               int top = 100;
                 
-              NewRuleWizard pop = new NewRuleWizard(new EditItemEvent() {
+              NewAssetWizard pop = new NewAssetWizard(new EditItemEvent() {
                   public void open(String key) {                  
                       editEvent.open( key );                      
                   }
-              });
+              }, true, null, "Create a new rule asset");
               pop.setPopupPosition( left, top );
               
               pop.show();
@@ -123,8 +122,46 @@ public class PackageExplorerWidget extends Composite {
             
         });
         
-        newWizards.add( newRule );
+        final Image newFunction = new Image("images/function_assets.gif");
+        newFunction.setTitle( "Create a new function" );
+        newFunction.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                int left = 70;
+                int top = 100;
+                  
+                NewAssetWizard pop = new NewAssetWizard(new EditItemEvent() {
+                    public void open(String key) {                  
+                        editEvent.open( key );                      
+                    }
+                }, false, AssetFormats.FUNCTION, "Create a new function");
+                pop.setPopupPosition( left, top );
+                
+                pop.show();                
+            }
+        } );
+        
+        final Image newDSL = new Image("images/dsl.gif");
+        newDSL.setTitle( "Create a new DSL (language configuration)" );
+        newDSL.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                int left = 70;
+                int top = 100;
+                  
+                NewAssetWizard pop = new NewAssetWizard(new EditItemEvent() {
+                    public void open(String key) {                  
+                        editEvent.open( key );                      
+                    }
+                }, false, AssetFormats.DSL, "Create a new language configuration");
+                pop.setPopupPosition( left, top );
+                
+                pop.show();                
+            }
+        } );        
+        
         newWizards.add( newPackage );
+        newWizards.add( newRule );
+        newWizards.add( newFunction );
+        newWizards.add( newDSL );
         return newWizards;
 
     }
@@ -190,33 +227,6 @@ public class PackageExplorerWidget extends Composite {
         pop.show();
     }
     
-    private void showNewFunction(Widget w) {
-        final FormStylePopup pop = new FormStylePopup("images/new_wiz.gif", "Create a new package");
-        final TextBox nameBox = new TextBox();
-        nameBox.setTitle( "The name of the package. Avoid spaces, use underscore instead." );
-        
-        pop.addAttribute( "Package name", nameBox );
-        final TextArea descBox = new TextArea();
-        pop.addAttribute( "Description", descBox );
-        
-        Button create = new Button("Create package");
-        create.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                pop.hide();
-            }
-
-        
-        });
-        
-        
-        pop.addAttribute( "", create );
-        
-        pop.setStyleName( "ks-popups-Popup" );
-        
-        pop.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() - 100 );
-        pop.show();
-        
-    }
 
     private void createPackageAction(final String name, final String descr) {
         LoadingPopup.showMessage( "Creating package - please wait..." );
@@ -242,16 +252,14 @@ public class PackageExplorerWidget extends Composite {
                 loadPackageConfig(name);
             }
         }));
-
         
         pkg.addItem( makeItem("Business rules", "images/rule_asset.gif", showListEvent(name, AssetFormats.BUSINESS_RULE)) );
         pkg.addItem( makeItem("Technical rules", "images/technical_rule_assets.gif", showListEvent(name, AssetFormats.TECHNICAL_RULE)) );
         pkg.addItem( makeItem("Functions", "images/function_assets.gif", showListEvent(name, AssetFormats.FUNCTION)) );
+        pkg.addItem( makeItem("DSL", "images/dsl.gif", showListEvent(name, AssetFormats.DSL)) );
         pkg.addItem( makeItem("Model", "images/model_asset.gif", showListEvent(name, AssetFormats.MODEL) ) );
-
         
         exTree.addItem( pkg );
-
     }
 
 
