@@ -14,10 +14,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 import org.drools.scm.DefaultScmEntry;
 import org.drools.scm.ScmAction;
 import org.drools.scm.ScmActionFactory;
@@ -33,12 +34,14 @@ import org.drools.scm.svn.SvnActionFactory.MoveFile;
 import org.drools.scm.svn.SvnActionFactory.UpdateFile;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNLogEntry;
+import org.tmatesoft.svn.core.SVNLogEntryPath;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.io.SVNRepository;
 
 public class SvnActionFactoryTest extends TestCase {
 
-    private static Logger logger = Logger.getLogger( SvnActionFactoryTest.class );
+    //private static Logger logger = Logger.getLogger( SvnActionFactoryTest.class );
 
     private static String svnUrl;
 
@@ -197,16 +200,24 @@ public class SvnActionFactoryTest extends TestCase {
 
         svn.execute( actions,
                      "test message" );
-        
+
         // Check the contents are correct
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        svn.getContent( "folder1", "file1.dat", -1, baos );
-        assertTrue( Arrays.equals( new byte[]{1, 1, 1, 1}, baos.toByteArray() ) );
-        
+        svn.getContent( "folder1",
+                        "file1.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( new byte[]{1, 1, 1, 1},
+                                   baos.toByteArray() ) );
+
         baos = new ByteArrayOutputStream();
-        svn.getContent( "folder1/folder1_1", "file1_1.dat", -1, baos );
-        assertTrue( Arrays.equals( new byte[]{0, 0, 0, 0}, baos.toByteArray() ) );
-              
+        svn.getContent( "folder1/folder1_1",
+                        "file1_1.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( new byte[]{0, 0, 0, 0},
+                                   baos.toByteArray() ) );
+
         // Check the directories are correctly created
         List list = convertToStringList( svn.listEntries( "" ) );
         assertTrue( list.contains( "folder1" ) );
@@ -228,19 +239,23 @@ public class SvnActionFactoryTest extends TestCase {
 
         byte[] oldContent = new byte[]{1, 1, 1, 1};
         byte[] newContent = new byte[]{1, 0, 1, 0};
-        
+
         // Add the initial file
         ScmAction addFile = new AddFile( "folder1",
                                          "file1.dat",
-                                         oldContent );                
+                                         oldContent );
         actions.addScmAction( addFile );
         svn.execute( actions,
                      "test message" );
-        
+
         // Check the contents are correct
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        svn.getContent( "folder1", "file1.dat", -1, baos );
-        assertTrue( Arrays.equals( oldContent, baos.toByteArray() ) );
+        svn.getContent( "folder1",
+                        "file1.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( oldContent,
+                                   baos.toByteArray() ) );
 
         // Update the existing file
         actions = new CompositeSvnAction();
@@ -251,11 +266,15 @@ public class SvnActionFactoryTest extends TestCase {
         actions.addScmAction( updateFile );
         svn.execute( actions,
                      "test message" );
-        
+
         // Check the contents are correct
         baos = new ByteArrayOutputStream();
-        svn.getContent( "folder1", "file1.dat", -1, baos );
-        assertTrue( Arrays.equals( newContent, baos.toByteArray() ) );
+        svn.getContent( "folder1",
+                        "file1.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( newContent,
+                                   baos.toByteArray() ) );
 
         // Check the correct directory structue was created
         List list = convertToStringList( svn.listEntries( "" ) );
@@ -280,17 +299,21 @@ public class SvnActionFactoryTest extends TestCase {
         actions.addScmAction( addFile );
         svn.execute( actions,
                      "test message" );
-        
+
         // Check the contents are correct
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        svn.getContent( "folder1", "file1.dat", -1, baos );
-        assertTrue( Arrays.equals( content, baos.toByteArray() ) );
-        
+        svn.getContent( "folder1",
+                        "file1.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( content,
+                                   baos.toByteArray() ) );
+
         List list = convertToStringList( svn.listEntries( "" ) );
         assertTrue( list.contains( "folder1" ) );
         assertTrue( list.contains( "folder1/file1.dat" ) );
         assertFalse( list.contains( "folder2/file2.dat" ) );
-        
+
         // Now copy the file
         actions = new CompositeSvnAction();
         addFolder = new AddDirectory( "",
@@ -303,12 +326,16 @@ public class SvnActionFactoryTest extends TestCase {
                                            svn.getLatestRevision() );
         actions.addScmAction( copyFile );
         svn.execute( actions,
-                     "test message" );             
-        
+                     "test message" );
+
         baos = new ByteArrayOutputStream();
-        svn.getContent( "folder2", "file2.dat", -1, baos );
-        assertTrue( Arrays.equals( content, baos.toByteArray() ) );
-        
+        svn.getContent( "folder2",
+                        "file2.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( content,
+                                   baos.toByteArray() ) );
+
         list = convertToStringList( svn.listEntries( "" ) );
         assertTrue( list.contains( "folder1" ) );
         assertTrue( list.contains( "folder1/file1.dat" ) );
@@ -341,18 +368,26 @@ public class SvnActionFactoryTest extends TestCase {
         actions.addScmAction( addFile );
         svn.execute( actions,
                      "test message" );
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        svn.getContent( "folder1", "file1.dat", -1, baos );
-        assertTrue( Arrays.equals( content1, baos.toByteArray() ) );
+        svn.getContent( "folder1",
+                        "file1.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( content1,
+                                   baos.toByteArray() ) );
         baos = new ByteArrayOutputStream();
-        svn.getContent( "folder1/folder1_1", "file1.dat", -1, baos );
-        assertTrue( Arrays.equals( content2, baos.toByteArray() ) );        
-        
+        svn.getContent( "folder1/folder1_1",
+                        "file1.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( content2,
+                                   baos.toByteArray() ) );
+
         List list = convertToStringList( svn.listEntries( "" ) );
         assertTrue( list.contains( "folder1" ) );
         assertTrue( list.contains( "folder1/folder1_1/file1.dat" ) );
-        assertFalse( list.contains( "folder2/folder1/file1.dat" ) );        
+        assertFalse( list.contains( "folder2/folder1/file1.dat" ) );
 
         // Now copy the directory
         actions = new CompositeSvnAction();
@@ -365,20 +400,36 @@ public class SvnActionFactoryTest extends TestCase {
         actions.addScmAction( copyDirectory );
         svn.execute( actions,
                      "test message" );
-        
+
         baos = new ByteArrayOutputStream();
-        svn.getContent( "folder1", "file1.dat", -1, baos );
-        assertTrue( Arrays.equals( content1, baos.toByteArray() ) );
+        svn.getContent( "folder1",
+                        "file1.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( content1,
+                                   baos.toByteArray() ) );
         baos = new ByteArrayOutputStream();
-        svn.getContent( "folder1/folder1_1", "file1.dat", -1, baos );
-        assertTrue( Arrays.equals( content2, baos.toByteArray() ) );        
+        svn.getContent( "folder1/folder1_1",
+                        "file1.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( content2,
+                                   baos.toByteArray() ) );
         baos = new ByteArrayOutputStream();
-        svn.getContent( "folder2/folder1", "file1.dat", -1, baos );
-        assertTrue( Arrays.equals( content1, baos.toByteArray() ) );
+        svn.getContent( "folder2/folder1",
+                        "file1.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( content1,
+                                   baos.toByteArray() ) );
         baos = new ByteArrayOutputStream();
-        svn.getContent( "folder2/folder1/folder1_1", "file1.dat", -1, baos );
-        assertTrue( Arrays.equals( content2, baos.toByteArray() ) ); 
-        
+        svn.getContent( "folder2/folder1/folder1_1",
+                        "file1.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( content2,
+                                   baos.toByteArray() ) );
+
         list = convertToStringList( svn.listEntries( "" ) );
         assertTrue( list.contains( "folder1" ) );
         assertTrue( list.contains( "folder1/folder1_1/file1.dat" ) );
@@ -402,16 +453,20 @@ public class SvnActionFactoryTest extends TestCase {
         actions.addScmAction( addFile );
         svn.execute( actions,
                      "test message" );
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        svn.getContent( "folder1", "file1.dat", -1, baos );
-        assertTrue( Arrays.equals( content, baos.toByteArray() ) );    
-        
+        svn.getContent( "folder1",
+                        "file1.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( content,
+                                   baos.toByteArray() ) );
+
         List list = convertToStringList( svn.listEntries( "" ) );
         assertTrue( list.contains( "folder1" ) );
         assertTrue( list.contains( "folder1/file1.dat" ) );
         assertFalse( list.contains( "folder2/file2.dat" ) );
-        
+
         // No do the file move
         actions = new CompositeSvnAction();
         addFolder = new AddDirectory( "",
@@ -425,16 +480,20 @@ public class SvnActionFactoryTest extends TestCase {
         actions.addScmAction( moveFile );
         svn.execute( actions,
                      "test message" );
-        
+
         baos = new ByteArrayOutputStream();
-        svn.getContent( "folder2", "file2.dat", -1, baos );
-        assertTrue( Arrays.equals( content, baos.toByteArray() ) );          
-        
+        svn.getContent( "folder2",
+                        "file2.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( content,
+                                   baos.toByteArray() ) );
+
         list = convertToStringList( svn.listEntries( "" ) );
         assertTrue( list.contains( "folder1" ) );
         assertFalse( list.contains( "folder1/file1.dat" ) );
         assertTrue( list.contains( "folder2/file2.dat" ) );
-    }   
+    }
 
     public void testMoveDirectory() throws Exception {
         ScmActionFactory svn = new SvnActionFactory( svnUrl,
@@ -456,9 +515,13 @@ public class SvnActionFactoryTest extends TestCase {
 
         // check the intial content and dir structure
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        svn.getContent( "folder1", "file1.dat", -1, baos );
-        assertTrue( Arrays.equals( content, baos.toByteArray() ) );       
-        
+        svn.getContent( "folder1",
+                        "file1.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( content,
+                                   baos.toByteArray() ) );
+
         actions = new CompositeSvnAction();
         MoveDirectory moveDirectory = new MoveDirectory( "folder1",
                                                          "folder2",
@@ -466,12 +529,16 @@ public class SvnActionFactoryTest extends TestCase {
         actions.addScmAction( moveDirectory );
         svn.execute( actions,
                      "test message" );
-        
+
         // Check the moved content and dir structure
         baos = new ByteArrayOutputStream();
-        svn.getContent( "folder2", "file1.dat", -1, baos );
-        assertTrue( Arrays.equals( content, baos.toByteArray() ) ); 
-                
+        svn.getContent( "folder2",
+                        "file1.dat",
+                        -1,
+                        baos );
+        assertTrue( Arrays.equals( content,
+                                   baos.toByteArray() ) );
+
         List list = convertToStringList( svn.listEntries( "" ) );
 
         assertFalse( list.contains( "folder1" ) );
@@ -495,10 +562,10 @@ public class SvnActionFactoryTest extends TestCase {
                                          content );
         actions.addScmAction( addFile );
         svn.execute( actions,
-                     "test message" );       
+                     "test message" );
         List list = convertToStringList( svn.listEntries( "" ) );
         assertTrue( list.contains( "folder1" ) );
-        assertTrue( list.contains( "folder1/file1.dat" ) );        
+        assertTrue( list.contains( "folder1/file1.dat" ) );
 
         // Now do the file delete
         actions = new CompositeSvnAction();
@@ -506,7 +573,7 @@ public class SvnActionFactoryTest extends TestCase {
                                                "file1.dat" );
         actions.addScmAction( deleteFile );
         svn.execute( actions,
-                     "test message" );            
+                     "test message" );
         list = convertToStringList( svn.listEntries( "" ) );
         assertTrue( list.contains( "folder1" ) );
         assertFalse( list.contains( "folder1/file1.dat" ) );
@@ -526,7 +593,7 @@ public class SvnActionFactoryTest extends TestCase {
         ScmAction addFile = new AddFile( "folder1",
                                          "file1.dat",
                                          content );
-        actions.addScmAction( addFile );        
+        actions.addScmAction( addFile );
         addFolder = new AddDirectory( "",
                                       "folder2" );
         actions.addScmAction( addFolder );
@@ -536,18 +603,57 @@ public class SvnActionFactoryTest extends TestCase {
         assertTrue( list.contains( "folder1" ) );
         assertTrue( list.contains( "folder1/file1.dat" ) );
         assertTrue( list.contains( "folder2" ) );
-        
+
         // now do the directory delete        
         actions = new CompositeSvnAction();
         ScmAction deleteDirectory = new DeleteDirectory( "folder1" );
         actions.addScmAction( deleteDirectory );
         svn.execute( actions,
                      "test message" );
-        list = convertToStringList( svn.listEntries( "" ) );        
+        list = convertToStringList( svn.listEntries( "" ) );
         assertFalse( list.contains( "folder1" ) );
         assertFalse( list.contains( "folder1/file1.dat" ) );
         assertTrue( list.contains( "folder2" ) );
     }
+    
+    public void testHistory() throws Exception {
+        SvnActionFactory svn = new SvnActionFactory( svnUrl,
+                                                     "mrtrout",
+                                                     "drools" );
+
+        CompositeSvnAction actions = new CompositeSvnAction();
+
+        ScmAction addFolder = new AddDirectory( "",
+                                                "folder1" );
+        actions.addScmAction( addFolder );
+        byte[] content = new byte[]{1, 1, 1, 1};
+        ScmAction addFile = new AddFile( "folder1",
+                                         "file1.dat",
+                                         content );
+        actions.addScmAction( addFile );
+        svn.execute( actions,
+                     "test message" );
+
+        actions = new CompositeSvnAction();
+        MoveDirectory moveDirectory = new MoveDirectory( "folder1",
+                                                         "folder2",
+                                                         svn.getLatestRevision() );
+        actions.addScmAction( moveDirectory );
+        svn.execute( actions,
+                     "test message" );
+        
+        Collection collection = svn.log( new String[] { "" }, 0, -1 );
+        for ( Iterator it = collection.iterator(); it.hasNext(); ) {
+            SVNLogEntry logEntry = ( SVNLogEntry ) it.next();
+            Map map = logEntry.getChangedPaths();
+            Set changePathSet = map.keySet();
+            for ( Iterator it2 = changePathSet.iterator(); it2.hasNext(); ) {
+                SVNLogEntryPath entryPath = ( SVNLogEntryPath ) map.get( it2.next() );
+                System.out.println( entryPath );
+            }
+        }
+        
+    }    
 
     public static void copy(File src,
                             File dest) throws IOException {

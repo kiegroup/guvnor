@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.drools.scm.svn;
+package org.drools.scm.jcr;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,12 +12,12 @@ import org.drools.scm.ScmAction;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.io.ISVNEditor;
 
-public class CompositeSvnAction
+public class CompositeJcrAction
     implements
     ScmAction {
     private List actions;
 
-    public CompositeSvnAction() {
+    public CompositeJcrAction() {
         this.actions = Collections.EMPTY_LIST;
     }
 
@@ -29,10 +29,10 @@ public class CompositeSvnAction
     }
 
     public void applyAction(Object context) throws SVNException {
-        ISVNEditor editor = ( ISVNEditor ) context;
+//        ISVNEditor editor = ( ISVNEditor ) context;
         for ( Iterator it = this.actions.iterator(); it.hasNext(); ) {
             ScmAction action = (ScmAction) it.next();
-            action.applyAction( editor );
+//            action.applyAction( editor );
         }
     }
 }

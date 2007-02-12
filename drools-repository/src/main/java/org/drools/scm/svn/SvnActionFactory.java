@@ -12,17 +12,29 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 import org.drools.scm.DefaultScmEntry;
 import org.drools.scm.ScmAction;
 import org.drools.scm.ScmActionFactory;
 import org.drools.scm.ScmEntry;
+
+import org.drools.scm.log.ScmLogEntry;
+import org.drools.scm.log.ScmLogEntry.Add;
+import org.drools.scm.log.ScmLogEntry.Copy;
+import org.drools.scm.log.ScmLogEntry.Delete;
+import org.drools.scm.log.ScmLogEntry.Replaced;
+import org.drools.scm.log.ScmLogEntry.Update;
+
 import org.tmatesoft.svn.core.SVNCommitInfo;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNErrorCode;
 import org.tmatesoft.svn.core.SVNErrorMessage;
 import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNLogEntry;
+import org.tmatesoft.svn.core.SVNLogEntryPath;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
@@ -40,7 +52,7 @@ public class SvnActionFactory
     implements
     ScmActionFactory {
 
-    private static Logger logger = Logger.getLogger( SvnActionFactory.class );
+//    private static Logger logger = Logger.getLogger( SvnActionFactory.class );
     private SVNRepository repository;
 
     /*
@@ -162,7 +174,7 @@ public class SvnActionFactory
             }
         } catch ( SVNException e ) {
             e.printStackTrace();
-            logger.error( "svn error: " );
+            //logger.error( "svn error: " );
             throw e;
         }
     }
@@ -170,13 +182,76 @@ public class SvnActionFactory
     public void getContent(String path, String file, long revision, OutputStream os) throws SVNException  {
         this.repository.getFile( path + "/" + file, revision, null, os);
     }
+    
+    public List log(String[] paths, long startRevision, long endRevision)  throws SVNException {
+        return toScm( this.repository.log( paths, null, startRevision, endRevision, true, false ) );
+    }
+    
+    private List toScm(Collection collection) throws SVNException {
+      List list = new ArrayList();
+      for ( Iterator it = collection.iterator(); it.hasNext(); ) {
+          SVNLogEntry logEntry = ( SVNLogEntry ) it.next();
+          Map map = logEntry.getChangedPaths();
+          Set changePathSet = map.keySet();          
+          
+          ScmLogEntry scmLogEntry = new ScmLogEntry(logEntry.getAuthor(),logEntry.getDate(), logEntry.getMessage() );
+          for ( Iterator it2 = changePathSet.iterator(); it2.hasNext(); ) {              
+              SVNLogEntryPath entryPath = ( SVNLogEntryPath ) map.get( it2.next() );              
+              
+              switch (entryPath.getType()) {
+                  
+                  case SVNLogEntryPath.TYPE_ADDED: {
+                      SVNDirEntry dirEntry = this.repository.info( entryPath.getPath(), -1 );
+                      char type = ( dirEntry.getKind() == SVNNodeKind.DIR ) ? 'D' : 'F';
+                      if ( entryPath.getCopyPath() == null ) {
+                          // this entry was added
+                          Add add = new Add( type, entryPath.getPath(), logEntry.getRevision());
+                          scmLogEntry.addAction( add );
+                          break;
+                      } else {
+                          // this entry was copied
+                          Copy copy = new Copy( type, entryPath.getCopyPath(), entryPath.getCopyRevision(), entryPath.getPath(), logEntry.getRevision() );
+                          scmLogEntry.addAction( copy );
+                          break;                 
+                      }                      
+                  }
+                      
+                  case SVNLogEntryPath.TYPE_DELETED: {
+                      SVNDirEntry dirEntry = this.repository.info( entryPath.getPath(), -1 );
+                      char type = ( dirEntry.getKind() == SVNNodeKind.DIR ) ? 'D' : 'F';
+                      Delete delete = new Delete( type, entryPath.getPath(), logEntry.getRevision());
+                      scmLogEntry.addAction( delete );
+                      break;
+                  }
+                  
+                  case SVNLogEntryPath.TYPE_MODIFIED: {
+                      SVNDirEntry dirEntry = this.repository.info( entryPath.getPath(), -1 );
+                      char type = ( dirEntry.getKind() == SVNNodeKind.DIR ) ? 'D' : 'F';
+                      Update update = new Update( type, entryPath.getPath(), logEntry.getRevision());
+                      scmLogEntry.addAction( update );
+                      break;
+                  }
+                  
+                  case SVNLogEntryPath.TYPE_REPLACED: {
+                      SVNDirEntry dirEntry = this.repository.info( entryPath.getPath(), -1 );
+                      char type = ( dirEntry.getKind() == SVNNodeKind.DIR ) ? 'D' : 'F';
+                      Replaced replaced = new Replaced( type, entryPath.getPath(), logEntry.getRevision());
+                      scmLogEntry.addAction( replaced );
+                      break;
+                  }                                       
+              }                            
+          }
+          list.add( scmLogEntry );
+      }        
+      return list;
+    }
 
     public long getLatestRevision() throws Exception {
         try {
             return repository.getLatestRevision();
         } catch ( SVNException e ) {
             e.printStackTrace();
-            logger.error( "svn error: " );
+            //logger.error( "svn error: " );
             throw e;
         }
     }
@@ -193,7 +268,7 @@ public class SvnActionFactory
             SVNCommitInfo info = editor.closeEdit();
         } catch ( SVNException e ) {
             e.printStackTrace();
-            logger.error( "svn error: " );
+            //logger.error( "svn error: " );
             throw e;
         }
     }
@@ -214,7 +289,8 @@ public class SvnActionFactory
             this.actions.add( action );
         }
 
-        public void applyAction(ISVNEditor editor) throws SVNException {
+        public void applyAction(Object context) throws SVNException {
+            ISVNEditor editor = ( ISVNEditor ) context;
             for ( Iterator it = this.actions.iterator(); it.hasNext(); ) {
                 ScmAction action = (ScmAction) it.next();
                 action.applyAction( editor );
@@ -237,7 +313,8 @@ public class SvnActionFactory
             this.content = content;
         }
 
-        public void applyAction(ISVNEditor editor) throws SVNException {
+        public void applyAction(Object context) throws SVNException {
+            ISVNEditor editor = ( ISVNEditor ) context;
             openDirectories( editor,
                              path );
 
@@ -276,7 +353,8 @@ public class SvnActionFactory
             this.path = path;
         }
 
-        public void applyAction(ISVNEditor editor) throws SVNException {
+        public void applyAction(Object context) throws SVNException {
+            ISVNEditor editor = ( ISVNEditor ) context;
             openDirectories( editor,
                              this.root );
             String[] paths = this.path.split( "/" );
@@ -314,7 +392,8 @@ public class SvnActionFactory
             this.newContent = newContent;
         }
 
-        public void applyAction(ISVNEditor editor) throws SVNException {
+        public void applyAction(Object context) throws SVNException {
+            ISVNEditor editor = ( ISVNEditor ) context;
             openDirectories( editor,
                              path );
             editor.openFile( path + "/" + file,
@@ -357,7 +436,8 @@ public class SvnActionFactory
             this.revision = revision;
         }
 
-        public void applyAction(ISVNEditor editor) throws SVNException {
+        public void applyAction(Object context) throws SVNException {
+            ISVNEditor editor = ( ISVNEditor ) context;
             editor.addFile( newPath + "/" + newFile,
                             path + "/" + file,
                             revision );
@@ -379,7 +459,8 @@ public class SvnActionFactory
             this.revision = revision;
         }
 
-        public void applyAction(ISVNEditor editor) throws SVNException {
+        public void applyAction(Object context) throws SVNException {
+            ISVNEditor editor = ( ISVNEditor ) context;
             editor.addDir( newPath,
                            path,
                            revision );
@@ -408,7 +489,8 @@ public class SvnActionFactory
             this.revision = revision;
         }
 
-        public void applyAction(ISVNEditor editor) throws SVNException {
+        public void applyAction(Object context) throws SVNException {
+            ISVNEditor editor = ( ISVNEditor ) context;
             CopyFile copyFile = new CopyFile( path,
                                               file,
                                               newPath,
@@ -438,7 +520,8 @@ public class SvnActionFactory
             this.revision = revision;
         }
 
-        public void applyAction(ISVNEditor editor) throws SVNException {
+        public void applyAction(Object context) throws SVNException {
+            ISVNEditor editor = ( ISVNEditor ) context;
             CopyDirectory copyDirectory = new CopyDirectory( path,
                                                              newPath,
                                                              revision );
@@ -462,7 +545,8 @@ public class SvnActionFactory
             this.file = file;
         }
 
-        public void applyAction(ISVNEditor editor) throws SVNException {
+        public void applyAction(Object context) throws SVNException {
+            ISVNEditor editor = ( ISVNEditor ) context;
             openDirectories( editor,
                              path );
             editor.deleteEntry( path + "/" + file,
@@ -481,7 +565,8 @@ public class SvnActionFactory
             this.path = path;
         }
 
-        public void applyAction(ISVNEditor editor) throws SVNException {
+        public void applyAction(Object context) throws SVNException {
+            ISVNEditor editor = ( ISVNEditor ) context;
             openDirectories( editor,
                              path );
             editor.deleteEntry( path,
