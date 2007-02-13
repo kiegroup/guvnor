@@ -170,6 +170,7 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals("testLoadRuleAsset", asset.metaData.categories[0]);
       
       AssetItem rule = impl.repo.loadPackage( "testLoadRuleAsset" ).loadAsset( "testLoadRuleAsset" );
+      impl.repo.createState( "whee" );
       rule.updateState( "whee" );
       rule.checkin( "changed state" );
       asset = impl.loadRuleAsset( uuid );
