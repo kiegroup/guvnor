@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<project name="org.drools.brms.JBRMS" default="gwt-compile" basedir="." xmlns:gwt="antlib:de.samaflost.gwttasks">
+	<taskdef uri="antlib:de.samaflost.gwttasks"
+	              resource="de/samaflost/gwttasks/antlib.xml"
+	              classpath="../lib/gwttasks.jar"/>
+	  
+	<property file="build.properties"/>
+
+	<target name="gwt-compile">
+		<gwt:compile outDir="src/main/webapp" 
+			gwtHome="${gwt.home}"
+			classBase="org.drools.brms.JBRMS" 
+			sourcedir="src/main/java" 
+		/>
+	</target>
+
+	<target name="gwt-shell">
+		<gwt:shell sourcedir="src/main/java/" 
+			bindir="target/classes" 
+			outDir="src/main/webapp" 
+			gwtHome="${gwt.home}" 
+			startPage="org.drools.brms.JBRMS/JBRMS.html" 
+		/>
+	</target>
+</project>
+
