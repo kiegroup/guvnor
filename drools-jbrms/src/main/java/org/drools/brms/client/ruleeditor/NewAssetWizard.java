@@ -36,7 +36,7 @@ public class NewAssetWizard extends PopupPanel {
                                                    public void selected(String selectedPath) {
                                                        initialCategory = selectedPath;
                                                    }
-                                               }, false );
+                                               });
     private ListBox                 formatChooser = getFormatChooser();
     
     private RulePackageSelector packageSelector = new RulePackageSelector();

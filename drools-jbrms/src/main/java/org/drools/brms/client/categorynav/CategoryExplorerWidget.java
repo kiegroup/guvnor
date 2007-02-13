@@ -37,27 +37,16 @@ public class CategoryExplorerWidget extends Composite
         navTreeWidget.setWidth( width );
     }
 
+
+
     /**
-     * Creates a category widget with edit buttons enabled.
-     * @param handler A call back interface.
+     * Create a new cat explorer.
+     * @param handler
      */
     public CategoryExplorerWidget(CategorySelectHandler handler) {
-        this( handler,
-              true );
-    }
-
-    /**
-     * 
-     * @param handler
-     * @param showEditing true if you want to be able to edit categories.
-     */
-    public CategoryExplorerWidget(CategorySelectHandler handler,
-                                  boolean showEditing) {
         panel.add( navTreeWidget );
 
-        if ( showEditing ) {
-            doEditButtons();
-        }
+
         this.categorySelectHandler = handler;
         loadInitialTree();
 
@@ -65,47 +54,12 @@ public class CategoryExplorerWidget extends Composite
         navTreeWidget.addTreeListener( this );
     }
 
-    private void doEditButtons() {
-        FlexTable actionTable = new FlexTable();
-        FlexCellFormatter formatter = actionTable.getFlexCellFormatter();
-
-        actionTable.setStyleName( "global-Font" );
-        actionTable.setText( 0,
-                             0,
-                             "Manage categories:" );
-
-        Image refresh = new Image( "images/refresh.gif" );
-        refresh.setTitle( "Refresh categories" );
-        refresh.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                navTreeWidget.removeItems();
-                loadInitialTree();
-            }
-        } );
-
-        Image newCat = new Image( "images/new.gif" );
-        newCat.setTitle( "Create a new category" );
-        newCat.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                CategoryEditor newCat = new CategoryEditor( selectedPath );
-                newCat.setPopupPosition( w.getAbsoluteLeft(),
-                                         w.getAbsoluteTop() - 10 );
-                newCat.show();
-            }
-        } );
-
-        actionTable.setWidget( 0,
-                               1,
-                               newCat );
-        actionTable.setWidget( 0,
-                               2,
-                               refresh );
-        formatter.setAlignment( 0,
-                                0,
-                                HasHorizontalAlignment.ALIGN_RIGHT,
-                                HasVerticalAlignment.ALIGN_MIDDLE );
-
-        panel.add( actionTable );
+    /**
+     * This refreshes the view.
+     */
+    public void refresh() {
+        navTreeWidget.removeItems();
+        loadInitialTree();
     }
 
     /** This will refresh the tree and restore it back to the original state */

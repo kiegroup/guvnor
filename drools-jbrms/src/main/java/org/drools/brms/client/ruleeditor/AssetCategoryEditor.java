@@ -157,7 +157,7 @@ public class AssetCategoryEditor extends Composite {
                     selectedPath = sel;
                 }
                 
-            }, false);
+            });
             
             this.setStyleName( "ks-popups-Popup" );
             
