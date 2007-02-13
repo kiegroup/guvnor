@@ -607,6 +607,7 @@ public class RulesRepository {
         try {
             Node folderNode = this.getAreaNode(STATE_AREA);
             Node stateNode = RulesRepository.addNodeIfNew(folderNode, name, StateItem.STATE_NODE_TYPE_NAME);
+            log.info( "Created the status [" + name + "]" );
             return new StateItem(this, stateNode);
         }
         catch(Exception e) {
