@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.drools.repository.AssetItem;
+import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.scm.ScmAction;
 import org.drools.scm.ScmActionFactory;
@@ -22,6 +24,10 @@ public class JcrActionFactory
 
     private RulesRepository repository;
 
+    public JcrActionFactory(RulesRepository repo) {
+        this.repository = repo;
+    }
+    
     public ScmAction addDirectory(String root,
                                   String path) {
         return null;
@@ -30,7 +36,7 @@ public class JcrActionFactory
     public ScmAction addFile(String path,
                              String file,
                              byte[] content) {
-        return null;
+        return new AddFile(path, file, content);
     }
 
     public ScmAction copyDirectory(String path,
@@ -58,6 +64,8 @@ public class JcrActionFactory
 
     public void execute(ScmAction action,
                         String message) throws Exception {
+        
+        action.applyAction( new RepositoryContext(repository, message));
     }
 
     public void getContent(String path,
@@ -96,7 +104,7 @@ public class JcrActionFactory
                                 String file,
                                 byte[] oldContent,
                                 byte[] newContent) {
-        return null;
+        return new UpdateFile(path, file, oldContent, newContent);
     }
 
     public void syncToScmLog(List list,
@@ -225,11 +233,39 @@ public class JcrActionFactory
         }
 
         public void applyAction(Object context) throws Exception {
-
+            RepositoryContext ctx = (RepositoryContext) context;
+            
+            
+            PackageItem pkg = ctx.repository.loadPackage( toPackageName(path) );
+            
+            StringTokenizer tk = new StringTokenizer(file, ".");
+            
+            String name = tk.nextToken();
+            String format = tk.nextToken();
+            
+            AssetItem asset = pkg.addAsset( name, ctx.message );
+            asset.updateFormat( format );
+            asset.updateContent( new String(content) );
+            ctx.repository.save();
+            
         }
     }
 
-    private String convertPath(String path, String token, String replace) {
+    /**
+     * This is used for passing in a context to perform the actions.
+     */
+    public static class RepositoryContext {
+        
+        public RepositoryContext(RulesRepository repository2, String message2) {
+            this.repository = repository2;
+            this.message = message2;
+        }
+        
+        public RulesRepository repository;
+        public String message;
+    }
+    
+    private static String convertPath(String path, String token, String replace) {
         if (path.indexOf( token ) == -1) return path;
         StringTokenizer tk = new StringTokenizer(path, token);
         StringBuffer buf = new StringBuffer();
@@ -241,13 +277,14 @@ public class JcrActionFactory
         return buf.toString();
     }
     
-    public String toDirectoryName(String packageName) {
+    static String toDirectoryName(String packageName) {
         return convertPath( packageName, ".", "/" );
     }
     
-    public String toPackageName(String directory) {
+    static String toPackageName(String directory) {
         return convertPath( directory, "/", "." );
     }
+    
 
     /**
      * root should be the last, previously created, parent folder. Each directory in the path
@@ -290,7 +327,12 @@ public class JcrActionFactory
         }
 
         public void applyAction(Object context) throws Exception {
-
+            RepositoryContext ctx = (RepositoryContext) context;
+            PackageItem pkg = ctx.repository.loadPackage( toPackageName( path ) );
+            String name = file.substring( 0, file.indexOf( '.' ) );
+            AssetItem asset = pkg.loadAsset( name );
+            asset.updateContent( new String(newContent) );
+            asset.checkin( ctx.message );
         }
     }
 
