@@ -35,6 +35,7 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.RepositoryConfigurator;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.StateItem;
 import org.drools.repository.VersionableItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
@@ -434,6 +435,23 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         return handler.loadRuleListTable( it, numRows );
         
 
+    }
+
+    public String createState(String name) throws SerializableException {
+        try {
+            return getRulesRepository().createState( name ).getNode().getUUID();
+        } catch ( RepositoryException e ) {            
+            throw new SerializableException( "Unable to create the status." );
+        }        
+    }
+
+    public String[] listStates() throws SerializableException {
+        StateItem[] states = getRulesRepository().listStates();
+        String[] result = new String[states.length];
+        for ( int i = 0; i < states.length; i++ ) {
+            result[i] = states[i].getName();
+        }
+        return result;
     }
     
 

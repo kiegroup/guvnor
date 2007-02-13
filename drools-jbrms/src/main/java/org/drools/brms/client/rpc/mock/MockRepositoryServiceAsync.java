@@ -380,6 +380,21 @@ public class MockRepositoryServiceAsync
                                    AsyncCallback cb) {
         loadRuleListForCategories( "/", cb );        
     }
+
+
+
+    public void createState(String p0,
+                            AsyncCallback cb) {
+        cb.onSuccess( "XXX" );
+        
+    }
+
+
+
+    public void listStates(AsyncCallback cb) {
+        cb.onSuccess( new String[0] );
+        
+    }
     
     
 

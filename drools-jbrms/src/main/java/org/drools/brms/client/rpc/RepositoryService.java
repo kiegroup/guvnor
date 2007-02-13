@@ -102,4 +102,15 @@ public interface RepositoryService extends RemoteService {
      */
     public TableDataResult listAssetsByFormat(String packageName, String format, int numRows, int startRow) throws SerializableException;
     
+    /**
+     * Returns a list of valid states.
+     */
+    public String[] listStates() throws SerializableException;
+
+    /**
+     * Create a state (status).
+     * @return the UUID of the created StateItem.
+     */
+    public String createState(String name) throws SerializableException;
+    
 }

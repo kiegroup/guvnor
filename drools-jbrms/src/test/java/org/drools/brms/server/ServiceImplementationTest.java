@@ -367,5 +367,31 @@ public class ServiceImplementationTest extends TestCase {
       
   }
   
+  public void testStatus() throws Exception {
+      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      String uuid = impl.createState( "testStatus1" );
+      assertNotNull(uuid);
+      
+      String[] states = impl.listStates();
+      assertTrue(states.length > 0);
+      
+      impl.createState( "testStatus2" );
+      String[] states2 = impl.listStates();
+      assertEquals(states.length + 1, states2.length);
+      
+      int match = 0;
+      for ( int i = 0; i < states2.length; i++ ) {
+         if (states2[i].equals( "testStatus2" )) {
+             match++;
+         } else if (states2[i].equals( "testStatus1" )) {
+             match++;
+         }
+      }
+      
+      assertEquals(2, match);
+      
+      
+  }
+  
     
 }
