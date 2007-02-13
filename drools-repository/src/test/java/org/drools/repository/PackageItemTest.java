@@ -160,6 +160,8 @@ public class PackageItemTest extends TestCase {
         List rules = iteratorToList( pack.getAssets() );
         assertEquals(3, rules.size());
         
+        getRepo().createState( "foobar" );
+        
         StateItem state = getRepo().getState( "foobar" );
         
         rule1.updateState( "foobar" );
@@ -172,6 +174,7 @@ public class PackageItemTest extends TestCase {
         assertEquals(1, rules.size());
         
         //now lets try an invalid state tag
+        getRepo().createState( "whee" );
         rules = iteratorToList( pack.getAssetsWithStatus( getRepo().getState( "whee" ) ) );
         assertEquals(0, rules.size());
         
@@ -182,16 +185,18 @@ public class PackageItemTest extends TestCase {
         
         //now do an update, and pull it out via state
         rule1.updateContent( "new content" );
-        rule1.updateState( "draft" );
+        getRepo().createState( "extractorState" );
+        rule1.updateState( "extractorState" );
         rule1.checkin( "latest" );
         
-        rules = iteratorToList( pack.getAssetsWithStatus(getRepo().getState( "draft" )) );
+        rules = iteratorToList( pack.getAssetsWithStatus(getRepo().getState( "extractorState" )) );
         assertEquals(1, rules.size());
         AssetItem rule = (AssetItem) rules.get( 0 );
         assertEquals("new content", rule.getContent());
         
         //get the previous one via state
         
+        getRepo().createState( "foobar" );
         rules = iteratorToList( pack.getAssetsWithStatus(getRepo().getState( "foobar" )) );
         assertEquals(1, rules.size());
         AssetItem prior = (AssetItem) rules.get( 0 );
@@ -203,7 +208,7 @@ public class PackageItemTest extends TestCase {
     public void testIgnoreState() throws Exception {
         PackageItem pack = getRepo().createPackage( "package testIgnoreState", "foo" );
         
-        
+        getRepo().createState( "x" );
         AssetItem rule1 = pack.addAsset( "rule number 1", "yeah man" );
         rule1.updateState( "x" );
         rule1.checkin( "version0" );
@@ -214,6 +219,8 @@ public class PackageItemTest extends TestCase {
         rule2.checkin( "version0" );
         
         AssetItem rule3 = pack.addAsset( "rule number 3", "yes way" );
+        getRepo().createState( "disabled" );
+        
         rule3.updateState( "disabled" );
         rule3.checkin( "version0" );
         

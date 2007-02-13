@@ -30,9 +30,7 @@ public class RepositorySessionUtil {
                 config.clearRulesRepository( session );
                 config.setupRulesRepository( session );
                 
-                
                 repoInstance = new RulesRepository( session );
-                
                 repo.set( repoInstance );                
             } catch ( Exception e) {
                 Assert.fail("Unable to initialise repository :" + e.getMessage());

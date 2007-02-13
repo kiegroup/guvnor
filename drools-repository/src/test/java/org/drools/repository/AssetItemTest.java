@@ -228,19 +228,20 @@ public class AssetItemTest extends TestCase {
     public void testSetStateString() {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testSetStateString", "test content");
            
+            getRepo().createState( "TestState1" );
+            
             ruleItem1.updateState("TestState1");
             assertNotNull(ruleItem1.getState());
             assertEquals("TestState1", ruleItem1.getState().getName());
             
+            getRepo().createState( "TestState2" );
             ruleItem1.updateState("TestState2");
             assertNotNull(ruleItem1.getState());
             assertEquals("TestState2", ruleItem1.getState().getName());            
 
-    }
+            ruleItem1 = getDefaultPackage().addAsset("foobar", "test description");
+            
 
-    public void testSetStateStateItem() {
-            AssetItem ruleItem1 = getDefaultPackage().addAsset("foobar", "test description");
-           
             StateItem stateItem1 = getRepo().getState("TestState1");
             ruleItem1.updateState(stateItem1);            
             assertNotNull(ruleItem1.getState());
@@ -252,6 +253,7 @@ public class AssetItemTest extends TestCase {
             assertEquals("TestState2", ruleItem1.getState().getName());            
 
     }
+
 
     public void testStatusStuff() {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testGetState", "test content");

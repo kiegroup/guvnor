@@ -135,7 +135,9 @@ public class RulesRepositoryTest extends TestCase {
     public void testGetState() {
         RulesRepository rulesRepository = RepositorySessionUtil.getRepository();
             
-            
+            StateItem state0 = rulesRepository.createState( "testGetState" );
+            assertNotNull(state0);
+            assertEquals("testGetState", state0.getName());
             StateItem stateItem1 = rulesRepository.getState("testGetState");
             assertNotNull(stateItem1);
             assertEquals("testGetState", stateItem1.getName());
@@ -221,6 +223,17 @@ public class RulesRepositoryTest extends TestCase {
         assertEquals("testMove", p.getPackageName());
         assertEquals("version0", p.getCheckinComment());
         
+    }
+    
+    public void testListStates()  {
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+        StateItem[] items = repo.listStates();
+        assertTrue(items.length > 0);
+        
+        repo.createState( "testListStates" );
+        
+        StateItem[] items2 = repo.listStates();
+        assertEquals(items.length + 1, items2.length);
     }
     
     List iteratorToList(Iterator it) {

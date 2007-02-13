@@ -588,13 +588,31 @@ public class RulesRepository {
     public StateItem getState(String name) throws RulesRepositoryException {
         try {
             Node folderNode = this.getAreaNode(STATE_AREA);
+            if (!folderNode.hasNode( name )) {
+                throw new RulesRepositoryException("The state called [" + name + "] does not exist.");
+            }            
+            Node stateNode = folderNode.getNode( name );//RulesRepository.addNodeIfNew(folderNode, name, StateItem.STATE_NODE_TYPE_NAME);
+            return new StateItem(this, stateNode);
+        }
+        catch(Exception e) {
+            log.error(e);
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    /**
+     * Create a status node of the given name.
+     */
+    public StateItem createState(String name) {
+        try {
+            Node folderNode = this.getAreaNode(STATE_AREA);
             Node stateNode = RulesRepository.addNodeIfNew(folderNode, name, StateItem.STATE_NODE_TYPE_NAME);
             return new StateItem(this, stateNode);
         }
         catch(Exception e) {
-            log.error("Caught Exception: " + e);
+            log.error(e);
             throw new RulesRepositoryException(e);
-        }
+        }  
     }
         
     /**
@@ -762,6 +780,28 @@ public class RulesRepository {
         } catch (RepositoryException e) {
             throw new RulesRepositoryException( e );
         }
+    }
+
+
+
+    /**
+     * @return A list of statii in the system. 
+     */
+    public StateItem[] listStates() {
+        
+        List states = new ArrayList();
+        NodeIterator it;
+        try {
+            it = this.getAreaNode( STATE_AREA ).getNodes();
+            while(it.hasNext()) {
+                states.add( new StateItem(this, it.nextNode()) );
+            }
+
+        } catch ( RepositoryException e ) {
+            log.error( e );
+            throw new RulesRepositoryException(e);
+        }
+        return (StateItem[]) states.toArray( new StateItem[states.size()] );
     }
 
 

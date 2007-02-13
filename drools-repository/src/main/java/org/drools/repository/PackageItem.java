@@ -139,7 +139,7 @@ public class PackageItem extends VersionableItem {
             ruleNode.setProperty( AssetItem.PACKAGE_NAME_PROPERTY, this.getName() );
             
             AssetItem rule = new AssetItem( this.rulesRepository, ruleNode );
-            
+                        
             rule.updateState( StateItem.DRAFT_STATE_NAME );
             
             if (initialCategory != null) {
