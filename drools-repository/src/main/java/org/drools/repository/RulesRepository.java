@@ -93,15 +93,6 @@ public class RulesRepository {
      */
     public final static String RULE_AREA = "drools:rule_area";
     
-    /**
-     * The name of the rule area of the repository
-     */
-    public final static String FUNCTION_AREA = "drools:function_area";
-    
-    /**
-     * The name of the DSL area of the repository
-     */
-    public final static String DSL_AREA = "drools:dsl_area";
     
     /**
      * The name of the tag area of the repository
