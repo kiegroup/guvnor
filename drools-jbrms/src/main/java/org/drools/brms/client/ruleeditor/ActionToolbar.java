@@ -1,12 +1,12 @@
 package org.drools.brms.client.ruleeditor;
 
 import org.drools.brms.client.common.FormStylePopup;
-import org.drools.brms.client.common.LoadingPopup;
+import org.drools.brms.client.common.StatusChangePopup;
 import org.drools.brms.client.rpc.MetaData;
+import org.drools.brms.client.rpc.RuleAsset;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -15,8 +15,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
@@ -32,20 +30,27 @@ public class ActionToolbar extends Composite {
     
     private MetaData      metaData;
     private Command checkin;
+    private String uuid;
+    private HTML state;
 
     
-    public ActionToolbar(final MetaData meta, 
+    public ActionToolbar(final RuleAsset asset,
+                          
                          final Command checkin, 
                          final Command minimiseMaximise, 
                          boolean readOnly) {
 
-        this.metaData = meta;
+        this.metaData = asset.metaData;
         this.checkin = checkin;
+        this.uuid = asset.uuid;
+        this.state = new HTML();
         String status = metaData.state;
 
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         HorizontalPanel saveControls = new HorizontalPanel();
-        HTML state = new HTML("<b>Status: <i>[" + status + "]</i></b>");
+        setState(status);
+        
+        
         saveControls.add( state );
         
         if (!readOnly) {
@@ -59,11 +64,25 @@ public class ActionToolbar extends Composite {
         setWidth( "100%" );
     }
 
+    /**
+     * Sets the visible status display.
+     */
+    private void setState(String status) {
+        state.setHTML( "Status: <b>[" + status + "]</b>");        
+    }
+
     private void controls(final Command minimiseMaximise,
                           FlexCellFormatter formatter,
                           HorizontalPanel saveControls) {
         Image editState = new Image("images/edit.gif");
-        editState.setTitle( "Change state (NOT IMPLEMENTED YET)." );
+        editState.setTitle( "Change status." );
+        editState.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                showStatusChanger(w);
+            }
+
+
+        } );
         saveControls.add( editState );
         
         
@@ -130,37 +149,25 @@ public class ActionToolbar extends Composite {
 
         });
         pop.show();
-//        final FormStylePopup pop = new FormStylePopup("images/checkin.gif", "Check in changes.");
-//        final TextArea comment = new TextArea();
-//        comment.setWidth( "100%" );
-//        Button save = new Button("Save");
-//        pop.addAttribute( "Comment", comment );
-//        pop.addAttribute( "", save);
-//        
-//        bindCommentField( comment );
-//        
-//        
-//        save.addClickListener( new ClickListener() {
-//            public void onClick(Widget w) {
-//                
-//                checkin.execute();
-//                pop.hide();
-//            }
-//        });
-//        
-//        pop.setStyleName( "ks-popups-Popup" );
-//        pop.setPopupPosition( 200, getAbsoluteTop() );
-//        pop.show();        
+      
         
     }
 
-//    private void bindCommentField(final TextArea comment) {
-//        comment.addChangeListener( new ChangeListener() {
-//            public void onChange(Widget w) {
-//                metaData.checkinComment = comment.getText();
-//            }
-//        });
-//    }
+    
+    
+    /**
+     * Show the stats change popup.
+     */
+    private void showStatusChanger(Widget w) {
+        final StatusChangePopup pop = new StatusChangePopup(uuid, false);
+        pop.setChangeStatusEvent(new Command() {
+            public void execute() {
+                setState( pop.getState() );
+            }                    
+        });
+        pop.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+        pop.show();
+    }
 
     /**
      * Called when user wants to close, but there is "dirtyness".

@@ -12,9 +12,6 @@ import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.version.Version;
-import javax.jcr.version.VersionIterator;
 import javax.servlet.http.HttpSession;
 
 import org.drools.brms.client.common.AssetFormats;
@@ -405,6 +402,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         data.name = item.getName();
         data.lastModified = item.getLastModified().getTime();
         data.lasContributor = item.getLastContributor();
+        data.state = item.getStateDescription();
         
         
         return data;
@@ -452,6 +450,24 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
             result[i] = states[i].getName();
         }
         return result;
+    }
+
+    public void changeState(String uuid,
+                            String newState,
+                            boolean wholePackage) {
+        RulesRepository repo = getRulesRepository();
+        if (!wholePackage) {
+            AssetItem asset = repo.loadAssetByUUID( uuid );
+            asset.updateState( newState );
+            repo.save();
+        } else {
+            PackageItem pkg = repo.loadPackageByUUID( uuid );
+            pkg.changeStatus(newState);
+            repo.save();
+        }
+        
+        
+        
     }
     
 

@@ -4,9 +4,11 @@ import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
+import org.drools.brms.client.common.StatusChangePopup;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -29,6 +31,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class PackageEditor extends FormStyleLayout {
 
     private PackageConfigData conf;
+    private HTML status;
 
     public PackageEditor(PackageConfigData data) {
         this.conf = data;
@@ -48,10 +51,47 @@ public class PackageEditor extends FormStyleLayout {
         addAttribute( "Description:", description() );
         addAttribute( "Header:", header() );
         addAttribute( "External URI:", externalURI() );
+        addRow(new HTML("<hr/>"));
         addAttribute( "Last modified on:", new Label(this.conf.lastModified.toLocaleString())  );
         addAttribute( "Last modified by:", new Label(this.conf.lasContributor));
         addRow(new HTML("<hr/>"));
+        
+        status = new HTML();
+        HorizontalPanel statusBar = new HorizontalPanel();
+        Image editState = new Image("images/edit.gif");
+        editState.setTitle( "Change status." );
+        editState.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                showStatusChanger(w);
+            }
+
+
+        } );
+        statusBar.add( status );
+        
+        statusBar.add( editState );
+        
+        setState(conf.state);
+        addAttribute("Status:", statusBar);
+
         addRow( saveChangeWidget() );
+    }
+
+    protected void showStatusChanger(Widget w) {
+        final StatusChangePopup pop = new StatusChangePopup(conf.uuid, true);
+        pop.setChangeStatusEvent(new Command() {
+            public void execute() {
+                setState( pop.getState() );
+            }                    
+        });
+        pop.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+        pop.show();
+        
+    }
+
+    private void setState(String state) {
+        status.setHTML( "<b>" + state + "</b>" );
+        
     }
 
     private Widget saveChangeWidget() {

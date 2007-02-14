@@ -20,6 +20,7 @@ public class PackageConfigData
     public String description;
     public Date   lastModified;
     public String lasContributor;
+    public String state;
     
     
     

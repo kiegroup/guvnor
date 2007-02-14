@@ -18,6 +18,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
+import org.drools.repository.StateItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -367,6 +368,7 @@ public class ServiceImplementationTest extends TestCase {
       
   }
   
+  
   public void testStatus() throws Exception {
       MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
       String uuid = impl.createState( "testStatus1" );
@@ -390,8 +392,33 @@ public class ServiceImplementationTest extends TestCase {
       
       assertEquals(2, match);
       
+
+      String packagUUID = impl.createPackage( "testStatus", "description" );
+      String ruleUUID = impl.createNewRule( "testStatus", "desc", null, "testStatus", "drl" );
+      String ruleUUID2 = impl.createNewRule( "testStatus2", "desc", null, "testStatus", "drl" );
+      impl.createState( "testState" );
+      
+      RuleAsset asset = impl.loadRuleAsset( ruleUUID );
+      assertEquals(StateItem.DRAFT_STATE_NAME, asset.metaData.state);
+      impl.changeState( ruleUUID, "testState", false );
+      asset = impl.loadRuleAsset( ruleUUID );
+      assertEquals("testState", asset.metaData.state);
+      asset = impl.loadRuleAsset( ruleUUID2 );
+      assertEquals( StateItem.DRAFT_STATE_NAME, asset.metaData.state);
+      
+      
+      
+      impl.createState( "testState2" );
+      impl.changeState( packagUUID, "testState2", true );
+      
+      PackageConfigData pkg = impl.loadPackage( "testStatus" );
+      assertEquals("testState2", pkg.state);
+      
+      asset = impl.loadRuleAsset( ruleUUID2 );
+      assertEquals("testState2", asset.metaData.state);
       
   }
+  
   
     
 }

@@ -1,8 +1,7 @@
 package org.drools.brms.client.ruleeditor;
 
-import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.ErrorPopup;
-import org.drools.brms.client.common.WarningPopup;
+import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 
@@ -84,7 +83,7 @@ public class RuleViewer extends Composite {
                             "40%" );
 
         //and now the action widgets (checkin/close etc).
-        ActionToolbar toolbar = new ActionToolbar( asset.metaData,
+        ActionToolbar toolbar = new ActionToolbar( asset,
                                                    new Command() {
                                                        public void execute() {
                                                            doCheckin();

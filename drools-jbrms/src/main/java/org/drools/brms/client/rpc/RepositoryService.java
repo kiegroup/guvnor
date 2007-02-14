@@ -113,4 +113,13 @@ public interface RepositoryService extends RemoteService {
      */
     public String createState(String name) throws SerializableException;
     
+    
+    /**
+     * This will change the state of an asset or package.
+     * @param uuid The UUID of the asset we are tweaking.
+     * @param newState The new state to set. It must be valid in the repo.
+     * @param wholePackage true if it is a package we are setting the state of. 
+     * If this is true, UUID must be the status of a package, if false, it must be an asset.
+     */
+    public void changeState(String uuid, String newState, boolean wholePackage);
 }

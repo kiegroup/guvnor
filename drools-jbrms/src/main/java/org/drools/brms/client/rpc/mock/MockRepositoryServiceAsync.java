@@ -395,6 +395,16 @@ public class MockRepositoryServiceAsync
         cb.onSuccess( new String[0] );
         
     }
+
+
+
+    public void changeState(String p0,
+                            String p1,
+                            boolean p2,
+                            AsyncCallback cb) {
+        cb.onSuccess( null );
+        
+    }
     
     
 
