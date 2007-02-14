@@ -1,6 +1,7 @@
 package org.drools.brms.client;
 
 import org.drools.brms.client.admin.CategoryManager;
+import org.drools.brms.client.admin.StateManager;
 
 import com.google.gwt.user.client.ui.TabPanel;
 
@@ -17,7 +18,7 @@ public class AdminFeature extends JBRMSFeature {
       tab.setHeight( "100%" );
 
       tab.add( new CategoryManager(), "<img src='images/category_small.gif'/>Manage categories", true ); 
-            
+      tab.add( new StateManager(),  "<img src='images/status_small.gif'/>Manage states", true );           
       tab.selectTab( 0 );
       
 

@@ -37,7 +37,7 @@ public class CategoryManager extends Composite {
 
         
         SimplePanel editable = new SimplePanel();
-        editable.setStyleName( "editable-Surface" );
+        editable.setStyleName( "metadata-Widget" );
         editable.add( explorer );
         
         form.addAttribute( "Current categories:", editable );
@@ -57,7 +57,7 @@ public class CategoryManager extends Composite {
             public void onClick(Widget w) {
                 CategoryEditor newCat = new CategoryEditor( selectedPath );
                 newCat.setPopupPosition( w.getAbsoluteLeft(),
-                                         w.getAbsoluteTop() - 10 );
+                                         w.getAbsoluteTop() - 400 );
                 newCat.show();
             }
         } );
