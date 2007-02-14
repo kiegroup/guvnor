@@ -546,6 +546,20 @@ public class PackageItem extends VersionableItem {
     public void updateExternalURI(String uri) {
         updateStringProperty( uri, EXTERNAL_URI_PROPERTY_NAME );
     }
+
+    /**
+     * This will change the status of this package, and all the contained assets. 
+     * No new versions are created of anything.
+     * @param newState The status tag to change it to.
+     */
+    public void changeStatus(String newState) {
+        StateItem stateItem = rulesRepository.getState( newState );
+        updateState( stateItem );
+        for ( Iterator iter = getAssets(); iter.hasNext(); ) {
+            AssetItem element = (AssetItem) iter.next();
+            element.updateState( stateItem );
+        }
+    }
     
     
 
