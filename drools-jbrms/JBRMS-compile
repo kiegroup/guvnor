@@ -1,4 +1,0 @@
-#!/bin/sh
-APPDIR=`dirname $0`;
-GWT_HOME=/home/michael/apps/gwt/gwt-linux-1.1.10;
-java -cp "$APPDIR/src/main/java:$GWT_HOME/gwt-user.jar:$GWT_HOME/gwt-dev-linux.jar" com.google.gwt.dev.GWTCompiler -out "$APPDIR/src/main/webapp" "$@" org.drools.brms.JBRMS;
