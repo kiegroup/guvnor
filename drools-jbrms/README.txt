@@ -5,9 +5,9 @@ When building into a war, or running unit tests, use
 
 >mvn package
 
-GWT is used to build the UI. This is what the JBRMS-compile shell script is for.
-If you take a look at the script, you may need to change the 
-path to be releveant for you.
+GWT is used to build the UI. This is what the ant build script is for.
+If you take a look at build.properties, you may need to change the gwt.home path to be 
+relevant for you.
 
 Download GWT if you want to mess with the UI.
 
@@ -22,8 +22,6 @@ set to where you have installed GWT (and if you are on windows, change the jar
 to the one for you).
 
 To make a change in GWT - when you are finished debugging, you will need to run
-the JBRMS-compile script to refresh the static web content (all the AJAXY shite).
-
-
+the ant build script to refresh the static web content (all the AJAXY shite).
 
 Any questions, contact michael.neale@gmail.com or find me in IRC.
