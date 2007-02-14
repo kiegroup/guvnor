@@ -9,13 +9,14 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.KeyboardListener;
+import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.DockPanel.DockLayoutConstant;
 
 
 /**
@@ -27,6 +28,8 @@ public class DSLRuleEditor extends Composite {
     
     private TextArea text;
     final private RuleContentText data;
+    private String[] conditions;
+    private String[] actions;
     
 
     
@@ -38,6 +41,9 @@ public class DSLRuleEditor extends Composite {
         text.setHeight("100%");
         text.setVisibleLines(10);
         text.setText(tex.content);
+
+        this.conditions = dslConditions;
+        this.actions = dslActions;       
         
         text.setStyleName( "dsl-text-Editor" );
         
@@ -51,6 +57,22 @@ public class DSLRuleEditor extends Composite {
         });
 
 
+        text.addKeyboardListener( new KeyboardListenerAdapter() {
+
+
+
+            public void onKeyDown(Widget arg0,
+                                   char arg1,
+                                   int arg2) {
+                if (arg1 == ' ' && arg2 == MODIFIER_CTRL) {
+                    showInTextOptions( ); 
+                } 
+                
+            }
+
+
+            
+        });
         
         VerticalPanel vert = new VerticalPanel();
         
@@ -85,6 +107,23 @@ public class DSLRuleEditor extends Composite {
         initWidget( layout );
     }
     
+    protected void showInTextOptions() {
+        String prev = text.getText().substring( 0, this.text.getCursorPos() );
+        if (prev.indexOf( "then" ) > -1) {
+            PickList pick = new PickList("Choose an action", actions , this);
+            pick.setPopupPosition( text.getAbsoluteLeft(), text.getAbsoluteTop() );
+            pick.show();
+            
+        } else {
+            PickList pick = new PickList("Choose a condition", conditions , this);
+            pick.setPopupPosition( text.getAbsoluteLeft(), text.getAbsoluteTop() );
+            pick.show();
+            
+        }
+        
+    }
+    
+
     private void showOptions(final String[] items,
                              Widget w, String message) {
         PickList pick = new PickList(message, items, this);
@@ -97,6 +136,7 @@ public class DSLRuleEditor extends Composite {
         String left = text.getText().substring( 0, i );
         String right = text.getText().substring( i, text.getText().length() );
         text.setText( left + ins + right );
+        this.data.content = text.getText();
     }    
 
     /**
@@ -119,7 +159,9 @@ public class DSLRuleEditor extends Composite {
             list.setVisibleItemCount( 6 );
             vert.add( list );
             
-            DockPanel buttons = new DockPanel();
+            
+            
+            FlexTable buttons = new FlexTable();
             
             
             Button ok = new Button("OK");
@@ -129,7 +171,8 @@ public class DSLRuleEditor extends Composite {
                     hide();
                 }
             }  );
-            buttons.add( ok, DockPanel.WEST );
+            buttons.setWidget( 0, 0, ok );
+            buttons.getFlexCellFormatter().setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE );
             
             
             
@@ -139,7 +182,10 @@ public class DSLRuleEditor extends Composite {
                     hide();
                 }
             } );
-            buttons.add( close, DockPanel.EAST );
+            
+            buttons.setWidget( 0, 1, close);
+            buttons.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
+            
             buttons.setWidth( "100%" );
             vert.add( buttons );
             

@@ -27,10 +27,12 @@ public class StatusChangePopup extends DialogBox {
     private Command changedStatus;
 
     public StatusChangePopup(String uuid, boolean isPackage) {
-        super();
+        super(true);
         
         this.uuid = uuid;
         this.isPackage = isPackage;
+        
+        setStyleName( "ks-popups-Popup" );
         
         setHTML( "<img src='images/status_small.gif'/><b>Change status</b>" );
         HorizontalPanel horiz = new HorizontalPanel();
