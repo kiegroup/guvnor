@@ -344,9 +344,11 @@ public class JcrActionFactory
             ctx.repository.createPackage( "testAddFiles.package",
                                           "just for testing" );
 
-            PackageItem pkgItem = ctx.repository.loadPackage( toPackageName( this.root ) );
-            if ( pkgItem == null ) {
-                throw new RuntimeException( "The parent package '" + this.root + "' must exist" );
+            if ( !this.root.equals( "" ) ) {
+                PackageItem pkgItem = ctx.repository.loadPackage( toPackageName( this.root ) );
+                if ( pkgItem == null ) {
+                    throw new RuntimeException( "The parent package '" + this.root + "' must exist" );
+                }
             }
 
             ctx.repository.createPackage( toPackageName( root + "/" + this.path ),
