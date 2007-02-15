@@ -178,6 +178,7 @@ public class RulesRepositoryTest extends TestCase {
             PackageItem rulePackageItem1 = rulesRepository.createPackage("testListPackages", "desc");
             
             assertTrue(rulesRepository.containsPackage( "testListPackages" ));
+            assertFalse(rulesRepository.containsPackage( "XXXXXXX" ));
             
             Iterator it = rulesRepository.listPackages();
             assertTrue(it.hasNext());
