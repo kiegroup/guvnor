@@ -404,6 +404,15 @@ public class RulesRepository {
         }
     }    
     
+    public boolean containsPackage(String name) {
+        Node folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
+        try {
+            return folderNode.hasNode( name );
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
+        }
+    }
+    
     public PackageItem loadPackageSnapshot(String packageName, String snapshotName) {
         try {
             Node n = this.getAreaNode( PACKAGE_SNAPSHOT_AREA ).getNode( packageName ).getNode( snapshotName );
