@@ -79,6 +79,7 @@ public class JcrActionFactory
         
         action.applyAction( new RepositoryContext( repository,
                                                    message ) );
+        repository.save();
     }
 
     public void getContent(String path,
@@ -98,7 +99,7 @@ public class JcrActionFactory
         for ( Iterator it = this.repository.listPackages(); it.hasNext(); ) {
             PackageItem pkgItem = (PackageItem) it.next();
             if ( pkgItem.getName().startsWith( pathAsPackageName ) ) {
-                pkgs.add( it.next() );
+                pkgs.add( pkgItem );
             }
 
         }
@@ -341,8 +342,6 @@ public class JcrActionFactory
 
         public void applyAction(Object context) throws Exception {
             RepositoryContext ctx = (RepositoryContext) context;
-            ctx.repository.createPackage( "testAddFiles.package",
-                                          "just for testing" );
 
             if ( !this.root.equals( "" ) ) {
                 PackageItem pkgItem = ctx.repository.loadPackage( toPackageName( this.root ) );
