@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.scm.CompositeScmAction;
 import org.drools.scm.ScmAction;
 import org.drools.scm.ScmActionFactory;
 import org.drools.scm.ScmEntry;
@@ -58,7 +59,7 @@ public class SvnLogTest extends TestCase {
                                                      "mrtrout",
                                                      "drools" );
 
-        CompositeSvnAction actions = new CompositeSvnAction();
+        CompositeScmAction actions = new CompositeScmAction();
 
         ScmAction addFolder = new AddDirectory( "",
                                                 "folder1" );

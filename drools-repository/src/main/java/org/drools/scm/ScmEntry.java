@@ -11,7 +11,7 @@ public interface ScmEntry {
     Date    getDate(); 
     String  getName(); 
     String  getPath();
-    long    getRevision(); 
+    long    getRevision();
     long    getSize(); 
     public boolean isFile();    
     public boolean isDirectory();   

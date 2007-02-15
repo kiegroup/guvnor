@@ -1,11 +1,19 @@
 package org.drools.scm.jcr;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RepositorySessionUtil;
 import org.drools.repository.RulesRepository;
+import org.drools.scm.CompositeScmAction;
 import org.drools.scm.ScmAction;
+import org.drools.scm.ScmActionFactory;
+import org.drools.scm.ScmEntry;
 import org.drools.scm.jcr.JcrActionFactory.AddFile;
+import org.drools.scm.jcr.JcrActionFactory.AddDirectory;
 
 import junit.framework.TestCase;
 
@@ -20,6 +28,57 @@ public class JcrActionFactoryTest extends TestCase {
     
         assertEquals("org/foo/bar", fact.toDirectoryName("org.foo.bar"));
         assertEquals("foo", fact.toDirectoryName("foo"));
+    }
+    
+    public void testAddDirectories() throws Exception {
+        ScmActionFactory svn = new JcrActionFactory( RepositorySessionUtil.getRepository() );
+
+        CompositeScmAction actions = new CompositeScmAction();
+
+        // Correctly add a new Directory at root
+        actions = new CompositeScmAction();
+        ScmAction addDirectory = new AddDirectory( "",
+                                                "folder1" );
+        actions.addScmAction( addDirectory );
+
+        svn.execute( actions,
+                     "test message" );
+
+        // Now check various flat and deep Directory creations
+        actions = new CompositeScmAction();
+
+        addDirectory = new AddDirectory( "folder1",
+                                      "folder1_1" );
+        actions.addScmAction( addDirectory );
+
+        addDirectory = new AddDirectory( "folder1/folder1_1",
+                                      "folder1_1_1" );
+        actions.addScmAction( addDirectory );
+
+        addDirectory = new AddDirectory( "folder1",
+                                      "folder1_2" );
+        actions.addScmAction( addDirectory );
+
+        addDirectory = new AddDirectory( "",
+                                      "folder2/folder2_1" );
+        actions.addScmAction( addDirectory );
+
+        addDirectory = new AddDirectory( "",
+                                      "folder3/folder3_1/folder3_1_1/folder3_1_1_1" );
+        actions.addScmAction( addDirectory );
+
+        svn.execute( actions,
+                     "test message" );
+        //------
+        // Now test results
+        //-------                
+        List list = convertToStringList( svn.listEntries( "" ) );
+
+        assertTrue( list.contains( "folder1" ) );
+        assertTrue( list.contains( "folder1/folder1_1" ) );
+        assertTrue( list.contains( "folder1/folder1_2" ) );
+        assertTrue( list.contains( "folder2/folder2_1" ) );
+        assertTrue( list.contains( "folder3/folder3_1/folder3_1_1/folder3_1_1_1" ) );
     }
     
     public void testAddFiles() throws Exception {
@@ -60,10 +119,17 @@ public class JcrActionFactoryTest extends TestCase {
         AssetItem asset2 = pkg.loadAsset( "testUpdateFilesSVN" );
         assertFalse(oldVersion.equals( asset2.getVersionNumber() ));
         assertEquals("lala2", asset2.getContent());
-        assertEquals("goo", asset2.getCheckinComment());
-        
-    }
+        assertEquals("goo", asset2.getCheckinComment());        
+    }    
     
-    
+    public static List convertToStringList(List list) {
+        List files = new ArrayList( list.size() );
+
+        for ( Iterator it = list.iterator(); it.hasNext(); ) {
+            ScmEntry entry = (ScmEntry) it.next();
+            files.add( entry.getPath().equals( "" ) ? entry.getName() : entry.getPath() + "/" + entry.getName() );
+        }
+        return files;
+    }    
     
 }

@@ -52,9 +52,6 @@ public interface ScmActionFactory {
     
     public void getContent(String path, String file, long revision, OutputStream os) throws Exception;    
     
-    public List listEntries(String path) throws Exception;
-    
-    public void listEntries(String path,
-                            List list) throws Exception;
+    public List listEntries(String path) throws Exception;    
     
 }

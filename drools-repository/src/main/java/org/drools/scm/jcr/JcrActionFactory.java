@@ -2,6 +2,11 @@ package org.drools.scm.jcr;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -9,14 +14,17 @@ import java.util.StringTokenizer;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.drools.scm.DefaultScmEntry;
 import org.drools.scm.ScmAction;
 import org.drools.scm.ScmActionFactory;
+import org.drools.scm.ScmEntry;
 import org.drools.scm.log.ScmLogEntry;
 import org.drools.scm.log.ScmLogEntryItem;
 import org.drools.scm.log.ScmLogEntry.Add;
 import org.drools.scm.log.ScmLogEntry.Copy;
 import org.drools.scm.log.ScmLogEntry.Delete;
 import org.drools.scm.log.ScmLogEntry.Update;
+import org.tmatesoft.svn.core.SVNNodeKind;
 
 public class JcrActionFactory
     implements
@@ -27,16 +35,19 @@ public class JcrActionFactory
     public JcrActionFactory(RulesRepository repo) {
         this.repository = repo;
     }
-    
+
     public ScmAction addDirectory(String root,
                                   String path) {
-        return null;
+        return new AddDirectory( root,
+                                 path );
     }
 
     public ScmAction addFile(String path,
                              String file,
                              byte[] content) {
-        return new AddFile(path, file, content);
+        return new AddFile( path,
+                            file,
+                            content );
     }
 
     public ScmAction copyDirectory(String path,
@@ -64,8 +75,10 @@ public class JcrActionFactory
 
     public void execute(ScmAction action,
                         String message) throws Exception {
+
         
-        action.applyAction( new RepositoryContext(repository, message));
+        action.applyAction( new RepositoryContext( repository,
+                                                   message ) );
     }
 
     public void getContent(String path,
@@ -79,11 +92,67 @@ public class JcrActionFactory
     }
 
     public List listEntries(String path) throws Exception {
-        return null;
+        // Build a list of packages which are for this path and all sub paths
+        List pkgs = new ArrayList();
+        String pathAsPackageName = toPackageName( path );
+        for ( Iterator it = this.repository.listPackages(); it.hasNext(); ) {
+            PackageItem pkgItem = (PackageItem) it.next();
+            if ( pkgItem.getName().startsWith( pathAsPackageName ) ) {
+                pkgs.add( it.next() );
+            }
+
+        }
+
+        // now sort so that it's directory listing order
+        Collections.sort( pkgs,
+                          new PackagePathComparator() );
+
+        // Now iterate each directory create an ScmEntry and then add an ScmEntry for each child
+        List entries = new ArrayList();
+        String parentPath = path;
+        for ( Iterator pkgIter = pkgs.iterator(); pkgIter.hasNext(); ) {
+            PackageItem item = (PackageItem) pkgIter.next();
+
+            DefaultScmEntry scmEntry = new DefaultScmEntry();
+            scmEntry.setPath( parentPath );
+            String name = toDirectoryName( item.getName() ).substring( parentPath.length() );
+            scmEntry.setName( name );
+            scmEntry.setAuthor( item.getPublisher() );
+            scmEntry.setDate( item.getLastModified().getTime() );
+            scmEntry.setRevision( new Long( item.getVersionNumber() ).longValue() );
+            scmEntry.setSize( 0 );
+            scmEntry.setType( ScmEntry.DIRECTORY );
+            entries.add( scmEntry );
+
+            String pkgNameAsPath = toDirectoryName( item.getName() );
+            for ( Iterator assetIter = item.getAssets(); assetIter.hasNext(); ) {
+                AssetItem assetItem = (AssetItem) assetIter.next();
+
+                scmEntry = new DefaultScmEntry();
+                scmEntry.setPath( pkgNameAsPath );
+                scmEntry.setName( toFileName( assetItem ) );
+                scmEntry.setAuthor( assetItem.getPublisher() );
+                scmEntry.setDate( assetItem.getLastModified().getTime() );
+                scmEntry.setRevision( new Long( assetItem.getVersionNumber() ).longValue() );
+                scmEntry.setSize( 0 );
+                scmEntry.setType( ScmEntry.FILE );
+                entries.add( scmEntry );
+            }
+        }
+
+        return entries;
     }
 
-    public void listEntries(String path,
-                            List list) throws Exception {
+    public static class PackagePathComparator
+        implements
+        Comparator {
+        public int compare(Object object0,
+                           Object object1) {
+            PackageItem item0 = (PackageItem) object0;
+            PackageItem item1 = (PackageItem) object1;
+
+            return item0.getName().compareTo( item1.getName() );
+        }
     }
 
     public ScmAction moveDirectory(String path,
@@ -104,7 +173,10 @@ public class JcrActionFactory
                                 String file,
                                 byte[] oldContent,
                                 byte[] newContent) {
-        return new UpdateFile(path, file, oldContent, newContent);
+        return new UpdateFile( path,
+                               file,
+                               oldContent,
+                               newContent );
     }
 
     public void syncToScmLog(List list,
@@ -234,57 +306,21 @@ public class JcrActionFactory
 
         public void applyAction(Object context) throws Exception {
             RepositoryContext ctx = (RepositoryContext) context;
-            
-            
-            PackageItem pkg = ctx.repository.loadPackage( toPackageName(path) );
-            
-            StringTokenizer tk = new StringTokenizer(file, ".");
-            
+
+            PackageItem pkg = ctx.repository.loadPackage( toPackageName( path ) );
+
+            StringTokenizer tk = new StringTokenizer( file,
+                                                      "." );
+
             String name = tk.nextToken();
             String format = tk.nextToken();
-            
-            AssetItem asset = pkg.addAsset( name, ctx.message );
-            asset.updateFormat( format );
-            asset.updateContent( new String(content) );
-            ctx.repository.save();
-            
-        }
-    }
 
-    /**
-     * This is used for passing in a context to perform the actions.
-     */
-    public static class RepositoryContext {
-        
-        public RepositoryContext(RulesRepository repository2, String message2) {
-            this.repository = repository2;
-            this.message = message2;
+            AssetItem asset = pkg.addAsset( name,
+                                            ctx.message );
+            asset.updateFormat( format );
+            asset.updateContent( new String( content ) );
         }
-        
-        public RulesRepository repository;
-        public String message;
     }
-    
-    private static String convertPath(String path, String token, String replace) {
-        if (path.indexOf( token ) == -1) return path;
-        StringTokenizer tk = new StringTokenizer(path, token);
-        StringBuffer buf = new StringBuffer();
-        while ( tk.hasMoreTokens() ) {
-            String el = tk.nextToken();
-            buf.append( el );
-            if (tk.hasMoreTokens()) buf.append( replace );            
-        }
-        return buf.toString();
-    }
-    
-    static String toDirectoryName(String packageName) {
-        return convertPath( packageName, ".", "/" );
-    }
-    
-    static String toPackageName(String directory) {
-        return convertPath( directory, "/", "." );
-    }
-    
 
     /**
      * root should be the last, previously created, parent folder. Each directory in the path
@@ -304,7 +340,17 @@ public class JcrActionFactory
         }
 
         public void applyAction(Object context) throws Exception {
+            RepositoryContext ctx = (RepositoryContext) context;
+            ctx.repository.createPackage( "testAddFiles.package",
+                                          "just for testing" );
 
+            PackageItem pkgItem = ctx.repository.loadPackage( toPackageName( this.root ) );
+            if ( pkgItem == null ) {
+                throw new RuntimeException( "The parent package '" + this.root + "' must exist" );
+            }
+
+            ctx.repository.createPackage( toPackageName( root + "/" + this.path ),
+                                          "initial package" );
         }
     }
 
@@ -329,9 +375,10 @@ public class JcrActionFactory
         public void applyAction(Object context) throws Exception {
             RepositoryContext ctx = (RepositoryContext) context;
             PackageItem pkg = ctx.repository.loadPackage( toPackageName( path ) );
-            String name = file.substring( 0, file.indexOf( '.' ) );
+            String name = file.substring( 0,
+                                          file.indexOf( '.' ) );
             AssetItem asset = pkg.loadAsset( name );
-            asset.updateContent( new String(newContent) );
+            asset.updateContent( new String( newContent ) );
             asset.checkin( ctx.message );
         }
     }
@@ -455,6 +502,50 @@ public class JcrActionFactory
         }
     }
 
+    /**
+     * This is used for passing in a context to perform the actions.
+     */
+    public static class RepositoryContext {
 
+        public RepositoryContext(RulesRepository repository2,
+                                 String message2) {
+            this.repository = repository2;
+            this.message = message2;
+        }
+
+        public RulesRepository repository;
+        public String          message;
+    }
+
+    private static String convertPath(String path,
+                                      String token,
+                                      String replace) {
+        if ( path.indexOf( token ) == -1 ) return path;
+        StringTokenizer tk = new StringTokenizer( path,
+                                                  token );
+        StringBuffer buf = new StringBuffer();
+        while ( tk.hasMoreTokens() ) {
+            String el = tk.nextToken();
+            buf.append( el );
+            if ( tk.hasMoreTokens() ) buf.append( replace );
+        }
+        return buf.toString();
+    }
+
+    static String toDirectoryName(String packageName) {
+        return convertPath( packageName,
+                            ".",
+                            "/" );
+    }
+
+    static String toPackageName(String directory) {
+        return convertPath( directory,
+                            "/",
+                            "." );
+    }
+
+    static String toFileName(AssetItem item) {
+        return item.getName() + "." + item.getFormat();
+    }
 
 }

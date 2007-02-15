@@ -1,6 +1,5 @@
 package org.drools.scm.svn;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +18,7 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 //import org.apache.log4j.Logger;
-import org.drools.scm.DefaultScmEntry;
+import org.drools.scm.CompositeScmAction;
 import org.drools.scm.ScmAction;
 import org.drools.scm.ScmActionFactory;
 import org.drools.scm.ScmEntry;
@@ -32,12 +31,8 @@ import org.drools.scm.svn.SvnActionFactory.DeleteFile;
 import org.drools.scm.svn.SvnActionFactory.MoveDirectory;
 import org.drools.scm.svn.SvnActionFactory.MoveFile;
 import org.drools.scm.svn.SvnActionFactory.UpdateFile;
-import org.tmatesoft.svn.core.SVNDirEntry;
-import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
-import org.tmatesoft.svn.core.SVNNodeKind;
-import org.tmatesoft.svn.core.io.SVNRepository;
 
 public class SvnActionFactoryTest extends TestCase {
 
@@ -70,17 +65,17 @@ public class SvnActionFactoryTest extends TestCase {
         delete( new File( url.getFile() ) );
     }
 
-    public void testCannotAddFolderWithNoParent() throws Exception {
+    public void testCannotAddDirectoryWithNoParent() throws Exception {
         ScmActionFactory svn = new SvnActionFactory( svnUrl,
                                                      "mrtrout",
                                                      "drools" );
 
-        CompositeSvnAction actions = new CompositeSvnAction();
+        CompositeScmAction actions = new CompositeScmAction();
 
         try {
-            ScmAction addFolder = new AddDirectory( "folder1",
+            ScmAction addDirectory = new AddDirectory( "folder1",
                                                     "folder1_1" );
-            actions.addScmAction( addFolder );
+            actions.addScmAction( addDirectory );
             svn.execute( actions,
                          "test message" );
             fail( "This should fail as 'folder1' has not yet been created" );
@@ -94,23 +89,23 @@ public class SvnActionFactoryTest extends TestCase {
                                                      "mrtrout",
                                                      "drools" );
 
-        CompositeSvnAction actions = new CompositeSvnAction();
+        CompositeScmAction actions = new CompositeScmAction();
 
         // Correctly add a new directory at root
-        actions = new CompositeSvnAction();
-        ScmAction addFolder = new AddDirectory( "",
+        actions = new CompositeScmAction();
+        ScmAction addDirectory = new AddDirectory( "",
                                                 "folder1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
 
         svn.execute( actions,
                      "test message" );
 
-        // Check we can't add duplicate folders
+        // Check we can't add duplicate Directorys
         try {
-            actions = new CompositeSvnAction();
-            addFolder = new AddDirectory( "",
+            actions = new CompositeScmAction();
+            addDirectory = new AddDirectory( "",
                                           "folder1" );
-            actions.addScmAction( addFolder );
+            actions.addScmAction( addDirectory );
             svn.execute( actions,
                          "test message" );
             fail( "This should fail as 'folder1' already exists" );
@@ -119,44 +114,44 @@ public class SvnActionFactoryTest extends TestCase {
         }
     }
 
-    public void testAddFolders() throws Exception {
+    public void testAddDirectories() throws Exception {
         ScmActionFactory svn = new SvnActionFactory( svnUrl,
                                                      "mrtrout",
                                                      "drools" );
 
-        CompositeSvnAction actions = new CompositeSvnAction();
+        CompositeScmAction actions = new CompositeScmAction();
 
-        // Correctly add a new folder at root
-        actions = new CompositeSvnAction();
-        ScmAction addFolder = new AddDirectory( "",
+        // Correctly add a new Directory at root
+        actions = new CompositeScmAction();
+        ScmAction addDirectory = new AddDirectory( "",
                                                 "folder1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
 
         svn.execute( actions,
                      "test message" );
 
-        // Now check various flat and deep folder creations
-        actions = new CompositeSvnAction();
+        // Now check various flat and deep Directory creations
+        actions = new CompositeScmAction();
 
-        addFolder = new AddDirectory( "folder1",
+        addDirectory = new AddDirectory( "folder1",
                                       "folder1_1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
 
-        addFolder = new AddDirectory( "folder1/folder1_1",
+        addDirectory = new AddDirectory( "folder1/folder1_1",
                                       "folder1_1_1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
 
-        addFolder = new AddDirectory( "folder1",
+        addDirectory = new AddDirectory( "folder1",
                                       "folder1_2" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
 
-        addFolder = new AddDirectory( "",
+        addDirectory = new AddDirectory( "",
                                       "folder2/folder2_1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
 
-        addFolder = new AddDirectory( "",
+        addDirectory = new AddDirectory( "",
                                       "folder3/folder3_1/folder3_1_1/folder3_1_1_1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
 
         svn.execute( actions,
                      "test message" );
@@ -170,7 +165,6 @@ public class SvnActionFactoryTest extends TestCase {
         assertTrue( list.contains( "folder1/folder1_2" ) );
         assertTrue( list.contains( "folder2/folder2_1" ) );
         assertTrue( list.contains( "folder3/folder3_1/folder3_1_1/folder3_1_1_1" ) );
-
     }
 
     public void testAddFiles() throws Exception {
@@ -178,20 +172,20 @@ public class SvnActionFactoryTest extends TestCase {
                                                      "mrtrout",
                                                      "drools" );
 
-        CompositeSvnAction actions = new CompositeSvnAction();
+        CompositeScmAction actions = new CompositeScmAction();
 
-        ScmAction addFolder = new AddDirectory( "",
+        ScmAction addDirectory = new AddDirectory( "",
                                                 "folder1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
 
         ScmAction addFile = new AddFile( "folder1",
                                          "file1.dat",
                                          new byte[]{1, 1, 1, 1} );
         actions.addScmAction( addFile );
 
-        addFolder = new AddDirectory( "folder1",
+        addDirectory = new AddDirectory( "folder1",
                                       "folder1_1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
 
         addFile = new AddFile( "folder1/folder1_1",
                                "file1_1.dat",
@@ -231,11 +225,11 @@ public class SvnActionFactoryTest extends TestCase {
                                                      "mrtrout",
                                                      "drools" );
 
-        CompositeSvnAction actions = new CompositeSvnAction();
+        CompositeScmAction actions = new CompositeScmAction();
 
-        ScmAction addFolder = new AddDirectory( "",
+        ScmAction addDirectory = new AddDirectory( "",
                                                 "folder1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
 
         byte[] oldContent = new byte[]{1, 1, 1, 1};
         byte[] newContent = new byte[]{1, 0, 1, 0};
@@ -258,7 +252,7 @@ public class SvnActionFactoryTest extends TestCase {
                                    baos.toByteArray() ) );
 
         // Update the existing file
-        actions = new CompositeSvnAction();
+        actions = new CompositeScmAction();
         ScmAction updateFile = new UpdateFile( "folder1",
                                                "file1.dat",
                                                oldContent,
@@ -287,11 +281,11 @@ public class SvnActionFactoryTest extends TestCase {
                                                      "mrtrout",
                                                      "drools" );
 
-        CompositeSvnAction actions = new CompositeSvnAction();
+        CompositeScmAction actions = new CompositeScmAction();
 
-        ScmAction addFolder = new AddDirectory( "",
+        ScmAction addDirectory = new AddDirectory( "",
                                                 "folder1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
         byte[] content = new byte[]{1, 1, 1, 1};
         ScmAction addFile = new AddFile( "folder1",
                                          "file1.dat",
@@ -315,10 +309,10 @@ public class SvnActionFactoryTest extends TestCase {
         assertFalse( list.contains( "folder2/file2.dat" ) );
 
         // Now copy the file
-        actions = new CompositeSvnAction();
-        addFolder = new AddDirectory( "",
+        actions = new CompositeScmAction();
+        addDirectory = new AddDirectory( "",
                                       "folder2" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
         ScmAction copyFile = new CopyFile( "folder1",
                                            "file1.dat",
                                            "folder2",
@@ -347,20 +341,20 @@ public class SvnActionFactoryTest extends TestCase {
                                                      "mrtrout",
                                                      "drools" );
 
-        CompositeSvnAction actions = new CompositeSvnAction();
+        CompositeScmAction actions = new CompositeScmAction();
 
-        ScmAction addFolder = new AddDirectory( "",
+        ScmAction addDirectory = new AddDirectory( "",
                                                 "folder1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
         byte[] content1 = new byte[]{1, 1, 1, 1};
         ScmAction addFile = new AddFile( "folder1",
                                          "file1.dat",
                                          content1 );
         actions.addScmAction( addFile );
 
-        addFolder = new AddDirectory( "folder1",
+        addDirectory = new AddDirectory( "folder1",
                                       "folder1_1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
         byte[] content2 = new byte[]{1, 0, 0, 1};
         addFile = new AddFile( "folder1/folder1_1",
                                "file1.dat",
@@ -390,10 +384,10 @@ public class SvnActionFactoryTest extends TestCase {
         assertFalse( list.contains( "folder2/folder1/file1.dat" ) );
 
         // Now copy the directory
-        actions = new CompositeSvnAction();
-        addFolder = new AddDirectory( "",
+        actions = new CompositeScmAction();
+        addDirectory = new AddDirectory( "",
                                       "folder2" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
         ScmAction copyDirectory = new CopyDirectory( "folder1",
                                                      "folder2/folder1",
                                                      svn.getLatestRevision() );
@@ -441,11 +435,11 @@ public class SvnActionFactoryTest extends TestCase {
                                                      "mrtrout",
                                                      "drools" );
 
-        CompositeSvnAction actions = new CompositeSvnAction();
+        CompositeScmAction actions = new CompositeScmAction();
 
-        ScmAction addFolder = new AddDirectory( "",
+        ScmAction addDirectory = new AddDirectory( "",
                                                 "folder1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
         byte[] content = new byte[]{1, 1, 1, 1};
         ScmAction addFile = new AddFile( "folder1",
                                          "file1.dat",
@@ -468,10 +462,10 @@ public class SvnActionFactoryTest extends TestCase {
         assertFalse( list.contains( "folder2/file2.dat" ) );
 
         // No do the file move
-        actions = new CompositeSvnAction();
-        addFolder = new AddDirectory( "",
+        actions = new CompositeScmAction();
+        addDirectory = new AddDirectory( "",
                                       "folder2" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
         MoveFile moveFile = new MoveFile( "folder1",
                                           "file1.dat",
                                           "folder2",
@@ -500,11 +494,11 @@ public class SvnActionFactoryTest extends TestCase {
                                                      "mrtrout",
                                                      "drools" );
 
-        CompositeSvnAction actions = new CompositeSvnAction();
+        CompositeScmAction actions = new CompositeScmAction();
 
-        ScmAction addFolder = new AddDirectory( "",
+        ScmAction addDirectory = new AddDirectory( "",
                                                 "folder1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
         byte[] content = new byte[]{1, 1, 1, 1};
         ScmAction addFile = new AddFile( "folder1",
                                          "file1.dat",
@@ -522,7 +516,7 @@ public class SvnActionFactoryTest extends TestCase {
         assertTrue( Arrays.equals( content,
                                    baos.toByteArray() ) );
 
-        actions = new CompositeSvnAction();
+        actions = new CompositeScmAction();
         MoveDirectory moveDirectory = new MoveDirectory( "folder1",
                                                          "folder2",
                                                          svn.getLatestRevision() );
@@ -551,11 +545,11 @@ public class SvnActionFactoryTest extends TestCase {
                                                      "mrtrout",
                                                      "drools" );
 
-        CompositeSvnAction actions = new CompositeSvnAction();
+        CompositeScmAction actions = new CompositeScmAction();
 
-        ScmAction addFolder = new AddDirectory( "",
+        ScmAction addDirectory = new AddDirectory( "",
                                                 "folder1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
         byte[] content = new byte[]{1, 1, 1, 1};
         ScmAction addFile = new AddFile( "folder1",
                                          "file1.dat",
@@ -568,7 +562,7 @@ public class SvnActionFactoryTest extends TestCase {
         assertTrue( list.contains( "folder1/file1.dat" ) );
 
         // Now do the file delete
-        actions = new CompositeSvnAction();
+        actions = new CompositeScmAction();
         ScmAction deleteFile = new DeleteFile( "folder1",
                                                "file1.dat" );
         actions.addScmAction( deleteFile );
@@ -584,19 +578,19 @@ public class SvnActionFactoryTest extends TestCase {
                                                      "mrtrout",
                                                      "drools" );
 
-        CompositeSvnAction actions = new CompositeSvnAction();
+        CompositeScmAction actions = new CompositeScmAction();
 
-        ScmAction addFolder = new AddDirectory( "",
+        ScmAction addDirectory = new AddDirectory( "",
                                                 "folder1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
         byte[] content = new byte[]{1, 1, 1, 1};
         ScmAction addFile = new AddFile( "folder1",
                                          "file1.dat",
                                          content );
         actions.addScmAction( addFile );
-        addFolder = new AddDirectory( "",
+        addDirectory = new AddDirectory( "",
                                       "folder2" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
         svn.execute( actions,
                      "test message" );
         List list = convertToStringList( svn.listEntries( "" ) );
@@ -605,7 +599,7 @@ public class SvnActionFactoryTest extends TestCase {
         assertTrue( list.contains( "folder2" ) );
 
         // now do the directory delete        
-        actions = new CompositeSvnAction();
+        actions = new CompositeScmAction();
         ScmAction deleteDirectory = new DeleteDirectory( "folder1" );
         actions.addScmAction( deleteDirectory );
         svn.execute( actions,
@@ -621,11 +615,11 @@ public class SvnActionFactoryTest extends TestCase {
                                                      "mrtrout",
                                                      "drools" );
 
-        CompositeSvnAction actions = new CompositeSvnAction();
+        CompositeScmAction actions = new CompositeScmAction();
 
-        ScmAction addFolder = new AddDirectory( "",
+        ScmAction addDirectory = new AddDirectory( "",
                                                 "folder1" );
-        actions.addScmAction( addFolder );
+        actions.addScmAction( addDirectory );
         byte[] content = new byte[]{1, 1, 1, 1};
         ScmAction addFile = new AddFile( "folder1",
                                          "file1.dat",
@@ -634,7 +628,7 @@ public class SvnActionFactoryTest extends TestCase {
         svn.execute( actions,
                      "test message" );
 
-        actions = new CompositeSvnAction();
+        actions = new CompositeScmAction();
         MoveDirectory moveDirectory = new MoveDirectory( "folder1",
                                                          "folder2",
                                                          svn.getLatestRevision() );
