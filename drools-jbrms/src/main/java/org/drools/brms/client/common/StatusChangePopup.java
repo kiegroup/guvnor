@@ -42,6 +42,7 @@ public class StatusChangePopup extends DialogBox {
         RepositoryServiceFactory.getService().listStates( new GenericCallback() {
             public void onSuccess(Object data) {
                 String[] list = (String[]) data;
+                box.addItem( "-- Choose one --" );
                 for ( int i = 0; i < list.length; i++ ) {
                     box.addItem( list[i] );
                 }
