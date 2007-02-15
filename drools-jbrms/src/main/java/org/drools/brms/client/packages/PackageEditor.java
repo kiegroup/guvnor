@@ -50,8 +50,8 @@ public class PackageEditor extends FormStyleLayout {
         addAttribute( "Header:", header() );
         addAttribute( "External URI:", externalURI() );
         addRow(new HTML("<hr/>"));
-        addAttribute( "Last modified on:", new Label(this.conf.lastModified.toLocaleString())  );
-        addAttribute( "Last modified by:", new Label(this.conf.lasContributor));
+        addAttribute( "Last modified:", new Label(this.conf.lastModified.toLocaleString())  );
+        addAttribute( "Last modified:", new Label(this.conf.lasContributor));
         addRow(new HTML("<hr/>"));
         
         status = new HTML();
@@ -201,9 +201,30 @@ public class PackageEditor extends FormStyleLayout {
         newGlobal.setTitle( "Add a new global variable declaration." );
         vert.add( newGlobal );
         
+        Image newFactTemplate = new Image("images/fact_template.gif");
+        newFactTemplate.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                final FactTemplateWizard wiz = new FactTemplateWizard();
+                wiz.setPopupPosition( w.getAbsoluteLeft() - 400, w.getAbsoluteTop() - 250 );
+                wiz.setOKClick( new Command() {
+                    public void execute() {
+                        area.setText( area.getText() + "\n" +
+                                      wiz.getTemplateText() );
+                        conf.header = area.getText();
+                        
+                    }
+                } );
+                wiz.show();
+            }
+        });
+        newFactTemplate.setTitle( "Add a new fact template." );
+        vert.add( newFactTemplate );
+        
+        
         panel.add( vert );
         return panel;
     }
+
 
     private HorizontalPanel expandableTextArea(final TextArea area) {
         HorizontalPanel panel = new HorizontalPanel();

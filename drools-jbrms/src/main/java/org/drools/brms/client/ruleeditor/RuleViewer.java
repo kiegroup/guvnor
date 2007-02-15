@@ -80,7 +80,7 @@ public class RuleViewer extends Composite {
         formatter.setVerticalAlignment( 0, 0, HasVerticalAlignment.ALIGN_TOP );
         formatter.setWidth( 0,
                             0,
-                            "40%" );
+                            "30%" );
 
         //and now the action widgets (checkin/close etc).
         ActionToolbar toolbar = new ActionToolbar( asset,

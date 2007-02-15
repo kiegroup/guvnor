@@ -104,6 +104,7 @@ public class DSLRuleEditor extends Composite {
         layout.setWidth( "100%" );
         layout.setHeight( "100%" );
         
+        
         initWidget( layout );
     }
     

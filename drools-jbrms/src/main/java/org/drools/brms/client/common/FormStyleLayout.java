@@ -2,6 +2,7 @@ package org.drools.brms.client.common;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
@@ -48,7 +49,7 @@ public class FormStyleLayout extends Composite {
      */
     public void addAttribute(String lbl,
                      Widget editor) {
-        Label label = new Label(lbl);
+        HTML label = new HTML("<b>" + lbl + "</b>");
         layout.setWidget( numInLayout, 0, label );
         formatter.setAlignment( numInLayout, 0, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_TOP );
         layout.setWidget( numInLayout, 1, editor );
