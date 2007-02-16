@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeListener;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
@@ -69,17 +70,32 @@ public class PackageExplorerWidget extends Composite {
         
         exTree.addTreeListener( treeListener );
         
+        VerticalPanel left = new VerticalPanel();
+        left.add( exTree );
+        
+        FlexTable buttons = new FlexTable();
+        buttons.getCellFormatter().setStyleName( 0, 0, "new-asset-Icons" );
+        buttons.getCellFormatter().setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
+
+        buttons.setWidget( 0, 0, getNewWizardButtons() );
+        left.add( buttons );
+        buttons.setWidth( "100%" );
+        
+        layout.setWidget( 0, 0, left );
+        FlexCellFormatter formatter = layout.getFlexCellFormatter();
+        formatter.setVerticalAlignment( 0, 0, HasVerticalAlignment.ALIGN_TOP );
+        layout.getFlexCellFormatter().setRowSpan( 0, 1, 2 );
+        layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP );
+
+        
         refreshTreeView( );
         
 
         layout.setWidget( 0, 1, new HTML("<i>Please choose a package to edit, explore, or create a new package.</i>") );
-        //layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         
-        layout.setWidget( 1, 0, getNewWizardButtons() );
         layout.getFlexCellFormatter().setWidth( 0, 0, "20%" );
         
-        layout.getCellFormatter().setStyleName( 1, 0, "new-asset-Icons" );
-        layout.getCellFormatter().setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
+        layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
         
         listView = new AssetItemListViewer(this.editEvent);
         
@@ -169,7 +185,7 @@ public class PackageExplorerWidget extends Composite {
 
     private void refreshTreeView() {
         
-        layout.setWidget( 0, 0, new Label("Please wait...") );
+        
         
         RepositoryServiceFactory.getService().listRulePackages( new GenericCallback() {
 
@@ -180,12 +196,6 @@ public class PackageExplorerWidget extends Composite {
                 for ( int i = 0; i < packages.length; i++ ) {
                     addPackage( packages[i] );
                 }
-                
-                layout.setWidget( 0, 0, exTree );
-                FlexCellFormatter formatter = layout.getFlexCellFormatter();
-                formatter.setVerticalAlignment( 0, 0, HasVerticalAlignment.ALIGN_TOP );
-                layout.getFlexCellFormatter().setRowSpan( 0, 1, 2 );
-                layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP );
                 
             }
             
@@ -278,8 +288,10 @@ public class PackageExplorerWidget extends Composite {
                 final TableDataResult table = (TableDataResult) data;                
                 listView.loadTableData( table );      
                 listView.setWidth( "100%" );
-                listView.setHeight( "100%" );
+                //listView.setHeight( "100%" );
                 layout.setWidget( 0, 1, listView );
+                layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
+                
             }
         };
         
