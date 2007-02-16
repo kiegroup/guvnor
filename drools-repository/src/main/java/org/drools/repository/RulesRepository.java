@@ -404,6 +404,9 @@ public class RulesRepository {
         }
     }    
     
+    /**
+     * This returns true if the repository contains the specified package name. 
+     */
     public boolean containsPackage(String name) {
         Node folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
         try {
@@ -535,13 +538,11 @@ public class RulesRepository {
     
 
     /**
-     * Adds a rule package node in the repository. This node has a property called 
-     * drools:rule_reference that is a multi-value reference property.  It will hold an array of 
-     * references to rule nodes that are subsequently added.
+     * Adds a package to the repository.
      *   
      * @param name what to name the node added
      * @param description what description to use for the node
-     * @return a RulePackageItem, encapsulating the created node
+     * @return a PackageItem, encapsulating the created node
      * @throws RulesRepositoryException
      */
     public PackageItem createPackage(String name, String description) throws RulesRepositoryException {

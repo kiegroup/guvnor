@@ -101,7 +101,9 @@ public class PackageItem extends VersionableItem {
 
     /**
      * This adds a rule to the current physical package (you can move it later).
-     * With the given category
+     * With the given category.
+     * 
+     * This will NOT check the asset in, just create the basic record. 
      * @param assetName The name of the asset (the file name minus the extension)
      * @param description A description of the asset.
      * @param initialCategory The initial category the asset is placed in (can belong to multiple ones later).
