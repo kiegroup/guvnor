@@ -36,6 +36,7 @@ public interface RepositoryService extends RemoteService {
     /**
      * Creates a brand new rule with the initial category.
      * Return the UUID of the item created.
+     * This will not check in the rule, but just leave it as saved in the repo.
      */
     public String createNewRule(String ruleName, String description, String initialCategory, String initialPackage, String format) throws SerializableException;
     
@@ -72,7 +73,7 @@ public interface RepositoryService extends RemoteService {
     public void restoreVersion(String versionUUID, String assetUUID, String comment);
     
     /**
-     * This creates a package of the given name.
+     * This creates a package of the given name, and checks it in.
      * @return UUID of the created item.
      */
     public String createPackage(String name, String description) throws SerializableException;
