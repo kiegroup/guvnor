@@ -129,15 +129,18 @@ public class JcrActionFactory
             for ( Iterator assetIter = item.getAssets(); assetIter.hasNext(); ) {
                 AssetItem assetItem = (AssetItem) assetIter.next();
 
-                scmEntry = new DefaultScmEntry();
-                scmEntry.setPath( pkgNameAsPath );
-                scmEntry.setName( toFileName( assetItem ) );
-                scmEntry.setAuthor( assetItem.getPublisher() );
-                scmEntry.setDate( assetItem.getLastModified().getTime() );
-                scmEntry.setRevision( new Long( assetItem.getVersionNumber() ).longValue() );
-                scmEntry.setSize( 0 );
-                scmEntry.setType( ScmEntry.FILE );
-                entries.add( scmEntry );
+                if (!assetItem.getVersionNumber().equals( "" )) {
+                
+                    scmEntry = new DefaultScmEntry();
+                    scmEntry.setPath( pkgNameAsPath );
+                    scmEntry.setName( toFileName( assetItem ) );
+                    scmEntry.setAuthor( assetItem.getPublisher() );
+                    scmEntry.setDate( assetItem.getLastModified().getTime() );
+                    scmEntry.setRevision( new Long( assetItem.getVersionNumber() ).longValue() );
+                    scmEntry.setSize( 0 );
+                    scmEntry.setType( ScmEntry.FILE );
+                    entries.add( scmEntry );
+                }
             }
         }
 
@@ -352,7 +355,7 @@ public class JcrActionFactory
 
             PackageItem item = ctx.repository.createPackage( toPackageName( root + "/" + this.path ),
                                                              "initial package" );
-            item.checkin( "save" );
+            //item.checkin( "save" );
         }
     }
 

@@ -34,7 +34,7 @@ public class JcrActionFactoryTest extends TestCase {
                       fact.toDirectoryName( "foo" ) );
     }
 
-    public void FIXME_testAddDirectories() throws Exception {
+    public void testAddDirectories() throws Exception {
         ScmActionFactory svn = new JcrActionFactory( RepositorySessionUtil.getRepository() );
 
         CompositeScmAction actions = new CompositeScmAction();

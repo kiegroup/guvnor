@@ -564,10 +564,10 @@ public class RulesRepository {
             Calendar lastModified = Calendar.getInstance();
             rulePackageNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
             
-            this.session.save();
+            PackageItem item = new PackageItem(this, rulePackageNode);
+            item.checkin( "Initial" );            
             
-            
-            return new PackageItem(this, rulePackageNode);
+            return item;
         } catch (ItemExistsException e) {
             throw new RulesRepositoryException("A package name must be unique.", e);
         } catch (RepositoryException e) {
@@ -748,8 +748,10 @@ public class RulesRepository {
             item.checkout();
             item.node.setProperty( AssetItem.PACKAGE_NAME_PROPERTY, newPackage );
             
-            item.checkin( explanation );            
+            item.checkin( explanation );   
+            sourcePkg.checkout();
             sourcePkg.checkin( explanation );
+            destPkg.checkout();
             destPkg.checkin( explanation );
             
         } catch ( RepositoryException e ) {
