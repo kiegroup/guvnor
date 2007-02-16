@@ -78,7 +78,10 @@ public class AssetItemTest extends TestCase {
             
             assertEquals("new rule content", ruleItem1.getContent());
             
+            assertTrue(ruleItem1.getNode().getSession().hasPendingChanges());
+            
             ruleItem1.checkin( "yeah !" );
+            assertFalse(ruleItem1.getNode().getSession().hasPendingChanges());
             
             assertEquals("yeah !", ruleItem1.getCheckinComment());
             
