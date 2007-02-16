@@ -350,8 +350,9 @@ public class JcrActionFactory
                 }
             }
 
-            ctx.repository.createPackage( toPackageName( root + "/" + this.path ),
-                                          "initial package" );
+            PackageItem item = ctx.repository.createPackage( toPackageName( root + "/" + this.path ),
+                                                             "initial package" );
+            item.checkin( "save" );
         }
     }
 
