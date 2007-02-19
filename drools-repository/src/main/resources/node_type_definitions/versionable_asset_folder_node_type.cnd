@@ -13,7 +13,7 @@
 [drools:versionableAssetFolder]
 
 // Supertypes
-> 'nt:hierarchyNode','mix:versionable'
+> 'nt:folder','mix:versionable'
 
 // what it contains
 + * (drools:versionableNodeType)

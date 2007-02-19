@@ -11,7 +11,7 @@
 [drools:rulepackageNodeType]
 
 // Supertypes
-> 'drools:versionableNodeType'
+> 'drools:versionableNodeType', 'nt:folder'
 
 // Multiple assets are children of one physical package definition
 // these folders contain the actual assets
