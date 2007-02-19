@@ -326,8 +326,8 @@ a:visited {
 }
 
 .loading-Popup {
-  background-color: #FDFCDC;
-  border: 1px solid #B8B8B8;
+  //background-color: #FDFCDC;
+  border: 2px solid #B8B8B8;
   padding: 4px;
 }
 

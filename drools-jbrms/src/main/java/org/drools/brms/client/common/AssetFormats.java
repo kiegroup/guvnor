@@ -19,8 +19,9 @@ public class AssetFormats {
     public static final String FUNCTION = "function";
 
     /** For "model" assets */
-    public static final String MODEL = "model";
+    public static final String MODEL = "jar";
 
+    /** For DSL language grammars */
     public static final String DSL = "dsl";
 
     /** Vanilla DRL "file" */

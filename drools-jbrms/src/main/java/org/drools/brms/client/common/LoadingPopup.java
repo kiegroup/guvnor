@@ -25,6 +25,7 @@ public class LoadingPopup extends PopupPanel {
         super(true);
         panel.add( errorMessage );
         panel.add( ok );
+        panel.add( new Image("images/searching.gif") );
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget arg0) {                
                 hide();

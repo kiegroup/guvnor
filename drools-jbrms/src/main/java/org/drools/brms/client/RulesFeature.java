@@ -191,6 +191,8 @@ public class RulesFeature extends JBRMSFeature {
                   icon = "dsl.gif";
               } else if (asset.metaData.format.equals( AssetFormats.FUNCTION )) {
                   icon = "function_assets.gif";
+              } else if (asset.metaData.format.equals( AssetFormats.MODEL )) {
+                  icon = "model_asset.gif";
               }
               tab.add( view, "<img src='images/" + icon + "'>" + displayName, true );
               

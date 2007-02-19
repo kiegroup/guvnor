@@ -117,6 +117,26 @@ public class PackageExplorerWidget extends Composite {
             }            
         });
         
+        Image uploadModel = new Image("images/model_asset.gif");
+        uploadModel.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                int left = 70;
+                int top = 100;
+                  
+                NewAssetWizard pop = new NewAssetWizard(new EditItemEvent() {
+                    public void open(String key) {                  
+                        editEvent.open( key );                      
+                    }
+                }, false, AssetFormats.MODEL, "Create a new model archive");
+                pop.setPopupPosition( left, top );
+                
+                pop.show();  
+            }            
+        });
+        uploadModel.setTitle( "This creates a new model archive - models contain classes/types that rules use." );
+        
+        newWizards.add( uploadModel );
+        
         Image newRule = new Image("images/new_rule.gif");
         newRule.setTitle( "Create new rule" );
 
@@ -183,9 +203,14 @@ public class PackageExplorerWidget extends Composite {
     }
 
 
+
+
+
+
+
     private void refreshTreeView() {
         
-        
+        LoadingPopup.showMessage( "Loading list of packages ..." );
         
         RepositoryServiceFactory.getService().listRulePackages( new GenericCallback() {
 
@@ -197,6 +222,7 @@ public class PackageExplorerWidget extends Composite {
                     addPackage( packages[i] );
                 }
                 
+                LoadingPopup.close();
             }
             
         });

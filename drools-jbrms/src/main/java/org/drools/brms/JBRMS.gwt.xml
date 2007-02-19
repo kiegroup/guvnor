@@ -8,5 +8,6 @@
 	<entry-point class='org.drools.brms.client.JBRMSEntryPoint'/>
   
 	<servlet path="/jbrmsService" class="org.drools.brms.server.JBRMSServiceServlet" />  
-  
+    <servlet path="/upload" class="org.drools.brms.server.FileUploadServlet"/>
+    
 </module>

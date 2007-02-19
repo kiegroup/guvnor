@@ -4,6 +4,7 @@ import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.brms.client.modeldriven.ui.RuleModeller;
+import org.drools.brms.client.packages.ModelArchiveFileWidget;
 import org.drools.brms.client.rpc.DSLRuleData;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleModelData;
@@ -27,14 +28,17 @@ public class EditorLauncher {
     /**
      * This will return the appropriate viewer for the asset.
      */
-    public static Widget getEditorViewer(RuleAsset asset) {
+    public static Widget getEditorViewer(RuleAsset asset, RuleViewer viewer) {
         //depending on the format, load the appropriate editor
         if ( asset.metaData.format.equals( AssetFormats.BUSINESS_RULE ) ) {
             return new RuleModeller( getSuggestionCompletionEngine(asset), getRuleModel(asset) );
         } else if (asset.metaData.format.equals( AssetFormats.DSL_TEMPLATE_RULE )){
             DSLRuleData data = (DSLRuleData) asset.content;            
             return new DSLRuleEditor( data.text, data.lhsSuggestions, data.rhsSuggestions );
+        } else if (asset.metaData.format.equals( AssetFormats.MODEL ) ) {
+            return new ModelArchiveFileWidget(asset, viewer);
         } else {
+
             return new DefaultRuleContentWidget( asset );
         }
 

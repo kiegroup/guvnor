@@ -9,10 +9,20 @@
 		<servlet-name>JBRMSServiceServlet</servlet-name>
 		<servlet-class>org.drools.brms.server.JBRMSServiceServlet</servlet-class>
 	</servlet>  
+	
+	<servlet>
+		<servlet-name>FileUploadServlet</servlet-name>
+		<servlet-class>org.drools.brms.server.FileUploadServlet</servlet-class>
+	</servlet>  
   
 	<servlet-mapping>
 		<servlet-name>JBRMSServiceServlet</servlet-name>
 		<url-pattern>/org.drools.brms.JBRMS/jbrmsService</url-pattern>
+	</servlet-mapping>  
+	
+	<servlet-mapping>
+		<servlet-name>FileUploadServlet</servlet-name>
+		<url-pattern>/org.drools.brms.JBRMS/upload</url-pattern>
 	</servlet-mapping>  
   
 </web-app>
