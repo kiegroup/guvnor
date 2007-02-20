@@ -9,6 +9,8 @@ import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -95,13 +97,10 @@ public class PackageEditor extends FormStyleLayout {
     private Widget saveChangeWidget() {
         
         Button save = new Button("Save configuration changes");
+        
         save.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                doSaveAction();
-                FormStylePopup pop = new FormStylePopup("images/asset_version.png", "Change saved successfully...");
-                pop.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
-                
-                pop.show();
+                doSaveAction();                
             }
         } );
         
@@ -113,10 +112,21 @@ public class PackageEditor extends FormStyleLayout {
         RepositoryServiceFactory.getService().savePackage( this.conf, new GenericCallback() {
             public void onSuccess(Object data) {
                 reload();
+                LoadingPopup.showMessage( "Package configuration updated successfully" );
+                Timer t = new Timer() {
+                    public void run() {
+                        LoadingPopup.close();
+                    }
+                    
+                };
+                t.schedule( 2000 );
+                
             }            
         });
         
     }
+
+
 
     /**
      * Will refresh all the data.

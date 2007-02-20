@@ -2,12 +2,10 @@ package org.drools.brms.client.ruleeditor;
 
 import org.drools.brms.client.rpc.RuleContentText;
 
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -57,13 +55,18 @@ public class DSLRuleEditor extends Composite {
         });
 
 
+
         text.addKeyboardListener( new KeyboardListenerAdapter() {
+
+            
+            
 
 
 
             public void onKeyDown(Widget arg0,
                                    char arg1,
                                    int arg2) {
+                
                 if (arg1 == ' ' && arg2 == MODIFIER_CTRL) {
                     showInTextOptions( ); 
                 } 
@@ -165,7 +168,7 @@ public class DSLRuleEditor extends Composite {
             FlexTable buttons = new FlexTable();
             
             
-            Button ok = new Button("OK");
+            Image ok = new Image("images/tick.gif");
             ok.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     self.insertText( list.getItemText( list.getSelectedIndex() ) );
@@ -177,7 +180,7 @@ public class DSLRuleEditor extends Composite {
             
             
             
-            Button close = new Button("close");
+            Image close = new Image("images/close.gif");
             close.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     hide();
