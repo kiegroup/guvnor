@@ -63,14 +63,14 @@ public class ModelAttachmentFileWidget extends Composite {
 
         
         layout.addAttribute( "Upload new version:", form );
-        Button dl = new Button("download current version");
+        Button dl = new Button("Download");
         dl.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 Window.open( GWT.getModuleBaseURL() + "fileManager?" +  FORM_FIELD_UUID + "=" + asset.uuid, 
                              "downloading...", "" );
             }            
         });
-        layout.addAttribute( "Download:", dl );
+        layout.addAttribute( "Download current version:", dl );
         
         busy = new HorizontalPanel();
         busy.setVisible( false );
