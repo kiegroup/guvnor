@@ -4,7 +4,7 @@ import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.brms.client.modeldriven.ui.RuleModeller;
-import org.drools.brms.client.packages.ModelArchiveFileWidget;
+import org.drools.brms.client.packages.ModelAttachmentFileWidget;
 import org.drools.brms.client.rpc.DSLRuleData;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleModelData;
@@ -36,7 +36,7 @@ public class EditorLauncher {
             DSLRuleData data = (DSLRuleData) asset.content;            
             return new DSLRuleEditor( data.text, data.lhsSuggestions, data.rhsSuggestions );
         } else if (asset.metaData.format.equals( AssetFormats.MODEL ) ) {
-            return new ModelArchiveFileWidget(asset, viewer);
+            return new ModelAttachmentFileWidget(asset, viewer);
         } else {
 
             return new DefaultRuleContentWidget( asset );

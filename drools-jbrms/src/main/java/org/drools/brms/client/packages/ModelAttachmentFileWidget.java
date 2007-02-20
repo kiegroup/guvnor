@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.FormHandler;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormSubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormSubmitEvent;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -29,7 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Neale
  */
-public class ModelArchiveFileWidget extends Composite {
+public class ModelAttachmentFileWidget extends Composite {
 
 
 
@@ -38,10 +39,10 @@ public class ModelArchiveFileWidget extends Composite {
     private Button ok;
     private HorizontalPanel busy;
 
-    public ModelArchiveFileWidget(RuleAsset asset, final RuleViewer viewer) {
+    public ModelAttachmentFileWidget(final RuleAsset asset, final RuleViewer viewer) {
         
         form = new FormPanel();
-        form.setAction( GWT.getModuleBaseURL() + "upload"   );
+        form.setAction( GWT.getModuleBaseURL() + "fileManager"   );
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
         
@@ -62,11 +63,21 @@ public class ModelArchiveFileWidget extends Composite {
 
         
         layout.addAttribute( "Upload new version:", form );
+        Button dl = new Button("download current version");
+        dl.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                Window.open( GWT.getModuleBaseURL() + "fileManager?" +  FORM_FIELD_UUID + "=" + asset.uuid, 
+                             "downloading...", "" );
+            }            
+        });
+        layout.addAttribute( "Download:", dl );
         
         busy = new HorizontalPanel();
         busy.setVisible( false );
         busy.add( new Label("Uploading file...") );
         busy.add( new Image("images/spinner.gif") );
+        
+        
         
         layout.addRow( busy );
         ok.addClickListener( new ClickListener() {

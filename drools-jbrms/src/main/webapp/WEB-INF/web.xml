@@ -22,7 +22,7 @@
 	
 	<servlet-mapping>
 		<servlet-name>FileUploadServlet</servlet-name>
-		<url-pattern>/org.drools.brms.JBRMS/upload</url-pattern>
+		<url-pattern>/org.drools.brms.JBRMS/fileManager</url-pattern>
 	</servlet-mapping>  
   
 </web-app>

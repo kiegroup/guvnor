@@ -1,6 +1,7 @@
 package org.drools.brms.server;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.drools.brms.client.packages.ModelArchiveFileWidget;
+import org.drools.brms.client.packages.ModelAttachmentFileWidget;
 import org.drools.brms.server.util.RepositoryManager;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
@@ -22,6 +23,8 @@ import org.drools.repository.RulesRepositoryException;
 
 /**
  * Files can be uploaded as part of the repo (eg model classes, spreadsheets).
+ * This servlet supports the uploading and downloading of files 
+ * in assets in the repository.
  * 
  * @author Michael Neale
  */
@@ -29,6 +32,9 @@ public class FileUploadServlet extends HttpServlet {
 
     private static final long serialVersionUID = 3909768997932550498L;
 
+    /**
+     * The post accepts files for attachment to an asset.
+     */
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException,
                                                        IOException {
@@ -41,13 +47,46 @@ public class FileUploadServlet extends HttpServlet {
         }
         
         
-        RepositoryManager repoMan = new RepositoryManager();
-        RulesRepository repo = repoMan.getRepositoryFrom( request.getSession() );
+        RulesRepository repo = getRepository( request );
         attachFile( uploadItem, repo );
         
         uploadItem.file.getInputStream().close();
         
         response.getWriter().write( "OK" );
+    }
+    
+    /** 
+     * The get returns files based on UUID.
+     * you can do a request like /fileManager?uuid=..... 
+     * (need to know the UUID) and it will return it as a file.
+     */
+    protected void doGet(HttpServletRequest req,
+                         HttpServletResponse res) throws ServletException,
+                                                  IOException {
+        
+        String uuid = (String) req.getParameter( ModelAttachmentFileWidget.FORM_FIELD_UUID );
+        if (uuid == null) {
+            res.sendError( HttpServletResponse.SC_BAD_REQUEST );
+            return;
+        }
+        AssetItem item = getRepository( req ).loadAssetByUUID( uuid );
+        
+        res.setContentType("application/x-download");
+        res.setHeader("Content-Disposition", "attachment; filename=" + item.getBinaryContentAttachmentFileName());
+        
+        byte[] data = item.getBinaryContentAsBytes();
+        res.setContentLength( data.length );
+        
+        OutputStream out = res.getOutputStream();
+        out.write( data );        
+        out.flush();
+        
+    }    
+
+    private RulesRepository getRepository(HttpServletRequest request) {
+        RepositoryManager repoMan = new RepositoryManager();
+        RulesRepository repo = repoMan.getRepositoryFrom( request.getSession() );
+        return repo;
     }
 
     void attachFile(FormData uploadItem,
@@ -71,7 +110,7 @@ public class FileUploadServlet extends HttpServlet {
             Iterator it = items.iterator();
             while ( it.hasNext() ) {
                 FileItem item = (FileItem) it.next();
-                if (item.isFormField() && item.getFieldName().equals( ModelArchiveFileWidget.FORM_FIELD_UUID )) {
+                if (item.isFormField() && item.getFieldName().equals( ModelAttachmentFileWidget.FORM_FIELD_UUID )) {
                     data.uuid = item.getString();
                 } else if ( !item.isFormField() ) {
                     data.file = item;
@@ -88,5 +127,8 @@ public class FileUploadServlet extends HttpServlet {
         FileItem file;
         String uuid;
     }
+
+
+
 
 }
