@@ -1,22 +1,14 @@
 package org.drools.repository;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Iterator;
-import java.util.List;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.ItemExistsException;
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.ValueFormatException;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.version.VersionException;
 
 import org.apache.log4j.Logger;
 
@@ -34,8 +26,9 @@ public class AssetItem extends CategorisableItem {
     public static final String RULE_NODE_TYPE_NAME          = "drools:ruleNodeType";
 
     public static final String CONTENT_PROPERTY_NAME        = "drools:content";
-
-
+    public static final String CONTENT_PROPERTY_BINARY_NAME = "drools:binaryContent";
+    public static final String CONTENT_PROPERTY_ATTACHMENT_FILENAME = "drools:attachmentFileName";
+    
     /**
      * The name of the date effective property on the rule node type
      */
@@ -47,6 +40,8 @@ public class AssetItem extends CategorisableItem {
     public static final String DATE_EXPIRED_PROPERTY_NAME   = "drools:dateExpired";
 
     public static final String PACKAGE_NAME_PROPERTY        = "drools:packageName";
+    
+    
 
     /**
      * Constructs a RuleItem object, setting its node attribute to the specified node.
@@ -79,9 +74,8 @@ public class AssetItem extends CategorisableItem {
     }
 
     /**
-     * returns the contents of the rule node.
-     * It there is a URI, this may need to access the external resource
-     * to grab/sync the latest, but in any case, it should be the real content.
+     * returns the string contents of the rule node.
+     * If this is a binary asset, this will return null (use getBinaryContent instead).
      */
     public String getContent() throws RulesRepositoryException {
         try {
@@ -98,6 +92,70 @@ public class AssetItem extends CategorisableItem {
                        e );
             throw new RulesRepositoryException( e );
         }
+    }
+    
+    /**
+     * If this asset contains binary data, this is how you return it. 
+     * Otherwise it will return null.
+     */
+    public InputStream getBinaryContentAttachment() {
+        try {
+            Node ruleNode = getVersionContentNode();
+            if ( ruleNode.hasProperty( CONTENT_PROPERTY_BINARY_NAME ) ) {
+                Property data = ruleNode.getProperty( CONTENT_PROPERTY_BINARY_NAME );
+                return data.getStream();
+            } else {
+                return null;
+            }
+        } catch ( Exception e ) {
+            log.error( "Caught Exception",
+                       e );
+            throw new RulesRepositoryException( e );
+        }        
+    }
+    
+    /** Get the name of the "file" attachment, if one is set. Null otherwise */
+    public String getBinaryContentAttachmentFileName() {
+        return getStringProperty( CONTENT_PROPERTY_ATTACHMENT_FILENAME );
+    }
+    
+    /**
+     * This is a convenience method for returning the binary data as a byte array.
+     */
+    public byte[] getBinaryContentAsBytes() {
+        try {
+            Node ruleNode = getVersionContentNode();
+            if ( ruleNode.hasProperty( CONTENT_PROPERTY_BINARY_NAME ) ) {
+                Property data = ruleNode.getProperty( CONTENT_PROPERTY_BINARY_NAME );
+                InputStream in = data.getStream();
+                
+                // Create the byte array to hold the data
+                byte[] bytes = new byte[(int) data.getLength()];
+            
+                // Read in the bytes
+                int offset = 0;
+                int numRead = 0;
+                while (offset < bytes.length
+                       && (numRead=in.read(bytes, offset, bytes.length-offset)) >= 0) {
+                    offset += numRead;
+                }
+            
+                // Ensure all the bytes have been read in
+                if (offset < bytes.length) {
+                    throw new RulesRepositoryException("Could not completely read asset "+ getName());
+                }
+            
+                // Close the input stream and return bytes
+                in.close();   
+                return bytes;
+            } else {
+                return null;
+            }
+        } catch ( Exception e ) {
+            log.error( e );
+            if (e instanceof RuntimeException) throw (RuntimeException) e;
+            throw new RulesRepositoryException( e );
+        }  
     }
 
 
@@ -182,9 +240,11 @@ public class AssetItem extends CategorisableItem {
     }
 
     /**
-     * This will update the rules content (checking it out if it is not already).
+     * This will update the asset's content (checking it out if it is not already).
      * This will not save the session or create a new version of the node 
      * (this has to be done seperately, as several properties may change as part of one edit).
+     * This is only used if the asset is a textual asset. For binary, use the updateBinaryContent method
+     * instead. 
      */
     public AssetItem updateContent(String newRuleContent) throws RulesRepositoryException {
         checkout();
@@ -193,10 +253,31 @@ public class AssetItem extends CategorisableItem {
                                    newRuleContent );
             return this;
         } catch ( RepositoryException e ) {
-            log.error( "Caught Exception",
-                       e );
+            log.error( "Unable to update the asset content", e );
             throw new RulesRepositoryException( e );
         }
+    }
+    
+    /**
+     * If the asset is a binary asset, then use this to update the content
+     * (do NOT use text).
+     */
+    public AssetItem updateBinaryContentAttachment(InputStream data) {
+        checkout();
+        try {
+            this.node.setProperty( CONTENT_PROPERTY_BINARY_NAME, data );            
+            return this;
+        } catch (RepositoryException e ) {
+            log.error( "Unable to update the assets binary content", e );
+            throw new RulesRepositoryException( e );
+        }
+    }
+    
+    /**
+     * Optionally set the filename to be associated with the binary content.
+     */
+    public void updateBinaryContentAttachmentFileName(String name) {
+        updateStringProperty( name, CONTENT_PROPERTY_ATTACHMENT_FILENAME );
     }
 
 

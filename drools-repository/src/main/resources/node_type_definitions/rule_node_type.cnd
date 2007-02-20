@@ -16,6 +16,8 @@
 
 // Properties:
 - drools:content (string)
+- drools:binaryContent (binary)
+- drools:attachmentFileName (string)
   
 // use this to capture fields which are not known ahead of time 
 - * (undefined)

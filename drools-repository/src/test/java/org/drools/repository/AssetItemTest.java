@@ -1,5 +1,7 @@
 package org.drools.repository;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -598,10 +600,13 @@ public class AssetItemTest extends TestCase {
         
     }
     
-    public void testGetFormat() {        
+    public void testGetFormat() throws Exception {        
             AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetFormat", "test content");
-            
+            ruleItem1.updateContent( "la" );
             assertEquals(AssetItem.DEFAULT_CONTENT_FORMAT, ruleItem1.getFormat());     
+            
+            assertTrue(ruleItem1.getNode().hasProperty( AssetItem.CONTENT_PROPERTY_NAME ));
+            assertFalse(ruleItem1.getNode().hasProperty( AssetItem.CONTENT_PROPERTY_BINARY_NAME ));            
             
             ruleItem1.updateFormat( "blah" );
             assertEquals("blah", ruleItem1.getFormat());
@@ -623,6 +628,30 @@ public class AssetItemTest extends TestCase {
             assertNotNull(e.getMessage());
         }
 
+        
+    }
+    
+    public void testBinaryAsset() throws Exception {
+        AssetItem item = getRepo().loadDefaultPackage().addAsset( "testBinaryAsset", "yeah" );
+        String data = "abc 123";
+        ByteArrayInputStream in = new ByteArrayInputStream(data.getBytes());
+        item.updateBinaryContentAttachment( in );
+        item.updateBinaryContentAttachmentFileName( "x.x" );
+        in.close();
+        
+        assertFalse(item.getNode().hasProperty( AssetItem.CONTENT_PROPERTY_NAME ));
+        assertTrue(item.getNode().hasProperty( AssetItem.CONTENT_PROPERTY_BINARY_NAME ));
+        item.checkin( "lalalala" );
+        
+        
+        
+        item = getRepo().loadDefaultPackage().loadAsset( "testBinaryAsset" );
+        InputStream in2 = item.getBinaryContentAttachment();
+        assertNotNull(in2);
+        
+        byte[] data2 = item.getBinaryContentAsBytes();
+        assertEquals(data, new String(data2));
+        assertEquals("x.x", item.getBinaryContentAttachmentFileName());
         
     }
     
