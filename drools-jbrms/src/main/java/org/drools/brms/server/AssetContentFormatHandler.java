@@ -136,6 +136,8 @@ public class AssetContentFormatHandler {
         } else if (asset.content instanceof DSLRuleData) {
             DSLRuleData data = (DSLRuleData) asset.content;
             repoAsset.updateContent( data.text.content );
+        } else if (asset.metaData.format.equals( AssetFormats.MODEL )) {
+            //do nothing, as we have an attachment
         } else {
             throw new SerializableException("Not able to handle that type of content just yet...");
         }

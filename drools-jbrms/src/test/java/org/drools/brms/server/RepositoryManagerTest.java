@@ -1,6 +1,5 @@
 package org.drools.brms.server;
 
-import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,16 +11,16 @@ import javax.servlet.http.HttpSessionContext;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.drools.brms.client.rpc.RuleContentText;
+import org.drools.brms.server.util.RepositoryManager;
 import org.drools.repository.RulesRepository;
 
 /**
  * This tests the basic http stuff for the servlet.
  */
-public class JBRMSServiceServletTest extends TestCase {
+public class RepositoryManagerTest extends TestCase {
 
     public void testInit() throws Exception {
-        JBRMSServiceServlet serv = new JBRMSServiceServlet();
+        RepositoryManager serv = new RepositoryManager();
         MockHttpSession session = new MockHttpSession();
         RulesRepository repo = serv.getRepositoryFrom( session );
         assertTrue(session.sessionData.containsKey( "drools.repository" ));
@@ -34,7 +33,7 @@ public class JBRMSServiceServletTest extends TestCase {
     }
     
     public void testGetRepository() throws Exception {
-        JBRMSServiceServlet serv = new JBRMSServiceServlet();
+        RepositoryManager serv = new RepositoryManager();
         RulesRepository repo = serv.createRuleRepositoryInstance();
         assertNotNull(repo);
     }

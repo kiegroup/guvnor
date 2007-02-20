@@ -12,6 +12,8 @@ import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
 import org.drools.brms.client.common.AssetFormats;
@@ -23,6 +25,7 @@ import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.server.util.MetaDataMapper;
+import org.drools.brms.server.util.RepositoryManager;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
@@ -52,10 +55,8 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     private static final long serialVersionUID = 3150768417428383474L;
     private static final DateFormat dateFormatter = DateFormat.getInstance();
     
-    /**
-     * The shared repository instance. This could be bound to JNDI eventually.
-     */
-    public static Repository repository;
+
+
 
     private MetaDataMapper metaDataMapper;
 
@@ -151,73 +152,19 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     
     /** Get the rule repository for the "current" user */
     RulesRepository getRulesRepository() {
-        return this.getRepositoryFrom( getSession() );
+        RepositoryManager helper = new RepositoryManager();
+        return helper.getRepositoryFrom( getSession() );
     }
 
     private HttpSession getSession() {
         return this.getThreadLocalRequest().getSession();
     }
 
-    /**
-     * Pull or create the repository from session.
-     * If it is not found, it will create one and then bind it to the session.
-     */
-    RulesRepository getRepositoryFrom(HttpSession session) {
-        Object obj = session.getAttribute( "drools.repository" );
-        if ( obj == null ) {
-            obj = createRuleRepositoryInstance();
-            session.setAttribute( "drools.repository",
-                                  obj );
-        }
-        return (RulesRepository) obj;
-    }
-
-    /** Initialse the repository, set it up if it is brand new */
-    RulesRepository createRuleRepositoryInstance() {
-        
-        RepositoryConfigurator config = new RepositoryConfigurator();
-
-        try {
-            
-            Session session;
-            if (repository == null) {
-                long start = System.currentTimeMillis();
-                session = initialiseRepo( config );
-                System.out.println("initialise repo time: " + (System.currentTimeMillis() - start));
-            }  else {
-                long start = System.currentTimeMillis();
-                session = config.login( repository );
-                System.out.println("login repo time: " + (System.currentTimeMillis() - start));
-                
-            }
-            
-            return new RulesRepository( session );
-        } catch ( LoginException e ) {
-            throw new RuntimeException( e );
-        } catch ( RepositoryException e ) {
-            throw new RuntimeException( "Unable to get a repository: " + e.getMessage() );
-        }
-    }
-    
-    
-
-    /** This will create a new repository instance (should only happen once after startup) */
-    private Session initialiseRepo(RepositoryConfigurator config) throws LoginException,
-                                                                 RepositoryException {
-        Session session = config.login( getJCRRepository( config ) );
-        
-        config.setupRulesRepository( session );
-        return session;
-    }
 
 
 
-    synchronized static Repository getJCRRepository(RepositoryConfigurator config) {
-        if (repository == null) {
-            repository = config.createRepository();
-        }
-        return repository;
-    }
+
+
 
     /**
      * This actually does the hard work of loading up an asset based

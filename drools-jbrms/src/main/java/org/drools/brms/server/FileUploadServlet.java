@@ -15,6 +15,9 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.drools.brms.client.packages.ModelArchiveFileWidget;
+import org.drools.brms.server.util.RepositoryManager;
+import org.drools.repository.AssetItem;
+import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 
 /**
@@ -23,6 +26,8 @@ import org.drools.repository.RulesRepositoryException;
  * @author Michael Neale
  */
 public class FileUploadServlet extends HttpServlet {
+
+    private static final long serialVersionUID = 3909768997932550498L;
 
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException,
@@ -34,10 +39,23 @@ public class FileUploadServlet extends HttpServlet {
             response.getWriter().write( "NO-SCRIPT-DATA" );
             return;
         }
-
-        //TODO: this is where we attach the file to the asset.
+        
+        
+        RepositoryManager repoMan = new RepositoryManager();
+        RulesRepository repo = repoMan.getRepositoryFrom( request.getSession() );
+        attachFile( uploadItem, repo );
+        
+        uploadItem.file.getInputStream().close();
         
         response.getWriter().write( "OK" );
+    }
+
+    void attachFile(FormData uploadItem,
+                            RulesRepository repo) throws IOException {
+        AssetItem item = repo.loadAssetByUUID( uploadItem.uuid );
+        item.updateBinaryContentAttachment( uploadItem.file.getInputStream() );
+        item.updateBinaryContentAttachmentFileName( uploadItem.file.getName() );
+        item.checkin( "Attached file: " + uploadItem.file.getName() );
     }
 
     /**

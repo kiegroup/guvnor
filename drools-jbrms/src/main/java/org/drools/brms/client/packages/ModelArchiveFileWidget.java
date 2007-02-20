@@ -58,7 +58,7 @@ public class ModelArchiveFileWidget extends Composite {
         form.add( fields );
         
         FormStyleLayout layout = new FormStyleLayout("images/model_large.png", 
-                                                     asset.metaData.name + "." + asset.metaData.format);
+                                                     asset.metaData.name);
 
         
         layout.addAttribute( "Upload new version:", form );
@@ -82,8 +82,7 @@ public class ModelArchiveFileWidget extends Composite {
             }
 
             public void onSubmitComplete(FormSubmitCompleteEvent ev) {  
-                    if (ev.getResults().indexOf( "OK" ) > -1) {
-                        Window.alert( "Model archive was uploaded successfully.");  
+                    if (ev.getResults().indexOf( "OK" ) > -1) {                        
                         viewer.refreshDataAndView();
                     } else {
                         ErrorPopup.showMessage( "Unable to upload the file." );
