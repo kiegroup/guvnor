@@ -349,25 +349,40 @@ public class ServiceImplementationTest extends TestCase {
       String uuid3 = impl.createNewRule( "testListByFormat3", "x", cat, "testListByFormat", "testListByFormat" );
       String uuid4 = impl.createNewRule( "testListByFormat4", "x", cat, "testListByFormat", "testListByFormat" );
 
-      TableDataResult res = impl.listAssetsByFormat( "testListByFormat", "testListByFormat", -1, 0 );
+      TableDataResult res = impl.listAssetsByFormat( "testListByFormat", arr("testListByFormat"), -1, 0 );
       assertEquals(4, res.data.length);
       assertEquals(uuid, res.data[0].id);
       assertEquals("testListByFormat", res.data[0].values[0]);
       
-      res = impl.listAssetsByFormat( "testListByFormat", "testListByFormat", 4, 0 );      
+      res = impl.listAssetsByFormat( "testListByFormat", arr("testListByFormat"), 4, 0 );      
       assertEquals(4, res.data.length);
 
-      res = impl.listAssetsByFormat( "testListByFormat", "testListByFormat", 2, 0 );      
+      res = impl.listAssetsByFormat( "testListByFormat", arr("testListByFormat"), 2, 0 );      
       assertEquals(2, res.data.length);
       assertEquals(uuid, res.data[0].id);
       
       
-      res = impl.listAssetsByFormat( "testListByFormat", "testListByFormat", 2, 2 );      
+      res = impl.listAssetsByFormat( "testListByFormat", arr("testListByFormat"), 2, 2 );      
       assertEquals(2, res.data.length);
       assertEquals(uuid3, res.data[0].id);
       
+      
+      uuid = impl.createNewRule( "testListByFormat5", "x", cat, "testListByFormat", "otherFormat" );
+      
+      res = impl.listAssetsByFormat( "testListByFormat", arr("otherFormat"), 40, 0 );
+      assertEquals(1, res.data.length);
+      assertEquals(uuid, res.data[0].id);
+
+      res = impl.listAssetsByFormat( "testListByFormat", new String[] {"otherFormat", "testListByFormat"}, 40, 0 );
+      assertEquals(5, res.data.length);
+      
+
+      
   }
   
+  public String[] arr(String s) {
+      return new String[] {s};
+  }
   
   public void testStatus() throws Exception {
       MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();

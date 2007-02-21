@@ -101,7 +101,7 @@ public interface RepositoryService extends RemoteService {
      * @param numRows The number of rows to return. -1 means all.
      * @param startRow The starting row number if paging - if numRows is -1 then this is ignored.
      */
-    public TableDataResult listAssetsByFormat(String packageName, String format, int numRows, int startRow) throws SerializableException;
+    public TableDataResult listAssetsByFormat(String packageName, String formats[], int numRows, int startRow) throws SerializableException;
     
     /**
      * Returns a list of valid states.

@@ -289,11 +289,11 @@ public class PackageExplorerWidget extends Composite {
             }
         }));
         
-        pkg.addItem( makeItem("Business rules", "images/rule_asset.gif", showListEvent(name, AssetFormats.BUSINESS_RULE)) );
-        pkg.addItem( makeItem("Technical rules", "images/technical_rule_assets.gif", showListEvent(name, AssetFormats.TECHNICAL_RULE)) );
-        pkg.addItem( makeItem("Functions", "images/function_assets.gif", showListEvent(name, AssetFormats.FUNCTION)) );
-        pkg.addItem( makeItem("DSL", "images/dsl.gif", showListEvent(name, AssetFormats.DSL)) );
-        pkg.addItem( makeItem("Model", "images/model_asset.gif", showListEvent(name, AssetFormats.MODEL) ) );
+        pkg.addItem( makeItem("Business rules", "images/rule_asset.gif", showListEvent(name, AssetFormats.BUSINESS_RULE_FORMATS)) );
+        pkg.addItem( makeItem("Technical rules", "images/technical_rule_assets.gif", showListEvent(name, AssetFormats.TECHNICAL_RULE_FORMATS)) );
+        pkg.addItem( makeItem("Functions", "images/function_assets.gif", showListEvent(name, new String[] {AssetFormats.FUNCTION})) );
+        pkg.addItem( makeItem("DSL", "images/dsl.gif", showListEvent(name, new String[] {AssetFormats.DSL})) );
+        pkg.addItem( makeItem("Model", "images/model_asset.gif", showListEvent(name, new String[] {AssetFormats.MODEL}) ) );
         
         exTree.addItem( pkg );
     }
@@ -308,7 +308,7 @@ public class PackageExplorerWidget extends Composite {
     /**
      * This will create a "show list" event to be attached to the tree.
      */
-    private PackageTreeItem showListEvent(final String name, final String format) {
+    private PackageTreeItem showListEvent(final String name, final String[] format) {
         final GenericCallback cb = new GenericCallback() {
             public void onSuccess(Object data) {
                 final TableDataResult table = (TableDataResult) data;                

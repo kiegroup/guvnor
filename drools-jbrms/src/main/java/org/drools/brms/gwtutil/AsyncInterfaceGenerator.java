@@ -22,7 +22,11 @@ public class AsyncInterfaceGenerator {
                 line += "public void " + meth.getName() + "(";
                 Class params[] = meth.getParameterTypes();
                 for ( int j = 0; j < params.length; j++ ) {
-                    line += params[j].getName();
+                    String type = params[j].getName();
+                    if (type.equals( "[Ljava.lang.String;" )) {
+                        type = "String[]";
+                    }
+                    line += type;
                     line += " p" + j;
                     if (j < params.length -1) {
                         line += ", ";

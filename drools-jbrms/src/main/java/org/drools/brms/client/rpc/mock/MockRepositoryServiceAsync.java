@@ -405,6 +405,17 @@ public class MockRepositoryServiceAsync
         cb.onSuccess( null );
         
     }
+
+
+
+    public void listAssetsByFormat(String p0,
+                                   String[] p1,
+                                   int p2,
+                                   int p3,
+                                   AsyncCallback cb) {
+        cb.onSuccess( null );
+        
+    }
     
     
 

@@ -368,11 +368,11 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     }
 
     public TableDataResult listAssetsByFormat(String packageName,
-                                              String format,
+                                              String formats[],
                                               int numRows,
                                               int startRow) throws SerializableException {
         PackageItem pkg = getRulesRepository().loadPackage( packageName );
-        AssetItemIterator it = pkg.listAssetsByFormat( format );
+        AssetItemIterator it = pkg.listAssetsByFormat( formats );
         if (numRows != -1) {
             it.skip( startRow );
         }
