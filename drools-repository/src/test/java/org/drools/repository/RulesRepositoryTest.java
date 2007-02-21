@@ -229,7 +229,7 @@ public class RulesRepositoryTest extends TestCase {
         PackageItem pkg = repo.createPackage( "testMove", "description" );
         AssetItem r = pkg.addAsset( "testMove", "description" );
         r.checkin( "version0" );
-        
+        String uuid = r.getUUID();
         assertEquals("testMove", r.getPackageName());
         
         repo.save();
@@ -253,7 +253,7 @@ public class RulesRepositoryTest extends TestCase {
         AssetItem p = (AssetItem) r.getPrecedingVersion();
         assertEquals("testMove", p.getPackageName());
         assertEquals("version0", p.getCheckinComment());
-        
+        assertEquals(uuid, r.getUUID());
     }
     
     public void testListStates()  {

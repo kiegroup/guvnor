@@ -750,10 +750,11 @@ public class RulesRepository {
             item.node.setProperty( AssetItem.PACKAGE_NAME_PROPERTY, newPackage );
             
             item.checkin( explanation );   
-            sourcePkg.checkout();
-            sourcePkg.checkin( explanation );
-            destPkg.checkout();
-            destPkg.checkin( explanation );
+            
+//            sourcePkg.checkout();
+//            sourcePkg.checkin( explanation );
+//            destPkg.checkout();
+//            destPkg.checkin( explanation );
             
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException(e);
