@@ -75,7 +75,7 @@ public class RulesRepositoryTest extends TestCase {
     }
 
     
-    public void testLoadRuleByUUID() throws Exception {
+    public void testLoadRuleByUUIDWithConcurrentSessions() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
         
         PackageItem rulePackageItem = repo.loadDefaultPackage();
@@ -121,6 +121,8 @@ public class RulesRepositoryTest extends TestCase {
         asset1.updateContent( "yeah" );
         asset1.checkin( "boo" );
         uuid = asset1.getUUID();
+        asset1.updateState( "Draft" );
+        repo.save();
         
         Session s2 = repo.getSession().getRepository().login(new SimpleCredentials("fdd", "password".toCharArray()));
         
