@@ -253,6 +253,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         
         repoAsset.updateDateEffective( dateToCalendar( meta.dateEffective ) );
         repoAsset.updateDateExpired( dateToCalendar( meta.dateExpired ) );        
+        repoAsset.updateState( StateItem.DRAFT_STATE_NAME );
         
         repoAsset.updateCategoryList( meta.categories );
         AssetContentFormatHandler handler = new AssetContentFormatHandler();
@@ -410,15 +411,11 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         if (!wholePackage) {
             AssetItem asset = repo.loadAssetByUUID( uuid );
             asset.updateState( newState );
-            repo.save();
         } else {
             PackageItem pkg = repo.loadPackageByUUID( uuid );
-            pkg.changeStatus(newState);
-            repo.save();
+            pkg.changeStatus(newState);            
         }
-        
-        
-        
+        repo.save();
     }
     
 

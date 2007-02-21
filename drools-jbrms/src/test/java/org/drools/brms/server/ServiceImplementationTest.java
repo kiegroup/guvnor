@@ -281,6 +281,7 @@ public class ServiceImplementationTest extends TestCase {
           assertEquals("testCheckinCategory", asset2.metaData.categories[0]);
           assertEquals("testCheckinCategory2", asset2.metaData.categories[1]);
           assertEquals("testCheckinCategory/deeper", asset2.metaData.categories[2]);
+
           
   }
   
@@ -436,6 +437,10 @@ public class ServiceImplementationTest extends TestCase {
       
       asset = impl.loadRuleAsset( ruleUUID2 );
       assertEquals("testState2", asset.metaData.state);
+      
+      impl.checkinVersion( asset );
+      asset = impl.loadRuleAsset( asset.uuid );
+      assertEquals(StateItem.DRAFT_STATE_NAME, asset.metaData.state);
       
   }
   
