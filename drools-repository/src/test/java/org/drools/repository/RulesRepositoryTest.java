@@ -5,6 +5,9 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.jcr.Session;
+import javax.jcr.SimpleCredentials;
+
 import junit.framework.TestCase;
 
 public class RulesRepositoryTest extends TestCase {
@@ -110,7 +113,30 @@ public class RulesRepositoryTest extends TestCase {
         } catch (RulesRepositoryException e) {
             // that is OK!
             assertNotNull(e.getMessage());
-        }        
+        }   
+
+        //now test concurrent session access...
+        
+        AssetItem asset1 = repo.loadDefaultPackage().addAsset( "testMultiSession", "description" );
+        asset1.updateContent( "yeah" );
+        asset1.checkin( "boo" );
+        uuid = asset1.getUUID();
+        
+        Session s2 = repo.getSession().getRepository().login(new SimpleCredentials("fdd", "password".toCharArray()));
+        
+        RulesRepository repo2 = new RulesRepository(s2);
+        
+        AssetItem asset2 = repo2.loadAssetByUUID( uuid );
+        asset2.updateContent( "yeah 42" );
+        asset2.checkin( "yeah" );
+        
+        asset1 = repo.loadAssetByUUID( uuid );
+        assertEquals("yeah 42", asset1.getContent());
+        asset1.updateContent( "yeah 43" );
+        asset1.checkin( "la" );
+        
+        asset2 = repo2.loadAssetByUUID( uuid );
+        assertEquals( "yeah 43", asset2.getContent() );
     }
     
     public void testAddRuleCalendarWithDates() {
