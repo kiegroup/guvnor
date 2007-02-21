@@ -32,7 +32,7 @@ public interface RepositoryServiceAsync
     public void listAssetsByFormat(java.lang.String p0, String[] p1, int p2, int p3, AsyncCallback cb);
     public void listStates(AsyncCallback cb);
     public void createState(java.lang.String p0, AsyncCallback cb);
+    public void changeAssetPackage(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback cb);
     public void changeState(java.lang.String p0, java.lang.String p1, boolean p2, AsyncCallback cb);
-
 
 }

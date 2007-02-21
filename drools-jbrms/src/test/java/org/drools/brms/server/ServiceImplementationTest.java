@@ -444,6 +444,33 @@ public class ServiceImplementationTest extends TestCase {
       
   }
   
+  public void testMovePackage() throws Exception {
+      JBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      String[] cats = impl.loadChildCategories( "/" );
+      if (cats.length == 0) {
+          impl.createCategory( "/", "la", "d" );
+      }
+      impl.createPackage( "sourcePackage", "description" );
+      impl.createPackage( "targetPackage", "description" );
+      
+      String cat = impl.loadChildCategories( "/" )[0];
+      
+      String uuid = impl.createNewRule( "testMovePackage", "desc", cat, "sourcePackage", "drl" );
+      
+      TableDataResult res = impl.listAssetsByFormat( "targetPackage", new String[] {"drl"}, 2, 0 );
+      assertEquals(0, res.data.length);
+      
+      
+      impl.changeAssetPackage( uuid, "targetPackage", "yeah" );
+      res = impl.listAssetsByFormat( "targetPackage", new String[] {"drl"}, 2, 0 );
+      
+      assertEquals(1, res.data.length);
+      
+      
+      
+      
+  }
+  
   
     
 }

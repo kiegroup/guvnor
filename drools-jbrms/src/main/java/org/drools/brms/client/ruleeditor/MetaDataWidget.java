@@ -3,11 +3,19 @@ package org.drools.brms.client.ruleeditor;
 import java.util.Date;
 
 import org.drools.brms.client.common.FormStyleLayout;
+import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.rpc.MetaData;
+import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -52,7 +60,7 @@ public class MetaDataWidget extends FormStyleLayout {
         addAttribute("Note:", readOnlyText( data.checkinComment ));
         addAttribute("Created by:", readOnlyText(data.creator));
         addAttribute("Version:", getVersionNumberLabel());
-        addAttribute("Package:", readOnlyText(data.packageName));
+        addAttribute("Package:", packageEditor(data.packageName));
         addAttribute("Format:", new HTML( "<b>" + data.format + "</b>" ));
         
         if (!readOnly) {
@@ -108,6 +116,57 @@ public class MetaDataWidget extends FormStyleLayout {
         if (!readOnly) {
             addRow( new VersionBrowser(this.uuid, this.data, refreshView) );
         }
+    }
+
+
+    private Widget packageEditor(final String packageName) {
+        if (this.readOnly) {
+            return readOnlyText( packageName );
+        } else {
+            HorizontalPanel horiz = new HorizontalPanel();
+            horiz.add( readOnlyText( packageName ) );
+            Image editPackage = new Image("images/edit.gif");
+            editPackage.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                    showEditPackage(packageName, w);                    
+                }
+            });           
+            horiz.add( editPackage );
+            return horiz;
+        }
+
+        
+    }
+
+
+    private void showEditPackage(final String pkg, Widget source) {
+        final FormStylePopup pop = new FormStylePopup("images/package_large.png", "Change package");
+        pop.addAttribute( "Current package:", new Label(pkg) );
+        final RulePackageSelector sel = new RulePackageSelector();
+        pop.addAttribute( "New package:", sel );
+        Button ok = new Button("Change package");
+        pop.addAttribute( "", ok );
+        ok.addClickListener( new ClickListener() {
+
+            public void onClick(Widget w) {
+                RepositoryServiceFactory.getService().changeAssetPackage( uuid, sel.getSelectedPackage(), 
+                                                                          "Moved from : " + pkg, 
+                                                                          new GenericCallback() {
+
+                                                                           
+                                                                            public void onSuccess(Object data) {
+                                                                                refreshView.execute();
+                                                                                pop.hide();
+                                                                            }
+                    
+                                                                            });
+                
+                
+            }
+            
+        });
+        pop.setPopupPosition( source.getAbsoluteLeft(), source.getAbsoluteTop() );
+        pop.show();
     }
 
 

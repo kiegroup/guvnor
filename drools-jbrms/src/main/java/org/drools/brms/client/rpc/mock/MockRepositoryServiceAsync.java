@@ -416,6 +416,16 @@ public class MockRepositoryServiceAsync
         cb.onSuccess( null );
         
     }
+
+
+
+    public void changeAssetPackage(String p0,
+                                   String p1,
+                                   String p2,
+                                   AsyncCallback cb) {
+        cb.onSuccess( null );
+        
+    }
     
     
 

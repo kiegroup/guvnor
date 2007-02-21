@@ -123,4 +123,9 @@ public interface RepositoryService extends RemoteService {
      * If this is true, UUID must be the status of a package, if false, it must be an asset.
      */
     public void changeState(String uuid, String newState, boolean wholePackage);
+    
+    /**
+     * This moves an asset to the given target package.
+     */
+    public void changeAssetPackage(String uuid, String newPackage, String comment);
 }
