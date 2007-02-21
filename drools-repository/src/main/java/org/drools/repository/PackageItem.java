@@ -366,8 +366,20 @@ public class PackageItem extends VersionableItem {
     /**
      * This will load an iterator for assets of the given format type.
      */
-    public AssetItemIterator listAssetsByFormat(String format) {
-        return queryAssets( "drools:format='" + format + "'" );
+    public AssetItemIterator listAssetsByFormat(String[] formats) {
+        if (formats.length == 1) {
+            return queryAssets( "drools:format='" + formats[0] + "'" );
+        } else {
+            String predicate = " ( ";
+            for ( int i = 0; i < formats.length; i++ ) {
+                predicate = predicate + "drools:format='" + formats[i] + "'";
+                if (!(i == formats.length -1 )) { predicate =  predicate + " OR "; }
+            }
+            predicate = predicate + " ) ";
+            return queryAssets( predicate );
+            
+        }
+        
     }
     
     /**

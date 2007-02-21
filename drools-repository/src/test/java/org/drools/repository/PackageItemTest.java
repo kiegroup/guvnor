@@ -433,11 +433,18 @@ public class PackageItemTest extends TestCase {
         assertTrue(list.get( 1 ) instanceof AssetItem);
 
         
-        AssetItemIterator it2 = pkg.listAssetsByFormat( "xyz" );
+        AssetItemIterator it2 = pkg.listAssetsByFormat( new String[] {"xyz"} );
         List list2 = iteratorToList( it2 );
-        assertEquals(2, list.size());
+        assertEquals(2, list2.size());
         assertTrue(list2.get( 0 ) instanceof AssetItem);
         assertTrue(list2.get( 1 ) instanceof AssetItem);
+        
+        it2 = pkg.listAssetsByFormat( new String[] {"xyz", "ABC"} );
+        list2 = iteratorToList( it2 );
+        assertEquals(3, list2.size());
+        assertTrue(list2.get( 0 ) instanceof AssetItem);
+        assertTrue(list2.get( 1 ) instanceof AssetItem);
+        assertTrue(list2.get( 2 ) instanceof AssetItem);
         
     }
     
