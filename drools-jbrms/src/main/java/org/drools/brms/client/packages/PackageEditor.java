@@ -1,7 +1,6 @@
 package org.drools.brms.client.packages;
 
 import org.drools.brms.client.common.FormStyleLayout;
-import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.StatusChangePopup;
@@ -10,7 +9,6 @@ import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -64,7 +62,6 @@ public class PackageEditor extends FormStyleLayout {
             public void onClick(Widget w) {
                 showStatusChanger(w);
             }
-
 
         } );
         statusBar.add( status );
@@ -158,9 +155,9 @@ public class PackageEditor extends FormStyleLayout {
         
         final TextArea area = new TextArea();
         area.setWidth( "100%" );
-        area.setVisibleLines( 4 );
+        area.setVisibleLines( 8 );
         
-        area.setCharacterWidth( 52 );
+        area.setCharacterWidth( 100 );
         
         area.setText( this.conf.header );
         area.addChangeListener( new ChangeListener() {
@@ -182,7 +179,7 @@ public class PackageEditor extends FormStyleLayout {
                 if (area.getVisibleLines() != 32) {
                     area.setVisibleLines( 32 );
                 } else {
-                    area.setVisibleLines( 4 );
+                    area.setVisibleLines( 8 );
                 }
             }
         } );
@@ -249,7 +246,7 @@ public class PackageEditor extends FormStyleLayout {
                 if (area.getVisibleLines() != 32) {
                     area.setVisibleLines( 32 );                    
                 } else {
-                    area.setVisibleLines( 4 );
+                    area.setVisibleLines( 8 );
                 }
             }
         } );
@@ -259,7 +256,7 @@ public class PackageEditor extends FormStyleLayout {
     private Widget description() {
         final TextArea area = new TextArea();
         area.setWidth( "100%" );
-        area.setVisibleLines( 4 );
+        area.setVisibleLines( 8 );
         area.setText( conf.description );
         
         area.addChangeListener( new ChangeListener() {
@@ -268,7 +265,7 @@ public class PackageEditor extends FormStyleLayout {
             }            
         });
         
-        area.setCharacterWidth( 52 );
+        area.setCharacterWidth( 100 );
         
         return expandableTextArea( area );
     }

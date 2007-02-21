@@ -134,10 +134,12 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
 
 
     public TableDataResult loadRuleListForCategories(String categoryPath) throws SerializableException {
+        long start = System.currentTimeMillis();
         RulesRepository repo = getRulesRepository();
 
         List list = repo.findAssetsByCategory( categoryPath );
         TableDisplayHandler handler = new TableDisplayHandler();
+        System.out.println("time for load: " + (System.currentTimeMillis() - start) );
         return handler.loadRuleListTable( list.iterator(), -1 );
         
     }
@@ -371,12 +373,14 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
                                               String formats[],
                                               int numRows,
                                               int startRow) throws SerializableException {
+        long start = System.currentTimeMillis();
         PackageItem pkg = getRulesRepository().loadPackage( packageName );
         AssetItemIterator it = pkg.listAssetsByFormat( formats );
         if (numRows != -1) {
             it.skip( startRow );
         }
         TableDisplayHandler handler = new TableDisplayHandler();
+        System.out.println("time for load: " + (System.currentTimeMillis() - start) );
         return handler.loadRuleListTable( it, numRows );
         
 

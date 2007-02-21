@@ -76,13 +76,14 @@ public class RepositoryManager {
      * If it is not found, it will create one and then bind it to the session.
      */
     public RulesRepository getRepositoryFrom(HttpSession session) {
-        Object obj = session.getAttribute( "drools.repository" );
-        if ( obj == null ) {
-            obj = createRuleRepositoryInstance();
-            session.setAttribute( "drools.repository",
-                                  obj );
-        }
-        return (RulesRepository) obj;
+//        Object obj = session.getAttribute( "drools.repository" );
+//        if ( obj == null ) {
+//            obj = createRuleRepositoryInstance();
+//            session.setAttribute( "drools.repository",
+//                                  obj );
+//        }
+//        return (RulesRepository) obj;
+        return createRuleRepositoryInstance();
     }
     
 }

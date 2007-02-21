@@ -81,6 +81,11 @@ public class ServiceImplementationTest extends TestCase {
       }
       assertTrue(found);
       
+ //just for performance testing with scaling up numbers of rules      
+//      for (int i=1; i <= 1000; i++) {
+//          impl.createNewRule( "somerule_" + i, "description", 
+//                              "testAddRule", "another", "drl" );
+//      }
   }
 
   public void testAttemptDupeRule() throws Exception {

@@ -59,6 +59,7 @@ public class PackageExplorerWidget extends Composite {
                 PackageTreeItem event = (PackageTreeItem) selected.getUserObject();
                 currentPackage = event.name;
                 Command selectEvent = event.command;
+                LoadingPopup.showMessage( "Please wait..." );
                 DeferredCommand.add( selectEvent );                
             }
 
@@ -309,15 +310,16 @@ public class PackageExplorerWidget extends Composite {
      * This will create a "show list" event to be attached to the tree.
      */
     private PackageTreeItem showListEvent(final String name, final String[] format) {
+        
         final GenericCallback cb = new GenericCallback() {
             public void onSuccess(Object data) {
-                final TableDataResult table = (TableDataResult) data;                
+                final TableDataResult table = (TableDataResult) data;
                 listView.loadTableData( table );      
                 listView.setWidth( "100%" );
                 //listView.setHeight( "100%" );
                 layout.setWidget( 0, 1, listView );
                 layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
-                
+                LoadingPopup.close();
             }
         };
         
