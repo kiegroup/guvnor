@@ -128,4 +128,20 @@ public interface RepositoryService extends RemoteService {
      * This moves an asset to the given target package.
      */
     public void changeAssetPackage(String uuid, String newPackage, String comment);
+    
+    /**
+     * Copies an asset into a new destination package.
+     * @param assetUUID The source assetID. 
+     * @param newPackage The destination package (may be the same as the current source package, but
+     * in that case the asset has to have a different name). 
+     * @param newName The new name of the asset.
+     */
+    public String copyAsset(String assetUUID, String newPackage, String newName);
+    
+    
+    /**
+     * This will load a list of snapshots for the given package. Snapshots are created 
+     * by taking a labelled copy of a package, at a point in time, for instance for deployment.
+     */
+    public String[] listSnapshots(String packageName);
 }

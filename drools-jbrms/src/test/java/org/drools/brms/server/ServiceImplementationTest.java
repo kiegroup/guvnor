@@ -471,6 +471,19 @@ public class ServiceImplementationTest extends TestCase {
       
   }
   
+  public void testCopyAsset() throws Exception {
+      JBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      impl.createCategory( "/", "templates", "ya" );
+      String uuid = impl.createNewRule( "testCopyAsset", "", "templates", "default", "drl" );
+      String uuid2 = impl.copyAsset( uuid, "default", "testCopyAsset2" );
+      assertNotSame( uuid, uuid2 );
+      
+      RuleAsset asset = impl.loadRuleAsset( uuid2 );
+      assertNotNull(asset); 
+      assertEquals("default", asset.metaData.packageName);
+      assertEquals("testCopyAsset2", asset.metaData.name);
+  }
+  
   
     
 }

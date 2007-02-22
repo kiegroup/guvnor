@@ -424,6 +424,16 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         getRulesRepository().moveRuleItemPackage( newPackage, uuid, comment );
         
     }
+
+    public String copyAsset(String assetUUID,
+                          String newPackage,
+                          String newName) {
+        return getRulesRepository().copyAsset( assetUUID, newPackage, newName );        
+    }
+
+    public String[] listSnapshots(String packageName) {
+        return getRulesRepository().listPackageSnapshots( packageName );        
+    }
     
 
 

@@ -426,6 +426,24 @@ public class MockRepositoryServiceAsync
         cb.onSuccess( null );
         
     }
+
+
+
+    public void copyAsset(String p0,
+                          String p1,
+                          String p2,
+                          AsyncCallback cb) {
+        cb.onSuccess( "lalalalal" );
+        
+    }
+
+
+
+    public void listSnapshots(String p0,
+                              AsyncCallback cb) {
+        cb.onSuccess( null );
+        
+    }
     
     
 

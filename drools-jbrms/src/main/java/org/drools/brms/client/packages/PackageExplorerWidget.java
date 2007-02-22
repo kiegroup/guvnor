@@ -89,8 +89,11 @@ public class PackageExplorerWidget extends Composite {
         layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP );
 
         
+        
         refreshTreeView( );
         
+        TreeItem item  = exTree.getItem( 0 );
+        if (item != null) exTree.setSelectedItem( item );
 
         layout.setWidget( 0, 1, new HTML("<i>Please choose a package to edit, explore, or create a new package.</i>") );
         

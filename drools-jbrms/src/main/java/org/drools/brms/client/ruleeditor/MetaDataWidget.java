@@ -140,7 +140,7 @@ public class MetaDataWidget extends FormStyleLayout {
 
 
     private void showEditPackage(final String pkg, Widget source) {
-        final FormStylePopup pop = new FormStylePopup("images/package_large.png", "Change package");
+        final FormStylePopup pop = new FormStylePopup("images/package_large.png", "Move this item to another package");
         pop.addAttribute( "Current package:", new Label(pkg) );
         final RulePackageSelector sel = new RulePackageSelector();
         pop.addAttribute( "New package:", sel );
