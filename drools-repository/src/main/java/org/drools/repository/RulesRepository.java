@@ -382,6 +382,27 @@ public class RulesRepository {
 
     
     /**
+     * This will copy an assets content to the new location.
+     */
+    public String copyAsset(String uuidSource, String destinationPackage, String destinationName) {
+        try {
+            AssetItem source = loadAssetByUUID( uuidSource );
+            String sourcePath = source.getNode().getPath();
+            
+            String destPath = this.getAreaNode( RULE_PACKAGE_AREA ).getPath() + "/" + destinationPackage +  "/" 
+                            + PackageItem.ASSET_FOLDER_NAME + "/" + destinationName;
+            this.session.getWorkspace().copy( sourcePath, destPath );
+            AssetItem dest = loadPackage( destinationPackage ).loadAsset( destinationName );
+            dest.updateStringProperty( destinationPackage, AssetItem.PACKAGE_NAME_PROPERTY );
+            dest.checkin( "Copied from " + source.getPackageName() + "/" + source.getName() );
+            return dest.getUUID();
+        } catch (RepositoryException e) {
+            log.error( "Unable to copy asset.", e );
+            throw new RulesRepositoryException( e );
+        }
+    }
+    
+    /**
      * Loads a RulePackage for the specified package name. Will throw
      * an exception if the specified rule package does not exist.
      * @param name the name of the package to load 

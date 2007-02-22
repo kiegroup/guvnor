@@ -256,6 +256,20 @@ public class RulesRepositoryTest extends TestCase {
         assertEquals(uuid, r.getUUID());
     }
     
+    public void testCopyAsset() throws Exception {
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+        repo.createPackage( "testCopyAsset", "asset" );
+        AssetItem item = repo.loadDefaultPackage().addAsset( "testCopyAssetSource", "desc" );
+        item.updateContent( "la" );
+        item.checkin( "" );
+        
+        String uuid = repo.copyAsset( item.getUUID(), "testCopyAsset", "testCopyAssetDestination" );
+        AssetItem dest = repo.loadAssetByUUID( uuid );
+        assertEquals("la", dest.getContent());
+        assertEquals("testCopyAsset", dest.getPackageName());
+        assertFalse(uuid.equals( item.getUUID() ));
+    }
+    
     public void testListStates()  {
         RulesRepository repo = RepositorySessionUtil.getRepository();
         StateItem[] items = repo.listStates();
