@@ -1,11 +1,16 @@
 package org.drools.brms.client.ruleeditor;
 
 import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.common.StatusChangePopup;
 import org.drools.brms.client.rpc.MetaData;
+import org.drools.brms.client.rpc.RepositoryService;
+import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -15,6 +20,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
@@ -91,15 +97,25 @@ public class ActionToolbar extends Composite {
         
         
         
-        Image save = new Image("images/save_edit.gif");
+        //Image save = new Image("images/save_edit.gif");
+        Button save = new Button("Save changes");
         save.setTitle( "Check in changes." );        
         save.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                doCheckinConfirm();
+                doCheckinConfirm(w);
             }
         });
         
         saveControls.add( save );
+        
+        Button copy = new Button("Copy");
+        copy.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                doCopyDialog(w);
+            }
+        } );
+        
+        saveControls.add( copy );
         
         HorizontalPanel windowControls = new HorizontalPanel();
         
@@ -133,12 +149,45 @@ public class ActionToolbar extends Composite {
         formatter.setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
     }
     
+    protected void doCopyDialog(Widget w) {
+        final FormStylePopup form = new FormStylePopup("images/rule_asset.gif", "Copy this item");
+        final TextBox newName = new TextBox();
+        final RulePackageSelector newPackage = new RulePackageSelector();
+        form.addAttribute( "New name:", newName );
+        form.addAttribute( "New package:", newPackage );
+        
+        Button ok = new Button("Create copy");
+        ok.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                RepositoryServiceFactory.getService().copyAsset( uuid, newPackage.getSelectedPackage(), newName.getText(), 
+                                                                 new GenericCallback() {
+                                                                    public void onSuccess(Object data) {
+                                                                        completedCopying(newName.getText(), newPackage.getSelectedPackage());
+                                                                        form.hide();
+                                                                    }
+
+
+                });
+            }
+        } );
+        form.addAttribute( "", ok );
+        
+        form.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop());
+        form.show();
+        
+    }
+    
+    private void completedCopying(String name, String pkg) {
+        Window.alert( "Created a new item called [" + name + "] in package: [" + pkg + "] successfully." );
+        
+    }
+
     /**
      * Called when user wants to checkin.
      */
-    protected void doCheckinConfirm() {
+    protected void doCheckinConfirm(Widget w) {
         
-        final CheckinPopup pop = new CheckinPopup(200, getAbsoluteTop(), "Check in changes.");
+        final CheckinPopup pop = new CheckinPopup(w.getAbsoluteLeft(), w.getAbsoluteTop(), "Check in changes.");
         pop.setCommand( new Command() {
 
             public void execute() {
