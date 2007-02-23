@@ -21,11 +21,8 @@ import java.util.ArrayList;
 import org.drools.brms.client.JBRMSFeature.ComponentInfo;
 
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is the list of features that make up the rule management console.

@@ -1,12 +1,10 @@
 package org.drools.brms.server.util;
 
 import java.lang.reflect.Method;
-import java.util.Calendar;
-
-import org.drools.brms.server.util.TableDisplayHandler.RowLoader;
-import org.drools.repository.AssetItem;
 
 import junit.framework.TestCase;
+
+import org.drools.brms.server.util.TableDisplayHandler.RowLoader;
 
 public class TableDisplayHandlerTest extends TestCase {
 

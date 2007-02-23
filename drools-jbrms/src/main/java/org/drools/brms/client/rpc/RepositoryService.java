@@ -144,4 +144,15 @@ public interface RepositoryService extends RemoteService {
      * by taking a labelled copy of a package, at a point in time, for instance for deployment.
      */
     public String[] listSnapshots(String packageName);
+    
+
+    /**
+     * Create a package snapshot for deployment.
+     * @param packageName THe name of the package to copy.
+     * @param snapshotName The name of the snapshot. Has to be unique unless existing one is to be replaced.
+     * @param replaceExisting Replace the existing one (must be true to replace an existing snapshot of the same name).
+     * @param comment A comment to be added to the copied one.
+     */
+    public void createPackageSnapshot(String packageName, String snapshotName, boolean replaceExisting, String comment);
+    
 }

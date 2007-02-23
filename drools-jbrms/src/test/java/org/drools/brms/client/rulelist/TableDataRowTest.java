@@ -1,8 +1,8 @@
 package org.drools.brms.client.rulelist;
 
-import org.drools.brms.client.rpc.TableDataRow;
-
 import junit.framework.TestCase;
+
+import org.drools.brms.client.rpc.TableDataRow;
 
 public class TableDataRowTest extends TestCase {
 

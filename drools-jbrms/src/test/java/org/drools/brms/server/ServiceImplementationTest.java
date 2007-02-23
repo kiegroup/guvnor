@@ -15,7 +15,6 @@ import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.rulelist.AssetItemListViewer;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.repository.AssetItem;
-import org.drools.repository.AssetItemIterator;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.StateItem;
@@ -484,6 +483,23 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals("testCopyAsset2", asset.metaData.name);
   }
   
+  public void testSnapshot() throws Exception {
+      JBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      impl.createCategory( "/", "snapshotTesting", "y" );
+      impl.createPackage( "testSnapshot", "d" );
+      String uuid = impl.createNewRule( "testSnapshotRule", "", "snapshotTesting", "testSnapshot", "drl" );
+      
+      impl.createPackageSnapshot( "testSnapshot", "X", false, "ya" );
+      String[] snaps = impl.listSnapshots( "testSnapshot" );
+      assertEquals(1, snaps.length);
+      
+      
+      impl.createPackageSnapshot( "testSnapshot", "Y", false, "we" );
+      assertEquals(2, impl.listSnapshots( "testSnapshot" ).length);
+      impl.createPackageSnapshot( "testSnapshot", "X", true, "we" );
+      assertEquals(2, impl.listSnapshots( "testSnapshot" ).length);
+      
+  }
   
     
 }

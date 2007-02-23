@@ -8,12 +8,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.jcr.LoginException;
-import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
 import org.drools.brms.client.common.AssetFormats;
@@ -32,7 +27,6 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
-import org.drools.repository.RepositoryConfigurator;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
@@ -433,6 +427,23 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
 
     public String[] listSnapshots(String packageName) {
         return getRulesRepository().listPackageSnapshots( packageName );        
+    }
+
+    public void createPackageSnapshot(String packageName,
+                                      String snapshotName,
+                                      boolean replaceExisting,
+                                      String comment) {
+        RulesRepository repo = getRulesRepository();
+        
+        if (replaceExisting) {
+            repo.removePackageSnapshot( packageName, snapshotName );                        
+        } 
+        
+        repo.createPackageSnapshot( packageName, snapshotName );
+        PackageItem item = repo.loadPackageSnapshot( packageName, snapshotName );
+        item.updateCheckinComment( comment );
+        repo.save();
+        
     }
     
 

@@ -2,6 +2,8 @@ package org.drools.brms.client.modeldriven;
 
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
@@ -11,8 +13,6 @@ import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 
 import com.thoughtworks.xstream.XStream;
-
-import junit.framework.TestCase;
 
 public class RuleModelTest extends TestCase {
 

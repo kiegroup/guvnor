@@ -17,7 +17,6 @@ package org.drools.brms.client;
 
 import org.drools.brms.client.decisiontable.EditableDTGrid;
 
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**

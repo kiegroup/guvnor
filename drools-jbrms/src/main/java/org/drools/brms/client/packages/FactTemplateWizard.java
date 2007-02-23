@@ -1,13 +1,10 @@
 package org.drools.brms.client.packages;
 
-import java.util.HashMap;
-
 import org.drools.brms.client.common.FormStylePopup;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;

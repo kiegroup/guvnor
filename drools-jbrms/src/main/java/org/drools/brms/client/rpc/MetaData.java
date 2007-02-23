@@ -2,8 +2,6 @@ package org.drools.brms.client.rpc;
 
 import java.util.Date;
 
-import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**

@@ -36,7 +36,8 @@ public class RepositoryServiceFactory {
     }
 
     private static RepositoryServiceAsync getMockService() {
-        return new MockRepositoryServiceAsync();
+        //return new MockRepositoryServiceAsync();
+        return null;
     }
 
     private static RepositoryServiceAsync getRealService() {

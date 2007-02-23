@@ -1,9 +1,9 @@
 package org.drools.brms.client.modeldriven;
 
+import junit.framework.TestCase;
+
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
-
-import junit.framework.TestCase;
 
 public class ActionSetFieldTest extends TestCase {
 

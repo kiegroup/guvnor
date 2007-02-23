@@ -7,11 +7,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.fileupload.FileItem;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
-
-import junit.framework.TestCase;
 
 public class FileUploadServletTest extends TestCase {
 

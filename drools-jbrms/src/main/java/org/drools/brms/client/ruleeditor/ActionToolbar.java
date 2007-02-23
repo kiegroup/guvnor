@@ -5,7 +5,6 @@ import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.common.StatusChangePopup;
 import org.drools.brms.client.rpc.MetaData;
-import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 

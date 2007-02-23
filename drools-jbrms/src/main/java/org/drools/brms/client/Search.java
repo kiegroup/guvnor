@@ -15,7 +15,6 @@
  */
 package org.drools.brms.client;
 
-import com.google.gwt.user.client.ui.Image;
 
 /**
  * Demonstrates {@link com.google.gwt.user.client.ui.Table}.

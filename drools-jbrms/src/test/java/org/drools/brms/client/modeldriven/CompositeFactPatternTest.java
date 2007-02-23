@@ -1,9 +1,9 @@
 package org.drools.brms.client.modeldriven;
 
+import junit.framework.TestCase;
+
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
-
-import junit.framework.TestCase;
 
 public class CompositeFactPatternTest extends TestCase {
 

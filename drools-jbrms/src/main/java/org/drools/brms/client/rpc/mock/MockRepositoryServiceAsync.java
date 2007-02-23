@@ -35,9 +35,10 @@ import com.google.gwt.user.client.rpc.SerializableException;
  * This is a repository back end simulator. 
  */
 public class MockRepositoryServiceAsync
-    implements
-    RepositoryServiceAsync {
+//    implements
+//    RepositoryServiceAsync {
 
+{
 
     public void loadChildCategories(String categoryPath,
                                  AsyncCallback callback) {

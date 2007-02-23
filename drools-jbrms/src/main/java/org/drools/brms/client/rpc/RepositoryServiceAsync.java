@@ -35,6 +35,7 @@ public interface RepositoryServiceAsync
     public void changeAssetPackage(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback cb);
     public void copyAsset(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback cb);
     public void listSnapshots(java.lang.String p0, AsyncCallback cb);
+    public void createPackageSnapshot(java.lang.String p0, java.lang.String p1, boolean p2, java.lang.String p3, AsyncCallback cb);
     public void changeState(java.lang.String p0, java.lang.String p1, boolean p2, AsyncCallback cb);
 
 

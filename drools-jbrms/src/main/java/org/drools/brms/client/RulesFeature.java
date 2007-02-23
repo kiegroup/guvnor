@@ -14,8 +14,8 @@ import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.ruleeditor.NewAssetWizard;
 import org.drools.brms.client.ruleeditor.RuleViewer;
-import org.drools.brms.client.rulelist.EditItemEvent;
 import org.drools.brms.client.rulelist.AssetItemListViewer;
+import org.drools.brms.client.rulelist.EditItemEvent;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
