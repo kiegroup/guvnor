@@ -476,6 +476,31 @@ public class RulesRepository {
             throw new RulesRepositoryException(e);
         }
     }
+    
+    /**
+     * This will remove the specified snapshot.
+     */
+    public void removePackageSnapshot(String packageName, String snapshotName) {
+        log.info( "Removing snapshot for [" + packageName + "] called [" + snapshotName + "]");
+        try {
+            Node snaps = this.getAreaNode( PACKAGE_SNAPSHOT_AREA );
+            
+            if (!snaps.hasNode( packageName )) {
+                return;
+            }
+            
+            Node pkgSnaps = snaps.getNode( packageName ); 
+
+            if (pkgSnaps.hasNode( snapshotName )) {
+                pkgSnaps.getNode( snapshotName ).remove();
+            }
+            
+            save();
+        } catch (RepositoryException e) {
+            log.error( "Unable to remove snapshot", e );
+            throw new RulesRepositoryException(e);
+        }
+    }
 
     /**
      * This will return or create the default package for rules that have no home yet.

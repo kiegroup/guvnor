@@ -313,6 +313,8 @@ public abstract class VersionableItem extends Item {
     }
     
 
+    
+
     /**
      * See the Dublin Core documentation for more
      * explanation: http://dublincore.org/documents/dces/

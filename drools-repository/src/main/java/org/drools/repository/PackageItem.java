@@ -560,6 +560,13 @@ public class PackageItem extends VersionableItem {
     public void updateExternalURI(String uri) {
         updateStringProperty( uri, EXTERNAL_URI_PROPERTY_NAME );
     }
+    
+    /**
+     * Update the checkin comment. 
+     */
+    public void updateCheckinComment(String comment) {
+        updateStringProperty(comment, VersionableItem.CHECKIN_COMMENT);
+    }    
 
     /**
      * This will change the status of this package, and all the contained assets. 

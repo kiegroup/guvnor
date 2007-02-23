@@ -95,14 +95,28 @@ public class PackageItemTest extends TestCase {
         it1.checkin( "c" );
         it2.checkin( "c" );
         
+        String ver1 = it1.getVersionNumber();
+        String ver2 = it2.getVersionNumber();
+        assertFalse( "".equals( ver1 ));
         repo.createPackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
         
         
         PackageItem pkg2 = repo.loadPackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
         assertNotNull(pkg2);
-        
-        assertEquals(2, iteratorToList( pkg2.getAssets() ).size());
+        List snapAssets = iteratorToList( pkg2.getAssets() );
+        assertEquals(2, snapAssets.size());
         assertFalse(pkg2.getUUID().equals( pkg.getUUID() ));
+        assertTrue(snapAssets.get( 0 ) instanceof AssetItem);
+        assertTrue(snapAssets.get( 1 ) instanceof AssetItem);
+        
+        AssetItem sn1 = (AssetItem) snapAssets.get( 0 );
+        AssetItem sn2 = (AssetItem) snapAssets.get( 1 );
+        assertEquals("la", sn1.getDescription());
+        assertEquals("la", sn2.getDescription());
+        assertEquals(ver1, sn1.getVersionNumber());
+        assertEquals(ver2, sn2.getVersionNumber());
+        
+        
         
         //now check we can list the snappies
         String[] res = repo.listPackageSnapshots("testPackageSnapshot");
@@ -111,6 +125,15 @@ public class PackageItemTest extends TestCase {
         assertEquals("PROD 2.0", res[0]);
         
         res = repo.listPackageSnapshots( "does not exist" );
+        assertEquals(0, res.length);
+        
+        repo.removePackageSnapshot( "testPackageSnapshot", "XX" );
+        //does nothing... but should not barf...
+        
+        repo.removePackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
+        repo.save();
+        
+        res = repo.listPackageSnapshots( "testPackageSnapshot" );
         assertEquals(0, res.length);
         
     }
@@ -510,6 +533,13 @@ public class PackageItemTest extends TestCase {
         
         AssetItem rule_ = getRepo().loadAssetByUUID( rule.getUUID() );
         assertEquals(rule.getVersionNumber(), rule_.getVersionNumber());
+        
+        item = getRepo().loadPackage( "testPackageCheckinConfig");
+        String v = item.getVersionNumber();
+        item.updateCheckinComment( "x" );
+        getRepo().save();
+        
+        assertEquals(v, item.getVersionNumber());
         
     }
     
