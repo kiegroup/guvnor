@@ -21,15 +21,15 @@ public interface RepositoryServiceAsync
     public void loadTableConfig(java.lang.String p0, AsyncCallback cb);
     public void createCategory(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback cb);
     public void createNewRule(java.lang.String p0, java.lang.String p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, AsyncCallback cb);
-    public void listRulePackages(AsyncCallback cb);
+    public void listPackages(AsyncCallback cb);
     public void loadRuleAsset(java.lang.String p0, AsyncCallback cb);
     public void loadAssetHistory(java.lang.String p0, AsyncCallback cb);
     public void checkinVersion(org.drools.brms.client.rpc.RuleAsset p0, AsyncCallback cb);
     public void restoreVersion(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback cb);
     public void createPackage(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
-    public void loadPackage(java.lang.String p0, AsyncCallback cb);
+    public void loadPackageConfig(java.lang.String p0, AsyncCallback cb);
     public void savePackage(org.drools.brms.client.rpc.PackageConfigData p0, AsyncCallback cb);
-    public void listAssetsByFormat(java.lang.String p0, String[] p1, int p2, int p3, AsyncCallback cb);
+    public void listAssets(java.lang.String p0, String[] p1, int p2, int p3, AsyncCallback cb);
     public void listStates(AsyncCallback cb);
     public void createState(java.lang.String p0, AsyncCallback cb);
     public void changeAssetPackage(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback cb);
@@ -37,6 +37,5 @@ public interface RepositoryServiceAsync
     public void listSnapshots(java.lang.String p0, AsyncCallback cb);
     public void createPackageSnapshot(java.lang.String p0, java.lang.String p1, boolean p2, java.lang.String p3, AsyncCallback cb);
     public void changeState(java.lang.String p0, java.lang.String p1, boolean p2, AsyncCallback cb);
-
 
 }

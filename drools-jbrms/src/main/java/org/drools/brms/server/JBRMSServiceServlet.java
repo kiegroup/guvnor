@@ -2,8 +2,9 @@ package org.drools.brms.server;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.rpc.SnapshotInfo;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
@@ -48,8 +50,6 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
 
     private static final long serialVersionUID = 3150768417428383474L;
     private static final DateFormat dateFormatter = DateFormat.getInstance();
-    
-
 
 
     private MetaDataMapper metaDataMapper;
@@ -110,15 +110,30 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
 
     }
 
-    public String[] listRulePackages() {
+    public PackageConfigData[] listPackages() {
         Iterator pkgs = getRulesRepository().listPackages();
         List result = new ArrayList();
         while(pkgs.hasNext()) {
             PackageItem pkg = (PackageItem) pkgs.next();
-            result.add( pkg.getName() );
+
+            PackageConfigData data = new PackageConfigData();
+            data.uuid = pkg.getUUID();
+            data.name = pkg.getName();
+            
+            result.add( data );
         }
-        String[] resultArr = (String[]) result.toArray( new String[result.size()] );
-        Arrays.sort( resultArr );
+        Collections.sort( result, new Comparator() {
+
+            public int compare(Object o1,
+                               Object o2) {
+                PackageConfigData d1 = (PackageConfigData) o1;
+                PackageConfigData d2 = (PackageConfigData) o2;
+                return d1.name.compareTo( d2.name );
+            }
+            
+        });
+        PackageConfigData[] resultArr = (PackageConfigData[]) result.toArray( new PackageConfigData[result.size()] );
+
         return resultArr;
     }
 
@@ -335,8 +350,8 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         return item.getUUID();
     }
 
-    public PackageConfigData loadPackage(String name) {
-        PackageItem item = getRulesRepository().loadPackage( name );
+    public PackageConfigData loadPackageConfig(String uuid) {
+        PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
         
         PackageConfigData data = new PackageConfigData();
         data.uuid = item.getUUID();
@@ -364,12 +379,12 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         return item.getUUID();
     }
 
-    public TableDataResult listAssetsByFormat(String packageName,
+    public TableDataResult listAssets(String uuid,
                                               String formats[],
                                               int numRows,
                                               int startRow) throws SerializableException {
         long start = System.currentTimeMillis();
-        PackageItem pkg = getRulesRepository().loadPackage( packageName );
+        PackageItem pkg = getRulesRepository().loadPackageByUUID( uuid );
         AssetItemIterator it = pkg.listAssetsByFormat( formats );
         if (numRows != -1) {
             it.skip( startRow );
@@ -425,8 +440,20 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         return getRulesRepository().copyAsset( assetUUID, newPackage, newName );        
     }
 
-    public String[] listSnapshots(String packageName) {
-        return getRulesRepository().listPackageSnapshots( packageName );        
+    public SnapshotInfo[] listSnapshots(String packageName) {
+        RulesRepository repo = getRulesRepository();
+        
+        String[] snaps = repo.listPackageSnapshots( packageName );
+        SnapshotInfo[] res = new SnapshotInfo[snaps.length];
+        for ( int i = 0; i < snaps.length; i++ ) {
+            PackageItem snap = repo.loadPackageSnapshot( packageName, snaps[i] );
+            SnapshotInfo info = new SnapshotInfo(); 
+            res[i] = info;
+            info.comment = snap.getCheckinComment();
+            info.name = snaps[i];
+            info.uuid = snap.getUUID();
+        }
+        return res;       
     }
 
     public void createPackageSnapshot(String packageName,

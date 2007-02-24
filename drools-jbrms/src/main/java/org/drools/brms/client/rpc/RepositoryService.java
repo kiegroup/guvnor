@@ -42,8 +42,9 @@ public interface RepositoryService extends RemoteService {
     
     /**
      * This returns a list of packages where rules may be added.
+     * Only the UUID and the name need to be populated.
      */
-    public String[] listRulePackages();
+    public PackageConfigData[] listPackages();
     
     /**
      * This loads up all the stuff for a 
@@ -79,11 +80,10 @@ public interface RepositoryService extends RemoteService {
     public String createPackage(String name, String description) throws SerializableException;
     
     /**
-     * Loads a package by its name (NOT UUID !).
-     * @param name The name of the package (NOT THE UUID !).
+     * Loads a package by its uuid.
      * @return Well, its pretty obvious if you think about it for a minute. Really.
      */
-    public PackageConfigData loadPackage(String name);
+    public PackageConfigData loadPackageConfig(String uuid);
     
     /**
      * Saves the package config data in place (does not create a new version of anything).
@@ -96,12 +96,12 @@ public interface RepositoryService extends RemoteService {
      * Given a format, this will return assets that match.
      * It can also be used for "pagination" by passing in start and 
      * finish row numbers.
-     * @param packageName The package name to search inside.
+     * @param packageUUID The package uuid to search inside.
      * @param format The format to filter on.
      * @param numRows The number of rows to return. -1 means all.
      * @param startRow The starting row number if paging - if numRows is -1 then this is ignored.
      */
-    public TableDataResult listAssetsByFormat(String packageName, String formats[], int numRows, int startRow) throws SerializableException;
+    public TableDataResult listAssets(String packageUUID, String formats[], int numRows, int startRow) throws SerializableException;
     
     /**
      * Returns a list of valid states.
@@ -143,7 +143,7 @@ public interface RepositoryService extends RemoteService {
      * This will load a list of snapshots for the given package. Snapshots are created 
      * by taking a labelled copy of a package, at a point in time, for instance for deployment.
      */
-    public String[] listSnapshots(String packageName);
+    public SnapshotInfo[] listSnapshots(String packageName);
     
 
     /**

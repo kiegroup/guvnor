@@ -9,6 +9,7 @@ import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleContentText;
+import org.drools.brms.client.rpc.SnapshotInfo;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
@@ -69,16 +70,20 @@ public class ServiceImplementationTest extends TestCase {
       assertNotNull(result);
       assertFalse("".equals( result ));
       
-      String[] packages = impl.listRulePackages();
+      PackageConfigData[] packages = impl.listPackages();
       assertTrue(packages.length > 0);
       
       boolean found = false;
       for ( int i = 0; i < packages.length; i++ ) {
-          if (packages[i].equals( "another" )) {
+          if (packages[i].name.equals( "another" )) {
               found = true;
           }
       }
+      
       assertTrue(found);
+      
+      assertFalse(packages[0].uuid == null);
+      assertFalse(packages[0].uuid.equals( "" ));
       
  //just for performance testing with scaling up numbers of rules      
 //      for (int i=1; i <= 1000; i++) {
@@ -229,7 +234,7 @@ public class ServiceImplementationTest extends TestCase {
   public void testCheckin() throws Exception {
           MockJBRMSServiceServlet serv = new MockJBRMSServiceServlet();
           
-          serv.listRulePackages();
+          serv.listPackages();
           
           serv.createCategory( "/", "testCheckinCategory", "this is a description" );
           serv.createCategory( "/", "testCheckinCategory2", "this is a description" );
@@ -287,7 +292,7 @@ public class ServiceImplementationTest extends TestCase {
   
   public void testCreatePackage() throws Exception {
       MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
-      String[] pkgs = impl.listRulePackages();
+      PackageConfigData[] pkgs = impl.listPackages();
       String uuid = impl.createPackage( "testCreatePackage", "this is a new package" );
       assertNotNull( uuid );
       
@@ -297,9 +302,9 @@ public class ServiceImplementationTest extends TestCase {
       
       
       
-      assertEquals(pkgs.length + 1, impl.listRulePackages().length);
+      assertEquals(pkgs.length + 1, impl.listPackages().length);
       
-      PackageConfigData conf = impl.loadPackage( "testCreatePackage" );
+      PackageConfigData conf = impl.loadPackageConfig( uuid );
       assertEquals("this is a new package", conf.description);
       assertNotNull(conf.lastModified);
   }
@@ -307,12 +312,13 @@ public class ServiceImplementationTest extends TestCase {
   public void testLoadPackageConfig() throws Exception {
       MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
       PackageItem it = impl.repo.loadDefaultPackage();
+      String uuid = it.getUUID();
       it.updateCoverage( "xyz" );
       it.updateExternalURI( "ext" );
       it.updateHeader( "header" );
       impl.repo.save();
       
-      PackageConfigData data = impl.loadPackage( "default" );
+      PackageConfigData data = impl.loadPackageConfig( uuid );
       assertNotNull(data);
       
       assertEquals("default", data.name);
@@ -326,7 +332,7 @@ public class ServiceImplementationTest extends TestCase {
   public void testPackageConfSave() throws Exception {
       MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
       String uuid = impl.createPackage( "testPackageConfSave", "a desc" );
-      PackageConfigData data = impl.loadPackage( "testPackageConfSave" );
+      PackageConfigData data = impl.loadPackageConfig( uuid );
       
       data.description = "new desc";
       data.header = "wa";
@@ -337,7 +343,7 @@ public class ServiceImplementationTest extends TestCase {
       assertNotNull(uuid);
       assertEquals(uuid, uuid2);
       
-      data = impl.loadPackage( "testPackageConfSave" );
+      data = impl.loadPackageConfig( uuid );
       assertEquals("new desc", data.description);
       assertEquals("wa", data.header);
       assertEquals("new URI", data.externalURI);      
@@ -347,38 +353,38 @@ public class ServiceImplementationTest extends TestCase {
       MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
       String cat = "testListByFormat";
       impl.createCategory( "/", cat, "ya" );
-      impl.createPackage( "testListByFormat", "used for listing by format." );
+      String pkgUUID = impl.createPackage( "testListByFormat", "used for listing by format." );
       
       String uuid = impl.createNewRule( "testListByFormat", "x", cat, "testListByFormat", "testListByFormat" );
       String uuid2 = impl.createNewRule( "testListByFormat2", "x", cat, "testListByFormat", "testListByFormat" );
       String uuid3 = impl.createNewRule( "testListByFormat3", "x", cat, "testListByFormat", "testListByFormat" );
       String uuid4 = impl.createNewRule( "testListByFormat4", "x", cat, "testListByFormat", "testListByFormat" );
 
-      TableDataResult res = impl.listAssetsByFormat( "testListByFormat", arr("testListByFormat"), -1, 0 );
+      TableDataResult res = impl.listAssets( pkgUUID, arr("testListByFormat"), -1, 0 );
       assertEquals(4, res.data.length);
       assertEquals(uuid, res.data[0].id);
       assertEquals("testListByFormat", res.data[0].values[0]);
       
-      res = impl.listAssetsByFormat( "testListByFormat", arr("testListByFormat"), 4, 0 );      
+      res = impl.listAssets( pkgUUID , arr("testListByFormat"), 4, 0 );      
       assertEquals(4, res.data.length);
 
-      res = impl.listAssetsByFormat( "testListByFormat", arr("testListByFormat"), 2, 0 );      
+      res = impl.listAssets( pkgUUID, arr("testListByFormat"), 2, 0 );      
       assertEquals(2, res.data.length);
       assertEquals(uuid, res.data[0].id);
       
       
-      res = impl.listAssetsByFormat( "testListByFormat", arr("testListByFormat"), 2, 2 );      
+      res = impl.listAssets( pkgUUID, arr("testListByFormat"), 2, 2 );      
       assertEquals(2, res.data.length);
       assertEquals(uuid3, res.data[0].id);
       
       
       uuid = impl.createNewRule( "testListByFormat5", "x", cat, "testListByFormat", "otherFormat" );
       
-      res = impl.listAssetsByFormat( "testListByFormat", arr("otherFormat"), 40, 0 );
+      res = impl.listAssets( pkgUUID, arr("otherFormat"), 40, 0 );
       assertEquals(1, res.data.length);
       assertEquals(uuid, res.data[0].id);
 
-      res = impl.listAssetsByFormat( "testListByFormat", new String[] {"otherFormat", "testListByFormat"}, 40, 0 );
+      res = impl.listAssets( pkgUUID, new String[] {"otherFormat", "testListByFormat"}, 40, 0 );
       assertEquals(5, res.data.length);
       
 
@@ -431,7 +437,7 @@ public class ServiceImplementationTest extends TestCase {
       impl.createState( "testState2" );
       impl.changeState( packagUUID, "testState2", true );
       
-      PackageConfigData pkg = impl.loadPackage( "testStatus" );
+      PackageConfigData pkg = impl.loadPackageConfig( packagUUID );
       assertEquals("testState2", pkg.state);
       
       asset = impl.loadRuleAsset( ruleUUID2 );
@@ -449,23 +455,27 @@ public class ServiceImplementationTest extends TestCase {
       if (cats.length == 0) {
           impl.createCategory( "/", "la", "d" );
       }
-      impl.createPackage( "sourcePackage", "description" );
-      impl.createPackage( "targetPackage", "description" );
+      String sourcePkgId = impl.createPackage( "sourcePackage", "description" );
+      String destPkgId = impl.createPackage( "targetPackage", "description" );
       
       String cat = impl.loadChildCategories( "/" )[0];
       
       String uuid = impl.createNewRule( "testMovePackage", "desc", cat, "sourcePackage", "drl" );
       
-      TableDataResult res = impl.listAssetsByFormat( "targetPackage", new String[] {"drl"}, 2, 0 );
+      TableDataResult res = impl.listAssets( destPkgId, new String[] {"drl"}, 2, 0 );
       assertEquals(0, res.data.length);
       
       
       impl.changeAssetPackage( uuid, "targetPackage", "yeah" );
-      res = impl.listAssetsByFormat( "targetPackage", new String[] {"drl"}, 2, 0 );
+      res = impl.listAssets( destPkgId, new String[] {"drl"}, 2, 0 );
       
       assertEquals(1, res.data.length);
       
+      res = impl.listAssets( sourcePkgId, new String[] {"drl"}, 2, 0 );
       
+      assertEquals(0, res.data.length);
+      
+    
       
       
   }
@@ -490,8 +500,11 @@ public class ServiceImplementationTest extends TestCase {
       String uuid = impl.createNewRule( "testSnapshotRule", "", "snapshotTesting", "testSnapshot", "drl" );
       
       impl.createPackageSnapshot( "testSnapshot", "X", false, "ya" );
-      String[] snaps = impl.listSnapshots( "testSnapshot" );
+      SnapshotInfo[] snaps = impl.listSnapshots( "testSnapshot" );
       assertEquals(1, snaps.length);
+      assertEquals("X", snaps[0].name);
+      assertEquals("ya", snaps[0].comment);
+      assertNotNull(snaps[0].uuid);
       
       
       impl.createPackageSnapshot( "testSnapshot", "Y", false, "we" );

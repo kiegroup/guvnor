@@ -130,7 +130,7 @@ public class PackageEditor extends FormStyleLayout {
      */
     private void reload() {
         LoadingPopup.showMessage( "Refreshing package data..." );
-        RepositoryServiceFactory.getService().loadPackage( this.conf.name, new GenericCallback() {
+        RepositoryServiceFactory.getService().loadPackageConfig( this.conf.uuid, new GenericCallback() {
             public void onSuccess(Object data) {
                 LoadingPopup.close();
                 conf = (PackageConfigData) data;

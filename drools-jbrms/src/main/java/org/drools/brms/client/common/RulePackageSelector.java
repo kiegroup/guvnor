@@ -1,5 +1,6 @@
 package org.drools.brms.client.common;
 
+import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -17,16 +18,17 @@ public class RulePackageSelector extends Composite {
     public RulePackageSelector() {
         packageList = new ListBox();
         
-        RepositoryServiceFactory.getService().listRulePackages( new AsyncCallback() {
+        RepositoryServiceFactory.getService().listPackages( new AsyncCallback() {
 
             public void onFailure(Throwable arg0) {
                 ErrorPopup.showMessage( "Unable to load list of packages." );                
             }
 
             public void onSuccess(Object o) {
-                String[] list = (String[]) o;
+                PackageConfigData[] list = (PackageConfigData[]) o;
+
                 for ( int i = 0; i < list.length; i++ ) {
-                    packageList.addItem( list[i] );
+                    packageList.addItem( list[i].name );
                 }
                 
             }

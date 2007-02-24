@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
+import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
+import org.drools.brms.client.rpc.SnapshotInfo;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.table.SortableTable;
@@ -52,23 +54,23 @@ public class PackageSnapshotView extends Composite {
 
     private void refreshPackageList() {
         LoadingPopup.showMessage( "Loading package list..." );
-        service.listRulePackages( new GenericCallback() {
+        service.listPackages( new GenericCallback() {
             public void onSuccess(Object data) {
-                String[] list = (String[]) data;
+                PackageConfigData[] list = (PackageConfigData[]) data;
                 addPackages(list);
                 LoadingPopup.close();
             }            
         });
     }
 
-    private void addPackages(final String[] list) {
+    private void addPackages(final PackageConfigData[] list) {
         
         Tree snapTree = new Tree();
         
         VerticalPanel packages = new VerticalPanel();
         for ( int i = 0; i < list.length; i++ ) {
-            final String pkgName = list[i];
-            
+            final String pkgName = list[i].name;
+            final String uuid = list[i].uuid;
             TreeItem item  = makeItem( pkgName, "images/package_snapshot.gif", new Command() {
                 public void execute() {
                     showPackage(pkgName);
@@ -110,7 +112,8 @@ public class PackageSnapshotView extends Composite {
         LoadingPopup.showMessage( "Loading snapshots..." );
         service.listSnapshots( pkgName, new GenericCallback() {
             public void onSuccess(Object data) {
-                String[] list = (String[]) data;
+                SnapshotInfo[] list = (SnapshotInfo[]) data;
+                
                 renderListOfSnapshots(list);
                 LoadingPopup.close();
             }
@@ -120,10 +123,10 @@ public class PackageSnapshotView extends Composite {
     /**
      * This will render the snapshot list.
      */
-    protected void renderListOfSnapshots(String[] list) {
+    protected void renderListOfSnapshots(SnapshotInfo[] list) {
         FlexTable table = new FlexTable();
         for ( int i = 0; i < list.length; i++ ) {
-            table.setWidget( i, 0, new Label( list[i] ) );
+            table.setWidget( i, 0, new Label( list[i].name ) );
             
         }
         layout.setWidget( 0, 1, table );

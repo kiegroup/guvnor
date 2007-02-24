@@ -41,7 +41,6 @@ public class PackageExplorerWidget extends Composite {
     private final Tree exTree;
     private final FlexTable layout;
     private final TreeListener treeListener;
-    private String currentPackage;
     private AssetItemListViewer listView;
     private EditItemEvent editEvent;
     
@@ -56,7 +55,7 @@ public class PackageExplorerWidget extends Composite {
 
             public void onTreeItemSelected(TreeItem selected) {
                 PackageTreeItem event = (PackageTreeItem) selected.getUserObject();
-                currentPackage = event.name;
+                
                 Command selectEvent = event.command;
                 LoadingPopup.showMessage( "Please wait..." );
                 DeferredCommand.add( selectEvent );                
@@ -215,10 +214,11 @@ public class PackageExplorerWidget extends Composite {
         
         LoadingPopup.showMessage( "Loading list of packages ..." );
         
-        RepositoryServiceFactory.getService().listRulePackages( new GenericCallback() {
+        RepositoryServiceFactory.getService().listPackages( new GenericCallback() {
 
             public void onSuccess(Object data) {
-                String[] packages = (String[]) data;
+                PackageConfigData[] packages = (PackageConfigData[]) data;
+                
                 
                 exTree.clear();
                 for ( int i = 0; i < packages.length; i++ ) {
@@ -284,19 +284,19 @@ public class PackageExplorerWidget extends Composite {
      * Add a package to the tree.
      * @param name
      */
-    private void addPackage(final String name) {
+    private void addPackage(final PackageConfigData conf) {
         
-        TreeItem pkg = makeItem(name, "images/package.gif", new PackageTreeItem(name,new Command() {
+        TreeItem pkg = makeItem(conf.name, "images/package.gif", new PackageTreeItem(new Command() {
             public void execute() {
-                loadPackageConfig(name);
+                loadPackageConfig(conf.uuid);
             }
         }));
         
-        pkg.addItem( makeItem("Business rules", "images/rule_asset.gif", showListEvent(name, AssetFormats.BUSINESS_RULE_FORMATS)) );
-        pkg.addItem( makeItem("Technical rules", "images/technical_rule_assets.gif", showListEvent(name, AssetFormats.TECHNICAL_RULE_FORMATS)) );
-        pkg.addItem( makeItem("Functions", "images/function_assets.gif", showListEvent(name, new String[] {AssetFormats.FUNCTION})) );
-        pkg.addItem( makeItem("DSL", "images/dsl.gif", showListEvent(name, new String[] {AssetFormats.DSL})) );
-        pkg.addItem( makeItem("Model", "images/model_asset.gif", showListEvent(name, new String[] {AssetFormats.MODEL}) ) );
+        pkg.addItem( makeItem("Business rules", "images/rule_asset.gif", showListEvent(conf.uuid, AssetFormats.BUSINESS_RULE_FORMATS)) );
+        pkg.addItem( makeItem("Technical rules", "images/technical_rule_assets.gif", showListEvent(conf.uuid, AssetFormats.TECHNICAL_RULE_FORMATS)) );
+        pkg.addItem( makeItem("Functions", "images/function_assets.gif", showListEvent(conf.uuid, new String[] {AssetFormats.FUNCTION})) );
+        pkg.addItem( makeItem("DSL", "images/dsl.gif", showListEvent(conf.uuid, new String[] {AssetFormats.DSL})) );
+        pkg.addItem( makeItem("Model", "images/model_asset.gif", showListEvent(conf.uuid, new String[] {AssetFormats.MODEL}) ) );
         
         exTree.addItem( pkg );
     }
@@ -311,7 +311,7 @@ public class PackageExplorerWidget extends Composite {
     /**
      * This will create a "show list" event to be attached to the tree.
      */
-    private PackageTreeItem showListEvent(final String name, final String[] format) {
+    private PackageTreeItem showListEvent(final String uuid, final String[] format) {
         
         final GenericCallback cb = new GenericCallback() {
             public void onSuccess(Object data) {
@@ -325,9 +325,9 @@ public class PackageExplorerWidget extends Composite {
             }
         };
         
-        return new PackageTreeItem(name, new Command() {
+        return new PackageTreeItem(new Command() {
             public void execute() {
-                RepositoryServiceFactory.getService().listAssetsByFormat( currentPackage, format, 
+                RepositoryServiceFactory.getService().listAssets( uuid, format, 
                                                                           -1, -1, cb);                
             }            
         });
@@ -339,9 +339,9 @@ public class PackageExplorerWidget extends Composite {
     /**
      * Load up the package config data and display it.
      */
-    private void loadPackageConfig(String name) {
-        this.currentPackage = name;
-        RepositoryServiceFactory.getService().loadPackage( name, new GenericCallback() {
+    private void loadPackageConfig(String uuid) {
+
+        RepositoryServiceFactory.getService().loadPackageConfig( uuid, new GenericCallback() {
 
             public void onSuccess(Object data) {
                 PackageConfigData conf = (PackageConfigData) data;
@@ -366,10 +366,10 @@ public class PackageExplorerWidget extends Composite {
     
     static class PackageTreeItem {
         Command command;
-        String name;   
-        public PackageTreeItem(String name, Command com) {
+           
+        public PackageTreeItem(Command com) {
             this.command = com;
-            this.name = name;
+            
         }
                 
     }
