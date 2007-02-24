@@ -1,6 +1,5 @@
 package org.drools.repository;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Iterator;

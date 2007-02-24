@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.jcr.PathNotFoundException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
 

@@ -8,7 +8,6 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
-import javax.jcr.version.Version;
 
 import org.drools.repository.util.VersionNumberGenerator;
 
