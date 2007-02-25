@@ -303,8 +303,8 @@ a:visited {
 
 
 .ks-popups-Popup {
-  background-color: #FDFCDC;
-  border: 1px solid #B8B8B8;
+  background-color: white;
+  border: 2px solid #B8B8B8;
   padding: 4px;
 }
 
@@ -315,7 +315,8 @@ a:visited {
 }
 
 .metadata-Widget {
-  border: 1px solid #B8B8B8;
+  font-size: normal;
+  //border: 1px solid #B8B8B8;
 }
 
 .rule-error-Popup {
@@ -325,8 +326,8 @@ a:visited {
 }
 
 .loading-Popup {
-  background-color: #FDFCDC;
-  border: 1px solid #B8B8B8;
+  //background-color: #FDFCDC;
+  border: 2px solid #B8B8B8;
   padding: 4px;
 }
 
@@ -417,6 +418,7 @@ a:visited {
 .dsl-text-Editor {
   font-family: Arial, sans-serif;
   font-size: smaller;
+  background-color: #FDFCDC;
   border: 1px solid #B8B8B8;
   padding: 0px;	
 }
