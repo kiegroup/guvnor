@@ -91,14 +91,28 @@ public class PackageItemTest extends TestCase {
         AssetItem it2 = pkg.addAsset( "testPackageCopy2", "la" );
         
         it1.updateContent( "new content" );
+        it1.updateFormat( "drl" );
         it2.updateContent( "more content" );
+        it2.updateFormat( "drl" );
         it1.checkin( "c" );
         it2.checkin( "c" );
         
         String ver1 = it1.getVersionNumber();
         String ver2 = it2.getVersionNumber();
         assertFalse( "".equals( ver1 ));
+        
+        assertEquals(2, iteratorToList(pkg.listAssetsByFormat( new String[] {"drl"} )).size());
         repo.createPackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
+
+        //now make some changes on the main line
+        it1.updateContent( "XXX" );
+        it1.checkin( "X" );
+        assertFalse(it1.getVersionNumber().equals( ver1 ));
+        AssetItem it3 = pkg.addAsset( "testPackageCopy3", "x" );
+        it3.updateFormat( "drl" );
+        it3.checkin( "a" );
+        assertEquals(3, iteratorToList( pkg.listAssetsByFormat( new String[] {"drl"} )).size());
+        
         
         
         PackageItem pkg2 = repo.loadPackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
@@ -116,7 +130,8 @@ public class PackageItemTest extends TestCase {
         assertEquals(ver1, sn1.getVersionNumber());
         assertEquals(ver2, sn2.getVersionNumber());
         
-        
+
+        assertEquals(2, iteratorToList(pkg2.listAssetsByFormat( new String[] {"drl"} )).size());
         
         //now check we can list the snappies
         String[] res = repo.listPackageSnapshots("testPackageSnapshot");
