@@ -90,7 +90,8 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
                                  String initialPackage,
                                  String format) throws SerializableException {        
         try {
-            PackageItem pkg = getRulesRepository().loadPackage( initialPackage );
+            RulesRepository repo = getRulesRepository();
+            PackageItem pkg = repo.loadPackage( initialPackage );
             AssetItem asset = pkg.addAsset( ruleName, description, initialCategory, format );
             
             if (format.equals( AssetFormats.DSL_TEMPLATE_RULE )) {
@@ -102,7 +103,9 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
                         "rule language mapping {var}\n" +
                         "[then]Action sentence template=rule language mapping");
             }
-            getRulesRepository().save();
+            repo.save();
+            
+            
             return asset.getUUID();
         } catch (RulesRepositoryException e) {
             throw new SerializableException(e.getMessage());

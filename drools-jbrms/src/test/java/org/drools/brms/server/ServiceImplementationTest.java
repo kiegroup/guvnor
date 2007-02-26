@@ -24,6 +24,8 @@ import com.google.gwt.user.client.rpc.SerializableException;
 
 public class ServiceImplementationTest extends TestCase {
 
+    
+    
   public void testCategory() throws Exception {
         //ServiceImpl impl = new ServiceImpl(new RulesRepository(SessionHelper.getSession()));
 

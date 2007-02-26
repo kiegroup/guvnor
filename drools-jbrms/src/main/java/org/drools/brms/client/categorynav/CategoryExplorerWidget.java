@@ -71,6 +71,9 @@ public class CategoryExplorerWidget extends Composite
                                              selectedPath = null;
                                              navTreeWidget.removeItems();
                                              String[] categories = (String[]) result;
+                                             if (categories.length == 0) {
+                                                 navTreeWidget.addItem( "No categories created yet. Add some categories from the administration screen." );
+                                             }
                                              for ( int i = 0; i < categories.length; i++ ) {
                                                  TreeItem it = new TreeItem();
                                                  it.setHTML( "<img src=\"images/category_small.gif\"/>" + categories[i] );
