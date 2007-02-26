@@ -119,7 +119,7 @@ public class PackageEditor extends FormStyleLayout {
         Button snap = new Button("Create snapshot for deployment");
         snap.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                showSnapshowDialog(w);
+                showSnapshotDialog(w);
             }
         } );
         horiz.add( snap );
@@ -129,7 +129,7 @@ public class PackageEditor extends FormStyleLayout {
     /**
      * This will display a dialog for creating a snapshot.
      */
-    private void showSnapshowDialog(Widget w) {
+    private void showSnapshotDialog(Widget w) {
         LoadingPopup.showMessage( "Loading existing snapshots..." );
         final FormStylePopup form = new FormStylePopup("images/snapshot.png", "Create a snapshot for deployment.");
         form.addRow( new HTML("<i>A package snapshot is essentially a " +
@@ -151,8 +151,16 @@ public class PackageEditor extends FormStyleLayout {
                 }
                 HorizontalPanel newSnap = new HorizontalPanel();
                 
-                final RadioButton newSnapRadio = new RadioButton("snapshotNameGroup", newSnapshotText);
+                final RadioButton newSnapRadio = new RadioButton("snapshotNameGroup", newSnapshotText);                
                 newSnap.add( newSnapRadio );
+                newName.setEnabled( false );
+                newSnapRadio.addClickListener( new ClickListener() {
+
+                    public void onClick(Widget w) {
+                        newName.setEnabled( true );
+                    }
+                    
+                });
                 
                 newSnap.add( newName );
                 radioList.add( newSnapRadio );
@@ -183,6 +191,12 @@ public class PackageEditor extends FormStyleLayout {
                 if (name.equals( newSnapshotText )) {
                     name = newName.getText();
                 }
+                
+                if (name.equals( "" )) {
+                    Window.alert( "You have to enter or chose a label (name) for the snapshot." );
+                    return;
+                }
+                
                 
                 RepositoryServiceFactory.getService().createPackageSnapshot( conf.name, name, replace, comment.getText(), new GenericCallback() {
                     public void onSuccess(Object data) {

@@ -2,6 +2,7 @@ package org.drools.brms.client.packages;
 
 import java.util.ArrayList;
 
+import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.PackageConfigData;
@@ -14,10 +15,12 @@ import org.drools.brms.client.table.SortableTable;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Tree;
@@ -39,13 +42,14 @@ public class PackageSnapshotView extends Composite {
     public PackageSnapshotView() {
         
         layout = new FlexTable();
-        layout.getCellFormatter().setWidth( 0, 0, "40%" );
+        layout.getCellFormatter().setWidth( 0, 0, "20%" );
         
         
         service = RepositoryServiceFactory.getService();
         
         refreshPackageList();
         
+        layout.setWidth( "100%" );
         
         initWidget( layout );
         
@@ -107,13 +111,13 @@ public class PackageSnapshotView extends Composite {
     /**
      * This will load up the list of snapshots for a package.
      */
-    private void showPackage(String pkgName) {
+    private void showPackage(final String pkgName) {
         LoadingPopup.showMessage( "Loading snapshots..." );
         service.listSnapshots( pkgName, new GenericCallback() {
             public void onSuccess(Object data) {
                 SnapshotInfo[] list = (SnapshotInfo[]) data;
                 
-                renderListOfSnapshots(list);
+                renderListOfSnapshots(pkgName, list);
                 LoadingPopup.close();
             }
         });
@@ -122,16 +126,40 @@ public class PackageSnapshotView extends Composite {
     /**
      * This will render the snapshot list.
      */
-    protected void renderListOfSnapshots(SnapshotInfo[] list) {
+    protected void renderListOfSnapshots(String pkgName, SnapshotInfo[] list) {
+        
+        FormStyleLayout right = new FormStyleLayout("images/snapshot.png", "Labelled snapshots for package: " + pkgName);
+        
         FlexTable table = new FlexTable();
+        table.setText( 0, 1, "Name" );
+        table.setText( 0, 2, "Comment" );
+        table.getRowFormatter().setStyleName( 0, SortableTable.styleListHeader );
+        
         for ( int i = 0; i < list.length; i++ ) {
+            int row = i + 1;
             Label name = new Label( list[i].name );
-            table.setWidget( i, 0,  new Image("images/package_snapshot_item.gif"));
-            table.setWidget( i, 1, name );
-            table.setWidget( i, 2, new Label(list[i].comment) );
+            table.setWidget( row, 0,  new Image("images/package_snapshot_item.gif"));
+            table.setWidget( row, 1, name );
+            table.setWidget( row, 2, new Label(list[i].comment) );
+            table.setWidget( row, 3, new Button("Copy") );
+            table.setWidget( row, 4, new Button("Delete") );
             
+            if (i%2 == 0) {
+                table.getRowFormatter().setStyleName( i + 1, SortableTable.styleEvenRow );
+            } 
         }
-        layout.setWidget( 0, 1, table );
+        
+        right.setWidth( "100%" );
+        right.setHeight( "100%" );
+        right.addRow( table );
+        table.setWidth( "100%" );
+        right.setStyleName( SortableTable.styleList );
+        
+        
+        
+        layout.setWidget( 0, 1, right);
+        layout.getFlexCellFormatter().setVerticalAlignment( 0, 1, HasVerticalAlignment.ALIGN_TOP );
+        
     }
 
     private TreeItem makeItem(String name, String icon, Object command) {
