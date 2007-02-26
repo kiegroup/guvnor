@@ -70,7 +70,6 @@ public class PackageSnapshotView extends Composite {
         VerticalPanel packages = new VerticalPanel();
         for ( int i = 0; i < list.length; i++ ) {
             final String pkgName = list[i].name;
-            final String uuid = list[i].uuid;
             TreeItem item  = makeItem( pkgName, "images/package_snapshot.gif", new Command() {
                 public void execute() {
                     showPackage(pkgName);
@@ -126,7 +125,10 @@ public class PackageSnapshotView extends Composite {
     protected void renderListOfSnapshots(SnapshotInfo[] list) {
         FlexTable table = new FlexTable();
         for ( int i = 0; i < list.length; i++ ) {
-            table.setWidget( i, 0, new Label( list[i].name ) );
+            Label name = new Label( list[i].name );
+            table.setWidget( i, 0,  new Image("images/package_snapshot_item.gif"));
+            table.setWidget( i, 1, name );
+            table.setWidget( i, 2, new Label(list[i].comment) );
             
         }
         layout.setWidget( 0, 1, table );

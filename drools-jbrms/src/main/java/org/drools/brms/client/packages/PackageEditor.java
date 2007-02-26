@@ -1,14 +1,21 @@
 package org.drools.brms.client.packages;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.brms.client.common.FormStyleLayout;
+import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.StatusChangePopup;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
+import org.drools.brms.client.rpc.SnapshotInfo;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -16,6 +23,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -71,7 +79,7 @@ public class PackageEditor extends FormStyleLayout {
         setState(conf.state);
         addAttribute("Status:", statusBar);
 
-        addRow( saveChangeWidget() );
+        addRow( saveWidgets() );
     }
 
     protected void showStatusChanger(Widget w) {
@@ -91,7 +99,12 @@ public class PackageEditor extends FormStyleLayout {
         
     }
 
-    private Widget saveChangeWidget() {
+    /**
+     * This will get the save widgets.
+     */
+    private Widget saveWidgets() {
+        
+        HorizontalPanel horiz = new HorizontalPanel();
         
         Button save = new Button("Save configuration changes");
         
@@ -101,7 +114,90 @@ public class PackageEditor extends FormStyleLayout {
             }
         } );
         
-        return save;
+        horiz.add( save );
+        
+        Button snap = new Button("Create snapshot for deployment");
+        snap.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                showSnapshowDialog(w);
+            }
+        } );
+        horiz.add( snap );
+        return horiz;
+    }
+
+    /**
+     * This will display a dialog for creating a snapshot.
+     */
+    private void showSnapshowDialog(Widget w) {
+        LoadingPopup.showMessage( "Loading existing snapshots..." );
+        final FormStylePopup form = new FormStylePopup("images/snapshot.png", "Create a snapshot for deployment.");
+        form.addRow( new HTML("<i>A package snapshot is essentially a " +
+                "read only 'locked in' and labelled view of a package at a point in time, which can be used for deployment.</i>") );
+        
+        final VerticalPanel vert = new VerticalPanel();
+        form.addAttribute( "Choose or create snapshot name:",  vert);
+        final List radioList = new ArrayList();
+        final TextBox newName = new TextBox();
+        final String newSnapshotText = "NEW:";
+        
+        RepositoryServiceFactory.getService().listSnapshots( conf.name, new GenericCallback() {
+            public void onSuccess(Object data) {
+                SnapshotInfo[] result = (SnapshotInfo[]) data;
+                for ( int i = 0; i < result.length; i++ ) {
+                    RadioButton existing = new RadioButton("snapshotNameGroup", result[i].name);
+                    radioList.add( existing );
+                    vert.add( existing );    
+                }
+                HorizontalPanel newSnap = new HorizontalPanel();
+                
+                final RadioButton newSnapRadio = new RadioButton("snapshotNameGroup", newSnapshotText);
+                newSnap.add( newSnapRadio );
+                
+                newSnap.add( newName );
+                radioList.add( newSnapRadio );
+                vert.add( newSnap );
+                
+                LoadingPopup.close();
+            }
+        });
+        
+        final TextBox comment = new TextBox();
+        form.addAttribute( "Comment:", comment );
+        
+        Button create = new Button("Create new snapshot");
+        form.addAttribute( "", create );
+        
+        create.addClickListener( new ClickListener() {
+            String name = "";
+            public void onClick(Widget w) {
+                boolean replace = false;
+                for ( Iterator iter = radioList.iterator(); iter.hasNext(); ) {
+                    RadioButton but = (RadioButton) iter.next();
+                    if (but.isChecked()) {
+                        name = but.getText();
+                        replace = true;
+                        break;
+                    }
+                }
+                if (name.equals( newSnapshotText )) {
+                    name = newName.getText();
+                }
+                
+                RepositoryServiceFactory.getService().createPackageSnapshot( conf.name, name, replace, comment.getText(), new GenericCallback() {
+                    public void onSuccess(Object data) {
+                        Window.alert( "The snapshot called: " + name + " was successfully created." );
+                        form.hide();
+                    }
+                });
+            }
+        } );
+        
+        form.setWidth( "50%" );
+        form.setPopupPosition( Window.getClientWidth() / 3, Window.getClientHeight() / 3 );
+        form.show();
+        
+        
     }
 
     private void doSaveAction() {
