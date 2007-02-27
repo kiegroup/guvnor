@@ -104,6 +104,15 @@ public class PackageItemTest extends TestCase {
         assertEquals(2, iteratorToList(pkg.listAssetsByFormat( new String[] {"drl"} )).size());
         repo.createPackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
 
+        //just check we can load it all via UUID as well...
+        PackageItem pkgLoaded = repo.loadPackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
+        PackageItem _pkgLoaded = repo.loadPackageByUUID( pkgLoaded.getUUID() );
+        assertNotNull(_pkgLoaded);
+        assertEquals(pkgLoaded.getCreatedDate(), _pkgLoaded.getCreatedDate());
+        List loadedAssets = iteratorToList( pkgLoaded.getAssets() );
+        List _loadedAssets = iteratorToList( _pkgLoaded.getAssets() );
+        assertEquals(loadedAssets.size(), _loadedAssets.size());
+        
         //now make some changes on the main line
         it1.updateContent( "XXX" );
         it1.checkin( "X" );
