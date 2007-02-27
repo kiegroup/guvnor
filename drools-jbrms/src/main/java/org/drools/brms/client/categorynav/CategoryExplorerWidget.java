@@ -71,7 +71,9 @@ public class CategoryExplorerWidget extends Composite
                                              selectedPath = null;
                                              navTreeWidget.removeItems();
                                              String[] categories = (String[]) result;
+                                             boolean empty = false;
                                              if (categories.length == 0) {
+                                                 empty = true;
                                                  navTreeWidget.addItem( "No categories created yet. Add some categories from the administration screen." );
                                              }
                                              for ( int i = 0; i < categories.length; i++ ) {
@@ -81,7 +83,7 @@ public class CategoryExplorerWidget extends Composite
                                                  it.addItem( new PendingItem() );
                                                  navTreeWidget.addItem( it );
                                              }
-                                             navTreeWidget.setSelectedItem( navTreeWidget.getItem( 0 ) );
+                                             if (!empty) navTreeWidget.setSelectedItem( navTreeWidget.getItem( 0 ) );
 
                                          }
 
