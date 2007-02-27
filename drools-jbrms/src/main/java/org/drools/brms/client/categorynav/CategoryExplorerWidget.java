@@ -81,6 +81,7 @@ public class CategoryExplorerWidget extends Composite
                                                  it.addItem( new PendingItem() );
                                                  navTreeWidget.addItem( it );
                                              }
+                                             navTreeWidget.setSelectedItem( navTreeWidget.getItem( 0 ) );
 
                                          }
 
