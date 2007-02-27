@@ -153,12 +153,29 @@ public class PackageItemTest extends TestCase {
         
         repo.removePackageSnapshot( "testPackageSnapshot", "XX" );
         //does nothing... but should not barf...
+        try {
+            repo.removePackageSnapshot( "NOTHING SENSIBLE", "XX" );
+            fail("should not be able to remove this.");
+        } catch (RulesRepositoryException e) {
+            assertNotNull(e.getMessage());
+        }
         
         repo.removePackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
         repo.save();
         
         res = repo.listPackageSnapshots( "testPackageSnapshot" );
         assertEquals(0, res.length);
+        
+        repo.createPackageSnapshot( "testPackageSnapshot", "BOO" );
+        res = repo.listPackageSnapshots( "testPackageSnapshot" );
+        assertEquals(1, res.length);
+        repo.copyPackageSnapshot( "testPackageSnapshot", "BOO", "BOO2" );
+        res = repo.listPackageSnapshots( "testPackageSnapshot" );
+        assertEquals(2, res.length);
+        
+        assertEquals("BOO", res[0]);
+        assertEquals("BOO2", res[1]);
+        
         
     }
 

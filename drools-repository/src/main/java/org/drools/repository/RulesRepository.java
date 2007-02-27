@@ -477,7 +477,7 @@ public class RulesRepository {
             Node snaps = this.getAreaNode( PACKAGE_SNAPSHOT_AREA );
             
             if (!snaps.hasNode( packageName )) {
-                return;
+                throw new RulesRepositoryException("The package " + packageName + " does not have any snapshots.");
             }
             
             Node pkgSnaps = snaps.getNode( packageName ); 
@@ -491,6 +491,33 @@ public class RulesRepository {
             log.error( "Unable to remove snapshot", e );
             throw new RulesRepositoryException(e);
         }
+    }
+
+    /**
+     * Copies a snapshot to the new location/label.
+     * @param packageName The name of the package.
+     * @param snapshotName The label of the source snapshot 
+     * @param newName The new label. The old one is left intact.
+     */
+    public void copyPackageSnapshot(String packageName, String snapshotName, String newName) {
+        log.info( "Creating snapshot for [" + packageName + "] called [" + snapshotName + "]");
+        try {
+            Node snaps = this.getAreaNode( PACKAGE_SNAPSHOT_AREA );
+            
+
+            
+            Node pkgSnaps = snaps.getNode( packageName ); 
+
+            Node sourceNode = pkgSnaps.getNode( snapshotName );
+            
+            String destinationPath = pkgSnaps.getPath() + "/" + newName;
+            
+            
+            this.session.getWorkspace().copy( sourceNode.getPath(), destinationPath );
+        } catch (RepositoryException e) {
+            log.error( "Unable to create snapshot", e );
+            throw new RulesRepositoryException(e);
+        }        
     }
 
     /**
