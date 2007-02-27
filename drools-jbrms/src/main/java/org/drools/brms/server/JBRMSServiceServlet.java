@@ -475,6 +475,22 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         repo.save();
         
     }
+
+    public void copyOrRemoveSnapshot(String packageName,
+                                     String snapshotName,
+                                     boolean delete,
+                                     String newSnapshotName) throws SerializableException {
+        RulesRepository repo = getRulesRepository();
+        if (delete) {
+            repo.removePackageSnapshot( packageName, snapshotName );
+        } else {
+            if (newSnapshotName.equals( "" )) {
+                throw new SerializableException("Need to have a new snapshot name.");
+            }
+            repo.copyPackageSnapshot( packageName, snapshotName, newSnapshotName );
+        }
+        
+    }
     
 
 

@@ -49,7 +49,7 @@ public class PackageExplorerWidget extends Composite {
      * This is for the generic and re-useable package explorer.
      */    
     public PackageExplorerWidget(EditItemEvent edit) {
-        this(edit, null);
+        this(edit, null, false);
     }
     
     /**
@@ -57,7 +57,7 @@ public class PackageExplorerWidget extends Composite {
      * @param edit The edit event (action) when the user wants to open an item.
      * @param uuid The package to lock this to.
      */
-    public PackageExplorerWidget(EditItemEvent edit, String uuid) {
+    public PackageExplorerWidget(EditItemEvent edit, String uuid, boolean readonly) {
         
         this.editEvent = edit;
         this.uuid = uuid;
@@ -84,15 +84,17 @@ public class PackageExplorerWidget extends Composite {
         
         VerticalPanel left = new VerticalPanel();
         left.add( exTree );
-        
-        FlexTable buttons = new FlexTable();
-        buttons.getCellFormatter().setStyleName( 0, 0, "new-asset-Icons" );
-        buttons.getCellFormatter().setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
 
-        buttons.setWidget( 0, 0, getNewWizardButtons() );
-        left.add( buttons );
-        buttons.setWidth( "100%" );
-        
+        if (!readonly) {
+            //only care about new buttons if its not read only
+            FlexTable buttons = new FlexTable();
+            buttons.getCellFormatter().setStyleName( 0, 0, "new-asset-Icons" );
+            buttons.getCellFormatter().setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
+    
+            buttons.setWidget( 0, 0, getNewWizardButtons() );
+            left.add( buttons );
+            buttons.setWidth( "100%" );
+        }
         layout.setWidget( 0, 0, left );
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         formatter.setVerticalAlignment( 0, 0, HasVerticalAlignment.ALIGN_TOP );

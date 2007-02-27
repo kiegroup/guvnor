@@ -29,20 +29,20 @@ public class PackageManagerView extends Composite {
      * not including snapshots.
      */
     public PackageManagerView() {
-        this(null);
+        this(null, false);
     }
 
     /**
      * This is used when you only want to view one package.
      * @param packageUUID The UUID of the package.
      */
-    public PackageManagerView(String packageUUID) {
+    public PackageManagerView(String packageUUID, final boolean readonly) {
         tab = new TabPanel();
         tab.setWidth("100%");
         tab.setHeight("100%");   
         EditItemEvent editEvent = new EditItemEvent() {
             public void open(String key) {
-                RulesFeature.showLoadEditor( openedViewers, tab, key );
+                RulesFeature.showLoadEditor( openedViewers, tab, key, readonly );
             }
         };
         PackageExplorerWidget explorer = null;
@@ -50,7 +50,7 @@ public class PackageManagerView extends Composite {
         if (packageUUID == null) {
             explorer = new PackageExplorerWidget(editEvent);            
         } else {
-            explorer = new PackageExplorerWidget(editEvent, packageUUID);
+            explorer = new PackageExplorerWidget(editEvent, packageUUID, readonly);
         }
         
         tab.add( explorer,  "Explore");        

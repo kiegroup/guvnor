@@ -155,4 +155,13 @@ public interface RepositoryService extends RemoteService {
      */
     public void createPackageSnapshot(String packageName, String snapshotName, boolean replaceExisting, String comment);
     
+    /**
+     * This alters an existing snapshot, it can be used to copy or delete it. 
+     * @param packageName The package name that we are dealing with. 
+     * @param snapshotName The snapshot name (this must exist)
+     * @param delete true if the snapshotName is to be removed. 
+     * @param newSnapshotName The name of the target snapshot that the contents will be copied to.
+     */
+    public void copyOrRemoveSnapshot(String packageName, String snapshotName, boolean delete, String newSnapshotName) throws SerializableException;
+    
 }

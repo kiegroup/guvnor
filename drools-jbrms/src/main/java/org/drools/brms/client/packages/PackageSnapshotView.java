@@ -1,6 +1,7 @@
 package org.drools.brms.client.packages;
 
 import org.drools.brms.client.common.FormStyleLayout;
+import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.PackageConfigData;
@@ -24,6 +25,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeListener;
@@ -151,8 +153,8 @@ public class PackageSnapshotView extends Composite {
             table.setWidget( row, 1, name );
             table.setWidget( row, 2, new Label(list[i].comment) );
             table.setWidget( row, 3, getOpenSnapshotButton(pkgName, name.getText(), list[i].uuid) );
-            table.setWidget( row, 4, new Button("Copy") );
-            table.setWidget( row, 4, getDeleteButton(name.getText(), pkgName) );
+            table.setWidget( row, 4, getCopyButton(pkgName, name.getText() ) );
+            table.setWidget( row, 5, getDeleteButton(name.getText(), pkgName) );
             
             if (i%2 == 0) {
                 table.getRowFormatter().setStyleName( i + 1, SortableTable.styleEvenRow );
@@ -172,6 +174,36 @@ public class PackageSnapshotView extends Composite {
         
     }
 
+    private Button getCopyButton(final String packageName, final String snapshotName) {
+        final FormStylePopup copy = new FormStylePopup("images/snapshot.png", "Copy snapshot " + snapshotName);
+        final TextBox box = new TextBox();
+        copy.addAttribute( "New label:", box );
+        Button ok = new Button("OK");        
+        copy.addAttribute( "", ok );
+        
+        ok.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                service.copyOrRemoveSnapshot( packageName, snapshotName, false, box.getText(), new GenericCallback() {
+                    public void onSuccess(Object data) {
+                        showPackage( packageName );
+                        copy.hide();                        
+                    }
+                });
+            }
+        } );
+        
+        
+        Button btn = new Button("Copy");
+        btn.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                copy.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+                copy.show();
+            }            
+        });
+        
+        return btn;
+    }
+
     private Button getOpenSnapshotButton(final String pkgName, final String snapshotName, final String uuid) {
 
         
@@ -179,37 +211,9 @@ public class PackageSnapshotView extends Composite {
         but.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 
-                FlexTable viewLayout = new FlexTable();
-                String msg = "<b>Viewing snapshot labelled: </b>" + snapshotName + 
-                    " for package " + pkgName + ". This should not be edited.";
-                HorizontalPanel horiz = new HorizontalPanel();
-                horiz.add( new HTML(msg) );
-                Image close = new Image("images/close.gif");
-                close.setTitle( "Close this view" );
-                close.addClickListener( new ClickListener() {
-                    public void onClick(Widget w) {
-                        tab.remove( 1 );
-                        tab.selectTab( 0 );
-                    }
-                } );
-                horiz.add( close );
-                viewLayout.setWidget( 0, 0, horiz );
-                FlexCellFormatter formatter = viewLayout.getFlexCellFormatter();
-                formatter.setStyleName( 0, 0, "editable-Surface" );
-                
-                
-                viewLayout.setWidget( 1, 0, new PackageManagerView(uuid) );
-                
-                
-                
-                viewLayout.setWidth( "100%" );
-                viewLayout.setHeight( "100%" );
-                
-                if (tab.getWidgetCount() > 1) {
-                    tab.remove( 1 );
-                }
-                tab.add( viewLayout, "<img src='images/package_snapshot_item.gif'> " + pkgName + " [" + snapshotName + "]", true );
-                tab.selectTab( 1 );
+                openPackageSnapshot( pkgName,
+                                     snapshotName,
+                                     uuid );
             }            
         });
         
@@ -223,9 +227,17 @@ public class PackageSnapshotView extends Composite {
             public void onClick(Widget w) {
                 boolean confirm = Window.confirm( "Are you sure you want to delete the snapshot labelled [" + snapshotName +
                                  "] from the package [" + pkgName + "] ?");
-                Window.alert( "FINISH ME !" );
-                if (!confirm) return;
                 
+                if (!confirm) 
+                {
+                    return;
+                } else {
+                    service.copyOrRemoveSnapshot( pkgName, snapshotName, true, null, new GenericCallback() {
+                        public void onSuccess(Object data) {
+                            showPackage( pkgName );
+                        }                    
+                    });
+                }
             }
             
         });
@@ -237,6 +249,42 @@ public class PackageSnapshotView extends Composite {
         item.setHTML( "<img src=\""+ icon + "\">" + name + "</a>" );
         item.setUserObject( command );
         return item;
+    }
+
+    /**
+     * This opens the package viewer, showing the contents of that snapshot.
+     */
+    private void openPackageSnapshot(final String pkgName,
+                                     final String snapshotName,
+                                     final String uuid) {
+        FlexTable viewLayout = new FlexTable();
+        String msg = "<b>Viewing snapshot labelled: </b>" + snapshotName + 
+            " for package " + pkgName + ". This should not be edited.";
+        HorizontalPanel horiz = new HorizontalPanel();
+        horiz.add( new HTML(msg) );
+        Image close = new Image("images/close.gif");
+        close.setTitle( "Close this view" );
+        close.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                tab.remove( 1 );
+                tab.selectTab( 0 );
+            }
+        } );
+        horiz.add( close );
+        viewLayout.setWidget( 0, 0, horiz );
+        FlexCellFormatter formatter = viewLayout.getFlexCellFormatter();
+        formatter.setStyleName( 0, 0, "editable-Surface" );
+        
+        viewLayout.setWidget( 1, 0, new PackageManagerView(uuid, true) );
+        
+        viewLayout.setWidth( "100%" );
+        viewLayout.setHeight( "100%" );
+        
+        if (tab.getWidgetCount() > 1) {
+            tab.remove( 1 );
+        }
+        tab.add( viewLayout, "<img src='images/package_snapshot_item.gif'> " + pkgName + " [" + snapshotName + "]", true );
+        tab.selectTab( 1 );
     }
 
 }

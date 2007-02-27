@@ -514,6 +514,18 @@ public class ServiceImplementationTest extends TestCase {
       impl.createPackageSnapshot( "testSnapshot", "X", true, "we" );
       assertEquals(2, impl.listSnapshots( "testSnapshot" ).length);
       
+      impl.copyOrRemoveSnapshot( "testSnapshot", "X", false, "Q" );
+      assertEquals(3, impl.listSnapshots( "testSnapshot" ).length);
+      
+      try {
+          impl.copyOrRemoveSnapshot( "testSnapshot", "X", false, "" );
+          fail("should not be able to copy snapshot to empty detination");
+      } catch (SerializableException e) {
+          assertNotNull(e.getMessage());
+      }
+      
+      impl.copyOrRemoveSnapshot( "testSnapshot", "X", true, null );
+      assertEquals(2, impl.listSnapshots( "testSnapshot" ).length);      
   }
   
     

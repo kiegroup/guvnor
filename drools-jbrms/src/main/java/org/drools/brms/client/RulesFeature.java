@@ -154,14 +154,14 @@ public class RulesFeature extends JBRMSFeature {
     }
 
     public void showLoadEditor(String uuid) {
-        showLoadEditor( openedViewers, tab, uuid );
+        showLoadEditor( openedViewers, tab, uuid, false );
     }
 
     /**
      * This will show the rule viewer. If it was previously opened, it will show that dialog instead
      * of opening it again.
      */
-    public static void showLoadEditor(final Map openedViewers, final TabPanel tab,  final String uuid) {
+    public static void showLoadEditor(final Map openedViewers, final TabPanel tab,  final String uuid, final boolean readonly) {
       
         
       if (openedViewers.containsKey( uuid )) {
@@ -178,7 +178,7 @@ public class RulesFeature extends JBRMSFeature {
 
           public void onSuccess(Object o) {
               RuleAsset asset = (RuleAsset) o;
-              final RuleViewer view = new RuleViewer(asset);
+              final RuleViewer view = new RuleViewer(asset, readonly);
               
               String displayName = asset.metaData.name;
               if (displayName.length() > 10) {
