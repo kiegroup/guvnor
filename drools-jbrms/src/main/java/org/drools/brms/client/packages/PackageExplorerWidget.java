@@ -43,11 +43,24 @@ public class PackageExplorerWidget extends Composite {
     private final TreeListener treeListener;
     private AssetItemListViewer listView;
     private EditItemEvent editEvent;
+    private String uuid;
     
-    
+    /**
+     * This is for the generic and re-useable package explorer.
+     */    
     public PackageExplorerWidget(EditItemEvent edit) {
+        this(edit, null);
+    }
+    
+    /**
+     * This will open an explorer locked to one specific package.
+     * @param edit The edit event (action) when the user wants to open an item.
+     * @param uuid The package to lock this to.
+     */
+    public PackageExplorerWidget(EditItemEvent edit, String uuid) {
         
         this.editEvent = edit;
+        this.uuid = uuid;
         exTree = new Tree();
         layout = new FlexTable();
         
@@ -212,23 +225,36 @@ public class PackageExplorerWidget extends Composite {
 
     private void refreshTreeView() {
         
-        LoadingPopup.showMessage( "Loading list of packages ..." );
         
-        RepositoryServiceFactory.getService().listPackages( new GenericCallback() {
-
-            public void onSuccess(Object data) {
-                PackageConfigData[] packages = (PackageConfigData[]) data;
-                
-                
-                exTree.clear();
-                for ( int i = 0; i < packages.length; i++ ) {
-                    addPackage( packages[i] );
+        
+        if (this.uuid == null) {
+            LoadingPopup.showMessage( "Loading list of packages ..." );
+            RepositoryServiceFactory.getService().listPackages( new GenericCallback() {
+                public void onSuccess(Object data) {
+                    PackageConfigData[] packages = (PackageConfigData[]) data;
+                    exTree.clear();
+                    for ( int i = 0; i < packages.length; i++ ) {
+                        if (i == 0) {
+                            addPackage( packages[i], true );
+                        } else {
+                            addPackage( packages[i], false );
+                        }
+                    }
+                    LoadingPopup.close();
                 }
-                
-                LoadingPopup.close();
-            }
-            
-        });
+            });
+        } else {
+            LoadingPopup.showMessage( "Loading package ..." );
+            RepositoryServiceFactory.getService().loadPackageConfig( uuid, new GenericCallback() {
+                public void onSuccess(Object data) {
+                    PackageConfigData pack = (PackageConfigData) data;
+                    exTree.clear();
+                    addPackage(pack, true);
+
+                    LoadingPopup.close();
+                }
+            });            
+        }
         
 
     }
@@ -284,7 +310,7 @@ public class PackageExplorerWidget extends Composite {
      * Add a package to the tree.
      * @param name
      */
-    private void addPackage(final PackageConfigData conf) {
+    private void addPackage(final PackageConfigData conf, boolean preSelect) {
         
         TreeItem pkg = makeItem(conf.name, "images/package.gif", new PackageTreeItem(new Command() {
             public void execute() {
@@ -299,6 +325,9 @@ public class PackageExplorerWidget extends Composite {
         pkg.addItem( makeItem("Model", "images/model_asset.gif", showListEvent(conf.uuid, new String[] {AssetFormats.MODEL}) ) );
         
         exTree.addItem( pkg );
+        if (preSelect) {
+            exTree.setSelectedItem( pkg, true );
+        }
     }
 
 

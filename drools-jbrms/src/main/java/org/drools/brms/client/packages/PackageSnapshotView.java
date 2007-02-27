@@ -1,7 +1,5 @@
 package org.drools.brms.client.packages;
 
-import java.util.ArrayList;
-
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
@@ -9,25 +7,29 @@ import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.SnapshotInfo;
-import org.drools.brms.client.rpc.TableDataResult;
-import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.table.SortableTable;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeListener;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
  * This contains a list of packages and their deployment snapshots.
@@ -37,11 +39,17 @@ import com.google.gwt.user.client.ui.Widget;
 public class PackageSnapshotView extends Composite {
     
     private RepositoryServiceAsync service;
+    private TabPanel tab;
     private FlexTable layout;
 
     public PackageSnapshotView() {
         
         layout = new FlexTable();
+        tab = new TabPanel();
+        tab.setWidth( "100%" );
+        tab.setHeight( "100%" );
+        
+        tab.add( layout, "<img src='images/package_snapshot.gif'>Snapshots</a>", true );
         layout.getCellFormatter().setWidth( 0, 0, "20%" );
         
         
@@ -51,8 +59,9 @@ public class PackageSnapshotView extends Composite {
         
         layout.setWidth( "100%" );
         
-        initWidget( layout );
+        initWidget( tab );
         
+        tab.selectTab( 0 );
         
     }
 
@@ -141,8 +150,9 @@ public class PackageSnapshotView extends Composite {
             table.setWidget( row, 0,  new Image("images/package_snapshot_item.gif"));
             table.setWidget( row, 1, name );
             table.setWidget( row, 2, new Label(list[i].comment) );
-            table.setWidget( row, 3, new Button("Copy") );
-            table.setWidget( row, 4, new Button("Delete") );
+            table.setWidget( row, 3, getOpenSnapshotButton(pkgName, name.getText(), list[i].uuid) );
+            table.setWidget( row, 4, new Button("Copy") );
+            table.setWidget( row, 4, getDeleteButton(name.getText(), pkgName) );
             
             if (i%2 == 0) {
                 table.getRowFormatter().setStyleName( i + 1, SortableTable.styleEvenRow );
@@ -160,6 +170,66 @@ public class PackageSnapshotView extends Composite {
         layout.setWidget( 0, 1, right);
         layout.getFlexCellFormatter().setVerticalAlignment( 0, 1, HasVerticalAlignment.ALIGN_TOP );
         
+    }
+
+    private Button getOpenSnapshotButton(final String pkgName, final String snapshotName, final String uuid) {
+
+        
+        Button but = new Button("Open");
+        but.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                
+                FlexTable viewLayout = new FlexTable();
+                String msg = "<b>Viewing snapshot labelled: </b>" + snapshotName + 
+                    " for package " + pkgName + ". This should not be edited.";
+                HorizontalPanel horiz = new HorizontalPanel();
+                horiz.add( new HTML(msg) );
+                Image close = new Image("images/close.gif");
+                close.setTitle( "Close this view" );
+                close.addClickListener( new ClickListener() {
+                    public void onClick(Widget w) {
+                        tab.remove( 1 );
+                        tab.selectTab( 0 );
+                    }
+                } );
+                horiz.add( close );
+                viewLayout.setWidget( 0, 0, horiz );
+                FlexCellFormatter formatter = viewLayout.getFlexCellFormatter();
+                formatter.setStyleName( 0, 0, "editable-Surface" );
+                
+                
+                viewLayout.setWidget( 1, 0, new PackageManagerView(uuid) );
+                
+                
+                
+                viewLayout.setWidth( "100%" );
+                viewLayout.setHeight( "100%" );
+                
+                if (tab.getWidgetCount() > 1) {
+                    tab.remove( 1 );
+                }
+                tab.add( viewLayout, "<img src='images/package_snapshot_item.gif'> " + pkgName + " [" + snapshotName + "]", true );
+                tab.selectTab( 1 );
+            }            
+        });
+        
+        return but;
+    }
+
+    private Button getDeleteButton(final String snapshotName, final String pkgName) {
+        Button btn = new Button("Delete");
+        btn.addClickListener( new ClickListener() {
+
+            public void onClick(Widget w) {
+                boolean confirm = Window.confirm( "Are you sure you want to delete the snapshot labelled [" + snapshotName +
+                                 "] from the package [" + pkgName + "] ?");
+                Window.alert( "FINISH ME !" );
+                if (!confirm) return;
+                
+            }
+            
+        });
+        return btn;
     }
 
     private TreeItem makeItem(String name, String icon, Object command) {

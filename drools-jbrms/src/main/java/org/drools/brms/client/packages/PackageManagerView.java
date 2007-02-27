@@ -23,21 +23,37 @@ public class PackageManagerView extends Composite {
 
     private final TabPanel tab;
     private Map openedViewers = new HashMap();
-    
+
+    /**
+     * This will provide a explorer for all the packages in the system,
+     * not including snapshots.
+     */
     public PackageManagerView() {
+        this(null);
+    }
+
+    /**
+     * This is used when you only want to view one package.
+     * @param packageUUID The UUID of the package.
+     */
+    public PackageManagerView(String packageUUID) {
         tab = new TabPanel();
         tab.setWidth("100%");
         tab.setHeight("100%");   
-        
-        PackageExplorerWidget explorer = new PackageExplorerWidget(new EditItemEvent() {
-
+        EditItemEvent editEvent = new EditItemEvent() {
             public void open(String key) {
                 RulesFeature.showLoadEditor( openedViewers, tab, key );
             }
-            
-        });
-        tab.add( explorer,  "Explore");
+        };
+        PackageExplorerWidget explorer = null;
         
+        if (packageUUID == null) {
+            explorer = new PackageExplorerWidget(editEvent);            
+        } else {
+            explorer = new PackageExplorerWidget(editEvent, packageUUID);
+        }
+        
+        tab.add( explorer,  "Explore");        
         tab.selectTab( 0 );
         
         initWidget( tab );
