@@ -224,6 +224,28 @@ public class RulesRepositoryTest extends TestCase {
             
     }
     
+    /**
+     * Here we are testing to make sure that category links don't pick up stuff in snapshots area.
+     */
+    public void testCategoriesAndSnapshots() throws Exception {
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+        repo.loadCategory( "/" ).addCategory( "testCategoriesAndSnapshots", "X" );
+        
+        PackageItem pkg = repo.createPackage( "testCategoriesAndSnapshots", "");
+        pkg.addAsset( "testCat1", "x", "/testCategoriesAndSnapshots", "drl");
+        pkg.addAsset( "testCat2", "x", "/testCategoriesAndSnapshots", "drl");
+        repo.save();
+        
+        List items = repo.findAssetsByCategory( "/testCategoriesAndSnapshots" );
+        assertEquals(2, items.size());
+        
+        repo.createPackageSnapshot( "testCategoriesAndSnapshots", "SNAP 1" );
+        items = repo.findAssetsByCategory( "testCategoriesAndSnapshots" );
+        assertEquals(2, items.size());        
+        
+        
+    }
+    
     public void testMoveRulePackage() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
         PackageItem pkg = repo.createPackage( "testMove", "description" );

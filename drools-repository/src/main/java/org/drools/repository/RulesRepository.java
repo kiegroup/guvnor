@@ -737,14 +737,22 @@ public class RulesRepository {
             while(it.hasNext()) {
                 Property ruleLink = (Property) it.next();
                 Node parentNode = ruleLink.getParent();
-                if(parentNode.getPrimaryNodeType().getName().equals(AssetItem.RULE_NODE_TYPE_NAME)) {
-                    results.add(new AssetItem(this, parentNode));
+                if (isNotSnapshot( parentNode )) {
+                    if(parentNode.getPrimaryNodeType().getName().equals(AssetItem.RULE_NODE_TYPE_NAME)) {
+                        results.add(new AssetItem(this, parentNode));
+                    }
                 }
             }
             return results;
         } catch ( RepositoryException e ) {            
             throw new RulesRepositoryException(e);
         }        
+    }
+
+
+
+    private boolean isNotSnapshot(Node parentNode) throws RepositoryException {
+        return parentNode.getPath().indexOf( PACKAGE_SNAPSHOT_AREA ) == -1;
     }
     
     /**

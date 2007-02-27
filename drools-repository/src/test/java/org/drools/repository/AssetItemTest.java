@@ -147,6 +147,8 @@ public class AssetItemTest extends TestCase {
             AssetItem prev = (AssetItem) ruleItem1.getPrecedingVersion();
             assertNotNull(prev);
             
+            
+            
     }
     
     public void testUpdateCategories() {
