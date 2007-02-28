@@ -21,6 +21,7 @@ import org.drools.brms.client.rpc.SnapshotInfo;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
+import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.RepositoryManager;
 import org.drools.brms.server.util.TableDisplayHandler;
@@ -94,15 +95,9 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
             PackageItem pkg = repo.loadPackage( initialPackage );
             AssetItem asset = pkg.addAsset( ruleName, description, initialCategory, format );
             
-            if (format.equals( AssetFormats.DSL_TEMPLATE_RULE )) {
-                asset.updateContent( "when\n\nthen\n" );
-            } else if (format.equals( AssetFormats.FUNCTION )) {
-                asset.updateContent( "function " + ruleName + "(<args here>)\n\n\nend" );
-            } else if (format.equals( AssetFormats.DSL )) {
-                asset.updateContent( "[when]Condition sentence template {var}=" +
-                        "rule language mapping {var}\n" +
-                        "[then]Action sentence template=rule language mapping");
-            }
+            applyPreBuiltTemplates( ruleName,
+                                    format,
+                                    asset );
             repo.save();
             
             
@@ -111,6 +106,23 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
             throw new SerializableException(e.getMessage());
         }
 
+    }
+
+    /**
+     * For some format types, we add some sugar by adding a new template.
+     */
+    private void applyPreBuiltTemplates(String ruleName,
+                                        String format,
+                                        AssetItem asset) {
+        if (format.equals( AssetFormats.DSL_TEMPLATE_RULE )) {
+            asset.updateContent( "when\n\nthen\n" );
+        } else if (format.equals( AssetFormats.FUNCTION )) {
+            asset.updateContent( "function " + ruleName + "(<args here>)\n\n\nend" );
+        } else if (format.equals( AssetFormats.DSL )) {
+            asset.updateContent( "[when]Condition sentence template {var}=" +
+                    "rule language mapping {var}\n" +
+                    "[then]Action sentence template=rule language mapping");
+        }
     }
 
     public PackageConfigData[] listPackages() {
@@ -195,7 +207,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         asset.metaData = populateMetaData( item );
         
         //load the content
-        AssetContentFormatHandler handler = new AssetContentFormatHandler();
+        ContentHandler handler = ContentHandler.getHandler( asset.metaData.format );
         handler.retrieveAssetContent(asset, item);
         
         return asset;
@@ -268,7 +280,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         repoAsset.updateState( StateItem.DRAFT_STATE_NAME );
         
         repoAsset.updateCategoryList( meta.categories );
-        AssetContentFormatHandler handler = new AssetContentFormatHandler();
+        ContentHandler handler = ContentHandler.getHandler( repoAsset.getFormat() );//new AssetContentFormatHandler();
         handler.storeAssetContent( asset, repoAsset );
         
         repoAsset.checkin( meta.checkinComment );

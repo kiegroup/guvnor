@@ -10,6 +10,7 @@ import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -149,6 +150,10 @@ public class MetaDataWidget extends FormStyleLayout {
         ok.addClickListener( new ClickListener() {
 
             public void onClick(Widget w) {
+                if (sel.getSelectedPackage().equals( pkg )) {
+                    Window.alert( "You need to pick a different package to move this to." );
+                    return;
+                }
                 RepositoryServiceFactory.getService().changeAssetPackage( uuid, sel.getSelectedPackage(), 
                                                                           "Moved from : " + pkg, 
                                                                           new GenericCallback() {

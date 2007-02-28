@@ -152,7 +152,7 @@ public class ServiceImplementationTest extends TestCase {
       impl.createCategory( "", "testLoadRuleAsset", "this is a cat" );
       
       
-      impl.createNewRule( "testLoadRuleAsset", "description", "testLoadRuleAsset", "testLoadRuleAsset", "txt" );
+      impl.createNewRule( "testLoadRuleAsset", "description", "testLoadRuleAsset", "testLoadRuleAsset", "drl" );
       
       TableDataResult res = impl.loadRuleListForCategories( "testLoadRuleAsset" );
       assertEquals(1, res.data.length);
@@ -175,7 +175,7 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals("testLoadRuleAsset", asset.metaData.name);
       assertEquals("testLoadRuleAsset", asset.metaData.title);
       assertEquals("testLoadRuleAsset", asset.metaData.packageName);
-      assertEquals("txt", asset.metaData.format);
+      assertEquals("drl", asset.metaData.format);
       assertNotNull(asset.metaData.createdDate);
       
       assertEquals(1, asset.metaData.categories.length);
@@ -199,7 +199,7 @@ public class ServiceImplementationTest extends TestCase {
       impl.createCategory( "", "testLoadAssetHistory", "this is a cat" );
       
       
-      String uuid = impl.createNewRule( "testLoadAssetHistory", "description", "testLoadAssetHistory", "testLoadAssetHistory", "txt" );
+      String uuid = impl.createNewRule( "testLoadAssetHistory", "description", "testLoadAssetHistory", "testLoadAssetHistory", "drl" );
       RuleAsset asset = impl.loadRuleAsset( uuid );
       impl.checkinVersion( asset ); //1
       impl.checkinVersion( asset ); //2
