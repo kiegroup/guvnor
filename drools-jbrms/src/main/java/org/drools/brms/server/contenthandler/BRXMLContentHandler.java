@@ -26,6 +26,7 @@ public class BRXMLContentHandler extends ContentHandler {
         //TODO: replace with the code that loads it from a cache server side.
         //otherwise it will look at the current package, and then work out the model from that.
         data.completionEngine = getDummySuggestionEngine();
+        asset.content = data;
 
     }
 
