@@ -184,7 +184,9 @@ public class PackageEditor extends FormStyleLayout {
                     RadioButton but = (RadioButton) iter.next();
                     if (but.isChecked()) {
                         name = but.getText();
-                        replace = true;
+                        if (!but.getText().equals( newSnapshotText )) {
+                            replace = true;
+                        }
                         break;
                     }
                 }
