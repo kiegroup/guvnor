@@ -110,7 +110,7 @@ public class PackageExplorerWidget extends Composite {
 
         layout.setWidget( 0, 1, new HTML("<i>Please choose a package to edit, explore, or create a new package.</i>") );
         
-        layout.getFlexCellFormatter().setWidth( 0, 0, "20%" );
+        layout.getFlexCellFormatter().setWidth( 0, 0, "25%" );
         
         layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
         
@@ -152,7 +152,7 @@ public class PackageExplorerWidget extends Composite {
         });
         uploadModel.setTitle( "This creates a new model archive - models contain classes/types that rules use." );
         
-        newWizards.add( uploadModel );
+        
         
         Image newRule = new Image("images/new_rule.gif");
         newRule.setTitle( "Create new rule" );
@@ -212,6 +212,7 @@ public class PackageExplorerWidget extends Composite {
         } );        
         
         newWizards.add( newPackage );
+        newWizards.add( uploadModel );
         newWizards.add( newRule );
         newWizards.add( newFunction );
         newWizards.add( newDSL );

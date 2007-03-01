@@ -59,7 +59,7 @@ public class PackageEditor extends FormStyleLayout {
         addAttribute( "External URI:", externalURI() );
         addRow(new HTML("<hr/>"));
         addAttribute( "Last modified:", new Label(this.conf.lastModified.toLocaleString())  );
-        addAttribute( "Last modified:", new Label(this.conf.lasContributor));
+        addAttribute( "Last contributor:", new Label(this.conf.lasContributor));
         addRow(new HTML("<hr/>"));
         
         status = new HTML();

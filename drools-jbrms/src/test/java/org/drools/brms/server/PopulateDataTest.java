@@ -1,11 +1,11 @@
 package org.drools.brms.server;
 
+import junit.framework.TestCase;
+
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.rpc.PackageConfigData;
 
 import com.google.gwt.user.client.rpc.SerializableException;
-
-import junit.framework.TestCase;
 
 /**
  * This class will setup the data in a test state, which is
@@ -27,18 +27,27 @@ public class PopulateDataTest extends TestCase {
         createCategories( serv );
         createStates( serv );
         createPackages( serv );
-        
         createSomeRules( serv );
-        
-        
+        createPackageSnapshots( serv );
         
     }
 
+    private void createPackageSnapshots(JBRMSServiceServlet serv) {
+        serv.createPackageSnapshot( "com.billasurf.finance", "TEST", false, "The testing region." );
+        serv.createPackageSnapshot( "com.billasurf.finance", "PRODUCTION", false, "The testing region." );
+        serv.createPackageSnapshot( "com.billasurf.finance", "PRODUCTION ROLLBACK", false, "The testing region." );
+    }
+
     private void createSomeRules(JBRMSServiceServlet serv) throws SerializableException {
-        serv.createNewRule( "Surfboard_Colour_Combination", "allowable combinations for basic boards.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
-        serv.createNewRule( "Premium_Colour_Combinations", "This defines .", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
-//        serv.createNewRule( "Surfboard_Colour_Combination", "allowable combinations for basic boards.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
-//        serv.createNewRule( "Premium_Colour_Combinations", "This defines .", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
+        String uuid = serv.createNewRule( "Surfboard_Colour_Combination", "allowable combinations for basic boards.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
+        serv.changeState( uuid, "Pending", false );
+        uuid = serv.createNewRule( "Premium_Colour_Combinations", "This defines XXX.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
+        serv.changeState( uuid, "Approved", false );
+        uuid = serv.createNewRule( "Fibreglass supplier selection", "This defines XXX.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
+        uuid = serv.createNewRule( "Recommended wax", "This defines XXX.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
+
+        
+        
     }
 
     private void createPackages(JBRMSServiceServlet serv) throws SerializableException {

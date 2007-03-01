@@ -32,11 +32,7 @@ public class NewAssetWizard extends PopupPanel {
     private TextBox                name        = new TextBox();
     private TextArea               description = new TextArea();
     private String                 initialCategory;
-    private CategoryExplorerWidget catChooser  = new CategoryExplorerWidget( new CategorySelectHandler() {
-                                                   public void selected(String selectedPath) {
-                                                       initialCategory = selectedPath;
-                                                   }
-                                               });
+
     private ListBox                 formatChooser = getFormatChooser();
     
     private RulePackageSelector packageSelector = new RulePackageSelector();
@@ -72,7 +68,7 @@ public class NewAssetWizard extends PopupPanel {
                          name );
         if (showCats) {
             table.setWidget( 2, 0, new Label("Initial category:") );
-            table.setWidget( 2, 1, catChooser );
+            table.setWidget( 2, 1, getCatChooser() );
         }
         
         if (format == null) {
@@ -118,6 +114,14 @@ public class NewAssetWizard extends PopupPanel {
 
         add( table );
         setStyleName( "ks-popups-Popup" );
+    }
+
+    private Widget getCatChooser() {
+       return new CategoryExplorerWidget( new CategorySelectHandler() {
+            public void selected(String selectedPath) {
+                initialCategory = selectedPath;
+            }
+        });
     }
 
     private ListBox getFormatChooser() {

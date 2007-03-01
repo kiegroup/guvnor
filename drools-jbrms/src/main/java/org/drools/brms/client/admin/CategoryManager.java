@@ -38,7 +38,7 @@ public class CategoryManager extends Composite {
         SimplePanel editable = new SimplePanel();
         editable.setStyleName( "metadata-Widget" );
         editable.add( explorer );
-        
+        form.addRow( new HTML("<hr/>") );
         form.addAttribute( "Current categories:", editable );
         
         Image refresh = new Image( "images/refresh.gif" );
@@ -49,7 +49,8 @@ public class CategoryManager extends Composite {
             }
         } );
         form.addAttribute( "Refresh view:", refresh );
-         
+        form.addRow( new HTML("<hr/>") );
+        
         Image newCat = new Image( "images/new.gif" );
         newCat.setTitle( "Create a new category" );
         newCat.addClickListener( new ClickListener() {
