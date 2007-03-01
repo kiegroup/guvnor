@@ -52,7 +52,7 @@ public class PackageSnapshotView extends Composite {
         tab.setHeight( "100%" );
         
         tab.add( layout, "<img src='images/package_snapshot.gif'>Snapshots</a>", true );
-        layout.getCellFormatter().setWidth( 0, 0, "20%" );
+        layout.getCellFormatter().setWidth( 0, 0, "28%" );
         
         
         service = RepositoryServiceFactory.getService();

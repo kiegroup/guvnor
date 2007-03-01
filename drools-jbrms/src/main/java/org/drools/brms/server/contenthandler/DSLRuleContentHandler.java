@@ -19,6 +19,8 @@ public class DSLRuleContentHandler extends ContentHandler {
         DSLRuleData data = getDummyDSLSuggestions();
         data.text = text;
 
+        asset.content = data;
+        
     }
 
     public void storeAssetContent(RuleAsset asset,
@@ -30,8 +32,12 @@ public class DSLRuleContentHandler extends ContentHandler {
     
     private DSLRuleData getDummyDSLSuggestions() {
         DSLRuleData data = new DSLRuleData();
-        data.lhsSuggestions = new String[] {"The persons name is {name}", "- age is less than {age}"};
-        data.rhsSuggestions = new String[] {"Reject claim", "Send notification to [{email}]"};                                                   
+        data.lhsSuggestions = new String[] {"The surboard cosmetic configuration", "- colour1 is {colour}", "- colour2 is {colour}", "- colour3 is {colour}", "- graphic is large", "- graphic is normal",
+                                            "The surfboard shape", "- full malibu", "- mini mal", "- standard short", "- long short", "- stunt"};
+        data.rhsSuggestions = new String[] {"Reject configuration", 
+                                            "Send notification to manufacturing '{email}'",
+                                            "Accept configuration",
+                                            "Send notification to sales '{email}'"};                                                   
         return data;
     }    
 

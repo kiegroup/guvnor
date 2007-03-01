@@ -20,6 +20,7 @@ import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -372,7 +373,7 @@ public class RuleModeller extends Composite {
         }
         
 
-        popup.setPopupPosition( w.getAbsoluteLeft() - 400, w.getAbsoluteTop() );
+        popup.setPopupPosition( Window.getClientWidth()/3, Window.getClientHeight()/3 );
         popup.show();
     }
     

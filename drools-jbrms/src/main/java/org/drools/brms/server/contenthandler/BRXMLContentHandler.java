@@ -39,36 +39,41 @@ public class BRXMLContentHandler extends ContentHandler {
     private SuggestionCompletionEngine getDummySuggestionEngine() {
         SuggestionCompletionEngine com = new SuggestionCompletionEngine();
         
-        com.factTypes = new String[] {"Person", "Vehicle"};
+        com.factTypes = new String[] {"Board", "Order", "Clothing"};
         
         Map fieldTypes = new HashMap();
-        fieldTypes.put("Person.age", SuggestionCompletionEngine.TYPE_NUMERIC);
-        fieldTypes.put("Person.name", "String");
-        fieldTypes.put("Vehicle.type", "String");
-        fieldTypes.put("Vehcile.make", "String");
+        fieldTypes.put("Board.size", SuggestionCompletionEngine.TYPE_NUMERIC);
+        fieldTypes.put("Board.cost", SuggestionCompletionEngine.TYPE_NUMERIC);
+        fieldTypes.put("Board.type", SuggestionCompletionEngine.TYPE_STRING);
+        fieldTypes.put("Board.name", SuggestionCompletionEngine.TYPE_STRING);        
+        fieldTypes.put("Order.value", SuggestionCompletionEngine.TYPE_NUMERIC);
+        fieldTypes.put("Order.quantity", SuggestionCompletionEngine.TYPE_NUMERIC);
+        fieldTypes.put("Clothing.value", SuggestionCompletionEngine.TYPE_NUMERIC);
+        fieldTypes.put("Clothing.type", SuggestionCompletionEngine.TYPE_STRING);
         com.fieldTypes = fieldTypes;
 
         Map fieldsForType = new HashMap();
-        fieldsForType.put("Person", new String[] {"age", "name"});
-        fieldsForType.put("Vehicle", new String[] {"type", "make"});
+        fieldsForType.put("Board", new String[] {"size", "cost", "type", "name"});
+        fieldsForType.put("Order", new String[] {"value", "quantity"});
+        fieldsForType.put("Clothing", new String[] {"value", "type"});
         com.fieldsForType = fieldsForType;
         
         
         DSLSentence sen = new DSLSentence();
-        sen.elements = new DSLSentenceFragment[2];
-        sen.elements[0] = new DSLSentenceFragment("This is a dsl expression", false);
-        sen.elements[1] = new DSLSentenceFragment("(something)", true);
-        com.conditionDSLSentences = new DSLSentence[] {sen};
+//        sen.elements = new DSLSentenceFragment[2];
+//        sen.elements[0] = new DSLSentenceFragment("Notify manufacturing", false);
+//        sen.elements[1] = new DSLSentenceFragment("(something)", true);
+//        com.conditionDSLSentences = new DSLSentence[] {sen};
         
         sen = new DSLSentence();
         sen.elements = new DSLSentenceFragment[3];
-        sen.elements[0] = new DSLSentenceFragment("Send an email to [", false);
-        sen.elements[1] = new DSLSentenceFragment("(someone)", true);
+        sen.elements[0] = new DSLSentenceFragment("Notify manufacturing with warning [", false);
+        sen.elements[1] = new DSLSentenceFragment("(quantity of items description)", true);
         sen.elements[2] = new DSLSentenceFragment("]", false);
                 
         DSLSentence sen2 = new DSLSentence();
         sen2.elements = new DSLSentenceFragment[1];
-        sen2.elements[0] = new DSLSentenceFragment("do nothing", false);        
+        sen2.elements[0] = new DSLSentenceFragment("Reject order (too many items)", false);
         
         com.actionDSLSentences = new DSLSentence[] {sen, sen2};        
         
