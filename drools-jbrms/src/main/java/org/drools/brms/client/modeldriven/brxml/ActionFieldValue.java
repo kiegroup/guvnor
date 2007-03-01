@@ -20,4 +20,21 @@ public class ActionFieldValue
     public String field;
     public String value;
     
+    /**
+     * This will return true if the value is really a "formula" - in 
+     * the sense of like an excel spreadsheet.
+     * 
+     *  If it IS a formula, then the value should never be turned into a 
+     *  string, always left as-is.
+     * 
+     */
+    public boolean isFormula() {
+        if (value == null) return false;
+        if (value.trim().startsWith( "=" )) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
 }

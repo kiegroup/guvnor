@@ -28,11 +28,17 @@ public class PopulateDataTest extends TestCase {
         createStates( serv );
         createPackages( serv );
         
-        serv.createNewRule( "SurfboardColourCombination", "allowable combinations for basic boards.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
-        serv.createNewRule( "PremiumColourCombinations", "This defines .", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
+        createSomeRules( serv );
         
         
         
+    }
+
+    private void createSomeRules(JBRMSServiceServlet serv) throws SerializableException {
+        serv.createNewRule( "Surfboard_Colour_Combination", "allowable combinations for basic boards.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
+        serv.createNewRule( "Premium_Colour_Combinations", "This defines .", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
+//        serv.createNewRule( "Surfboard_Colour_Combination", "allowable combinations for basic boards.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
+//        serv.createNewRule( "Premium_Colour_Combinations", "This defines .", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
     }
 
     private void createPackages(JBRMSServiceServlet serv) throws SerializableException {
