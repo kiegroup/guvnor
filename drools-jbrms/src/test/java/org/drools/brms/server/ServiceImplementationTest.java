@@ -187,7 +187,7 @@ public class ServiceImplementationTest extends TestCase {
       rule.checkin( "changed state" );
       asset = impl.loadRuleAsset( uuid );
       
-      assertEquals("whee", asset.metaData.state);
+      assertEquals("whee", asset.metaData.status);
       assertEquals("changed state", asset.metaData.checkinComment);
       
       
@@ -427,12 +427,12 @@ public class ServiceImplementationTest extends TestCase {
       impl.createState( "testState" );
       
       RuleAsset asset = impl.loadRuleAsset( ruleUUID );
-      assertEquals(StateItem.DRAFT_STATE_NAME, asset.metaData.state);
+      assertEquals(StateItem.DRAFT_STATE_NAME, asset.metaData.status);
       impl.changeState( ruleUUID, "testState", false );
       asset = impl.loadRuleAsset( ruleUUID );
-      assertEquals("testState", asset.metaData.state);
+      assertEquals("testState", asset.metaData.status);
       asset = impl.loadRuleAsset( ruleUUID2 );
-      assertEquals( StateItem.DRAFT_STATE_NAME, asset.metaData.state);
+      assertEquals( StateItem.DRAFT_STATE_NAME, asset.metaData.status);
       
       
       
@@ -443,11 +443,11 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals("testState2", pkg.state);
       
       asset = impl.loadRuleAsset( ruleUUID2 );
-      assertEquals("testState2", asset.metaData.state);
+      assertEquals("testState2", asset.metaData.status);
       
       impl.checkinVersion( asset );
       asset = impl.loadRuleAsset( asset.uuid );
-      assertEquals(StateItem.DRAFT_STATE_NAME, asset.metaData.state);
+      assertEquals("testState2", asset.metaData.status);
       
   }
   
@@ -507,6 +507,8 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals("X", snaps[0].name);
       assertEquals("ya", snaps[0].comment);
       assertNotNull(snaps[0].uuid);
+      PackageConfigData confSnap = impl.loadPackageConfig( snaps[0].uuid );
+      assertEquals("testSnapshot", confSnap.name);
       
       
       impl.createPackageSnapshot( "testSnapshot", "Y", false, "we" );
@@ -517,6 +519,10 @@ public class ServiceImplementationTest extends TestCase {
       impl.copyOrRemoveSnapshot( "testSnapshot", "X", false, "Q" );
       assertEquals(3, impl.listSnapshots( "testSnapshot" ).length);
       
+      
+      
+      
+      
       try {
           impl.copyOrRemoveSnapshot( "testSnapshot", "X", false, "" );
           fail("should not be able to copy snapshot to empty detination");
@@ -525,7 +531,9 @@ public class ServiceImplementationTest extends TestCase {
       }
       
       impl.copyOrRemoveSnapshot( "testSnapshot", "X", true, null );
-      assertEquals(2, impl.listSnapshots( "testSnapshot" ).length);      
+      assertEquals(2, impl.listSnapshots( "testSnapshot" ).length);   
+      
+      
   }
   
     

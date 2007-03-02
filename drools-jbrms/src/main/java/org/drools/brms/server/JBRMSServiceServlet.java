@@ -220,7 +220,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     MetaData populateMetaData(VersionableItem item) {
         MetaData meta = new MetaData();
         
-        meta.state = (item.getState() != null) ? item.getState().getName() : "";
+        meta.status = (item.getState() != null) ? item.getState().getName() : "";
 
         getMetaDataMapper().copyToMetaData( meta, item );
         
@@ -277,7 +277,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         
         repoAsset.updateDateEffective( dateToCalendar( meta.dateEffective ) );
         repoAsset.updateDateExpired( dateToCalendar( meta.dateExpired ) );        
-        repoAsset.updateState( StateItem.DRAFT_STATE_NAME );
+        
         
         repoAsset.updateCategoryList( meta.categories );
         ContentHandler handler = ContentHandler.getHandler( repoAsset.getFormat() );//new AssetContentFormatHandler();
@@ -285,6 +285,8 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         
         repoAsset.checkin( meta.checkinComment );
                 
+//        repoAsset.updateState( StateItem.DRAFT_STATE_NAME );
+//        repo.save();
         
         return repoAsset.getUUID();
     }

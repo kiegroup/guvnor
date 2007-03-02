@@ -49,7 +49,7 @@ public class ActionToolbar extends Composite {
         this.checkin = checkin;
         this.uuid = asset.uuid;
         this.state = new HTML();
-        String status = metaData.state;
+        String status = metaData.status;
 
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         HorizontalPanel saveControls = new HorizontalPanel();

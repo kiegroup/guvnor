@@ -16,7 +16,7 @@ public class MetaData
     public String description = "";
     
     public String title = "";
-    public String state = "";
+    public String status = "";
 
     public Date lastModifiedDate;
     public String lastContributor = "";
