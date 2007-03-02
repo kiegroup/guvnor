@@ -268,6 +268,7 @@ public class FactPatternWidget extends Composite {
     private Widget operatorDropDown(final Constraint c) {
         String[] ops = completions.getOperatorCompletions( pattern.factType, c.fieldName );
         final ListBox box = new ListBox();
+        box.addItem( "--- please choose ---" );
         for ( int i = 0; i < ops.length; i++ ) {
             String op = ops[i];
             box.addItem( HumanReadable.getOperatorDisplayName( op ) , op );
@@ -282,6 +283,7 @@ public class FactPatternWidget extends Composite {
                 c.operator = box.getValue( box.getSelectedIndex() );                
             }            
         });
+        
         
         return box;
     }
