@@ -82,6 +82,21 @@ public class PackageItem extends VersionableItem {
     }
 
 
+    
+    public String getName() {
+        try {
+            if (this.rulesRepository.isNotSnapshot( this.node.getParent() )) {
+                return super.getName();
+            } else {
+                System.out.println(this.node.getPath());
+                return this.node.getParent().getName();
+                
+            }
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException( e );
+        }
+    }
+
     /**
      * Adds a rule to the current package with no category (not recommended !).
      * Without categories, its going to be hard to find rules later on

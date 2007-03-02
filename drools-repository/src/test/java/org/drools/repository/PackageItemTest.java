@@ -109,6 +109,8 @@ public class PackageItemTest extends TestCase {
         PackageItem _pkgLoaded = repo.loadPackageByUUID( pkgLoaded.getUUID() );
         assertNotNull(_pkgLoaded);
         assertEquals(pkgLoaded.getCreatedDate(), _pkgLoaded.getCreatedDate());
+        assertEquals(pkgLoaded.getName(), _pkgLoaded.getName());
+        //assertEquals("testPackageSnapshot", pkgLoaded.getName());
         List loadedAssets = iteratorToList( pkgLoaded.getAssets() );
         List _loadedAssets = iteratorToList( _pkgLoaded.getAssets() );
         assertEquals(loadedAssets.size(), _loadedAssets.size());

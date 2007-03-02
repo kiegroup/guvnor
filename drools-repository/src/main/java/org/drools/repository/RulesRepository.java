@@ -751,7 +751,7 @@ public class RulesRepository {
 
 
 
-    private boolean isNotSnapshot(Node parentNode) throws RepositoryException {
+    boolean isNotSnapshot(Node parentNode) throws RepositoryException {
         return parentNode.getPath().indexOf( PACKAGE_SNAPSHOT_AREA ) == -1;
     }
     

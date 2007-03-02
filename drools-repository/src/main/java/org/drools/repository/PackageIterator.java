@@ -13,11 +13,12 @@ public class PackageIterator
     implements
     Iterator {
     
-    private NodeIterator packageNodeIterator;
-    private RulesRepository repository;
+    private final NodeIterator packageNodeIterator;
+    private final RulesRepository repository;
 
     public PackageIterator(RulesRepository repository, NodeIterator packageNodes) {
         this.packageNodeIterator = packageNodes;
+        this.repository = repository;
     }
 
     public boolean hasNext() {
