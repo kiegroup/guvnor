@@ -122,9 +122,7 @@ public class RepositoryConfigurator {
             // Setup the rule repository node
             Node repositoryNode = RulesRepository.addNodeIfNew(root, RulesRepository.RULES_REPOSITORY_NAME, "nt:folder");
                     
-            // Setup the Rule area
-            RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.RULE_AREA, "nt:folder");
-            
+
             
             // Setup the RulePackageItem area        
             RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.RULE_PACKAGE_AREA, "nt:folder");

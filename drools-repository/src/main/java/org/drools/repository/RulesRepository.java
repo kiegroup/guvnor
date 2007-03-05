@@ -17,6 +17,8 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
 
 import org.apache.log4j.Logger;
@@ -78,11 +80,6 @@ public class RulesRepository {
      * The name of the rulepackage area of the repository
      */
     public final static String PACKAGE_SNAPSHOT_AREA = "drools:packagesnapshot_area";    
-    
-    /**
-     * The name of the rule area of the repository
-     */
-    public final static String RULE_AREA = "drools:rule_area";
     
     
     /**
@@ -617,9 +614,7 @@ public class RulesRepository {
             Node rulePackageNode = folderNode.addNode(name, PackageItem.RULE_PACKAGE_TYPE_NAME);
             
             rulePackageNode.addNode( PackageItem.ASSET_FOLDER_NAME, "drools:versionableAssetFolder" );
-            rulePackageNode.addNode( PackageItem.FUNCTION_FOLDER_NAME, "drools:versionableAssetFolder" );
-            
-            
+
             rulePackageNode.setProperty(PackageItem.TITLE_PROPERTY_NAME, name);
             
                         
@@ -859,6 +854,29 @@ public class RulesRepository {
         }
     }
 
+    
+    /** 
+     * This will search assets, looking for matches against the name.
+     */
+    public AssetItemIterator findAssetsByName(String name) {
+        try {
+            
+
+            String sql = "SELECT drools:title, drools:description FROM " + AssetItem.RULE_NODE_TYPE_NAME;
+            sql += " WHERE drools:title LIKE '" + name + "'"; 
+            sql += " AND jcr:path LIKE '/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/%'";
+            
+            System.out.println(sql);
+            
+            Query q = this.session.getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
+            
+            QueryResult res = q.execute();            
+            return new AssetItemIterator(res.getNodes(), this);        
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException(e);
+        }
+        
+    }
 
 
     /**

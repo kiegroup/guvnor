@@ -44,10 +44,6 @@ public class PackageItem extends VersionableItem {
      */
     public static final String RULE_PACKAGE_TYPE_NAME           = "drools:rulepackageNodeType";
 
-    /**
-     * The folder where functions are kept
-     */
-    public static final String FUNCTION_FOLDER_NAME             = "functions";
     
     public static final String HEADER_PROPERTY_NAME             = "drools:header";
     public static final String EXTERNAL_URI_PROPERTY_NAME             = "drools:externalURI";

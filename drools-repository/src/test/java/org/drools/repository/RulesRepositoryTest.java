@@ -73,6 +73,43 @@ public class RulesRepositoryTest extends TestCase {
         
         
     }
+    
+    public void testFindRulesByName() throws Exception {
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+        
+
+        
+        repo.loadDefaultPackage().addAsset( "findRulesByName1", "X" );
+        repo.loadDefaultPackage().addAsset( "findRulesByName2", "X" );
+        repo.save();
+        
+        
+        List list = iteratorToList(repo.findAssetsByName( "findRulesByName1" ));        
+        assertEquals(1, list.size());
+
+        list = iteratorToList(repo.findAssetsByName( "findRulesByName2" ));        
+        assertEquals(1, list.size());
+        
+
+        list = iteratorToList( repo.findAssetsByName( "findRulesByName%" ) );
+        assertEquals(2, list.size());
+        
+        
+        repo.createPackageSnapshot( "default", "testFindRulesByName" );
+        repo.save();
+
+        list = iteratorToList(repo.findAssetsByName( "findRulesByName2" ));   
+        AssetItem item = (AssetItem)list.get( 0 );
+        assertEquals("findRulesByName2", item.getName());
+        assertEquals("X", item.getDescription());
+        assertEquals(1, list.size());
+        
+
+        list = iteratorToList( repo.findAssetsByName( "findRulesByName%" ) );
+        assertEquals(2, list.size());
+
+        
+    }
 
     
     public void testLoadRuleByUUIDWithConcurrentSessions() throws Exception {
