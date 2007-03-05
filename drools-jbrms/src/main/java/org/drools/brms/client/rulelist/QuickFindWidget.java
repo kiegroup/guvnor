@@ -1,0 +1,179 @@
+package org.drools.brms.client.rulelist;
+
+import org.drools.brms.client.common.AutoCompleteTextBoxAsync;
+import org.drools.brms.client.common.CompletionItemsAsync;
+import org.drools.brms.client.common.CompletionItemsAsyncReturn;
+import org.drools.brms.client.common.FormStyleLayout;
+import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.LoadingPopup;
+import org.drools.brms.client.rpc.RepositoryServiceFactory;
+import org.drools.brms.client.rpc.TableDataResult;
+import org.drools.brms.client.rpc.TableDataRow;
+
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.KeyboardListener;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
+
+/**
+ * This is for quickly finding an asset by name. Partial completion is allowed.
+ * This also uses some auto completion magic.
+ * @author Michael Neale
+ */
+public class QuickFindWidget extends Composite {
+
+    private final FormStyleLayout layout;
+    private final FlexTable listPanel;
+    private final TextBox searchBox;
+    private EditItemEvent editEvent;
+    private String[] shortListItems;
+    
+    
+    public QuickFindWidget(EditItemEvent editEvent) {
+        layout = new FormStyleLayout("images/search_large.gif", "Find rules");
+        
+        
+        
+        searchBox = new AutoCompleteTextBoxAsync(new CompletionItemsAsync() {
+
+            public void getCompletionItems(String match,
+                                           CompletionItemsAsyncReturn asyncReturn) {
+                loadShortList(match, asyncReturn);
+                
+            }
+
+            
+        });
+        
+        this.editEvent = editEvent;
+        HorizontalPanel srch = new HorizontalPanel();
+        Button go = new Button("Go");
+        go.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+               updateList();
+            }
+        } );
+        
+        srch.add( searchBox );
+        srch.add( go ); 
+        layout.addAttribute( "Find items with a name matching:", srch );
+        layout.addRow( new HTML("<hr/>") );
+        
+        listPanel = new FlexTable();
+        listPanel.setWidget( 0, 0, new HTML("Enter the name or part of a name. Alternatively, use the categories to browse.") );
+        layout.addRow(listPanel);
+        
+        listPanel.setStyleName( "editable-Surface" );
+        
+        
+        searchBox.addKeyboardListener( getKeyboardListener());
+        
+        initWidget( layout );
+    }
+
+    /**
+     * This will load a list of items as they are typing.
+     */
+    protected String[] loadShortList(String match, final CompletionItemsAsyncReturn returnItems) {
+        RepositoryServiceFactory.getService().quickFindAsset( match, 5, new GenericCallback() {
+
+
+            public void onSuccess(Object data) {
+                TableDataResult result = (TableDataResult) data;
+                String[] items = new String[result.data.length];
+                for ( int i = 0; i < result.data.length; i++ ) {
+                    if (!result.data[i].id.equals( "MORE" )) {
+                        items[i] = result.data[i].values[0];
+                    }
+                }
+                returnItems.itemReturn( items ); 
+            }
+            
+        });
+        return shortListItems;
+    }
+
+    private KeyboardListener getKeyboardListener() {
+        return new KeyboardListener() {
+            public void onKeyDown(Widget arg0,
+                                  char arg1,
+                                  int arg2) {
+            }
+
+            public void onKeyPress(Widget arg0,
+                                   char arg1,
+                                   int arg2) {
+            }
+
+            public void onKeyUp(Widget arg0,
+                                char arg1,
+                                int arg2) {
+                if (arg1 == KEY_ENTER) {
+                    
+                    updateList();
+                }
+            }
+            
+        };
+    }
+
+    protected void updateList() {
+
+        LoadingPopup.showMessage( "Searching..." );
+        RepositoryServiceFactory.getService().quickFindAsset( searchBox.getText(), 15, new GenericCallback() {
+            public void onSuccess(Object data) {
+                TableDataResult result = (TableDataResult) data;
+                populateList(result);
+                
+            }
+        });
+        
+    }
+
+    protected void populateList(TableDataResult result) {
+        
+        
+        FlexTable data = new FlexTable();
+        
+        //if its only one, just open it...
+        if (result.data.length == 1) {
+            editEvent.open( result.data[0].id );
+        }
+        
+        for ( int i = 0; i < result.data.length; i++ ) {
+            
+            final TableDataRow row = result.data[i];
+            if (row.id.equals( "MORE" )) {
+                data.setWidget( i, 0, new HTML("<i>There are more items... try narrowing the search terms..</i>") );
+                data.getFlexCellFormatter().setColSpan( i, 0, 3 );
+            } else {
+                data.setWidget( i, 0, new Label(row.values[0]) );
+                data.setWidget( i, 1, new Label(row.values[1]) );
+                Button open = new Button("Open");
+                open.addClickListener( new ClickListener() {
+                    public void onClick(Widget w) {
+                        editEvent.open( row.id );
+                    }
+                } );
+                
+                data.setWidget( i, 2, open );
+            }
+            
+
+        }
+        
+        data.setWidth( "100%" );
+        listPanel.setWidget( 0, 0, data);
+        
+        LoadingPopup.close();
+        
+    }
+    
+    
+}

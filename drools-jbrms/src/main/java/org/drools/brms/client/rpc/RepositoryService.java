@@ -164,4 +164,16 @@ public interface RepositoryService extends RemoteService {
      */
     public void copyOrRemoveSnapshot(String packageName, String snapshotName, boolean delete, String newSnapshotName) throws SerializableException;
     
+    
+    /**
+     * This will quickly return a list of asset names/descriptions.
+     * This list will be limited, and it will be flagged if more are found then can be shown.
+     * Returning an extra empty row means there are more to come... 
+     * 
+     * The id of a row is the UUID, the first value is the name, the next the description.
+     * Finally, if there is "more" rows, a row will be returned which has "MORE" as its ID.
+     * 
+     */
+    public TableDataResult quickFindAsset(String searchText, int maxMatches);
+    
 }

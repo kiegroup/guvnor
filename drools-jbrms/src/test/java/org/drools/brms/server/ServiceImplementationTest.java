@@ -390,6 +390,17 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals(5, res.data.length);
       
 
+      TableDataResult result = impl.quickFindAsset( "testListByForma", 5 );
+      assertEquals(5, result.data.length);
+      
+      assertNotNull(result.data[0].id);
+      assertTrue(result.data[0].values[0].startsWith( "testListByFormat" ));
+      
+      result = impl.quickFindAsset( "testListByForma", 3 );
+      assertEquals(4, result.data.length);
+      
+      assertEquals("MORE", result.data[3].id);
+      
       
   }
   

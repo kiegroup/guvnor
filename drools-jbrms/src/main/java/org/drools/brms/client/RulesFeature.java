@@ -16,6 +16,7 @@ import org.drools.brms.client.ruleeditor.NewAssetWizard;
 import org.drools.brms.client.ruleeditor.RuleViewer;
 import org.drools.brms.client.rulelist.AssetItemListViewer;
 import org.drools.brms.client.rulelist.EditItemEvent;
+import org.drools.brms.client.rulelist.QuickFindWidget;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -24,6 +25,7 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -39,7 +41,8 @@ public class RulesFeature extends JBRMSFeature {
     private TabPanel tab;
     private Map openedViewers = new HashMap();
     private AssetItemListViewer list;
-
+    
+    
     
 	public static ComponentInfo init() {
 		return new ComponentInfo("Rules", "Find and edit rules.") {
@@ -57,9 +60,10 @@ public class RulesFeature extends JBRMSFeature {
         tab.setWidth("100%");
         tab.setHeight("100%");        
 
-        FlexTable explorePanel = doExplore();        
+        FlexTable explorePanel = doExplorer();        
         
         tab.add(explorePanel, "Explore");
+
         tab.selectTab(0);
         
 		initWidget(tab);
@@ -68,34 +72,40 @@ public class RulesFeature extends JBRMSFeature {
     
 
     /** This will setup the explorer tab */
-	private FlexTable doExplore() {
-		FlexTable  table = new FlexTable();
+	private FlexTable doExplorer() {
+		final FlexTable  table = new FlexTable();
         //and the the delegate to open an editor for a rule resource when
         //chosen to
         list = new AssetItemListViewer(new EditItemEvent() {
             public void open(String key) {                  
                 showLoadEditor( key );
-                
             }
         });    
-        //list.loadTableData( null );
+        
+        
+        FlexCellFormatter formatter = table.getFlexCellFormatter();
+
         
         //setup the nav, which will drive the list
 		CategoryExplorerWidget nav = new CategoryExplorerWidget(new CategorySelectHandler() {
             public void selected(final String selectedPath) {
                 Command load = getRuleListLoadingCommand( list,
                                            selectedPath );
+                table.setWidget( 0, 1, list );
                 DeferredCommand.add( load );
                 list.setRefreshCommand(load);                
             }
 
         });		
         
-        
-        FlexCellFormatter formatter = table.getFlexCellFormatter();
+        final QuickFindWidget quick = new QuickFindWidget(new EditItemEvent() {
+            public void open(String key) {                  
+                showLoadEditor( key );
+            }
+        });
         
         table.setWidget( 0, 0, nav );
-		table.setWidget( 0, 1, list);
+		table.setWidget( 0, 1, quick);
         
         formatter.setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
         formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );        
@@ -111,25 +121,23 @@ public class RulesFeature extends JBRMSFeature {
         newRule.setTitle( "Create new rule" );
 
         newRule.addClickListener( new ClickListener() {
-
             public void onClick(Widget w) {
-              int left = 70;
-              int top = 100;
-                
-              NewAssetWizard pop = new NewAssetWizard(new EditItemEvent() {
-                  public void open(String key) {                  
-                      showLoadEditor( key );
-                      
-                  }
-              }, true, null, "Create a new rule");
-              pop.setPopupPosition( left, top );
-              
-              pop.show();
+              showNewAssetWizard();
             }
-            
         });
         
-        table.setWidget( 1, 0, newRule);
+        Image showFinder = new Image("images/find_items.gif");
+        showFinder.setTitle( "Show the name finder." );
+        showFinder.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                table.setWidget( 0, 1, quick );
+            }
+        } );
+        
+        HorizontalPanel actions = new HorizontalPanel();
+        actions.add( showFinder );
+        actions.add( newRule );
+        table.setWidget( 1, 0, actions);
         formatter.setHeight( 1, 0, "5%" );
         formatter.setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP);
         formatter.setStyleName( 1, 0, "new-asset-Icons" );
@@ -156,6 +164,23 @@ public class RulesFeature extends JBRMSFeature {
     public void showLoadEditor(String uuid) {
         showLoadEditor( openedViewers, tab, uuid, false );
     }
+
+    private void showNewAssetWizard() {
+        int left = 70;
+          int top = 100;
+            
+          NewAssetWizard pop = new NewAssetWizard(new EditItemEvent() {
+              public void open(String key) {                  
+                  showLoadEditor( key );
+                  
+              }
+          }, true, null, "Create a new rule");
+          pop.setPopupPosition( left, top );
+          
+          pop.show();
+    }
+
+
 
     /**
      * This will show the rule viewer. If it was previously opened, it will show that dialog instead

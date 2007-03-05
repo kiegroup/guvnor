@@ -162,7 +162,7 @@ public class PackageSnapshotView extends Composite {
         }
         
         right.setWidth( "100%" );
-        right.setHeight( "100%" );
+        //right.setHeight( "100%" );
         right.addRow( table );
         table.setWidth( "100%" );
         right.setStyleName( SortableTable.styleList );

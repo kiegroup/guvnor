@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpSession;
@@ -503,6 +505,47 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
             }
             repo.copyPackageSnapshot( packageName, snapshotName, newSnapshotName );
         }
+        
+    }
+
+    public TableDataResult quickFindAsset(String searchText, int max) {
+        
+        RulesRepository repo = getRulesRepository();
+        String search = Pattern.compile("*", Pattern.LITERAL).matcher(searchText).replaceAll(Matcher.quoteReplacement("%"));
+        
+        if (!search.endsWith( "%" )) {
+            search += "%";
+        }
+        
+        
+        TableDataResult result = new TableDataResult();
+        
+        List resultList = new ArrayList();        
+        
+        long start = System.currentTimeMillis();        
+        AssetItemIterator it = repo.findAssetsByName( search );
+        System.out.println(System.currentTimeMillis() - start);
+        for(int i = 0; i < max; i++) {
+            if (!it.hasNext()) {
+                break;
+            } 
+            
+            AssetItem item = (AssetItem) it.next();
+            TableDataRow row = new TableDataRow();
+            row.id = item.getUUID();
+            row.values = new String[] { item.getName(), item.getDescription() };
+            resultList.add( row );
+           
+        }
+        
+        if (it.hasNext()) {
+            TableDataRow empty = new TableDataRow();
+            empty.id = "MORE";
+            resultList.add( empty );
+        }
+        
+        result.data = (TableDataRow[]) resultList.toArray( new TableDataRow[resultList.size()] );
+        return result;
         
     }
     

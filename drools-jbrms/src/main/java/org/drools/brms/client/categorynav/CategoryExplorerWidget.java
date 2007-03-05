@@ -83,7 +83,8 @@ public class CategoryExplorerWidget extends Composite
                                                  it.addItem( new PendingItem() );
                                                  navTreeWidget.addItem( it );
                                              }
-                                             if (!empty) navTreeWidget.setSelectedItem( navTreeWidget.getItem( 0 ) );
+                                             //MN: disabling this to get rid of default selection
+                                             //if (!empty) navTreeWidget.setSelectedItem( navTreeWidget.getItem( 0 ) );
 
                                          }
 
