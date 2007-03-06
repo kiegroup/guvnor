@@ -818,10 +818,6 @@ public class RulesRepository {
             
             item.checkin( explanation );   
             
-//            sourcePkg.checkout();
-//            sourcePkg.checkin( explanation );
-//            destPkg.checkout();
-//            destPkg.checkin( explanation );
             
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException(e);
@@ -862,11 +858,10 @@ public class RulesRepository {
         try {
             
 
-            String sql = "SELECT drools:title, drools:description FROM " + AssetItem.RULE_NODE_TYPE_NAME;
-            sql += " WHERE drools:title LIKE '" + name + "'"; 
+            String sql = "SELECT " + AssetItem.TITLE_PROPERTY_NAME +  ", " 
+                    + AssetItem.DESCRIPTION_PROPERTY_NAME + " FROM " + AssetItem.RULE_NODE_TYPE_NAME;
+            sql += " WHERE " + AssetItem.TITLE_PROPERTY_NAME + " LIKE '" + name + "'"; 
             sql += " AND jcr:path LIKE '/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/%'";
-            
-            System.out.println(sql);
             
             Query q = this.session.getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
             
