@@ -220,11 +220,12 @@ public class FactPatternWidget extends Composite {
     private Widget connectiveOperatorDropDown(final ConnectiveConstraint con, String fieldName) {
         String[] ops = completions.getConnectiveOperatorCompletions( pattern.factType, fieldName );
         final ListBox box = new ListBox();
+        box.addItem( "--- please choose ---" );
         for ( int i = 0; i < ops.length; i++ ) {
             String op = ops[i];
             box.addItem(HumanReadable.getOperatorDisplayName( op ), op );
             if (op.equals( con.operator )) {
-                box.setSelectedIndex( i );
+                box.setSelectedIndex( i + 1 );
             }
 
         }
