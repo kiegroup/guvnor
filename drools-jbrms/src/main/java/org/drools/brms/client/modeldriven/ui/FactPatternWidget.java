@@ -273,14 +273,15 @@ public class FactPatternWidget extends Composite {
             String op = ops[i];
             box.addItem( HumanReadable.getOperatorDisplayName( op ) , op );
             if (op.equals( c.operator )) {
-                box.setSelectedIndex( i );
+                box.setSelectedIndex( i + 1 );
             }
 
         }
         
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-                c.operator = box.getValue( box.getSelectedIndex() );                
+                c.operator = box.getValue( box.getSelectedIndex() );
+                System.out.println("Set operator to :" + c.operator);
             }            
         });
         
