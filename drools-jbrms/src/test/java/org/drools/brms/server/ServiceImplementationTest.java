@@ -547,5 +547,16 @@ public class ServiceImplementationTest extends TestCase {
       
   }
   
+  public void testRemoveCategory() throws Exception {
+      
+      JBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      String[] children = impl.loadChildCategories( "/" );
+      impl.createCategory( "/", "testRemoveCategory", "foo" );
+      
+      impl.removeCategory( "testRemoveCategory" );
+      String[] _children = impl.loadChildCategories( "/" );
+      assertEquals(children.length, _children.length);
+  }
+  
     
 }

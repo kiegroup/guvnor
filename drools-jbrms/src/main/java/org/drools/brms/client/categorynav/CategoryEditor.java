@@ -97,7 +97,7 @@ public class CategoryEditor extends PopupPanel {
             ErrorPopup.showMessage( "Can't have an empty category name." );
         } else {
             RepositoryServiceFactory.getService().createCategory( path, name.getText(), description.getText(), cb );        
-            //this.table.setWidget( 0, 1, new Label("Please wait ..." ));
+            
         }
     }
     

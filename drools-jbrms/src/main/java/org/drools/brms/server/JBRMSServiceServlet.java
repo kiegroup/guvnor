@@ -75,10 +75,12 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
                                   String description) {
         
         if (path == null || "".equals(path)) {
-            path = "/";
+            path = "/";        
         }
-        CategoryItem item = getRulesRepository().loadCategory( path );
+        RulesRepository repo = getRulesRepository();
+        CategoryItem item = repo.loadCategory( path );
         item.addCategory( name, description );
+        repo.save();
         return Boolean.TRUE;
     }
     
@@ -550,6 +552,18 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         
         result.data = (TableDataRow[]) resultList.toArray( new TableDataRow[resultList.size()] );
         return result;
+        
+    }
+
+    public void removeCategory(String categoryPath) throws SerializableException {
+        RulesRepository repo = getRulesRepository();
+        
+        try {
+            repo.loadCategory( categoryPath ).remove();
+            repo.save();
+        } catch (RulesRepositoryException e) {
+            throw new SerializableException( e.getMessage() );
+        }
         
     }
     

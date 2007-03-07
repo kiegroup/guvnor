@@ -176,4 +176,14 @@ public interface RepositoryService extends RemoteService {
      */
     public TableDataResult quickFindAsset(String searchText, int maxMatches);
     
+    
+    /**
+     * This will remove a category. A category must have no
+     * current assets linked to it, or else it will not be able to be removed. 
+     * @param categoryPath The full path to the category. Any sub categories will also
+     * be removed.
+     * @throws SerializableException For when it all goes horribly wrong.
+     */
+    public void removeCategory(String categoryPath) throws SerializableException;
+    
 }
