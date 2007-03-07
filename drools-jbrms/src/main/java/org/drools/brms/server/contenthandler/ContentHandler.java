@@ -6,6 +6,7 @@ import java.util.Map;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.repository.AssetItem;
+import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
 
 import com.google.gwt.user.client.rpc.SerializableException;
@@ -39,6 +40,7 @@ public abstract class ContentHandler {
      * @throws SerializableException
      */
     public abstract void retrieveAssetContent(RuleAsset asset,
+                                              PackageItem pkg, 
                                               AssetItem item) throws SerializableException;
 
     /**

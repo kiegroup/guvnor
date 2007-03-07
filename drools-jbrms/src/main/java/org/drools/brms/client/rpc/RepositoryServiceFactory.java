@@ -1,7 +1,5 @@
 package org.drools.brms.client.rpc;
 
-import org.drools.brms.client.rpc.mock.MockRepositoryServiceAsync;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 

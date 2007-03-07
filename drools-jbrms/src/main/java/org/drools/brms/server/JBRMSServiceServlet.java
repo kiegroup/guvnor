@@ -208,9 +208,13 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         //load standard meta data
         asset.metaData = populateMetaData( item );
         
+        // get package header
+        PackageItem pkgItem = repo.loadPackage( asset.metaData.packageName );
+        String header = pkgItem.getHeader();
+
         //load the content
         ContentHandler handler = ContentHandler.getHandler( asset.metaData.format );
-        handler.retrieveAssetContent(asset, item);
+        handler.retrieveAssetContent(asset, pkgItem, item);
         
         return asset;
     }

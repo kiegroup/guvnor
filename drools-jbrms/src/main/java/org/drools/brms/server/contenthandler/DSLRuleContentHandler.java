@@ -4,6 +4,7 @@ import org.drools.brms.client.rpc.DSLRuleData;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleContentText;
 import org.drools.repository.AssetItem;
+import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -11,6 +12,7 @@ public class DSLRuleContentHandler extends ContentHandler {
 
 
     public void retrieveAssetContent(RuleAsset asset,
+                                     PackageItem pkg,
                                      AssetItem item) throws SerializableException {
         RuleContentText text = new RuleContentText();
         text.content = item.getContent();
