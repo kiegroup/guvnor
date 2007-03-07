@@ -48,6 +48,10 @@
       <artifactId>drools-repository</artifactId>
       <type>test-jar</type>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>    
 
     <!-- External dependencies -->
     <!-- now the deps for the repo web app -->
