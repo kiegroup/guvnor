@@ -3,6 +3,7 @@ package org.drools.repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
@@ -129,18 +130,22 @@ public abstract class CategorisableItem extends VersionableItem {
                 Property tagReferenceProperty = ruleNode.getProperty( CATEGORY_PROPERTY_NAME );
                 Value[] tagValues = tagReferenceProperty.getValues();
                 for ( int i = 0; i < tagValues.length; i++ ) {
-                    Node tagNode = this.node.getSession().getNodeByUUID( tagValues[i].getString() );
-                    CategoryItem tagItem = new CategoryItem( this.rulesRepository,
-                                                             tagNode );
-                    returnList.add( tagItem );
+                    try {
+                        Node tagNode = this.node.getSession().getNodeByUUID( tagValues[i].getString() );
+                        CategoryItem tagItem = new CategoryItem( this.rulesRepository,
+                                                                 tagNode );
+                        returnList.add( tagItem );
+                    } catch (ItemNotFoundException e) {
+                        //ignore
+                        log.debug( "Was unable to load a category by UUID - must have been removed." );
+                    }
                 }
             } catch ( PathNotFoundException e ) {
                 //the property doesn't even exist yet, so just return nothing
             }
             return returnList;
-        } catch ( Exception e ) {
-            log.error( "Caught exception",
-                       e );
+        } catch ( RepositoryException e ) {
+            log.error( "Error loading cateories", e );
             throw new RulesRepositoryException( e );
         }
     }

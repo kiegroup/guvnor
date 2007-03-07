@@ -5,6 +5,11 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.ReferentialIntegrityException;
+import javax.jcr.RepositoryException;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.version.VersionException;
 
 import org.apache.log4j.Logger;
 
@@ -106,6 +111,21 @@ public class CategoryItem extends Item {
             }
         }
 
+    }
+
+    /**
+     * This will remove the category and any ones under it. 
+     * This will only work if you have no current assets linked to the category.
+     */
+    public void remove() {
+        try {
+            if (this.node.getReferences().hasNext()) {
+                throw new RulesRepositoryException("The category still has some assets linked to it. You will need to remove the links so you can delete the cateogory.");
+            }
+            this.node.remove();
+        } catch ( RepositoryException e ) {
+            log.error( e );
+        }
     }
     
 }

@@ -3,6 +3,8 @@ package org.drools.repository;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.jcr.ItemNotFoundException;
+
 import org.drools.repository.RulesRepository;
 import org.drools.repository.CategoryItem;
 
@@ -65,7 +67,15 @@ public class CategoryItemTest extends TestCase {
         item = repo.loadCategory( "testCreateCategories" );
         assertEquals("testCreateCategories", item.getName());
         
+        item.remove();
+        repo.save();
         
+        try {
+            repo.loadCategory( "testCreateCategories" );
+            fail("this should not exist");
+        } catch (RulesRepositoryException e) {
+            assertNotNull(e.getCause());
+        }
     }
     
     public void testGetChildTags() {        
@@ -131,6 +141,24 @@ public class CategoryItemTest extends TestCase {
             
             
 
+    }
+    
+    public void testRemoveCategoryUneeded() {
+        RulesRepository repo = getRepo();
+        repo.loadCategory( "/" ).addCategory( "testRemoveCat", "a" );
+        AssetItem as = repo.loadDefaultPackage().addAsset( "testRemoveCategory", "a", "testRemoveCat", "drl" );
+        as.checkin( "a" );
+        as.updateCategoryList( new String[] {} );
+        
+        as.checkin( "a" );
+        
+        as = repo.loadDefaultPackage().loadAsset( "testRemoveCategory" );
+        assertEquals(0, as.getCategories().size());
+        
+        
+        repo.loadCategory( "testRemoveCat" ).remove();
+        repo.save();
+        
     }
 
     private RulesRepository getRepo() {

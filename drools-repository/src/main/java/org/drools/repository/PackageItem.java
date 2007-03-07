@@ -84,7 +84,7 @@ public class PackageItem extends VersionableItem {
             if (this.rulesRepository.isNotSnapshot( this.node.getParent() )) {
                 return super.getName();
             } else {
-                System.out.println(this.node.getPath());
+                
                 return this.node.getParent().getName();
                 
             }

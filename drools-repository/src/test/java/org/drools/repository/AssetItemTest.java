@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.jcr.ReferentialIntegrityException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
 
@@ -189,6 +190,16 @@ public class AssetItemTest extends TestCase {
             assertTrue(element.getName().startsWith( "testFindRulesByCategory" ));
         }
         
+        try {
+            getRepo().loadCategory( "testFindRulesByCat" ).remove();
+
+            fail("should not be able to remove");
+        } catch (RulesRepositoryException e) {
+            //assertTrue(e.getCause() instanceof ReferentialIntegrityException);
+            assertNotNull(e.getMessage());
+        }
+        
+
     }
     
 
