@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.PackageConfigData;
@@ -53,7 +54,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
 
     private static final long serialVersionUID = 3150768417428383474L;
     private static final DateFormat dateFormatter = DateFormat.getInstance();
-
+    private static final Logger log = Logger.getLogger( JBRMSServiceServlet.class );
 
     private MetaDataMapper metaDataMapper;
 
@@ -73,7 +74,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     public Boolean createCategory(String path,
                                   String name,
                                   String description) {
-        
+        log.info( "CREATING cateogory: [" + name + "] in path [" + path + "]" );
         if (path == null || "".equals(path)) {
             path = "/";        
         }
@@ -93,7 +94,8 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
                                  String description,
                                  String initialCategory,
                                  String initialPackage,
-                                 String format) throws SerializableException {        
+                                 String format) throws SerializableException {    
+        log.info( "CREATING new asset name [" + ruleName + "] in package [" + initialPackage + "]" );
         try {
             RulesRepository repo = getRulesRepository();
             PackageItem pkg = repo.loadPackage( initialPackage );
@@ -274,7 +276,8 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         return this.metaDataMapper;
     }
 
-    public String checkinVersion(RuleAsset asset) throws SerializableException {        
+    public String checkinVersion(RuleAsset asset) throws SerializableException {  
+        log.info( "CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "]");
         RulesRepository repo = getRulesRepository();
         
         AssetItem repoAsset = repo.loadAssetByUUID( asset.uuid );
@@ -292,9 +295,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         handler.storeAssetContent( asset, repoAsset );
         
         repoAsset.checkin( meta.checkinComment );
-                
-//        repoAsset.updateState( StateItem.DRAFT_STATE_NAME );
-//        repo.save();
+
         
         return repoAsset.getUUID();
     }
@@ -302,15 +303,11 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     public TableDataResult loadAssetHistory(String uuid) throws SerializableException {
         
         List result = new ArrayList();
-        
         RulesRepository repo = getRulesRepository();
-        
         AssetItem item = repo.loadAssetByUUID( uuid );
-
         AssetHistoryIterator it = item.getHistory();
-        //VersionIterator it = item.getNode().getVersionHistory().getAllVersions();
+
         while ( it.hasNext() ) {
-            //Version element = (Version) it.next();
             AssetItem historical = (AssetItem) it.next();//new AssetItem(repo, element);
             String versionNumber = historical.getVersionNumber();
             if (!versionNumber.equals( "" ) 
@@ -329,27 +326,6 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
 
         
         
-//        Iterator versions = item.getPredecessorVersionsIterator();
-//        
-//        
-//        
-//        while(versions.hasNext()) {
-//            
-//            TableDataRow row = new TableDataRow();
-//            AssetItem historical = (AssetItem) versions.next();
-//                row.id = historical.getVersionSnapshotUUID();
-//                row.values = new String[4];
-//                row.values[0] = historical.getVersionNumber();
-//                row.values[1] = historical.getCheckinComment();                
-//                row.values[2] = dateFormatter.format( historical.getLastModified().getTime() );
-//                row.values[3] = historical.getStateDescription();
-//                result.add( row );
-//        }
-
-
-
-        
-        
         if (result.size() == 0) return null;
         TableDataResult table = new TableDataResult();
         table.data = (TableDataRow[]) result.toArray(new TableDataRow[result.size()]);
@@ -360,16 +336,21 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     public void restoreVersion(String versionUUID,
                                  String assetUUID,
                                  String comment) {
+        
+        
         RulesRepository repo = getRulesRepository();    
-
-        repo.restoreHistoricalAsset( repo.loadAssetByUUID( versionUUID ), 
-                                     repo.loadAssetByUUID( assetUUID ), 
+        AssetItem old = repo.loadAssetByUUID( versionUUID );
+        AssetItem head = repo.loadAssetByUUID( assetUUID );
+        log.info( "RESTORE of asset: [" + head.getName() + "] UUID: [" + head.getUUID() + "] with historical version number: [" + old.getVersionNumber() );
+        repo.restoreHistoricalAsset( old, 
+                                     head, 
                                      comment );
         
     }
 
     public String createPackage(String name,
                                 String description) throws SerializableException {
+        log.info( "CREATING package [" + name + "]" );
         PackageItem item = getRulesRepository().createPackage( name, description );
         
         return item.getUUID();
@@ -393,6 +374,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     }
 
     public String savePackage(PackageConfigData data) throws SerializableException {
+        log.info( "SAVING package [" + data.name + "]" );
         PackageItem item = getRulesRepository().loadPackage( data.name );
         
         item.updateHeader( data.header );
@@ -422,6 +404,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     }
 
     public String createState(String name) throws SerializableException {
+        log.info( "CREATING state: [" + name + "]" );
         try {
             return getRulesRepository().createState( name ).getNode().getUUID();
         } catch ( RepositoryException e ) {            
@@ -441,12 +424,20 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     public void changeState(String uuid,
                             String newState,
                             boolean wholePackage) {
+        
         RulesRepository repo = getRulesRepository();
         if (!wholePackage) {
+            
             AssetItem asset = repo.loadAssetByUUID( uuid );
+            log.info( "CHANGING ASSET STATUS. Asset name, uuid: " +
+                    "[" + asset.getName() + ", " +asset.getUUID() + "]" 
+                      +  " to [" + newState + "]");
             asset.updateState( newState );
         } else {
             PackageItem pkg = repo.loadPackageByUUID( uuid );
+            log.info( "CHANGING Package STATUS. Asset name, uuid: " +
+                      "[" + pkg.getName() + ", " + pkg.getUUID() + "]" 
+                        +  " to [" + newState + "]");
             pkg.changeStatus(newState);            
         }
         repo.save();
@@ -455,6 +446,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     public void changeAssetPackage(String uuid,
                                    String newPackage,
                                    String comment) {
+        log.info( "CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]");
         getRulesRepository().moveRuleItemPackage( newPackage, uuid, comment );
         
     }
@@ -485,6 +477,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
                                       String snapshotName,
                                       boolean replaceExisting,
                                       String comment) {
+        log.info( "CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
         RulesRepository repo = getRulesRepository();
         
         if (replaceExisting) {
@@ -502,13 +495,17 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
                                      String snapshotName,
                                      boolean delete,
                                      String newSnapshotName) throws SerializableException {
+        
         RulesRepository repo = getRulesRepository();
         if (delete) {
+            log.info( "REMOVING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "]" );
             repo.removePackageSnapshot( packageName, snapshotName );
         } else {
             if (newSnapshotName.equals( "" )) {
                 throw new SerializableException("Need to have a new snapshot name.");
             }
+            log.info( "COPYING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
+
             repo.copyPackageSnapshot( packageName, snapshotName, newSnapshotName );
         }
         
@@ -556,6 +553,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     }
 
     public void removeCategory(String categoryPath) throws SerializableException {
+        log.info( "REMOVING CATEGORY path: [" + categoryPath + "]" );
         RulesRepository repo = getRulesRepository();
         
         try {
