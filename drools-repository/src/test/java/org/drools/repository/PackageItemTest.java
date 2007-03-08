@@ -97,8 +97,8 @@ public class PackageItemTest extends TestCase {
         it1.checkin( "c" );
         it2.checkin( "c" );
         
-        String ver1 = it1.getVersionNumber();
-        String ver2 = it2.getVersionNumber();
+        long ver1 = it1.getVersionNumber();
+        long ver2 = it2.getVersionNumber();
         assertFalse( "".equals( ver1 ));
         
         assertEquals(2, iteratorToList(pkg.listAssetsByFormat( new String[] {"drl"} )).size());
@@ -118,7 +118,7 @@ public class PackageItemTest extends TestCase {
         //now make some changes on the main line
         it1.updateContent( "XXX" );
         it1.checkin( "X" );
-        assertFalse(it1.getVersionNumber().equals( ver1 ));
+        assertFalse(it1.getVersionNumber()==  ver1 );
         AssetItem it3 = pkg.addAsset( "testPackageCopy3", "x" );
         it3.updateFormat( "drl" );
         it3.checkin( "a" );
@@ -578,7 +578,7 @@ public class PackageItemTest extends TestCase {
         assertEquals(rule.getVersionNumber(), rule_.getVersionNumber());
         
         item = getRepo().loadPackage( "testPackageCheckinConfig");
-        String v = item.getVersionNumber();
+        long v = item.getVersionNumber();
         item.updateCheckinComment( "x" );
         getRepo().save();
         
@@ -587,13 +587,13 @@ public class PackageItemTest extends TestCase {
     }
     
     static class MockAssetItem extends AssetItem {
-        private String version;
+        private long version;
 
-        MockAssetItem(int ver) {
-            this.version = Integer.toString( ver ); 
+        MockAssetItem(long ver) {
+            this.version = ver ; 
         }
         
-        public String getVersionNumber() {
+        public long getVersionNumber() {
             return this.version;
         }
         
@@ -602,7 +602,7 @@ public class PackageItemTest extends TestCase {
         }
         
         public String toString() {
-            return this.version;
+            return Long.toString( this.version );
         }
     }
 }

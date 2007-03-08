@@ -22,8 +22,6 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
 
 import org.apache.log4j.Logger;
-import org.drools.repository.util.DefaultVersionNumberGenerator;
-import org.drools.repository.util.VersionNumberGenerator;
 
 
 /**
@@ -67,9 +65,6 @@ public class RulesRepository {
     private static final Logger log = Logger.getLogger(RulesRepository.class);
 
     private Map areaNodeCache = new HashMap();
-
-    protected VersionNumberGenerator versionNumberGenerator = new DefaultVersionNumberGenerator();
-    
     
     /**
      * The name of the rulepackage area of the repository
@@ -248,16 +243,6 @@ public class RulesRepository {
     }
     
   
-    
-    
-    /**
-     * Optionally override the default version number generator with a custom
-     * number generator.
-     * The default one is incremental.
-     */
-    public void setVersionNumberGenerator(VersionNumberGenerator gen) {
-        this.versionNumberGenerator = gen;
-    }
     
 
     
@@ -566,13 +551,14 @@ public class RulesRepository {
      */
     public void restoreHistoricalAsset(AssetItem versionToRestore, AssetItem headVersion, String comment) {
         
-        String oldVersionNumber = headVersion.getVersionNumber();
+        long oldVersionNumber = headVersion.getVersionNumber();
         
         Version v = (Version) versionToRestore.getNode();
         try {
             headVersion.getNode().restore( v, true );
             AssetItem newHead = loadAssetByUUID( headVersion.getUUID() );
-            newHead.updateStringProperty( oldVersionNumber, VersionableItem.VERSION_NUMBER_PROPERTY_NAME );
+            newHead.checkout();
+            newHead.getNode().setProperty( VersionableItem.VERSION_NUMBER_PROPERTY_NAME, oldVersionNumber );
             newHead.checkin( comment );
         } catch ( RepositoryException e ) {
             log.error( "Unable to restore version of asset.", e );

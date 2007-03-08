@@ -492,7 +492,7 @@ public class PackageItem extends VersionableItem {
                 List fullHistory = new ArrayList();
                 for ( Iterator iter = head.getHistory(); iter.hasNext(); ) {
                     AssetItem element = (AssetItem) iter.next();
-                    if (!element.getVersionNumber().equals( "" )) {
+                    if (!(element.getVersionNumber() == 0)) {
                         fullHistory.add( element );
                     }
                 }
@@ -521,7 +521,12 @@ public class PackageItem extends VersionableItem {
                                Object o2) {
                 AssetItem a1 = (AssetItem) o1;
                 AssetItem a2 = (AssetItem) o2;
-                return a2.getVersionNumber().compareTo( a1.getVersionNumber() );
+                long la1 = a1.getVersionNumber();
+                long la2 = a2.getVersionNumber();
+                if (la1 == la2) return 0;
+                else if (la1 < la2) return 1;
+                else return -1;
+                
             }
             
         });

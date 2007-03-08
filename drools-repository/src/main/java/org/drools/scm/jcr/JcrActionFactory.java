@@ -129,7 +129,7 @@ public class JcrActionFactory
             for ( Iterator assetIter = item.getAssets(); assetIter.hasNext(); ) {
                 AssetItem assetItem = (AssetItem) assetIter.next();
 
-                if (!assetItem.getVersionNumber().equals( "" )) {
+                if (!(assetItem.getVersionNumber() == 0)) {
                 
                     scmEntry = new DefaultScmEntry();
                     scmEntry.setPath( pkgNameAsPath );

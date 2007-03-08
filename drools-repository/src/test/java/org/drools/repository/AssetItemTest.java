@@ -417,7 +417,7 @@ public class AssetItemTest extends TestCase {
             
             AssetItem loadedHistorical = getRepo().loadAssetByUUID( predecessorRuleItem.getVersionSnapshotUUID() );
             assertTrue(loadedHistorical.isHistoricalVersion());
-            assertFalse(ruleItem1.getVersionNumber().equals(loadedHistorical.getVersionNumber()));
+            assertFalse(ruleItem1.getVersionNumber() == loadedHistorical.getVersionNumber());
             
             ruleItem1.updateContent("new content");
             ruleItem1.checkin( "two changes" );
@@ -443,7 +443,7 @@ public class AssetItemTest extends TestCase {
             assertEquals("test content", predecessorRuleItem.getContent());
  
             //now try restoring
-            String oldVersionNumber = ruleItem1.getVersionNumber();
+            long oldVersionNumber = ruleItem1.getVersionNumber();
             
             AssetItem toRestore = getRepo().loadAssetByUUID( predecessorRuleItem.getVersionSnapshotUUID() );
             
@@ -455,15 +455,15 @@ public class AssetItemTest extends TestCase {
             //assertEquals( predecessorRuleItem.getCheckinComment(), restored.getCheckinComment());
             assertEquals(predecessorRuleItem.getDescription(), restored.getDescription());
             assertEquals("cause I want to", restored.getCheckinComment());
-            assertEquals("5", restored.getVersionNumber());
-            assertFalse(oldVersionNumber.equals( restored.getVersionNumber() ));
+            assertEquals(5, restored.getVersionNumber());
+            assertFalse(oldVersionNumber ==  restored.getVersionNumber() );
     }
     
     public void testGetSucceedingVersion() {
             AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetSucceedingVersion", "test description");
             ruleItem1.checkin( "version0" );
 
-            assertEquals("1", ruleItem1.getVersionNumber());
+            assertEquals(1, ruleItem1.getVersionNumber());
             
             AssetItem succeedingRuleItem = (AssetItem) ruleItem1.getSucceedingVersion();
             assertTrue(succeedingRuleItem == null);            
@@ -471,7 +471,7 @@ public class AssetItemTest extends TestCase {
             ruleItem1.updateContent("new content");
             ruleItem1.checkin( "la" );
             
-            assertEquals("2", ruleItem1.getVersionNumber());
+            assertEquals(2, ruleItem1.getVersionNumber());
             
             AssetItem predecessorRuleItem = (AssetItem) ruleItem1.getPrecedingVersion();
             assertEquals(null, predecessorRuleItem.getContent());

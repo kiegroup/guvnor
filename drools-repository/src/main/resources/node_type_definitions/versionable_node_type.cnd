@@ -41,7 +41,7 @@
   mandatory 
 
 //for incrementing (or user defined) unique version numbers
-- drools:versionNumber (string)
+- drools:versionNumber (long)
   
 //to remember when it was created  
 - drools:createdDate (date)  

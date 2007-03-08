@@ -9,8 +9,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 
-import org.drools.repository.util.VersionNumberGenerator;
-
 /**
  * This is the parent class for versionable assets.
  * Contains standard fields based on Dublin Core, and 
@@ -329,7 +327,7 @@ public abstract class VersionableItem extends Item {
      * get this version number (default is incrementing integer, but you
      * can provide an implementation of VersionNumberGenerator if needed).
      */
-    public String getVersionNumber() {
+    public long getVersionNumber() {
 //        try {
 //            if ( getVersionContentNode().hasProperty( VERSION_NUMBER_PROPERTY_NAME ) ) {
 //                return getVersionContentNode().getProperty( VERSION_NUMBER_PROPERTY_NAME ).getString();
@@ -340,7 +338,7 @@ public abstract class VersionableItem extends Item {
 //            throw new RulesRepositoryException( e );
 //        }
         
-        return getStringProperty( VERSION_NUMBER_PROPERTY_NAME );
+        return getLongProperty( VERSION_NUMBER_PROPERTY_NAME );
     }
 
     /**
@@ -504,8 +502,7 @@ public abstract class VersionableItem extends Item {
         try {
             this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance() );
             this.node.setProperty( CHECKIN_COMMENT, comment );
-            VersionNumberGenerator gen = rulesRepository.versionNumberGenerator;
-            String nextVersion = gen.calculateNextVersion( getVersionNumber(), this );
+            long nextVersion = getVersionNumber() + 1;
             this.node.setProperty( VERSION_NUMBER_PROPERTY_NAME,  nextVersion );
             this.node.getSession().save();
             this.node.checkin();
@@ -719,6 +716,20 @@ public abstract class VersionableItem extends Item {
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
+    }
+    
+    protected long getLongProperty(String property) {
+        try {
+            Node theNode = getVersionContentNode();
+            if ( theNode.hasProperty( property ) ) {
+                Property data = theNode.getProperty( property );
+                return data.getValue().getLong();
+            } else {
+                return 0;
+            }
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
+        }        
     }
     
     /**

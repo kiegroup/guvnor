@@ -122,7 +122,7 @@ public class JcrActionFactoryTest extends TestCase {
 
         asset.updateContent( "lala" );
         asset.checkin( "yeah" );
-        String oldVersion = asset.getVersionNumber();
+        long oldVersion = asset.getVersionNumber();
 
         JcrActionFactory fact = new JcrActionFactory( repo );
         ScmAction action = fact.updateFile( "default",
@@ -134,7 +134,7 @@ public class JcrActionFactoryTest extends TestCase {
                       "goo" );
 
         AssetItem asset2 = pkg.loadAsset( "testUpdateFilesSVN" );
-        assertFalse( oldVersion.equals( asset2.getVersionNumber() ) );
+        assertFalse( oldVersion == asset2.getVersionNumber() );
         assertEquals( "lala2",
                       asset2.getContent() );
         assertEquals( "goo",
