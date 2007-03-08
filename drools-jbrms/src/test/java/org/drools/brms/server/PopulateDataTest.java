@@ -22,7 +22,7 @@ import com.google.gwt.user.client.rpc.SerializableException;
 public class PopulateDataTest extends TestCase {
 
     public void testPopulate() throws Exception {
-        JBRMSServiceServlet serv = new MockJBRMSServiceServlet();
+        JBRMSServiceServlet serv = new TestHarnessJBRMSServiceServlet();
         
         createCategories( serv );
         createStates( serv );

@@ -3,7 +3,7 @@ package org.drools.brms.client.packages;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.brms.client.RulesFeature;
+import org.drools.brms.client.ruleeditor.EditorLauncher;
 import org.drools.brms.client.rulelist.EditItemEvent;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -42,7 +42,7 @@ public class PackageManagerView extends Composite {
         tab.setHeight("100%");   
         EditItemEvent editEvent = new EditItemEvent() {
             public void open(String key) {
-                RulesFeature.showLoadEditor( openedViewers, tab, key, readonly );
+                EditorLauncher.showLoadEditor( openedViewers, tab, key, readonly );
             }
         };
         PackageExplorerWidget explorer = null;

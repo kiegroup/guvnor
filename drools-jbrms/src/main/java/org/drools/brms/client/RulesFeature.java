@@ -6,12 +6,14 @@ import java.util.Map;
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.common.AssetFormats;
-import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.packages.SuggestionCompletionCache;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.TableDataResult;
+import org.drools.brms.client.ruleeditor.EditorLauncher;
 import org.drools.brms.client.ruleeditor.NewAssetWizard;
 import org.drools.brms.client.ruleeditor.RuleViewer;
 import org.drools.brms.client.rulelist.AssetItemListViewer;
@@ -20,7 +22,6 @@ import org.drools.brms.client.rulelist.QuickFindWidget;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -33,6 +34,8 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
  * This controls the "Rules manager" top level feature.
+ * TODO: refactor this into a "AssetExplorer" widget, this feature should purely be 
+ * for layout.
  * @author Michael Neale
  */
 public class RulesFeature extends JBRMSFeature {
@@ -162,7 +165,7 @@ public class RulesFeature extends JBRMSFeature {
     }
 
     public void showLoadEditor(String uuid) {
-        showLoadEditor( openedViewers, tab, uuid, false );
+        EditorLauncher.showLoadEditor( openedViewers, tab, uuid, false );
     }
 
     private void showNewAssetWizard() {
@@ -182,62 +185,10 @@ public class RulesFeature extends JBRMSFeature {
 
 
 
-    /**
-     * This will show the rule viewer. If it was previously opened, it will show that dialog instead
-     * of opening it again.
-     */
-    public static void showLoadEditor(final Map openedViewers, final TabPanel tab,  final String uuid, final boolean readonly) {
-      
-        
-      if (openedViewers.containsKey( uuid )) {
-          tab.selectTab( tab.getWidgetIndex( (Widget) openedViewers.get( uuid ) ));
-          LoadingPopup.close();
-          return;
-      }
-        
-      RepositoryServiceFactory.getService().loadRuleAsset( uuid,
-      new AsyncCallback() {
-          public void onFailure(Throwable e) {
-              ErrorPopup.showMessage( e.getMessage() );
-          }
 
-          public void onSuccess(Object o) {
-              RuleAsset asset = (RuleAsset) o;
-              final RuleViewer view = new RuleViewer(asset, readonly);
-              
-              String displayName = asset.metaData.name;
-              if (displayName.length() > 10) {
-                  displayName = displayName.substring( 0, 7 ) + "...";
-              }
-              String icon = "rule_asset.gif";
-              if (asset.metaData.format.equals( AssetFormats.DRL )) {
-                  icon = "technical_rule_assets.gif";
-              } else if (asset.metaData.format.equals( AssetFormats.DSL )) {
-                  icon = "dsl.gif";
-              } else if (asset.metaData.format.equals( AssetFormats.FUNCTION )) {
-                  icon = "function_assets.gif";
-              } else if (asset.metaData.format.equals( AssetFormats.MODEL )) {
-                  icon = "model_asset.gif";
-              }
-              tab.add( view, "<img src='images/" + icon + "'>" + displayName, true );
-              
-              openedViewers.put(uuid, view);
-              
-              view.setCloseCommand( new Command() {
-                  public void execute() {
-                    tab.remove( tab.getWidgetIndex( view ) ); 
-                    tab.selectTab( 0 );
-                    openedViewers.remove( uuid );
-                    
-                  }
-              });
-              tab.selectTab( tab.getWidgetIndex( view ) );
-          }
 
-      } );
-        
-        
 
-    }
+
+
 
 }

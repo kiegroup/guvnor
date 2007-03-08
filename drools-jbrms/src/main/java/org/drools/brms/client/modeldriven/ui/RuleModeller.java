@@ -18,6 +18,8 @@ import org.drools.brms.client.modeldriven.brxml.IAction;
 import org.drools.brms.client.modeldriven.brxml.IPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
+import org.drools.brms.client.packages.SuggestionCompletionCache;
+import org.drools.brms.client.rpc.RuleAsset;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -45,9 +47,9 @@ public class RuleModeller extends Composite {
     private SuggestionCompletionEngine completions;
     private RuleModel model;
     
-    public RuleModeller(SuggestionCompletionEngine com, RuleModel model) {
-        this.model = model;
-        this.completions = com;
+    public RuleModeller(RuleAsset asset) {
+        this.model = (RuleModel) asset.content;
+        this.completions = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.metaData.packageName );
         
         layout = new FlexTable();
         

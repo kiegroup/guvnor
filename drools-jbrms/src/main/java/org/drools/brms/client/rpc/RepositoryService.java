@@ -1,5 +1,7 @@
 package org.drools.brms.client.rpc;
 
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -185,5 +187,12 @@ public interface RepositoryService extends RemoteService {
      * @throws SerializableException For when it all goes horribly wrong.
      */
     public void removeCategory(String categoryPath) throws SerializableException;
+    
+    /**
+     * Loads up the SuggestionCompletionEngine for the given package.
+     * As this doesn't change that often, its safe to cache. However, if a change is made to
+     * a package, should blow away the cache.
+     */
+    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializableException;
     
 }

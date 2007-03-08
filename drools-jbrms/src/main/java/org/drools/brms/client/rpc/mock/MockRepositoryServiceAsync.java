@@ -19,10 +19,8 @@ import org.drools.brms.client.modeldriven.brxml.IPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.PackageConfigData;
-import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleContentText;
-import org.drools.brms.client.rpc.RuleModelData;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
@@ -169,10 +167,7 @@ public class MockRepositoryServiceAsync
             
         } else {
             meta.format = AssetFormats.BUSINESS_RULE;
-            RuleModelData data = new RuleModelData();
-            data.completionEngine = getDummySuggestionEngine();
-            data.model = getDummyData();
-            asset.content = data;
+            asset.content = getDummyData();
         }
         
         asset.metaData = meta;

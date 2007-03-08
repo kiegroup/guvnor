@@ -39,5 +39,7 @@ public interface RepositoryServiceAsync
     public void copyOrRemoveSnapshot(java.lang.String p0, java.lang.String p1, boolean p2, java.lang.String p3, AsyncCallback cb);
     public void quickFindAsset(java.lang.String p0, int p1, AsyncCallback cb);
     public void removeCategory(java.lang.String p0, AsyncCallback cb);
-    public void changeState(java.lang.String p0, java.lang.String p1, boolean p2, AsyncCallback cb);    
+    public void loadSuggestionCompletionEngine(java.lang.String p0, AsyncCallback cb);
+    public void changeState(java.lang.String p0, java.lang.String p1, boolean p2, AsyncCallback cb);
+
 }

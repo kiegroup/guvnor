@@ -9,11 +9,11 @@ import org.drools.repository.RulesRepository;
  * @author michael neale.
  *
  */
-public class MockJBRMSServiceServlet extends JBRMSServiceServlet {
+public class TestHarnessJBRMSServiceServlet extends JBRMSServiceServlet {
 
     RulesRepository repo;
 
-    public MockJBRMSServiceServlet() throws Exception  {
+    public TestHarnessJBRMSServiceServlet() throws Exception  {
         repo = new RulesRepository(SessionHelper.getSession());        
     }
     

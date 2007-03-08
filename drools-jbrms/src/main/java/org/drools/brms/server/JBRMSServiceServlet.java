@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
@@ -25,6 +26,7 @@ import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.server.contenthandler.ContentHandler;
+import org.drools.brms.server.rules.SuggestionCompletionLoader;
 import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.RepositoryManager;
 import org.drools.brms.server.util.TableDisplayHandler;
@@ -562,6 +564,14 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         } catch (RulesRepositoryException e) {
             throw new SerializableException( e.getMessage() );
         }
+        
+    }
+
+    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializableException {
+        RulesRepository repo = getRulesRepository();
+        PackageItem pkg = repo.loadPackage( packageName );
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        return loader.getSuggestionEngine( pkg );
         
     }
     

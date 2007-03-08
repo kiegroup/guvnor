@@ -5,6 +5,9 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.RuleAsset;
@@ -29,7 +32,7 @@ public class ServiceImplementationTest extends TestCase {
   public void testCategory() throws Exception {
         //ServiceImpl impl = new ServiceImpl(new RulesRepository(SessionHelper.getSession()));
 
-        RepositoryService impl = new MockJBRMSServiceServlet();
+        RepositoryService impl = new TestHarnessJBRMSServiceServlet();
       
         String[] originalCats = impl.loadChildCategories( "/" );
         
@@ -58,7 +61,7 @@ public class ServiceImplementationTest extends TestCase {
   public void testAddRuleAndListPackages() throws Exception {
       //ServiceImpl impl = new ServiceImpl(new RulesRepository(SessionHelper.getSession()));
       
-      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
       
       impl.repo.loadDefaultPackage();
       impl.repo.createPackage( "another", "woot" );
@@ -95,7 +98,7 @@ public class ServiceImplementationTest extends TestCase {
   }
 
   public void testAttemptDupeRule() throws Exception {
-      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
       CategoryItem cat = impl.repo.loadCategory( "/" );
       cat.addCategory( "testAttemptDupeRule", "yeah" );
       
@@ -113,7 +116,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testRuleTableLoad() throws Exception {
-      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
       TableConfig conf = impl.loadTableConfig( AssetItemListViewer.RULE_LIST_TABLE_ID );
       assertNotNull(conf.headers);
       
@@ -147,7 +150,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testLoadRuleAsset() throws Exception {
-      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
       impl.repo.createPackage( "testLoadRuleAsset", "desc" );
       impl.createCategory( "", "testLoadRuleAsset", "this is a cat" );
       
@@ -189,12 +192,16 @@ public class ServiceImplementationTest extends TestCase {
       
       assertEquals("whee", asset.metaData.status);
       assertEquals("changed state", asset.metaData.checkinComment);
+   
       
+      uuid = impl.createNewRule( "testBRXMLFormatSugComp", "description", "testLoadRuleAsset", "testLoadRuleAsset", AssetFormats.BUSINESS_RULE );
+      asset = impl.loadRuleAsset( uuid );
+      assertTrue(asset.content instanceof RuleModel);
       
   }
   
   public void testLoadAssetHistoryAndRestore() throws Exception {
-      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
       impl.repo.createPackage( "testLoadAssetHistory", "desc" );
       impl.createCategory( "", "testLoadAssetHistory", "this is a cat" );
       
@@ -234,7 +241,7 @@ public class ServiceImplementationTest extends TestCase {
   
   
   public void testCheckin() throws Exception {
-          MockJBRMSServiceServlet serv = new MockJBRMSServiceServlet();
+          TestHarnessJBRMSServiceServlet serv = new TestHarnessJBRMSServiceServlet();
           
           serv.listPackages();
           
@@ -293,7 +300,7 @@ public class ServiceImplementationTest extends TestCase {
   
   
   public void testCreatePackage() throws Exception {
-      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
       PackageConfigData[] pkgs = impl.listPackages();
       String uuid = impl.createPackage( "testCreatePackage", "this is a new package" );
       assertNotNull( uuid );
@@ -312,7 +319,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testLoadPackageConfig() throws Exception {
-      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
       PackageItem it = impl.repo.loadDefaultPackage();
       String uuid = it.getUUID();
       it.updateCoverage( "xyz" );
@@ -332,7 +339,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testPackageConfSave() throws Exception {
-      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
       String uuid = impl.createPackage( "testPackageConfSave", "a desc" );
       PackageConfigData data = impl.loadPackageConfig( uuid );
       
@@ -352,7 +359,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testListByFormat() throws Exception {
-      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
       String cat = "testListByFormat";
       impl.createCategory( "/", cat, "ya" );
       String pkgUUID = impl.createPackage( "testListByFormat", "used for listing by format." );
@@ -409,7 +416,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testStatus() throws Exception {
-      MockJBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
       String uuid = impl.createState( "testStatus1" );
       assertNotNull(uuid);
       
@@ -463,7 +470,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testMovePackage() throws Exception {
-      JBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      JBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
       String[] cats = impl.loadChildCategories( "/" );
       if (cats.length == 0) {
           impl.createCategory( "/", "la", "d" );
@@ -494,7 +501,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testCopyAsset() throws Exception {
-      JBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      JBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
       impl.createCategory( "/", "templates", "ya" );
       String uuid = impl.createNewRule( "testCopyAsset", "", "templates", "default", "drl" );
       String uuid2 = impl.copyAsset( uuid, "default", "testCopyAsset2" );
@@ -507,7 +514,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testSnapshot() throws Exception {
-      JBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      JBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
       impl.createCategory( "/", "snapshotTesting", "y" );
       impl.createPackage( "testSnapshot", "d" );
       String uuid = impl.createNewRule( "testSnapshotRule", "", "snapshotTesting", "testSnapshot", "drl" );
@@ -549,13 +556,24 @@ public class ServiceImplementationTest extends TestCase {
   
   public void testRemoveCategory() throws Exception {
       
-      JBRMSServiceServlet impl = new MockJBRMSServiceServlet();
+      JBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
       String[] children = impl.loadChildCategories( "/" );
       impl.createCategory( "/", "testRemoveCategory", "foo" );
       
       impl.removeCategory( "testRemoveCategory" );
       String[] _children = impl.loadChildCategories( "/" );
       assertEquals(children.length, _children.length);
+  }
+  
+  public void testLoadSuggestionCompletionEngine() throws Exception {
+      JBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
+      String uuid = impl.createPackage( "testSuggestionComp", "x" );
+      PackageConfigData conf = impl.loadPackageConfig( uuid );
+      conf.header = "import java.util.List";
+      
+      SuggestionCompletionEngine eng = impl.loadSuggestionCompletionEngine( "testSuggestionComp" );
+      assertNotNull(eng);
+      
   }
   
     
