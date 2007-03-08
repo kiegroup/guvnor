@@ -69,7 +69,7 @@ public class RulesRepository {
     /**
      * The name of the rulepackage area of the repository
      */
-    public final static String RULE_PACKAGE_AREA = "drools:rulepackage_area";
+    public final static String RULE_PACKAGE_AREA = "drools:package_area";
     
     /**
      * The name of the rulepackage area of the repository

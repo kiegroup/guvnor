@@ -42,7 +42,7 @@ public class PackageItem extends VersionableItem {
     /**
      * The name of the rule package node type
      */
-    public static final String RULE_PACKAGE_TYPE_NAME           = "drools:rulepackageNodeType";
+    public static final String RULE_PACKAGE_TYPE_NAME           = "drools:packageNodeType";
 
     
     public static final String HEADER_PROPERTY_NAME             = "drools:header";
@@ -351,8 +351,7 @@ public class PackageItem extends VersionableItem {
      */
     public AssetItemIterator queryAssets(String fieldPredicates) {
         try {
-            
-            //String sql = "SELECT * FROM drools:ruleNodeType WHERE jcr:path LIKE '/drools:repository/drools:rulepackage_area/searchByFormat/rules[%]/%'";
+
             String sql = "SELECT * FROM " + AssetItem.RULE_NODE_TYPE_NAME;
             sql += " WHERE jcr:path LIKE '" + getVersionContentNode().getPath() + "/" + ASSET_FOLDER_NAME + "[%]/%'";
             

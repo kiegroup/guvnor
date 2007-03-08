@@ -22,7 +22,7 @@ public class AssetItem extends CategorisableItem {
     /**
      * The name of the rule node type
      */
-    public static final String RULE_NODE_TYPE_NAME          = "drools:ruleNodeType";
+    public static final String RULE_NODE_TYPE_NAME          = "drools:assetNodeType";
 
     public static final String CONTENT_PROPERTY_NAME        = "drools:content";
     public static final String CONTENT_PROPERTY_BINARY_NAME = "drools:binaryContent";

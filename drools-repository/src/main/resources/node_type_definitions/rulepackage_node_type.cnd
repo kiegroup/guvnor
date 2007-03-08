@@ -8,7 +8,7 @@
 <mix='http://www.jcp.org/jcr/mix/1.0'>
 
 // Node type name
-[drools:rulepackageNodeType]
+[drools:packageNodeType]
 
 // Supertypes
 > 'drools:versionableNodeType', 'nt:folder'
@@ -30,6 +30,6 @@
 - drools:ruleReference (reference)
   multiple
   copy
-  < 'drools:ruleNodeType','nt:version'
+  < 'drools:assetNodeType','nt:version'
 */
 

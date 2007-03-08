@@ -8,7 +8,7 @@
 <mix='http://www.jcp.org/jcr/mix/1.0'>
 
 // Node type name
-[drools:ruleNodeType]
+[drools:assetNodeType]
 
 // Supertypes
 > 'drools:versionableNodeType'
