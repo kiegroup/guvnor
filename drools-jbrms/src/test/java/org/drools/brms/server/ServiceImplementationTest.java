@@ -221,12 +221,12 @@ public class ServiceImplementationTest extends TestCase {
       
       RuleAsset old = impl.loadRuleAsset( rows[0].id );
       RuleAsset newer = impl.loadRuleAsset( rows[1].id );
-      assertFalse(old.metaData.versionNumber.equals( newer.metaData.versionNumber ));
+      assertFalse(old.metaData.versionNumber == newer.metaData.versionNumber );
             
       RuleAsset head = impl.loadRuleAsset( uuid );
       
-      String oldVersion = old.metaData.versionNumber;
-      assertFalse(oldVersion.equals( head.metaData.versionNumber ));
+      long oldVersion = old.metaData.versionNumber;
+      assertFalse(oldVersion == head.metaData.versionNumber );
       
       impl.restoreVersion( old.uuid, head.uuid, "this was cause of a mistake" );
       
@@ -271,7 +271,7 @@ public class ServiceImplementationTest extends TestCase {
           
           
           assertEquals("boo", asset2.metaData.coverage);
-          assertEquals("1", asset2.metaData.versionNumber);
+          assertEquals(1, asset2.metaData.versionNumber);
           
           assertEquals("yeah !", ((RuleContentText) asset2.content).content);
           
@@ -288,7 +288,7 @@ public class ServiceImplementationTest extends TestCase {
           
           asset2 = serv.loadRuleAsset( uuid );
           assertEquals("ya", asset2.metaData.coverage);
-          assertEquals("2", asset2.metaData.versionNumber);
+          assertEquals(2, asset2.metaData.versionNumber);
           assertEquals("checked in", asset2.metaData.checkinComment);
           assertEquals(3, asset2.metaData.categories.length);
           assertEquals("testCheckinCategory", asset2.metaData.categories[0]);

@@ -311,14 +311,14 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
 
         while ( it.hasNext() ) {
             AssetItem historical = (AssetItem) it.next();//new AssetItem(repo, element);
-            String versionNumber = historical.getVersionNumber();
-            if (!versionNumber.equals( "" ) 
-                            && !versionNumber.equals( item.getVersionNumber() ))
+            long versionNumber = historical.getVersionNumber();
+            if (! (versionNumber == 0) 
+                            && ! (versionNumber == item.getVersionNumber() ))
                 {
                 TableDataRow row = new TableDataRow();
                     row.id = historical.getVersionSnapshotUUID();
                     row.values = new String[4];
-                    row.values[0] = historical.getVersionNumber();
+                    row.values[0] = Long.toString( historical.getVersionNumber());
                     row.values[1] = historical.getCheckinComment();                
                     row.values[2] = dateFormatter.format( historical.getLastModified().getTime() );
                     row.values[3] = historical.getStateDescription();

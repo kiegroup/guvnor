@@ -176,10 +176,10 @@ public class MetaDataWidget extends FormStyleLayout {
 
 
     private Widget getVersionNumberLabel() {
-        if (data.versionNumber == null || "".equals(data.versionNumber )) {
+        if (data.versionNumber == 0 ) {
             return new HTML("<i>Not checked in yet</i>");
         } else {
-            return readOnlyText(data.versionNumber);    
+            return readOnlyText(Long.toString( data.versionNumber) );    
         }
         
     }

@@ -20,7 +20,7 @@ public class MetaData
 
     public Date lastModifiedDate;
     public String lastContributor = "";
-    public String versionNumber;
+    public long versionNumber;
 
     public Date createdDate;
     
