@@ -99,7 +99,7 @@ public class PackageItemTest extends TestCase {
         
         long ver1 = it1.getVersionNumber();
         long ver2 = it2.getVersionNumber();
-        assertFalse( "".equals( ver1 ));
+        assertFalse( ver1 == 0 );
         
         assertEquals(2, iteratorToList(pkg.listAssetsByFormat( new String[] {"drl"} )).size());
         repo.createPackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
