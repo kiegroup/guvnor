@@ -58,7 +58,7 @@ public class SuggestionCompletionCache {
 
 
     void loadPackage(final String packageName, final Command command) {
-        
+        System.out.println("Loading package Suggestions...");
         RepositoryServiceFactory.getService().loadSuggestionCompletionEngine( packageName, new GenericCallback() {
             public void onSuccess(Object data) {
                 SuggestionCompletionEngine engine = (SuggestionCompletionEngine) data;

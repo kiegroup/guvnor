@@ -221,6 +221,7 @@ public class PackageEditor extends FormStyleLayout {
         RepositoryServiceFactory.getService().savePackage( this.conf, new GenericCallback() {
             public void onSuccess(Object data) {
                 reload();
+                SuggestionCompletionCache.getInstance().removePackage( conf.name );
                 LoadingPopup.showMessage( "Package configuration updated successfully" );
                 Timer t = new Timer() {
                     public void run() {
