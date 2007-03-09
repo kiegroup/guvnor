@@ -50,7 +50,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
+      <artifactId>drools-compiler</artifactId>
     </dependency>    
 
     <!-- External dependencies -->

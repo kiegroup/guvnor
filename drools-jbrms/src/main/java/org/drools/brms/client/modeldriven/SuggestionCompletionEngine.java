@@ -198,6 +198,12 @@ public class SuggestionCompletionEngine implements IsSerializable {
         return this.globalTypes.containsKey( variable );
     }
     
+    public String[] getFieldCompletionsForGlobalVariable(String varName) {
+        String type = (String) this.globalTypes.get( varName );        
+        return (String[]) this.fieldsForType.get( type );
+    }
+
+
     private String[] toStringArray(Set set) {
         String[] f = new String[set.size()];
         int i = 0;
@@ -207,13 +213,6 @@ public class SuggestionCompletionEngine implements IsSerializable {
         }
         return f;                
     }
-
-
-    public String[] getFieldCompletionsForGlobalVariable(String varName) {
-        String type = (String) this.globalTypes.get( varName );        
-        return (String[]) this.fieldsForType.get( type );
-    }
-
 
     public String[] getGlobalVariables() {         
         return toStringArray( this.globalTypes.keySet() );
