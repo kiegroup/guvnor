@@ -1,9 +1,16 @@
 package org.drools.brms.server;
 
+import java.io.InputStream;
+
 import junit.framework.TestCase;
 
 import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.rpc.PackageConfigData;
+import org.drools.brms.server.rules.SuggestionCompletionLoader;
+import org.drools.repository.AssetItem;
+import org.drools.repository.PackageItem;
+import org.drools.repository.RulesRepository;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -27,8 +34,45 @@ public class PopulateDataTest extends TestCase {
         createCategories( serv );
         createStates( serv );
         createPackages( serv );
+        createModel( serv );
+        
         createSomeRules( serv );
         createPackageSnapshots( serv );
+        
+    }
+
+    private void createModel(JBRMSServiceServlet serv) throws Exception {
+        RulesRepository repo = serv.getRulesRepository();
+        String uuid = serv.createNewRule( "DomainModel", "This is the business object model", null, "com.billasurf.manufacturing.plant", AssetFormats.MODEL );
+        InputStream file = this.getClass().getResourceAsStream( "/billasurf.jar" );
+        assertNotNull(file);
+        
+        FileUploadServlet.attachFileToAsset( repo, uuid, file, "billasurf.jar" );
+        
+        AssetItem item = repo.loadAssetByUUID( uuid );
+        assertNotNull(item.getBinaryContentAsBytes());
+        
+        
+        
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        PackageItem pkg = repo.loadPackage( "com.billasurf.manufacturing.plant" );
+        pkg.updateHeader( "import com.billasurf.Board\nimport com.billasurf.Person" );
+        pkg.checkin( "added imports" );
+        
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( pkg );
+        assertNotNull(eng);
+        
+        assertEquals(2, eng.factTypes.length);
+        String[] fields = (String[]) eng.fieldsForType.get( "Board" );
+        assertTrue(fields.length >= 3);
+        
+        
+        fields = (String[]) eng.fieldsForType.get( "Person" );
+        
+        assertTrue(fields.length >= 2);
+        
+        
+        
         
     }
 

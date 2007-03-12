@@ -196,19 +196,8 @@ public class SuggestionCompletionLoader {
             // not found in the classpath, so check if it
             // is in a package model
             try {
-                // try to load the package model
-                PackageItem importedPkg = null;
-                String pkgName = classname;
-                do {
-                    pkgName = classname.substring( 0,
-                                                   Math.max( classname.lastIndexOf( '.' ),
-                                                             0 ) );
-                    importedPkg = pkg.getRulesRepository().loadPackage( pkgName );
-                } while ( importedPkg == null && pkgName.length() > 0 );
 
-                if ( importedPkg != null ) {
-                    // a package was found, so, try it out
-                    AssetItemIterator ait = importedPkg.listAssetsByFormat( new String[]{AssetFormats.MODEL} );
+                    AssetItemIterator ait = pkg.listAssetsByFormat( new String[]{AssetFormats.MODEL} );
                     while ( ait.hasNext() ) {
                         AssetItem item = (AssetItem) ait.next();
                         JarInputStream jis = new JarInputStream( item.getBinaryContentAttachment(),
@@ -226,13 +215,11 @@ public class SuggestionCompletionLoader {
                                                     out.toByteArray() );
                             }
                         }
-                    }
+
                 }
                 clazz = loader.loadClass( classname );
-            } catch ( RulesRepositoryException e ) {
-                // TODO: mic_hat, what do we do here?
             } catch ( IOException e ) {
-                // TODO: mic_hat, what do we do here?
+                throw new RulesRepositoryException ( e );
             } catch ( ClassNotFoundException e ) {
                 errors.append( "\tImported class not found: " );
                 errors.append( classname );

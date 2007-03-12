@@ -1,6 +1,7 @@
 package org.drools.brms.server;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
@@ -91,10 +92,27 @@ public class FileUploadServlet extends HttpServlet {
 
     void attachFile(FormData uploadItem,
                             RulesRepository repo) throws IOException {
-        AssetItem item = repo.loadAssetByUUID( uploadItem.uuid );
-        item.updateBinaryContentAttachment( uploadItem.file.getInputStream() );
-        item.updateBinaryContentAttachmentFileName( uploadItem.file.getName() );
-        item.checkin( "Attached file: " + uploadItem.file.getName() );
+        String uuid = uploadItem.uuid;
+        InputStream fileData = uploadItem.file.getInputStream();
+        String fileName = uploadItem.file.getName();
+        
+        attachFileToAsset( repo,
+                           uuid,
+                           fileData,
+                           fileName );
+    }
+
+    /**
+     * This utility method attaches a file to an asset.
+     */
+    public static void attachFileToAsset(RulesRepository repo,
+                                   String uuid,
+                                   InputStream fileData,
+                                   String fileName) {
+        AssetItem item = repo.loadAssetByUUID( uuid );
+        item.updateBinaryContentAttachment( fileData );
+        item.updateBinaryContentAttachmentFileName( fileName );
+        item.checkin( "Attached file: " + fileName );
     }
 
     /**
