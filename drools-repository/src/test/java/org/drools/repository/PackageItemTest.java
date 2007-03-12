@@ -10,7 +10,10 @@ public class PackageItemTest extends TestCase {
 
     public void testListPackages() throws Exception {
         RulesRepository repo = getRepo();
-        repo.createPackage( "testListPackages1", "lalalala" );
+        PackageItem item = repo.createPackage( "testListPackages1", "lalalala" );
+        
+        assertNotNull(item.getCreator());
+        assertFalse(item.getCreator().equals( "" ));
         
         List list = iteratorToList( repo.listPackages() );
         int prevSize = list.size();

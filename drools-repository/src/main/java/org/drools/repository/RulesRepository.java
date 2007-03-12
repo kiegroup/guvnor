@@ -606,9 +606,11 @@ public class RulesRepository {
                         
             rulePackageNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME, description);
             rulePackageNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME, PackageItem.PACKAGE_FORMAT);
+            rulePackageNode.setProperty( PackageItem.CREATOR_PROPERTY_NAME, this.session.getUserID() );
             
             Calendar lastModified = Calendar.getInstance();
             rulePackageNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
+            
             
             PackageItem item = new PackageItem(this, rulePackageNode);
             item.checkin( "Initial" );            

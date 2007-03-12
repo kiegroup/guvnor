@@ -240,10 +240,6 @@ public abstract class VersionableItem extends Item {
                               TITLE_PROPERTY_NAME );
     }
 
-    public void updateLastContributor(String contibName) {
-        updateStringProperty( contibName,
-                              LAST_CONTRIBUTOR_PROPERTY_NAME );
-    }
 
     public void updateType(String type) {
         updateStringProperty( type,
@@ -502,6 +498,7 @@ public abstract class VersionableItem extends Item {
         try {
             this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance() );
             this.node.setProperty( CHECKIN_COMMENT, comment );
+            this.node.setProperty( LAST_CONTRIBUTOR_PROPERTY_NAME, this.node.getSession().getUserID() );
             long nextVersion = getVersionNumber() + 1;
             this.node.setProperty( VERSION_NUMBER_PROPERTY_NAME,  nextVersion );
             this.node.getSession().save();

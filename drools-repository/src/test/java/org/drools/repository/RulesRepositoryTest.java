@@ -37,6 +37,9 @@ public class RulesRepositoryTest extends TestCase {
         assertNotNull(def);
         assertEquals("default", def.getName());
         
+        String userId = repo.getSession().getUserID();
+        assertNotNull(userId);
+        assertFalse(userId.equals( "" ));
         
     }
     

@@ -52,7 +52,7 @@ public class RepositoryConfigurator {
     public Session login(Repository repository) throws LoginException,
                         RepositoryException {
         Session session = repository.login(
-                                   new SimpleCredentials("username", "password".toCharArray()));
+                                   new SimpleCredentials("alan_parsons", "password".toCharArray()));
 
         if(session == null) {
             log.error("LOGIN FAILED! SESSION IS NULL!");

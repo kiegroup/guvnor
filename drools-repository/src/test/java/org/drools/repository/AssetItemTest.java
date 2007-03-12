@@ -73,8 +73,12 @@ public class AssetItemTest extends TestCase {
     
     public void testUpdateContent() throws Exception {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testUpdateContent", "test description");
+            
+            assertFalse(ruleItem1.getCreator().equals( "" ));
             ruleItem1.updateContent( "test content" );            
             ruleItem1.checkin( "yeah" );
+            
+            assertFalse(ruleItem1.getLastContributor().equals( "" ));
             
             ruleItem1.updateContent( "new rule content");
             
@@ -598,14 +602,12 @@ public class AssetItemTest extends TestCase {
         ruleItem.updateCoverage( "b" );
         assertEquals("b",ruleItem.getCoverage());
         
-        ruleItem.updateLastContributor( "me" );
         ruleItem.checkin( "woo" );
         
         pkg = getRepo().loadPackage( "testDublinCore" );
         ruleItem = (AssetItem) pkg.getAssets().next();
         
         assertEquals("b", ruleItem.getCoverage());
-        assertEquals("me", ruleItem.getLastContributor());
         
         assertEquals("", ruleItem.getExternalRelation());
         assertEquals("", ruleItem.getExternalSource());

@@ -141,8 +141,9 @@ public class PackageItem extends VersionableItem {
             Calendar lastModified = Calendar.getInstance();
             
             ruleNode.setProperty( AssetItem.LAST_MODIFIED_PROPERTY_NAME, lastModified );            
-          
             ruleNode.setProperty( AssetItem.PACKAGE_NAME_PROPERTY, this.getName() );
+            ruleNode.setProperty( CREATOR_PROPERTY_NAME, this.node.getSession().getUserID() );
+
             
             AssetItem rule = new AssetItem( this.rulesRepository, ruleNode );
                         
