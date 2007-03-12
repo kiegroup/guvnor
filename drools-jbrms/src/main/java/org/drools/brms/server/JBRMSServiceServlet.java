@@ -568,10 +568,15 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
     }
 
     public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializableException {
-        RulesRepository repo = getRulesRepository();
-        PackageItem pkg = repo.loadPackage( packageName );
-        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        return loader.getSuggestionEngine( pkg );
+        try {
+            RulesRepository repo = getRulesRepository();
+            PackageItem pkg = repo.loadPackage( packageName );
+            SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+            return loader.getSuggestionEngine( pkg );
+        } catch (RuntimeException e) {
+            log.error( e );
+            throw new SerializableException(e.getMessage());
+        }
         
     }
     
