@@ -3,28 +3,35 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="M2_REPO/commons-io/commons-io/1.1/commons-io-1.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.3/servlet-api-2.3.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/geronimo/specs/geronimo-jta_1.0.1B_spec/1.0.1/geronimo-jta_1.0.1B_spec-1.0.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/xpp3/xpp3/1.1.3.4.O/xpp3-1.1.3.4.O.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/derby/derby/10.2.1.6/derby-10.2.1.6.jar"/>
+	<classpathentry kind="var" path="M2_REPO/concurrent/concurrent/1.3.4/concurrent-1.3.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/jackrabbit/jackrabbit-jcr-commons/1.2.2/jackrabbit-jcr-commons-1.2.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/xstream/xstream/1.1.3/xstream-1.1.3.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-core/2.0.0/lucene-core-2.0.0.jar"/>
-	<classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/mvel/mvel14/1.2beta13/mvel14-1.2beta13.jar"/>
-	<classpathentry kind="var" path="M2_REPO/xpp3/xpp3/1.1.3.4.O/xpp3-1.1.3.4.O.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.0/slf4j-log4j12-1.0.jar"/>
-	<classpathentry kind="var" path="M2_REPO/javax/jcr/jcr/1.0/jcr-1.0.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/tmatesoft/javasvn/1.1-beta5/javasvn-1.1-beta5.jar"/>
-	<classpathentry kind="var" path="M2_REPO/commons-fileupload/commons-fileupload/1.1.1/commons-fileupload-1.1.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/drools/drools-core/3.1.0-M1/drools-core-3.1.0-M1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/jackrabbit/jackrabbit-api/1.2.2/jackrabbit-api-1.2.2.jar"/>
-	<classpathentry kind="var" path="M2_REPO/google/gwt-servlet/1.2.11/gwt-servlet-1.2.11.jar"/>
-	<classpathentry kind="var" path="M2_REPO/concurrent/concurrent/1.3.4/concurrent-1.3.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/jackrabbit/jackrabbit-core/1.2.2/jackrabbit-core-1.2.2.jar"/>
-	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.8/log4j-1.2.8.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/derby/derby/10.2.1.6/derby-10.2.1.6.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-io/commons-io/1.1/commons-io-1.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.3/servlet-api-2.3.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.2.1.v_677_R32x/core-3.2.1.v_677_R32x.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/geronimo/specs/geronimo-jta_1.0.1B_spec/1.0.1/geronimo-jta_1.0.1B_spec-1.0.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/mvel/mvel14/1.2beta13/mvel14-1.2beta13.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/drools/drools-core/3.1.0-M1/drools-core-3.1.0-M1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
+	<classpathentry kind="var" path="M2_REPO/google/gwt-servlet/1.2.11/gwt-servlet-1.2.11.jar"/>
+	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.8/log4j-1.2.8.jar"/>
+	<classpathentry kind="var" path="M2_REPO/janino/janino/2.5.5/janino-2.5.5.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/tmatesoft/javasvn/1.1-beta5/javasvn-1.1-beta5.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/drools/drools-compiler/3.1.0-M1/drools-compiler-3.1.0-M1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/antlr/antlr/3.0b5/antlr-3.0b5.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.0/slf4j-log4j12-1.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/jackrabbit/jackrabbit-core/1.2.2/jackrabbit-core-1.2.2.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-fileupload/commons-fileupload/1.1.1/commons-fileupload-1.1.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/jackrabbit/jackrabbit-api/1.2.2/jackrabbit-api-1.2.2.jar"/>
+	<classpathentry kind="var" path="M2_REPO/antlr/stringtemplate/3.0/stringtemplate-3.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/javax/jcr/jcr/1.0/jcr-1.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-core/2.0.0/lucene-core-2.0.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/drools-repository"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
