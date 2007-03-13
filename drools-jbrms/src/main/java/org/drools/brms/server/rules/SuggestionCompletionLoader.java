@@ -3,8 +3,10 @@ package org.drools.brms.server.rules;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -156,6 +158,8 @@ public class SuggestionCompletionLoader {
                     ClassFieldInspector inspector = new ClassFieldInspector( clazz );
                     String[] fields = (String[]) inspector.getFieldNames().keySet().toArray( new String[inspector.getFieldNames().size()] );
 
+                    fields = removeIrrelevantFields(fields);
+                    
                     builder.addFactType( factType );
                     builder.addFieldsForType( factType,
                                               fields );
@@ -174,6 +178,23 @@ public class SuggestionCompletionLoader {
                 }
             }
         }
+    }
+
+    /**
+     * This will remove the unneeded "fields" that come from java.lang.Object
+     * these are really not needed for the modeller.
+     */
+    String[] removeIrrelevantFields(String[] fields) {
+        List result = new ArrayList();
+        for ( int i = 0; i < fields.length; i++ ) {
+            String field = fields[i];
+            if (field.equals( "class" ) || field.equals( "hashCode" ) || field.equals( "toString" )) {
+                //ignore
+            } else {
+                result.add( field );
+            }
+        }
+        return (String[]) result.toArray( new String[result.size()] );
     }
 
     /**

@@ -9,6 +9,8 @@ import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
+import org.drools.brms.client.modeldriven.brxml.ActionAssertLogicalFact;
+import org.drools.brms.client.modeldriven.brxml.ActionModifyField;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
@@ -294,12 +296,15 @@ public class RuleModeller extends Composite {
         List vars = model.getBoundFacts();        
         final ListBox varBox = new ListBox();
         final ListBox retractBox = new ListBox();
+        final ListBox modifyBox = new ListBox();
         varBox.addItem( "Choose ..." );        
-        retractBox.addItem( "Choose..." );
+        retractBox.addItem( "Choose ..." );
+        modifyBox.addItem( "Choose ..." );
         for ( Iterator iter = vars.iterator(); iter.hasNext(); ) {
             String v = (String) iter.next();
             varBox.addItem( v );
             retractBox.addItem( v );
+            modifyBox.addItem( v );
         }
         String[] globals = this.completions.getGlobalVariables();
         for ( int i = 0; i < globals.length; i++ ) {
@@ -309,19 +314,10 @@ public class RuleModeller extends Composite {
         varBox.setSelectedIndex( 0 );
         varBox.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-                addModifyVar(varBox.getItemText( varBox.getSelectedIndex() ));
+                addActionSetField(varBox.getItemText( varBox.getSelectedIndex() ));
                 popup.hide();
             }
         });
-        
-        if (varBox.getItemCount() > 1) {
-            popup.addAttribute( "Modify a field on", varBox );
-            
-        }
-        if (retractBox.getItemCount() > 1) {
-            popup.addAttribute( "Retract a fact", retractBox );
-        }
-        
         
         retractBox.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
@@ -330,11 +326,44 @@ public class RuleModeller extends Composite {
             }            
         });
         
+        modifyBox.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+                addModify(modifyBox.getItemText( modifyBox.getSelectedIndex() ));
+                popup.hide();
+            }            
+        });        
+        
+        if (varBox.getItemCount() > 1) {
+            popup.addAttribute( "Set the values of a field on", varBox );            
+        }
+
+        
+        if (modifyBox.getItemCount() > 1) {
+            HorizontalPanel horiz = new HorizontalPanel();
+            horiz.add( modifyBox );
+            Image img = new Image("images/information.gif");
+            img.setTitle( "Modify a field on a fact, and notify the engine to re-evaluate rules." );
+            horiz.add( img );
+            popup.addAttribute( "Modify a fact", horiz );
+        }
+        
+        popup.addRow( new HTML("<hr/>") );
+        
+        if (retractBox.getItemCount() > 1) {
+            popup.addAttribute( "Retract the fact", retractBox );
+        }        
+        
+        popup.addRow( new HTML("<hr/>") );
+        
         
         final ListBox factsToAssert = new ListBox();
-        factsToAssert.addItem( "Choose..." );
+        final ListBox factsToLogicallyAssert = new ListBox();
+        factsToAssert.addItem( "Choose ..." );
+        factsToLogicallyAssert.addItem( "Choose ..." );
         for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
-            factsToAssert.addItem( completions.getFactTypes()[i] );
+            String item = completions.getFactTypes()[i];
+            factsToAssert.addItem( item );
+            factsToLogicallyAssert.addItem( item );
         }
         
         factsToAssert.addChangeListener( new ChangeListener() {
@@ -347,10 +376,27 @@ public class RuleModeller extends Composite {
             }            
         });
         
+        factsToLogicallyAssert.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+               String fact = factsToLogicallyAssert.getItemText( factsToLogicallyAssert.getSelectedIndex() );
+               model.addRhsItem( new ActionAssertLogicalFact(fact) );
+               refreshWidget();
+               popup.hide();
+                
+            }            
+        });        
+        
         
         if (factsToAssert.getItemCount() > 1) {
             popup.addAttribute( "Assert a new fact", factsToAssert );
+            HorizontalPanel horiz = new HorizontalPanel();
+            horiz.add( factsToLogicallyAssert );
+            Image img = new Image("images/information.gif");
+            img.setTitle( "Logically assert a fact - the fact will be retracted when the supporting evidence is removed." );
+            horiz.add( img );
+            popup.addAttribute( "Logically assert a new fact", horiz );
         }
+        
         
         
         //
@@ -381,6 +427,12 @@ public class RuleModeller extends Composite {
     
 
 
+    protected void addModify(String itemText) {
+        this.model.addRhsItem(new ActionModifyField(itemText));
+        refreshWidget(); 
+        
+    }
+
     protected void addNewDSLRhs(DSLSentence sentence) {
         this.model.addRhsItem( sentence );
         refreshWidget();        
@@ -391,7 +443,7 @@ public class RuleModeller extends Composite {
         refreshWidget();        
     }
 
-    protected void addModifyVar(String itemText) {        
+    protected void addActionSetField(String itemText) {        
         this.model.addRhsItem(new ActionSetField(itemText));
         refreshWidget();        
     }

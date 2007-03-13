@@ -41,6 +41,7 @@ import org.drools.repository.StateItem;
 import org.drools.repository.VersionableItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /** 
@@ -53,6 +54,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class JBRMSServiceServlet extends RemoteServiceServlet
     implements
     RepositoryService {
+
 
     private static final long serialVersionUID = 3150768417428383474L;
     private static final DateFormat dateFormatter = DateFormat.getInstance();
@@ -579,6 +581,8 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         }
         
     }
+
+
     
 
 

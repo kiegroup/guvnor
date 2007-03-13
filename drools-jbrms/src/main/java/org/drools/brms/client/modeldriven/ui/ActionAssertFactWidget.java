@@ -5,6 +5,7 @@ import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
+import org.drools.brms.client.modeldriven.brxml.ActionAssertLogicalFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
 
 import com.google.gwt.user.client.Command;
@@ -107,8 +108,10 @@ public class ActionAssertFactWidget extends Composite {
                 showAddFieldPopup(w);
             }
         } );
-                
-        horiz.add( new Label(HumanReadable.getActionDisplayName("assert") + " " + this.model.factType) );
+            
+
+        
+        horiz.add( new Label(HumanReadable.getActionDisplayName(this.model.getType()) + " " + this.model.factType) );
         horiz.add( edit );
         return horiz;
         
