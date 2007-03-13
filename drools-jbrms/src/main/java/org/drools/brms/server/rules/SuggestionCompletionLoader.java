@@ -65,7 +65,8 @@ public class SuggestionCompletionLoader {
 
         // populating globals
         this.populateGlobalInfo( errors,
-                                 pkgDescr );
+                                 pkgDescr,
+                                 pkg);
 
         // populating DSL sentences
         this.populateDSLSentences( pkg,
@@ -108,39 +109,47 @@ public class SuggestionCompletionLoader {
     }
 
     /**
-     * @param errors
-     * @param pkgDescr
+     * Populate the global stuff.
      */
     private void populateGlobalInfo(StringBuffer errors,
-                                    PackageDescr pkgDescr) {
+                                    PackageDescr pkgDescr, PackageItem pkg) {
+        
         // populating information for the globals
         for ( Iterator it = pkgDescr.getGlobals().iterator(); it.hasNext(); ) {
             GlobalDescr global = (GlobalDescr) it.next();
-
             try {
-                Class clazz = Class.forName( global.getType() );
-
-                builder.addGlobalType( global.getIdentifier(),
-                                       this.getFieldType( clazz ) );
-            } catch ( ClassNotFoundException e ) {
-                errors.append( "\tClass " );
+                    String shortTypeName = global.getType();
+                    if (!this.builder.hasFieldsForType( shortTypeName )) {
+                        Class clazz = loadClass( pkg,
+                                                 global.getType(), 
+                                                 errors );
+                        loadClassFields( clazz,
+                                         shortTypeName );  
+                        
+                        this.builder.addGlobalType( global.getIdentifier(), shortTypeName );
+                    }
+    
+    
+                    builder.addGlobalType( global.getIdentifier(), shortTypeName );
+            } catch (IOException e) {
+                errors.append( "\tError while inspecting class: " );
                 errors.append( global.getType() );
-                errors.append( " not found for global " );
-                errors.append( global.getIdentifier() );
+                errors.append( " : " );
+                errors.append( e.getMessage() );
                 errors.append( "\n" );
             }
+
         }
     }
 
     /**
-     * @param errors
-     * @param pkgDescr
+     * Populate the fact type data.
      */
     private void populateModelInfo(StringBuffer errors,
                                    PackageDescr pkgDescr,
                                    PackageItem pkg ) {
 
-        ByteArrayClassLoader loader = new ByteArrayClassLoader( this.getClass().getClassLoader() );
+        
 
         // iterating over the import list
         for ( Iterator it = pkgDescr.getImports().iterator(); it.hasNext(); ) {
@@ -148,27 +157,14 @@ public class SuggestionCompletionLoader {
             String classname = imp.getTarget();
 
             Class clazz = loadClass( pkg,
-                                     classname, 
-                                     loader,
+                                     classname,                                      
                                      errors );
             if ( clazz != null ) {
                 try {
-                    String factType = clazz.getName().substring( clazz.getName().lastIndexOf('.')+1 );
-
-                    ClassFieldInspector inspector = new ClassFieldInspector( clazz );
-                    String[] fields = (String[]) inspector.getFieldNames().keySet().toArray( new String[inspector.getFieldNames().size()] );
-
-                    fields = removeIrrelevantFields(fields);
-                    
-                    builder.addFactType( factType );
-                    builder.addFieldsForType( factType,
-                                              fields );
-                    for ( int i = 0; i < fields.length; i++ ) {
-                        Class type = (Class) inspector.getFieldTypes().get( fields[i] );
-                        String fieldType = getFieldType( type );
-                        builder.addFieldType( factType + "." + fields[i],
-                                              fieldType );
-                    }
+                    String shortTypeName = getShortNameOfClass( clazz.getName() );
+                    loadClassFields( clazz,
+                                     shortTypeName );
+                    builder.addFactType( shortTypeName );                    
                 } catch ( IOException e ) {
                     errors.append( "\tError while inspecting class: " );
                     errors.append( classname );
@@ -178,6 +174,28 @@ public class SuggestionCompletionLoader {
                 }
             }
         }
+    }
+
+    private void loadClassFields(Class clazz,
+                                 String shortTypeName) throws IOException {
+        ClassFieldInspector inspector = new ClassFieldInspector( clazz );
+        String[] fields = (String[]) inspector.getFieldNames().keySet().toArray( new String[inspector.getFieldNames().size()] );
+
+        fields = removeIrrelevantFields(fields);
+        
+
+        builder.addFieldsForType( shortTypeName,
+                                  fields );
+        for ( int i = 0; i < fields.length; i++ ) {
+            Class type = (Class) inspector.getFieldTypes().get( fields[i] );
+            String fieldType = getFieldType( type );
+            builder.addFieldType( shortTypeName + "." + fields[i],
+                                  fieldType );
+        }
+    }
+
+    String getShortNameOfClass(String clazz) {
+        return clazz.substring( clazz.lastIndexOf('.')+1 );
     }
 
     /**
@@ -205,8 +223,8 @@ public class SuggestionCompletionLoader {
      */
     private Class loadClass(PackageItem pkg,
                             String classname,
-                            ByteArrayClassLoader loader,
                             StringBuffer errors ) {
+        ByteArrayClassLoader loader = new ByteArrayClassLoader( this.getClass().getClassLoader() );
         Class clazz = null;
         try {
             // check if it is already in the classpath

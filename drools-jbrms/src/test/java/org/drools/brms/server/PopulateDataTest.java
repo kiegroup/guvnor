@@ -56,7 +56,8 @@ public class PopulateDataTest extends TestCase {
         
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         PackageItem pkg = repo.loadPackage( "com.billasurf.manufacturing.plant" );
-        pkg.updateHeader( "import com.billasurf.Board\nimport com.billasurf.Person" );
+        pkg.updateHeader( "import com.billasurf.Board\nimport com.billasurf.Person" +
+                "\n\nglobal com.billasurf.Person prs" );
         pkg.checkin( "added imports" );
         
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( pkg );
@@ -66,6 +67,10 @@ public class PopulateDataTest extends TestCase {
         String[] fields = (String[]) eng.fieldsForType.get( "Board" );
         assertTrue(fields.length == 3);
         
+        String[] globalVars = eng.getGlobalVariables();
+        assertEquals(1, globalVars.length);
+        assertEquals("prs", globalVars[0]);
+        assertEquals(2, eng.getFieldCompletionsForGlobalVariable( "prs" ).length);
         
         fields = (String[]) eng.fieldsForType.get( "Person" );
         

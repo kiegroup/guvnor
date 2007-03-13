@@ -96,6 +96,13 @@ public class SuggestionCompletionEngineBuilder {
     }
 
     /**
+     * @return true if this has the type already registered (field information).
+     */
+    public boolean hasFieldsForType(String type) {
+        return this.fieldsForType.containsKey( type );
+    }
+    
+    /**
      * Adds a type declaration for a field
      * 
      * @param field

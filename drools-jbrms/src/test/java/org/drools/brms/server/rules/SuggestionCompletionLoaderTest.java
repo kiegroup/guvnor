@@ -28,4 +28,15 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals("foo", result[0]);
     }
     
+    public void testGetShortNameOfClass() {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        
+        assertEquals("Object", loader.getShortNameOfClass( Object.class.getName() ));
+        
+        assertEquals("Foo", loader.getShortNameOfClass( "Foo" ));
+        
+        
+        
+    }
+    
 }
