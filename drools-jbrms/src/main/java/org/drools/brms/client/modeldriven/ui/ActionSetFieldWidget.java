@@ -1,5 +1,6 @@
 package org.drools.brms.client.modeldriven.ui;
 
+import org.drools.brms.client.common.FieldEditListener;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
@@ -19,6 +20,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -144,14 +147,29 @@ public class ActionSetFieldWidget extends Composite {
 
 
     private Widget valueEditor(final ActionFieldValue val) {
+        
+        SimplePanel panel = new SimplePanel();
+        
+        
         final TextBox box = new TextBox();
         box.setText( val.value );
+        if (val.value.length() != 0) {
+            box.setVisibleLength( val.value.length() );
+        }
+        
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 val.value = box.getText();
             }            
         });
-        return box;
+        
+        box.addKeyboardListener( new FieldEditListener(new Command() {
+            public void execute() {
+                box.setVisibleLength( box.getText().length() );
+            }            
+        }));        
+        panel.add( box );
+        return panel;
     }
 
 
