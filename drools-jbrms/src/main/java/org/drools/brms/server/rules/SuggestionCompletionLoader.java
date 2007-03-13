@@ -10,12 +10,15 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import org.codehaus.jfdi.interpreter.ClassTypeResolver;
 import org.drools.RuntimeDroolsException;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.server.util.SuggestionCompletionEngineBuilder;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
+import org.drools.lang.descr.FactTemplateDescr;
+import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -42,6 +45,11 @@ public class SuggestionCompletionLoader {
 
     private SuggestionCompletionEngineBuilder builder = new SuggestionCompletionEngineBuilder();
     private DrlParser                         parser  = new DrlParser();
+    private final ByteArrayClassLoader        loader;
+
+    public SuggestionCompletionLoader() {
+        loader = new ByteArrayClassLoader( this.getClass().getClassLoader() );
+    }
 
     public SuggestionCompletionEngine getSuggestionEngine(PackageItem pkg) {
         StringBuffer errors = new StringBuffer();
@@ -66,7 +74,7 @@ public class SuggestionCompletionLoader {
         // populating globals
         this.populateGlobalInfo( errors,
                                  pkgDescr,
-                                 pkg);
+                                 pkg );
 
         // populating DSL sentences
         this.populateDSLSentences( pkg,
@@ -112,26 +120,28 @@ public class SuggestionCompletionLoader {
      * Populate the global stuff.
      */
     private void populateGlobalInfo(StringBuffer errors,
-                                    PackageDescr pkgDescr, PackageItem pkg) {
-        
+                                    PackageDescr pkgDescr,
+                                    PackageItem pkg) {
+
         // populating information for the globals
         for ( Iterator it = pkgDescr.getGlobals().iterator(); it.hasNext(); ) {
             GlobalDescr global = (GlobalDescr) it.next();
             try {
-                    String shortTypeName = global.getType();
-                    if (!this.builder.hasFieldsForType( shortTypeName )) {
-                        Class clazz = loadClass( pkg,
-                                                 global.getType(), 
-                                                 errors );
-                        loadClassFields( clazz,
-                                         shortTypeName );  
-                        
-                        this.builder.addGlobalType( global.getIdentifier(), shortTypeName );
-                    }
-    
-    
-                    builder.addGlobalType( global.getIdentifier(), shortTypeName );
-            } catch (IOException e) {
+                String shortTypeName = global.getType();
+                if ( !this.builder.hasFieldsForType( shortTypeName ) ) {
+                    Class clazz = loadClass( pkg,
+                                             global.getType(),
+                                             errors );
+                    loadClassFields( clazz,
+                                     shortTypeName );
+
+                    this.builder.addGlobalType( global.getIdentifier(),
+                                                shortTypeName );
+                }
+
+                builder.addGlobalType( global.getIdentifier(),
+                                       shortTypeName );
+            } catch ( IOException e ) {
                 errors.append( "\tError while inspecting class: " );
                 errors.append( global.getType() );
                 errors.append( " : " );
@@ -147,24 +157,24 @@ public class SuggestionCompletionLoader {
      */
     private void populateModelInfo(StringBuffer errors,
                                    PackageDescr pkgDescr,
-                                   PackageItem pkg ) {
-
-        
+                                   PackageItem pkg) {
 
         // iterating over the import list
+        ClassTypeResolver resolver = new ClassTypeResolver();
         for ( Iterator it = pkgDescr.getImports().iterator(); it.hasNext(); ) {
             ImportDescr imp = (ImportDescr) it.next();
             String classname = imp.getTarget();
+            resolver.addImport( classname );
 
             Class clazz = loadClass( pkg,
-                                     classname,                                      
+                                     classname,
                                      errors );
             if ( clazz != null ) {
                 try {
                     String shortTypeName = getShortNameOfClass( clazz.getName() );
                     loadClassFields( clazz,
                                      shortTypeName );
-                    builder.addFactType( shortTypeName );                    
+                    builder.addFactType( shortTypeName );
                 } catch ( IOException e ) {
                     errors.append( "\tError while inspecting class: " );
                     errors.append( classname );
@@ -174,6 +184,50 @@ public class SuggestionCompletionLoader {
                 }
             }
         }
+
+        // iterating over templates
+        populateFactTemplateTypes( pkgDescr,
+                                   pkg,
+                                   resolver,
+                                   errors );
+    }
+
+    /**
+     * Iterates over fact templates and add them to the model definition
+     * 
+     * @param pkgDescr
+     */
+    private void populateFactTemplateTypes(PackageDescr pkgDescr,
+                                           PackageItem pkg,
+                                           ClassTypeResolver resolver,
+                                           StringBuffer errors) {
+        for ( Iterator it = pkgDescr.getFactTemplates().iterator(); it.hasNext(); ) {
+            FactTemplateDescr templ = (FactTemplateDescr) it.next();
+            String factType = templ.getName();
+            builder.addFactType( factType );
+
+            String[] fields = new String[templ.getFields().size()];
+            builder.addFieldsForType( factType,
+                                      fields );
+
+            int index = 0;
+            for ( Iterator fieldsIt = templ.getFields().iterator(); fieldsIt.hasNext(); ) {
+                FieldTemplateDescr fieldDescr = (FieldTemplateDescr) fieldsIt.next();
+                fields[index++] = fieldDescr.getName();
+                String fieldType = fieldDescr.getClassType();
+
+                Class fieldTypeClass = null;
+                try {
+                    fieldTypeClass = resolver.resolveType( fieldType );
+                } catch ( ClassNotFoundException e ) {
+                    errors.append( "\tClass not found: " );
+                    errors.append( fieldType );
+                    errors.append( "\n" );
+                }
+                builder.addFieldType( factType + "." + fieldDescr.getName(),
+                                      getFieldType( fieldTypeClass ) );
+            }
+        }
     }
 
     private void loadClassFields(Class clazz,
@@ -181,8 +235,7 @@ public class SuggestionCompletionLoader {
         ClassFieldInspector inspector = new ClassFieldInspector( clazz );
         String[] fields = (String[]) inspector.getFieldNames().keySet().toArray( new String[inspector.getFieldNames().size()] );
 
-        fields = removeIrrelevantFields(fields);
-        
+        fields = removeIrrelevantFields( fields );
 
         builder.addFieldsForType( shortTypeName,
                                   fields );
@@ -195,7 +248,7 @@ public class SuggestionCompletionLoader {
     }
 
     String getShortNameOfClass(String clazz) {
-        return clazz.substring( clazz.lastIndexOf('.')+1 );
+        return clazz.substring( clazz.lastIndexOf( '.' ) + 1 );
     }
 
     /**
@@ -206,7 +259,7 @@ public class SuggestionCompletionLoader {
         List result = new ArrayList();
         for ( int i = 0; i < fields.length; i++ ) {
             String field = fields[i];
-            if (field.equals( "class" ) || field.equals( "hashCode" ) || field.equals( "toString" )) {
+            if ( field.equals( "class" ) || field.equals( "hashCode" ) || field.equals( "toString" ) ) {
                 //ignore
             } else {
                 result.add( field );
@@ -223,44 +276,45 @@ public class SuggestionCompletionLoader {
      */
     private Class loadClass(PackageItem pkg,
                             String classname,
-                            StringBuffer errors ) {
-        ByteArrayClassLoader loader = new ByteArrayClassLoader( this.getClass().getClassLoader() );
+                            StringBuffer errors) {
         Class clazz = null;
         try {
             // check if it is already in the classpath
             clazz = loader.loadClass( classname );
-            
+
         } catch ( ClassNotFoundException e1 ) {
-            
+
             // not found in the classpath, so check if it
             // is in a package model
             try {
 
-                    AssetItemIterator ait = pkg.listAssetsByFormat( new String[]{AssetFormats.MODEL} );
-                    while ( ait.hasNext() ) {
-                        AssetItem item = (AssetItem) ait.next();
-                        JarInputStream jis = new JarInputStream( item.getBinaryContentAttachment(),
-                                                                 false );
-                        JarEntry entry = null;
-                        byte[] buf = new byte[1024];
-                        int len = 0;
-                        while ( (entry = jis.getNextJarEntry()) != null ) {
-                            if ( !entry.isDirectory() ) {
-                                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                                while( (len = jis.read( buf ) ) >=0 ) {
-                                    out.write( buf, 0, len );
-                                }
-                                loader.addResource( entry.getName(),
-                                                    out.toByteArray() );
+                AssetItemIterator ait = pkg.listAssetsByFormat( new String[]{AssetFormats.MODEL} );
+                while ( ait.hasNext() ) {
+                    AssetItem item = (AssetItem) ait.next();
+                    JarInputStream jis = new JarInputStream( item.getBinaryContentAttachment(),
+                                                             false );
+                    JarEntry entry = null;
+                    byte[] buf = new byte[1024];
+                    int len = 0;
+                    while ( (entry = jis.getNextJarEntry()) != null ) {
+                        if ( !entry.isDirectory() ) {
+                            ByteArrayOutputStream out = new ByteArrayOutputStream();
+                            while ( (len = jis.read( buf )) >= 0 ) {
+                                out.write( buf,
+                                           0,
+                                           len );
                             }
+                            loader.addResource( entry.getName(),
+                                                out.toByteArray() );
                         }
+                    }
 
                 }
                 clazz = loader.loadClass( classname );
             } catch ( IOException e ) {
-                throw new RulesRepositoryException ( e );
+                throw new RulesRepositoryException( e );
             } catch ( ClassNotFoundException e ) {
-                errors.append( "\tImported class not found: " );
+                errors.append( "\tClass not found: " );
                 errors.append( classname );
                 errors.append( "\n" );
             }
@@ -276,16 +330,18 @@ public class SuggestionCompletionLoader {
      */
     private String getFieldType(Class type) {
         String fieldType = null; // if null, will use standard operators
-        if ( type.isPrimitive() && (type != boolean.class) ) {
-            fieldType = SuggestionCompletionEngine.TYPE_NUMERIC;
-        } else if ( Number.class.isAssignableFrom( type ) ) {
-            fieldType = SuggestionCompletionEngine.TYPE_NUMERIC;
-        } else if ( String.class.isAssignableFrom( type ) ) {
-            fieldType = SuggestionCompletionEngine.TYPE_STRING;
-        } else if ( Collection.class.isAssignableFrom( type ) ) {
-            fieldType = SuggestionCompletionEngine.TYPE_COLLECTION;
-        } else if ( Comparable.class.isAssignableFrom( type ) ) {
-            fieldType = SuggestionCompletionEngine.TYPE_COMPARABLE;
+        if ( type != null ) {
+            if ( type.isPrimitive() && (type != boolean.class) ) {
+                fieldType = SuggestionCompletionEngine.TYPE_NUMERIC;
+            } else if ( Number.class.isAssignableFrom( type ) ) {
+                fieldType = SuggestionCompletionEngine.TYPE_NUMERIC;
+            } else if ( String.class.isAssignableFrom( type ) ) {
+                fieldType = SuggestionCompletionEngine.TYPE_STRING;
+            } else if ( Collection.class.isAssignableFrom( type ) ) {
+                fieldType = SuggestionCompletionEngine.TYPE_COLLECTION;
+            } else if ( Comparable.class.isAssignableFrom( type ) ) {
+                fieldType = SuggestionCompletionEngine.TYPE_COMPARABLE;
+            } 
         }
         return fieldType;
     }

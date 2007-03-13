@@ -14,6 +14,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         RulesRepository repo = new RulesRepository(SessionHelper.getSession());
         PackageItem item = repo.createPackage( "testLoader", "to test the loader" );
         item.updateHeader( "import java.util.Date" );
+        repo.save();
         
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( item );
@@ -34,9 +35,33 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals("Object", loader.getShortNameOfClass( Object.class.getName() ));
         
         assertEquals("Foo", loader.getShortNameOfClass( "Foo" ));
+    }
+    
+    public void testFactTemplates() throws Exception {
         
+        RulesRepository repo = new RulesRepository(SessionHelper.getSession());
+        PackageItem item = repo.createPackage( "testLoader2", "to test the loader for fact templates" );
+        item.updateHeader( "import java.util.Date\ntemplate Person\njava.lang.String name\nDate birthDate\nend" );
+        repo.save();
         
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( item );
+        assertNotNull(engine);
+        String[] factTypes = engine.getFactTypes();
         
+        assertEquals( 2, factTypes.length );
+        assertEquals("Date", factTypes[0]);
+        assertEquals("Person", factTypes[1]);
+        
+        String[] fieldsForType = engine.getFieldCompletions( "Person" );
+        assertEquals( 2, fieldsForType.length );
+        assertEquals("name", fieldsForType[0]);
+        assertEquals("birthDate", fieldsForType[1]);
+        
+        String fieldType = engine.getFieldType( "Person", "name" );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING, fieldType );
+        fieldType = engine.getFieldType( "Person", "birthDate" );
+        assertEquals( SuggestionCompletionEngine.TYPE_COMPARABLE, fieldType );
     }
     
 }

@@ -194,6 +194,11 @@ public class SuggestionCompletionEngine implements IsSerializable {
                 
     }
     
+    public String getFieldType( String factType,
+                                String fieldName ) {
+        return (String) this.fieldTypes.get( factType + "." + fieldName );
+    }
+    
     public boolean isGlobalVariable(String variable) {
         return this.globalTypes.containsKey( variable );
     }
