@@ -21,4 +21,11 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         
     }
     
+    public void testStripUnNeededFields() {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        String[] result = loader.removeIrrelevantFields( new String[] {"foo", "toString", "class", "hashCode"} );
+        assertEquals(1, result.length);
+        assertEquals("foo", result[0]);
+    }
+    
 }

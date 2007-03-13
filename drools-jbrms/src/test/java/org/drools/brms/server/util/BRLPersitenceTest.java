@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brxml.ActionModifyField;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
@@ -98,7 +99,7 @@ public class BRLPersitenceTest extends TestCase {
         comp.addFactPattern( new FactPattern("Cancel") );
         m.addLhsItem( comp );
         
-        ActionSetField set = new ActionSetField();
+        ActionModifyField set = new ActionModifyField();
         set.variable = "p1";        
         set.addFieldValue( new ActionFieldValue("status", "rejected") );
         m.addRhsItem( set );

@@ -64,12 +64,12 @@ public class PopulateDataTest extends TestCase {
         
         assertEquals(2, eng.factTypes.length);
         String[] fields = (String[]) eng.fieldsForType.get( "Board" );
-        assertTrue(fields.length >= 3);
+        assertTrue(fields.length == 3);
         
         
         fields = (String[]) eng.fieldsForType.get( "Person" );
         
-        assertTrue(fields.length >= 2);
+        assertTrue(fields.length == 2);
         
         
         
