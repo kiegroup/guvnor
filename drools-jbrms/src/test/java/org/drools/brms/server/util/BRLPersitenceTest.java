@@ -6,11 +6,9 @@ import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brxml.ActionModifyField;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
-import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
 import org.drools.brms.client.modeldriven.brxml.Constraint;
 import org.drools.brms.client.modeldriven.brxml.DSLSentence;
-import org.drools.brms.client.modeldriven.brxml.DSLSentenceFragment;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
@@ -109,10 +107,8 @@ public class BRLPersitenceTest extends TestCase {
         m.addRhsItem( ret );
         
         DSLSentence sen = new DSLSentence();
-        sen.elements = new DSLSentenceFragment[2];
-        sen.elements[0] = new DSLSentenceFragment("Send an email to", false);
-        sen.elements[1] = new DSLSentenceFragment("administrator", true);
-        
+        sen.sentence = "Send an email to {administrator}";
+
         
         
         m.addRhsItem( sen );

@@ -1,15 +1,11 @@
 package org.drools.brms.server.util;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.DSLSentence;
-import org.drools.brms.client.modeldriven.brxml.DSLSentenceFragment;
 
 public class SuggestionCompletionEngineBuilderTest extends TestCase {
     SuggestionCompletionEngineBuilder builder = new SuggestionCompletionEngineBuilder();
@@ -25,23 +21,16 @@ public class SuggestionCompletionEngineBuilderTest extends TestCase {
 
     public void testAddDSLSentence() {
         String input = "{This} is a {pattern} considered pretty \\{{easy}\\} by most \\{people\\}. What do you {say}?";
-        String[] strFrags = new String[] {"{This}", " is a ", "{pattern}", " considered pretty {", "{easy}", "} by most {people}. What do you ", "{say}", "?"};
-        boolean[] editable = new boolean[] { true, false, true, false, true, false, true, false };
-        builder.addDSLSentence( input );
-
+        builder.addDSLActionSentence(  input );
+        builder.addDSLConditionSentence( "foo bar" );
         SuggestionCompletionEngine engine = builder.getInstance();
 
         assertEquals( 1,
                       engine.actionDSLSentences.length );
-        DSLSentenceFragment[] fragments = engine.actionDSLSentences[0].elements;
-        assertEquals( 8,
-                      fragments.length );
-        for( int i = 0; i < 8; i++ ) {
-            assertEquals( strFrags[i],
-                          fragments[i].value );
-            assertEquals( editable[i],
-                          fragments[i].isEditableField );
-        }
+        assertEquals( 1,
+                      engine.conditionDSLSentences.length );
+        
+
 
     }
     

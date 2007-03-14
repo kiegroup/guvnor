@@ -280,7 +280,7 @@ public class RuleModeller extends Composite {
     }
     
     protected void addNewDSLLhs(DSLSentence sentence) {
-        model.addLhsItem( sentence );
+        model.addLhsItem( sentence.copy() );
         refreshWidget();
         
     }
@@ -434,7 +434,7 @@ public class RuleModeller extends Composite {
     }
 
     protected void addNewDSLRhs(DSLSentence sentence) {
-        this.model.addRhsItem( sentence );
+        this.model.addRhsItem( sentence.copy() );
         refreshWidget();        
     }
 

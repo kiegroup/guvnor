@@ -1,9 +1,8 @@
 package org.drools.brms.server.util;
 
 import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
-import org.drools.brms.client.modeldriven.brxml.ActionFieldList;
-import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brxml.ActionAssertLogicalFact;
+import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brxml.ActionModifyField;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
@@ -11,7 +10,6 @@ import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
 import org.drools.brms.client.modeldriven.brxml.ConnectiveConstraint;
 import org.drools.brms.client.modeldriven.brxml.Constraint;
 import org.drools.brms.client.modeldriven.brxml.DSLSentence;
-import org.drools.brms.client.modeldriven.brxml.DSLSentenceFragment;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
@@ -40,14 +38,14 @@ public class BRLPersistence {
         xt.alias( "assert", ActionAssertFact.class );
         xt.alias( "modify", ActionModifyField.class );
         xt.alias( "setField", ActionSetField.class );
-        xt.alias( "dslExpression", DSLSentence.class );
+        xt.alias( "dslSentence", DSLSentence.class );
         xt.alias( "compositePattern", CompositeFactPattern.class );
         xt.alias( "attribute", RuleAttribute.class );
 
         xt.alias( "fieldValue", ActionFieldValue.class );
         xt.alias( "connectiveConstraint", ConnectiveConstraint.class );
         xt.alias( "constraint", Constraint.class );
-        xt.alias( "sentenceFragment", DSLSentenceFragment.class );
+
         xt.alias( "assertLogical", ActionAssertLogicalFact.class );
 
 

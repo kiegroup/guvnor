@@ -1,7 +1,9 @@
 package org.drools.brms.server.rules;
 
+import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.server.SessionHelper;
+import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 
@@ -62,6 +64,29 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals( SuggestionCompletionEngine.TYPE_STRING, fieldType );
         fieldType = engine.getFieldType( "Person", "birthDate" );
         assertEquals( SuggestionCompletionEngine.TYPE_COMPARABLE, fieldType );
+    }
+    
+    public void testLoadDSLs() throws Exception {
+        String dsl = "[when]The agents rating is {rating}=doNothing()\n[then]Send a notification to manufacturing '{message}'=foo()";
+        RulesRepository repo = new RulesRepository(SessionHelper.getSession());
+        PackageItem item = repo.createPackage( "testLoadDSLs", "to test the loader for DSLs" );
+        AssetItem asset = item.addAsset( "mydsl", "" );
+        asset.updateFormat( AssetFormats.DSL );
+        asset.updateContent( dsl );
+        asset.checkin( "ok" );
+        
+        item = repo.loadPackage( "testLoadDSLs" );
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( item );
+        assertEquals(1, eng.actionDSLSentences.length);
+        assertEquals(1, eng.conditionDSLSentences.length);
+        
+        assertEquals( "The agents rating is {rating}", eng.conditionDSLSentences[0].sentence );
+        assertEquals("Send a notification to manufacturing '{message}'",eng.actionDSLSentences[0].sentence);
+        
+        
+        
+        
     }
     
 }

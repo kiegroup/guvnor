@@ -101,7 +101,12 @@ public class SuggestionCompletionLoader {
                     DSLMapping mapping = file.getMapping();
                     for ( Iterator entries = mapping.getEntries().iterator(); entries.hasNext(); ) {
                         DSLMappingEntry entry = (DSLMappingEntry) entries.next();
-                        builder.addDSLSentence( entry.getMappingKey() );
+                        if (entry.getSection() == DSLMappingEntry.CONDITION) {
+                            builder.addDSLConditionSentence( entry.getMappingKey() );
+                        } else if (entry.getSection() == DSLMappingEntry.CONSEQUENCE) {
+                            builder.addDSLActionSentence( entry.getMappingKey() );
+                        }
+                        
                     }
                 } else {
                     errors.append( file.getErrors().toString() );

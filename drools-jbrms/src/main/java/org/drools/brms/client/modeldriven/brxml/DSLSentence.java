@@ -10,15 +10,26 @@ public class DSLSentence
     IPattern,
     IAction {
 
-    public DSLSentenceFragment[] elements;
+    public String sentence;
     
+    /**
+     * This will strip off any residual "{" stuff...
+     */
     public String toString() {
+        char[] chars = sentence.toCharArray();
         String result = "";
-        if (elements != null) {
-            for ( int i = 0; i < elements.length; i++ ) {
-                result += elements[i].value + " ";
+        for ( int i = 0; i < chars.length; i++ ) {
+            char c = chars[i];
+            if (c != '{' && c != '}') {
+                result += c;
             }
         }
         return result;
+    }
+    
+    public DSLSentence copy() {
+        DSLSentence newOne = new DSLSentence();
+        newOne.sentence = this.sentence;
+        return newOne;
     }
 }

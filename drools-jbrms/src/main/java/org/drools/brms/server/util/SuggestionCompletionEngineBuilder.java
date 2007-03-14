@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.DSLSentence;
-import org.drools.brms.client.modeldriven.brxml.DSLSentenceFragment;
+import org.drools.lang.dsl.DSLMappingEntry;
 
 /**
  * A builder to incrementally populate a SuggestionCompletionEngine
@@ -57,7 +57,8 @@ public class SuggestionCompletionEngineBuilder {
     private Map                        fieldsForType = new HashMap();
     private Map                        fieldTypes    = new HashMap();
     private Map                        globalTypes   = new HashMap();
-    private List                       dslSentences  = new ArrayList();
+    private List                       actionDSLSentences  = new ArrayList();
+    private List                       conditionDSLSentences  = new ArrayList();
 
     public SuggestionCompletionEngineBuilder() {
     }
@@ -71,7 +72,8 @@ public class SuggestionCompletionEngineBuilder {
         this.fieldsForType = new HashMap();
         this.fieldTypes = new HashMap();
         this.globalTypes = new HashMap();
-        this.dslSentences = new ArrayList();
+        this.actionDSLSentences = new ArrayList();
+        this.conditionDSLSentences = new ArrayList();
     }
 
     /**
@@ -127,41 +129,23 @@ public class SuggestionCompletionEngineBuilder {
     }
 
     /**
-     * Adds a DSL Sentence to the engine, splitting it into
-     * chunks of editable and non-editable text
-     *  
-     * @param sentence
+     * Add a DSL sentence for an action.
      */
-    public void addDSLSentence(String sentence) {
-        // splitting the sentence in fragments
-        Matcher m = splitter.matcher( sentence );
-        int lastEnd = 0;
-        List fragments = new ArrayList();
-
-        while ( m.find() ) {
-            if ( m.start( 2 ) > lastEnd ) {
-                // if there is anything after last match and before the current one, add
-                // a non-editable fragment
-                fragments.add( new DSLSentenceFragment( sentence.substring( lastEnd,
-                                                                            m.start( 2 ) ).replaceAll( "\\\\([\\{\\}])",
-                                                                                                       "$1" ),
-                                                        false ) );
-            }
-            // add the editable fragment
-            fragments.add( new DSLSentenceFragment( m.group( 2 ),
-                                                    true ) );
-            lastEnd = m.end( 2 );
-        }
-        if ( lastEnd < sentence.length() ) {
-            // if there is anything after the last match, add as a non-editable fragment
-            fragments.add( new DSLSentenceFragment( sentence.substring( lastEnd ),
-                                                    false ) );
-        }
-
+    public void addDSLActionSentence(String sentence) {
         DSLSentence sen = new DSLSentence();
-        sen.elements = (DSLSentenceFragment[]) fragments.toArray( new DSLSentenceFragment[fragments.size()] );
-        this.dslSentences.add( sen );
+        sen.sentence = sentence;
+        this.actionDSLSentences.add( sen );
     }
+    
+    /**
+     * Add a DSL sentence for a condition.
+     */
+    public void addDSLConditionSentence(String sentence) {
+        DSLSentence sen = new DSLSentence();
+        sen.sentence = sentence;
+        this.conditionDSLSentences.add( sen );
+    }
+    
 
     /**
      * Returns a SuggestionCompletionEngine instance populated with 
@@ -174,7 +158,8 @@ public class SuggestionCompletionEngineBuilder {
         this.instance.fieldsForType = this.fieldsForType;
         this.instance.fieldTypes = this.fieldTypes;
         this.instance.globalTypes = this.globalTypes;
-        this.instance.actionDSLSentences = (DSLSentence[]) this.dslSentences.toArray( new DSLSentence[this.dslSentences.size()] );
+        this.instance.actionDSLSentences = (DSLSentence[]) this.actionDSLSentences.toArray( new DSLSentence[this.actionDSLSentences.size()] );
+        this.instance.conditionDSLSentences = (DSLSentence[]) this.conditionDSLSentences.toArray( new DSLSentence[this.conditionDSLSentences.size()] );
         return this.instance;
     }
 
