@@ -5,11 +5,9 @@ import java.util.Map;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
-import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.brms.client.modeldriven.ui.RuleModeller;
 import org.drools.brms.client.packages.ModelAttachmentFileWidget;
 import org.drools.brms.client.packages.SuggestionCompletionCache;
-import org.drools.brms.client.rpc.DSLRuleData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 
@@ -40,10 +38,7 @@ public class EditorLauncher {
         if ( asset.metaData.format.equals( AssetFormats.BUSINESS_RULE ) ) {
             return new RuleModeller( asset  );
         } else if ( asset.metaData.format.equals( AssetFormats.DSL_TEMPLATE_RULE ) ) {
-            DSLRuleData data = (DSLRuleData) asset.content;
-            return new DSLRuleEditor( data.text,
-                                      data.lhsSuggestions,
-                                      data.rhsSuggestions );
+            return new DSLRuleEditor( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.MODEL ) ) {
             return new ModelAttachmentFileWidget( asset,
                                                   viewer );

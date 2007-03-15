@@ -198,6 +198,9 @@ public class ServiceImplementationTest extends TestCase {
       asset = impl.loadRuleAsset( uuid );
       assertTrue(asset.content instanceof RuleModel);
       
+      uuid = impl.createNewRule( "testLoadRuleAssetBRL", "description", "testLoadRuleAsset", "testLoadRuleAsset", AssetFormats.DSL_TEMPLATE_RULE );
+      asset = impl.loadRuleAsset( uuid );
+      assertTrue(asset.content instanceof RuleContentText);
   }
   
   public void testLoadAssetHistoryAndRestore() throws Exception {

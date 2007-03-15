@@ -1,5 +1,9 @@
 package org.drools.brms.client.ruleeditor;
 
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.brxml.DSLSentence;
+import org.drools.brms.client.packages.SuggestionCompletionCache;
+import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleContentText;
 
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -26,22 +30,25 @@ public class DSLRuleEditor extends Composite {
     
     private TextArea text;
     final private RuleContentText data;
-    private String[] conditions;
-    private String[] actions;
+    private DSLSentence[] conditions;
+    private DSLSentence[] actions;
     
 
     
-    public DSLRuleEditor(RuleContentText tex, final String[] dslConditions, final String[] dslActions) {
+    public DSLRuleEditor(RuleAsset asset) {
         
-        this.data = tex;
+        RuleContentText cont = (RuleContentText) asset.content;
+        
+        this.data = cont;
         text = new TextArea();
         text.setWidth("100%");
         text.setHeight("100%");
         text.setVisibleLines(10);
-        text.setText(tex.content);
-
-        this.conditions = dslConditions;
-        this.actions = dslActions;       
+        text.setText(data.content);
+        SuggestionCompletionEngine eng = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.metaData.packageName );
+        this.actions = eng.actionDSLSentences;
+        this.conditions = eng.conditionDSLSentences;
+      
         
         text.setStyleName( "dsl-text-Editor" );
         
@@ -57,9 +64,6 @@ public class DSLRuleEditor extends Composite {
 
 
         text.addKeyboardListener( new KeyboardListenerAdapter() {
-
-            
-            
 
 
 
@@ -84,7 +88,7 @@ public class DSLRuleEditor extends Composite {
         lhsOptions.setTitle( msg );
         lhsOptions.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                showOptions( dslConditions, w, msg );
+                showSuggestions( conditions );
             }
         });        
         
@@ -93,7 +97,7 @@ public class DSLRuleEditor extends Composite {
         rhsOptions.setTitle( msg2 );
         rhsOptions.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                showOptions( dslActions, w, msg2 );
+                showSuggestions( actions );
             }
         });   
         
@@ -114,28 +118,22 @@ public class DSLRuleEditor extends Composite {
     protected void showInTextOptions() {
         String prev = text.getText().substring( 0, this.text.getCursorPos() );
         if (prev.indexOf( "then" ) > -1) {
-            PickList pick = new PickList("Choose an action", actions , this);
-            pick.setPopupPosition( text.getAbsoluteLeft(), text.getAbsoluteTop() );
-            pick.show();
-            
+            showSuggestions(this.actions);
         } else {
-            PickList pick = new PickList("Choose a condition", conditions , this);
-            pick.setPopupPosition( text.getAbsoluteLeft(), text.getAbsoluteTop() );
-            pick.show();
-            
+            showSuggestions(this.conditions);
         }
         
     }
-    
 
-    private void showOptions(final String[] items,
-                             Widget w, String message) {
-        PickList pick = new PickList(message, items, this);
-        pick.setPopupPosition( w.getAbsoluteLeft() - 250, w.getAbsoluteTop() );
-        pick.show();
-    }    
+    private void showSuggestions(DSLSentence[] items) {
+        ChoiceList choice = new ChoiceList(items, this);
+        choice.setPopupPosition( text.getAbsoluteLeft() + 20, text.getAbsoluteTop() + 20 );
+        choice.show();        
+    }
     
-    private void insertText(String ins) {
+  
+    
+    void insertText(String ins) {
         int i = text.getCursorPos();
         String left = text.getText().substring( 0, i );
         String right = text.getText().substring( i, text.getText().length() );
