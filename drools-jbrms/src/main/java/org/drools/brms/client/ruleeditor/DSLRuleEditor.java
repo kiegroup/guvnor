@@ -141,58 +141,6 @@ public class DSLRuleEditor extends Composite {
         this.data.content = text.getText();
     }    
 
-    /**
-     * The popup content assistance. Can be dragged around.
-     */
-    static class PickList extends DialogBox {
 
-        public PickList(String message, String[] items, final DSLRuleEditor self) {            
-            setStyleName( "ks-popups-Popup" );
-
-            final ListBox list = new ListBox();
-            for ( int i = 0; i < items.length; i++ ) {
-                list.addItem( items[i] );
-            }
-            
-            
-            setText( message );
-            
-            VerticalPanel vert = new VerticalPanel();
-            list.setVisibleItemCount( 6 );
-            vert.add( list );
-            
-            
-            
-            FlexTable buttons = new FlexTable();
-            
-            
-            Image ok = new Image("images/tick.gif");
-            ok.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
-                    self.insertText( list.getItemText( list.getSelectedIndex() ) );
-                    hide();
-                }
-            }  );
-            buttons.setWidget( 0, 0, ok );
-            buttons.getFlexCellFormatter().setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE );
-            
-            
-            
-            Image close = new Image("images/close.gif");
-            close.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
-                    hide();
-                }
-            } );
-            
-            buttons.setWidget( 0, 1, close);
-            buttons.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
-            
-            buttons.setWidth( "100%" );
-            vert.add( buttons );
-            
-            setWidget( vert );
-        }
-    }
 
 }
