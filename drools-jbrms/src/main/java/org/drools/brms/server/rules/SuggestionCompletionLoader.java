@@ -17,6 +17,7 @@ import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.server.util.SuggestionCompletionEngineBuilder;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.ParserError;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.GlobalDescr;
@@ -36,7 +37,11 @@ import org.drools.util.asm.ClassFieldInspector;
  * This utility class loads suggestion completion stuff for the package, 
  * introspecting from models, templates etc. 
  * 
- * This also includes DSL stuff. 
+ * This also includes DSL stuff, basically, everything you need to get started with a package.
+ * It also validates the package configuration, and can provide errors.
+ * 
+ * This does NOT validate assets in the package, other then to load up DSLs, models etc
+ * as needed.
  * 
  * @author Michael Neale
  *
@@ -46,52 +51,66 @@ public class SuggestionCompletionLoader {
     private SuggestionCompletionEngineBuilder builder = new SuggestionCompletionEngineBuilder();
     private DrlParser                         parser  = new DrlParser();
     private final ByteArrayClassLoader        loader;
+    private List errors;
 
     public SuggestionCompletionLoader() {
         loader = new ByteArrayClassLoader( this.getClass().getClassLoader() );
     }
 
+    /**
+     * This will validate, and generate a new engine, ready to go.
+     * If there are errors, you can get them by doing getErrors();
+     * @param pkg
+     * @return
+     */
     public SuggestionCompletionEngine getSuggestionEngine(PackageItem pkg) {
-        StringBuffer errors = new StringBuffer();
+        errors = new ArrayList();
         builder.newCompletionEngine();
 
         String header = pkg.getHeader();
 
+        if (!header.trim().equals( "" )) {
+            processPackageHeader( pkg, header );
+        }
+
+        // populating DSL sentences
+        this.populateDSLSentences( pkg );
+        
+        return builder.getInstance();
+    }
+
+    private void processPackageHeader(PackageItem pkg,
+                                      String header) {
         // get fact types from imports
         PackageDescr pkgDescr;
         try {
             pkgDescr = parser.parse( header );
         } catch ( DroolsParserException e1 ) {
-            throw new RuntimeDroolsException( "Error parsing header for package " + pkg.getName(),
-                                              e1 );
+            throw new RulesRepositoryException( "Serious error, unable to validate package " + pkg.getName(), e1 );
         }
-
+   
+        if (this.parser.hasErrors()) {
+            for ( Iterator iter = this.parser.getErrors().iterator(); iter.hasNext(); ) {
+                ParserError element = (ParserError) iter.next();
+                errors.add( element.getMessage() );
+            }            
+        }
         // populating information for the model itself
-        this.populateModelInfo( errors,
-                                pkgDescr,
+        this.populateModelInfo( pkgDescr,
                                 pkg );
-
+   
         // populating globals
-        this.populateGlobalInfo( errors,
-                                 pkgDescr,
+        this.populateGlobalInfo( pkgDescr,
                                  pkg );
+   
 
-        // populating DSL sentences
-        this.populateDSLSentences( pkg,
-                                   errors );
-
-        if ( errors.length() > 0 ) {
-            throw new RuntimeDroolsException( "Error(s) while loading suggestion completion engine: \n" + errors.toString() );
-        }
-        return builder.getInstance();
     }
 
     /**
      * @param pkg
      * @param errors
      */
-    private void populateDSLSentences(PackageItem pkg,
-                                      StringBuffer errors) {
+    private void populateDSLSentences(PackageItem pkg) {
         AssetItemIterator it = pkg.listAssetsByFormat( new String[]{AssetFormats.DSL} );
         while ( it.hasNext() ) {
             AssetItem item = (AssetItem) it.next();
@@ -109,14 +128,10 @@ public class SuggestionCompletionLoader {
                         
                     }
                 } else {
-                    errors.append( file.getErrors().toString() );
+                    errors.add( file.getErrors().toString() );
                 }
             } catch ( IOException e ) {
-                errors.append( "\tError while loading DSL mapping " );
-                errors.append( item.getBinaryContentAttachmentFileName() );
-                errors.append( " : " );
-                errors.append( e.getMessage() );
-                errors.append( "\n" );
+                errors.add( "Error while loading DSL language configuration : " + item.getBinaryContentAttachmentFileName() + " error message: " + e.getMessage() );
             }
         }
     }
@@ -124,8 +139,7 @@ public class SuggestionCompletionLoader {
     /**
      * Populate the global stuff.
      */
-    private void populateGlobalInfo(StringBuffer errors,
-                                    PackageDescr pkgDescr,
+    private void populateGlobalInfo(PackageDescr pkgDescr,
                                     PackageItem pkg) {
 
         // populating information for the globals
@@ -135,8 +149,7 @@ public class SuggestionCompletionLoader {
                 String shortTypeName = global.getType();
                 if ( !this.builder.hasFieldsForType( shortTypeName ) ) {
                     Class clazz = loadClass( pkg,
-                                             global.getType(),
-                                             errors );
+                                             global.getType() );
                     loadClassFields( clazz,
                                      shortTypeName );
 
@@ -147,11 +160,7 @@ public class SuggestionCompletionLoader {
                 builder.addGlobalType( global.getIdentifier(),
                                        shortTypeName );
             } catch ( IOException e ) {
-                errors.append( "\tError while inspecting class: " );
-                errors.append( global.getType() );
-                errors.append( " : " );
-                errors.append( e.getMessage() );
-                errors.append( "\n" );
+                errors.add( "Error while inspecting class for global: " + global.getType() + " error message: " + e.getMessage());
             }
 
         }
@@ -160,8 +169,7 @@ public class SuggestionCompletionLoader {
     /**
      * Populate the fact type data.
      */
-    private void populateModelInfo(StringBuffer errors,
-                                   PackageDescr pkgDescr,
+    private void populateModelInfo(PackageDescr pkgDescr,
                                    PackageItem pkg) {
 
         // iterating over the import list
@@ -172,8 +180,7 @@ public class SuggestionCompletionLoader {
             resolver.addImport( classname );
 
             Class clazz = loadClass( pkg,
-                                     classname,
-                                     errors );
+                                     classname );
             if ( clazz != null ) {
                 try {
                     String shortTypeName = getShortNameOfClass( clazz.getName() );
@@ -181,11 +188,7 @@ public class SuggestionCompletionLoader {
                                      shortTypeName );
                     builder.addFactType( shortTypeName );
                 } catch ( IOException e ) {
-                    errors.append( "\tError while inspecting class: " );
-                    errors.append( classname );
-                    errors.append( " : " );
-                    errors.append( e.getMessage() );
-                    errors.append( "\n" );
+                    errors.add( "Error while inspecting the class: " + classname + ". The error was: " + e.getMessage() );
                 }
             }
         }
@@ -193,8 +196,7 @@ public class SuggestionCompletionLoader {
         // iterating over templates
         populateFactTemplateTypes( pkgDescr,
                                    pkg,
-                                   resolver,
-                                   errors );
+                                   resolver );
     }
 
     /**
@@ -204,8 +206,7 @@ public class SuggestionCompletionLoader {
      */
     private void populateFactTemplateTypes(PackageDescr pkgDescr,
                                            PackageItem pkg,
-                                           ClassTypeResolver resolver,
-                                           StringBuffer errors) {
+                                           ClassTypeResolver resolver) {
         for ( Iterator it = pkgDescr.getFactTemplates().iterator(); it.hasNext(); ) {
             FactTemplateDescr templ = (FactTemplateDescr) it.next();
             String factType = templ.getName();
@@ -225,9 +226,7 @@ public class SuggestionCompletionLoader {
                 try {
                     fieldTypeClass = resolver.resolveType( fieldType );
                 } catch ( ClassNotFoundException e ) {
-                    errors.append( "\tClass not found: " );
-                    errors.append( fieldType );
-                    errors.append( "\n" );
+                    errors.add( "Fact template field type not found: " + fieldType );
                 }
                 builder.addFieldType( factType + "." + fieldDescr.getName(),
                                       getFieldType( fieldTypeClass ) );
@@ -237,6 +236,7 @@ public class SuggestionCompletionLoader {
 
     private void loadClassFields(Class clazz,
                                  String shortTypeName) throws IOException {
+        if (clazz == null) return;
         ClassFieldInspector inspector = new ClassFieldInspector( clazz );
         String[] fields = (String[]) inspector.getFieldNames().keySet().toArray( new String[inspector.getFieldNames().size()] );
 
@@ -280,8 +280,7 @@ public class SuggestionCompletionLoader {
      * @return
      */
     private Class loadClass(PackageItem pkg,
-                            String classname,
-                            StringBuffer errors) {
+                            String classname) {
         Class clazz = null;
         try {
             // check if it is already in the classpath
@@ -319,9 +318,7 @@ public class SuggestionCompletionLoader {
             } catch ( IOException e ) {
                 throw new RulesRepositoryException( e );
             } catch ( ClassNotFoundException e ) {
-                errors.append( "\tClass not found: " );
-                errors.append( classname );
-                errors.append( "\n" );
+                errors.add( "Class not found: " + classname );
             }
         }
         return clazz;
@@ -349,6 +346,20 @@ public class SuggestionCompletionLoader {
             } 
         }
         return fieldType;
+    }
+    
+    /**
+     * @return true if there were errors when processing the package.
+     */
+    public boolean hasErrors() {
+        return (this.errors.size() > 0);
+    }
+    
+    /**
+     * Returns a list of String errors.
+     */
+    public List getErrors() {
+        return this.errors;
     }
 
 }

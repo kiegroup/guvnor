@@ -25,6 +25,7 @@ import org.drools.brms.client.rpc.SnapshotInfo;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
+import org.drools.brms.client.rpc.ValidatedResponse;
 import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.rules.SuggestionCompletionLoader;
 import org.drools.brms.server.util.MetaDataMapper;
@@ -377,7 +378,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         return data;
     }
 
-    public String savePackage(PackageConfigData data) throws SerializableException {
+    public ValidatedResponse savePackage(PackageConfigData data) throws SerializableException {
         log.info( "SAVING package [" + data.name + "]" );
         PackageItem item = getRulesRepository().loadPackage( data.name );
         
@@ -387,7 +388,22 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
         
         item.checkin( data.description );
         
-        return item.getUUID();
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        loader.getSuggestionEngine( item );
+        
+        ValidatedResponse res = new ValidatedResponse();
+        if (loader.hasErrors()) {
+            res.hasErrors = true;
+            String err = "";
+            for ( Iterator iter = loader.getErrors().iterator(); iter.hasNext(); ) {
+                err += (String) iter.next();
+                if (iter.hasNext()) err += "\n";
+            }
+            res.errorHeader  = "Package validation errors";
+            res.errorMessage = err;
+        }
+        
+        return res;
     }
 
     public TableDataResult listAssets(String uuid,

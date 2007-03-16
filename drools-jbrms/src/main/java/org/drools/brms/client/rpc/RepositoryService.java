@@ -89,9 +89,12 @@ public interface RepositoryService extends RemoteService {
     
     /**
      * Saves the package config data in place (does not create a new version of anything).
-     * @return The UUID of the saved item.
+     * @return A ValidatedReponse, with any errors to be reported.
+     * No payload is in the response. If there are any errors, the user
+     * should be given the option to review them, and correct them if needed
+     * (but a save will not be prevented this way - as its not an exception).
      */
-    public String savePackage(PackageConfigData data) throws SerializableException;
+    public ValidatedResponse savePackage(PackageConfigData data) throws SerializableException;
         
     
     /**

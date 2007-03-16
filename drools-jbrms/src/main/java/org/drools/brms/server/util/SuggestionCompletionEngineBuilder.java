@@ -20,12 +20,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.DSLSentence;
-import org.drools.lang.dsl.DSLMappingEntry;
 
 /**
  * A builder to incrementally populate a SuggestionCompletionEngine
@@ -33,24 +30,6 @@ import org.drools.lang.dsl.DSLMappingEntry;
  * @author etirelli
  */
 public class SuggestionCompletionEngineBuilder {
-
-    // The following pattern is capable of spliting a DSL sentence into
-    // fragments, supporting \{ escapes. Example:
-    //
-    // {This} is a {pattern} considered pretty \{{easy}\} by most \{people\}. What do you {say}?
-    //
-    // would be parsed into the following fragments:
-    //
-    // Fragment: [{This}]
-    // Fragment: [ is a ]
-    // Fragment: [{pattern}]
-    // Fragment: [ considered pretty {]
-    // Fragment: [{easy}]
-    // Fragment: [} by most {people}. What do you ]
-    // Fragment: [{say}]
-    // Fragment: [?]
-    private final static Pattern       splitter      = Pattern.compile( "(^|[^\\\\])(\\{[(\\\\\\{)|[^\\{]]*?\\})",
-                                                                        Pattern.MULTILINE | Pattern.DOTALL );
 
     private SuggestionCompletionEngine instance      = new SuggestionCompletionEngine();
     private List                       factTypes     = new ArrayList();

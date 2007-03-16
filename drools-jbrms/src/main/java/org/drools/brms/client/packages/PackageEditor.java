@@ -9,9 +9,11 @@ import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.StatusChangePopup;
+import org.drools.brms.client.common.ValidationMessageWidget;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.SnapshotInfo;
+import org.drools.brms.client.rpc.ValidatedResponse;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
@@ -24,6 +26,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -38,6 +41,7 @@ public class PackageEditor extends FormStyleLayout {
 
     private PackageConfigData conf;
     private HTML status;
+    protected ValidatedResponse previousResponse;
 
     public PackageEditor(PackageConfigData data) {
         this.conf = data;
@@ -53,6 +57,10 @@ public class PackageEditor extends FormStyleLayout {
     private void refreshWidgets() {
         clear();
         addHeader( "images/package_large.png", this.conf.name );
+        
+
+        addRow( warnings() );
+                
         
         addAttribute( "Description:", description() );
         addAttribute( "Header:", header() );
@@ -80,6 +88,28 @@ public class PackageEditor extends FormStyleLayout {
         addAttribute("Status:", statusBar);
 
         addRow( saveWidgets() );
+    }
+
+    private Widget warnings() {
+        if (this.previousResponse != null && this.previousResponse.hasErrors) {
+            Image img = new Image("images/warning.gif");
+            HorizontalPanel h = new HorizontalPanel();
+            h.add( img );
+            HTML msg = new HTML("<b>There were errors validating this package configuration.");
+            h.add( msg );
+            Button show = new Button("View errors");
+            show.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                    ValidationMessageWidget wid = new ValidationMessageWidget(previousResponse.errorHeader, previousResponse.errorMessage);
+                    wid.setPopupPosition( Window.getClientWidth()/4, w.getAbsoluteTop()  );
+                    wid.show();
+                }
+            } );
+            h.add( show );
+            return h;
+        } else {
+            return new SimplePanel();
+        }
     }
 
     protected void showStatusChanger(Widget w) {
@@ -220,6 +250,8 @@ public class PackageEditor extends FormStyleLayout {
         LoadingPopup.showMessage( "Saving package configuration. Please wait ..." );
         RepositoryServiceFactory.getService().savePackage( this.conf, new GenericCallback() {
             public void onSuccess(Object data) {
+                previousResponse = (ValidatedResponse) data;
+                
                 reload();
                 SuggestionCompletionCache.getInstance().removePackage( conf.name );
                 LoadingPopup.showMessage( "Package configuration updated successfully" );

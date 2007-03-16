@@ -89,4 +89,26 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         
     }
     
+    public void testErrors() throws Exception {
+        RulesRepository repo = new RulesRepository(SessionHelper.getSession());
+        PackageItem item = repo.createPackage( "testErrorsInPackage", "to test error handling" );
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        assertNotNull(loader.getSuggestionEngine( item ));
+        assertFalse(loader.hasErrors());
+        
+        item.updateHeader( "gooble de gook" );
+        loader = new SuggestionCompletionLoader();
+        loader.getSuggestionEngine( item );
+        assertTrue(loader.hasErrors());
+        
+        
+        item.updateHeader( "import foo.bar; \nglobal goo.Bar baz;" );
+        loader = new SuggestionCompletionLoader();
+        loader.getSuggestionEngine( item );
+        assertTrue(loader.hasErrors());
+        
+        
+    }
+    
 }

@@ -41,5 +41,4 @@ public interface RepositoryServiceAsync
     public void removeCategory(java.lang.String p0, AsyncCallback cb);
     public void loadSuggestionCompletionEngine(java.lang.String p0, AsyncCallback cb);
     public void changeState(java.lang.String p0, java.lang.String p1, boolean p2, AsyncCallback cb);
-
 }

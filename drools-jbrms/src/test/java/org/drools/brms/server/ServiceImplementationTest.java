@@ -16,6 +16,7 @@ import org.drools.brms.client.rpc.SnapshotInfo;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
+import org.drools.brms.client.rpc.ValidatedResponse;
 import org.drools.brms.client.rulelist.AssetItemListViewer;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.repository.AssetItem;
@@ -351,14 +352,19 @@ public class ServiceImplementationTest extends TestCase {
       data.externalURI = "new URI";
       
       
-      String uuid2 = impl.savePackage( data );
-      assertNotNull(uuid);
-      assertEquals(uuid, uuid2);
+      ValidatedResponse res = impl.savePackage( data );
+      assertNotNull(res);
+      assertTrue(res.hasErrors);
+      assertNotNull(res.errorMessage);
       
       data = impl.loadPackageConfig( uuid );
       assertEquals("new desc", data.description);
       assertEquals("wa", data.header);
-      assertEquals("new URI", data.externalURI);      
+      assertEquals("new URI", data.externalURI);   
+      
+      data.header = "";
+      res = impl.savePackage( data );
+      assertFalse(res.hasErrors);
   }
   
   public void testListByFormat() throws Exception {
