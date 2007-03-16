@@ -340,6 +340,7 @@ public class PackageEditor extends FormStyleLayout {
         newFactTemplate.setTitle( "Add a new fact template." );
         vert.add( newFactTemplate );
         
+        panel.setWidth( "100%" );
         
         panel.add( vert );
         return panel;
