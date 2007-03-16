@@ -54,13 +54,15 @@ public class PopulateDataTest extends TestCase {
         
         
         
-        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        
         PackageItem pkg = repo.loadPackage( "com.billasurf.manufacturing.plant" );
         pkg.updateHeader( "import com.billasurf.Board\nimport com.billasurf.Person" +
                 "\n\nglobal com.billasurf.Person prs" );
         pkg.checkin( "added imports" );
         
-        SuggestionCompletionEngine eng = loader.getSuggestionEngine( pkg );
+        
+        
+        SuggestionCompletionEngine eng = serv.loadSuggestionCompletionEngine( "com.billasurf.manufacturing.plant" );
         assertNotNull(eng);
         
         assertEquals(2, eng.factTypes.length);
