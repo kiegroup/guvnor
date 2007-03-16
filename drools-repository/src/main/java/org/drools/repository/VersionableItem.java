@@ -286,7 +286,7 @@ public abstract class VersionableItem extends Item {
         try {
             checkIsUpdateable();
 
-            if (value == null || value.trim().equals( "" )) {
+            if (value == null) {
                 return;
             }
             
