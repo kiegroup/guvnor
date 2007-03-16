@@ -575,7 +575,7 @@ public class JBRMSServiceServlet extends RemoteServiceServlet
             PackageItem pkg = repo.loadPackage( packageName );
             SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
             return loader.getSuggestionEngine( pkg );
-        } catch (RuntimeException e) {
+        } catch (RulesRepositoryException e) {
             log.error( e );
             throw new SerializableException(e.getMessage());
         }
