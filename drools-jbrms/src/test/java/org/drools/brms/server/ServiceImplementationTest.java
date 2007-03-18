@@ -364,6 +364,13 @@ public class ServiceImplementationTest extends TestCase {
       
       data.header = "";
       res = impl.savePackage( data );
+      if (res.hasErrors) {
+          System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+          System.out.println(res.errorMessage);
+          System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+          
+      }
+
       assertFalse(res.hasErrors);
   }
   
