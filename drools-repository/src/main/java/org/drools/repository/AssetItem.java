@@ -22,10 +22,10 @@ public class AssetItem extends CategorisableItem {
     /**
      * The name of the rule node type
      */
-    public static final String RULE_NODE_TYPE_NAME          = "drools:assetNodeType";
+    public static final String RULE_NODE_TYPE_NAME           = "drools:assetNodeType";
 
-    public static final String CONTENT_PROPERTY_NAME        = "drools:content";
-    public static final String CONTENT_PROPERTY_BINARY_NAME = "drools:binaryContent";
+    public static final String CONTENT_PROPERTY_NAME         = "drools:content";
+    public static final String CONTENT_PROPERTY_BINARY_NAME  = "drools:binaryContent";
     public static final String CONTENT_PROPERTY_ATTACHMENT_FILENAME = "drools:attachmentFileName";
     
     /**
@@ -261,7 +261,7 @@ public class AssetItem extends CategorisableItem {
      * If the asset is a binary asset, then use this to update the content
      * (do NOT use text).
      */
-    public AssetItem updateBinaryContentAttachment(InputStream data) {
+	public AssetItem updateBinaryContentAttachment(InputStream data) {
         checkout();
         try {
             this.node.setProperty( CONTENT_PROPERTY_BINARY_NAME, data );            
@@ -271,7 +271,7 @@ public class AssetItem extends CategorisableItem {
             throw new RulesRepositoryException( e );
         }
     }
-    
+	
     /**
      * Optionally set the filename to be associated with the binary content.
      */
@@ -297,12 +297,16 @@ public class AssetItem extends CategorisableItem {
     /**
      * Nicely formats the information contained by the node that this object encapsulates
      */
-    public String toString() {
+	public String toString() {
         try {
             StringBuffer returnString = new StringBuffer();
             returnString.append( "Content of rule item named '" + this.getName() + "':\n" );
             returnString.append( "Content: " + this.getContent() + "\n" );
             returnString.append( "------\n" );
+            
+            returnString.append( "Archived: " + this.isArchived() + "\n" );
+            returnString.append( "------\n" );
+            
 
             returnString.append( "Date Effective: " + this.getDateEffective() + "\n" );
             returnString.append( "Date Expired: " + this.getDateExpired() + "\n" );

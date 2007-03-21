@@ -30,6 +30,8 @@ public abstract class VersionableItem extends Item {
     public static final String FORMAT_PROPERTY_NAME           = "drools:format";
     public static final String CHECKIN_COMMENT                = "drools:checkinComment";
     public static final String VERSION_NUMBER_PROPERTY_NAME   = "drools:versionNumber";
+    public static final String CONTENT_PROPERTY_ARCHIVE_FLAG = "drools:archive";
+
 
     /** Dublin core based fields. */
     public static final String LAST_CONTRIBUTOR_PROPERTY_NAME = "drools:lastContributor";
@@ -748,5 +750,33 @@ public abstract class VersionableItem extends Item {
         }
 
     }    
+    
+
+    public VersionableItem archiveItem(boolean data) {
+    	checkout();
+
+    	try {
+    		this.node.setProperty(CONTENT_PROPERTY_ARCHIVE_FLAG, data);
+    		return this;
+    	} catch (RepositoryException e) {
+    		log.error("Unable to update this VersionableItem binary archive flag");
+    		throw new RulesRepositoryException(e);
+    	}
+    }
+
+    /**
+     * Test if the VersionableItem is archived 
+     */
+    public boolean isArchived() {
+    	checkout();
+    	try {
+    		return this.node.getProperty(CONTENT_PROPERTY_ARCHIVE_FLAG)
+    				.getBoolean();
+    	} catch (RepositoryException e) {
+    		log.error("Unable to check this asset");
+    		throw new RulesRepositoryException(e);
+    	}
+    }
+    
     
 }

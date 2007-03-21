@@ -1,10 +1,6 @@
 package org.drools.repository;
 
-import java.util.List;
-
 import javax.jcr.Node;
-import javax.jcr.version.Version;
-import javax.jcr.version.VersionIterator;
 
 import org.apache.log4j.Logger;
 

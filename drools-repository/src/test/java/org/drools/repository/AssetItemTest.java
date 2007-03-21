@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.jcr.ReferentialIntegrityException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
 
@@ -290,12 +289,15 @@ public class AssetItemTest extends TestCase {
             assertEquals(StateItem.DRAFT_STATE_NAME, ruleItem1.getStateDescription());
             assertEquals(getRepo().getState( StateItem.DRAFT_STATE_NAME ), ruleItem1.getState());
     }
-    
 
     public void testToString() {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testToString", "test content");
-           
-            assertNotNull(ruleItem1.toString());                        
+            assertNotNull(ruleItem1.toString());
+            
+            
+        	AssetItem item = getRepo().loadDefaultPackage().loadAsset("testArchiveBooleanFlag");
+        	System.out.println(item);
+        	assertTrue(item.isArchived());
 
     }
     

@@ -13,6 +13,9 @@
 // Supertypes
 > 'drools:versionableNodeType', 'nt:folder'
 
+- drools:archive (boolean) = 'false' mandatory autocreated
+
+
 // Multiple assets are children of one physical package definition
 // these folders contain the actual assets
 + * (drools:versionableAssetFolder)
@@ -24,7 +27,6 @@
 // this is for storing (optional) URI that will sync the repo with an external repository
 // for example SVN
 - drools:externalURI (string)
-
 
 /* MN: retiring this structure  - use it in future for shared rules
 - drools:ruleReference (reference)

@@ -1,30 +1,21 @@
 package org.drools.scm.svn;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import junit.framework.TestCase;
 
 import org.drools.scm.CompositeScmAction;
 import org.drools.scm.ScmAction;
-import org.drools.scm.ScmActionFactory;
 import org.drools.scm.ScmEntry;
 import org.drools.scm.svn.SvnActionFactory.AddDirectory;
 import org.drools.scm.svn.SvnActionFactory.AddFile;
-import org.drools.scm.svn.SvnActionFactory.MoveDirectory;
-import org.tmatesoft.svn.core.SVNLogEntry;
-import org.tmatesoft.svn.core.SVNLogEntryPath;
-
-import junit.framework.TestCase;
 
 public class SvnLogTest extends TestCase {
     private static String svnUrl;

@@ -13,11 +13,12 @@
 // Supertypes
 > 'drools:versionableNodeType'
 
-
 // Properties:
 - drools:content (string)
 - drools:binaryContent (binary)
 - drools:attachmentFileName (string)
+- drools:archive (boolean) = 'false' mandatory autocreated
+
   
 // use this to capture fields which are not known ahead of time 
 - * (undefined)
@@ -35,6 +36,3 @@
   copy
   < 'drools:categoryNodeType'  
   
-
-
-

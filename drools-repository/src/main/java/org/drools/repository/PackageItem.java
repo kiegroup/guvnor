@@ -62,7 +62,7 @@ public class PackageItem extends VersionableItem {
         try {
             //make sure this node is a rule package node       
             if ( !(this.node.getPrimaryNodeType().getName().equals( RULE_PACKAGE_TYPE_NAME ) ||
-                    isHistoricalVersion())  ) {
+                    isHistoricalVersion())) {
                 String message = this.node.getName() + " is not a node of type " + RULE_PACKAGE_TYPE_NAME + ". It is a node of type: " + this.node.getPrimaryNodeType().getName();
                 log.error( message );
                 throw new RulesRepositoryException( message );
@@ -399,7 +399,6 @@ public class PackageItem extends VersionableItem {
         } catch ( RepositoryException e ) {
              throw new RulesRepositoryException(e);
        }
-        
     }
 
     /**

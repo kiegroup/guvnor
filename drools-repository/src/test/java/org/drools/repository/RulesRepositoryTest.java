@@ -12,13 +12,6 @@ import junit.framework.TestCase;
 
 public class RulesRepositoryTest extends TestCase {
 
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
     
     public void testDefaultPackage() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
@@ -82,33 +75,33 @@ public class RulesRepositoryTest extends TestCase {
         
 
         
-        repo.loadDefaultPackage().addAsset( "findRulesByName1", "X" );
-        repo.loadDefaultPackage().addAsset( "findRulesByName2", "X" );
+        repo.loadDefaultPackage().addAsset( "findRulesByNamex1", "X" );
+        repo.loadDefaultPackage().addAsset( "findRulesByNamex2", "X" );
         repo.save();
         
         
-        List list = iteratorToList(repo.findAssetsByName( "findRulesByName1" ));        
-        assertEquals(1, list.size());
+        List list = iteratorToList(repo.findAssetsByName( "findRulesByNamex1" ));        
+	    assertEquals(1, list.size());
 
-        list = iteratorToList(repo.findAssetsByName( "findRulesByName2" ));        
+        list = iteratorToList(repo.findAssetsByName( "findRulesByNamex2" ));        
         assertEquals(1, list.size());
         
 
-        list = iteratorToList( repo.findAssetsByName( "findRulesByName%" ) );
+        list = iteratorToList( repo.findAssetsByName( "findRulesByNamex%") );
         assertEquals(2, list.size());
         
         
         repo.createPackageSnapshot( "default", "testFindRulesByName" );
         repo.save();
 
-        list = iteratorToList(repo.findAssetsByName( "findRulesByName2" ));   
+        list = iteratorToList(repo.findAssetsByName( "findRulesByNamex2" ));   
         AssetItem item = (AssetItem)list.get( 0 );
-        assertEquals("findRulesByName2", item.getName());
+        assertEquals("findRulesByNamex2", item.getName());
         assertEquals("X", item.getDescription());
         assertEquals(1, list.size());
         
 
-        list = iteratorToList( repo.findAssetsByName( "findRulesByName%" ) );
+        list = iteratorToList( repo.findAssetsByName( "findRulesByNamex%" ) );
         assertEquals(2, list.size());
 
         
@@ -241,9 +234,7 @@ public class RulesRepositoryTest extends TestCase {
     
     public void testListPackages() {
         RulesRepository rulesRepository = RepositorySessionUtil.getRepository();
-        
-        
-            PackageItem rulePackageItem1 = rulesRepository.createPackage("testListPackages", "desc");
+            rulesRepository.createPackage("testListPackages", "desc");
             
             assertTrue(rulesRepository.containsPackage( "testListPackages" ));
             assertFalse(rulesRepository.containsPackage( "XXXXXXX" ));
@@ -259,6 +250,7 @@ public class RulesRepositoryTest extends TestCase {
                     found = true;
                     break;
                 }
+                System.out.println(element.getName());
             }
             assertTrue(found);
             
