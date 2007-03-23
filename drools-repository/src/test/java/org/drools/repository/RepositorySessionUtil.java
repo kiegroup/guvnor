@@ -2,6 +2,7 @@ package org.drools.repository;
 
 import javax.jcr.Repository;
 import javax.jcr.Session;
+import javax.jcr.SimpleCredentials;
 
 import junit.framework.Assert;
 
@@ -17,17 +18,20 @@ public class RepositorySessionUtil {
     public static RulesRepository getRepository() {
         Object repoInstance = repo.get();
         if ( repoInstance == null ) {
-            RepositoryConfigurator config = new RepositoryConfigurator();
+            JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
             
             //create a repo instance (startup)
-            Repository repository = config.createRepository();
+            Repository repository = config.getJCRRepository(null);
             
             //create a session
             Session session;
             try {
-                session = config.login( repository );
+                session = repository.login(new SimpleCredentials("alan_parsons", "password".toCharArray()));
+                RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(session);
                 //clear out and setup
-                config.clearRulesRepository( session );
+                if (admin.isRepositoryInitialized()) {
+                    admin.clearRulesRepository();
+                }
                 config.setupRulesRepository( session );
                 
                 repoInstance = new RulesRepository( session );

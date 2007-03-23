@@ -36,9 +36,13 @@ public class ScalabilityTest extends TestCase {
     }
     
     public void xxtestRun() throws Exception {
-        RepositoryConfigurator config = new RepositoryConfigurator();
+        JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
         
-        repo = new RulesRepository(config.login(config.createRepository()));   
+        Session session = config.getJCRRepository("./scalabilityTestRepo").login(
+                                           new SimpleCredentials("alan_parsons", "password".toCharArray()));
+
+        
+        repo = new RulesRepository(session);   
         
         long start = System.currentTimeMillis();
         //setupData( repo );
