@@ -79,7 +79,7 @@ public class FactTemplateWizard extends FormStylePopup {
      * This will return a text version of the template to add in.
      */
     public String getTemplateText() {
-        String result = "template \"" + name.getText() + "\"\n"; 
+        String result = "template " + name.getText() + "\n"; 
         for (int i = 0; i < attributes.getRowCount(); i++) {
             ListBox type = (ListBox) attributes.getWidget( i, 1 );
             String typeName = type.getItemText( type.getSelectedIndex() );

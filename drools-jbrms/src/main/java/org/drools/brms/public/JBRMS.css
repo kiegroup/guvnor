@@ -1,3 +1,6 @@
+/* Edited with EditCSS */
+/**** LINK-tag style sheet JBRMS.css ****/
+
 body {
   background-color: white;
   color: black;
@@ -11,11 +14,11 @@ code {
 }
 
 a {
-  color: darkblue;
+  color: black;
 }
 
 a:visited {
-  color: darkblue;
+  color: black;
 }
 
 .gwt-BorderedPanel {
@@ -526,4 +529,5 @@ a:visited {
 .DatePicker .day .gwt-HTML {
   border: 1px solid #B8B8B8;
 } 
+
 

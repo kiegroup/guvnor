@@ -7,7 +7,7 @@
 	<!-- <entry-point class='org.drools.brms.client.JBRMS'/> -->
 	<entry-point class='org.drools.brms.client.JBRMSEntryPoint'/>
   
-	<servlet path="/jbrmsService" class="org.drools.brms.server.JBRMSServiceServlet" />  
+	<servlet path="/jbrmsService" class="org.jboss.seam.remoting.gwt.GWTRemoteServiceServlet" />  
     <servlet path="/fileManager" class="org.drools.brms.server.FileUploadServlet"/>
     
 </module>

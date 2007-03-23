@@ -5,9 +5,24 @@
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
   
+    <listener>
+        <listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
+    </listener>  
+  
+    <filter>
+        <filter-name>Seam Filter</filter-name>
+        <filter-class>org.jboss.seam.web.ContextFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>Seam Filter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+      
+  
 	<servlet>
-		<servlet-name>JBRMSServiceServlet</servlet-name>
-		<servlet-class>org.drools.brms.server.JBRMSServiceServlet</servlet-class>
+		<servlet-name>GWTRemotingServlet</servlet-name>
+		<servlet-class>org.jboss.seam.remoting.gwt.GWTRemoteServiceServlet</servlet-class>
 	</servlet>  
 	
 	<servlet>
@@ -16,7 +31,7 @@
 	</servlet>  
   
 	<servlet-mapping>
-		<servlet-name>JBRMSServiceServlet</servlet-name>
+		<servlet-name>GWTRemotingServlet</servlet-name>
 		<url-pattern>/org.drools.brms.JBRMS/jbrmsService</url-pattern>
 	</servlet-mapping>  
 	
@@ -24,5 +39,12 @@
 		<servlet-name>FileUploadServlet</servlet-name>
 		<url-pattern>/org.drools.brms.JBRMS/fileManager</url-pattern>
 	</servlet-mapping>  
+	
+	<!--
+    <listener>
+        <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
+    </listener>	
+    -->
+
   
 </web-app>

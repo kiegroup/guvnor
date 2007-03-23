@@ -4,9 +4,11 @@ import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.SimpleCredentials;
 import javax.servlet.http.HttpSession;
 
-import org.drools.repository.RepositoryConfigurator;
+import org.drools.repository.JackrabbitRepositoryConfigurator;
+import org.drools.repository.JCRRepositoryConfigurator;
 import org.drools.repository.RulesRepository;
 
 /**
@@ -27,17 +29,20 @@ public class RepositoryManager {
     public static Repository repository;
     
     /** This will create a new repository instance (should only happen once after startup) */
-    private Session initialiseRepo(RepositoryConfigurator config) throws LoginException,
+    private Session initialiseRepo(JCRRepositoryConfigurator config) throws LoginException,
                                                                  RepositoryException {
-        Session session = config.login( getJCRRepository( config ) );
+        Session session = getJCRRepository(config).login(
+                                           new SimpleCredentials("alan_parsons", "password".toCharArray()));
+
+
         
         config.setupRulesRepository( session );
         return session;
     }
     
-    public synchronized static Repository getJCRRepository(RepositoryConfigurator config) {
+    public synchronized static Repository getJCRRepository(JCRRepositoryConfigurator config) {
         if (repository == null) {
-            repository = config.createRepository();
+            repository = config.getJCRRepository(null);
         }
         return repository;
     }
@@ -45,7 +50,7 @@ public class RepositoryManager {
     /** Initialse the repository, set it up if it is brand new */
     public RulesRepository createRuleRepositoryInstance() {
         
-        RepositoryConfigurator config = new RepositoryConfigurator();
+        JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
 
         try {
             
@@ -58,7 +63,9 @@ public class RepositoryManager {
             }  else {
                 //ok this is probably fast enough to do with each request I think
                 long start = System.currentTimeMillis();
-                session = config.login( repository );
+                session = repository.login(
+                                                   new SimpleCredentials("alan_parsons", "password".toCharArray()));
+
                 System.out.println("login repo time: " + (System.currentTimeMillis() - start));
                 
             }

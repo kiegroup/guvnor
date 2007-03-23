@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components xmlns="http://jboss.com/products/seam/components"
+            xmlns:core="http://jboss.com/products/seam/core"
+            xmlns:security="http://jboss.com/products/seam/security"
+            xmlns:web="http://jboss.com/products/seam/web"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation=
+                "http://jboss.com/products/seam/core http://jboss.com/products/seam/core-1.2.xsd
+                 http://jboss.com/products/seam/security http://jboss.com/products/seam/security-1.2.xsd
+                 http://jboss.com/products/seam/components http://jboss.com/products/seam/components-1.2.xsd
+                 http://jboss.com/products/seam/web http://jboss.com/products/seam/web-1.2.xsd">
+
+    <core:init debug="true"/>
+
+	<component name="repositoryConfiguration">
+		<!--
+		  *** This is for configuring the "home" directory for the repo storage. the directory must exist. 	***
+	      <property name="homeDirectory">/home/michael/RulesRepository_001</property>
+	    -->  
+	    
+	    <!--   
+	      Optional: this is for creating a configurator for a seperate repository type.
+	      <property name="repositoryConfigurator">org.drools.repository.JackrabbitRepositoryConfigurator</property>
+	    -->
+    </component>
+
+</components>

@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import junit.framework.TestCase;
 
 import org.apache.commons.fileupload.FileItem;
+import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 
@@ -22,7 +23,7 @@ public class FileUploadServletTest extends TestCase {
         
         
         
-        RulesRepository repo = new RulesRepository(SessionHelper.getSession());
+        RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
        
         AssetItem item = repo.loadDefaultPackage().addAsset( "testUploadFile", "description" );
         upload.uuid = item.getUUID();

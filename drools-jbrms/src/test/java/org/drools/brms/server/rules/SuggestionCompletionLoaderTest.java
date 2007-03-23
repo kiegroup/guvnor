@@ -1,19 +1,19 @@
 package org.drools.brms.server.rules;
 
+import junit.framework.TestCase;
+
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.server.SessionHelper;
+import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
-
-import junit.framework.TestCase;
 
 public class SuggestionCompletionLoaderTest extends TestCase {
 
     public void testLoader() throws Exception {
         
-        RulesRepository repo = new RulesRepository(SessionHelper.getSession());
+        RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         PackageItem item = repo.createPackage( "testLoader", "to test the loader" );
         item.updateHeader( "import java.util.Date" );
         repo.save();
@@ -41,7 +41,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
     
     public void testFactTemplates() throws Exception {
         
-        RulesRepository repo = new RulesRepository(SessionHelper.getSession());
+        RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         PackageItem item = repo.createPackage( "testLoader2", "to test the loader for fact templates" );
         item.updateHeader( "import java.util.Date\ntemplate Person\njava.lang.String name\nDate birthDate\nend" );
         repo.save();
@@ -68,7 +68,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
     
     public void testLoadDSLs() throws Exception {
         String dsl = "[when]The agents rating is {rating}=doNothing()\n[then]Send a notification to manufacturing '{message}'=foo()";
-        RulesRepository repo = new RulesRepository(SessionHelper.getSession());
+        RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         PackageItem item = repo.createPackage( "testLoadDSLs", "to test the loader for DSLs" );
         AssetItem asset = item.addAsset( "mydsl", "" );
         asset.updateFormat( AssetFormats.DSL );
@@ -90,7 +90,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
     }
     
     public void testErrors() throws Exception {
-        RulesRepository repo = new RulesRepository(SessionHelper.getSession());
+        RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         PackageItem item = repo.createPackage( "testErrorsInPackage", "to test error handling" );
 
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();

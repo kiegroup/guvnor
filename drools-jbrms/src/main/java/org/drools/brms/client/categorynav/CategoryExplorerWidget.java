@@ -52,6 +52,7 @@ public class CategoryExplorerWidget extends Composite
      */
     public void refresh() {
         navTreeWidget.removeItems();
+        selectedPath = null;
         loadInitialTree();
     }
 
@@ -162,6 +163,10 @@ public class CategoryExplorerWidget extends Composite
         public PendingItem() {
             super( "Please wait..." );
         }
+    }
+    
+    public String getSelectedPath() {
+        return this.selectedPath;
     }
 
 }

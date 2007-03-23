@@ -19,9 +19,11 @@ import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.rpc.ValidatedResponse;
 import org.drools.brms.client.rulelist.AssetItemListViewer;
 import org.drools.brms.server.util.TableDisplayHandler;
+import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
+import org.drools.repository.RulesRepository;
 import org.drools.repository.StateItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
@@ -33,7 +35,9 @@ public class ServiceImplementationTest extends TestCase {
   public void testCategory() throws Exception {
         //ServiceImpl impl = new ServiceImpl(new RulesRepository(SessionHelper.getSession()));
 
-        RepositoryService impl = new TestHarnessJBRMSServiceServlet();
+        
+      
+        RepositoryService impl = getService();
       
         String[] originalCats = impl.loadChildCategories( "/" );
         
@@ -62,13 +66,13 @@ public class ServiceImplementationTest extends TestCase {
   public void testAddRuleAndListPackages() throws Exception {
       //ServiceImpl impl = new ServiceImpl(new RulesRepository(SessionHelper.getSession()));
       
-      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
+      ServiceImplementation impl = getService();
       
-      impl.repo.loadDefaultPackage();
-      impl.repo.createPackage( "another", "woot" );
+      impl.repository.loadDefaultPackage();
+      impl.repository.createPackage( "another", "woot" );
       
       
-      CategoryItem cat = impl.repo.loadCategory( "/" );
+      CategoryItem cat = impl.repository.loadCategory( "/" );
       cat.addCategory( "testAddRule", "yeah" );
       
       
@@ -99,11 +103,11 @@ public class ServiceImplementationTest extends TestCase {
   }
 
   public void testAttemptDupeRule() throws Exception {
-      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
-      CategoryItem cat = impl.repo.loadCategory( "/" );
+      ServiceImplementation impl = getService();
+      CategoryItem cat = impl.repository.loadCategory( "/" );
       cat.addCategory( "testAttemptDupeRule", "yeah" );
       
-      impl.repo.createPackage("dupes", "yeah");
+      impl.repository.createPackage("dupes", "yeah");
       
       impl.createNewRule( "testAttemptDupeRule", "ya", "testAttemptDupeRule", "dupes", "rule" );
       
@@ -117,14 +121,14 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testRuleTableLoad() throws Exception {
-      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
+      ServiceImplementation impl = getService();
       TableConfig conf = impl.loadTableConfig( AssetItemListViewer.RULE_LIST_TABLE_ID );
       assertNotNull(conf.headers);
       
-      CategoryItem cat = impl.repo.loadCategory( "/" );
+      CategoryItem cat = impl.repository.loadCategory( "/" );
       cat.addCategory( "testRuleTableLoad", "yeah" );
             
-      impl.repo.createPackage("testRuleTableLoad", "yeah");      
+      impl.repository.createPackage("testRuleTableLoad", "yeah");      
       impl.createNewRule( "testRuleTableLoad", "ya", "testRuleTableLoad", "testRuleTableLoad", "rule" );
       impl.createNewRule( "testRuleTableLoad2", "ya", "testRuleTableLoad", "testRuleTableLoad", "rule" );
 
@@ -151,8 +155,8 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testLoadRuleAsset() throws Exception {
-      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
-      impl.repo.createPackage( "testLoadRuleAsset", "desc" );
+      ServiceImplementation impl = getService();
+      impl.repository.createPackage( "testLoadRuleAsset", "desc" );
       impl.createCategory( "", "testLoadRuleAsset", "this is a cat" );
       
       
@@ -185,8 +189,8 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals(1, asset.metaData.categories.length);
       assertEquals("testLoadRuleAsset", asset.metaData.categories[0]);
       
-      AssetItem rule = impl.repo.loadPackage( "testLoadRuleAsset" ).loadAsset( "testLoadRuleAsset" );
-      impl.repo.createState( "whee" );
+      AssetItem rule = impl.repository.loadPackage( "testLoadRuleAsset" ).loadAsset( "testLoadRuleAsset" );
+      impl.repository.createState( "whee" );
       rule.updateState( "whee" );
       rule.checkin( "changed state" );
       asset = impl.loadRuleAsset( uuid );
@@ -205,8 +209,8 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testLoadAssetHistoryAndRestore() throws Exception {
-      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
-      impl.repo.createPackage( "testLoadAssetHistory", "desc" );
+      ServiceImplementation impl = getService();
+      impl.repository.createPackage( "testLoadAssetHistory", "desc" );
       impl.createCategory( "", "testLoadAssetHistory", "this is a cat" );
       
       
@@ -245,7 +249,7 @@ public class ServiceImplementationTest extends TestCase {
   
   
   public void testCheckin() throws Exception {
-          TestHarnessJBRMSServiceServlet serv = new TestHarnessJBRMSServiceServlet();
+          RepositoryService serv = getService();
           
           serv.listPackages();
           
@@ -304,12 +308,12 @@ public class ServiceImplementationTest extends TestCase {
   
   
   public void testCreatePackage() throws Exception {
-      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
+      ServiceImplementation impl = getService();
       PackageConfigData[] pkgs = impl.listPackages();
       String uuid = impl.createPackage( "testCreatePackage", "this is a new package" );
       assertNotNull( uuid );
       
-      PackageItem item = impl.repo.loadPackage( "testCreatePackage" );
+      PackageItem item = impl.repository.loadPackage( "testCreatePackage" );
       assertNotNull(item);
       assertEquals("this is a new package", item.getDescription());
       
@@ -323,13 +327,13 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testLoadPackageConfig() throws Exception {
-      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
-      PackageItem it = impl.repo.loadDefaultPackage();
+      ServiceImplementation impl = getService();
+      PackageItem it = impl.repository.loadDefaultPackage();
       String uuid = it.getUUID();
       it.updateCoverage( "xyz" );
       it.updateExternalURI( "ext" );
       it.updateHeader( "header" );
-      impl.repo.save();
+      impl.repository.save();
       
       PackageConfigData data = impl.loadPackageConfig( uuid );
       assertNotNull(data);
@@ -343,7 +347,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testPackageConfSave() throws Exception {
-      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
+      RepositoryService impl = getService();
       String uuid = impl.createPackage( "testPackageConfSave", "a desc" );
       PackageConfigData data = impl.loadPackageConfig( uuid );
       
@@ -375,7 +379,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testListByFormat() throws Exception {
-      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
+      RepositoryService impl = getService();
       String cat = "testListByFormat";
       impl.createCategory( "/", cat, "ya" );
       String pkgUUID = impl.createPackage( "testListByFormat", "used for listing by format." );
@@ -432,7 +436,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testStatus() throws Exception {
-      TestHarnessJBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
+      RepositoryService impl = getService();
       String uuid = impl.createState( "testStatus1" );
       assertNotNull(uuid);
       
@@ -486,7 +490,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testMovePackage() throws Exception {
-      JBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
+      RepositoryService impl = getService();
       String[] cats = impl.loadChildCategories( "/" );
       if (cats.length == 0) {
           impl.createCategory( "/", "la", "d" );
@@ -517,7 +521,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testCopyAsset() throws Exception {
-      JBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
+      RepositoryService impl = getService();
       impl.createCategory( "/", "templates", "ya" );
       String uuid = impl.createNewRule( "testCopyAsset", "", "templates", "default", "drl" );
       String uuid2 = impl.copyAsset( uuid, "default", "testCopyAsset2" );
@@ -530,7 +534,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testSnapshot() throws Exception {
-      JBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
+      RepositoryService impl = getService();
       impl.createCategory( "/", "snapshotTesting", "y" );
       impl.createPackage( "testSnapshot", "d" );
       String uuid = impl.createNewRule( "testSnapshotRule", "", "snapshotTesting", "testSnapshot", "drl" );
@@ -572,7 +576,7 @@ public class ServiceImplementationTest extends TestCase {
   
   public void testRemoveCategory() throws Exception {
       
-      JBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
+      RepositoryService impl = getService();
       String[] children = impl.loadChildCategories( "/" );
       impl.createCategory( "/", "testRemoveCategory", "foo" );
       
@@ -582,7 +586,7 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   public void testLoadSuggestionCompletionEngine() throws Exception {
-      JBRMSServiceServlet impl = new TestHarnessJBRMSServiceServlet();
+      RepositoryService impl = getService();
       String uuid = impl.createPackage( "testSuggestionComp", "x" );
       PackageConfigData conf = impl.loadPackageConfig( uuid );
       conf.header = "import java.util.List";
@@ -590,6 +594,12 @@ public class ServiceImplementationTest extends TestCase {
       SuggestionCompletionEngine eng = impl.loadSuggestionCompletionEngine( "testSuggestionComp" );
       assertNotNull(eng);
       
+  }
+  
+  private ServiceImplementation getService() throws Exception {
+      ServiceImplementation impl = new ServiceImplementation();
+      impl.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+      return impl;
   }
   
     

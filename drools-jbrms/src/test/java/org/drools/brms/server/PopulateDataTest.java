@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.rpc.PackageConfigData;
-import org.drools.brms.server.rules.SuggestionCompletionLoader;
+import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
@@ -29,7 +29,8 @@ import com.google.gwt.user.client.rpc.SerializableException;
 public class PopulateDataTest extends TestCase {
 
     public void testPopulate() throws Exception {
-        JBRMSServiceServlet serv = new TestHarnessJBRMSServiceServlet();
+        ServiceImplementation serv = new ServiceImplementation();
+        serv.repository = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         
         createCategories( serv );
         createStates( serv );
@@ -41,8 +42,8 @@ public class PopulateDataTest extends TestCase {
         
     }
 
-    private void createModel(JBRMSServiceServlet serv) throws Exception {
-        RulesRepository repo = serv.getRulesRepository();
+    private void createModel(ServiceImplementation serv) throws Exception {
+        RulesRepository repo = serv.repository;
         String uuid = serv.createNewRule( "DomainModel", "This is the business object model", null, "com.billasurf.manufacturing.plant", AssetFormats.MODEL );
         InputStream file = this.getClass().getResourceAsStream( "/billasurf.jar" );
         assertNotNull(file);
@@ -83,13 +84,13 @@ public class PopulateDataTest extends TestCase {
         
     }
 
-    private void createPackageSnapshots(JBRMSServiceServlet serv) {
+    private void createPackageSnapshots(ServiceImplementation serv) {
         serv.createPackageSnapshot( "com.billasurf.finance", "TEST", false, "The testing region." );
         serv.createPackageSnapshot( "com.billasurf.finance", "PRODUCTION", false, "The testing region." );
         serv.createPackageSnapshot( "com.billasurf.finance", "PRODUCTION ROLLBACK", false, "The testing region." );
     }
 
-    private void createSomeRules(JBRMSServiceServlet serv) throws SerializableException {
+    private void createSomeRules(ServiceImplementation serv) throws SerializableException {
         String uuid = serv.createNewRule( "Surfboard_Colour_Combination", "allowable combinations for basic boards.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
         serv.changeState( uuid, "Pending", false );
         uuid = serv.createNewRule( "Premium_Colour_Combinations", "This defines XXX.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
@@ -101,7 +102,7 @@ public class PopulateDataTest extends TestCase {
         
     }
 
-    private void createPackages(JBRMSServiceServlet serv) throws SerializableException {
+    private void createPackages(ServiceImplementation serv) throws SerializableException {
         String uuid = serv.createPackage( "com.billasurf.manufacturing", "Rules for manufacturing." );
         
         PackageConfigData conf = serv.loadPackageConfig( uuid );
@@ -115,12 +116,12 @@ public class PopulateDataTest extends TestCase {
         
     }
 
-    private void createStates(JBRMSServiceServlet serv) throws SerializableException {
+    private void createStates(ServiceImplementation serv) throws SerializableException {
         serv.createState( "Approved" );
         serv.createState( "Pending" );
     }
 
-    private void createCategories(JBRMSServiceServlet serv) {
+    private void createCategories(ServiceImplementation serv) {
         serv.createCategory( "/", "HR", "" );
         serv.createCategory( "/", "Sales", "" );
         serv.createCategory( "/", "Manufacturing", "" );
