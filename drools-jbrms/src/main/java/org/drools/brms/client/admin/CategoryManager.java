@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class CategoryManager extends Composite {
 
     public VerticalPanel layout = new VerticalPanel();
-    public String selectedPath;
+    //public String selectedPath;
     private CategoryExplorerWidget explorer;
     
     public CategoryManager() {
@@ -34,10 +34,8 @@ public class CategoryManager extends Composite {
 
         explorer = new CategoryExplorerWidget(new CategorySelectHandler() {
             public void selected(String sel) {
-                selectPath( sel );
+                //don't really need this
             }
-
-          
          });
 
         
@@ -61,7 +59,7 @@ public class CategoryManager extends Composite {
         newCat.setTitle( "Create a new category" );
         newCat.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                CategoryEditor newCat = new CategoryEditor( selectedPath );
+                CategoryEditor newCat = new CategoryEditor( explorer.getSelectedPath() );
                 newCat.setPopupPosition( w.getAbsoluteLeft(),
                                          w.getAbsoluteTop() - 400 );
                 newCat.show();
@@ -85,8 +83,8 @@ public class CategoryManager extends Composite {
     
     
     private void deleteSelected() {
-        if (Window.confirm( "Are you sure you want to delete category: " + selectedPath )) {
-            RepositoryServiceFactory.getService().removeCategory( selectedPath, new GenericCallback() {
+        if (Window.confirm( "Are you sure you want to delete category: " + explorer.getSelectedPath() )) {
+            RepositoryServiceFactory.getService().removeCategory( explorer.getSelectedPath(), new GenericCallback() {
 
                 public void onSuccess(Object data) {
                     explorer.refresh();
@@ -96,12 +94,6 @@ public class CategoryManager extends Composite {
         }        
     }
 
-    /**
-     * This is called when the user clicks somewhere on the tree.
-     * @param sel
-     */
-    private void selectPath(String sel) {
-        selectedPath = sel;
-    }   
+
     
 }
