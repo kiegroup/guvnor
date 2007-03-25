@@ -17,10 +17,12 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.drools.brms.client.packages.ModelAttachmentFileWidget;
-import org.drools.brms.server.util.RepositoryManager;
+import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
+import org.jboss.seam.Component;
+import org.jboss.seam.contexts.Contexts;
 
 /**
  * Files can be uploaded as part of the repo (eg model classes, spreadsheets).
@@ -48,7 +50,7 @@ public class FileUploadServlet extends HttpServlet {
         }
         
         
-        RulesRepository repo = getRepository( request );
+        RulesRepository repo = getRepository( );
         attachFile( uploadItem, repo );
         
         uploadItem.file.getInputStream().close();
@@ -70,7 +72,7 @@ public class FileUploadServlet extends HttpServlet {
             res.sendError( HttpServletResponse.SC_BAD_REQUEST );
             return;
         }
-        AssetItem item = getRepository( req ).loadAssetByUUID( uuid );
+        AssetItem item = getRepository( ).loadAssetByUUID( uuid );
         
         res.setContentType("application/x-download");
         res.setHeader("Content-Disposition", "attachment; filename=" + item.getBinaryContentAttachmentFileName());
@@ -84,10 +86,22 @@ public class FileUploadServlet extends HttpServlet {
         
     }    
 
-    private RulesRepository getRepository(HttpServletRequest request) {
-        RepositoryManager repoMan = new RepositoryManager();
-        RulesRepository repo = repoMan.getRepositoryFrom( request.getSession() );
-        return repo;
+    private RulesRepository getRepository() {
+        if (Contexts.isApplicationContextActive()) {
+            return (RulesRepository) Component.getInstance( "repository" );
+        } else {
+            //MN: NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
+            //THIS IS ALL THAT IS NEEDED.
+            System.out.println("WARNING: RUNNING IN NON SEAM MODE SINGLE USER MODE - ONLY FOR TESTING AND DEBUGGING !!!!!");
+            ServiceImplementation impl = new ServiceImplementation();
+             
+            try {
+                return new RulesRepository(TestEnvironmentSessionHelper.getSession(false));
+            } catch ( Exception e ) {
+                throw new IllegalStateException("Unable to launch debug mode...");
+            }            
+        }
+
     }
 
     void attachFile(FormData uploadItem,
