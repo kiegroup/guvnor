@@ -35,7 +35,7 @@ public class FormStylePopup extends PopupPanel {
     }
 
     public void show() {        
-        Image close = new Image("images/close.gif");
+        Image close = new ImageButton("images/close.gif");
         close.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 hide();                

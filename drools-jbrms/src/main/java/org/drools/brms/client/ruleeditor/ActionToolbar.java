@@ -2,6 +2,7 @@ package org.drools.brms.client.ruleeditor;
 
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.common.StatusChangePopup;
 import org.drools.brms.client.rpc.MetaData;
@@ -79,7 +80,7 @@ public class ActionToolbar extends Composite {
     private void controls(final Command minimiseMaximise,
                           FlexCellFormatter formatter,
                           HorizontalPanel saveControls) {
-        Image editState = new Image("images/edit.gif");
+        Image editState = new ImageButton("images/edit.gif");
         editState.setTitle( "Change status." );
         editState.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -118,7 +119,7 @@ public class ActionToolbar extends Composite {
         
         HorizontalPanel windowControls = new HorizontalPanel();
         
-        Image maxMinImage = new Image("images/max_min.gif");
+        Image maxMinImage = new ImageButton("images/max_min.gif");
         maxMinImage.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 minimiseMaximise.execute();                
@@ -129,7 +130,7 @@ public class ActionToolbar extends Composite {
         
         
         
-        Image closeImg = new Image("images/close.gif");
+        Image closeImg = new ImageButton("images/close.gif");
         closeImg.setTitle( "Close." );
         closeImg.addClickListener( new ClickListener() {
             public void onClick(Widget w) {

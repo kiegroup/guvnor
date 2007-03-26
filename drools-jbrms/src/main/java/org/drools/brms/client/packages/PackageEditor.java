@@ -7,6 +7,7 @@ import java.util.List;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.StatusChangePopup;
 import org.drools.brms.client.common.ValidationMessageWidget;
@@ -72,7 +73,7 @@ public class PackageEditor extends FormStyleLayout {
         
         status = new HTML();
         HorizontalPanel statusBar = new HorizontalPanel();
-        Image editState = new Image("images/edit.gif");
+        Image editState = new ImageButton("images/edit.gif");
         editState.setTitle( "Change status." );
         editState.addClickListener( new ClickListener() {
             public void onClick(Widget w) {

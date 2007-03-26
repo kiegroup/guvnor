@@ -3,6 +3,7 @@ package org.drools.brms.client.packages;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
@@ -16,8 +17,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -262,7 +261,7 @@ public class PackageSnapshotView extends Composite {
             " for package " + pkgName + ". This should not be edited.";
         HorizontalPanel horiz = new HorizontalPanel();
         horiz.add( new HTML(msg) );
-        Image close = new Image("images/close.gif");
+        Image close = new ImageButton("images/close.gif");
         close.setTitle( "Close this view" );
         close.addClickListener( new ClickListener() {
             public void onClick(Widget w) {

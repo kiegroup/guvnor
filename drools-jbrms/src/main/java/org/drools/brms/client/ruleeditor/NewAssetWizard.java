@@ -4,6 +4,7 @@ import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.common.WarningPopup;
@@ -14,7 +15,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -55,7 +55,7 @@ public class NewAssetWizard extends PopupPanel {
         
         table.setWidget( 0,
                          0,
-                         new Image( "images/new_wiz.gif" ) );
+                         new ImageButton( "images/new_wiz.gif" ) );
         table.setWidget( 0,
                          1,
                          new HTML( "<b>" + title + "</b>" ) );        

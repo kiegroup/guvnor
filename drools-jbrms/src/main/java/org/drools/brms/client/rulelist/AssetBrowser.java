@@ -6,6 +6,7 @@ import java.util.Map;
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.ruleeditor.EditorLauncher;
@@ -97,7 +98,7 @@ public class AssetBrowser extends Composite {
 
         table.setText( 2, 0, "" );
         
-        Image newRule = new Image("images/new_rule.gif");
+        Image newRule = new ImageButton("images/new_rule.gif");
         newRule.setTitle( "Create new rule" );
 
         newRule.addClickListener( new ClickListener() {
@@ -106,7 +107,7 @@ public class AssetBrowser extends Composite {
             }
         });
         
-        Image showFinder = new Image("images/find_items.gif");
+        Image showFinder = new ImageButton("images/find_items.gif");
         showFinder.setTitle( "Show the name finder." );
         showFinder.addClickListener( new ClickListener() {
             public void onClick(Widget w) {

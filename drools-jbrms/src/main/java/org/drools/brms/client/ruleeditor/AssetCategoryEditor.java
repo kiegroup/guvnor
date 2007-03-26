@@ -2,6 +2,7 @@ package org.drools.brms.client.ruleeditor;
 
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.rpc.MetaData;
 
 import com.google.gwt.user.client.ui.Button;
@@ -62,7 +63,7 @@ public class AssetCategoryEditor extends Composite {
 
     private void doActions() {
         VerticalPanel actions = new VerticalPanel();
-        Image add = new Image("images/new_item.gif");
+        Image add = new ImageButton("images/new_item.gif");
         add.setTitle( "Add a new category." );
         
         add.addClickListener( new ClickListener() {
@@ -99,7 +100,7 @@ public class AssetCategoryEditor extends Composite {
             final int idx = i;
             
             list.setText( i, 0, data.categories[i] );
-            Image del = new Image("images/trash.gif");
+            Image del = new ImageButton("images/trash.gif");
             del.setTitle( "Remove this category" );
             del.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {

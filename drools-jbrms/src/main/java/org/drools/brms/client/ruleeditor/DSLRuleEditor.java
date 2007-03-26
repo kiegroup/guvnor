@@ -1,5 +1,6 @@
 package org.drools.brms.client.ruleeditor;
 
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.DSLSentence;
 import org.drools.brms.client.packages.SuggestionCompletionCache;
@@ -9,13 +10,9 @@ import org.drools.brms.client.rpc.RuleContentText;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -83,7 +80,7 @@ public class DSLRuleEditor extends Composite {
         
         VerticalPanel vert = new VerticalPanel();
         
-        Image lhsOptions = new Image("images/new_dsl_pattern.gif");
+        Image lhsOptions = new ImageButton("images/new_dsl_pattern.gif");
         final String msg = "Add a new condition";
         lhsOptions.setTitle( msg );
         lhsOptions.addClickListener( new ClickListener() {
@@ -92,7 +89,7 @@ public class DSLRuleEditor extends Composite {
             }
         });        
         
-        Image rhsOptions = new Image("images/new_dsl_action.gif");   
+        Image rhsOptions = new ImageButton("images/new_dsl_action.gif");   
         final String msg2 =  "Add an action";
         rhsOptions.setTitle( msg2 );
         rhsOptions.addClickListener( new ClickListener() {

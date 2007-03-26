@@ -2,11 +2,11 @@ package org.drools.brms.client.modeldriven.ui;
 
 import org.drools.brms.client.common.FieldEditListener;
 import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brxml.ActionModifyField;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
@@ -21,7 +21,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -75,7 +74,7 @@ public class ActionSetFieldWidget extends Composite {
             inner.setWidget( i, 0, fieldSelector(val) );
             inner.setWidget( i, 1, valueEditor(val) );
             final int idx = i;
-            Image remove = new Image("images/delete_item_small.gif");
+            Image remove = new ImageButton("images/delete_item_small.gif");
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     YesNoDialog diag = new YesNoDialog("Remove this item?", new Command() {

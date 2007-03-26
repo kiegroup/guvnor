@@ -1,13 +1,13 @@
 package org.drools.brms.client.categorynav;
 
 import org.drools.brms.client.common.ErrorPopup;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -31,7 +31,7 @@ public class CategoryEditor extends PopupPanel {
         super(true);
         path = catPath;
         
-        table.setWidget( 0, 0, new Image("images/edit_category.gif") );
+        table.setWidget( 0, 0, new ImageButton("images/edit_category.gif") );
         
         table.setWidget( 0, 1, new Label(getTitle( path )));
         

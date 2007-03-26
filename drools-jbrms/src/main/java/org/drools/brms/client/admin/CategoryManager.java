@@ -5,13 +5,13 @@ import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -45,7 +45,7 @@ public class CategoryManager extends Composite {
         form.addRow( new HTML("<hr/>") );
         form.addAttribute( "Current categories:", editable );
         
-        Image refresh = new Image( "images/refresh.gif" );
+        Image refresh = new ImageButton( "images/refresh.gif" );
         refresh.setTitle( "Refresh categories" );
         refresh.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -55,7 +55,7 @@ public class CategoryManager extends Composite {
         form.addAttribute( "Refresh view:", refresh );
         form.addRow( new HTML("<hr/>") );
         
-        Image newCat = new Image( "images/new.gif" );
+        Image newCat = new ImageButton( "images/new.gif" );
         newCat.setTitle( "Create a new category" );
         newCat.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -68,7 +68,7 @@ public class CategoryManager extends Composite {
         
         form.addAttribute( "Create a new category:", newCat );
         
-        Image delete = new Image("images/delete_obj.gif");
+        Image delete = new ImageButton("images/delete_obj.gif");
         delete.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 deleteSelected();

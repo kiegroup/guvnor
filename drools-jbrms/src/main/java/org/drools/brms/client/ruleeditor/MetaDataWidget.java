@@ -5,6 +5,7 @@ import java.util.Date;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
@@ -126,7 +127,7 @@ public class MetaDataWidget extends FormStyleLayout {
         } else {
             HorizontalPanel horiz = new HorizontalPanel();
             horiz.add( readOnlyText( packageName ) );
-            Image editPackage = new Image("images/edit.gif");
+            Image editPackage = new ImageButton("images/edit.gif");
             editPackage.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     showEditPackage(packageName, w);                    

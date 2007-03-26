@@ -1,11 +1,11 @@
 package org.drools.brms.client.modeldriven.ui;
 
 import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
-import org.drools.brms.client.modeldriven.brxml.ActionAssertLogicalFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
 
 import com.google.gwt.user.client.Command;
@@ -60,7 +60,7 @@ public class ActionAssertFactWidget extends Composite {
             inner.setWidget( i, 0, fieldSelector(val) );
             inner.setWidget( i, 1, valueEditor(val) );
             final int idx = i;
-            Image remove = new Image("images/delete_item_small.gif");
+            Image remove = new ImageButton("images/delete_item_small.gif");
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     YesNoDialog diag = new YesNoDialog("Remove this item?", new Command() {
@@ -101,7 +101,7 @@ public class ActionAssertFactWidget extends Composite {
         HorizontalPanel horiz = new HorizontalPanel();
         
         
-        Image edit = new Image("images/add_field_to_fact.gif");
+        Image edit = new ImageButton("images/add_field_to_fact.gif");
         edit.setTitle( "Add another field to this so you can set its value." );
         edit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {

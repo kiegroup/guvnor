@@ -1,6 +1,7 @@
 package org.drools.brms.client.ruleeditor;
 
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.TableDataResult;
@@ -47,7 +48,7 @@ public class VersionBrowser extends Composite {
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         formatter.setHorizontalAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT);
         
-        refresh = new Image("images/refresh.gif");
+        refresh = new ImageButton("images/refresh.gif");
         
         refresh.addClickListener( new ClickListener() {
             public void onClick(Widget w) {

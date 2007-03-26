@@ -1,6 +1,7 @@
 package org.drools.brms.client.rulelist;
 
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
@@ -37,7 +38,7 @@ public class AssetItemListViewer extends Composite {
     private static TableConfig   tableConfig;
     private EditItemEvent openItemEvent;
 
-    private Image refreshIcon = new Image("images/refresh.gif");
+    private Image refreshIcon = new ImageButton("images/refresh.gif");
     private Command refresh;
     private static RepositoryServiceAsync service = RepositoryServiceFactory.getService();
     private Label itemCounter = new Label();
@@ -95,7 +96,7 @@ public class AssetItemListViewer extends Composite {
                                 HasHorizontalAlignment.ALIGN_LEFT,
                                 HasVerticalAlignment.ALIGN_MIDDLE );
 
-        Image openIcon = new Image( "images/open_item.gif" );
+        Image openIcon = new ImageButton( "images/open_item.gif" );
         openIcon.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 LoadingPopup.showMessage( "Loading item, please wait ..." );
