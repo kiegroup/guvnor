@@ -14,11 +14,13 @@ code {
 }
 
 a {
-  color: black;
+  color: darkblue;
 }
 
+
+
 a:visited {
-  color: black;
+  color: darkblue;
 }
 
 .gwt-BorderedPanel {
@@ -35,13 +37,13 @@ a:visited {
 }
 
 .gwt-DialogBox {
-  sborder: 8px solid #B8B8B8;
+  sborder: 8px solid #aaaa99;
   border: 2px outset;
   background-color: white;
 }
 
 .gwt-DialogBox .Caption {
-  background-color: #B8B8B8;
+  background-color: #aaaa99;
   padding: 3px;
   margin: 2px;
   font-weight: bold;
@@ -56,12 +58,12 @@ a:visited {
 
 .gwt-HorizontalSplitter .Bar {
   width: 8px;
-  background-color: #B8B8B8;
+  background-color: #aaaa99;
 }
 
 .gwt-VerticalSplitter .Bar {
   height: 8px;
-  background-color: #B8B8B8;
+  background-color: #aaaa99;
 }
 
 .gwt-HTML {
@@ -79,13 +81,13 @@ a:visited {
 }
 
 .gwt-ListBox {
-  border: 1px solid #B8B8B8;
+  border: 1px solid #aaaa99;
   padding: 0px;	
 }
 
 .gwt-MenuBar {
-  background-color: #B8B8B8;
-  border: 1px solid #B8B8B8;
+  background-color: #aaaa99;
+  border: 1px solid #aaaa99;
   cursor: default;
 }
 
@@ -96,7 +98,7 @@ a:visited {
 }
 
 .gwt-MenuBar .gwt-MenuItem-selected {
-  background-color: #F6F9ED;
+  background-color: #f6f6f6;
 }
 
 .gwt-PasswordTextBox {
@@ -117,13 +119,13 @@ a:visited {
 }
 
 .model-builder-Background {
-  background-color: #FDFCDC;
-  border: 1px solid #B8B8B8;
+  background-color: #f7f2d0;
+  border: 1px solid #aaaa99;
 }
 
 .model-builderInner-Background {
 	background-color: white;
-	border: 1px solid #B8B8B8;
+	border: 1px solid #aaaa99;
 
 }
 
@@ -135,72 +137,69 @@ a:visited {
 
 
 .gwt-DialogBox { 
-	border: 1px solid #B8B8B8;
+	border: 1px solid #aaaa99;
 }
 .gwt-DialogBox .Caption {  
-	background-color: #FDFCDC;
+	background-color: #f7f2d0;
 	font-size: smaller;
 }
 
 .version-Popup {
 	background-color: white;
-	border: 1px solid #B8B8B8;
+	border: 1px solid #aaaa99;
 }
 
 .version-Popup .Caption {
-  background-color: #B8B8B8;
+  background-color: #aaaa99;
   font-color: white;
-  font-weight: bold;
+  font-weight: pointer
 }
 
 
 .gwt-TabBar {
-  background-color: #B8B8B8;
+  background-color: #aaaa99;
   font-size: smaller;
 }
 
 .gwt-TabBar .gwt-TabBarFirst {
-  height: 100%;
-  border-bottom: 1px solid #B8B8B8;
-  padding-left: 3px;
+
+  margin:0em; padding:0em; width:0em; 
 }
 
 .gwt-TabBar .gwt-TabBarRest {
-  border-bottom: 1px solid #B8B8B8;
+  border-bottom: 1px solid #aaaa99;
   padding-right: 3px;
 }
 
 .gwt-TabBar .gwt-TabBarItem {
-  border: 1px solid #B8B8B8;
-  padding: 2px;
-  cursor: hand;
+  border: 1px solid #aaaa99;
+  padding: .5em 1em;
+  cursor: pointer; color:white;
 }
 
 
-
+hr{border-collapse; border-style:none; border-bottom: 1px dotted #ccc;}
 .gwt-TabBar .gwt-TabBarItem-selected {
-  font-weight: bold;
-  background-color: #F6F9ED;
-  border-top: 1px solid #F6F9ED;
-  border-left: 1px solid #F6F9ED;
-  border-right: 1px solid #F6F9ED;
-  border-bottom: 0px solid #B8B8B8;
-  padding: 2px;
-  cursor: default;
+  background-color: #f6f6f6;
+margin:0em;
+  border-bottom: 0px solid #aaaa99;
+  cursor: url;
+  padding: .5em 1em;
+border:0px transparent none;
 }
+.gwt-TabBarItem-selected{color:black !important;}
 
 
-
-
+input{ padding:2px !important;border-color:#ccc !important;}
+input:focus, input:active{ border-color:black !important;}
 
 .gwt-TextArea {
-  border: 1px solid #B8B8B8;
+  border: 1px solid #aaaa99;
   padding: 0px;
 }
 
 .gwt-TextBox {
-  border: 1px solid #B8B8B8;
-  padding: 0px;	
+  border: 1px solid #aaaa99;
 }
 
 .gwt-Tree {
@@ -218,7 +217,7 @@ a:visited {
 }
 
 .gwt-StackPanel .gwt-StackPanelItem {
-  background-color: #B8B8B8;
+  background-color: #aaaa99;
   cursor: pointer;
   cursor: hand;
 }
@@ -233,26 +232,32 @@ a:visited {
 
 /* -------------------------------------------------------------------------- */
 
-/* -- orig border: #C3D9FF  replaced with #B8B8B8 
-  orig background: #E8EEF7 replaced with #F6F9ED -- */
+/* -- orig border: #C3D9FF  replaced with #aaaa99 
+  orig background: #E8EEF7 replaced with #f6f6f6 -- */
 .ks-Sink {
-  border: 4px solid #B8B8B8;
-  background-color: #F6F9ED;
+  border: 4px solid #aaaa99;
+  background-color: #f6f6f6;
   width: 100%;
   height: 24em;
 }
 
 .ks-Info {
-  background-color: #B8B8B8;
+  background-color: #aaaa99;
   padding: 10px 10px 2px 10px;
   font-size: smaller;
 }
 
 .ks-List {
-  margin-top: 8px;
   margin-bottom: 8px;
   font-size: smaller;
 }
+
+.ks-info{color:white;}
+.ks-List a:link,
+.ks-List a:visited{text-decoration:none; color: #555; font-weight:bold; padding-left:0.5em;}
+
+.ks-List .ks-SinkItem-selected a{color:white;}
+
 
 .ks-List .ks-SinkItem {
   width: 100%;
@@ -263,7 +268,7 @@ a:visited {
 }
 
 .ks-List .ks-SinkItem-selected {
-  background-color: #B8B8B8;
+  background-color: #aaaa99;
 }
 
 .ks-images-Image {
@@ -281,7 +286,7 @@ a:visited {
 }
 
 .ks-layouts-Label {
-  background-color: #B8B8B8;
+  background-color: #aaaa99;
   font-weight: bold;
   margin-top: 1em;
   padding: 2px 0px 2px 0px;
@@ -290,118 +295,118 @@ a:visited {
 
 .ks-layouts-Scroller {
   height: 128px;
-  border: 2px solid #B8B8B8;
+  border: 2px solid #aaaa99;
   padding: 8px;
   margin: 8px;
 }
 
 .outline-Debug {
-  border: 2px solid #B8B8B8;
+  border: 2px solid #aaaa99;
 }
 
 .warning-Popup {
-  border: 2px solid #B8B8B8;
-  background-color: #FDFCDC;		
+  border: 2px solid #aaaa99;
+  background-color: #f7f2d0;		
 }
 
 
 .ks-popups-Popup {
   background-color: white;
-  border: 2px solid #B8B8B8;
+  border: 2px solid #aaaa99;
   padding: 4px;
 }
 
 .editable-Surface {
-  background-color: #FDFCDC;
-  border: 1px solid #B8B8B8;
+  background-color: #f7f2d0;
+  border: 1px solid #aaaa99;
 //  padding: 4px;
 }
 
 .metadata-Widget {
   font-size: normal;
-  //border: 1px solid #B8B8B8;
+  //border: 1px solid #aaaa99;
 }
 
 .rule-error-Popup {
   background-color: red;
-  border: 1px solid #B8B8B8;
+  border: 1px solid #aaaa99;
   padding: 4px;
 }
 
 .loading-Popup {
-  //background-color: #FDFCDC;
-  border: 2px solid #B8B8B8;
+  //background-color: #f7f2d0;
+  border: 2px solid #aaaa99;
   padding: 4px;
 }
 
 .rule-warning-Popup {
   background-color: yellow;
-  border: 1px solid #B8B8B8;
+  border: 1px solid #aaaa99;
   padding: 4px;
 }
 
 .rule-breditor-Table {
-  background-color: #FDFCDC;
-  border: 1px solid #B8B8B8;
+  background-color: #f7f2d0;
+  border: 1px solid #aaaa99;
   padding: 4px;
 }
 
 .new-asset-Icons  {
-  border: 1px solid #B8B8B8;
-  background-color: #FDFCDC;
+  border: 1px solid #aaaa99;
+  background-color: #f7f2d0;
 }
 
 .version-browser-Border {
-  border: 1px solid #B8B8B8;
+  border: 1px solid #aaaa99;
 }
 
 .dt-editor-Grid {
-  background-color: #FDFCDC;
-  border: 1px solid #B8B8B8;  
+  background-color: #f7f2d0;
+  border: 1px solid #aaaa99;  
   border-spacing: 0px;
   border-collapse: collapse
 }
 
 .dt-editor-Cell {
   background-color: white;
-  border: 1px solid #B8B8B8; 
+  border: 1px solid #aaaa99; 
   font-size: smaller;
   padding: 2px;
 }
 
 .dt-editor-Toolbar {
   background-color: white;
-  border: 1px solid #B8B8B8; 
+  border: 1px solid #aaaa99; 
   padding: 2px;
 }
 
 .dt-editor-Cell-selected {
   background-color: white;
-  border: 2px solid #B8B8B8; 
+  border: 2px solid #aaaa99; 
   font-size: smaller;
   padding: 0px;
 }
 
 .dt-editor-DescriptionCell {
-  background-color: #FDFCDC;
+  background-color: #f7f2d0;
   font-size: smaller;
   padding: 3px;
 }
 
 .dt-editor-DescriptionCell-selected {
-  background-color: #B8B8B8;
+  background-color: #aaaa99;
   color : #FFFFFF;
   font-size: smaller;
   padding: 3px;
 }
 
 .dt-editor-CountColumn {
-  background-color: #FDFCDC;
+  background-color: #f7f2d0;
   font-size: smaller;
   padding: 3px;
 }
 .dt-editor-CountColumn-selected {
-  background-color: #B8B8B8;
+  background-color: #aaaa99;
   color : #FFFFFF;
   font-size: smaller;
   padding: 3px;
@@ -412,7 +417,7 @@ a:visited {
 }
 
 .dsl-field-TextBox {
-  border: 1px solid #B8B8B8;
+  border: 1px solid #aaaa99;
   padding: 0px;	
   width: 100%;
   height: 100%
@@ -421,8 +426,8 @@ a:visited {
 .dsl-text-Editor {
   font-family: Arial, sans-serif;
   font-size: smaller;
-  background-color: #FDFCDC;
-  border: 1px solid #B8B8B8;
+  background-color: #f7f2d0;
+  border: 1px solid #aaaa99;
   padding: 0px;	
 }
 
@@ -433,18 +438,18 @@ a:visited {
 }
 
 .rule-viewer-Documentation {
-  background-color: #FDFCDC;
+  background-color: #f7f2d0;
   font-family: Arial, sans-serif;
   font-size: smaller;
-  border: 1px solid #B8B8B8;
+  border: 1px solid #aaaa99;
   width: 100%;
 }
 
 /* And the rule list stuff */
 
 .rule-ListHeader {
-	background-color: #F6F9ED;
-	font-weight: bold;
+	background-color: #f6f6f6; color:#666;
+	 padding-left:1em !important;font-weight:bold; height:2em;
 }
 
 .rule-SelectedRow {
@@ -453,13 +458,13 @@ a:visited {
 }
 
 .rule-ListEvenRow {
-	background-color: #FDFCDC;
+	background-color: #f7f2d0;
 }
 
-
+body{margin:0em; padding:0em; font-family: "bitstream vera sans", "dejavu sans" verdana, helvetica, sans-serif; line-height: 1.5em;background-color:white;}
 
 .rule-List {
-	border: 1px solid #B8B8B8;
+	border: 1px solid #aaaa99;
 	background-color: white;
         font-family: Arial, sans-serif;
         font-size: smaller;
@@ -481,14 +486,14 @@ a:visited {
 
 
 .DatePicker {
-  border: 1px solid #B8B8B8;
+  border: 1px solid #aaaa99;
 }
 
 .DatePicker .navbar {
   width: 100%;
-  background-color: #FDFCDC;
+  background-color: #f7f2d0;
   vertical-align: middle;
-  border-bottom: 1px solid #B8B8B8;
+  border-bottom: 1px solid #aaaa99;
 }
 
 .DatePicker .navbar .gwt-Button {
@@ -501,7 +506,7 @@ a:visited {
 }
 
 .DatePicker .weekheader {
-  background-color: #FDFCDC;
+  background-color: #f7f2d0;
 }
 
 .DatePicker .weekheader .days {
@@ -513,21 +518,31 @@ a:visited {
 }
 
 .DatePicker .cell .gwt-HTML {
-  border: 1px solid #B8B8B8;
+  border: 1px solid #aaaa99;
 }
+button{border:1px solid #ccc; margin-right:1px; background-color:#fff;border-bottom:1px solid #aaa; border-top-color:#ddd} 
+button:active, button:focus{background-color:#999; color:white; border: 1px solid #444;}
 
 .DatePicker .cell .gwt-HTML span {
   width: 100%;
   height: 100%;
   line-height: 2em;
 }
+textarea{background-color:white !important; padding:.3em; color:#666;border:1px solid #ccc !important; background-color:#fefefe !important;}
+
+textarea:focus, textarea:active{color:black; border-color:black !important; background-color:#fff !important;}
+.model-builder-Background{ padding-left:.5em;border: 1px solid #ddd; background-color:white;}
 
 .DatePicker .today .gwt-HTML {
   background-color: white;
 }
 
 .DatePicker .day .gwt-HTML {
-  border: 1px solid #B8B8B8;
+  border: 1px solid #aaaa99;
 } 
 
+.sinkitem{color:white;}
 
+body{color:#444;}
+
+.gwt-TreeItem{width:100%; cursor:pointer; display:block !important; padding:0em; margin:0em; line-height:em}

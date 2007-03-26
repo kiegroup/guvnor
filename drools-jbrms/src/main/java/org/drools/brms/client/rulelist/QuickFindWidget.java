@@ -50,6 +50,7 @@ public class QuickFindWidget extends Composite {
 
             
         });
+        searchBox.setStyleName( "gwt-TextBox" );
         
         this.editEvent = editEvent;
         HorizontalPanel srch = new HorizontalPanel();

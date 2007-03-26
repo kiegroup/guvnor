@@ -556,7 +556,8 @@ public class ServiceImplementation
             AssetItem item = (AssetItem) it.next();
             TableDataRow row = new TableDataRow();
             row.id = item.getUUID();
-            row.values = new String[] { item.getName(), item.getDescription() };
+            String desc = item.getDescription() + "";
+            row.values = new String[] { item.getName(), desc.substring( 0, Math.min( 32, desc.length() ) ) };
             resultList.add( row );
            
         }
@@ -571,6 +572,7 @@ public class ServiceImplementation
         return result;
         
     }
+
 
     
     @WebRemote    
