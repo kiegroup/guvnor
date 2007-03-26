@@ -323,8 +323,7 @@ input:focus, input:active{ border-color:black !important;}
 }
 
 .metadata-Widget {
-  font-size: normal;
-  //border: 1px solid #aaaa99;
+  font-size:smaller;color:#666;  
 }
 
 .rule-error-Popup {

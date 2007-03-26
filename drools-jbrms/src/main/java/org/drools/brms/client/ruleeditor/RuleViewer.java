@@ -72,14 +72,14 @@ public class RuleViewer extends Composite {
         //now the main layout table
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         layout.setWidget( 0,
-                          0,
+                          1,
                           metaWidget );
         formatter.setRowSpan( 0,
-                              0,
+                              1,
                               3 );
         formatter.setVerticalAlignment( 0, 0, HasVerticalAlignment.ALIGN_TOP );
         formatter.setWidth( 0,
-                            0,
+                            1,
                             "30%" );
 
         //and now the action widgets (checkin/close etc).
@@ -102,10 +102,10 @@ public class RuleViewer extends Composite {
         } );
 
         layout.setWidget( 0,
-                          1,
+                          0,
                           toolbar );
         formatter.setAlignment( 0,
-                                1,
+                                0,
                                 HasHorizontalAlignment.ALIGN_RIGHT,
                                 HasVerticalAlignment.ALIGN_MIDDLE );
 
@@ -175,8 +175,9 @@ public class RuleViewer extends Composite {
      * in the rule asset).
      */
     public void toggleMetaDataWidget() {
-       boolean vis = layout.getFlexCellFormatter().isVisible( 0, 0 );
-       this.layout.getFlexCellFormatter().setVisible( 0, 0, !vis ); 
+       boolean vis = layout.getFlexCellFormatter().isVisible( 1, 0 );
+       this.layout.getFlexCellFormatter().setVisible( 1, 0, !vis );
+       this.layout.getFlexCellFormatter().setVisible( 0, 1, !vis ); 
     }
     
 
