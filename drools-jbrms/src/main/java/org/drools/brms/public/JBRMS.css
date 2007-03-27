@@ -414,19 +414,8 @@ input:focus, input:active{ border-color:black !important;}
   font-size: larger;
 }
 
-.dsl-field-TextBox {
-  border: 1px solid #aaaa99;
-  padding: 0px;	
-  width: 100%;
-  height: 100%
-}
 
 .dsl-text-Editor {
-  font-family: Arial, sans-serif;
-  font-size: smaller;
-  background-color: #f7f2d0;
-  border: 1px solid #aaaa99;
-  padding: 0px;	
 }
 
 .dt-field-TextBox {

@@ -101,7 +101,7 @@ public class DSLSentenceWidget extends Composite {
         
         public FieldEditor() {
             box = new TextBox();
-            box.setStyleName( "dsl-field-TextBox" );
+            //box.setStyleName( "dsl-field-TextBox" );
             
             panel.add( new HTML("&nbsp;") );
             panel.add( box );
