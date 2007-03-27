@@ -55,14 +55,13 @@ public class MetaDataWidget extends FormStyleLayout {
     private void loadData(MetaData d) {
         this.data = d;
         addAttribute("Categories:", categories());
-           
+        addRow( new HTML("<hr/>") );   
         
         addAttribute("Last modified:", readOnlyDate(data.lastModifiedDate));
         addAttribute("Last contributor:", readOnlyText(data.lastContributor));
         addAttribute("Note:", readOnlyText( data.checkinComment ));
         addAttribute("Created by:", readOnlyText(data.creator));
         addAttribute("Version:", getVersionNumberLabel());
-        addAttribute("Package:", packageEditor(data.packageName));
         addAttribute("Format:", new HTML( "<b>" + data.format + "</b>" ));
         
         if (!readOnly) {
@@ -71,7 +70,8 @@ public class MetaDataWidget extends FormStyleLayout {
 
         
         addRow(new HTML("<hr/>"));
-        
+
+        addAttribute("Package:", packageEditor(data.packageName));        
         addAttribute("Subject:", editableText(new FieldBinding() {
             public String getValue() {
                 return data.subject;
@@ -126,6 +126,7 @@ public class MetaDataWidget extends FormStyleLayout {
             return readOnlyText( packageName );
         } else {
             HorizontalPanel horiz = new HorizontalPanel();
+            horiz.setStyleName( "current-Asset-Package" );
             horiz.add( readOnlyText( packageName ) );
             Image editPackage = new ImageButton("images/edit.gif");
             editPackage.addClickListener( new ClickListener() {
@@ -171,7 +172,7 @@ public class MetaDataWidget extends FormStyleLayout {
             }
             
         });
-        pop.setPopupPosition( source.getAbsoluteLeft(), source.getAbsoluteTop() );
+        pop.setPopupPosition( source.getParent().getParent().getAbsoluteLeft(), source.getParent().getParent().getAbsoluteTop() );
         pop.show();
     }
 

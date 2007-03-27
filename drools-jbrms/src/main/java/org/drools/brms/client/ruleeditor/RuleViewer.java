@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
@@ -26,6 +27,14 @@ public class RuleViewer extends Composite {
 
     private final FlexTable layout;
     private boolean readOnly;
+
+    private MetaDataWidget metaWidget;
+
+    private ActionToolbar toolbar;
+
+    private Widget editor;
+
+    private RuleDocumentWidget doco;
 
     public RuleViewer(RuleAsset asset) {
         this(asset, false);
@@ -57,7 +66,7 @@ public class RuleViewer extends Composite {
     private void doWidgets() {
         this.layout.clear();
         
-        final MetaDataWidget metaWidget = new MetaDataWidget( this.asset.metaData,
+        metaWidget = new MetaDataWidget( this.asset.metaData,
                                                               readOnly, this.asset.uuid, new Command() {
 
                                                                 public void execute() {
@@ -67,8 +76,8 @@ public class RuleViewer extends Composite {
         });
 
 
-        metaWidget.setWidth( "100%" );
-        //metaWidget.setHeight( "100%" );
+        //metaWidget.setWidth( "100%" );
+
         //now the main layout table
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         layout.setWidget( 0,
@@ -83,7 +92,7 @@ public class RuleViewer extends Composite {
                             "30%" );
 
         //and now the action widgets (checkin/close etc).
-        ActionToolbar toolbar = new ActionToolbar( asset,
+        toolbar = new ActionToolbar( asset,
                                                    new Command() {
                                                        public void execute() {
                                                            doCheckin();
@@ -91,7 +100,7 @@ public class RuleViewer extends Composite {
                                                    },
                                                    new Command() {
                                                        public void execute() {
-                                                           toggleMetaDataWidget();
+                                                           zoomIntoAsset();
                                                        }
                                                    },
                                                    readOnly);
@@ -112,11 +121,12 @@ public class RuleViewer extends Composite {
         //REMEMBER: subsequent rows have only one column, doh that is confusing ! 
         //GAAAAAAAAAAAAAAAAAAAAAAAAAAH
 
-        layout.setWidget( 1, 0, EditorLauncher.getEditorViewer(asset, this));
+        editor = EditorLauncher.getEditorViewer(asset, this);
+        layout.setWidget( 1, 0, editor);
         
 
         //the document widget
-        final RuleDocumentWidget doco = new RuleDocumentWidget(asset.metaData);
+        doco = new RuleDocumentWidget(asset.metaData);
         layout.setWidget( 2,
                           0,
                           doco );
@@ -174,10 +184,12 @@ public class RuleViewer extends Composite {
      * Calling this will toggle the visibility of the meta-data widget (effectively zooming
      * in the rule asset).
      */
-    public void toggleMetaDataWidget() {
-       boolean vis = layout.getFlexCellFormatter().isVisible( 1, 0 );
-       this.layout.getFlexCellFormatter().setVisible( 1, 0, !vis );
-       this.layout.getFlexCellFormatter().setVisible( 0, 1, !vis ); 
+    public void zoomIntoAsset() {
+        
+
+       boolean vis = !layout.getFlexCellFormatter().isVisible( 2, 0 );
+       this.layout.getFlexCellFormatter().setVisible( 0, 1, vis );
+       this.layout.getFlexCellFormatter().setVisible( 2, 0, vis ); 
     }
     
 
