@@ -80,10 +80,9 @@ a:visited {
   font-size: smaller;
 }
 
-.gwt-ListBox {
-  border: 1px solid #aaaa99;
-  padding: 0px;	
-}
+/* List boxes */
+select{ border: 1px solid #ccc; padding:0px !important;border-color:#ccc !important; color:#666;}
+select:focus{ border-color:black !important; color: black;}
 
 .gwt-MenuBar {
   background-color: #aaaa99;
@@ -190,17 +189,14 @@ border:0px transparent none;
 .gwt-TabBarItem-selected{color:black !important;}
 
 
-input{ padding:2px !important;border-color:#ccc !important;}
-input:focus, input:active{ border-color:black !important;}
+input{ padding:2px !important;border-color:#ccc !important; border: 1px solid #aaaa99; color:#666;}
+input:focus, input:active{ border-color:black !important; color: black;}
 
 .gwt-TextArea {
   border: 1px solid #aaaa99;
   padding: 0px;
 }
 
-.gwt-TextBox {
-  border: 1px solid #aaaa99;
-}
 
 .gwt-Tree {
 }
@@ -415,19 +411,8 @@ input:focus, input:active{ border-color:black !important;}
   font-size: larger;
 }
 
-.dsl-field-TextBox {
-  border: 1px solid #aaaa99;
-  padding: 0px;	
-  width: 100%;
-  height: 100%
-}
 
 .dsl-text-Editor {
-  font-family: Arial, sans-serif;
-  font-size: smaller;
-  background-color: #f7f2d0;
-  border: 1px solid #aaaa99;
-  padding: 0px;	
 }
 
 .dt-field-TextBox {
