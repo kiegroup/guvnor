@@ -57,8 +57,8 @@ public class MetaDataWidget extends FormStyleLayout {
         addAttribute("Categories:", categories());
         addRow( new HTML("<hr/>") );   
         
-        addAttribute("Last modified:", readOnlyDate(data.lastModifiedDate));
-        addAttribute("Last contributor:", readOnlyText(data.lastContributor));
+        addAttribute("Modified on:", readOnlyDate(data.lastModifiedDate));
+        addAttribute("by:", readOnlyText(data.lastContributor));
         addAttribute("Note:", readOnlyText( data.checkinComment ));
         addAttribute("Created by:", readOnlyText(data.creator));
         addAttribute("Version:", getVersionNumberLabel());

@@ -107,7 +107,7 @@ public class AssetBrowser extends Composite {
             }
         });
         
-        Image showFinder = new ImageButton("images/find_items.gif");
+        Image showFinder = new ImageButton("images/system_search_small.png");
         showFinder.setTitle( "Show the name finder." );
         showFinder.addClickListener( new ClickListener() {
             public void onClick(Widget w) {

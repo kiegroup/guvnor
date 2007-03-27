@@ -36,7 +36,7 @@ public class QuickFindWidget extends Composite {
     
     
     public QuickFindWidget(EditItemEvent editEvent) {
-        layout = new FormStyleLayout("images/search_large.gif", "Find rules");
+        layout = new FormStyleLayout("images/system_search.png", "");
         
         
         
