@@ -67,7 +67,7 @@ public class Info extends JBRMSFeature {
         formatter.setHorizontalAlignment( 1, 1, HasHorizontalAlignment.ALIGN_RIGHT );
         
         
-        layout.setStyleName( "editable-Surface" );
+        layout.setStyleName( "welcome-Page" );
         
         return layout;
     }
