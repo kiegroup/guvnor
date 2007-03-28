@@ -10,12 +10,32 @@ public class Constraint
     implements
     PortableObject {
     
-    public static final int    UNDEFINED = 0;
-    public static final int    LITERAL   = 1;
-    public static final int    VARIABLE  = 2;
-    public static final int    RET_VALUE = 3;
-    public static final int    ENUM      = 4;
-    public static final int    PREDICATE = 5;
+
+    /**
+     * This may be string, or number, anything really. 
+     */
+    public static final int    TYPE_LITERAL   = 1;
+    
+    /**
+     * This is when it is set to a valid previously bound variable.
+     */
+    public static final int    TYPE_VARIABLE  = 2;
+    
+    /**
+     * This is for a "formula" that calculates a value.
+     */
+    public static final int    TYPE_RET_VALUE = 3;
+    
+    /**
+     * This is not used yet. ENUMs are not suitable for business rules
+     * until we can get data driven non code enums.
+     */
+    public static final int    TYPE_ENUM      = 4;
+    
+    /**
+     * The fieldName and fieldBinding is not used in the case of a predicate. 
+     */
+    public static final int    TYPE_PREDICATE = 5;
 
     public String                 fieldBinding;
     public String                 fieldName;

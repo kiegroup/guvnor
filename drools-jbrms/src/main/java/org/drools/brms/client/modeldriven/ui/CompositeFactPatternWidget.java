@@ -1,6 +1,7 @@
 package org.drools.brms.client.modeldriven.ui;
 
 import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
@@ -37,7 +38,7 @@ public class CompositeFactPatternWidget extends Composite {
         this.completions = completions;
         this.pattern = pattern;
         this.modeller = modeller;
-
+ 
         this.layout = new Grid( 1, 2 );
         this.layout.setStyleName( "model-builderInner-Background" );
 
@@ -68,7 +69,7 @@ public class CompositeFactPatternWidget extends Composite {
     private Widget getCompositeLabel() {
 
         HorizontalPanel horiz = new HorizontalPanel();
-        Image edit = new Image( "images/add_field_to_fact.gif" );
+        Image edit = new ImageButton( "images/add_field_to_fact.gif" );
         edit.setTitle( "Add a fact to this constraint. If it is an 'or' type, it will need at least 2." );
         edit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -78,6 +79,7 @@ public class CompositeFactPatternWidget extends Composite {
         
         horiz.add( new Label( HumanReadable.getCEDisplayName( pattern.type ) ) );
         horiz.add( edit );
+        horiz.setStyleName( "modeller-composite-Label" );
         return horiz;
     }
 

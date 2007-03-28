@@ -96,7 +96,7 @@ public class BRXMLToDescrConverter {
                                                                       constr.fieldBinding );
                 column.addDescr( fieldDescr );
             }
-            if ( constr.type == Constraint.PREDICATE ) {
+            if ( constr.type == Constraint.TYPE_PREDICATE ) {
                 PredicateDescr predicateDescr = new PredicateDescr( constr.value );
                 column.addDescr( predicateDescr );
             } else {
@@ -139,20 +139,20 @@ public class BRXMLToDescrConverter {
                                                  String operator,
                                                  String value) {
         switch ( type ) {
-            case Constraint.LITERAL :
+            case Constraint.TYPE_LITERAL :
                 LiteralRestrictionDescr lit = new LiteralRestrictionDescr( operator,
                                                                            value );
                 return lit;
-            case Constraint.VARIABLE :
+            case Constraint.TYPE_VARIABLE :
                 VariableRestrictionDescr var = new VariableRestrictionDescr( operator,
                                                                              value );
                 return var;
-            case Constraint.ENUM :
+            case Constraint.TYPE_ENUM :
                 LiteralRestrictionDescr enu = new LiteralRestrictionDescr( operator,
                                                                            value,
                                                                            true );
                 return enu;
-            case Constraint.RET_VALUE :
+            case Constraint.TYPE_RET_VALUE :
                 ReturnValueRestrictionDescr rvc = new ReturnValueRestrictionDescr( operator,
                                                                                    value );
                 return rvc;

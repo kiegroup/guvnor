@@ -16,12 +16,15 @@ import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
  * This is the new smart widget that works off the model.
@@ -43,10 +46,13 @@ public class FactPatternWidget extends Composite {
         this.modeller = mod;
         this.bindable = canBind;
         layout.setWidget( 0, 0, getPatternLabel() );
+        FlexCellFormatter formatter = layout.getFlexCellFormatter();
+        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
+        formatter.setStyleName( 0, 0, "modeller-fact-TypeHeader" );
         
         final FlexTable inner = new FlexTable();
         
-        layout.setWidget( 0, 1, inner );
+        layout.setWidget( 1, 0, inner );
         
         for ( int row = 0; row < pattern.constraints.length; row++ ) {
             final Constraint c = pattern.constraints[row];
@@ -93,10 +99,12 @@ public class FactPatternWidget extends Composite {
 
         }
         if (bindable) {
-            layout.setStyleName( "model-builderInner-Background" );
+            //layout.setStyleName( "model-builderInner-Background" );
+            layout.setStyleName( "modeller-fact-pattern-Widget" );
         } else {
-            layout.setStyleName( "model-builderInnerInner-Background" );
+            //layout.setStyleName( "model-builderInnerInner-Background" );
         }
+        
         initWidget( layout );
         
     }
