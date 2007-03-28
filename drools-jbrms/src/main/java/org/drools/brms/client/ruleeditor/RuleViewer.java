@@ -86,7 +86,7 @@ public class RuleViewer extends Composite {
         formatter.setRowSpan( 0,
                               1,
                               3 );
-        formatter.setVerticalAlignment( 0, 0, HasVerticalAlignment.ALIGN_TOP );
+        formatter.setVerticalAlignment( 0, 1, HasVerticalAlignment.ALIGN_TOP );
         formatter.setWidth( 0,
                             1,
                             "30%" );
