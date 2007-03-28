@@ -11,7 +11,7 @@
 		<gwt:compile outDir="src/main/webapp" 
 			gwtHome="${gwt.home}"
 			classBase="org.drools.brms.JBRMS" 
-			sourcedir="src/main/java" 
+			sourceclasspath="src/main/java; ../drools-compiler/src/main/java" 
 		/>
 	</target>
 
