@@ -179,7 +179,7 @@ public interface RepositoryService extends RemoteService {
      * Finally, if there is "more" rows, a row will be returned which has "MORE" as its ID.
      * 
      */
-    public TableDataResult quickFindAsset(String searchText, int maxMatches);
+    public TableDataResult quickFindAsset(String searchText, int maxMatches, boolean searchArchived);
     
     
     /**

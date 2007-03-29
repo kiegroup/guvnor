@@ -226,7 +226,7 @@ public class PackageExplorerWidget extends Composite {
 
 
 
-    private void refreshTreeView() {
+    public void refreshTreeView() {
         
         
         

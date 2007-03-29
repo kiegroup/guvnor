@@ -21,7 +21,5 @@ public class PackageConfigData
     public Date   lastModified;
     public String lasContributor;
     public String state;
-    
-    
-    
+    public boolean archived = false;
 }

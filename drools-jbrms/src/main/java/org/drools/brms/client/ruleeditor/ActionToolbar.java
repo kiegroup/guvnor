@@ -5,6 +5,7 @@ import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.common.StatusChangePopup;
+import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
@@ -36,19 +37,23 @@ public class ActionToolbar extends Composite {
     
     private MetaData      metaData;
     private Command checkin;
+    private Command arch;
     private String uuid;
     private HTML state;
+    
 
     
     public ActionToolbar(final RuleAsset asset,
                           
-                         final Command checkin, 
+                         final Command checkin,
+                         final Command archiv,
                          final Command minimiseMaximise, 
                          boolean readOnly) {
 
         this.metaData = asset.metaData;
         this.checkin = checkin;
         this.uuid = asset.uuid;
+        this.arch = archiv;
         this.state = new HTML();
         String status = metaData.status;
 
@@ -116,6 +121,21 @@ public class ActionToolbar extends Composite {
         } );
         
         saveControls.add( copy );
+        
+        Button archive = new Button("Archive");
+        archive.addClickListener(new ClickListener() {
+            public void onClick(Widget w) {
+                YesNoDialog diag = new YesNoDialog("Are you sure about archive this Item?", new Command() {
+                    public void execute() {
+                        metaData.checkinComment = "Archived Item on $date";
+                        arch.execute();
+                    }                        
+                });
+                diag.setPopupPosition(Window.getClientWidth() / 2, Window.getClientHeight() / 2);
+                diag.show();
+            }
+        });
+        saveControls.add(archive);        
         
         HorizontalPanel windowControls = new HorizontalPanel();
         

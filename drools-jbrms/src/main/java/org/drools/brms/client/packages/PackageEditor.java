@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
@@ -11,6 +12,7 @@ import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.StatusChangePopup;
 import org.drools.brms.client.common.ValidationMessageWidget;
+import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.SnapshotInfo;
@@ -39,6 +41,8 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Neale
  */
 public class PackageEditor extends FormStyleLayout {
+    
+   
 
     private PackageConfigData conf;
     private HTML status;
@@ -154,6 +158,24 @@ public class PackageEditor extends FormStyleLayout {
             }
         } );
         horiz.add( snap );
+        
+        Button archive = new Button("Archive");
+        archive.addClickListener(new ClickListener() {
+            public void onClick(Widget w) {
+                YesNoDialog diag = new YesNoDialog("Are you sure about archive this package?", new Command() {
+                    public void execute() {
+                        conf.archived = true;
+                        doSaveAction();
+                        PackageExplorerWidget local = (PackageExplorerWidget) getParent().getParent();
+                        local.refreshTreeView();
+                    }                        
+                });
+                diag.setPopupPosition(Window.getClientWidth() / 2, Window.getClientHeight() / 2);
+                diag.show();
+            }
+        });
+        horiz.add(archive);
+                
         return horiz;
     }
 

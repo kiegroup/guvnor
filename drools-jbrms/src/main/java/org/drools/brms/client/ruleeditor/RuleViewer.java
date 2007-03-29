@@ -100,6 +100,11 @@ public class RuleViewer extends Composite {
                                                    },
                                                    new Command() {
                                                        public void execute() {
+                                                           doArchive();
+                                                       }
+                                                   },
+                                                   new Command() {
+                                                       public void execute() {
                                                            zoomIntoAsset();
                                                        }
                                                    },
@@ -136,6 +141,13 @@ public class RuleViewer extends Composite {
     /**
      * This responds to the checkin command.
      */
+    
+    void doArchive() {
+        this.asset.archived = true;
+        this.doCheckin();
+        this.closeCommand.execute();
+    }
+    
     void doCheckin() {
         this.layout.clear();
         

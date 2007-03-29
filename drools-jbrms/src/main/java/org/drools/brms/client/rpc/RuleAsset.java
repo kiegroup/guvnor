@@ -16,5 +16,6 @@ public class RuleAsset
     public IsSerializable content;
 
     public String uuid;
+    public boolean archived = false;
 
 }

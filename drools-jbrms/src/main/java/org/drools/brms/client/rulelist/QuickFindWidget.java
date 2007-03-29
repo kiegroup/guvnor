@@ -10,7 +10,9 @@ import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -31,6 +33,7 @@ public class QuickFindWidget extends Composite {
     private final FormStyleLayout layout;
     private final FlexTable listPanel;
     private final TextBox searchBox;
+    private CheckBox archiveBox;
     private EditItemEvent editEvent;
     private String[] shortListItems;
     
@@ -62,8 +65,13 @@ public class QuickFindWidget extends Composite {
         } );
         
         srch.add( searchBox );
-        srch.add( go ); 
+        srch.add( go );
+        
+        archiveBox = new CheckBox("Search archived itens");
+        archiveBox.setChecked(false);
+
         layout.addAttribute( "Find items with a name matching:", srch );
+        layout.addRow( archiveBox );
         layout.addRow( new HTML("<hr/>") );
         
         listPanel = new FlexTable();
@@ -82,7 +90,7 @@ public class QuickFindWidget extends Composite {
      * This will load a list of items as they are typing.
      */
     protected String[] loadShortList(String match, final CompletionItemsAsyncReturn returnItems) {
-        RepositoryServiceFactory.getService().quickFindAsset( match, 5, new GenericCallback() {
+        RepositoryServiceFactory.getService().quickFindAsset( match, 5, archiveBox.isChecked() ,new GenericCallback() {
 
 
             public void onSuccess(Object data) {
@@ -127,7 +135,7 @@ public class QuickFindWidget extends Composite {
     protected void updateList() {
 
         LoadingPopup.showMessage( "Searching..." );
-        RepositoryServiceFactory.getService().quickFindAsset( searchBox.getText(), 15, new GenericCallback() {
+        RepositoryServiceFactory.getService().quickFindAsset( searchBox.getText(), 15, archiveBox.isChecked() , new GenericCallback() {
             public void onSuccess(Object data) {
                 TableDataResult result = (TableDataResult) data;
                 populateList(result);

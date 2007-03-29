@@ -143,7 +143,7 @@ public class ServiceImplementation
     @WebRemote
     public PackageConfigData[] listPackages() {
         Iterator pkgs = repository.listPackages();
-        List result = new ArrayList();
+        List<PackageConfigData> result = new ArrayList<PackageConfigData>();
         while(pkgs.hasNext()) {
             PackageItem pkg = (PackageItem) pkgs.next();
 
@@ -153,17 +153,17 @@ public class ServiceImplementation
             
             result.add( data );
         }
-        Collections.sort( result, new Comparator() {
+        Collections.sort( result, new Comparator<Object>() {
 
-            public int compare(Object o1,
-                               Object o2) {
-                PackageConfigData d1 = (PackageConfigData) o1;
-                PackageConfigData d2 = (PackageConfigData) o2;
+            public int compare(final Object o1,
+                               final Object o2) {
+                final PackageConfigData d1 = (PackageConfigData) o1;
+                final PackageConfigData d2 = (PackageConfigData) o2;
                 return d1.name.compareTo( d2.name );
             }
             
         });
-        PackageConfigData[] resultArr = (PackageConfigData[]) result.toArray( new PackageConfigData[result.size()] );
+        PackageConfigData[] resultArr = result.toArray( new PackageConfigData[result.size()] );
 
         return resultArr;
     }
@@ -267,11 +267,14 @@ public class ServiceImplementation
 
     @WebRemote
     public String checkinVersion(RuleAsset asset) throws SerializableException {  
-        log.info( "CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "]");
+        log.info( "CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "]  ARCHIVED [" + asset.archived + "]");
+        
+        System.out.println("CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "]  ARCHIVED [" + asset.archived + "]");
 
         
         AssetItem repoAsset = repository.loadAssetByUUID( asset.uuid );
         
+        repoAsset.archiveItem( asset.archived );
         MetaData meta = asset.metaData;
         
         metaDataMapper.copyFromMetaData( meta, repoAsset );
@@ -293,7 +296,7 @@ public class ServiceImplementation
     @WebRemote
     public TableDataResult loadAssetHistory(String uuid) throws SerializableException {
         
-        List result = new ArrayList();
+        List<TableDataRow> result = new ArrayList<TableDataRow>();
         RulesRepository repo = repository;
         AssetItem item = repository.loadAssetByUUID( uuid );
         AssetHistoryIterator it = item.getHistory();
@@ -319,7 +322,7 @@ public class ServiceImplementation
         
         if (result.size() == 0) return null;
         TableDataResult table = new TableDataResult();
-        table.data = (TableDataRow[]) result.toArray(new TableDataRow[result.size()]);
+        table.data = result.toArray(new TableDataRow[result.size()]);
         
         return table;
     }
@@ -375,6 +378,7 @@ public class ServiceImplementation
         item.updateHeader( data.header );
         item.updateExternalURI( data.externalURI );
         item.updateDescription( data.description );
+        item.archiveItem( data.archived );
         
         item.checkin( data.description );
         
@@ -410,8 +414,6 @@ public class ServiceImplementation
         TableDisplayHandler handler = new TableDisplayHandler();
         System.out.println("time for load: " + (System.currentTimeMillis() - start) );
         return handler.loadRuleListTable( it, numRows );
-        
-
     }
 
     
@@ -531,7 +533,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    public TableDataResult quickFindAsset(String searchText, int max) {
+    public TableDataResult quickFindAsset(String searchText, int max, boolean searchArchived) {
         
         RulesRepository repo = repository;
         String search = Pattern.compile("*", Pattern.LITERAL).matcher(searchText).replaceAll(Matcher.quoteReplacement("%"));
@@ -543,10 +545,10 @@ public class ServiceImplementation
         
         TableDataResult result = new TableDataResult();
         
-        List resultList = new ArrayList();        
+        List<TableDataRow> resultList = new ArrayList<TableDataRow>();        
         
         long start = System.currentTimeMillis();        
-        AssetItemIterator it = repository.findAssetsByName( search );
+        AssetItemIterator it = repository.findAssetsByName( search, searchArchived ); // search for archived itens
         System.out.println(System.currentTimeMillis() - start);
         for(int i = 0; i < max; i++) {
             if (!it.hasNext()) {
@@ -568,7 +570,7 @@ public class ServiceImplementation
             resultList.add( empty );
         }
         
-        result.data = (TableDataRow[]) resultList.toArray( new TableDataRow[resultList.size()] );
+        result.data = resultList.toArray( new TableDataRow[resultList.size()] );
         return result;
         
     }

@@ -307,6 +307,17 @@ public class ServiceImplementationTest extends TestCase {
   }
   
   
+  public void testArchivePackage() throws Exception {
+      ServiceImplementation impl = getService();
+      
+      PackageConfigData[] pkgs = impl.listPackages();
+      
+      String uuid = impl.createPackage( "testCreateArchivedPackage", "this is a new package" );
+      PackageItem item = impl.repository.loadPackage( "testCreateArchivedPackage" );
+      item.archiveItem( true );
+      assertEquals( pkgs.length, impl.listPackages().length );
+  }
+  
   public void testCreatePackage() throws Exception {
       ServiceImplementation impl = getService();
       PackageConfigData[] pkgs = impl.listPackages();
@@ -417,13 +428,13 @@ public class ServiceImplementationTest extends TestCase {
       assertEquals(5, res.data.length);
       
 
-      TableDataResult result = impl.quickFindAsset( "testListByForma", 5 );
+      TableDataResult result = impl.quickFindAsset( "testListByForma", 5, false );
       assertEquals(5, result.data.length);
       
       assertNotNull(result.data[0].id);
       assertTrue(result.data[0].values[0].startsWith( "testListByFormat" ));
       
-      result = impl.quickFindAsset( "testListByForma", 3 );
+      result = impl.quickFindAsset( "testListByForma", 3, false );
       assertEquals(4, result.data.length);
       
       assertEquals("MORE", result.data[3].id);

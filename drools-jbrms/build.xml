@@ -6,7 +6,7 @@
 	              classpath="../lib/gwttasks.jar"/>
 	  
 	<property file="build.properties"/>
-
+	
 	<target name="gwt-compile">
 		<gwt:compile outDir="src/main/webapp" 
 			gwtHome="${gwt.home}"
@@ -16,7 +16,7 @@
 	</target>
 
 	<target name="gwt-shell">
-		<gwt:shell sourcedir="src/main/java/" 
+		<gwt:shell sourceclasspath=".:src/main/java/" 
 			bindir="target/classes" 
 			outDir="src/main/webapp" 
 			gwtHome="${gwt.home}" 
