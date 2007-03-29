@@ -26,7 +26,7 @@ import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.rpc.ValidatedResponse;
 import org.drools.brms.server.contenthandler.ContentHandler;
-import org.drools.brms.server.rules.SuggestionCompletionLoader;
+import org.drools.brms.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.repository.AssetHistoryIterator;
@@ -378,7 +378,7 @@ public class ServiceImplementation
         
         item.checkin( data.description );
         
-        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
         loader.getSuggestionEngine( item );
         
         ValidatedResponse res = new ValidatedResponse();
@@ -593,7 +593,7 @@ public class ServiceImplementation
         try {
             
             PackageItem pkg = repository.loadPackage( packageName );
-            SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+            BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
             return loader.getSuggestionEngine( pkg );
         } catch (RulesRepositoryException e) {
             log.error( e );

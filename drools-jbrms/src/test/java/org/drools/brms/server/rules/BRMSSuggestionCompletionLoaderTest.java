@@ -4,12 +4,13 @@ import junit.framework.TestCase;
 
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 
-public class SuggestionCompletionLoaderTest extends TestCase {
+public class BRMSSuggestionCompletionLoaderTest extends TestCase {
 
     public void testLoader() throws Exception {
         
@@ -18,7 +19,10 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         item.updateHeader( "import java.util.Date" );
         repo.save();
         
-        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        BRMSSuggestionCompletionLoader  loader = new BRMSSuggestionCompletionLoader();
+        String header = item.getHeader();
+        
+        
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( item );
         assertNotNull(engine);
         
@@ -46,7 +50,8 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         item.updateHeader( "import java.util.Date\ntemplate Person\njava.lang.String name\nDate birthDate\nend" );
         repo.save();
         
-        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
+
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( item );
         assertNotNull(engine);
         String[] factTypes = engine.getFactTypes();
@@ -76,7 +81,9 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         asset.checkin( "ok" );
         
         item = repo.loadPackage( "testLoadDSLs" );
-        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
+        
+
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( item );
         assertEquals(1, eng.actionDSLSentences.length);
         assertEquals(1, eng.conditionDSLSentences.length);
@@ -93,18 +100,20 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         PackageItem item = repo.createPackage( "testErrorsInPackage", "to test error handling" );
 
-        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
+
+        
         assertNotNull(loader.getSuggestionEngine( item ));
         assertFalse(loader.hasErrors());
         
         item.updateHeader( "gooble de gook" );
-        loader = new SuggestionCompletionLoader();
+        loader = new BRMSSuggestionCompletionLoader();
         loader.getSuggestionEngine( item );
         assertTrue(loader.hasErrors());
         
         
         item.updateHeader( "import foo.bar; \nglobal goo.Bar baz;" );
-        loader = new SuggestionCompletionLoader();
+        loader = new BRMSSuggestionCompletionLoader();
         loader.getSuggestionEngine( item );
         assertTrue(loader.hasErrors());
         
