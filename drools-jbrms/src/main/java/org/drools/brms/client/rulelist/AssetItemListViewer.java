@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 public class AssetItemListViewer extends Composite {
 
     /** The number of rows to "fill out" */
-    private static final int FILLER_ROWS = 100;
+    private static final int FILLER_ROWS = 25;
     public static final String RULE_LIST_TABLE_ID = "ruleList";
     
     private FlexTable     outer = new FlexTable();
