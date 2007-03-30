@@ -195,7 +195,7 @@ public class PackageSnapshotView extends Composite {
         Button btn = new Button("Copy");
         btn.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                copy.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+                copy.setPopupPosition( w.getAbsoluteLeft() - 180, w.getAbsoluteTop() );
                 copy.show();
             }            
         });

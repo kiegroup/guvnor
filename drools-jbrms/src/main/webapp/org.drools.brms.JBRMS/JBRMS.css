@@ -23,20 +23,22 @@ a {
   color: darkblue;
 }
 
-
-
 a:visited {
   color: darkblue;
 }
 
-.gwt-BorderedPanel {
+.headerBarGrey {
+	background-image: url(images/jbossrules_hdrbkg_grey.gif);
+	background-repeat: repeat-x;
+	height:70px;
 }
 
-.gwt-Button {
+.headerBarBlue {
+	background-image: url(images/jbossrules_hdrbkg_blue.gif);
+	background-repeat: repeat-x;
+	height:70px;
 }
 
-.gwt-Canvas {
-}
 
 .gwt-CheckBox {
   font-size: smaller;
@@ -56,11 +58,6 @@ a:visited {
   cursor: default;
 }
 
-.gwt-FileUpload {
-}
-
-.gwt-Frame {
-}
 
 .gwt-HorizontalSplitter .Bar {
   width: 8px;
@@ -74,12 +71,6 @@ a:visited {
 
 .gwt-HTML {
   font-size: smaller;
-}
-
-.gwt-Hyperlink {
-}
-
-.gwt-Image {
 }
 
 .gwt-Label {
@@ -106,22 +97,10 @@ select:focus{ border-color:black !important; color: black;}
   background-color: #f6f6f6;
 }
 
-.gwt-PasswordTextBox {
-}
-
 .gwt-RadioButton {
   font-size: smaller;
 }
 
-
-
-.gwt-TabPanel {
-  
-}
-
-.gwt-TabPanelBottom {
-
-}
 
 .model-builder-Background {
   background-color: #f7f2d0;
@@ -221,6 +200,9 @@ input:focus, input:active{ border-color:black !important; color: black;}
   font-size: smaller;
 }
 
+.small-Text {font-size: smaller;}
+
+
 .gwt-Tree .gwt-TreeItem-selected {
   background-color: yellow;
 }
@@ -251,12 +233,13 @@ input:focus, input:active{ border-color:black !important; color: black;}
   background-color: #f6f6f6;
   width: 100%;
   height: 24em;
+  font-size: smaller;
 }
 
 .ks-Info {
   background-color: #aaaa99;
   padding: 10px 10px 2px 10px;
-  font-size: smaller;
+  font-size: x-small !important;
 }
 
 .ks-List {
@@ -345,9 +328,17 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .loading-Popup {
-  //background-color: #f7f2d0;
+  background-color: white;
   border: 2px solid #aaaa99;
   padding: 4px;
+  font-color: white !important;
+}
+
+.welcome-Page {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: #ccc;
 }
 
 .rule-warning-Popup {
