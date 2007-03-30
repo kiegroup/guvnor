@@ -20,69 +20,19 @@ import org.drools.repository.RulesRepositoryAdministrator;
 public class TestEnvironmentSessionHelper {
 
 
-    public static Session testSession;
     public static Repository repository;
-    
-    /** This will create a new repository instance (should only happen once after startup) */
-    private Session initialiseRepo(JCRRepositoryConfigurator config) throws LoginException,
-                                                                 RepositoryException {
-        Session session = getJCRRepository(config).login(
-                                           new SimpleCredentials("alan_parsons", "password".toCharArray()));
-
-
-        
-        config.setupRulesRepository( session );
-        return session;
-    }
-    
-    synchronized static Repository getJCRRepository(JCRRepositoryConfigurator config) {
-        if (repository == null) {
-            repository = config.getJCRRepository(null);
-        }
-        return repository;
-    }
-    
-    /** Initialse the repository, set it up if it is brand new */
-    public RulesRepository createRuleRepositoryInstance() {
-        
-        JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
-
-        try {
-            
-            Session session;
-            if (repository == null) {
-                //this should only need to be done on server startup
-                long start = System.currentTimeMillis();
-                session = initialiseRepo( config );
-                System.out.println("initialise repo time: " + (System.currentTimeMillis() - start));
-            }  else {
-                //ok this is probably fast enough to do with each request I think
-                long start = System.currentTimeMillis();
-                session = repository.login(
-                                                   new SimpleCredentials("alan_parsons", "password".toCharArray()));
-
-                System.out.println("login repo time: " + (System.currentTimeMillis() - start));
-                
-            }
-            
-            return new RulesRepository( session );
-        } catch ( LoginException e ) {
-            throw new RuntimeException( e );
-        } catch ( RepositoryException e ) {
-            throw new RuntimeException( "Unable to get a repository: " + e.getMessage() );
-        }
-    }
     
     
     public static Session getSession() throws Exception {
         return getSession(true);
     }
     
-    public static Session getSession(boolean erase) throws Exception {
-        if (testSession == null) {
+    public static synchronized Session getSession(boolean erase) throws Exception {
+        if (repository == null) {
             JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
-            Repository repo = getJCRRepository( config );
-            testSession = repo.login(
+            repository = config.getJCRRepository(null);;
+        
+            Session testSession = repository.login(
                                                                      new SimpleCredentials("alan_parsons", "password".toCharArray()));
 
             RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(testSession);
@@ -91,8 +41,11 @@ public class TestEnvironmentSessionHelper {
                 admin.clearRulesRepository( );
             } 
             config.setupRulesRepository( testSession );
+            return testSession;
+        } else {
+            return repository.login(
+                             new SimpleCredentials("alan_parsons", "password".toCharArray()));            
         }
-        return testSession;
         
     }
         

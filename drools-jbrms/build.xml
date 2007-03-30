@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
+<!-- 
+ This is a module specific script for GWT related issues mainly you should only need to worry about this
+ if you are modifying the GUI itself.
+ 
+ @author Fernando Meyer, Michael Neale
+-->
 <project name="org.drools.brms.JBRMS" default="gwt-compile" basedir="." xmlns:gwt="antlib:de.samaflost.gwttasks">
 	<taskdef uri="antlib:de.samaflost.gwttasks"
 	              resource="de/samaflost/gwttasks/antlib.xml"
@@ -16,7 +22,7 @@
 	</target>
 
 	<target name="gwt-shell">
-		<gwt:shell sourceclasspath=".:src/main/java/" 
+		<gwt:shell sourceclasspath="src/main/java/; ../drools-compiler/src/main/java" 
 			bindir="target/classes" 
 			outDir="src/main/webapp" 
 			gwtHome="${gwt.home}" 

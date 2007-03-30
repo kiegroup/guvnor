@@ -5,11 +5,17 @@ import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeListener;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is a rule/resource navigator that uses the server side categories to 
@@ -25,7 +31,9 @@ public class CategoryExplorerWidget extends Composite
     private RepositoryServiceAsync service       = RepositoryServiceFactory.getService();
     private CategorySelectHandler  categorySelectHandler;
     private String                 selectedPath;
-
+    private Panel                  emptyCategories;
+    
+    
     public void setTreeSize(String width) {
         navTreeWidget.setWidth( width );
     }
@@ -45,6 +53,7 @@ public class CategoryExplorerWidget extends Composite
 
         initWidget( panel );
         navTreeWidget.addTreeListener( this );
+        this.setStyleName( "category-explorer-Tree" );
     }
 
     /**
@@ -56,6 +65,26 @@ public class CategoryExplorerWidget extends Composite
         loadInitialTree();
     }
 
+    public void showEmptyTree() {
+       
+        if (this.emptyCategories == null) {
+                AbsolutePanel p = new AbsolutePanel();
+                 p.add( new HTML("No categories created yet. Add some categories from the administration screen.") );
+                 Button b = new Button("Refresh");
+                 b.addClickListener( new ClickListener() {
+                    public void onClick(Widget w) {
+                        refresh();
+                    }
+                 });
+                 p.add( b );
+                 p.setStyleName( "small-Text" );
+                 this.emptyCategories = p;
+                 this.panel.add( this.emptyCategories );
+        }
+        emptyCategories.setVisible( true );     
+               
+    }
+    
     /** This will refresh the tree and restore it back to the original state */
     private void loadInitialTree() {
         navTreeWidget.addItem( "Please wait..." );
@@ -72,10 +101,11 @@ public class CategoryExplorerWidget extends Composite
                                              selectedPath = null;
                                              navTreeWidget.removeItems();
                                              String[] categories = (String[]) result;
-                                             boolean empty = false;
+
                                              if (categories.length == 0) {
-                                                 empty = true;
-                                                 navTreeWidget.addItem( "No categories created yet. Add some categories from the administration screen." );
+                                                 showEmptyTree();
+                                             } else {
+                                                 hideEmptyTree();
                                              }
                                              for ( int i = 0; i < categories.length; i++ ) {
                                                  TreeItem it = new TreeItem();
@@ -84,22 +114,30 @@ public class CategoryExplorerWidget extends Composite
                                                  it.addItem( new PendingItem() );
                                                  navTreeWidget.addItem( it );
                                              }
-                                             //MN: disabling this to get rid of default selection
-                                             //if (!empty) navTreeWidget.setSelectedItem( navTreeWidget.getItem( 0 ) );
 
                                          }
+
+
 
                                      } );
 
     }
 
-    public void onShow() {
-        //move along... these are not the droids you're looking for...
+    
+    
+
+    private void hideEmptyTree() {
+        if (this.emptyCategories != null) {
+            this.emptyCategories.setVisible( false );
+        }
+        
     }
 
+
+
     public void onTreeItemSelected(TreeItem item) {
-        this.selectedPath = getPath( item );
-        this.categorySelectHandler.selected( selectedPath );
+            this.selectedPath = getPath( item );
+            this.categorySelectHandler.selected( selectedPath );
     }
 
     public void onTreeItemStateChanged(TreeItem item) {

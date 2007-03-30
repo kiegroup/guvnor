@@ -594,6 +594,8 @@ public class ServiceImplementationTest extends TestCase {
       impl.removeCategory( "testRemoveCategory" );
       String[] _children = impl.loadChildCategories( "/" );
       assertEquals(children.length, _children.length);
+      
+      
   }
   
   public void testLoadSuggestionCompletionEngine() throws Exception {

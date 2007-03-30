@@ -34,10 +34,10 @@ public class CategoryManager extends Composite {
 
         explorer = new CategoryExplorerWidget(new CategorySelectHandler() {
             public void selected(String sel) {
-                //don't really need this
+                //don't need this here as we don't do anything on select in this spot
             }
          });
-
+        explorer.setStyleName( "category-explorer-Admin" );
         
         SimplePanel editable = new SimplePanel();
         editable.setStyleName( "metadata-Widget" );

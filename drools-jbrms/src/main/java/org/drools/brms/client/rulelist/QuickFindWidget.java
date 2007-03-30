@@ -67,7 +67,8 @@ public class QuickFindWidget extends Composite {
         srch.add( searchBox );
         srch.add( go );
         
-        archiveBox = new CheckBox("Search archived itens");
+        archiveBox = new CheckBox("Include archived items in list");
+        archiveBox.setStyleName( "small-Text" );
         archiveBox.setChecked(false);
 
         layout.addAttribute( "Find items with a name matching:", srch );
