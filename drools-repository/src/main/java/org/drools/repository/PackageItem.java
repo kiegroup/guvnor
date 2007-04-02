@@ -350,13 +350,16 @@ public class PackageItem extends VersionableItem {
      * @param fieldPredicates A predicate string (SQL style).
      * @return A list of matches. 
      */
-    public AssetItemIterator queryAssets(String fieldPredicates) {
+    public AssetItemIterator queryAssets(String fieldPredicates, boolean seekArchived) {
         try {
 
             String sql = "SELECT * FROM " + AssetItem.RULE_NODE_TYPE_NAME;
-            sql += " WHERE jcr:path LIKE '" + getVersionContentNode().getPath() + "/" + ASSET_FOLDER_NAME + "[%]/%'";
-            
+            sql += " WHERE jcr:pathz LIKE '" + getVersionContentNode().getPath() + "/" + ASSET_FOLDER_NAME + "[%]/%'";
             sql += " and " + fieldPredicates;
+            
+            if ( seekArchived == true ) sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
+            
+            System.out.println(sql);
             
             Query q = node.getSession().getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
             QueryResult res = q.execute();            
@@ -364,9 +367,11 @@ public class PackageItem extends VersionableItem {
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException(e);
         }
-        
     }
     
+    public AssetItemIterator queryAssets(String fieldPredicates){
+        return queryAssets( fieldPredicates, true );
+    }
     /**
      * This will load an iterator for assets of the given format type.
      */
@@ -381,9 +386,7 @@ public class PackageItem extends VersionableItem {
             }
             predicate = predicate + " ) ";
             return queryAssets( predicate );
-            
         }
-        
     }
     
     /**
@@ -453,9 +456,6 @@ public class PackageItem extends VersionableItem {
             throw new RulesRepositoryException( e );
         }
     }
-
-
-
     
     /**
      * This will return a list of assets for a given state.
@@ -486,8 +486,6 @@ public class PackageItem extends VersionableItem {
                 //ignore this one
             } 
             else {
-                
-                
                 List fullHistory = new ArrayList();
                 for ( Iterator iter = head.getHistory(); iter.hasNext(); ) {
                     AssetItem element = (AssetItem) iter.next();
