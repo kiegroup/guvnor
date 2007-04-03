@@ -9,7 +9,6 @@
 	<classpathentry kind="var" path="M2_REPO/javax/jcr/jcr/1.0/jcr-1.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/antlr/stringtemplate/3.0/stringtemplate-3.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.2.1.v_677_R32x/core-3.2.1.v_677_R32x.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/drools/drools-repository/3.1.0-M1/drools-repository-3.1.0-M1-tests.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/mvel/mvel14/1.2beta13/mvel14-1.2beta13.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/drools/drools-core/3.1.0-M1/drools-core-3.1.0-M1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate-annotations/3.2.1.ga/hibernate-annotations-3.2.1.ga.jar"/>
@@ -47,9 +46,9 @@
 	<classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate/3.2.1.ga/hibernate-3.2.1.ga.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/geronimo/specs/geronimo-jta_1.0.1B_spec/1.0.1/geronimo-jta_1.0.1B_spec-1.0.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/concurrent/concurrent/1.3.4/concurrent-1.3.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/drools/drools-repository/3.1.0-M1/drools-repository-3.1.0-M1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/asm/asm-attrs/1.5.3/asm-attrs-1.5.3.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/drools-compiler"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/drools-repository"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
