@@ -1,4 +1,16 @@
 package org.drools.brms.client.rulelist;
+
+/**
+ * This class is fully deprecated. Move along, nothing to see here.
+ * (useful notes are in the comments).
+ * @deprecated
+ * @author Michael Neale
+ *
+ */
+public class RuleListViewLegacy {
+    
+}
+
 //package org.drools.brms.client.rulelist;
 //
 //import org.drools.brms.client.rpc.RepositoryServiceAsync;
