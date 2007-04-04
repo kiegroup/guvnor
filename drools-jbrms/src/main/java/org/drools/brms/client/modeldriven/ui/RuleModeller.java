@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
@@ -69,7 +70,7 @@ public class RuleModeller extends Composite {
     public void refreshWidget() {
         layout.clear();
         
-        Image addPattern = new Image( "images/new_item.gif" );
+        Image addPattern = new ImageButton( "images/new_item.gif" );
         addPattern.setTitle( "Add a condition to this rule." );
         addPattern.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -83,7 +84,7 @@ public class RuleModeller extends Composite {
         layout.setWidget( 1, 1, renderLhs(this.model) );
         layout.setWidget( 2, 0, new Label("THEN") );
         
-        Image addAction = new Image("images/new_item.gif");
+        Image addAction = new ImageButton("images/new_item.gif");
         addAction.setTitle( "Add an action to this rule." );
         addAction.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -102,7 +103,7 @@ public class RuleModeller extends Composite {
 
 
     private Widget getAddAttribute() {
-        Image add = new Image("images/new_item.gif");
+        Image add = new ImageButton("images/new_item.gif");
         add.setTitle( "Add an option to the rule, to modify its behavior when evaluated or executed." );
         
         add.addClickListener( new ClickListener() {
@@ -172,7 +173,7 @@ public class RuleModeller extends Composite {
             
             HorizontalPanel horiz = new HorizontalPanel();
             
-            Image remove = new Image("images/delete_item_small.gif");
+            Image remove = new ImageButton("images/delete_item_small.gif");
             remove.setTitle( "Remove this action." );
             final int idx = i;
             remove.addClickListener( new ClickListener() {
@@ -523,9 +524,7 @@ public class RuleModeller extends Composite {
                               Widget w) {
         HorizontalPanel horiz = new HorizontalPanel();
         
-        
-        
-        Image remove = new Image("images/delete_item_small.gif");
+        Image remove = new ImageButton("images/delete_item_small.gif");
         remove.setTitle( "Remove this ENTIRE condition, and all the field constraints that belong to it." );
         final int idx = i;
         remove.addClickListener( new ClickListener() {
