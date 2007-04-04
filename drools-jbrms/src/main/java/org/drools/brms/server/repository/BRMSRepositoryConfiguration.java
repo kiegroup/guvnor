@@ -28,7 +28,7 @@ public class BRMSRepositoryConfiguration {
     JCRRepositoryConfigurator configurator = new JackrabbitRepositoryConfigurator();
     String repositoryHomeDirectory = null;
     
-    private Repository repository;
+    Repository repository;
     
     @Create
     public void create() {
