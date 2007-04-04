@@ -39,6 +39,22 @@
             <target>1.5</target>
           </configuration>
         </plugin>
+	    <plugin>
+	      <artifactId>maven-clean-plugin</artifactId>
+	      <configuration>
+	        <filesets>
+	          <fileset>
+	            <directory>./</directory>
+	            <includes>
+	              <include>repository**/*</include>
+				  <include>repository.xml</include>
+				  <include>repository</include>				
+	            </includes>
+	            <followSymlinks>false</followSymlinks>
+	          </fileset>
+	        </filesets>
+	      </configuration>
+	    </plugin>
       </plugins>
     </pluginManagement>    
   </build>
