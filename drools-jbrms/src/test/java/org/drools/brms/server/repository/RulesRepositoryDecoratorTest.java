@@ -1,5 +1,9 @@
 package org.drools.brms.server.repository;
 
+import javax.jcr.Session;
+
+import org.drools.repository.RulesRepository;
+
 import junit.framework.TestCase;
 
 public class RulesRepositoryDecoratorTest extends TestCase {
@@ -7,18 +11,22 @@ public class RulesRepositoryDecoratorTest extends TestCase {
     public void testDecorator() {
         RulesRepositoryManager dec = new RulesRepositoryManager();
         BRMSRepositoryConfiguration config = new BRMSRepositoryConfiguration();
-        config.create();
-        
+        MockRepo repo = new MockRepo();
+        config.repository = repo;
         dec.repositoryConfiguration = config;
         dec.userName = "test";
         dec.create();
         
         assertNotNull(dec.getRepository().getSession());
-        assertTrue(dec.getRepository().getSession().isLive());
+        
+        
+        
+        assertFalse(repo.session.loggedout);
         dec.close();
-        assertFalse(dec.getRepository().getSession().isLive());
+        assertTrue(repo.session.loggedout);
         
         
     }
+    
     
 }
