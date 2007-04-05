@@ -10,6 +10,7 @@ import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ConnectiveConstraint;
 import org.drools.brms.client.modeldriven.brxml.Constraint;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
+import org.drools.brms.client.modeldriven.brxml.IConstraint;
 import org.drools.brms.client.modeldriven.brxml.IPattern;
 
 import com.google.gwt.user.client.Command;
@@ -61,7 +62,7 @@ public class FactPatternWidget extends Composite {
             final Constraint c = pattern.constraints[row];
             final int currentRow = row;
 
-            if ( c.type != Constraint.TYPE_PREDICATE ) {
+            if ( c.constraintValueType != Constraint.TYPE_PREDICATE ) {
                 inner.setWidget( row, 0, fieldLabel( c ) );
 
                 inner.setWidget( row, 1, operatorDropDown( c ) );
@@ -78,7 +79,7 @@ public class FactPatternWidget extends Composite {
                 } );
 
                 inner.setWidget( row, 4, addConnective );
-            } else if (c.type == Constraint.TYPE_PREDICATE) {
+            } else if (c.constraintValueType == Constraint.TYPE_PREDICATE) {
                 inner.setWidget( row, 0, predicateEditor(c) );
                 inner.getFlexCellFormatter().setColSpan( row, 0, 5 );
             }
@@ -188,7 +189,7 @@ public class FactPatternWidget extends Composite {
         predicate.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 Constraint con = new Constraint();
-                con.type = Constraint.TYPE_PREDICATE;
+                con.constraintValueType = Constraint.TYPE_PREDICATE;
                 pattern.addConstraint( con );
                 modeller.refreshWidget();
                 popup.hide();
@@ -246,17 +247,8 @@ public class FactPatternWidget extends Composite {
 
     }
 
-    private Widget connectiveValueEditor(final ConnectiveConstraint con) {
-
-        final TextBox box = new TextBox();
-        box.setVisibleLength( 4 );
-        box.setText( con.value );
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                con.value = box.getText();
-            }
-        } );
-        return box;
+    private Widget connectiveValueEditor(final IConstraint con) {
+        return new ConstraintValueEditor(con, this.modeller.getModel());
     }
 
     private Widget connectiveOperatorDropDown(final ConnectiveConstraint con, String fieldName) {

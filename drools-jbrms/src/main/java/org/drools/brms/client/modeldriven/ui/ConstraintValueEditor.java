@@ -1,6 +1,5 @@
 package org.drools.brms.client.modeldriven.ui;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.brms.client.common.FieldEditListener;
@@ -8,6 +7,7 @@ import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.InfoPopup;
 import org.drools.brms.client.common.Lbl;
 import org.drools.brms.client.modeldriven.brxml.Constraint;
+import org.drools.brms.client.modeldriven.brxml.IConstraint;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 
 import com.google.gwt.user.client.Command;
@@ -18,7 +18,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -34,14 +33,14 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ConstraintValueEditor extends Composite {
 
-    private Constraint constraint;
+    private IConstraint constraint;
     private Panel      panel;
     private RuleModel model;
 
     /**
      * @param con The constraint being edited.
      */
-    public ConstraintValueEditor(Constraint con, RuleModel model) {
+    public ConstraintValueEditor(IConstraint con, RuleModel model) {
         this.constraint = con;
         this.model = model;
         panel = new SimplePanel();
@@ -52,7 +51,7 @@ public class ConstraintValueEditor extends Composite {
     private void refreshEditor() {
         panel.clear();
 
-        if ( constraint.type == Constraint.TYPE_UNDEFINED ) {
+        if ( constraint.constraintValueType == Constraint.TYPE_UNDEFINED ) {
             Image clickme = new Image( "images/edit.gif" );
             clickme.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
@@ -61,7 +60,7 @@ public class ConstraintValueEditor extends Composite {
             } );
             panel.add( clickme );
         } else {
-            switch ( constraint.type ) {
+            switch ( constraint.constraintValueType ) {
                 case Constraint.TYPE_LITERAL :
                     panel.add( literalEditor() );
                     break;
@@ -124,7 +123,7 @@ public class ConstraintValueEditor extends Composite {
         return box;
     }
 
-    private TextBox boundTextBox(final Constraint c) {
+    private TextBox boundTextBox(final IConstraint c) {
         final TextBox box = new TextBox();
         box.setStyleName( "constraint-value-Editor" );
         box.setText( c.value );
@@ -153,14 +152,14 @@ public class ConstraintValueEditor extends Composite {
     /**
      * Show a list of possibilities for the value type. 
      */
-    private void showTypeChoice(Widget w, final Constraint con) {
+    private void showTypeChoice(Widget w, final IConstraint con) {
         final FormStylePopup form = new FormStylePopup( "images/newex_wiz.gif",
                                                         "Field value" );
 
         Button lit = new Button( "Literal value" );
         lit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                con.type = Constraint.TYPE_LITERAL;
+                con.constraintValueType = Constraint.TYPE_LITERAL;
                 doTypeChosen( form );
             }
 
@@ -174,19 +173,23 @@ public class ConstraintValueEditor extends Composite {
         form.addRow( new HTML( "<hr/>" ) );
         form.addRow( new Lbl( "Advanced options",
                               "weak-Text" ) );
-        Button variable = new Button("Bound variable");
-        variable.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                con.type = Constraint.TYPE_VARIABLE;
-                doTypeChosen( form );
-            }
-        });
-        form.addAttribute( "A variable:", widgets( variable, new InfoPopup("A bound variable", "Will apply a constraint that compares a field to a bound variable.")) );
+        
+        //only want to show variables if we have some !
+        if (this.model.getBoundVariablesInScope( this.constraint ).size() > 0) {
+            Button variable = new Button("Bound variable");
+            variable.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                    con.constraintValueType = Constraint.TYPE_VARIABLE;
+                    doTypeChosen( form );
+                }
+            });
+            form.addAttribute( "A variable:", widgets( variable, new InfoPopup("A bound variable", "Will apply a constraint that compares a field to a bound variable.")) );
+        }
         
         Button formula = new Button( "New formula" );
         formula.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                con.type = Constraint.TYPE_RET_VALUE;
+                con.constraintValueType = Constraint.TYPE_RET_VALUE;
                 doTypeChosen( form );
             }
         } );
