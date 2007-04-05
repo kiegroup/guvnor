@@ -109,7 +109,8 @@ select:focus{ border-color:black !important; color: black;}
 
 .model-builderInner-Background {
 	background-color: white;
-	border: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 
 }
 
@@ -124,11 +125,13 @@ select:focus{ border-color:black !important; color: black;}
 }
 
 .modeller-fact-pattern-Widget {
-	border: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 }
 
 .modeller-composite-Label { font-style: italic; }
 
+.modeller-action-Label { font-style: italic; font-size: smaller; }
 
 .gwt-DialogBox { 
 	border: 1px solid #aaaa99;
@@ -192,6 +195,14 @@ input:focus, input:active{ border-color:black !important; color: black;}
   padding: 0px;
 }
 
+.constraint-value-Editor {
+	padding:2px !important;border-color:#ccc !important; border: 1px solid #aaaa99; color:#666;
+}
+
+.constraint-value-Editor:focus, .constraint-value-Editor:active {
+	border-color:black !important; color: black;
+}
+
 
 .gwt-Tree {
 }
@@ -201,6 +212,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .small-Text {font-size: smaller;}
+.weak-Text {font-size: smaller; color: #ccc;}
 
 
 .gwt-Tree .gwt-TreeItem-selected {
@@ -258,7 +270,6 @@ input:focus, input:active{ border-color:black !important; color: black;}
   width: 100%;
   padding: 0.3em;
   padding-right: 16px;
-  cursor: pointer;
   cursor: hand;
 }
 
@@ -266,19 +277,6 @@ input:focus, input:active{ border-color:black !important; color: black;}
   background-color: #aaaa99;
 }
 
-.ks-images-Image {
-  margin: 8px;
-}
-
-.ks-images-Button {
-  margin: 8px;
-  cursor: pointer;
-  cursor: hand;
-}
-
-.ks-layouts {
-  margin: 8px;
-}
 
 .ks-layouts-Label {
   background-color: #aaaa99;
@@ -533,6 +531,8 @@ textarea:focus, textarea:active{color:black; border-color:black !important; back
 } 
 
 .sinkitem{color:white;}
+
+.image-Button{ cursor:pointer !important; }
 
 body{color:#444;}
 
