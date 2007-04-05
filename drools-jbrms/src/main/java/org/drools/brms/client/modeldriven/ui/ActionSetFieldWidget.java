@@ -3,6 +3,7 @@ package org.drools.brms.client.modeldriven.ui;
 import org.drools.brms.client.common.FieldEditListener;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.common.Lbl;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
@@ -101,7 +102,7 @@ public class ActionSetFieldWidget extends Composite {
         HorizontalPanel horiz = new HorizontalPanel();
         
         
-        Image edit = new Image("images/add_field_to_fact.gif");
+        Image edit = new ImageButton("images/add_field_to_fact.gif");
         edit.setTitle( "Add another field to this so you can set its value." );
         edit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -109,7 +110,7 @@ public class ActionSetFieldWidget extends Composite {
             }
         } );
         
-        horiz.add( new Label(HumanReadable.getActionDisplayName(this.model.getType()) + " [" + model.variable + "]") );
+        horiz.add( new Lbl(HumanReadable.getActionDisplayName(this.model.getType()) + " [" + model.variable + "]", "modeller-action-Label") );
         horiz.add( edit );
         
         return horiz;

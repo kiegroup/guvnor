@@ -2,6 +2,7 @@ package org.drools.brms.client.modeldriven.ui;
 
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.common.Lbl;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
@@ -111,7 +112,7 @@ public class ActionAssertFactWidget extends Composite {
             
 
         
-        horiz.add( new Label(HumanReadable.getActionDisplayName(this.model.getType()) + " " + this.model.factType) );
+        horiz.add( new Lbl(HumanReadable.getActionDisplayName(this.model.getType()) + " " + this.model.factType, "modeller-action-Label") );
         horiz.add( edit );
         return horiz;
         

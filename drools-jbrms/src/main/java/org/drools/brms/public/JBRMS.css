@@ -109,7 +109,8 @@ select:focus{ border-color:black !important; color: black;}
 
 .model-builderInner-Background {
 	background-color: white;
-	border: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 
 }
 
@@ -124,11 +125,13 @@ select:focus{ border-color:black !important; color: black;}
 }
 
 .modeller-fact-pattern-Widget {
-	border: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 }
 
 .modeller-composite-Label { font-style: italic; }
 
+.modeller-action-Label { font-style: italic; font-size: smaller; }
 
 .gwt-DialogBox { 
 	border: 1px solid #aaaa99;
