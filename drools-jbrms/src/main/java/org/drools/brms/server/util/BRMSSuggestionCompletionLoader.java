@@ -50,10 +50,12 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
         AssetItemIterator ait = pkg.listAssetsByFormat( new String[]{AssetFormats.MODEL} );
         while ( ait.hasNext() ) {
             AssetItem item = (AssetItem) ait.next();
-            try {
-                result.add( new JarInputStream( item.getBinaryContentAttachment(), false ) );
-            } catch ( IOException e ) {
-                this.errors.add( e.getMessage() );
+            if (item.getBinaryContentAttachment() != null) {
+                try {
+                    result.add( new JarInputStream( item.getBinaryContentAttachment(), false ) );
+                } catch ( IOException e ) {
+                    this.errors.add( e.getMessage() );
+                }
             }
         }
         return result;

@@ -1,8 +1,11 @@
 package org.drools.brms.client.common;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -13,16 +16,18 @@ import com.google.gwt.user.client.ui.Widget;
  * Generic error dialog popup.
  * This is a lazy singleton, only really need one to be shown at time. 
  */
-public class ErrorPopup extends PopupPanel {
+public class ErrorPopup extends DialogBox {
     
     public static ErrorPopup instance = null;
     
     Label errorMessage = new Label();
     Panel panel = new HorizontalPanel();
-    Button ok = new Button("OK");
+    Image ok = new ImageButton("images/close.gif");
     
     public ErrorPopup() {        
         super(true);
+        
+        panel.add( new Image("images/error_dialog.png") );
         panel.add( errorMessage );
         panel.add( ok );
         final PopupPanel self = this;
@@ -31,8 +36,9 @@ public class ErrorPopup extends PopupPanel {
                 self.hide();
             }            
         });
-        this.add( panel );
-        this.setPopupPosition( 0, 0 );
+        this.setWidget( panel );
+        this.setPopupPosition( 40, 40 );
+        setHeight( "150px" );
         setStyleName( "rule-error-Popup" );        
     }
     

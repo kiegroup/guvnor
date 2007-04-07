@@ -320,9 +320,11 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .rule-error-Popup {
-  background-color: red;
-  border: 1px solid #aaaa99;
+  background-color: white;
+  border: 2px solid black;
   padding: 4px;
+  font-style: bold !important;
+  font-color: black !important;
 }
 
 .loading-Popup {

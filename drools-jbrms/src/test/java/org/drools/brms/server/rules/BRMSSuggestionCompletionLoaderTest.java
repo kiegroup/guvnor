@@ -120,4 +120,23 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
         
     }
     
+    /**
+     * This shows we need to load up the model without anything attached yet.
+     */
+    public void testModelWithNoAttachment() throws Exception {
+        RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+        PackageItem item = repo.createPackage( "testmodelWithNoAttachment", "to test model loading" );
+        
+        item.addAsset( "testModel", "", null, AssetFormats.MODEL );
+        repo.save();
+        
+        BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
+
+        
+        assertNotNull(loader.getSuggestionEngine( item ));
+        assertFalse(loader.hasErrors());
+        
+        
+    }
+    
 }

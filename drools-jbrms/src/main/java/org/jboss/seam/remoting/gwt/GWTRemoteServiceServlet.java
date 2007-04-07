@@ -66,7 +66,7 @@ public class GWTRemoteServiceServlet extends HttpServlet {
   private static final String CONTENT_ENCODING = "Content-Encoding";
   private static final String CONTENT_ENCODING_GZIP = "gzip";
   private static final String CONTENT_TYPE_TEXT_PLAIN_UTF8 = "text/plain; charset=utf-8";
-  private static final String GENERIC_FAILURE_MSG = "The call failed on the server; see server log for details";
+  private static final String GENERIC_FAILURE_MSG = "An unexpected error happened on the server; See server log for details.";
   private static final HashMap TYPE_NAMES;
 
   /**
