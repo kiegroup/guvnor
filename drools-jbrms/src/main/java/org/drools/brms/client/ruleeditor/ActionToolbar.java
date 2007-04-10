@@ -1,5 +1,6 @@
 package org.drools.brms.client.ruleeditor;
 
+
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
@@ -36,8 +37,9 @@ public class ActionToolbar extends Composite {
     private Command closeCommand;
     
     private MetaData      metaData;
-    private Command checkin;
-    private Command arch;
+    private Command checkinAction;
+    private Command archiveAction;
+    private Command deleteAction;
     private String uuid;
     private HTML state;
     
@@ -51,9 +53,9 @@ public class ActionToolbar extends Composite {
                          boolean readOnly) {
 
         this.metaData = asset.metaData;
-        this.checkin = checkin;
+        this.checkinAction = checkin;
         this.uuid = asset.uuid;
-        this.arch = archiv;
+        this.archiveAction = archiv;
         this.state = new HTML();
         String status = metaData.status;
 
@@ -127,8 +129,8 @@ public class ActionToolbar extends Composite {
             public void onClick(Widget w) {
                 YesNoDialog diag = new YesNoDialog("Are you sure about archive this Item?", new Command() {
                     public void execute() {
-                        metaData.checkinComment = "Archived Item on $date";
-                        arch.execute();
+                        metaData.checkinComment = "Archived Item on " + new java.util.Date().toString();
+                        archiveAction.execute();
                     }                        
                 });
                 diag.setPopupPosition(Window.getClientWidth() / 2, Window.getClientHeight() / 2);
@@ -136,6 +138,23 @@ public class ActionToolbar extends Composite {
             }
         });
         saveControls.add(archive);        
+        
+        Button delete = new Button("Delete");
+        delete.addClickListener(new ClickListener() {
+            public void onClick(Widget w) {
+                YesNoDialog diag = new YesNoDialog("Are you sure about archive this Item?", new Command() {
+                    public void execute() {
+                        metaData.checkinComment = "Archived Item on $date";
+                        deleteAction.execute();
+                    }                        
+                });
+                diag.setPopupPosition(Window.getClientWidth() / 2, Window.getClientHeight() / 2);
+                diag.show();
+            }
+        });
+        saveControls.add(delete);        
+        
+                
         
         HorizontalPanel windowControls = new HorizontalPanel();
         
@@ -147,9 +166,7 @@ public class ActionToolbar extends Composite {
         });
         
         windowControls.add( maxMinImage );
-        
-        
-        
+       
         Image closeImg = new ImageButton("images/close.gif");
         closeImg.setTitle( "Close." );
         closeImg.addClickListener( new ClickListener() {
@@ -212,14 +229,10 @@ public class ActionToolbar extends Composite {
 
             public void execute() {
                 metaData.checkinComment = pop.getCheckinComment();
-                checkin.execute();
-                
+                checkinAction.execute();
             }
-
         });
         pop.show();
-      
-        
     }
 
     
