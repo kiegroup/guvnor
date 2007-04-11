@@ -54,7 +54,6 @@ public abstract class ContentHandler {
 
     
     public static ContentHandler getHandler(String format) {
-        
         ContentHandler h =  (ContentHandler) handlers.get( format );
         if (h == null) throw new IllegalArgumentException("Unable to handle the content type: " + format);
         return h;

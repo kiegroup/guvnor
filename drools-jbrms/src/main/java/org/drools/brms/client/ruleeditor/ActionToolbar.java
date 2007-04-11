@@ -50,12 +50,13 @@ public class ActionToolbar extends Composite {
                          final Command checkin,
                          final Command archiv,
                          final Command minimiseMaximise, 
-                         boolean readOnly) {
+                         final Command delete, boolean readOnly) {
 
         this.metaData = asset.metaData;
         this.checkinAction = checkin;
         this.uuid = asset.uuid;
         this.archiveAction = archiv;
+        this.deleteAction = delete;
         this.state = new HTML();
         String status = metaData.status;
 
@@ -139,21 +140,24 @@ public class ActionToolbar extends Composite {
         });
         saveControls.add(archive);        
         
-        Button delete = new Button("Delete");
-        delete.addClickListener(new ClickListener() {
-            public void onClick(Widget w) {
-                YesNoDialog diag = new YesNoDialog("Are you sure about archive this Item?", new Command() {
-                    public void execute() {
-                        metaData.checkinComment = "Archived Item on $date";
-                        deleteAction.execute();
-                    }                        
-                });
-                diag.setPopupPosition(Window.getClientWidth() / 2, Window.getClientHeight() / 2);
-                diag.show();
-            }
-        });
-        saveControls.add(delete);        
-        
+        if (this.metaData.versionNumber == 0) {  
+        Button delete = new Button( "Delete" );
+            delete.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                    YesNoDialog diag = new YesNoDialog( "Are you sure about delete this unversioned Item?",
+                                                        new Command() {
+                                                            public void execute() {
+                                                                metaData.checkinComment = "Archived Item on $date";
+                                                                deleteAction.execute();
+                                                            }
+                                                        } );
+                    diag.setPopupPosition( Window.getClientWidth() / 2,
+                                           Window.getClientHeight() / 2 );
+                    diag.show();
+                }
+            } );
+            saveControls.add( delete );        
+        }
                 
         
         HorizontalPanel windowControls = new HorizontalPanel();

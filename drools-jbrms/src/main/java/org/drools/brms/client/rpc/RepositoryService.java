@@ -42,6 +42,10 @@ public interface RepositoryService extends RemoteService {
      */
     public String createNewRule(String ruleName, String description, String initialCategory, String initialPackage, String format) throws SerializableException;
     
+
+    public void deleteUncheckedRule(String ruleName, String initialPackage);
+    
+    
     /**
      * This returns a list of packages where rules may be added.
      * Only the UUID and the name need to be populated.

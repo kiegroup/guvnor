@@ -17,5 +17,8 @@ public class RuleAsset
 
     public String uuid;
     public boolean archived = false;
+    public long getVersionNumber() {
+        return metaData.versionNumber;
+    }
 
 }

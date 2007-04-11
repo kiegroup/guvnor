@@ -122,7 +122,15 @@ public class ServiceImplementation
         }
 
     }
-
+    
+    
+    @WebRemote
+    public void deleteUncheckedRule(String uuid, String initialPackage) {
+        AssetItem asset = repository.loadAssetByUUID( uuid );
+        asset.remove();
+        repository.save();
+    }
+    
     /**
      * For some format types, we add some sugar by adding a new template.
      */
@@ -587,7 +595,6 @@ public class ServiceImplementation
         } catch (RulesRepositoryException e) {
             throw new SerializableException( e.getMessage() );
         }
-        
     }
 
     @WebRemote    
@@ -603,9 +610,4 @@ public class ServiceImplementation
         }
         
     }
-
-
-
-    
-
 }

@@ -1,7 +1,9 @@
 package org.drools.brms.client.ruleeditor;
 
 import org.drools.brms.client.common.ErrorPopup;
+import org.drools.brms.client.common.InfoPopup;
 import org.drools.brms.client.common.LoadingPopup;
+import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 
@@ -74,6 +76,8 @@ public class RuleViewer extends Composite {
                                                                 }
             
         });
+        
+        Command deleteCommand = null;
 
 
         //metaWidget.setWidth( "100%" );
@@ -90,7 +94,7 @@ public class RuleViewer extends Composite {
         formatter.setWidth( 0,
                             1,
                             "30%" );
-
+        
         //and now the action widgets (checkin/close etc).
         toolbar = new ActionToolbar( asset,
                                                    new Command() {
@@ -106,6 +110,11 @@ public class RuleViewer extends Composite {
                                                    new Command() {
                                                        public void execute() {
                                                            zoomIntoAsset();
+                                                       }
+                                                   },
+                                                   new Command() {
+                                                       public void execute() {
+                                                           doDelete();
                                                        }
                                                    },
                                                    readOnly);
@@ -135,7 +144,19 @@ public class RuleViewer extends Composite {
         layout.setWidget( 2,
                           0,
                           doco );
-
+    }
+    
+    void doDelete() {
+        RepositoryServiceFactory.getService().deleteUncheckedRule( this.asset.uuid , this.asset.metaData.packageName, new AsyncCallback() {
+  
+          public void onFailure(Throwable err) {
+                ErrorPopup.showMessage( err.getMessage() );
+          }
+  
+          public void onSuccess(Object o) {
+              closeCommand.execute();
+          }
+       });
     }
 
     /**
@@ -164,13 +185,8 @@ public class RuleViewer extends Composite {
                     ErrorPopup.showMessage( "Failed to check in the item. Please contact your system administrator." );
                     return;
                 }
-                
                 refreshDataAndView( );
-                
             }
-
-
-            
         });
     }
 
