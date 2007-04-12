@@ -147,7 +147,6 @@ public class ActionToolbar extends Composite {
                     YesNoDialog diag = new YesNoDialog( "Are you sure about delete this unversioned Item?",
                                                         new Command() {
                                                             public void execute() {
-                                                                metaData.checkinComment = "Archived Item on $date";
                                                                 deleteAction.execute();
                                                             }
                                                         } );

@@ -1,5 +1,6 @@
 package org.drools.brms.client;
 
+import org.drools.brms.client.admin.BackupManager;
 import org.drools.brms.client.admin.CategoryManager;
 import org.drools.brms.client.admin.StateManager;
 
@@ -18,10 +19,10 @@ public class AdminFeature extends JBRMSFeature {
       tab.setHeight( "100%" );
 
       tab.add( new CategoryManager(), "<img src='images/category_small.gif'/>Manage categories", true ); 
-      tab.add( new StateManager(),  "<img src='images/status_small.gif'/>Manage states", true );           
-      tab.selectTab( 0 );
+      tab.add( new StateManager(),  "<img src='images/status_small.gif'/>Manage states", true );
+      tab.add( new BackupManager(), "<img src='images/backup_small.gif'/>Manage Backups", true );
       
-
+      tab.selectTab( 0 );
       
       initWidget( tab );
       
