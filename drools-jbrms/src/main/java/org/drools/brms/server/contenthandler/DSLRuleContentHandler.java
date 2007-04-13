@@ -7,7 +7,7 @@ import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
-public class DSLRuleContentHandler extends ContentHandler {
+public class DSLRuleContentHandler extends ContentHandler implements IRuleAsset {
 
 
     public void retrieveAssetContent(RuleAsset asset,

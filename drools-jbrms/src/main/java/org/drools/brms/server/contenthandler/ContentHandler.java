@@ -24,11 +24,11 @@ public abstract class ContentHandler {
         handlers = new HashMap() {{
             put(AssetFormats.BUSINESS_RULE, new BRXMLContentHandler());
             put(AssetFormats.DSL_TEMPLATE_RULE, new DSLRuleContentHandler());
-            put(AssetFormats.DRL, new PlainTextContentHandler());
-            put(AssetFormats.DSL, new PlainTextContentHandler());
-            put(AssetFormats.FUNCTION, new PlainTextContentHandler());
+            put(AssetFormats.DRL, new DRLFileContentHandler());
+            put(AssetFormats.DSL, new DSLDefinitionContentHandler());
+            put(AssetFormats.FUNCTION, new FunctionContentHandler());
             put(AssetFormats.MODEL, new ModelContentHandler());
-            put(AssetFormats.TECHNICAL_RULE, new PlainTextContentHandler());
+            put(AssetFormats.TECHNICAL_RULE, new DRLFileContentHandler());
             
         }};        
     }

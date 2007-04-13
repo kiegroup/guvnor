@@ -7,7 +7,7 @@ import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
-public class PlainTextContentHandler extends ContentHandler {
+public abstract class PlainTextContentHandler extends ContentHandler {
 
 
     public void retrieveAssetContent(RuleAsset asset,
