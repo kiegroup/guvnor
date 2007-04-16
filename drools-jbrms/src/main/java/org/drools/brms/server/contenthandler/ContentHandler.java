@@ -7,7 +7,6 @@ import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-import org.drools.repository.RulesRepositoryException;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -57,6 +56,16 @@ public abstract class ContentHandler {
         ContentHandler h =  (ContentHandler) handlers.get( format );
         if (h == null) throw new IllegalArgumentException("Unable to handle the content type: " + format);
         return h;
+    }
+    
+    /** 
+     * @return true if the current content type is for a rule asset.
+     * If it is a rule asset, then it can be assembled into a package. 
+     * If its not, then it is there, nominally to support compiling or 
+     * validation/testing of the package (eg a model, or a dsl file).
+     */
+    public boolean isRuleAsset() {
+        return this instanceof IRuleAsset;
     }
     
 }

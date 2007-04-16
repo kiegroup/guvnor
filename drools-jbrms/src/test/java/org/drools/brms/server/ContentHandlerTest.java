@@ -12,14 +12,6 @@ public class ContentHandlerTest extends TestCase {
 
     
     public void testContentHandlerCreate() {
-        assertTrue(ContentHandler.getHandler( AssetFormats.DRL ) instanceof PlainTextContentHandler);
-        assertTrue(ContentHandler.getHandler( AssetFormats.DSL_TEMPLATE_RULE ) instanceof DSLRuleContentHandler);
-        assertTrue(ContentHandler.getHandler( AssetFormats.BUSINESS_RULE ) instanceof BRXMLContentHandler);
-        try {
-            ContentHandler.getHandler( "XXX" );
-            fail("should have thrown an exception");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e.getMessage());
-        }
+
     }
 }

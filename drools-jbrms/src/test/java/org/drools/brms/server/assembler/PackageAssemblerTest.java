@@ -59,6 +59,16 @@ public class PackageAssemblerTest extends TestCase {
         }
         assertFalse(builder.hasErrors());
 
+        ruleAtom = "package foo.bar2 rule foo2 \n when \n Person() \n then \n System.out.println(42); end";
+        builder.addPackageFromDrl( new StringReader(ruleAtom) );
+        if (builder.hasErrors()) {            
+            System.err.println(builder.getErrors()[0].getMessage());
+        }
+        assertFalse(builder.hasErrors());
+        
+        
+        
+        
     }
 
 }
