@@ -85,13 +85,21 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
         
 
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( item );
+        assertFalse(loader.hasErrors());
         assertEquals(1, eng.actionDSLSentences.length);
         assertEquals(1, eng.conditionDSLSentences.length);
         
         assertEquals( "The agents rating is {rating}", eng.conditionDSLSentences[0].sentence );
         assertEquals("Send a notification to manufacturing '{message}'",eng.actionDSLSentences[0].sentence);
         
+        dsl = "koo kooo ca choo";
+        asset.updateContent( dsl );
+        asset.checkin( "boo" );
         
+        item = repo.loadPackage( "testLoadDSLs" );
+        loader = new BRMSSuggestionCompletionLoader();
+        loader.getSuggestionEngine( item );
+        assertTrue(loader.hasErrors());
         
         
     }

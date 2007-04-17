@@ -1,6 +1,8 @@
 package org.drools.brms.server.builder;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.jar.JarInputStream;
 
 import junit.framework.TestCase;
@@ -15,15 +17,20 @@ public class BRMSPackageBuilderTest extends TestCase {
     public void testPartialPackage() throws Exception {
 
         JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
-        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance(  new JarInputStream[] {jis} );
+        List<JarInputStream> l = new ArrayList<JarInputStream>();
+        l.add( jis );
+        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l );
         
-        String header = "package foo.bar\n import com.billasurf.Person\n import com.billasurf.Board";
+        PackageDescr pc = new PackageDescr("foo.bar");
+        builder.addPackage( pc );
+        
+        String header = "import com.billasurf.Person\n import com.billasurf.Board";
         builder.addPackageFromDrl( new StringReader(header) );
         assertFalse(builder.hasErrors());
         
 
         
-        String ruleAtom = "package foo.bar rule foo \n when \n Person() \n then \n System.out.println(42); end";
+        String ruleAtom = "rule foo \n when \n Person() \n then \n System.out.println(42); end";
         builder.addPackageFromDrl( new StringReader(ruleAtom) );
         if (builder.hasErrors()) {            
             System.err.println(builder.getErrors()[0].getMessage());
@@ -73,5 +80,9 @@ public class BRMSPackageBuilderTest extends TestCase {
         assertNotNull(p.getRule( "abc" ));
         
     }
+    
+
+    
+    
 
 }
