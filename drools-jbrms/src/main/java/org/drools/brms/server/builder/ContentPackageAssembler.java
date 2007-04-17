@@ -16,6 +16,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.VersionableItem;
 import org.drools.rule.Package;
 
 /**
@@ -27,7 +28,7 @@ import org.drools.rule.Package;
 public class ContentPackageAssembler {
 
     private PackageItem pkg;
-    private List errors = new ArrayList();
+    private List<ContentAssemblyError> errors = new ArrayList<ContentAssemblyError>();
 
     private BRMSPackageBuilder builder;
     List<DSLMappingFile> dslFiles;
@@ -59,7 +60,7 @@ public class ContentPackageAssembler {
         builder.addPackage( new PackageDescr(pkg.getName()) );
         addDrl(pkg.getHeader());
         if (builder.hasErrors()) {
-            recordBuilderErrors();
+            recordBuilderErrors(pkg);
             return false;
         }
 
@@ -75,7 +76,7 @@ public class ContentPackageAssembler {
             AssetItem func = (AssetItem) it.next();
             addDrl( func.getContent() );
             if (builder.hasErrors()) {
-                recordBuilderErrors();
+                recordBuilderErrors(func);
                 return false;
             }
         }
@@ -83,6 +84,18 @@ public class ContentPackageAssembler {
         return errors.size() == 0;
     }
 
+    /**
+     * This will return true if there is an error in the package configuration or functions.
+     * @return
+     */
+    public boolean isPackageConfigurationInError() {
+        if (this.errors.size() > 0) {
+            return this.errors.get( 0 ).itemInError instanceof PackageItem;
+        } else {
+            return false;
+        }
+    }
+    
     private void addDrl(String drl) {
         try {
             builder.addPackageFromDrl( new StringReader(drl) );
@@ -98,10 +111,10 @@ public class ContentPackageAssembler {
     /**
      * This will accumulate the errors.
      */
-    private void recordBuilderErrors() {
+    private void recordBuilderErrors(VersionableItem asset) {
         DroolsError[] errs = builder.getErrors();
         for ( int i = 0; i < errs.length; i++ ) {
-            this.errors.add( new ContentAssemblyError(pkg, errs[i].getMessage()) );
+            this.errors.add( new ContentAssemblyError(asset, errs[i].getMessage()) );
         }
         
     }
@@ -119,6 +132,10 @@ public class ContentPackageAssembler {
     
     public boolean hasErrors() {
         return errors.size() > 0;
+    }
+    
+    public List<ContentAssemblyError> getErrors() {
+        return this.errors;
     }
     
     

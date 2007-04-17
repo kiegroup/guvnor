@@ -49,6 +49,20 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertEquals(1, assembler.dslFiles.size());
         
         
+        pkg.updateHeader( "koo koo ca choo" );
+        assembler = new ContentPackageAssembler(pkg);
+        assertTrue(assembler.hasErrors());
+        assertTrue(assembler.isPackageConfigurationInError());
+        
+        pkg.updateHeader( "import java.util.Date" );
+        assembler = new ContentPackageAssembler(pkg);
+        assertTrue(assembler.hasErrors());
+        assertTrue(assembler.getErrors().get(0).itemInError instanceof AssetItem);
+        
+        assertEquals("func1", assembler.getErrors().get( 0 ).itemInError.getName());
+        
+            
+        
     }
     
     public void FIXME_testSimplePackage() throws Exception {
