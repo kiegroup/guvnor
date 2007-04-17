@@ -1,11 +1,55 @@
 package org.drools.brms.server.builder;
 
+import java.util.List;
+
+import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.client.ruleeditor.CheckinPopup;
+import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
+import org.drools.repository.RepositorySessionUtil;
+import org.drools.repository.RulesRepository;
+import org.drools.rule.Package;
 
 import junit.framework.TestCase;
 
 public class ContentPackageAssemblerTest extends TestCase {
 
+    
+    public void testPackageConfig() throws Exception {
+        //test the config, no rule assets yet
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+        PackageItem pkg = repo.createPackage( "testBuilderPackageConfig", "x" );
+        pkg.updateHeader( "import java.util.List" );
+        AssetItem func = pkg.addAsset( "func1", "a function" );
+        func.updateFormat( AssetFormats.FUNCTION );
+        func.updateContent( "function void doSomething() { \n System.err.println(List.class.toString()); }" );
+        func.checkin( "yeah" );
+        
+        func = pkg.addAsset( "func2", "q" );
+        func.updateFormat( AssetFormats.FUNCTION );
+        func.updateContent( "function void foo() { \nSystem.err.println(42); \n}");
+        func.checkin( "" );
+        
+        AssetItem ass = pkg.addAsset( "dsl", "m");
+        ass.updateFormat( AssetFormats.DSL );
+        ass.updateContent( "[when]Foo bar=String()" );
+        ass.checkin( "" );
+        repo.save();
+
+
+        //now lets light it up
+        ContentPackageAssembler assembler = new ContentPackageAssembler(pkg);
+        assertFalse(assembler.hasErrors());
+        Package bin = assembler.getBinaryPackage();
+        assertNotNull(bin);
+        assertEquals("testBuilderPackageConfig", bin.getName());
+        assertEquals(2, bin.getFunctions().size());
+        
+        assertTrue(bin.isValid());
+        assertEquals(1, assembler.dslFiles.size());
+        
+        
+    }
     
     public void FIXME_testSimplePackage() throws Exception {
         PackageItem pkg = null;
