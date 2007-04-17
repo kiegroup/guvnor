@@ -1,4 +1,4 @@
-package org.drools.brms.server.assembler;
+package org.drools.brms.server.builder;
 
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;

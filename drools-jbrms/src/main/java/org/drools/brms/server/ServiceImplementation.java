@@ -140,7 +140,7 @@ public class ServiceImplementation
         if (format.equals( AssetFormats.DSL_TEMPLATE_RULE )) {
             asset.updateContent( "when\n\nthen\n" );
         } else if (format.equals( AssetFormats.FUNCTION )) {
-            asset.updateContent( "function " + ruleName + "(<args here>)\n\n\nend" );
+            asset.updateContent( "function " + ruleName + "(<args here>) {\n\n\n}" );
         } else if (format.equals( AssetFormats.DSL )) {
             asset.updateContent( "[when]Condition sentence template {var}=" +
                     "rule language mapping {var}\n" +
@@ -216,7 +216,6 @@ public class ServiceImplementation
         
         // get package header
         PackageItem pkgItem = repository.loadPackage( asset.metaData.packageName );
-        String header = pkgItem.getHeader();
 
         //load the content
         ContentHandler handler = ContentHandler.getHandler( asset.metaData.format );
@@ -305,7 +304,7 @@ public class ServiceImplementation
     public TableDataResult loadAssetHistory(String uuid) throws SerializableException {
         
         List<TableDataRow> result = new ArrayList<TableDataRow>();
-        RulesRepository repo = repository;
+
         AssetItem item = repository.loadAssetByUUID( uuid );
         AssetHistoryIterator it = item.getHistory();
 
@@ -339,9 +338,7 @@ public class ServiceImplementation
     public void restoreVersion(String versionUUID,
                                  String assetUUID,
                                  String comment) {
-        
-        
-        RulesRepository repo = repository;    
+  
         AssetItem old = repository.loadAssetByUUID( versionUUID );
         AssetItem head = repository.loadAssetByUUID( assetUUID );
         log.info( "RESTORE of asset: [" + head.getName() + "] UUID: [" + head.getUUID() + "] with historical version number: [" + old.getVersionNumber() );
@@ -452,7 +449,6 @@ public class ServiceImplementation
                             String newState,
                             boolean wholePackage) {
         
-        RulesRepository repo = repository;
         if (!wholePackage) {
             
             AssetItem asset = repository.loadAssetByUUID( uuid );
@@ -543,7 +539,6 @@ public class ServiceImplementation
     @WebRemote
     public TableDataResult quickFindAsset(String searchText, int max, boolean searchArchived) {
         
-        RulesRepository repo = repository;
         String search = Pattern.compile("*", Pattern.LITERAL).matcher(searchText).replaceAll(Matcher.quoteReplacement("%"));
         
         if (!search.endsWith( "%" )) {
