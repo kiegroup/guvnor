@@ -5,12 +5,13 @@ import java.util.jar.JarInputStream;
 
 import junit.framework.TestCase;
 
+import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 
-public class PackageAssemblerTest extends TestCase {
+public class BRMSPackageBuilderTest extends TestCase {
 
-    public void testDummy() {}
-    
     public void testPartialPackage() throws Exception {
 
         JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
@@ -56,6 +57,20 @@ public class PackageAssemblerTest extends TestCase {
         assertTrue(builder.hasErrors());
         builder.clearErrors();
         assertFalse(builder.hasErrors());
+        
+        RuleDescr rule = new RuleDescr("abc");
+        PackageDescr pkg = new PackageDescr(null);
+        
+        AndDescr and = new AndDescr();
+        rule.setLhs( and );
+        pkg.addRule( rule );
+        
+        builder.addPackage( pkg );
+        assertFalse(builder.hasErrors());
+
+        
+        assertEquals(3, p.getRules().length);
+        assertNotNull(p.getRule( "abc" ));
         
     }
 
