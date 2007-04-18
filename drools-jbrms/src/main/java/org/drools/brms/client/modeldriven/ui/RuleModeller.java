@@ -560,6 +560,14 @@ public class RuleModeller extends Composite {
     public RuleModel getModel() {
         return model;
     }
+
+    /**
+     * Returns true is a var name has already been used
+     * either by the rule, or as a global.
+     */
+    public boolean isVariableNameUsed(String name) {
+        return model.isVariableNameUsed( name ) || completions.isGlobalVariable( name );
+    }
     
     
 }

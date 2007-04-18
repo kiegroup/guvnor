@@ -14,4 +14,10 @@ public class ImageButton extends Image {
         setStyleName( "image-Button" );
     }
     
+    public ImageButton(String img, String tooltip) {
+        super(img);
+        setStyleName( "image-Button" );
+        setTitle( tooltip );
+    }
+    
 }

@@ -14,6 +14,8 @@ import org.drools.brms.client.modeldriven.brxml.IConstraint;
 import org.drools.brms.client.modeldriven.brxml.IPattern;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -219,6 +221,11 @@ public class FactPatternWidget extends Composite {
             Button bindVar = new Button( "Set" );
             bindVar.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
+                    String var = varTxt.getText();
+                    if (modeller.isVariableNameUsed( var )) {
+                        Window.alert( "The variable name [" + var + "] is already taken." );
+                        return;
+                    }
                     pattern.boundName = varTxt.getText();
                     modeller.refreshWidget();
                     popup.hide();
@@ -300,8 +307,59 @@ public class FactPatternWidget extends Composite {
         return box;
     }
 
+    /**
+     * get the field widget. This may be a simple label, or it may
+     * be bound (and show the var name) or a icon to create a binding.
+     */
     private Widget fieldLabel(final Constraint con) {//, final Command onChange) {
-        return new Label( con.fieldName );
+        HorizontalPanel ab = new HorizontalPanel();
+        ab.setStyleName( "modeller-field-Label" );
+        if (!con.isBound()) {
+            if (bindable) {
+                Image bind = new ImageButton( "images/add_field_to_fact.gif", "Give this field a variable name that can be used elsewhere." );
+                bind.addClickListener( new ClickListener() {
+                    public void onClick(Widget w) {
+                        showBindFieldPopup(w, con);
+                    }
+                });
+                ab.add( bind );
+            }
+        } else {
+            ab.add( new Label("[" + con.fieldBinding + "]") );
+        }
+
+        ab.add(new Label( con.fieldName ));
+        return ab;
     }
+
+    /**
+     * Display a little editor for field bindings.
+     */
+    private void showBindFieldPopup(final Widget w, final Constraint con) {
+        final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
+                                                         "Bind the field called [" + con.fieldName + "] to a variable." );
+        final AbsolutePanel vn = new AbsolutePanel();
+        final TextBox varName = new TextBox();
+        final Button ok = new Button("Set");
+        vn.add( varName );
+        vn.add( ok );
+        
+        ok.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                String var = varName.getText();
+                if (modeller.isVariableNameUsed( var )) {
+                    Window.alert( "The variable name [" + var + "] is already taken.");
+                    return;
+                }
+                con.fieldBinding = var;
+                modeller.refreshWidget();
+                popup.hide();
+            }
+        } );
+        popup.addAttribute( "Variable name", vn );
+        popup.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+        popup.show();
+    }
+    
 
 }
