@@ -1,7 +1,11 @@
 package org.drools.brms.server.contenthandler;
 
+import java.io.IOException;
+
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleContentText;
+import org.drools.brms.server.builder.BRMSPackageBuilder;
+import org.drools.compiler.DroolsParserException;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
@@ -27,6 +31,11 @@ public class DSLRuleContentHandler extends ContentHandler implements IRuleAsset 
         RuleContentText text = (RuleContentText) asset.content;
         repoAsset.updateContent( text.content );
 
+    }
+
+    public void compile(BRMSPackageBuilder builder, AssetItem asset) throws DroolsParserException,
+                                                                    IOException {
+        throw new UnsupportedOperationException();        
     }
     
 

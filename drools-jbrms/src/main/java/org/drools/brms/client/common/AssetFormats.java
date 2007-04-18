@@ -29,16 +29,14 @@ public class AssetFormats {
     
     /** Use the rule modeller */
     public static String BUSINESS_RULE = "brxml";
-    
-    /** use vanilla text */
-    public static String TECHNICAL_RULE    = "rule";
+
     
     /** use a DSL, not sure about this one - can use text or constrained editor */
-    public static String DSL_TEMPLATE_RULE   = "trule";
+    public static String DSL_TEMPLATE_RULE   = "brule";
 
     /**
      * The following group the 
      */
     public static String[] BUSINESS_RULE_FORMATS = new String[] {AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE};
-    public static String[] TECHNICAL_RULE_FORMATS = new String[] {AssetFormats.DRL, AssetFormats.TECHNICAL_RULE};
+    public static String[] TECHNICAL_RULE_FORMATS = new String[] {AssetFormats.DRL};
 }

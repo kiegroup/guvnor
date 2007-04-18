@@ -27,7 +27,6 @@ public abstract class ContentHandler {
             put(AssetFormats.DSL, new DSLDefinitionContentHandler());
             put(AssetFormats.FUNCTION, new FunctionContentHandler());
             put(AssetFormats.MODEL, new ModelContentHandler());
-            put(AssetFormats.TECHNICAL_RULE, new DRLFileContentHandler());
             
         }};        
     }

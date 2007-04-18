@@ -1,24 +1,22 @@
 package org.drools.brms.server.builder;
 
-import java.util.List;
+import java.io.InputStream;
+
+import junit.framework.TestCase;
 
 import org.drools.brms.client.common.AssetFormats;
-import org.drools.brms.client.ruleeditor.CheckinPopup;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-import org.drools.repository.RepositorySessionUtil;
 import org.drools.repository.RulesRepository;
 import org.drools.rule.Package;
-
-import junit.framework.TestCase;
 
 public class ContentPackageAssemblerTest extends TestCase {
 
     
     
     
-    public void testPackageConfig() throws Exception {
+    public void testPackageConfigWithErrors() throws Exception {
         //test the config, no rule assets yet
         RulesRepository repo = getRepo();
         PackageItem pkg = repo.createPackage( "testBuilderPackageConfig", "x" );
@@ -49,7 +47,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertEquals(2, bin.getFunctions().size());
         
         assertTrue(bin.isValid());
-        assertEquals(1, assembler.dslFiles.size());
+        assertEquals(1, assembler.builder.getDSLMappingFiles().size());
         
         
         pkg.updateHeader( "koo koo ca choo" );
@@ -63,8 +61,12 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertTrue(assembler.getErrors().get(0).itemInError instanceof AssetItem);
         
         assertEquals("func1", assembler.getErrors().get( 0 ).itemInError.getName());
-        
-            
+        try {
+            assembler.getBinaryPackage();
+            fail("should not work as is in error.");
+        } catch (IllegalStateException e) {
+            assertNotNull(e.getMessage());
+        }
         
     }
 
@@ -72,22 +74,47 @@ public class ContentPackageAssemblerTest extends TestCase {
         return new RulesRepository( TestEnvironmentSessionHelper.getSession() );
     }
     
-    public void FIXME_testSimplePackage() throws Exception {
-        PackageItem pkg = null;
+    public void testSimplePackageBuildNoErrors() throws Exception {
+        RulesRepository repo = getRepo();
+        
+        PackageItem pkg = repo.createPackage( "testSimplePackageBuildNoErrors", "" );
+        AssetItem model = pkg.addAsset( "model", "qed" );
+        model.updateFormat( AssetFormats.MODEL );
+        
+        model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        model.checkin( "" );
+        
+        pkg.updateHeader( "import com.billasurf.Board\n global com.billasurf.Person customer" );
+        
+        AssetItem rule1 = pkg.addAsset( "rule_1", "" );
+        rule1.updateFormat( AssetFormats.DRL );
+        rule1.updateContent( "rule 'rule1' \n when Board() \n then customer.setAge(42); \n end"); 
+        rule1.checkin( "" );
+        
+        AssetItem rule2 = pkg.addAsset( "rule2", "" );
+        rule2.updateFormat( AssetFormats.DRL );
+        rule2.updateContent( "agenda-group 'q' \n when \n Board() \n then \n System.err.println(42);" );
+        rule2.checkin( "" );
+
+        AssetItem rule3 = pkg.addAsset( "A file", "" );
+        rule3.updateFormat( AssetFormats.DRL );
+        rule3.updateContent( "package foo\n rule 'rule3' \n when \n then \n customer.setAge(43); \n end \n" +
+                "rule 'rule4' \n when \n then \n System.err.println(44); \n end" );
+        rule3.checkin( "" );
+        
+        repo.save();
+        
+        
         ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
         assertFalse(asm.hasErrors());
         assertNotNull(asm.getBinaryPackage());
-        org.drools.rule.Package bin = asm.getBinaryPackage();
+        Package bin = asm.getBinaryPackage();
         assertEquals(pkg.getName(), bin.getName());
         assertTrue(bin.isValid());
         
-        assertEquals(2, bin.getRules().length);
+        assertEquals(4, bin.getRules().length);
         
         
-        
-    }
-    
-    public void testErrorsInConfig() {
         
     }
     

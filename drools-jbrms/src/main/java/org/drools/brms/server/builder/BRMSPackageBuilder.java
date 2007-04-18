@@ -29,6 +29,8 @@ import org.drools.resource.util.ByteArrayClassLoader;
  */
 public class BRMSPackageBuilder extends PackageBuilder {
 
+    private List<DSLMappingFile> dslFiles;
+    
     /**
      * This will give you a fresh new PackageBuilder 
      * using the given classpath.
@@ -79,6 +81,14 @@ public class BRMSPackageBuilder extends PackageBuilder {
         super.resetErrors();
     }
 
+    public void setDSLFiles(List<DSLMappingFile> files) {
+        this.dslFiles = files;
+    }
+    
+    public List<DSLMappingFile> getDSLMappingFiles() {
+        return this.dslFiles;
+    }
+    
     /**
      * Load up all the DSL mappping files for the given package.
      */

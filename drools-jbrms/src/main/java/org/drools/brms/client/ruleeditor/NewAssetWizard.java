@@ -129,8 +129,7 @@ public class NewAssetWizard extends PopupPanel {
         ListBox box = new ListBox();
         
         box.addItem( "Business rule", AssetFormats.BUSINESS_RULE );
-        box.addItem( "DRL file", AssetFormats.DRL );        
-        box.addItem( "Technical rule", AssetFormats.TECHNICAL_RULE );
+        box.addItem( "DRL rule (technical rule)", AssetFormats.DRL );        
         box.addItem( "Business rule using a DSL template", AssetFormats.DSL_TEMPLATE_RULE );
         
         box.setSelectedIndex( 0 );

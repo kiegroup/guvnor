@@ -1,8 +1,12 @@
 package org.drools.brms.server.contenthandler;
 
+import java.io.IOException;
+
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.server.builder.BRMSPackageBuilder;
 import org.drools.brms.server.util.BRLPersistence;
+import org.drools.compiler.DroolsParserException;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
@@ -26,6 +30,12 @@ public class BRXMLContentHandler extends ContentHandler implements IRuleAsset {
                                   AssetItem repoAsset) throws SerializableException {
         RuleModel data = (RuleModel) asset.content;
         repoAsset.updateContent( BRLPersistence.getInstance().toXML( data ) );
+    }
+
+    public void compile(BRMSPackageBuilder builder, AssetItem asset) throws DroolsParserException,
+                                                                    IOException {
+        throw new UnsupportedOperationException();
+        
     }
     
 

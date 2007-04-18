@@ -2,16 +2,17 @@ package org.drools.brms.server.builder;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.security.KeyStore.Builder;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.jar.JarInputStream;
 
 import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.server.contenthandler.ContentHandler;
+import org.drools.brms.server.contenthandler.IRuleAsset;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
@@ -30,8 +31,7 @@ public class ContentPackageAssembler {
     private PackageItem pkg;
     private List<ContentAssemblyError> errors = new ArrayList<ContentAssemblyError>();
 
-    private BRMSPackageBuilder builder;
-    List<DSLMappingFile> dslFiles;
+    BRMSPackageBuilder builder;
     
     public ContentPackageAssembler(PackageItem assetPackage) {
         this.pkg = assetPackage;
@@ -46,7 +46,24 @@ public class ContentPackageAssembler {
      * This will build the package. 
      */
     private void buildPackage() {
-
+        Iterator it = pkg.getAssets();
+        while (it.hasNext()) {
+            AssetItem asset = (AssetItem) it.next();
+            ContentHandler h = ContentHandler.getHandler( asset.getFormat() );
+            if (h instanceof IRuleAsset) {
+                try {
+                    ((IRuleAsset) h).compile( builder, asset );
+                    if (builder.hasErrors()) {
+                        this.recordBuilderErrors( asset );
+                        builder.clearErrors();
+                    }
+                } catch ( DroolsParserException e ) {
+                    throw new RulesRepositoryException(e);
+                } catch ( IOException e ) {
+                    throw new RulesRepositoryException(e);
+                }
+            }
+        }
     }
 
     /**
@@ -65,11 +82,11 @@ public class ContentPackageAssembler {
         }
 
         
-        this.dslFiles = BRMSPackageBuilder.getDSLMappingFiles( pkg, new BRMSPackageBuilder.ErrorEvent() {
+        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( pkg, new BRMSPackageBuilder.ErrorEvent() {
             public void logError(String message) {
                 errors.add( new ContentAssemblyError(pkg, message) );
             }
-        });
+        }));
         
         AssetItemIterator it = this.pkg.listAssetsByFormat( new String[] {AssetFormats.FUNCTION} );
         while(it.hasNext()) {
