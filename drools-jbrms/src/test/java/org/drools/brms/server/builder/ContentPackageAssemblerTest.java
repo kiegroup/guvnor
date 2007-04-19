@@ -1,7 +1,5 @@
 package org.drools.brms.server.builder;
 
-import java.io.InputStream;
-
 import junit.framework.TestCase;
 
 import org.drools.brms.client.common.AssetFormats;
@@ -15,7 +13,10 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     
     
-    
+    /**
+     * Test package configuration errors, 
+     * including header, functions, DSL files.
+     */
     public void testPackageConfigWithErrors() throws Exception {
         //test the config, no rule assets yet
         RulesRepository repo = getRepo();
@@ -68,11 +69,36 @@ public class ContentPackageAssemblerTest extends TestCase {
             assertNotNull(e.getMessage());
         }
         
+        //fix it up
+        pkg.updateHeader( "import java.util.List" );
+        assembler = new ContentPackageAssembler(pkg);
+        assertFalse(assembler.hasErrors());
+        
+        //now break a DSL and check the error
+        ass.updateContent( "rubbish" );
+        ass.checkin( "" );
+        assembler = new ContentPackageAssembler(pkg);
+        assertTrue(assembler.hasErrors());
+        assertTrue(assembler.getErrors().get( 0 ).itemInError.getName().equals( ass.getName() ));
+        assertNotEmpty(assembler.getErrors().get( 0 ).errorReport);
+        assertFalse(assembler.isPackageConfigurationInError());
+        
+        //now fix it up
+        ass.updateContent( "[when]foo=String()" );
+        ass.checkin( "" );
+        assembler = new ContentPackageAssembler(pkg);
+        assertFalse(assembler.hasErrors());        
+        
+        //break a func, and check for error
+        func.updateContent( "goo" );
+        func.checkin( "" );
+        assembler = new ContentPackageAssembler(pkg);
+        assertTrue(assembler.hasErrors());
+        assertFalse(assembler.isPackageConfigurationInError());
+        assertTrue(assembler.getErrors().get( 0 ).itemInError.getName().equals( func.getName() ));
+        assertNotEmpty(assembler.getErrors().get( 0 ).errorReport);
     }
 
-    private RulesRepository getRepo() throws Exception {
-        return new RulesRepository( TestEnvironmentSessionHelper.getSession() );
-    }
     
     public void testSimplePackageBuildNoErrors() throws Exception {
         RulesRepository repo = getRepo();
@@ -118,14 +144,112 @@ public class ContentPackageAssemblerTest extends TestCase {
         
     }
     
-    public void testErrorsInFunctionAndRuleAsset() {
+    /**
+     * This this case we will test errors that occur in rule assets,
+     * not in functions or package header.
+     */
+    public void testErrorsInRuleAsset() throws Exception {
+
+        RulesRepository repo = getRepo();
+        
+        //first, setup the package correctly:
+        PackageItem pkg = repo.createPackage( "testErrorsInRuleAsset", "" );
+        AssetItem model = pkg.addAsset( "model", "qed" );
+        model.updateFormat( AssetFormats.MODEL );
+        model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        model.checkin( "" );
+        pkg.updateHeader( "import com.billasurf.Board\n global com.billasurf.Person customer" );
+        repo.save();
+        
+        AssetItem goodRule = pkg.addAsset( "goodRule", "" );
+        goodRule.updateFormat( AssetFormats.DRL );
+        goodRule.updateContent( "rule 'yeah' \n when \n Board() \n then \n System.out.println(42); end" );
+        goodRule.checkin( "" );
+        
+        AssetItem badRule = pkg.addAsset( "badRule", "xxx" );
+        badRule.updateFormat( AssetFormats.DRL );
+        badRule.updateContent( "if something then another" );
+        badRule.checkin( "" );
+        
+        ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
+        assertTrue(asm.hasErrors());
+        assertFalse(asm.isPackageConfigurationInError());
+
+        for ( ContentAssemblyError err : asm.getErrors() ) {
+            assertTrue(err.itemInError.getName().equals( badRule.getName() ));
+            assertNotEmpty(err.errorReport);
+        }
         
     }
     
-    public void testComplexAssets() {
+
+
+    /**
+     * This time, we mix up stuff a bit
+     *
+     */
+    public void testRuleAndDSLAndFunction() throws Exception {
+        RulesRepository repo = getRepo();
+        
+        //first, setup the package correctly:
+        PackageItem pkg = repo.createPackage( "testRuleAndDSLAndFunction", "" );
+        AssetItem model = pkg.addAsset( "model", "qed" );
+        model.updateFormat( AssetFormats.MODEL );
+        model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        model.checkin( "" );
+        pkg.updateHeader( "import com.billasurf.Board\n global com.billasurf.Person customer" );
+        repo.save();
+        
+        AssetItem func = pkg.addAsset( "func", "" );
+        func.updateFormat( AssetFormats.FUNCTION );
+        func.updateContent( "function void foo() { System.out.println(42); }" );
+        func.checkin( "" );
+        
+        AssetItem dsl = pkg.addAsset( "myDSL", "" );
+        dsl.updateFormat( AssetFormats.DSL );
+        dsl.updateContent( "[then]call a func=foo();" );
+        dsl.checkin( "" );
+
+        AssetItem dsl2 = pkg.addAsset( "myDSL2", "" );
+        dsl2.updateFormat( AssetFormats.DSL );
+        dsl2.updateContent( "[when]There is a board=Board()" );
+        dsl2.checkin( "" );
+        
+        
+        AssetItem rule = pkg.addAsset( "myRule", "" );
+        rule.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
+        rule.updateContent( "when \n There is a board \n then \n call a func" );
+        rule.checkin( "" );
+        
+        AssetItem rule2 = pkg.addAsset( "myRule2", "" );
+        rule2.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
+        rule2.updateContent( "package xyz \n rule 'myRule2222' \n when \n There is a board \n then \n call a func \nend" );
+        rule2.checkin( "" );
+        
+        AssetItem rule3 = pkg.addAsset( "myRule3", "" );
+        rule3.updateFormat( AssetFormats.DRL );
+        rule3.updateContent( "package QED\n rule 'rule3' \n when \n Board() \n then \n System.err.println(42); end");
+        rule3.checkin( "" );
+        
+        repo.save();
+        
+        ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
+        assertFalse(asm.hasErrors());
+        Package bin = asm.getBinaryPackage();
+        assertNotNull(bin);
+        assertEquals(3, bin.getRules().length);
+        assertEquals(1, bin.getFunctions().size());
         
     }
     
+    private void assertNotEmpty(String s) {
+        if (s == null) fail("should not be null");
+        if (s.trim().equals( "" )) fail("should not be empty string");
+    }
+    
+    private RulesRepository getRepo() throws Exception {
+        return new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+    }
     
     
 }

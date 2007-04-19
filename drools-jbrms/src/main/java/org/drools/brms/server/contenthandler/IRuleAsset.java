@@ -3,6 +3,7 @@ package org.drools.brms.server.contenthandler;
 import java.io.IOException;
 
 import org.drools.brms.server.builder.BRMSPackageBuilder;
+import org.drools.brms.server.builder.ContentPackageAssembler;
 import org.drools.compiler.DroolsParserException;
 import org.drools.repository.AssetItem;
 
@@ -18,7 +19,7 @@ public interface IRuleAsset {
      * This will be called when the asset is required to compile itself, 
      * in the context of the given builder.
      */
-    public void compile(BRMSPackageBuilder builder, AssetItem asset) throws DroolsParserException,
+    public void compile(BRMSPackageBuilder builder, AssetItem asset, ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
                                                                     IOException;
 
 }

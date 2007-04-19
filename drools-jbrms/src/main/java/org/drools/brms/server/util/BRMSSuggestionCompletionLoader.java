@@ -7,6 +7,7 @@ import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.server.builder.BRMSPackageBuilder;
 import org.drools.brms.server.rules.SuggestionCompletionLoader;
 import org.drools.lang.dsl.DSLMappingFile;
+import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
 /**
@@ -22,9 +23,9 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
     
     
     private List<DSLMappingFile> getDSLMappingFiles(PackageItem pkg) {
-        return BRMSPackageBuilder.getDSLMappingFiles( pkg, new BRMSPackageBuilder.ErrorEvent() {
-            public void logError(String message) {
-                errors.add( message );
+        return BRMSPackageBuilder.getDSLMappingFiles( pkg, new BRMSPackageBuilder.DSLErrorEvent() {
+            public void recordError(AssetItem asset, String message) {
+                errors.add( asset.getName() + " : " + message );
             }
         });
     }    

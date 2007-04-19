@@ -92,7 +92,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
     /**
      * Load up all the DSL mappping files for the given package.
      */
-    public static List<DSLMappingFile> getDSLMappingFiles(PackageItem pkg, ErrorEvent err) {
+    public static List<DSLMappingFile> getDSLMappingFiles(PackageItem pkg, DSLErrorEvent err) {
         List<DSLMappingFile> result = new ArrayList<DSLMappingFile>();
         AssetItemIterator it = pkg.listAssetsByFormat( new String[]{AssetFormats.DSL} );
         while ( it.hasNext() ) {
@@ -106,12 +106,12 @@ public class BRMSPackageBuilder extends PackageBuilder {
                     List errs = file.getErrors();
                     for ( Iterator iter = errs.iterator(); iter.hasNext(); ) {
                         DSLMappingParseException e = (DSLMappingParseException) iter.next();
-                        err.logError( "An error occurred loading DSL configuration called: " + item.getName() + " line number " + e.getLine() + " : " + e.getMessage() );
+                        err.recordError( item, "Line " + e.getLine() + " : " + e.getMessage() );
                     }
                 }
 
             } catch ( IOException e ) {
-                err.logError( e.getMessage() );
+                throw new RulesRepositoryException(e);
             }
 
         }
@@ -142,8 +142,8 @@ public class BRMSPackageBuilder extends PackageBuilder {
     /**
      * This is used when loading Jars, DSLs etc to report errors.
      */
-    public static interface ErrorEvent {
-        public void logError(String message);
+    public static interface DSLErrorEvent {
+        public void recordError(AssetItem asset, String message);
     }
 
 }

@@ -29,6 +29,12 @@ import org.drools.rule.Package;
 public class ContentPackageAssembler {
 
     private PackageItem pkg;
+    
+    /**
+     * We accumulate errors here. If they come from the builder,
+     * then we reset the builders errors so as to not double report.
+     * It also means we can track errors to the exact asset that caused it.
+     */
     private List<ContentAssemblyError> errors = new ArrayList<ContentAssemblyError>();
 
     BRMSPackageBuilder builder;
@@ -52,9 +58,10 @@ public class ContentPackageAssembler {
             ContentHandler h = ContentHandler.getHandler( asset.getFormat() );
             if (h instanceof IRuleAsset) {
                 try {
-                    ((IRuleAsset) h).compile( builder, asset );
+                    ((IRuleAsset) h).compile( builder, asset, new ErrorLogger() );
                     if (builder.hasErrors()) {
                         this.recordBuilderErrors( asset );
+                        //clear the errors, so we don't double report.
                         builder.clearErrors();
                     }
                 } catch ( DroolsParserException e ) {
@@ -72,29 +79,36 @@ public class ContentPackageAssembler {
      * and we can't even get the package header up.
      */
     private boolean preparePackage() {
+        
+        //firstly we loadup the classpath
         List<JarInputStream> jars = BRMSPackageBuilder.getJars( pkg );
         builder = BRMSPackageBuilder.getInstance( jars );
         builder.addPackage( new PackageDescr(pkg.getName()) );
+        
+        //now we deal with the header (imports, templates, globals).
         addDrl(pkg.getHeader());
         if (builder.hasErrors()) {
             recordBuilderErrors(pkg);
+            //if we have any failures, lets drop out now, no point in going
+            //any further
             return false;
         }
 
-        
-        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( pkg, new BRMSPackageBuilder.ErrorEvent() {
-            public void logError(String message) {
-                errors.add( new ContentAssemblyError(pkg, message) );
+        //now we load up the DSL files
+        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( pkg, new BRMSPackageBuilder.DSLErrorEvent() {
+            public void recordError(AssetItem asset, String message) {
+                errors.add( new ContentAssemblyError(asset, message) );
             }
         }));
         
+        //finally, any functions we will load at this point.
         AssetItemIterator it = this.pkg.listAssetsByFormat( new String[] {AssetFormats.FUNCTION} );
         while(it.hasNext()) {
             AssetItem func = (AssetItem) it.next();
             addDrl( func.getContent() );
             if (builder.hasErrors()) {
                 recordBuilderErrors(func);
-                return false;
+                builder.clearErrors();
             }
         }
         
@@ -155,5 +169,16 @@ public class ContentPackageAssembler {
         return this.errors;
     }
     
+    
+    /**
+     * This is passed in to the compilers so extra errors can be added.
+     * 
+     * @author Michael Neale
+     */
+    public class ErrorLogger {
+        public void logError(ContentAssemblyError err) {
+            errors.add(err);
+        }
+    }
     
 }
