@@ -140,7 +140,19 @@ public class ContentPackageAssemblerTest extends TestCase {
         
         assertEquals(4, bin.getRules().length);
         
+        //now create a snapshot
+        repo.createPackageSnapshot( pkg.getName(), "SNAP_1" );
         
+        //and screw up the the non snapshot one
+        pkg.updateHeader( "koo koo ca choo" );
+        asm = new ContentPackageAssembler(pkg);
+        assertTrue(asm.hasErrors());
+        
+        
+        //check the snapshot is kosher
+        pkg = repo.loadPackageSnapshot( pkg.getName(), "SNAP_1" );
+        asm = new ContentPackageAssembler(pkg);
+        assertFalse(asm.hasErrors());
         
     }
     
