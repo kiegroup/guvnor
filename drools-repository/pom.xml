@@ -24,7 +24,7 @@
 	            <directory>./</directory>
 	            <includes>
 	              <include>repository**/*</include>
-				  <include>repository.xml</include>
+				  <include>repository*.xml</include>
 				  <include>repository</include>				
 	            </includes>
 	            <followSymlinks>false</followSymlinks>

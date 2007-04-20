@@ -11,7 +11,6 @@ import javax.jcr.SimpleCredentials;
 import junit.framework.TestCase;
 
 public class RulesRepositoryTest extends TestCase {
-
     
     public void testDefaultPackage() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
@@ -334,6 +333,23 @@ public class RulesRepositoryTest extends TestCase {
         StateItem[] items2 = repo.listStates();
         assertEquals(items.length + 1, items2.length);
     }
+    
+    public void testImportExport() {
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+        byte []byteArray;
+        
+        try {
+            repo.createPackage( "testImportExport", "nodescription" );
+            byteArray = repo.exportRulesRepository(); 
+            assertTrue( byteArray.length >= 2048 ); // empty repository must have a minimum of 2048 bytes.
+            repo.importRulesRepository( byteArray );
+            assertTrue( repo.containsPackage( "testImportExport" ) ); 
+            
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+    
     
     List iteratorToList(Iterator it) {
         List list = new ArrayList();

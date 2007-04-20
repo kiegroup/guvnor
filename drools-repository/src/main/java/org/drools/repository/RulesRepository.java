@@ -1,13 +1,25 @@
 package org.drools.repository;
  
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.StringTokenizer;
 
+import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.InvalidSerializedDataException;
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -17,9 +29,12 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
+import javax.jcr.version.VersionException;
 
 import org.apache.log4j.Logger;
 
@@ -59,6 +74,7 @@ import org.apache.log4j.Logger;
  * scheme to be better aligned with JCR's versioning abilities.
  * 
  * @author Ben Truitt
+ * @author Fernando Meyer
  */
 public class RulesRepository {
 
@@ -809,6 +825,23 @@ public class RulesRepository {
     public List findAssetsByCategory(String categoryTag) throws RulesRepositoryException {
         return this.findAssetsByCategory( categoryTag,
                                           false );
+    }
+    
+    public byte[] exportRulesRepository() throws IOException, PathNotFoundException, RepositoryException {
+        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        session.exportSystemView( "/drools:repository", byteOut , false, false );
+        return byteOut.toByteArray();
+    }
+    
+    public void importRulesRepository(byte[] byteArray) {
+        try {
+            session.importXML( "/drools:repository", new ByteArrayInputStream(byteArray), ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
+            session.save();
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException();
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
     }
 
     boolean isNotSnapshot(Node parentNode) throws RepositoryException {
