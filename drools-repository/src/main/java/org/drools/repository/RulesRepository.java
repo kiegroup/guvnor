@@ -162,9 +162,7 @@ public class RulesRepository {
     }
 
     /**
-     * Explicitly logout of the underlying JCR repository. If this is the last
-     * session to that repository, the repository will automatically be
-     * shutdown.
+     * Explicitly logout of the underlying JCR repository. 
      */
     public void logout() {
         this.session.logout();
