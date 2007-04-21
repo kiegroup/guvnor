@@ -254,6 +254,60 @@ public class ContentPackageAssemblerTest extends TestCase {
         
     }
     
+    public void testShowSource() throws Exception {
+        RulesRepository repo = getRepo();
+        
+        //first, setup the package correctly:
+        PackageItem pkg = repo.createPackage( "testShowSource", "" );
+
+        pkg.updateHeader( "import com.billasurf.Board\n global com.billasurf.Person customer" );
+        repo.save();
+        
+        AssetItem func = pkg.addAsset( "func", "" );
+        func.updateFormat( AssetFormats.FUNCTION );
+        func.updateContent( "function void foo() { System.out.println(42); }" );
+        func.checkin( "" );
+        
+        AssetItem dsl = pkg.addAsset( "myDSL", "" );
+        dsl.updateFormat( AssetFormats.DSL );
+        dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz()" );
+        dsl.checkin( "" );
+        
+        AssetItem rule = pkg.addAsset( "rule1", "" );
+        rule.updateFormat( AssetFormats.DRL );
+        rule.updateContent( "rule 'foo' when Goo() then end" ); 
+        rule.checkin( "" );
+        
+        AssetItem rule2 = pkg.addAsset( "rule2", "" );
+        rule2.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
+        rule2.updateContent( "when \n foo \n then \n call a func" );
+        rule2.checkin( "" );
+        
+        ContentPackageAssembler asm = new ContentPackageAssembler(pkg, false);
+        String drl = asm.getDRL();
+        
+        assertNotNull(drl);
+              
+        assertContains("import com.billasurf.Board\n global com.billasurf.Person customer", drl);
+        assertContains("package testShowSource", drl);
+        assertContains("function void foo() { System.out.println(42); }", drl);
+        assertContains("foo();", drl);
+        assertContains("FooBarBaz()", drl);
+        assertContains("rule 'foo' when Goo() then end", drl);
+        
+        
+    }
+    
+    
+    private void assertContains(String sub, String text) {
+        if (text.indexOf( sub ) == -1) {
+            fail("the text: '" + sub +"' was not found.");
+        }
+        
+        
+    }
+
+
     private void assertNotEmpty(String s) {
         if (s == null) fail("should not be null");
         if (s.trim().equals( "" )) fail("should not be empty string");

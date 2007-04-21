@@ -38,6 +38,13 @@ public class BRXMLContentHandler extends ContentHandler implements IRuleAsset {
         throw new UnsupportedOperationException();
         
     }
+
+    public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset, StringBuffer buf) {
+        throw new UnsupportedOperationException();
+    }
+
+    
+
     
 
 }

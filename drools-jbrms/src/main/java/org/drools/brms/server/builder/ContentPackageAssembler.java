@@ -12,6 +12,7 @@ import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.contenthandler.IRuleAsset;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -39,13 +40,23 @@ public class ContentPackageAssembler {
 
     BRMSPackageBuilder builder;
     
-    public ContentPackageAssembler(PackageItem assetPackage) {
+    /**
+     * @param assetPackage The package.
+     * @param compile true if we want to build it. False and its just for looking at source.
+     */
+    public ContentPackageAssembler(PackageItem assetPackage, boolean compile) {
         this.pkg = assetPackage;
         
-        if (preparePackage()) {
+        if (compile && preparePackage()) {
             buildPackage();
+        } else {
+            builder = new BRMSPackageBuilder(new PackageBuilderConfiguration());
         }
         
+    }
+    
+    public ContentPackageAssembler(PackageItem assetPackage) {
+        this(assetPackage, true);
     }
     
     /**
@@ -179,6 +190,44 @@ public class ContentPackageAssembler {
         public void logError(ContentAssemblyError err) {
             errors.add(err);
         }
+    }
+
+
+    public String getDRL() {
+        StringBuffer src = new StringBuffer();
+        src.append( "package " + this.pkg.getName() + "\n");
+        src.append( this.pkg.getHeader() + "\n");
+        
+        
+        //now we load up the DSL files
+        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( pkg, new BRMSPackageBuilder.DSLErrorEvent() {
+            public void recordError(AssetItem asset, String message) {
+                errors.add( new ContentAssemblyError(asset, message) );
+            }
+        }));
+        
+        
+        //do the functions.
+        AssetItemIterator it = this.pkg.listAssetsByFormat( new String[] {AssetFormats.FUNCTION} );
+        while(it.hasNext()) {
+            AssetItem func = (AssetItem) it.next();
+            src.append( func.getContent() + "\n" );
+        }        
+        
+        //now the rules
+        Iterator iter = pkg.getAssets();
+        while (iter.hasNext()) {
+            AssetItem asset = (AssetItem) iter.next();
+            ContentHandler h = ContentHandler.getHandler( asset.getFormat() );
+            if (h instanceof IRuleAsset) {
+                IRuleAsset ruleAsset = (IRuleAsset) h;
+                ruleAsset.assembleDRL( builder, asset, src );
+            }
+            src.append( "\n\n" );
+        }       
+        
+        
+        return src.toString();
     }
     
 }

@@ -12,13 +12,19 @@ import org.drools.repository.AssetItem;
 public class DRLFileContentHandler extends PlainTextContentHandler implements IRuleAsset {
 
     public void compile(BRMSPackageBuilder builder, AssetItem asset, ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException, IOException {
+        builder.addPackageFromDrl( new StringReader(getContent( asset )) );
+    }
+
+    private String getContent(AssetItem asset) {
         String content = asset.getContent();
         if (isStandAloneRule( content )) {
-            content = "rule '" + asset.getName() + "'\n"  + content + "\nend\n";
-        } 
-        builder.addPackageFromDrl( new StringReader(content) );
-        
-        
+            content = wrapRuleDeclaration( asset, content );
+        }
+        return content;
+    }
+
+    private String wrapRuleDeclaration(AssetItem asset, String content) {
+        return "rule '" + asset.getName() + "'\n"  + content + "\nend";
     }
 
     /**
@@ -39,6 +45,20 @@ public class DRLFileContentHandler extends PlainTextContentHandler implements IR
         }
         return true;
         
-    }    
+    }
+
+    public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset, StringBuffer buf) {
+        String content = asset.getContent();
+        boolean standAlone = isStandAloneRule( content );
+        if (standAlone) {
+            buf.append( wrapRuleDeclaration( asset, content ) );
+        } else {
+            buf.append( content );
+        }
+        
+        
+    }
+
+
     
 }

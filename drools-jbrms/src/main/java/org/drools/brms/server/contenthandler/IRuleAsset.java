@@ -22,4 +22,9 @@ public interface IRuleAsset {
     public void compile(BRMSPackageBuilder builder, AssetItem asset, ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
                                                                     IOException;
 
+    /**
+     * This will be called when a rule asset is to render itself to DRL source.
+     */
+    public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset, StringBuffer buf);
+    
 }

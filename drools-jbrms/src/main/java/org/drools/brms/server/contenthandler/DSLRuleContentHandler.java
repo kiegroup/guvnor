@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleContentText;
@@ -44,20 +43,12 @@ public class DSLRuleContentHandler extends ContentHandler implements IRuleAsset 
 
     public void compile(BRMSPackageBuilder builder, AssetItem asset, ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
                                                                     IOException {
-        List<DSLMappingFile> dsls = builder.getDSLMappingFiles();
-        if (dsls == null || dsls.size() == 0) {
-            logger.logError( new ContentAssemblyError(asset, "This rule asset requires a DSL, yet none were configured in the package.") );
-        }
-        
-        DefaultExpander expander = new DefaultExpander();
-        for ( DSLMappingFile file : dsls ) {
-            expander.addDSLMapping( file.getMapping() );
-        }
+        DefaultExpander expander = getExpander( builder, asset, logger );
         
         //add the rule keyword if its 'stand alone'
         String source = asset.getContent();
         if (DRLFileContentHandler.isStandAloneRule(source)) {
-            source = "rule '" + asset.getName() + "' \n" + source + "\nend\n";
+            source = wrapRule( asset, source );
         }
         
         //expand and check for errors
@@ -73,6 +64,38 @@ public class DSLRuleContentHandler extends ContentHandler implements IRuleAsset 
         
         
         builder.addPackageFromDrl( new StringReader(drl) );
+    }
+
+    private DefaultExpander getExpander(BRMSPackageBuilder builder, AssetItem asset, ContentPackageAssembler.ErrorLogger logger) {
+        List<DSLMappingFile> dsls = builder.getDSLMappingFiles();
+        if (dsls == null || dsls.size() == 0) {
+            logger.logError( new ContentAssemblyError(asset, "This rule asset requires a DSL, yet none were configured in the package.") );
+        }
+        
+        DefaultExpander expander = new DefaultExpander();
+        for ( DSLMappingFile file : dsls ) {
+            expander.addDSLMapping( file.getMapping() );
+        }
+        return expander;
+    }
+
+    public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset, StringBuffer buf) {
+        //add the rule keyword if its 'stand alone'
+        String source = asset.getContent();
+        if (DRLFileContentHandler.isStandAloneRule(source)) {
+            source = wrapRule( asset, source );
+        }
+        
+        DefaultExpander expander = new DefaultExpander();
+        for ( DSLMappingFile file : builder.getDSLMappingFiles()) {
+            expander.addDSLMapping( file.getMapping() );
+        }        
+        buf.append( expander.expand( source ) );
+        
+    }
+
+    private String wrapRule(AssetItem asset, String source) {
+        return "rule '" + asset.getName() + "' \n" + source + "\nend";
     }
 
 
