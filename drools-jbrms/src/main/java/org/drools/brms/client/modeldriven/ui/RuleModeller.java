@@ -566,6 +566,7 @@ public class RuleModeller extends Composite {
      * either by the rule, or as a global.
      */
     public boolean isVariableNameUsed(String name) {
+        
         return model.isVariableNameUsed( name ) || completions.isGlobalVariable( name );
     }
     
