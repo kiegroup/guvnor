@@ -1,10 +1,16 @@
 package org.drools.repository;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
@@ -336,18 +342,36 @@ public class RulesRepositoryTest extends TestCase {
     
     public void testImportExport() {
         RulesRepository repo = RepositorySessionUtil.getRepository();
-        byte []byteArray;
+        byte []repository_unitest;
+        byte []repository_backup;
         
         try {
+            repository_backup = repo.dumpRepositoryXml();
             repo.createPackage( "testImportExport", "nodescription" );
-            byteArray = repo.exportRulesRepository(); 
-            assertTrue( byteArray.length >= 2048 ); // empty repository must have a minimum of 2048 bytes.
-            repo.importRulesRepository( byteArray );
-            assertTrue( repo.containsPackage( "testImportExport" ) ); 
-            
+            repo.save();
+            repository_unitest = repo.dumpRepositoryXml(); 
+            assertTrue( repository_unitest.length >= 2048 ); // empty repository must have a minimum of 2048 bytes.
+            repo.importRulesRepository( repository_unitest );
+            assertTrue( repo.containsPackage( "testImportExport" ) );
+            repo.importRulesRepository( repository_backup );
         } catch ( Exception e ) {
             e.printStackTrace();
         }
+    }
+    
+    public void testExportZippedRepository () throws PathNotFoundException, IOException, RepositoryException {
+        
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+        byte []repository_unitest;
+        
+        repository_unitest =  repo.exportRulesRepository();
+        
+        ByteArrayInputStream bin = new ByteArrayInputStream(repository_unitest);
+        ZipInputStream zis = new ZipInputStream (bin);
+        
+        ZipEntry entry =  zis.getNextEntry();
+        assertEquals( entry.getName() , "repository_export.xml" );
+        assertFalse( entry.isDirectory() );
     }
     
     

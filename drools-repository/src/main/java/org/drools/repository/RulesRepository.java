@@ -2,24 +2,18 @@ package org.drools.repository;
  
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.StringTokenizer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.jcr.ImportUUIDBehavior;
-import javax.jcr.InvalidSerializedDataException;
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -29,12 +23,9 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
-import javax.jcr.version.VersionException;
 
 import org.apache.log4j.Logger;
 
@@ -172,8 +163,9 @@ public class RulesRepository {
      * Recursively outputs the contents of the workspace starting from root. The
      * large subtree called jcr:system is skipped. This method is just here for
      * programmatic debugging purposes, and should be removed.
-     * 
+     * @deprecated
      * @throws RulesRepositoryException
+     * 
      */
     public void dumpRepository() throws RulesRepositoryException {
         try {
@@ -187,6 +179,7 @@ public class RulesRepository {
     /**
      * Recursively outputs the contents of the given node. Used for debugging
      * purposes.
+     * @deprecated
      */
     private void dump(final Node node) throws RulesRepositoryException {
         try {
@@ -263,133 +256,133 @@ public class RulesRepository {
         }
     }
 
-    // MN: This is kept for future reference showing how to tie references
-    // to a specific version when
-    // sharing assets.
-    //    
-    // /**
-    // * Adds a Rule node in the repository using the content specified,
-    // associating it with
-    // * the specified DSL node
-    // *
-    // * @param ruleName the name of the rule
-    // * @param lhsContent the lhs of the rule
-    // * @param rhsContent the rhs of the rule
-    // * @param dslItem the dslItem encapsulting the dsl node to associate
-    // this rule node with
-    // * @paaram followDslHead whether or not to follow the head revision of
-    // the dsl node
-    // * @return a RuleItem object encapsulating the node that gets added
-    // * @throws RulesRepositoryException
-    // */
-    // public RuleItem addRule(String ruleName, String ruleContent, DslItem
-    // dslItem, boolean followDslHead) throws RulesRepositoryException {
-    // Node folderNode = this.getAreaNode(RULE_AREA);
-    //        
-    // try {
-    // //create the node - see section 6.7.22.6 of the spec
-    // Node ruleNode = folderNode.addNode(ruleName,
-    // RuleItem.RULE_NODE_TYPE_NAME);
-    //                        
-    // ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, ruleName);
-    // ruleNode.setProperty(RuleItem.RULE_CONTENT_PROPERTY_NAME,
-    // ruleContent);
-    // ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, "");
-    // ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME,
-    // RuleItem.RULE_FORMAT);
-    //            
-    //            
-    // if(followDslHead) {
-    // ruleNode.setProperty(RuleItem.DSL_PROPERTY_NAME, dslItem.getNode());
-    // }
-    // else {
-    // //tie the ruleNode to specifically the current version of the dslNode
-    // ruleNode.setProperty(RuleItem.DSL_PROPERTY_NAME,
-    // dslItem.getNode().getBaseVersion());
-    // }
-    //            
-    // Calendar lastModified = Calendar.getInstance();
-    // ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME,
-    // lastModified);
-    //            
-    // session.save();
-    //            
-    // try {
-    // ruleNode.checkin();
-    // }
-    // catch(UnsupportedRepositoryOperationException e) {
-    // String message = "Error: Caught
-    // UnsupportedRepositoryOperationException when attempting to checkin
-    // rule: " + ruleNode.getName() + ". Are you sure your JCR repository
-    // supports versioning? ";
-    // log.error(message + e);
-    // throw new RulesRepositoryException(message, e);
-    // }
-    //            
-    // return new RuleItem(this, ruleNode);
-    // }
-    // catch(Exception e) {
-    // log.error("Caught Exception", e);
-    // throw new RulesRepositoryException(e);
-    // }
-    // }
-    //    
-    //    
-    // /**
-    // * Adds a Rule node in the repository using the content specified
-    // *
-    // * @param ruleName the name of the rule
-    // * @param lhsContent the lhs of the rule
-    // * @param rhsContent the rhs of the rule
-    // * @return a RuleItem object encapsulating the node that gets added
-    // * @throws RulesRepositoryException
-    // */
-    // public RuleItem addRule(String ruleName, String ruleContent) throws
-    // RulesRepositoryException {
-    // Node folderNode = this.getAreaNode(RULE_AREA);
-    //        
-    // try {
-    // //create the node - see section 6.7.22.6 of the spec
-    // Node ruleNode = folderNode.addNode(ruleName,
-    // RuleItem.RULE_NODE_TYPE_NAME);
-    //                        
-    // ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, ruleName);
-    //            
-    //                        
-    // ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, "");
-    // ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME,
-    // RuleItem.RULE_FORMAT);
-    // ruleNode.setProperty(RuleItem.RULE_CONTENT_PROPERTY_NAME,
-    // ruleContent);
-    //                                    
-    // ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT, "Initial" );
-    //            
-    //            
-    // Calendar lastModified = Calendar.getInstance();
-    // ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME,
-    // lastModified);
-    //            
-    // session.save();
-    //            
-    // try {
-    // ruleNode.checkin();
-    // }
-    // catch(UnsupportedRepositoryOperationException e) {
-    // String message = "Error: Caught
-    // UnsupportedRepositoryOperationException when attempting to checkin
-    // rule: " + ruleNode.getName() + ". Are you sure your JCR repository
-    // supports versioning? ";
-    // log.error(message + e);
-    // throw new RulesRepositoryException(message, e);
-    // }
-    //            
-    // return new RuleItem(this, ruleNode);
-    // }
-    // catch(Exception e) {
-    // log.error("Caught Exception", e);
-    // throw new RulesRepositoryException(e);
-    // }
-    // }
+//    MN: This is kept for future reference showing how to tie references
+//    to a specific version when
+//    sharing assets.
+//
+//    /**
+//     * Adds a Rule node in the repository using the content specified,
+//     associating it with
+//     * the specified DSL node
+//     *
+//     * @param ruleName the name of the rule
+//     * @param lhsContent the lhs of the rule
+//     * @param rhsContent the rhs of the rule
+//     * @param dslItem the dslItem encapsulting the dsl node to associate
+//     this rule node with
+//     * @paaram followDslHead whether or not to follow the head revision of
+//     the dsl node
+//     * @return a RuleItem object encapsulating the node that gets added
+//     * @throws RulesRepositoryException
+//     */
+//    public RuleItem addRule(String ruleName, String ruleContent, DslItem
+//                            dslItem, boolean followDslHead) throws RulesRepositoryException {
+//        Node folderNode = this.getAreaNode(RULE_AREA);
+//
+//        try {
+//            //create the node - see section 6.7.22.6 of the spec
+//            Node ruleNode = folderNode.addNode(ruleName,
+//                                               RuleItem.RULE_NODE_TYPE_NAME);
+//
+//            ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, ruleName);
+//            ruleNode.setProperty(RuleItem.RULE_CONTENT_PROPERTY_NAME,
+//                                 ruleContent);
+//            ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, "");
+//            ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME,
+//                                 RuleItem.RULE_FORMAT);
+//
+//
+//            if(followDslHead) {
+//                ruleNode.setProperty(RuleItem.DSL_PROPERTY_NAME, dslItem.getNode());
+//            }
+//            else {
+//                //tie the ruleNode to specifically the current version of the dslNode
+//                ruleNode.setProperty(RuleItem.DSL_PROPERTY_NAME,
+//                                     dslItem.getNode().getBaseVersion());
+//            }
+//
+//            Calendar lastModified = Calendar.getInstance();
+//            ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME,
+//                                 lastModified);
+//
+//            session.save();
+//
+//            try {
+//                ruleNode.checkin();
+//            }
+//            catch(UnsupportedRepositoryOperationException e) {
+//                String message = "Error: Caught
+//                    UnsupportedRepositoryOperationException when attempting to checkin
+//                    rule: " + ruleNode.getName() + ". Are you sure your JCR repository
+//                    supports versioning? ";
+//                        log.error(message + e);
+//                throw new RulesRepositoryException(message, e);
+//            }
+//
+//            return new RuleItem(this, ruleNode);
+//        }
+//        catch(Exception e) {
+//            log.error("Caught Exception", e);
+//            throw new RulesRepositoryException(e);
+//        }
+//    }
+//
+//
+//    /**
+//     * Adds a Rule node in the repository using the content specified
+//     *
+//     * @param ruleName the name of the rule
+//     * @param lhsContent the lhs of the rule
+//     * @param rhsContent the rhs of the rule
+//     * @return a RuleItem object encapsulating the node that gets added
+//     * @throws RulesRepositoryException
+//     */
+//    public RuleItem addRule(String ruleName, String ruleContent) throws
+//    RulesRepositoryException {
+//        Node folderNode = this.getAreaNode(RULE_AREA);
+//
+//        try {
+//            //create the node - see section 6.7.22.6 of the spec
+//            Node ruleNode = folderNode.addNode(ruleName,
+//                                               RuleItem.RULE_NODE_TYPE_NAME);
+//
+//            ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, ruleName);
+//
+//
+//            ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, "");
+//            ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME,
+//                                 RuleItem.RULE_FORMAT);
+//            ruleNode.setProperty(RuleItem.RULE_CONTENT_PROPERTY_NAME,
+//                                 ruleContent);
+//
+//            ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT, "Initial" );
+//
+//
+//            Calendar lastModified = Calendar.getInstance();
+//            ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME,
+//                                 lastModified);
+//
+//            session.save();
+//
+//            try {
+//                ruleNode.checkin();
+//            }
+//            catch(UnsupportedRepositoryOperationException e) {
+//                String message = "Error: Caught
+//                    UnsupportedRepositoryOperationException when attempting to checkin
+//                    rule: " + ruleNode.getName() + ". Are you sure your JCR repository
+//                    supports versioning? ";
+//                        log.error(message + e);
+//                throw new RulesRepositoryException(message, e);
+//            }
+//
+//            return new RuleItem(this, ruleNode);
+//        }
+//        catch(Exception e) {
+//            log.error("Caught Exception", e);
+//            throw new RulesRepositoryException(e);
+//        }
+//    }
 
     /**
      * This will copy an assets content to the new location.
@@ -825,23 +818,54 @@ public class RulesRepository {
                                           false );
     }
     
+    /**
+     * TODO: comment 
+     * @return
+     * @throws IOException
+     * @throws PathNotFoundException
+     * @throws RepositoryException
+     */
     public byte[] exportRulesRepository() throws IOException, PathNotFoundException, RepositoryException {
+        
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ZipOutputStream zout = new ZipOutputStream( bout );
+
+        zout.putNextEntry( new ZipEntry( "repository_export.xml" ) );
+        zout.write( dumpRepositoryXml() );
+        zout.closeEntry();
+        zout.finish();
+        return bout.toByteArray();
+    }
+    
+    public byte[] dumpRepositoryXml() throws PathNotFoundException, IOException, RepositoryException {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         session.exportSystemView( "/drools:repository", byteOut , false, false );
         return byteOut.toByteArray();
     }
     
+    /**
+     * 
+     * @param byteArray
+     */
     public void importRulesRepository(byte[] byteArray) {
         try {
-            session.importXML( "/drools:repository", new ByteArrayInputStream(byteArray), ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
+            session.importXML( "/", new ByteArrayInputStream(byteArray), ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
             session.save();
+            System.out.println("rules repository import -> ok ");
         } catch ( RepositoryException e ) {
+            e.printStackTrace();
             throw new RulesRepositoryException();
         } catch ( IOException e ) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * 
+     * @param parentNode
+     * @return
+     * @throws RepositoryException
+     */
     boolean isNotSnapshot(Node parentNode) throws RepositoryException {
         return parentNode.getPath().indexOf( PACKAGE_SNAPSHOT_AREA ) == -1;
     }
