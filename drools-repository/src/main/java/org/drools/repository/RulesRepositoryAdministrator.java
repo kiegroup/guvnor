@@ -68,18 +68,15 @@ public class RulesRepositoryAdministrator {
                 Node node = session.getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
                 node.remove();
                 session.save();
-                System.out.println("saved Session");
             } else {
                 System.out.println("Repo not setup, ergo not clearing it !");
             }
         }
         catch(PathNotFoundException e) {                
             log.error( e );
-            e.printStackTrace();
         }          
         catch(RepositoryException e) {
             log.error( e );
-            e.printStackTrace();
         }
     }  
     

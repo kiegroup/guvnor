@@ -839,6 +839,9 @@ public class RulesRepository {
     
     public byte[] dumpRepositoryXml() throws PathNotFoundException, IOException, RepositoryException {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        if ( session.hasPendingChanges() ) {
+            session.save();
+        }
         session.exportSystemView( "/" + RULES_REPOSITORY_NAME, byteOut , false, false );
         return byteOut.toByteArray();
     }
@@ -849,7 +852,7 @@ public class RulesRepository {
      */
     public void importRulesRepository(byte[] byteArray) {
         try {
-            session.importXML( "/" , new ByteArrayInputStream(byteArray), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+            session.importXML( "/" , new ByteArrayInputStream(byteArray), ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
             session.save();
             System.out.println("rules repository import -> ok ");
         } catch ( RepositoryException e ) {
