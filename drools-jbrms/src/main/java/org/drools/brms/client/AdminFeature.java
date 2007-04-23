@@ -27,7 +27,6 @@ public class AdminFeature extends JBRMSFeature {
       initWidget( tab );
       
   }
-
   
   public static ComponentInfo init() {
     return new ComponentInfo("Admin",
@@ -42,6 +41,4 @@ public class AdminFeature extends JBRMSFeature {
 
   public void onShow() {
   }
-
-
 }

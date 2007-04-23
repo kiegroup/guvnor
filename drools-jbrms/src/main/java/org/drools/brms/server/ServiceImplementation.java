@@ -1,5 +1,6 @@
 package org.drools.brms.server;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
 import org.apache.log4j.Logger;
@@ -35,6 +37,7 @@ import org.drools.repository.AssetItemIterator;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryAdministrator;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.VersionableItem;
@@ -348,6 +351,17 @@ public class ServiceImplementation
         
     }
 
+    @WebRemote 
+    public byte[] exportRepository() throws SerializableException {
+        byte [] exportedOutput = null; 
+        try {
+             exportedOutput =  repository.exportRulesRepository();
+        } catch ( Exception e ) {
+            throw new SerializableException( "Unable to export repository" );
+        } 
+        return exportedOutput;
+    }
+    
     @WebRemote
     public String createPackage(String name,
                                 String description) throws SerializableException {
@@ -578,8 +592,6 @@ public class ServiceImplementation
         
     }
 
-
-    
     @WebRemote    
     public void removeCategory(String categoryPath) throws SerializableException {
         log.info( "REMOVING CATEGORY path: [" + categoryPath + "]" );
@@ -590,6 +602,12 @@ public class ServiceImplementation
         } catch (RulesRepositoryException e) {
             throw new SerializableException( e.getMessage() );
         }
+    }
+    
+    @WebRemote 
+    public void clearRulesRepository() {
+        RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(repository.getSession());
+        admin.clearRulesRepository();
     }
 
     @WebRemote    

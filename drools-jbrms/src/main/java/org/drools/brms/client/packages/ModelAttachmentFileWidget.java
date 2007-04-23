@@ -28,27 +28,36 @@ import com.google.gwt.user.client.ui.Widget;
  * Model packages are jar files. 
  * 
  * @author Michael Neale
+ * @author Fernando Meyer
  */
+
 public class ModelAttachmentFileWidget extends Composite {
-
-
 
     public static final String FORM_FIELD_UUID = "uuid";
     private FormPanel form;
     private Button ok;
     private HorizontalPanel busy;
+    private RuleAsset asset;
+    private RuleViewer viewer;
+    
 
     public ModelAttachmentFileWidget(final RuleAsset asset, final RuleViewer viewer) {
-        
+        this.asset = asset;
+        this.viewer = viewer;
+        initWidgets(asset.uuid, asset.metaData.name);
+        initAssetHandlers();
+    }
+    
+    protected void initWidgets(final String uuid, String formName) {
         form = new FormPanel();
-        form.setAction( GWT.getModuleBaseURL() + "fileManager"   );
+        form.setAction( GWT.getModuleBaseURL() + "fileManager" );
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
         
         FileUpload up = new FileUpload();
         up.setName( "fileUploadElement" );        
         HorizontalPanel fields = new HorizontalPanel();
-        fields.add( getHiddenField(FORM_FIELD_UUID, asset.uuid) );
+        fields.add( getHiddenField(FORM_FIELD_UUID, uuid) );
   
         ok = new Button("Upload");
                 
@@ -58,14 +67,14 @@ public class ModelAttachmentFileWidget extends Composite {
         form.add( fields );
         
         FormStyleLayout layout = new FormStyleLayout("images/model_large.png", 
-                                                     asset.metaData.name);
+                                                     formName);
 
         
         layout.addAttribute( "Upload new version:", form );
         Button dl = new Button("Download");
         dl.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                Window.open( GWT.getModuleBaseURL() + "fileManager?" +  FORM_FIELD_UUID + "=" + asset.uuid, 
+                Window.open( GWT.getModuleBaseURL() + "fileManager?" +  FORM_FIELD_UUID + "=" + uuid, 
                              "downloading...", "" );
             }            
         });
@@ -76,16 +85,20 @@ public class ModelAttachmentFileWidget extends Composite {
         busy.add( new Label("Uploading file...") );
         busy.add( new Image("images/spinner.gif") );
         
-        
-        
         layout.addRow( busy );
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showUploadingBusy();
-                submitUpload();              
+                submitUpload();
             }            
         });
+                
+        initWidget( layout );
         
+        this.setStyleName( "editable-Surface" );        
+    }
+    
+    void initAssetHandlers( ) {
         form.addFormHandler( new FormHandler() {
 
             public void onSubmit(FormSubmitEvent ev) {                
@@ -99,12 +112,7 @@ public class ModelAttachmentFileWidget extends Composite {
                     }
             }
             
-        });
-        
-        initWidget( layout );
-        
-        this.setStyleName( "editable-Surface" );
-        
+        });        
     }
 
     protected void submitUpload() {
