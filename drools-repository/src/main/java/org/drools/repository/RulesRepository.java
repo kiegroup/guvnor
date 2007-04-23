@@ -839,7 +839,7 @@ public class RulesRepository {
     
     public byte[] dumpRepositoryXml() throws PathNotFoundException, IOException, RepositoryException {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        session.exportSystemView( "/drools:repository", byteOut , false, false );
+        session.exportSystemView( "/" + RULES_REPOSITORY_NAME, byteOut , false, false );
         return byteOut.toByteArray();
     }
     
@@ -849,7 +849,7 @@ public class RulesRepository {
      */
     public void importRulesRepository(byte[] byteArray) {
         try {
-            session.importXML( "/", new ByteArrayInputStream(byteArray), ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
+            session.importXML( "/" , new ByteArrayInputStream(byteArray), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
             session.save();
             System.out.println("rules repository import -> ok ");
         } catch ( RepositoryException e ) {
