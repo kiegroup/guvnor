@@ -75,8 +75,6 @@ public class RulesRepository {
 
     private static final Logger log                   = Logger.getLogger( RulesRepository.class );
 
-    private Map                 areaNodeCache         = new HashMap();
-
     /**
      * The name of the rulepackage area of the repository
      */
@@ -219,41 +217,35 @@ public class RulesRepository {
     }
 
     private Node getAreaNode(String areaName) throws RulesRepositoryException {
-        if ( areaNodeCache.containsKey( areaName ) ) {
-            return (Node) areaNodeCache.get( areaName );
-        } else {
-            Node folderNode = null;
-            int tries = 0;
-            while ( folderNode == null && tries < 2 ) {
-                try {
-                    tries++;
-                    folderNode = this.session.getRootNode().getNode( RULES_REPOSITORY_NAME + "/" + areaName );
-                } catch ( PathNotFoundException e ) {
-                    if ( tries == 1 ) {
-                        // hmm..repository must have gotten screwed up. set it
-                        // up again
-                        log.warn( "The repository appears to have become corrupted." );
-                        throw new RulesRepositoryException( "Unable to get the main rule repo node. Repository is not setup correctly.",
-                                                            e );
-                    } else {
-                        log.error( "Unable to correct repository corruption" );
-                    }
-                } catch ( Exception e ) {
-                    log.error( "Caught Exception",
-                               e );
-                    throw new RulesRepositoryException( "Caught exception " + e.getClass().getName(),
+        Node folderNode = null;
+        int tries = 0;
+        while ( folderNode == null && tries < 2 ) {
+            try {
+                tries++;
+                folderNode = this.session.getRootNode().getNode( RULES_REPOSITORY_NAME + "/" + areaName );
+            } catch ( PathNotFoundException e ) {
+                if ( tries == 1 ) {
+                    // hmm..repository must have gotten screwed up. set it
+                    // up again
+                    log.warn( "The repository appears to have become corrupted." );
+                    throw new RulesRepositoryException( "Unable to get the main rule repo node. Repository is not setup correctly.",
                                                         e );
+                } else {
+                    log.error( "Unable to correct repository corruption" );
                 }
+            } catch ( Exception e ) {
+                log.error( "Caught Exception",
+                           e );
+                throw new RulesRepositoryException( "Caught exception " + e.getClass().getName(),
+                                                    e );
             }
-            if ( folderNode == null ) {
-                String message = "Could not get a reference to a node for " + RULES_REPOSITORY_NAME + "/" + areaName;
-                log.error( message );
-                throw new RulesRepositoryException( message );
-            }
-            areaNodeCache.put( areaName,
-                               folderNode );
-            return folderNode;
         }
+        if ( folderNode == null ) {
+            String message = "Could not get a reference to a node for " + RULES_REPOSITORY_NAME + "/" + areaName;
+            log.error( message );
+            throw new RulesRepositoryException( message );
+        }
+        return folderNode;
     }
 
 //    MN: This is kept for future reference showing how to tie references
@@ -839,9 +831,7 @@ public class RulesRepository {
     
     public byte[] dumpRepositoryXml() throws PathNotFoundException, IOException, RepositoryException {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        if ( session.hasPendingChanges() ) {
-            session.save();
-        }
+        session.refresh( false );
         session.exportSystemView( "/" + RULES_REPOSITORY_NAME, byteOut , false, false );
         return byteOut.toByteArray();
     }
@@ -852,9 +842,9 @@ public class RulesRepository {
      */
     public void importRulesRepository(byte[] byteArray) {
         try {
-            session.importXML( "/" , new ByteArrayInputStream(byteArray), ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
+            new RulesRepositoryAdministrator(this.session).clearRulesRepository();
+            this.session.getWorkspace().importXML( "/" , new ByteArrayInputStream(byteArray), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
             session.save();
-            System.out.println("rules repository import -> ok ");
         } catch ( RepositoryException e ) {
             e.printStackTrace();
             throw new RulesRepositoryException();

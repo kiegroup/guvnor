@@ -346,13 +346,18 @@ public class RulesRepositoryTest extends TestCase {
         byte []repository_backup;
         
         try {
+            
             repository_backup = repo.dumpRepositoryXml();
+            assertNotNull( repository_backup );
+            
             repo.createPackage( "testImportExport", "nodescription" );
             repository_unitest = repo.dumpRepositoryXml(); 
-            assertTrue( repository_unitest.length >= 2048 ); // empty repository must have a minimum of 2048 bytes.
-            //repo.importRulesRepository( repository_backup);
-            //assertFalse( repo.containsPackage( "testImportExport" ) );
+            repo.importRulesRepository( repository_backup );
+            assertFalse( repo.containsPackage( "testImportExport" ) );
+            repo.importRulesRepository( repository_unitest );
+            assertTrue( repo.containsPackage( "testImportExport" ) );
         } catch ( Exception e ) {
+            fail("Can't throw any exception.");
             e.printStackTrace();
         }
     }
