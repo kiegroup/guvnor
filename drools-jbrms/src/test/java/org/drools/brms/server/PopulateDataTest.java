@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.rpc.PackageConfigData;
+import org.drools.brms.server.util.FileUploadHelper;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -48,20 +49,17 @@ public class PopulateDataTest extends TestCase {
         InputStream file = this.getClass().getResourceAsStream( "/billasurf.jar" );
         assertNotNull(file);
         
-        FileUploadServlet.attachFileToAsset( repo, uuid, file, "billasurf.jar" );
+        new FileUploadHelper().attachFileToAsset( repo, uuid, file, "billasurf.jar" );
         
         AssetItem item = repo.loadAssetByUUID( uuid );
         assertNotNull(item.getBinaryContentAsBytes());
-        
-        
+        assertEquals( item.getBinaryContentAttachmentFileName(), "billasurf.jar" );
         
         
         PackageItem pkg = repo.loadPackage( "com.billasurf.manufacturing.plant" );
         pkg.updateHeader( "import com.billasurf.Board\nimport com.billasurf.Person" +
                 "\n\nglobal com.billasurf.Person prs" );
         pkg.checkin( "added imports" );
-        
-        
         
         SuggestionCompletionEngine eng = serv.loadSuggestionCompletionEngine( "com.billasurf.manufacturing.plant" );
         assertNotNull(eng);
