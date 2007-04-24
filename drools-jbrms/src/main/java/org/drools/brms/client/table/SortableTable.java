@@ -153,7 +153,7 @@ public class SortableTable extends Grid implements TableListener {
 	public void sort(int columnIndex){
 		Collections.sort(this.tableRows);
 		if(this.sortColIndex != columnIndex){
-			// New Column Header clicked
+			// New Pattern Header clicked
 			// Reset the sortDirection to ASC
 			this.sortDirection = SORT_ASCENDING;
 		}else{
@@ -370,8 +370,8 @@ public class SortableTable extends Grid implements TableListener {
 	 * renderTableHeader
 	 * Renders a particular column in the Table Header
 	 * 
-	 * @param Column Name (String)
-	 * @param Column Index (int) 
+	 * @param Pattern Name (String)
+	 * @param Pattern Index (int) 
 	 */
 	private void renderTableHeader(String name, int index){
 		StringBuffer headerText = new StringBuffer();
