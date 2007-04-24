@@ -108,8 +108,7 @@ public class BackupManager extends Composite {
         uploadFormPanel.addFormHandler( new FormHandler() {
             public void onSubmitComplete(FormSubmitCompleteEvent event) {
                 if ( event.getResults() != null ) Window.alert( event.getResults() );
-                else Window.alert( "Rules repository imported successful" );
-
+                else Window.alert( "Rules repository imported successful, execute a browser refresh (F5) to update static content." );                
                 LoadingPopup.close();
             }
 
