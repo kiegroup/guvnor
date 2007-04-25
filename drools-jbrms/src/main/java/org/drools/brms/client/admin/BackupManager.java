@@ -1,9 +1,9 @@
 package org.drools.brms.client.admin;
 
+import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStyleLayout;
-import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.HTMLFileManagerFields;
 import org.drools.brms.client.common.LoadingPopup;
-import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -19,9 +19,13 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * 
+ * @author Fernando Meyer
+ */
 public class BackupManager extends Composite {
 
-    public static final String FORM_FIELD_REPOSITORY = "repo";
+
 
     public BackupManager() {
 
@@ -29,17 +33,15 @@ public class BackupManager extends Composite {
                                                       "Manage Backups" );
 
         widtab.addAttribute( "",
-                             new HTML( "<i>Import and Export rules repository 'drools:repository'</i>" ) );
+                             new HTML( "<i>Import and Export rules repository</i>" ) );
         widtab.addRow( new HTML( "<hr/>" ) );
-
-        widtab.addAttribute( "Import 'drools:repository' from xml file",
+        widtab.addAttribute( "Import from an xml file",
                              newImportWidget() );
-        widtab.addAttribute( "Export 'drools:repository'",
+        widtab.addAttribute( "Export to a zip file",
                              newExportWidget() );
         widtab.addRow( new HTML( "<hr/>" ) );
-
-        widtab.addAttribute( "Delete rules repository",
-                             cleanRepository() );
+//        widtab.addAttribute( "Delete rules repository",
+//                             cleanRepository() );
 
         initWidget( widtab );
 
@@ -59,29 +61,27 @@ public class BackupManager extends Composite {
         return horiz;
     }
     
-    private Widget cleanRepository() {
-        HorizontalPanel horiz = new HorizontalPanel();
-
-        Button delete = new Button( "Execute" );
-        delete.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                if ( Window.confirm( "Are you really sure about delete your entry drools repository database?" ) ) {  
-                    RepositoryServiceFactory.getService().clearRulesRepository( new GenericCallback() {
-                        public void onSuccess(Object data) {
-                            Window.alert( "Rules repository deleted." );
-                        }
-                    });
-                } else {
-                    Window.alert( "Operation cancelled" );
-                }
-            }
-        } );
-        
-        horiz.add( delete );
-        return horiz;
-    }
-
-    
+//    private Widget cleanRepository() {
+//        HorizontalPanel horiz = new HorizontalPanel();
+//
+//        Button delete = new Button( "Execute" );
+//        delete.addClickListener( new ClickListener() {
+//            public void onClick(Widget w) {
+//                if ( Window.confirm( "Are you REALLY REALLY sure you want to erase you repository contents?" ) ) {  
+//                    RepositoryServiceFactory.getService().clearRulesRepository( new GenericCallback() {
+//                        public void onSuccess(Object data) {
+//                            Window.alert( "Rules repository deleted." );
+//                        }
+//                    });
+//                } else {
+//                    Window.alert( "Operation cancelled" );
+//                }
+//            }
+//        } );
+//        
+//        horiz.add( delete );
+//        return horiz;
+//    }
 
     private Widget newImportWidget() {
 
@@ -94,27 +94,37 @@ public class BackupManager extends Composite {
         uploadFormPanel.setWidget( panel );
 
         final FileUpload upload = new FileUpload();
-        upload.setName( "uploadFormElement" );
+        upload.setName( HTMLFileManagerFields.FILE_UPLOAD_FIELD_NAME_IMPORT );
         panel.add( upload );
 
-        panel.add( new Button( "Submit",
+        panel.add( new Button( "Import",
                                new ClickListener() {
                                    public void onClick(Widget sender) {
-                                       LoadingPopup.showMessage( "Importing 'drools:repository' file" );
-                                       uploadFormPanel.submit();
+                                       doImportFile( uploadFormPanel );
                                    }
+
+                                private void doImportFile(final FormPanel uploadFormPanel) {
+                                       if (Window.confirm( "Are you sure you want to import? this will erase any content in the " +
+                                            "repository currently?" )) {
+                                           LoadingPopup.showMessage( "Importing 'drools:repository' file" );
+                                           uploadFormPanel.submit();
+                                       }
+                                }
                                } ) );
 
         uploadFormPanel.addFormHandler( new FormHandler() {
             public void onSubmitComplete(FormSubmitCompleteEvent event) {
-                if ( event.getResults() != null ) Window.alert( event.getResults() );
-                else Window.alert( "Rules repository imported successful, execute a browser refresh (F5) to update static content." );                
+                if (event.getResults().indexOf( "OK" ) > -1) {
+                    Window.alert( "Rules repository imported successfully. Please refresh your browser (F5) to show the new content. ");
+                } else {
+                    ErrorPopup.showMessage( "Unable to import into the repository. Consult the server logs for error messages." );
+                }                
                 LoadingPopup.close();
             }
 
             public void onSubmit(FormSubmitEvent event) {
                 if ( upload.getFilename().length() == 0 ) {
-                    Window.alert( "You did not specify an exported repository filename!" );
+                    Window.alert( "You did not specify an exported repository filename !" );
                     event.setCancelled( true );
                 } else if ( !upload.getFilename().endsWith( ".xml" ) ) {
                     Window.alert( "Please specify a valid repository xml file." );
@@ -128,9 +138,9 @@ public class BackupManager extends Composite {
     }
 
     private void exportRepository() {
-        byte[] returnfromfunction = null;
+
         LoadingPopup.showMessage( "Exporting 'drools:repository' file" );
-        Window.open( GWT.getModuleBaseURL() + "fileManager?" + FORM_FIELD_REPOSITORY + "=true",
+        Window.open( GWT.getModuleBaseURL() + "fileManager?" + HTMLFileManagerFields.FORM_FIELD_REPOSITORY + "=true",
                      "downloading...",
                      "" );
         LoadingPopup.close();

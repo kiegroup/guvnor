@@ -13,8 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.brms.client.admin.BackupManager;
+import org.drools.brms.client.common.HTMLFileManagerFields;
 import org.drools.brms.client.packages.ModelAttachmentFileWidget;
-import org.drools.brms.server.util.FileUploadHelper;
+import org.drools.brms.server.util.FileManagerUtils;
 import org.drools.brms.server.util.FormData;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
@@ -32,24 +33,26 @@ import org.jboss.seam.contexts.Contexts;
 public class FileUploadServlet extends HttpServlet {
 
     private static final long serialVersionUID = 3909768997932550498L;
-    final FileUploadHelper uploadHelper = new FileUploadHelper();
+    final FileManagerUtils uploadHelper = new FileManagerUtils();
     
 
     /**
-     * The post accepts files for attachment to an asset.
+     * Posting accepts content of various types - 
+     * may be an attachement for an asset, or perhaps a repository import to process.
      */
-
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException,
                                                        IOException {
         response.setContentType( "text/plain" );
-        FormData uploadItem = new FileUploadHelper().getFileItem( request );
+        FormData uploadItem = new FileManagerUtils().getFormData( request );
 
-        if ( uploadItem.getFile().getFieldName().equals( "uploadFormElement" ) ) {
-            processUploadRepository( uploadItem.getFile().getInputStream() );
+        if ( uploadItem.getFile().getFieldName().equals( HTMLFileManagerFields.FILE_UPLOAD_FIELD_NAME_IMPORT ) ) {
+            //importing a while repo
+            response.getWriter().write(processImportRepository( uploadItem.getFile().getInputStream() ));
             return;
         } else if ( uploadItem.getFile() != null && uploadItem.getUuid() != null ) {
-            response.getWriter().write( processUploadFileToAsset(uploadItem) );
+            //attaching to an asset.
+            response.getWriter().write( processAttachFileToAsset(uploadItem) );
             return;
         }
         response.getWriter().write( "NO-SCRIPT-DATA" );
@@ -58,16 +61,15 @@ public class FileUploadServlet extends HttpServlet {
     /**
      * doGet acting like a dispatcher.
      */
-
     protected void doGet(HttpServletRequest req,
                          HttpServletResponse res) throws ServletException,
                                                  IOException {
 
-        String uuid = (String) req.getParameter( ModelAttachmentFileWidget.FORM_FIELD_UUID );
-        String repo = (String) req.getParameter( BackupManager.FORM_FIELD_REPOSITORY );
-
+        String uuid = (String) req.getParameter( HTMLFileManagerFields.FORM_FIELD_UUID );
+        String repo = (String) req.getParameter( HTMLFileManagerFields.FORM_FIELD_REPOSITORY );
+        
         if ( uuid != null ) {
-            processFileDownload( uuid, res );
+            processAttachmentDownload( uuid, res );
         } else if ( repo != null ) {
             try {
                 processXmlFileDownload(res);
@@ -89,14 +91,14 @@ public class FileUploadServlet extends HttpServlet {
         res.getOutputStream().flush();
     }
 
-    private void processFileDownload(String uuid, HttpServletResponse response) throws IOException {
+    private void processAttachmentDownload(String uuid, HttpServletResponse response) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        String filename = uploadHelper.getFilebyUUID( uuid, output, getRepository() );
+        String filename = uploadHelper.loadFileAttachmentByUUID( uuid, output, getRepository() );
 
         
         response.setContentType( "application/x-download" );
         response.setHeader( "Content-Disposition",
-                       "attachment; filename=" + filename + ");");
+                       "attachment; filename=" + filename + ";");
         response.setContentLength( output.size() );
         response.getOutputStream().write( output.toByteArray() );
         response.getOutputStream().flush();
@@ -109,7 +111,6 @@ public class FileUploadServlet extends HttpServlet {
             //MN: NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
             //THIS IS ALL THAT IS NEEDED.
             System.out.println( "WARNING: RUNNING IN NON SEAM MODE SINGLE USER MODE - ONLY FOR TESTING AND DEBUGGING !!!!!" );
-            ServiceImplementation impl = new ServiceImplementation();
 
             try {
                 return new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) );
@@ -120,7 +121,7 @@ public class FileUploadServlet extends HttpServlet {
     }
  
     
-    private String processUploadFileToAsset(FormData uploadItem) throws IOException {
+    private String processAttachFileToAsset(FormData uploadItem) throws IOException {
         RulesRepository repo = getRepository();
 
         uploadHelper.attachFile( uploadItem, repo );
@@ -130,12 +131,13 @@ public class FileUploadServlet extends HttpServlet {
     }
 
 
-    private void processUploadRepository(InputStream file) throws IOException {
+    private String processImportRepository(InputStream file) throws IOException {
         byte[] byteArray = new byte[file.available()];
         RulesRepository repo = getRepository();
 
         file.read( byteArray );
         repo.importRulesRepository( byteArray );
+        return "OK";
     }
     
 }

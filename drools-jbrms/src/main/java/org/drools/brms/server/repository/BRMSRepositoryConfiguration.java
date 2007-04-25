@@ -31,13 +31,20 @@ public class BRMSRepositoryConfiguration {
     Repository repository;
     
     @Create
-    public void create() {
+    public void create() {      
         repository = configurator.getJCRRepository( repositoryHomeDirectory );
         Session sessionForSetup = newSession("admin");
+        create( sessionForSetup );
+    }
+
+
+    void create(Session sessionForSetup) {
+                
         RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(sessionForSetup);
         if (!admin.isRepositoryInitialized()) {
             configurator.setupRulesRepository( sessionForSetup );
         }
+        sessionForSetup.logout();
     }
 
 

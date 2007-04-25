@@ -3,6 +3,8 @@ package org.drools.brms.server.repository;
 
 
 
+import javax.jcr.Session;
+
 import junit.framework.TestCase;
 
 public class BRMSRepositoryConfigurationTest extends TestCase {
@@ -20,6 +22,14 @@ public class BRMSRepositoryConfigurationTest extends TestCase {
         assertNotNull(config.newSession("foo"));
         assertNotSame(config.newSession("foo"), config.newSession("foo"));
         
+    }
+    
+    public void testCreate() throws Exception {
+        BRMSRepositoryConfiguration config = new BRMSRepositoryConfiguration();
+        config.create();
+        Session s = config.newSession( "admin" );
+        config.create( s );
+        assertFalse( s.isLive() );
     }
 
     

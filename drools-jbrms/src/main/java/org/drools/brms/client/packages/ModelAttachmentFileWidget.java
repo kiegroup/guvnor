@@ -2,6 +2,7 @@ package org.drools.brms.client.packages;
 
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStyleLayout;
+import org.drools.brms.client.common.HTMLFileManagerFields;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.ruleeditor.RuleViewer;
 
@@ -33,16 +34,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ModelAttachmentFileWidget extends Composite {
 
-    public static final String FORM_FIELD_UUID = "uuid";
+
     private FormPanel form;
     private Button ok;
     private HorizontalPanel busy;
-    private RuleAsset asset;
     private RuleViewer viewer;
     
 
     public ModelAttachmentFileWidget(final RuleAsset asset, final RuleViewer viewer) {
-        this.asset = asset;
         this.viewer = viewer;
         initWidgets(asset.uuid, asset.metaData.name);
         initAssetHandlers();
@@ -55,9 +54,9 @@ public class ModelAttachmentFileWidget extends Composite {
         form.setMethod( FormPanel.METHOD_POST );
         
         FileUpload up = new FileUpload();
-        up.setName( "fileUploadElement" );        
+        up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );        
         HorizontalPanel fields = new HorizontalPanel();
-        fields.add( getHiddenField(FORM_FIELD_UUID, uuid) );
+        fields.add( getHiddenField(HTMLFileManagerFields.FORM_FIELD_UUID, uuid) );
   
         ok = new Button("Upload");
                 
@@ -74,7 +73,7 @@ public class ModelAttachmentFileWidget extends Composite {
         Button dl = new Button("Download");
         dl.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                Window.open( GWT.getModuleBaseURL() + "fileManager?" +  FORM_FIELD_UUID + "=" + uuid, 
+                Window.open( GWT.getModuleBaseURL() + "fileManager?" +  HTMLFileManagerFields.FORM_FIELD_UUID + "=" + uuid, 
                              "downloading...", "" );
             }            
         });

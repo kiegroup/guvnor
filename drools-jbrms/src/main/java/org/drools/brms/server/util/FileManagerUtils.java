@@ -13,19 +13,24 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.drools.brms.client.common.HTMLFileManagerFields;
 import org.drools.brms.client.packages.ModelAttachmentFileWidget;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 
-public class FileUploadHelper {
 
-    private String filename; 
+
+/**
+ * This assists the file manager servlet.
+ * @author Fernando Meyer
+ */
+public class FileManagerUtils {
+
     
     /**
      * This will return the file and the Asset UUID that it is to be attached to.
      */
-
     public void attachFile(FormData uploadItem, RulesRepository repo) throws IOException {
         
         String uuid = uploadItem.getUuid();
@@ -43,7 +48,6 @@ public class FileUploadHelper {
                                          String uuid,
                                          InputStream fileData,
                                          String fileName) {
-        this.filename = fileName;
         
         AssetItem item = repo.loadAssetByUUID( uuid );
         item.updateBinaryContentAttachment( fileData );
@@ -57,7 +61,7 @@ public class FileUploadHelper {
      * (need to know the UUID) and it will return it as a file.
      */
 
-    public String getFilebyUUID(String uuid,
+    public String loadFileAttachmentByUUID(String uuid,
                                  OutputStream out,
                                  RulesRepository repository) throws IOException {
 
@@ -68,15 +72,14 @@ public class FileUploadHelper {
         out.write( data );
         out.flush();
 
-        this.filename = item.getBinaryContentAttachmentFileName();
         return item.getBinaryContentAttachmentFileName();
     }
+
     
-    public String getFileName () {
-        return this.filename;
-    }
-    
-    public FormData getFileItem(HttpServletRequest request) {
+    /**
+     * Get the form data from the inbound request.
+     */
+    public FormData getFormData(HttpServletRequest request) {
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload( factory );
 
@@ -86,7 +89,7 @@ public class FileUploadHelper {
             Iterator it = items.iterator();
             while ( it.hasNext() ) {
                 FileItem item = (FileItem) it.next();
-                if ( item.isFormField() && item.getFieldName().equals( ModelAttachmentFileWidget.FORM_FIELD_UUID ) ) {
+                if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.FORM_FIELD_UUID ) ) {
                     data.setUuid( item.getString() );
                 } else if ( !item.isFormField() ) {
                     data.setFile( item );

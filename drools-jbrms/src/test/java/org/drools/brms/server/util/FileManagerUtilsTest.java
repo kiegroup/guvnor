@@ -14,20 +14,18 @@ import org.apache.commons.fileupload.FileItem;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 
-public class FileUploadHelperTest extends TestCase {
+public class FileManagerUtilsTest extends TestCase {
     
-    String storeduuid;
-
     public void testAttachFile() throws Exception {
         
-        FileUploadHelper uploadHelper = new FileUploadHelper();
+        FileManagerUtils uploadHelper = new FileManagerUtils();
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         AssetItem item = repo.loadDefaultPackage().addAsset( "testUploadFile", "description" );
         FormData upload = new FormData();
         
         upload.setFile( new MockFile() );
         upload.setUuid( item.getUUID() );
-        this.storeduuid = item.getUUID();
+        
         uploadHelper.attachFile( upload, repo );
         
         AssetItem item2 = repo.loadDefaultPackage().loadAsset( "testUploadFile" );
@@ -47,7 +45,7 @@ public class FileUploadHelperTest extends TestCase {
     }
     
     public void testGetFilebyUUID() throws Exception {
-        FileUploadHelper uploadHelper = new FileUploadHelper();
+        FileManagerUtils uploadHelper = new FileManagerUtils();
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         AssetItem item = repo.loadDefaultPackage().addAsset( "testGetFilebyUUID", "description" );
         FormData upload = new FormData();
@@ -59,7 +57,7 @@ public class FileUploadHelperTest extends TestCase {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream ();
 
-        String filename = uploadHelper.getFilebyUUID(item.getUUID(), out, repo );
+        String filename = uploadHelper.loadFileAttachmentByUUID(item.getUUID(), out, repo );
 
         assertNotNull(out.toByteArray());
         assertEquals("foo bar", new String(out.toByteArray()));

@@ -315,6 +315,12 @@ input:focus, input:active{ border-color:black !important; color: black;}
 //  padding: 4px;
 }
 
+.package-Editor {
+  background-color: #f7f2d0;
+  border: 1px solid #aaaa99;
+//  padding: 4px;
+}
+
 .metadata-Widget {
   font-size:smaller;color:#666;  
 }

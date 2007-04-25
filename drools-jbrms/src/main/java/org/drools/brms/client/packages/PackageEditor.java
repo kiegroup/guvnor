@@ -51,9 +51,9 @@ public class PackageEditor extends FormStyleLayout {
     public PackageEditor(PackageConfigData data) {
         this.conf = data;
         
-        setStyleName( "editable-Surface" );
+        setStyleName( "package-Editor" );
         
-        setHeight( "100%" );
+//        setHeight( "100%" );
         setWidth( "100%" );
         
         refreshWidgets();
@@ -162,7 +162,7 @@ public class PackageEditor extends FormStyleLayout {
         Button archive = new Button("Archive");
         archive.addClickListener(new ClickListener() {
             public void onClick(Widget w) {
-                YesNoDialog diag = new YesNoDialog("Are you sure about archive this package?", new Command() {
+                YesNoDialog diag = new YesNoDialog("Are you sure you want to archive (remove) this package?", new Command() {
                     public void execute() {
                         conf.archived = true;
                         doSaveAction();
