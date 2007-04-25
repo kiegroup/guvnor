@@ -154,15 +154,6 @@ public class RulesRepository {
         this.session.logout();
     }
 
-    /**
-     * Recursively outputs the contents of the workspace starting from root. The
-     * large subtree called jcr:system is skipped. This method is just here for
-     * programmatic debugging purposes, and should be removed.
-     * @deprecated
-     * @throws RulesRepositoryException
-     * 
-     */
-
     private Node getAreaNode(String areaName) throws RulesRepositoryException {
         Node folderNode = null;
         int tries = 0;
