@@ -5,10 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -22,7 +20,6 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
@@ -165,56 +162,6 @@ public class RulesRepository {
      * @throws RulesRepositoryException
      * 
      */
-    public void dumpRepository() throws RulesRepositoryException {
-        try {
-            this.dump( this.session.getRootNode() );
-        } catch ( Exception e ) {
-            log.error( "Caught exception: " + e );
-            throw new RulesRepositoryException( e );
-        }
-    }
-
-    /**
-     * Recursively outputs the contents of the given node. Used for debugging
-     * purposes.
-     * @deprecated
-     */
-    private void dump(final Node node) throws RulesRepositoryException {
-        try {
-            // First output the node path
-            System.out.println( node.getPath() );
-            // Skip the virtual (and large!) jcr:system subtree
-            /*
-             * if (node.getName().equals("jcr:system")) { return; }
-             */
-
-            // Then output the properties
-            PropertyIterator properties = node.getProperties();
-            while ( properties.hasNext() ) {
-                Property property = properties.nextProperty();
-                if ( property.getDefinition().isMultiple() ) {
-                    // A multi-valued property, print all values
-                    Value[] values = property.getValues();
-                    for ( int i = 0; i < values.length; i++ ) {
-                        System.out.println( new StringBuilder().append( property.getPath() ).append( " = " ).append( values[i].getString() ) );
-                    }
-                } else {
-                    // A single-valued property
-                    System.out.println( new StringBuilder().append( property.getPath() ).append( " = " ).append( property.getString() ) );
-                }
-            }
-
-            // Finally output all the child nodes recursively
-            NodeIterator nodes = node.getNodes();
-            while ( nodes.hasNext() ) {
-                dump( nodes.nextNode() );
-            }
-        } catch ( Exception e ) {
-            log.error( "Caught Exception",
-                       e );
-            throw new RulesRepositoryException( e );
-        }
-    }
 
     private Node getAreaNode(String areaName) throws RulesRepositoryException {
         Node folderNode = null;
