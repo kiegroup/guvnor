@@ -1,6 +1,5 @@
 package org.drools.brms.client.common;
 
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -16,7 +15,7 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  * 
  * @author Michael Neale
  */
-public class FormStyleLayout extends Composite {
+public class FormStyleLayout extends DirtableComposite {
     
     private FlexTable layout = new FlexTable();
     private FlexCellFormatter formatter = layout.getFlexCellFormatter();
@@ -29,7 +28,6 @@ public class FormStyleLayout extends Composite {
         addHeader( image, title );
         initWidget( layout );
     }
-    
     
     /** This has no header */
     public FormStyleLayout() {
@@ -83,7 +81,12 @@ public class FormStyleLayout extends Composite {
         name.setStyleName( "resource-name-Label" );
 
         layout.setWidget( 0, 1, name );
+        
         numInLayout++;
-    }    
+    }
+    
+    public void setFlexTableWidget(int row, int col, Widget widget){
+        layout.setWidget( row, col, widget );
+    }
 
 }

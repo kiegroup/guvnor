@@ -26,8 +26,6 @@ public class MetaDataMapperTest extends TestCase {
         assertEquals("abc", bean.getPublisher());
         assertEquals("def", bean.getCreator());
         
-        assertFalse(data.dirty);
-        
     }
     
 

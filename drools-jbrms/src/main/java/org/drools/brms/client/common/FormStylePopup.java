@@ -22,10 +22,20 @@ public class FormStylePopup extends PopupPanel {
         form = new FormStyleLayout( image, title );
         this.setStyleName( "ks-popups-Popup" );
 
-        
+        Image close = new ImageButton("images/close.gif");
+        close.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                hide();                
+            }            
+        });
+
+        form.setFlexTableWidget( 0, 2, close );
+
         add( form );
+
+        
     }
-    
+
     public void addAttribute(String label, Widget wid) {
         form.addAttribute( label, wid );
     }
@@ -33,18 +43,4 @@ public class FormStylePopup extends PopupPanel {
     public void addRow(Widget wid) {
         form.addRow( wid );
     }
-
-    public void show() {        
-        Image close = new ImageButton("images/close.gif");
-        close.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                hide();                
-            }            
-        });
-        addAttribute("", close);
-        
-        super.show();
-    }
-    
-
 }

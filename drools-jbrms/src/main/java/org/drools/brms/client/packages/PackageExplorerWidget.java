@@ -81,9 +81,7 @@ public class PackageExplorerWidget extends Composite {
         };
         
         exTree.addTreeListener( treeListener );
-        
         VerticalPanel left = new VerticalPanel();
-        left.add( exTree );
 
         if (!readonly) {
             //only care about new buttons if its not read only
@@ -95,31 +93,25 @@ public class PackageExplorerWidget extends Composite {
             left.add( buttons );
             buttons.setWidth( "100%" );
         }
+        left.add( exTree );
+        
         layout.setWidget( 0, 0, left );
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         formatter.setVerticalAlignment( 0, 0, HasVerticalAlignment.ALIGN_TOP );
         layout.getFlexCellFormatter().setRowSpan( 0, 1, 2 );
         layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP );
 
-        
-        
         refreshTreeView( );
         
         TreeItem item  = exTree.getItem( 0 );
         if (item != null) exTree.setSelectedItem( item );
 
         layout.setWidget( 0, 1, new HTML("<i>Please choose a package to edit, explore, or create a new package.</i>") );
-        
         layout.getFlexCellFormatter().setWidth( 0, 0, "25%" );
-        
         layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
-        
         listView = new AssetItemListViewer(this.editEvent);
-        
         initWidget( layout );
     }
-
-
 
 
     /** Return all the new wizard buttons. */
@@ -220,15 +212,7 @@ public class PackageExplorerWidget extends Composite {
 
     }
 
-
-
-
-
-
-
     public void refreshTreeView() {
-        
-        
         
         if (this.uuid == null) {
             LoadingPopup.showMessage( "Loading list of packages ..." );
@@ -333,13 +317,6 @@ public class PackageExplorerWidget extends Composite {
         }
     }
 
-
-
-
-
-
-
-
     /**
      * This will create a "show list" event to be attached to the tree.
      */
@@ -350,7 +327,6 @@ public class PackageExplorerWidget extends Composite {
                 final TableDataResult table = (TableDataResult) data;
                 listView.loadTableData( table );      
                 listView.setWidth( "100%" );
-                //listView.setHeight( "100%" );
                 layout.setWidget( 0, 1, listView );
                 layout.getFlexCellFormatter().setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
                 LoadingPopup.close();
@@ -378,8 +354,6 @@ public class PackageExplorerWidget extends Composite {
             public void onSuccess(Object data) {
                 PackageConfigData conf = (PackageConfigData) data;
                 PackageEditor ed = new PackageEditor(conf);
-//                ed.setWidth( "100%" );
-//                ed.setHeight( "100%" );
                 layout.setWidget( 0, 1, ed );              
             }            
         });

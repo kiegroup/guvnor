@@ -137,8 +137,6 @@ public class MetaDataWidget extends FormStyleLayout {
             horiz.add( editPackage );
             return horiz;
         }
-
-        
     }
 
 
@@ -156,26 +154,25 @@ public class MetaDataWidget extends FormStyleLayout {
                     Window.alert( "You need to pick a different package to move this to." );
                     return;
                 }
-                RepositoryServiceFactory.getService().changeAssetPackage( uuid, sel.getSelectedPackage(), 
-                                                                          "Moved from : " + pkg, 
+                RepositoryServiceFactory.getService().changeAssetPackage( uuid,
+                                                                          sel.getSelectedPackage(),
+                                                                          "Moved from : " + pkg,
                                                                           new GenericCallback() {
+                                                                              public void onSuccess(Object data) {
+                                                                                  refreshView.execute();
+                                                                                  pop.hide();
+                                                                              }
 
-                                                                           
-                                                                            public void onSuccess(Object data) {
-                                                                                refreshView.execute();
-                                                                                pop.hide();
-                                                                            }
-                    
-                                                                            });
+                                                                          } );
                 
                 
             }
             
         });
-        pop.setPopupPosition( source.getParent().getParent().getAbsoluteLeft(), source.getParent().getParent().getAbsoluteTop() );
+        pop.setPopupPosition( source.getParent().getParent().getAbsoluteLeft(),
+                              source.getParent().getParent().getAbsoluteTop() );
         pop.show();
     }
-
 
     private Widget getVersionNumberLabel() {
         if (data.versionNumber == 0 ) {
@@ -186,8 +183,6 @@ public class MetaDataWidget extends FormStyleLayout {
         
     }
 
-
-
     private Widget readOnlyDate(Date lastModifiedDate) {
         if (lastModifiedDate == null) {
             return null;
@@ -196,17 +191,11 @@ public class MetaDataWidget extends FormStyleLayout {
         }
     }
 
-    
-
     private Label readOnlyText(String text) {
         Label lbl = new Label(text);
         lbl.setWidth( "100%" );
         return lbl;
     }
-    
-    
-
-
 
     private Widget categories() {
         AssetCategoryEditor ed = new AssetCategoryEditor(this.data, this.readOnly);
@@ -221,8 +210,8 @@ public class MetaDataWidget extends FormStyleLayout {
             box.setTitle( toolTip );
             box.setText( bind.getValue() );
             ChangeListener listener = new ChangeListener() {    
-                public void onChange(Widget w) {   
-                    data.dirty = true;     
+                public void onChange(Widget w) {
+                    makeDirty();
                     bind.setValue( box.getText() );                
                 }                
             };            
@@ -233,16 +222,11 @@ public class MetaDataWidget extends FormStyleLayout {
         }
     }
 
-
-
     /** used to bind fields in the meta data DTO to the form */
     static interface FieldBinding {
         void setValue(String val);
         String getValue();
     }
-
-
-
     
     /**
      * Return the data if it is to be saved.
@@ -250,7 +234,5 @@ public class MetaDataWidget extends FormStyleLayout {
     public MetaData getData() {
         return data;
     }
-
-	
 	
 }

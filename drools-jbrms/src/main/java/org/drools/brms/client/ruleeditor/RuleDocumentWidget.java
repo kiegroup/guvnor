@@ -1,5 +1,6 @@
 package org.drools.brms.client.ruleeditor;
 
+import org.drools.brms.client.common.DirtableComposite;
 import org.drools.brms.client.rpc.MetaData;
 
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -16,7 +17,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Neale
  *
  */
-public class RuleDocumentWidget extends Composite {
+public class RuleDocumentWidget extends DirtableComposite {
 
 	private TextArea text;
 	
@@ -50,7 +51,7 @@ public class RuleDocumentWidget extends Composite {
         text.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {                
                 data.description = text.getText();
-                data.dirty = true;
+                makeDirty();
             }            
         });
         if (data.description == null || "".equals(data.description )) {

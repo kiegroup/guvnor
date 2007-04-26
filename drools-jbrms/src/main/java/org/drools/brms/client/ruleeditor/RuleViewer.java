@@ -1,16 +1,19 @@
 package org.drools.brms.client.ruleeditor;
 
+import org.drools.brms.client.common.DirtableComposite;
+import org.drools.brms.client.common.DirtableFlexTable;
 import org.drools.brms.client.common.ErrorPopup;
-import org.drools.brms.client.common.InfoPopup;
+import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.LoadingPopup;
-import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Widget;
@@ -24,19 +27,17 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 public class RuleViewer extends Composite {
 
     private Command           closeCommand;
-
     protected RuleAsset       asset;
-
-    private final FlexTable layout;
+    private final DirtableFlexTable layout;
+    
     private boolean readOnly;
 
     private MetaDataWidget metaWidget;
-
-    private ActionToolbar toolbar;
-
-    private Widget editor;
-
     private RuleDocumentWidget doco;
+    private Widget editor;
+    
+    private ActionToolbar toolbar;
+    
 
     public RuleViewer(RuleAsset asset) {
         this(asset, false);
@@ -51,10 +52,9 @@ public class RuleViewer extends Composite {
     public RuleViewer(RuleAsset asset, boolean historicalReadOnly) {
         this.asset = asset;
         this.readOnly = historicalReadOnly;
-        layout = new FlexTable();
+        layout = new DirtableFlexTable();
         
         doWidgets();
-        
         initWidget( this.layout );
         
         LoadingPopup.close();
@@ -68,12 +68,10 @@ public class RuleViewer extends Composite {
     private void doWidgets() {
         this.layout.clear();
         
-        metaWidget = new MetaDataWidget( this.asset.metaData,
-                                                              readOnly, this.asset.uuid, new Command() {
-
-                                                                public void execute() {
-                                                                    refreshDataAndView();
-                                                                }
+        metaWidget = new MetaDataWidget( this.asset.metaData, readOnly, this.asset.uuid, new Command() {
+            public void execute() {
+                refreshDataAndView();
+            }
             
         });
         
@@ -84,66 +82,61 @@ public class RuleViewer extends Composite {
 
         //now the main layout table
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
-        layout.setWidget( 0,
-                          1,
-                          metaWidget );
-        formatter.setRowSpan( 0,
-                              1,
-                              3 );
+        layout.setWidget( 0, 1, metaWidget );
+        
+        formatter.setRowSpan( 0, 1, 3 );
         formatter.setVerticalAlignment( 0, 1, HasVerticalAlignment.ALIGN_TOP );
-        formatter.setWidth( 0,
-                            1,
-                            "30%" );
+        formatter.setWidth( 0, 1, "30%" );
         
         //and now the action widgets (checkin/close etc).
         toolbar = new ActionToolbar( asset,
-                                                   new Command() {
-                                                       public void execute() {
-                                                           doCheckin();
-                                                       }
-                                                   },
-                                                   new Command() {
-                                                       public void execute() {
-                                                           doArchive();
-                                                       }
-                                                   },
-                                                   new Command() {
-                                                       public void execute() {
-                                                           zoomIntoAsset();
-                                                       }
-                                                   },
-                                                   new Command() {
-                                                       public void execute() {
-                                                           doDelete();
-                                                       }
-                                                   },
-                                                   readOnly);
-        toolbar.setCloseCommand( new Command() {
-            public void execute() {
-                closeCommand.execute();
-            }
-        } );
+                                     new Command() {
+                public void execute() {
+                    doCheckin();
+                }
+                },
+                new Command() {
+                    public void execute() {
+                        doArchive();
+                    }
+                },
+                new Command() {
+                    public void execute() {
+                        zoomIntoAsset();
+                    }
+                },
+                new Command() {
+                    public void execute() {
+                        doDelete();
+                    }
+                },
+        readOnly);
 
-        layout.setWidget( 0,
-                          0,
-                          toolbar );
-        formatter.setAlignment( 0,
-                                0,
-                                HasHorizontalAlignment.ALIGN_RIGHT,
-                                HasVerticalAlignment.ALIGN_MIDDLE );
+        
+        layout.setWidget( 0, 0, toolbar );
+        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
 
         //REMEMBER: subsequent rows have only one column, doh that is confusing ! 
         //GAAAAAAAAAAAAAAAAAAAAAAAAAAH
 
         editor = EditorLauncher.getEditorViewer(asset, this);
+        toolbar.setCloseCommand( new Command() {
+            public void execute() {
+                if (layout.hasDirty()) {
+                    doCloseUnsavedWarning( );
+                } else {
+
+                closeCommand.execute();
+                }
+            }
+        } );
+
         layout.setWidget( 1, 0, editor);
         
 
         //the document widget
         doco = new RuleDocumentWidget(asset.metaData);
-        layout.setWidget( 2,
-                          0,
-                          doco );
+        layout.setWidget( 2, 0, doco );
     }
     
     void doDelete() {
@@ -181,6 +174,11 @@ public class RuleViewer extends Composite {
 
             public void onSuccess(Object o) {
                 String uuid = (String)o;
+                
+                ((DirtableComposite) editor).resetDirty();
+                metaWidget.resetDirty();
+                doco.resetDirty();
+                
                 if (uuid == null) {
                     ErrorPopup.showMessage( "Failed to check in the item. Please contact your system administrator." );
                     return;
@@ -213,7 +211,6 @@ public class RuleViewer extends Composite {
      * in the rule asset).
      */
     public void zoomIntoAsset() {
-        
 
        boolean vis = !layout.getFlexCellFormatter().isVisible( 2, 0 );
        this.layout.getFlexCellFormatter().setVisible( 0, 1, vis );
@@ -227,6 +224,29 @@ public class RuleViewer extends Composite {
      */
     public void setCloseCommand(Command c) {
         this.closeCommand = c;
+    }
+
+    /**
+     * Called when user wants to close, but there is "dirtyness".
+     */
+    protected void doCloseUnsavedWarning() {
+        final FormStylePopup pop = new FormStylePopup("images/warning-large.png", "WARNING: Un-committed changes.");
+        Button dis = new Button("Discard");
+        pop.addRow( new HTML("Are you sure you want to discard changes?") );
+        pop.addRow( dis );
+        
+        dis.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                closeCommand.execute();
+                pop.hide();
+            }
+        });
+        
+        pop.setStyleName( "warning-Popup" );
+        
+        pop.setPopupPosition( 200, getAbsoluteTop() );
+        pop.show();
+        
     }
 
 }

@@ -43,8 +43,6 @@ public class ActionToolbar extends Composite {
     private String uuid;
     private HTML state;
     
-
-    
     public ActionToolbar(final RuleAsset asset,
                           
                          final Command checkin,
@@ -157,8 +155,7 @@ public class ActionToolbar extends Composite {
             } );
             saveControls.add( delete );        
         }
-                
-        
+
         HorizontalPanel windowControls = new HorizontalPanel();
         
         Image maxMinImage = new ImageButton("images/max_min.gif");
@@ -174,12 +171,7 @@ public class ActionToolbar extends Composite {
         closeImg.setTitle( "Close." );
         closeImg.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                if (metaData.dirty) {
-                    doCloseUnsavedWarning( );
-                } else {
-                    //we can actually close
-                    closeCommand.execute(  );
-                }
+                closeCommand.execute(  );
             }
         });
         
@@ -237,8 +229,6 @@ public class ActionToolbar extends Composite {
         });
         pop.show();
     }
-
-    
     
     /**
      * Show the stats change popup.
@@ -255,34 +245,10 @@ public class ActionToolbar extends Composite {
     }
 
     /**
-     * Called when user wants to close, but there is "dirtyness".
-     */
-    protected void doCloseUnsavedWarning() {
-        final FormStylePopup pop = new FormStylePopup("images/warning-large.png", "WARNING: Un-committed changes.");
-        Button dis = new Button("Discard");
-        pop.addAttribute( "Are you sure you want to discard changes?", dis );
-        
-        dis.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                closeCommand.execute();
-                pop.hide();
-            }
-        });
-        
-        pop.setStyleName( "warning-Popup" );
-        
-        pop.setPopupPosition( 200, getAbsoluteTop() );
-        pop.show();
-        
-    }
-
-    /**
      * This needs to be set to allow the current viewer to be closed.
      */
     public void setCloseCommand(Command c) {
         this.closeCommand = c;
     }
-    
-
     
 }

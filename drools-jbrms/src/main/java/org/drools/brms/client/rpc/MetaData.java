@@ -8,9 +8,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * This is the DTO for a versionable asset's meta data.
  * ie basically everything except the payload.
  */
-public class MetaData
-    implements
-    IsSerializable {
+public class MetaData implements IsSerializable  {
 
     public String name = "";
     public String description = "";
@@ -42,8 +40,6 @@ public class MetaData
     public Date dateEffective;
     public Date dateExpired;
     
-    /** used to flag dirty - ie needs to be spanked. Or saved to the repo, whatever */
-    public boolean dirty = false;
     
     /**
      * Remove a category.

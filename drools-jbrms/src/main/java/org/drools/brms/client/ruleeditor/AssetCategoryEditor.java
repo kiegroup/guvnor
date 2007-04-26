@@ -2,12 +2,12 @@ package org.drools.brms.client.ruleeditor;
 
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
+import org.drools.brms.client.common.DirtableComposite;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.rpc.MetaData;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Image;
@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Neale
  */
-public class AssetCategoryEditor extends Composite {
+public class AssetCategoryEditor extends DirtableComposite {
 
     private MetaData data;
     private Grid layout = new Grid(1, 2);
@@ -54,10 +54,6 @@ public class AssetCategoryEditor extends Composite {
     
         
         
-
-        
-        
-        
         initWidget( layout );        
     }
 
@@ -79,11 +75,8 @@ public class AssetCategoryEditor extends Composite {
     }
 
     protected void removeCategory(int idx) {
-        
         data.removeCategory( idx );
-        
-        data.dirty = true;
-        
+        makeDirty();
         resetBox();
     }
 
