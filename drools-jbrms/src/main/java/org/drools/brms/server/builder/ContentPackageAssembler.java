@@ -154,7 +154,7 @@ public class ContentPackageAssembler {
      * This will accumulate the errors.
      */
     private void recordBuilderErrors(VersionableItem asset) {
-        DroolsError[] errs = builder.getErrors();
+        DroolsError[] errs = builder.getErrors().getErrors();
         for ( int i = 0; i < errs.length; i++ ) {
             this.errors.add( new ContentAssemblyError(asset, errs[i].getMessage()) );
         }
