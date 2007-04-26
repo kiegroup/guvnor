@@ -35,3 +35,6 @@
   < 'drools:assetNodeType','nt:version'
 */
 
+//optionally store the binary compiled package (really a cache)
+- drools:compiledPackage (binary)
+

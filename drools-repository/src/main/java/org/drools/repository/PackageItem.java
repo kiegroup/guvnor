@@ -1,5 +1,6 @@
 package org.drools.repository;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
@@ -47,6 +49,8 @@ public class PackageItem extends VersionableItem {
     
     public static final String HEADER_PROPERTY_NAME             = "drools:header";
     public static final String EXTERNAL_URI_PROPERTY_NAME             = "drools:externalURI";
+
+    private static final String COMPILED_PACKAGE_PROPERTY_NAME = "drools:compiledPackage";
 
     /**
      * Constructs an object of type RulePackageItem corresponding the specified node
@@ -585,6 +589,61 @@ public class PackageItem extends VersionableItem {
             element.updateState( stateItem );
         }
     }
+    
+    /**
+     * If the asset is a binary asset, then use this to update the content
+     * (do NOT use text).
+     */
+    public PackageItem updateCompiledPackage(InputStream data) {
+        checkout();
+        try {
+            this.node.setProperty( COMPILED_PACKAGE_PROPERTY_NAME, data );            
+            return this;
+        } catch (RepositoryException e ) {
+            log.error( "Unable to update the assets binary content", e );
+            throw new RulesRepositoryException( e );
+        }
+    }    
+    
+    /**
+     * This is a convenience method for returning the binary data as a byte array.
+     */
+    public byte[] getCompiledPackageBytes() {
+        
+        try {
+            Node ruleNode = getVersionContentNode();
+            if ( ruleNode.hasProperty(  COMPILED_PACKAGE_PROPERTY_NAME ) ) {
+                Property data = ruleNode.getProperty( COMPILED_PACKAGE_PROPERTY_NAME );
+                InputStream in = data.getStream();
+                
+                // Create the byte array to hold the data
+                byte[] bytes = new byte[(int) data.getLength()];
+            
+                // Read in the bytes
+                int offset = 0;
+                int numRead = 0;
+                while (offset < bytes.length
+                       && (numRead=in.read(bytes, offset, bytes.length-offset)) >= 0) {
+                    offset += numRead;
+                }
+            
+                // Ensure all the bytes have been read in
+                if (offset < bytes.length) {
+                    throw new RulesRepositoryException("Could not completely read binary package for "+ getName());
+                }
+            
+                // Close the input stream and return bytes
+                in.close();   
+                return bytes;
+            } else {
+                return null;
+            }
+        } catch ( Exception e ) {
+            log.error( e );
+            if (e instanceof RuntimeException) throw (RuntimeException) e;
+            throw new RulesRepositoryException( e );
+        }  
+    }    
     
     
 
