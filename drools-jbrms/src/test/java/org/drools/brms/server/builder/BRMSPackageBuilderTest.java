@@ -33,14 +33,14 @@ public class BRMSPackageBuilderTest extends TestCase {
         String ruleAtom = "rule foo \n when \n Person() \n then \n System.out.println(42); end";
         builder.addPackageFromDrl( new StringReader(ruleAtom) );
         if (builder.hasErrors()) {            
-            System.err.println(builder.getErrors()[0].getMessage());
+            System.err.println(builder.getErrors().getErrors()[0].getMessage());
         }
         assertFalse(builder.hasErrors());
 
         ruleAtom = "rule foo2 \n when \n Person() \n then \n System.out.println(42); end";
         builder.addPackageFromDrl( new StringReader(ruleAtom) );
         if (builder.hasErrors()) {            
-            System.err.println(builder.getErrors()[0].getMessage());
+            System.err.println(builder.getErrors().getErrors()[0].getMessage());
         }
         assertFalse(builder.hasErrors());
         
@@ -50,7 +50,7 @@ public class BRMSPackageBuilderTest extends TestCase {
         String functionAtom = "function int fooBar(String x) { return 42; }";
         builder.addPackageFromDrl( new StringReader(functionAtom) );
         if (builder.hasErrors()) {            
-            System.err.println(builder.getErrors()[0].getMessage());
+            System.err.println(builder.getErrors().getErrors()[0].getMessage());
         }
         assertFalse(builder.hasErrors());
         
