@@ -1,6 +1,11 @@
 package org.drools.brms.server;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,6 +23,7 @@ import javax.jcr.RepositoryException;
 import org.apache.log4j.Logger;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
@@ -27,6 +33,8 @@ import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.rpc.ValidatedResponse;
+import org.drools.brms.server.builder.ContentAssemblyError;
+import org.drools.brms.server.builder.ContentPackageAssembler;
 import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.brms.server.util.MetaDataMapper;
@@ -41,6 +49,7 @@ import org.drools.repository.RulesRepositoryAdministrator;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.VersionableItem;
+import org.drools.rule.Package;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -622,5 +631,42 @@ public class ServiceImplementation
             throw new SerializableException(e.getMessage());
         }
         
+    }
+
+    @WebRemote
+    public BuilderResult[] buildPackage(String packageUUID) throws SerializableException {
+        PackageItem item = repository.loadPackageByUUID( packageUUID );
+        ContentPackageAssembler asm = new ContentPackageAssembler(item);
+        if (asm.hasErrors()) {
+            BuilderResult[] result = new BuilderResult[asm.getErrors().size()];
+            for ( int i = 0; i < result.length; i++ ) {
+                ContentAssemblyError err = asm.getErrors().get( i );
+                BuilderResult res = new BuilderResult();
+                res.assetName = err.itemInError.getName();
+                res.assetFormat = err.itemInError.getFormat();
+                res.message = err.errorReport;
+                res.uuid = err.itemInError.getUUID();
+                result[i] = res;
+            }
+            return result;
+        } else {
+            try {
+                ByteArrayOutputStream bout = new ByteArrayOutputStream();
+                ObjectOutputStream out = new ObjectOutputStream(bout);
+                out.writeObject( asm.getBinaryPackage() );
+                
+                item.updateCompiledPackage( new ByteArrayInputStream( bout.toByteArray()) );
+                out.flush();
+                out.close();
+                
+                repository.save();
+            } catch (IOException e) {
+                log.error( e );
+                throw new SerializableException(e.getMessage());
+            }
+
+            return null;
+
+        }
     }
 }

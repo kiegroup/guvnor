@@ -213,4 +213,10 @@ public interface RepositoryService extends RemoteService {
      */
     public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializableException;
     
+    /**
+     * Build the package (may be a snapshot) and return the result.
+     * This will then store the result in the package as an attachment. 
+     */
+    public BuilderResult[] buildPackage(String packageUUID) throws SerializableException;
+    
 }

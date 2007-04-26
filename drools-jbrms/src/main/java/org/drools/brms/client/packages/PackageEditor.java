@@ -9,25 +9,36 @@ import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.common.InfoPopup;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.StatusChangePopup;
 import org.drools.brms.client.common.ValidationMessageWidget;
 import org.drools.brms.client.common.YesNoDialog;
+import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.SnapshotInfo;
 import org.drools.brms.client.rpc.ValidatedResponse;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FormHandler;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormSubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormSubmitEvent;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -52,8 +63,7 @@ public class PackageEditor extends FormStyleLayout {
         this.conf = data;
         
         setStyleName( "package-Editor" );
-        
-//        setHeight( "100%" );
+
         setWidth( "100%" );
         
         refreshWidgets();
@@ -65,7 +75,14 @@ public class PackageEditor extends FormStyleLayout {
         
 
         addRow( warnings() );
-                
+
+        //build stuff
+        final SimplePanel buildResults = new SimplePanel();
+        buildResults.setStyleName( "build-Results" );
+        addAttribute( "Build binary package", buildButton(buildResults));
+        addRow( buildResults );
+        
+      
         
         addAttribute( "Description:", description() );
         addAttribute( "Header:", header() );
@@ -93,7 +110,100 @@ public class PackageEditor extends FormStyleLayout {
         addAttribute("Status:", statusBar);
 
         addRow( saveWidgets() );
+        addRow(new HTML("<hr/>"));
+
+        
     }
+    
+    private Widget buildButton(final Panel buildResults) {
+        final Button build = new Button("Build");
+        InfoPopup info = new InfoPopup("Building", "Building the package will collate, " +
+                "validate, and compile all the rules into a binary package, ready for deployment." +
+                "If successful, a package will be downloaded. If not, a list of errors will show what needs to be addressed.");
+        final AbsolutePanel ab = new AbsolutePanel();
+        ab.add( build ); ab.add( info );
+        build.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                build.setEnabled( false );
+                doBuild(buildResults);
+                build.setEnabled( true );
+            }
+        });          
+        return ab;
+    }
+
+    /**
+     * Actually do the building.
+     * @param buildResults The panel to stuff the results in.
+     */
+    private void doBuild(final Panel buildResults) {
+        buildResults.clear();
+        
+        final HorizontalPanel busy = new HorizontalPanel();
+        busy.add( new Label("Validating and building package...") );
+        busy.add( new Image("images/spinner.gif") );
+        
+        buildResults.add( busy );
+        
+        DeferredCommand.add( new Command() {
+            public void execute() {
+                RepositoryServiceFactory.getService().buildPackage( conf.uuid, new AsyncCallback() {
+                    public void onSuccess(Object data) {
+                        if (data == null) {
+                            showSuccessfulBuild(buildResults);
+                            
+                        } else {
+                            BuilderResult[] results = (BuilderResult[]) data;
+                            showBuilderErrors(results, buildResults);
+                        }
+                    }
+                    public void onFailure(Throwable t) {
+                        ErrorPopup.showMessage( t.getMessage() );
+                        buildResults.clear();
+                    }
+                });
+            }
+        });
+        
+
+        
+    }
+    
+    /**
+     * This is called to display the success (and a download option).
+     * @param buildResults
+     */
+    private void showSuccessfulBuild(Panel buildResults) {
+        buildResults.clear();
+        buildResults.add( new Label("Package build successfully.") );
+    }
+    
+    /**
+     * This is called in the unhappy event of there being errors.  
+     */
+    private void showBuilderErrors(BuilderResult[] results, Panel buildResults) {
+        buildResults.clear();
+        
+        FlexTable errTable = new FlexTable();
+        errTable.setStyleName( "error-List" );
+        errTable.setText( 0, 1, "Format" );
+        errTable.setText( 0, 2, "Name" );
+        errTable.setText( 0, 3, "Message" );
+        
+        for ( int i = 0; i < results.length; i++ ) {
+            int row = i+1;
+            BuilderResult res = results[i];
+            errTable.setWidget( row, 0, new Image("images/error.gif"));
+            errTable.setText( row, 1, res.assetFormat );
+            errTable.setText( row, 2, res.assetName );
+            errTable.setText( row, 3, res.message );
+            
+            errTable.setWidget( row, 4, new Button("show") );
+        }
+        
+        buildResults.add( errTable );
+        
+    }    
 
     private Widget warnings() {
         if (this.previousResponse != null && this.previousResponse.hasErrors) {
@@ -192,7 +302,7 @@ public class PackageEditor extends FormStyleLayout {
         form.addAttribute( "Choose or create snapshot name:",  vert);
         final List radioList = new ArrayList();
         final TextBox newName = new TextBox();
-        final String newSnapshotText = "NEW:";
+        final String newSnapshotText = "NEW: ";
         
         RepositoryServiceFactory.getService().listSnapshots( conf.name, new GenericCallback() {
             public void onSuccess(Object data) {

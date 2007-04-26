@@ -1,13 +1,20 @@
 package org.drools.brms.server;
 
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
 import java.util.Calendar;
 import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.drools.Person;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.StatelessSession;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
+import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.RuleAsset;
@@ -25,6 +32,8 @@ import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.StateItem;
+import org.drools.rule.Package;
+import org.drools.util.BinaryRuleBaseLoader;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -848,6 +857,72 @@ public class ServiceImplementationTest extends TestCase {
         SuggestionCompletionEngine eng = impl.loadSuggestionCompletionEngine( "testSuggestionComp" );
         assertNotNull( eng );
 
+    }
+    
+
+    
+    /**
+     * This will test creating a package, check it compiles, and can exectute rules, 
+     * then take a snapshot, and check that it reports errors. 
+     */
+    public void testBinaryPackageCompileAndExecute() throws Exception {
+        ServiceImplementation impl = getService();
+        RulesRepository repo = impl.repository;
+
+        
+        
+        //create our package
+        PackageItem pkg = repo.createPackage( "testBinaryPackageCompile", "" );
+        pkg.updateHeader( "import org.drools.Person" );
+        AssetItem rule1 = pkg.addAsset( "rule_1", "" );
+        rule1.updateFormat( AssetFormats.DRL );
+        rule1.updateContent( "rule 'rule1' \n when p:Person() \n then p.setAge(42); \n end"); 
+        rule1.checkin( "" );
+        repo.save();
+        
+        BuilderResult[] results = impl.buildPackage( pkg.getUUID() );
+        assertNull(results);
+        
+        pkg = repo.loadPackage( "testBinaryPackageCompile" );
+        byte[] binPackage = pkg.getCompiledPackageBytes();
+
+        assertNotNull(binPackage);
+        
+        ByteArrayInputStream bin = new ByteArrayInputStream(binPackage);
+        ObjectInputStream in = new ObjectInputStream(bin);
+        Package binPkg = (Package) in.readObject();
+         
+        assertNotNull(binPkg);
+        assertTrue(binPkg.isValid());
+        
+        Person p = new Person();
+        
+        BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
+        loader.addPackage( new ByteArrayInputStream(binPackage) );
+        RuleBase rb = loader.getRuleBase();
+        
+        StatelessSession sess = rb.newStatelessSession();
+        sess.execute( p );
+        assertEquals(42, p.getAge());
+        
+        impl.createPackageSnapshot( "testBinaryPackageCompile", "SNAP1", false, "" );
+        
+        
+        rule1.updateContent( "rule 'rule1' \n when p:PersonX() \n then System.err.println(42); \n end"); 
+        rule1.checkin( "" );
+        
+        results = impl.buildPackage( pkg.getUUID() );
+        assertNotNull(results);
+        assertEquals(1, results.length);
+        assertEquals(rule1.getName(), results[0].assetName);
+        assertEquals(AssetFormats.DRL, results[0].assetFormat);
+        assertNotNull(results[0].message);
+        assertEquals(rule1.getUUID(), results[0].uuid);
+        
+        pkg = repo.loadPackageSnapshot( "testBinaryPackageCompile", "SNAP1" );
+        results = impl.buildPackage( pkg.getUUID() );
+        assertNull(results);
+        
     }
 
     private ServiceImplementation getService() throws Exception {
