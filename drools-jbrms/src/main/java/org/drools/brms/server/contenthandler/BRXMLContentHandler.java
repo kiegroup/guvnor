@@ -6,7 +6,7 @@ import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.server.builder.BRMSPackageBuilder;
 import org.drools.brms.server.builder.ContentPackageAssembler;
-import org.drools.brms.server.util.BRLPersistence;
+import org.drools.brms.server.util.BRXMLPersistence;
 import org.drools.compiler.DroolsParserException;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -19,7 +19,7 @@ public class BRXMLContentHandler extends ContentHandler implements IRuleAsset {
     public void retrieveAssetContent(RuleAsset asset,
                                      PackageItem pkg,
                                      AssetItem item) throws SerializableException {
-        RuleModel model = BRLPersistence.getInstance().toModel( item.getContent() );
+        RuleModel model = BRXMLPersistence.getInstance().unmarshal( item.getContent() );
 
 
         
@@ -30,7 +30,7 @@ public class BRXMLContentHandler extends ContentHandler implements IRuleAsset {
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializableException {
         RuleModel data = (RuleModel) asset.content;
-        repoAsset.updateContent( BRLPersistence.getInstance().toXML( data ) );
+        repoAsset.updateContent( BRXMLPersistence.getInstance().marshal( data ) );
     }
 
     public void compile(BRMSPackageBuilder builder, AssetItem asset, ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
