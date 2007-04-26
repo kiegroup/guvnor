@@ -1,6 +1,7 @@
 package org.drools.brms.client.common;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
@@ -12,14 +13,18 @@ public class DirtableFlexTable extends FlexTable {
 
     public boolean hasDirty() {
         
-        //Pair coordinates;
+        Pair coordinates;
         DirtableComposite element;
         
-        for ( Object coordinates : list ) {
-            element = (DirtableComposite) getWidget( ( (Pair) coordinates).getRow(), ( (Pair) coordinates).getColumn() );
+        for ( Iterator iter = list.iterator(); iter.hasNext(); ) {
+            coordinates = (Pair) iter.next();
+            element = (DirtableComposite) getWidget( coordinates.getRow(), coordinates.getColumn() );
             if ( element.isDirty() ) return true;
+            
         }
+        
         return false;
+        
     }
     
     public void setWidget(int row, int column , Widget arg2) {
