@@ -34,6 +34,7 @@ public class MetaDataWidget extends FormStyleLayout {
     private boolean readOnly;
     private String uuid;
     private Command refreshView;
+    AssetCategoryEditor ed;
 	
 	public MetaDataWidget(MetaData d, boolean readOnly, String uuid, Command refreshView) {
         
@@ -198,7 +199,7 @@ public class MetaDataWidget extends FormStyleLayout {
     }
 
     private Widget categories() {
-        AssetCategoryEditor ed = new AssetCategoryEditor(this.data, this.readOnly);
+        ed = new AssetCategoryEditor(this.data, this.readOnly);
         return ed;
     }
 
@@ -234,5 +235,12 @@ public class MetaDataWidget extends FormStyleLayout {
     public MetaData getData() {
         return data;
     }
+
+
+    public boolean isDirty() {
+        return ed.isDirty();
+    }
+    
+    
 	
 }
