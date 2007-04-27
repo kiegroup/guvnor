@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  * 
  * @author Michael Neale
  */
-public class FormStyleLayout extends DirtableComposite {
+public class FormStyleLayout extends DirtyableComposite {
     
     private FlexTable layout = new FlexTable();
     private FlexCellFormatter formatter = layout.getFlexCellFormatter();

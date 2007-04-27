@@ -2,7 +2,7 @@ package org.drools.brms.client.ruleeditor;
 
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
-import org.drools.brms.client.common.DirtableComposite;
+import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.rpc.MetaData;
 
@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Neale
  */
-public class AssetCategoryEditor extends DirtableComposite {
+public class AssetCategoryEditor extends DirtyableComposite {
 
     private MetaData data;
     private Grid layout = new Grid(1, 2);

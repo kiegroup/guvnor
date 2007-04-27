@@ -14,11 +14,11 @@ public class DirtyableFlexTable extends FlexTable {
     public boolean hasDirty() {
         
         Pair coordinates;
-        DirtableComposite element;
+        DirtyableComposite element;
         
         for ( Iterator iter = list.iterator(); iter.hasNext(); ) {
             coordinates = (Pair) iter.next();
-            element = (DirtableComposite) getWidget( coordinates.getRow(), coordinates.getColumn() );
+            element = (DirtyableComposite) getWidget( coordinates.getRow(), coordinates.getColumn() );
             if ( element.isDirty() ) return true;
             
         }
@@ -30,7 +30,7 @@ public class DirtyableFlexTable extends FlexTable {
     public void setWidget(int row, int column , Widget arg2) {
         super.setWidget( row, column, arg2 );
         
-        if ( arg2 instanceof DirtableComposite ) {
+        if ( arg2 instanceof DirtyableComposite ) {
             list.add( length++, new Pair(row ,column) );
             
         }

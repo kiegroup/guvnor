@@ -1,13 +1,9 @@
 package org.drools.brms.client.ruleeditor;
 
-import org.drools.brms.client.common.DirtableComposite;
+import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.rpc.MetaData;
 
 import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -17,7 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Neale
  *
  */
-public class RuleDocumentWidget extends DirtableComposite {
+public class RuleDocumentWidget extends DirtyableComposite {
 
 	private TextArea text;
 	
