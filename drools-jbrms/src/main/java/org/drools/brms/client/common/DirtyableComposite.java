@@ -2,7 +2,7 @@ package org.drools.brms.client.common;
 
 import com.google.gwt.user.client.ui.Composite;
 
-public abstract class DirtyableFlexTable extends Composite implements IDirtyable  {
+public abstract class DirtyableComposite extends Composite implements IDirtyable  {
     private boolean dirtyflag = false;
     
     /* (non-Javadoc)
