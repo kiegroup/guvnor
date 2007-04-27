@@ -1,7 +1,7 @@
 package org.drools.brms.client.ruleeditor;
 
-import org.drools.brms.client.common.DirtableComposite;
-import org.drools.brms.client.common.DirtableFlexTable;
+import org.drools.brms.client.common.DirtyableComposite;
+import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.LoadingPopup;
@@ -28,7 +28,7 @@ public class RuleViewer extends Composite {
 
     private Command           closeCommand;
     protected RuleAsset       asset;
-    private final DirtableFlexTable layout;
+    private final DirtyableFlexTable layout;
     
     private boolean readOnly;
 
@@ -52,7 +52,7 @@ public class RuleViewer extends Composite {
     public RuleViewer(RuleAsset asset, boolean historicalReadOnly) {
         this.asset = asset;
         this.readOnly = historicalReadOnly;
-        layout = new DirtableFlexTable();
+        layout = new DirtyableFlexTable();
         
         doWidgets();
         initWidget( this.layout );
@@ -77,7 +77,7 @@ public class RuleViewer extends Composite {
         
         Command deleteCommand = null;
 
-
+        
         //metaWidget.setWidth( "100%" );
 
         //now the main layout table
@@ -175,7 +175,7 @@ public class RuleViewer extends Composite {
             public void onSuccess(Object o) {
                 String uuid = (String)o;
                 
-                ((DirtableComposite) editor).resetDirty();
+                ((DirtyableComposite) editor).resetDirty();
                 metaWidget.resetDirty();
                 doco.resetDirty();
                 
