@@ -13,6 +13,11 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brxml.ActionSetField;
+import org.drools.brms.client.modeldriven.brxml.FactPattern;
+import org.drools.brms.client.modeldriven.brxml.IAction;
+import org.drools.brms.client.modeldriven.brxml.IPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.PackageConfigData;
@@ -25,6 +30,7 @@ import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.rpc.ValidatedResponse;
 import org.drools.brms.client.rulelist.AssetItemListViewer;
+import org.drools.brms.server.util.BRXMLPersistence;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
@@ -920,6 +926,80 @@ public class ServiceImplementationTest extends TestCase {
         assertEquals(rule1.getUUID(), results[0].uuid);
         
         pkg = repo.loadPackageSnapshot( "testBinaryPackageCompile", "SNAP1" );
+        results = impl.buildPackage( pkg.getUUID() );
+        assertNull(results);
+        
+    }
+
+    /**
+     * This will test creating a package with a BRXML rule, check it compiles, and can exectute rules, 
+     * then take a snapshot, and check that it reports errors. 
+     */
+    public void STILL_FIXING_testBinaryPackageCompileAndExecuteWithBRXML() throws Exception {
+        ServiceImplementation impl = getService();
+        RulesRepository repo = impl.repository;
+
+        //create our package
+        PackageItem pkg = repo.createPackage( "testBinaryPackageCompileBRXML", "" );
+        pkg.updateHeader( "import org.drools.Person" );
+        AssetItem rule1 = pkg.addAsset( "rule_1", "" );
+        rule1.updateFormat( AssetFormats.BUSINESS_RULE );
+        
+        RuleModel model = new RuleModel();
+        model.name = "rule2";
+        FactPattern pattern = new FactPattern("Person");
+        pattern.boundName = "p";
+        ActionSetField action = new ActionSetField("p");
+        ActionFieldValue value = new ActionFieldValue("age", "42");
+        action.addFieldValue( value );
+        
+        model.addLhsItem( pattern );
+        model.addRhsItem( action );
+        
+        rule1.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
+        rule1.checkin( "" );
+        repo.save();
+        
+        BuilderResult[] results = impl.buildPackage( pkg.getUUID() );
+        assertNull(results);
+        
+        pkg = repo.loadPackage( "testBinaryPackageCompileBRXML" );
+        byte[] binPackage = pkg.getCompiledPackageBytes();
+
+        assertNotNull(binPackage);
+        
+        ByteArrayInputStream bin = new ByteArrayInputStream(binPackage);
+        ObjectInputStream in = new ObjectInputStream(bin);
+        Package binPkg = (Package) in.readObject();
+         
+        assertNotNull(binPkg);
+        assertTrue(binPkg.isValid());
+        
+        Person p = new Person();
+        
+        BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
+        loader.addPackage( new ByteArrayInputStream(binPackage) );
+        RuleBase rb = loader.getRuleBase();
+        
+        StatelessSession sess = rb.newStatelessSession();
+        sess.execute( p );
+        assertEquals(42, p.getAge());
+        
+        impl.createPackageSnapshot( "testBinaryPackageCompileBRXML", "SNAP1", false, "" );
+        
+        pattern.factType = "PersonX";
+        rule1.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
+        rule1.checkin( "" );
+        
+        results = impl.buildPackage( pkg.getUUID() );
+        assertNotNull(results);
+        assertEquals(1, results.length);
+        assertEquals(rule1.getName(), results[0].assetName);
+        assertEquals(AssetFormats.BUSINESS_RULE, results[0].assetFormat);
+        assertNotNull(results[0].message);
+        assertEquals(rule1.getUUID(), results[0].uuid);
+        
+        pkg = repo.loadPackageSnapshot( "testBinaryPackageCompileBRXML", "SNAP1" );
         results = impl.buildPackage( pkg.getUUID() );
         assertNull(results);
         
