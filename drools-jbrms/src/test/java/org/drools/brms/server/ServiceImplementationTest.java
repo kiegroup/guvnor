@@ -874,8 +874,6 @@ public class ServiceImplementationTest extends TestCase {
     public void testBinaryPackageCompileAndExecute() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
-
-        
         
         //create our package
         PackageItem pkg = repo.createPackage( "testBinaryPackageCompile", "" );
@@ -935,29 +933,29 @@ public class ServiceImplementationTest extends TestCase {
      * This will test creating a package with a BRXML rule, check it compiles, and can exectute rules, 
      * then take a snapshot, and check that it reports errors. 
      */
-    public void STILL_FIXING_testBinaryPackageCompileAndExecuteWithBRXML() throws Exception {
+    public void testBinaryPackageCompileAndExecuteWithBRXML() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
 
         //create our package
         PackageItem pkg = repo.createPackage( "testBinaryPackageCompileBRXML", "" );
         pkg.updateHeader( "import org.drools.Person" );
-        AssetItem rule1 = pkg.addAsset( "rule_1", "" );
-        rule1.updateFormat( AssetFormats.BUSINESS_RULE );
+        AssetItem rule2 = pkg.addAsset( "rule2", "" );
+        rule2.updateFormat( AssetFormats.BUSINESS_RULE );
         
         RuleModel model = new RuleModel();
         model.name = "rule2";
         FactPattern pattern = new FactPattern("Person");
         pattern.boundName = "p";
         ActionSetField action = new ActionSetField("p");
-        ActionFieldValue value = new ActionFieldValue("age", "42");
+        ActionFieldValue value = new ActionFieldValue("age", "=42");
         action.addFieldValue( value );
         
         model.addLhsItem( pattern );
         model.addRhsItem( action );
         
-        rule1.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
-        rule1.checkin( "" );
+        rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
+        rule2.checkin( "" );
         repo.save();
         
         BuilderResult[] results = impl.buildPackage( pkg.getUUID() );
@@ -988,16 +986,16 @@ public class ServiceImplementationTest extends TestCase {
         impl.createPackageSnapshot( "testBinaryPackageCompileBRXML", "SNAP1", false, "" );
         
         pattern.factType = "PersonX";
-        rule1.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
-        rule1.checkin( "" );
+        rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
+        rule2.checkin( "" );
         
         results = impl.buildPackage( pkg.getUUID() );
         assertNotNull(results);
-        assertEquals(1, results.length);
-        assertEquals(rule1.getName(), results[0].assetName);
+        assertEquals(2, results.length);
+        assertEquals(rule2.getName(), results[0].assetName);
         assertEquals(AssetFormats.BUSINESS_RULE, results[0].assetFormat);
         assertNotNull(results[0].message);
-        assertEquals(rule1.getUUID(), results[0].uuid);
+        assertEquals(rule2.getUUID(), results[0].uuid);
         
         pkg = repo.loadPackageSnapshot( "testBinaryPackageCompileBRXML", "SNAP1" );
         results = impl.buildPackage( pkg.getUUID() );
