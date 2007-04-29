@@ -3,6 +3,7 @@ package org.drools.brms.client.admin;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.HTMLFileManagerFields;
+import org.drools.brms.client.common.ImportWidget;
 import org.drools.brms.client.common.LoadingPopup;
 
 import com.google.gwt.core.client.GWT;
@@ -10,9 +11,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormHandler;
-import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormSubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormSubmitEvent;
 import com.google.gwt.user.client.ui.HTML;
@@ -84,35 +83,18 @@ public class BackupManager extends Composite {
 //    }
 
     private Widget newImportWidget() {
+        final ImportWidget impWidget = new ImportWidget( HTMLFileManagerFields.FILE_UPLOAD_FIELD_NAME_IMPORT);
+        
+        impWidget.add( new Button( "Import", new ClickListener() {
+            public void onClick(Widget sender) {
+                if (Window.confirm( "Are you sure you want to import? this will erase any content in the repository currently?" )) {
+                    LoadingPopup.showMessage( "Importing 'drools:repository' file" );
+                    impWidget.submit();
+                }
+            }
+        } ) );
 
-        final FormPanel uploadFormPanel = new FormPanel();
-        uploadFormPanel.setAction( GWT.getModuleBaseURL() + "fileManager" );
-        uploadFormPanel.setEncoding( FormPanel.ENCODING_MULTIPART );
-        uploadFormPanel.setMethod( FormPanel.METHOD_POST );
-
-        HorizontalPanel panel = new HorizontalPanel();
-        uploadFormPanel.setWidget( panel );
-
-        final FileUpload upload = new FileUpload();
-        upload.setName( HTMLFileManagerFields.FILE_UPLOAD_FIELD_NAME_IMPORT );
-        panel.add( upload );
-
-        panel.add( new Button( "Import",
-                               new ClickListener() {
-                                   public void onClick(Widget sender) {
-                                       doImportFile( uploadFormPanel );
-                                   }
-
-                                private void doImportFile(final FormPanel uploadFormPanel) {
-                                       if (Window.confirm( "Are you sure you want to import? this will erase any content in the " +
-                                            "repository currently?" )) {
-                                           LoadingPopup.showMessage( "Importing 'drools:repository' file" );
-                                           uploadFormPanel.submit();
-                                       }
-                                }
-                               } ) );
-
-        uploadFormPanel.addFormHandler( new FormHandler() {
+        impWidget.addFormHandler( new FormHandler() {
             public void onSubmitComplete(FormSubmitCompleteEvent event) {
                 if (event.getResults().indexOf( "OK" ) > -1) {
                     Window.alert( "Rules repository imported successfully. Please refresh your browser (F5) to show the new content. ");
@@ -123,22 +105,21 @@ public class BackupManager extends Composite {
             }
 
             public void onSubmit(FormSubmitEvent event) {
-                if ( upload.getFilename().length() == 0 ) {
+                if ( impWidget.getFilename().length() == 0 ) {
                     Window.alert( "You did not specify an exported repository filename !" );
                     event.setCancelled( true );
-                } else if ( !upload.getFilename().endsWith( ".xml" ) ) {
+                } else if ( !impWidget.getFilename().endsWith( ".xml" ) ) {
                     Window.alert( "Please specify a valid repository xml file." );
                     event.setCancelled( true );
                 }
 
             }
         } );
-
-        return uploadFormPanel;
+        return impWidget;
     }
+    
 
     private void exportRepository() {
-
         LoadingPopup.showMessage( "Exporting 'drools:repository' file" );
         Window.open( GWT.getModuleBaseURL() + "fileManager?" + HTMLFileManagerFields.FORM_FIELD_REPOSITORY + "=true",
                      "downloading...",

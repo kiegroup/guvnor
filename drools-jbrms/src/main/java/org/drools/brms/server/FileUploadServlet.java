@@ -12,9 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.drools.brms.client.admin.BackupManager;
 import org.drools.brms.client.common.HTMLFileManagerFields;
-import org.drools.brms.client.packages.ModelAttachmentFileWidget;
 import org.drools.brms.server.util.FileManagerUtils;
 import org.drools.brms.server.util.FormData;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
@@ -43,9 +41,8 @@ public class FileUploadServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException,
                                                        IOException {
-        response.setContentType( "text/plain" );
         FormData uploadItem = new FileManagerUtils().getFormData( request );
-
+        
         if ( uploadItem.getFile().getFieldName().equals( HTMLFileManagerFields.FILE_UPLOAD_FIELD_NAME_IMPORT ) ) {
             //importing a while repo
             response.getWriter().write(processImportRepository( uploadItem.getFile().getInputStream() ));
@@ -125,6 +122,7 @@ public class FileUploadServlet extends HttpServlet {
         RulesRepository repo = getRepository();
 
         uploadHelper.attachFile( uploadItem, repo );
+        
         uploadItem.getFile().getInputStream().close();
         
         return "OK";

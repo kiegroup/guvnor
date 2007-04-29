@@ -40,8 +40,7 @@ public class EditorLauncher {
         } else if ( asset.metaData.format.equals( AssetFormats.DSL_TEMPLATE_RULE ) ) {
             return new DSLRuleEditor( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.MODEL ) ) {
-            return new ModelAttachmentFileWidget( asset,
-                                                  viewer );
+            return new ModelAttachmentFileWidget( asset );
         } else {
 
             return new DefaultRuleContentWidget( asset );

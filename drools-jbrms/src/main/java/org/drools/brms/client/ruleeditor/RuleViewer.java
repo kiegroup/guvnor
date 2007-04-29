@@ -175,7 +175,10 @@ public class RuleViewer extends Composite {
             public void onSuccess(Object o) {
                 String uuid = (String)o;
                 
-                ((DirtyableComposite) editor).resetDirty();
+                if ( editor instanceof DirtyableComposite ) {
+                    ((DirtyableComposite) editor).resetDirty();
+                }
+                
                 metaWidget.resetDirty();
                 doco.resetDirty();
                 
