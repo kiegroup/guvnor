@@ -85,7 +85,7 @@ public class AssetBrowser extends Composite {
             }
         });
         
-        table.setWidget( 0, 0, nav );
+        table.setWidget( 1, 0, nav );
         table.setWidget( 0, 1, quick);
         
         formatter.setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
@@ -118,10 +118,10 @@ public class AssetBrowser extends Composite {
         HorizontalPanel actions = new HorizontalPanel();
         actions.add( showFinder );
         actions.add( newRule );
-        table.setWidget( 1, 0, actions);
-        formatter.setHeight( 1, 0, "5%" );
-        formatter.setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP);
-        formatter.setStyleName( 1, 0, "new-asset-Icons" );
+        table.setWidget( 0, 0, actions);
+        formatter.setHeight( 0, 0, "5%" );
+        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP);
+        formatter.setStyleName( 0, 0, "new-asset-Icons" );
         
         return table;
     }
