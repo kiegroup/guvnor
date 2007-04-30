@@ -14,10 +14,11 @@ import com.google.gwt.user.client.ui.TabPanel;
  * The first tab always shows the list of packages in tree form, 
  * with a list/explorer like motif.
  * 
+ * This can also be specified to only show one package (ie when viewing a snapshot).
+ * 
  * Each editor that is opened is opened in a new tab.
  * 
  * @author Michael Neale
- *
  */
 public class PackageManagerView extends Composite {
 
@@ -29,20 +30,21 @@ public class PackageManagerView extends Composite {
      * not including snapshots.
      */
     public PackageManagerView() {
-        this(null, false);
+        this(null, null);
     }
 
     /**
      * This is used when you only want to view one package.
      * @param packageUUID The UUID of the package.
      */
-    public PackageManagerView(String packageUUID, final boolean readonly) {
+    public PackageManagerView(String packageUUID, final String snapshotName) {
         tab = new TabPanel();
         tab.setWidth("100%");
-        tab.setHeight("100%");   
+        tab.setHeight("100%");
+        
         EditItemEvent editEvent = new EditItemEvent() {
             public void open(String key) {
-                EditorLauncher.showLoadEditor( openedViewers, tab, key, readonly );
+                EditorLauncher.showLoadEditor( openedViewers, tab, key, (snapshotName != null) );
             }
         };
         PackageExplorerWidget explorer = null;
@@ -50,7 +52,7 @@ public class PackageManagerView extends Composite {
         if (packageUUID == null) {
             explorer = new PackageExplorerWidget(editEvent);            
         } else {
-            explorer = new PackageExplorerWidget(editEvent, packageUUID, readonly);
+            explorer = new PackageExplorerWidget(editEvent, packageUUID, snapshotName);
         }
         
         tab.add( explorer,  "Explore");        

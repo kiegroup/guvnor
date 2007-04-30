@@ -19,16 +19,28 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
       
-  
+	<!-- servlets - mostly to do with file management -->
 	<servlet>
 		<servlet-name>GWTRemotingServlet</servlet-name>
 		<servlet-class>org.jboss.seam.remoting.gwt.GWTRemoteServiceServlet</servlet-class>
 	</servlet>  
 	
 	<servlet>
-		<servlet-name>FileUploadServlet</servlet-name>
-		<servlet-class>org.drools.brms.server.FileUploadServlet</servlet-class>
+		<servlet-name>AssetFileServlet</servlet-name>
+		<servlet-class>org.drools.brms.server.files.AssetFileServlet</servlet-class>
 	</servlet>  
+	
+	<servlet>
+		<servlet-name>PackageDeploymentServlet</servlet-name>
+		<servlet-class>org.drools.brms.server.files.PackageDeploymentServlet</servlet-class>
+	</servlet>  
+	
+	<servlet>
+		<servlet-name>RepositoryBackupServlet</servlet-name>
+		<servlet-class>org.drools.brms.server.files.RepositoryBackupServlet</servlet-class>
+	</servlet>  
+	
+	
   
 	<servlet-mapping>
 		<servlet-name>GWTRemotingServlet</servlet-name>
@@ -36,9 +48,21 @@
 	</servlet-mapping>  
 	
 	<servlet-mapping>
-		<servlet-name>FileUploadServlet</servlet-name>
-		<url-pattern>/org.drools.brms.JBRMS/fileManager</url-pattern>
+		<servlet-name>AssetFileServlet</servlet-name>
+		<url-pattern>/org.drools.brms.JBRMS/asset</url-pattern>
 	</servlet-mapping>  
+	
+	<servlet-mapping>
+		<servlet-name>PackageDeploymentServlet</servlet-name>
+		<url-pattern>/org.drools.brms.JBRMS/package</url-pattern>
+	</servlet-mapping>  
+
+	<servlet-mapping>
+		<servlet-name>RepositoryBackupServlet</servlet-name>
+		<url-pattern>/org.drools.brms.JBRMS/backup</url-pattern>
+	</servlet-mapping>  
+	
+	
 	
 	<!--
     <listener>

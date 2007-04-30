@@ -22,4 +22,8 @@ public class PackageConfigData
     public String lasContributor;
     public String state;
     public boolean archived = false;
+    public boolean isSnapshot = false;
+    public String snapshotName;
+    public Date dateCreated;
+    public String checkinComment;
 }

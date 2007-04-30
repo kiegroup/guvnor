@@ -8,6 +8,8 @@
 	<entry-point class='org.drools.brms.client.JBRMSEntryPoint'/>
   
 	<servlet path="/jbrmsService" class="org.jboss.seam.remoting.gwt.GWTRemoteServiceServlet" />  
-    <servlet path="/fileManager" class="org.drools.brms.server.FileUploadServlet"/>
+    <servlet path="/asset" class="org.drools.brms.server.files.AssetFileServlet"/>
+    <servlet path="/backup" class="org.drools.brms.server.files.RepositoryBackupServlet"/>    
+    <servlet path="/package" class="org.drools.brms.server.files.PackageDeploymentServlet"/>  
     
 </module>

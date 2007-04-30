@@ -3,21 +3,25 @@ package org.drools.brms.client.packages;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.HTMLFileManagerFields;
-import org.drools.brms.client.common.ImportWidget;
-import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.ruleeditor.RuleViewer;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormHandler;
+import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormSubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormSubmitEvent;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -31,59 +35,45 @@ import com.google.gwt.user.client.ui.Widget;
 public class ModelAttachmentFileWidget extends Composite {
 
 
+    private FormPanel form;
     private Button ok;
     private HorizontalPanel busy;
+    private RuleViewer viewer;
     
 
-    public ModelAttachmentFileWidget(final RuleAsset asset ) {
+    public ModelAttachmentFileWidget(final RuleAsset asset, final RuleViewer viewer) {
+        this.viewer = viewer;
         initWidgets(asset.uuid, asset.metaData.name);
+        initAssetHandlers();
     }
-    
-    private Widget newImportWidget(final String uuid) {
-
-        final ImportWidget impWidget = new ImportWidget( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH, uuid);
-
-        impWidget.add( new Button( "Import", new ClickListener() {
-           public void onClick(Widget sender) {
-               doImportFile();
-           }
-        
-           private void doImportFile() {
-               if ( Window.confirm( "Are you sure you want to import? this will erase the previous file?" ) ) {  
-                   LoadingPopup.showMessage( "Importing file to asset" );
-                   impWidget.submit();
-               }
-           }
-           
-        } ) );
-
-        impWidget.addFormHandler( new FormHandler() {
-            public void onSubmitComplete(FormSubmitCompleteEvent event) {
-                if (event.getResults().indexOf( "OK" ) > -1) {
-                    Window.alert( "File imported successfully. Please refresh your browser (F5) to show the new content. ");
-                } else {
-                    ErrorPopup.showMessage( "Unable to import into the repository. Consult the server logs for error messages." );
-                }                
-                LoadingPopup.close();
-            }
-
-            public void onSubmit(FormSubmitEvent event) {
-
-            }
-        } );
-        
-        return impWidget;
-    }
-    
     
     protected void initWidgets(final String uuid, String formName) {
+        form = new FormPanel();
+        form.setAction( GWT.getModuleBaseURL() + "asset" );
+        form.setEncoding( FormPanel.ENCODING_MULTIPART );
+        form.setMethod( FormPanel.METHOD_POST );
+        
+        FileUpload up = new FileUpload();
+        up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );        
+        HorizontalPanel fields = new HorizontalPanel();
+        fields.add( getHiddenField(HTMLFileManagerFields.FORM_FIELD_UUID, uuid) );
+  
+        ok = new Button("Upload");
+                
+        fields.add( up );
+        fields.add( ok );
+        
+        form.add( fields );
+        
         FormStyleLayout layout = new FormStyleLayout("images/model_large.png", 
                                                      formName);
-        layout.addAttribute( "Upload new version:", newImportWidget(uuid) );
+
+        
+        layout.addAttribute( "Upload new version:", form );
         Button dl = new Button("Download");
         dl.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                Window.open( GWT.getModuleBaseURL() + "fileManager?" +  HTMLFileManagerFields.FORM_FIELD_UUID + "=" + uuid, 
+                Window.open( GWT.getModuleBaseURL() + "asset?" +  HTMLFileManagerFields.FORM_FIELD_UUID + "=" + uuid, 
                              "downloading...", "" );
             }            
         });
@@ -95,16 +85,55 @@ public class ModelAttachmentFileWidget extends Composite {
         busy.add( new Image("images/spinner.gif") );
         
         layout.addRow( busy );
+        ok.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                showUploadingBusy();
+                submitUpload();
+            }            
+        });
+                
         initWidget( layout );
         
         this.setStyleName( "editable-Surface" );        
     }
+    
+    void initAssetHandlers( ) {
+        form.addFormHandler( new FormHandler() {
+
+            public void onSubmit(FormSubmitEvent ev) {                
+            }
+
+            public void onSubmitComplete(FormSubmitCompleteEvent ev) {  
+                    if (ev.getResults().indexOf( "OK" ) > -1) {                        
+                        viewer.refreshDataAndView();
+                    } else {
+                        ErrorPopup.showMessage( "Unable to upload the file." );
+                    }
+            }
+            
+        });        
+    }
+
+    protected void submitUpload() {
+        DeferredCommand.add( new Command() {
+            public void execute() {
+                form.submit();
+            }            
+        });
+    }
 
     protected void showUploadingBusy() {
         this.ok.setVisible( false );
-//        this.form.setVisible( false );
+        this.form.setVisible( false );
         this.busy.setVisible( true );
     }
 
+    private TextBox getHiddenField(String name, String value) {
+        TextBox t = new TextBox();
+        t.setName( name );
+        t.setText( value );
+        t.setVisible( false );
+        return t;
+    }
     
 }

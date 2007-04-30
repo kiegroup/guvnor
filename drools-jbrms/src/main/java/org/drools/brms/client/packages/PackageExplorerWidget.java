@@ -1,6 +1,7 @@
 package org.drools.brms.client.packages;
 
 import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
@@ -13,6 +14,8 @@ import org.drools.brms.client.rulelist.EditItemEvent;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -22,6 +25,8 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.StackPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
@@ -33,6 +38,7 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
  * Contains the explorer to view (and lazy load) the packages in a repository.
+ * This uses the explorer type motif, with a tree on the left, and a list or "panel" on the right.
  * 
  * @author Michael Neale
  */
@@ -44,12 +50,14 @@ public class PackageExplorerWidget extends Composite {
     private AssetItemListViewer listView;
     private EditItemEvent editEvent;
     private String uuid;
+
+    private String snapshotName;
     
     /**
      * This is for the generic and re-useable package explorer.
      */    
     public PackageExplorerWidget(EditItemEvent edit) {
-        this(edit, null, false);
+        this(edit, null, null);
     }
     
     /**
@@ -57,10 +65,12 @@ public class PackageExplorerWidget extends Composite {
      * @param edit The edit event (action) when the user wants to open an item.
      * @param uuid The package to lock this to.
      */
-    public PackageExplorerWidget(EditItemEvent edit, String uuid, boolean readonly) {
+    public PackageExplorerWidget(EditItemEvent edit, String uuid, String snapshotName) {
         
         this.editEvent = edit;
         this.uuid = uuid;
+        this.snapshotName = snapshotName;
+        
         exTree = new Tree();
         layout = new FlexTable();
         
@@ -83,7 +93,7 @@ public class PackageExplorerWidget extends Composite {
         exTree.addTreeListener( treeListener );
         VerticalPanel left = new VerticalPanel();
 
-        if (!readonly) {
+        if (snapshotName == null) {
             //only care about new buttons if its not read only
             FlexTable buttons = new FlexTable();
             buttons.getCellFormatter().setStyleName( 0, 0, "new-asset-Icons" );
@@ -353,8 +363,45 @@ public class PackageExplorerWidget extends Composite {
 
             public void onSuccess(Object data) {
                 PackageConfigData conf = (PackageConfigData) data;
-                PackageEditor ed = new PackageEditor(conf);
-                layout.setWidget( 0, 1, ed );              
+                
+                StackPanel sp = new StackPanel();
+                
+                FormStyleLayout infoLayout = new FormStyleLayout("images/package_large.png", conf.name);
+                infoLayout.setStyleName( "package-Editor" );
+                infoLayout.setWidth( "100%" );
+                infoLayout.addAttribute( "Description:", new Label(conf.description) );
+                infoLayout.addAttribute( "Date created:", new Label(conf.dateCreated.toLocaleString()));
+                
+                if (conf.isSnapshot) {
+                    infoLayout.addAttribute( "Snapshot created on:", new Label(conf.lastModified.toLocaleString()) );
+                    infoLayout.addAttribute( "Snapshot comment:", new Label(conf.checkinComment) );
+                    final String uri = PackageBuilderWidget.getDownloadLink( conf );
+                    Button download = new Button("Download package");
+                    download.addClickListener( new ClickListener() {
+                        public void onClick(Widget arg0) {
+                            Window.open( uri, "downloading...", "" );
+                        }                        
+                    });
+                    infoLayout.addAttribute( "Download package:", download );
+                    infoLayout.addAttribute( "Package URI:", new Label(uri) );
+                }
+                
+                if (!conf.isSnapshot) {
+                    infoLayout.addRow( new HTML("<i>Choose one of the options below</i>") );
+                }                
+                
+                sp.add( infoLayout, "<img src='images/information.gif'/>Info", true );
+                if (!conf.isSnapshot) {
+                    sp.add( new PackageEditor(conf), "<img src='images/package.gif'/>Edit Package configuration", true);
+                    sp.add( new PackageBuilderWidget(conf, editEvent), "<img src='images/package_build.gif'/>Build, validate and deploy", true );
+                } else {
+                    sp.add( new PackageEditor(conf),  "<img src='images/package.gif'/>View Package configuration", true);
+                    
+                }
+                
+                sp.setWidth( "100%" );
+                
+                layout.setWidget( 0, 1, sp );              
             }            
         });
         

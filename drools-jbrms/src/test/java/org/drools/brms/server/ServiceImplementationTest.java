@@ -475,7 +475,21 @@ public class ServiceImplementationTest extends TestCase {
                       data.externalURI );
 
         assertNotNull( data.uuid );
-
+        assertFalse(data.isSnapshot);
+        
+        assertNotNull(data.dateCreated);
+        Date original = data.lastModified;
+        
+        Thread.sleep( 100 );
+        
+        impl.createPackageSnapshot( "default", "TEST SNAP 2.0", false, "ya" );
+        PackageItem loaded = impl.repository.loadPackageSnapshot( "default", "TEST SNAP 2.0" );
+        
+        data = impl.loadPackageConfig( loaded.getUUID() );
+        assertTrue(data.isSnapshot);
+        assertEquals("TEST SNAP 2.0", data.snapshotName);
+        assertFalse(original.equals( data.lastModified ));
+        assertEquals("ya", data.checkinComment);
     }
 
     public void testPackageConfSave() throws Exception {
@@ -959,6 +973,11 @@ public class ServiceImplementationTest extends TestCase {
         repo.save();
         
         BuilderResult[] results = impl.buildPackage( pkg.getUUID() );
+        if (results != null) {
+            for ( int i = 0; i < results.length; i++ ) {
+                System.err.println(results[i].message);
+            }
+        }
         assertNull(results);
         
         pkg = repo.loadPackage( "testBinaryPackageCompileBRXML" );

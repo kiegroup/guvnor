@@ -340,6 +340,23 @@ input:focus, input:active{ border-color:black !important; color: black;}
   font-color: white !important;
 }
 
+.build-Results {
+	border: 1px solid #666;
+	background-color: white;
+	font-size: small;
+	border-width: 1px;
+	border-collapse: collapse
+	border-style: inset;
+}
+
+
+
+
+
+
+
+
+
 .welcome-Page {
   width: 100%;
   height: 100%;

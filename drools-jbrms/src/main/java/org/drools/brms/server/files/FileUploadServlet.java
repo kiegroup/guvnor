@@ -1,4 +1,4 @@
-package org.drools.brms.server;
+package org.drools.brms.server.files;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.drools.brms.client.admin.BackupManager;
 import org.drools.brms.client.common.HTMLFileManagerFields;
+import org.drools.brms.client.packages.ModelAttachmentFileWidget;
 import org.drools.brms.server.util.FileManagerUtils;
 import org.drools.brms.server.util.FormData;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
@@ -28,10 +30,9 @@ import org.jboss.seam.contexts.Contexts;
  * @author Michael Neale
  * @author Fernando Meyer
  */
-public class FileUploadServlet extends HttpServlet {
+public class FileUploadServlet extends RepositoryServlet {
 
     private static final long serialVersionUID = 3909768997932550498L;
-    final FileManagerUtils uploadHelper = new FileManagerUtils();
     
 
     /**
@@ -41,8 +42,9 @@ public class FileUploadServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException,
                                                        IOException {
+        response.setContentType( "text/plain" );
         FormData uploadItem = new FileManagerUtils().getFormData( request );
-        
+
         if ( uploadItem.getFile().getFieldName().equals( HTMLFileManagerFields.FILE_UPLOAD_FIELD_NAME_IMPORT ) ) {
             //importing a while repo
             response.getWriter().write(processImportRepository( uploadItem.getFile().getInputStream() ));
@@ -62,6 +64,12 @@ public class FileUploadServlet extends HttpServlet {
                          HttpServletResponse res) throws ServletException,
                                                  IOException {
 
+        System.err.println("path info:" + req.getPathInfo());
+        System.err.println("servlet path:" + req.getServletPath());
+        System.err.println("URI:" + req.getRequestURI());
+        System.err.println("URL:" + req.getRequestURL());
+        System.err.println("path translated:" + req.getPathTranslated());
+        
         String uuid = (String) req.getParameter( HTMLFileManagerFields.FORM_FIELD_UUID );
         String repo = (String) req.getParameter( HTMLFileManagerFields.FORM_FIELD_REPOSITORY );
         
@@ -101,28 +109,11 @@ public class FileUploadServlet extends HttpServlet {
         response.getOutputStream().flush();
     }
 
-    private RulesRepository getRepository() {
-        if ( Contexts.isApplicationContextActive() ) {
-            return (RulesRepository) Component.getInstance( "repository" );
-        } else {
-            //MN: NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
-            //THIS IS ALL THAT IS NEEDED.
-            System.out.println( "WARNING: RUNNING IN NON SEAM MODE SINGLE USER MODE - ONLY FOR TESTING AND DEBUGGING !!!!!" );
-
-            try {
-                return new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) );
-            } catch ( Exception e ) {
-                throw new IllegalStateException( "Unable to launch debug mode..." );
-            }
-        }
-    }
- 
     
     private String processAttachFileToAsset(FormData uploadItem) throws IOException {
         RulesRepository repo = getRepository();
 
         uploadHelper.attachFile( uploadItem, repo );
-        
         uploadItem.getFile().getInputStream().close();
         
         return "OK";

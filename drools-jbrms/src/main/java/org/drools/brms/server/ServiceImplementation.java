@@ -391,10 +391,14 @@ public class ServiceImplementation
         data.description = item.getDescription();
         data.name = item.getName();
         data.lastModified = item.getLastModified().getTime();
+        data.dateCreated = item.getCreatedDate().getTime();
+        data.checkinComment = item.getCheckinComment();
         data.lasContributor = item.getLastContributor();
         data.state = item.getStateDescription();
-        
-        
+        data.isSnapshot = item.isSnapshot();
+        if (data.isSnapshot) {
+            data.snapshotName = item.getSnapshotName();
+        }        
         return data;
     }
 

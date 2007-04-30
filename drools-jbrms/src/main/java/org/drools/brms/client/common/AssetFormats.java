@@ -34,6 +34,8 @@ public class AssetFormats {
     /** use a DSL, not sure about this one - can use text or constrained editor */
     public static String DSL_TEMPLATE_RULE   = "brule";
 
+
+    
     /**
      * The following group the 
      */

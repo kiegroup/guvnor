@@ -3,6 +3,7 @@ package org.drools.brms.server.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.drools.brms.client.common.HTMLFileManagerFields;
 import org.drools.repository.AssetItem;
+import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 
@@ -55,11 +57,8 @@ public class FileManagerUtils {
     }
 
     /** 
-     * The get returns files based on UUID.
-     * you can do a request like /fileManager?uuid=..... 
-     * (need to know the UUID) and it will return it as a file.
+     * The get returns files based on UUID of an asset.
      */
-
     public String loadFileAttachmentByUUID(String uuid,
                                  OutputStream out,
                                  RulesRepository repository) throws IOException {
@@ -97,6 +96,36 @@ public class FileManagerUtils {
         } catch ( FileUploadException e ) {
             throw new RulesRepositoryException( e );
         }
+    }
+    
+    /**
+     * Load up the approproate package version.
+     * @param packageName The name of the package. 
+     * @param packageVersion The version (if it is a snapshot).
+     * @param isLatest true if the latest package binary will be used (ie NOT a snapshot).
+     * @return The filename if its all good.
+     */
+    public String loadBinaryPackage(String packageName, 
+                                    String packageVersion, 
+                                    boolean isLatest, 
+                                    OutputStream out, 
+                                    RulesRepository repository) throws IOException {
+        PackageItem item = null;
+        if (isLatest) {
+            item = repository.loadPackage( packageName );
+            byte[] data = item.getCompiledPackageBytes();
+            out.write( data );
+            out.flush();
+            return packageName + ".pkg";            
+        } else {
+            item = repository.loadPackageSnapshot( packageName, packageVersion );
+            byte[] data = item.getCompiledPackageBytes();
+            out.write( data );
+            out.flush();       
+            return packageName + "_" + URLEncoder.encode( packageVersion, "UTF-8") + ".pkg";            
+        }
+
+        
     }
     
 

@@ -42,6 +42,8 @@ public class PackageSnapshotView extends Composite {
     private RepositoryServiceAsync service;
     private TabPanel tab;
     private FlexTable layout;
+    
+    public static final String LATEST_SNAPSHOT = "LATEST";    
 
     public PackageSnapshotView() {
         
@@ -267,14 +269,14 @@ public class PackageSnapshotView extends Composite {
             public void onClick(Widget w) {
                 tab.remove( 1 );
                 tab.selectTab( 0 );
-            }
+            } 
         } );
         horiz.add( close );
         viewLayout.setWidget( 0, 0, horiz );
         FlexCellFormatter formatter = viewLayout.getFlexCellFormatter();
         formatter.setStyleName( 0, 0, "editable-Surface" );
         
-        viewLayout.setWidget( 1, 0, new PackageManagerView(uuid, true) );
+        viewLayout.setWidget( 1, 0, new PackageManagerView(uuid, snapshotName) );
         
         viewLayout.setWidth( "100%" );
         viewLayout.setHeight( "100%" );

@@ -7,11 +7,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import junit.framework.TestCase;
 
 import org.apache.commons.fileupload.FileItem;
+import org.drools.brms.client.packages.PackageSnapshotView;
+import org.drools.brms.server.builder.ContentPackageAssembler;
+import org.drools.brms.server.files.DeploymentURIHelperTest;
+import org.drools.brms.server.files.PackageDeploymentURIHelper;
 import org.drools.repository.AssetItem;
+import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 
 public class FileManagerUtilsTest extends TestCase {
@@ -62,6 +68,33 @@ public class FileManagerUtilsTest extends TestCase {
         assertNotNull(out.toByteArray());
         assertEquals("foo bar", new String(out.toByteArray()));
         assertEquals("foo.bar", filename);
+    }
+    
+    public void testGetBinaryPackage() throws Exception {
+        FileManagerUtils uploadHelper = new FileManagerUtils();
+        RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+        PackageItem pkg = repo.createPackage( "testGetBinaryPackageServlet", "" );
+        pkg.updateHeader( "import java.util.List" );
+        pkg.updateCompiledPackage( new ByteArrayInputStream("foo".getBytes()) );
+        pkg.checkin( "" );
+
+        repo.createPackageSnapshot( pkg.getName(), "SNAPPY 1" );
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        String fileName = uploadHelper.loadBinaryPackage( pkg.getName(), PackageSnapshotView.LATEST_SNAPSHOT, true, out, repo );
+        assertEquals("testGetBinaryPackageServlet.pkg", fileName);
+        byte[] file = out.toByteArray();
+        assertNotNull(file);
+        assertEquals("foo", new String(file));
+        
+        
+        out = new ByteArrayOutputStream();
+        fileName = uploadHelper.loadBinaryPackage( pkg.getName(),"SNAPPY 1", false, out, repo );
+        assertEquals("testGetBinaryPackageServlet_SNAPPY+1.pkg", fileName);
+        file = out.toByteArray();
+        assertNotNull(file);
+        assertEquals("foo", new String(file));        
+        
     }
 }
 
