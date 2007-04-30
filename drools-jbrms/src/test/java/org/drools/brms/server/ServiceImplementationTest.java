@@ -962,7 +962,7 @@ public class ServiceImplementationTest extends TestCase {
         FactPattern pattern = new FactPattern("Person");
         pattern.boundName = "p";
         ActionSetField action = new ActionSetField("p");
-        ActionFieldValue value = new ActionFieldValue("age", "=42");
+        ActionFieldValue value = new ActionFieldValue("age", "42", SuggestionCompletionEngine.TYPE_NUMERIC );
         action.addFieldValue( value );
         
         model.addLhsItem( pattern );

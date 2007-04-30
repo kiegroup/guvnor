@@ -133,7 +133,9 @@ public class ActionAssertFactWidget extends Composite {
         popup.addAttribute( "Add field", box );
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-                model.addFieldValue( new ActionFieldValue(box.getItemText( box.getSelectedIndex() ), "") );
+                String fieldName = box.getItemText( box.getSelectedIndex() );
+                String fieldType = completions.getFieldType( model.getType(), fieldName );
+                model.addFieldValue( new ActionFieldValue( fieldName, "", fieldType ) );
                 modeller.refreshWidget();
                 popup.hide();
             }
