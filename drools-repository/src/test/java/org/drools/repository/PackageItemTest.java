@@ -89,6 +89,8 @@ public class PackageItemTest extends TestCase {
         RulesRepository repo = getRepo();
         
         PackageItem pkg = repo.createPackage( "testPackageSnapshot", "this is something" );
+        assertFalse(pkg.isSnapshot());
+        
         
         AssetItem it1 = pkg.addAsset( "testPackageCopy1", "la" );
         AssetItem it2 = pkg.addAsset( "testPackageCopy2", "la" );
@@ -109,6 +111,10 @@ public class PackageItemTest extends TestCase {
 
         //just check we can load it all via UUID as well...
         PackageItem pkgLoaded = repo.loadPackageSnapshot( "testPackageSnapshot", "PROD 2.0" );
+        assertTrue(pkgLoaded.isSnapshot());
+        assertEquals("PROD 2.0", pkgLoaded.getSnapshotName());
+        assertEquals("testPackageSnapshot", pkgLoaded.getName());
+
         PackageItem _pkgLoaded = repo.loadPackageByUUID( pkgLoaded.getUUID() );
         assertNotNull(_pkgLoaded);
         assertEquals(pkgLoaded.getCreatedDate(), _pkgLoaded.getCreatedDate());

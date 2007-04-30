@@ -8,7 +8,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.ItemExistsException;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
@@ -83,18 +85,39 @@ public class PackageItem extends VersionableItem {
 
 
     
+    /**
+     * Return the name of the package. 
+     */
     public String getName() {
         try {
-            if (this.rulesRepository.isNotSnapshot( this.node.getParent() )) {
-                return super.getName();
-            } else {
-                
+
+            if (isSnapshot()) {
                 return this.node.getParent().getName();
-                
+            } else {
+                return super.getName();
             }
         } catch (RepositoryException e) {
             throw new RulesRepositoryException( e );
         }
+    }
+    
+    /**
+     * @return true if this package is actually a snapshot.
+     */
+    public boolean isSnapshot() {
+        try {
+            return (!this.rulesRepository.isNotSnapshot( this.node.getParent() ));
+        } catch (  RepositoryException e ) {
+            throw new IllegalStateException(e);
+        }
+    }
+    
+    /**
+     * returns the name of the snapshot, if this package is really a snapshot.
+     * If it is not, it will just return the name of the package, so use wisely !
+     */
+    public String getSnapshotName() {
+            return super.getName();
     }
 
     /**
