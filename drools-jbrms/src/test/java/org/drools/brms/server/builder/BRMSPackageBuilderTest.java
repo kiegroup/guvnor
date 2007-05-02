@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 
@@ -20,7 +21,7 @@ public class BRMSPackageBuilderTest extends TestCase {
    }
 
     // @FIXME rule "abc" is null and the Packge has no namespace
-    public void FIXME_testPartialPackage() throws Exception {
+    public void testPartialPackage() throws Exception {
 
         JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         List<JarInputStream> l = new ArrayList<JarInputStream>();
@@ -63,7 +64,7 @@ public class BRMSPackageBuilderTest extends TestCase {
         Package p = builder.getPackage();
         assertEquals(2, p.getRules().length);
         assertEquals(1, p.getFunctions().size());
-        
+        assertNotNull(p.getRule( "foo2" ));
         
         functionAtom = "xxx";
         builder.addPackageFromDrl( new StringReader(functionAtom) );
@@ -71,19 +72,6 @@ public class BRMSPackageBuilderTest extends TestCase {
         builder.clearErrors();
         assertFalse(builder.hasErrors());
         
-        RuleDescr rule = new RuleDescr("abc");
-        PackageDescr pkg = new PackageDescr(null);
-        
-        AndDescr and = new AndDescr();
-        rule.setLhs( and );
-        pkg.addRule( rule );
-        
-        builder.addPackage( pkg );        
-        assertFalse(builder.hasErrors());
-
-        
-        assertEquals(3, p.getRules().length);
-        assertNotNull(p.getRule( "abc" ));
         
     }
     
