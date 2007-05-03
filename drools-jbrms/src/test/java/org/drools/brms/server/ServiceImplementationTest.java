@@ -319,7 +319,9 @@ public class ServiceImplementationTest extends TestCase {
                                           "drl" );
         RuleAsset asset = impl.loadRuleAsset( uuid );
         impl.checkinVersion( asset ); //1
+        asset = impl.loadRuleAsset( uuid );
         impl.checkinVersion( asset ); //2
+        asset = impl.loadRuleAsset( uuid );
         impl.checkinVersion( asset ); //HEAD   
 
         TableDataResult result = impl.loadAssetHistory( uuid );
@@ -425,6 +427,26 @@ public class ServiceImplementationTest extends TestCase {
         assertEquals( "testCheckinCategory/deeper",
                       asset2.metaData.categories[2] );
 
+        
+        //now lets try a concurrent edit of an asset. 
+        //asset3 will be loaded and edited, and then asset2 will try to clobber, it, which should fail.
+        //as it is optimistically locked.
+        RuleAsset asset3 = serv.loadRuleAsset( asset2.uuid );
+        asset3.metaData.subject =  "new sub";
+        serv.checkinVersion( asset3 );
+        
+        asset3 = serv.loadRuleAsset( asset2.uuid );
+        assertFalse(asset3.metaData.versionNumber == asset2.metaData.versionNumber);
+        
+        try {
+            serv.checkinVersion( asset2 );
+            fail("should have failed optimistic lock.");
+        } catch (SerializableException e) {
+            assertNotNull(e.getMessage());
+            assertEquals(-1, e.getMessage().indexOf( "server" ));
+        }
+        
+        
     }
 
     public void testArchivePackage() throws Exception {

@@ -284,13 +284,16 @@ public class ServiceImplementation
     }    
 
     @WebRemote
-    public String checkinVersion(RuleAsset asset) throws SerializableException {  
-        log.info( "CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "]  ARCHIVED [" + asset.archived + "]");
+    public String checkinVersion(RuleAsset asset) throws SerializableException { 
         
-        System.out.println("CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "]  ARCHIVED [" + asset.archived + "]");
+        log.info( "CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "]  ARCHIVED [" + asset.archived + "]");
 
         
         AssetItem repoAsset = repository.loadAssetByUUID( asset.uuid );
+        if (asset.metaData.lastModifiedDate.before( repoAsset.getLastModified().getTime())  ) {
+            throw new SerializableException("This asset was saved by someone else previously, and this version will not be overwritten.");
+        }
+        
         
         repoAsset.archiveItem( asset.archived );
         MetaData meta = asset.metaData;
