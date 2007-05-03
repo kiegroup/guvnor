@@ -90,7 +90,11 @@ public class ServiceImplementation
     public Boolean createCategory(String path,
                                   String name,
                                   String description) {
-        log.info( "CREATING cateogory: [" + name + "] in path [" + path + "]" );
+        
+        
+        log.info( "USER:" + repository.getSession().getUserID() 
+                  + " CREATING cateogory: [" + name + "] in path [" + path + "]" );
+        
         if (path == null || "".equals(path)) {
             path = "/";        
         }
@@ -112,7 +116,10 @@ public class ServiceImplementation
                                  String initialCategory,
                                  String initialPackage,
                                  String format) throws SerializableException {    
-        log.info( "CREATING new asset name [" + ruleName + "] in package [" + initialPackage + "]" );
+        
+        log.info( "USER:" + repository.getSession().getUserID() + 
+                           " CREATING new asset name [" + ruleName + "] in package [" + initialPackage + "]" );
+        
         try {
 
             PackageItem pkg = repository.loadPackage( initialPackage );
@@ -172,6 +179,7 @@ public class ServiceImplementation
             
             result.add( data );
         }
+        
         Collections.sort( result, new Comparator<Object>() {
 
             public int compare(final Object o1,
@@ -197,7 +205,7 @@ public class ServiceImplementation
 
         List list = repository.findAssetsByCategory( categoryPath );
         TableDisplayHandler handler = new TableDisplayHandler();
-        System.out.println("time for load: " + (System.currentTimeMillis() - start) );
+        log.info("time for load: " + (System.currentTimeMillis() - start) );
         return handler.loadRuleListTable( list.iterator(), -1 );
         
     }
@@ -286,7 +294,8 @@ public class ServiceImplementation
     @WebRemote
     public String checkinVersion(RuleAsset asset) throws SerializableException { 
         
-        log.info( "CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "]  ARCHIVED [" + asset.archived + "]");
+        log.info( "USER:" + repository.getSession().getUserID() + 
+        " CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "]  ARCHIVED [" + asset.archived + "]");
 
         
         AssetItem repoAsset = repository.loadAssetByUUID( asset.uuid );
@@ -338,8 +347,6 @@ public class ServiceImplementation
                     result.add( row );                    
             }
         }
-
-        
         
         if (result.size() == 0) return null;
         TableDataResult table = new TableDataResult();
@@ -352,10 +359,13 @@ public class ServiceImplementation
     public void restoreVersion(String versionUUID,
                                  String assetUUID,
                                  String comment) {
-  
         AssetItem old = repository.loadAssetByUUID( versionUUID );
         AssetItem head = repository.loadAssetByUUID( assetUUID );
-        log.info( "RESTORE of asset: [" + head.getName() + "] UUID: [" + head.getUUID() + "] with historical version number: [" + old.getVersionNumber() );
+
+        log.info( "USER:" + repository.getSession().getUserID() + 
+                           " RESTORE of asset: [" + head.getName() + "] UUID: [" + head.getUUID() + "] with historical version number: [" + old.getVersionNumber() );
+
+        
         repository.restoreHistoricalAsset( old, 
                                      head, 
                                      comment );
@@ -364,6 +374,10 @@ public class ServiceImplementation
 
     @WebRemote 
     public byte[] exportRepository() throws SerializableException {
+        
+        log.info( "USER:" + repository.getSession().getUserID() + 
+                           " EXPORTING repository");
+        
         byte [] exportedOutput = null; 
         try {
              exportedOutput =  repository.exportRulesRepository();
@@ -376,7 +390,8 @@ public class ServiceImplementation
     @WebRemote
     public String createPackage(String name,
                                 String description) throws SerializableException {
-        log.info( "CREATING package [" + name + "]" );
+        log.info( "USER:" + repository.getSession().getUserID() + 
+                           " CREATING package [" + name + "]" );
         PackageItem item = repository.createPackage( name, description );
         
         return item.getUUID();
@@ -406,7 +421,9 @@ public class ServiceImplementation
 
     @WebRemote
     public ValidatedResponse savePackage(PackageConfigData data) throws SerializableException {
-        log.info( "SAVING package [" + data.name + "]" );
+        log.info( "USER:" + repository.getSession().getUserID() + 
+                           " SAVING package [" + data.name + "]" );
+        
         PackageItem item = repository.loadPackage( data.name );
         
         item.updateHeader( data.header );
@@ -446,14 +463,15 @@ public class ServiceImplementation
             it.skip( startRow );
         }
         TableDisplayHandler handler = new TableDisplayHandler();
-        System.out.println("time for load: " + (System.currentTimeMillis() - start) );
+        log.info("time for load: " + (System.currentTimeMillis() - start) );
         return handler.loadRuleListTable( it, numRows );
     }
 
     
     @WebRemote
     public String createState(String name) throws SerializableException {
-        log.info( "CREATING state: [" + name + "]" );
+        log.info( "USER:" + repository.getSession().getUserID() + 
+                           " CREATING state: [" + name + "]" );
         try {
             String uuid = repository.createState( name ).getNode().getUUID();
             repository.save();
@@ -481,13 +499,15 @@ public class ServiceImplementation
         if (!wholePackage) {
             
             AssetItem asset = repository.loadAssetByUUID( uuid );
-            log.info( "CHANGING ASSET STATUS. Asset name, uuid: " +
+            log.info( "USER:" + repository.getSession().getUserID() + 
+                               " CHANGING ASSET STATUS. Asset name, uuid: " +
                     "[" + asset.getName() + ", " +asset.getUUID() + "]" 
                       +  " to [" + newState + "]");
             asset.updateState( newState );
         } else {
             PackageItem pkg = repository.loadPackageByUUID( uuid );
-            log.info( "CHANGING Package STATUS. Asset name, uuid: " +
+            log.info( "USER:" + repository.getSession().getUserID() +
+            " CHANGING Package STATUS. Asset name, uuid: " +
                       "[" + pkg.getName() + ", " + pkg.getUUID() + "]" 
                         +  " to [" + newState + "]");
             pkg.changeStatus(newState);            
@@ -499,7 +519,8 @@ public class ServiceImplementation
     public void changeAssetPackage(String uuid,
                                    String newPackage,
                                    String comment) {
-        log.info( "CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]");
+        log.info( "USER:" + repository.getSession().getUserID() + 
+                           " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]");
         repository.moveRuleItemPackage( newPackage, uuid, comment );
         
     }
@@ -532,7 +553,8 @@ public class ServiceImplementation
                                       String snapshotName,
                                       boolean replaceExisting,
                                       String comment) {
-        log.info( "CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
+        log.info( "USER:" + repository.getSession().getUserID() +
+         " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
         
         if (replaceExisting) {
             repository.removePackageSnapshot( packageName, snapshotName );                        
@@ -552,14 +574,16 @@ public class ServiceImplementation
                                      String newSnapshotName) throws SerializableException {
         
         if (delete) {
-            log.info( "REMOVING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "]" );
+            log.info( "USER:" + repository.getSession().getUserID() +
+            " REMOVING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "]" );
             repository.removePackageSnapshot( packageName, snapshotName );
         } else {
             if (newSnapshotName.equals( "" )) {
                 throw new SerializableException("Need to have a new snapshot name.");
             }
-            log.info( "COPYING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
-
+            log.info( "USER:" + repository.getSession().getUserID() +
+                               " COPYING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
+ 
             repository.copyPackageSnapshot( packageName, snapshotName, newSnapshotName );
         }
         
@@ -581,7 +605,7 @@ public class ServiceImplementation
         
         long start = System.currentTimeMillis();        
         AssetItemIterator it = repository.findAssetsByName( search, searchArchived ); // search for archived itens
-        System.out.println(System.currentTimeMillis() - start);
+        log.info(System.currentTimeMillis() - start);
         for(int i = 0; i < max; i++) {
             if (!it.hasNext()) {
                 break;
@@ -609,7 +633,8 @@ public class ServiceImplementation
 
     @WebRemote    
     public void removeCategory(String categoryPath) throws SerializableException {
-        log.info( "REMOVING CATEGORY path: [" + categoryPath + "]" );
+        log.info( "USER:" + repository.getSession().getUserID() +
+        " REMOVING CATEGORY path: [" + categoryPath + "]" );
         
         try {
             repository.loadCategory( categoryPath ).remove();
