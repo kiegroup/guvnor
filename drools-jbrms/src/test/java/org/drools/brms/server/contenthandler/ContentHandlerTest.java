@@ -1,8 +1,8 @@
 package org.drools.brms.server.contenthandler;
 
-import org.drools.brms.client.common.AssetFormats;
-
 import junit.framework.TestCase;
+
+import org.drools.brms.client.common.AssetFormats;
 
 public class ContentHandlerTest extends TestCase {
 

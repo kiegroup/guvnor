@@ -8,19 +8,13 @@ import java.io.PrintWriter;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.drools.brms.client.admin.BackupManager;
 import org.drools.brms.client.common.HTMLFileManagerFields;
-import org.drools.brms.client.packages.ModelAttachmentFileWidget;
 import org.drools.brms.server.util.FileManagerUtils;
 import org.drools.brms.server.util.FormData;
-import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
-import org.jboss.seam.Component;
-import org.jboss.seam.contexts.Contexts;
 
 /**
  * Files can be uploaded as part of the repo (eg model classes, spreadsheets).

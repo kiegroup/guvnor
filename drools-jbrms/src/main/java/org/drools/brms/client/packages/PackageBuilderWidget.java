@@ -8,7 +8,6 @@ import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
-import org.drools.brms.client.common.InfoPopup;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.PackageConfigData;
@@ -21,19 +20,18 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -51,7 +49,7 @@ public class PackageBuilderWidget extends Composite {
     private EditItemEvent editEvent;
 
     
-    public PackageBuilderWidget(PackageConfigData conf, EditItemEvent editEvent) {
+    public PackageBuilderWidget(final PackageConfigData conf, EditItemEvent editEvent) {
         layout = new FormStyleLayout("images/package_builder.png", "Verify and assemble package");
         this.conf = conf;
         this.editEvent = editEvent;
@@ -64,6 +62,14 @@ public class PackageBuilderWidget extends Composite {
                 doBuild(buildResults);
             }
         } );
+        
+        Button buildSource = new Button("Show package source");
+        buildSource.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                doBuildSource(conf.uuid, conf.name);
+            }
+        } );
+        layout.addAttribute( "View source for package", buildSource );
         layout.addAttribute( "Build binary package:", b);
         layout.addRow( new HTML("<i><small>Building a package will collect all the assets, validate and compile into a deployable package.</small></i>") );
         layout.addRow( buildResults );
@@ -77,6 +83,43 @@ public class PackageBuilderWidget extends Composite {
     
     
     
+    /**
+     * Actually build the source, and display it.
+     */
+    public static void doBuildSource(final String uuid, final String name) {
+        LoadingPopup.showMessage( "Assembling package source..." );
+        DeferredCommand.add( new Command() {
+            public void execute() {
+                RepositoryServiceFactory.getService().buildPackageSource( uuid, new GenericCallback() {
+                    public void onSuccess(Object data) {
+                        String content = (String) data;
+                        showSource(content, name);
+                    }
+                });
+            }
+        } );
+    }
+
+
+
+    /**
+     * Popup the view source.
+     */
+    private static void showSource(String content, String name) {
+        FormStylePopup pop = new FormStylePopup("images/view_source.gif", "Viewing source for: " + name);
+        TextArea area = new TextArea();
+        area.setVisibleLines( 48 );
+        area.setWidth( "100%" );
+        area.setCharacterWidth( 80 );
+        pop.addRow( area );
+        area.setText( content );
+        pop.setPopupPosition( 30, 30 );
+        LoadingPopup.close();
+        pop.show();
+    }
+
+
+
     /**
      * Actually do the building.
      * @param buildResults The panel to stuff the results in.

@@ -9,15 +9,12 @@ import junit.framework.TestCase;
 
 import org.drools.Person;
 import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
-import org.drools.brms.client.modeldriven.brxml.IAction;
-import org.drools.brms.client.modeldriven.brxml.IPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.PackageConfigData;
@@ -1028,6 +1025,40 @@ public class ServiceImplementationTest extends TestCase {
         pkg = repo.loadPackageSnapshot( "testBinaryPackageCompileBRXML", "SNAP1" );
         results = impl.buildPackage( pkg.getUUID() );
         assertNull(results);
+        
+    }
+    
+    public void testPackageSource() throws Exception {
+        ServiceImplementation impl = getService();
+        RulesRepository repo = impl.repository;
+        
+        //create our package
+        PackageItem pkg = repo.createPackage( "testPackageSource", "" );
+        pkg.updateHeader( "import org.goo.Ber" );
+        AssetItem rule1 = pkg.addAsset( "rule_1", "" );
+        rule1.updateFormat( AssetFormats.DRL );
+        rule1.updateContent( "rule 'rule1' \n when p:Person() \n then p.setAge(42); \n end"); 
+        rule1.checkin( "" );
+        repo.save();
+        
+        AssetItem func = pkg.addAsset( "funky", "" );
+        func.updateFormat( AssetFormats.FUNCTION );
+        func.updateContent( "this is a func" );
+        func.checkin( "" );
+        
+        String drl = impl.buildPackageSource( pkg.getUUID() );
+        assertNotNull(drl);
+        
+        assertTrue(drl.indexOf( "import org.goo.Ber" ) > -1);
+        assertTrue(drl.indexOf( "package testPackageSource" ) > -1);
+        assertTrue(drl.indexOf( "rule 'rule1'" ) > -1);
+        assertTrue(drl.indexOf( "this is a func" ) > -1);
+        assertTrue(drl.indexOf( "this is a func" ) < drl.indexOf( "rule 'rule1'" ));
+        assertTrue(drl.indexOf( "package testPackageSource" ) < drl.indexOf( "this is a func" ));
+        assertTrue(drl.indexOf( "package testPackageSource" ) < drl.indexOf( "import org.goo.Ber" ));
+        
+        
+        
         
     }
 

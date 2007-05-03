@@ -1,9 +1,9 @@
 package org.drools.brms.server.util;
 
+import junit.framework.TestCase;
+
 import org.drools.brms.server.ServiceImplementation;
 import org.jboss.seam.remoting.gwt.GWTToSeamAdapter;
-
-import junit.framework.TestCase;
 
 public class GWTNoSeamTest extends TestCase {
 

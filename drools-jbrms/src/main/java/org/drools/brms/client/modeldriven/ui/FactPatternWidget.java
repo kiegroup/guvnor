@@ -1,6 +1,5 @@
 package org.drools.brms.client.modeldriven.ui;
 
-import org.drools.brms.client.common.FieldEditListener;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.Lbl;

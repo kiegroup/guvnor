@@ -196,7 +196,7 @@ public class ContentPackageAssembler {
     public String getDRL() {
         StringBuffer src = new StringBuffer();
         src.append( "package " + this.pkg.getName() + "\n");
-        src.append( this.pkg.getHeader() + "\n");
+        src.append( this.pkg.getHeader() + "\n\n");
         
         
         //now we load up the DSL files
@@ -211,7 +211,7 @@ public class ContentPackageAssembler {
         AssetItemIterator it = this.pkg.listAssetsByFormat( new String[] {AssetFormats.FUNCTION} );
         while(it.hasNext()) {
             AssetItem func = (AssetItem) it.next();
-            src.append( func.getContent() + "\n" );
+            src.append( func.getContent() + "\n\n" );
         }        
         
         //now the rules

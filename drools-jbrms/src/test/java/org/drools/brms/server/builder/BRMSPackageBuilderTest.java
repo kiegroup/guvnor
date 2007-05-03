@@ -7,10 +7,7 @@ import java.util.jar.JarInputStream;
 
 import junit.framework.TestCase;
 
-import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 
 public class BRMSPackageBuilderTest extends TestCase {

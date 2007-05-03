@@ -15,7 +15,6 @@ import org.drools.brms.client.rulelist.EditItemEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -362,7 +361,7 @@ public class PackageExplorerWidget extends Composite {
         RepositoryServiceFactory.getService().loadPackageConfig( uuid, new GenericCallback() {
 
             public void onSuccess(Object data) {
-                PackageConfigData conf = (PackageConfigData) data;
+                final PackageConfigData conf = (PackageConfigData) data;
                 
                 StackPanel sp = new StackPanel();
                 
@@ -384,6 +383,13 @@ public class PackageExplorerWidget extends Composite {
                     });
                     infoLayout.addAttribute( "Download package:", download );
                     infoLayout.addAttribute( "Package URI:", new Label(uri) );
+                    Button viewSource = new Button("View package source");
+                    viewSource.addClickListener( new ClickListener() {
+                        public void onClick(Widget w) {
+                            PackageBuilderWidget.doBuildSource( conf.uuid, conf.name );
+                        }
+                    } );
+                    infoLayout.addAttribute( "Show package source:", viewSource );
                 }
                 
                 if (!conf.isSnapshot) {

@@ -1,28 +1,7 @@
 package org.drools.brms.client.packages;
 
-import org.drools.brms.client.common.ErrorPopup;
-import org.drools.brms.client.common.FormStyleLayout;
-import org.drools.brms.client.common.HTMLFileManagerFields;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.ruleeditor.RuleViewer;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FormHandler;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormSubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormSubmitEvent;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This wraps a file uploader utility for model packages.

@@ -4,8 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,7 +15,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
 import org.apache.log4j.Logger;
@@ -49,7 +46,6 @@ import org.drools.repository.RulesRepositoryAdministrator;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.VersionableItem;
-import org.drools.rule.Package;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -675,5 +671,12 @@ public class ServiceImplementation
             return null;
 
         }
+    }
+
+    @WebRemote
+    public String buildPackageSource(String packageUUID) throws SerializableException {
+        PackageItem item = repository.loadPackageByUUID( packageUUID );
+        ContentPackageAssembler asm = new ContentPackageAssembler(item, false);
+        return asm.getDRL();
     }
 }

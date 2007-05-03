@@ -2,17 +2,13 @@ package org.drools.brms.server.util;
 
 import java.io.File;
 
-import javax.jcr.LoginException;
 import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
-import javax.servlet.http.HttpSession;
 
 import org.drools.repository.JCRRepositoryConfigurator;
 import org.drools.repository.JackrabbitRepositoryConfigurator;
 import org.drools.repository.RepositorySessionUtil;
-import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryAdministrator;
 
 /**

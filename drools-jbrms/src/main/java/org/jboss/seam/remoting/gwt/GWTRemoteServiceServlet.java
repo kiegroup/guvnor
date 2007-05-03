@@ -16,14 +16,6 @@ package org.jboss.seam.remoting.gwt;
  * the License.
  */
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.SerializableException;
-import com.google.gwt.user.client.rpc.SerializationException;
-import com.google.gwt.user.server.rpc.impl.ServerSerializableTypeOracle;
-import com.google.gwt.user.server.rpc.impl.ServerSerializableTypeOracleImpl;
-import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamReader;
-import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamWriter;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,6 +34,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jboss.seam.remoting.gwt.GWTToSeamAdapter.ReturnedObject;
+
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.server.rpc.impl.ServerSerializableTypeOracle;
+import com.google.gwt.user.server.rpc.impl.ServerSerializableTypeOracleImpl;
+import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamReader;
+import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamWriter;
 
 /**
  * 

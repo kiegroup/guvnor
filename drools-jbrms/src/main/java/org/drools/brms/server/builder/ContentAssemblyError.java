@@ -1,6 +1,5 @@
 package org.drools.brms.server.builder;
 
-import org.drools.repository.PackageItem;
 import org.drools.repository.VersionableItem;
 
 /**

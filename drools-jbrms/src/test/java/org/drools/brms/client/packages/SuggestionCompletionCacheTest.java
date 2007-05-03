@@ -1,10 +1,10 @@
 package org.drools.brms.client.packages;
 
+import junit.framework.TestCase;
+
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 
 import com.google.gwt.user.client.Command;
-
-import junit.framework.TestCase;
 
 public class SuggestionCompletionCacheTest extends TestCase {
 

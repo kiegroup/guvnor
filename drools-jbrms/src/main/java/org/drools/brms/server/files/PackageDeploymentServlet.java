@@ -7,11 +7,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.drools.brms.client.common.HTMLFileManagerFields;
-import org.drools.brms.server.util.FileManagerUtils;
-import org.drools.brms.server.util.FormData;
-import org.drools.repository.RulesRepository;
-
 /**
  * This servlet deals with providing packages in binary form.
  *   

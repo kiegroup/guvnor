@@ -219,4 +219,16 @@ public interface RepositoryService extends RemoteService {
      */
     public BuilderResult[] buildPackage(String packageUUID) throws SerializableException;
     
+    /**
+     * This will return the effective DRL for a package.
+     * This would be the equivalent if all the rules were written by hand in the one file.
+     * It may not actually be compiled this way in the implementation, so this is for display and 
+     * debugging assistance only.
+     * 
+     * It should still generate 
+     * 
+     * @throws SerializableException
+     */
+    public String buildPackageSource(String packageUUID) throws SerializableException;
+    
 }

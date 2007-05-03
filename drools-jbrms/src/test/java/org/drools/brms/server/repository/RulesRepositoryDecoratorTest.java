@@ -1,9 +1,5 @@
 package org.drools.brms.server.repository;
 
-import javax.jcr.Session;
-
-import org.drools.repository.RulesRepository;
-
 import junit.framework.TestCase;
 
 public class RulesRepositoryDecoratorTest extends TestCase {

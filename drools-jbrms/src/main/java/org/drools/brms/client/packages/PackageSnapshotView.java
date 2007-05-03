@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -114,10 +115,12 @@ public class PackageSnapshotView extends Composite {
             }
             public void onTreeItemStateChanged(TreeItem a) {}
         });
-        
+        packages.setVerticalAlignment( HasVerticalAlignment.ALIGN_TOP );
+        packages.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_LEFT );
         packages.add( refresh );
-        
+        packages.setStyleName( "snapshot-List" );
         layout.setWidget( 0, 0, packages );
+        layout.getCellFormatter().setVerticalAlignment( 0, 0, HasVerticalAlignment.ALIGN_TOP );
     }
 
     /**

@@ -7,15 +7,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 import junit.framework.TestCase;
 
 import org.apache.commons.fileupload.FileItem;
 import org.drools.brms.client.packages.PackageSnapshotView;
-import org.drools.brms.server.builder.ContentPackageAssembler;
-import org.drools.brms.server.files.DeploymentURIHelperTest;
-import org.drools.brms.server.files.PackageDeploymentURIHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;

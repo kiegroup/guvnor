@@ -7,7 +7,6 @@ import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Label;
 
 /**
  * This is used when you want to retract a fact. It will provide a list of 

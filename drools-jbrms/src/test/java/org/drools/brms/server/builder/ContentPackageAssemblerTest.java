@@ -15,7 +15,6 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.rule.Package;
-import org.drools.util.BinaryRuleBaseLoader;
 
 /**
  * This will unit test package assembly into a binary.
