@@ -5,6 +5,7 @@ import java.util.Map;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
+import org.drools.brms.client.decisiontable.DecisionTableXLSWidget;
 import org.drools.brms.client.modeldriven.ui.RuleModeller;
 import org.drools.brms.client.packages.ModelAttachmentFileWidget;
 import org.drools.brms.client.packages.SuggestionCompletionCache;
@@ -41,8 +42,9 @@ public class EditorLauncher {
             return new DSLRuleEditor( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.MODEL ) ) {
             return new ModelAttachmentFileWidget( asset, viewer );
+        } else if (asset.metaData.format.equals( AssetFormats.DECISION_SPREADSHEET_XLS )){
+            return new DecisionTableXLSWidget( asset, viewer );
         } else {
-
             return new DefaultRuleContentWidget( asset );
         }
 
@@ -118,7 +120,10 @@ public class EditorLauncher {
             icon = "function_assets.gif";
         } else if ( asset.metaData.format.equals( AssetFormats.MODEL ) ) {
             icon = "model_asset.gif";
+        } else if (asset.metaData.format.equals( AssetFormats.DECISION_SPREADSHEET_XLS )) {
+            icon = "spreadsheet_small.gif";
         }
+        
         tab.add( view,
                  "<img src='images/" + icon + "'>" + displayName,
                  true );

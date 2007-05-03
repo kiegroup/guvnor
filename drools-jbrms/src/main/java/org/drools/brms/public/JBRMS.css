@@ -315,6 +315,11 @@ input:focus, input:active{ border-color:black !important; color: black;}
 //  padding: 4px;
 }
 
+.decision-Table-upload {
+  background-color: white;
+  border: 1px solid #aaaa99;
+}
+
 .package-Editor {
   background-color: #f7f2d0;
   border: 1px solid #aaaa99;

@@ -1,5 +1,7 @@
 package org.drools.brms.server.util;
 
+import java.io.File;
+
 import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -9,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import org.drools.repository.JCRRepositoryConfigurator;
 import org.drools.repository.JackrabbitRepositoryConfigurator;
+import org.drools.repository.RepositorySessionUtil;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryAdministrator;
 
@@ -29,6 +32,14 @@ public class TestEnvironmentSessionHelper {
     
     public static synchronized Session getSession(boolean erase) throws Exception {
         if (repository == null) {
+            
+            if (erase) {
+                File repoDir = new File("repository");
+                System.out.println("DELETE test repo dir: " + repoDir.getAbsolutePath());
+                RepositorySessionUtil.deleteDir( repoDir );
+                System.out.println("TEST repo dir deleted.");
+            }
+            
             JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
             repository = config.getJCRRepository(null);;
         

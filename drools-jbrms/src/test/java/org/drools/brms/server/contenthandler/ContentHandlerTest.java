@@ -11,6 +11,8 @@ public class ContentHandlerTest extends TestCase {
         assertTrue(ContentHandler.getHandler( AssetFormats.DSL ) instanceof DSLDefinitionContentHandler);
         assertTrue(ContentHandler.getHandler( AssetFormats.DSL_TEMPLATE_RULE ) instanceof DSLRuleContentHandler);
         assertTrue(ContentHandler.getHandler( AssetFormats.BUSINESS_RULE ) instanceof BRXMLContentHandler);
+        assertTrue(ContentHandler.getHandler( AssetFormats.DECISION_SPREADSHEET_XLS ) instanceof DecisionTableXLSHandler);
+        
         
         try {
             ContentHandler.getHandler( "XXX" );
@@ -24,6 +26,7 @@ public class ContentHandlerTest extends TestCase {
         assertTrue(ContentHandler.getHandler( AssetFormats.DRL ).isRuleAsset());
         assertTrue(ContentHandler.getHandler( AssetFormats.DSL_TEMPLATE_RULE ).isRuleAsset());
         assertTrue(ContentHandler.getHandler( AssetFormats.BUSINESS_RULE ).isRuleAsset());
+        assertTrue(ContentHandler.getHandler( AssetFormats.DECISION_SPREADSHEET_XLS ).isRuleAsset());
         
         assertFalse(ContentHandler.getHandler( AssetFormats.DSL ).isRuleAsset());
         assertFalse(ContentHandler.getHandler( AssetFormats.MODEL ).isRuleAsset());

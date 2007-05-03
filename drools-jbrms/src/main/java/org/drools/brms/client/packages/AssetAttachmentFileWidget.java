@@ -18,7 +18,9 @@ import com.google.gwt.user.client.ui.FormHandler;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormSubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormSubmitEvent;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -32,34 +34,17 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Fernando Meyer
  */
 
-public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget {
-
-    
-    public ModelAttachmentFileWidget(RuleAsset asset, RuleViewer viewer) {
-        super( asset, viewer );
-    }
-
-
-    public String getIcon() {
-        return "images/model_large.png";
-    }
-    
-    public String getOverallStyleName() {
-        return "editable-Surface";
-    }
-    
-}
-
-/*Composite {
+public abstract class AssetAttachmentFileWidget extends Composite {
 
 
     private FormPanel form;
     private Button ok;
     private HorizontalPanel busy;
     private RuleViewer viewer;
+    private FormStyleLayout layout;
     
 
-    public ModelAttachmentFileWidget(final RuleAsset asset, final RuleViewer viewer) {
+    public AssetAttachmentFileWidget(final RuleAsset asset, final RuleViewer viewer) {
         this.viewer = viewer;
         initWidgets(asset.uuid, asset.metaData.name);
         initAssetHandlers();
@@ -83,11 +68,12 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget {
         
         form.add( fields );
         
-        FormStyleLayout layout = new FormStyleLayout("images/model_large.png", 
+        layout = new FormStyleLayout(getIcon(), 
                                                      formName);
 
         
         layout.addAttribute( "Upload new version:", form );
+        
         Button dl = new Button("Download");
         dl.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -111,10 +97,20 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget {
         });
                 
         initWidget( layout );
-        
-        this.setStyleName( "editable-Surface" );        
+        layout.setWidth( "100%" );
+        this.setStyleName( getOverallStyleName() );        
     }
     
+    /**
+     * @return The path to the icon to use.
+     */
+    public abstract String getIcon();
+
+    /**
+     * return the overall style name to use.
+     */
+    public abstract String getOverallStyleName();
+
     void initAssetHandlers( ) {
         form.addFormHandler( new FormHandler() {
 
@@ -153,7 +149,10 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget {
         t.setVisible( false );
         return t;
     }
+
+    public void addDescription(Widget d) {
+        this.layout.addRow( d );
+        
+    }
     
 }
-
-*/

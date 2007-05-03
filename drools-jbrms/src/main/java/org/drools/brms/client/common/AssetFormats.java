@@ -31,14 +31,16 @@ public class AssetFormats {
     public static String BUSINESS_RULE = "brxml";
 
     
-    /** use a DSL, not sure about this one - can use text or constrained editor */
+    /** use a DSL, free text editor */
     public static String DSL_TEMPLATE_RULE   = "brule";
 
-
+    
+    /** Use a decision table.*/
+    public static String DECISION_SPREADSHEET_XLS = "xls";
     
     /**
      * The following group the 
      */
-    public static String[] BUSINESS_RULE_FORMATS = new String[] {AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE};
+    public static String[] BUSINESS_RULE_FORMATS = new String[] {AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE, AssetFormats.DECISION_SPREADSHEET_XLS};
     public static String[] TECHNICAL_RULE_FORMATS = new String[] {AssetFormats.DRL};
 }

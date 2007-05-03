@@ -89,6 +89,7 @@ public class AssetBrowser extends Composite {
         table.setWidget( 0, 1, quick);
         
         formatter.setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
+        formatter.setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
         formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );        
         formatter.setRowSpan( 0, 1, 3 );
         formatter.setWidth( 0, 0, "30%" );

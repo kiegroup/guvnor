@@ -150,6 +150,15 @@ public class ServiceImplementationTest extends TestCase {
         //          impl.createNewRule( "somerule_" + i, "description", 
         //                              "testAddRule", "another", "drl" );
         //      }
+        
+        result = impl.createNewRule( "testDTSample",
+                                     "a description",
+                                     "testAddRule",
+                                     "another",
+                                     AssetFormats.DECISION_SPREADSHEET_XLS );  
+        AssetItem dtItem = impl.repository.loadAssetByUUID( result );
+        assertNotNull(dtItem.getBinaryContentAsBytes());
+        assertTrue(dtItem.getBinaryContentAttachmentFileName().endsWith( ".xls" ));
     }
 
     public void testAttemptDupeRule() throws Exception {

@@ -1,17 +1,27 @@
 package org.drools.brms.server.builder;
 
+import java.io.InputStream;
+
 import junit.framework.TestCase;
 
+import org.acme.insurance.Driver;
+import org.acme.insurance.Policy;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.rule.Package;
+import org.drools.util.BinaryRuleBaseLoader;
 
+/**
+ * This will unit test package assembly into a binary.
+ * @author Michael Neale
+ */
 public class ContentPackageAssemblerTest extends TestCase {
-
-    
     
     /**
      * Test package configuration errors, 
@@ -295,6 +305,67 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertContains("FooBarBaz()", drl);
         assertContains("rule 'foo' when Goo() then end", drl);
         
+        
+    }
+    
+    public void testXLSDecisionTable() throws Exception {
+
+        RulesRepository repo = getRepo();
+        
+        //first, setup the package correctly:
+        PackageItem pkg = repo.createPackage( "testXLSDecisionTable", "" );
+
+        pkg.updateHeader( "import org.acme.insurance.Policy\n import org.acme.insurance.Driver" );
+        repo.save();
+        
+        InputStream xls = this.getClass().getResourceAsStream( "/SampleDecisionTable.xls" );
+        assertNotNull(xls);
+        
+        AssetItem asset = pkg.addAsset( "MyDT", "" );
+        asset.updateFormat( AssetFormats.DECISION_SPREADSHEET_XLS );
+        asset.updateBinaryContentAttachment( xls );
+        asset.checkin( "" );
+        
+        ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
+        if (asm.hasErrors()) {
+            System.err.println(asm.getErrors().get( 0 ).errorReport);
+            System.err.println(asm.getDRL());
+        }
+        assertFalse(asm.hasErrors());
+        
+        String drl = asm.getDRL();
+        
+        assertContains( "policy: Policy", drl );
+        
+        
+        Package bin = asm.getBinaryPackage();
+        
+        RuleBase rb = RuleBaseFactory.newRuleBase();
+        rb.addPackage( bin );
+        
+        WorkingMemory wm = rb.newStatefulSession();
+        
+        //now create some test data
+        Driver driver = new Driver();
+        Policy policy = new Policy();
+        
+        wm.assertObject(driver);
+        wm.assertObject(policy);
+        
+        wm.fireAllRules();
+        
+        assertEquals(120, policy.getBasePrice());
+        
+        asset.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/SampleDecisionTable_WithError.xls" ) );
+        asset.checkin( "" );
+        asm = new ContentPackageAssembler(pkg);
+        assertTrue(asm.hasErrors());
+        assertEquals(asset.getName(), asm.getErrors().get( 0 ).itemInError.getName());
+        asm = new ContentPackageAssembler(pkg, false);
+        assertFalse(asm.hasErrors());
+        drl = asm.getDRL();
+        assertNotNull(drl);
+        assertContains( "Driverx", drl);
         
     }
     

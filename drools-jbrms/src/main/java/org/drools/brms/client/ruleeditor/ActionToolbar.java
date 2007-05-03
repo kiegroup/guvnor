@@ -6,7 +6,6 @@ import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.common.StatusChangePopup;
-import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
@@ -126,14 +125,10 @@ public class ActionToolbar extends Composite {
         Button archive = new Button("Archive");
         archive.addClickListener(new ClickListener() {
             public void onClick(Widget w) {
-                YesNoDialog diag = new YesNoDialog("Are you sure about archive this Item?", new Command() {
-                    public void execute() {
-                        metaData.checkinComment = "Archived Item on " + new java.util.Date().toString();
-                        archiveAction.execute();
-                    }                        
-                });
-                diag.setPopupPosition(Window.getClientWidth() / 2, Window.getClientHeight() / 2);
-                diag.show();
+                if (Window.confirm( "Are you sure you want to archive this item?" )) {
+                    metaData.checkinComment = "Archived Item on " + new java.util.Date().toString();
+                    archiveAction.execute();
+                }
             }
         });
         saveControls.add(archive);        
@@ -141,16 +136,11 @@ public class ActionToolbar extends Composite {
         if (this.metaData.versionNumber == 0) {  
         Button delete = new Button( "Delete" );
             delete.addClickListener( new ClickListener() {
+                
                 public void onClick(Widget w) {
-                    YesNoDialog diag = new YesNoDialog( "Are you sure about delete this unversioned Item?",
-                                                        new Command() {
-                                                            public void execute() {
-                                                                deleteAction.execute();
-                                                            }
-                                                        } );
-                    diag.setPopupPosition( Window.getClientWidth() / 2,
-                                           Window.getClientHeight() / 2 );
-                    diag.show();
+                    if (Window.confirm( "Are you sure you want to permanently delete this (unversioned) item?" ) ) {
+                        deleteAction.execute();
+                    }
                 }
             } );
             saveControls.add( delete );        

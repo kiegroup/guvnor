@@ -157,6 +157,9 @@ public class ServiceImplementation
             asset.updateContent( "[when]Condition sentence template {var}=" +
                     "rule language mapping {var}\n" +
                     "[then]Action sentence template=rule language mapping");
+        } else if (format.equals( AssetFormats.DECISION_SPREADSHEET_XLS )) {
+            asset.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/SampleDecisionTable.xls" ) );
+            asset.updateBinaryContentAttachmentFileName( "SampleDecisionTable.xls" );
         }
     }
 
