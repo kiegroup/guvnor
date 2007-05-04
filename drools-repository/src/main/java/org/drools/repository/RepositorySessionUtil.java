@@ -6,7 +6,7 @@ import javax.jcr.Repository;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
-import junit.framework.Assert;
+//import junit.framework.Assert;
 
 /**
  * This is a utility to simulate session behavior for the test suite.
@@ -34,7 +34,7 @@ public class RepositorySessionUtil {
     }    
     
     
-    public static RulesRepository getRepository() {
+    public static RulesRepository getRepository() throws RulesRepositoryException {
         Object repoInstance = repo.get();
         if ( repoInstance == null ) {
             
@@ -62,7 +62,8 @@ public class RepositorySessionUtil {
                 repoInstance = new RulesRepository( session );
                 repo.set( repoInstance );                
             } catch ( Exception e) {
-                Assert.fail("Unable to initialise repository :" + e.getMessage());
+                throw new RulesRepositoryException();
+                //Assert.fail("Unable to initialise repository :" + e.getMessage());
             }
             
 

@@ -768,7 +768,6 @@ public abstract class VersionableItem extends Item {
      * Test if the VersionableItem is archived 
      */
     public boolean isArchived() {
-    	checkout();
     	try {
     		return this.node.getProperty(CONTENT_PROPERTY_ARCHIVE_FLAG)
     				.getBoolean();
