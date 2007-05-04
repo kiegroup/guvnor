@@ -396,7 +396,7 @@ public class RulesRepository {
      */
     public void createPackageSnapshot(String packageName,
                                       String snapshotName) {
-        log.info( "Creating snapshot for [" + packageName + "] called [" + snapshotName + "]" );
+        log.debug( "Creating snapshot for [" + packageName + "] called [" + snapshotName + "]" );
         try {
             Node snaps = this.getAreaNode( PACKAGE_SNAPSHOT_AREA );
 
@@ -429,7 +429,7 @@ public class RulesRepository {
      */
     public void removePackageSnapshot(String packageName,
                                       String snapshotName) {
-        log.info( "Removing snapshot for [" + packageName + "] called [" + snapshotName + "]" );
+        log.debug( "Removing snapshot for [" + packageName + "] called [" + snapshotName + "]" );
         try {
             Node snaps = this.getAreaNode( PACKAGE_SNAPSHOT_AREA );
 
@@ -464,7 +464,7 @@ public class RulesRepository {
     public void copyPackageSnapshot(String packageName,
                                     String snapshotName,
                                     String newName) {
-        log.info( "Creating snapshot for [" + packageName + "] called [" + snapshotName + "]" );
+        log.debug( "Creating snapshot for [" + packageName + "] called [" + snapshotName + "]" );
         try {
             Node snaps = this.getAreaNode( PACKAGE_SNAPSHOT_AREA );
 
@@ -660,7 +660,7 @@ public class RulesRepository {
             Node stateNode = RulesRepository.addNodeIfNew( folderNode,
                                                            name,
                                                            StateItem.STATE_NODE_TYPE_NAME );
-            log.info( "Created the status [" + name + "]" );
+            log.debug( "Created the status [" + name + "]" );
             return new StateItem( this,
                                   stateNode );
         } catch ( Exception e ) {

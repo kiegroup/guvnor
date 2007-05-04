@@ -60,7 +60,7 @@ public class RulesRepositoryAdministrator {
      * be called to set up the minimal data for a "blank" setup. If importing other data, however, this is probably not needed.
      */
     public void clearRulesRepository() {
-        log.info( "Clearing repository database. UserId=" + session.getUserID() );
+        log.debug( "Clearing repository database. UserId=" + session.getUserID() );
         try {
             
             if (session.getRootNode().hasNode( RulesRepository.RULES_REPOSITORY_NAME )) {
