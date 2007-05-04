@@ -409,6 +409,22 @@ public class AssetItem extends CategorisableItem {
         return new AssetHistoryIterator(this.rulesRepository, this.node);
     }
 
+    
+    /**
+     * This will get the package an asset item belongs to.
+     */
+    public PackageItem getPackage() {
+
+        try {
+            if (this.isHistoricalVersion()) {
+                throw new UnsupportedOperationException("Unable to get package for versioned asset. Use base revision.");
+            }
+            return new PackageItem(this.rulesRepository, this.node.getParent().getParent());
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
+        }
+    }
+
 
 
 }

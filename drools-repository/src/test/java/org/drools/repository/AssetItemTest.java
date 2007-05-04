@@ -58,6 +58,17 @@ public class AssetItemTest extends TestCase {
             fail("Caught unexpected exception: " + e);
         }
     }
+    
+    public void testGetPackageItem() throws Exception {
+        RulesRepository repo = getRepo();
+        PackageItem def = repo.loadDefaultPackage();
+        AssetItem asset = repo.loadDefaultPackage().addAsset("testPackageItem", "test content");
+        PackageItem pkg = asset.getPackage();
+        assertEquals(def.getName(), pkg.getName());
+        assertEquals(def.getUUID(), pkg.getUUID());
+        
+    }
+    
 
     public void testGetContent() {
             
@@ -293,12 +304,6 @@ public class AssetItemTest extends TestCase {
     public void testToString() {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testToString", "test content");
             assertNotNull(ruleItem1.toString());
-            
-            
-        	AssetItem item = getRepo().loadDefaultPackage().loadAsset("testArchiveBooleanFlag");
-        	System.out.println(item);
-        	assertTrue(item.isArchived());
-
     }
     
     public void testGetLastModifiedOnCheckin() throws Exception  {
