@@ -39,6 +39,7 @@ public class ContentPackageAssembler {
     private List<ContentAssemblyError> errors = new ArrayList<ContentAssemblyError>();
 
     BRMSPackageBuilder builder;
+
     
     /**
      * @param assetPackage The package.
@@ -55,8 +56,21 @@ public class ContentPackageAssembler {
         
     }
     
+    /**
+     * Use this if you want to build the whole package.
+     */
     public ContentPackageAssembler(PackageItem assetPackage) {
         this(assetPackage, true);
+    }
+
+    /**
+     * Use this if you want to build and compile just the one asset.
+     */
+    public ContentPackageAssembler(AssetItem assetToBuild) {
+        this.pkg = assetToBuild.getPackage();
+        if (preparePackage()) {
+            buildAsset( assetToBuild );
+        }
     }
     
     /**
@@ -66,20 +80,27 @@ public class ContentPackageAssembler {
         Iterator it = pkg.getAssets();
         while (it.hasNext()) {
             AssetItem asset = (AssetItem) it.next();
-            ContentHandler h = ContentHandler.getHandler( asset.getFormat() );
-            if (h instanceof IRuleAsset) {
-                try {
-                    ((IRuleAsset) h).compile( builder, asset, new ErrorLogger() );
-                    if (builder.hasErrors()) {
-                        this.recordBuilderErrors( asset );
-                        //clear the errors, so we don't double report.
-                        builder.clearErrors();
-                    }
-                } catch ( DroolsParserException e ) {
-                    throw new RulesRepositoryException(e);
-                } catch ( IOException e ) {
-                    throw new RulesRepositoryException(e);
+            buildAsset( asset );
+        }
+    }
+
+    /**
+     * Builds assets that are "rule" assets (ie things that are not functions etc).
+     */
+    private void buildAsset(AssetItem asset) {
+        ContentHandler h = ContentHandler.getHandler( asset.getFormat() );
+        if (h instanceof IRuleAsset) {
+            try {
+                ((IRuleAsset) h).compile( builder, asset, new ErrorLogger() );
+                if (builder.hasErrors()) {
+                    this.recordBuilderErrors( asset );
+                    //clear the errors, so we don't double report.
+                    builder.clearErrors();
                 }
+            } catch ( DroolsParserException e ) {
+                throw new RulesRepositoryException(e);
+            } catch ( IOException e ) {
+                throw new RulesRepositoryException(e);
             }
         }
     }
@@ -105,12 +126,7 @@ public class ContentPackageAssembler {
             return false;
         }
 
-        //now we load up the DSL files
-        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( pkg, new BRMSPackageBuilder.DSLErrorEvent() {
-            public void recordError(AssetItem asset, String message) {
-                errors.add( new ContentAssemblyError(asset, message) );
-            }
-        }));
+        loadDSLFiles();
         
         //finally, any functions we will load at this point.
         AssetItemIterator it = this.pkg.listAssetsByFormat( new String[] {AssetFormats.FUNCTION} );
@@ -124,6 +140,15 @@ public class ContentPackageAssembler {
         }
         
         return errors.size() == 0;
+    }
+
+    private void loadDSLFiles() {
+        //now we load up the DSL files
+        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( pkg, new BRMSPackageBuilder.DSLErrorEvent() {
+            public void recordError(AssetItem asset, String message) {
+                errors.add( new ContentAssemblyError(asset, message) );
+            }
+        }));
     }
 
     /**

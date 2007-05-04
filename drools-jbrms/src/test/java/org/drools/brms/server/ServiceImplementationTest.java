@@ -1079,8 +1079,129 @@ public class ServiceImplementationTest extends TestCase {
         assertTrue(drl.indexOf( "package testPackageSource" ) < drl.indexOf( "this is a func" ));
         assertTrue(drl.indexOf( "package testPackageSource" ) < drl.indexOf( "import org.goo.Ber" ));
         
+
+        AssetItem dsl = pkg.addAsset( "MyDSL", "" );
+        dsl.updateFormat( AssetFormats.DSL );
+        dsl.updateContent( "[when]This is foo=bar()\n[then]do something=yeahMan();" );
+        dsl.checkin( "" );
+        
+        AssetItem asset = pkg.addAsset( "MyDSLRule", "" );
+        asset.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
+        asset.updateContent( "when \n This is foo \n then \n do something" );
+        asset.checkin( "" );
+        
+        drl = impl.buildPackageSource( pkg.getUUID() );
+        assertNotNull(drl);
+        
+        assertTrue(drl.indexOf( "import org.goo.Ber" ) > -1);
+        assertTrue(drl.indexOf( "This is foo" ) == -1);
+        assertTrue(drl.indexOf( "do something" ) == -1);
+        assertTrue(drl.indexOf( "bar()" ) > 0);
+        assertTrue(drl.indexOf( "yeahMan();" ) > 0);
         
         
+    }
+    
+    public void testAssetSource() throws Exception {
+        ServiceImplementation impl = getService();
+        RulesRepository repo = impl.repository;
+        
+        //create our package
+        PackageItem pkg = repo.createPackage( "testAssetSource", "" );
+        AssetItem asset = pkg.addAsset( "testRule", "" );
+        asset.updateFormat( AssetFormats.DRL );
+        asset.updateContent( "rule 'n' \n when Foo() then bar(); \n end");
+        asset.checkin( "" );
+        repo.save();
+
+        RuleAsset rule = impl.loadRuleAsset( asset.getUUID() );
+        String drl = impl.buildAssetSource( rule );
+        assertEquals("rule 'n' \n when Foo() then bar(); \n end", drl);
+        
+        asset = pkg.addAsset( "DT", "" );
+        asset.updateFormat( AssetFormats.DECISION_SPREADSHEET_XLS );
+        asset.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/SampleDecisionTable.xls" ) );
+        asset.checkin( "" );
+        
+        rule = impl.loadRuleAsset( asset.getUUID() );
+        drl = impl.buildAssetSource( rule );
+        assertNotNull(drl);
+        assertTrue(drl.indexOf( "rule" ) > -1);
+        assertTrue(drl.indexOf( "policy: Policy" ) > -1);
+        
+        AssetItem dsl = pkg.addAsset( "MyDSL", "" );
+        dsl.updateFormat( AssetFormats.DSL );
+        dsl.updateContent( "[when]This is foo=bar()\n[then]do something=yeahMan();" );
+        dsl.checkin( "" );
+        
+        asset = pkg.addAsset( "MyDSLRule", "" );
+        asset.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
+        asset.updateContent( "when \n This is foo \n then \n do something" );
+        asset.checkin( "" );
+        
+        
+        rule = impl.loadRuleAsset( asset.getUUID() );
+        drl = impl.buildAssetSource( rule );
+        assertNotNull(drl);
+        assertTrue(drl.indexOf( "This is foo" ) == -1);
+        assertTrue(drl.indexOf( "do something" ) == -1);
+        assertTrue(drl.indexOf( "bar()" ) > -1);
+        assertTrue(drl.indexOf( "yeahMan();" ) > -1);
+        
+    }
+    
+    public void testBuildAsset() throws Exception {
+        ServiceImplementation impl = getService();
+        RulesRepository repo = impl.repository;
+        
+        //create our package
+        PackageItem pkg = repo.createPackage( "testBuildAsset", "" );
+        AssetItem model = pkg.addAsset( "MyModel", "" );
+        model.updateFormat( AssetFormats.MODEL );
+        model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        model.checkin( "" );
+        
+        pkg.updateHeader( "import com.billasurf.Person" );
+        
+        
+        AssetItem asset = pkg.addAsset( "testRule", "" );
+        asset.updateFormat( AssetFormats.DRL );
+        asset.updateContent( "rule 'MyGoodRule' \n when Person() then System.err.println(42); \n end");
+        asset.checkin( "" );
+        repo.save();
+        
+        RuleAsset rule = impl.loadRuleAsset( asset.getUUID() );
+
+        //check its all OK
+        BuilderResult[] result = impl.buildAsset( rule );
+        assertNull(result);
+
+        //try it with a bad rule
+        RuleContentText text = new RuleContentText();
+        text.content = "rule 'MyBadRule' \n when Personx() then System.err.println(42); \n end";
+        rule.content = text;
+        
+        result = impl.buildAsset( rule );
+        assertNotNull(result);
+        assertNotNull(result[0].message);
+        assertEquals(AssetFormats.DRL, result[0].assetFormat);
+        
+
+        //now mix in a DSL
+        AssetItem dsl = pkg.addAsset( "MyDSL", "" );
+        dsl.updateFormat( AssetFormats.DSL );
+        dsl.updateContent( "[when]There is a person=Person()\n[then]print out 42=System.err.println(42);" );
+        dsl.checkin( "" );
+
+        AssetItem dslRule = pkg.addAsset( "dslRule", "" );
+        dslRule.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
+        dslRule.updateContent( "when \n There is a person \n then \n print out 42" );
+        dslRule.checkin( "" );
+        
+        rule = impl.loadRuleAsset( dslRule.getUUID() );
+        
+        result = impl.buildAsset( rule );
+        assertNull(result);
         
     }
 

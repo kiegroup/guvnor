@@ -231,4 +231,15 @@ public interface RepositoryService extends RemoteService {
      */
     public String buildPackageSource(String packageUUID) throws SerializableException;
     
+    
+    /**
+     * This will return the effective source for an asset (in DRL).
+     * Used as an aid for debugging.
+     */
+    public String buildAssetSource(RuleAsset asset) throws SerializableException;
+    
+    /**
+     * This will build the asset and return any build results (errors).
+     */
+    public BuilderResult[] buildAsset(RuleAsset asset) throws SerializableException;
 }

@@ -30,12 +30,15 @@ import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.rpc.ValidatedResponse;
+import org.drools.brms.server.builder.BRMSPackageBuilder;
 import org.drools.brms.server.builder.ContentAssemblyError;
 import org.drools.brms.server.builder.ContentPackageAssembler;
 import org.drools.brms.server.contenthandler.ContentHandler;
+import org.drools.brms.server.contenthandler.IRuleAsset;
 import org.drools.brms.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.TableDisplayHandler;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -669,16 +672,7 @@ public class ServiceImplementation
         PackageItem item = repository.loadPackageByUUID( packageUUID );
         ContentPackageAssembler asm = new ContentPackageAssembler(item);
         if (asm.hasErrors()) {
-            BuilderResult[] result = new BuilderResult[asm.getErrors().size()];
-            for ( int i = 0; i < result.length; i++ ) {
-                ContentAssemblyError err = asm.getErrors().get( i );
-                BuilderResult res = new BuilderResult();
-                res.assetName = err.itemInError.getName();
-                res.assetFormat = err.itemInError.getFormat();
-                res.message = err.errorReport;
-                res.uuid = err.itemInError.getUUID();
-                result[i] = res;
-            }
+            BuilderResult[] result = generateBuilderResults( asm );
             return result;
         } else {
             try {
@@ -701,10 +695,65 @@ public class ServiceImplementation
         }
     }
 
+    private BuilderResult[] generateBuilderResults(ContentPackageAssembler asm) {
+        BuilderResult[] result = new BuilderResult[asm.getErrors().size()];
+        for ( int i = 0; i < result.length; i++ ) {
+            ContentAssemblyError err = asm.getErrors().get( i );
+            BuilderResult res = new BuilderResult();
+            res.assetName = err.itemInError.getName();
+            res.assetFormat = err.itemInError.getFormat();
+            res.message = err.errorReport;
+            res.uuid = err.itemInError.getUUID();
+            result[i] = res;
+        }
+        return result;
+    }
+
     @WebRemote
     public String buildPackageSource(String packageUUID) throws SerializableException {
         PackageItem item = repository.loadPackageByUUID( packageUUID );
         ContentPackageAssembler asm = new ContentPackageAssembler(item, false);
         return asm.getDRL();
+    }
+
+    @WebRemote
+    public String buildAssetSource(RuleAsset asset) throws SerializableException {
+        AssetItem item = repository.loadAssetByUUID( asset.uuid );
+
+        ContentHandler handler = ContentHandler.getHandler( item.getFormat() );//new AssetContentFormatHandler();
+        handler.storeAssetContent( asset, item );
+        StringBuffer buf = new StringBuffer();
+        if (handler.isRuleAsset()) {
+            
+            BRMSPackageBuilder builder = new BRMSPackageBuilder(new PackageBuilderConfiguration());
+            //now we load up the DSL files
+            builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( item.getPackage(), new BRMSPackageBuilder.DSLErrorEvent() {
+                public void recordError(AssetItem asset, String message) {
+                    //ignore at this point...
+                }
+            }));
+            ((IRuleAsset) handler).assembleDRL( builder, item, buf );
+        } else {
+            return item.getContent();
+        }
+        
+        return buf.toString();
+    }
+
+    @WebRemote
+    public BuilderResult[] buildAsset(RuleAsset asset) throws SerializableException {
+        AssetItem item = repository.loadAssetByUUID( asset.uuid );
+
+        ContentHandler handler = ContentHandler.getHandler( item.getFormat() );//new AssetContentFormatHandler();
+        handler.storeAssetContent( asset, item );
+        
+        
+        ContentPackageAssembler asm = new ContentPackageAssembler(item);
+        if (!asm.hasErrors()) {
+            return null;
+        } else {
+            return generateBuilderResults( asm );
+        }
+        
     }
 }
