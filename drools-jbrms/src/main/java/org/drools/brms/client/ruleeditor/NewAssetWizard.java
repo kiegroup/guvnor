@@ -3,6 +3,7 @@ package org.drools.brms.client.ruleeditor;
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.LoadingPopup;
@@ -17,7 +18,6 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -26,9 +26,8 @@ import com.google.gwt.user.client.ui.Widget;
  * This provides a popup for creating a new rule/asset from scratch.
  * reuses a few other widgets.
  */
-public class NewAssetWizard extends PopupPanel {
+public class NewAssetWizard extends FormStylePopup {
 
-    private FlexTable              table       = new FlexTable(); //Using this table for the form layout
     private TextBox                name        = new TextBox();
     private TextArea               description = new TextArea();
     private String                 initialCategory;
@@ -44,49 +43,27 @@ public class NewAssetWizard extends PopupPanel {
 
     /** This is used when creating a new rule. */
     public NewAssetWizard(EditItemEvent afterCreate, boolean showCats, String format, String title) {
-        super( true );
+        super("images/new_wiz.gif", title);
         this.showCats = showCats;
         this.format = format;
         
         this.afterCreate = afterCreate;
-        super.setWidth( "40%" );
-        table.setWidth( "100%" );
-        name.setWidth( "100%" );
-        
-        table.setWidget( 0,
-                         0,
-                         new ImageButton( "images/new_wiz.gif" ) );
-        table.setWidget( 0,
-                         1,
-                         new HTML( "<b>" + title + "</b>" ) );        
 
-        table.setWidget( 1,
-                         0,
-                         new Label("Name:") );
-        table.setWidget( 1,
-                         1,
-                         name );
+        addAttribute( "Name:", name );
+        
         if (showCats) {
-            table.setWidget( 2, 0, new Label("Initial category:") );
-            table.setWidget( 2, 1, getCatChooser() );
+            addAttribute("Initial category:", getCatChooser());
         }
         
         if (format == null) {
-            table.setWidget( 3, 0, new Label("Type (format) of rule:" ));
-            table.setWidget( 3, 1, this.formatChooser );
+            addAttribute( "Type (format) of rule:", this.formatChooser );
         } 
         
-        table.setWidget( 4, 0, new Label("Package") );
-        table.setWidget( 4, 1, packageSelector );
+        addAttribute("Package:", packageSelector);
 
         description.setVisibleLines( 4 );
         description.setWidth( "100%" );
-        table.setWidget( 5,
-                         0,
-                         new Label( "Initial Description:" ) );
-        table.setWidget( 5,
-                         1,
-                         description );
+        addAttribute("Initial description:", description);
 
         Button ok = new Button( "OK" );
         ok.addClickListener( new ClickListener() {
@@ -96,23 +73,8 @@ public class NewAssetWizard extends PopupPanel {
 
         } );
 
-        table.setWidget( 6,
-                         0,
-                         ok );
+        addAttribute( "", ok );
 
-        Button cancel = new Button( "Cancel" );
-        cancel.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                cancel();
-            }
-
-        } );
-
-        table.setWidget( 6,
-                         1,
-                         cancel );
-
-        add( table );
         setStyleName( "ks-popups-Popup" );
     }
 
@@ -182,8 +144,5 @@ public class NewAssetWizard extends PopupPanel {
         afterCreate.open( uuid );
     }
 
-    void cancel() {
-        hide();
-    }
 
 }
