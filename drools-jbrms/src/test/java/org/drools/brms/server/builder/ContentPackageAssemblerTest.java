@@ -300,7 +300,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertContains("import com.billasurf.Board\n global com.billasurf.Person customer", drl);
         assertContains("package testShowSource", drl);
         assertContains("function void foo() { System.out.println(42); }", drl);
-        assertContains("foo()", drl);
+        assertContains("foo();", drl);
         assertContains("FooBarBaz()", drl);
         assertContains("rule 'foo' when Goo() then end", drl);
         
