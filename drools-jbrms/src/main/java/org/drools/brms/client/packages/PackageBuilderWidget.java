@@ -38,6 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is the widget for building packages, validating etc. 
+ * Visually decorates or wraps a rule editor widget with buttons for this purpose.
  * 
  * @author Michael Neale
  */
@@ -103,12 +104,12 @@ public class PackageBuilderWidget extends Composite {
 
 
     /**
-     * Popup the view source.
+     * Popup the view source dialog, showing the given content.
      */
-    private static void showSource(String content, String name) {
+    public static void showSource(String content, String name) {
         FormStylePopup pop = new FormStylePopup("images/view_source.gif", "Viewing source for: " + name);
         TextArea area = new TextArea();
-        area.setVisibleLines( 48 );
+        area.setVisibleLines( 30 );
         area.setWidth( "100%" );
         area.setCharacterWidth( 80 );
         pop.addRow( area );

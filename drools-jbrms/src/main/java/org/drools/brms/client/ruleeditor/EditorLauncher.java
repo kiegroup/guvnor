@@ -37,15 +37,15 @@ public class EditorLauncher {
                                          RuleViewer viewer) {
         //depending on the format, load the appropriate editor
         if ( asset.metaData.format.equals( AssetFormats.BUSINESS_RULE ) ) {
-            return new RuleModeller( asset  );
+            return new RuleValidatorWrapper( new RuleModeller( asset  ), asset);
         } else if ( asset.metaData.format.equals( AssetFormats.DSL_TEMPLATE_RULE ) ) {
-            return new DSLRuleEditor( asset );
+            return new RuleValidatorWrapper(new DSLRuleEditor( asset ), asset);
         } else if ( asset.metaData.format.equals( AssetFormats.MODEL ) ) {
             return new ModelAttachmentFileWidget( asset, viewer );
         } else if (asset.metaData.format.equals( AssetFormats.DECISION_SPREADSHEET_XLS )){
-            return new DecisionTableXLSWidget( asset, viewer );
+            return new RuleValidatorWrapper(new DecisionTableXLSWidget( asset, viewer ), asset);
         } else {
-            return new DefaultRuleContentWidget( asset );
+            return new RuleValidatorWrapper(new DefaultRuleContentWidget( asset ), asset);
         }
 
     }

@@ -35,6 +35,7 @@ public class RulePackageSelector extends Composite {
             
         });
         
+        
         initWidget( packageList );
     }
     

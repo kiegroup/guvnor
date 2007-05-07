@@ -1204,6 +1204,46 @@ public class ServiceImplementationTest extends TestCase {
         assertNull(result);
         
     }
+    
+    public void testBuildAssetWithPackageConfigError() throws Exception {
+        ServiceImplementation impl = getService();
+        RulesRepository repo = impl.repository;
+        
+        PackageItem pkg = repo.createPackage( "testBuildAssetWithPackageConfigError", "" );
+//        AssetItem model = pkg.addAsset( "MyModel", "" );
+//        model.updateFormat( AssetFormats.MODEL );
+//        model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+//        model.checkin( "" );
+        
+//        pkg.updateHeader( "import com.billasurf.Person" );
+        
+        
+        AssetItem asset = pkg.addAsset( "testRule", "" );
+        asset.updateFormat( AssetFormats.DRL );
+        asset.updateContent( "rule 'MyGoodRule' \n when \n then \n end");
+        asset.checkin( "" );
+        repo.save();
+        
+        RuleAsset rule = impl.loadRuleAsset( asset.getUUID() );
+
+        //check its all OK
+        BuilderResult[] result = impl.buildAsset( rule );
+        if (!(result == null)) {
+            System.err.println(result[0].assetName + " " + result[0].message);
+        }
+        assertNull(result);
+        
+        pkg.updateHeader( "importxxxx" );
+        repo.save();
+        result = impl.buildAsset( rule );
+        assertNotNull(result);
+        
+        assertEquals(1, result.length);
+        assertEquals("package", result[0].assetFormat);
+        assertNotNull(result[0].message);
+        
+        
+    }
 
     private ServiceImplementation getService() throws Exception {
         ServiceImplementation impl = new ServiceImplementation();

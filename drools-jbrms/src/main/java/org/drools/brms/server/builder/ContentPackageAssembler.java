@@ -164,6 +164,9 @@ public class ContentPackageAssembler {
     }
     
     private void addDrl(String drl) {
+        if ("".equals( drl )) {
+            return;
+        }
         try {
             builder.addPackageFromDrl( new StringReader(drl) );
         } catch ( DroolsParserException e ) {
