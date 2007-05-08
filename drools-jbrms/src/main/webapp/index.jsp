@@ -1,5 +1,4 @@
-<html>
-<body>
-<h2>BRMS application is up.</h2>
-</body>
-</html>
+    <%
+        String redirectURL = "org.drools.brms.JBRMS/JBRMS.html";
+        response.sendRedirect(redirectURL);
+    %>
