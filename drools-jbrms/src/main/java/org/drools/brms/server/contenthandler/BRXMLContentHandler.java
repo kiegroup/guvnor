@@ -32,6 +32,9 @@ public class BRXMLContentHandler extends ContentHandler implements IRuleAsset {
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializableException {
         RuleModel data = (RuleModel) asset.content;
+        if (data.name == null) {
+            data.name = repoAsset.getName();
+        }
         repoAsset.updateContent( BRXMLPersistence.getInstance().marshal( data ) );
     }
 

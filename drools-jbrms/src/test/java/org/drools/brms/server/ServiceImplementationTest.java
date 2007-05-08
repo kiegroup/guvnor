@@ -27,6 +27,8 @@ import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.rpc.ValidatedResponse;
 import org.drools.brms.client.rulelist.AssetItemListViewer;
+import org.drools.brms.server.contenthandler.BRXMLContentHandler;
+import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.util.BRXMLPersistence;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
@@ -1048,6 +1050,27 @@ public class ServiceImplementationTest extends TestCase {
         results = impl.buildPackage( pkg.getUUID() );
         assertNull(results);
         
+        //check that the rule name in the model is being set
+        AssetItem asset2 = pkg.addAsset( "testSetRuleName", "" );
+        asset2.updateFormat( AssetFormats.BUSINESS_RULE );
+        asset2.checkin( "" );
+
+        RuleModel model2 = new RuleModel();
+        assertNull(model2.name);
+        RuleAsset asset = impl.loadRuleAsset( asset2.getUUID() );
+        asset.content = model2;
+        
+        impl.checkinVersion( asset );
+        
+        asset = impl.loadRuleAsset( asset2.getUUID() );
+        
+        model2 = (RuleModel) asset.content;
+        assertNotNull(model2);
+        assertNotNull(model2.name);
+        assertEquals(asset2.getName(), model2.name);
+        
+        
+
     }
     
     public void testPackageSource() throws Exception {

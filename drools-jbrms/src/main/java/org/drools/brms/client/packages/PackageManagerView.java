@@ -55,7 +55,7 @@ public class PackageManagerView extends Composite {
             explorer = new PackageExplorerWidget(editEvent, packageUUID, snapshotName);
         }
         
-        tab.add( explorer,  "Explore");        
+        tab.add( explorer,  "<img src='images/explore.gif'/>Explore", true);        
         tab.selectTab( 0 );
         
         initWidget( tab );

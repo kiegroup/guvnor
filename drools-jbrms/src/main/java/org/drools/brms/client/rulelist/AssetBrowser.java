@@ -45,7 +45,7 @@ public class AssetBrowser extends Composite {
 
         FlexTable explorePanel = doExplorer();        
         
-        tab.add(explorePanel, "Explore");
+        tab.add(explorePanel, "<img src='images/explore.gif'/>Explore", true);
 
         tab.selectTab(0);
         

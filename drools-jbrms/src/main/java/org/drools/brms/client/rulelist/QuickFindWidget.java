@@ -75,13 +75,17 @@ public class QuickFindWidget extends Composite {
         layout.addRow( new HTML("<hr/>") );
         
         listPanel = new FlexTable();
-        listPanel.setWidget( 0, 0, new HTML("Enter the name or part of a name. Alternatively, use the categories to browse.") );
+        listPanel.setWidget( 0, 0, new HTML("<img src='images/information.gif'/>&nbsp;Enter the name or part of a name. Alternatively, use the categories to browse.") );
         layout.addRow(listPanel);
         
         listPanel.setStyleName( "editable-Surface" );
         
         
+        
+        
         searchBox.addKeyboardListener( getKeyboardListener());
+        
+        layout.setStyleName( "quick-find" );
         
         initWidget( layout );
     }

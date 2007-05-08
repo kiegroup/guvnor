@@ -315,6 +315,12 @@ input:focus, input:active{ border-color:black !important; color: black;}
 //  padding: 4px;
 }
 
+.quick-find {
+  background-color: white;
+  border: 1px solid #aaaa99;
+  width: 100%;
+}
+
 .decision-Table-upload {
   background-color: white;
   border: 1px solid #aaaa99;
