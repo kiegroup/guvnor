@@ -6,6 +6,8 @@ import javax.jcr.Repository;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
+import org.apache.log4j.Logger;
+
 //import junit.framework.Assert;
 
 /**
@@ -16,6 +18,8 @@ import javax.jcr.SimpleCredentials;
 public class RepositorySessionUtil {
 
     private static ThreadLocal repo = new ThreadLocal();
+    
+    private static final Logger log = Logger.getLogger( RepositorySessionUtil.class );
 
     public static boolean deleteDir(File dir) {
         
@@ -39,9 +43,9 @@ public class RepositorySessionUtil {
         if ( repoInstance == null ) {
             
             File dir = new File( "repository" );
-            System.out.println("DELETING test repo: " + dir.getAbsolutePath());
+            log.debug( "DELETING test repo: " + dir.getAbsolutePath() );
             deleteDir( dir );
-            System.out.println("TEST repo was deleted.");
+            log.debug( "TEST repo was deleted." );
             
             JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
             
