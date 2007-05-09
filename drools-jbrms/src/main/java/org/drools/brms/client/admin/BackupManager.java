@@ -140,9 +140,11 @@ public class BackupManager extends Composite {
     private void exportRepository() {
 
         LoadingPopup.showMessage( "Exporting repository, please wait, as this could take some time..." );
+        
         Window.open( GWT.getModuleBaseURL() + "backup?" + HTMLFileManagerFields.FORM_FIELD_REPOSITORY + "=true",
-                     "downloading...",
-                     "" );
+        "downloading",
+        "resizable=no,scrollbars=yes,status=no" );
+        
         LoadingPopup.close();
     }
 
