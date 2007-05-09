@@ -120,14 +120,17 @@ public class RuleModeller extends Composite {
         list.addItem( "Choose..." );
         
         list.addItem( "salience" );
+        list.addItem( "enabled" );
+        list.addItem( "date-effective" );
+        list.addItem( "date-expires" );
         list.addItem( "no-loop" );
         list.addItem( "agenda-group" );
         list.addItem( "activation-group" );
         list.addItem( "duration" );
         list.addItem( "auto-focus" ); 
-        list.addItem( "date-effective" );
-        list.addItem( "date-expires" );
-        list.addItem( "enabled" );
+        list.addItem( "lock-on-active" );
+        list.addItem( "ruleflow-group" );
+        list.addItem( "dialect" );
         
         list.setSelectedIndex( 0 );
         

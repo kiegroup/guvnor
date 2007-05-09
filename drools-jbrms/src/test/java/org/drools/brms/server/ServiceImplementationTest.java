@@ -1,6 +1,7 @@
 package org.drools.brms.server;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.util.Calendar;
 import java.util.Date;
@@ -1015,6 +1016,7 @@ public class ServiceImplementationTest extends TestCase {
 
         assertNotNull(binPackage);
         
+        
         ByteArrayInputStream bin = new ByteArrayInputStream(binPackage);
         ObjectInputStream in = new ObjectInputStream(bin);
         Package binPkg = (Package) in.readObject();
@@ -1071,6 +1073,20 @@ public class ServiceImplementationTest extends TestCase {
         
         
 
+    }
+
+    /**
+     * this loads up a precompile binary package. If this fails, 
+     * then it means it needs to be updated. It gets the package form the BRXML example above.
+     */
+    public void testLoadAndExecBinary() throws Exception {
+        Person p = new Person();
+        BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
+        loader.addPackage( this.getClass().getResourceAsStream( "/RepoBinPackage.pkg" ) );
+        RuleBase rb = loader.getRuleBase();
+        StatelessSession sess = rb.newStatelessSession();
+        sess.execute( p );
+        assertEquals(42, p.getAge());
     }
     
     public void testPackageSource() throws Exception {
