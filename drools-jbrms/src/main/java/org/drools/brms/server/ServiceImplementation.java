@@ -607,8 +607,8 @@ public class ServiceImplementation
         List<TableDataRow> resultList = new ArrayList<TableDataRow>();        
         
         long start = System.currentTimeMillis();        
-        AssetItemIterator it = repository.findAssetsByName( search, searchArchived ); // search for archived itens
-        log.info(System.currentTimeMillis() - start);
+        AssetItemIterator it = repository.findAssetsByName( search, searchArchived ); // search for archived items
+        log.debug("Search time: " + (System.currentTimeMillis() - start));
         for(int i = 0; i < max; i++) {
             if (!it.hasNext()) {
                 break;

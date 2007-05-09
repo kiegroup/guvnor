@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.drools.brms.server.ServiceImplementation;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
@@ -21,6 +22,7 @@ public class GWTToSeamAdapter {
 
     /** A very simple cache of previously looked up methods */
     static final Map METHOD_CACHE = new HashMap();
+    private static final Logger log = Logger.getLogger( GWTToSeamAdapter.class );
 
 
     /**
@@ -45,17 +47,14 @@ public class GWTToSeamAdapter {
             Method method = getMethod( serviceIntfName, methodName,
                             clz,
                             paramTypes );
-
             
             Object result = method.invoke( component, args );
             return new ReturnedObject(method.getReturnType(), result);
-
-        
     }
 
     /**
-     * Get the method on the class, including walking up the class heirarchy if needed.
-     * Methods have to be marked as "@WebRemote" to be allowed.
+     * Get the method on the class, including walking up the class hierarchy if needed.
+     * Methods have to be marked as "@WebRemote" to be allowed
      * @param methodName
      * @param clz
      * @param paramTypes
@@ -101,7 +100,7 @@ public class GWTToSeamAdapter {
     }
     
     /**
-     * Recurse up the class hierarchy, looking for a compatable method that is marked as "@WebRemote".
+     * Recurse up the class hierarchy, looking for a compatible method that is marked as "@WebRemote".
      * If one is not found (or we hit Object.class) then we barf - basically trust nothing from the client
      * other then what we want to allow them to call. 
      */
@@ -131,12 +130,13 @@ public class GWTToSeamAdapter {
      */
     protected Object getServiceComponent(String serviceIntfName) {
         if (Contexts.isApplicationContextActive()) {
+            log.debug( "Running in seam mode multi user and authentication enabled" );
             return Component.getInstance( serviceIntfName );
         } else {
 
             //MN: NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
             //THIS IS ALL THAT IS NEEDED.
-            System.out.println("WARNING: RUNNING IN NON SEAM MODE SINGLE USER MODE - ONLY FOR TESTING AND DEBUGGING !!!!!");
+            log.debug( "WARNING: RUNNING IN NON SEAM MODE SINGLE USER MODE - ONLY FOR TESTING AND DEBUGGING !!!!!" );
             ServiceImplementation impl = new ServiceImplementation();
              
             try {

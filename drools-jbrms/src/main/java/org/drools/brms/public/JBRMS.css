@@ -577,3 +577,15 @@ textarea:focus, textarea:active{color:black; border-color:black !important; back
 body{color:#444;}
 
 .gwt-TreeItem{width:100%; cursor:pointer; display:block !important; padding:0em; margin:0em; line-height:em}
+
+#user_info {
+	position: absolute;
+	right: 1em;
+	top: 0;
+	color: #fff;
+	font-size: .9em;
+}
+
+#user_info a {
+	color: #fff;
+}

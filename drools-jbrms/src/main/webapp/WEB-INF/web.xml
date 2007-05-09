@@ -1,74 +1,96 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
-
+<?xml version="1.0"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
-  <display-name>Archetype Created Web Application</display-name>
-  
-    <listener>
-        <listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
-    </listener>  
-  
-    <filter>
-        <filter-name>Seam Filter</filter-name>
-        <filter-class>org.jboss.seam.web.ContextFilter</filter-class>
-    </filter>
+	<display-name>Archetype Created Web Application</display-name>
+	<listener>
+		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
+	</listener>
+	<filter>
+		<filter-name>Seam Filter</filter-name>
+		<filter-class>org.jboss.seam.web.ContextFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Seam Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+<!-- servlets - mostly to do with file management -->
 
-    <filter-mapping>
-        <filter-name>Seam Filter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-      
-	<!-- servlets - mostly to do with file management -->
 	<servlet>
 		<servlet-name>GWTRemotingServlet</servlet-name>
 		<servlet-class>org.jboss.seam.remoting.gwt.GWTRemoteServiceServlet</servlet-class>
-	</servlet>  
-	
+	</servlet>
 	<servlet>
 		<servlet-name>AssetFileServlet</servlet-name>
 		<servlet-class>org.drools.brms.server.files.AssetFileServlet</servlet-class>
-	</servlet>  
-	
+	</servlet>
 	<servlet>
 		<servlet-name>PackageDeploymentServlet</servlet-name>
 		<servlet-class>org.drools.brms.server.files.PackageDeploymentServlet</servlet-class>
-	</servlet>  
-	
+	</servlet>
 	<servlet>
 		<servlet-name>RepositoryBackupServlet</servlet-name>
 		<servlet-class>org.drools.brms.server.files.RepositoryBackupServlet</servlet-class>
-	</servlet>  
-	
-	
-  
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>GWTRemotingServlet</servlet-name>
 		<url-pattern>/org.drools.brms.JBRMS/jbrmsService</url-pattern>
-	</servlet-mapping>  
-	
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>AssetFileServlet</servlet-name>
 		<url-pattern>/org.drools.brms.JBRMS/asset</url-pattern>
-	</servlet-mapping>  
-	
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>PackageDeploymentServlet</servlet-name>
 		<url-pattern>/org.drools.brms.JBRMS/package</url-pattern>
-	</servlet-mapping>  
-
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>RepositoryBackupServlet</servlet-name>
 		<url-pattern>/org.drools.brms.JBRMS/backup</url-pattern>
-	</servlet-mapping>  
-	
-	
-	
-	<!--
+	</servlet-mapping>
+<!--
     <listener>
         <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
     </listener>	
     -->
-
-  
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>JBRMS Protected Area</web-resource-name>
+			<url-pattern>/index.jsp</url-pattern>
+			<url-pattern>/login.jsp</url-pattern>
+			<url-pattern>/login-error.jsp</url-pattern>
+			<url-pattern>/general-error.jsp</url-pattern>
+			<url-pattern>/org.drools.brms.JBRMS/*</url-pattern>
+			<http-method>HEAD</http-method>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+			<http-method>PUT</http-method>
+			<http-method>DELETE</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>AdminRol</role-name>
+			<role-name>UserRol</role-name>
+		</auth-constraint>
+		
+		<user-data-constraint>
+			<description>no description</description>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+		
+	</security-constraint>
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<form-login-config>
+			<form-login-page>/login.jsp</form-login-page>
+			<form-error-page>/login.jsp?error=1</form-error-page>
+		</form-login-config>
+	</login-config>
+	<security-role>
+		<description>Admin user access</description>
+		<role-name>AdminRol</role-name>
+	</security-role>
+	<security-role>
+		<description>General user access</description>
+		<role-name>UserRol</role-name>
+	</security-role>
 </web-app>

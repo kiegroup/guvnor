@@ -22,7 +22,6 @@ public class JBRMSFeatureConfigurator {
 		//list.addSink(RuleBases.init());
 		list.addSink(DeploymentManagementFeature.init());
 		list.addSink(AdminFeature.init());
-		
 	}
 
 }

@@ -1,0 +1,54 @@
+#login {
+	background: #fff;
+	border: 1px solid #a2a2a2;
+	margin: 5em auto;
+	padding: 1.5em;
+	width: 25em;
+}
+
+#login #login_error {
+	background: #c00;
+	border: 1px solid #a40000;
+	color: #fff;
+	font-size: 16px;
+	font-weight: bold;
+	padding: .5em;
+	text-align: center;
+}
+
+#login h1 {
+	background: url(images/wordpress-logo.png) no-repeat top left;
+	margin-top: 0;
+}
+
+#login h1 a {
+	display: block;
+	text-indent: -1000px;
+	height: 66px;
+	border-bottom: none;
+}
+
+#login input {
+	padding: 3px;
+}
+
+#login ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#login ul li {
+	display: inline;
+	margin-left: 1.4em;
+	text-align: center;
+}
+
+#login #log, #pwd {
+	font-size: 1.7em;
+	width: 80%;
+}
+
+#login #submit {
+	font-size: 1.7em;
+}

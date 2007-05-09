@@ -16,6 +16,7 @@
 package org.drools.brms.client;
 
 import org.drools.brms.client.JBRMSFeature.ComponentInfo;
+import org.drools.brms.client.common.LoginInfoWidget;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.History;
@@ -55,7 +56,11 @@ public class JBRMSEntryPoint implements EntryPoint, HistoryListener {
   }
 
   public void onModuleLoad() {
+      
     // Load all the sinks.
+      
+      
+      
     JBRMSFeatureConfigurator.configure(list);
 
     // Put the sink list on the left, and add the outer dock panel to the
@@ -67,6 +72,8 @@ public class JBRMSEntryPoint implements EntryPoint, HistoryListener {
     vp.setWidth("100%");
     vp.add(description);
     vp.add(sinkContainer);
+    
+    
 
     description.setStyleName("ks-Info");
 
@@ -77,6 +84,12 @@ public class JBRMSEntryPoint implements EntryPoint, HistoryListener {
     panel.setCellWidth(vp, "100%");
 
     History.addHistoryListener(this);
+    
+    /*
+     * TODO: work with context session;
+     */
+    
+    RootPanel.get().add( new LoginInfoWidget() );
     RootPanel.get().add(panel);
 
     // Show the initial screen.
