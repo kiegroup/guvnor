@@ -20,7 +20,7 @@
 	    
 	    <!--   
 	      Optional: this is for creating a configurator for a seperate repository type.
-	      <property name="repositoryConfigurator">org.drools.repository.JackrabbitRepositoryConfigurator</property>
+	      <property name="configurator">org.drools.repository.JackrabbitRepositoryConfigurator</property>
 	    -->
     </component>
 

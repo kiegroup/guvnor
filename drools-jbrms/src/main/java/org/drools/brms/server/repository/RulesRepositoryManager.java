@@ -1,5 +1,6 @@
 package org.drools.brms.server.repository;
 
+import org.drools.brms.server.util.UserIdentity;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -24,11 +25,12 @@ public class RulesRepositoryManager {
     
     private RulesRepository repository;
     
-    //TODO: inject this ?? 
-    String userName = "alan_q";
+    @In
+    UserIdentity currentUser;
     
     @Create
     public void create() {
+        String userName = currentUser.getUserName();
         repository = new RulesRepository(repositoryConfiguration.newSession(userName) );
     }
     

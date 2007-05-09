@@ -1,5 +1,7 @@
 package org.drools.brms.server.repository;
 
+import org.drools.brms.server.util.UserIdentity;
+
 import junit.framework.TestCase;
 
 public class RulesRepositoryDecoratorTest extends TestCase {
@@ -10,7 +12,7 @@ public class RulesRepositoryDecoratorTest extends TestCase {
         MockRepo repo = new MockRepo();
         config.repository = repo;
         dec.repositoryConfiguration = config;
-        dec.userName = "test";
+        dec.currentUser = new UserIdentity();
         dec.create();
         
         assertNotNull(dec.getRepository().getSession());
