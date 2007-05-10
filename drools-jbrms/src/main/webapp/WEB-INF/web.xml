@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
-	<display-name>Archetype Created Web Application</display-name>
+	<display-name>JBoss Rules BRMS</display-name>
+    <session-config>
+        <session-timeout>180</session-timeout>
+    </session-config>	
 	<listener>
 		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
 	</listener>
@@ -49,13 +52,13 @@
 	</servlet-mapping>
 
 	<!-- following are security constraints, this can be modified to suit your environment -->
+	
+	<!-- ************ Uncomment to enable security
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>JBRMS Protected Area</web-resource-name>
 			<url-pattern>/index.jsp</url-pattern>
 			<url-pattern>/login.jsp</url-pattern>
-			<url-pattern>/login-error.jsp</url-pattern>
-			<url-pattern>/general-error.jsp</url-pattern>
 			<url-pattern>/org.drools.brms.JBRMS/*</url-pattern>
 			<http-method>HEAD</http-method>
 			<http-method>GET</http-method>
@@ -89,4 +92,6 @@
 		<description>General user access</description>
 		<role-name>UserRol</role-name>
 	</security-role>
+	-->
+	
 </web-app>
