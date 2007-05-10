@@ -8,7 +8,9 @@
 	</head>
 	<body>
 	
-	    <div id=user_info> Howdy <%=request.getRemoteUser() %> <a href='/drools-jbrms/logout.jsp'>[Sign Out]</a> </div>
+	    <% if (request.getRemoteUser() != null) { %>
+		    <div id=user_info> User: <%=request.getRemoteUser() %> <a href='/drools-jbrms/logout.jsp'>[Sign Out]</a> </div>
+		<% } %>    
 	    <div class="headerBarblue"><img src="images/jbossrules_hdrlogo.png" width="279" height="70" /></d
 		<!-- This script is the bootstrap stuff that simply must be there; it is sent down uncompressed -->
 		<script language='javascript' src='gwt.js'></script>

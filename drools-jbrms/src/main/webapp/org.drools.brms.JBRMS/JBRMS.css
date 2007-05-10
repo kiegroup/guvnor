@@ -48,6 +48,8 @@ a:visited {
   sborder: 8px solid #aaaa99;
   border: 2px outset;
   background-color: white;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 .gwt-DialogBox .Caption {
@@ -85,6 +87,8 @@ select:focus{ border-color:black !important; color: black;}
   background-color: #aaaa99;
   border: 1px solid #aaaa99;
   cursor: default;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 .gwt-MenuBar .gwt-MenuItem {
@@ -105,19 +109,24 @@ select:focus{ border-color:black !important; color: black;}
 .model-builder-Background {
   background-color: #f7f2d0;
   border: 1px solid #ccc;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 .model-builderInner-Background {
 	background-color: white;
 	border-top: 1px solid #ccc;
 	border-bottom: 1px solid #ccc;
-
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 .model-builderInnerInner-Background {
         background-color: white;
 	border-top: 0px solid #ccc;
 	border-bottom: 0px solid #ccc;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 .modeller-fact-TypeHeader {
@@ -127,6 +136,8 @@ select:focus{ border-color:black !important; color: black;}
 .modeller-fact-pattern-Widget {
 	border-top: 1px solid #ccc;
 	border-bottom: 1px solid #ccc;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 .modeller-composite-Label { font-style: italic; }
@@ -135,6 +146,8 @@ select:focus{ border-color:black !important; color: black;}
 
 .gwt-DialogBox { 
 	border: 1px solid #aaaa99;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 .gwt-DialogBox .Caption {  
 	background-color: #f7f2d0;
@@ -144,6 +157,8 @@ select:focus{ border-color:black !important; color: black;}
 .version-Popup {
 	background-color: white;
 	border: 1px solid #aaaa99;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 .version-Popup .Caption {
@@ -176,13 +191,14 @@ select:focus{ border-color:black !important; color: black;}
 
 
 hr{border-collapse; border-style:none; border-bottom: 1px dotted #ccc;}
+
 .gwt-TabBar .gwt-TabBarItem-selected {
   background-color: #f6f6f6;
-margin:0em;
+  margin:0em;
   border-bottom: 0px solid #aaaa99;
   cursor: url;
   padding: .5em 1em;
-border:0px transparent none;
+  border:0px transparent none;
 }
 .gwt-TabBarItem-selected{color:black !important;}
 
@@ -278,28 +294,12 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 
-.ks-layouts-Label {
-  background-color: #aaaa99;
-  font-weight: bold;
-  margin-top: 1em;
-  padding: 2px 0px 2px 0px;
-  width: 100%;
-}
-
-.ks-layouts-Scroller {
-  height: 128px;
-  border: 2px solid #aaaa99;
-  padding: 8px;
-  margin: 8px;
-}
-
-.outline-Debug {
-  border: 2px solid #aaaa99;
-}
 
 .warning-Popup {
   border: 2px solid #aaaa99;
   background-color: #f7f2d0;		
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 
@@ -307,11 +307,15 @@ input:focus, input:active{ border-color:black !important; color: black;}
   background-color: white;
   border: 2px solid #aaaa99;
   padding: 4px;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 .editable-Surface {
   background-color: #f7f2d0;
   border: 1px solid #aaaa99;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 //  padding: 4px;
 }
 
@@ -319,16 +323,23 @@ input:focus, input:active{ border-color:black !important; color: black;}
   background-color: white;
   border: 1px solid #aaaa99;
   width: 100%;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
+
 }
 
 .decision-Table-upload {
   background-color: white;
   border: 1px solid #aaaa99;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 .package-Editor {
   background-color: #f7f2d0;
   border: 1px solid #aaaa99;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 //  padding: 4px;
 }
 
@@ -342,6 +353,8 @@ input:focus, input:active{ border-color:black !important; color: black;}
   padding: 4px;
   font-style: bold !important;
   font-color: black !important;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 .loading-Popup {
@@ -358,6 +371,8 @@ input:focus, input:active{ border-color:black !important; color: black;}
 	border-width: 1px;
 	border-collapse: collapse
 	border-style: inset;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 
@@ -383,21 +398,29 @@ input:focus, input:active{ border-color:black !important; color: black;}
   background-color: yellow;
   border: 1px solid #aaaa99;
   padding: 4px;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 .rule-breditor-Table {
   background-color: #f7f2d0;
   border: 1px solid #aaaa99;
   padding: 4px;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 .new-asset-Icons  {
   border: 1px solid #aaaa99;
   background-color: #f7f2d0;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 .version-browser-Border {
   border: 1px solid #aaaa99;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 .dt-editor-Grid {
@@ -457,8 +480,6 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 
-.dsl-text-Editor {
-}
 
 .dt-field-TextBox {
   border: none;
@@ -472,6 +493,8 @@ input:focus, input:active{ border-color:black !important; color: black;}
   font-size: smaller;
   border: 1px solid #aaaa99;
   width: 100%;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 /* And the rule list stuff */
@@ -501,6 +524,8 @@ body{margin:0em; padding:0em; font-family: "bitstream vera sans", "dejavu sans" 
 	cursor: hand;
         border-spacing: 0px;
         border-collapse: collapse
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
 }
 
 /* end the rule list stuff */
