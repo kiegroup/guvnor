@@ -88,7 +88,7 @@ public class ServiceImplementation
         return list;
 
     }
-
+    
     @WebRemote
     public Boolean createCategory(String path,
                                   String name,
@@ -756,4 +756,11 @@ public class ServiceImplementation
         }
         
     }
+    
+    @WebRemote 
+    public String getLoggedUser () {
+        return repository.getSession().getUserID();
+    }
+
+
 }

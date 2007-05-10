@@ -16,6 +16,9 @@ public interface RepositoryService extends RemoteService {
      * @param callback
      */
     public String[] loadChildCategories(String categoryPath);
+    
+    
+    public String getLoggedUser ();
  
     
     /**
