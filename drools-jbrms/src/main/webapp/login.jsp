@@ -10,12 +10,8 @@
 </head>
 
 <body onload="document.forms[0].elements[0].focus()">
-  <table border="0" width="100%" align="center">
-  
-  <tr><td align="center">
-  <form name="login" method="post" action="/drools-jbrms/j_security_check">
-    <table>
-      <tr><td style="height: 125px " colspan="2">
+
+		<div id="login">
        <%
 			if (request.getParameter("error") != null) {
 		%>
@@ -23,27 +19,20 @@
 		<%
 			}
 		%>
+	  <center><img src="/drools-jbrms/drools_logo.gif" border="0" width=60% height=60% /></center>
+	  <form name="login" method="post" action="/drools-jbrms/j_security_check">
+		<p><label>Username:<br /><input type="text" name="j_username" id="log" value="" size="20" tabindex="1" /></label></p>
+		<p><label>Password:<br /> <input type="password" name="j_password" id="pwd" value="" size="20" tabindex="2" /></label></p>
+		<p>
+		<p class="submit">
+			<input type="submit" name="submit" id="submit" value="Login &raquo;" tabindex="4" />
+		
+		</p>
+		</form>
+		<ul>
+			<li><a href="javascript:alert('not implemented')" title="Password Lost and Found">Lost your password?</a></li>
+		</ul>
+		</div>		
       
-      </td></tr>
-      <tr>
-      	<td colspan="2" align="center"><img src="/drools-jbrms/drools_logo.gif" border="0" /></td>
-      </tr>
-      <tr><td style="height: 15px"></td></tr>
-      <tr>
-
-        <td>Login:</td>
-        <td><input type="text" name="j_username" /></td>
-      </tr>
-      <tr>
-        <td>Password:</td>
-        <td><input type="password" name="j_password" /></td>
-      </tr>
-      <tr>
-
-        <td colspan="2" align="center"><input type="submit" value="Login" /></td>
-      </tr>
-    </table>
-  </form>
-  </td></tr></table>
   </body>
 </html>
