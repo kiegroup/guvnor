@@ -158,7 +158,7 @@ public class ServiceImplementation
         if (format.equals( AssetFormats.DSL_TEMPLATE_RULE )) {
             asset.updateContent( "when\n\nthen\n" );
         } else if (format.equals( AssetFormats.FUNCTION )) {
-            asset.updateContent( "function " + ruleName + "(<args here>) {\n\n\n}" );
+            asset.updateContent( "function <returnType> " + ruleName + "(<args here>) {\n\n\n}" );
         } else if (format.equals( AssetFormats.DSL )) {
             asset.updateContent( "[when]Condition sentence template {var}=" +
                     "rule language mapping {var}\n" +

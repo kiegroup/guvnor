@@ -275,7 +275,7 @@ public class RuleModeller extends Composite {
                     popup.hide();
                 }
             });
-            popup.addAttribute( "Template conditions", dsls );
+            popup.addAttribute( "Condition sentences", dsls );
         }
         
         popup.setPopupPosition( w.getAbsoluteLeft() - 400, w.getAbsoluteTop() );
@@ -421,7 +421,7 @@ public class RuleModeller extends Composite {
                     popup.hide();
                 }
             });
-            popup.addAttribute( "Template actions", dsls );
+            popup.addAttribute( "Actions ...", dsls );
         }
         
 
