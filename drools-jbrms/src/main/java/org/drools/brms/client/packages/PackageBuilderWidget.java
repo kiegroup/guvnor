@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
@@ -237,7 +238,12 @@ public class PackageBuilderWidget extends Composite {
         }
         
         errTable.setWidth( "100%" );
-        buildResults.add( errTable );
+        ScrollPanel scroll = new ScrollPanel(errTable);
+        scroll.setAlwaysShowScrollBars(true);
+        scroll.setSize("100%","25em");
+                    
+        
+        buildResults.add( scroll );
         
     }        
     

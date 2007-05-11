@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -116,8 +117,13 @@ public class RuleValidatorWrapper extends Composite {
                 }
                 
             }
+            ScrollPanel scroll = new ScrollPanel(errTable);
+            scroll.setAlwaysShowScrollBars(true);
+            scroll.setSize("100%","25em");
+                        
+            //scroll.setScrollPosition( 100 );
             errTable.setWidth( "100%" );
-            pop.addRow( errTable );
+            pop.addRow( scroll );
             
         }
         pop.setPopupPosition( 100, 100 );
