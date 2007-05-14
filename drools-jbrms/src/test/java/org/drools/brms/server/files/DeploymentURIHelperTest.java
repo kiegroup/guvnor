@@ -5,8 +5,7 @@ import junit.framework.TestCase;
 public class DeploymentURIHelperTest extends TestCase {
 
     public void testGetPackageToExport() throws Exception {
-        String uri = "/org.drools.brms.JBRMS/asset/boo/ya+man";
-        //from getPathInfo() on req.
+        String uri = "/org.drools.brms.JBRMS/package/boo/ya+man";
 
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
 
@@ -14,7 +13,7 @@ public class DeploymentURIHelperTest extends TestCase {
         assertEquals( "boo", helper.getPackageName() );
         assertFalse(helper.isLatest());
 
-        helper = new PackageDeploymentURIHelper("/foo/bar/LATEST");
+        helper = new PackageDeploymentURIHelper("/asset/bar/LATEST");
         assertTrue(helper.isLatest());
         assertEquals("bar", helper.getPackageName());
         

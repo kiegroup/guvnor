@@ -44,7 +44,7 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>PackageDeploymentServlet</servlet-name>
-		<url-pattern>/org.drools.brms.JBRMS/package</url-pattern>
+		<url-pattern>/org.drools.brms.JBRMS/package/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>RepositoryBackupServlet</servlet-name>
@@ -53,7 +53,7 @@
 
 	<!-- following are security constraints, this can be modified to suit your environment -->
 	
-	<!-- ************ Uncomment to enable security
+	<!-- ************ Uncomment to enable security 
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>JBRMS Protected Area</web-resource-name>
@@ -92,6 +92,6 @@
 		<description>General user access</description>
 		<role-name>UserRol</role-name>
 	</security-role>
-	-->
+-->
 	
 </web-app>

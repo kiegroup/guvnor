@@ -7,6 +7,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+import org.drools.repository.RulesRepository;
+
 /**
  * This servlet deals with providing packages in binary form.
  *   
@@ -15,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 public class PackageDeploymentServlet extends RepositoryServlet {
 
     private static final long serialVersionUID = 3909768997932550498L;
+    private static final Logger log = Logger.getLogger( PackageDeploymentURIHelper.class );
     
 
     /**
@@ -44,6 +48,11 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                          HttpServletResponse response) throws ServletException,
                                                  IOException {
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(req.getRequestURI());
+        
+        System.out.println( "PackageName: " + helper.getPackageName() );
+        System.out.println( "PackageVersion: " + helper.getVersion() );
+        System.out.println( "PackageIsLatest: " + helper.isLatest() );
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         String fileName = uploadHelper.loadBinaryPackage( helper.getPackageName(), 
                                         helper.getVersion(), helper.isLatest(), out, getRepository() );
