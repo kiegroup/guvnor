@@ -25,22 +25,42 @@ public class AssetFormats {
     public static final String DSL = "dsl";
 
     /** Vanilla DRL "file" */
-    public static String DRL = "drl";
+    public static final String DRL = "drl";
     
     /** Use the rule modeller */
-    public static String BUSINESS_RULE = "brxml";
+    public static final String BUSINESS_RULE = "brxml";
 
     
     /** use a DSL, free text editor */
-    public static String DSL_TEMPLATE_RULE   = "brule";
+    public static final String DSL_TEMPLATE_RULE   = "brule";
 
     
     /** Use a decision table.*/
-    public static String DECISION_SPREADSHEET_XLS = "xls";
+    public static final String DECISION_SPREADSHEET_XLS = "xls";
+
+    /**
+     * The following group the assets together for lists, helpers etc... 
+     */
+    public static final String[] BUSINESS_RULE_FORMATS = new String[] {AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE, AssetFormats.DECISION_SPREADSHEET_XLS};
+    public static final String[] TECHNICAL_RULE_FORMATS = new String[] {AssetFormats.DRL};
     
     /**
-     * The following group the 
+     * These define assets that are really package level "things" 
      */
-    public static String[] BUSINESS_RULE_FORMATS = new String[] {AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE, AssetFormats.DECISION_SPREADSHEET_XLS};
-    public static String[] TECHNICAL_RULE_FORMATS = new String[] {AssetFormats.DRL};
+    private static final String[] PACKAGE_DEPENCENCIES = new String[] {AssetFormats.FUNCTION, AssetFormats.DSL, AssetFormats.MODEL};
+
+    
+    /**
+     * Will return true if the given asset format is a package dependency (eg a function, DSL, model etc).
+     * Package dependencies are needed before the package is validated, and any rule assets are processed.
+     */
+    public static boolean isPackageDependency(String format) {
+        for ( int i = 0; i < PACKAGE_DEPENCENCIES.length; i++ ) {
+            if (PACKAGE_DEPENCENCIES[i].equals( format )) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }

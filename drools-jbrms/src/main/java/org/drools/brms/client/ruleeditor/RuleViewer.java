@@ -1,10 +1,12 @@
 package org.drools.brms.client.ruleeditor;
 
+import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.LoadingPopup;
+import org.drools.brms.client.packages.SuggestionCompletionCache;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 
@@ -74,11 +76,6 @@ public class RuleViewer extends Composite {
             }
             
         });
-        
-        Command deleteCommand = null;
-
-        
-        //metaWidget.setWidth( "100%" );
 
         //now the main layout table
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
@@ -173,6 +170,9 @@ public class RuleViewer extends Composite {
             }
 
             public void onSuccess(Object o) {
+                
+                flushSuggestionCompletionCache();
+                
                 String uuid = (String)o;
                 
                 if ( editor instanceof DirtyableComposite ) {
@@ -192,6 +192,16 @@ public class RuleViewer extends Composite {
     }
 
 
+    /**
+     * In some cases we will want to flush the package dependency stuff for suggestion completions.
+     * The user will still need to reload the asset editor though.
+     */
+    public void flushSuggestionCompletionCache() {
+        if (AssetFormats.isPackageDependency( this.asset.metaData.format) ) {
+            SuggestionCompletionCache.getInstance().removePackage( this.asset.metaData.packageName );
+        }
+    }
+    
     /**
      * This will reload the contents from the database, and refresh the widgets.
      */

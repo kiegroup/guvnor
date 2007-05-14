@@ -20,4 +20,12 @@ public class AssetFormatsTest extends TestCase {
         }
     }
     
+    public void testPackageDependencies() {
+        assertFalse(AssetFormats.isPackageDependency(AssetFormats.BUSINESS_RULE));
+        assertFalse(AssetFormats.isPackageDependency(AssetFormats.DRL));
+        assertTrue(AssetFormats.isPackageDependency(AssetFormats.DSL));
+        assertTrue(AssetFormats.isPackageDependency(AssetFormats.MODEL));
+        assertTrue(AssetFormats.isPackageDependency(AssetFormats.FUNCTION));
+    }
+    
 }
