@@ -104,7 +104,7 @@ select:focus{ border-color:black !important; color: black;}
 
 
 .model-builder-Background {
-  background-color: #f7f3dc;
+  background-color: #FFFFF0;
   border: 1px solid #ccc;
   -moz-border-radius: 0.7em;
   border-radius: 0.7em;
@@ -147,7 +147,7 @@ select:focus{ border-color:black !important; color: black;}
   border-radius: 0.7em;
 }
 .gwt-DialogBox .Caption {  
-	background-color: #f7f3dc;
+	background-color: #FFFFF0;
 	font-size: smaller;
 }
 
@@ -294,7 +294,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 
 .warning-Popup {
   border: 2px solid #aaaa99;
-  background-color: #f7f3dc;		
+  background-color: #FFFFF0;		
   -moz-border-radius: 0.7em;
   border-radius: 0.7em;
 }
@@ -309,7 +309,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .editable-Surface {
-  background-color: #f7f3dc;
+  background-color: #FFFFF0; 
   border: 1px solid #aaaa99;
   -moz-border-radius: 0.7em;
   border-radius: 0.7em;
@@ -333,7 +333,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .package-Editor {
-  background-color: #f7f3dc;
+  background-color: #FFFFF0;
   border: 1px solid #aaaa99;
   -moz-border-radius: 0.7em;
   border-radius: 0.7em;
@@ -400,7 +400,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .rule-breditor-Table {
-  background-color: #f7f3dc;
+  background-color: #FFFFF0;
   border: 1px solid #aaaa99;
   padding: 4px;
   -moz-border-radius: 0.7em;
@@ -409,7 +409,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 
 .new-asset-Icons  {
   border: 1px solid #aaaa99;
-  background-color: #f7f3dc;
+  background-color: #FFFFF0;
   -moz-border-radius: 0.7em;
   border-radius: 0.7em;
 }
@@ -421,7 +421,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .dt-editor-Grid {
-  background-color: #f7f3dc;
+  background-color: #FFFFF0;
   border: 1px solid #aaaa99;  
   border-spacing: 0px;
   border-collapse: collapse
@@ -448,7 +448,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .dt-editor-DescriptionCell {
-  background-color: #f7f3dc;
+  background-color: #FFFFF0;
   font-size: smaller;
   padding: 3px;
 }
@@ -461,7 +461,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .dt-editor-CountColumn {
-  background-color: #f7f3dc;
+  background-color: #FFFFF0;
   font-size: smaller;
   padding: 3px;
 }
@@ -485,7 +485,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .rule-viewer-Documentation {
-  background-color: #f7f3dc;
+  background-color: #FFFFF0;
   font-family: Arial, sans-serif;
   font-size: smaller;
   border: 1px solid #aaaa99;
@@ -495,7 +495,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .dsl-text-Editor {
-  background-color: #f7f3dc;
+  background-color: #FFFFF0;
   font-family: Arial, sans-serif;
   font-size: smaller;
   border: 1px solid #aaaa99;
@@ -505,7 +505,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .default-text-Area {
-  background-color: #f7f3dc;
+  background-color: #FFFFF0;
   font-family: Arial, sans-serif;
   font-size: smaller;
   border: 1px solid #aaaa99;
@@ -529,7 +529,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .rule-ListEvenRow {
-	background-color: #f7f3dc;
+	background-color: #FFFFF0;
 }
 
 body{margin:0em; padding:0em; font-family: "bitstream vera sans", "dejavu sans" verdana, helvetica, sans-serif; line-height: 1.5em;background-color:white;}
@@ -569,7 +569,7 @@ body{margin:0em; padding:0em; font-family: "bitstream vera sans", "dejavu sans" 
 
 .DatePicker .navbar {
   width: 100%;
-  background-color: #f7f3dc;
+  background-color: #FFFFF0;
   vertical-align: middle;
   border-bottom: 1px solid #aaaa99;
 }
@@ -584,7 +584,7 @@ body{margin:0em; padding:0em; font-family: "bitstream vera sans", "dejavu sans" 
 }
 
 .DatePicker .weekheader {
-  background-color: #f7f3dc;
+  background-color: #FFFFF0;
 }
 
 .DatePicker .weekheader .days {
