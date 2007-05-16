@@ -33,9 +33,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.drools.brms.server.util.UserIdentity;
-import org.jboss.seam.Component;
-import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.remoting.gwt.GWTToSeamAdapter.ReturnedObject;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -295,11 +292,6 @@ public class GWTRemoteServiceServlet extends HttpServlet {
         serializableTypeOracle);
     Throwable caught = null;
     try {
-        //set the user identity
-        if (Contexts.isApplicationContextActive()) {
-            UserIdentity id = (UserIdentity) Component.getInstance( "currentUser" );
-            id.setUserName( getThreadLocalRequest().getRemoteUser() );
-        }
         
         //call the component
         ReturnedObject returnedObject = adapter.callWebRemoteMethod(serviceIntfName, methodName, paramTypes, args);

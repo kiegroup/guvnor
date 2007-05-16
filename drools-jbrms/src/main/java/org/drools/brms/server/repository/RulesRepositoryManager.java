@@ -1,6 +1,5 @@
 package org.drools.brms.server.repository;
 
-import org.drools.brms.server.util.UserIdentity;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -10,6 +9,8 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Unwrap;
+import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.Identity;
 
 /**
  * This enhances the BRMS repository for lifecycle management.
@@ -20,17 +21,23 @@ import org.jboss.seam.annotations.Unwrap;
 @Name("repository")
 public class RulesRepositoryManager {
 
+    private static String READ_ONLY_USER = "anonymous";
+    
     @In 
     BRMSRepositoryConfiguration repositoryConfiguration;
     
     private RulesRepository repository;
     
-    @In
-    UserIdentity currentUser;
     
     @Create
     public void create() {
-        String userName = currentUser.getUserName();
+        String userName = READ_ONLY_USER;
+        if (Contexts.isApplicationContextActive()) {
+            userName = Identity.instance().getUsername();
+        }
+        if (userName == null) {
+            userName = READ_ONLY_USER;
+        }        
         repository = new RulesRepository(repositoryConfiguration.newSession(userName) );
     }
     

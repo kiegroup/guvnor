@@ -17,10 +17,6 @@ public interface RepositoryService extends RemoteService {
      */
     public String[] loadChildCategories(String categoryPath);
     
-    
-    public String getLoggedUser ();
- 
-    
     /**
      * Return a a 2d array/grid of results for rules.
      * @param A "/" delimited path to a category.
@@ -245,4 +241,5 @@ public interface RepositoryService extends RemoteService {
      * This will build the asset and return any build results (errors).
      */
     public BuilderResult[] buildAsset(RuleAsset asset) throws SerializableException;
+
 }

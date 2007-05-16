@@ -106,12 +106,41 @@
      <groupId>commons-fileupload</groupId>
      <artifactId>commons-fileupload</artifactId>
    </dependency>
+   
+   <!-- seam follows -->
    <dependency>
     	<groupId>jboss.seam.profiles</groupId>
         <artifactId>seam-nopersistence</artifactId>
         <version>1.2.0.GA</version>
         <scope>compile</scope>
    </dependency>
+	<dependency>
+		<groupId>javax.el</groupId>
+		<artifactId>el-api</artifactId>
+		<version>1.2</version>
+		<scope>runtime</scope>
+	</dependency>
+	<dependency>
+		<groupId>javax.el</groupId>
+		<artifactId>el-ri</artifactId>
+		<version>1.2</version>
+		<scope>runtime</scope>
+	</dependency>  
+	
+	<!-- and now some overrides for stuff we really don't need in the final product -->
+	<dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
+      <version>1.0.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- this is not needed as we are using janino for java compiling if needed -->
+    <dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+	
   </dependencies>
 
 </project>

@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.drools.brms.client.rpc.SecurityService;
 import org.drools.brms.server.ServiceImplementation;
+import org.drools.brms.server.security.SecurityServiceImpl;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.Component;
@@ -137,6 +139,9 @@ public class GWTToSeamAdapter {
             //MN: NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
             //THIS IS ALL THAT IS NEEDED.
             log.debug( "WARNING: RUNNING IN NON SEAM MODE SINGLE USER MODE - ONLY FOR TESTING AND DEBUGGING !!!!!" );
+            if (serviceIntfName.equals( SecurityService.class.getName() )) {
+                return new SecurityServiceImpl();
+            }
             ServiceImplementation impl = new ServiceImplementation();
              
             try {

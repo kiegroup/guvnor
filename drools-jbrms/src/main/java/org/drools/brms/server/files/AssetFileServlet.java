@@ -8,9 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.brms.client.common.HTMLFileManagerFields;
-import org.drools.brms.server.util.FileManagerUtils;
 import org.drools.brms.server.util.FormData;
-import org.drools.repository.RulesRepository;
 
 /**
  * This is for dealing with assets that have an attachment (ie assets that are really an attachment).
@@ -61,7 +59,7 @@ public class AssetFileServlet extends RepositoryServlet {
 
     private void processAttachmentDownload(String uuid, HttpServletResponse response) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        String filename = uploadHelper.loadFileAttachmentByUUID( uuid, output, getRepository() );
+        String filename = getFileManager().loadFileAttachmentByUUID( uuid, output );
 
         
         response.setContentType( "application/x-download" );
@@ -74,9 +72,9 @@ public class AssetFileServlet extends RepositoryServlet {
 
     
     private String processAttachFileToAsset(FormData uploadItem) throws IOException {
-        RulesRepository repo = getRepository();
 
-        uploadHelper.attachFile( uploadItem, repo );
+        FileManagerUtils manager = getFileManager();
+        manager.attachFile( uploadItem );
         uploadItem.getFile().getInputStream().close();
         
         return "OK";

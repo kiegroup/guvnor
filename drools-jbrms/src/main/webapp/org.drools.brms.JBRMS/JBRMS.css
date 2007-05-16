@@ -1,6 +1,3 @@
-/* Edited with EditCSS */
-/**** LINK-tag style sheet JBRMS.css ****/
-
 /*
  * NOTICE: 
  * Uses some icons from Tango Desktop Project: http://tango.freedesktop.org/Tango_Icon_Library
@@ -107,7 +104,7 @@ select:focus{ border-color:black !important; color: black;}
 
 
 .model-builder-Background {
-  background-color: #f7f2d0;
+  background-color: #f7f3dc;
   border: 1px solid #ccc;
   -moz-border-radius: 0.7em;
   border-radius: 0.7em;
@@ -150,7 +147,7 @@ select:focus{ border-color:black !important; color: black;}
   border-radius: 0.7em;
 }
 .gwt-DialogBox .Caption {  
-	background-color: #f7f2d0;
+	background-color: #f7f3dc;
 	font-size: smaller;
 }
 
@@ -297,7 +294,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 
 .warning-Popup {
   border: 2px solid #aaaa99;
-  background-color: #f7f2d0;		
+  background-color: #f7f3dc;		
   -moz-border-radius: 0.7em;
   border-radius: 0.7em;
 }
@@ -312,7 +309,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .editable-Surface {
-  background-color: #f7f2d0;
+  background-color: #f7f3dc;
   border: 1px solid #aaaa99;
   -moz-border-radius: 0.7em;
   border-radius: 0.7em;
@@ -336,7 +333,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .package-Editor {
-  background-color: #f7f2d0;
+  background-color: #f7f3dc;
   border: 1px solid #aaaa99;
   -moz-border-radius: 0.7em;
   border-radius: 0.7em;
@@ -403,7 +400,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .rule-breditor-Table {
-  background-color: #f7f2d0;
+  background-color: #f7f3dc;
   border: 1px solid #aaaa99;
   padding: 4px;
   -moz-border-radius: 0.7em;
@@ -412,7 +409,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 
 .new-asset-Icons  {
   border: 1px solid #aaaa99;
-  background-color: #f7f2d0;
+  background-color: #f7f3dc;
   -moz-border-radius: 0.7em;
   border-radius: 0.7em;
 }
@@ -424,7 +421,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .dt-editor-Grid {
-  background-color: #f7f2d0;
+  background-color: #f7f3dc;
   border: 1px solid #aaaa99;  
   border-spacing: 0px;
   border-collapse: collapse
@@ -451,7 +448,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .dt-editor-DescriptionCell {
-  background-color: #f7f2d0;
+  background-color: #f7f3dc;
   font-size: smaller;
   padding: 3px;
 }
@@ -464,7 +461,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .dt-editor-CountColumn {
-  background-color: #f7f2d0;
+  background-color: #f7f3dc;
   font-size: smaller;
   padding: 3px;
 }
@@ -488,7 +485,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .rule-viewer-Documentation {
-  background-color: #f7f2d0;
+  background-color: #f7f3dc;
   font-family: Arial, sans-serif;
   font-size: smaller;
   border: 1px solid #aaaa99;
@@ -496,6 +493,28 @@ input:focus, input:active{ border-color:black !important; color: black;}
   -moz-border-radius: 0.7em;
   border-radius: 0.7em;
 }
+
+.dsl-text-Editor {
+  background-color: #f7f3dc;
+  font-family: Arial, sans-serif;
+  font-size: smaller;
+  border: 1px solid #aaaa99;
+  width: 100%;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
+}
+
+.default-text-Area {
+  background-color: #f7f3dc;
+  font-family: Arial, sans-serif;
+  font-size: smaller;
+  border: 1px solid #aaaa99;
+  width: 100%;
+  -moz-border-radius: 0.7em;
+  border-radius: 0.7em;
+}
+
+
 
 /* And the rule list stuff */
 
@@ -510,7 +529,7 @@ input:focus, input:active{ border-color:black !important; color: black;}
 }
 
 .rule-ListEvenRow {
-	background-color: #f7f2d0;
+	background-color: #f7f3dc;
 }
 
 body{margin:0em; padding:0em; font-family: "bitstream vera sans", "dejavu sans" verdana, helvetica, sans-serif; line-height: 1.5em;background-color:white;}
@@ -526,6 +545,11 @@ body{margin:0em; padding:0em; font-family: "bitstream vera sans", "dejavu sans" 
         border-collapse: collapse
   -moz-border-radius: 0.7em;
   border-radius: 0.7em;
+}
+
+.login-Form {
+  border: 1px solid #aaaa99;
+  background-color: #f6f6f6; 
 }
 
 /* end the rule list stuff */
@@ -545,7 +569,7 @@ body{margin:0em; padding:0em; font-family: "bitstream vera sans", "dejavu sans" 
 
 .DatePicker .navbar {
   width: 100%;
-  background-color: #f7f2d0;
+  background-color: #f7f3dc;
   vertical-align: middle;
   border-bottom: 1px solid #aaaa99;
 }
@@ -560,7 +584,7 @@ body{margin:0em; padding:0em; font-family: "bitstream vera sans", "dejavu sans" 
 }
 
 .DatePicker .weekheader {
-  background-color: #f7f2d0;
+  background-color: #f7f3dc;
 }
 
 .DatePicker .weekheader .days {

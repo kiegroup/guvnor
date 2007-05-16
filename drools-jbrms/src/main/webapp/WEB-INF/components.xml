@@ -10,7 +10,7 @@
                  http://jboss.com/products/seam/components http://jboss.com/products/seam/components-1.2.xsd
                  http://jboss.com/products/seam/web http://jboss.com/products/seam/web-1.2.xsd">
 
-    <core:init debug="true"/>
+
 
 	<component name="repositoryConfiguration">
 		<!--
@@ -23,5 +23,16 @@
 	      <property name="configurator">org.drools.repository.JackrabbitRepositoryConfigurator</property>
 	    -->
     </component>
+    
+    <!-- SECURITY CONFIGURATION -->
+    
+    <!-- default (will take any username, useful if you want to keep track of users but not authenticate -->
+    <security:identity authenticate-method="#{defaultAuthenticator.authenticate}"/>
+
+	<!-- NO authentication. This will bypass the login screen when you hit the app. Everyone is "guest" -->
+	<!-- <security:identity authenticate-method="#{nilAuthenticator.authenticate}"/> -->
+	
+	<!-- as JAAS is used you can use container specific ones to link up to your login services, eg LDAP -->
+
 
 </components>

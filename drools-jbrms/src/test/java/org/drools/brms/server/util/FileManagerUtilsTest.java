@@ -12,6 +12,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.fileupload.FileItem;
 import org.drools.brms.client.packages.PackageSnapshotView;
+import org.drools.brms.server.files.FileManagerUtils;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
@@ -21,14 +22,17 @@ public class FileManagerUtilsTest extends TestCase {
     public void testAttachFile() throws Exception {
         
         FileManagerUtils uploadHelper = new FileManagerUtils();
+        
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+        uploadHelper.repository = repo;
         AssetItem item = repo.loadDefaultPackage().addAsset( "testUploadFile", "description" );
         FormData upload = new FormData();
         
         upload.setFile( new MockFile() );
         upload.setUuid( item.getUUID() );
         
-        uploadHelper.attachFile( upload, repo );
+        
+        uploadHelper.attachFile( upload );
         
         AssetItem item2 = repo.loadDefaultPackage().loadAsset( "testUploadFile" );
         byte[] data = item2.getBinaryContentAsBytes();
@@ -49,17 +53,18 @@ public class FileManagerUtilsTest extends TestCase {
     public void testGetFilebyUUID() throws Exception {
         FileManagerUtils uploadHelper = new FileManagerUtils();
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+        uploadHelper.repository = repo;
         AssetItem item = repo.loadDefaultPackage().addAsset( "testGetFilebyUUID", "description" );
         FormData upload = new FormData();
 
         upload.setFile( new MockFile() );
         upload.setUuid( item.getUUID() );
-        uploadHelper.attachFile( upload, repo );
+        uploadHelper.attachFile( upload );
 
 
         ByteArrayOutputStream out = new ByteArrayOutputStream ();
 
-        String filename = uploadHelper.loadFileAttachmentByUUID(item.getUUID(), out, repo );
+        String filename = uploadHelper.loadFileAttachmentByUUID(item.getUUID(), out );
 
         assertNotNull(out.toByteArray());
         assertEquals("foo bar", new String(out.toByteArray()));
@@ -69,6 +74,7 @@ public class FileManagerUtilsTest extends TestCase {
     public void testGetBinaryPackage() throws Exception {
         FileManagerUtils uploadHelper = new FileManagerUtils();
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+        uploadHelper.repository = repo;
         PackageItem pkg = repo.createPackage( "testGetBinaryPackageServlet", "" );
         pkg.updateHeader( "import java.util.List" );
         pkg.updateCompiledPackage( new ByteArrayInputStream("foo".getBytes()) );
@@ -77,7 +83,7 @@ public class FileManagerUtilsTest extends TestCase {
         repo.createPackageSnapshot( pkg.getName(), "SNAPPY 1" );
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        String fileName = uploadHelper.loadBinaryPackage( pkg.getName(), PackageSnapshotView.LATEST_SNAPSHOT, true, out, repo );
+        String fileName = uploadHelper.loadBinaryPackage( pkg.getName(), PackageSnapshotView.LATEST_SNAPSHOT, true, out );
         assertEquals("testGetBinaryPackageServlet.pkg", fileName);
         byte[] file = out.toByteArray();
         assertNotNull(file);
@@ -85,7 +91,7 @@ public class FileManagerUtilsTest extends TestCase {
         
         
         out = new ByteArrayOutputStream();
-        fileName = uploadHelper.loadBinaryPackage( pkg.getName(),"SNAPPY 1", false, out, repo );
+        fileName = uploadHelper.loadBinaryPackage( pkg.getName(),"SNAPPY 1", false, out );
         assertEquals("testGetBinaryPackageServlet_SNAPPY+1.pkg", fileName);
         file = out.toByteArray();
         assertNotNull(file);

@@ -65,11 +65,13 @@ public class ActionToolbar extends Composite {
         saveControls.add( state );
         
         if (!readOnly) {
-        controls( minimiseMaximise,
+        controls( 
                   formatter,
                   saveControls );
 
         }
+        
+        windowControls( minimiseMaximise, formatter );
         
         initWidget( layout );
         setWidth( "100%" );
@@ -82,8 +84,7 @@ public class ActionToolbar extends Composite {
         state.setHTML( "Status: <b>[" + status + "]</b>");        
     }
 
-    private void controls(final Command minimiseMaximise,
-                          FlexCellFormatter formatter,
+    private void controls(FlexCellFormatter formatter,
                           HorizontalPanel saveControls) {
         Image editState = new ImageButton("images/edit.gif");
         editState.setTitle( "Change status." );
@@ -146,6 +147,10 @@ public class ActionToolbar extends Composite {
             saveControls.add( delete );        
         }
 
+    }
+    
+    private void windowControls(final Command minimiseMaximise,
+                                FlexCellFormatter formatter) {
         HorizontalPanel windowControls = new HorizontalPanel();
         
         Image maxMinImage = new ImageButton("images/max_min.gif");
@@ -169,6 +174,7 @@ public class ActionToolbar extends Composite {
         
         layout.setWidget( 0, 1, windowControls );
         formatter.setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
+        
     }
     
     protected void doCopyDialog(Widget w) {

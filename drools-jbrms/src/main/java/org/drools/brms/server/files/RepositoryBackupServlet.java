@@ -10,7 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.drools.brms.server.util.FileManagerUtils;
 import org.drools.brms.server.util.FormData;
 import org.drools.repository.RulesRepository;
 
@@ -56,17 +55,15 @@ public class RepositoryBackupServlet extends RepositoryServlet {
         res.setHeader( "Content-Disposition",
                        "inline; filename=repository_export.zip;" );
 
-        res.getOutputStream().write( getRepository().exportRulesRepository() );
+        res.getOutputStream().write( getFileManager().exportRulesRepository() );
         res.getOutputStream().flush();
     }
 
 
     private String processImportRepository(InputStream file) throws IOException {
         byte[] byteArray = new byte[file.available()];
-        RulesRepository repo = getRepository();
-
         file.read( byteArray );
-        repo.importRulesRepository( byteArray );
+        getFileManager().importRulesRepository( byteArray );
         return "OK";
     }
     

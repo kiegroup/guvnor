@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.rpc.PackageConfigData;
-import org.drools.brms.server.util.FileManagerUtils;
+import org.drools.brms.server.files.FileManagerUtils;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -49,7 +49,10 @@ public class PopulateDataTest extends TestCase {
         InputStream file = this.getClass().getResourceAsStream( "/billasurf.jar" );
         assertNotNull(file);
         
-        new FileManagerUtils().attachFileToAsset( repo, uuid, file, "billasurf.jar" );
+        FileManagerUtils fm = new FileManagerUtils();
+        fm.repository = repo;
+        
+        fm.attachFileToAsset( uuid, file, "billasurf.jar" );
         
         AssetItem item = repo.loadAssetByUUID( uuid );
         assertNotNull(item.getBinaryContentAsBytes());

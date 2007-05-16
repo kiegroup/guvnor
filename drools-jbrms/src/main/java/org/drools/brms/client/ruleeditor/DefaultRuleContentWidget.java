@@ -18,19 +18,20 @@ public class DefaultRuleContentWidget extends DirtyableComposite {
 	
 	private TextArea text;
 	final private RuleContentText data;
-    final private MetaData meta;
+
     final private RuleAsset asset;
     
 	public DefaultRuleContentWidget(RuleAsset a) {
         asset = a;
         data = (RuleContentText) asset.content;
         
-        meta = asset.metaData;
 		text = new TextArea();
 		text.setWidth("100%");
 		text.setHeight("100%");
 		text.setVisibleLines(10);
 		text.setText(data.content);
+        
+        text.setStyleName( "default-text-Area" );
         
         text.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {

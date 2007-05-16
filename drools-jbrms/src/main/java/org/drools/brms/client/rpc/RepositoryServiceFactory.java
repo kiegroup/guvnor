@@ -1,6 +1,7 @@
 package org.drools.brms.client.rpc;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 /**
@@ -46,6 +47,23 @@ public class RepositoryServiceFactory {
         
         String endpointURL = GWT.getModuleBaseURL() + "jbrmsService";        
         
+        endpoint.setServiceEntryPoint(endpointURL);
+        return svc;
+    }
+
+    /**
+     * Perform the login.
+     */
+    public static void login(String userName, String password, AsyncCallback cb) {
+        SecurityServiceAsync svc = getSecurityService();
+        svc.login( userName, password, cb );
+    }
+
+    public static SecurityServiceAsync getSecurityService() {
+        SecurityServiceAsync svc =
+            (SecurityServiceAsync) GWT.create(SecurityService.class);
+        ServiceDefTarget endpoint = (ServiceDefTarget) svc;
+        String endpointURL = GWT.getModuleBaseURL() + "jbrmsService";        
         endpoint.setServiceEntryPoint(endpointURL);
         return svc;
     }

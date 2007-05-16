@@ -16,13 +16,19 @@
 package org.drools.brms.client;
 
 import org.drools.brms.client.JBRMSFeature.ComponentInfo;
+import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.HistoryListener;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasAlignment;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -41,6 +47,8 @@ public class JBRMSEntryPoint implements EntryPoint, HistoryListener {
   private JBRMSFeatureList list = new JBRMSFeatureList();
   private DockPanel panel = new DockPanel();
   private DockPanel sinkContainer;
+  private LoginWidget loginWidget;
+  private LoggedInUserInfo loggedInUserInfo;
 
   public void onHistoryChanged(String token) {
     // Find the SinkInfo associated with the history context. If one is
@@ -81,8 +89,20 @@ public class JBRMSEntryPoint implements EntryPoint, HistoryListener {
 
     History.addHistoryListener(this);
     
-    RootPanel.get().add(panel);
+    loggedInUserInfo = new LoggedInUserInfo();
+    loginWidget = new LoginWidget();
+    
+    RootPanel.get().add( loggedInUserInfo );
+    RootPanel.get().add(panel);    
+    RootPanel.get().add( loginWidget );
+    loginWidget.setWidth( "100%" );
+    
+    loggedInUserInfo.setVisible( false );
+    panel.setVisible( false );
+    loginWidget.setVisible( false );
 
+    checkLoggedIn();
+    
     // Show the initial screen.
     String initToken = History.getToken();
     if (initToken.length() > 0)
@@ -91,7 +111,47 @@ public class JBRMSEntryPoint implements EntryPoint, HistoryListener {
       showInfo();
   }
 
-  public void show(ComponentInfo info, boolean affectHistory) {
+  /**
+   * Check if user is logged in, if not, then show prompt.
+   * If it is, then we show the app, in all its glory !
+   */
+  private void checkLoggedIn() {
+      
+      RepositoryServiceFactory.getSecurityService().getCurrentUser( new GenericCallback() {
+          
+        public void onSuccess(Object data) {
+            String userName = (String) data;
+            if (userName != null) {
+                loggedInUserInfo.setUserName( userName );
+                loggedInUserInfo.setVisible( true );
+                panel.setVisible( true );
+                loginWidget.setVisible( false );                
+            } else { 
+                
+                loginWidget.setVisible( true );
+                loginWidget.setLoggedInEvent( new Command() {
+                    public void execute() {
+                        loggedInUserInfo.setUserName( loginWidget.getUserName() );
+                        loggedInUserInfo.setVisible( true );
+                        loginWidget.setVisible( false );
+                        panel.setVisible( true );
+                    }
+                } );
+                
+            }
+        }
+
+      });
+
+      
+      
+    
+    
+  }
+         
+  
+
+public void show(ComponentInfo info, boolean affectHistory) {
     // Don't bother re-displaying the existing sink. This can be an issue
     // in practice, because when the history context is set, our
     // onHistoryChanged() handler will attempt to show the currently-visible

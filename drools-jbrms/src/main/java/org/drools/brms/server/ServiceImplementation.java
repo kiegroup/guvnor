@@ -53,6 +53,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.WebRemote;
+import org.jboss.seam.annotations.security.Restrict;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -77,6 +78,7 @@ public class ServiceImplementation
     private MetaDataMapper metaDataMapper = new MetaDataMapper();
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public String[] loadChildCategories(String categoryPath) {
         
         CategoryItem item = repository.loadCategory( categoryPath );
@@ -90,6 +92,7 @@ public class ServiceImplementation
     }
     
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public Boolean createCategory(String path,
                                   String name,
                                   String description) {
@@ -114,6 +117,7 @@ public class ServiceImplementation
      * The initial state will be the draft state.
      */
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public String createNewRule(String ruleName,
                                  String description,
                                  String initialCategory,
@@ -143,6 +147,7 @@ public class ServiceImplementation
     
     
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public void deleteUncheckedRule(String uuid, String initialPackage) {
         AssetItem asset = repository.loadAssetByUUID( uuid );
         asset.remove();
@@ -170,6 +175,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public PackageConfigData[] listPackages() {
         Iterator pkgs = repository.listPackages();
         List<PackageConfigData> result = new ArrayList<PackageConfigData>();
@@ -203,6 +209,7 @@ public class ServiceImplementation
 
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public TableDataResult loadRuleListForCategories(String categoryPath) throws SerializableException {
         long start = System.currentTimeMillis();
 
@@ -214,6 +221,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public TableConfig loadTableConfig(String listName) {
         TableDisplayHandler handler = new TableDisplayHandler();
         return handler.loadTableConfig(listName);
@@ -226,6 +234,7 @@ public class ServiceImplementation
      * on its format.
      */
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public RuleAsset loadRuleAsset(String uuid) throws SerializableException {
 
         AssetItem item = repository.loadAssetByUUID( uuid );
@@ -295,6 +304,7 @@ public class ServiceImplementation
     }    
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public String checkinVersion(RuleAsset asset) throws SerializableException { 
         
         log.info( "USER:" + repository.getSession().getUserID() + 
@@ -327,6 +337,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public TableDataResult loadAssetHistory(String uuid) throws SerializableException {
         
         List<TableDataRow> result = new ArrayList<TableDataRow>();
@@ -359,6 +370,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")    
     public void restoreVersion(String versionUUID,
                                  String assetUUID,
                                  String comment) {
@@ -376,6 +388,7 @@ public class ServiceImplementation
     }
 
     @WebRemote 
+    @Restrict("#{identity.loggedIn}")    
     public byte[] exportRepository() throws SerializableException {
         
         log.info( "USER:" + repository.getSession().getUserID() + 
@@ -391,6 +404,7 @@ public class ServiceImplementation
     }
     
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public String createPackage(String name,
                                 String description) throws SerializableException {
         log.info( "USER:" + repository.getSession().getUserID() + 
@@ -401,6 +415,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public PackageConfigData loadPackageConfig(String uuid) {
         PackageItem item = repository.loadPackageByUUID( uuid );
         
@@ -423,6 +438,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public ValidatedResponse savePackage(PackageConfigData data) throws SerializableException {
         log.info( "USER:" + repository.getSession().getUserID() + 
                            " SAVING package [" + data.name + "]" );
@@ -455,6 +471,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")    
     public TableDataResult listAssets(String uuid,
                                               String formats[],
                                               int numRows,
@@ -472,6 +489,7 @@ public class ServiceImplementation
 
     
     @WebRemote
+    @Restrict("#{identity.loggedIn}")    
     public String createState(String name) throws SerializableException {
         log.info( "USER:" + repository.getSession().getUserID() + 
                            " CREATING state: [" + name + "]" );
@@ -485,6 +503,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public String[] listStates() throws SerializableException {
         StateItem[] states = repository.listStates();
         String[] result = new String[states.length];
@@ -495,6 +514,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public void changeState(String uuid,
                             String newState,
                             boolean wholePackage) {
@@ -519,6 +539,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public void changeAssetPackage(String uuid,
                                    String newPackage,
                                    String comment) {
@@ -529,6 +550,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public String copyAsset(String assetUUID,
                           String newPackage,
                           String newName) {
@@ -536,6 +558,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public SnapshotInfo[] listSnapshots(String packageName) {
         
         String[] snaps = repository.listPackageSnapshots( packageName );
@@ -552,6 +575,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public void createPackageSnapshot(String packageName,
                                       String snapshotName,
                                       boolean replaceExisting,
@@ -571,6 +595,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public void copyOrRemoveSnapshot(String packageName,
                                      String snapshotName,
                                      boolean delete,
@@ -593,6 +618,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public TableDataResult quickFindAsset(String searchText, int max, boolean searchArchived) {
         
         String search = Pattern.compile("*", Pattern.LITERAL).matcher(searchText).replaceAll(Matcher.quoteReplacement("%"));
@@ -635,6 +661,7 @@ public class ServiceImplementation
     }
 
     @WebRemote    
+    @Restrict("#{identity.loggedIn}")
     public void removeCategory(String categoryPath) throws SerializableException {
         log.info( "USER:" + repository.getSession().getUserID() +
         " REMOVING CATEGORY path: [" + categoryPath + "]" );
@@ -648,12 +675,14 @@ public class ServiceImplementation
     }
     
     @WebRemote 
+    @Restrict("#{identity.loggedIn}")
     public void clearRulesRepository() {
         RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(repository.getSession());
         admin.clearRulesRepository();
     }
 
     @WebRemote    
+    @Restrict("#{identity.loggedIn}")
     public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializableException {
         try {
             
@@ -668,6 +697,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public BuilderResult[] buildPackage(String packageUUID) throws SerializableException {
         PackageItem item = repository.loadPackageByUUID( packageUUID );
         ContentPackageAssembler asm = new ContentPackageAssembler(item);
@@ -710,6 +740,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public String buildPackageSource(String packageUUID) throws SerializableException {
         PackageItem item = repository.loadPackageByUUID( packageUUID );
         ContentPackageAssembler asm = new ContentPackageAssembler(item, false);
@@ -717,6 +748,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public String buildAssetSource(RuleAsset asset) throws SerializableException {
         AssetItem item = repository.loadAssetByUUID( asset.uuid );
 
@@ -741,6 +773,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public BuilderResult[] buildAsset(RuleAsset asset) throws SerializableException {
         AssetItem item = repository.loadAssetByUUID( asset.uuid );
 
@@ -756,11 +789,8 @@ public class ServiceImplementation
         }
         
     }
-    
-    @WebRemote 
-    public String getLoggedUser () {
-        return repository.getSession().getUserID();
-    }
+
+
 
 
 }

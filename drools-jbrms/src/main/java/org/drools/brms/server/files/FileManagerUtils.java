@@ -1,4 +1,4 @@
-package org.drools.brms.server.util;
+package org.drools.brms.server.files;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,6 +7,7 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
@@ -15,42 +16,53 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.drools.brms.client.common.HTMLFileManagerFields;
+import org.drools.brms.server.util.FormData;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-
-
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.security.Restrict;
 
 /**
- * This assists the file manager servlet.
+ * This assists the file manager servlets.
  * @author Fernando Meyer
  */
+@Name("fileManager")
+@Scope(ScopeType.EVENT)
+@AutoCreate
 public class FileManagerUtils {
 
+    @In
+    public RulesRepository repository;    
     
     /**
-     * This will return the file and the Asset UUID that it is to be attached to.
+     * This attach a file to an asset.
      */
-    public void attachFile(FormData uploadItem, RulesRepository repo) throws IOException {
+    @Restrict("#{identity.loggedIn}")
+    public void attachFile(FormData uploadItem) throws IOException {
         
         String uuid = uploadItem.getUuid();
         InputStream fileData = uploadItem.getFile().getInputStream();
         String fileName = uploadItem.getFile().getName();
 
-        attachFileToAsset( repo, uuid, fileData, fileName );
+        attachFileToAsset( uuid, fileData, fileName );
         uploadItem.getFile().getInputStream().close();
     }
 
     /**
      * This utility method attaches a file to an asset.
      */
-    public void attachFileToAsset(RulesRepository repo,
-                                         String uuid,
+    @Restrict("#{identity.loggedIn}")
+    public void attachFileToAsset(String uuid,
                                          InputStream fileData,
                                          String fileName) {
         
-        AssetItem item = repo.loadAssetByUUID( uuid );
+        AssetItem item = repository.loadAssetByUUID( uuid );
         item.updateBinaryContentAttachment( fileData );
         item.updateBinaryContentAttachmentFileName( fileName );
         item.checkin( "Attached file: " + fileName );
@@ -59,9 +71,9 @@ public class FileManagerUtils {
     /** 
      * The get returns files based on UUID of an asset.
      */
+    @Restrict("#{identity.loggedIn}")
     public String loadFileAttachmentByUUID(String uuid,
-                                 OutputStream out,
-                                 RulesRepository repository) throws IOException {
+                                 OutputStream out) throws IOException {
 
         AssetItem item = repository.loadAssetByUUID( uuid );
 
@@ -108,8 +120,7 @@ public class FileManagerUtils {
     public String loadBinaryPackage(String packageName, 
                                     String packageVersion, 
                                     boolean isLatest, 
-                                    OutputStream out, 
-                                    RulesRepository repository) throws IOException {
+                                    OutputStream out) throws IOException {
         PackageItem item = null;
         if (isLatest) {
             item = repository.loadPackage( packageName );
@@ -126,6 +137,21 @@ public class FileManagerUtils {
         }
 
         
+    }
+    
+    public byte[] exportRulesRepository() {
+        try {
+            return this.repository.exportRulesRepository();
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException(e);
+        } catch ( IOException e ) {
+            throw new RulesRepositoryException(e);
+        }
+    }
+    
+    @Restrict("#{identity.loggedIn}")
+    public void importRulesRepository(byte[] data) {
+        repository.importRulesRepository( data );
     }
     
 

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.drools.repository.RulesRepository;
 
 /**
  * This servlet deals with providing packages in binary form.
@@ -54,8 +53,8 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         System.out.println( "PackageIsLatest: " + helper.isLatest() );
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        String fileName = uploadHelper.loadBinaryPackage( helper.getPackageName(), 
-                                        helper.getVersion(), helper.isLatest(), out, getRepository() );
+        String fileName = getFileManager().loadBinaryPackage( helper.getPackageName(), 
+                                        helper.getVersion(), helper.isLatest(), out );
         response.setContentType( "application/x-download" );
         response.setHeader( "Content-Disposition",
                        "attachment; filename=" + fileName + ";");

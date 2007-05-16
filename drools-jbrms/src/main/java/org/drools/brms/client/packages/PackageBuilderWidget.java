@@ -59,6 +59,7 @@ public class PackageBuilderWidget extends Composite {
         final SimplePanel buildResults = new SimplePanel();
 
         Button b = new Button("Build package");
+        b.setTitle( "This will validate and compile all the assets in a package." );
         b.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 doBuild(buildResults);
@@ -171,9 +172,10 @@ public class PackageBuilderWidget extends Composite {
         vert.add( new HTML("<img src='images/tick_green.gif'/><i>Package built successfully.</i>") );
         final String hyp = getDownloadLink(this.conf);
         Button download = new Button("Download binary package");
+        download.setTitle( "You can download the package here for deployment, or you can use the snapshot deployment feature to have a more permanent downloadable package." );
         download.addClickListener( new ClickListener()  {
             public void onClick(Widget arg0) {
-                        Window.open( hyp, "downloading...", "" );
+                        Window.open( hyp, "downloading...", "resizable=no,scrollbars=yes,status=no" );
             }
         });
         

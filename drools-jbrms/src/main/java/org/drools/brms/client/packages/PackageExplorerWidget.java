@@ -378,7 +378,7 @@ public class PackageExplorerWidget extends Composite {
                     Button download = new Button("Download package");
                     download.addClickListener( new ClickListener() {
                         public void onClick(Widget arg0) {
-                            Window.open( uri, "downloading...", "" );
+                            Window.open( uri, "downloading...", "resizable=no,scrollbars=yes,status=no" );
                         }                        
                     });
                     infoLayout.addAttribute( "Download package:", download );
