@@ -79,8 +79,11 @@ public class ContentPackageAssembler {
     private void buildPackage() {
         Iterator it = pkg.getAssets();
         while (it.hasNext()) {
+            
             AssetItem asset = (AssetItem) it.next();
-            buildAsset( asset );
+            if (!asset.isArchived()) {
+                buildAsset( asset );
+            }
         }
     }
 

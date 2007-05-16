@@ -165,6 +165,44 @@ public class ContentPackageAssemblerTest extends TestCase {
         
     }
     
+    public void testIgnoreArchivedItems() throws Exception {
+        RulesRepository repo = getRepo();
+        
+        PackageItem pkg = repo.createPackage( "testIgnoreArchivedItems", "" );
+        AssetItem model = pkg.addAsset( "model", "qed" );
+        model.updateFormat( AssetFormats.MODEL );
+        
+        model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        model.checkin( "" );
+        
+        pkg.updateHeader( "import com.billasurf.Board\n global com.billasurf.Person customer" );
+        
+        AssetItem rule1 = pkg.addAsset( "rule_1", "" );
+        rule1.updateFormat( AssetFormats.DRL );
+        rule1.updateContent( "rule 'rule1' \n when Board() \n then customer.setAge(42); \n end"); 
+        rule1.checkin( "" );
+        
+        AssetItem rule2 = pkg.addAsset( "rule2", "" );
+        rule2.updateFormat( AssetFormats.DRL );
+        rule2.updateContent( "agenda-group 'q' \n when \n Boardx() \n then \n System.err.println(42);" );
+        rule2.checkin( "" );
+        
+        repo.save();
+        
+        
+        ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
+        assertTrue(asm.hasErrors());
+        
+        rule2.archiveItem( true );
+        rule2.checkin( "" );
+        
+        assertTrue(rule2.isArchived());
+        asm = new ContentPackageAssembler(pkg);
+        assertFalse(asm.hasErrors());        
+        
+        
+    }
+    
     /**
      * This this case we will test errors that occur in rule assets,
      * not in functions or package header.

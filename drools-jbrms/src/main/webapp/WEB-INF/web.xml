@@ -50,48 +50,5 @@
 		<servlet-name>RepositoryBackupServlet</servlet-name>
 		<url-pattern>/org.drools.brms.JBRMS/backup</url-pattern>
 	</servlet-mapping>
-
-	<!-- following are security constraints, this can be modified to suit your environment -->
-	
-	<!-- ************ Uncomment to enable security 
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>JBRMS Protected Area</web-resource-name>
-			<url-pattern>/index.jsp</url-pattern>
-			<url-pattern>/login.jsp</url-pattern>
-			<url-pattern>/org.drools.brms.JBRMS/*</url-pattern>
-			<http-method>HEAD</http-method>
-			<http-method>GET</http-method>
-			<http-method>POST</http-method>
-			<http-method>PUT</http-method>
-			<http-method>DELETE</http-method>
-		</web-resource-collection>
-		<auth-constraint>
-			<role-name>AdminRol</role-name>
-			<role-name>UserRol</role-name>
-		</auth-constraint>
-		
-		<user-data-constraint>
-			<description>no description</description>
-			<transport-guarantee>NONE</transport-guarantee>
-		</user-data-constraint>
-		
-	</security-constraint>
-	<login-config>
-		<auth-method>FORM</auth-method>
-		<form-login-config>
-			<form-login-page>/login.jsp</form-login-page>
-			<form-error-page>/login.jsp?error=1</form-error-page>
-		</form-login-config>
-	</login-config>
-	<security-role>
-		<description>Admin user access</description>
-		<role-name>AdminRol</role-name>
-	</security-role>
-	<security-role>
-		<description>General user access</description>
-		<role-name>UserRol</role-name>
-	</security-role>
--->
 	
 </web-app>
