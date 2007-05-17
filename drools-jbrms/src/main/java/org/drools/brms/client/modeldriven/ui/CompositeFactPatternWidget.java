@@ -42,7 +42,7 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
         this.pattern = pattern;
         this.modeller = modeller;
  
-        //this.layout = new Grid( 1, 2 );
+        this.layout = new DirtyableFlexTable();
         this.layout.setStyleName( "model-builderInner-Background" );
 
         doLayout();
