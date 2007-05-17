@@ -315,8 +315,10 @@ public class PackageExplorerWidget extends DirtyableComposite {
             public void execute() {
                 
                 if ( isDirty() ) {
-                    if ( Window.confirm( "Discart Changes ? " ) )
+                    if ( Window.confirm( "Discart Changes ? " ) ) {
+                        resetDirty();
                         loadPackageConfig(conf.uuid);
+                    }
                 } else {
                     loadPackageConfig(conf.uuid);
                 }
