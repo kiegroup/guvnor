@@ -7,6 +7,7 @@ import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.ruleeditor.EditorLauncher;
@@ -73,6 +74,7 @@ public class AssetBrowser extends Composite {
                 Command load = getRuleListLoadingCommand( list,
                                            selectedPath );
                 table.setWidget( 0, 1, list );
+                LoadingPopup.showMessage( "Retrieving list, please wait..." );
                 DeferredCommand.add( load );
                 list.setRefreshCommand(load);                
             }
@@ -131,11 +133,13 @@ public class AssetBrowser extends Composite {
                                               final String selectedPath) {
         return new Command() {
             public void execute() {
+              LoadingPopup.showMessage( "Loading list, please wait..." );
               RepositoryServiceFactory.getService().loadRuleListForCategories( selectedPath,
               new GenericCallback() {
                       public void onSuccess(Object o) {
                           TableDataResult result = (TableDataResult) o;
-                          list.loadTableData( result );                                                                                 
+                          list.loadTableData( result );
+                          LoadingPopup.close();
                       }
 
                   } );                    

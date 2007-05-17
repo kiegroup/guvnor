@@ -8,8 +8,10 @@ import java.util.List;
 import org.drools.brms.client.rpc.TableDataRow;
 
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SourcesTableEvents;
 import com.google.gwt.user.client.ui.TableListener;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A sortable table widget. Extends the GWT Grid widget.
@@ -67,13 +69,13 @@ public class SortableTable extends Grid implements TableListener {
      * @param fillRows The number of rows to pad out, if needed
      * @return A SortableTable ready to go !
      */
-    public static SortableTable createTableWidget(TableDataRow[] rows, String[] header, int fillRows) {
+    public static SortableTable createTableWidget(DataModel data, String[] header, int fillRows) {
         SortableTable tableWidget = null;
-        if (fillRows > rows.length) {
+        if (fillRows > data.getNumberOfRows()) {
             tableWidget = new SortableTable(fillRows, header.length + 1);
-            tableWidget.setValue( 1, 1, "" );
+            tableWidget.setValue( 1, 1, "", null );
         } else {
-            tableWidget = new SortableTable(rows.length + 1, header.length + 1);    
+            tableWidget = new SortableTable(data.getNumberOfRows() + 1, header.length + 1);    
         }        
         
         tableWidget.setColumnHeader( "", 0 );
@@ -84,12 +86,11 @@ public class SortableTable extends Grid implements TableListener {
         
         
         tableWidget.setHiddenColumn( 0 );
-        for ( int i = 0; i < rows.length; i++ ) {
-            String[] cols = rows[i].values;
-            
-            tableWidget.setValue( i + 1, 0, rows[i].id );
-            for ( int j = 0; j < cols.length; j++ ) {
-                tableWidget.setValue( i + 1, j + 1, cols[j] );
+        for ( int i = 0; i < data.getNumberOfRows(); i++ ) {
+            tableWidget.setValue( i + 1, 0, data.getRowId( i ), null );
+            for ( int j = 0; j < header.length; j++ ) {
+                //tableWidget.setValue( i + 1, j + 1,  cols[j], null );
+                tableWidget.setValue( i + 1, j + 1,  data.getValue( i, j ), data.getWidget( i, j ) );
             }
         }
         return tableWidget;
@@ -98,7 +99,7 @@ public class SortableTable extends Grid implements TableListener {
 	/** 
      * Adds a header, which will be at the zero index in the table.
 	 */
-	private void setColumnHeader(String name, int index){               
+	public void setColumnHeader(String name, int index){               
 		tableHeader.add(index, name);
 		this.renderTableHeader(name, index);
 	}
@@ -110,7 +111,7 @@ public class SortableTable extends Grid implements TableListener {
      * You would use this to allow a "key" column to be stored with the data.
      * For example, a UUID for a rule. 
      */
-    private void setHiddenColumn(int colIndex) {
+    public void setHiddenColumn(int colIndex) {
         this.hideColumnIndex = colIndex;
         this.getCellFormatter().setVisible( 0, colIndex, false );
     }
@@ -120,7 +121,7 @@ public class SortableTable extends Grid implements TableListener {
      * Values must be comparable for sorting to work of course.
      * Start with a row index of 1 otherwise as zero means header.
 	 */
-	private void setValue(int row, int col, Comparable val){
+	public void setValue(int row, int col, Comparable val, Widget w){
         
 		if(row == 0)return;
         
@@ -133,7 +134,11 @@ public class SortableTable extends Grid implements TableListener {
 		
 		RowData rowData = (RowData)this.tableRows.get(row-1); 
 		rowData.addColumnValue(col, val);
-		this.setText(row, col, "" + val.toString()+ "");
+        if (w == null) {
+            this.setText(row, col, "" + val.toString()+ "");
+        } else {
+            this.setWidget( row, col, w );
+        }
         
         //and hiding the required column
         if (col == hideColumnIndex) {

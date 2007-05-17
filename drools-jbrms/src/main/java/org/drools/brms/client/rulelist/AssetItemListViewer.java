@@ -8,6 +8,8 @@ import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
+import org.drools.brms.client.ruleeditor.EditorLauncher;
+import org.drools.brms.client.table.DataModel;
 import org.drools.brms.client.table.SortableTable;
 
 import com.google.gwt.user.client.Command;
@@ -56,6 +58,7 @@ public class AssetItemListViewer extends Composite {
         this.refreshIcon.setTitle( "Refresh current list. Will show any changes." );
         this.refreshIcon.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
+                LoadingPopup.showMessage( "Refreshing list, please wait..." );
                 refresh.execute();
             }            
         });
@@ -134,10 +137,80 @@ public class AssetItemListViewer extends Composite {
         //if no data, just fill it out
         if ( data == null || data.data.length == 0) {
             
-            table = SortableTable.createTableWidget( new TableDataRow[0], tableConfig.headers, FILLER_ROWS );
+           DataModel nil = new DataModel() {
+
+                public int getNumberOfRows() {
+                    return 0;
+                }
+
+                public String getRowId(int row) {
+                    return "";
+                }
+
+                public Comparable getValue(int row, int col) {
+                    return "";
+                }
+
+                public Widget getWidget(int row, int col) {
+                    return null;
+                }
+                
+            };
+            
+            table = SortableTable.createTableWidget( nil, tableConfig.headers, FILLER_ROWS );
             itemCounter.setVisible( false );
         } else {
-            table = SortableTable.createTableWidget( data.data, this.tableConfig.headers, FILLER_ROWS );
+            final TableDataRow[] rows = data.data;
+            DataModel mdl = new DataModel() {
+
+                public int getNumberOfRows() {
+                    return rows.length;
+                }
+
+                public String getRowId(int row) {
+                    return rows[row].id;
+                }
+
+                public Comparable getValue(int row, int col) {
+                    return rows[row].values[col];
+                }
+
+                public Widget getWidget(int row, int col) {
+                    
+                    if (tableConfig.headers[col].equals( "*" )) {
+                        return new Image("images/" + EditorLauncher.getAssetFormatIcon( rows[row].format  ) );
+                    } else {
+                        return null;
+                    }
+                }
+                
+            };
+            
+//            DataModel mock = new DataModel() {
+//
+//                public int getNumberOfRows() {
+//                    return 1200;
+//                }
+//
+//                public String getRowId(int row) {
+//                    return "";
+//                }
+//
+//                public Comparable getValue(int row, int col) {
+//
+//                    return "" + row + " " + col;
+//                }
+//
+//                public Widget getWidget(int row, int col) {
+//                    if (col == 1) 
+//                        return new Image("images/close.gif");
+//                    else 
+//                        return null;
+//                }
+//                
+//            };
+            
+            table = SortableTable.createTableWidget( mdl, this.tableConfig.headers, FILLER_ROWS );
 
             
             HorizontalPanel panel = new HorizontalPanel();

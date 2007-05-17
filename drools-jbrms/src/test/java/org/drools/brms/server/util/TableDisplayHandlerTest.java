@@ -14,14 +14,14 @@ public class TableDisplayHandlerTest extends TestCase {
         
         assertEquals(4, loader.getHeaders().length);
         String[] headers = loader.getHeaders();
-        assertEquals("Name", headers[0]);
-        assertEquals("Last modified", headers[1]);
-        assertEquals("Status", headers[2]);
-        assertEquals("Version", headers[3]);
+        assertEquals("*", headers[0]);
+        assertEquals("Name", headers[1]);
+        assertEquals("Last modified", headers[2]);
+        assertEquals("Status", headers[3]);
         
         assertEquals(4, loader.extractors.size());
         assertTrue(loader.extractors.get( 0 ) instanceof Method);
-        assertEquals(((Method)loader.extractors.get( 2 )).getName(), "getStateDescription");
+        assertEquals("getLastModified", ((Method)loader.extractors.get( 2 )).getName());
         
     }
     

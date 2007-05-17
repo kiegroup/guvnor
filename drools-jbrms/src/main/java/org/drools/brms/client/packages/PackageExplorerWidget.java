@@ -344,6 +344,7 @@ public class PackageExplorerWidget extends Composite {
         
         return new PackageTreeItem(new Command() {
             public void execute() {
+                LoadingPopup.showMessage( "Loading list, please wait..." );
                 RepositoryServiceFactory.getService().listAssets( uuid, format, 
                                                                           -1, -1, cb);                
             }            

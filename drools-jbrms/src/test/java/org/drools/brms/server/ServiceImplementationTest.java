@@ -220,7 +220,7 @@ public class ServiceImplementationTest extends TestCase {
 
         assertEquals( result.data[0].format,
                       "rule" );
-        assertTrue( result.data[0].values[0].startsWith( "testRule" ) );
+        assertTrue( result.data[0].values[0].startsWith( "rule" ) );
     }
 
     public void testDateFormatting() throws Exception {

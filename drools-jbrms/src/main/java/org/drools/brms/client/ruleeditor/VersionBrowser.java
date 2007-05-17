@@ -6,6 +6,7 @@ import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
+import org.drools.brms.client.table.DataModel;
 import org.drools.brms.client.table.SortableTable;
 
 import com.google.gwt.user.client.Command;
@@ -98,11 +99,13 @@ public class VersionBrowser extends Composite {
                     return;
                 }
                 TableDataResult table = (TableDataResult) data;                
-                TableDataRow[] rows = table.data;
+                final TableDataRow[] rows = table.data;
                 
                 String[] header = new String[] {"Version number", "Comment", "Date Modified", "Status"};
                 
-                final SortableTable tableWidget = SortableTable.createTableWidget( rows, header, 0 );
+                DataModel mdl = getTableDataModel( rows );
+                
+                final SortableTable tableWidget = SortableTable.createTableWidget( mdl, header, 0 );
                 
                 tableWidget.setWidth( "100%" );
                 
@@ -158,6 +161,28 @@ public class VersionBrowser extends Composite {
     
     private void showStaticIcon() {
         refresh.setUrl( "images/refresh.gif" );
+    }
+
+    private DataModel getTableDataModel(final TableDataRow[] rows) {
+        return new DataModel() {
+
+            public int getNumberOfRows() {
+                return rows.length;
+            }
+
+            public String getRowId(int row) {
+                return rows[row].id;
+            }
+
+            public Comparable getValue(int row, int col) {
+                return rows[row].values[col];
+            }
+
+            public Widget getWidget(int row, int col) {
+                return null;
+            }
+            
+        };
     }
 
     

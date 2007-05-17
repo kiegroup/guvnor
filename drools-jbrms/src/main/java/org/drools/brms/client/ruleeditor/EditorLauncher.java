@@ -1,5 +1,6 @@
 package org.drools.brms.client.ruleeditor;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.brms.client.common.AssetFormats;
@@ -30,6 +31,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class EditorLauncher {
 
+    
+    public static final Map TYPE_IMAGES = getTypeImages();
+    
     /**
      * This will return the appropriate viewer for the asset.
      */
@@ -48,6 +52,34 @@ public class EditorLauncher {
             return new RuleValidatorWrapper(new DefaultRuleContentWidget( asset ), asset);
         }
 
+    }
+
+
+    private static Map getTypeImages() {
+        Map result = new HashMap();
+        
+        result.put( AssetFormats.DRL, "technical_rule_assets.gif" );
+        result.put( AssetFormats.DSL, "dsl.gif" );
+        result.put( AssetFormats.FUNCTION, "function_assets.gif" );
+        result.put( AssetFormats.MODEL, "model_asset.gif" );
+        result.put( AssetFormats.DECISION_SPREADSHEET_XLS, "spreadsheet_small.gif" );
+        result.put( AssetFormats.BUSINESS_RULE, "rule_asset.gif" );
+        result.put( AssetFormats.DSL_TEMPLATE_RULE, "rule_asset.gif" );
+        
+        return result;
+    }
+    
+    /**
+     * Get the icon name (not the path), including the extension, for the appropriate
+     * asset format.
+     */
+    public static String getAssetFormatIcon(String format) {
+        String result = (String) TYPE_IMAGES.get( format );
+        if (result == null) {
+            return "rule_asset.gif";
+        } else {
+            return result;
+        }
     }
 
 
@@ -111,18 +143,7 @@ public class EditorLauncher {
             displayName = displayName.substring( 0,
                                                  7 ) + "...";
         }
-        String icon = "rule_asset.gif";
-        if ( asset.metaData.format.equals( AssetFormats.DRL ) ) {
-            icon = "technical_rule_assets.gif";
-        } else if ( asset.metaData.format.equals( AssetFormats.DSL ) ) {
-            icon = "dsl.gif";
-        } else if ( asset.metaData.format.equals( AssetFormats.FUNCTION ) ) {
-            icon = "function_assets.gif";
-        } else if ( asset.metaData.format.equals( AssetFormats.MODEL ) ) {
-            icon = "model_asset.gif";
-        } else if (asset.metaData.format.equals( AssetFormats.DECISION_SPREADSHEET_XLS )) {
-            icon = "spreadsheet_small.gif";
-        }
+        String icon = getAssetFormatIcon( asset.metaData.format );
         
         tab.add( view,
                  "<img src='images/" + icon + "'>" + displayName,
@@ -142,4 +163,7 @@ public class EditorLauncher {
         tab.selectTab( tab.getWidgetIndex( view ) );
     }
 
+    
+    
+    
 }
