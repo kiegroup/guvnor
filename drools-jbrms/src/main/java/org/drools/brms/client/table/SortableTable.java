@@ -5,7 +5,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.brms.client.ruleeditor.EditorLauncher;
+
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SourcesTableEvents;
 import com.google.gwt.user.client.ui.TableListener;
 import com.google.gwt.user.client.ui.Widget;
@@ -181,7 +184,6 @@ public class SortableTable extends Grid implements TableListener {
 	        clickSort( row, col );
 	    }
 	    
-		System.out.println("Row: " + row + " Column: " + col + " Size: " + tableRows.size());
 	}
     
     /**
@@ -341,9 +343,7 @@ public class SortableTable extends Grid implements TableListener {
 				RowData columns = (RowData)tableRows.get(rowIndex);
 				for(int colIndex=0; colIndex<columns.getColumnValues().size(); colIndex++){
 					Object value = columns.getColumnValue(colIndex);
-					if(null != value){
-						this.setText(rowIndex+1, colIndex, value.toString());
-					}
+	                setCell(rowIndex+1, colIndex, value.toString());
 				}
 			}
 		}else{
@@ -352,12 +352,19 @@ public class SortableTable extends Grid implements TableListener {
 				RowData columns = (RowData)tableRows.get(rowIndex);
 				for(int colIndex=0; colIndex<columns.getColumnValues().size(); colIndex++){
 					Object value = columns.getColumnValue(colIndex);
-					if(null != value){
-						this.setText(rowNum, colIndex, value.toString());
-					}
+					setCell(rowNum, colIndex, value.toString());
 				}
 			}
 		}
+	}
+	
+	private void setCell(int rowNum, int colIndex, String value) {
+	    if(null != value){
+            if (colIndex == 1 )
+                this.setWidget( rowNum, colIndex, new Image("images/" + EditorLauncher.getAssetFormatIcon( value.toString() ) ) );
+            else 
+                this.setText(rowNum, colIndex, value.toString());
+	    }
 	}
 	
 	/*
