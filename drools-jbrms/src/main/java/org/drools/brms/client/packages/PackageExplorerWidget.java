@@ -3,7 +3,6 @@ package org.drools.brms.client.packages;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.DirtyableFlexTable;
-import org.drools.brms.client.common.DirtyableStackPanel;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
@@ -20,7 +19,6 @@ import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -377,7 +375,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
             public void onSuccess(Object data) {
                 final PackageConfigData conf = (PackageConfigData) data;
                 
-                DirtyableStackPanel sp = new DirtyableStackPanel();
+                StackPanel sp = new StackPanel();
                 
                 FormStyleLayout infoLayout = new FormStyleLayout("images/package_large.png", conf.name);
                 infoLayout.setStyleName( "package-Editor" );
