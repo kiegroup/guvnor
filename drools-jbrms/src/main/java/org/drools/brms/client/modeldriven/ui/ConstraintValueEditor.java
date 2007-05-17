@@ -2,6 +2,7 @@ package org.drools.brms.client.modeldriven.ui;
 
 import java.util.List;
 
+import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.FieldEditListener;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.InfoPopup;
@@ -30,8 +31,9 @@ import com.google.gwt.user.client.ui.Widget;
  * When the constraint value has no type, it will allow the user to choose the first time.
  * 
  * @author Michael Neale
+ * @author Fernando Meyer
  */
-public class ConstraintValueEditor extends Composite {
+public class ConstraintValueEditor extends DirtyableComposite {
 
     private IConstraint constraint;
     private Panel      panel;
@@ -136,6 +138,7 @@ public class ConstraintValueEditor extends Composite {
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 c.value = box.getText();
+                makeDirty();
             }
 
         } );
@@ -146,6 +149,8 @@ public class ConstraintValueEditor extends Composite {
             }
         } ) );
 
+        
+        
         return box;
     }
 
@@ -213,5 +218,11 @@ public class ConstraintValueEditor extends Composite {
         panel.setWidth("100%");
         return panel;
     }
+
+    public boolean isDirty() {
+        return super.isDirty();
+    }
+    
+    
 
 }

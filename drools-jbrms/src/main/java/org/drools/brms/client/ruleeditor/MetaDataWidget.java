@@ -160,6 +160,7 @@ public class MetaDataWidget extends FormStyleLayout {
                                                                           "Moved from : " + pkg,
                                                                           new GenericCallback() {
                                                                               public void onSuccess(Object data) {
+                                                                                  makeDirty();
                                                                                   refreshView.execute();
                                                                                   pop.hide();
                                                                               }
@@ -238,7 +239,7 @@ public class MetaDataWidget extends FormStyleLayout {
 
 
     public boolean isDirty() {
-        return ed.isDirty();
+        return (ed.isDirty() || dirtyflag) ;
     }
     
     

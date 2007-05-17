@@ -1,5 +1,8 @@
 package org.drools.brms.client.modeldriven.ui;
 
+import org.drools.brms.client.common.DirtyableComposite;
+import org.drools.brms.client.common.DirtyableFlexTable;
+import org.drools.brms.client.common.DirtyableHorizontalPane;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.Lbl;
@@ -36,10 +39,10 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  * @author Michael Neale
  *
  */
-public class FactPatternWidget extends Composite {
+public class FactPatternWidget extends DirtyableComposite {
 
     private FactPattern                pattern;
-    private FlexTable                  layout = new FlexTable();
+    private DirtyableFlexTable         layout = new DirtyableFlexTable();
     private SuggestionCompletionEngine completions;
     private RuleModeller               modeller;
     private boolean                    bindable;
@@ -55,7 +58,7 @@ public class FactPatternWidget extends Composite {
         formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         formatter.setStyleName( 0, 0, "modeller-fact-TypeHeader" );
 
-        final FlexTable inner = new FlexTable();
+        final DirtyableFlexTable inner = new DirtyableFlexTable();
 
         layout.setWidget( 1, 0, inner );
 
@@ -125,13 +128,12 @@ public class FactPatternWidget extends Composite {
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 c.value = box.getText();
+                modeller.makeDirty();
             }
-            
         });
         
         box.setWidth( "100%" );
         pred.add( box );
-        
         return pred;
     }
 
@@ -217,6 +219,7 @@ public class FactPatternWidget extends Composite {
             varTxt.setText( pattern.boundName );
             varTxt.setVisibleLength( 3 );
             varName.add( varTxt );
+                        
             Button bindVar = new Button( "Set" );
             bindVar.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
@@ -239,11 +242,11 @@ public class FactPatternWidget extends Composite {
 
     private Widget connectives(Constraint c) {
         if ( c.connectives != null && c.connectives.length > 0 ) {
-            HorizontalPanel horiz = new HorizontalPanel();
+            DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
             for ( int i = 0; i < c.connectives.length; i++ ) {
                 ConnectiveConstraint con = c.connectives[i];
                 horiz.add( connectiveOperatorDropDown( con, c.fieldName ) );
-                horiz.add( connectiveValueEditor( con ) );
+                horiz.add( connectiveValueEditor( con ) ); 
             }
             return horiz;
         } else {
@@ -299,6 +302,7 @@ public class FactPatternWidget extends Composite {
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 c.operator = box.getValue( box.getSelectedIndex() );
+                modeller.makeDirty();
                 System.out.println( "Set operator to :" + c.operator );
             }
         } );
@@ -358,6 +362,10 @@ public class FactPatternWidget extends Composite {
         popup.addAttribute( "Variable name", vn );
         popup.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
         popup.show();
+    }
+    
+    public boolean isDirty() {
+        return layout.hasDirty();
     }
     
 

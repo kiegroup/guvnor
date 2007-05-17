@@ -1,5 +1,7 @@
 package org.drools.brms.client.modeldriven.ui;
 
+import org.drools.brms.client.common.DirtyableComposite;
+import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.FieldEditListener;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
@@ -30,11 +32,11 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Neale
  */
-public class ActionSetFieldWidget extends Composite {
+public class ActionSetFieldWidget extends DirtyableComposite {
 
     final private ActionSetField model;
     final private SuggestionCompletionEngine completions;
-    final private FlexTable layout;
+    final private DirtyableFlexTable layout;
     private boolean isBoundFact = false;
     
     final private String[] fieldCompletions;
@@ -44,7 +46,7 @@ public class ActionSetFieldWidget extends Composite {
     public ActionSetFieldWidget(RuleModeller mod, RuleModel rule, ActionSetField set, SuggestionCompletionEngine com) {
         this.model = set;
         this.completions = com;
-        this.layout = new FlexTable();
+        this.layout = new DirtyableFlexTable();
         this.modeller = mod;
         layout.setStyleName( "model-builderInner-Background" );
         if (completions.isGlobalVariable( set.variable )) {
@@ -65,9 +67,7 @@ public class ActionSetFieldWidget extends Composite {
         layout.clear();
         layout.setWidget( 0, 0, getSetterLabel() );
         
-        FlexTable inner = new FlexTable();
-        
-
+        DirtyableFlexTable inner = new DirtyableFlexTable();
         
         for ( int i = 0; i < model.fieldValues.length; i++ ) {
             ActionFieldValue val = model.fieldValues[i];
@@ -184,6 +184,10 @@ public class ActionSetFieldWidget extends Composite {
      */
     public boolean isBoundFact() {
         return isBoundFact;
+    }
+    
+    public boolean isDirty() {
+        return layout.hasDirty();
     }
     
 }

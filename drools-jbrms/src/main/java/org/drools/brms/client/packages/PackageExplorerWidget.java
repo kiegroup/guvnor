@@ -1,6 +1,9 @@
 package org.drools.brms.client.packages;
 
 import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.client.common.DirtyableComposite;
+import org.drools.brms.client.common.DirtyableFlexTable;
+import org.drools.brms.client.common.DirtyableStackPanel;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
@@ -41,16 +44,17 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  * 
  * @author Michael Neale
  */
-public class PackageExplorerWidget extends Composite {
+public class PackageExplorerWidget extends DirtyableComposite {
 
     private final Tree exTree;
-    private final FlexTable layout;
+    private final DirtyableFlexTable layout;
     private final TreeListener treeListener;
     private AssetItemListViewer listView;
     private EditItemEvent editEvent;
     private String uuid;
-
     private String snapshotName;
+    
+    private String lastEditedPackage;
     
     /**
      * This is for the generic and re-useable package explorer.
@@ -68,10 +72,11 @@ public class PackageExplorerWidget extends Composite {
         
         this.editEvent = edit;
         this.uuid = uuid;
+        this.lastEditedPackage = uuid;
         this.snapshotName = snapshotName;
         
         exTree = new Tree();
-        layout = new FlexTable();
+        layout = new DirtyableFlexTable();
         
         treeListener = new TreeListener() {
 
@@ -310,7 +315,13 @@ public class PackageExplorerWidget extends Composite {
         
         TreeItem pkg = makeItem(conf.name, "images/package.gif", new PackageTreeItem(new Command() {
             public void execute() {
-                loadPackageConfig(conf.uuid);
+                
+                if ( isDirty() ) {
+                    if ( Window.confirm( "Discart Changes ? " ) )
+                        loadPackageConfig(conf.uuid);
+                } else {
+                    loadPackageConfig(conf.uuid);
+                }
             }
         }));
         
@@ -358,13 +369,15 @@ public class PackageExplorerWidget extends Composite {
      * Load up the package config data and display it.
      */
     private void loadPackageConfig(String uuid) {
+        
+        lastEditedPackage = uuid;
 
         RepositoryServiceFactory.getService().loadPackageConfig( uuid, new GenericCallback() {
 
             public void onSuccess(Object data) {
                 final PackageConfigData conf = (PackageConfigData) data;
                 
-                StackPanel sp = new StackPanel();
+                DirtyableStackPanel sp = new DirtyableStackPanel();
                 
                 FormStyleLayout infoLayout = new FormStyleLayout("images/package_large.png", conf.name);
                 infoLayout.setStyleName( "package-Editor" );
@@ -395,14 +408,30 @@ public class PackageExplorerWidget extends Composite {
                 
                 if (!conf.isSnapshot) {
                     infoLayout.addRow( new HTML("<i>Choose one of the options below</i>") );
-                }                
+                }   
+                
+                Command makeDirtyCommand = new Command () {
+                    public void execute() {
+                        makeDirty();
+                    }
+                    
+                };
+                
+                Command cleanDirtyCommand = new Command () {
+                    public void execute() {
+                        resetDirty();
+                    }
+                    
+                };                
+                
                 
                 sp.add( infoLayout, "<img src='images/information.gif'/>Info", true );
                 if (!conf.isSnapshot) {
-                    sp.add( new PackageEditor(conf), "<img src='images/package.gif'/>Edit Package configuration", true);
+                    sp.add( new PackageEditor(conf, makeDirtyCommand, cleanDirtyCommand ), "<img src='images/package.gif'/>Edit Package configuration", true);
                     sp.add( new PackageBuilderWidget(conf, editEvent), "<img src='images/package_build.gif'/>Build, validate and deploy", true );
                 } else {
-                    sp.add( new PackageEditor(conf),  "<img src='images/package.gif'/>View Package configuration", true);
+                    sp.add(new PackageEditor(conf, makeDirtyCommand, cleanDirtyCommand)
+                    ,  "<img src='images/package.gif'/>View Package configuration", true);
                     
                 }
                 

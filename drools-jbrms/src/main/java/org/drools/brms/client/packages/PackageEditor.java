@@ -35,13 +35,18 @@ import com.google.gwt.user.client.ui.Widget;
 public class PackageEditor extends FormStyleLayout {
     
    
-
+    private Command dirtyCommand;
+    private Command cleanCommand;
+    
     private PackageConfigData conf;
     private HTML status;
     protected ValidatedResponse previousResponse;
 
-    public PackageEditor(PackageConfigData data) {
+    public PackageEditor(PackageConfigData data, Command dCommand, Command cCommand) {
         this.conf = data;
+        this.dirtyCommand = dCommand;
+        this.cleanCommand = cCommand;
+        
         setStyleName( "package-Editor" );
         setWidth( "100%" );
         refreshWidgets();
@@ -50,6 +55,7 @@ public class PackageEditor extends FormStyleLayout {
     private void refreshWidgets() {
         clear();
         //addHeader( "images/package_large.png", this.conf.name );
+        
 
         addRow( warnings() );
         
@@ -182,6 +188,9 @@ public class PackageEditor extends FormStyleLayout {
         LoadingPopup.showMessage( "Saving package configuration. Please wait ..." );
         RepositoryServiceFactory.getService().savePackage( this.conf, new GenericCallback() {
             public void onSuccess(Object data) {
+                
+                cleanCommand.execute();
+                
                 previousResponse = (ValidatedResponse) data;
                 
                 reload();
@@ -239,7 +248,8 @@ public class PackageEditor extends FormStyleLayout {
         area.setText( this.conf.header );
         area.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-                 conf.header = area.getText();         
+                 conf.header = area.getText();
+                 dirtyCommand.execute();
             }            
         });
         
@@ -339,7 +349,8 @@ public class PackageEditor extends FormStyleLayout {
         
         area.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-                conf.description = area.getText();                 
+                conf.description = area.getText();    
+                dirtyCommand.execute();
             }            
         });
         

@@ -1,5 +1,7 @@
 package org.drools.brms.client.modeldriven.ui;
 
+import org.drools.brms.client.common.DirtyableComposite;
+import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.Lbl;
@@ -27,9 +29,9 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Neale
  *
  */
-public class ActionAssertFactWidget extends Composite {
+public class ActionAssertFactWidget extends DirtyableComposite {
 
-    private FlexTable layout;
+    private DirtyableFlexTable layout;
     private ActionAssertFact model;
     private SuggestionCompletionEngine completions;
     private String[] fieldCompletions;
@@ -38,7 +40,7 @@ public class ActionAssertFactWidget extends Composite {
     public ActionAssertFactWidget(RuleModeller mod, ActionAssertFact set, SuggestionCompletionEngine com) {
         this.model = set;
         this.completions = com;
-        this.layout = new FlexTable();
+        this.layout = new DirtyableFlexTable();
         this.modeller = mod;
         this.fieldCompletions = this.completions.getFieldCompletions( set.factType );
         
@@ -53,7 +55,7 @@ public class ActionAssertFactWidget extends Composite {
         layout.clear();
         layout.setWidget( 0, 0, getAssertLabel() );
         
-        FlexTable inner = new FlexTable();
+        DirtyableFlexTable inner = new DirtyableFlexTable();
         
         for ( int i = 0; i < model.fieldValues.length; i++ ) {
             ActionFieldValue val = model.fieldValues[i];
@@ -89,6 +91,7 @@ public class ActionAssertFactWidget extends Composite {
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 val.value = box.getText();
+                modeller.refreshWidget();
             }            
         });
         return box;

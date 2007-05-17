@@ -3,10 +3,11 @@ package org.drools.brms.client.common;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 
-public class DirtyableFlexTable extends FlexTable {
+public class DirtyableFlexTable extends FlexTable implements DirtyableContainer {
     
     private int length; 
     private ArrayList list = new ArrayList();
@@ -14,27 +15,27 @@ public class DirtyableFlexTable extends FlexTable {
     public boolean hasDirty() {
         
         Pair coordinates;
-        DirtyableComposite element;
+        Widget element;
         
         for ( Iterator iter = list.iterator(); iter.hasNext(); ) {
             coordinates = (Pair) iter.next();
-            element = (DirtyableComposite) getWidget( coordinates.getRow(), coordinates.getColumn() );
-            if ( element.isDirty() ) return true;
-            
+            element =  (Widget) getWidget( coordinates.getRow(), coordinates.getColumn() );
+            if (element instanceof DirtyableWidget) 
+                if ( ((DirtyableWidget) element).isDirty() ) return true;
+            if (element instanceof DirtyableContainer)
+                if ( ((DirtyableContainer) element).hasDirty()) return true;
         }
-        
         return false;
-        
     }
     
     public void setWidget(int row, int column , Widget arg2) {
         super.setWidget( row, column, arg2 );
         
-        if ( arg2 instanceof DirtyableComposite ) {
+        if (( arg2 instanceof IDirtyable ))  {
             list.add( length++, new Pair(row ,column) );
-            
         }
     }
+
 }
 
 class Pair {

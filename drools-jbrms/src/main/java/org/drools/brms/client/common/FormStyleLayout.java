@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  */
 public class FormStyleLayout extends DirtyableComposite {
     
-    private FlexTable layout = new FlexTable();
+    private DirtyableFlexTable layout = new DirtyableFlexTable();
     private FlexCellFormatter formatter = layout.getFlexCellFormatter();
     private int numInLayout = 0;
 
@@ -88,5 +88,10 @@ public class FormStyleLayout extends DirtyableComposite {
     public void setFlexTableWidget(int row, int col, Widget widget){
         layout.setWidget( row, col, widget );
     }
+    
+    public boolean isDirty() {
+        return layout.hasDirty();
+    } 
+
 
 }

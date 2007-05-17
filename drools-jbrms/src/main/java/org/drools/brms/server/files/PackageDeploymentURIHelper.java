@@ -29,12 +29,9 @@ public class PackageDeploymentURIHelper {
         if ( m.matches() ) {
             String result = m.group(2);
             String []mtoks = result.split( "/" );
-            
-            
             this.version = mtoks[1];
             this.packageName = mtoks[0];
         }
-        
     }
 
     public String getPackageName() {

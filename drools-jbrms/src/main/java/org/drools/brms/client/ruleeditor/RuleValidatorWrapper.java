@@ -1,5 +1,7 @@
 package org.drools.brms.client.ruleeditor;
 
+import org.drools.brms.client.common.DirtyableComposite;
+import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
@@ -24,16 +26,19 @@ import com.google.gwt.user.client.ui.Widget;
  * This widget wraps a rule asset widget, and provides actions to validate and view source.
  * @author Michael Neale
  */
-public class RuleValidatorWrapper extends Composite {
-
+public class RuleValidatorWrapper extends DirtyableComposite {
     
     private RuleAsset asset;
+    private DirtyableFlexTable layout;
+
+    public boolean isDirty() {
+        return layout.hasDirty();  
+    }
 
     public RuleValidatorWrapper(Widget editor, RuleAsset asset) {
         this.asset = asset;
-        
-        
-        FlexTable layout = new FlexTable();
+
+        layout = new DirtyableFlexTable();
         layout.setStyleName( "asset-editor-Layout" );
         layout.setWidget( 0, 0, editor );
         layout.setWidget( 1, 0, validatorActions() );

@@ -3,6 +3,10 @@ package org.drools.brms.client.modeldriven.ui;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.brms.client.common.DirtyableComposite;
+import org.drools.brms.client.common.DirtyableFlexTable;
+import org.drools.brms.client.common.DirtyableHorizontalPane;
+import org.drools.brms.client.common.DirtyableVerticalPane;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
@@ -28,14 +32,11 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -44,19 +45,20 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Neale
  *
  */
-public class RuleModeller extends Composite {
+public class RuleModeller extends DirtyableComposite {
  
-    private FlexTable layout;
+    private DirtyableFlexTable layout;
     private SuggestionCompletionEngine completions;
     private RuleModel model;
     
     public RuleModeller(RuleAsset asset) {
         this.model = (RuleModel) asset.content;
+        
         this.completions = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.metaData.packageName );
         
-        layout = new FlexTable();
+        layout = new DirtyableFlexTable();
         
-        refreshWidget();
+        initWidget();
         
         layout.setStyleName( "model-builder-Background" );
         initWidget( layout );  
@@ -67,7 +69,7 @@ public class RuleModeller extends Composite {
     /**
      * This updates the widget to reflect the state of the model.
      */
-    public void refreshWidget() {
+    public void initWidget() {
         layout.clear();
         
         Image addPattern = new ImageButton( "images/new_item.gif" );
@@ -98,9 +100,12 @@ public class RuleModeller extends Composite {
         layout.setWidget( 4, 0, new Label("(options)") );
         layout.setWidget( 4, 2, getAddAttribute() );
         layout.setWidget( 5, 1, new RuleAttributeWidget(this, this.model) );
-        
     }
 
+    public void refreshWidget() {
+        initWidget();
+        makeDirty();
+    }
 
     private Widget getAddAttribute() {
         Image add = new ImageButton("images/new_item.gif");
@@ -152,8 +157,11 @@ public class RuleModeller extends Composite {
     /**
      * Do all the widgets for the RHS.
      */
+    /*
+     * TODO STILL NEED TO BE CHECKED 
+     */
     private Widget renderRhs(final RuleModel model) {
-        VerticalPanel vert = new VerticalPanel();
+        DirtyableVerticalPane vert = new DirtyableVerticalPane();
         
         for ( int i = 0; i < model.rhs.length; i++ ) {
             IAction action = model.rhs[i];
@@ -174,7 +182,7 @@ public class RuleModeller extends Composite {
             vert.add( spacerWidget() );            
             //vert.setWidth( "100%" );
             
-            HorizontalPanel horiz = new HorizontalPanel();
+            DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
             
             Image remove = new ImageButton("images/delete_item_small.gif");
             remove.setTitle( "Remove this action." );
@@ -469,7 +477,7 @@ public class RuleModeller extends Composite {
      * Builds all the condition widgets.
      */
     private Widget renderLhs(final RuleModel model) {
-        VerticalPanel vert = new VerticalPanel();
+        DirtyableVerticalPane vert = new DirtyableVerticalPane();
          
         for ( int i = 0; i < model.lhs.length; i++ ) {
             IPattern pattern = model.lhs[i];
@@ -494,7 +502,7 @@ public class RuleModeller extends Composite {
         }
         
         
-        VerticalPanel dsls = new VerticalPanel();
+        DirtyableVerticalPane dsls = new DirtyableVerticalPane();
         for ( int i = 0; i < model.lhs.length; i++ ) {
             IPattern pattern = model.lhs[i];
             Widget w = null;
@@ -507,8 +515,6 @@ public class RuleModeller extends Composite {
             }
         }
         vert.add( dsls );
-
-        
         
         return vert;
     }
@@ -525,7 +531,7 @@ public class RuleModeller extends Composite {
     private Widget wrapLHSWidget(final RuleModel model,
                               int i,
                               Widget w) {
-        HorizontalPanel horiz = new HorizontalPanel();
+        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
         
         Image remove = new ImageButton("images/delete_item_small.gif");
         remove.setTitle( "Remove this ENTIRE condition, and all the field constraints that belong to it." );
@@ -554,8 +560,6 @@ public class RuleModeller extends Composite {
         horiz.add( remove );
 
         return horiz;
-
-
     }
 
 
@@ -568,10 +572,16 @@ public class RuleModeller extends Composite {
      * Returns true is a var name has already been used
      * either by the rule, or as a global.
      */
+    
     public boolean isVariableNameUsed(String name) {
         
         return model.isVariableNameUsed( name ) || completions.isGlobalVariable( name );
     }
+
+    public boolean isDirty() {
+        return ( layout.hasDirty() || dirtyflag) ;
+    }
+    
     
     
 }

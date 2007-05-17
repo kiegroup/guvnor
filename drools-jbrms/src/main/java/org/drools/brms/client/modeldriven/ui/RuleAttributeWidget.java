@@ -1,5 +1,7 @@
 package org.drools.brms.client.modeldriven.ui;
 
+import org.drools.brms.client.common.DirtyableComposite;
+import org.drools.brms.client.common.DirtyableHorizontalPane;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
@@ -20,7 +22,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author Michael Neale
  */
-public class RuleAttributeWidget extends Composite {
+public class RuleAttributeWidget extends DirtyableComposite {
 
     private FormStyleLayout layout;
     private RuleModel model;
@@ -50,9 +52,10 @@ public class RuleAttributeWidget extends Composite {
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 at.value = box.getText();
+                makeDirty();
             }
         });
-        HorizontalPanel horiz = new HorizontalPanel();
+        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
         horiz.add( box );
         horiz.add( getRemoveIcon( idx ) );
         
@@ -99,4 +102,8 @@ public class RuleAttributeWidget extends Composite {
         return remove;
     }
     
+    public boolean isDirty() {
+        return layout.isDirty();
+    }
+       
 }

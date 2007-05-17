@@ -2,8 +2,8 @@ package org.drools.brms.client.common;
 
 import com.google.gwt.user.client.ui.Composite;
 
-public abstract class DirtyableComposite extends Composite implements IDirtyable  {
-    private boolean dirtyflag = false;
+public abstract class DirtyableComposite extends Composite implements DirtyableWidget  {
+    protected boolean dirtyflag = false;
     
     /* (non-Javadoc)
      * @see org.drools.brms.client.common.isDirtable#isDirty()

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.brms.client.common.DirtyableComposite;
+import org.drools.brms.client.common.DirtyableHorizontalPane;
 import org.drools.brms.client.modeldriven.brxml.DSLSentence;
 
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -18,13 +20,13 @@ import com.google.gwt.user.client.ui.Widget;
  * This displays a widget to edit a DSL sentence.
  * @author Michael Neale
  */
-public class DSLSentenceWidget extends Composite {
+public class DSLSentenceWidget extends DirtyableComposite {
 
-    private final HorizontalPanel horiz;
+    private final DirtyableHorizontalPane horiz;
     private final List  widgets;
     private final DSLSentence sentence;
     public DSLSentenceWidget(DSLSentence sentence) {
-        horiz = new HorizontalPanel();
+        horiz = new DirtyableHorizontalPane();
         widgets = new ArrayList();
         this.sentence = sentence;
         init(  );
@@ -94,7 +96,7 @@ public class DSLSentenceWidget extends Composite {
         
     }    
     
-    class FieldEditor extends Composite {
+    class FieldEditor extends DirtyableComposite {
 
         private TextBox box;
         private HorizontalPanel panel = new HorizontalPanel();
@@ -110,6 +112,7 @@ public class DSLSentenceWidget extends Composite {
             box.addChangeListener( new ChangeListener() {
                 public void onChange(Widget w) {
                     updateSentence();
+                    makeDirty();
                 }                
             });
             
@@ -132,6 +135,10 @@ public class DSLSentenceWidget extends Composite {
             return box.getText();
         }
     }    
+    
+    public boolean isDirty() {
+        return horiz.hasDirty();
+    }
     
     
 }

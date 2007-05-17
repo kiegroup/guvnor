@@ -3,6 +3,7 @@ package org.drools.brms.client.ruleeditor;
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.common.DirtyableComposite;
+import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.rpc.MetaData;
 
@@ -23,11 +24,12 @@ import com.google.gwt.user.client.ui.Widget;
  * It is intended to work with the meta data form.
  * 
  * @author Michael Neale
+ * @author Fernando Meyer
  */
 public class AssetCategoryEditor extends DirtyableComposite {
 
     private MetaData data;
-    private Grid layout = new Grid(1, 2);
+    private DirtyableFlexTable layout = new DirtyableFlexTable();
     private FlexTable list;
     
     
@@ -40,19 +42,14 @@ public class AssetCategoryEditor extends DirtyableComposite {
         this.data = d;
 
         list = new FlexTable();
-        
-        
-        
+
         loadData( list );  
         list.setStyleName( "rule-List" );
         layout.setWidget( 0, 0, list );
         
-        
         if (!readOnly) {
             doActions();
         }
-    
-        
         
         initWidget( layout );        
     }
@@ -81,11 +78,11 @@ public class AssetCategoryEditor extends DirtyableComposite {
     }
 
     private void resetBox() {
-        
         list = new FlexTable();
         list.setStyleName( "rule-List" );
         layout.setWidget( 0, 0, list );        
         loadData( list );
+        makeDirty();
     }
 
     private void loadData(FlexTable list) {

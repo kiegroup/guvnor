@@ -1,5 +1,8 @@
 package org.drools.brms.client.modeldriven.ui;
 
+import org.drools.brms.client.common.DirtyableComposite;
+import org.drools.brms.client.common.DirtyableFlexTable;
+import org.drools.brms.client.common.DirtyableVerticalPane;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.modeldriven.HumanReadable;
@@ -25,11 +28,11 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Neale
  *
  */
-public class CompositeFactPatternWidget extends Composite {
+public class CompositeFactPatternWidget extends DirtyableComposite {
 
     private final SuggestionCompletionEngine completions;
     private CompositeFactPattern             pattern;
-    private Grid                             layout;
+    private DirtyableFlexTable                             layout;
     private RuleModeller                     modeller;
 
     public CompositeFactPatternWidget(RuleModeller modeller,
@@ -39,7 +42,7 @@ public class CompositeFactPatternWidget extends Composite {
         this.pattern = pattern;
         this.modeller = modeller;
  
-        this.layout = new Grid( 1, 2 );
+        //this.layout = new Grid( 1, 2 );
         this.layout.setStyleName( "model-builderInner-Background" );
 
         doLayout();
@@ -52,7 +55,7 @@ public class CompositeFactPatternWidget extends Composite {
                                getCompositeLabel() );
 
         if ( pattern.patterns != null ) {
-            VerticalPanel vert = new VerticalPanel();
+            DirtyableVerticalPane vert = new DirtyableVerticalPane();
             FactPattern[] facts = pattern.patterns;
             for ( int i = 0; i < facts.length; i++ ) {
                 vert.add( new FactPatternWidget( modeller,
@@ -113,7 +116,12 @@ public class CompositeFactPatternWidget extends Composite {
         popup.setPopupPosition( w.getAbsoluteLeft() - 400,
                                 w.getAbsoluteTop() );
         popup.show();
-
     }
+
+    public boolean isDirty() {
+        return layout.hasDirty();
+    }
+    
+    
 
 }
