@@ -5,10 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.brms.client.rpc.TableDataRow;
-
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SourcesTableEvents;
 import com.google.gwt.user.client.ui.TableListener;
 import com.google.gwt.user.client.ui.Widget;
@@ -48,6 +45,7 @@ public class SortableTable extends Grid implements TableListener {
 	private List tableHeader 		= new ArrayList();
     private int hideColumnIndex;
     private int selectedRow;
+    private int RowNumbers;
 
     
 	/** 
@@ -122,6 +120,7 @@ public class SortableTable extends Grid implements TableListener {
      * Start with a row index of 1 otherwise as zero means header.
 	 */
 	public void setValue(int row, int col, Comparable val, Widget w){
+	    
         
 		if(row == 0)return;
         
@@ -176,9 +175,13 @@ public class SortableTable extends Grid implements TableListener {
      * data and redisplay the grid.
 	 */
 	public void onCellClicked(SourcesTableEvents sender, int row, int col) {
-
-        styleSelectedRow(row);
-		clickSort( row, col );
+	    
+	    if ( row <= tableRows.size()) {
+	        styleSelectedRow(row);
+	        clickSort( row, col );
+	    }
+	    
+		System.out.println("Row: " + row + " Column: " + col + " Size: " + tableRows.size());
 	}
     
     /**
@@ -186,7 +189,7 @@ public class SortableTable extends Grid implements TableListener {
      * one, and set the selectedRow.
      */
     private void styleSelectedRow(int row) {
-        if (row != 0) {
+        if (row != 0 ) {
             CellFormatter formatter = getCellFormatter();
             for (int i=1; i < this.getColumnCount(); i++ ) {
                 formatter.setStyleName( row, i, styleSelectedRow );
@@ -397,6 +400,14 @@ public class SortableTable extends Grid implements TableListener {
         getRowFormatter().setStyleName( 0, styleListHeader );
     
 	}
+
+    public int getRowNumbers() {
+        return RowNumbers;
+    }
+
+    public void setRowNumbers(int rowNumbers) {
+        RowNumbers = rowNumbers;
+    }
     
     
 }
