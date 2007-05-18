@@ -411,6 +411,10 @@ public class PackageItemTest extends TestCase {
             ruleItem1.updateContent( "test lhs content" );
 
             
+            assertTrue(rulePackageItem1.containsAsset( "testGetRules" ));
+            assertFalse(rulePackageItem1.containsAsset( "XXXXYYYYZZZZ" ));
+            
+            
             List rules = iteratorToList(rulePackageItem1.getAssets());
             assertNotNull(rules);
             assertEquals(1, rules.size());

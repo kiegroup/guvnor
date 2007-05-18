@@ -12,6 +12,7 @@ import javax.jcr.AccessDeniedException;
 import javax.jcr.ItemExistsException;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
@@ -427,6 +428,21 @@ public class PackageItem extends VersionableItem {
         } catch ( RepositoryException e ) {
              throw new RulesRepositoryException(e);
        }
+    }
+    
+    
+    /**
+     * Returns true if this package item contains an asset of the given name.
+     */
+    public boolean containsAsset(String name) {
+        Node content;
+        try {
+            content = getVersionContentNode();
+            return content.getNode( ASSET_FOLDER_NAME ).hasNode( name );
+        }         
+        catch ( RepositoryException e ) {
+            throw new RulesRepositoryException(e);
+        }
     }
 
     /**

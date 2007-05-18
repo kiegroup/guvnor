@@ -354,15 +354,13 @@ public class RulesRepository {
 
             return new PackageItem( this,
                                     rulePackageNode );
-        } catch ( Exception e ) {
+        } catch ( RepositoryException e ) {
             log.error( "Unable to load a rule package. ",
                        e );
-            if ( e instanceof RuntimeException ) {
-                throw (RuntimeException) e;
-            } else {
+
                 throw new RulesRepositoryException( "Unable to load a rule package. ",
                                                     e );
-            }
+            
         }
     }
 
