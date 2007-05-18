@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.drools.brms.server.util.FormData;
 
 /**
  * This servlet deals with providing packages in binary form.
@@ -21,12 +22,14 @@ public class PackageDeploymentServlet extends RepositoryServlet {
     
 
     /**
-     * post makes no sense in this context.
+     * This is used for importing legacy DRL.
      */
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException,
                                                        IOException {
-
+//        FormData data = FileManagerUtils.getFormData( request );
+//        System.err.println("Filename: " + data.getFile().getName());
+        
         response.sendError( HttpServletResponse.SC_METHOD_NOT_ALLOWED, "This servlet only provides packages, they can " +
                 "not be updated via a POST." );
     }

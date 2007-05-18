@@ -6,10 +6,6 @@ public class FormData {
     private FileItem file;
     private String   uuid;
     
-    public FormData(FileItem file, String uuid){
-        this.file = file;
-        this.uuid = uuid;
-    }
     
     public FormData() {
     }

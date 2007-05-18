@@ -1,0 +1,25 @@
+package foo
+
+
+
+import goo.wee
+
+global ka.cha
+
+expander yeah
+
+
+rule "blah"
+ when
+   ka chow
+ then
+   bam
+end
+
+
+rule "cha"
+  when
+   ka chiga
+  then
+   ka chow
+end

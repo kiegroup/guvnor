@@ -33,7 +33,7 @@ public class RepositoryBackupServlet extends RepositoryServlet {
                           HttpServletResponse response) throws ServletException,
                                                        IOException {
         response.setContentType( "text/plain" );
-        FormData uploadItem = new FileManagerUtils().getFormData( request );
+        FormData uploadItem = FileManagerUtils.getFormData( request );
         response.getWriter().write(processImportRepository( uploadItem.getFile().getInputStream() ));
     }
 

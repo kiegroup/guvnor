@@ -1,0 +1,18 @@
+package foo
+
+import goo.wee
+
+rule "blah"
+ when
+   Whee()
+ then
+   goo();
+end
+
+
+rule "cha"
+  when
+   Sup()
+  then
+   ka();
+end
