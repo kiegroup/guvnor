@@ -50,9 +50,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
     private AssetItemListViewer listView;
     private EditItemEvent editEvent;
     private String uuid;
-    private String snapshotName;
-    
-    private String lastEditedPackage;
+
     
     /**
      * This is for the generic and re-useable package explorer.
@@ -70,8 +68,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
         
         this.editEvent = edit;
         this.uuid = uuid;
-        this.lastEditedPackage = uuid;
-        this.snapshotName = snapshotName;
+
         
         exTree = new Tree();
         layout = new DirtyableFlexTable();
@@ -264,43 +261,17 @@ public class PackageExplorerWidget extends DirtyableComposite {
      * sir decide to create said package. Nice package sir.
      */
     private void showNewPackage(Widget w) {
-        final FormStylePopup pop = new FormStylePopup("images/new_wiz.gif", "Create a new package");
-        final TextBox nameBox = new TextBox();
-        nameBox.setTitle( "The name of the package. Avoid spaces, use underscore instead." );
-        
-        pop.addAttribute( "Package name", nameBox );
-        final TextArea descBox = new TextArea();
-        pop.addAttribute( "Description", descBox );
-        
-        Button create = new Button("Create package");
-        create.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                createPackageAction(nameBox.getText(), descBox.getText());  
-                pop.hide();
-            }
-
-        
+        NewPackageWizard pop = new NewPackageWizard(new Command() {
+            public void execute() {
+                refreshTreeView();
+            } 
         });
-        
-        
-        pop.addAttribute( "", create );
-        
-        pop.setStyleName( "ks-popups-Popup" );
-        
         pop.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() - 100 );
         pop.show();
     }
     
 
-    private void createPackageAction(final String name, final String descr) {
-        LoadingPopup.showMessage( "Creating package - please wait..." );
-        RepositoryServiceFactory.getService().createPackage( name, descr, new GenericCallback() {
-            public void onSuccess(Object data) {
-                LoadingPopup.close();
-                refreshTreeView();
-            }
-        });
-    }        
+     
     
 
 
@@ -370,7 +341,6 @@ public class PackageExplorerWidget extends DirtyableComposite {
      */
     private void loadPackageConfig(String uuid) {
         
-        lastEditedPackage = uuid;
 
         RepositoryServiceFactory.getService().loadPackageConfig( uuid, new GenericCallback() {
 

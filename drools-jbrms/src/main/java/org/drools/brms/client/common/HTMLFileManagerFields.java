@@ -11,7 +11,8 @@ public class HTMLFileManagerFields {
     public static final String FORM_FIELD_REPOSITORY = "exportWholeRepository";
     public static final String FORM_FIELD_UUID = "attachmentUUID";  
     public static final String FILE_UPLOAD_FIELD_NAME_IMPORT = "importFile"; 
-    public static final String UPLOAD_FIELD_NAME_ATTACH = "fileUploadElement";    
+    public static final String UPLOAD_FIELD_NAME_ATTACH = "fileUploadElement";
+    public static final String CLASSIC_DRL_IMPORT = "classicDRLFile";
     
     
 }

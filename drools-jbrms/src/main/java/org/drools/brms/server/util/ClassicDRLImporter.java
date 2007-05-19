@@ -80,8 +80,8 @@ public class ClassicDRLImporter {
     private void laConsumeToEnd(StringTokenizer lines, StringBuffer currentRule) {
         String line;
         while ( true && lines.hasMoreTokens()) {
-            line = lines.nextToken().trim();
-            if ( line.equals( "end" ) ) {
+            line = lines.nextToken();
+            if ( line.trim().startsWith( "end" ) ) {
                 break;
             }
             currentRule.append( line );

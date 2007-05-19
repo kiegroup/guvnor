@@ -28,7 +28,7 @@ public class ClassicDRLImporterTest extends TestCase {
         
         assertEqualsIgnoreWhitespace( "when Whee() then goo();", imp.getRules().get( 0 ).content);
         assertEqualsIgnoreWhitespace( "when Sup() then ka();", imp.getRules().get( 1 ).content);
-        
+        assertTrue(imp.getRules().get( 0 ).content.indexOf( " Whee()") > -1);
         
     }
     

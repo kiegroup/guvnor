@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.drools.brms.server.util.FormData;
+import org.drools.compiler.DroolsParserException;
+import org.drools.repository.RulesRepositoryException;
 
 /**
  * This servlet deals with providing packages in binary form.
@@ -27,11 +29,19 @@ public class PackageDeploymentServlet extends RepositoryServlet {
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException,
                                                        IOException {
-//        FormData data = FileManagerUtils.getFormData( request );
-//        System.err.println("Filename: " + data.getFile().getName());
+        FormData data = FileManagerUtils.getFormData( request );
+        System.err.println("Filename: " + data.getFile().getName());
         
-        response.sendError( HttpServletResponse.SC_METHOD_NOT_ALLOWED, "This servlet only provides packages, they can " +
-                "not be updated via a POST." );
+        try {
+            getFileManager().importClassicDRL( data.getFile().getInputStream() );
+            response.getWriter().write( "OK" );
+        } catch ( DroolsParserException e ) {    
+            response.getWriter().write( "Unable to process import: " + e.getMessage() );            
+        } catch ( RulesRepositoryException e) {
+            response.getWriter().write( "Unable to process import: " + e.getMessage() );
+        }
+        
+        
     }
 
     /**
