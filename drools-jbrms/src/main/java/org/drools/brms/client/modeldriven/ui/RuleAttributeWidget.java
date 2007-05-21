@@ -9,11 +9,11 @@ import org.drools.brms.client.modeldriven.brxml.RuleModel;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.KeyboardListener;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -28,6 +28,7 @@ public class RuleAttributeWidget extends DirtyableComposite {
     private RuleModel model;
     private RuleModeller parent;
 
+    
     public RuleAttributeWidget(RuleModeller parent, RuleModel model) {
         this.parent = parent;
         this.model = model;
@@ -41,11 +42,73 @@ public class RuleAttributeWidget extends DirtyableComposite {
         initWidget( layout );
     }
 
+    /**
+     * Return a listbox of choices for rule attributes.
+     * @return
+     */
+    public static ListBox getAttributeList() {
+        ListBox list = new ListBox();
+        list.addItem( "Choose..." );
+        
+        list.addItem( "salience" );
+        list.addItem( "enabled" );
+        list.addItem( "date-effective" );
+        list.addItem( "date-expires" );
+        list.addItem( "no-loop" );
+        list.addItem( "agenda-group" );
+        list.addItem( "activation-group" );
+        list.addItem( "duration" );
+        list.addItem( "auto-focus" ); 
+        list.addItem( "lock-on-active" );
+        list.addItem( "ruleflow-group" );
+        list.addItem( "dialect" );
+        
+        return list;
+    }
+
     private Widget getEditorWidget(final RuleAttribute at, final int idx) {
         if (at.attributeName.equals( "no-loop" )) {
             return getRemoveIcon( idx );
         }
         
+        Widget editor = null;
+        
+        if (at.attributeName.equals( "enabled" ) 
+                || at.attributeName.equals( "auto-focus" )
+                || at.attributeName.equals( "lock-on-active" )) {
+            editor = checkBoxEditor( at );
+        } else {
+            editor = textBoxEditor( at );
+        }
+        
+        
+        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
+        horiz.add( editor );
+        horiz.add( getRemoveIcon( idx ) );        
+        
+        return horiz;
+        
+    }
+
+    private Widget checkBoxEditor(final RuleAttribute at) {
+        final CheckBox box = new CheckBox();
+        if (at.value == null) {
+            box.setChecked( true );
+            at.value = "true";
+        } else {
+            box.setChecked( ( at.value.equals( "true" ) ? true : false) );  
+        }
+        
+        
+        box.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                at.value = (box.isChecked()) ? "true" : "false";
+            }
+        });
+        return box;
+    }
+
+    private TextBox textBoxEditor(final RuleAttribute at) {
         final TextBox box = new TextBox();
         box.setVisibleLength( (at.value.length() < 3) ? 3 : at.value.length() );
         box.setText( at.value );
@@ -55,9 +118,14 @@ public class RuleAttributeWidget extends DirtyableComposite {
                 makeDirty();
             }
         });
-        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
-        horiz.add( box );
-        horiz.add( getRemoveIcon( idx ) );
+        
+        if (at.attributeName.equals( "date-effective" ) || at.attributeName.equals( "date-expires" )) {
+            if (at.value == null || "".equals( at.value )) box.setText( "dd-MMM-yyyy" );
+                
+            box.setVisibleLength( 10 );
+        }
+        
+
         
         box.addKeyboardListener( new KeyboardListener() {
 
@@ -81,8 +149,7 @@ public class RuleAttributeWidget extends DirtyableComposite {
             }
             
         });
-        
-        return horiz;
+        return box;
     }
 
     private Image getRemoveIcon(final int idx) {

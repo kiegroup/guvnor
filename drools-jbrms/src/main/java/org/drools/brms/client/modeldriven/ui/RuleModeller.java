@@ -121,21 +121,7 @@ public class RuleModeller extends DirtyableComposite {
 
     protected void showAttributeSelector(Widget w) {
         final FormStylePopup pop = new FormStylePopup("images/config.png", "Add an option to the rule");
-        final ListBox list = new ListBox();
-        list.addItem( "Choose..." );
-        
-        list.addItem( "salience" );
-        list.addItem( "enabled" );
-        list.addItem( "date-effective" );
-        list.addItem( "date-expires" );
-        list.addItem( "no-loop" );
-        list.addItem( "agenda-group" );
-        list.addItem( "activation-group" );
-        list.addItem( "duration" );
-        list.addItem( "auto-focus" ); 
-        list.addItem( "lock-on-active" );
-        list.addItem( "ruleflow-group" );
-        list.addItem( "dialect" );
+        final ListBox list = RuleAttributeWidget.getAttributeList();
         
         list.setSelectedIndex( 0 );
         
