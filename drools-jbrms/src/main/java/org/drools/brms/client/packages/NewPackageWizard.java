@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.FormHandler;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormSubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormSubmitEvent;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextArea;
@@ -50,8 +51,18 @@ public class NewPackageWizard extends FormStylePopup {
         this.afterCreatedEvent = afterCreatedEvent;
         
         
+        newPackageLayout.addRow( new HTML("<i><small>Create a new package in the BRMS</small></i>") );
+        importLayout.addRow( new HTML("<i><small>Importing a package from an existing DRL will create the package in the BRMS if it " +
+                "does not already exist. If it does exist, any new rules found will be merged into the BRMS package.</small></i>") );
+        importLayout.addRow( new HTML("<i><small>Any new rules created will not have any categories assigned initially, " +
+                "but rules will be stored individually (ie normalised). Functions, queries, imports etc will show up in the package configuration.</small></i>") );
+        importLayout.addRow( new HTML("<i><small>Any DSLs or models required by the imported package will need to be uploaded seperately.</small></i>") );
+        
+        
         newPackageLayout.addAttribute( "Name:", nameBox );
         newPackageLayout.addAttribute( "Description:", descBox );
+        
+        
         
         nameBox.setTitle( "The name of the package. Avoid spaces, use underscore instead." );
         
