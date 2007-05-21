@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
@@ -245,12 +246,25 @@ public class RuleViewer extends Composite {
     protected void doCloseUnsavedWarning() {
         final FormStylePopup pop = new FormStylePopup("images/warning-large.png", "WARNING: Un-committed changes.");
         Button dis = new Button("Discard");
+        Button can = new Button("Cancel");
+        HorizontalPanel hor =  new HorizontalPanel();
+        
+        hor.add( dis );
+        hor.add( can );
+        
         pop.addRow( new HTML("Are you sure you want to discard changes?") );
-        pop.addRow( dis );
+        pop.addRow( hor );
+        
         
         dis.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 closeCommand.execute();
+                pop.hide();
+            }
+        });
+        
+        can.addClickListener( new ClickListener () {
+            public void onClick(Widget w) {
                 pop.hide();
             }
         });
