@@ -41,11 +41,13 @@ public class PackageEditor extends FormStyleLayout {
     private PackageConfigData conf;
     private HTML status;
     protected ValidatedResponse previousResponse;
+    private Command refreshCommand;
 
-    public PackageEditor(PackageConfigData data, Command dCommand, Command cCommand) {
+    public PackageEditor(PackageConfigData data, Command dCommand, Command cCommand, Command command) {
         this.conf = data;
         this.dirtyCommand = dCommand;
         this.cleanCommand = cCommand;
+        this.refreshCommand = command;
         
         setStyleName( "package-Editor" );
         setWidth( "100%" );
@@ -164,21 +166,14 @@ public class PackageEditor extends FormStyleLayout {
             Button archive = new Button("Archive");
             archive.addClickListener(new ClickListener() {
                 public void onClick(Widget w) {
-                    YesNoDialog diag = new YesNoDialog("Are you sure you want to archive (remove) this package?", new Command() {
-                        public void execute() {
-                            conf.archived = true;
-                            doSaveAction();
-                            PackageExplorerWidget local = (PackageExplorerWidget) getParent().getParent();
-                            local.refreshTreeView();
-                        }                        
-                    });
-                    diag.setPopupPosition(Window.getClientWidth() / 2, Window.getClientHeight() / 2);
-                    diag.show();
+                    if ( Window.confirm( "Are you sure you want to archive (remove) this package?" ) ) {
+                        conf.archived = true;
+                        doSaveAction();
+                        refreshCommand.execute();
+                    }
                 }
             });
             horiz.add(archive);
-        
-                
         return horiz;
     }
 

@@ -4,7 +4,6 @@ import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.FormStyleLayout;
-import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.PackageConfigData;
@@ -27,8 +26,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.StackPanel;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeListener;
@@ -397,10 +394,10 @@ public class PackageExplorerWidget extends DirtyableComposite {
                 
                 sp.add( infoLayout, "<img src='images/information.gif'/>Info", true );
                 if (!conf.isSnapshot) {
-                    sp.add( new PackageEditor(conf, makeDirtyCommand, cleanDirtyCommand ), "<img src='images/package.gif'/>Edit Package configuration", true);
+                    sp.add( new PackageEditor(conf, makeDirtyCommand, cleanDirtyCommand, refreshCommand), "<img src='images/package.gif'/>Edit Package configuration", true);
                     sp.add( new PackageBuilderWidget(conf, editEvent), "<img src='images/package_build.gif'/>Build, validate and deploy", true );
                 } else {
-                    sp.add(new PackageEditor(conf, makeDirtyCommand, cleanDirtyCommand)
+                    sp.add(new PackageEditor(conf, makeDirtyCommand, cleanDirtyCommand, refreshCommand)
                     ,  "<img src='images/package.gif'/>View Package configuration", true);
                     
                 }
@@ -412,6 +409,12 @@ public class PackageExplorerWidget extends DirtyableComposite {
         });
         
     }
+    
+    Command refreshCommand =  new Command () {
+            public void execute() {
+                refreshTreeView();
+            }
+    };
 
 
 
