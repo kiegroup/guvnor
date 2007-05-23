@@ -8,6 +8,7 @@ import java.util.jar.JarInputStream;
 import junit.framework.TestCase;
 
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.rule.Package;
 
 public class BRMSPackageBuilderTest extends TestCase {
@@ -70,6 +71,20 @@ public class BRMSPackageBuilderTest extends TestCase {
         assertFalse(builder.hasErrors());
         
         
+    }
+    
+    public void testHasDSL() {
+        BRMSPackageBuilder builder = new BRMSPackageBuilder(null);
+        assertFalse(builder.hasDSL());
+    }
+    
+    public void testGetExpander() {
+        BRMSPackageBuilder builder = new BRMSPackageBuilder(null);
+        List<DSLMappingFile> files = new ArrayList<DSLMappingFile>();
+        files.add( new DSLMappingFile() );
+        builder.setDSLFiles( files );
+        assertTrue(builder.hasDSL());
+        assertNotNull(builder.getDSLExpander());
     }
     
 

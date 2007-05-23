@@ -67,16 +67,13 @@ public class DSLRuleContentHandler extends ContentHandler implements IRuleAsset 
     }
 
     private DefaultExpander getExpander(BRMSPackageBuilder builder, AssetItem asset, ContentPackageAssembler.ErrorLogger logger) {
-        List<DSLMappingFile> dsls = builder.getDSLMappingFiles();
-        if (dsls == null || dsls.size() == 0) {
+        
+        if (!builder.hasDSL()) {
             logger.logError( new ContentAssemblyError(asset, "This rule asset requires a DSL, yet none were configured in the package.") );
         }
         
-        DefaultExpander expander = new DefaultExpander();
-        for ( DSLMappingFile file : dsls ) {
-            expander.addDSLMapping( file.getMapping() );
-        }
-        return expander;
+
+        return builder.getDSLExpander();
     }
 
     public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset, StringBuffer buf) {
@@ -86,10 +83,7 @@ public class DSLRuleContentHandler extends ContentHandler implements IRuleAsset 
             source = wrapRule( asset, source );
         }
         
-        DefaultExpander expander = new DefaultExpander();
-        for ( DSLMappingFile file : builder.getDSLMappingFiles()) {
-            expander.addDSLMapping( file.getMapping() );
-        }        
+        DefaultExpander expander = builder.getDSLExpander();    
         buf.append( expander.expand( source ) );
         
     }

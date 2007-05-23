@@ -10,6 +10,14 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brxml.ActionSetField;
+import org.drools.brms.client.modeldriven.brxml.DSLSentence;
+import org.drools.brms.client.modeldriven.brxml.FactPattern;
+import org.drools.brms.client.modeldriven.brxml.RuleModel;
+import org.drools.brms.server.ServiceImplementation;
+import org.drools.brms.server.util.BRXMLPersistence;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -403,6 +411,53 @@ public class ContentPackageAssemblerTest extends TestCase {
         drl = asm.getDRL();
         assertNotNull(drl);
         assertContains( "Driverx", drl);
+        
+    }
+    
+    public void testBRXMLWithDSLMixedIn() throws Exception {
+        RulesRepository repo = getRepo();
+
+        //create our package
+        PackageItem pkg = repo.createPackage( "testBRXMLWithDSLMixedIn", "" );
+        pkg.updateHeader( "import org.drools.Person" );
+        AssetItem rule2 = pkg.addAsset( "rule2", "" );
+        rule2.updateFormat( AssetFormats.BUSINESS_RULE );
+        
+        AssetItem dsl = pkg.addAsset( "MyDSL", "" );
+        dsl.updateFormat( AssetFormats.DSL );
+        dsl.updateContent( "[when]This is a sentence=Person()\n[then]say {hello}=System.err.println({hello});" );
+        dsl.checkin( "" );
+        
+        RuleModel model = new RuleModel();
+        model.name = "rule2";
+        FactPattern pattern = new FactPattern("Person");
+        pattern.boundName = "p";
+        ActionSetField action = new ActionSetField("p");
+        ActionFieldValue value = new ActionFieldValue("age", "42", SuggestionCompletionEngine.TYPE_NUMERIC );
+        action.addFieldValue( value );
+        
+        model.addLhsItem( pattern );
+        model.addRhsItem( action );
+        
+        DSLSentence dslCondition = new DSLSentence();
+        dslCondition.sentence = "This is a sentence";
+        
+        model.addLhsItem( dslCondition );
+        
+        DSLSentence dslAction = new DSLSentence();
+        dslAction.sentence = "say {42}";
+        
+        model.addRhsItem( dslAction );
+        
+        rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
+        rule2.checkin( "" );
+        repo.save();
+        
+        pkg = repo.loadPackage( "testBRXMLWithDSLMixedIn" );
+        ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
+        assertFalse(asm.hasErrors());
+        
+        
         
     }
     

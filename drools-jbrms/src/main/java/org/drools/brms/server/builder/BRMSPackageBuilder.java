@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -14,6 +15,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLMappingParseException;
+import org.drools.lang.dsl.DefaultExpander;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
@@ -30,6 +32,7 @@ import org.drools.resource.util.ByteArrayClassLoader;
 public class BRMSPackageBuilder extends PackageBuilder {
 
     private List<DSLMappingFile> dslFiles;
+    private DefaultExpander expander;
     
     /**
      * This will give you a fresh new PackageBuilder 
@@ -83,11 +86,11 @@ public class BRMSPackageBuilder extends PackageBuilder {
     }
 
     public void setDSLFiles(List<DSLMappingFile> files) {
-        this.dslFiles = files;
+        this.dslFiles = files;        
     }
     
     public List<DSLMappingFile> getDSLMappingFiles() {
-        return this.dslFiles;
+        return Collections.unmodifiableList( this.dslFiles );
     }
     
     /**
@@ -145,6 +148,26 @@ public class BRMSPackageBuilder extends PackageBuilder {
      */
     public static interface DSLErrorEvent {
         public void recordError(AssetItem asset, String message);
+    }
+    
+    /**
+     * Returns true if this package uses a DSL.
+     */
+    public boolean hasDSL() {
+        return this.dslFiles != null && this.dslFiles.size() > 0;
+    }
+
+    /**
+     * Returns an expander for DSLs (only if there is a DSL configured for this package).
+     */
+    public DefaultExpander getDSLExpander() {
+        if (this.expander == null) {
+            expander = new DefaultExpander();
+            for ( DSLMappingFile file : this.dslFiles ) {
+                expander.addDSLMapping( file.getMapping() );
+            }
+        }
+        return expander;
     }
 
 }

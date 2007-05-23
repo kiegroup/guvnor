@@ -239,7 +239,7 @@ public class RuleModeller extends DirtyableComposite {
         }
         ceBox.setSelectedIndex( 0 );
         
-        if (ces.length > 0) popup.addAttribute( "Condition type", ceBox );
+        if (facts.length > 0) popup.addAttribute( "Condition type", ceBox );
         ceBox.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 String s = ceBox.getValue( ceBox.getSelectedIndex() );

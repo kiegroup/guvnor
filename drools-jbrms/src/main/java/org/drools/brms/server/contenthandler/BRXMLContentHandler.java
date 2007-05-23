@@ -40,17 +40,20 @@ public class BRXMLContentHandler extends ContentHandler implements IRuleAsset {
 
     public void compile(BRMSPackageBuilder builder, AssetItem asset, ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
                                                                     IOException {
-        builder.addPackageFromDrl( new StringReader(getSourceDRL( asset ) ) );
+        builder.addPackageFromDrl( new StringReader(getSourceDRL( asset, builder ) ) );
     }
 
     public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset, StringBuffer buf) {
-        String drl = getSourceDRL( asset );
+        String drl = getSourceDRL( asset, builder );
         buf.append( drl );
     }
 
-    private String getSourceDRL(AssetItem asset) {
+    private String getSourceDRL(AssetItem asset, BRMSPackageBuilder builder) {
         RuleModel model = BRXMLPersistence.getInstance().unmarshal( asset.getContent() );
         String drl = BRDRLPersistence.getInstance().marshal( model );
+        if (builder.hasDSL()) {
+            drl = builder.getDSLExpander().expand( drl );
+        }
         return drl;
     }
 }
