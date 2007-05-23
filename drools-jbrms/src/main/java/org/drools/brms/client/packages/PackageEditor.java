@@ -1,6 +1,7 @@
 package org.drools.brms.client.packages;
 
 import org.drools.brms.client.common.FormStyleLayout;
+import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.LoadingPopup;
@@ -174,10 +175,53 @@ public class PackageEditor extends FormStyleLayout {
                 }
             });
             horiz.add(archive);
+            
+            
+            Button copy = new Button("Copy");
+            copy.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                    showCopyDialog();
+                }
+            } );
+            
+            horiz.add( copy );
+            
         return horiz;
     }
 
 
+
+    /**
+     * Will show a copy dialog for copying the whole package.
+     */
+    private void showCopyDialog() {
+        final FormStylePopup pop = new FormStylePopup("images/new_wiz.gif", "Copy the package");
+        pop.addRow( new HTML("<i>Copy the package and all its assets. A new unique name is required.</i>") );
+        final TextBox name = new TextBox();
+        pop.addAttribute( "New package name:", name );
+        Button ok = new Button("OK");
+        pop.addAttribute( "", ok );
+        
+        ok.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                RepositoryServiceFactory.getService().copyPackage( conf.name, name.getText(), new GenericCallback() {
+                    public void onSuccess(Object data) {
+                        Window.alert( "Package copied successfully. Please refresh to reload the list of packages." );
+                        pop.hide();
+                    }
+                });
+            }
+        } );
+        
+        pop.setWidth( "40%" );
+        pop.setPopupPosition( Window.getClientWidth() / 3, Window.getClientHeight() / 3 );
+        pop.show();
+        
+    }
+
+    protected void doCopyPackage(String name) {
+        
+    }
 
     private void doSaveAction() {
         LoadingPopup.showMessage( "Saving package configuration. Please wait ..." );

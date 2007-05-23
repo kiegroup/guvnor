@@ -790,6 +790,16 @@ public class ServiceImplementation
         
     }
 
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void copyPackage(String sourcePackageName, String destPackageName) throws SerializableException {
+        try {
+            repository.copyPackage( sourcePackageName, destPackageName );
+        } catch (RulesRepositoryException e) {
+            log.error( e );
+        }
+    }
+
 
 
 

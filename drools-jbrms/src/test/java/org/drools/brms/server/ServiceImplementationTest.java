@@ -484,6 +484,12 @@ public class ServiceImplementationTest extends TestCase {
         assertEquals( "this is a new package",
                       conf.description );
         assertNotNull( conf.lastModified );
+        
+        pkgs = impl.listPackages();
+        
+        impl.copyPackage( "testCreatePackage", "testCreatePackage_COPY" );
+        
+        assertEquals(pkgs.length + 1, impl.listPackages().length);
     }
 
     public void testLoadPackageConfig() throws Exception {

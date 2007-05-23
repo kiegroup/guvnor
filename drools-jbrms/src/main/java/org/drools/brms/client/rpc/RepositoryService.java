@@ -159,6 +159,13 @@ public interface RepositoryService extends RemoteService {
     
     
     /**
+     * Copy the package (everything).
+     * @param sourcePackageName
+     * @param destPackageName
+     */
+    public void copyPackage(String sourcePackageName, String destPackageName) throws SerializableException;
+    
+    /**
      * This will load a list of snapshots for the given package. Snapshots are created 
      * by taking a labelled copy of a package, at a point in time, for instance for deployment.
      */
