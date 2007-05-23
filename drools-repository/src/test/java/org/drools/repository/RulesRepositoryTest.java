@@ -329,6 +329,33 @@ public class RulesRepositoryTest extends TestCase {
         assertFalse(uuid.equals( item.getUUID() ));
     }
     
+    public void testCopyPackage() throws Exception {
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+        PackageItem source = repo.createPackage( "testCopyPackage", "asset" );
+        AssetItem item = source.addAsset( "testCopyPackage", "desc" );
+        item.updateContent( "la" );
+        item.checkin( "" );
+        repo.save();
+        
+        repo.copyPackage( "testCopyPackage", "testCopyPackage2" );
+        PackageItem dest = repo.loadPackage( "testCopyPackage2" );
+        assertNotNull(dest);
+        assertFalse( source.getUUID().equals( dest.getUUID() ));
+        
+        assertEquals(1, iteratorToList( dest.getAssets()).size());
+        
+        try {
+            repo.copyPackage( "testCopyPackage", "testCopyPackage2" );
+            fail("should not be able to copy when existing.");
+            
+        } catch (RulesRepositoryException e) {
+            assertNotNull(e.getMessage());
+        }
+        
+        
+    }
+    
+    
     public void testListStates()  {
         RulesRepository repo = RepositorySessionUtil.getRepository();
         StateItem[] items = repo.listStates();
