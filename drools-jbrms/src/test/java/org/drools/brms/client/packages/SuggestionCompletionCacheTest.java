@@ -18,10 +18,10 @@ public class SuggestionCompletionCacheTest extends TestCase {
     }
     
     public void testCache() {
-        SuggestionCompletionCache cache = SuggestionCompletionCache.getInstance();
-        assertSame(cache, SuggestionCompletionCache.getInstance());
+        SuggestionCompletionCache cache1 = SuggestionCompletionCache.getInstance();
+        assertSame(cache1, SuggestionCompletionCache.getInstance());
         
-        cache = new SuggestionCompletionCache() {
+        final SuggestionCompletionCache cache = new SuggestionCompletionCache() {
             
             void loadPackage(String packageName,
                              Command command) {
@@ -50,8 +50,14 @@ public class SuggestionCompletionCacheTest extends TestCase {
         
         assertNotNull(cache.getEngineFromCache( "foo" ));
         
-        cache.removePackage( "foo" );
-        assertFalse(cache.cache.containsKey( "foo" ));
+        cache.refreshPackage( "foo", new Command() {
+
+            public void execute() {
+                                
+            }
+            
+        });
+        
         
         
         

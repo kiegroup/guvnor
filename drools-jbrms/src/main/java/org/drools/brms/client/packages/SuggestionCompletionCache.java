@@ -72,8 +72,14 @@ public class SuggestionCompletionCache {
     /**
      * Removed the package from the cache, causing it to be loaded the next time.
      */
-    public void removePackage(String packageName) {
-        cache.remove( packageName );
+    public void refreshPackage(String packageName, Command done) {
+        if (cache.containsKey( packageName )) {
+            cache.remove( packageName );
+            loadPackage( packageName, done );            
+        } else {
+            done.execute();
+        }
+        
     }
     
 }

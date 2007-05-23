@@ -233,15 +233,16 @@ public class PackageEditor extends FormStyleLayout {
                 previousResponse = (ValidatedResponse) data;
                 
                 reload();
-                SuggestionCompletionCache.getInstance().removePackage( conf.name );
-                LoadingPopup.showMessage( "Package configuration updated successfully" );
-                Timer t = new Timer() {
-                    public void run() {
+                LoadingPopup.showMessage( "Package configuration updated successfully, refreshing content cache..." );
+                
+                SuggestionCompletionCache.getInstance().refreshPackage( conf.name, new Command() {
+                    public void execute() {
                         LoadingPopup.close();
                     }
-                    
-                };
-                t.schedule( 2000 );
+                });
+                
+                
+                
                 
             }            
         });

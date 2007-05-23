@@ -198,8 +198,13 @@ public class RuleViewer extends Composite {
      * The user will still need to reload the asset editor though.
      */
     public void flushSuggestionCompletionCache() {
+        LoadingPopup.showMessage( "Refreshing content assistance..." );
         if (AssetFormats.isPackageDependency( this.asset.metaData.format) ) {
-            SuggestionCompletionCache.getInstance().removePackage( this.asset.metaData.packageName );
+            SuggestionCompletionCache.getInstance().refreshPackage( this.asset.metaData.packageName, new Command() {
+                public void execute() {
+                    LoadingPopup.close();                    
+                }
+            });
         }
     }
     
