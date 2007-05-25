@@ -46,7 +46,7 @@
 	          <fileset>
 	            <directory>./</directory>
 	            <includes>
-	              <include>repository**/*</include>
+	              <include>.gwt-cache</include>
 				  <include>repository.xml</include>
 				  <include>repository</include>				
 	            </includes>
