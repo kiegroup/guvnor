@@ -70,23 +70,11 @@ public class RuleViewer extends Composite {
      */
     private void doWidgets() {
         this.layout.clear();
-        
-        metaWidget = new MetaDataWidget( this.asset.metaData, readOnly, this.asset.uuid, new Command() {
-            public void execute() {
-                refreshDataAndView();
-            }
-            
-        });
 
-        //now the main layout table
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
-        layout.setWidget( 0, 1, metaWidget );
+
         
-        formatter.setRowSpan( 0, 1, 3 );
-        formatter.setVerticalAlignment( 0, 1, HasVerticalAlignment.ALIGN_TOP );
-        formatter.setWidth( 0, 1, "30%" );
-        
-        //and now the action widgets (checkin/close etc).
+        //the action widgets (checkin/close etc).
         toolbar = new ActionToolbar( asset,
                                      new Command() {
                 public void execute() {
@@ -113,6 +101,22 @@ public class RuleViewer extends Composite {
         
         layout.setWidget( 0, 0, toolbar );
         formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
+        
+        
+        metaWidget = new MetaDataWidget( this.asset.metaData, readOnly, this.asset.uuid, new Command() {
+            public void execute() {
+                refreshDataAndView();
+            }
+            
+        });
+
+        //now the main layout table
+        layout.setWidget( 0, 1, metaWidget );
+        
+        formatter.setRowSpan( 0, 1, 3 );
+        formatter.setVerticalAlignment( 0, 1, HasVerticalAlignment.ALIGN_TOP );
+        formatter.setWidth( 0, 1, "30%" );
+        
 
         //REMEMBER: subsequent rows have only one column, doh that is confusing ! 
         //GAAAAAAAAAAAAAAAAAAAAAAAAAAH
@@ -198,8 +202,8 @@ public class RuleViewer extends Composite {
      * The user will still need to reload the asset editor though.
      */
     public void flushSuggestionCompletionCache() {
-        LoadingPopup.showMessage( "Refreshing content assistance..." );
         if (AssetFormats.isPackageDependency( this.asset.metaData.format) ) {
+            LoadingPopup.showMessage( "Refreshing content assistance..." );
             SuggestionCompletionCache.getInstance().refreshPackage( this.asset.metaData.packageName, new Command() {
                 public void execute() {
                     LoadingPopup.close();                    
