@@ -51,7 +51,6 @@ public class CategoryItem extends Item {
      */
     public String getFullPath() throws RulesRepositoryException {        
         try {
-            log.debug("getting full path for node named: " + this.node.getName());
             
             StringBuffer returnString = new StringBuffer();
             returnString.append(this.node.getName());

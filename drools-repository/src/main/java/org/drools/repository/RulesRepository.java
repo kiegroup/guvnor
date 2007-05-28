@@ -642,7 +642,6 @@ public class RulesRepository {
         if ( tagName == null || "".equals( tagName ) ) {
             throw new RuntimeException( "Empty category name not permitted." );
         }
-        log.debug( "getting tag with name: " + tagName );
 
         try {
             Node folderNode = this.getAreaNode( TAG_AREA );
