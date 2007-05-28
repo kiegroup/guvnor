@@ -1020,6 +1020,12 @@ public class ServiceImplementationTest extends TestCase {
         pkg = repo.loadPackage( "testBinaryPackageCompileBRXML" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
 
+        //Here is where we write it out if needed... UNCOMMENT if needed for the binary test
+//        FileOutputStream out = new FileOutputStream("/home/michael/RepoBinPackage.pkg");
+//        out.write( binPackage );
+//        out.flush();
+//        out.close();
+        
         assertNotNull(binPackage);
         
         

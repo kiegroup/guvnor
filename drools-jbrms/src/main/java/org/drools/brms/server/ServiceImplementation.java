@@ -215,7 +215,7 @@ public class ServiceImplementation
 
         List list = repository.findAssetsByCategory( categoryPath );
         TableDisplayHandler handler = new TableDisplayHandler();
-        log.info("time for load: " + (System.currentTimeMillis() - start) );
+        //log.info("time for load: " + (System.currentTimeMillis() - start) );
         return handler.loadRuleListTable( list.iterator(), -1 );
         
     }
