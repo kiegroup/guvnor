@@ -27,20 +27,24 @@ public class HumanReadable {
         operatorDisplayMap.put( ">", "greater than" );
         operatorDisplayMap.put( ">=", "greater than or equal to" );
         
-        operatorDisplayMap.put( "| ==", "or equal to" );
-        operatorDisplayMap.put( "| !=", "or not equal to" );
-        operatorDisplayMap.put( "& !=", "and not equal to" );
-        operatorDisplayMap.put( "& >", "and greater than" );
-        operatorDisplayMap.put( "| >=", "or greater than (or equal to)" );
-        operatorDisplayMap.put( "| <=", "or less than (or equal to)" );
-        operatorDisplayMap.put( "& >=", "and greater than (or equal to)" );
-        operatorDisplayMap.put( "& <=", "or less than (or equal to)" );
-        operatorDisplayMap.put( "& contains", "and contains" );
-        operatorDisplayMap.put( "| contains", "or contains" );
-        operatorDisplayMap.put( "& matches", "and matches" );
-        operatorDisplayMap.put( "| matches", "or matches" );
-        operatorDisplayMap.put( "| excludes", "or excludes" );
-        operatorDisplayMap.put( "& excludes", "and excludes" );
+        operatorDisplayMap.put( "|| ==", "or equal to" );
+        operatorDisplayMap.put( "|| !=", "or not equal to" );
+        operatorDisplayMap.put( "&& !=", "and not equal to" );
+        operatorDisplayMap.put( "&& >", "and greater than" );
+        operatorDisplayMap.put( "&& <", "and less than" );
+        operatorDisplayMap.put( "|| >", "or greater than" );
+        operatorDisplayMap.put( "|| <", "or less than" );
+        
+        operatorDisplayMap.put( "|| >=", "or greater than (or equal to)" );
+        operatorDisplayMap.put( "|| <=", "or less than (or equal to)" );
+        operatorDisplayMap.put( "&& >=", "and greater than (or equal to)" );
+        operatorDisplayMap.put( "&& <=", "or less than (or equal to)" );
+        operatorDisplayMap.put( "&& contains", "and contains" );
+        operatorDisplayMap.put( "|| contains", "or contains" );
+        operatorDisplayMap.put( "&& matches", "and matches" );
+        operatorDisplayMap.put( "|| matches", "or matches" );
+        operatorDisplayMap.put( "|| excludes", "or excludes" );
+        operatorDisplayMap.put( "&& excludes", "and excludes" );
     
         
         ceDisplayMap.put( "not", "There is no" );

@@ -7,8 +7,8 @@ import org.drools.brms.client.common.FieldEditListener;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.InfoPopup;
 import org.drools.brms.client.common.Lbl;
-import org.drools.brms.client.modeldriven.brxml.Constraint;
-import org.drools.brms.client.modeldriven.brxml.IConstraint;
+import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
+import org.drools.brms.client.modeldriven.brxml.ISingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 
 import com.google.gwt.user.client.Command;
@@ -35,14 +35,14 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ConstraintValueEditor extends DirtyableComposite {
 
-    private IConstraint constraint;
+    private ISingleFieldConstraint constraint;
     private Panel      panel;
     private RuleModel model;
 
     /**
      * @param con The constraint being edited.
      */
-    public ConstraintValueEditor(IConstraint con, RuleModel model) {
+    public ConstraintValueEditor(ISingleFieldConstraint con, RuleModel model) {
         this.constraint = con;
         this.model = model;
         panel = new SimplePanel();
@@ -53,7 +53,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private void refreshEditor() {
         panel.clear();
 
-        if ( constraint.constraintValueType == Constraint.TYPE_UNDEFINED ) {
+        if ( constraint.constraintValueType == SingleFieldConstraint.TYPE_UNDEFINED ) {
             Image clickme = new Image( "images/edit.gif" );
             clickme.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
@@ -63,13 +63,13 @@ public class ConstraintValueEditor extends DirtyableComposite {
             panel.add( clickme );
         } else {
             switch ( constraint.constraintValueType ) {
-                case Constraint.TYPE_LITERAL :
+                case SingleFieldConstraint.TYPE_LITERAL :
                     panel.add( literalEditor() );
                     break;
-                case Constraint.TYPE_RET_VALUE :
+                case SingleFieldConstraint.TYPE_RET_VALUE :
                     panel.add( returnValueEditor() );
                     break;
-                case Constraint.TYPE_VARIABLE :
+                case SingleFieldConstraint.TYPE_VARIABLE :
                     panel.add( variableEditor() );
                     break;
                 default :
@@ -125,7 +125,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         return box;
     }
 
-    private TextBox boundTextBox(final IConstraint c) {
+    private TextBox boundTextBox(final ISingleFieldConstraint c) {
         final TextBox box = new TextBox();
         box.setStyleName( "constraint-value-Editor" );
         box.setText( c.value );
@@ -157,14 +157,14 @@ public class ConstraintValueEditor extends DirtyableComposite {
     /**
      * Show a list of possibilities for the value type. 
      */
-    private void showTypeChoice(Widget w, final IConstraint con) {
+    private void showTypeChoice(Widget w, final ISingleFieldConstraint con) {
         final FormStylePopup form = new FormStylePopup( "images/newex_wiz.gif",
                                                         "Field value" );
 
         Button lit = new Button( "Literal value" );
         lit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                con.constraintValueType = Constraint.TYPE_LITERAL;
+                con.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
                 doTypeChosen( form );
             }
 
@@ -184,7 +184,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
             Button variable = new Button("Bound variable");
             variable.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                    con.constraintValueType = Constraint.TYPE_VARIABLE;
+                    con.constraintValueType = SingleFieldConstraint.TYPE_VARIABLE;
                     doTypeChosen( form );
                 }
             });
@@ -194,7 +194,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         Button formula = new Button( "New formula" );
         formula.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                con.constraintValueType = Constraint.TYPE_RET_VALUE;
+                con.constraintValueType = SingleFieldConstraint.TYPE_RET_VALUE;
                 doTypeChosen( form );
             }
         } );
