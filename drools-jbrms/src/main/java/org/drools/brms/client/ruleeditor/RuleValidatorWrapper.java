@@ -123,12 +123,14 @@ public class RuleValidatorWrapper extends DirtyableComposite {
                 
             }
             ScrollPanel scroll = new ScrollPanel(errTable);
-            scroll.setAlwaysShowScrollBars(true);
-            scroll.setSize("100%","25em");
-                        
+            //scroll.setAlwaysShowScrollBars(true);
+            //scroll.setSize("100%","25em");
+            scroll.setWidth( "100%" );
             //scroll.setScrollPosition( 100 );
-            errTable.setWidth( "100%" );
+            //errTable.setWidth( "60%" );
             pop.addRow( scroll );
+            pop.setWidth( "70%" );
+            pop.setHeight( "50%" );
             
         }
         pop.setPopupPosition( 100, 100 );

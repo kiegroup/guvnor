@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -94,6 +95,25 @@ public class ActionAssertFactWidget extends DirtyableComposite {
                 modeller.refreshWidget();
             }            
         });
+        
+        if (val.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
+            box.addKeyboardListener( new KeyboardListener() {
+    
+                public void onKeyDown(Widget arg0, char arg1, int arg2) {
+
+                }
+    
+                public void onKeyPress(Widget w, char c, int i) {
+                    if (Character.isLetter( c )) {
+                        ((TextBox) w).cancelKey();
+                    } 
+                }
+    
+                public void onKeyUp(Widget arg0, char arg1, int arg2) {
+                }
+                
+            });
+        }        
         return box;
     }
 
@@ -137,7 +157,7 @@ public class ActionAssertFactWidget extends DirtyableComposite {
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 String fieldName = box.getItemText( box.getSelectedIndex() );
-                String fieldType = completions.getFieldType( model.getType(), fieldName );
+                String fieldType = completions.getFieldType( model.factType, fieldName );
                 model.addFieldValue( new ActionFieldValue( fieldName, "", fieldType ) );
                 modeller.refreshWidget();
                 popup.hide();

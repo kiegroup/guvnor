@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -41,6 +42,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
     
     final private String[] fieldCompletions;
     private RuleModeller modeller;
+    private String variableClass;
     
     
     public ActionSetFieldWidget(RuleModeller mod, RuleModel rule, ActionSetField set, SuggestionCompletionEngine com) {
@@ -50,10 +52,12 @@ public class ActionSetFieldWidget extends DirtyableComposite {
         this.modeller = mod;
         layout.setStyleName( "model-builderInner-Background" );
         if (completions.isGlobalVariable( set.variable )) {
-            this.fieldCompletions = completions.getFieldCompletionsForGlobalVariable( set.variable );            
+            this.fieldCompletions = completions.getFieldCompletionsForGlobalVariable( set.variable );  
+            this.variableClass = (String) completions.globalTypes.get( set.variable );
         } else {
             FactPattern pattern = rule.getBoundFact( set.variable );
             this.fieldCompletions = completions.getFieldCompletions( pattern.factType );
+            this.variableClass = pattern.factType;
             this.isBoundFact = true;
         }
         
@@ -133,7 +137,8 @@ public class ActionSetFieldWidget extends DirtyableComposite {
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 String fieldName = box.getItemText( box.getSelectedIndex() );
-                String fieldType = completions.getFieldType( model.getType(), fieldName );
+                
+                String fieldType = completions.getFieldType( variableClass, fieldName );
                 model.addFieldValue( new ActionFieldValue( fieldName, "", fieldType ) );
                 modeller.refreshWidget();
                 popup.hide();
@@ -157,6 +162,25 @@ public class ActionSetFieldWidget extends DirtyableComposite {
         box.setText( val.value );
         if (val.value.length() != 0) {
             box.setVisibleLength( val.value.length() );
+        }
+        
+        if (val.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
+            box.addKeyboardListener( new KeyboardListener() {
+    
+                public void onKeyDown(Widget arg0, char arg1, int arg2) {
+
+                }
+    
+                public void onKeyPress(Widget w, char c, int i) {
+                    if (Character.isLetter( c )) {
+                        ((TextBox) w).cancelKey();
+                    } 
+                }
+    
+                public void onKeyUp(Widget arg0, char arg1, int arg2) {
+                }
+                
+            });
         }
         
         box.addChangeListener( new ChangeListener() {

@@ -17,6 +17,7 @@ import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
+import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
 import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
@@ -1254,6 +1255,59 @@ public class ServiceImplementationTest extends TestCase {
         result = impl.buildAsset( rule );
         assertNull(result);
         
+    }
+    
+    public void testBuildAssetBRXML() throws Exception {
+        ServiceImplementation impl = getService();
+        RulesRepository repo = impl.repository;
+        
+        //create our package
+        PackageItem pkg = repo.createPackage( "testBuildAssetBRXML", "" );
+        AssetItem model = pkg.addAsset( "MyModel", "" );
+        model.updateFormat( AssetFormats.MODEL );
+        model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        model.checkin( "" );
+        
+        pkg.updateHeader( "import com.billasurf.Person" );
+        impl.createCategory( "/", "brxml", "" );
+
+        String uuid = impl.createNewRule( "testBRXML", "", "brxml", "testBuildAssetBRXML", AssetFormats.BUSINESS_RULE );
+        
+        
+        RuleAsset rule = impl.loadRuleAsset( uuid );
+        
+        RuleModel m = (RuleModel) rule.content;
+        assertNotNull(m);
+        m.name = "testBRXML";
+        
+        FactPattern p = new FactPattern("Person");
+        p.boundName = "p";
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.fieldName = "name";
+        con.value = "mark";
+        con.operator = "==";
+        con.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
+        
+        p.addConstraint( con );
+        
+        m.addLhsItem( p );
+        
+        ActionSetField set = new ActionSetField("p");
+        ActionFieldValue f = new ActionFieldValue("name", "42-ngoo", SuggestionCompletionEngine.TYPE_STRING);
+        set.addFieldValue( f );
+        
+        m.addRhsItem( set );
+        
+        impl.checkinVersion( rule );
+        
+        //check its all OK
+        BuilderResult[] result = impl.buildAsset( rule );
+        if (result != null) {
+            for ( int i = 0; i < result.length; i++ ) {
+                System.err.println(result[i].message);
+            }
+        }
+        assertNull(result);        
     }
     
     public void testBuildAssetWithPackageConfigError() throws Exception {

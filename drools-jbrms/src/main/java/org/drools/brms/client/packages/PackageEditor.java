@@ -352,7 +352,7 @@ public class PackageEditor extends FormStyleLayout {
             }
         });
         newFactTemplate.setTitle( "Add a new fact template." );
-        vert.add( newFactTemplate );
+        //vert.add( newFactTemplate );
         
         panel.setWidth( "100%" );
         

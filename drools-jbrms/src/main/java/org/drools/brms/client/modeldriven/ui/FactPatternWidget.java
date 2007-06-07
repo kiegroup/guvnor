@@ -271,8 +271,8 @@ public class FactPatternWidget extends DirtyableComposite {
         
         final ListBox composites = new ListBox();
         composites.addItem("...");
-        composites.addItem( "All of the constraints must be true (And)", CompositeFieldConstraint.COMPOSITE_TYPE_AND );
-        composites.addItem( "Any of the constraints can be true (Or)", CompositeFieldConstraint.COMPOSITE_TYPE_OR );
+        composites.addItem( "All of (And)", CompositeFieldConstraint.COMPOSITE_TYPE_AND );
+        composites.addItem( "Any of (Or)", CompositeFieldConstraint.COMPOSITE_TYPE_OR );
         composites.setSelectedIndex( 0 );
         
         composites.addChangeListener( new ChangeListener() {
@@ -291,7 +291,7 @@ public class FactPatternWidget extends DirtyableComposite {
         HorizontalPanel horiz = new HorizontalPanel();
         horiz.add( composites );
         horiz.add( infoComp );
-        popup.addAttribute( "Add a constraint that combines other constraints", horiz );
+        popup.addAttribute( "Multiple field constraint", horiz );
         
         popup.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
         popup.show();        
@@ -326,8 +326,8 @@ public class FactPatternWidget extends DirtyableComposite {
         
         final ListBox composites = new ListBox();
         composites.addItem("...");
-        composites.addItem( "All of the constraints must be true (And)", CompositeFieldConstraint.COMPOSITE_TYPE_AND );
-        composites.addItem( "Any of the constraints can be true (Or)", CompositeFieldConstraint.COMPOSITE_TYPE_OR );
+        composites.addItem( "All of (And)", CompositeFieldConstraint.COMPOSITE_TYPE_AND );
+        composites.addItem( "Any of (Or)", CompositeFieldConstraint.COMPOSITE_TYPE_OR );
         composites.setSelectedIndex( 0 );
         
         composites.addChangeListener( new ChangeListener() {
@@ -346,7 +346,7 @@ public class FactPatternWidget extends DirtyableComposite {
         HorizontalPanel horiz = new HorizontalPanel();
         horiz.add( composites );
         horiz.add( infoComp );
-        popup.addAttribute( "Add a constraint that combines other constraints", horiz );
+        popup.addAttribute( "Multiple field constraint", horiz );
         
         
         popup.addRow( new HTML("<hr/>") );

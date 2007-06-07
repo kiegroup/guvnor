@@ -88,10 +88,10 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
         for ( int i = 0; i < vars.size(); i++ ) {
             String var = (String) vars.get( i );
+            box.addItem( var );
             if (this.constraint.value != null && this.constraint.value.equals( var )) {
                 box.setSelectedIndex( i );
             }
-            box.addItem( var );
         }
         
         box.addChangeListener( new ChangeListener() {
