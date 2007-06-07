@@ -28,7 +28,7 @@ public abstract class ContentHandler {
             put(AssetFormats.FUNCTION, new FunctionContentHandler());
             put(AssetFormats.MODEL, new ModelContentHandler());
             put(AssetFormats.DECISION_SPREADSHEET_XLS, new DecisionTableXLSHandler());
-            
+            put(AssetFormats.RULE_FLOW_RF, new RuleFlowHandler());
         }};        
     }
     

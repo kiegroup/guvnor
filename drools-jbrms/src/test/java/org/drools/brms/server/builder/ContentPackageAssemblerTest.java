@@ -1,6 +1,8 @@
 package org.drools.brms.server.builder;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -23,6 +25,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.rule.Package;
+import org.drools.ruleflow.core.RuleFlowProcess;
 
 /**
  * This will unit test package assembly into a binary.
@@ -115,7 +118,42 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertTrue(assembler.getErrors().get( 0 ).itemInError.getName().equals( func.getName() ));
         assertNotEmpty(assembler.getErrors().get( 0 ).errorReport);
     }
+    
 
+    public void testPackageWithRuleflow() throws Exception {
+        RulesRepository repo = getRepo();
+        
+        PackageItem pkg = repo.createPackage( "testPackageWithRuleFlow", "" );
+        AssetItem model = pkg.addAsset( "model", "qed" );
+        model.updateFormat( AssetFormats.MODEL );
+        
+        model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        model.checkin( "" );
+        
+        pkg.updateHeader( "import com.billasurf.Board\n global com.billasurf.Person customer" );
+        
+        AssetItem rule1 = pkg.addAsset( "rule_1", "" );
+        rule1.updateFormat( AssetFormats.DRL );
+        rule1.updateContent( "rule 'rule1' \n when Board() \n then customer.setAge(42); \n end"); 
+        rule1.checkin( "" );
+        
+        AssetItem ruleFlow = pkg.addAsset( "ruleFlow", "" );
+        ruleFlow.updateFormat( AssetFormats.RULE_FLOW_RF );
+        
+        ruleFlow.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/ruleflow.rf" ) );
+        ruleFlow.checkin( "" );
+        
+        ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
+        assertFalse(asm.hasErrors());
+        Map flows = asm.getBinaryPackage().getRuleFlows();
+        assertNotNull(flows);
+        
+        assertEquals(1, flows.size());
+        Object flow = flows.values().iterator().next();
+        assertNotNull(flow);
+        assertTrue(flow instanceof RuleFlowProcess);
+        
+    }
     
     public void testSimplePackageBuildNoErrors() throws Exception {
         RulesRepository repo = getRepo();

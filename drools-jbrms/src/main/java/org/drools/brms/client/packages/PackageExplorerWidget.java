@@ -5,6 +5,7 @@ import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
@@ -132,27 +133,17 @@ public class PackageExplorerWidget extends DirtyableComposite {
             }            
         });
         
-        Image uploadModel = new Image("images/model_asset.gif");
+        Image uploadModel = new ImageButton("images/model_asset.gif");
         uploadModel.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                int left = 70;
-                int top = 100;
-                  
-                NewAssetWizard pop = new NewAssetWizard(new EditItemEvent() {
-                    public void open(String key) {                  
-                        editEvent.open( key );                      
-                    }
-                }, false, AssetFormats.MODEL, "Create a new model archive");
-                pop.setPopupPosition( left, top );
-                
-                pop.show();  
+                launchWizard( AssetFormats.MODEL, "Create a new model archive" );
             }            
         });
         uploadModel.setTitle( "This creates a new model archive - models contain classes/types that rules use." );
         
         
         
-        Image newRule = new Image("images/new_rule.gif");
+        Image newRule = new ImageButton("images/new_rule.gif");
         newRule.setTitle( "Create new rule" );
 
         newRule.addClickListener( new ClickListener() {
@@ -173,47 +164,36 @@ public class PackageExplorerWidget extends DirtyableComposite {
             
         });
         
-        final Image newFunction = new Image("images/function_assets.gif");
+        final Image newFunction = new ImageButton("images/function_assets.gif");
         newFunction.setTitle( "Create a new function" );
         newFunction.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                int left = 70;
-                int top = 100;
-                  
-                NewAssetWizard pop = new NewAssetWizard(new EditItemEvent() {
-                    public void open(String key) {                  
-                        editEvent.open( key );                      
-                    }
-                }, false, AssetFormats.FUNCTION, "Create a new function");
-                pop.setPopupPosition( left, top );
-                
-                pop.show();                
+                launchWizard( AssetFormats.FUNCTION, "Create a new function" );
             }
         } );
         
-        final Image newDSL = new Image("images/dsl.gif");
+        final Image newDSL = new ImageButton("images/dsl.gif");
         newDSL.setTitle( "Create a new DSL (language configuration)" );
         newDSL.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                int left = 70;
-                int top = 100;
-                  
-                NewAssetWizard pop = new NewAssetWizard(new EditItemEvent() {
-                    public void open(String key) {                  
-                        editEvent.open( key );                      
-                    }
-                }, false, AssetFormats.DSL, "Create a new language configuration");
-                pop.setPopupPosition( left, top );
-                
-                pop.show();                
+                launchWizard( AssetFormats.DSL, "Create a new language configuration" );
             }
-        } );        
+        } );    
+        
+        final Image newRuleflow = new ImageButton("images/ruleflow_small.gif");
+        newRuleflow.setTitle( "Upload a new ruleflow." );
+        newRuleflow.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                launchWizard(AssetFormats.RULE_FLOW_RF, "Create a new ruleflow");                 
+            }
+        } );
         
         newWizards.add( newPackage );
         newWizards.add( uploadModel );
         newWizards.add( newRule );
         newWizards.add( newFunction );
         newWizards.add( newDSL );
+        newWizards.add( newRuleflow );
         return newWizards;
 
     }
@@ -293,8 +273,8 @@ public class PackageExplorerWidget extends DirtyableComposite {
             }
         }));
         
-        pkg.addItem( makeItem("Business rules", "images/rule_asset.gif", showListEvent(conf.uuid, AssetFormats.BUSINESS_RULE_FORMATS)) );
-        pkg.addItem( makeItem("Technical rules", "images/technical_rule_assets.gif", showListEvent(conf.uuid, AssetFormats.TECHNICAL_RULE_FORMATS)) );
+        pkg.addItem( makeItem("Business rule assets", "images/rule_asset.gif", showListEvent(conf.uuid, AssetFormats.BUSINESS_RULE_FORMATS)) );
+        pkg.addItem( makeItem("Technical rule assets", "images/technical_rule_assets.gif", showListEvent(conf.uuid, AssetFormats.TECHNICAL_RULE_FORMATS)) );
         pkg.addItem( makeItem("Functions", "images/function_assets.gif", showListEvent(conf.uuid, new String[] {AssetFormats.FUNCTION})) );
         pkg.addItem( makeItem("DSL", "images/dsl.gif", showListEvent(conf.uuid, new String[] {AssetFormats.DSL})) );
         pkg.addItem( makeItem("Model", "images/model_asset.gif", showListEvent(conf.uuid, new String[] {AssetFormats.MODEL}) ) );
@@ -426,6 +406,20 @@ public class PackageExplorerWidget extends DirtyableComposite {
         return item;
     }
     
+    private void launchWizard(String format, String title) {
+        int left = 70;
+        int top = 100;
+          
+        NewAssetWizard pop = new NewAssetWizard(new EditItemEvent() {
+            public void open(String key) {                  
+                editEvent.open( key );                      
+            }
+        }, false, format, title);
+        pop.setPopupPosition( left, top );
+        
+        pop.show();
+    }
+
     static class PackageTreeItem {
         Command command;
            

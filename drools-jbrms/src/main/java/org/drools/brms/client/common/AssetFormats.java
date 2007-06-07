@@ -38,11 +38,15 @@ public class AssetFormats {
     /** Use a decision table.*/
     public static final String DECISION_SPREADSHEET_XLS = "xls";
 
+    /** Use a ruleflow.*/
+    public static final String RULE_FLOW_RF = "rf";
+    
+    
     /**
      * The following group the assets together for lists, helpers etc... 
      */
     public static final String[] BUSINESS_RULE_FORMATS = new String[] {AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE, AssetFormats.DECISION_SPREADSHEET_XLS};
-    public static final String[] TECHNICAL_RULE_FORMATS = new String[] {AssetFormats.DRL};
+    public static final String[] TECHNICAL_RULE_FORMATS = new String[] {AssetFormats.DRL, AssetFormats.RULE_FLOW_RF};
     
     /**
      * These define assets that are really package level "things" 

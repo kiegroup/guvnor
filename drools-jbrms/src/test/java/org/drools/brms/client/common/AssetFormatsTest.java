@@ -18,6 +18,19 @@ public class AssetFormatsTest extends TestCase {
                 fail("Incorrect grouping of business rules.");
             }
         }
+        
+        formats = AssetFormats.TECHNICAL_RULE_FORMATS;
+        for ( int i = 0; i < formats.length; i++ ) {
+            String fmt = formats[i];
+            if (! (fmt.equals( AssetFormats.RULE_FLOW_RF )
+                    ||
+                    fmt.equals( AssetFormats.DRL )
+            ) ) {
+                fail("Incorrect grouping of technical rules.");
+            }
+        }        
+        
+        
     }
     
     public void testPackageDependencies() {

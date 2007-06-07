@@ -48,6 +48,8 @@ public class EditorLauncher {
             return new ModelAttachmentFileWidget( asset, viewer );
         } else if (asset.metaData.format.equals( AssetFormats.DECISION_SPREADSHEET_XLS )){
             return new RuleValidatorWrapper(new DecisionTableXLSWidget( asset, viewer ), asset);
+        } else if (asset.metaData.format.equals( AssetFormats.RULE_FLOW_RF )) {
+            return new RuleFlowUploadWidget(asset, viewer);
         } else {
             return new RuleValidatorWrapper(new DefaultRuleContentWidget( asset ), asset);
         }
@@ -65,6 +67,8 @@ public class EditorLauncher {
         result.put( AssetFormats.DECISION_SPREADSHEET_XLS, "spreadsheet_small.gif" );
         result.put( AssetFormats.BUSINESS_RULE, "rule_asset.gif" );
         result.put( AssetFormats.DSL_TEMPLATE_RULE, "rule_asset.gif" );
+        result.put( AssetFormats.RULE_FLOW_RF, "ruleflow_small.gif" );
+        
         
         return result;
     }
