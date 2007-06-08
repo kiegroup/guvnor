@@ -66,7 +66,7 @@ import org.apache.log4j.Logger;
  */
 public class RulesRepository {
 
-    static final String         DEFAULT_PACKAGE       = "default";
+    public static final String         DEFAULT_PACKAGE       = "defaultPackage";
 
     public static final String  DROOLS_URI            = "http://www.jboss.org/drools-repository/1.0";
 

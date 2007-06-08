@@ -129,8 +129,8 @@ public class RuleValidatorWrapper extends DirtyableComposite {
             //scroll.setScrollPosition( 100 );
             //errTable.setWidth( "60%" );
             pop.addRow( scroll );
-            pop.setWidth( "70%" );
-            pop.setHeight( "50%" );
+//            pop.setWidth( "70%" );
+//            pop.setHeight( "50%" );
             
         }
         pop.setPopupPosition( 100, 100 );

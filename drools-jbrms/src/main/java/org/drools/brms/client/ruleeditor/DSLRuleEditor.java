@@ -42,6 +42,7 @@ public class DSLRuleEditor extends Composite {
         text.setHeight("100%");
         text.setVisibleLines(10);
         text.setText(data.content);
+        text.setTitle( "Hint: press control+space for popup assistance, or use one of the icons to the right." );
         SuggestionCompletionEngine eng = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.metaData.packageName );
         this.actions = eng.actionDSLSentences;
         this.conditions = eng.conditionDSLSentences;
@@ -119,8 +120,8 @@ public class DSLRuleEditor extends Composite {
         } else {
             showSuggestions(this.conditions);
         }
-        
     }
+    
 
     private void showSuggestions(DSLSentence[] items) {
         ChoiceList choice = new ChoiceList(items, this);

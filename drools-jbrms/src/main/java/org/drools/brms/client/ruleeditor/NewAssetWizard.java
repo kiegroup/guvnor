@@ -78,6 +78,16 @@ public class NewAssetWizard extends FormStylePopup {
         setStyleName( "ks-popups-Popup" );
     }
 
+    /**
+     * This will create a new asset wizard with the given preselected package.
+     */
+    public NewAssetWizard(
+                          EditItemEvent event, boolean showCategories, String format2, String title, String currentlySelectedPackage) {
+        this(event, showCategories, format2, title);
+        packageSelector.selectPackage(currentlySelectedPackage);
+        
+    }
+
     private Widget getCatChooser() {
        return new CategoryExplorerWidget( new CategorySelectHandler() {
             public void selected(String selectedPath) {

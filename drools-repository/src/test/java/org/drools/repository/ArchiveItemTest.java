@@ -136,7 +136,7 @@ public class ArchiveItemTest extends TestCase {
         assertEquals( 2,
                       list.size() );
 
-        repo.createPackageSnapshot( "default",
+        repo.createPackageSnapshot( RulesRepository.DEFAULT_PACKAGE,
                                     "testFindRulesByName2" );
         repo.save();
 

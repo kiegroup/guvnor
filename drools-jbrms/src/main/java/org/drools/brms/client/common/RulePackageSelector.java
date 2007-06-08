@@ -1,5 +1,7 @@
 package org.drools.brms.client.common;
 
+import java.util.Iterator;
+
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
@@ -14,6 +16,7 @@ import com.google.gwt.user.client.ui.ListBox;
 public class RulePackageSelector extends Composite {
 
     private ListBox packageList;
+    private String currentlySelectedPackage;
     
     public RulePackageSelector() {
         packageList = new ListBox();
@@ -29,6 +32,10 @@ public class RulePackageSelector extends Composite {
 
                 for ( int i = 0; i < list.length; i++ ) {
                     packageList.addItem( list[i].name );
+                    if (currentlySelectedPackage != null &&
+                            list[i].name.equals( currentlySelectedPackage )) {
+                        packageList.setSelectedIndex( i );
+                    }
                 }
                 
             }
@@ -44,6 +51,10 @@ public class RulePackageSelector extends Composite {
      */
     public String getSelectedPackage() {
         return packageList.getItemText( packageList.getSelectedIndex() );
+    }
+
+    public void selectPackage(String currentlySelectedPackage) {
+        this.currentlySelectedPackage = currentlySelectedPackage;
     }
     
 }

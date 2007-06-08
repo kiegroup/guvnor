@@ -374,7 +374,7 @@ public class ServiceImplementationTest extends TestCase {
         String uuid = serv.createNewRule( "testChecking",
                                           "this is a description",
                                           "testCheckinCategory",
-                                          "default",
+                                          RulesRepository.DEFAULT_PACKAGE,
                                           "drl" );
 
         RuleAsset asset = serv.loadRuleAsset( uuid );
@@ -505,7 +505,7 @@ public class ServiceImplementationTest extends TestCase {
         PackageConfigData data = impl.loadPackageConfig( uuid );
         assertNotNull( data );
 
-        assertEquals( "default",
+        assertEquals( RulesRepository.DEFAULT_PACKAGE,
                       data.name );
         assertEquals( "header",
                       data.header );
@@ -520,8 +520,8 @@ public class ServiceImplementationTest extends TestCase {
         
         Thread.sleep( 100 );
         
-        impl.createPackageSnapshot( "default", "TEST SNAP 2.0", false, "ya" );
-        PackageItem loaded = impl.repository.loadPackageSnapshot( "default", "TEST SNAP 2.0" );
+        impl.createPackageSnapshot( RulesRepository.DEFAULT_PACKAGE, "TEST SNAP 2.0", false, "ya" );
+        PackageItem loaded = impl.repository.loadPackageSnapshot( RulesRepository.DEFAULT_PACKAGE, "TEST SNAP 2.0" );
         
         data = impl.loadPackageConfig( loaded.getUUID() );
         assertTrue(data.isSnapshot);
@@ -806,17 +806,17 @@ public class ServiceImplementationTest extends TestCase {
         String uuid = impl.createNewRule( "testCopyAsset",
                                           "",
                                           "templates",
-                                          "default",
+                                          RulesRepository.DEFAULT_PACKAGE,
                                           "drl" );
         String uuid2 = impl.copyAsset( uuid,
-                                       "default",
+                                       RulesRepository.DEFAULT_PACKAGE,
                                        "testCopyAsset2" );
         assertNotSame( uuid,
                        uuid2 );
 
         RuleAsset asset = impl.loadRuleAsset( uuid2 );
         assertNotNull( asset );
-        assertEquals( "default",
+        assertEquals( RulesRepository.DEFAULT_PACKAGE,
                       asset.metaData.packageName );
         assertEquals( "testCopyAsset2",
                       asset.metaData.name );

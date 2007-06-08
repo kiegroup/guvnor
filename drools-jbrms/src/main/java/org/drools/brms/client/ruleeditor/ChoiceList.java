@@ -6,6 +6,7 @@ import org.drools.brms.client.modeldriven.brxml.DSLSentence;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.FocusListener;
 import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -34,6 +35,17 @@ public class ChoiceList extends PopupPanel {
         
         this.sentences = sen;
         filter = new TextBox();
+        filter.setWidth( "100%" );
+        final String defaultMessage = "<enter text to filter list>";
+        filter.setText( defaultMessage );
+        filter.addFocusListener( new FocusListener() {
+            public void onFocus(Widget w) {
+                filter.setText( "" );
+            }
+            public void onLostFocus(Widget w) {
+                filter.setText( defaultMessage );
+            }
+        });
         filter.addKeyboardListener( new KeyboardListener() {
 
             public void onKeyDown(Widget arg0,

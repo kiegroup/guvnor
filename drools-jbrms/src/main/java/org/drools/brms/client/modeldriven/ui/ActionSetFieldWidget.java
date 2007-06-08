@@ -10,6 +10,7 @@ import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brxml.ActionModifyField;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
@@ -113,8 +114,11 @@ public class ActionSetFieldWidget extends DirtyableComposite {
                 showAddFieldPopup(w);
             }
         } );
-        
-        horiz.add( new Lbl(HumanReadable.getActionDisplayName(this.model.getType()) + " [" + model.variable + "]", "modeller-action-Label") );
+        String modifyType = "set";
+        if (this.model instanceof ActionModifyField) {
+            modifyType = "modify";
+        }
+        horiz.add( new Lbl(HumanReadable.getActionDisplayName(modifyType) + " [" + model.variable + "]", "modeller-action-Label") );
         horiz.add( edit );
         
         return horiz;

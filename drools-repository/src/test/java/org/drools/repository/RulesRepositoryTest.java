@@ -33,7 +33,7 @@ public class RulesRepositoryTest extends TestCase {
         
         PackageItem def = repo.loadDefaultPackage();
         assertNotNull(def);
-        assertEquals("default", def.getName());
+        assertEquals(RulesRepository.DEFAULT_PACKAGE, def.getName());
         
         String userId = repo.getSession().getUserID();
         assertNotNull(userId);
@@ -96,7 +96,7 @@ public class RulesRepositoryTest extends TestCase {
         assertEquals(2, list.size());
         
         
-        repo.createPackageSnapshot( "default", "testFindRulesByName" );
+        repo.createPackageSnapshot( RulesRepository.DEFAULT_PACKAGE, "testFindRulesByName" );
         repo.save();
 
         list = iteratorToList(repo.findAssetsByName( "findRulesByNamex2" ));   

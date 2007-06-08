@@ -48,6 +48,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
     private AssetItemListViewer listView;
     private EditItemEvent editEvent;
     private String uuid;
+    private String currentlySelectedPackage;
 
     
     /**
@@ -156,7 +157,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
                   public void open(String key) {                  
                       editEvent.open( key );                      
                   }
-              }, true, null, "Create a new rule asset");
+              }, true, null, "Create a new rule asset", currentlySelectedPackage);
               pop.setPopupPosition( left, top );
               
               pop.show();
@@ -260,6 +261,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
     private void addPackage(final PackageConfigData conf, boolean preSelect) {
         
         TreeItem pkg = makeItem(conf.name, "images/package.gif", new PackageTreeItem(new Command() {
+
             public void execute() {
                 
                 if ( isDirty() ) {
@@ -268,6 +270,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
                         loadPackageConfig(conf.uuid);
                     }
                 } else {
+                    
                     loadPackageConfig(conf.uuid);
                 }
             }
@@ -318,13 +321,15 @@ public class PackageExplorerWidget extends DirtyableComposite {
      */
     private void loadPackageConfig(String uuid) {
         
-
+        LoadingPopup.showMessage( "Loading package information ..." );
+        
         RepositoryServiceFactory.getService().loadPackageConfig( uuid, new GenericCallback() {
 
             public void onSuccess(Object data) {
                 final PackageConfigData conf = (PackageConfigData) data;
                 
                 StackPanel sp = new StackPanel();
+                currentlySelectedPackage = conf.name;
                 
                 FormStyleLayout infoLayout = new FormStyleLayout("images/package_large.png", conf.name);
                 infoLayout.setStyleName( "package-Editor" );
@@ -336,13 +341,15 @@ public class PackageExplorerWidget extends DirtyableComposite {
                     infoLayout.addAttribute( "Snapshot created on:", new Label(conf.lastModified.toLocaleString()) );
                     infoLayout.addAttribute( "Snapshot comment:", new Label(conf.checkinComment) );
                     final String uri = PackageBuilderWidget.getDownloadLink( conf );
-                    Button download = new Button("Download package");
-                    download.addClickListener( new ClickListener() {
-                        public void onClick(Widget arg0) {
-                            Window.open( uri, "downloading...", "resizable=no,scrollbars=yes,status=no" );
-                        }                        
-                    });
-                    infoLayout.addAttribute( "Download package:", download );
+//                    Button download = new Button("Download package");
+//                    download.addClickListener( new ClickListener() {
+//                        public void onClick(Widget arg0) {
+//                            Window.open( uri, "downloading...", "resizable=no,scrollbars=yes,status=no" );
+//                        }                        
+//                    });
+                    
+                    HTML html = new HTML("<a href='" + uri + "' target='_blank'>Download binary package</a>");
+                    infoLayout.addAttribute( "Download package:", html );
                     infoLayout.addAttribute( "Package URI:", new Label(uri) );
                     Button viewSource = new Button("View package source");
                     viewSource.addClickListener( new ClickListener() {
@@ -384,7 +391,8 @@ public class PackageExplorerWidget extends DirtyableComposite {
                 
                 sp.setWidth( "100%" );
                 
-                layout.setWidget( 0, 1, sp );              
+                layout.setWidget( 0, 1, sp );
+                LoadingPopup.close();
             }            
         });
         
@@ -414,7 +422,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
             public void open(String key) {                  
                 editEvent.open( key );                      
             }
-        }, false, format, title);
+        }, false, format, title, currentlySelectedPackage);
         pop.setPopupPosition( left, top );
         
         pop.show();

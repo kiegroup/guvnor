@@ -441,7 +441,7 @@ public class AssetItemTest extends TestCase {
             
             assertEquals("test content", predecessorRuleItem.getContent());
 
-            assertEquals("default", predecessorRuleItem.getPackageName());
+            assertEquals(RulesRepository.DEFAULT_PACKAGE, predecessorRuleItem.getPackageName());
             
             ruleItem1.updateContent("newer lhs");
             ruleItem1.checkin( "another" );

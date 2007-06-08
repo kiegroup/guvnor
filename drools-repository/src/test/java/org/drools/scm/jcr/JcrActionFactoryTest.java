@@ -125,7 +125,7 @@ public class JcrActionFactoryTest extends TestCase {
         long oldVersion = asset.getVersionNumber();
 
         JcrActionFactory fact = new JcrActionFactory( repo );
-        ScmAction action = fact.updateFile( "default",
+        ScmAction action = fact.updateFile( RulesRepository.DEFAULT_PACKAGE,
                                             "testUpdateFilesSVN.drl",
                                             "lala".getBytes(),
                                             "lala2".getBytes() );

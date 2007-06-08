@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -172,16 +173,21 @@ public class PackageBuilderWidget extends Composite {
         
         vert.add( new HTML("<img src='images/tick_green.gif'/><i>Package built successfully.</i>") );
         final String hyp = getDownloadLink(this.conf);
-        Button download = new Button("Download binary package");
-        download.setTitle( "You can download the package here for deployment, or you can use the snapshot deployment feature to have a more permanent downloadable package." );
-        download.addClickListener( new ClickListener()  {
-            public void onClick(Widget arg0) {
-                        Window.open( hyp, "downloading...", "resizable=no,scrollbars=yes,status=no" );
-            }
-        });
         
-        vert.add( download );
         
+        
+        HTML html = new HTML("<a href='" + hyp + "' target='_blank'>Download binary package</a>");
+        
+//        Button download = new Button("Download binary package");
+//        download.setTitle( "You can download the package here for deployment, or you can use the snapshot deployment feature to have a more permanent downloadable package." );
+//        download.addClickListener( new ClickListener()  {
+//            public void onClick(Widget arg0) {
+//                        Window.open( hyp, "downloading...", "resizable=no,scrollbars=yes,status=no" );
+//            }
+//        });
+        
+        //vert.add( download );
+        vert.add( html );
         Button snap = new Button("Create snapshot for deployment");
         snap.addClickListener( new ClickListener() {
             public void onClick(Widget w) {

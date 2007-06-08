@@ -157,20 +157,17 @@ public class PackageEditor extends FormStyleLayout {
             
             save.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                    doSaveAction();                
+                    doSaveAction(null);                
                 }
             } );
-            
             horiz.add( save );
-            
             
             Button archive = new Button("Archive");
             archive.addClickListener(new ClickListener() {
                 public void onClick(Widget w) {
                     if ( Window.confirm( "Are you sure you want to archive (remove) this package?" ) ) {
                         conf.archived = true;
-                        doSaveAction();
-                        refreshCommand.execute();
+                        doSaveAction(refreshCommand);
                     }
                 }
             });
@@ -223,7 +220,7 @@ public class PackageEditor extends FormStyleLayout {
         
     }
 
-    private void doSaveAction() {
+    private void doSaveAction(final Command refresh) {
         LoadingPopup.showMessage( "Saving package configuration. Please wait ..." );
         RepositoryServiceFactory.getService().savePackage( this.conf, new GenericCallback() {
             public void onSuccess(Object data) {
@@ -237,6 +234,9 @@ public class PackageEditor extends FormStyleLayout {
                 
                 SuggestionCompletionCache.getInstance().refreshPackage( conf.name, new Command() {
                     public void execute() {
+                        if (refresh != null) {
+                            refresh.execute();
+                        }
                         LoadingPopup.close();
                     }
                 });
