@@ -932,7 +932,7 @@ public class ServiceImplementationTest extends TestCase {
         pkg.updateHeader( "import org.drools.Person" );
         AssetItem rule1 = pkg.addAsset( "rule_1", "" );
         rule1.updateFormat( AssetFormats.DRL );
-        rule1.updateContent( "rule 'rule1' \n when p:Person() \n then p.setAge(42); \n end"); 
+        rule1.updateContent( "rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end"); 
         rule1.checkin( "" );
         repo.save();
         
