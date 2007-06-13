@@ -8,9 +8,9 @@ import org.drools.brms.client.common.Lbl;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
-import org.drools.brms.client.modeldriven.brxml.ActionAssertLogicalFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertLogicalFact;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -31,15 +31,15 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Neale
  *
  */
-public class ActionAssertFactWidget extends DirtyableComposite {
+public class ActionInsertFactWidget extends DirtyableComposite {
 
     private DirtyableFlexTable layout;
-    private ActionAssertFact model;
+    private ActionInsertFact model;
     private SuggestionCompletionEngine completions;
     private String[] fieldCompletions;
     private RuleModeller modeller;
     
-    public ActionAssertFactWidget(RuleModeller mod, ActionAssertFact set, SuggestionCompletionEngine com) {
+    public ActionInsertFactWidget(RuleModeller mod, ActionInsertFact set, SuggestionCompletionEngine com) {
         this.model = set;
         this.completions = com;
         this.layout = new DirtyableFlexTable();
@@ -136,7 +136,7 @@ public class ActionAssertFactWidget extends DirtyableComposite {
             
 
         String assertType = "assert";
-        if (this.model instanceof ActionAssertLogicalFact) {
+        if (this.model instanceof ActionInsertLogicalFact) {
             assertType = "assertLogical";
         }
         horiz.add( new Lbl(HumanReadable.getActionDisplayName(assertType) + " " + this.model.factType, "modeller-action-Label") );

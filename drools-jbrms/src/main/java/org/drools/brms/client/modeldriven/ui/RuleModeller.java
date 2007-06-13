@@ -13,9 +13,9 @@ import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionAssertFact;
-import org.drools.brms.client.modeldriven.brxml.ActionAssertLogicalFact;
-import org.drools.brms.client.modeldriven.brxml.ActionModifyField;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertLogicalFact;
+import org.drools.brms.client.modeldriven.brxml.ActionUpdateField;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
@@ -155,8 +155,8 @@ public class RuleModeller extends DirtyableComposite {
             Widget w = null;            
             if (action instanceof ActionSetField) {                
                 w =  new ActionSetFieldWidget(this, this.model, (ActionSetField) action, completions ) ; 
-            } else if (action instanceof ActionAssertFact) {
-                w = new ActionAssertFactWidget(this, (ActionAssertFact) action, completions );
+            } else if (action instanceof ActionInsertFact) {
+                w = new ActionInsertFactWidget(this, (ActionInsertFact) action, completions );
             } else if (action instanceof ActionRetractFact) {
                 w = new ActionRetractFactWidget(this.completions, (ActionRetractFact) action );
             } else if (action instanceof DSLSentence) {
@@ -367,7 +367,7 @@ public class RuleModeller extends DirtyableComposite {
         factsToAssert.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                String fact = factsToAssert.getItemText( factsToAssert.getSelectedIndex() );
-               model.addRhsItem( new ActionAssertFact(fact) );
+               model.addRhsItem( new ActionInsertFact(fact) );
                refreshWidget();
                popup.hide();
                 
@@ -377,7 +377,7 @@ public class RuleModeller extends DirtyableComposite {
         factsToLogicallyAssert.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                String fact = factsToLogicallyAssert.getItemText( factsToLogicallyAssert.getSelectedIndex() );
-               model.addRhsItem( new ActionAssertLogicalFact(fact) );
+               model.addRhsItem( new ActionInsertLogicalFact(fact) );
                refreshWidget();
                popup.hide();
                 
@@ -426,7 +426,7 @@ public class RuleModeller extends DirtyableComposite {
 
 
     protected void addModify(String itemText) {
-        this.model.addRhsItem(new ActionModifyField(itemText));
+        this.model.addRhsItem(new ActionUpdateField(itemText));
         refreshWidget(); 
         
     }

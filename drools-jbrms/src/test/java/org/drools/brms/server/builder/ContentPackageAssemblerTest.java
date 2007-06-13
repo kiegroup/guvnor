@@ -432,8 +432,8 @@ public class ContentPackageAssemblerTest extends TestCase {
         Driver driver = new Driver();
         Policy policy = new Policy();
         
-        wm.assertObject(driver);
-        wm.assertObject(policy);
+        wm.insert(driver);
+        wm.insert(policy);
         
         wm.fireAllRules();
         
