@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -109,15 +110,33 @@ public class PackageBuilderWidget extends Composite {
     /**
      * Popup the view source dialog, showing the given content.
      */
-    public static void showSource(String content, String name) {
+    public static void showSource(final String content, String name) {
         FormStylePopup pop = new FormStylePopup("images/view_source.gif", "Viewing source for: " + name);
-        TextArea area = new TextArea();
+        final TextArea area = new TextArea();
         area.setVisibleLines( 30 );
         area.setWidth( "100%" );
         area.setCharacterWidth( 80 );
         pop.addRow( area );
         area.setText( content );
         area.setEnabled( true );
+        area.setTitle( "THIS IS READ ONLY - you may copy and paste, but not edit." );
+        
+        area.addKeyboardListener( new KeyboardListener() {
+
+            public void onKeyDown(Widget arg0, char arg1, int arg2) {
+                area.setText( content );
+            }
+
+            public void onKeyPress(Widget arg0, char arg1, int arg2) {
+                area.setText( content );
+            }
+
+            public void onKeyUp(Widget arg0, char arg1, int arg2) {
+                area.setText( content );
+            }
+            
+        });
+        
         pop.setPopupPosition( 30, 30 );
         LoadingPopup.close();
         pop.show();
