@@ -117,7 +117,7 @@ public class PackageBuilderWidget extends Composite {
         area.setCharacterWidth( 80 );
         pop.addRow( area );
         area.setText( content );
-        area.setEnabled( false );
+        area.setEnabled( true );
         pop.setPopupPosition( 30, 30 );
         LoadingPopup.close();
         pop.show();
