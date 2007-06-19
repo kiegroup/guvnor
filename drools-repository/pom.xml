@@ -54,7 +54,7 @@
     </dependency>
     <dependency>
       <groupId>org.tmatesoft</groupId>
-      <artifactId>javasvn</artifactId>
+      <artifactId>svnkit</artifactId>
     </dependency>    
   </dependencies>
 
