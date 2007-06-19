@@ -69,29 +69,29 @@
 
   <dependencies>
     <!-- Internal dependencies -->
+    
     <!-- first the deps for the repo API itself (Jackrabbit based) -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-repository</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-repository</artifactId>
-      <type>test-jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
+      <artifactId>drools-compiler</artifactId>          
     </dependency>    
+    
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
     </dependency>        
     
+    <!-- jackrabbit (this really should come from repository, not sure why not) 
     <dependency>
       <groupId>org.apache.jackrabbit</groupId>
       <artifactId>jackrabbit-core</artifactId>
     </dependency>
+    
     <dependency>
       <groupId>org.tmatesoft</groupId>
       <artifactId>svnkit</artifactId>
@@ -106,9 +106,10 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
       </dependency>     
-
+	-->
+	
     <!-- External dependencies -->
-    <!-- now the deps for the repo web app -->
+    <!-- now the deps for the web app -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
@@ -145,21 +146,19 @@
 		<version>1.2</version>
 		<scope>runtime</scope>
 	</dependency>  
-	
-	<!-- and now some overrides for stuff we really don't need in the final product -->
+	<!-- NOT needed as we use janino -->
 	<dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
-      <version>1.0.1</version>
-      <scope>provided</scope>
-    </dependency>
-    <!-- this is not needed as we are using janino for java compiling if needed -->
-    <dependency>
-      <groupId>org.eclipse.jdt</groupId>
-      <artifactId>core</artifactId>
-      <scope>provided</scope>
-    </dependency>
+      	<groupId>org.eclipse.jdt</groupId>
+      	<artifactId>core</artifactId>
+      	<scope>provided</scope>
+	</dependency>  
 	
+	<!-- NOT needed due to licencing -->
+	<dependency>	
+	        <groupId>org.tmatesoft</groupId>
+        	<artifactId>svnkit</artifactId>
+        	<scope>provided</scope>
+	</dependency>
   </dependencies>
 
 </project>
