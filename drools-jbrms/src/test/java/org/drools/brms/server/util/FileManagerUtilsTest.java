@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import junit.framework.TestCase;
 import org.apache.commons.fileupload.FileItem;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.packages.PackageSnapshotView;
+import org.drools.brms.server.ServiceImplementation;
 import org.drools.brms.server.files.FileManagerUtils;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -76,15 +78,27 @@ public class FileManagerUtilsTest extends TestCase {
     }
     
     public void testGetBinaryPackage() throws Exception {
-        FileManagerUtils uploadHelper = new FileManagerUtils();
+
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+        ServiceImplementation impl = new ServiceImplementation();
+        impl.repository = repo;
+        
+        
+        long before = System.currentTimeMillis();
+        Thread.sleep( 20 );
+        FileManagerUtils uploadHelper = new FileManagerUtils();
+
         uploadHelper.repository = repo;
         PackageItem pkg = repo.createPackage( "testGetBinaryPackageServlet", "" );
         pkg.updateHeader( "import java.util.List" );
         pkg.updateCompiledPackage( new ByteArrayInputStream("foo".getBytes()) );
         pkg.checkin( "" );
 
-        repo.createPackageSnapshot( pkg.getName(), "SNAPPY 1" );
+        assertTrue(before < uploadHelper.getLastModified( pkg.getName(), "LATEST" ));
+        
+        
+        impl.createPackageSnapshot( pkg.getName(), "SNAPPY 1", false, "" );
+
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         String fileName = uploadHelper.loadBinaryPackage( pkg.getName(), PackageSnapshotView.LATEST_SNAPSHOT, true, out );
@@ -99,7 +113,22 @@ public class FileManagerUtilsTest extends TestCase {
         assertEquals("testGetBinaryPackageServlet_SNAPPY+1.pkg", fileName);
         file = out.toByteArray();
         assertNotNull(file);
-        assertEquals("foo", new String(file));        
+        assertEquals("foo", new String(file));     
+        
+        Thread.sleep( 100 );
+        impl.createPackageSnapshot( pkg.getName(), "SNAPX", false, "" );
+        
+        
+        long lastMod = uploadHelper.getLastModified( pkg.getName(), "SNAPPY 1");
+        assertTrue(pkg.getLastModified().getTimeInMillis() < lastMod);
+        
+        Thread.sleep( 100 );
+        
+        impl.createPackageSnapshot( pkg.getName(), "SNAPX", true, "yeah");
+        
+        long lastMod2 = uploadHelper.getLastModified( pkg.getName(), "SNAPX");
+        assertTrue(lastMod < lastMod2);
+
         
     }
     

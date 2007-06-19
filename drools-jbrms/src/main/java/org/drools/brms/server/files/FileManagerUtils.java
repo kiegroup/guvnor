@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -196,6 +197,19 @@ public class FileManagerUtils {
         }
 
         repository.save();
+    }
+
+    /**
+     * This will return the last time the package was built.
+     */
+    public long getLastModified(String name, String version) {
+        PackageItem item = null;
+        if (version.equals( "LATEST" )) {
+            item = repository.loadPackage( name );
+        } else {
+            item = repository.loadPackageSnapshot( name, version );
+        }
+        return item.getLastModified().getTimeInMillis();
     }
 
 }

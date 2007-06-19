@@ -636,7 +636,9 @@ public class PackageItem extends VersionableItem {
     public PackageItem updateCompiledPackage(InputStream data) {
         checkout();
         try {
-            this.node.setProperty( COMPILED_PACKAGE_PROPERTY_NAME, data );            
+            this.node.setProperty( COMPILED_PACKAGE_PROPERTY_NAME, data );
+            this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME,
+                                   Calendar.getInstance() );
             return this;
         } catch (RepositoryException e ) {
             log.error( "Unable to update the assets binary content", e );

@@ -7,7 +7,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
 import org.drools.brms.server.util.FormData;
 import org.drools.compiler.DroolsParserException;
 import org.drools.repository.RulesRepositoryException;
@@ -20,8 +19,21 @@ import org.drools.repository.RulesRepositoryException;
 public class PackageDeploymentServlet extends RepositoryServlet {
 
     private static final long serialVersionUID = 3909768997932550498L;
-    private static final Logger log = Logger.getLogger( PackageDeploymentURIHelper.class );
     
+
+    @Override
+    protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+                                                                            IOException {
+        if (request.getMethod().equals( "HEAD" )) {
+            PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(request.getRequestURI());
+            FileManagerUtils fm = getFileManager();
+            long mod = fm.getLastModified( helper.getPackageName(), helper.getVersion() );
+            response.addHeader( "lastModified", "" + mod);
+
+        } else {
+            super.doHead(request, response);
+        }
+    }
 
     /**
      * This is used for importing legacy DRL.
@@ -30,7 +42,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                           HttpServletResponse response) throws ServletException,
                                                        IOException {
         FormData data = FileManagerUtils.getFormData( request );
-        System.err.println("Filename: " + data.getFile().getName());
+        //System.err.println("Filename: " + data.getFile().getName());
         
         try {
             getFileManager().importClassicDRL( data.getFile().getInputStream() );

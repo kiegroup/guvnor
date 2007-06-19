@@ -20,9 +20,13 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.ValueFormatException;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
+import javax.jcr.version.VersionException;
 
 import org.apache.log4j.Logger;
 
@@ -36,12 +40,6 @@ import org.apache.log4j.Logger;
  * DSL content. Rules can be explicitly tied to a particular DSL node within the
  * repository, and this reference can either follow the head version, or a
  * specific version of the DSL node.
- * <p>
- * The RulesRepository also is capable of storing RulePackages, which aggregate
- * one or more Rules into a set. RulePackages hold references to the nodes
- * storing the content of the rules in the set within the repository. Each entry
- * in a rulepackage can either refer to the head version of the given rule node,
- * or a specific version.
  * <p>
  * Rules can be tagged. Tags are stored in a separate area of the repository,
  * and can be added on demand. Rules can have 0 or more tags. Tags are intended
@@ -63,6 +61,7 @@ import org.apache.log4j.Logger;
  * 
  * @author Ben Truitt
  * @author Fernando Meyer
+ * @author Michael Neale
  */
 public class RulesRepository {
 
@@ -365,6 +364,7 @@ public class RulesRepository {
         }
     }
 
+    
     public PackageItem loadPackageSnapshot(String packageName, String snapshotName) {
         try {
             Node n = this.getAreaNode( PACKAGE_SNAPSHOT_AREA ).getNode( packageName ).getNode( snapshotName );
@@ -400,6 +400,7 @@ public class RulesRepository {
             String source = rulePackageNode.getPath();
 
             this.session.getWorkspace().copy( source, newName );
+            
         } catch ( RepositoryException e ) {
             log.error( "Unable to create snapshot", e );
             throw new RulesRepositoryException( e );
