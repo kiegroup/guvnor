@@ -7,6 +7,7 @@ import java.util.jar.JarInputStream;
 
 import junit.framework.TestCase;
 
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.rule.Package;
@@ -33,7 +34,7 @@ public class BRMSPackageBuilderTest extends TestCase {
         builder.addPackageFromDrl( new StringReader(header) );
         assertFalse(builder.hasErrors());
         
-
+        assertEquals(PackageBuilderConfiguration.JANINO, builder.getPackageBuilderConfiguration().getCompiler());
         
         String ruleAtom = "rule foo \n when \n Person() \n then \n System.out.println(42); end";
         builder.addPackageFromDrl( new StringReader(ruleAtom) );
