@@ -34,6 +34,7 @@ import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.util.BRXMLPersistence;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
@@ -945,7 +946,7 @@ public class ServiceImplementationTest extends TestCase {
         assertNotNull(binPackage);
         
         ByteArrayInputStream bin = new ByteArrayInputStream(binPackage);
-        ObjectInputStream in = new ObjectInputStream(bin);
+        ObjectInputStream in = new DroolsObjectInputStream(bin);
         Package binPkg = (Package) in.readObject();
          
         assertNotNull(binPkg);
@@ -1031,7 +1032,7 @@ public class ServiceImplementationTest extends TestCase {
         
         
         ByteArrayInputStream bin = new ByteArrayInputStream(binPackage);
-        ObjectInputStream in = new ObjectInputStream(bin);
+        ObjectInputStream in = new DroolsObjectInputStream(bin);
         Package binPkg = (Package) in.readObject();
          
         assertNotNull(binPkg);

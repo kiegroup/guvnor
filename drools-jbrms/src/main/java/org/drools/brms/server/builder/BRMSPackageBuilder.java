@@ -62,8 +62,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
         }
 
         PackageBuilderConfiguration config = new PackageBuilderConfiguration();
-        //config.setClassLoader( loader );
-        Thread.currentThread().setContextClassLoader( loader );
+        config.setClassLoader( loader );
         config.setCompiler( PackageBuilderConfiguration.JANINO );
 
         return new BRMSPackageBuilder( config );
