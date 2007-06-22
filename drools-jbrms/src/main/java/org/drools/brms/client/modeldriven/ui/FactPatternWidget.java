@@ -233,7 +233,7 @@ public class FactPatternWidget extends DirtyableComposite {
         } );
 
         if ( pattern.boundName != null ) {
-            horiz.add( new Label( pattern.factType + " [" + pattern.boundName + "]" ) );
+            horiz.add( new Label( "[" + pattern.boundName + "] " + pattern.factType  ) );
         } else {
             horiz.add( new Label( pattern.factType ) );
         }

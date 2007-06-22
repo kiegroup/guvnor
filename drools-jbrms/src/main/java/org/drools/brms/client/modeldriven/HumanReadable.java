@@ -34,6 +34,7 @@ public class HumanReadable {
         operatorDisplayMap.put( "&& <", "and less than" );
         operatorDisplayMap.put( "|| >", "or greater than" );
         operatorDisplayMap.put( "|| <", "or less than" );
+        operatorDisplayMap.put( "&& <", "and less than" );
         
         operatorDisplayMap.put( "|| >=", "or greater than (or equal to)" );
         operatorDisplayMap.put( "|| <=", "or less than (or equal to)" );
