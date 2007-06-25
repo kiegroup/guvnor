@@ -1,7 +1,4 @@
 package org.drools;
-
-import java.io.Serializable;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -17,6 +14,12 @@ import java.io.Serializable;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
+
+import java.io.Serializable;
+
+
 
 public class Cheese
     implements
