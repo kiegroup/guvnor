@@ -57,7 +57,8 @@ public class RuleValidatorWrapper extends DirtyableComposite {
         layout = new DirtyableFlexTable();
         layout.setStyleName( "asset-editor-Layout" );
         layout.setWidget( 0, 0, editor );
-        layout.setWidget( 1, 0, validatorActions() );
+        if (!asset.isreadonly) 
+            layout.setWidget( 1, 0, validatorActions() );
         layout.getCellFormatter().setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
         
         

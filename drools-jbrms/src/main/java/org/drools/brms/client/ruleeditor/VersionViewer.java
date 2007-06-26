@@ -60,6 +60,7 @@ public class VersionViewer extends DialogBox {
             public void onSuccess(Object data) {
                                 
                 RuleAsset asset = (RuleAsset) data;
+                asset.isreadonly = true;
                 asset.metaData.name = head.name;
                 setText( "Version number [" + asset.metaData.versionNumber + "] of ["
                          + asset.metaData.name + "]");
@@ -99,7 +100,6 @@ public class VersionViewer extends DialogBox {
             }
         });
     }
-
 
     private void restore(Widget w) {
         

@@ -55,10 +55,12 @@ public abstract class AssetAttachmentFileWidget extends Composite {
     private HorizontalPanel busy;
     private RuleViewer viewer;
     private FormStyleLayout layout;
+    private RuleAsset asset;
     
 
     public AssetAttachmentFileWidget(final RuleAsset asset, final RuleViewer viewer) {
         this.viewer = viewer;
+        this.asset = asset;
         initWidgets(asset.uuid, asset.metaData.name);
         initAssetHandlers();
     }
@@ -84,8 +86,8 @@ public abstract class AssetAttachmentFileWidget extends Composite {
         layout = new FormStyleLayout(getIcon(), 
                                                      formName);
 
-        
-        layout.addAttribute( "Upload new version:", form );
+        if ( !this.asset.isreadonly )
+            layout.addAttribute( "Upload new version:", form );
         
         Button dl = new Button("Download");
         dl.addClickListener( new ClickListener() {

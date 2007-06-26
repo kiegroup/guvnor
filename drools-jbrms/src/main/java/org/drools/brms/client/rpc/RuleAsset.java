@@ -34,6 +34,7 @@ public class RuleAsset
 
     public String uuid;
     public boolean archived = false;
+    public boolean isreadonly = false;
     public long getVersionNumber() {
         return metaData.versionNumber;
     }
