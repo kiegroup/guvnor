@@ -403,7 +403,7 @@ public class RuleModeller extends DirtyableComposite {
         
         
         if (factsToAssert.getItemCount() > 1) {
-            popup.addAttribute( "Assert a new fact", factsToAssert );
+            popup.addAttribute( "Insert a new fact", factsToAssert );
             HorizontalPanel horiz = new HorizontalPanel();
             horiz.add( factsToLogicallyAssert );
             Image img = new Image("images/information.gif");
