@@ -1,4 +1,5 @@
 package org.drools.brms.client.ruleeditor;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.brms.client.ruleeditor;
  * limitations under the License.
  */
 
-
-
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.DSLSentence;
@@ -29,133 +28,139 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
- * This is a textual rule editor, which provides DSL content assistance.
- * This is similar (but simpler) to the IDE based one.
+ * This is a textual rule editor, which provides DSL content assistance. This is
+ * similar (but simpler) to the IDE based one.
+ * 
  * @author michael neale
  */
-public class DSLRuleEditor extends Composite {
-    
-    private TextArea text;
-    final private RuleContentText data;
-    private DSLSentence[] conditions;
-    private DSLSentence[] actions;
-    
 
-    
+public class DSLRuleEditor extends Composite {
+
+    private TextArea      text;
+    final private RuleContentText data;
+    private DSLSentence[]         conditions;
+    private DSLSentence[]         actions;
+
     public DSLRuleEditor(RuleAsset asset) {
-        
+
         RuleContentText cont = (RuleContentText) asset.content;
-        
+
         this.data = cont;
         text = new TextArea();
-        text.setWidth("100%");
-        text.setHeight("100%");
-        text.setVisibleLines(10);
-        text.setText(data.content);
+        text.setWidth( "100%" );
+        text.setHeight( "100%" );
+        text.setVisibleLines( 10 );
+        text.setText( data.content );
         text.setTitle( "Hint: press control+space for popup assistance, or use one of the icons to the right." );
+
         SuggestionCompletionEngine eng = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.metaData.packageName );
         this.actions = eng.actionDSLSentences;
         this.conditions = eng.conditionDSLSentences;
-      
-        
+
         text.setStyleName( "dsl-text-Editor" );
-        
+
         FlexTable layout = new FlexTable();
-        layout.setWidget( 0, 0, text );
-        
+        layout.setWidget( 0,
+                          0,
+                          text );
+
         text.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 data.content = text.getText();
             }
-        });
-
-
+        } );
 
         text.addKeyboardListener( new KeyboardListenerAdapter() {
-
-
-
             public void onKeyDown(Widget arg0,
-                                   char arg1,
-                                   int arg2) {
+                                  char arg1,
+                                  int arg2) {
+                if ( arg1 == ' ' && arg2 == MODIFIER_CTRL ) {
+                    showInTextOptions();
+                }
                 
-                if (arg1 == ' ' && arg2 == MODIFIER_CTRL) {
-                    showInTextOptions( ); 
-                } 
-                
+                if ( arg1 == KEY_TAB ) {
+                    insertText( "\t" );
+                    text.setCursorPos( text.getCursorPos() + 1 );
+                    text.cancelKey();
+                }
             }
+        } );
 
-
-            
-        });
-        
         VerticalPanel vert = new VerticalPanel();
-        
-        Image lhsOptions = new ImageButton("images/new_dsl_pattern.gif");
+
+        Image lhsOptions = new ImageButton( "images/new_dsl_pattern.gif" );
         final String msg = "Add a new condition";
         lhsOptions.setTitle( msg );
         lhsOptions.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showSuggestions( conditions );
             }
-        });        
-        
-        Image rhsOptions = new ImageButton("images/new_dsl_action.gif");   
-        final String msg2 =  "Add an action";
+        } );
+
+        Image rhsOptions = new ImageButton( "images/new_dsl_action.gif" );
+        final String msg2 = "Add an action";
         rhsOptions.setTitle( msg2 );
         rhsOptions.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showSuggestions( actions );
             }
-        });   
-        
-        vert.add( lhsOptions );    
+        } );
+
+        vert.add( lhsOptions );
         vert.add( rhsOptions );
-        layout.setWidget( 0, 1, vert );
-        
-        layout.getCellFormatter().setWidth( 0, 0, "95%" );
-        layout.getCellFormatter().setWidth( 0, 1, "5%" );
-        
+
+        layout.setWidget( 0,
+                          1,
+                          vert );
+
+        layout.getCellFormatter().setWidth( 0,
+                                            0,
+                                            "95%" );
+        layout.getCellFormatter().setWidth( 0,
+                                            1,
+                                            "5%" );
+
         layout.setWidth( "100%" );
         layout.setHeight( "100%" );
-        
-        
+
         initWidget( layout );
     }
-    
+
     protected void showInTextOptions() {
-        String prev = text.getText().substring( 0, this.text.getCursorPos() );
-        if (prev.indexOf( "then" ) > -1) {
-            showSuggestions(this.actions);
+        String prev = text.getText().substring( 0,
+                                                this.text.getCursorPos() );
+        if ( prev.indexOf( "then" ) > -1 ) {
+            showSuggestions( this.actions );
         } else {
-            showSuggestions(this.conditions);
+            showSuggestions( this.conditions );
         }
     }
-    
 
     private void showSuggestions(DSLSentence[] items) {
-        ChoiceList choice = new ChoiceList(items, this);
-        choice.setPopupPosition( text.getAbsoluteLeft() + 20, text.getAbsoluteTop() + 20 );
-        choice.show();        
+        ChoiceList choice = new ChoiceList( items,
+                                            this );
+        choice.setPopupPosition( text.getAbsoluteLeft() + 20,
+                                 text.getAbsoluteTop() + 20 );
+        choice.show();
     }
-    
-  
-    
+
     void insertText(String ins) {
         int i = text.getCursorPos();
-        String left = text.getText().substring( 0, i );
-        String right = text.getText().substring( i, text.getText().length() );
+        String left = text.getText().substring( 0,
+                                                i );
+        String right = text.getText().substring( i,
+                                                 text.getText().length() );
         text.setText( left + ins + right );
         this.data.content = text.getText();
-    }    
-
-
+    }
 
 }

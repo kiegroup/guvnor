@@ -1,4 +1,5 @@
 package org.drools.brms.client.ruleeditor;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.brms.client.ruleeditor;
  * limitations under the License.
  */
 
-
-
 import java.util.List;
 
 import org.drools.brms.client.modeldriven.brxml.DSLSentence;
@@ -24,6 +23,7 @@ import org.drools.brms.client.modeldriven.brxml.DSLSentence;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FocusListener;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -37,19 +37,19 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ChoiceList extends PopupPanel {
 
-    private ListBox list;
-    private final DSLSentence[] sentences;    
-    
-    private TextBox filter;
-    
+    private ListBox             list;
+    private final DSLSentence[] sentences;
+    private HorizontalPanel     buttons;
+    private TextBox             filter;
 
-        /**
-     * Pass in a list of suggestions for the popup lists.
-     * Set a click listener to get notified when the OK button is clicked.
-     */
-    public ChoiceList(final DSLSentence[] sen, final DSLRuleEditor self) {
+    /**
+    * Pass in a list of suggestions for the popup lists.
+    * Set a click listener to get notified when the OK button is clicked.
+    */
+    public ChoiceList(final DSLSentence[] sen,
+                      final DSLRuleEditor self) {
         super( true );
-        
+
         this.sentences = sen;
         filter = new TextBox();
         filter.setWidth( "100%" );
@@ -59,16 +59,17 @@ public class ChoiceList extends PopupPanel {
             public void onFocus(Widget w) {
                 filter.setText( "" );
             }
+
             public void onLostFocus(Widget w) {
                 filter.setText( defaultMessage );
             }
-        });
+        } );
         filter.addKeyboardListener( new KeyboardListener() {
 
             public void onKeyDown(Widget arg0,
                                   char arg1,
                                   int arg2) {
-                
+
             }
 
             public void onKeyPress(Widget arg0,
@@ -79,60 +80,68 @@ public class ChoiceList extends PopupPanel {
             public void onKeyUp(Widget arg0,
                                 char arg1,
                                 int arg2) {
-                if (arg1 == KEY_ENTER) {
+                if ( arg1 == KEY_ENTER ) {
                     applyChoice( self );
                 } else {
-                    populateList( ListUtil.filter(sentences, filter.getText()) );
+                    populateList( ListUtil.filter( sentences,
+                                                   filter.getText() ) );
                 }
             }
-            
-        });
+
+        } );
         filter.setFocus( true );
-        
-        
+
         VerticalPanel panel = new VerticalPanel();
         panel.add( filter );
-        
+
         list = new ListBox();
         list.setVisibleItemCount( 5 );
-        
-        populateList( ListUtil.filter( this.sentences, "" ));        
-        
-        
+
+        populateList( ListUtil.filter( this.sentences,
+                                       "" ) );
+
         panel.add( list );
-        
-        Button ok = new Button("ok");
+
+        Button ok = new Button( "ok" );
         ok.addClickListener( new ClickListener() {
-            public void onClick(Widget btn) {                
+            public void onClick(Widget btn) {
                 applyChoice( self );
             }
+        } );
 
+        Button cancel = new Button( "cancel" );
+        cancel.addClickListener( new ClickListener() {
+            public void onClick(Widget btn) {
+                hide();
+            }
+        } );
 
-            
-        });
-        panel.add( ok );        
-        add( panel );      
+        buttons = new HorizontalPanel();
+
+        buttons.add( ok );
+        buttons.add( cancel );
+
+        panel.add( buttons );
+
+        add( panel );
         setStyleName( "ks-popups-Popup" );
-        
+
     }
 
     private void applyChoice(final DSLRuleEditor self) {
         self.insertText( getSelectedItem() );
         hide();
     }
-    
+
     private void populateList(List filtered) {
         list.clear();
-        for (int i = 0; i < filtered.size(); i++) {
-            list.addItem(((DSLSentence)filtered.get( i )).sentence);
-        }        
+        for ( int i = 0; i < filtered.size(); i++ ) {
+            list.addItem( ((DSLSentence) filtered.get( i )).sentence );
+        }
     }
-    
 
-    
     public String getSelectedItem() {
         return list.getItemText( list.getSelectedIndex() );
     }
-    
-    
+
 }

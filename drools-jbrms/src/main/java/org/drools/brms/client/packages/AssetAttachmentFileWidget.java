@@ -15,8 +15,6 @@ package org.drools.brms.client.packages;
  * limitations under the License.
  */
 
-
-
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.HTMLFileManagerFields;

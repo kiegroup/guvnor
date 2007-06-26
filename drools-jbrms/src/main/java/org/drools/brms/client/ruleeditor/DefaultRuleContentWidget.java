@@ -1,4 +1,5 @@
 package org.drools.brms.client.ruleeditor;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,49 +16,70 @@ package org.drools.brms.client.ruleeditor;
  * limitations under the License.
  */
 
-
-
 import org.drools.brms.client.common.DirtyableComposite;
-import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleContentText;
 
 import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.FocusListener;
+import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
-
 
 /**
  * This is the default rule editor widget (just text editor based) - more to come later.
  * @author michael neale
  */
 public class DefaultRuleContentWidget extends DirtyableComposite {
-	
-	private TextArea text;
-	final private RuleContentText data;
 
-    final private RuleAsset asset;
-    
-	public DefaultRuleContentWidget(RuleAsset a) {
+    private TextArea              text;
+    final private RuleContentText data;
+
+    final private RuleAsset       asset;
+
+    public DefaultRuleContentWidget(RuleAsset a) {
         asset = a;
         data = (RuleContentText) asset.content;
-        
-		text = new TextArea();
-		text.setWidth("100%");
-		text.setHeight("100%");
-		text.setVisibleLines(10);
-		text.setText(data.content);
-        
+
+        text = new TextArea();
+        text.setWidth( "100%" );
+        text.setHeight( "100%" );
+        text.setVisibleLines( 10 );
+        text.setText( data.content );
+
         text.setStyleName( "default-text-Area" );
-        
+
         text.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 data.content = text.getText();
                 makeDirty();
             }
-        }); 
-        
-		initWidget(text);
-	}
+        } );
+
+        text.addKeyboardListener( new KeyboardListenerAdapter() {
+            public void onKeyDown(Widget arg0,
+                                  char arg1,
+                                  int arg2) {
+
+                if ( arg1 == KEY_TAB ) {
+                    insertText( "\t" );
+                    text.setCursorPos( text.getCursorPos() + 1 );
+                    text.cancelKey();
+                }
+            }
+        } );
+
+        initWidget( text );
+    }
+
+    void insertText(String ins) {
+        int i = text.getCursorPos();
+        String left = text.getText().substring( 0,
+                                                i );
+        String right = text.getText().substring( i,
+                                                 text.getText().length() );
+        text.setText( left + ins + right );
+        this.data.content = text.getText();
+    }
 
 }
