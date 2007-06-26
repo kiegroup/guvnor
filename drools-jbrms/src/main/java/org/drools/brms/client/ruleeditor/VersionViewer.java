@@ -61,8 +61,6 @@ public class VersionViewer extends DialogBox {
                                 
                 RuleAsset asset = (RuleAsset) data;
                 asset.metaData.name = head.name;
-
-                
                 setText( "Version number [" + asset.metaData.versionNumber + "] of ["
                          + asset.metaData.name + "]");
                 
@@ -92,18 +90,14 @@ public class VersionViewer extends DialogBox {
                 
                 RuleViewer viewer = new RuleViewer(asset, true);
                 
-                
                 viewer.setWidth( "100%" );
                 layout.setWidget( 1, 0, viewer );
                 formatter.setColSpan( 1, 1, 2 );
                 layout.setWidth( "100%" );
-                
+                layout.setPixelSize( 800, 300 );
                 setWidget(layout);
             }
-            
         });
-        
-        
     }
 
 

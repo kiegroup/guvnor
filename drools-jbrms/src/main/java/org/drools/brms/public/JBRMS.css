@@ -152,8 +152,10 @@ select:focus{ border-color:black !important; color: black;}
 }
 
 .version-Popup {
-	background-color: white;
-	border: 1px solid #aaaa99;
+  margin:1em;
+  padding: .5em .5em;
+  background-color: white;
+  border: 1px solid #aaaa99;
   -moz-border-radius: 0.7em;
   border-radius: 0.7em;
 }
