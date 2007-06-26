@@ -66,6 +66,7 @@ public class SortableTable extends Grid implements TableListener {
     private int hideColumnIndex;
     private int selectedRow;
     private int RowNumbers;
+    private boolean hasIcons = true;
 
     
 	/** 
@@ -85,10 +86,12 @@ public class SortableTable extends Grid implements TableListener {
      * @param rows The data.
      * @param header Headers.
      * @param fillRows The number of rows to pad out, if needed
+     * @param hasIcons 
      * @return A SortableTable ready to go !
      */
-    public static SortableTable createTableWidget(DataModel data, String[] header, int fillRows) {
+    public static SortableTable createTableWidget(DataModel data, String[] header, int fillRows, boolean hasIcons) {
         SortableTable tableWidget = null;
+        
         if (fillRows > data.getNumberOfRows()) {
             tableWidget = new SortableTable(fillRows, header.length + 1);
             tableWidget.setValue( 1, 1, "", null );
@@ -111,10 +114,17 @@ public class SortableTable extends Grid implements TableListener {
                 tableWidget.setValue( i + 1, j + 1,  data.getValue( i, j ), data.getWidget( i, j ) );
             }
         }
+        
+        tableWidget.setHasIcons(hasIcons);
+        
         return tableWidget;
     }    
 
-	/** 
+	private void setHasIcons(boolean hasIcons) {
+	    this.hasIcons = hasIcons;
+	}
+
+    /** 
      * Adds a header, which will be at the zero index in the table.
 	 */
 	public void setColumnHeader(String name, int index){               
@@ -377,7 +387,7 @@ public class SortableTable extends Grid implements TableListener {
 	
 	private void setCell(int rowNum, int colIndex, String value) {
 	    if(null != value){
-            if (colIndex == 1 )
+            if (colIndex == 1 && hasIcons )
                 this.setWidget( rowNum, colIndex, new Image("images/" + EditorLauncher.getAssetFormatIcon( value.toString() ) ) );
             else 
                 this.setText(rowNum, colIndex, value.toString());

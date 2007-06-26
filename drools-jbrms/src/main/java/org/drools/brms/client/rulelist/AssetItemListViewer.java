@@ -174,7 +174,7 @@ public class AssetItemListViewer extends Composite {
                 
             };
             
-            table = SortableTable.createTableWidget( nil, tableConfig.headers, FILLER_ROWS );
+            table = SortableTable.createTableWidget( nil, tableConfig.headers, FILLER_ROWS, true );
             itemCounter.setVisible( false );
         } else {
             final TableDataRow[] rows = data.data;
@@ -227,7 +227,7 @@ public class AssetItemListViewer extends Composite {
 //                
 //            };
             
-            table = SortableTable.createTableWidget( mdl, this.tableConfig.headers, FILLER_ROWS );
+            table = SortableTable.createTableWidget( mdl, this.tableConfig.headers, FILLER_ROWS, true );
 
             
             HorizontalPanel panel = new HorizontalPanel();
