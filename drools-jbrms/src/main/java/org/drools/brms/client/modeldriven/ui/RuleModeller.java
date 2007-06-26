@@ -97,7 +97,7 @@ public class RuleModeller extends DirtyableComposite {
             }            
         });
         
-        layout.setWidget( 0, 0, new Label("IF") );
+        layout.setWidget( 0, 0, new Label("WHEN") );
         layout.setWidget( 0, 2, addPattern );
         
         layout.setWidget( 1, 1, renderLhs(this.model) );
