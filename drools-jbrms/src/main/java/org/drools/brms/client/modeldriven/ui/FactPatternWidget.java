@@ -190,8 +190,8 @@ public class FactPatternWidget extends DirtyableComposite {
             inner.setWidget( row, 0, fieldLabel( c, showBinding ) );
    
             inner.setWidget( row, 1, operatorDropDown( c ) );
-            inner.setWidget( row, 2, valueEditor( c ) );
-            inner.setWidget( row, 3, connectives( c ) );
+            inner.setWidget( row, 2, valueEditor( c, this.pattern.factType ) );
+            inner.setWidget( row, 3, connectives( c, this.pattern.factType ) );
    
             Image addConnective = new ImageButton( "images/add_connective.gif" );
             addConnective.setTitle( "Add more options to this fields values." );
@@ -421,13 +421,13 @@ public class FactPatternWidget extends DirtyableComposite {
         }
     }
 
-    private Widget connectives(SingleFieldConstraint c) {
+    private Widget connectives(SingleFieldConstraint c, String factClass) {
         if ( c.connectives != null && c.connectives.length > 0 ) {
             DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
             for ( int i = 0; i < c.connectives.length; i++ ) {
                 ConnectiveConstraint con = c.connectives[i];
                 horiz.add( connectiveOperatorDropDown( con, c.fieldName ) );
-                horiz.add( connectiveValueEditor( con ) ); 
+                horiz.add( connectiveValueEditor( con, factClass, c.fieldName ) ); 
             }
             return horiz;
         } else {
@@ -437,8 +437,9 @@ public class FactPatternWidget extends DirtyableComposite {
 
     }
 
-    private Widget connectiveValueEditor(final ISingleFieldConstraint con) {
-        return new ConstraintValueEditor(con, this.modeller.getModel());
+    private Widget connectiveValueEditor(final ISingleFieldConstraint con, String factClass, String fieldName) {
+        String typeNumeric = this.modeller.getSuggestionCompletions().getFieldType( factClass, fieldName );
+        return new ConstraintValueEditor(con, this.modeller.getModel(), typeNumeric);
     }
 
     private Widget connectiveOperatorDropDown(final ConnectiveConstraint con, String fieldName) {
@@ -463,8 +464,9 @@ public class FactPatternWidget extends DirtyableComposite {
         return box;
     }
 
-    private Widget valueEditor(final SingleFieldConstraint c) {
-        return  new ConstraintValueEditor(c, this.modeller.getModel());
+    private Widget valueEditor(final SingleFieldConstraint c, String factType) {
+        String type = this.modeller.getSuggestionCompletions().getFieldType( factType, c.fieldName );
+        return  new ConstraintValueEditor(c, this.modeller.getModel(),  type);
     }
 
     private Widget operatorDropDown(final SingleFieldConstraint c) {

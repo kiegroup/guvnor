@@ -585,6 +585,10 @@ public class RuleModeller extends DirtyableComposite {
         return ( layout.hasDirty() || dirtyflag) ;
     }
     
+    public SuggestionCompletionEngine getSuggestionCompletions() {
+        return this.completions;
+    }
+    
     
     
 }

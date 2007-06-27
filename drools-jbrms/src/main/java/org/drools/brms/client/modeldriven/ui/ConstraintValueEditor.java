@@ -24,6 +24,7 @@ import org.drools.brms.client.common.FieldEditListener;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.InfoPopup;
 import org.drools.brms.client.common.Lbl;
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brxml.ISingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
@@ -36,6 +37,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -55,16 +57,21 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private ISingleFieldConstraint constraint;
     private Panel      panel;
     private RuleModel model;
+    private boolean numericValue;
 
     /**
      * @param con The constraint being edited.
      */
-    public ConstraintValueEditor(ISingleFieldConstraint con, RuleModel model) {
+    public ConstraintValueEditor(ISingleFieldConstraint con, RuleModel model, String valueTypeNumeric /* eg is numeric */) {
         this.constraint = con;
+        if (valueTypeNumeric.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
+            this.numericValue = true;
+        }
         this.model = model;
         panel = new SimplePanel();
         refreshEditor();
         initWidget( panel );
+
     }
 
     private void refreshEditor() {
@@ -137,7 +144,26 @@ public class ConstraintValueEditor extends DirtyableComposite {
      * An editor for literal values.
      */
     private TextBox literalEditor() {
-        TextBox box = boundTextBox(constraint);
+        final TextBox box = boundTextBox(constraint);
+        if (this.numericValue) {
+            box.addKeyboardListener( new KeyboardListener() {
+       
+                public void onKeyDown(Widget arg0, char arg1, int arg2) {
+    
+                }
+       
+                public void onKeyPress(Widget w, char c, int i) {
+                    if (Character.isLetter( c ) ) {
+                        ((TextBox) w).cancelKey();
+                    } 
+                }
+       
+                public void onKeyUp(Widget arg0, char arg1, int arg2) {
+                }
+                
+            } );
+        }
+        
         box.setTitle( "This is a literal value. What is shown is what the field is checked against." );
         return box;
     }
