@@ -186,22 +186,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
         }
         
         if (val.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
-            box.addKeyboardListener( new KeyboardListener() {
-    
-                public void onKeyDown(Widget arg0, char arg1, int arg2) {
-
-                }
-    
-                public void onKeyPress(Widget w, char c, int i) {
-                    if (Character.isLetter( c )) {
-                        ((TextBox) w).cancelKey();
-                    } 
-                }
-    
-                public void onKeyUp(Widget arg0, char arg1, int arg2) {
-                }
-                
-            });
+            box.addKeyboardListener( getNumericFilter( box ));
         }
         
         box.addChangeListener( new ChangeListener() {
@@ -217,6 +202,33 @@ public class ActionSetFieldWidget extends DirtyableComposite {
         }));        
         panel.add( box );
         return panel;
+    }
+
+
+    /**
+     * This will return a keyboard listener for field setters, which 
+     * will obey numeric conventions - it will also allow formulas
+     * (a formula is when the first value is a "=" which means
+     * it is meant to be taken as the user typed)
+     */
+    public static KeyboardListener getNumericFilter(final TextBox box) {
+        return new KeyboardListener() {
+   
+            public void onKeyDown(Widget arg0, char arg1, int arg2) {
+
+            }
+   
+            public void onKeyPress(Widget w, char c, int i) {
+                if (Character.isLetter( c ) && c != '='
+                    && !(box.getText().startsWith( "=" ))) {
+                    ((TextBox) w).cancelKey();
+                } 
+            }
+   
+            public void onKeyUp(Widget arg0, char arg1, int arg2) {
+            }
+            
+        };
     }
 
 

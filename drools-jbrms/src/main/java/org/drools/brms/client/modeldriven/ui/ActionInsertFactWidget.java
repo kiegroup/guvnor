@@ -115,22 +115,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
         });
         
         if (val.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
-            box.addKeyboardListener( new KeyboardListener() {
-    
-                public void onKeyDown(Widget arg0, char arg1, int arg2) {
-
-                }
-    
-                public void onKeyPress(Widget w, char c, int i) {
-                    if (Character.isLetter( c )) {
-                        ((TextBox) w).cancelKey();
-                    } 
-                }
-    
-                public void onKeyUp(Widget arg0, char arg1, int arg2) {
-                }
-                
-            });
+            box.addKeyboardListener( ActionSetFieldWidget.getNumericFilter( box ));
         }        
         return box;
     }
