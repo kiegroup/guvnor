@@ -17,21 +17,21 @@ package org.drools.brms.server.util;
 
 
 
-import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
-import org.drools.brms.client.modeldriven.brxml.DSLSentence;
-import org.drools.brms.client.modeldriven.brxml.FactPattern;
-import org.drools.brms.client.modeldriven.brxml.IPattern;
-import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
-import org.drools.brms.client.modeldriven.brxml.RuleModel;
+import org.drools.brms.client.modeldriven.brl.CompositeFactPattern;
+import org.drools.brms.client.modeldriven.brl.DSLSentence;
+import org.drools.brms.client.modeldriven.brl.FactPattern;
+import org.drools.brms.client.modeldriven.brl.IPattern;
+import org.drools.brms.client.modeldriven.brl.RuleAttribute;
+import org.drools.brms.client.modeldriven.brl.RuleModel;
 
 /** 
- * This class will convert BRXML to DRL.
+ * This class will convert BRL to DRL.
  * It will work off the RuleModel object graph, primarily.
  * 
  * @author Michael Neale
  * @written-when-jetlagged-in-hong-kong-oh-how-I-hate-jetlag
  */
-public class BRXMLToDRLConverter {
+public class BRLToDRLConverter {
     
     public String toDRL(RuleModel model,
                         String ruleName) {

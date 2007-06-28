@@ -25,9 +25,9 @@ import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.InfoPopup;
 import org.drools.brms.client.common.Lbl;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
-import org.drools.brms.client.modeldriven.brxml.ISingleFieldConstraint;
-import org.drools.brms.client.modeldriven.brxml.RuleModel;
+import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.brms.client.modeldriven.brl.RuleModel;
+import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;

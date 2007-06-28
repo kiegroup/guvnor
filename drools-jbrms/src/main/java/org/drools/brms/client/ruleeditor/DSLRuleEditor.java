@@ -18,7 +18,7 @@ package org.drools.brms.client.ruleeditor;
 
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.DSLSentence;
+import org.drools.brms.client.modeldriven.brl.DSLSentence;
 import org.drools.brms.client.packages.SuggestionCompletionCache;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.RuleContentText;

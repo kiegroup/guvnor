@@ -30,11 +30,11 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brxml.ActionSetField;
-import org.drools.brms.client.modeldriven.brxml.DSLSentence;
-import org.drools.brms.client.modeldriven.brxml.FactPattern;
-import org.drools.brms.client.modeldriven.brxml.RuleModel;
+import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brl.ActionSetField;
+import org.drools.brms.client.modeldriven.brl.DSLSentence;
+import org.drools.brms.client.modeldriven.brl.FactPattern;
+import org.drools.brms.client.modeldriven.brl.RuleModel;
 import org.drools.brms.server.ServiceImplementation;
 import org.drools.brms.server.util.BRXMLPersistence;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
@@ -473,7 +473,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         RulesRepository repo = getRepo();
 
         //create our package
-        PackageItem pkg = repo.createPackage( "testBRXMLWithDSLMixedIn", "" );
+        PackageItem pkg = repo.createPackage( "testBRLWithDSLMixedIn", "" );
         pkg.updateHeader( "import org.drools.Person" );
         AssetItem rule2 = pkg.addAsset( "rule2", "" );
         rule2.updateFormat( AssetFormats.BUSINESS_RULE );
@@ -508,7 +508,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         rule2.checkin( "" );
         repo.save();
         
-        pkg = repo.loadPackage( "testBRXMLWithDSLMixedIn" );
+        pkg = repo.loadPackage( "testBRLWithDSLMixedIn" );
         ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
         assertFalse(asm.hasErrors());
         

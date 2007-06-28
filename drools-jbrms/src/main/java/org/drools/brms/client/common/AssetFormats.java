@@ -45,7 +45,7 @@ public class AssetFormats {
     public static final String DRL = "drl";
     
     /** Use the rule modeller */
-    public static final String BUSINESS_RULE = "brxml";
+    public static final String BUSINESS_RULE = "brl";
 
     
     /** use a DSL, free text editor */

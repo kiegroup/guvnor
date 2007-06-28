@@ -20,7 +20,7 @@ package org.drools.brms.client.modeldriven.ui;
 import org.drools.brms.client.common.Lbl;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
+import org.drools.brms.client.modeldriven.brl.ActionRetractFact;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;

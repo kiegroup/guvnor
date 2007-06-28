@@ -21,8 +21,8 @@ import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.DirtyableHorizontalPane;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.YesNoDialog;
-import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
-import org.drools.brms.client.modeldriven.brxml.RuleModel;
+import org.drools.brms.client.modeldriven.brl.RuleAttribute;
+import org.drools.brms.client.modeldriven.brl.RuleModel;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ChangeListener;

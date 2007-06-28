@@ -1,4 +1,4 @@
-package org.drools.brms.client.modeldriven.brxml;
+package org.drools.brms.client.modeldriven.brl;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -21,7 +21,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This interface means the object will be squirted over the wire to the GWT client.
- * It also means that the object is part of BRXML serialization.
+ * It also means that the object is part of BRL serialization.
  * 
  * @author Michael Neale
  */

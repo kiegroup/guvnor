@@ -25,9 +25,9 @@ import org.drools.brms.client.common.Lbl;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
-import org.drools.brms.client.modeldriven.brxml.ActionInsertLogicalFact;
+import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brl.ActionInsertFact;
+import org.drools.brms.client.modeldriven.brl.ActionInsertLogicalFact;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ChangeListener;

@@ -24,8 +24,8 @@ import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
-import org.drools.brms.client.modeldriven.brxml.FactPattern;
+import org.drools.brms.client.modeldriven.brl.CompositeFactPattern;
+import org.drools.brms.client.modeldriven.brl.FactPattern;
 
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;

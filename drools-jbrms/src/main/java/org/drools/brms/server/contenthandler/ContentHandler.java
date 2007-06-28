@@ -38,7 +38,7 @@ public abstract class ContentHandler {
     
     static {
         handlers = new HashMap() {{
-            put(AssetFormats.BUSINESS_RULE, new BRXMLContentHandler());
+            put(AssetFormats.BUSINESS_RULE, new BRLContentHandler());
             put(AssetFormats.DSL_TEMPLATE_RULE, new DSLRuleContentHandler());
             put(AssetFormats.DRL, new DRLFileContentHandler());
             put(AssetFormats.DSL, new DSLDefinitionContentHandler());

@@ -18,7 +18,7 @@ package org.drools.brms.client.ruleeditor;
 
 import java.util.List;
 
-import org.drools.brms.client.modeldriven.brxml.DSLSentence;
+import org.drools.brms.client.modeldriven.brl.DSLSentence;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;

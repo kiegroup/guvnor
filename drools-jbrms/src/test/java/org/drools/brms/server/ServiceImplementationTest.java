@@ -30,11 +30,11 @@ import org.drools.RuleBase;
 import org.drools.StatelessSession;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brxml.ActionSetField;
-import org.drools.brms.client.modeldriven.brxml.FactPattern;
-import org.drools.brms.client.modeldriven.brxml.RuleModel;
-import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
+import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brl.ActionSetField;
+import org.drools.brms.client.modeldriven.brl.FactPattern;
+import org.drools.brms.client.modeldriven.brl.RuleModel;
+import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
@@ -46,7 +46,7 @@ import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.rpc.ValidatedResponse;
 import org.drools.brms.client.rulelist.AssetItemListViewer;
-import org.drools.brms.server.contenthandler.BRXMLContentHandler;
+import org.drools.brms.server.contenthandler.BRLContentHandler;
 import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.util.BRXMLPersistence;
 import org.drools.brms.server.util.TableDisplayHandler;
@@ -309,7 +309,7 @@ public class ServiceImplementationTest extends TestCase {
         assertEquals( "changed state",
                       asset.metaData.checkinComment );
 
-        uuid = impl.createNewRule( "testBRXMLFormatSugComp",
+        uuid = impl.createNewRule( "testBRLFormatSugComp",
                                    "description",
                                    "testLoadRuleAsset",
                                    "testLoadRuleAsset",
@@ -1000,7 +1000,7 @@ public class ServiceImplementationTest extends TestCase {
     }
 
     /**
-     * This will test creating a package with a BRXML rule, check it compiles, and can exectute rules, 
+     * This will test creating a package with a BRL rule, check it compiles, and can exectute rules, 
      * then take a snapshot, and check that it reports errors. 
      */
     public void testBinaryPackageCompileAndExecuteWithBRXML() throws Exception {
@@ -1008,7 +1008,7 @@ public class ServiceImplementationTest extends TestCase {
         RulesRepository repo = impl.repository;
 
         //create our package
-        PackageItem pkg = repo.createPackage( "testBinaryPackageCompileBRXML", "" );
+        PackageItem pkg = repo.createPackage( "testBinaryPackageCompileBRL", "" );
         pkg.updateHeader( "import org.drools.Person" );
         AssetItem rule2 = pkg.addAsset( "rule2", "" );
         rule2.updateFormat( AssetFormats.BUSINESS_RULE );
@@ -1036,7 +1036,7 @@ public class ServiceImplementationTest extends TestCase {
         }
         assertNull(results);
         
-        pkg = repo.loadPackage( "testBinaryPackageCompileBRXML" );
+        pkg = repo.loadPackage( "testBinaryPackageCompileBRL" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
 
         //Here is where we write it out if needed... UNCOMMENT if needed for the binary test
@@ -1065,7 +1065,7 @@ public class ServiceImplementationTest extends TestCase {
         sess.execute( p );
         assertEquals(42, p.getAge());
         
-        impl.createPackageSnapshot( "testBinaryPackageCompileBRXML", "SNAP1", false, "" );
+        impl.createPackageSnapshot( "testBinaryPackageCompileBRL", "SNAP1", false, "" );
         
         pattern.factType = "PersonX";
         rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
@@ -1080,7 +1080,7 @@ public class ServiceImplementationTest extends TestCase {
         assertNotNull(results[0].message);
         assertEquals(rule2.getUUID(), results[0].uuid);
         
-        pkg = repo.loadPackageSnapshot( "testBinaryPackageCompileBRXML", "SNAP1" );
+        pkg = repo.loadPackageSnapshot( "testBinaryPackageCompileBRL", "SNAP1" );
         results = impl.buildPackage( pkg.getUUID() );
         assertNull(results);
         
@@ -1109,7 +1109,7 @@ public class ServiceImplementationTest extends TestCase {
 
     /**
      * this loads up a precompile binary package. If this fails, 
-     * then it means it needs to be updated. It gets the package form the BRXML example above.
+     * then it means it needs to be updated. It gets the package form the BRL example above.
      */
     public void testLoadAndExecBinary() throws Exception {
         Person p = new Person();
@@ -1281,7 +1281,7 @@ public class ServiceImplementationTest extends TestCase {
         RulesRepository repo = impl.repository;
         
         //create our package
-        PackageItem pkg = repo.createPackage( "testBuildAssetBRXML", "" );
+        PackageItem pkg = repo.createPackage( "testBuildAssetBRL", "" );
         AssetItem model = pkg.addAsset( "MyModel", "" );
         model.updateFormat( AssetFormats.MODEL );
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
@@ -1290,14 +1290,14 @@ public class ServiceImplementationTest extends TestCase {
         pkg.updateHeader( "import com.billasurf.Person" );
         impl.createCategory( "/", "brxml", "" );
 
-        String uuid = impl.createNewRule( "testBRXML", "", "brxml", "testBuildAssetBRXML", AssetFormats.BUSINESS_RULE );
+        String uuid = impl.createNewRule( "testBRL", "", "brxml", "testBuildAssetBRL", AssetFormats.BUSINESS_RULE );
         
         
         RuleAsset rule = impl.loadRuleAsset( uuid );
         
         RuleModel m = (RuleModel) rule.content;
         assertNotNull(m);
-        m.name = "testBRXML";
+        m.name = "testBRL";
         
         FactPattern p = new FactPattern("Person");
         p.boundName = "p";

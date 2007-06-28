@@ -20,7 +20,7 @@ package org.drools.brms.server.contenthandler;
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.drools.brms.client.modeldriven.brxml.RuleModel;
+import org.drools.brms.client.modeldriven.brl.RuleModel;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.server.builder.BRMSPackageBuilder;
 import org.drools.brms.server.builder.ContentPackageAssembler;
@@ -32,7 +32,7 @@ import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
-public class BRXMLContentHandler extends ContentHandler implements IRuleAsset {
+public class BRLContentHandler extends ContentHandler implements IRuleAsset {
 
 	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
 			AssetItem item) throws SerializableException {
