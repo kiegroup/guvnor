@@ -1288,9 +1288,9 @@ public class ServiceImplementationTest extends TestCase {
         model.checkin( "" );
         
         pkg.updateHeader( "import com.billasurf.Person" );
-        impl.createCategory( "/", "brxml", "" );
+        impl.createCategory( "/", "brl", "" );
 
-        String uuid = impl.createNewRule( "testBRL", "", "brxml", "testBuildAssetBRL", AssetFormats.BUSINESS_RULE );
+        String uuid = impl.createNewRule( "testBRL", "", "brl", "testBuildAssetBRL", AssetFormats.BUSINESS_RULE );
         
         
         RuleAsset rule = impl.loadRuleAsset( uuid );
