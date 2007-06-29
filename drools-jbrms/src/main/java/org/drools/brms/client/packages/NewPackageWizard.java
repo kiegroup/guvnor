@@ -65,24 +65,6 @@ public class NewPackageWizard extends FormStylePopup {
         nameBox = new TextBox();
         descBox = new TextArea();
 
-        
-        nameBox.addKeyboardListener( new KeyboardListener() {
-   
-            public void onKeyDown(Widget arg0, char arg1, int arg2) {
-
-            }
-   
-            public void onKeyPress(Widget w, char c, int i) {
-                if (c == ' ') {
-                    ((TextBox) w).cancelKey();
-                } 
-            }
-   
-            public void onKeyUp(Widget arg0, char arg1, int arg2) {
-            }
-            
-        } );
-
         this.afterCreatedEvent = afterCreatedEvent;
         
         
@@ -135,14 +117,18 @@ public class NewPackageWizard extends FormStylePopup {
         Button create = new Button("Create package");
         create.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                createPackageAction(nameBox.getText(), descBox.getText(), afterCreatedEvent);  
-                hide();
+            	if ( validatePackageName(nameBox.getText()) ) {
+            		createPackageAction(nameBox.getText(), descBox.getText(), afterCreatedEvent);
+            		hide();
+            	} else {
+            		nameBox.setText("");
+            		Window.alert("Invalid package name, use java-style package name");
+            	}
             }
-
-        
+			private boolean validatePackageName(String text) {
+				return text.matches("[a-zA-Z\\.]*");
+			}
         });
-        
-
         
         newPackageLayout.addAttribute( "", create );
         
