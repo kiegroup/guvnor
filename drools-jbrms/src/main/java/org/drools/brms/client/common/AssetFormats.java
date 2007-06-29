@@ -49,7 +49,7 @@ public class AssetFormats {
 
     
     /** use a DSL, free text editor */
-    public static final String DSL_TEMPLATE_RULE   = "brule";
+    public static final String DSL_TEMPLATE_RULE   = "dslr";
 
     
     /** Use a decision table.*/
