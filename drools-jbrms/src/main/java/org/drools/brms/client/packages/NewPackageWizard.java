@@ -38,6 +38,7 @@ import com.google.gwt.user.client.ui.FormSubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormSubmitEvent;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
@@ -64,6 +65,23 @@ public class NewPackageWizard extends FormStylePopup {
         nameBox = new TextBox();
         descBox = new TextArea();
 
+        
+        nameBox.addKeyboardListener( new KeyboardListener() {
+   
+            public void onKeyDown(Widget arg0, char arg1, int arg2) {
+
+            }
+   
+            public void onKeyPress(Widget w, char c, int i) {
+                if (c == ' ') {
+                    ((TextBox) w).cancelKey();
+                } 
+            }
+   
+            public void onKeyUp(Widget arg0, char arg1, int arg2) {
+            }
+            
+        } );
 
         this.afterCreatedEvent = afterCreatedEvent;
         
