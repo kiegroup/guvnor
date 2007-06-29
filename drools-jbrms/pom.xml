@@ -115,7 +115,7 @@
       <artifactId>servlet-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>google</groupId>
+      <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
     </dependency>
     <dependency>
