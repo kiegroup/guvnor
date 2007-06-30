@@ -22,6 +22,7 @@ import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.common.LigthBox;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.packages.SuggestionCompletionCache;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
@@ -297,9 +298,8 @@ public class RuleViewer extends Composite {
         
         pop.setStyleName( "warning-Popup" );
         
-        pop.setPopupPosition( 200, getAbsoluteTop() );
-        pop.show();
-        
+        LigthBox box = new LigthBox(pop);
+        box.show();        
     }
 
 }

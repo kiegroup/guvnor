@@ -79,8 +79,6 @@ public class JBRMSEntryPoint implements EntryPoint, HistoryListener {
     vp.setWidth("100%");
     vp.add(description);
     vp.add(sinkContainer);
-    
-    
 
     description.setStyleName("ks-Info");
 
@@ -185,9 +183,10 @@ public void show(ComponentInfo info, boolean affectHistory) {
     // Display the new sink.
     sinkContainer.add(curSink, DockPanel.CENTER);
     sinkContainer.setCellWidth(curSink, "100%");
-    sinkContainer.setCellHeight(curSink, "100%");
+    //sinkContainer.setCellHeight(curSink, "100%");
     sinkContainer.setCellVerticalAlignment(curSink, DockPanel.ALIGN_TOP);
     curSink.onShow();
+
   }
 
 

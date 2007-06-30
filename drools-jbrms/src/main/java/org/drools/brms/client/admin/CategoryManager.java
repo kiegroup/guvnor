@@ -53,7 +53,7 @@ public class CategoryManager extends Composite {
             public void selected(String sel) {
                 //don't need this here as we don't do anything on select in this spot
             }
-         });
+         }, 400, 400);
         explorer.setStyleName( "category-explorer-Admin" );
         
         SimplePanel editable = new SimplePanel();

@@ -50,9 +50,6 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Neale
  */
 public class NewPackageWizard extends FormStylePopup {
-
-    
-    
     
     private TextBox nameBox;
     private TextArea descBox;

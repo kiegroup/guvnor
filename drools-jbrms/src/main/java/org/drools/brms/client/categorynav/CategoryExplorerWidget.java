@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeListener;
@@ -62,8 +63,15 @@ public class CategoryExplorerWidget extends Composite
      * @param handler
      */
     public CategoryExplorerWidget(CategorySelectHandler handler) {
-        panel.add( navTreeWidget );
+    	this(handler,300,300);
+    }
+    
+    public CategoryExplorerWidget(CategorySelectHandler handler, int width, int heigth) {
+        ScrollPanel scroll = new ScrollPanel();
+        scroll.add(navTreeWidget);
+        scroll.setPixelSize(width, heigth);
 
+        panel.add(scroll);
 
         this.categorySelectHandler = handler;
         loadInitialTree();
@@ -72,6 +80,7 @@ public class CategoryExplorerWidget extends Composite
         navTreeWidget.addTreeListener( this );
         this.setStyleName( "category-explorer-Tree" );
     }
+
 
     /**
      * This refreshes the view.
@@ -131,6 +140,7 @@ public class CategoryExplorerWidget extends Composite
                                                  it.addItem( new PendingItem() );
                                                  navTreeWidget.addItem( it );
                                              }
+                                             
 
                                          }
 

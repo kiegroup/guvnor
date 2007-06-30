@@ -47,9 +47,7 @@ public class FormStylePopup extends PopupPanel {
         });
 
         form.setFlexTableWidget( 0, 2, close );
-
         add( form );
-
         
     }
 

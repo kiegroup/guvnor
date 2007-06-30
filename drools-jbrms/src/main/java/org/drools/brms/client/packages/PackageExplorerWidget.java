@@ -23,6 +23,7 @@ import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.common.LigthBox;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
@@ -43,6 +44,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.StackPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -106,6 +108,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
         };
         
         exTree.addTreeListener( treeListener );
+        exTree.setPixelSize( 350  , DirtyableComposite.getHeight() - 200 );
         VerticalPanel left = new VerticalPanel();
 
         if (snapshotName == null) {
@@ -118,7 +121,11 @@ public class PackageExplorerWidget extends DirtyableComposite {
             left.add( buttons );
             buttons.setWidth( "100%" );
         }
-        left.add( exTree );
+        
+        ScrollPanel scroll = new ScrollPanel();
+        scroll.add(exTree);
+        scroll.setHeight("100%");
+        left.add( scroll );
         
         layout.setWidget( 0, 0, left );
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
@@ -175,9 +182,9 @@ public class PackageExplorerWidget extends DirtyableComposite {
                       editEvent.open( key );                      
                   }
               }, true, null, "Create a new rule asset", currentlySelectedPackage);
-              pop.setPopupPosition( left, top );
               
-              pop.show();
+              LigthBox box = new LigthBox(pop);
+              box.show();              
             }
             
         });
@@ -261,8 +268,8 @@ public class PackageExplorerWidget extends DirtyableComposite {
                 refreshTreeView();
             } 
         });
-        pop.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() - 100 );
-        pop.show();
+        LigthBox box = new LigthBox(pop);
+        box.show();        
     }
     
 
@@ -405,9 +412,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
                     ,  "<img src='images/package.gif'/>View Package configuration", true);
                     
                 }
-                
                 sp.setWidth( "100%" );
-                
                 layout.setWidget( 0, 1, sp );
                 LoadingPopup.close();
             }            
@@ -440,9 +445,11 @@ public class PackageExplorerWidget extends DirtyableComposite {
                 editEvent.open( key );                      
             }
         }, false, format, title, currentlySelectedPackage);
-        pop.setPopupPosition( left, top );
         
-        pop.show();
+        LigthBox box = new LigthBox(pop);
+        box.show(); 
+//        pop.setPopupPosition( left, top );
+//        pop.show();
     }
 
     static class PackageTreeItem {
@@ -454,5 +461,4 @@ public class PackageExplorerWidget extends DirtyableComposite {
         }
                 
     }
-    
 }

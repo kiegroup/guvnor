@@ -57,7 +57,7 @@ public class PackageManagerView extends Composite {
     public PackageManagerView(String packageUUID, final String snapshotName) {
         tab = new TabPanel();
         tab.setWidth("100%");
-        tab.setHeight("100%");
+        tab.setHeight("30%");
         
         EditItemEvent editEvent = new EditItemEvent() {
             public void open(String key) {

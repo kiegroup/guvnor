@@ -21,6 +21,7 @@ package org.drools.brms.client.ruleeditor;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.common.LigthBox;
 import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.common.StatusChangePopup;
 import org.drools.brms.client.rpc.MetaData;
@@ -216,10 +217,8 @@ public class ActionToolbar extends Composite {
             }
         } );
         form.addAttribute( "", ok );
-        
-        form.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop());
-        form.show();
-        
+        LigthBox box = new LigthBox(form);
+        box.show();        
     }
     
     private void completedCopying(String name, String pkg) {

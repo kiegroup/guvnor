@@ -25,6 +25,7 @@ import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.LigthBox;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.PackageConfigData;
@@ -154,9 +155,10 @@ public class PackageBuilderWidget extends Composite {
             
         });
         
-        pop.setPopupPosition( 30, 30 );
         LoadingPopup.close();
-        pop.show();
+        LigthBox box = new LigthBox(pop);
+        box.show();
+        
     }
 
 
@@ -376,8 +378,12 @@ public class PackageBuilderWidget extends Composite {
         } );
         
         form.setWidth( "50%" );
-        form.setPopupPosition( Window.getClientWidth() / 3, Window.getClientHeight() / 3 );
-        form.show();
+        
+        LigthBox box = new LigthBox(form);
+        box.show();        
+        
+//        form.setPopupPosition( Window.getClientWidth() / 3, Window.getClientHeight() / 3 );
+//        form.show();
         
         
     }    
