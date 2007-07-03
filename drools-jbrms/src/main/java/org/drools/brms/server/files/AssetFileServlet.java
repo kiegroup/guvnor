@@ -35,7 +35,7 @@ import org.drools.brms.server.util.FormData;
  */
 public class AssetFileServlet extends RepositoryServlet {
 
-    private static final long serialVersionUID = 3909768997932550498L;
+    private static final long serialVersionUID = 400L;
     
 
     /**

@@ -39,7 +39,7 @@ import org.drools.repository.RulesRepository;
  */
 public class RepositoryBackupServlet extends RepositoryServlet {
 
-    private static final long serialVersionUID = 3909768997932550498L;
+    private static final long serialVersionUID = 400L;
     final FileManagerUtils uploadHelper = new FileManagerUtils();
     
 

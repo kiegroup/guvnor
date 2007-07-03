@@ -89,7 +89,7 @@ public class ServiceImplementation
     public RulesRepository repository;
     
 
-    private static final long serialVersionUID = 3150768417428383474L;
+    private static final long serialVersionUID = 400L;
     private static final DateFormat dateFormatter = DateFormat.getInstance();
     private static final Logger log = Logger.getLogger( ServiceImplementation.class );
     private MetaDataMapper metaDataMapper = new MetaDataMapper();

@@ -32,7 +32,7 @@ import org.jboss.seam.contexts.Contexts;
  */
 public class RepositoryServlet extends HttpServlet {
 
-    private static final long  serialVersionUID = 3909768997932550498L;
+    private static final long  serialVersionUID = 400L;
     //    protected final FileManagerUtils uploadHelper = new FileManagerUtils();
     public static final Logger log              = Logger.getLogger( RepositoryServlet.class );
 

@@ -35,7 +35,7 @@ import org.drools.repository.RulesRepositoryException;
  */
 public class PackageDeploymentServlet extends RepositoryServlet {
 
-    private static final long serialVersionUID = 3909768997932550498L;
+    private static final long serialVersionUID = 400L;
     
 
     @Override
