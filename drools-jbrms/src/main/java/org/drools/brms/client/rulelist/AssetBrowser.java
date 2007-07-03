@@ -17,6 +17,7 @@ package org.drools.brms.client.rulelist;
 
 
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +54,7 @@ public class AssetBrowser extends Composite {
     
     public static final int       EDITOR_TAB         = 1;
     private TabPanel tab;
-    private Map openedViewers = new HashMap();
+    private Map openedViewers = Collections.EMPTY_MAP;
     private AssetItemListViewer list;
     
     public AssetBrowser() {
@@ -158,7 +159,6 @@ public class AssetBrowser extends Composite {
                           list.loadTableData( result );
                           LoadingPopup.close();
                       }
-
                   } );                    
               }                    
         };
@@ -182,7 +182,7 @@ public class AssetBrowser extends Composite {
           
           pop.show();
     }
-    
-    
-    
+	public void setOpenedViewersContainer(Map openedViewers) {
+		this.openedViewers = openedViewers;
+	}
 }

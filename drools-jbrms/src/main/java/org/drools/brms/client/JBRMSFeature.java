@@ -1,4 +1,5 @@
 package org.drools.brms.client;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,55 +16,62 @@ package org.drools.brms.client;
  * limitations under the License.
  */
 
-
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gwt.user.client.ui.Composite;
 
 /**
- * A 'feature' is a single panel of the JBRMS console. They are meant to be lazily
- * instantiated so that the application doesn't pay for all of them on startup.
+ * A 'feature' is a single panel of the JBRMS console. They are meant to be
+ * lazily instantiated so that the application doesn't pay for all of them on
+ * startup.
  */
 public abstract class JBRMSFeature extends Composite {
 
-  /**
-   * Encapsulated information about a JBRMS Feature. Each component is expected to have a
-   * static <code>init()</code> method that will be called by the layout on startup.
-   */
-  public abstract static class ComponentInfo {
-    private JBRMSFeature instance;
-    private String name, description;
+	static Map openedViewers = new HashMap();
 
-    public ComponentInfo(String name, String desc) {
-      this.name = name;
-      description = desc;
-    }
+	/**
+	 * Encapsulated information about a JBRMS Feature. Each component is
+	 * expected to have a static <code>init()</code> method that will be
+	 * called by the layout on startup.
+	 */
+	public abstract static class ComponentInfo {
+		private JBRMSFeature instance;
+		private String name, description;
 
-    public abstract JBRMSFeature createInstance();
+		public ComponentInfo(String name, String desc) {
+			this.name = name;
+			description = desc;
+		}
 
-    public String getDescription() {
-      return description;
-    }
+		public abstract JBRMSFeature createInstance();
 
-    public final JBRMSFeature getInstance() {
-      if (instance != null)
-        return instance;
-      return (instance = createInstance());
-    }
+		public String getDescription() {
+			return description;
+		}
 
-    public String getName() {
-      return name;
-    }
-  }
+		public final JBRMSFeature getInstance() {
+			if (instance != null)
+				return instance;
+			return (instance = createInstance());
+		}
 
-  /**
-   * Called just before this sink is hidden.
-   */
-  public void onHide() {
-  }
+		public String getName() {
+			return name;
+		}
+	}
 
-  /**
-   * Called just after this sink is shown.
-   */
-  public void onShow() {
-  }
+	/**
+	 * Called just before this sink is hidden.
+	 */
+	public void onHide() {
+	}
+
+	/**
+	 * Called just after this sink is shown.
+	 */
+	public void onShow() {
+	}
 }

@@ -21,16 +21,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.decisiontable.DecisionTableXLSWidget;
 import org.drools.brms.client.modeldriven.ui.RuleModeller;
 import org.drools.brms.client.packages.ModelAttachmentFileWidget;
+import org.drools.brms.client.packages.PackageExplorerWidget;
+import org.drools.brms.client.packages.PackageManagerView;
 import org.drools.brms.client.packages.SuggestionCompletionCache;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -114,7 +118,13 @@ public class EditorLauncher {
                                       final boolean readonly) {
 
         if ( openedViewers.containsKey( uuid ) ) {
-            tab.selectTab( tab.getWidgetIndex( (Widget) openedViewers.get( uuid ) ) );
+        	
+        	if ( tab.getWidgetIndex( (Widget) openedViewers.get( uuid ) ) == -1 ) {
+        		String featurename = tab.getWidget(0) instanceof PackageExplorerWidget ? "Rule Viewer" : "Package Manager";
+        		Window.alert("Asset already opened in " + featurename  );
+        	} else {
+        		tab.selectTab( tab.getWidgetIndex( (Widget) openedViewers.get( uuid )  ));
+        	}
             LoadingPopup.close();
             return;
         }

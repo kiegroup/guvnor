@@ -17,6 +17,7 @@ package org.drools.brms.client.packages;
 
 
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ import com.google.gwt.user.client.ui.TabPanel;
 public class PackageManagerView extends Composite {
 
     private final TabPanel tab;
-    private Map openedViewers = new HashMap();
+    private Map openedViewers = Collections.EMPTY_MAP;
 
     /**
      * This will provide a explorer for all the packages in the system,
@@ -77,5 +78,9 @@ public class PackageManagerView extends Composite {
         
         initWidget( tab );
     }
+
+	public void setOpenedViewersContainer(Map openedViewers) {
+		this.openedViewers = openedViewers;
+	}
     
 }

@@ -1,4 +1,5 @@
 package org.drools.brms.client;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,12 +16,11 @@ package org.drools.brms.client;
  * limitations under the License.
  */
 
-
-
 import org.drools.brms.client.rulelist.AssetBrowser;
 
 /**
  * This controls the "Rules manager" top level feature.
+ * 
  * @author Michael Neale
  */
 public class RulesFeature extends JBRMSFeature {
@@ -34,9 +34,10 @@ public class RulesFeature extends JBRMSFeature {
 		};
 	}
 
-	
 	public RulesFeature() {
-	    initWidget( new AssetBrowser() );
+		AssetBrowser assetBrowser = new AssetBrowser();
+		assetBrowser.setOpenedViewersContainer(JBRMSFeature.openedViewers);
+		initWidget(assetBrowser);
 	}
 
 }
