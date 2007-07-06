@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class JBRMSEntryPoint implements EntryPoint, HistoryListener {
 
   private ComponentInfo curInfo;
-  private JBRMSFeature curSink;
+  private JBRMSFeature curSink; 
   private HTML description = new HTML();
   private JBRMSFeatureList list = new JBRMSFeatureList();
   private DockPanel panel = new DockPanel();
