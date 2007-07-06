@@ -37,7 +37,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
-import org.drools.resource.util.ByteArrayClassLoader;
+import org.drools.rule.MapBackedClassLoader;
 
 /**
  * This decorates the drools-compiler PackageBuilder
@@ -57,7 +57,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
      */
     public static BRMSPackageBuilder getInstance(List<JarInputStream> classpath) {
 
-        ByteArrayClassLoader loader = new ByteArrayClassLoader( BRMSPackageBuilder.class.getClassLoader() );
+    	MapBackedClassLoader loader = new MapBackedClassLoader( BRMSPackageBuilder.class.getClassLoader() );
         try {
             for ( JarInputStream jis : classpath ) {
                 JarEntry entry = null;
