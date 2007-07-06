@@ -63,15 +63,7 @@ public class CategoryExplorerWidget extends Composite
      * @param handler
      */
     public CategoryExplorerWidget(CategorySelectHandler handler) {
-    	this(handler,300,300);
-    }
-    
-    public CategoryExplorerWidget(CategorySelectHandler handler, int width, int heigth) {
-        ScrollPanel scroll = new ScrollPanel();
-        scroll.add(navTreeWidget);
-        scroll.setPixelSize(width, heigth);
-
-        panel.add(scroll);
+        panel.add(navTreeWidget);
 
         this.categorySelectHandler = handler;
         loadInitialTree();
@@ -80,7 +72,7 @@ public class CategoryExplorerWidget extends Composite
         navTreeWidget.addTreeListener( this );
         this.setStyleName( "category-explorer-Tree" );
     }
-
+    
 
     /**
      * This refreshes the view.

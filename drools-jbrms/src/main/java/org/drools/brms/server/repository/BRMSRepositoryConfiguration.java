@@ -17,6 +17,8 @@ package org.drools.brms.server.repository;
 
 
 
+import java.util.Collection;
+
 import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;

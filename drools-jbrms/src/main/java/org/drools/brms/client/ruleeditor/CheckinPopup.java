@@ -17,8 +17,8 @@ package org.drools.brms.client.ruleeditor;
 
 
 
+import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.FormStylePopup;
-import org.drools.brms.client.common.LigthBox;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -65,8 +65,8 @@ public class CheckinPopup {
     }
 
     public void show() {
-        LigthBox box = new LigthBox(pop);
-        box.show();        
+		pop.setPopupPosition((DirtyableComposite.getWidth() - pop.getOffsetWidth()) / 2, 100);
+		pop.show();
     }
     
     public String getCheckinComment() {

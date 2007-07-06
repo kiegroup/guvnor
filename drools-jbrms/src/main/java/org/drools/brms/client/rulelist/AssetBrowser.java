@@ -97,7 +97,7 @@ public class AssetBrowser extends Composite {
                 list.setRefreshCommand(load);                
             }
 
-        }, 400, 500);     
+        });     
         
         final QuickFindWidget quick = new QuickFindWidget(new EditItemEvent() {
             public void open(String key) {                  

@@ -17,11 +17,11 @@ package org.drools.brms.client.packages;
 
 
 
+import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
-import org.drools.brms.client.common.LigthBox;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
@@ -218,9 +218,8 @@ public class PackageSnapshotView extends Composite {
         Button btn = new Button("Copy");
         btn.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                copy.setPopupPosition( w.getAbsoluteLeft() - 180, w.getAbsoluteTop() );
-                LigthBox box = new LigthBox(copy);
-                box.show();
+      		  copy.setPopupPosition((DirtyableComposite.getWidth() - copy.getOffsetWidth()) / 2, 100);
+    		  copy.show();
             }            
         });
         
