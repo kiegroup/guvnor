@@ -475,8 +475,8 @@ public class ContentPackageAssemblerTest extends TestCase {
         //create our package
         PackageItem pkg = repo.createPackage( "testBRLWithDSLMixedIn", "" );
         pkg.updateHeader( "import org.drools.Person" );
-        AssetItem rule2 = pkg.addAsset( "rule2", "" );
-        rule2.updateFormat( AssetFormats.BUSINESS_RULE );
+        AssetItem rule1 = pkg.addAsset( "rule2", "" );
+        rule1.updateFormat( AssetFormats.BUSINESS_RULE );
         
         AssetItem dsl = pkg.addAsset( "MyDSL", "" );
         dsl.updateFormat( AssetFormats.DSL );
@@ -504,14 +504,36 @@ public class ContentPackageAssemblerTest extends TestCase {
         
         model.addRhsItem( dslAction );
         
-        rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
-        rule2.checkin( "" );
+        rule1.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
+        rule1.checkin( "" );
         repo.save();
+
+        
+        //now add a rule with no DSL
+        model = new RuleModel();
+        model.name = "ruleNODSL";
+        pattern = new FactPattern("Person");
+        pattern.boundName = "p";
+        action = new ActionSetField("p");
+        value = new ActionFieldValue("age", "42", SuggestionCompletionEngine.TYPE_NUMERIC );
+        action.addFieldValue( value );
+        
+        model.addLhsItem( pattern );
+        model.addRhsItem( action );
+
+        
+        AssetItem ruleNODSL = pkg.addAsset( "ruleNoDSL", "" );
+        ruleNODSL.updateFormat( AssetFormats.BUSINESS_RULE );
+     
+        ruleNODSL.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
+        ruleNODSL.checkin( "" );
+        
         
         pkg = repo.loadPackage( "testBRLWithDSLMixedIn" );
         ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
         assertFalse(asm.hasErrors());
-        
+        Package bpkg = asm.getBinaryPackage();
+        assertEquals(2, bpkg.getRules().length);
         
         
     }

@@ -70,7 +70,7 @@ public class BRLContentHandler extends ContentHandler implements IRuleAsset {
 		RuleModel model = BRXMLPersistence.getInstance().unmarshal(
 				asset.getContent());
 		String drl = BRDRLPersistence.getInstance().marshal(model);
-		if (builder.hasDSL()) {
+		if (builder.hasDSL() && model.hasDSLSentences()) {
 			drl = builder.getDSLExpander().expand(drl);
 		}
 		return drl;
