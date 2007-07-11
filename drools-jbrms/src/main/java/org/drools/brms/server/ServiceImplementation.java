@@ -814,6 +814,7 @@ public class ServiceImplementation
             repository.copyPackage( sourcePackageName, destPackageName );
         } catch (RulesRepositoryException e) {
             log.error( e );
+            throw e;
         }
     }
 

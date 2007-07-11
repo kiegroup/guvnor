@@ -56,6 +56,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.rule.Package;
 import org.drools.util.BinaryRuleBaseLoader;
@@ -508,7 +509,14 @@ public class ServiceImplementationTest extends TestCase {
         
         impl.copyPackage( "testCreatePackage", "testCreatePackage_COPY" );
         
+        
+        
         assertEquals(pkgs.length + 1, impl.listPackages().length);
+        try {
+            impl.copyPackage( "testCreatePackage", "testCreatePackage_COPY" );
+        } catch (RulesRepositoryException e) {
+            assertNotNull(e.getMessage());
+        }
     }
 
     public void testLoadPackageConfig() throws Exception {

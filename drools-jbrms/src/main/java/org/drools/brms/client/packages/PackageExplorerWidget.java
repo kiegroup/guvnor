@@ -125,11 +125,12 @@ public class PackageExplorerWidget extends DirtyableComposite {
 			buttons.setWidth("100%");
 		}
 
-		ScrollPanel scroll = new ScrollPanel();
-		scroll.add(exTree);
-		scroll.setHeight("100%");
-		left.add(scroll);
-
+//		ScrollPanel scroll = new ScrollPanel();
+//		scroll.add(exTree);
+//		scroll.setHeight("100%");
+//		left.add(scroll);
+		left.add( exTree );
+        
 		layout.setWidget(0, 0, left);
 		FlexCellFormatter formatter = layout.getFlexCellFormatter();
 		formatter.setVerticalAlignment(0, 0, HasVerticalAlignment.ALIGN_TOP);

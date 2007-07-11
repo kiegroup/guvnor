@@ -61,11 +61,11 @@ public class PackageEditor extends FormStyleLayout {
     protected ValidatedResponse previousResponse;
     private Command refreshCommand;
 
-    public PackageEditor(PackageConfigData data, Command dCommand, Command cCommand, Command command) {
+    public PackageEditor(PackageConfigData data, Command dirtyCommand, Command cleanCommand, Command refreshCommand) {
         this.conf = data;
-        this.dirtyCommand = dCommand;
-        this.cleanCommand = cCommand;
-        this.refreshCommand = command;
+        this.dirtyCommand = dirtyCommand;
+        this.cleanCommand = cleanCommand;
+        this.refreshCommand = refreshCommand;
         
         setStyleName( "package-Editor" );
         setWidth( "100%" );
@@ -219,7 +219,8 @@ public class PackageEditor extends FormStyleLayout {
             public void onClick(Widget w) {
                 RepositoryServiceFactory.getService().copyPackage( conf.name, name.getText(), new GenericCallback() {
                     public void onSuccess(Object data) {
-                        Window.alert( "Package copied successfully. Please refresh to reload the list of packages." );
+                        refreshCommand.execute();
+                        Window.alert( "Package copied successfully." );
                         pop.hide();
                     }
                 });
