@@ -500,7 +500,7 @@ public class ServiceImplementation
             it.skip( startRow );
         }
         TableDisplayHandler handler = new TableDisplayHandler();
-        log.info("time for load: " + (System.currentTimeMillis() - start) );
+        log.debug("time for asset list load: " + (System.currentTimeMillis() - start) );
         return handler.loadRuleListTable( it, numRows );
     }
 
