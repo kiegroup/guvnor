@@ -58,7 +58,7 @@ public class MetaDataWidget extends FormStyleLayout {
         setStyleName( "metadata-Widget" );
         
         if (!readOnly) {
-            Image edit = new Image("images/edit.gif");
+            Image edit = new ImageButton("images/edit.gif", "Rename this asset");
             edit.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     showRenameAsset(w);
