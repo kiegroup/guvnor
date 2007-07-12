@@ -817,8 +817,18 @@ public class ServiceImplementation
             throw e;
         }
     }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public String renameAsset(String uuid, String newName) {
+        return repository.renameAsset( uuid, newName );
+    }
 
-
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public String renamePackage(String uuid, String newName) {
+        return repository.renamePackage( uuid, newName );
+    }
 
 
 }

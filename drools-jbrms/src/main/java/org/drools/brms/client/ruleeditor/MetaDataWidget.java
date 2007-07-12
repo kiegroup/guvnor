@@ -58,7 +58,13 @@ public class MetaDataWidget extends FormStyleLayout {
         setStyleName( "metadata-Widget" );
         
         if (!readOnly) {
-            addHeader( "images/meta_data.png", d.name );
+            Image edit = new Image("images/edit.gif");
+            edit.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                    showRenameAsset(w);
+                }
+            });
+            addHeader( "images/meta_data.png", d.name, edit );
         } else {
             addHeader( "images/asset_version.png", d.name );
         }
@@ -157,6 +163,29 @@ public class MetaDataWidget extends FormStyleLayout {
         }
     }
 
+    private void showRenameAsset(Widget source) {
+        final FormStylePopup pop = new FormStylePopup("images/package_large.png", "Rename this item");
+        final TextBox box = new TextBox();
+        pop.addAttribute( "New name", box );
+        Button ok = new Button("Rename item");
+        pop.addAttribute( "", ok );
+        ok.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                RepositoryServiceFactory.getService().renameAsset( uuid, box.getText(), new GenericCallback() {
+                    public void onSuccess(Object data) {
+                        refreshView.execute();
+                        Window.alert( "Item has been renamed" );
+                        pop.hide();
+                    }
+                });
+            }
+        } );
+        
+        pop.setPopupPosition( source.getParent().getParent().getAbsoluteLeft() - 18,
+                              source.getParent().getParent().getAbsoluteTop() );
+        pop.show();        
+    }
+    
 
     private void showEditPackage(final String pkg, Widget source) {
         final FormStylePopup pop = new FormStylePopup("images/package_large.png", "Move this item to another package");

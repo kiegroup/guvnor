@@ -17,10 +17,10 @@ package org.drools.brms.client.common;
 
 
 
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -91,15 +91,28 @@ public class FormStyleLayout extends DirtyableComposite {
      * Adds a header at the top.
      */
     protected void addHeader(String image, String title) {
-        layout.setWidget( 0, 0, new Image(image) );
-        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
-
         Label name = new Label(title);
         name.setStyleName( "resource-name-Label" );
+        doHeader( image, name );
+    }
 
-        layout.setWidget( 0, 1, name );
-        
+    private void doHeader(String image, Widget title) {
+        layout.setWidget( 0, 0, new Image(image) );
+        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
+        layout.setWidget( 0, 1, title );
         numInLayout++;
+    }
+    
+    
+    
+    protected void addHeader(String image, String title, Widget titleIcon) {
+        Label name = new Label(title);
+        name.setStyleName( "resource-name-Label" );
+        HorizontalPanel horiz = new HorizontalPanel();
+        horiz.add( name );
+        horiz.add( titleIcon );
+        doHeader( image, horiz );
+        
     }
     
     public void setFlexTableWidget(int row, int col, Widget widget){

@@ -265,5 +265,15 @@ public interface RepositoryService extends RemoteService {
      * This will build the asset and return any build results (errors).
      */
     public BuilderResult[] buildAsset(RuleAsset asset) throws SerializableException;
+    
+    /**
+     * Rename an asset.
+     */
+    public String renameAsset(String uuid, String newName);
+
+    /**
+     * Rename a package.
+     */
+    public String renamePackage(String uuid, String newName);
 
 }

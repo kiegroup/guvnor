@@ -329,6 +329,52 @@ public class RulesRepositoryTest extends TestCase {
         assertFalse(uuid.equals( item.getUUID() ));
     }
     
+    public void testRenameAsset() throws Exception {
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+        repo.createPackage( "testRenameAsset", "asset" );
+        AssetItem item = repo.loadPackage("testRenameAsset").addAsset( "testRenameAssetSource", "desc" );
+        item.updateContent( "la" );
+        item.checkin( "" );
+
+        String uuid = repo.renameAsset( item.getUUID(), "testRename2");
+        item = repo.loadAssetByUUID( uuid );
+        assertEquals("testRename2", item.getName());
+        assertEquals("testRename2", item.getTitle());
+
+        List assets = iteratorToList( repo.loadPackage( "testRenameAsset" ).getAssets() );
+        assertEquals(1, assets.size());
+        item = (AssetItem) assets.get( 0 );
+        assertEquals("testRename2", item.getName());
+        assertEquals("la", item.getContent());
+        
+    }
+    
+    public void testRenamePackage() throws Exception {
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+        PackageItem original = repo.createPackage( "testRenamePackage", "asset" );
+        List packagesOriginal = iteratorToList( repo.listPackages() );
+        AssetItem item = repo.loadPackage("testRenamePackage").addAsset( "testRenameAssetSource", "desc" );
+        item.updateContent( "la" );
+        item.checkin( "" );
+
+        String uuid = repo.renamePackage( original.getUUID(), "testRenamePackage2");
+
+        PackageItem pkg = repo.loadPackageByUUID( uuid );
+        assertEquals("testRenamePackage2", pkg.getName());
+        
+        List assets = iteratorToList( repo.loadPackage( "testRenamePackage2" ).getAssets() );
+        assertEquals(1, assets.size());
+        item = (AssetItem) assets.get( 0 );
+        assertEquals("testRenameAssetSource", item.getName());
+        assertEquals("la", item.getContent());
+        
+        List packageFinal = iteratorToList( repo.listPackages() );
+        assertEquals(packagesOriginal.size(), packageFinal.size());
+        
+    }
+    
+    
+    
     public void testCopyPackage() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
         PackageItem source = repo.createPackage( "testCopyPackage", "asset" );

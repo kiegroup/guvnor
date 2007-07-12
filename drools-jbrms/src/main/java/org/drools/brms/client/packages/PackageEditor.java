@@ -196,14 +196,50 @@ public class PackageEditor extends FormStyleLayout {
                     showCopyDialog();
                 }
             } );
-            
             horiz.add( copy );
+            
+            Button rename = new Button("Rename");
+            rename.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                    showRenameDialog();
+                }
+            } );
+            horiz.add( rename );
+            
+
             
         return horiz;
     }
 
 
 
+    private void showRenameDialog() {
+        final FormStylePopup pop = new FormStylePopup("images/new_wiz.gif", "Rename the package");
+        pop.addRow( new HTML("<i>Rename the package. A new unique name is required.</i>") );
+        final TextBox name = new TextBox();
+        pop.addAttribute( "New package name:", name );
+        Button ok = new Button("OK");
+        pop.addAttribute( "", ok );
+        
+        ok.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                RepositoryServiceFactory.getService().renamePackage( conf.uuid, name.getText(), new GenericCallback() {
+                    public void onSuccess(Object data) {
+                        refreshCommand.execute();
+                        Window.alert( "Package renamed successfully." );
+                        pop.hide();
+                    }
+                });
+            }
+        } );
+        
+        pop.setWidth( "40%" );
+        pop.setPopupPosition( Window.getClientWidth() / 3, Window.getClientHeight() / 3 );
+        pop.show();        
+    }
+
+    
+    
     /**
      * Will show a copy dialog for copying the whole package.
      */

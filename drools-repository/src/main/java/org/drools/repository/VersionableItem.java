@@ -227,9 +227,6 @@ public abstract class VersionableItem extends Item {
     }
 
     /** 
-     * Creates a new version of this object's node, updating the title content 
-     * for the node.
-     * <br>
      * See the Dublin Core documentation for more
      * explanation: http://dublincore.org/documents/dces/
      * 
@@ -237,7 +234,6 @@ public abstract class VersionableItem extends Item {
      * @throws RulesRepositoryException
      */
     public void updateTitle(String title) throws RulesRepositoryException {
-
         updateStringProperty( title,
                               TITLE_PROPERTY_NAME );
     }

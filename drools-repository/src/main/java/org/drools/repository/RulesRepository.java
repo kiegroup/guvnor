@@ -835,6 +835,52 @@ public class RulesRepository {
         }
 
     }
+    
+    /**
+     * This will rename an assset and apply the change immediately.
+     * @return the UUID of the new asset
+     */
+    public String renameAsset(String uuid, String newAssetName) {
+        try {
+            AssetItem itemOriginal = loadAssetByUUID( uuid );
+            log.info( "Renaming asset: " + itemOriginal.getNode().getPath() + " to " + newAssetName );
+            Node node = itemOriginal.getNode();
+            String sourcePath = node.getPath();
+            String destPath = node.getParent().getPath() + "/" + newAssetName;
+            this.session.move( sourcePath, destPath );
+            
+            
+            itemOriginal.updateTitle( newAssetName );
+            itemOriginal.checkin( "Renamed asset " +  itemOriginal.getName());
+            return itemOriginal.getUUID();
+        } catch (RepositoryException e) {
+            log.error( e );
+            throw new RulesRepositoryException( e );
+        }
+    }
+    
+    /**
+     * This will rename a package and apply the change immediately.
+     * @return the UUID of the package
+     */
+    public String renamePackage(String uuid, String newPackageName) {
+        try {
+            PackageItem itemOriginal = loadPackageByUUID( uuid );
+            log.info( "Renaming package: " + itemOriginal.getNode().getPath() + " to " + newPackageName );
+            Node node = itemOriginal.getNode();
+            String sourcePath = node.getPath();
+            String destPath = node.getParent().getPath() + "/" + newPackageName;
+            this.session.move( sourcePath, destPath );
+            
+            
+            itemOriginal.updateTitle( newPackageName );
+            itemOriginal.checkin( "Renamed package " +  itemOriginal.getName());
+            return itemOriginal.getUUID();
+        } catch (RepositoryException e) {
+            log.error( e );
+            throw new RulesRepositoryException( e );
+        }
+    }    
 
     /**
      * Return a list of the snapshots available for the given package name.

@@ -286,7 +286,7 @@ public class RuleModeller extends DirtyableComposite {
                     popup.hide();
                 }
             });
-            popup.addAttribute( "Condition sentences", dsls );
+            popup.addAttribute( "DSL sentence", dsls );
         }
         
         popup.setPopupPosition( w.getAbsoluteLeft() - 400, w.getAbsoluteTop() );
@@ -432,7 +432,7 @@ public class RuleModeller extends DirtyableComposite {
                     popup.hide();
                 }
             });
-            popup.addAttribute( "Actions ...", dsls );
+            popup.addAttribute( "DSL sentence", dsls );
         }
         
 
