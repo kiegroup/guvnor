@@ -51,6 +51,9 @@ public class BRMSPackageBuilder extends PackageBuilder {
     private List<DSLMappingFile> dslFiles;
     private DefaultExpander expander;
     
+    /** the default compiler. This is nominally JANINO but can be overridden by setting drools.compiler to ECLIPSE */
+    static int COMPILER = getPreferredBRMSCompiler();
+    
     /**
      * This will give you a fresh new PackageBuilder 
      * using the given classpath.
@@ -80,10 +83,23 @@ public class BRMSPackageBuilder extends PackageBuilder {
 
         PackageBuilderConfiguration config = new PackageBuilderConfiguration();
         config.setClassLoader( loader );
-        config.setCompiler( PackageBuilderConfiguration.JANINO );
+        config.setCompiler( COMPILER );
 
         return new BRMSPackageBuilder( config );
 
+    }
+
+    /**
+     * This will return the preferred compiler, according to the System property
+     * drools.compiler (JANINO|ECLIPSE) - default is JANINO due to classpath issues
+     * mainly in tomcat, grrr... 
+     */
+    static int getPreferredBRMSCompiler() {
+        if (System.getProperty( "drools.compiler", "JANINO" ).equals( "ECLIPSE" )) {
+            return PackageBuilderConfiguration.ECLIPSE;
+        } else {
+            return PackageBuilderConfiguration.JANINO;
+        }
     }
 
     /**

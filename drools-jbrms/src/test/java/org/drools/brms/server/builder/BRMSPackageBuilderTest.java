@@ -105,6 +105,14 @@ public class BRMSPackageBuilderTest extends TestCase {
         assertNotNull(builder.getDSLExpander());
     }
     
+    public void testDefaultCompiler() {
+        assertEquals(PackageBuilderConfiguration.JANINO, BRMSPackageBuilder.COMPILER);
+        assertEquals(PackageBuilderConfiguration.JANINO, BRMSPackageBuilder.getPreferredBRMSCompiler());
+        System.setProperty( "drools.compiler", "ECLIPSE" );
+        assertEquals(PackageBuilderConfiguration.ECLIPSE, BRMSPackageBuilder.getPreferredBRMSCompiler());
+        System.setProperty( "drools.compiler", "" );
+        assertEquals(PackageBuilderConfiguration.JANINO, BRMSPackageBuilder.getPreferredBRMSCompiler());
+    }
 
     
     
