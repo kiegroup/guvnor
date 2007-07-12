@@ -59,7 +59,7 @@ public class DecisionTableXLSHandler extends ContentHandler implements IRuleAsse
     public void compile(BRMSPackageBuilder builder, AssetItem asset, ErrorLogger logger) throws DroolsParserException,
                                                                                         IOException {
         SpreadsheetCompiler comp = new SpreadsheetCompiler();
-        String drl = comp.compile( asset.getBinaryContentAttachment(), InputType.XLS );
+        String drl = comp.compile( builder.getPackage(), asset.getBinaryContentAttachment(), InputType.XLS );
         builder.addPackageFromDrl( new StringReader(drl) );
         
     }
