@@ -50,6 +50,9 @@ public class DRLFileContentHandler extends PlainTextContentHandler implements IR
      * (in the latter case, the content is passed as it to the compiler).
      */
     static boolean isStandAloneRule(String content) {
+        if (content == null || "".equals( content.trim() )) {
+            return false;
+        }
         StringTokenizer st = new StringTokenizer(content, " ");
         while (st.hasMoreTokens()) {
             String tok = st.nextToken();

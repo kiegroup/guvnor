@@ -44,4 +44,20 @@ public class DRLFileContentHandlerTest extends TestCase {
         assertTrue(h.isStandAloneRule( moreNewRule ));
     }    
     
+    public void testRuleWithDialect() {
+       String rule = "rule \"DemoRule\" \n "+
+                    "    salience 10 \n" +
+                    "    dialect \"mvel\" \n " +
+                    " when \n" +
+                    " Driver( age > 65 ) \n" +
+                    " then \n" +
+                    " insert(new Rejection(\" too old \"));" +
+                    "end ";
+       DRLFileContentHandler h = new DRLFileContentHandler();
+       assertFalse(h.isStandAloneRule( rule ));
+       
+       assertFalse(h.isStandAloneRule( "" ));
+       
+    }
+    
 }
