@@ -923,6 +923,15 @@ public class RulesRepository {
             }
             this.session.getWorkspace().copy( sourcePath, destPath );
 
+            PackageItem newPkg = loadPackage( destPackageName );
+
+            for ( Iterator iter = newPkg.getAssets(); iter.hasNext(); ) {
+                AssetItem as = (AssetItem) iter.next();
+                as.updateStringProperty( destPackageName, AssetItem.PACKAGE_NAME_PROPERTY );
+            }
+
+            save();
+            
         } catch ( RepositoryException e ) {
             log.error( e );
             throw new RulesRepositoryException(e);

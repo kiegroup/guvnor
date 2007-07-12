@@ -343,6 +343,17 @@ public class RulesRepositoryTest extends TestCase {
         assertFalse( source.getUUID().equals( dest.getUUID() ));
         
         assertEquals(1, iteratorToList( dest.getAssets()).size());
+        AssetItem item2 = (AssetItem) dest.getAssets().next();
+
+        assertEquals("testCopyPackage", item.getPackageName());
+        assertEquals("testCopyPackage2", item2.getPackageName());
+        
+        
+        item2.updateContent( "goober choo" );
+        item2.checkin( "yeah" );
+
+        assertEquals("la", item.getContent());
+        
         
         try {
             repo.copyPackage( "testCopyPackage", "testCopyPackage2" );
