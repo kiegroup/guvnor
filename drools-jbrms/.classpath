@@ -53,5 +53,5 @@
   <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/asm/asm-attrs/1.5.3/asm-attrs-1.5.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.0/antlr-runtime-3.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel14/1.2pre2/mvel14-1.2pre2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel14/1.2pre3/mvel14-1.2pre3.jar"/>
 </classpath>
