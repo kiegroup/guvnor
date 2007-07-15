@@ -28,6 +28,7 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.rule.Package;
+import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 
 public class BRMSPackageBuilderTest extends TestCase {
     
@@ -51,7 +52,8 @@ public class BRMSPackageBuilderTest extends TestCase {
         builder.addPackageFromDrl( new StringReader(header) );
         assertFalse(builder.hasErrors());
         
-        assertEquals(PackageBuilderConfiguration.JANINO, builder.getPackageBuilderConfiguration().getCompiler());
+        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );        
+        assertEquals(JavaDialectConfiguration.JANINO, javaConf.getCompiler());
         
         String ruleAtom = "rule foo \n when \n Person() \n then \n System.out.println(42); end";
         builder.addPackageFromDrl( new StringReader(ruleAtom) );
@@ -105,14 +107,52 @@ public class BRMSPackageBuilderTest extends TestCase {
         assertNotNull(builder.getDSLExpander());
     }
     
-    public void testDefaultCompiler() {
-        assertEquals(PackageBuilderConfiguration.JANINO, BRMSPackageBuilder.COMPILER);
-        assertEquals(PackageBuilderConfiguration.JANINO, BRMSPackageBuilder.getPreferredBRMSCompiler());
-        System.setProperty( "drools.compiler", "ECLIPSE" );
-        assertEquals(PackageBuilderConfiguration.ECLIPSE, BRMSPackageBuilder.getPreferredBRMSCompiler());
-        System.setProperty( "drools.compiler", "" );
-        assertEquals(PackageBuilderConfiguration.JANINO, BRMSPackageBuilder.getPreferredBRMSCompiler());
+//    public void testDefaultCompiler() {
+//        assertEquals(JavaDialectConfiguration.JANINO, BRMSPackageBuilder.COMPILER);
+//        assertEquals(PackageBuilderConfiguration.JANINO, BRMSPackageBuilder.getPreferredBRMSCompiler());
+//        System.setProperty( "drools.compiler", "ECLIPSE" );
+//        assertEquals(PackageBuilderConfiguration.ECLIPSE, BRMSPackageBuilder.getPreferredBRMSCompiler());
+//        System.setProperty( "drools.compiler", "" );
+//        assertEquals(PackageBuilderConfiguration.JANINO, BRMSPackageBuilder.getPreferredBRMSCompiler());
+//    }
+    
+    // @FIXME rule "abc" is null and the Packge has no namespace
+    public void testDefaultCompiler() throws Exception {
+
+        JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        List<JarInputStream> l = new ArrayList<JarInputStream>();
+        l.add( jis );
+        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l );
+        
+        PackageDescr pc = new PackageDescr("foo.bar");
+        builder.addPackage( pc );
+        
+        String header = "import com.billasurf.Person\n import com.billasurf.Board";
+        builder.addPackageFromDrl( new StringReader(header) );
+        assertFalse(builder.hasErrors());
+        
+        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );        
+        assertEquals(JavaDialectConfiguration.JANINO, javaConf.getCompiler());
     }
+    
+    public void testEclipseCompiler() throws Exception {
+
+        System.setProperty( "drools.dialect.java.compiler", "ECLIPSE" );
+        JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        List<JarInputStream> l = new ArrayList<JarInputStream>();
+        l.add( jis );
+        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l );
+        
+        PackageDescr pc = new PackageDescr("foo.bar");
+        builder.addPackage( pc );
+        
+        String header = "import com.billasurf.Person\n import com.billasurf.Board";
+        builder.addPackageFromDrl( new StringReader(header) );
+        assertFalse(builder.hasErrors());
+        
+        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );        
+        assertEquals(JavaDialectConfiguration.ECLIPSE, javaConf.getCompiler());
+    }    
 
     
     
