@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -38,6 +39,8 @@ import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.MapBackedClassLoader;
+import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.util.ChainedProperties;
 
 /**
  * This decorates the drools-compiler PackageBuilder
@@ -50,9 +53,6 @@ public class BRMSPackageBuilder extends PackageBuilder {
 
     private List<DSLMappingFile> dslFiles;
     private DefaultExpander expander;
-    
-    /** the default compiler. This is nominally JANINO but can be overridden by setting drools.compiler to ECLIPSE */
-    static int COMPILER = getPreferredBRMSCompiler();
     
     /**
      * This will give you a fresh new PackageBuilder 
@@ -80,12 +80,22 @@ public class BRMSPackageBuilder extends PackageBuilder {
         } catch ( IOException e ) {
             throw new RulesRepositoryException( e );
         }
+        
 
-        PackageBuilderConfiguration config = new PackageBuilderConfiguration();
-        config.setClassLoader( loader );
-        config.setCompiler( COMPILER );
+        // See if we can find a packagebuilder.conf
+        // We do this manually here, as we cannot rely on PackageBuilder doing this correctly
+        // note this chainedProperties already checks System properties too
+        ChainedProperties chainedProperties = new ChainedProperties( BRMSPackageBuilder.class.getClassLoader(),
+                                                                     "packagebuilder.conf",
+                                                                     false ); // false means it ignores any default values
+        
+        // the default compiler. This is nominally JANINO but can be overridden by setting drools.dialect.java.compiler to ECLIPSE 
+        Properties properties = new Properties();
+        properties.setProperty( "drools.dialect.java.compiler", 
+                                chainedProperties.getProperty( "drools.dialect.java.compiler", "JANINO" ) );
+        PackageBuilderConfiguration pkgConf = new PackageBuilderConfiguration( properties );
 
-        return new BRMSPackageBuilder( config );
+        return new BRMSPackageBuilder( pkgConf );
 
     }
 
@@ -95,10 +105,10 @@ public class BRMSPackageBuilder extends PackageBuilder {
      * mainly in tomcat, grrr... 
      */
     static int getPreferredBRMSCompiler() {
-        if (System.getProperty( "drools.compiler", "JANINO" ).equals( "ECLIPSE" )) {
-            return PackageBuilderConfiguration.ECLIPSE;
+        if (System.getProperty( "drools.dialect.java.compiler", "JANINO" ).equals( "ECLIPSE" )) {
+            return JavaDialectConfiguration.ECLIPSE;
         } else {
-            return PackageBuilderConfiguration.JANINO;
+            return JavaDialectConfiguration.JANINO;
         }
     }
 
