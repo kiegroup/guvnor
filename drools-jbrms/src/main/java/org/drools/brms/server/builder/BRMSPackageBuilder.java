@@ -94,6 +94,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
         properties.setProperty( "drools.dialect.java.compiler", 
                                 chainedProperties.getProperty( "drools.dialect.java.compiler", "JANINO" ) );
         PackageBuilderConfiguration pkgConf = new PackageBuilderConfiguration( properties );
+        pkgConf.setClassLoader( loader );
 
         return new BRMSPackageBuilder( pkgConf );
 
