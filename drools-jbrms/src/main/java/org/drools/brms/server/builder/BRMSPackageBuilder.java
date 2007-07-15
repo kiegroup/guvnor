@@ -59,8 +59,11 @@ public class BRMSPackageBuilder extends PackageBuilder {
      * using the given classpath.
      */
     public static BRMSPackageBuilder getInstance(List<JarInputStream> classpath) {
-
-    	MapBackedClassLoader loader = new MapBackedClassLoader( BRMSPackageBuilder.class.getClassLoader() );
+        ClassLoader parentClassLoader = Thread.currentThread().getContextClassLoader();
+        if ( parentClassLoader == null ) {
+            parentClassLoader = BRMSPackageBuilder.class.getClassLoader();
+        }
+    	MapBackedClassLoader loader = new MapBackedClassLoader( parentClassLoader );
         try {
             for ( JarInputStream jis : classpath ) {
                 JarEntry entry = null;
@@ -85,7 +88,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
         // See if we can find a packagebuilder.conf
         // We do this manually here, as we cannot rely on PackageBuilder doing this correctly
         // note this chainedProperties already checks System properties too
-        ChainedProperties chainedProperties = new ChainedProperties( BRMSPackageBuilder.class.getClassLoader(),
+        ChainedProperties chainedProperties = new ChainedProperties( BRMSPackageBuilder.class.getClassLoader(), // pass this as it searches currentThread anyway
                                                                      "packagebuilder.conf",
                                                                      false ); // false means it ignores any default values
         
