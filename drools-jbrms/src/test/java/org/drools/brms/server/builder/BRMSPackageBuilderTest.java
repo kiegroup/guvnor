@@ -36,6 +36,14 @@ public class BRMSPackageBuilderTest extends TestCase {
    public void testEmpty() {
        
    }
+   
+   public void setUp() {
+       System.getProperties().remove( "drools.dialect.java.compiler" );
+   }
+   
+   public void tearDown() {
+       System.getProperties().remove( "drools.dialect.java.compiler" );
+   }   
 
     // @FIXME rule "abc" is null and the Packge has no namespace
     public void testPartialPackage() throws Exception {
@@ -152,9 +160,7 @@ public class BRMSPackageBuilderTest extends TestCase {
         
         JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );        
         assertEquals(JavaDialectConfiguration.ECLIPSE, javaConf.getCompiler());
-    }    
-
-    
+    }                
     
 
 }
