@@ -75,7 +75,8 @@ public class BRMSPackageBuilder extends PackageBuilder {
                         while ( (len = jis.read( buf )) >= 0 ) {
                             out.write( buf, 0, len );
                         }
-                        loader.addResource( entry.getName(), out.toByteArray() );
+                        
+                        loader.addResource( entry.getName() , out.toByteArray() );
                     }
                 }
 

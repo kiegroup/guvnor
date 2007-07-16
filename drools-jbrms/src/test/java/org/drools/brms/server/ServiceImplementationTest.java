@@ -18,7 +18,6 @@ package org.drools.brms.server;
 
 
 import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,8 +45,6 @@ import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.rpc.ValidatedResponse;
 import org.drools.brms.client.rulelist.AssetItemListViewer;
-import org.drools.brms.server.contenthandler.BRLContentHandler;
-import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.util.BRXMLPersistence;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;

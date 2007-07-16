@@ -75,10 +75,5 @@ public class DRLFileContentHandler extends PlainTextContentHandler implements IR
         } else {
             buf.append( content );
         }
-        
-        
     }
-
-
-    
 }
