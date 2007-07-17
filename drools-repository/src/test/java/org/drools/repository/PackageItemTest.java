@@ -13,6 +13,9 @@ public class PackageItemTest extends TestCase {
         PackageItem item = repo.createPackage( "testListPackages1", "lalalala" );
         
         assertNotNull(item.getCreator());
+        
+        item.updateStringProperty( "goo", "whee" );
+        assertEquals("goo", item.getStringProperty( "whee" ));
         assertFalse(item.getCreator().equals( "" ));
         
         List list = iteratorToList( repo.listPackages() );
@@ -20,6 +23,8 @@ public class PackageItemTest extends TestCase {
         repo.createPackage( "testListPackages2", "abc" );
         
         list = iteratorToList( repo.listPackages() );
+        
+        
         
         assertEquals(prevSize + 1, list.size());
     }

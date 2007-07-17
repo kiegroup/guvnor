@@ -38,3 +38,6 @@
 //optionally store the binary compiled package (really a cache)
 - drools:compiledPackage (binary)
 
+
+// use this to capture fields which are not known ahead of time 
+- * (undefined)
