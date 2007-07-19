@@ -52,4 +52,5 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.GWTShell"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-out www org.drools.brms.JBRMS/JBRMS.html"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="drools-jbrms"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-XstartOnFirstThread"/>
 </launchConfiguration>

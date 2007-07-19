@@ -16,6 +16,7 @@ package org.drools.brms.client.ruleeditor;
  * limitations under the License.
  */
 
+import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.DSLSentence;
@@ -25,14 +26,10 @@ import org.drools.brms.client.rpc.RuleContentText;
 
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -43,7 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author michael neale
  */
 
-public class DSLRuleEditor extends Composite {
+public class DSLRuleEditor extends DirtyableComposite {
 
     private TextArea      text;
     final private RuleContentText data;
@@ -76,6 +73,7 @@ public class DSLRuleEditor extends Composite {
         text.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 data.content = text.getText();
+                makeDirty();
             }
         } );
 
