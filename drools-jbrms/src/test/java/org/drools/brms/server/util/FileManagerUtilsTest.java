@@ -244,7 +244,7 @@ public class FileManagerUtilsTest extends TestCase {
 
 class MockFile implements FileItem {
     
-    private static final long serialVersionUID = -9170360363970788385L;
+    private static final long serialVersionUID = 400L;
     InputStream stream = new ByteArrayInputStream("foo bar".getBytes());
     
     public void setInputStream(InputStream is) throws IOException {
