@@ -15,6 +15,47 @@ public class ArchiveItemTest extends TestCase {
     private PackageItem getDefaultPackage() {
         return getRepo().loadDefaultPackage();
     }
+    
+    public void testFindArchivedAssets() throws Exception {
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+
+        repo.loadDefaultPackage().addAsset( "testFindArchivedAssets1",
+                                            "X" );
+        repo.loadDefaultPackage().addAsset( "testFindArchivedAssets2",
+                                            "X" );
+        repo.loadDefaultPackage().addAsset( "testFindArchivedAssets3",
+                                            "X" );
+        repo.loadDefaultPackage().addAsset( "testFindArchivedAssets4",
+                                            "X" );
+        
+        AssetItem item = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "testFindArchivedAssets1" );
+        assertFalse( item.isArchived() );
+        item.archiveItem( true );
+        item.checkin( "archiving item 1" );
+        item = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "testFindArchivedAssets1" );
+        assertTrue( item.isArchived() );
+        
+        item = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "testFindArchivedAssets2" );
+        assertFalse( item.isArchived() );
+        item.archiveItem( true );
+        item.checkin( "archiving item 1" );
+        item = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "testFindArchivedAssets2" );
+        assertTrue( item.isArchived() );
+
+        item = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "testFindArchivedAssets3" );
+        assertFalse( item.isArchived() );
+        item.archiveItem( true );
+        item.checkin( "archiving item 1" );
+        item = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "testFindArchivedAssets3" );
+        assertTrue( item.isArchived() );
+        
+        
+        AssetItemIterator it =  repo.findArchivedAssets(); 
+        
+        List list = iteratorToList( it );
+        assertEquals(3, list.size());
+        
+    }
 
     public void testArchiveBooleanFlag() throws Exception {
         AssetItem item = RepositorySessionUtil.getRepository().loadDefaultPackage().addAsset( "testArchiveBooleanFlag",

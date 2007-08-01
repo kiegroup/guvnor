@@ -903,18 +903,14 @@ public class RulesRepository {
             throw new RulesRepositoryException( e );
         }
     }
-
-    /**
-     * This will search assets, looking for matches against the name.
-     */
-    public AssetItemIterator findAssetsByName(String name, boolean seekArchived) {
+    
+    public AssetItemIterator findArchivedAssets() {
         try {
 
             String sql = "SELECT " + AssetItem.TITLE_PROPERTY_NAME + ", " + AssetItem.DESCRIPTION_PROPERTY_NAME + ", " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " FROM " + AssetItem.RULE_NODE_TYPE_NAME;
-            sql += " WHERE " + AssetItem.TITLE_PROPERTY_NAME + " LIKE '" + name + "'";
-            sql += " AND jcr:path LIKE '/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/%'";
-
-            if ( seekArchived == false ) sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
+            sql += " WHERE ";
+            sql += " jcr:path LIKE '/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/%'";
+            sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'true'";
 
             Query q = this.session.getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
 
@@ -926,7 +922,33 @@ public class RulesRepository {
             System.out.println( e.getMessage() );
             throw new RulesRepositoryException( e );
         }
+    }
+    
 
+    /**
+     * This will search assets, looking for matches against the name.
+     */
+    public AssetItemIterator findAssetsByName(String name, boolean seekArchived) {
+        try {
+
+            String sql = "SELECT " + AssetItem.TITLE_PROPERTY_NAME + ", " + AssetItem.DESCRIPTION_PROPERTY_NAME + ", " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " FROM " + AssetItem.RULE_NODE_TYPE_NAME;
+            sql += " WHERE " + AssetItem.TITLE_PROPERTY_NAME + " LIKE '" + name + "'";
+            sql += " AND jcr:path LIKE '/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/%'";
+
+            if ( seekArchived == false ) { 
+                sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
+            }
+
+            Query q = this.session.getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
+
+            QueryResult res = q.execute();
+
+            return new AssetItemIterator( res.getNodes(),
+                                          this );
+        } catch ( RepositoryException e ) {
+            System.out.println( e.getMessage() );
+            throw new RulesRepositoryException( e );
+        }
     }
 
     public AssetItemIterator findAssetsByName(String name) {

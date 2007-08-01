@@ -383,9 +383,13 @@ public class PackageItem extends VersionableItem {
 
             String sql = "SELECT * FROM " + AssetItem.RULE_NODE_TYPE_NAME;
             sql += " WHERE jcr:path LIKE '" + getVersionContentNode().getPath() + "/" + ASSET_FOLDER_NAME + "[%]/%'";
-            sql += " and " + fieldPredicates;
+            if ( fieldPredicates.length() > 0 ) { 
+                sql += " and " + fieldPredicates;
+            }
             
-            if ( seekArchived == false ) sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
+            if ( seekArchived == false ) {
+                sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
+            }
             
             Query q = node.getSession().getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
             QueryResult res = q.execute();            
@@ -398,6 +402,12 @@ public class PackageItem extends VersionableItem {
     public AssetItemIterator queryAssets(String fieldPredicates){
         return queryAssets( fieldPredicates, false );
     }
+    
+    
+    public AssetItemIterator listArchivedAssets () {
+        return queryAssets( AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'true'" , true );
+    }
+    
     /**
      * This will load an iterator for assets of the given format type.
      */

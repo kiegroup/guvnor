@@ -532,6 +532,46 @@ public class PackageItemTest extends TestCase {
         
     }
     
+    public void testListArchivedAssets() throws Exception {
+        PackageItem pkg = getRepo().createPackage( "org.drools.archivedtest", "" );
+        getRepo().save();
+        
+        
+        AssetItem item = pkg.addAsset( "archivedItem1", "" );
+        item.archiveItem( true );
+        item.checkin( "la" );
+
+        item = pkg.addAsset( "archivedItem2", "wee" );
+        item.archiveItem( true );
+        item.checkin( "la" );
+        
+        item = pkg.addAsset( "archivedItem3", "wee" );
+        item.archiveItem( true );
+        item.checkin( "la" );
+        
+        item = pkg.addAsset( "NOTarchivedItem", "wee" );
+        item.checkin( "la" );
+        
+        
+        Thread.sleep( 150 );
+        
+        AssetItemIterator it = pkg.listArchivedAssets(); 
+        
+        List list = iteratorToList( it );
+        assertEquals(3, list.size());
+        assertTrue(list.get( 0 ) instanceof AssetItem);
+        assertTrue(list.get( 1 ) instanceof AssetItem);
+        assertTrue(list.get( 2 ) instanceof AssetItem);
+        
+        
+        it = pkg.queryAssets( "", true ); 
+        
+        list = iteratorToList( it );
+        assertEquals(4, list.size());
+ 
+        
+    }    
+    
     public void testSortHistoryByVersionNumber() {
         PackageItem item = new PackageItem();
         List l = new ArrayList();
