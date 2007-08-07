@@ -15,8 +15,6 @@ package org.drools.brms.client.common;
  * limitations under the License.
  */
 
-
-
 /**
  * This is a central location for all form fields use in HTML forms for submission to the file servlet.
  * The all must be unique, of course.

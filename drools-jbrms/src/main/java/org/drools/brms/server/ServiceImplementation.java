@@ -220,10 +220,7 @@ public class ServiceImplementation
 
         return resultArr;
     }
-
     
-
-
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
@@ -231,7 +228,7 @@ public class ServiceImplementation
         long start = System.currentTimeMillis();
 
         List list = repository.findAssetsByCategory( categoryPath );
-        TableDisplayHandler handler = new TableDisplayHandler();
+        TableDisplayHandler handler = new TableDisplayHandler(TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
         //log.info("time for load: " + (System.currentTimeMillis() - start) );
         return handler.loadRuleListTable( list.iterator(), -1 );
         
@@ -240,9 +237,8 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableConfig loadTableConfig(String listName) {
-        TableDisplayHandler handler = new TableDisplayHandler();
-        return handler.loadTableConfig(listName);
-        
+        TableDisplayHandler handler = new TableDisplayHandler(listName);
+        return handler.loadTableConfig();
     }
 
 
@@ -385,6 +381,42 @@ public class ServiceImplementation
         
         return table;
     }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public TableDataResult loadArchivedAssets() throws SerializableException {
+        
+        List<TableDataRow> result = new ArrayList<TableDataRow>();
+
+        AssetItemIterator it = repository.findArchivedAssets();
+        
+        while ( it.hasNext() ) {
+            AssetItem archived = (AssetItem) it.next();
+            
+            TableDataRow row = new TableDataRow();
+                row.id = archived.getUUID();
+                row.values = new String[5];
+
+                row.values[0] = archived.getFormat();
+                row.values[1] = archived.getPackageName();
+                row.values[2] = archived.getName();
+                row.values[3] = archived.getLastContributor();
+                row.values[4] = archived.getLastModified().getTime().toLocaleString();
+                
+                result.add( row );
+        }
+
+        if (result.size() == 0) { 
+            return null;
+        }
+        
+        TableDataResult table = new TableDataResult();
+        table.data = result.toArray(new TableDataRow[result.size()]);
+        
+        return table;
+    }
+    
+    
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")    
@@ -499,7 +531,7 @@ public class ServiceImplementation
         if (numRows != -1) {
             it.skip( startRow );
         }
-        TableDisplayHandler handler = new TableDisplayHandler();
+        TableDisplayHandler handler = new TableDisplayHandler(TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
         log.debug("time for asset list load: " + (System.currentTimeMillis() - start) );
         return handler.loadRuleListTable( it, numRows );
     }

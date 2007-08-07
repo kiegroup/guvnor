@@ -1,4 +1,5 @@
 package org.drools.brms.client.rulelist;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.brms.client.rulelist;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
@@ -49,27 +48,27 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 public class AssetItemListViewer extends Composite {
 
     /** The number of rows to "fill out" */
-    private static final int FILLER_ROWS = 25;
-    public static final String RULE_LIST_TABLE_ID = "ruleList";
-    
-    private FlexTable     outer = new FlexTable();
-    private SortableTable table;
-    private static TableConfig   tableConfig;
-    private EditItemEvent openItemEvent;
+    private static final int              FILLER_ROWS                 = 25;
 
-    private Image refreshIcon = new ImageButton("images/refresh.gif");
-    private Command refresh;
-    private static RepositoryServiceAsync service = RepositoryServiceFactory.getService();
-    private Label itemCounter = new Label();
-    
-    
-    public AssetItemListViewer(EditItemEvent event) {
+    public static final String            RULE_LIST_TABLE_ID          = "rulelist";
+    public static final String            ARCHIVED_RULE_LIST_TABLE_ID = "archivedrulelist";
+
+    private FlexTable                     outer                       = new FlexTable();
+    private SortableTable                 table;
+    private TableConfig                   tableConfig;
+    private EditItemEvent                 openItemEvent;
+
+    private Image                         refreshIcon                 = new ImageButton( "images/refresh.gif" );
+    private Command                       refresh;
+    private static RepositoryServiceAsync service                     = RepositoryServiceFactory.getService();
+    private Label                         itemCounter                 = new Label();
+
+    public AssetItemListViewer(EditItemEvent event,
+                               String tableconfig) {
 
         init();
-        
-        if (tableConfig == null) {
-            loadTableConfig();
-        }
+
+        loadTableConfig( tableconfig );
         this.refreshIcon.setVisible( false );
         this.openItemEvent = event;
         this.refreshIcon.setTitle( "Refresh current list. Will show any changes." );
@@ -77,33 +76,32 @@ public class AssetItemListViewer extends Composite {
             public void onClick(Widget w) {
                 LoadingPopup.showMessage( "Refreshing list, please wait..." );
                 refresh.execute();
-            }            
-        });
-        
+            }
+        } );
     }
 
     /**
-     * Optionally set the refresh command to repopulate the list on demand.
+     * Optionally set the refresh command to re-populate the list on demand.
      * @param refreshCom
      */
     public void setRefreshCommand(Command refreshCom) {
         this.refresh = refreshCom;
         this.refreshIcon.setVisible( true );
-        
+
     }
-    
-    private void loadTableConfig() {
-        service.loadTableConfig( "ruleList",
-                                                               new GenericCallback() {
-                                                                   public void onSuccess(Object o) {
-                                                                       tableConfig = (TableConfig) o;
-                                                                       loadTableData( null );
-                                                                   }
-                                                               } );
+
+    private void loadTableConfig(String tableconfig) {
+        service.loadTableConfig( tableconfig,
+                                 new GenericCallback() {
+                                     public void onSuccess(Object o) {
+                                         tableConfig = (TableConfig) o;
+                                         loadTableData( null );
+                                     }
+                                 } );
     }
 
     /**
-     * Initialise the widget goodness.
+     * Initialize the widget goodness.
      */
     private void init() {
         FlexCellFormatter formatter = outer.getFlexCellFormatter();
@@ -120,8 +118,8 @@ public class AssetItemListViewer extends Composite {
         openIcon.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 LoadingPopup.showMessage( "Loading item, please wait ..." );
-                openItemEvent.open( TableDataRow.getId( table.getSelectedKey()));
-                
+                openItemEvent.open( TableDataRow.getId( table.getSelectedKey() ) );
+
             }
         } );
         openIcon.setTitle( "Open item" );
@@ -152,9 +150,9 @@ public class AssetItemListViewer extends Composite {
                          null );
 
         //if no data, just fill it out
-        if ( data == null || data.data.length == 0) {
-            
-           DataModel nil = new DataModel() {
+        if ( data == null || data.data.length == 0 ) {
+
+            DataModel nil = new DataModel() {
 
                 public int getNumberOfRows() {
                     return 0;
@@ -164,17 +162,22 @@ public class AssetItemListViewer extends Composite {
                     return "";
                 }
 
-                public Comparable getValue(int row, int col) {
+                public Comparable getValue(int row,
+                                           int col) {
                     return "";
                 }
 
-                public Widget getWidget(int row, int col) {
+                public Widget getWidget(int row,
+                                        int col) {
                     return null;
                 }
-                
+
             };
-            
-            table = SortableTable.createTableWidget( nil, tableConfig.headers, FILLER_ROWS, true );
+
+            table = SortableTable.createTableWidget( nil,
+                                                     tableConfig.headers,
+                                                     FILLER_ROWS,
+                                                     true );
             itemCounter.setVisible( false );
         } else {
             final TableDataRow[] rows = data.data;
@@ -188,90 +191,97 @@ public class AssetItemListViewer extends Composite {
                     return rows[row].id;
                 }
 
-                public Comparable getValue(int row, int col) {
+                public Comparable getValue(int row,
+                                           int col) {
                     return rows[row].values[col];
                 }
 
-                public Widget getWidget(int row, int col) {
-                    
-                    if (tableConfig.headers[col].equals( "*" )) {
-                        return new Image("images/" + EditorLauncher.getAssetFormatIcon( rows[row].format  ) );
+                public Widget getWidget(int row,
+                                        int col) {
+
+                    if ( tableConfig.headers[col].equals( "*" ) ) {
+                        return new Image( "images/" + EditorLauncher.getAssetFormatIcon( rows[row].format ) );
                     } else {
                         return null;
                     }
                 }
-                
-            };
-            
-//            DataModel mock = new DataModel() {
-//
-//                public int getNumberOfRows() {
-//                    return 1200;
-//                }
-//
-//                public String getRowId(int row) {
-//                    return "";
-//                }
-//
-//                public Comparable getValue(int row, int col) {
-//
-//                    return "" + row + " " + col;
-//                }
-//
-//                public Widget getWidget(int row, int col) {
-//                    if (col == 1) 
-//                        return new Image("images/close.gif");
-//                    else 
-//                        return null;
-//                }
-//                
-//            };
-            
-            table = SortableTable.createTableWidget( mdl, this.tableConfig.headers, FILLER_ROWS, true );
 
-            
+            };
+
+            //            DataModel mock = new DataModel() {
+            //
+            //                public int getNumberOfRows() {
+            //                    return 1200;
+            //                }
+            //
+            //                public String getRowId(int row) {
+            //                    return "";
+            //                }
+            //
+            //                public Comparable getValue(int row, int col) {
+            //
+            //                    return "" + row + " " + col;
+            //                }
+            //
+            //                public Widget getWidget(int row, int col) {
+            //                    if (col == 1) 
+            //                        return new Image("images/close.gif");
+            //                    else 
+            //                        return null;
+            //                }
+            //                
+            //            };
+
+            table = SortableTable.createTableWidget( mdl,
+                                                     this.tableConfig.headers,
+                                                     FILLER_ROWS,
+                                                     true );
+
             HorizontalPanel panel = new HorizontalPanel();
             panel.add( refreshIcon );
             itemCounter.setVisible( true );
             itemCounter.setText( "  " + data.data.length + " items." );
             panel.add( itemCounter );
-            
-            outer.setWidget( 0, 0, panel);
+
+            outer.setWidget( 0,
+                             0,
+                             panel );
         }
 
         table.setWidth( "100%" );
-        outer.setWidget( 1, 0, table );
-        formatter.setColSpan( 1, 0, 2 );
+        outer.setWidget( 1,
+                         0,
+                         table );
+        formatter.setColSpan( 1,
+                              0,
+                              2 );
 
     }
-    
 
-//    /**
-//     * This is called to tell the widget to reload itself for the given cat path.
-//     */
-//    public void loadRulesForCategoryPath(final String selectedPath) {
-//
-//        //this.currentSelectedPath = selectedPath;
-//        
-//
-//        
-//        service .loadRuleListForCategories( selectedPath,
-//                                                                         new AsyncCallback() {
-//
-//                                                                             public void onFailure(Throwable t) {
-//                                                                                 ErrorPopup.showMessage( t.getMessage() );
-//                                                                             }
-//
-//                                                                             public void onSuccess(Object o) {
-//                                                                                 TableDataResult result = (TableDataResult) o;
-//                                                                                 loadTableData( result );                                                                                 
-//                                                                             }
-//
-//                                                                         } );
-//
-//        
-//    }
+    //    /**
+    //     * This is called to tell the widget to reload itself for the given cat path.
+    //     */
+    //    public void loadRulesForCategoryPath(final String selectedPath) {
+    //
+    //        //this.currentSelectedPath = selectedPath;
+    //        
+    //
+    //        
+    //        service .loadRuleListForCategories( selectedPath,
+    //                                                                         new AsyncCallback() {
+    //
+    //                                                                             public void onFailure(Throwable t) {
+    //                                                                                 ErrorPopup.showMessage( t.getMessage() );
+    //                                                                             }
+    //
+    //                                                                             public void onSuccess(Object o) {
+    //                                                                                 TableDataResult result = (TableDataResult) o;
+    //                                                                                 loadTableData( result );                                                                                 
+    //                                                                             }
+    //
+    //                                                                         } );
+    //
+    //        
+    //    }
 
-
-    
 }

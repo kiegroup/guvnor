@@ -1,4 +1,5 @@
 package org.drools.brms.client.rulelist;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,10 +16,7 @@ package org.drools.brms.client.rulelist;
  * limitations under the License.
  */
 
-
-
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.brms.client.categorynav.CategoryExplorerWidget;
@@ -51,99 +49,135 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  * @author Michael Neale
  */
 public class AssetBrowser extends Composite {
-    
-    public static final int       EDITOR_TAB         = 1;
-    private TabPanel tab;
-    private Map openedViewers = Collections.EMPTY_MAP;
+
+    public static final int     EDITOR_TAB    = 1;
+    private TabPanel            tab;
+    private Map                 openedViewers = Collections.EMPTY_MAP;
     private AssetItemListViewer list;
-    
+
     public AssetBrowser() {
         tab = new TabPanel();
-        tab.setWidth("100%");
-        tab.setHeight("100%");        
+        tab.setWidth( "100%" );
+        tab.setHeight( "100%" );
 
-        FlexTable explorePanel = doExplorer();        
-        
-        tab.add(explorePanel, "<img src='images/explore.gif'/>Explore", true);
+        FlexTable explorePanel = doExplorer();
 
-        tab.selectTab(0);
-        
-        initWidget(tab);    
+        tab.add( explorePanel,
+                 "<img src='images/explore.gif'/>Explore",
+                 true );
+
+        tab.selectTab( 0 );
+        initWidget( tab );
     }
-    
+
     /** This will setup the explorer tab */
     private FlexTable doExplorer() {
-        final FlexTable  table = new FlexTable();
+        final FlexTable table = new FlexTable();
         //and the the delegate to open an editor for a rule resource when
         //chosen to
-        list = new AssetItemListViewer(new EditItemEvent() {
-            public void open(String key) {                  
-                showLoadEditor( key );
-            }
-        });    
-        
-        
+        list = new AssetItemListViewer( new EditItemEvent() {
+                                            public void open(String key) {
+                                                showLoadEditor( key );
+                                            }
+                                        },
+                                        AssetItemListViewer.RULE_LIST_TABLE_ID );
+
         FlexCellFormatter formatter = table.getFlexCellFormatter();
 
-        
         //setup the nav, which will drive the list
-        CategoryExplorerWidget nav = new CategoryExplorerWidget(new CategorySelectHandler() {
+        CategoryExplorerWidget nav = new CategoryExplorerWidget( new CategorySelectHandler() {
             public void selected(final String selectedPath) {
                 Command load = getRuleListLoadingCommand( list,
-                                           selectedPath );
-                table.setWidget( 0, 1, list );
+                                                          selectedPath );
+                table.setWidget( 0,
+                                 1,
+                                 list );
                 LoadingPopup.showMessage( "Retrieving list, please wait..." );
                 DeferredCommand.add( load );
-                list.setRefreshCommand(load);                
+                list.setRefreshCommand( load );
             }
 
-        });     
-        
-        final QuickFindWidget quick = new QuickFindWidget(new EditItemEvent() {
-            public void open(String key) {                  
+        } );
+
+        final QuickFindWidget quick = new QuickFindWidget( new EditItemEvent() {
+            public void open(String key) {
                 showLoadEditor( key );
             }
-        });
-        
-        table.setWidget( 1, 0, nav );
-        table.setWidget( 0, 1, quick);
-        
-        formatter.setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
-        formatter.setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
-        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );        
-        formatter.setRowSpan( 0, 1, 3 );
-        formatter.setWidth( 0, 0, "30%" );
-        formatter.setWidth( 0, 1, "70%" );
+        } );
 
-        formatter.setHeight( 0, 0, "90%" );
+        table.setWidget( 1,
+                         0,
+                         nav );
+        table.setWidget( 0,
+                         1,
+                         quick );
 
-        table.setText( 2, 0, "" );
-        
-        Image newRule = new ImageButton("images/new_rule.gif");
+        formatter.setAlignment( 0,
+                                1,
+                                HasHorizontalAlignment.ALIGN_LEFT,
+                                HasVerticalAlignment.ALIGN_TOP );
+        formatter.setAlignment( 1,
+                                0,
+                                HasHorizontalAlignment.ALIGN_LEFT,
+                                HasVerticalAlignment.ALIGN_TOP );
+        formatter.setAlignment( 0,
+                                0,
+                                HasHorizontalAlignment.ALIGN_LEFT,
+                                HasVerticalAlignment.ALIGN_TOP );
+        formatter.setRowSpan( 0,
+                              1,
+                              3 );
+        formatter.setWidth( 0,
+                            0,
+                            "30%" );
+        formatter.setWidth( 0,
+                            1,
+                            "70%" );
+
+        formatter.setHeight( 0,
+                             0,
+                             "90%" );
+
+        table.setText( 2,
+                       0,
+                       "" );
+
+        Image newRule = new ImageButton( "images/new_rule.gif" );
         newRule.setTitle( "Create new rule" );
 
         newRule.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-              showNewAssetWizard();
+                showNewAssetWizard();
             }
-        });
-        
-        Image showFinder = new ImageButton("images/system_search_small.png");
+        } );
+
+        Image showFinder = new ImageButton( "images/system_search_small.png" );
         showFinder.setTitle( "Show the name finder." );
         showFinder.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                table.setWidget( 0, 1, quick );
+                table.setWidget( 0,
+                                 1,
+                                 quick );
             }
         } );
-        
+
         HorizontalPanel actions = new HorizontalPanel();
         actions.add( showFinder );
         actions.add( newRule );
-        table.setWidget( 0, 0, actions);
-        formatter.setHeight( 0, 0, "5%" );
-        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP);
-        formatter.setStyleName( 0, 0, "new-asset-Icons" );
-        
+        table.setWidget( 0,
+                         0,
+                         actions );
+        formatter.setHeight( 0,
+                             0,
+                             "5%" );
+        formatter.setAlignment( 0,
+                                0,
+                                HasHorizontalAlignment.ALIGN_CENTER,
+                                HasVerticalAlignment.ALIGN_TOP );
+        formatter.setStyleName( 0,
+                                0,
+                                "new-asset-Icons" );
+
         return table;
     }
 
@@ -151,38 +185,46 @@ public class AssetBrowser extends Composite {
                                               final String selectedPath) {
         return new Command() {
             public void execute() {
-              LoadingPopup.showMessage( "Loading list, please wait..." );
-              RepositoryServiceFactory.getService().loadRuleListForCategories( selectedPath,
-              new GenericCallback() {
-                      public void onSuccess(Object o) {
-                          TableDataResult result = (TableDataResult) o;
-                          list.loadTableData( result );
-                          LoadingPopup.close();
-                      }
-                  } );                    
-              }                    
+                LoadingPopup.showMessage( "Loading list, please wait..." );
+                RepositoryServiceFactory.getService().loadRuleListForCategories( selectedPath,
+                                                                                 new GenericCallback() {
+                                                                                     public void onSuccess(Object o) {
+                                                                                         TableDataResult result = (TableDataResult) o;
+                                                                                         list.loadTableData( result );
+                                                                                         LoadingPopup.close();
+                                                                                     }
+                                                                                 } );
+            }
         };
     }
 
     public void showLoadEditor(String uuid) {
-        EditorLauncher.showLoadEditor( openedViewers, tab, uuid, false );
+        EditorLauncher.showLoadEditor( openedViewers,
+                                       tab,
+                                       uuid,
+                                       false );
     }
 
     private void showNewAssetWizard() {
         int left = 70;
-          int top = 100;
-            
-          NewAssetWizard pop = new NewAssetWizard(new EditItemEvent() {
-              public void open(String key) {                  
-                  showLoadEditor( key );
-                  
-              }
-          }, true, null, "Create a new rule");
-          pop.setPopupPosition( left, top );
-          
-          pop.show();
+        int top = 100;
+
+        NewAssetWizard pop = new NewAssetWizard( new EditItemEvent() {
+                                                     public void open(String key) {
+                                                         showLoadEditor( key );
+
+                                                     }
+                                                 },
+                                                 true,
+                                                 null,
+                                                 "Create a new rule" );
+        pop.setPopupPosition( left,
+                              top );
+
+        pop.show();
     }
-	public void setOpenedViewersContainer(Map openedViewers) {
-		this.openedViewers = openedViewers;
-	}
+
+    public void setOpenedViewersContainer(Map openedViewers) {
+        this.openedViewers = openedViewers;
+    }
 }

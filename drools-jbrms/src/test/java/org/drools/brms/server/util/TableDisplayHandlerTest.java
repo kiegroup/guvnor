@@ -21,13 +21,11 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
-import org.drools.brms.server.util.TableDisplayHandler.RowLoader;
-
 public class TableDisplayHandlerTest extends TestCase {
 
     public void testRowLoaders() throws Exception {
-        TableDisplayHandler handler = new TableDisplayHandler();
-        RowLoader loader = new TableDisplayHandler.RowLoader(this.getClass().getResourceAsStream( "/AssetListTable.properties" ));
+        TableDisplayHandler handler = new TableDisplayHandler(TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
+        RowLoader loader = new RowLoader(TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
         
         assertEquals(4, loader.getHeaders().length);
         String[] headers = loader.getHeaders();
@@ -39,8 +37,5 @@ public class TableDisplayHandlerTest extends TestCase {
         assertEquals(4, loader.extractors.size());
         assertTrue(loader.extractors.get( 0 ) instanceof Method);
         assertEquals("getLastModified", ((Method)loader.extractors.get( 2 )).getName());
-        
     }
-    
-    
 }

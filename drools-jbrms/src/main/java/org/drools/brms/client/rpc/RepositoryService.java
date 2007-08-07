@@ -92,6 +92,15 @@ public interface RepositoryService extends RemoteService {
      */
     public TableDataResult loadAssetHistory(String uuid) throws SerializableException;
     
+
+    /**
+     * This will load all archived assets, in a summary format suitable
+     * for display in a table.
+     */
+
+    public TableDataResult loadArchivedAssets() throws SerializableException;
+    
+    
     /**
      * This checks in a new version of an asset. 
      * @return the UUID of the asset you are checking in, 

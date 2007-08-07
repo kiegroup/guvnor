@@ -17,6 +17,7 @@ package org.drools.brms.client;
 
 
 
+import org.drools.brms.client.admin.ArchivedAssetManager;
 import org.drools.brms.client.admin.BackupManager;
 import org.drools.brms.client.admin.CategoryManager;
 import org.drools.brms.client.admin.StateManager;
@@ -37,6 +38,7 @@ public class AdminFeature extends JBRMSFeature {
 
       tab.add( new CategoryManager(), "<img src='images/category_small.gif'/>Manage categories", true ); 
       tab.add( new StateManager(),  "<img src='images/status_small.gif'/>Manage states", true );
+      tab.add( new ArchivedAssetManager(), "<img src='images/backup_small.gif'/>Manage Archived Assets", true );
       tab.add( new BackupManager(), "<img src='images/backup_small.gif'/>Manage Backups", true );
       
       tab.selectTab( 0 );
