@@ -208,7 +208,7 @@ public class ServiceImplementationTest extends TestCase {
 
     public void testRuleTableLoad() throws Exception {
         ServiceImplementation impl = getService();
-        TableConfig conf = impl.loadTableConfig( AssetItemListViewer.RULE_LIST_TABLE_ID );
+        TableConfig conf = impl.loadTableConfig( TableDisplayHandler.DEFAULT_TABLE_TEMPLATE );
         assertNotNull( conf.headers );
 
         CategoryItem cat = impl.repository.loadCategory( "/" );
@@ -242,7 +242,7 @@ public class ServiceImplementationTest extends TestCase {
 
     public void testDateFormatting() throws Exception {
         Calendar cal = Calendar.getInstance();
-        TableDisplayHandler handler = new TableDisplayHandler();
+        TableDisplayHandler handler = new TableDisplayHandler(TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
         String fmt = handler.formatDate( cal );
         assertNotNull( fmt );
 
