@@ -9,13 +9,12 @@ import org.drools.brms.client.rulelist.AssetItemListViewer;
 import org.drools.brms.client.rulelist.EditItemEvent;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -50,7 +49,6 @@ public class ArchivedAssetManager extends Composite {
         showArchivedAssets().execute();
         widtab.addRow( new HTML( "<hr/>" ) );
         widtab.addRow( newButtonsActionWiget() );
-        
         initWidget( widtab );
     }
 
@@ -68,19 +66,40 @@ public class ArchivedAssetManager extends Composite {
         
 
         Button unarchive = new Button( "Unarchive" );
-        refresh.addClickListener( new ClickListener() {
+        unarchive.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                showArchivedAssets().execute();
+                
+                RepositoryServiceFactory.getService().archiveAsset( listView.getSelectedElementUUID(), false, new AsyncCallback() {
+
+                    public void onFailure(Throwable arg0) {
+                        Window.alert( "Fail" );
+                    }
+
+                    public void onSuccess(Object arg0) {
+                        showArchivedAssets().execute();
+                        Window.alert( "Done!" );
+                    }
+                });
             }
         } );
 
         Button deleteperm = new Button( "Delete" );
-        refresh.addClickListener( new ClickListener() {
+        deleteperm.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                showArchivedAssets().execute();
+                RepositoryServiceFactory.getService().removeAsset( listView.getSelectedElementUUID(), new AsyncCallback() {
+
+                    public void onFailure(Throwable arg0) {
+                        Window.alert( "Fail" );
+                    }
+
+                    public void onSuccess(Object arg0) {
+                        showArchivedAssets().execute();
+                        Window.alert( "Done!" );
+                        
+                    }
+                });
             }
         } );
-        
 
         horiz.add( refresh );
         horiz.add( unarchive );

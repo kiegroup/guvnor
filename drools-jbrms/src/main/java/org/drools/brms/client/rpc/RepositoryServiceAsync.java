@@ -68,6 +68,8 @@ public interface RepositoryServiceAsync
     public void buildAssetSource(org.drools.brms.client.rpc.RuleAsset p0, AsyncCallback cb);
     public void buildAsset(org.drools.brms.client.rpc.RuleAsset p0, AsyncCallback cb);
     public void renameAsset(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
+    public void archiveAsset(java.lang.String p0, boolean p1, AsyncCallback cb);
+    public void removeAsset(java.lang.String p0, AsyncCallback cb);
     public void renamePackage(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
-    
+
 }

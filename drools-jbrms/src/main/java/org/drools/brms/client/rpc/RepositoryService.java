@@ -281,6 +281,18 @@ public interface RepositoryService extends RemoteService {
     public String renameAsset(String uuid, String newName);
 
     /**
+     * Archive asset based on uuid 
+     * @param uuid
+     */
+    public void archiveAsset(String uuid, boolean value );
+
+    /**
+     * Remove an asset based on uuid
+     * @param uuid
+     */
+    public void removeAsset(String uuid);
+
+    /**
      * Rename a package.
      */
     public String renamePackage(String uuid, String newName);

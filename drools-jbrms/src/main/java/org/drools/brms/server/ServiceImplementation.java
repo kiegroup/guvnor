@@ -855,6 +855,33 @@ public class ServiceImplementation
     public String renameAsset(String uuid, String newName) {
         return repository.renameAsset( uuid, newName );
     }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void archiveAsset(String uuid, boolean value) {
+        try {
+            AssetItem item = repository.loadAssetByUUID( uuid );
+            item.archiveItem( value );
+            item.checkin( "unarchived" );
+            
+        } catch (RulesRepositoryException e) {
+            log.error( e );
+            throw e;
+        }
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void removeAsset(String uuid) {
+        try {
+            AssetItem item = repository.loadAssetByUUID( uuid );
+            item.remove();
+            repository.save();
+        } catch (RulesRepositoryException e) {
+            log.error( e );
+            throw e;
+        }
+    }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")

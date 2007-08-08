@@ -1,4 +1,5 @@
 package org.drools.brms.server;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -14,8 +15,6 @@ package org.drools.brms.server;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
@@ -112,17 +111,18 @@ public class ServiceImplementationTest extends TestCase {
                                           "txt" );
         assertNotNull( uuid );
         assertFalse( "".equals( uuid ) );
-        
-        AssetItem localItem = impl.repository.loadAssetByUUID( uuid ); 
-        assertEquals( "test Delete Unversioned", localItem.getName() );
-        
+
+        AssetItem localItem = impl.repository.loadAssetByUUID( uuid );
+        assertEquals( "test Delete Unversioned",
+                      localItem.getName() );
+
         localItem.remove();
         impl.repository.save();
-        
-        try { 
+
+        try {
             localItem = impl.repository.loadAssetByUUID( uuid );
             fail();
-        } catch (Exception e ) {
+        } catch ( Exception e ) {
         }
     }
 
@@ -167,15 +167,15 @@ public class ServiceImplementationTest extends TestCase {
         //          impl.createNewRule( "somerule_" + i, "description", 
         //                              "testAddRule", "another", "drl" );
         //      }
-        
+
         result = impl.createNewRule( "testDTSample",
                                      "a description",
                                      "testAddRule",
                                      "another",
-                                     AssetFormats.DECISION_SPREADSHEET_XLS );  
+                                     AssetFormats.DECISION_SPREADSHEET_XLS );
         AssetItem dtItem = impl.repository.loadAssetByUUID( result );
-        assertNotNull(dtItem.getBinaryContentAsBytes());
-        assertTrue(dtItem.getBinaryContentAttachmentFileName().endsWith( ".xls" ));
+        assertNotNull( dtItem.getBinaryContentAsBytes() );
+        assertTrue( dtItem.getBinaryContentAttachmentFileName().endsWith( ".xls" ) );
     }
 
     public void testAttemptDupeRule() throws Exception {
@@ -242,7 +242,7 @@ public class ServiceImplementationTest extends TestCase {
 
     public void testDateFormatting() throws Exception {
         Calendar cal = Calendar.getInstance();
-        TableDisplayHandler handler = new TableDisplayHandler(TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
+        TableDisplayHandler handler = new TableDisplayHandler( TableDisplayHandler.DEFAULT_TABLE_TEMPLATE );
         String fmt = handler.formatDate( cal );
         assertNotNull( fmt );
 
@@ -447,26 +447,25 @@ public class ServiceImplementationTest extends TestCase {
         assertEquals( "testCheckinCategory/deeper",
                       asset2.metaData.categories[2] );
 
-        
         //now lets try a concurrent edit of an asset. 
         //asset3 will be loaded and edited, and then asset2 will try to clobber, it, which should fail.
         //as it is optimistically locked.
         RuleAsset asset3 = serv.loadRuleAsset( asset2.uuid );
-        asset3.metaData.subject =  "new sub";
+        asset3.metaData.subject = "new sub";
         serv.checkinVersion( asset3 );
-        
+
         asset3 = serv.loadRuleAsset( asset2.uuid );
-        assertFalse(asset3.metaData.versionNumber == asset2.metaData.versionNumber);
-        
+        assertFalse( asset3.metaData.versionNumber == asset2.metaData.versionNumber );
+
         try {
             serv.checkinVersion( asset2 );
-            fail("should have failed optimistic lock.");
-        } catch (SerializableException e) {
-            assertNotNull(e.getMessage());
-            assertEquals(-1, e.getMessage().indexOf( "server" ));
+            fail( "should have failed optimistic lock." );
+        } catch ( SerializableException e ) {
+            assertNotNull( e.getMessage() );
+            assertEquals( -1,
+                          e.getMessage().indexOf( "server" ) );
         }
-        
-        
+
     }
 
     public void testArchivePackage() throws Exception {
@@ -501,18 +500,19 @@ public class ServiceImplementationTest extends TestCase {
         assertEquals( "this is a new package",
                       conf.description );
         assertNotNull( conf.lastModified );
-        
+
         pkgs = impl.listPackages();
-        
-        impl.copyPackage( "testCreatePackage", "testCreatePackage_COPY" );
-        
-        
-        
-        assertEquals(pkgs.length + 1, impl.listPackages().length);
+
+        impl.copyPackage( "testCreatePackage",
+                          "testCreatePackage_COPY" );
+
+        assertEquals( pkgs.length + 1,
+                      impl.listPackages().length );
         try {
-            impl.copyPackage( "testCreatePackage", "testCreatePackage_COPY" );
-        } catch (RulesRepositoryException e) {
-            assertNotNull(e.getMessage());
+            impl.copyPackage( "testCreatePackage",
+                              "testCreatePackage_COPY" );
+        } catch ( RulesRepositoryException e ) {
+            assertNotNull( e.getMessage() );
         }
     }
 
@@ -536,21 +536,27 @@ public class ServiceImplementationTest extends TestCase {
                       data.externalURI );
 
         assertNotNull( data.uuid );
-        assertFalse(data.isSnapshot);
-        
-        assertNotNull(data.dateCreated);
+        assertFalse( data.isSnapshot );
+
+        assertNotNull( data.dateCreated );
         Date original = data.lastModified;
-        
+
         Thread.sleep( 100 );
-        
-        impl.createPackageSnapshot( RulesRepository.DEFAULT_PACKAGE, "TEST SNAP 2.0", false, "ya" );
-        PackageItem loaded = impl.repository.loadPackageSnapshot( RulesRepository.DEFAULT_PACKAGE, "TEST SNAP 2.0" );
-        
+
+        impl.createPackageSnapshot( RulesRepository.DEFAULT_PACKAGE,
+                                    "TEST SNAP 2.0",
+                                    false,
+                                    "ya" );
+        PackageItem loaded = impl.repository.loadPackageSnapshot( RulesRepository.DEFAULT_PACKAGE,
+                                                                  "TEST SNAP 2.0" );
+
         data = impl.loadPackageConfig( loaded.getUUID() );
-        assertTrue(data.isSnapshot);
-        assertEquals("TEST SNAP 2.0", data.snapshotName);
-        assertFalse(original.equals( data.lastModified ));
-        assertEquals("ya", data.checkinComment);
+        assertTrue( data.isSnapshot );
+        assertEquals( "TEST SNAP 2.0",
+                      data.snapshotName );
+        assertFalse( original.equals( data.lastModified ) );
+        assertEquals( "ya",
+                      data.checkinComment );
     }
 
     public void testPackageConfSave() throws Exception {
@@ -928,6 +934,117 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    public void testRemoveAsset() throws Exception {
+        RepositoryService impl = getService();
+        String cat = "testRemoveAsset";
+        impl.createCategory( "/",
+                             cat,
+                             "ya" );
+        String pkgUUID = impl.createPackage( "testRemoveAsset",
+                                             "" );
+
+        String uuid = impl.createNewRule( "testRemoveAsset",
+                                          "x",
+                                          cat,
+                                          "testRemoveAsset",
+                                          "testRemoveAsset" );
+
+        String uuid2 = impl.createNewRule( "testRemoveAsset2",
+                                           "x",
+                                           cat,
+                                           "testRemoveAsset",
+                                           "testRemoveAsset" );
+
+        String uuid3 = impl.createNewRule( "testRemoveAsset3",
+                                           "x",
+                                           cat,
+                                           "testRemoveAsset",
+                                           "testRemoveAsset" );
+        String uuid4 = impl.createNewRule( "testRemoveAsset4",
+                                           "x",
+                                           cat,
+                                           "testRemoveAsset",
+                                           "testRemoveAsset" );
+
+        TableDataResult res = impl.listAssets( pkgUUID,
+                                               arr( "testRemoveAsset" ),
+                                               -1,
+                                               0 );
+        assertEquals( 4,
+                      res.data.length );
+
+        impl.removeAsset( uuid4 );
+        
+        res = impl.listAssets( pkgUUID,
+                               arr( "testRemoveAsset" ),
+                               -1,
+                               0 );
+        assertEquals( 3,
+                      res.data.length );
+    }
+    
+    
+    public void testArchiveAsset() throws Exception {
+        RepositoryService impl = getService();
+        String cat = "testArchiveAsset";
+        impl.createCategory( "/", 
+                             cat,
+                             "ya" );
+        String pkgUUID = impl.createPackage( "testArchiveAsset",
+                                             "" );
+
+        String uuid = impl.createNewRule( "testArchiveAsset",
+                                          "x",
+                                          cat,
+                                          "testArchiveAsset",
+                                          "testArchiveAsset" );
+
+        String uuid2 = impl.createNewRule( "testArchiveAsset2",
+                                           "x",
+                                           cat,
+                                           "testArchiveAsset",
+                                           "testArchiveAsset" );
+
+        String uuid3 = impl.createNewRule( "testArchiveAsset3",
+                                           "x",
+                                           cat,
+                                           "testArchiveAsset",
+                                           "testArchiveAsset" );
+        String uuid4 = impl.createNewRule( "testArchiveAsset4",
+                                           "x",
+                                           cat,
+                                           "testArchiveAsset",
+                                           "testArchiveAsset" );
+
+        TableDataResult res = impl.listAssets( pkgUUID,
+                                               arr( "testArchiveAsset" ),
+                                               -1,
+                                               0 );
+        assertEquals( 4,
+                      res.data.length );
+
+        impl.archiveAsset( uuid4, true );
+        
+        res = impl.listAssets( pkgUUID,
+                               arr( "testArchiveAsset" ),
+                               -1,
+                               0 );
+        assertEquals( 3,
+                      res.data.length );
+        
+        impl.archiveAsset( uuid4, false );
+        
+        res = impl.listAssets( pkgUUID,
+                               arr( "testArchiveAsset" ),
+                               -1,
+                               0 );
+        assertEquals( 4,
+                      res.data.length );
+        
+    }
+
+    
+
     public void testLoadSuggestionCompletionEngine() throws Exception {
         RepositoryService impl = getService();
         String uuid = impl.createPackage( "testSuggestionComp",
@@ -939,9 +1056,7 @@ public class ServiceImplementationTest extends TestCase {
         assertNotNull( eng );
 
     }
-    
 
-    
     /**
      * This will test creating a package, check it compiles, and can exectute rules, 
      * then take a snapshot, and check that it reports errors. 
@@ -949,59 +1064,69 @@ public class ServiceImplementationTest extends TestCase {
     public void testBinaryPackageCompileAndExecute() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
-        
+
         //create our package
-        PackageItem pkg = repo.createPackage( "testBinaryPackageCompile", "" );
+        PackageItem pkg = repo.createPackage( "testBinaryPackageCompile",
+                                              "" );
         pkg.updateHeader( "import org.drools.Person" );
-        AssetItem rule1 = pkg.addAsset( "rule_1", "" );
+        AssetItem rule1 = pkg.addAsset( "rule_1",
+                                        "" );
         rule1.updateFormat( AssetFormats.DRL );
-        rule1.updateContent( "rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end"); 
+        rule1.updateContent( "rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end" );
         rule1.checkin( "" );
         repo.save();
-        
+
         BuilderResult[] results = impl.buildPackage( pkg.getUUID() );
-        assertNull(results);
-        
+        assertNull( results );
+
         pkg = repo.loadPackage( "testBinaryPackageCompile" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
 
-        assertNotNull(binPackage);
-        
-        ByteArrayInputStream bin = new ByteArrayInputStream(binPackage);
-        ObjectInputStream in = new DroolsObjectInputStream(bin);
+        assertNotNull( binPackage );
+
+        ByteArrayInputStream bin = new ByteArrayInputStream( binPackage );
+        ObjectInputStream in = new DroolsObjectInputStream( bin );
         Package binPkg = (Package) in.readObject();
-         
-        assertNotNull(binPkg);
-        assertTrue(binPkg.isValid());
-        
+
+        assertNotNull( binPkg );
+        assertTrue( binPkg.isValid() );
+
         Person p = new Person();
-        
+
         BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
-        loader.addPackage( new ByteArrayInputStream(binPackage) );
+        loader.addPackage( new ByteArrayInputStream( binPackage ) );
         RuleBase rb = loader.getRuleBase();
-        
+
         StatelessSession sess = rb.newStatelessSession();
         sess.execute( p );
-        assertEquals(42, p.getAge());
-        
-        impl.createPackageSnapshot( "testBinaryPackageCompile", "SNAP1", false, "" );
-        
-        
-        rule1.updateContent( "rule 'rule1' \n when p:PersonX() \n then System.err.println(42); \n end"); 
+        assertEquals( 42,
+                      p.getAge() );
+
+        impl.createPackageSnapshot( "testBinaryPackageCompile",
+                                    "SNAP1",
+                                    false,
+                                    "" );
+
+        rule1.updateContent( "rule 'rule1' \n when p:PersonX() \n then System.err.println(42); \n end" );
         rule1.checkin( "" );
-        
+
         results = impl.buildPackage( pkg.getUUID() );
-        assertNotNull(results);
-        assertEquals(1, results.length);
-        assertEquals(rule1.getName(), results[0].assetName);
-        assertEquals(AssetFormats.DRL, results[0].assetFormat);
-        assertNotNull(results[0].message);
-        assertEquals(rule1.getUUID(), results[0].uuid);
-        
-        pkg = repo.loadPackageSnapshot( "testBinaryPackageCompile", "SNAP1" );
+        assertNotNull( results );
+        assertEquals( 1,
+                      results.length );
+        assertEquals( rule1.getName(),
+                      results[0].assetName );
+        assertEquals( AssetFormats.DRL,
+                      results[0].assetFormat );
+        assertNotNull( results[0].message );
+        assertEquals( rule1.getUUID(),
+                      results[0].uuid );
+
+        pkg = repo.loadPackageSnapshot( "testBinaryPackageCompile",
+                                        "SNAP1" );
         results = impl.buildPackage( pkg.getUUID() );
-        assertNull(results);
-        
+        assertNull( results );
+
     }
 
     /**
@@ -1013,102 +1138,113 @@ public class ServiceImplementationTest extends TestCase {
         RulesRepository repo = impl.repository;
 
         //create our package
-        PackageItem pkg = repo.createPackage( "testBinaryPackageCompileBRL", "" );
+        PackageItem pkg = repo.createPackage( "testBinaryPackageCompileBRL",
+                                              "" );
         pkg.updateHeader( "import org.drools.Person" );
-        AssetItem rule2 = pkg.addAsset( "rule2", "" );
+        AssetItem rule2 = pkg.addAsset( "rule2",
+                                        "" );
         rule2.updateFormat( AssetFormats.BUSINESS_RULE );
-        
+
         RuleModel model = new RuleModel();
         model.name = "rule2";
-        FactPattern pattern = new FactPattern("Person");
+        FactPattern pattern = new FactPattern( "Person" );
         pattern.boundName = "p";
-        ActionSetField action = new ActionSetField("p");
-        ActionFieldValue value = new ActionFieldValue("age", "42", SuggestionCompletionEngine.TYPE_NUMERIC );
+        ActionSetField action = new ActionSetField( "p" );
+        ActionFieldValue value = new ActionFieldValue( "age",
+                                                       "42",
+                                                       SuggestionCompletionEngine.TYPE_NUMERIC );
         action.addFieldValue( value );
-        
+
         model.addLhsItem( pattern );
         model.addRhsItem( action );
-        
+
         rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
         rule2.checkin( "" );
         repo.save();
-        
+
         BuilderResult[] results = impl.buildPackage( pkg.getUUID() );
-        if (results != null) {
+        if ( results != null ) {
             for ( int i = 0; i < results.length; i++ ) {
-                System.err.println(results[i].message);
+                System.err.println( results[i].message );
             }
         }
-        assertNull(results);
-        
+        assertNull( results );
+
         pkg = repo.loadPackage( "testBinaryPackageCompileBRL" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
 
         //Here is where we write it out if needed... UNCOMMENT if needed for the binary test
-//        FileOutputStream out = new FileOutputStream("/home/michael/RepoBinPackage.pkg");
-//        out.write( binPackage );
-//        out.flush();
-//        out.close();
-        
-        assertNotNull(binPackage);
-        
-        
-        ByteArrayInputStream bin = new ByteArrayInputStream(binPackage);
-        ObjectInputStream in = new DroolsObjectInputStream(bin);
+        //        FileOutputStream out = new FileOutputStream("/home/michael/RepoBinPackage.pkg");
+        //        out.write( binPackage );
+        //        out.flush();
+        //        out.close();
+
+        assertNotNull( binPackage );
+
+        ByteArrayInputStream bin = new ByteArrayInputStream( binPackage );
+        ObjectInputStream in = new DroolsObjectInputStream( bin );
         Package binPkg = (Package) in.readObject();
-         
-        assertNotNull(binPkg);
-        assertTrue(binPkg.isValid());
-        
+
+        assertNotNull( binPkg );
+        assertTrue( binPkg.isValid() );
+
         Person p = new Person();
-        
+
         BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
-        loader.addPackage( new ByteArrayInputStream(binPackage) );
+        loader.addPackage( new ByteArrayInputStream( binPackage ) );
         RuleBase rb = loader.getRuleBase();
-        
+
         StatelessSession sess = rb.newStatelessSession();
         sess.execute( p );
-        assertEquals(42, p.getAge());
-        
-        impl.createPackageSnapshot( "testBinaryPackageCompileBRL", "SNAP1", false, "" );
-        
+        assertEquals( 42,
+                      p.getAge() );
+
+        impl.createPackageSnapshot( "testBinaryPackageCompileBRL",
+                                    "SNAP1",
+                                    false,
+                                    "" );
+
         pattern.factType = "PersonX";
         rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
         rule2.checkin( "" );
-        
+
         results = impl.buildPackage( pkg.getUUID() );
-        assertNotNull(results);
-        assertTrue(results.length > 0);
+        assertNotNull( results );
+        assertTrue( results.length > 0 );
         //assertEquals(2, results.length);
-        assertEquals(rule2.getName(), results[0].assetName);
-        assertEquals(AssetFormats.BUSINESS_RULE, results[0].assetFormat);
-        assertNotNull(results[0].message);
-        assertEquals(rule2.getUUID(), results[0].uuid);
-        
-        pkg = repo.loadPackageSnapshot( "testBinaryPackageCompileBRL", "SNAP1" );
+        assertEquals( rule2.getName(),
+                      results[0].assetName );
+        assertEquals( AssetFormats.BUSINESS_RULE,
+                      results[0].assetFormat );
+        assertNotNull( results[0].message );
+        assertEquals( rule2.getUUID(),
+                      results[0].uuid );
+
+        pkg = repo.loadPackageSnapshot( "testBinaryPackageCompileBRL",
+                                        "SNAP1" );
         results = impl.buildPackage( pkg.getUUID() );
-        assertNull(results);
-        
+        assertNull( results );
+
         //check that the rule name in the model is being set
-        AssetItem asset2 = pkg.addAsset( "testSetRuleName", "" );
+        AssetItem asset2 = pkg.addAsset( "testSetRuleName",
+                                         "" );
         asset2.updateFormat( AssetFormats.BUSINESS_RULE );
         asset2.checkin( "" );
 
         RuleModel model2 = new RuleModel();
-        assertNull(model2.name);
+        assertNull( model2.name );
         RuleAsset asset = impl.loadRuleAsset( asset2.getUUID() );
         asset.content = model2;
-        
+
         impl.checkinVersion( asset );
-        
+
         asset = impl.loadRuleAsset( asset2.getUUID() );
-        
+
         model2 = (RuleModel) asset.content;
-        assertNotNull(model2);
-        assertNotNull(model2.name);
-        assertEquals(asset2.getName(), model2.name);
-        
-        
+        assertNotNull( model2 );
+        assertNotNull( model2.name );
+        assertEquals( asset2.getName(),
+                      model2.name );
 
     }
 
@@ -1123,258 +1259,280 @@ public class ServiceImplementationTest extends TestCase {
         RuleBase rb = loader.getRuleBase();
         StatelessSession sess = rb.newStatelessSession();
         sess.execute( p );
-        assertEquals(42, p.getAge());
+        assertEquals( 42,
+                      p.getAge() );
     }
-    
+
     public void testPackageSource() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
-        
+
         //create our package
-        PackageItem pkg = repo.createPackage( "testPackageSource", "" );
+        PackageItem pkg = repo.createPackage( "testPackageSource",
+                                              "" );
         pkg.updateHeader( "import org.goo.Ber" );
-        AssetItem rule1 = pkg.addAsset( "rule_1", "" );
+        AssetItem rule1 = pkg.addAsset( "rule_1",
+                                        "" );
         rule1.updateFormat( AssetFormats.DRL );
-        rule1.updateContent( "rule 'rule1' \n when p:Person() \n then p.setAge(42); \n end"); 
+        rule1.updateContent( "rule 'rule1' \n when p:Person() \n then p.setAge(42); \n end" );
         rule1.checkin( "" );
         repo.save();
-        
-        AssetItem func = pkg.addAsset( "funky", "" );
+
+        AssetItem func = pkg.addAsset( "funky",
+                                       "" );
         func.updateFormat( AssetFormats.FUNCTION );
         func.updateContent( "this is a func" );
         func.checkin( "" );
-        
-        String drl = impl.buildPackageSource( pkg.getUUID() );
-        assertNotNull(drl);
-        
-        assertTrue(drl.indexOf( "import org.goo.Ber" ) > -1);
-        assertTrue(drl.indexOf( "package testPackageSource" ) > -1);
-        assertTrue(drl.indexOf( "rule 'rule1'" ) > -1);
-        assertTrue(drl.indexOf( "this is a func" ) > -1);
-        assertTrue(drl.indexOf( "this is a func" ) < drl.indexOf( "rule 'rule1'" ));
-        assertTrue(drl.indexOf( "package testPackageSource" ) < drl.indexOf( "this is a func" ));
-        assertTrue(drl.indexOf( "package testPackageSource" ) < drl.indexOf( "import org.goo.Ber" ));
-        
 
-        AssetItem dsl = pkg.addAsset( "MyDSL", "" );
+        String drl = impl.buildPackageSource( pkg.getUUID() );
+        assertNotNull( drl );
+
+        assertTrue( drl.indexOf( "import org.goo.Ber" ) > -1 );
+        assertTrue( drl.indexOf( "package testPackageSource" ) > -1 );
+        assertTrue( drl.indexOf( "rule 'rule1'" ) > -1 );
+        assertTrue( drl.indexOf( "this is a func" ) > -1 );
+        assertTrue( drl.indexOf( "this is a func" ) < drl.indexOf( "rule 'rule1'" ) );
+        assertTrue( drl.indexOf( "package testPackageSource" ) < drl.indexOf( "this is a func" ) );
+        assertTrue( drl.indexOf( "package testPackageSource" ) < drl.indexOf( "import org.goo.Ber" ) );
+
+        AssetItem dsl = pkg.addAsset( "MyDSL",
+                                      "" );
         dsl.updateFormat( AssetFormats.DSL );
         dsl.updateContent( "[when]This is foo=bar()\n[then]do something=yeahMan();" );
         dsl.checkin( "" );
-        
-        AssetItem asset = pkg.addAsset( "MyDSLRule", "" );
+
+        AssetItem asset = pkg.addAsset( "MyDSLRule",
+                                        "" );
         asset.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
         asset.updateContent( "when \n This is foo \n then \n do something" );
         asset.checkin( "" );
-        
+
         drl = impl.buildPackageSource( pkg.getUUID() );
-        assertNotNull(drl);
-        
-        assertTrue(drl.indexOf( "import org.goo.Ber" ) > -1);
-        assertTrue(drl.indexOf( "This is foo" ) == -1);
-        assertTrue(drl.indexOf( "do something" ) == -1);
-        assertTrue(drl.indexOf( "bar()" ) > 0);
-        assertTrue(drl.indexOf( "yeahMan();" ) > 0);
-        
-        
+        assertNotNull( drl );
+
+        assertTrue( drl.indexOf( "import org.goo.Ber" ) > -1 );
+        assertTrue( drl.indexOf( "This is foo" ) == -1 );
+        assertTrue( drl.indexOf( "do something" ) == -1 );
+        assertTrue( drl.indexOf( "bar()" ) > 0 );
+        assertTrue( drl.indexOf( "yeahMan();" ) > 0 );
+
     }
-    
+
     public void testAssetSource() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
-        
+
         //create our package
-        PackageItem pkg = repo.createPackage( "testAssetSource", "" );
-        AssetItem asset = pkg.addAsset( "testRule", "" );
+        PackageItem pkg = repo.createPackage( "testAssetSource",
+                                              "" );
+        AssetItem asset = pkg.addAsset( "testRule",
+                                        "" );
         asset.updateFormat( AssetFormats.DRL );
-        asset.updateContent( "rule 'n' \n when Foo() then bar(); \n end");
+        asset.updateContent( "rule 'n' \n when Foo() then bar(); \n end" );
         asset.checkin( "" );
         repo.save();
 
         RuleAsset rule = impl.loadRuleAsset( asset.getUUID() );
         String drl = impl.buildAssetSource( rule );
-        assertEquals("rule 'n' \n when Foo() then bar(); \n end", drl);
-        
-        asset = pkg.addAsset( "DT", "" );
+        assertEquals( "rule 'n' \n when Foo() then bar(); \n end",
+                      drl );
+
+        asset = pkg.addAsset( "DT",
+                              "" );
         asset.updateFormat( AssetFormats.DECISION_SPREADSHEET_XLS );
         asset.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/SampleDecisionTable.xls" ) );
         asset.checkin( "" );
-        
+
         rule = impl.loadRuleAsset( asset.getUUID() );
         drl = impl.buildAssetSource( rule );
-        assertNotNull(drl);
-        assertTrue(drl.indexOf( "rule" ) > -1);
-        assertTrue(drl.indexOf( "policy: Policy" ) > -1);
-        
-        AssetItem dsl = pkg.addAsset( "MyDSL", "" );
+        assertNotNull( drl );
+        assertTrue( drl.indexOf( "rule" ) > -1 );
+        assertTrue( drl.indexOf( "policy: Policy" ) > -1 );
+
+        AssetItem dsl = pkg.addAsset( "MyDSL",
+                                      "" );
         dsl.updateFormat( AssetFormats.DSL );
         dsl.updateContent( "[when]This is foo=bar()\n[then]do something=yeahMan();" );
         dsl.checkin( "" );
-        
-        asset = pkg.addAsset( "MyDSLRule", "" );
+
+        asset = pkg.addAsset( "MyDSLRule",
+                              "" );
         asset.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
         asset.updateContent( "when \n This is foo \n then \n do something" );
         asset.checkin( "" );
-        
-        
+
         rule = impl.loadRuleAsset( asset.getUUID() );
         drl = impl.buildAssetSource( rule );
-        assertNotNull(drl);
-        assertTrue(drl.indexOf( "This is foo" ) == -1);
-        assertTrue(drl.indexOf( "do something" ) == -1);
-        assertTrue(drl.indexOf( "bar()" ) > -1);
-        assertTrue(drl.indexOf( "yeahMan();" ) > -1);
-        
+        assertNotNull( drl );
+        assertTrue( drl.indexOf( "This is foo" ) == -1 );
+        assertTrue( drl.indexOf( "do something" ) == -1 );
+        assertTrue( drl.indexOf( "bar()" ) > -1 );
+        assertTrue( drl.indexOf( "yeahMan();" ) > -1 );
+
     }
-    
+
     public void testBuildAsset() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
-        
+
         //create our package
-        PackageItem pkg = repo.createPackage( "testBuildAsset", "" );
-        AssetItem model = pkg.addAsset( "MyModel", "" );
+        PackageItem pkg = repo.createPackage( "testBuildAsset",
+                                              "" );
+        AssetItem model = pkg.addAsset( "MyModel",
+                                        "" );
         model.updateFormat( AssetFormats.MODEL );
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
-        
+
         pkg.updateHeader( "import com.billasurf.Person" );
-        
-        
-        AssetItem asset = pkg.addAsset( "testRule", "" );
+
+        AssetItem asset = pkg.addAsset( "testRule",
+                                        "" );
         asset.updateFormat( AssetFormats.DRL );
-        asset.updateContent( "rule 'MyGoodRule' \n when Person() then System.err.println(42); \n end");
+        asset.updateContent( "rule 'MyGoodRule' \n when Person() then System.err.println(42); \n end" );
         asset.checkin( "" );
         repo.save();
-        
+
         RuleAsset rule = impl.loadRuleAsset( asset.getUUID() );
 
         //check its all OK
         BuilderResult[] result = impl.buildAsset( rule );
-        assertNull(result);
+        assertNull( result );
 
         //try it with a bad rule
         RuleContentText text = new RuleContentText();
         text.content = "rule 'MyBadRule' \n when Personx() then System.err.println(42); \n end";
         rule.content = text;
-        
+
         result = impl.buildAsset( rule );
-        assertNotNull(result);
-        assertNotNull(result[0].message);
-        assertEquals(AssetFormats.DRL, result[0].assetFormat);
-        
+        assertNotNull( result );
+        assertNotNull( result[0].message );
+        assertEquals( AssetFormats.DRL,
+                      result[0].assetFormat );
 
         //now mix in a DSL
-        AssetItem dsl = pkg.addAsset( "MyDSL", "" );
+        AssetItem dsl = pkg.addAsset( "MyDSL",
+                                      "" );
         dsl.updateFormat( AssetFormats.DSL );
         dsl.updateContent( "[when]There is a person=Person()\n[then]print out 42=System.err.println(42);" );
         dsl.checkin( "" );
 
-        AssetItem dslRule = pkg.addAsset( "dslRule", "" );
+        AssetItem dslRule = pkg.addAsset( "dslRule",
+                                          "" );
         dslRule.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
         dslRule.updateContent( "when \n There is a person \n then \n print out 42" );
         dslRule.checkin( "" );
-        
+
         rule = impl.loadRuleAsset( dslRule.getUUID() );
-        
+
         result = impl.buildAsset( rule );
-        assertNull(result);
-        
+        assertNull( result );
+
     }
-    
+
     public void testBuildAssetBRXML() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
-        
+
         //create our package
-        PackageItem pkg = repo.createPackage( "testBuildAssetBRL", "" );
-        AssetItem model = pkg.addAsset( "MyModel", "" );
+        PackageItem pkg = repo.createPackage( "testBuildAssetBRL",
+                                              "" );
+        AssetItem model = pkg.addAsset( "MyModel",
+                                        "" );
         model.updateFormat( AssetFormats.MODEL );
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
-        
-        pkg.updateHeader( "import com.billasurf.Person" );
-        impl.createCategory( "/", "brl", "" );
 
-        String uuid = impl.createNewRule( "testBRL", "", "brl", "testBuildAssetBRL", AssetFormats.BUSINESS_RULE );
-        
-        
+        pkg.updateHeader( "import com.billasurf.Person" );
+        impl.createCategory( "/",
+                             "brl",
+                             "" );
+
+        String uuid = impl.createNewRule( "testBRL",
+                                          "",
+                                          "brl",
+                                          "testBuildAssetBRL",
+                                          AssetFormats.BUSINESS_RULE );
+
         RuleAsset rule = impl.loadRuleAsset( uuid );
-        
+
         RuleModel m = (RuleModel) rule.content;
-        assertNotNull(m);
+        assertNotNull( m );
         m.name = "testBRL";
-        
-        FactPattern p = new FactPattern("Person");
+
+        FactPattern p = new FactPattern( "Person" );
         p.boundName = "p";
         SingleFieldConstraint con = new SingleFieldConstraint();
         con.fieldName = "name";
         con.value = "mark";
         con.operator = "==";
         con.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
-        
+
         p.addConstraint( con );
-        
+
         m.addLhsItem( p );
-        
-        ActionSetField set = new ActionSetField("p");
-        ActionFieldValue f = new ActionFieldValue("name", "42-ngoo", SuggestionCompletionEngine.TYPE_STRING);
+
+        ActionSetField set = new ActionSetField( "p" );
+        ActionFieldValue f = new ActionFieldValue( "name",
+                                                   "42-ngoo",
+                                                   SuggestionCompletionEngine.TYPE_STRING );
         set.addFieldValue( f );
-        
+
         m.addRhsItem( set );
-        
+
         impl.checkinVersion( rule );
-        
+
         //check its all OK
         BuilderResult[] result = impl.buildAsset( rule );
-        if (result != null) {
+        if ( result != null ) {
             for ( int i = 0; i < result.length; i++ ) {
-                System.err.println(result[i].message);
+                System.err.println( result[i].message );
             }
         }
-        assertNull(result);        
+        assertNull( result );
     }
-    
+
     public void testBuildAssetWithPackageConfigError() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
-        
-        PackageItem pkg = repo.createPackage( "testBuildAssetWithPackageConfigError", "" );
-//        AssetItem model = pkg.addAsset( "MyModel", "" );
-//        model.updateFormat( AssetFormats.MODEL );
-//        model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
-//        model.checkin( "" );
-        
-//        pkg.updateHeader( "import com.billasurf.Person" );
-        
-        
-        AssetItem asset = pkg.addAsset( "testRule", "" );
+
+        PackageItem pkg = repo.createPackage( "testBuildAssetWithPackageConfigError",
+                                              "" );
+        //        AssetItem model = pkg.addAsset( "MyModel", "" );
+        //        model.updateFormat( AssetFormats.MODEL );
+        //        model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        //        model.checkin( "" );
+
+        //        pkg.updateHeader( "import com.billasurf.Person" );
+
+        AssetItem asset = pkg.addAsset( "testRule",
+                                        "" );
         asset.updateFormat( AssetFormats.DRL );
-        asset.updateContent( "rule 'MyGoodRule' \n when \n then \n end");
+        asset.updateContent( "rule 'MyGoodRule' \n when \n then \n end" );
         asset.checkin( "" );
         repo.save();
-        
+
         RuleAsset rule = impl.loadRuleAsset( asset.getUUID() );
 
         //check its all OK
         BuilderResult[] result = impl.buildAsset( rule );
-        if (!(result == null)) {
-            System.err.println(result[0].assetName + " " + result[0].message);
+        if ( !(result == null) ) {
+            System.err.println( result[0].assetName + " " + result[0].message );
         }
-        assertNull(result);
-        
+        assertNull( result );
+
         pkg.updateHeader( "importxxxx" );
         repo.save();
         result = impl.buildAsset( rule );
-        assertNotNull(result);
-        
-        assertEquals(1, result.length);
-        assertEquals("package", result[0].assetFormat);
-        assertNotNull(result[0].message);
-        
-        
-    }
-    
+        assertNotNull( result );
 
+        assertEquals( 1,
+                      result.length );
+        assertEquals( "package",
+                      result[0].assetFormat );
+        assertNotNull( result[0].message );
+
+    }
 
     private ServiceImplementation getService() throws Exception {
         ServiceImplementation impl = new ServiceImplementation();
