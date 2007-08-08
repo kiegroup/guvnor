@@ -208,30 +208,6 @@ public class AssetItemListViewer extends Composite {
 
             };
 
-            //            DataModel mock = new DataModel() {
-            //
-            //                public int getNumberOfRows() {
-            //                    return 1200;
-            //                }
-            //
-            //                public String getRowId(int row) {
-            //                    return "";
-            //                }
-            //
-            //                public Comparable getValue(int row, int col) {
-            //
-            //                    return "" + row + " " + col;
-            //                }
-            //
-            //                public Widget getWidget(int row, int col) {
-            //                    if (col == 1) 
-            //                        return new Image("images/close.gif");
-            //                    else 
-            //                        return null;
-            //                }
-            //                
-            //            };
-
             table = SortableTable.createTableWidget( mdl,
                                                      this.tableConfig.headers,
                                                      FILLER_ROWS,
@@ -257,31 +233,8 @@ public class AssetItemListViewer extends Composite {
                               2 );
 
     }
-
-    //    /**
-    //     * This is called to tell the widget to reload itself for the given cat path.
-    //     */
-    //    public void loadRulesForCategoryPath(final String selectedPath) {
-    //
-    //        //this.currentSelectedPath = selectedPath;
-    //        
-    //
-    //        
-    //        service .loadRuleListForCategories( selectedPath,
-    //                                                                         new AsyncCallback() {
-    //
-    //                                                                             public void onFailure(Throwable t) {
-    //                                                                                 ErrorPopup.showMessage( t.getMessage() );
-    //                                                                             }
-    //
-    //                                                                             public void onSuccess(Object o) {
-    //                                                                                 TableDataResult result = (TableDataResult) o;
-    //                                                                                 loadTableData( result );                                                                                 
-    //                                                                             }
-    //
-    //                                                                         } );
-    //
-    //        
-    //    }
-
+    
+    public String getSelectedElementUUID() {
+        return TableDataRow.getId( table.getSelectedKey() );        
+    }
 }
