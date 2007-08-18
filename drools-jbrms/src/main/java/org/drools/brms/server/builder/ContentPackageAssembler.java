@@ -65,12 +65,14 @@ public class ContentPackageAssembler {
     public ContentPackageAssembler(PackageItem assetPackage, boolean compile) {
         this.pkg = assetPackage;
         
+        List<JarInputStream> jars = BRMSPackageBuilder.getJars( pkg );
+        builder = BRMSPackageBuilder.getInstance( jars );
+
         if (compile && preparePackage()) {
             buildPackage();
         } else {
-            builder = new BRMSPackageBuilder(new PackageBuilderConfiguration());
+            builder = BRMSPackageBuilder.getInstance( jars );
         }
-        
     }
     
     /**
