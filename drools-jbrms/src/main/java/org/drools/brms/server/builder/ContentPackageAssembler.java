@@ -29,7 +29,6 @@ import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.contenthandler.IRuleAsset;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -64,14 +63,10 @@ public class ContentPackageAssembler {
      */
     public ContentPackageAssembler(PackageItem assetPackage, boolean compile) {
         this.pkg = assetPackage;
+        createBuilder(); 
         
-        List<JarInputStream> jars = BRMSPackageBuilder.getJars( pkg );
-        builder = BRMSPackageBuilder.getInstance( jars );
-
         if (compile && preparePackage()) {
             buildPackage();
-        } else {
-            builder = BRMSPackageBuilder.getInstance( jars );
         }
     }
     
@@ -87,9 +82,17 @@ public class ContentPackageAssembler {
      */
     public ContentPackageAssembler(AssetItem assetToBuild) {
         this.pkg = assetToBuild.getPackage();
+        createBuilder();
+        
         if (preparePackage()) {
             buildAsset( assetToBuild );
         }
+    }
+    
+    
+    public void createBuilder( ) {
+        List<JarInputStream> jars = BRMSPackageBuilder.getJars( pkg );
+        builder = BRMSPackageBuilder.getInstance( jars );
     }
     
     /**
@@ -135,8 +138,6 @@ public class ContentPackageAssembler {
     private boolean preparePackage() {
         
         //firstly we loadup the classpath
-        List<JarInputStream> jars = BRMSPackageBuilder.getJars( pkg );
-        builder = BRMSPackageBuilder.getInstance( jars );
         builder.addPackage( new PackageDescr(pkg.getName()) );
         
         //now we deal with the header (imports, templates, globals).
