@@ -2,13 +2,13 @@ package org.drools.brms.client.packages;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -54,10 +54,11 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  * Contains the explorer to view (and lazy load) the packages in a repository.
  * This uses the explorer type motif, with a tree on the left, and a list or
  * "panel" on the right.
- * 
+ *
  * @author Michael Neale
  */
 public class PackageExplorerWidget extends DirtyableComposite {
+
 
     private final Tree               exTree;
     private final DirtyableFlexTable layout;
@@ -78,7 +79,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
 
     /**
      * This will open an explorer locked to one specific package.
-     * 
+     *
      * @param edit
      *            The edit event (action) when the user wants to open an item.
      * @param uuid
@@ -245,12 +246,24 @@ public class PackageExplorerWidget extends DirtyableComposite {
             }
         } );
 
+        final Image newEnum = new ImageButton("images/new_enumeration.gif");
+        newEnum.setTitle( "Create a new data enumeration (drop down list)" );
+        newEnum.addClickListener( new ClickListener() {
+
+            public void onClick(Widget w) {
+                launchWizard( AssetFormats.ENUMERATION,
+                              "Create a new enumeration (drop down mapping).");
+            }
+
+        });
+
         newWizards.add( newPackage );
         newWizards.add( uploadModel );
         newWizards.add( newRule );
         newWizards.add( newFunction );
         newWizards.add( newDSL );
         newWizards.add( newRuleflow );
+        newWizards.add( newEnum );
         return newWizards;
 
     }
@@ -309,7 +322,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
 
     /**
      * Add a package to the tree.
-     * 
+     *
      * @param name
      */
     private void addPackage(final PackageConfigData conf,

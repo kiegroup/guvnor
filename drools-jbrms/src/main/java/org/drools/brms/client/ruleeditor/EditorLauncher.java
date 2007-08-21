@@ -1,13 +1,13 @@
 package org.drools.brms.client.ruleeditor;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,19 +40,19 @@ import com.google.gwt.user.client.ui.Widget;
  * This launches the appropriate editor for the asset type.
  * This uses the format attribute to determine the appropriate editor, and
  * ALSO to unpackage the content payload from the generic asset RPC object.
- * 
- * NOTE: when adding new editors for asset types, this will also need to be enhanced to load 
+ *
+ * NOTE: when adding new editors for asset types, this will also need to be enhanced to load
  * it up/unpackage it correctly for the editor.
- * The editors will make changes to the rpc objects in place, and when checking in the whole RPC 
+ * The editors will make changes to the rpc objects in place, and when checking in the whole RPC
  * objects will be sent back to the server.
- * 
+ *
  * @author Michael Neale
  */
 public class EditorLauncher {
 
-    
+
     public static final Map TYPE_IMAGES = getTypeImages();
-    
+
     /**
      * This will return the appropriate viewer for the asset.
      */
@@ -70,7 +70,7 @@ public class EditorLauncher {
         } else if (asset.metaData.format.equals( AssetFormats.RULE_FLOW_RF )) {
             return new RuleFlowUploadWidget(asset, viewer);
         } else {
-            return new RuleValidatorWrapper(new DefaultRuleContentWidget( asset ), asset);
+            return new DefaultRuleContentWidget( asset );
         }
 
     }
@@ -78,7 +78,7 @@ public class EditorLauncher {
 
     private static Map getTypeImages() {
         Map result = new HashMap();
-        
+
         result.put( AssetFormats.DRL, "technical_rule_assets.gif" );
         result.put( AssetFormats.DSL, "dsl.gif" );
         result.put( AssetFormats.FUNCTION, "function_assets.gif" );
@@ -87,11 +87,11 @@ public class EditorLauncher {
         result.put( AssetFormats.BUSINESS_RULE, "rule_asset.gif" );
         result.put( AssetFormats.DSL_TEMPLATE_RULE, "rule_asset.gif" );
         result.put( AssetFormats.RULE_FLOW_RF, "ruleflow_small.gif" );
-        
-        
+
+
         return result;
     }
-    
+
     /**
      * Get the icon name (not the path), including the extension, for the appropriate
      * asset format.
@@ -172,7 +172,7 @@ public class EditorLauncher {
                                                  7 ) + "...";
         }
         String icon = getAssetFormatIcon( asset.metaData.format );
-        
+
         tab.add( view,
                  "<img src='images/" + icon + "'>" + displayName,
                  true );
@@ -191,7 +191,7 @@ public class EditorLauncher {
         tab.selectTab( tab.getWidgetIndex( view ) );
     }
 
-    
-    
-    
+
+
+
 }

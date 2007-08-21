@@ -1,13 +1,13 @@
 package org.drools.brms.server;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -74,20 +74,20 @@ import org.jboss.seam.annotations.security.Restrict;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
-/** 
+/**
  * This is the implementation of the repository service to drive the GWT based front end.
- * 
+ *
  * @author Michael Neale
  */
 @Name("org.drools.brms.client.rpc.RepositoryService")
 @AutoCreate
-public class ServiceImplementation 
+public class ServiceImplementation
     implements
     RepositoryService {
 
     @In
     public RulesRepository repository;
-    
+
 
     private static final long serialVersionUID = 400L;
     private static final DateFormat dateFormatter = DateFormat.getInstance();
@@ -97,7 +97,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] loadChildCategories(String categoryPath) {
-        
+
         CategoryItem item = repository.loadCategory( categoryPath );
         List children = item.getChildTags();
         String[] list = new String[children.size()];
@@ -107,19 +107,19 @@ public class ServiceImplementation
         return list;
 
     }
-    
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public Boolean createCategory(String path,
                                   String name,
                                   String description) {
-        
-        
-        log.info( "USER:" + repository.getSession().getUserID() 
+
+
+        log.info( "USER:" + repository.getSession().getUserID()
                   + " CREATING cateogory: [" + name + "] in path [" + path + "]" );
-        
+
         if (path == null || "".equals(path)) {
-            path = "/";        
+            path = "/";
         }
 
         CategoryItem item = repository.loadCategory( path );
@@ -127,8 +127,8 @@ public class ServiceImplementation
         repository.save();
         return Boolean.TRUE;
     }
-    
-    
+
+
     /**
      * This will create a new asset. It will be saved, but not checked in.
      * The initial state will be the draft state.
@@ -139,30 +139,30 @@ public class ServiceImplementation
                                  String description,
                                  String initialCategory,
                                  String initialPackage,
-                                 String format) throws SerializableException {    
-        
-        log.info( "USER:" + repository.getSession().getUserID() + 
+                                 String format) throws SerializableException {
+
+        log.info( "USER:" + repository.getSession().getUserID() +
                            " CREATING new asset name [" + ruleName + "] in package [" + initialPackage + "]" );
-        
+
         try {
 
             PackageItem pkg = repository.loadPackage( initialPackage );
             AssetItem asset = pkg.addAsset( ruleName, description, initialCategory, format );
-            
+
             applyPreBuiltTemplates( ruleName,
                                     format,
                                     asset );
             repository.save();
-            
-            
+
+
             return asset.getUUID();
         } catch (RulesRepositoryException e) {
             throw new SerializableException(e.getMessage());
         }
 
     }
-    
-    
+
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void deleteUncheckedRule(String uuid, String initialPackage) {
@@ -170,7 +170,7 @@ public class ServiceImplementation
         asset.remove();
         repository.save();
     }
-    
+
     /**
      * For some format types, we add some sugar by adding a new template.
      */
@@ -179,6 +179,7 @@ public class ServiceImplementation
                                         AssetItem asset) {
         if (format.equals( AssetFormats.DSL_TEMPLATE_RULE )) {
             asset.updateContent( "when\n\nthen\n" );
+            asset.updateDescription( "A dsl is a language mapping from a domain specific language to the rule language." );
         } else if (format.equals( AssetFormats.FUNCTION )) {
             asset.updateContent( "function <returnType> " + ruleName + "(<args here>) {\n\n\n}" );
         } else if (format.equals( AssetFormats.DSL )) {
@@ -188,6 +189,18 @@ public class ServiceImplementation
         } else if (format.equals( AssetFormats.DECISION_SPREADSHEET_XLS )) {
             asset.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/SampleDecisionTable.xls" ) );
             asset.updateBinaryContentAttachmentFileName( "SampleDecisionTable.xls" );
+        } else if (format.equals( AssetFormats.ENUMERATION )) {
+            asset.updateDescription( "An enumeration is a mapping from fields to a list of values." +
+                    "This will mean the rule editor will show a drop down for fields, instead of a text box." +
+                    "The format of this is: 'FactType.fieldName ': ['Value1', 'Value2']\n" +
+                    "You can add more mappings by adding in more lines. " +
+                    "\nFor example:\n\n" +
+                    "'Person.sex' : ['M', 'F']\n" +
+                     "'Person.rating' : ['High', 'Low']\n\n" +
+                     "You can also ad display aliases (so the value used in the rule is separate to the one displayed:\n"  +
+                    "'Person.sex' : ['M=Male', 'F=Female']\n" +
+                    "in the above case, the 'M=Male' means that 'Male' will be displayed as an item in a drop down box, but the value 'M' will be used in the rule. "
+                    );
         }
     }
 
@@ -202,10 +215,10 @@ public class ServiceImplementation
             PackageConfigData data = new PackageConfigData();
             data.uuid = pkg.getUUID();
             data.name = pkg.getName();
-            
+
             result.add( data );
         }
-        
+
         Collections.sort( result, new Comparator<Object>() {
 
             public int compare(final Object o1,
@@ -214,13 +227,13 @@ public class ServiceImplementation
                 final PackageConfigData d2 = (PackageConfigData) o2;
                 return d1.name.compareTo( d2.name );
             }
-            
+
         });
         PackageConfigData[] resultArr = result.toArray( new PackageConfigData[result.size()] );
 
         return resultArr;
     }
-    
+
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
@@ -231,7 +244,7 @@ public class ServiceImplementation
         TableDisplayHandler handler = new TableDisplayHandler(TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
         //log.info("time for load: " + (System.currentTimeMillis() - start) );
         return handler.loadRuleListTable( list.iterator(), -1 );
-        
+
     }
 
     @WebRemote
@@ -254,105 +267,105 @@ public class ServiceImplementation
         RuleAsset asset = new RuleAsset();
         asset.uuid = uuid;
 
-        
+
         //load standard meta data
         asset.metaData = populateMetaData( item );
-        
+
         // get package header
         PackageItem pkgItem = repository.loadPackage( asset.metaData.packageName );
 
         //load the content
         ContentHandler handler = ContentHandler.getHandler( asset.metaData.format );
         handler.retrieveAssetContent(asset, pkgItem, item);
-        
+
         return asset;
     }
-    
 
-    /** 
+
+    /**
      * read in the meta data, populating all dublin core and versioning stuff.
      */
     MetaData populateMetaData(VersionableItem item) {
         MetaData meta = new MetaData();
-        
+
         meta.status = (item.getState() != null) ? item.getState().getName() : "";
 
         metaDataMapper.copyToMetaData( meta, item );
-        
+
         meta.createdDate = calendarToDate(item.getCreatedDate());
         meta.lastModifiedDate = calendarToDate( item.getLastModified() );
-        
+
         return meta;
     }
-    
+
     /**
      * Populate meta data with asset specific info.
      */
     MetaData populateMetaData(AssetItem item) {
         MetaData meta = populateMetaData( (VersionableItem ) item);
         meta.packageName = item.getPackageName();
-        
+
         List cats = item.getCategories();
         meta.categories = new String[cats.size()];
         for ( int i = 0; i < meta.categories.length; i++ ) {
             CategoryItem cat = (CategoryItem) cats.get(i);
-            meta.categories[i] = cat.getFullPath();          
+            meta.categories[i] = cat.getFullPath();
         }
         meta.dateEffective = calendarToDate( item.getDateEffective() );
         meta.dateExpired = calendarToDate( item.getDateExpired() );
         return meta;
-        
+
     }
 
     private Date calendarToDate(Calendar createdDate) {
         if (createdDate == null) return null;
         return createdDate.getTime();
     }
-    
+
     private Calendar dateToCalendar(Date date) {
         if (date == null) return null;
         Calendar cal = Calendar.getInstance();
         cal.setTime( date );
         return cal;
-    }    
+    }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public String checkinVersion(RuleAsset asset) throws SerializableException { 
-        
-        log.info( "USER:" + repository.getSession().getUserID() + 
+    public String checkinVersion(RuleAsset asset) throws SerializableException {
+
+        log.info( "USER:" + repository.getSession().getUserID() +
         " CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "]  ARCHIVED [" + asset.archived + "]");
 
-        
+
         AssetItem repoAsset = repository.loadAssetByUUID( asset.uuid );
         if (asset.metaData.lastModifiedDate.before( repoAsset.getLastModified().getTime())  ) {
             throw new SerializableException("This asset was saved by someone else previously, and this version will not be overwritten.");
         }
-        
-        
+
+
         repoAsset.archiveItem( asset.archived );
         MetaData meta = asset.metaData;
-        
+
         metaDataMapper.copyFromMetaData( meta, repoAsset );
-        
+
         repoAsset.updateDateEffective( dateToCalendar( meta.dateEffective ) );
-        repoAsset.updateDateExpired( dateToCalendar( meta.dateExpired ) );        
-        
-        
+        repoAsset.updateDateExpired( dateToCalendar( meta.dateExpired ) );
+
+
         repoAsset.updateCategoryList( meta.categories );
         ContentHandler handler = ContentHandler.getHandler( repoAsset.getFormat() );//new AssetContentFormatHandler();
         handler.storeAssetContent( asset, repoAsset );
-        
+
         repoAsset.checkin( meta.checkinComment );
 
-        
+
         return repoAsset.getUUID();
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadAssetHistory(String uuid) throws SerializableException {
-        
+
         List<TableDataRow> result = new ArrayList<TableDataRow>();
 
         AssetItem item = repository.loadAssetByUUID( uuid );
@@ -361,38 +374,38 @@ public class ServiceImplementation
         while ( it.hasNext() ) {
             AssetItem historical = (AssetItem) it.next();//new AssetItem(repo, element);
             long versionNumber = historical.getVersionNumber();
-            if (! (versionNumber == 0) 
+            if (! (versionNumber == 0)
                             && ! (versionNumber == item.getVersionNumber() ))
                 {
                 TableDataRow row = new TableDataRow();
                     row.id = historical.getVersionSnapshotUUID();
                     row.values = new String[4];
                     row.values[0] = Long.toString( historical.getVersionNumber());
-                    row.values[1] = historical.getCheckinComment();                
+                    row.values[1] = historical.getCheckinComment();
                     row.values[2] = dateFormatter.format( historical.getLastModified().getTime() );
                     row.values[3] = historical.getStateDescription();
-                    result.add( row );                    
+                    result.add( row );
             }
         }
-        
+
         if (result.size() == 0) return null;
         TableDataResult table = new TableDataResult();
         table.data = result.toArray(new TableDataRow[result.size()]);
-        
+
         return table;
     }
-    
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadArchivedAssets() throws SerializableException {
-        
+
         List<TableDataRow> result = new ArrayList<TableDataRow>();
 
         AssetItemIterator it = repository.findArchivedAssets();
-        
+
         while ( it.hasNext() ) {
             AssetItem archived = (AssetItem) it.next();
-            
+
             TableDataRow row = new TableDataRow();
                 row.id = archived.getUUID();
                 row.values = new String[5];
@@ -402,64 +415,64 @@ public class ServiceImplementation
                 row.values[2] = archived.getName();
                 row.values[3] = archived.getLastContributor();
                 row.values[4] = archived.getLastModified().getTime().toLocaleString();
-                
+
                 result.add( row );
         }
 
-        if (result.size() == 0) { 
+        if (result.size() == 0) {
             return null;
         }
-        
+
         TableDataResult table = new TableDataResult();
         table.data = result.toArray(new TableDataRow[result.size()]);
-        
+
         return table;
     }
-    
-    
+
+
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")    
+    @Restrict("#{identity.loggedIn}")
     public void restoreVersion(String versionUUID,
                                  String assetUUID,
                                  String comment) {
         AssetItem old = repository.loadAssetByUUID( versionUUID );
         AssetItem head = repository.loadAssetByUUID( assetUUID );
 
-        log.info( "USER:" + repository.getSession().getUserID() + 
+        log.info( "USER:" + repository.getSession().getUserID() +
                            " RESTORE of asset: [" + head.getName() + "] UUID: [" + head.getUUID() + "] with historical version number: [" + old.getVersionNumber() );
 
-        
-        repository.restoreHistoricalAsset( old, 
-                                     head, 
+
+        repository.restoreHistoricalAsset( old,
+                                     head,
                                      comment );
-        
+
     }
 
-    @WebRemote 
-    @Restrict("#{identity.loggedIn}")    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public byte[] exportRepository() throws SerializableException {
-        
-        log.info( "USER:" + repository.getSession().getUserID() + 
+
+        log.info( "USER:" + repository.getSession().getUserID() +
                            " EXPORTING repository");
-        
-        byte [] exportedOutput = null; 
+
+        byte [] exportedOutput = null;
         try {
              exportedOutput =  repository.exportRulesRepository();
         } catch ( Exception e ) {
             throw new SerializableException( "Unable to export repository" );
-        } 
+        }
         return exportedOutput;
     }
-    
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String createPackage(String name,
                                 String description) throws SerializableException {
-        log.info( "USER:" + repository.getSession().getUserID() + 
+        log.info( "USER:" + repository.getSession().getUserID() +
                            " CREATING package [" + name + "]" );
         PackageItem item = repository.createPackage( name, description );
-        
+
         return item.getUUID();
     }
 
@@ -467,7 +480,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public PackageConfigData loadPackageConfig(String uuid) {
         PackageItem item = repository.loadPackageByUUID( uuid );
-        
+
         PackageConfigData data = new PackageConfigData();
         data.uuid = item.getUUID();
         data.header = item.getHeader();
@@ -482,28 +495,28 @@ public class ServiceImplementation
         data.isSnapshot = item.isSnapshot();
         if (data.isSnapshot) {
             data.snapshotName = item.getSnapshotName();
-        }        
+        }
         return data;
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public ValidatedResponse savePackage(PackageConfigData data) throws SerializableException {
-        log.info( "USER:" + repository.getSession().getUserID() + 
+        log.info( "USER:" + repository.getSession().getUserID() +
                            " SAVING package [" + data.name + "]" );
-        
+
         PackageItem item = repository.loadPackage( data.name );
-        
+
         item.updateHeader( data.header );
         item.updateExternalURI( data.externalURI );
         item.updateDescription( data.description );
         item.archiveItem( data.archived );
-        
+
         item.checkin( data.description );
-        
+
         BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
         loader.getSuggestionEngine( item );
-        
+
         ValidatedResponse res = new ValidatedResponse();
         if (loader.hasErrors()) {
             res.hasErrors = true;
@@ -515,12 +528,12 @@ public class ServiceImplementation
             res.errorHeader  = "Package validation errors";
             res.errorMessage = err;
         }
-        
+
         return res;
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")    
+    @Restrict("#{identity.loggedIn}")
     public TableDataResult listAssets(String uuid,
                                               String formats[],
                                               int numRows,
@@ -536,19 +549,19 @@ public class ServiceImplementation
         return handler.loadRuleListTable( it, numRows );
     }
 
-    
+
     @WebRemote
-    @Restrict("#{identity.loggedIn}")    
+    @Restrict("#{identity.loggedIn}")
     public String createState(String name) throws SerializableException {
-        log.info( "USER:" + repository.getSession().getUserID() + 
+        log.info( "USER:" + repository.getSession().getUserID() +
                            " CREATING state: [" + name + "]" );
         try {
             String uuid = repository.createState( name ).getNode().getUUID();
             repository.save();
             return uuid;
-        } catch ( RepositoryException e ) {            
+        } catch ( RepositoryException e ) {
             throw new SerializableException( "Unable to create the status." );
-        }        
+        }
     }
 
     @WebRemote
@@ -567,22 +580,22 @@ public class ServiceImplementation
     public void changeState(String uuid,
                             String newState,
                             boolean wholePackage) {
-        
+
         if (!wholePackage) {
-            
+
             AssetItem asset = repository.loadAssetByUUID( uuid );
-            log.info( "USER:" + repository.getSession().getUserID() + 
+            log.info( "USER:" + repository.getSession().getUserID() +
                                " CHANGING ASSET STATUS. Asset name, uuid: " +
-                    "[" + asset.getName() + ", " +asset.getUUID() + "]" 
+                    "[" + asset.getName() + ", " +asset.getUUID() + "]"
                       +  " to [" + newState + "]");
             asset.updateState( newState );
         } else {
             PackageItem pkg = repository.loadPackageByUUID( uuid );
             log.info( "USER:" + repository.getSession().getUserID() +
             " CHANGING Package STATUS. Asset name, uuid: " +
-                      "[" + pkg.getName() + ", " + pkg.getUUID() + "]" 
+                      "[" + pkg.getName() + ", " + pkg.getUUID() + "]"
                         +  " to [" + newState + "]");
-            pkg.changeStatus(newState);            
+            pkg.changeStatus(newState);
         }
         repository.save();
     }
@@ -592,10 +605,10 @@ public class ServiceImplementation
     public void changeAssetPackage(String uuid,
                                    String newPackage,
                                    String comment) {
-        log.info( "USER:" + repository.getSession().getUserID() + 
+        log.info( "USER:" + repository.getSession().getUserID() +
                            " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]");
         repository.moveRuleItemPackage( newPackage, uuid, comment );
-        
+
     }
 
     @WebRemote
@@ -603,24 +616,24 @@ public class ServiceImplementation
     public String copyAsset(String assetUUID,
                           String newPackage,
                           String newName) {
-        return repository.copyAsset( assetUUID, newPackage, newName );        
+        return repository.copyAsset( assetUUID, newPackage, newName );
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public SnapshotInfo[] listSnapshots(String packageName) {
-        
+
         String[] snaps = repository.listPackageSnapshots( packageName );
         SnapshotInfo[] res = new SnapshotInfo[snaps.length];
         for ( int i = 0; i < snaps.length; i++ ) {
             PackageItem snap = repository.loadPackageSnapshot( packageName, snaps[i] );
-            SnapshotInfo info = new SnapshotInfo(); 
+            SnapshotInfo info = new SnapshotInfo();
             res[i] = info;
             info.comment = snap.getCheckinComment();
             info.name = snaps[i];
             info.uuid = snap.getUUID();
         }
-        return res;       
+        return res;
     }
 
     @WebRemote
@@ -631,16 +644,16 @@ public class ServiceImplementation
                                       String comment) {
         log.info( "USER:" + repository.getSession().getUserID() +
          " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
-        
+
         if (replaceExisting) {
-            repository.removePackageSnapshot( packageName, snapshotName );                        
-        } 
-        
+            repository.removePackageSnapshot( packageName, snapshotName );
+        }
+
         repository.createPackageSnapshot( packageName, snapshotName );
         PackageItem item = repository.loadPackageSnapshot( packageName, snapshotName );
         item.updateCheckinComment( comment );
         repository.save();
-        
+
     }
 
     @WebRemote
@@ -649,7 +662,7 @@ public class ServiceImplementation
                                      String snapshotName,
                                      boolean delete,
                                      String newSnapshotName) throws SerializableException {
-        
+
         if (delete) {
             log.info( "USER:" + repository.getSession().getUserID() +
             " REMOVING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "]" );
@@ -660,61 +673,61 @@ public class ServiceImplementation
             }
             log.info( "USER:" + repository.getSession().getUserID() +
                                " COPYING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
- 
+
             repository.copyPackageSnapshot( packageName, snapshotName, newSnapshotName );
         }
-        
+
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult quickFindAsset(String searchText, int max, boolean searchArchived) {
-        
+
         String search = Pattern.compile("*", Pattern.LITERAL).matcher(searchText).replaceAll(Matcher.quoteReplacement("%"));
-        
+
         if (!search.endsWith( "%" )) {
             search += "%";
         }
-        
-        
+
+
         TableDataResult result = new TableDataResult();
-        
-        List<TableDataRow> resultList = new ArrayList<TableDataRow>();        
-        
-        long start = System.currentTimeMillis();        
+
+        List<TableDataRow> resultList = new ArrayList<TableDataRow>();
+
+        long start = System.currentTimeMillis();
         AssetItemIterator it = repository.findAssetsByName( search, searchArchived ); // search for archived items
         log.debug("Search time: " + (System.currentTimeMillis() - start));
         for(int i = 0; i < max; i++) {
             if (!it.hasNext()) {
                 break;
-            } 
-            
+            }
+
             AssetItem item = (AssetItem) it.next();
             TableDataRow row = new TableDataRow();
             row.id = item.getUUID();
             String desc = item.getDescription() + "";
             row.values = new String[] { item.getName(), desc.substring( 0, Math.min( 32, desc.length() ) ) };
             resultList.add( row );
-           
+
         }
-        
+
         if (it.hasNext()) {
             TableDataRow empty = new TableDataRow();
             empty.id = "MORE";
             resultList.add( empty );
         }
-        
+
         result.data = resultList.toArray( new TableDataRow[resultList.size()] );
         return result;
-        
+
     }
 
-    @WebRemote    
+    @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void removeCategory(String categoryPath) throws SerializableException {
         log.info( "USER:" + repository.getSession().getUserID() +
         " REMOVING CATEGORY path: [" + categoryPath + "]" );
-        
+
         try {
             repository.loadCategory( categoryPath ).remove();
             repository.save();
@@ -722,19 +735,19 @@ public class ServiceImplementation
             throw new SerializableException( e.getMessage() );
         }
     }
-    
-    @WebRemote 
+
+    @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void clearRulesRepository() {
         RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(repository.getSession());
         admin.clearRulesRepository();
     }
 
-    @WebRemote    
+    @WebRemote
     @Restrict("#{identity.loggedIn}")
     public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializableException {
         try {
-            
+
             PackageItem pkg = repository.loadPackage( packageName );
             BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
             return loader.getSuggestionEngine( pkg );
@@ -742,7 +755,7 @@ public class ServiceImplementation
             log.error( e );
             throw new SerializableException(e.getMessage());
         }
-        
+
     }
 
     @WebRemote
@@ -758,11 +771,11 @@ public class ServiceImplementation
                 ByteArrayOutputStream bout = new ByteArrayOutputStream();
                 ObjectOutputStream out = new ObjectOutputStream(bout);
                 out.writeObject( asm.getBinaryPackage() );
-                
+
                 item.updateCompiledPackage( new ByteArrayInputStream( bout.toByteArray()) );
                 out.flush();
                 out.close();
-                
+
                 repository.save();
             } catch (IOException e) {
                 log.error( e );
@@ -805,7 +818,7 @@ public class ServiceImplementation
         handler.storeAssetContent( asset, item );
         StringBuffer buf = new StringBuffer();
         if (handler.isRuleAsset()) {
-            
+
             BRMSPackageBuilder builder = new BRMSPackageBuilder(new PackageBuilderConfiguration());
             //now we load up the DSL files
             builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( item.getPackage(), new BRMSPackageBuilder.DSLErrorEvent() {
@@ -817,7 +830,7 @@ public class ServiceImplementation
         } else {
             return item.getContent();
         }
-        
+
         return buf.toString();
     }
 
@@ -828,15 +841,15 @@ public class ServiceImplementation
 
         ContentHandler handler = ContentHandler.getHandler( item.getFormat() );//new AssetContentFormatHandler();
         handler.storeAssetContent( asset, item );
-        
-        
+
+
         ContentPackageAssembler asm = new ContentPackageAssembler(item);
         if (!asm.hasErrors()) {
             return null;
         } else {
             return generateBuilderResults( asm );
         }
-        
+
     }
 
     @WebRemote
@@ -849,13 +862,13 @@ public class ServiceImplementation
             throw e;
         }
     }
-    
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String renameAsset(String uuid, String newName) {
         return repository.renameAsset( uuid, newName );
     }
-    
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void archiveAsset(String uuid, boolean value) {
@@ -863,7 +876,7 @@ public class ServiceImplementation
             AssetItem item = repository.loadAssetByUUID( uuid );
             item.archiveItem( value );
             item.checkin( "unarchived" );
-            
+
         } catch (RulesRepositoryException e) {
             log.error( e );
             throw e;

@@ -1,13 +1,13 @@
 package org.drools.brms.client.modeldriven.ui;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +25,7 @@ import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.InfoPopup;
 import org.drools.brms.client.common.Lbl;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.brl.FactPattern;
 import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brl.RuleModel;
 import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
@@ -33,7 +34,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -48,26 +48,36 @@ import com.google.gwt.user.client.ui.Widget;
  * This is an editor for constraint values.
  * How this behaves depends on the constraint value type.
  * When the constraint value has no type, it will allow the user to choose the first time.
- * 
+ *
  * @author Michael Neale
  * @author Fernando Meyer
  */
 public class ConstraintValueEditor extends DirtyableComposite {
 
-    private ISingleFieldConstraint constraint;
-    private Panel      panel;
-    private RuleModel model;
-    private boolean numericValue;
+    private final ISingleFieldConstraint constraint;
+    private final Panel      panel;
+    private final RuleModel model;
+    private final boolean numericValue;
+    private String[] enumeratedValues;
 
     /**
      * @param con The constraint being edited.
      */
-    public ConstraintValueEditor(ISingleFieldConstraint con, RuleModel model, String valueTypeNumeric /* eg is numeric */) {
+    public ConstraintValueEditor(FactPattern pattern, String fieldName, ISingleFieldConstraint con, RuleModeller modeller, String valueTypeNumeric /* eg is numeric */) {
         this.constraint = con;
         if (valueTypeNumeric.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
             this.numericValue = true;
+        } else {
+            this.numericValue = false;
         }
-        this.model = model;
+        this.model = modeller.getModel();
+        SuggestionCompletionEngine sce = modeller.getSuggestionCompletions();
+        String enumKey = pattern.factType + "." + fieldName;
+        if (sce.dataEnumLists.containsKey( enumKey )) {
+            this.enumeratedValues = (String[]) sce.dataEnumLists.get( enumKey );
+        }
+
+
         panel = new SimplePanel();
         refreshEditor();
         initWidget( panel );
@@ -104,9 +114,9 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
     private Widget variableEditor() {
         List vars = this.model.getBoundVariablesInScope( this.constraint );
-        
+
         final ListBox box = new ListBox();
-        
+
         if (this.constraint.value == null) {
             box.addItem( "Choose ..." );
         }
@@ -117,13 +127,13 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 box.setSelectedIndex( i );
             }
         }
-        
+
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 constraint.value = box.getItemText( box.getSelectedIndex() );
             }
         });
-        
+
         return box;
     }
 
@@ -143,29 +153,102 @@ public class ConstraintValueEditor extends DirtyableComposite {
     /**
      * An editor for literal values.
      */
-    private TextBox literalEditor() {
-        final TextBox box = boundTextBox(constraint);
-        if (this.numericValue) {
-            box.addKeyboardListener( new KeyboardListener() {
-       
-                public void onKeyDown(Widget arg0, char arg1, int arg2) {
-    
+    private Widget literalEditor() {
+
+        //use a drop down if we have a fixed list
+        if (this.enumeratedValues != null) {
+            return enumDropDown(constraint.value, new ValueChanged() {
+                public void valueChanged(String newValue) {
+                    constraint.value = newValue;
                 }
-       
-                public void onKeyPress(Widget w, char c, int i) {
-                    if (Character.isLetter( c ) ) {
-                        ((TextBox) w).cancelKey();
-                    } 
-                }
-       
-                public void onKeyUp(Widget arg0, char arg1, int arg2) {
-                }
-                
-            } );
+            }, this.enumeratedValues);
+        } else {
+
+            final TextBox box = boundTextBox(constraint);
+
+            if (this.numericValue) {
+                box.addKeyboardListener( new KeyboardListener() {
+
+                    public void onKeyDown(Widget arg0, char arg1, int arg2) {
+
+                    }
+
+                    public void onKeyPress(Widget w, char c, int i) {
+                        if (Character.isLetter( c ) ) {
+                            ((TextBox) w).cancelKey();
+                        }
+                    }
+
+                    public void onKeyUp(Widget arg0, char arg1, int arg2) {
+                    }
+
+                } );
+            }
+
+            box.setTitle( "This is a literal value. What is shown is what the field is checked against." );
+            return box;
         }
-        
-        box.setTitle( "This is a literal value. What is shown is what the field is checked against." );
+    }
+
+    /**
+     * This will do a drop down for enumerated values..
+     */
+    public static Widget enumDropDown(//final ISingleFieldConstraint constraint,
+                                       final String currentValue, final ValueChanged valueChanged,
+                                final String[] enumeratedValues) {
+        final ListBox box = new ListBox();
+
+        if (currentValue == null || "".equals( currentValue )) {
+            box.addItem( "Choose ..." );
+        }
+
+        for ( int i = 0; i < enumeratedValues.length; i++ ) {
+            String v = enumeratedValues[i];
+            String val;
+            if (v.indexOf( '=' ) > 0) {
+                //using a mapping
+                String[] splut = splitValue(v);
+                String realValue = splut[0];
+                String display = splut[1];
+                val = realValue;
+                box.addItem( display, realValue );
+            } else {
+                box.addItem( v, v );
+                val = v;
+            }
+            if (currentValue != null && currentValue.equals( val )) {
+                box.setSelectedIndex( i );
+            }
+        }
+
+        if (currentValue != null && box.getSelectedIndex() == -1) {
+            //need to add this value
+            box.addItem( currentValue, currentValue );
+            box.setSelectedIndex( enumeratedValues.length );
+        }
+
+        box.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+                valueChanged.valueChanged( box.getValue( box.getSelectedIndex() ) );
+                //constraint.value = box.getValue( box.getSelectedIndex() );
+            }
+        });
         return box;
+    }
+
+    /**
+     * 'Person.age' : ['M=Male', 'F=Female']
+     *
+     * This will split the drop down item into a value and a key.
+     * eg key=value
+     *
+     */
+    public static String[] splitValue(String v) {
+        String[] s = new String[2];
+        int pos = v.indexOf( '=' );
+        s[0] = v.substring( 0, pos );
+        s[1] = v.substring( pos + 1, v.length() );
+        return s;
     }
 
     private TextBox boundTextBox(final ISingleFieldConstraint c) {
@@ -192,13 +275,13 @@ public class ConstraintValueEditor extends DirtyableComposite {
             }
         } ) );
 
-        
-        
+
+
         return box;
     }
 
     /**
-     * Show a list of possibilities for the value type. 
+     * Show a list of possibilities for the value type.
      */
     private void showTypeChoice(Widget w, final ISingleFieldConstraint con) {
         final FormStylePopup form = new FormStylePopup( "images/newex_wiz.gif",
@@ -214,14 +297,14 @@ public class ConstraintValueEditor extends DirtyableComposite {
         } );
         form.addAttribute( "Literal value:", widgets( lit, new InfoPopup( "Literal",
                                                                           "A literal value means the " + "constraint is directly against the value that you type (ie. what you see on screen)." ) ) );
-        
-        
-        
+
+
+
 
         form.addRow( new HTML( "<hr/>" ) );
         form.addRow( new Lbl( "Advanced options",
                               "weak-Text" ) );
-        
+
         //only want to show variables if we have some !
         if (this.model.getBoundVariablesInScope( this.constraint ).size() > 0) {
             Button variable = new Button("Bound variable");
@@ -233,7 +316,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
             });
             form.addAttribute( "A variable:", widgets( variable, new InfoPopup("A bound variable", "Will apply a constraint that compares a field to a bound variable.")) );
         }
-        
+
         Button formula = new Button( "New formula" );
         formula.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -265,7 +348,11 @@ public class ConstraintValueEditor extends DirtyableComposite {
     public boolean isDirty() {
         return super.isDirty();
     }
-    
-    
+
+
+    static interface ValueChanged {
+        public void valueChanged(String newValue);
+    }
+
 
 }

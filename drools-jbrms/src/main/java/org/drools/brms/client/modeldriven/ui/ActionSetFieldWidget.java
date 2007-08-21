@@ -1,13 +1,13 @@
 package org.drools.brms.client.modeldriven.ui;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This widget is for setting fields on a bound fact or global variable.
- * 
+ *
  * @author Michael Neale
  */
 public class ActionSetFieldWidget extends DirtyableComposite {
@@ -57,30 +57,31 @@ public class ActionSetFieldWidget extends DirtyableComposite {
     final private SuggestionCompletionEngine completions;
     final private DirtyableFlexTable layout;
     private boolean isBoundFact = false;
-    
+
     final private String[] fieldCompletions;
-    private RuleModeller modeller;
-    private String variableClass;
-    
-    
-    public ActionSetFieldWidget(RuleModeller mod, RuleModel rule, ActionSetField set, SuggestionCompletionEngine com) {
+    final private RuleModeller modeller;
+    final private String variableClass;
+
+
+    public ActionSetFieldWidget(RuleModeller mod,  ActionSetField set, SuggestionCompletionEngine com) {
         this.model = set;
         this.completions = com;
         this.layout = new DirtyableFlexTable();
         this.modeller = mod;
+
         layout.setStyleName( "model-builderInner-Background" );
         if (completions.isGlobalVariable( set.variable )) {
-            this.fieldCompletions = completions.getFieldCompletionsForGlobalVariable( set.variable );  
+            this.fieldCompletions = completions.getFieldCompletionsForGlobalVariable( set.variable );
             this.variableClass = (String) completions.globalTypes.get( set.variable );
         } else {
-            FactPattern pattern = rule.getBoundFact( set.variable );
+            FactPattern pattern = mod.getModel().getBoundFact( set.variable );
             this.fieldCompletions = completions.getFieldCompletions( pattern.factType );
             this.variableClass = pattern.factType;
             this.isBoundFact = true;
         }
-        
+
         doLayout();
-        
+
         initWidget( this.layout );
     }
 
@@ -88,12 +89,12 @@ public class ActionSetFieldWidget extends DirtyableComposite {
     private void doLayout() {
         layout.clear();
         layout.setWidget( 0, 0, getSetterLabel() );
-        
+
         DirtyableFlexTable inner = new DirtyableFlexTable();
-        
+
         for ( int i = 0; i < model.fieldValues.length; i++ ) {
             ActionFieldValue val = model.fieldValues[i];
-            
+
             inner.setWidget( i, 0, fieldSelector(val) );
             inner.setWidget( i, 1, valueEditor(val) );
             final int idx = i;
@@ -104,26 +105,26 @@ public class ActionSetFieldWidget extends DirtyableComposite {
                         public void execute() {
                             model.removeField( idx );
                             modeller.refreshWidget();
-                        }                        
+                        }
                     });
                     diag.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
                     diag.show();
-                }                
+                }
             });
             inner.setWidget( i, 2, remove );
         }
-        
+
         layout.setWidget( 0, 1, inner );
-        
-        
+
+
     }
 
 
     private Widget getSetterLabel() {
-        
+
         HorizontalPanel horiz = new HorizontalPanel();
-        
-        
+
+
         Image edit = new ImageButton("images/add_field_to_fact.gif");
         edit.setTitle( "Add another field to this so you can set its value." );
         edit.addClickListener( new ClickListener() {
@@ -137,7 +138,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
         }
         horiz.add( new Lbl(HumanReadable.getActionDisplayName(modifyType) + " [" + model.variable + "]", "modeller-action-Label") );
         horiz.add( edit );
-        
+
         return horiz;
     }
 
@@ -151,100 +152,108 @@ public class ActionSetFieldWidget extends DirtyableComposite {
         for ( int i = 0; i < fieldCompletions.length; i++ ) {
             box.addItem( fieldCompletions[i] );
         }
-        
+
         box.setSelectedIndex( 0 );
-        
+
         popup.addAttribute( "Add field", box );
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 String fieldName = box.getItemText( box.getSelectedIndex() );
-                
+
                 String fieldType = completions.getFieldType( variableClass, fieldName );
                 model.addFieldValue( new ActionFieldValue( fieldName, "", fieldType ) );
                 modeller.refreshWidget();
                 popup.hide();
             }
         });
-        
 
-        
+
+
         popup.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
         popup.show();
- 
+
     }
 
 
     private Widget valueEditor(final ActionFieldValue val) {
-        
-        SimplePanel panel = new SimplePanel();
-        
-        
-        final TextBox box = new TextBox();
-        box.setText( val.value );
-        if (val.value.length() != 0) {
-            box.setVisibleLength( val.value.length() );
+
+        String enumKey = this.variableClass + "." + val.field;
+        if (this.completions.dataEnumLists.containsKey( enumKey )) {
+            return ConstraintValueEditor.enumDropDown( val.value, new ConstraintValueEditor.ValueChanged() {
+                public void valueChanged(String newValue) {
+                    val.value = newValue;
+                }
+            }, (String[]) this.completions.dataEnumLists.get( enumKey ) );
+        } else {
+
+            SimplePanel panel = new SimplePanel();
+            final TextBox box = new TextBox();
+            box.setText( val.value );
+            if (val.value.length() != 0) {
+                box.setVisibleLength( val.value.length() );
+            }
+
+            if (val.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
+                box.addKeyboardListener( getNumericFilter( box ));
+            }
+
+            box.addChangeListener( new ChangeListener() {
+                public void onChange(Widget w) {
+                    val.value = box.getText();
+                }
+            });
+
+            box.addKeyboardListener( new FieldEditListener(new Command() {
+                public void execute() {
+                    box.setVisibleLength( box.getText().length() );
+                }
+            }));
+            panel.add( box );
+            return panel;
         }
-        
-        if (val.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
-            box.addKeyboardListener( getNumericFilter( box ));
-        }
-        
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                val.value = box.getText();
-            }            
-        });
-        
-        box.addKeyboardListener( new FieldEditListener(new Command() {
-            public void execute() {
-                box.setVisibleLength( box.getText().length() );
-            }            
-        }));        
-        panel.add( box );
-        return panel;
     }
 
 
     /**
-     * This will return a keyboard listener for field setters, which 
+     * This will return a keyboard listener for field setters, which
      * will obey numeric conventions - it will also allow formulas
      * (a formula is when the first value is a "=" which means
      * it is meant to be taken as the user typed)
      */
     public static KeyboardListener getNumericFilter(final TextBox box) {
         return new KeyboardListener() {
-   
+
             public void onKeyDown(Widget arg0, char arg1, int arg2) {
 
             }
-   
+
             public void onKeyPress(Widget w, char c, int i) {
                 if (Character.isLetter( c ) && c != '='
                     && !(box.getText().startsWith( "=" ))) {
                     ((TextBox) w).cancelKey();
-                } 
+                }
             }
-   
+
             public void onKeyUp(Widget arg0, char arg1, int arg2) {
             }
-            
+
         };
     }
 
 
-    private Widget fieldSelector(final ActionFieldValue val) {        
-        return new Label(val.field);        
+    private Widget fieldSelector(final ActionFieldValue val) {
+        return new Label(val.field);
     }
-    
+
     /**
      * This returns true if the values being set are on a fact.
      */
     public boolean isBoundFact() {
         return isBoundFact;
     }
-    
+
     public boolean isDirty() {
         return layout.hasDirty();
     }
-    
+
 }

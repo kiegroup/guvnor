@@ -1,13 +1,13 @@
 package org.drools.brms.client.packages;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,15 +47,15 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is the package editor and viewer for package configuration.
- * 
+ *
  * @author Michael Neale
  */
 public class PackageEditor extends FormStyleLayout {
-    
-   
+
+
     private Command dirtyCommand;
     private Command cleanCommand;
-    
+
     private PackageConfigData conf;
     private HTML status;
     protected ValidatedResponse previousResponse;
@@ -66,7 +66,7 @@ public class PackageEditor extends FormStyleLayout {
         this.dirtyCommand = dirtyCommand;
         this.cleanCommand = cleanCommand;
         this.refreshCommand = refreshCommand;
-        
+
         setStyleName( "package-Editor" );
         setWidth( "100%" );
         refreshWidgets();
@@ -75,10 +75,10 @@ public class PackageEditor extends FormStyleLayout {
     private void refreshWidgets() {
         clear();
         //addHeader( "images/package_large.png", this.conf.name );
-        
+
 
         addRow( warnings() );
-        
+
         addAttribute( "Description:", description() );
         addAttribute( "Header:", header() );
         //addAttribute( "External repository sync URI:", externalURI() );
@@ -87,7 +87,7 @@ public class PackageEditor extends FormStyleLayout {
         addAttribute( "Last contributor:", new Label(this.conf.lasContributor));
 
         addRow(new HTML("<hr/>"));
-        
+
         status = new HTML();
         HorizontalPanel statusBar = new HorizontalPanel();
         Image editState = new ImageButton("images/edit.gif");
@@ -99,11 +99,11 @@ public class PackageEditor extends FormStyleLayout {
 
         } );
         statusBar.add( status );
-        
+
         if (!this.conf.isSnapshot) {
             statusBar.add( editState );
         }
-        
+
         setState(conf.state);
         addAttribute("Status:", statusBar);
 
@@ -112,14 +112,14 @@ public class PackageEditor extends FormStyleLayout {
         }
         addRow(new HTML("<hr/>"));
 
-        
+
     }
 
 
 
-    
 
-    
+
+
 
 
     private Widget warnings() {
@@ -149,11 +149,11 @@ public class PackageEditor extends FormStyleLayout {
         pop.setChangeStatusEvent(new Command() {
             public void execute() {
                 setState( pop.getState() );
-            }                    
+            }
         });
         pop.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
         pop.show();
-        
+
     }
 
     private void setState(String state) {
@@ -164,20 +164,18 @@ public class PackageEditor extends FormStyleLayout {
      * This will get the save widgets.
      */
     private Widget saveWidgets() {
-        
-        HorizontalPanel horiz = new HorizontalPanel();
-        
 
-        
-            Button save = new Button("Save configuration changes");
-            
+        HorizontalPanel horiz = new HorizontalPanel();
+
+            Button save = new Button("Save and validate configuration");
+
             save.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                    doSaveAction(null);                
+                    doSaveAction(null);
                 }
             } );
             horiz.add( save );
-            
+
             Button archive = new Button("Archive");
             archive.addClickListener(new ClickListener() {
                 public void onClick(Widget w) {
@@ -188,8 +186,8 @@ public class PackageEditor extends FormStyleLayout {
                 }
             });
             horiz.add(archive);
-            
-            
+
+
             Button copy = new Button("Copy");
             copy.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
@@ -197,7 +195,7 @@ public class PackageEditor extends FormStyleLayout {
                 }
             } );
             horiz.add( copy );
-            
+
             Button rename = new Button("Rename");
             rename.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
@@ -205,9 +203,9 @@ public class PackageEditor extends FormStyleLayout {
                 }
             } );
             horiz.add( rename );
-            
 
-            
+
+
         return horiz;
     }
 
@@ -220,7 +218,7 @@ public class PackageEditor extends FormStyleLayout {
         pop.addAttribute( "New package name:", name );
         Button ok = new Button("OK");
         pop.addAttribute( "", ok );
-        
+
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 RepositoryServiceFactory.getService().renamePackage( conf.uuid, name.getText(), new GenericCallback() {
@@ -232,14 +230,14 @@ public class PackageEditor extends FormStyleLayout {
                 });
             }
         } );
-        
+
         pop.setWidth( "40%" );
         pop.setPopupPosition( Window.getClientWidth() / 3, Window.getClientHeight() / 3 );
-        pop.show();        
+        pop.show();
     }
 
-    
-    
+
+
     /**
      * Will show a copy dialog for copying the whole package.
      */
@@ -250,7 +248,7 @@ public class PackageEditor extends FormStyleLayout {
         pop.addAttribute( "New package name:", name );
         Button ok = new Button("OK");
         pop.addAttribute( "", ok );
-        
+
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 RepositoryServiceFactory.getService().copyPackage( conf.name, name.getText(), new GenericCallback() {
@@ -262,29 +260,29 @@ public class PackageEditor extends FormStyleLayout {
                 });
             }
         } );
-        
+
         pop.setWidth( "40%" );
         pop.setPopupPosition( Window.getClientWidth() / 3, Window.getClientHeight() / 3 );
         pop.show();
-        
+
     }
 
     protected void doCopyPackage(String name) {
-        
+
     }
 
     private void doSaveAction(final Command refresh) {
         LoadingPopup.showMessage( "Saving package configuration. Please wait ..." );
         RepositoryServiceFactory.getService().savePackage( this.conf, new GenericCallback() {
             public void onSuccess(Object data) {
-                
+
                 cleanCommand.execute();
-                
+
                 previousResponse = (ValidatedResponse) data;
-                
+
                 reload();
                 LoadingPopup.showMessage( "Package configuration updated successfully, refreshing content cache..." );
-                
+
                 SuggestionCompletionCache.getInstance().refreshPackage( conf.name, new Command() {
                     public void execute() {
                         if (refresh != null) {
@@ -293,13 +291,13 @@ public class PackageEditor extends FormStyleLayout {
                         LoadingPopup.close();
                     }
                 });
-                
-                
-                
-                
-            }            
+
+
+
+
+            }
         });
-        
+
     }
 
 
@@ -325,29 +323,29 @@ public class PackageEditor extends FormStyleLayout {
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 conf.externalURI = box.getText();
-            }            
+            }
         });
         return box;
     }
 
     private Widget header() {
-        
+
         final TextArea area = new TextArea();
         area.setWidth( "100%" );
         area.setVisibleLines( 8 );
-        
+
         area.setCharacterWidth( 100 );
-        
+
         area.setText( this.conf.header );
         area.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                  conf.header = area.getText();
                  dirtyCommand.execute();
-            }            
+            }
         });
-        
-        
-        
+
+
+
         HorizontalPanel panel = new HorizontalPanel();
         panel.add( area );
 
@@ -369,25 +367,25 @@ public class PackageEditor extends FormStyleLayout {
         Image newImport = new Image("images/new_import.gif");
         newImport.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                area.setText( area.getText(  ) + "\n" + 
+                area.setText( area.getText(  ) + "\n" +
                               "import <your class here>");
                 conf.header = area.getText();
             }
         });
         vert.add( newImport );
         newImport.setTitle( "Add a new Type/Class import to the package." );
-        
+
         Image newGlobal = new Image("images/new_global.gif");
         newGlobal.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                area.setText( area.getText() + "\n" + 
+                area.setText( area.getText() + "\n" +
                               "global <your class here> <variable name>");
                 conf.header = area.getText();
             }
         });
         newGlobal.setTitle( "Add a new global variable declaration." );
         vert.add( newGlobal );
-        
+
         Image newFactTemplate = new Image("images/fact_template.gif");
         newFactTemplate.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -398,7 +396,7 @@ public class PackageEditor extends FormStyleLayout {
                         area.setText( area.getText() + "\n" +
                                       wiz.getTemplateText() );
                         conf.header = area.getText();
-                        
+
                     }
                 } );
                 wiz.show();
@@ -406,9 +404,9 @@ public class PackageEditor extends FormStyleLayout {
         });
         newFactTemplate.setTitle( "Add a new fact template." );
         //vert.add( newFactTemplate );
-        
+
         panel.setWidth( "100%" );
-        
+
         panel.add( vert );
         return panel;
     }
@@ -417,15 +415,15 @@ public class PackageEditor extends FormStyleLayout {
     private HorizontalPanel expandableTextArea(final TextArea area) {
         HorizontalPanel panel = new HorizontalPanel();
         panel.add( area );
-        
+
         Image max = new Image("images/max_min.gif");
         max.setTitle( "Increase view area" );
-        
+
         panel.add( max );
         max.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 if (area.getVisibleLines() != 32) {
-                    area.setVisibleLines( 32 );                    
+                    area.setVisibleLines( 32 );
                 } else {
                     area.setVisibleLines( 8 );
                 }
@@ -439,17 +437,17 @@ public class PackageEditor extends FormStyleLayout {
         area.setWidth( "100%" );
         area.setVisibleLines( 8 );
         area.setText( conf.description );
-        
+
         area.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-                conf.description = area.getText();    
+                conf.description = area.getText();
                 dirtyCommand.execute();
-            }            
+            }
         });
-        
+
         area.setCharacterWidth( 100 );
-        
+
         return expandableTextArea( area );
     }
-    
+
 }

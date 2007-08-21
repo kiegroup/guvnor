@@ -1,13 +1,13 @@
 package org.drools.brms.server.contenthandler;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,7 +35,7 @@ import com.google.gwt.user.client.rpc.SerializableException;
 public abstract class ContentHandler {
 
     static Map handlers;
-    
+
     static {
         handlers = new HashMap() {{
             put(AssetFormats.BUSINESS_RULE, new BRLContentHandler());
@@ -46,9 +46,10 @@ public abstract class ContentHandler {
             put(AssetFormats.MODEL, new ModelContentHandler());
             put(AssetFormats.DECISION_SPREADSHEET_XLS, new DecisionTableXLSHandler());
             put(AssetFormats.RULE_FLOW_RF, new RuleFlowHandler());
-        }};        
+            put(AssetFormats.ENUMERATION, new EnumerationContentHandler());
+        }};
     }
-    
+
     /**
      * When loading asset content.
      * @param asset The target.
@@ -56,7 +57,7 @@ public abstract class ContentHandler {
      * @throws SerializableException
      */
     public abstract void retrieveAssetContent(RuleAsset asset,
-                                              PackageItem pkg, 
+                                              PackageItem pkg,
                                               AssetItem item) throws SerializableException;
 
     /**
@@ -68,21 +69,21 @@ public abstract class ContentHandler {
     public abstract void storeAssetContent(RuleAsset asset,
                                            AssetItem repoAsset) throws SerializableException;
 
-    
+
     public static ContentHandler getHandler(String format) {
         ContentHandler h =  (ContentHandler) handlers.get( format );
         if (h == null) throw new IllegalArgumentException("Unable to handle the content type: " + format);
         return h;
     }
-    
-    /** 
+
+    /**
      * @return true if the current content type is for a rule asset.
-     * If it is a rule asset, then it can be assembled into a package. 
-     * If its not, then it is there, nominally to support compiling or 
+     * If it is a rule asset, then it can be assembled into a package.
+     * If its not, then it is there, nominally to support compiling or
      * validation/testing of the package (eg a model, or a dsl file).
      */
     public boolean isRuleAsset() {
         return this instanceof IRuleAsset;
     }
-    
+
 }
