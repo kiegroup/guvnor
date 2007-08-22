@@ -1,0 +1,14 @@
+package org.drools.brms.server.selector
+
+dialect "mvel"
+
+import org.drools.repository.AssetItem
+import org.drools.brms.server.selector.Allow
+
+rule "rule1"
+	when
+		AssetItem()
+	then
+		insert(new Allow())
+end
+

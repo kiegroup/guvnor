@@ -2,13 +2,13 @@ package org.drools.brms.server;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,7 @@ package org.drools.brms.server;
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
+import java.io.StringReader;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -48,6 +49,7 @@ import org.drools.brms.server.util.BRXMLPersistence;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.common.DroolsObjectInputStream;
+import org.drools.compiler.RuleBaseLoader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
@@ -113,6 +115,12 @@ public class ServiceImplementationTest extends TestCase {
         assertFalse( "".equals( uuid ) );
 
         AssetItem localItem = impl.repository.loadAssetByUUID( uuid );
+
+//        String drl = "package org.drools.repository\n\ndialect 'mvel'\n\n" +
+//        		"rule Rule1 \n when \n AssetItem(description != null) \n then \n System.out.println(\"yeah\");\nend";
+//        RuleBase rb = RuleBaseLoader.getInstance().loadFromReader(new StringReader(drl));
+//        rb.newStatelessSession().execute(localItem);
+
         assertEquals( "test Delete Unversioned",
                       localItem.getName() );
 
@@ -162,9 +170,9 @@ public class ServiceImplementationTest extends TestCase {
         assertFalse( packages[0].uuid == null );
         assertFalse( packages[0].uuid.equals( "" ) );
 
-        //just for performance testing with scaling up numbers of rules      
+        //just for performance testing with scaling up numbers of rules
         //      for (int i=1; i <= 1000; i++) {
-        //          impl.createNewRule( "somerule_" + i, "description", 
+        //          impl.createNewRule( "somerule_" + i, "description",
         //                              "testAddRule", "another", "drl" );
         //      }
 
@@ -342,7 +350,7 @@ public class ServiceImplementationTest extends TestCase {
         asset = impl.loadRuleAsset( uuid );
         impl.checkinVersion( asset ); //2
         asset = impl.loadRuleAsset( uuid );
-        impl.checkinVersion( asset ); //HEAD   
+        impl.checkinVersion( asset ); //HEAD
 
         TableDataResult result = impl.loadAssetHistory( uuid );
         assertNotNull( result );
@@ -447,7 +455,7 @@ public class ServiceImplementationTest extends TestCase {
         assertEquals( "testCheckinCategory/deeper",
                       asset2.metaData.categories[2] );
 
-        //now lets try a concurrent edit of an asset. 
+        //now lets try a concurrent edit of an asset.
         //asset3 will be loaded and edited, and then asset2 will try to clobber, it, which should fail.
         //as it is optimistically locked.
         RuleAsset asset3 = serv.loadRuleAsset( asset2.uuid );
@@ -974,7 +982,7 @@ public class ServiceImplementationTest extends TestCase {
                       res.data.length );
 
         impl.removeAsset( uuid4 );
-        
+
         res = impl.listAssets( pkgUUID,
                                arr( "testRemoveAsset" ),
                                -1,
@@ -982,12 +990,12 @@ public class ServiceImplementationTest extends TestCase {
         assertEquals( 3,
                       res.data.length );
     }
-    
-    
+
+
     public void testArchiveAsset() throws Exception {
         RepositoryService impl = getService();
         String cat = "testArchiveAsset";
-        impl.createCategory( "/", 
+        impl.createCategory( "/",
                              cat,
                              "ya" );
         String pkgUUID = impl.createPackage( "testArchiveAsset",
@@ -1024,26 +1032,26 @@ public class ServiceImplementationTest extends TestCase {
                       res.data.length );
 
         impl.archiveAsset( uuid4, true );
-        
+
         res = impl.listAssets( pkgUUID,
                                arr( "testArchiveAsset" ),
                                -1,
                                0 );
         assertEquals( 3,
                       res.data.length );
-        
+
         impl.archiveAsset( uuid4, false );
-        
+
         res = impl.listAssets( pkgUUID,
                                arr( "testArchiveAsset" ),
                                -1,
                                0 );
         assertEquals( 4,
                       res.data.length );
-        
+
     }
 
-    
+
 
     public void testLoadSuggestionCompletionEngine() throws Exception {
         RepositoryService impl = getService();
@@ -1058,8 +1066,8 @@ public class ServiceImplementationTest extends TestCase {
     }
 
     /**
-     * This will test creating a package, check it compiles, and can exectute rules, 
-     * then take a snapshot, and check that it reports errors. 
+     * This will test creating a package, check it compiles, and can exectute rules,
+     * then take a snapshot, and check that it reports errors.
      */
     public void testBinaryPackageCompileAndExecute() throws Exception {
         ServiceImplementation impl = getService();
@@ -1130,8 +1138,8 @@ public class ServiceImplementationTest extends TestCase {
     }
 
     /**
-     * This will test creating a package with a BRL rule, check it compiles, and can exectute rules, 
-     * then take a snapshot, and check that it reports errors. 
+     * This will test creating a package with a BRL rule, check it compiles, and can exectute rules,
+     * then take a snapshot, and check that it reports errors.
      */
     public void testBinaryPackageCompileAndExecuteWithBRXML() throws Exception {
         ServiceImplementation impl = getService();
@@ -1249,7 +1257,7 @@ public class ServiceImplementationTest extends TestCase {
     }
 
     /**
-     * this loads up a precompile binary package. If this fails, 
+     * this loads up a precompile binary package. If this fails,
      * then it means it needs to be updated. It gets the package form the BRL example above.
      */
     public void testLoadAndExecBinary() throws Exception {
