@@ -58,7 +58,7 @@ import org.apache.log4j.Logger;
  * version). The JCR specification supports a more complicated versioning
  * system, and if there is sufficient demand, we can modify our versioning
  * scheme to be better aligned with JCR's versioning abilities.
- * 
+ *
  * @author Ben Truitt
  * @author Fernando Meyer
  * @author Michael Neale
@@ -109,7 +109,7 @@ public class RulesRepository {
     /**
      * Will add a node named 'nodeName' of type 'type' to 'parent' if such a
      * node does not already exist.
-     * 
+     *
      * @param parent
      *            the parent node to add the new node to
      * @param nodeName
@@ -143,7 +143,7 @@ public class RulesRepository {
     }
 
     /**
-     * Explicitly logout of the underlying JCR repository. 
+     * Explicitly logout of the underlying JCR repository.
      */
     public void logout() {
         this.session.logout();
@@ -331,7 +331,7 @@ public class RulesRepository {
     /**
      * Loads a RulePackage for the specified package name. Will throw an
      * exception if the specified rule package does not exist.
-     * 
+     *
      * @param name
      *            the name of the package to load
      * @return a RulePackageItem object
@@ -364,7 +364,7 @@ public class RulesRepository {
         }
     }
 
-    
+
     public PackageItem loadPackageSnapshot(String packageName, String snapshotName) {
         try {
             Node n = this.getAreaNode( PACKAGE_SNAPSHOT_AREA ).getNode( packageName ).getNode( snapshotName );
@@ -400,7 +400,7 @@ public class RulesRepository {
             String source = rulePackageNode.getPath();
 
             this.session.getWorkspace().copy( source, newName );
-            
+
         } catch ( RepositoryException e ) {
             log.error( "Unable to create snapshot", e );
             throw new RulesRepositoryException( e );
@@ -434,7 +434,7 @@ public class RulesRepository {
 
     /**
      * Copies a snapshot to the new location/label.
-     * 
+     *
      * @param packageName
      *            The name of the package.
      * @param snapshotName
@@ -480,7 +480,7 @@ public class RulesRepository {
 
     /**
      * Similar to above. Loads a RulePackage for the specified uuid.
-     * 
+     *
      * @param uuid
      *            the uuid of the package to load
      * @return a RulePackageItem object
@@ -505,7 +505,7 @@ public class RulesRepository {
     /**
      * This will restore the historical version, save, and check it in as a new
      * version with the given comment.
-     * 
+     *
      * @param versionToRestore
      * @param headVersion
      * @param comment
@@ -544,7 +544,7 @@ public class RulesRepository {
 
     /**
      * Adds a package to the repository.
-     * 
+     *
      * @param name
      *            what to name the node added
      * @param description
@@ -588,7 +588,7 @@ public class RulesRepository {
     /**
      * Gets a StateItem for the specified state name. If a node for the
      * specified state does not yet exist, one is first created.
-     * 
+     *
      * @param name
      *            the name of the state to get
      * @return a StateItem object encapsulating the retreived node
@@ -629,7 +629,7 @@ public class RulesRepository {
 
     /**
      * This will return a category for the given category path.
-     * 
+     *
      * @param tagName
      *            the name of the tag to get. If the tag to get is within a
      *            heirarchy of tag nodes, specify the full path to the tag node
@@ -704,7 +704,7 @@ public class RulesRepository {
     }
 
     /**
-     * TODO: comment 
+     * TODO: comment
      * @return
      * @throws IOException
      * @throws PathNotFoundException
@@ -734,7 +734,7 @@ public class RulesRepository {
     }
 
     /**
-     * 
+     *
      * @param byteArray
      */
     public void importRulesRepository(byte[] byteArray) {
@@ -751,7 +751,7 @@ public class RulesRepository {
     }
 
     /**
-     * 
+     *
      * @param parentNode
      * @return
      * @throws RepositoryException
@@ -805,7 +805,7 @@ public class RulesRepository {
     /**
      * This moves a rule asset from one package to another, preserving history
      * etc etc.
-     * 
+     *
      * @param newPackage
      *            The destination package.
      * @param uuid
@@ -835,7 +835,7 @@ public class RulesRepository {
         }
 
     }
-    
+
     /**
      * This will rename an assset and apply the change immediately.
      * @return the UUID of the new asset
@@ -848,8 +848,8 @@ public class RulesRepository {
             String sourcePath = node.getPath();
             String destPath = node.getParent().getPath() + "/" + newAssetName;
             this.session.move( sourcePath, destPath );
-            
-            
+
+
             itemOriginal.updateTitle( newAssetName );
             itemOriginal.checkin( "Renamed asset " +  itemOriginal.getName());
             return itemOriginal.getUUID();
@@ -858,7 +858,7 @@ public class RulesRepository {
             throw new RulesRepositoryException( e );
         }
     }
-    
+
     /**
      * This will rename a package and apply the change immediately.
      * @return the UUID of the package
@@ -871,16 +871,26 @@ public class RulesRepository {
             String sourcePath = node.getPath();
             String destPath = node.getParent().getPath() + "/" + newPackageName;
             this.session.move( sourcePath, destPath );
-            
-            
+
+
             itemOriginal.updateTitle( newPackageName );
             itemOriginal.checkin( "Renamed package " +  itemOriginal.getName());
+
+            PackageItem newPkg = loadPackage(newPackageName);
+
+            for ( Iterator iter = newPkg.getAssets(); iter.hasNext(); ) {
+                AssetItem as = (AssetItem) iter.next();
+                as.updateStringProperty( newPackageName, AssetItem.PACKAGE_NAME_PROPERTY );
+            }
+
+            save();
+
             return itemOriginal.getUUID();
         } catch (RepositoryException e) {
             log.error( e );
             throw new RulesRepositoryException( e );
         }
-    }    
+    }
 
     /**
      * Return a list of the snapshots available for the given package name.
@@ -903,7 +913,7 @@ public class RulesRepository {
             throw new RulesRepositoryException( e );
         }
     }
-    
+
     public AssetItemIterator findArchivedAssets() {
         try {
 
@@ -923,7 +933,7 @@ public class RulesRepository {
             throw new RulesRepositoryException( e );
         }
     }
-    
+
 
     /**
      * This will search assets, looking for matches against the name.
@@ -935,7 +945,7 @@ public class RulesRepository {
             sql += " WHERE " + AssetItem.TITLE_PROPERTY_NAME + " LIKE '" + name + "'";
             sql += " AND jcr:path LIKE '/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/%'";
 
-            if ( seekArchived == false ) { 
+            if ( seekArchived == false ) {
                 sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
             }
 
@@ -981,7 +991,7 @@ public class RulesRepository {
     public void copyPackage(String sourcePackageName, String destPackageName) {
         PackageItem source = loadPackage( sourcePackageName );
         String sourcePath;
-        
+
         try {
             sourcePath = source.getNode().getPath();
 
@@ -999,7 +1009,7 @@ public class RulesRepository {
             }
 
             save();
-            
+
         } catch ( RepositoryException e ) {
             log.error( e );
             throw new RulesRepositoryException(e);
