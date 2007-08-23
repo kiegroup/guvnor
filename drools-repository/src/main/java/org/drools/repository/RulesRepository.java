@@ -816,7 +816,6 @@ public class RulesRepository {
     public void moveRuleItemPackage(String newPackage, String uuid, String explanation) {
         try {
             AssetItem item = loadAssetByUUID( uuid );
-            String oldPackage = item.getPackageName();
 
             PackageItem destPkg = loadPackage( newPackage );
 
