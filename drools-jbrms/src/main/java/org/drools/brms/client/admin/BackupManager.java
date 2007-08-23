@@ -47,7 +47,7 @@ public class BackupManager extends Composite {
     public BackupManager() {
 
         FormStyleLayout widtab = new FormStyleLayout( "images/backup_large.png",
-                                                      "Manage Backups" );
+                                                      "Import/Export" );
 
         widtab.addAttribute( "",
                              new HTML( "<i>Import and Export rules repository</i>" ) );
