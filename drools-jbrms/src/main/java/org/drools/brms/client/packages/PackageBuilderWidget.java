@@ -2,13 +2,13 @@ package org.drools.brms.client.packages;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +25,7 @@ import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.InfoPopup;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.PackageConfigData;
@@ -58,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This is the widget for building packages, validating etc. Visually decorates
  * or wraps a rule editor widget with buttons for this purpose.
- * 
+ *
  * @author Michael Neale
  */
 public class PackageBuilderWidget extends Composite {
@@ -76,12 +77,13 @@ public class PackageBuilderWidget extends Composite {
 
 		final SimplePanel buildResults = new SimplePanel();
 
-		Button b = new Button("Build package");
-		b
-				.setTitle("This will validate and compile all the assets in a package.");
+
+        final TextBox selector = new TextBox();
+		final Button b = new Button("Build package");
+		b.setTitle("This will validate and compile all the assets in a package.");
 		b.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
-				doBuild(buildResults);
+				doBuild(buildResults, selector.getText());
 			}
 		});
 
@@ -92,7 +94,16 @@ public class PackageBuilderWidget extends Composite {
 			}
 		});
 		layout.addAttribute("View source for package", buildSource);
-		layout.addAttribute("Build binary package:", b);
+
+        HorizontalPanel buildStuff = new HorizontalPanel();
+        buildStuff.add( b );
+        buildStuff.add( new HTML("&nbsp;&nbsp;<i>(Optional) selector name: </i>") );
+        buildStuff.add( selector );
+        buildStuff.add( new InfoPopup("Custom selector", "A selector is configured by administrators to choose what assets form part of a package build. " +
+                "This is configured on the server side. The name given is the name of the configuration that the administrator has set." +
+                " This is an optional feature (if you don't know what it is, you probably don't need to use it).") );
+
+		layout.addAttribute("Build binary package:", buildStuff);
 		layout
 				.addRow(new HTML(
 						"<i><small>Building a package will collect all the assets, validate and compile into a deployable package.</small></i>"));
@@ -164,11 +175,12 @@ public class PackageBuilderWidget extends Composite {
 
 	/**
 	 * Actually do the building.
-	 * 
+	 *
 	 * @param buildResults
 	 *            The panel to stuff the results in.
+	 * @param selectorName
 	 */
-	private void doBuild(final Panel buildResults) {
+	private void doBuild(final Panel buildResults, final String selectorName) {
 
 		buildResults.clear();
 
@@ -180,7 +192,7 @@ public class PackageBuilderWidget extends Composite {
 
 		DeferredCommand.add(new Command() {
 			public void execute() {
-				RepositoryServiceFactory.getService().buildPackage(conf.uuid,
+				RepositoryServiceFactory.getService().buildPackage(conf.uuid, selectorName,
 						new AsyncCallback() {
 							public void onSuccess(Object data) {
 								if (data == null) {
@@ -204,7 +216,7 @@ public class PackageBuilderWidget extends Composite {
 
 	/**
 	 * This is called to display the success (and a download option).
-	 * 
+	 *
 	 * @param buildResults
 	 */
 	private void showSuccessfulBuild(Panel buildResults) {

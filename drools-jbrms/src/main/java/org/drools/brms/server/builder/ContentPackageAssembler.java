@@ -1,13 +1,13 @@
 package org.drools.brms.server.builder;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,6 +27,8 @@ import java.util.jar.JarInputStream;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.contenthandler.IRuleAsset;
+import org.drools.brms.server.selector.AssetSelector;
+import org.drools.brms.server.selector.SelectorManager;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
@@ -39,14 +41,14 @@ import org.drools.rule.Package;
 
 /**
  * This assembles packages in the BRMS into binary package objects, and deals with errors etc.
- * Each content type is responsible for contributing to the package. 
- * 
+ * Each content type is responsible for contributing to the package.
+ *
  * @author Michael Neale
  */
 public class ContentPackageAssembler {
 
     private PackageItem pkg;
-    
+
     /**
      * We accumulate errors here. If they come from the builder,
      * then we reset the builders errors so as to not double report.
@@ -56,25 +58,38 @@ public class ContentPackageAssembler {
 
     BRMSPackageBuilder builder;
 
-    
+    private String selectorConfigName;
+
+    /**
+     * Use this if you want to build the whole package.
+     */
+    public ContentPackageAssembler(PackageItem pkg) {
+        this(pkg, null);
+    }
+
+    public ContentPackageAssembler(PackageItem pkg, boolean compile) {
+        this(pkg, compile, null);
+    }
+
     /**
      * @param assetPackage The package.
      * @param compile true if we want to build it. False and its just for looking at source.
      */
-    public ContentPackageAssembler(PackageItem assetPackage, boolean compile) {
+    public ContentPackageAssembler(PackageItem assetPackage, boolean compile, String selectorConfigName) {
         this.pkg = assetPackage;
-        createBuilder(); 
-        
+        this.selectorConfigName = selectorConfigName;
+        createBuilder();
+
         if (compile && preparePackage()) {
             buildPackage();
         }
     }
-    
+
     /**
      * Use this if you want to build the whole package.
      */
-    public ContentPackageAssembler(PackageItem assetPackage) {
-        this(assetPackage, true);
+    public ContentPackageAssembler(PackageItem assetPackage, String selectorConfigName) {
+        this(assetPackage, true, selectorConfigName);
     }
 
     /**
@@ -83,27 +98,32 @@ public class ContentPackageAssembler {
     public ContentPackageAssembler(AssetItem assetToBuild) {
         this.pkg = assetToBuild.getPackage();
         createBuilder();
-        
+
         if (preparePackage()) {
             buildAsset( assetToBuild );
         }
     }
-    
-    
+
+
     public void createBuilder( ) {
         List<JarInputStream> jars = BRMSPackageBuilder.getJars( pkg );
         builder = BRMSPackageBuilder.getInstance( jars );
     }
-    
+
     /**
-     * This will build the package. 
+     * This will build the package.
      */
     private void buildPackage() {
+        AssetSelector selector = SelectorManager.getInstance().getSelector( selectorConfigName );
+        if (selector == null) {
+            this.errors.add( new ContentAssemblyError(this.pkg, "The selector named " + selectorConfigName + " is not available.") );
+            return;
+        }
         Iterator it = pkg.getAssets();
         while (it.hasNext()) {
-            
+
             AssetItem asset = (AssetItem) it.next();
-            if (!asset.isArchived()) {
+            if (!asset.isArchived() && (selector.isAssetAllowed( asset ))) {
                 buildAsset( asset );
             }
         }
@@ -132,14 +152,14 @@ public class ContentPackageAssembler {
 
     /**
      * This prepares the package builder, loads the jars/classpath.
-     * @return true if everything is good to go, false if its all gone horribly wrong, 
+     * @return true if everything is good to go, false if its all gone horribly wrong,
      * and we can't even get the package header up.
      */
     private boolean preparePackage() {
-        
+
         //firstly we loadup the classpath
         builder.addPackage( new PackageDescr(pkg.getName()) );
-        
+
         //now we deal with the header (imports, templates, globals).
         addDrl(pkg.getHeader());
         if (builder.hasErrors()) {
@@ -150,7 +170,7 @@ public class ContentPackageAssembler {
         }
 
         loadDSLFiles();
-        
+
         //finally, any functions we will load at this point.
         AssetItemIterator it = this.pkg.listAssetsByFormat( new String[] {AssetFormats.FUNCTION} );
         while(it.hasNext()) {
@@ -161,7 +181,7 @@ public class ContentPackageAssembler {
                 builder.clearErrors();
             }
         }
-        
+
         return errors.size() == 0;
     }
 
@@ -185,7 +205,7 @@ public class ContentPackageAssembler {
             return false;
         }
     }
-    
+
     private void addDrl(String drl) {
         if ("".equals( drl )) {
             return;
@@ -209,7 +229,7 @@ public class ContentPackageAssembler {
         for ( int i = 0; i < errs.length; i++ ) {
             this.errors.add( new ContentAssemblyError(asset, errs[i].getMessage()) );
         }
-        
+
     }
 
     /**
@@ -222,19 +242,19 @@ public class ContentPackageAssembler {
         return builder.getPackage();
     }
 
-    
+
     public boolean hasErrors() {
         return errors.size() > 0;
     }
-    
+
     public List<ContentAssemblyError> getErrors() {
         return this.errors;
     }
-    
-    
+
+
     /**
      * This is passed in to the compilers so extra errors can be added.
-     * 
+     *
      * @author Michael Neale
      */
     public class ErrorLogger {
@@ -248,37 +268,42 @@ public class ContentPackageAssembler {
         StringBuffer src = new StringBuffer();
         src.append( "package " + this.pkg.getName() + "\n");
         src.append( this.pkg.getHeader() + "\n\n");
-        
-        
+
+
         //now we load up the DSL files
         builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( pkg, new BRMSPackageBuilder.DSLErrorEvent() {
             public void recordError(AssetItem asset, String message) {
                 errors.add( new ContentAssemblyError(asset, message) );
             }
         }));
-        
-        
+
+
         //do the functions.
         AssetItemIterator it = this.pkg.listAssetsByFormat( new String[] {AssetFormats.FUNCTION} );
         while(it.hasNext()) {
             AssetItem func = (AssetItem) it.next();
-            src.append( func.getContent() + "\n\n" );
-        }        
-        
+            if (!func.isArchived()) {
+                src.append( func.getContent() + "\n\n" );
+            }
+        }
+
         //now the rules
         Iterator iter = pkg.getAssets();
         while (iter.hasNext()) {
             AssetItem asset = (AssetItem) iter.next();
-            ContentHandler h = ContentHandler.getHandler( asset.getFormat() );
-            if (h instanceof IRuleAsset) {
-                IRuleAsset ruleAsset = (IRuleAsset) h;
-                ruleAsset.assembleDRL( builder, asset, src );
+            if (!asset.isArchived()) {
+                ContentHandler h = ContentHandler.getHandler( asset.getFormat() );
+                if (h instanceof IRuleAsset) {
+                    IRuleAsset ruleAsset = (IRuleAsset) h;
+                    ruleAsset.assembleDRL( builder, asset, src );
+                }
+
+                src.append( "\n\n" );
             }
-            src.append( "\n\n" );
-        }       
-        
-        
+        }
+
+
         return src.toString();
     }
-    
+
 }

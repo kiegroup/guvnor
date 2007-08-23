@@ -1,13 +1,13 @@
 package org.drools.brms.client.rpc;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -63,7 +63,7 @@ public interface RepositoryServiceAsync
     public void quickFindAsset(java.lang.String p0, int p1, boolean p2, AsyncCallback cb);
     public void removeCategory(java.lang.String p0, AsyncCallback cb);
     public void loadSuggestionCompletionEngine(java.lang.String p0, AsyncCallback cb);
-    public void buildPackage(java.lang.String p0, AsyncCallback cb);
+    public void buildPackage(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
     public void buildPackageSource(java.lang.String p0, AsyncCallback cb);
     public void buildAssetSource(org.drools.brms.client.rpc.RuleAsset p0, AsyncCallback cb);
     public void buildAsset(org.drools.brms.client.rpc.RuleAsset p0, AsyncCallback cb);
@@ -71,5 +71,4 @@ public interface RepositoryServiceAsync
     public void archiveAsset(java.lang.String p0, boolean p1, AsyncCallback cb);
     public void removeAsset(java.lang.String p0, AsyncCallback cb);
     public void renamePackage(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
-
 }

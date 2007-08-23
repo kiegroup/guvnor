@@ -16,7 +16,10 @@ public class SelectorManager {
 	public static String SELECTOR_CONFIG_PROPERTIES = "/selectors.properties";
 	private static final SelectorManager INSTANCE = new SelectorManager(SELECTOR_CONFIG_PROPERTIES);
 
-	public Map<String, AssetSelector> selectors = new HashMap<String, AssetSelector>();
+    /**
+     * This is a map of the selectors to use.
+     */
+	public final Map<String, AssetSelector> selectors = new HashMap<String, AssetSelector>();
 
 
 

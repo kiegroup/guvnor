@@ -1084,7 +1084,7 @@ public class ServiceImplementationTest extends TestCase {
         rule1.checkin( "" );
         repo.save();
 
-        BuilderResult[] results = impl.buildPackage( pkg.getUUID() );
+        BuilderResult[] results = impl.buildPackage( pkg.getUUID(), null );
         assertNull( results );
 
         pkg = repo.loadPackage( "testBinaryPackageCompile" );
@@ -1118,7 +1118,7 @@ public class ServiceImplementationTest extends TestCase {
         rule1.updateContent( "rule 'rule1' \n when p:PersonX() \n then System.err.println(42); \n end" );
         rule1.checkin( "" );
 
-        results = impl.buildPackage( pkg.getUUID() );
+        results = impl.buildPackage( pkg.getUUID(), null );
         assertNotNull( results );
         assertEquals( 1,
                       results.length );
@@ -1132,7 +1132,7 @@ public class ServiceImplementationTest extends TestCase {
 
         pkg = repo.loadPackageSnapshot( "testBinaryPackageCompile",
                                         "SNAP1" );
-        results = impl.buildPackage( pkg.getUUID() );
+        results = impl.buildPackage( pkg.getUUID(), null );
         assertNull( results );
 
     }
@@ -1170,7 +1170,7 @@ public class ServiceImplementationTest extends TestCase {
         rule2.checkin( "" );
         repo.save();
 
-        BuilderResult[] results = impl.buildPackage( pkg.getUUID() );
+        BuilderResult[] results = impl.buildPackage( pkg.getUUID(), null );
         if ( results != null ) {
             for ( int i = 0; i < results.length; i++ ) {
                 System.err.println( results[i].message );
@@ -1216,7 +1216,7 @@ public class ServiceImplementationTest extends TestCase {
         rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
         rule2.checkin( "" );
 
-        results = impl.buildPackage( pkg.getUUID() );
+        results = impl.buildPackage( pkg.getUUID(), null );
         assertNotNull( results );
         assertTrue( results.length > 0 );
         //assertEquals(2, results.length);
@@ -1230,7 +1230,7 @@ public class ServiceImplementationTest extends TestCase {
 
         pkg = repo.loadPackageSnapshot( "testBinaryPackageCompileBRL",
                                         "SNAP1" );
-        results = impl.buildPackage( pkg.getUUID() );
+        results = impl.buildPackage( pkg.getUUID(), null );
         assertNull( results );
 
         //check that the rule name in the model is being set

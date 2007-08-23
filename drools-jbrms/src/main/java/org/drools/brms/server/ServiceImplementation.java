@@ -760,9 +760,9 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public BuilderResult[] buildPackage(String packageUUID) throws SerializableException {
+    public BuilderResult[] buildPackage(String packageUUID, String selectorConfigName) throws SerializableException {
         PackageItem item = repository.loadPackageByUUID( packageUUID );
-        ContentPackageAssembler asm = new ContentPackageAssembler(item);
+        ContentPackageAssembler asm = new ContentPackageAssembler(item, selectorConfigName);
         if (asm.hasErrors()) {
             BuilderResult[] result = generateBuilderResults( asm );
             return result;
