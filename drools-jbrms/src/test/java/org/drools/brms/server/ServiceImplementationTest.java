@@ -1368,7 +1368,8 @@ public class ServiceImplementationTest extends TestCase {
         asset.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
         asset.updateContent( "when \n This is foo \n then \n do something" );
         asset.checkin( "" );
-
+        
+        
         rule = impl.loadRuleAsset( asset.getUUID() );
         drl = impl.buildAssetSource( rule );
         assertNotNull( drl );
@@ -1376,7 +1377,13 @@ public class ServiceImplementationTest extends TestCase {
         assertTrue( drl.indexOf( "do something" ) == -1 );
         assertTrue( drl.indexOf( "bar()" ) > -1 );
         assertTrue( drl.indexOf( "yeahMan();" ) > -1 );
-
+        
+        
+        rule = impl.loadRuleAsset( repo.copyAsset( asset.getUUID(), "testAssetSource", "newRuleName" ) );
+        drl = impl.buildAssetSource( rule );
+        assertNotNull( drl );
+        assertTrue( drl.indexOf( "newRuleName" ) > 0 );
+        
     }
 
     public void testBuildAsset() throws Exception {
