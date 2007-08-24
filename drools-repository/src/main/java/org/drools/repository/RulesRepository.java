@@ -320,7 +320,7 @@ public class RulesRepository {
             this.session.getWorkspace().copy( sourcePath, destPath );
             AssetItem dest = loadPackage( destinationPackage ).loadAsset( destinationName );
 
-            dest.updateStringProperty( destinationName, AssetItem.TYPE_PROPERTY_NAME );
+            dest.updateStringProperty( destinationName, AssetItem.RULE_NODE_TYPE_NAME );
             dest.updateStringProperty( destinationPackage, AssetItem.PACKAGE_NAME_PROPERTY );
             dest.checkin( "Copied from " + source.getPackageName() + "/" + source.getName() );
             return dest.getUUID();
