@@ -319,6 +319,8 @@ public class RulesRepository {
             String destPath = this.getAreaNode( RULE_PACKAGE_AREA ).getPath() + "/" + destinationPackage + "/" + PackageItem.ASSET_FOLDER_NAME + "/" + destinationName;
             this.session.getWorkspace().copy( sourcePath, destPath );
             AssetItem dest = loadPackage( destinationPackage ).loadAsset( destinationName );
+
+            dest.updateStringProperty( destinationName, AssetItem.TYPE_PROPERTY_NAME );
             dest.updateStringProperty( destinationPackage, AssetItem.PACKAGE_NAME_PROPERTY );
             dest.checkin( "Copied from " + source.getPackageName() + "/" + source.getName() );
             return dest.getUUID();
