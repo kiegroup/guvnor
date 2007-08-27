@@ -19,8 +19,11 @@ package org.drools.brms.server;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -50,6 +53,7 @@ import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.compiler.RuleBaseLoader;
+import org.drools.integrationtests.IteratorToList;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
@@ -1368,8 +1372,8 @@ public class ServiceImplementationTest extends TestCase {
         asset.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
         asset.updateContent( "when \n This is foo \n then \n do something" );
         asset.checkin( "" );
-        
-        
+
+
         rule = impl.loadRuleAsset( asset.getUUID() );
         drl = impl.buildAssetSource( rule );
         assertNotNull( drl );
@@ -1377,14 +1381,16 @@ public class ServiceImplementationTest extends TestCase {
         assertTrue( drl.indexOf( "do something" ) == -1 );
         assertTrue( drl.indexOf( "bar()" ) > -1 );
         assertTrue( drl.indexOf( "yeahMan();" ) > -1 );
-        
-        
+
+
         rule = impl.loadRuleAsset( repo.copyAsset( asset.getUUID(), "testAssetSource", "newRuleName" ) );
+        //System.err.println(((RuleContentText)rule.content).content);
         drl = impl.buildAssetSource( rule );
         assertNotNull( drl );
         assertTrue( drl.indexOf( "newRuleName" ) > 0 );
-        
+
     }
+
 
     public void testBuildAsset() throws Exception {
         ServiceImplementation impl = getService();
@@ -1445,7 +1451,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
-    public void testBuildAssetBRXML() throws Exception {
+    public void testBuildAssetBRXMLAndCopy() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
 
@@ -1505,6 +1511,37 @@ public class ServiceImplementationTest extends TestCase {
             }
         }
         assertNull( result );
+
+
+        List assets = iteratorToList(pkg.getAssets());
+        assertEquals(2, assets.size());
+        //now lets copy...
+        String newUUID = impl.copyAsset( rule.uuid, rule.metaData.packageName, "ruleName2" );
+
+
+        assets = iteratorToList(pkg.getAssets());
+        assertEquals(3, assets.size());
+        RuleAsset asset = impl.loadRuleAsset( newUUID );
+
+        String pkgSource = impl.buildPackageSource( pkg.getUUID() );
+
+        assertTrue(pkgSource.indexOf( "ruleName2" ) > 0);
+        assertTrue(impl.buildAssetSource( asset ).indexOf( "ruleName2" ) > 0);
+        assertTrue(impl.buildAssetSource( asset ).indexOf( "testBRL" ) == -1);
+
+
+//        RuleModel model2 = (RuleModel) asset.content;
+//        assertEquals("ruleName2", model2.name);
+
+    }
+
+    private List iteratorToList(Iterator assets) {
+        List result = new ArrayList();
+        while ( assets.hasNext() ) {
+            result.add( assets.next() );
+
+        }
+        return result;
     }
 
     public void testBuildAssetWithPackageConfigError() throws Exception {
