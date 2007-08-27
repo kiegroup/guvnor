@@ -310,6 +310,7 @@ public class RulesRepository {
 
     /**
      * This will copy an assets content to the new location.
+     * @return the UUID of the new asset.
      */
     public String copyAsset(String uuidSource, String destinationPackage, String destinationName) {
         try {
@@ -319,10 +320,12 @@ public class RulesRepository {
             String destPath = this.getAreaNode( RULE_PACKAGE_AREA ).getPath() + "/" + destinationPackage + "/" + PackageItem.ASSET_FOLDER_NAME + "/" + destinationName;
             this.session.getWorkspace().copy( sourcePath, destPath );
             AssetItem dest = loadPackage( destinationPackage ).loadAsset( destinationName );
-            if (dest.getContent() != null ) { 
-                dest.updateContent( dest.getContent().replaceAll( source.getName(), dest.getName() ) );
-            }
+//            if (dest.getContent() != null ) {
+//                dest.updateContent( dest.getContent().replaceAll( source.getName(), dest.getName() ) );
+//            }
+
             dest.updateStringProperty( destinationPackage, AssetItem.PACKAGE_NAME_PROPERTY );
+            dest.node.setProperty( AssetItem.VERSION_NUMBER_PROPERTY_NAME, 0 );
             dest.checkin( "Copied from " + source.getPackageName() + "/" + source.getName() );
             return dest.getUUID();
         } catch ( RepositoryException e ) {

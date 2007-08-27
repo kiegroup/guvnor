@@ -321,12 +321,16 @@ public class RulesRepositoryTest extends TestCase {
         AssetItem item = repo.loadDefaultPackage().addAsset( "testCopyAssetSource", "desc" );
         item.updateContent( "la" );
         item.checkin( "" );
+        item.updateDescription( "mmm" );
+        item.checkin( "again" );
+        assertEquals(2, item.getVersionNumber());
 
         String uuid = repo.copyAsset( item.getUUID(), "testCopyAsset", "testCopyAssetDestination" );
         AssetItem dest = repo.loadAssetByUUID( uuid );
         assertEquals("la", dest.getContent());
         assertEquals("testCopyAsset", dest.getPackageName());
         assertFalse(uuid.equals( item.getUUID() ));
+        assertEquals(1, dest.getVersionNumber());
     }
 
     public void testRenameAsset() throws Exception {
