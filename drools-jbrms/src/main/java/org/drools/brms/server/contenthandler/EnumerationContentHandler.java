@@ -1,6 +1,7 @@
 package org.drools.brms.server.contenthandler;
+
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2007 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +16,41 @@ package org.drools.brms.server.contenthandler;
  * limitations under the License.
  */
 
-/**
- * Nothing to do for enumerations.
- */
-public class EnumerationContentHandler extends PlainTextContentHandler {
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.drools.brms.client.rpc.BuilderResult;
+import org.drools.brms.server.util.DataEnumLoader;
+import org.drools.repository.AssetItem;
+
+
+
+public class EnumerationContentHandler extends PlainTextContentHandler implements IValidating {
+
+    public BuilderResult[] validateAsset(AssetItem asset) {
+
+        String content = asset.getContent();
+        DataEnumLoader loader = new DataEnumLoader(content);
+        if (!loader.hasErrors()) {
+            return new BuilderResult[0];
+        } else {
+            List<BuilderResult> errors = new ArrayList<BuilderResult>();
+            List errs = loader.getErrors();
+
+
+            for ( Iterator iter = errs.iterator(); iter.hasNext(); ) {
+
+                BuilderResult result = new BuilderResult();
+                result.assetName = asset.getName();
+                result.assetFormat = asset.getFormat();
+                result.uuid = asset.getUUID();
+                result.message = (String) iter.next();
+                errors.add( result );
+            }
+
+            return errors.toArray( new BuilderResult[errors.size()] );
+        }
+    }
 
 }

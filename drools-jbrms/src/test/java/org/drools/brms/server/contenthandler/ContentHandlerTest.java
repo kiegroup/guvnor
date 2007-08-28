@@ -20,6 +20,11 @@ package org.drools.brms.server.contenthandler;
 import junit.framework.TestCase;
 
 import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.client.rpc.BuilderResult;
+import org.drools.brms.server.util.TestEnvironmentSessionHelper;
+import org.drools.repository.AssetItem;
+import org.drools.repository.PackageItem;
+import org.drools.repository.RulesRepository;
 
 public class ContentHandlerTest extends TestCase {
 
@@ -48,6 +53,30 @@ public class ContentHandlerTest extends TestCase {
         assertFalse(ContentHandler.getHandler( AssetFormats.DSL ).isRuleAsset());
         assertFalse(ContentHandler.getHandler( AssetFormats.MODEL ).isRuleAsset());
         assertFalse(ContentHandler.getHandler( AssetFormats.ENUMERATION ).isRuleAsset());
+    }
+
+    public void testValidating() throws Exception {
+        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+        PackageItem pkg = repo.loadDefaultPackage();
+        AssetItem asset = pkg.addAsset( "testValidatingEnum", "" );
+        asset.updateFormat( AssetFormats.ENUMERATION );
+        asset.updateContent( "'Person.age' : [1, 2, 3]" );
+
+        EnumerationContentHandler ch = new EnumerationContentHandler();
+        BuilderResult[] result =  ch.validateAsset( asset );
+        assertNotNull(result);
+        assertEquals(0, result.length);
+
+        asset.updateContent( "goober boy" );
+        result = ch.validateAsset( asset );
+        assertFalse(result.length == 0);
+        assertEquals(asset.getName(), result[0].assetName);
+        assertEquals(asset.getFormat(), result[0].assetFormat);
+        assertNotNull(result[0].message);
+        assertEquals(asset.getUUID(), result[0].uuid);
+
+
+
     }
 
 }

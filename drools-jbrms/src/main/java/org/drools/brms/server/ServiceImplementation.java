@@ -52,6 +52,7 @@ import org.drools.brms.server.builder.ContentAssemblyError;
 import org.drools.brms.server.builder.ContentPackageAssembler;
 import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.contenthandler.IRuleAsset;
+import org.drools.brms.server.contenthandler.IValidating;
 import org.drools.brms.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.TableDisplayHandler;
@@ -843,11 +844,16 @@ public class ServiceImplementation
         handler.storeAssetContent( asset, item );
 
 
-        ContentPackageAssembler asm = new ContentPackageAssembler(item);
-        if (!asm.hasErrors()) {
-            return null;
+        if (handler instanceof IValidating) {
+            return ((IValidating) handler).validateAsset( item );
         } else {
-            return generateBuilderResults( asm );
+
+            ContentPackageAssembler asm = new ContentPackageAssembler(item);
+            if (!asm.hasErrors()) {
+                return null;
+            } else {
+                return generateBuilderResults( asm );
+            }
         }
 
     }

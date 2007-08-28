@@ -277,6 +277,7 @@ public interface RepositoryService extends RemoteService {
 
     /**
      * This will build the asset and return any build results (errors).
+     * This is only to report on the results - it will generally not store any state or apply any changed.
      */
     public BuilderResult[] buildAsset(RuleAsset asset) throws SerializableException;
 

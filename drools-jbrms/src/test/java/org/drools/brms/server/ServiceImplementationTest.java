@@ -1445,6 +1445,13 @@ public class ServiceImplementationTest extends TestCase {
         result = impl.buildAsset( rule );
         assertNull( result );
 
+        asset = pkg.addAsset( "someEnumThing", "" );
+        asset.updateFormat( AssetFormats.ENUMERATION );
+        asset.updateContent( "goober boy" );
+        asset.checkin( "" );
+        result = impl.buildAsset( impl.loadRuleAsset( asset.getUUID() ) );
+        assertFalse(result.length == 0);
+
     }
 
     public void testBuildAssetBRXMLAndCopy() throws Exception {

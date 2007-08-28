@@ -69,6 +69,10 @@ public class EditorLauncher {
             return new RuleValidatorWrapper(new DecisionTableXLSWidget( asset, viewer ), asset);
         } else if (asset.metaData.format.equals( AssetFormats.RULE_FLOW_RF )) {
             return new RuleFlowUploadWidget(asset, viewer);
+        } else if (asset.metaData.format.equals( AssetFormats.DRL )) {
+            return new RuleValidatorWrapper(new DefaultRuleContentWidget( asset ), asset);
+        } else if (asset.metaData.format.equals( AssetFormats.ENUMERATION )) {
+            return new RuleValidatorWrapper(new DefaultRuleContentWidget( asset ), asset);
         } else {
             return new DefaultRuleContentWidget( asset );
         }
