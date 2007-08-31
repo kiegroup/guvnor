@@ -1,13 +1,13 @@
 package org.drools.brms.server.builder;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,8 @@ package org.drools.brms.server.builder;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -46,16 +48,16 @@ import org.drools.util.ChainedProperties;
  * This decorates the drools-compiler PackageBuilder
  * with some functionality needed for the BRMS.
  * This can use the BRMS repo as a classpath.
- * 
+ *
  * @author Michael Neale
  */
 public class BRMSPackageBuilder extends PackageBuilder {
 
     private List<DSLMappingFile> dslFiles;
     private DefaultExpander expander;
-    
+
     /**
-     * This will give you a fresh new PackageBuilder 
+     * This will give you a fresh new PackageBuilder
      * using the given classpath.
      */
     public static BRMSPackageBuilder getInstance(List<JarInputStream> classpath) {
@@ -63,7 +65,18 @@ public class BRMSPackageBuilder extends PackageBuilder {
         if ( parentClassLoader == null ) {
             parentClassLoader = BRMSPackageBuilder.class.getClassLoader();
         }
-    	MapBackedClassLoader loader = new MapBackedClassLoader( parentClassLoader );
+
+
+
+        final ClassLoader p = parentClassLoader;
+
+        MapBackedClassLoader loader = AccessController.doPrivileged( new PrivilegedAction<MapBackedClassLoader>() {
+            public MapBackedClassLoader run() {
+                return new MapBackedClassLoader( p );
+            }
+        });
+
+
         try {
             for ( JarInputStream jis : classpath ) {
                 JarEntry entry = null;
@@ -75,7 +88,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
                         while ( (len = jis.read( buf )) >= 0 ) {
                             out.write( buf, 0, len );
                         }
-                        
+
                         loader.addResource( entry.getName() , out.toByteArray() );
                     }
                 }
@@ -84,7 +97,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
         } catch ( IOException e ) {
             throw new RulesRepositoryException( e );
         }
-        
+
 
         // See if we can find a packagebuilder.conf
         // We do this manually here, as we cannot rely on PackageBuilder doing this correctly
@@ -92,10 +105,10 @@ public class BRMSPackageBuilder extends PackageBuilder {
         ChainedProperties chainedProperties = new ChainedProperties( BRMSPackageBuilder.class.getClassLoader(), // pass this as it searches currentThread anyway
                                                                      "packagebuilder.conf",
                                                                      false ); // false means it ignores any default values
-        
-        // the default compiler. This is nominally JANINO but can be overridden by setting drools.dialect.java.compiler to ECLIPSE 
+
+        // the default compiler. This is nominally JANINO but can be overridden by setting drools.dialect.java.compiler to ECLIPSE
         Properties properties = new Properties();
-        properties.setProperty( "drools.dialect.java.compiler", 
+        properties.setProperty( "drools.dialect.java.compiler",
                                 chainedProperties.getProperty( "drools.dialect.java.compiler", "JANINO" ) );
         PackageBuilderConfiguration pkgConf = new PackageBuilderConfiguration( properties );
         pkgConf.setClassLoader( loader );
@@ -107,7 +120,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
     /**
      * This will return the preferred compiler, according to the System property
      * drools.compiler (JANINO|ECLIPSE) - default is JANINO due to classpath issues
-     * mainly in tomcat, grrr... 
+     * mainly in tomcat, grrr...
      */
     static int getPreferredBRMSCompiler() {
         if (System.getProperty( "drools.dialect.java.compiler", "JANINO" ).equals( "ECLIPSE" )) {
@@ -134,13 +147,13 @@ public class BRMSPackageBuilder extends PackageBuilder {
     }
 
     public void setDSLFiles(List<DSLMappingFile> files) {
-        this.dslFiles = files;        
+        this.dslFiles = files;
     }
-    
+
     public List<DSLMappingFile> getDSLMappingFiles() {
         return Collections.unmodifiableList( this.dslFiles );
     }
-    
+
     /**
      * Load up all the DSL mappping files for the given package.
      */
@@ -197,7 +210,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
     public static interface DSLErrorEvent {
         public void recordError(AssetItem asset, String message);
     }
-    
+
     /**
      * Returns true if this package uses a DSL.
      */

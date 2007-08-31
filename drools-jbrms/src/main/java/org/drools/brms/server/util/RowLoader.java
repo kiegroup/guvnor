@@ -1,6 +1,7 @@
 package org.drools.brms.server.util;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
@@ -51,7 +52,7 @@ public class RowLoader {
     }
 
     public RowLoader(String resourcename) {
-        
+
         InputStream in = RowLoader.class.getResourceAsStream( "/" + resourcename + ".properties" );
         BufferedReader reader = new BufferedReader( new InputStreamReader( in ) );
         List fields = new ArrayList();
@@ -80,8 +81,18 @@ public class RowLoader {
                 throw (RuntimeException) e;
             }
             throw new RulesRepositoryException( e );
+        } finally {
+            closeStream( reader );
         }
         headers = (String[]) fields.toArray( new String[fields.size()] );
+    }
+
+    private void closeStream(BufferedReader reader) {
+        try {
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

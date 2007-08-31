@@ -1,13 +1,13 @@
 package org.drools.brms.client.rulelist;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,26 +51,26 @@ public class QuickFindWidget extends Composite {
     private final TextBox searchBox;
     private CheckBox archiveBox;
     private EditItemEvent editEvent;
-    private String[] shortListItems;
-    
-    
+
+
+
     public QuickFindWidget(EditItemEvent editEvent) {
         layout = new FormStyleLayout("images/system_search.png", "");
-        
-        
-        
+
+
+
         searchBox = new AutoCompleteTextBoxAsync(new CompletionItemsAsync() {
 
             public void getCompletionItems(String match,
                                            CompletionItemsAsyncReturn asyncReturn) {
                 loadShortList(match, asyncReturn);
-                
+
             }
 
-            
+
         });
         searchBox.setStyleName( "gwt-TextBox" );
-        
+
         this.editEvent = editEvent;
         HorizontalPanel srch = new HorizontalPanel();
         Button go = new Button("Go");
@@ -79,10 +79,10 @@ public class QuickFindWidget extends Composite {
                updateList();
             }
         } );
-        
+
         srch.add( searchBox );
         srch.add( go );
-        
+
         archiveBox = new CheckBox("Include archived items in list");
         archiveBox.setStyleName( "small-Text" );
         archiveBox.setChecked(false);
@@ -90,27 +90,27 @@ public class QuickFindWidget extends Composite {
         layout.addAttribute( "Find items with a name matching:", srch );
         layout.addRow( archiveBox );
         layout.addRow( new HTML("<hr/>") );
-        
+
         listPanel = new FlexTable();
         listPanel.setWidget( 0, 0, new HTML("<img src='images/information.gif'/>&nbsp;Enter the name or part of a name. Alternatively, use the categories to browse.") );
         layout.addRow(listPanel);
-        
+
         listPanel.setStyleName( "editable-Surface" );
-        
-        
-        
-        
+
+
+
+
         searchBox.addKeyboardListener( getKeyboardListener());
-        
+
         layout.setStyleName( "quick-find" );
-        
+
         initWidget( layout );
     }
 
     /**
      * This will load a list of items as they are typing.
      */
-    protected String[] loadShortList(String match, final CompletionItemsAsyncReturn returnItems) {
+    protected void loadShortList(String match, final CompletionItemsAsyncReturn returnItems) {
         RepositoryServiceFactory.getService().quickFindAsset( match, 5, archiveBox.isChecked() ,new GenericCallback() {
 
 
@@ -122,11 +122,11 @@ public class QuickFindWidget extends Composite {
                         items[i] = result.data[i].values[0];
                     }
                 }
-                returnItems.itemReturn( items ); 
+                returnItems.itemReturn( items );
             }
-            
+
         });
-        return shortListItems;
+
     }
 
     private KeyboardListener getKeyboardListener() {
@@ -145,11 +145,11 @@ public class QuickFindWidget extends Composite {
                                 char arg1,
                                 int arg2) {
                 if (arg1 == KEY_ENTER) {
-                    
+
                     updateList();
                 }
             }
-            
+
         };
     }
 
@@ -160,24 +160,24 @@ public class QuickFindWidget extends Composite {
             public void onSuccess(Object data) {
                 TableDataResult result = (TableDataResult) data;
                 populateList(result);
-                
+
             }
         });
-        
+
     }
 
     protected void populateList(TableDataResult result) {
-        
-        
+
+
         FlexTable data = new FlexTable();
-        
+
         //if its only one, just open it...
         if (result.data.length == 1) {
             editEvent.open( result.data[0].id );
         }
-        
+
         for ( int i = 0; i < result.data.length; i++ ) {
-            
+
             final TableDataRow row = result.data[i];
             if (row.id.equals( "MORE" )) {
                 data.setWidget( i, 0, new HTML("<i>There are more items... try narrowing the search terms..</i>") );
@@ -191,19 +191,19 @@ public class QuickFindWidget extends Composite {
                         editEvent.open( row.id );
                     }
                 } );
-                
+
                 data.setWidget( i, 2, open );
             }
-            
+
 
         }
-        
+
         data.setWidth( "100%" );
         listPanel.setWidget( 0, 0, data);
-        
+
         LoadingPopup.close();
-        
+
     }
-    
-    
+
+
 }

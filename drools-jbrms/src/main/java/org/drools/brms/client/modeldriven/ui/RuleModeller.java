@@ -409,7 +409,7 @@ public class RuleModeller extends DirtyableComposite {
             Image img = new Image("images/information.gif");
             img.setTitle( "Logically assert a fact - the fact will be retracted when the supporting evidence is removed." );
             horiz.add( img );
-            popup.addAttribute( "Logically assert a new fact", horiz );
+            popup.addAttribute( "Logically insert a new fact", horiz );
         }
 
 

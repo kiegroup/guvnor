@@ -1,13 +1,13 @@
 package org.drools.brms.server.files;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,17 +31,17 @@ import org.drools.brms.server.util.FormData;
 import org.drools.repository.RulesRepository;
 
 /**
- * 
+ *
  * This servlet deals with import and export of the repository to XML/zip files.
- * 
+ *
  * @author Michael Neale
  * @author Fernando Meyer
  */
 public class RepositoryBackupServlet extends RepositoryServlet {
 
     private static final long serialVersionUID = 400L;
-    final FileManagerUtils uploadHelper = new FileManagerUtils();
-    
+    //final FileManagerUtils uploadHelper = new FileManagerUtils();
+
 
     /**
      * This accepts a repository, and will apply it.
@@ -66,7 +66,7 @@ public class RepositoryBackupServlet extends RepositoryServlet {
                 e.printStackTrace( new PrintWriter( res.getOutputStream() ) );
             }
     }
-    
+
     private void processExportRepositoryDownload(HttpServletResponse res) throws PathNotFoundException, IOException, RepositoryException {
         res.setContentType( "application/zip" );
         res.setHeader( "Content-Disposition",
@@ -83,5 +83,5 @@ public class RepositoryBackupServlet extends RepositoryServlet {
         getFileManager().importRulesRepository( byteArray );
         return "OK";
     }
-    
+
 }
