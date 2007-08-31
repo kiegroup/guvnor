@@ -1,13 +1,13 @@
 package org.drools.brms.client.modeldriven;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,28 +24,28 @@ public class HumanReadableTest extends TestCase {
     public void testOperatorMapping() {
 
         assertEquals("is not equal to", HumanReadable.getOperatorDisplayName("!="));
-        assertEquals("is equal to", HumanReadable.getOperatorDisplayName("=="));        
+        assertEquals("is equal to", HumanReadable.getOperatorDisplayName("=="));
         assertEquals("xxx", HumanReadable.getOperatorDisplayName("xxx"));
     }
-    
+
     public void testCEMapping() {
 
         assertEquals("There is no", HumanReadable.getCEDisplayName( "not" ));
         assertEquals("There exists", HumanReadable.getCEDisplayName( "exists" ));
         assertEquals("Any of", HumanReadable.getCEDisplayName( "or" ));
         assertEquals("xxx", HumanReadable.getCEDisplayName( "xxx" ));
-        
+
     }
-    
+
     public void testActionMapping() {
 
-        assertEquals("Assert", HumanReadable.getActionDisplayName( "assert" ));
+        assertEquals("Insert", HumanReadable.getActionDisplayName( "assert" ));
         assertEquals("foo", HumanReadable.getActionDisplayName( "foo" ));
     }
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
 }
