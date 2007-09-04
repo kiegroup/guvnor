@@ -34,6 +34,7 @@ import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brl.ActionSetField;
 import org.drools.brms.client.modeldriven.brl.FactPattern;
+import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brl.RuleModel;
 import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.brms.client.rpc.BuilderResult;
@@ -1156,6 +1157,14 @@ public class ServiceImplementationTest extends TestCase {
         RuleModel model = new RuleModel();
         model.name = "rule2";
         FactPattern pattern = new FactPattern( "Person" );
+
+
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.constraintValueType = ISingleFieldConstraint.TYPE_PREDICATE;
+        con.value = "name soundslike 'foobar'";
+        pattern.addConstraint( con );
+
+
         pattern.boundName = "p";
         ActionSetField action = new ActionSetField( "p" );
         ActionFieldValue value = new ActionFieldValue( "age",
@@ -1196,7 +1205,8 @@ public class ServiceImplementationTest extends TestCase {
         assertNotNull( binPkg );
         assertTrue( binPkg.isValid() );
 
-        Person p = new Person();
+        //and this shows off the "soundex" thing...
+        Person p = new Person("fubar");
 
         BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
         loader.addPackage( new ByteArrayInputStream( binPackage ) );

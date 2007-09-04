@@ -1,13 +1,13 @@
 package org.drools.brms.server;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,13 +35,13 @@ import com.google.gwt.user.client.rpc.SerializableException;
 /**
  * This class will setup the data in a test state, which is
  * good for screenshots/playing around.
- * 
+ *
  * If you run this by itself, the database will be wiped, and left with only this data in it.
  * If it is run as part of the suite, it will just augment the data.
- * 
+ *
  * This sets up the data for a fictional company Billasurf, dealing with surfwear and equipment
  * (for surfing, boarding etc).
- * 
+ *
  * @author Michael Neale
  */
 public class PopulateDataTest extends TestCase {
@@ -49,15 +49,15 @@ public class PopulateDataTest extends TestCase {
     public void testPopulate() throws Exception {
         ServiceImplementation serv = new ServiceImplementation();
         serv.repository = new RulesRepository(TestEnvironmentSessionHelper.getSession());
-        
+
         createCategories( serv );
         createStates( serv );
         createPackages( serv );
         createModel( serv );
-        
+
         createSomeRules( serv );
         createPackageSnapshots( serv );
-        
+
     }
 
     private void createModel(ServiceImplementation serv) throws Exception {
@@ -65,41 +65,41 @@ public class PopulateDataTest extends TestCase {
         String uuid = serv.createNewRule( "DomainModel", "This is the business object model", null, "com.billasurf.manufacturing.plant", AssetFormats.MODEL );
         InputStream file = this.getClass().getResourceAsStream( "/billasurf.jar" );
         assertNotNull(file);
-        
+
         FileManagerUtils fm = new FileManagerUtils();
         fm.repository = repo;
-        
+
         fm.attachFileToAsset( uuid, file, "billasurf.jar" );
-        
+
         AssetItem item = repo.loadAssetByUUID( uuid );
         assertNotNull(item.getBinaryContentAsBytes());
         assertEquals( item.getBinaryContentAttachmentFileName(), "billasurf.jar" );
-        
-        
+
+
         PackageItem pkg = repo.loadPackage( "com.billasurf.manufacturing.plant" );
         pkg.updateHeader( "import com.billasurf.Board\nimport com.billasurf.Person" +
                 "\n\nglobal com.billasurf.Person prs" );
         pkg.checkin( "added imports" );
-        
+
         SuggestionCompletionEngine eng = serv.loadSuggestionCompletionEngine( "com.billasurf.manufacturing.plant" );
         assertNotNull(eng);
-        
+
         assertEquals(2, eng.factTypes.length);
         String[] fields = (String[]) eng.fieldsForType.get( "Board" );
         assertTrue(fields.length == 3);
-        
+
         String[] globalVars = eng.getGlobalVariables();
         assertEquals(1, globalVars.length);
         assertEquals("prs", globalVars[0]);
         assertEquals(2, eng.getFieldCompletionsForGlobalVariable( "prs" ).length);
-        
+
         fields = (String[]) eng.fieldsForType.get( "Person" );
-        
+
         assertTrue(fields.length == 2);
-        
-        
-        
-        
+
+
+
+
     }
 
     private void createPackageSnapshots(ServiceImplementation serv) {
@@ -116,22 +116,22 @@ public class PopulateDataTest extends TestCase {
         uuid = serv.createNewRule( "Fibreglass supplier selection", "This defines XXX.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
         uuid = serv.createNewRule( "Recommended wax", "This defines XXX.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
 
-        
-        
+
+
     }
 
     private void createPackages(ServiceImplementation serv) throws SerializableException {
         String uuid = serv.createPackage( "com.billasurf.manufacturing", "Rules for manufacturing." );
-        
+
         PackageConfigData conf = serv.loadPackageConfig( uuid );
         conf.header = "import com.billasurf.manuf.materials.*";
         serv.savePackage( conf );
-        
+
         serv.createPackage( "com.billasurf.manufacturing.plant", "Rules for manufacturing plants." );
         serv.createPackage( "com.billasurf.finance", "All financial rules." );
         serv.createPackage( "com.billasurf.hrman", "Rules for in house HR application." );
         serv.createPackage( "com.billasurf.sales", "Rules exposed as a service for pricing, and discounting." );
-        
+
     }
 
     private void createStates(ServiceImplementation serv) throws SerializableException {
@@ -144,7 +144,7 @@ public class PopulateDataTest extends TestCase {
         serv.createCategory( "/", "Sales", "" );
         serv.createCategory( "/", "Manufacturing", "" );
         serv.createCategory( "/", "Finance", "" );
-        
+
         serv.createCategory( "HR", "Leave", "" );
         serv.createCategory( "HR", "Training", "" );
         serv.createCategory( "Sales", "Promotions", "" );
@@ -158,5 +158,5 @@ public class PopulateDataTest extends TestCase {
         serv.createCategory( "Finance", "Payables", "" );
         serv.createCategory( "Finance", "Receivables", "" );
     }
-    
+
 }
