@@ -26,6 +26,7 @@ public class HumanReadableTest extends TestCase {
         assertEquals("is not equal to", HumanReadable.getOperatorDisplayName("!="));
         assertEquals("is equal to", HumanReadable.getOperatorDisplayName("=="));
         assertEquals("xxx", HumanReadable.getOperatorDisplayName("xxx"));
+        assertEquals("sounds like", HumanReadable.getOperatorDisplayName("soundslike" ));
     }
 
     public void testCEMapping() {

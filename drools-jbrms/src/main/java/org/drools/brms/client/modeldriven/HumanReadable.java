@@ -64,6 +64,7 @@ public class HumanReadable {
         operatorDisplayMap.put( "|| excludes", "or excludes" );
         operatorDisplayMap.put( "&& excludes", "and excludes" );
 
+        operatorDisplayMap.put( "soundslike", "sounds like" );
 
         ceDisplayMap.put( "not", "There is no" );
         ceDisplayMap.put( "exists", "There exists" );

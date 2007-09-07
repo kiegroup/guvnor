@@ -366,7 +366,7 @@ public class FactPatternWidget extends DirtyableComposite {
         popup.addAttribute( "Multiple field constraint", horiz );
 
 
-        popup.addRow( new HTML("<hr/>") );
+        //popup.addRow( new HTML("<hr/>") );
 
         popup.addRow( new Lbl("Advanced options", "weak-Text") );
         final Button predicate = new Button( "New formula" );

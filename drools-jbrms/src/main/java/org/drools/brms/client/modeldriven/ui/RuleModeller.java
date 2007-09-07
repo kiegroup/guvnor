@@ -362,13 +362,13 @@ public class RuleModeller extends DirtyableComposite {
             popup.addAttribute( "Modify a fact", horiz );
         }
 
-        popup.addRow( new HTML("<hr/>") );
+        //popup.addRow( new HTML("<hr/>") );
 
         if (retractBox.getItemCount() > 1) {
             popup.addAttribute( "Retract the fact", retractBox );
         }
 
-        popup.addRow( new HTML("<hr/>") );
+        //popup.addRow( new HTML("<hr/>") );
 
 
         final ListBox factsToAssert = new ListBox();
