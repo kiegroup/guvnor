@@ -35,8 +35,6 @@ import org.drools.repository.RulesRepository;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.WebRemote;
 import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.security.NotLoggedInException;
-
 /**
  * This class adapts GWT RPC mechanism to Seam actions.
  *
@@ -78,7 +76,8 @@ public class GWTToSeamAdapter {
             } catch (InvocationTargetException e) {
                 //now in this case, we log, and then repack it as some sort of a serializable exception
                 log.error( e.getCause() );
-                if (e.getCause() instanceof NotLoggedInException) {
+                String exName = e.getCause().getClass().getName();
+                if (exName.endsWith( "NotLoggedInException" )) {
                     throw new InvocationTargetException(new SessionExpiredException());
                 } else {
                     Throwable cause = e.getCause();

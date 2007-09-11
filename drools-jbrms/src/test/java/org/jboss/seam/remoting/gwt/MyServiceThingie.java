@@ -19,7 +19,6 @@ package org.jboss.seam.remoting.gwt;
 
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.annotations.WebRemote;
-import org.jboss.seam.security.NotLoggedInException;
 
 public abstract class MyServiceThingie {
 
@@ -39,12 +38,17 @@ public abstract class MyServiceThingie {
 
     @WebRemote
     public String notLoggedIn() {
-        throw new NotLoggedInException();
+        throw new FooNotLoggedInException();
     }
 
     @WebRemote
     public String goNuts() {
         throw new RulesRepositoryException("woo");
+    }
+
+
+    static class FooNotLoggedInException extends RuntimeException {
+
     }
 
 }
