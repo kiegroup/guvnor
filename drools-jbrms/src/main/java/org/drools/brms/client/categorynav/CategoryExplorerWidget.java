@@ -1,13 +1,13 @@
 package org.drools.brms.client.categorynav;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,7 @@ package org.drools.brms.client.categorynav;
 
 
 import org.drools.brms.client.common.ErrorPopup;
+import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
@@ -36,7 +37,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * This is a rule/resource navigator that uses the server side categories to 
+ * This is a rule/resource navigator that uses the server side categories to
  * navigate the repository.
  * Uses the the {@link com.google.gwt.user.client.ui.Tree} widget.
  */
@@ -50,8 +51,8 @@ public class CategoryExplorerWidget extends Composite
     private CategorySelectHandler  categorySelectHandler;
     private String                 selectedPath;
     private Panel                  emptyCategories;
-    
-    
+
+
     public void setTreeSize(String width) {
         navTreeWidget.setWidth( width );
     }
@@ -72,7 +73,7 @@ public class CategoryExplorerWidget extends Composite
         navTreeWidget.addTreeListener( this );
         this.setStyleName( "category-explorer-Tree" );
     }
-    
+
 
     /**
      * This refreshes the view.
@@ -84,7 +85,7 @@ public class CategoryExplorerWidget extends Composite
     }
 
     public void showEmptyTree() {
-       
+
         if (this.emptyCategories == null) {
                 AbsolutePanel p = new AbsolutePanel();
                  p.add( new HTML("No categories created yet. Add some categories from the administration screen.") );
@@ -99,21 +100,16 @@ public class CategoryExplorerWidget extends Composite
                  this.emptyCategories = p;
                  this.panel.add( this.emptyCategories );
         }
-        emptyCategories.setVisible( true );     
-               
+        emptyCategories.setVisible( true );
+
     }
-    
+
     /** This will refresh the tree and restore it back to the original state */
     private void loadInitialTree() {
         navTreeWidget.addItem( "Please wait..." );
         service.loadChildCategories( "/",
-                                     new AsyncCallback() {
+                                     new GenericCallback() {
 
-                                         public void onFailure(Throwable caught) {
-                                             ErrorPopup.showMessage( "A server error occurred loading categories." );
-                                             navTreeWidget.removeItems();
-                                             navTreeWidget.addItem( "Unable to load categories." );
-                                         }
 
                                          public void onSuccess(Object result) {
                                              selectedPath = null;
@@ -132,7 +128,7 @@ public class CategoryExplorerWidget extends Composite
                                                  it.addItem( new PendingItem() );
                                                  navTreeWidget.addItem( it );
                                              }
-                                             
+
 
                                          }
 
@@ -142,14 +138,14 @@ public class CategoryExplorerWidget extends Composite
 
     }
 
-    
-    
+
+
 
     private void hideEmptyTree() {
         if (this.emptyCategories != null) {
             this.emptyCategories.setVisible( false );
         }
-        
+
     }
 
 
@@ -173,11 +169,7 @@ public class CategoryExplorerWidget extends Composite
         //item.setUserObject( new Boolean( true ) );
 
         service.loadChildCategories( selectedPath,
-                                     new AsyncCallback() {
-
-                                         public void onFailure(Throwable caught) {
-                                             ErrorPopup.showMessage( "Unable to load categories for [" + selectedPath + "]" );
-                                         }
+                                     new GenericCallback() {
 
                                          public void onSuccess(Object result) {
                                              TreeItem child = root.getChild( 0 );
@@ -190,7 +182,7 @@ public class CategoryExplorerWidget extends Composite
                                                  it.setHTML( "<img src=\"images/category_small.gif\"/>" + list[i] );
                                                  it.setUserObject( list[i] );
                                                  it.addItem( new PendingItem() );
-                                                 
+
                                                  root.addItem( it );
                                              }
                                          }
@@ -202,8 +194,8 @@ public class CategoryExplorerWidget extends Composite
     private boolean hasBeenLoaded(TreeItem item) {
         if (item.getChildCount() == 1 && item.getChild( 0 ) instanceof PendingItem) {
             return false;
-        }        
-        return true;        
+        }
+        return true;
     }
 
     private String getPath(TreeItem item) {
@@ -221,7 +213,7 @@ public class CategoryExplorerWidget extends Composite
             super( "Please wait..." );
         }
     }
-    
+
     public String getSelectedPath() {
         return this.selectedPath;
     }

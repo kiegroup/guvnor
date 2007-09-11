@@ -1,13 +1,13 @@
 package org.drools.brms.client;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ package org.drools.brms.client;
 
 
 import org.drools.brms.client.common.ErrorPopup;
+import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.Timer;
@@ -32,7 +33,7 @@ import com.google.gwt.user.client.ui.HTML;
  */
 public class LoggedInUserInfo extends Composite{
     private HTML widgetcontent;
-    
+
 
     public LoggedInUserInfo() {
 
@@ -48,8 +49,8 @@ public class LoggedInUserInfo extends Composite{
         content.append( "&nbsp;&nbsp;&nbsp;<a href='/drools-jbrms/logout.jsp'>[Sign Out]</a>" );
         content.append( "</div>" );
         widgetcontent.setHTML( content.toString() );
-         
-        
+
+
         //we have the timer to keep the session alive.
         Timer timer = new Timer() {
 
@@ -61,18 +62,18 @@ public class LoggedInUserInfo extends Composite{
 
                     public void onSuccess(Object o) {
                         if (o == null) {
-                            ErrorPopup.showMessage( "Your session has expired. Please press the 'Sign out' link so you can re-login." );
+                            GenericCallback.showSessionExpiry();
                         }
                     }
-                    
+
                 });
             }
-            
+
         };
-        
+
         timer.scheduleRepeating( 300000 );
-        
-        
+
+
     }
-    
+
 }

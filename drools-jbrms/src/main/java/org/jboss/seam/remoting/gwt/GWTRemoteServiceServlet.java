@@ -1,13 +1,13 @@
 package org.jboss.seam.remoting.gwt;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,16 +47,16 @@ import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamReader;
 import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamWriter;
 
 /**
- * 
+ *
  * @author @hacker Michael Neale
- * This is a less then ideal approach, but GWT (up to and including 1.3) 
- * has no means to get into the internals of the RPC mechanism, and free it 
+ * This is a less then ideal approach, but GWT (up to and including 1.3)
+ * has no means to get into the internals of the RPC mechanism, and free it
  * from the shackles of the servlet API.
  * So I, the liberator, have hacked this out of RemoteServiceServlet to do this, heretofore.
- * 
+ *
  * When GWT 1.4 comes along to save us all, this can be retired, and the RPC utility class
  * - as contributed by Rob Jellinghaus can be used instead.
- * 
+ *
  */
 public class GWTRemoteServiceServlet extends HttpServlet {
 
@@ -174,7 +174,7 @@ public class GWTRemoteServiceServlet extends HttpServlet {
       // Read the request fully.
       //
       String requestPayload = readPayloadAsUtf8(request);
-      
+
       // Invoke the core dispatching logic, which returns the serialized
       // result.
       //
@@ -242,7 +242,7 @@ public class GWTRemoteServiceServlet extends HttpServlet {
     //
     String methodName = streamReader.readString();
 
-     
+
     // Read the number and names of the parameter classes from the stream.
     // We have to do this so that we can find the correct overload of the
     // method.
@@ -286,8 +286,8 @@ public class GWTRemoteServiceServlet extends HttpServlet {
     }
 
     GWTToSeamAdapter adapter = new GWTToSeamAdapter();
-    
-    
+
+
     // Make the call via reflection.
     //
     String responsePayload = GENERIC_FAILURE_MSG;
@@ -295,7 +295,7 @@ public class GWTRemoteServiceServlet extends HttpServlet {
         serializableTypeOracle);
     Throwable caught = null;
     try {
-        
+
         //call the component
         ReturnedObject returnedObject = adapter.callWebRemoteMethod(serviceIntfName, methodName, paramTypes, args);
         Class returnType = returnedObject.returnType;
@@ -329,6 +329,8 @@ public class GWTRemoteServiceServlet extends HttpServlet {
     }
 
     if (caught != null) {
+
+
       responsePayload = GENERIC_FAILURE_MSG;
       ServletContext servletContext = getServletContext();
       // servletContext may be null (for example, when unit testing)
@@ -389,7 +391,7 @@ public class GWTRemoteServiceServlet extends HttpServlet {
    * string's estimated byte length is longer than 256 bytes. Subclasses can
    * override this logic.
    * </p>
-   * 
+   *
    * @param request the request being served
    * @param response the response that will be written into
    * @param responsePayload the payload that is about to be sent to the client
@@ -426,7 +428,7 @@ public class GWTRemoteServiceServlet extends HttpServlet {
 
   /**
    * Returns the {@link Class} instance for the named class.
-   * 
+   *
    * @param name the name of a class or primitive type
    * @return Class instance for the given type name
    * @throws ClassNotFoundException if the named type was not found
@@ -437,7 +439,7 @@ public class GWTRemoteServiceServlet extends HttpServlet {
 
   /**
    * Returns the {@link Class} instance for the named class or primitive type.
-   * 
+   *
    * @param name the name of a class or primitive type
    * @return Class instance for the given type name
    * @throws ClassNotFoundException if the named type was not found
@@ -471,7 +473,7 @@ public class GWTRemoteServiceServlet extends HttpServlet {
    * InvocationTargetException or false otherwise. NOTE we do not check that the
    * type is serializable here. We assume that it must be otherwise the
    * application would never have been allowed to run.
-   * 
+   *
    * @param serviceIntfMethod
    * @param e
    * @return is expected exception
@@ -547,7 +549,7 @@ public class GWTRemoteServiceServlet extends HttpServlet {
     if (intfToCheck.getName().equals(intfName)) {
       // The name is right, but we also verify that it is assignable to
       // RemoteService.
-      // 
+      //
       if (RemoteService.class.isAssignableFrom(intfToCheck)) {
         return true;
       } else {

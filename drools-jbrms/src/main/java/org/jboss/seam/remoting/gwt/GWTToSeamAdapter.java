@@ -1,13 +1,13 @@
 package org.jboss.seam.remoting.gwt;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,13 +17,17 @@ package org.jboss.seam.remoting.gwt;
 
 
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.drools.brms.client.rpc.DetailedSerializableException;
 import org.drools.brms.client.rpc.SecurityService;
+import org.drools.brms.client.rpc.SessionExpiredException;
 import org.drools.brms.server.ServiceImplementation;
 import org.drools.brms.server.security.SecurityServiceImpl;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
@@ -31,10 +35,11 @@ import org.drools.repository.RulesRepository;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.WebRemote;
 import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.NotLoggedInException;
 
 /**
  * This class adapts GWT RPC mechanism to Seam actions.
- * 
+ *
  * @author Michael Neale
  */
 public class GWTToSeamAdapter {
@@ -45,7 +50,7 @@ public class GWTToSeamAdapter {
 
 
     /**
-     * Call the service. 
+     * Call the service.
      * @param serviceIntfName The interface name - this will be the fully qualified name of the remote service interface as
      * understood by GWT. This correlates to a component name in seam.
      * @param methodName The method name of the service being invoked.
@@ -66,9 +71,25 @@ public class GWTToSeamAdapter {
             Method method = getMethod( serviceIntfName, methodName,
                             clz,
                             paramTypes );
-            
-            Object result = method.invoke( component, args );
-            return new ReturnedObject(method.getReturnType(), result);
+
+            try {
+                Object result = method.invoke( component, args );
+                return new ReturnedObject(method.getReturnType(), result);
+            } catch (InvocationTargetException e) {
+                //now in this case, we log, and then repack it as some sort of a serializable exception
+                log.error( e.getCause() );
+                if (e.getCause() instanceof NotLoggedInException) {
+                    throw new InvocationTargetException(new SessionExpiredException());
+                } else {
+                    Throwable cause = e.getCause();
+                    StringWriter sw = new StringWriter();
+                    PrintWriter w = new PrintWriter(sw);
+                    cause.printStackTrace( w );
+                    DetailedSerializableException det = new DetailedSerializableException("An error occurred executing the action.", sw.toString());
+                    throw new InvocationTargetException(det);
+                }
+            }
+
     }
 
     /**
@@ -79,7 +100,7 @@ public class GWTToSeamAdapter {
      * @param paramTypes
      * @return
      */
-    private Method getMethod(String serviceName, 
+    private Method getMethod(String serviceName,
                              String methodName,
                                 Class clz,
                                 Class[] paramTypes)  {
@@ -94,7 +115,7 @@ public class GWTToSeamAdapter {
                     METHOD_CACHE.put( key, m );
                     return m;
                 }
-                
+
             } catch ( NoSuchMethodException e ) {
                   throw new SecurityException("Unable to access a service method called [" + methodName + "] on class [" + clz.getName() + "] without the @WebRemote attribute. " +
                   "This may be a hack attempt, or someone simply neglected to use the @WebRemote attribute to indicate a method as" +
@@ -107,7 +128,7 @@ public class GWTToSeamAdapter {
                           String methodName,
                           Class[] paramTypes) {
         if (paramTypes == null) {
-            return serviceName + "." + methodName;    
+            return serviceName + "." + methodName;
         } else {
             String pTypes = "";
             for ( int i = 0; i < paramTypes.length; i++ ) {
@@ -115,13 +136,13 @@ public class GWTToSeamAdapter {
             }
             return serviceName + "." + methodName + "(" + pTypes + ")";
         }
-        
+
     }
-    
+
     /**
      * Recurse up the class hierarchy, looking for a compatible method that is marked as "@WebRemote".
      * If one is not found (or we hit Object.class) then we barf - basically trust nothing from the client
-     * other then what we want to allow them to call. 
+     * other then what we want to allow them to call.
      */
     private Method findMethod(Class clz, String methodName, Class[] paramTypes ) throws NoSuchMethodException {
         if (clz == Object.class) {
@@ -160,21 +181,21 @@ public class GWTToSeamAdapter {
                 return new SecurityServiceImpl();
             }
             ServiceImplementation impl = new ServiceImplementation();
-             
+
             try {
                 impl.repository = new RulesRepository(TestEnvironmentSessionHelper.getSession(false));
                 return impl;
             } catch ( Exception e ) {
                 throw new IllegalStateException("Unable to launch debug mode...");
             }
-            
-            
+
+
         }
     }
 
     /**
      * This is used for returning results to the GWT service endpoint.
-     * The class is needed even if the result is null. 
+     * The class is needed even if the result is null.
      * a void.class responseType is perfectly acceptable.
      * @author Michael Neale
      */
@@ -187,7 +208,7 @@ public class GWTToSeamAdapter {
         public Class returnType;
         public Object returnedObject;
     }
-    
 
-    
+
+
 }

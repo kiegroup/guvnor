@@ -1,13 +1,13 @@
 package org.drools.brms.client.common;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,21 +28,17 @@ import com.google.gwt.user.client.ui.ListBox;
 
 /**
  * A rule package selector widget.
- * @author michael neale 
+ * @author michael neale
  */
 public class RulePackageSelector extends Composite {
 
     private ListBox packageList;
     private String currentlySelectedPackage;
-    
+
     public RulePackageSelector() {
         packageList = new ListBox();
-        
-        RepositoryServiceFactory.getService().listPackages( new AsyncCallback() {
 
-            public void onFailure(Throwable arg0) {
-                ErrorPopup.showMessage( "Unable to load list of packages." );                
-            }
+        RepositoryServiceFactory.getService().listPackages( new GenericCallback() {
 
             public void onSuccess(Object o) {
                 PackageConfigData[] list = (PackageConfigData[]) o;
@@ -54,15 +50,15 @@ public class RulePackageSelector extends Composite {
                         packageList.setSelectedIndex( i );
                     }
                 }
-                
+
             }
-            
+
         });
-        
-        
+
+
         initWidget( packageList );
     }
-    
+
     /**
      * Returns the selected package.
      */
@@ -73,5 +69,5 @@ public class RulePackageSelector extends Composite {
     public void selectPackage(String currentlySelectedPackage) {
         this.currentlySelectedPackage = currentlySelectedPackage;
     }
-    
+
 }

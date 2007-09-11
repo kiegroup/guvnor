@@ -36,14 +36,14 @@ public class ArchivedAssetManager extends Composite {
         layout.setWidth( "100%" );
 
         widtab.addRow( layout );
-        
+
         listView = new AssetItemListViewer (new EditItemEvent () {
             public void open(String key) {
             }
         }, AssetItemListViewer.ARCHIVED_RULE_LIST_TABLE_ID );
-        
+
         listView.setRefreshCommand( showArchivedAssets() );
-        
+
         layout.add( listView );
 
         showArchivedAssets().execute();
@@ -52,28 +52,25 @@ public class ArchivedAssetManager extends Composite {
         initWidget( widtab );
     }
 
-    
+
     private Widget newButtonsActionWiget() {
 
         HorizontalPanel horiz = new HorizontalPanel();
-        
+
         Button refresh = new Button( "Refresh" );
         refresh.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showArchivedAssets().execute();
             }
         } );
-        
+
 
         Button unarchive = new Button( "Unarchive" );
         unarchive.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                
-                RepositoryServiceFactory.getService().archiveAsset( listView.getSelectedElementUUID(), false, new AsyncCallback() {
 
-                    public void onFailure(Throwable arg0) {
-                        Window.alert( "Fail" );
-                    }
+                RepositoryServiceFactory.getService().archiveAsset( listView.getSelectedElementUUID(), false, new GenericCallback() {
+
 
                     public void onSuccess(Object arg0) {
                         showArchivedAssets().execute();
@@ -86,16 +83,14 @@ public class ArchivedAssetManager extends Composite {
         Button deleteperm = new Button( "Delete" );
         deleteperm.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                RepositoryServiceFactory.getService().removeAsset( listView.getSelectedElementUUID(), new AsyncCallback() {
+                RepositoryServiceFactory.getService().removeAsset( listView.getSelectedElementUUID(), new GenericCallback() {
 
-                    public void onFailure(Throwable arg0) {
-                        Window.alert( "Fail" );
-                    }
+
 
                     public void onSuccess(Object arg0) {
                         showArchivedAssets().execute();
                         Window.alert( "Done!" );
-                        
+
                     }
                 });
             }

@@ -18,6 +18,7 @@ package org.drools.brms.client.categorynav;
 
 
 import org.drools.brms.client.common.ErrorPopup;
+import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
@@ -93,11 +94,8 @@ public class CategoryEditor extends PopupPanel {
 
     void ok() {
 
-        AsyncCallback cb = new AsyncCallback() {
+        AsyncCallback cb = new GenericCallback() {
 
-            public void onFailure(Throwable arg0) {
-                ErrorPopup.showMessage( "Unable to create new category (server error). ");
-            }
 
             public void onSuccess(Object result) {
                 if (((Boolean) result).booleanValue()) {

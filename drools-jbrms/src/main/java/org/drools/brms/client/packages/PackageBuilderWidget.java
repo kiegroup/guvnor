@@ -193,20 +193,14 @@ public class PackageBuilderWidget extends Composite {
 		DeferredCommand.add(new Command() {
 			public void execute() {
 				RepositoryServiceFactory.getService().buildPackage(conf.uuid, selectorName,
-						new AsyncCallback() {
+						new GenericCallback() {
 							public void onSuccess(Object data) {
 								if (data == null) {
 									showSuccessfulBuild(buildResults);
-
 								} else {
 									BuilderResult[] results = (BuilderResult[]) data;
 									showBuilderErrors(results, buildResults);
 								}
-							}
-
-							public void onFailure(Throwable t) {
-								ErrorPopup.showMessage(t.getMessage());
-								buildResults.clear();
 							}
 						});
 			}
@@ -223,8 +217,7 @@ public class PackageBuilderWidget extends Composite {
 		buildResults.clear();
 		VerticalPanel vert = new VerticalPanel();
 
-		vert
-				.add(new HTML(
+		vert.add(new HTML(
 						"<img src='images/tick_green.gif'/><i>Package built successfully.</i>"));
 		final String hyp = getDownloadLink(this.conf);
 
