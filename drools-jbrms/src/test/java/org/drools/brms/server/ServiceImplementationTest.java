@@ -17,6 +17,7 @@ package org.drools.brms.server;
  */
 
 import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -1191,10 +1192,10 @@ public class ServiceImplementationTest extends TestCase {
         byte[] binPackage = pkg.getCompiledPackageBytes();
 
         //Here is where we write it out if needed... UNCOMMENT if needed for the binary test
-        //        FileOutputStream out = new FileOutputStream("/home/michael/RepoBinPackage.pkg");
-        //        out.write( binPackage );
-        //        out.flush();
-        //        out.close();
+//                FileOutputStream out = new FileOutputStream("/Users/michaelneale/RepoBinPackage.pkg");
+//                out.write( binPackage );
+//                out.flush();
+//                out.close();
 
         assertNotNull( binPackage );
 
@@ -1271,7 +1272,7 @@ public class ServiceImplementationTest extends TestCase {
      * then it means it needs to be updated. It gets the package form the BRL example above.
      */
     public void testLoadAndExecBinary() throws Exception {
-        Person p = new Person();
+        Person p = new Person("fubar");
         BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
         loader.addPackage( this.getClass().getResourceAsStream( "/RepoBinPackage.pkg" ) );
         RuleBase rb = loader.getRuleBase();
