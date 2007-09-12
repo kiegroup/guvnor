@@ -71,4 +71,7 @@ public interface RepositoryServiceAsync
     public void archiveAsset(java.lang.String p0, boolean p1, AsyncCallback cb);
     public void removeAsset(java.lang.String p0, AsyncCallback cb);
     public void renamePackage(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
+    public void rebuildSnapshots(AsyncCallback cb);
+
+
 }

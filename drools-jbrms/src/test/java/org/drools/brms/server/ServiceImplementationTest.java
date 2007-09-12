@@ -39,6 +39,7 @@ import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brl.RuleModel;
 import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.brms.client.rpc.BuilderResult;
+import org.drools.brms.client.rpc.DetailedSerializableException;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.RuleAsset;
@@ -928,6 +929,70 @@ public class ServiceImplementationTest extends TestCase {
                       impl.listSnapshots( "testSnapshot" ).length );
 
     }
+
+    public void testSnapshotRebuild() throws Exception {
+
+
+
+        ServiceImplementation impl = getService();
+        RulesRepository repo = impl.repository;
+
+
+        //get rid of other snapshot crap
+        Iterator pkit = repo.listPackages();
+        while(pkit.hasNext()) {
+            PackageItem pkg = (PackageItem) pkit.next();
+            String[] snaps = repo.listPackageSnapshots( pkg.getName() );
+            for ( String snapName : snaps ) {
+                repo.removePackageSnapshot( pkg.getName(), snapName );
+            }
+        }
+
+
+        PackageItem pkg = repo.createPackage( "testSnapshotRebuild", "" );
+        pkg.updateHeader( "import java.util.List" );
+        repo.save();
+
+        AssetItem item = pkg.addAsset( "anAsset", "" );
+        item.updateFormat( AssetFormats.DRL );
+        item.updateContent( " rule abc \n when \n then \n System.out.println(42); \n end");
+        item.checkin( "" );
+
+        BuilderResult[] res = impl.buildPackage( pkg.getUUID(), "" );
+        assertNull(res);
+
+
+        impl.createPackageSnapshot( "testSnapshotRebuild", "SNAP", false, "");
+
+        PackageItem snap = repo.loadPackageSnapshot( "testSnapshotRebuild", "SNAP" );
+        long snapTime = snap.getLastModified().getTimeInMillis();
+
+        Thread.sleep( 100 );
+
+        impl.rebuildSnapshots();
+
+
+
+        PackageItem snap_ = repo.loadPackageSnapshot( "testSnapshotRebuild", "SNAP" );
+        long newTime = snap_.getLastModified().getTimeInMillis();
+
+        assertTrue(newTime > snapTime);
+
+
+        item.updateContent( "garbage" );
+        item.checkin( "" );
+
+        impl.createPackageSnapshot( "testSnapshotRebuild", "SNAP2", false, "");
+
+        try {
+            impl.rebuildSnapshots();
+        } catch (DetailedSerializableException e) {
+            assertNotNull(e.getMessage());
+            assertNotNull(e.getLongDescription());
+        }
+
+    }
+
 
     public void testRemoveCategory() throws Exception {
 

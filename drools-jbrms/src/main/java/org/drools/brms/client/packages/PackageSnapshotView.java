@@ -1,13 +1,13 @@
 package org.drools.brms.client.packages;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,38 +53,59 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
  * This contains a list of packages and their deployment snapshots.
- * 
+ *
  * @author Michael Neale
  */
 public class PackageSnapshotView extends Composite {
-    
+
     private RepositoryServiceAsync service;
     private TabPanel tab;
     private FlexTable layout;
-    
-    public static final String LATEST_SNAPSHOT = "LATEST";    
+
+    public static final String LATEST_SNAPSHOT = "LATEST";
 
     public PackageSnapshotView() {
-        
+
         layout = new FlexTable();
         tab = new TabPanel();
         tab.setWidth( "100%" );
         tab.setHeight( "100%" );
-        
-        tab.add( layout, "<img src='images/package_snapshot.gif'>Snapshots</a>", true );
+
+        VerticalPanel vert = new VerticalPanel();
+        vert.add( layout );
+
+        Button rebuild = new Button("Rebuild snapshot binaries");
+        rebuild.setTitle( "Rebuilding the binaries may be needed if the BRMS software was updated. Otherwise it should not be needed." );
+        rebuild.addClickListener( new ClickListener() {
+
+            public void onClick(Widget arg0) {
+                Window.confirm( "Rebuilding the snapshot binaries will take some time, and only needs to be done if" +
+                        " the BRMS itself has been updated recently. This will also cause the rule agents to load the rules anew." +
+                        " Are you sure you want to do this?" );
+                LoadingPopup.showMessage( "Rebuilding snapshots. Please wait, this may take some time..." );
+                RepositoryServiceFactory.getService().rebuildSnapshots( new GenericCallback() {
+                    public void onSuccess(Object data) {
+                        LoadingPopup.close();
+                        Window.alert( "Snapshots were rebuilt successfully." );
+                    }
+                });
+            }
+        });
+        vert.add( rebuild );
+
+        tab.add( vert, "<img src='images/package_snapshot.gif'>Snapshots</a>", true );
         layout.getCellFormatter().setWidth( 0, 0, "28%" );
-        
-        
+
         service = RepositoryServiceFactory.getService();
-        
+
         refreshPackageList();
-        
+
         layout.setWidth( "100%" );
-        
+
         initWidget( tab );
-        
+
         tab.selectTab( 0 );
-        
+
     }
 
     private void refreshPackageList() {
@@ -94,14 +115,14 @@ public class PackageSnapshotView extends Composite {
                 PackageConfigData[] list = (PackageConfigData[]) data;
                 addPackages(list);
                 LoadingPopup.close();
-            }            
+            }
         });
     }
 
     private void addPackages(final PackageConfigData[] list) {
-        
+
         Tree snapTree = new Tree();
-        
+
         VerticalPanel packages = new VerticalPanel();
         for ( int i = 0; i < list.length; i++ ) {
             final String pkgName = list[i].name;
@@ -115,18 +136,18 @@ public class PackageSnapshotView extends Composite {
             snapTree.addItem( item );
 
         }
-        
+
         packages.add( snapTree );
-        
+
         HTML refresh = new HTML("Refresh list:&nbsp;<img src='images/refresh.gif'/>");
-        
+
         //Image refresh = new Image("images/refresh.gif");
         refresh.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 refreshPackageList();
-            }            
+            }
         });
-        
+
         snapTree.addTreeListener( new TreeListener() {
             public void onTreeItemSelected(TreeItem item) {
                 DeferredCommand.add( (Command) item.getUserObject() );
@@ -149,25 +170,25 @@ public class PackageSnapshotView extends Composite {
         service.listSnapshots( pkgName, new GenericCallback() {
             public void onSuccess(Object data) {
                 SnapshotInfo[] list = (SnapshotInfo[]) data;
-                
+
                 renderListOfSnapshots(pkgName, list);
                 LoadingPopup.close();
             }
         });
     }
-    
+
     /**
      * This will render the snapshot list.
      */
     protected void renderListOfSnapshots(String pkgName, SnapshotInfo[] list) {
-        
+
         FormStyleLayout right = new FormStyleLayout("images/snapshot.png", "Labelled snapshots for package: " + pkgName);
-        
+
         FlexTable table = new FlexTable();
         table.setText( 0, 1, "Name" );
         table.setText( 0, 2, "Comment" );
         table.getRowFormatter().setStyleName( 0, SortableTable.styleListHeader );
-        
+
         for ( int i = 0; i < list.length; i++ ) {
             int row = i + 1;
             Label name = new Label( list[i].name );
@@ -177,68 +198,68 @@ public class PackageSnapshotView extends Composite {
             table.setWidget( row, 3, getOpenSnapshotButton(pkgName, name.getText(), list[i].uuid) );
             table.setWidget( row, 4, getCopyButton(pkgName, name.getText() ) );
             table.setWidget( row, 5, getDeleteButton(name.getText(), pkgName) );
-            
+
             if (i%2 == 0) {
                 table.getRowFormatter().setStyleName( i + 1, SortableTable.styleEvenRow );
-            } 
+            }
         }
-        
+
         right.setWidth( "100%" );
         //right.setHeight( "100%" );
         right.addRow( table );
         table.setWidth( "100%" );
         right.setStyleName( SortableTable.styleList );
-        
-        
-        
+
+
+
         layout.setWidget( 0, 1, right);
         layout.getFlexCellFormatter().setVerticalAlignment( 0, 1, HasVerticalAlignment.ALIGN_TOP );
-        
+
     }
 
     private Button getCopyButton(final String packageName, final String snapshotName) {
         final FormStylePopup copy = new FormStylePopup("images/snapshot.png", "Copy snapshot " + snapshotName);
         final TextBox box = new TextBox();
         copy.addAttribute( "New label:", box );
-        Button ok = new Button("OK");        
+        Button ok = new Button("OK");
         copy.addAttribute( "", ok );
-        
+
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 service.copyOrRemoveSnapshot( packageName, snapshotName, false, box.getText(), new GenericCallback() {
                     public void onSuccess(Object data) {
                         showPackage( packageName );
-                        copy.hide();                        
+                        copy.hide();
                     }
                 });
             }
         } );
-        
-        
+
+
         Button btn = new Button("Copy");
         btn.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
       		  copy.setPopupPosition((DirtyableComposite.getWidth() - copy.getOffsetWidth()) / 2, 100);
     		  copy.show();
-            }            
+            }
         });
-        
+
         return btn;
     }
 
     private Button getOpenSnapshotButton(final String pkgName, final String snapshotName, final String uuid) {
 
-        
+
         Button but = new Button("Open");
         but.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                
+
                 openPackageSnapshot( pkgName,
                                      snapshotName,
                                      uuid );
-            }            
+            }
         });
-        
+
         return but;
     }
 
@@ -249,19 +270,19 @@ public class PackageSnapshotView extends Composite {
             public void onClick(Widget w) {
                 boolean confirm = Window.confirm( "Are you sure you want to delete the snapshot labelled [" + snapshotName +
                                  "] from the package [" + pkgName + "] ?");
-                
-                if (!confirm) 
+
+                if (!confirm)
                 {
                     return;
                 } else {
                     service.copyOrRemoveSnapshot( pkgName, snapshotName, true, null, new GenericCallback() {
                         public void onSuccess(Object data) {
                             showPackage( pkgName );
-                        }                    
+                        }
                     });
                 }
             }
-            
+
         });
         return btn;
     }
@@ -280,7 +301,7 @@ public class PackageSnapshotView extends Composite {
                                      final String snapshotName,
                                      final String uuid) {
         FlexTable viewLayout = new FlexTable();
-        String msg = "<b>Viewing snapshot labelled: </b>" + snapshotName + 
+        String msg = "<b>Viewing snapshot labelled: </b>" + snapshotName +
             " for package " + pkgName + ". This should not be edited.";
         HorizontalPanel horiz = new HorizontalPanel();
         horiz.add( new HTML(msg) );
@@ -290,18 +311,18 @@ public class PackageSnapshotView extends Composite {
             public void onClick(Widget w) {
                 tab.remove( 1 );
                 tab.selectTab( 0 );
-            } 
+            }
         } );
         horiz.add( close );
         viewLayout.setWidget( 0, 0, horiz );
         FlexCellFormatter formatter = viewLayout.getFlexCellFormatter();
         formatter.setStyleName( 0, 0, "editable-Surface" );
-        
+
         viewLayout.setWidget( 1, 0, new PackageManagerView(uuid, snapshotName) );
-        
+
         viewLayout.setWidth( "100%" );
         viewLayout.setHeight( "100%" );
-        
+
         if (tab.getWidgetCount() > 1) {
             tab.remove( 1 );
         }

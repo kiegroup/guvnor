@@ -38,6 +38,7 @@ import org.apache.log4j.Logger;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.rpc.BuilderResult;
+import org.drools.brms.client.rpc.DetailedSerializableException;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
@@ -797,6 +798,7 @@ public class ServiceImplementation
         }
     }
 
+
     private BuilderResult[] generateBuilderResults(ContentPackageAssembler asm) {
         BuilderResult[] result = new BuilderResult[asm.getErrors().size()];
         for ( int i = 0; i < result.length; i++ ) {
@@ -915,6 +917,28 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public String renamePackage(String uuid, String newName) {
         return repository.renamePackage( uuid, newName );
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void rebuildSnapshots() throws SerializableException {
+        Iterator pkit = repository.listPackages();
+        while(pkit.hasNext()) {
+            PackageItem pkg = (PackageItem) pkit.next();
+            String[] snaps = repository.listPackageSnapshots( pkg.getName() );
+            for ( String snapName : snaps ) {
+                PackageItem snap = repository.loadPackageSnapshot( pkg.getName(), snapName );
+                BuilderResult[]  res = this.buildPackage( snap.getUUID(), ""  ) ;
+                if (res != null) {
+                    StringBuffer buf = new StringBuffer();
+                    for ( int i = 0; i < res.length; i++ ) {
+                        buf.append( res[i].toString() );
+                        buf.append( '\n' );
+                    }
+                    throw new DetailedSerializableException("Unable to rebuild snapshot [" + snapName, buf.toString() );
+                }
+            }
+        }
     }
 
 

@@ -303,4 +303,11 @@ public interface RepositoryService extends RemoteService {
      */
     public String renamePackage(String uuid, String newName);
 
+    /**
+     * This will force a rebuild of all snapshots binary data.
+     * No errors are expected, as there will be no change. If there are errors,
+     * an expert will need to look at them.
+     */
+    public void rebuildSnapshots() throws SerializableException;
+
 }
