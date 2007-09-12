@@ -94,7 +94,7 @@ select {
 	font-size:smaller;
 }
 .version-Popup {
-	border:1px solid #aa9;
+	border:4px solid #red;
 	-moz-border-radius:.7em;
 	border-radius:.7em;
 	margin:1em;
@@ -103,8 +103,8 @@ select {
 }
 .version-Popup .Caption {
 	font-color:#FFF;
-	font-weight:pointer;
-	background:#aa9;
+	font-weight:bold;
+	//background:#aa9;
 }
 .gwt-TabBar {
 	font-size:smaller;
@@ -269,6 +269,7 @@ select {
 	border:1px solid #aa9;
 	-moz-border-radius:.7em;
 	border-radius:.7em;
+	font-size:smaller;
 }
 .dt-editor-Grid {
 	border:1px solid #aa9;

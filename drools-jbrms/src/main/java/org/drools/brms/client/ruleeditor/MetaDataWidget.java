@@ -1,13 +1,13 @@
 package org.drools.brms.client.ruleeditor;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -52,11 +52,11 @@ public class MetaDataWidget extends FormStyleLayout {
     private String uuid;
     private Command refreshView;
     AssetCategoryEditor ed;
-	
+
 	public MetaDataWidget(MetaData d, boolean readOnly, String uuid, Command refreshView) {
-        
+
         setStyleName( "metadata-Widget" );
-        
+
         if (!readOnly) {
             Image edit = new ImageButton("images/edit.gif", "Rename this asset");
             edit.addClickListener( new ClickListener() {
@@ -79,33 +79,33 @@ public class MetaDataWidget extends FormStyleLayout {
     private void loadData(MetaData d) {
         this.data = d;
         addAttribute("Categories:", categories());
-        addRow( new HTML("<hr/>") );   
-        
+        addRow( new HTML("<hr/>") );
+
         addAttribute("Modified on:", readOnlyDate(data.lastModifiedDate));
         addAttribute("by:", readOnlyText(data.lastContributor));
         addAttribute("Note:", readOnlyText( data.checkinComment ));
         addAttribute("Version:", getVersionNumberLabel());
-        
+
         if (!readOnly) {
             addAttribute("Created on:", readOnlyDate( data.createdDate ));
         }
         addAttribute("Created by:", readOnlyText(data.creator));
         addAttribute("Format:", new HTML( "<b>" + data.format + "</b>" ));
 
-        
+
         addRow(new HTML("<hr/>"));
 
-        addAttribute("Package:", packageEditor(data.packageName));        
+        addAttribute("Package:", packageEditor(data.packageName));
         addAttribute("Subject:", editableText(new FieldBinding() {
             public String getValue() {
                 return data.subject;
             }
 
             public void setValue(String val) {
-                data.subject = val;                
-            }            
-        }, "A short description of the subject matter."));         
-        
+                data.subject = val;
+            }
+        }, "A short description of the subject matter."));
+
         addAttribute("Type:", editableText(new FieldBinding() {
             public String getValue() {
                 return data.type;
@@ -114,9 +114,9 @@ public class MetaDataWidget extends FormStyleLayout {
             public void setValue(String val) {
                 data.type = val;
             }
-            
+
         }, "This is for classification purposes."));
-        
+
         addAttribute("External link:", editableText(new FieldBinding() {
             public String getValue() {
                 return data.externalRelation;
@@ -125,9 +125,9 @@ public class MetaDataWidget extends FormStyleLayout {
             public void setValue(String val) {
                 data.externalRelation = val;
             }
-            
-        }, "This is for relating the asset to an external system."));    
-        
+
+        }, "This is for relating the asset to an external system."));
+
         addAttribute("Source:", editableText(new FieldBinding() {
             public String getValue() {
                 return data.externalSource;
@@ -136,9 +136,9 @@ public class MetaDataWidget extends FormStyleLayout {
             public void setValue(String val) {
                 data.externalSource = val;
             }
-            
+
         }, "A short description or code indicating the source of the rule."));
-        
+
         if (!readOnly) {
             addRow( new VersionBrowser(this.uuid, this.data, refreshView) );
         }
@@ -150,14 +150,14 @@ public class MetaDataWidget extends FormStyleLayout {
             return readOnlyText( packageName );
         } else {
             HorizontalPanel horiz = new HorizontalPanel();
-            horiz.setStyleName( "current-Asset-Package" );
+            horiz.setStyleName( "metadata-Widget" );
             horiz.add( readOnlyText( packageName ) );
             Image editPackage = new ImageButton("images/edit.gif");
             editPackage.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                    showEditPackage(packageName, w);                    
+                    showEditPackage(packageName, w);
                 }
-            });           
+            });
             horiz.add( editPackage );
             return horiz;
         }
@@ -180,12 +180,12 @@ public class MetaDataWidget extends FormStyleLayout {
                 });
             }
         } );
-        
+
         pop.setPopupPosition( source.getParent().getParent().getAbsoluteLeft() - 18,
                               source.getParent().getParent().getAbsoluteTop() );
-        pop.show();        
+        pop.show();
     }
-    
+
 
     private void showEditPackage(final String pkg, Widget source) {
         final FormStylePopup pop = new FormStylePopup("images/package_large.png", "Move this item to another package");
@@ -212,10 +212,10 @@ public class MetaDataWidget extends FormStyleLayout {
                                                                               }
 
                                                                           } );
-                
-                
+
+
             }
-            
+
         });
         pop.setPopupPosition( source.getParent().getParent().getAbsoluteLeft(),
                               source.getParent().getParent().getAbsoluteTop() );
@@ -226,9 +226,9 @@ public class MetaDataWidget extends FormStyleLayout {
         if (data.versionNumber == 0 ) {
             return new HTML("<i>Not checked in yet</i>");
         } else {
-            return readOnlyText(Long.toString( data.versionNumber) );    
+            return readOnlyText(Long.toString( data.versionNumber) );
         }
-        
+
     }
 
     private Widget readOnlyDate(Date lastModifiedDate) {
@@ -257,12 +257,12 @@ public class MetaDataWidget extends FormStyleLayout {
             final TextBox box = new TextBox();
             box.setTitle( toolTip );
             box.setText( bind.getValue() );
-            ChangeListener listener = new ChangeListener() {    
+            ChangeListener listener = new ChangeListener() {
                 public void onChange(Widget w) {
                     makeDirty();
-                    bind.setValue( box.getText() );                
-                }                
-            };            
+                    bind.setValue( box.getText() );
+                }
+            };
             box.addChangeListener( listener );
             return box;
         } else {
@@ -275,7 +275,7 @@ public class MetaDataWidget extends FormStyleLayout {
         void setValue(String val);
         String getValue();
     }
-    
+
     /**
      * Return the data if it is to be saved.
      */
@@ -287,7 +287,7 @@ public class MetaDataWidget extends FormStyleLayout {
     public boolean isDirty() {
         return (ed.isDirty() || dirtyflag) ;
     }
-    
-    
-	
+
+
+
 }

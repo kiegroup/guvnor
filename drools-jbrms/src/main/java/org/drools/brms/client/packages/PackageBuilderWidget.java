@@ -186,8 +186,9 @@ public class PackageBuilderWidget extends Composite {
 
 		final HorizontalPanel busy = new HorizontalPanel();
 		busy.add(new Label("Validating and building package, please wait..."));
-		busy.add(new Image("images/spinner.gif"));
+		busy.add(new Image("images/red_anime.gif"));
 
+        LoadingPopup.showMessage( "Please wait..." );
 		buildResults.add(busy);
 
 		DeferredCommand.add(new Command() {
@@ -195,6 +196,7 @@ public class PackageBuilderWidget extends Composite {
 				RepositoryServiceFactory.getService().buildPackage(conf.uuid, selectorName,
 						new GenericCallback() {
 							public void onSuccess(Object data) {
+                                LoadingPopup.close();
 								if (data == null) {
 									showSuccessfulBuild(buildResults);
 								} else {

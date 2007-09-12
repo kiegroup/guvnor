@@ -89,8 +89,8 @@ public class EditorLauncher {
         result.put( AssetFormats.FUNCTION, "function_assets.gif" );
         result.put( AssetFormats.MODEL, "model_asset.gif" );
         result.put( AssetFormats.DECISION_SPREADSHEET_XLS, "spreadsheet_small.gif" );
-        result.put( AssetFormats.BUSINESS_RULE, "rule_asset.gif" );
-        result.put( AssetFormats.DSL_TEMPLATE_RULE, "rule_asset.gif" );
+        result.put( AssetFormats.BUSINESS_RULE, "business_rule.gif" );
+        result.put( AssetFormats.DSL_TEMPLATE_RULE, "business_rule.gif" );
         result.put( AssetFormats.RULE_FLOW_RF, "ruleflow_small.gif" );
 
 

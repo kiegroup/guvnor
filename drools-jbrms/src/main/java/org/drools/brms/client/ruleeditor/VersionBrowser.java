@@ -2,13 +2,13 @@ package org.drools.brms.client.ruleeditor;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,8 +39,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
- * This widget shows a list of versions. 
- * 
+ * This widget shows a list of versions.
+ *
  * @author Michael Neale
  */
 public class VersionBrowser extends Composite {
@@ -66,6 +66,7 @@ public class VersionBrowser extends Composite {
         layout.setWidget( 0,
                           0,
                           new Label( "Version history" ) );
+        layout.getCellFormatter().setStyleName( 0, 0, "metadata-Widget" );
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         formatter.setHorizontalAlignment( 0,
                                           0,
@@ -137,7 +138,7 @@ public class VersionBrowser extends Composite {
                                                                                                                                            header,
                                                                                                                                            0,
                                                                                                                                            false);
-                                                                        
+
                                                                         tableWidget.setWidth( "100%" );
 
                                                                         layout.setWidget( 1,
