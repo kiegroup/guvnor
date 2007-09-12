@@ -17,6 +17,7 @@ package org.drools.brms.client.ruleeditor;
 
 
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -181,14 +182,19 @@ public class EditorLauncher {
                  "<img src='images/" + icon + "'>" + displayName,
                  true );
 
-        openedViewers.put( uuid,
-                           view );
+
+        if (openedViewers != Collections.EMPTY_MAP) {
+            openedViewers.put( uuid,
+                               view );
+        }
 
         view.setCloseCommand( new Command() {
             public void execute() {
                 tab.remove( tab.getWidgetIndex( view ) );
                 tab.selectTab( 0 );
-                openedViewers.remove( uuid );
+                if (openedViewers != Collections.EMPTY_MAP) {
+                    openedViewers.remove( uuid );
+                }
 
             }
         } );
