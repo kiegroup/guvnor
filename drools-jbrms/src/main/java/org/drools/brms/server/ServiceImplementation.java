@@ -372,6 +372,15 @@ public class ServiceImplementation
         AssetItem item = repository.loadAssetByUUID( uuid );
         AssetHistoryIterator it = item.getHistory();
 
+
+        //MN Note: this uses the lazy iterator, but then loads the whole lot up, and returns it.
+        //The reason for this is that the GUI needs to show things in numeric order by the version number.
+        //When a version is restored, its previous version is NOT what you thought it was - due to how JCR works
+        // (its more like CVS then SVN). So to get a linear progression of versions, we use the incrementing version number,
+        // and load it all up and sort it. This is not ideal.
+        // In future, we may do a "restore" instead just by copying content into a new version, not restoring a node,
+        // in which case the iterator will be in order (or you can just walk all the way back).
+        //So if there are performance problems with looking at lots of historical versions, look at this nasty bit of code.
         while ( it.hasNext() ) {
             AssetItem historical = (AssetItem) it.next();//new AssetItem(repo, element);
             long versionNumber = historical.getVersionNumber();
