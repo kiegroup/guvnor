@@ -46,7 +46,7 @@ public class LoggedInUserInfo extends Composite{
 
         content.append( "<div id='user_info'>" );
         content.append( "Welcome: &nbsp;" + userName );
-        content.append( "&nbsp;&nbsp;&nbsp;<a href='/drools-jbrms/logout.jsp'>[Sign Out]</a>" );
+        content.append( "&nbsp;&nbsp;&nbsp;<a href='logout.jsp'>[Sign Out]</a>" );
         content.append( "</div>" );
         widgetcontent.setHTML( content.toString() );
 
