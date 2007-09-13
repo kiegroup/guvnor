@@ -63,12 +63,15 @@ public class ConstraintValueEditor extends DirtyableComposite {
     /**
      * @param con The constraint being edited.
      */
-    public ConstraintValueEditor(FactPattern pattern, String fieldName, ISingleFieldConstraint con, RuleModeller modeller, String valueTypeNumeric /* eg is numeric */) {
+    public ConstraintValueEditor(FactPattern pattern, String fieldName, ISingleFieldConstraint con, RuleModeller modeller, String valueType /* eg is numeric */) {
         this.constraint = con;
-        if (valueTypeNumeric.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
+        if (valueType.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
             this.numericValue = true;
         } else {
             this.numericValue = false;
+        }
+        if (valueType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN )) {
+            this.enumeratedValues = new String[] {"true", "false" };
         }
         this.model = modeller.getModel();
         SuggestionCompletionEngine sce = modeller.getSuggestionCompletions();
