@@ -17,10 +17,8 @@ package org.drools.brms.server.contenthandler;
 
 
 
-import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -37,17 +35,7 @@ public abstract class ContentHandler {
     static Map handlers;
 
     static {
-        handlers = new HashMap() {{
-            put(AssetFormats.BUSINESS_RULE, new BRLContentHandler());
-            put(AssetFormats.DSL_TEMPLATE_RULE, new DSLRuleContentHandler());
-            put(AssetFormats.DRL, new DRLFileContentHandler());
-            put(AssetFormats.DSL, new DSLDefinitionContentHandler());
-            put(AssetFormats.FUNCTION, new FunctionContentHandler());
-            put(AssetFormats.MODEL, new ModelContentHandler());
-            put(AssetFormats.DECISION_SPREADSHEET_XLS, new DecisionTableXLSHandler());
-            put(AssetFormats.RULE_FLOW_RF, new RuleFlowHandler());
-            put(AssetFormats.ENUMERATION, new EnumerationContentHandler());
-        }};
+        handlers = ContentManager.getInstance().getContentHandlers();
     }
 
     /**
