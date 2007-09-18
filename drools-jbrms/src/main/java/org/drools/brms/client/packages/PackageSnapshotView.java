@@ -79,16 +79,17 @@ public class PackageSnapshotView extends Composite {
         rebuild.addClickListener( new ClickListener() {
 
             public void onClick(Widget arg0) {
-                Window.confirm( "Rebuilding the snapshot binaries will take some time, and only needs to be done if" +
+                if (Window.confirm( "Rebuilding the snapshot binaries will take some time, and only needs to be done if" +
                         " the BRMS itself has been updated recently. This will also cause the rule agents to load the rules anew." +
-                        " Are you sure you want to do this?" );
-                LoadingPopup.showMessage( "Rebuilding snapshots. Please wait, this may take some time..." );
-                RepositoryServiceFactory.getService().rebuildSnapshots( new GenericCallback() {
-                    public void onSuccess(Object data) {
-                        LoadingPopup.close();
-                        Window.alert( "Snapshots were rebuilt successfully." );
-                    }
-                });
+                        " Are you sure you want to do this?" )) {
+	                LoadingPopup.showMessage( "Rebuilding snapshots. Please wait, this may take some time..." );
+	                RepositoryServiceFactory.getService().rebuildSnapshots( new GenericCallback() {
+	                    public void onSuccess(Object data) {
+	                        LoadingPopup.close();
+	                        Window.alert( "Snapshots were rebuilt successfully." );
+	                    }
+	                });
+                }
             }
         });
         vert.add( rebuild );

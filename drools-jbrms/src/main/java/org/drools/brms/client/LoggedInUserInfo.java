@@ -22,6 +22,7 @@ import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -43,6 +44,8 @@ public class LoggedInUserInfo extends Composite{
 
     public void setUserName(String userName) {
         StringBuffer content = new StringBuffer();
+
+
 
         content.append( "<div id='user_info'>" );
         content.append( "Welcome: &nbsp;" + userName );
@@ -75,5 +78,7 @@ public class LoggedInUserInfo extends Composite{
 
 
     }
+
+
 
 }

@@ -1,5 +1,5 @@
-<% 
+<%
 	org.jboss.seam.Seam.invalidateSession();
-    String redirectURL = "index.jsp";
+    String redirectURL = "JBRMS.html";
     response.sendRedirect(redirectURL);
 %>
