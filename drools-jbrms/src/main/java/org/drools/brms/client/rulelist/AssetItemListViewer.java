@@ -2,13 +2,13 @@ package org.drools.brms.client.rulelist;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 /**
  * This is a viewer for viewing a list of rules for editing/selection.
  * This uses the sortable table widget, and can be re-used with different data sets.
- * (ie no need to throw is away). 
+ * (ie no need to throw is away).
  */
 public class AssetItemListViewer extends Composite {
 
@@ -112,7 +112,7 @@ public class AssetItemListViewer extends Composite {
         formatter.setAlignment( 0,
                                 0,
                                 HasHorizontalAlignment.ALIGN_LEFT,
-                                HasVerticalAlignment.ALIGN_MIDDLE );
+                                HasVerticalAlignment.ALIGN_TOP );
 
         Image openIcon = new ImageButton( "images/open_item.gif" );
         openIcon.addClickListener( new ClickListener() {
@@ -130,16 +130,16 @@ public class AssetItemListViewer extends Composite {
         formatter.setAlignment( 0,
                                 1,
                                 HasHorizontalAlignment.ALIGN_RIGHT,
-                                HasVerticalAlignment.ALIGN_MIDDLE );
+                                HasVerticalAlignment.ALIGN_TOP );
 
         initWidget( outer );
     }
 
-    /** 
+    /**
      * This will create a table, and load the data, wrapping it in a scrolling area.
      * If the data is null, it will just fill it in with something empty
      * so it looks busy.
-     * 
+     *
      * This could probably clear the table, but I just throw it away
      * let the garbage collector do the hard work.
      */
@@ -233,8 +233,8 @@ public class AssetItemListViewer extends Composite {
                               2 );
 
     }
-    
+
     public String getSelectedElementUUID() {
-        return TableDataRow.getId( table.getSelectedKey() );        
+        return TableDataRow.getId( table.getSelectedKey() );
     }
 }

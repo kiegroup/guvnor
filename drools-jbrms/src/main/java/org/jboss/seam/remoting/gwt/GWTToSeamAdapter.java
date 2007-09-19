@@ -75,7 +75,8 @@ public class GWTToSeamAdapter {
                 return new ReturnedObject(method.getReturnType(), result);
             } catch (InvocationTargetException e) {
                 //now in this case, we log, and then repack it as some sort of a serializable exception
-                log.error( e.getCause() );
+
+                log.error("Error invoking a service", e.getCause());
                 String exName = e.getCause().getClass().getName();
                 if (exName.endsWith( "NotLoggedInException" )) {
                     throw new InvocationTargetException(new SessionExpiredException());

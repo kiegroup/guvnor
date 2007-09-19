@@ -1,13 +1,13 @@
 package org.drools.brms.client.ruleeditor;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,12 +43,12 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Neale
  */
 public class RuleValidatorWrapper extends DirtyableComposite {
-    
+
     private RuleAsset asset;
     private DirtyableFlexTable layout;
 
     public boolean isDirty() {
-        return layout.hasDirty();  
+        return layout.hasDirty();
     }
 
     public RuleValidatorWrapper(Widget editor, RuleAsset asset) {
@@ -57,14 +57,14 @@ public class RuleValidatorWrapper extends DirtyableComposite {
         layout = new DirtyableFlexTable();
         layout.setStyleName( "asset-editor-Layout" );
         layout.setWidget( 0, 0, editor );
-        if (!asset.isreadonly) 
+        if (!asset.isreadonly)
             layout.setWidget( 1, 0, validatorActions() );
-        layout.getCellFormatter().setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
-        
-        
+        layout.getCellFormatter().setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_TOP );
+
+
         layout.setWidth("100%");
         layout.setHeight( "100%" );
-        
+
         initWidget( layout );
     }
 
@@ -72,29 +72,29 @@ public class RuleValidatorWrapper extends DirtyableComposite {
         HorizontalPanel horiz = new HorizontalPanel();
         Button viewSource = new Button("View source");
         horiz.add( viewSource );
-        
+
         Button validate = new Button("Validate");
         horiz.add( validate );
-        
+
         viewSource.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 doViewsource();
             }
 
         });
-        
+
         validate.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 doValidate();
             }
         });
-        
+
         horiz.setStyleName( "asset-validator-Buttons" );
         return horiz;
     }
-    
+
     private void doValidate() {
-        
+
         LoadingPopup.showMessage( "Validating item, please wait..." );
         RepositoryServiceFactory.getService().buildAsset( asset, new GenericCallback() {
             public void onSuccess(Object data) {
@@ -102,7 +102,7 @@ public class RuleValidatorWrapper extends DirtyableComposite {
                 showBuilderErrors(results);
             }
         });
-        
+
     }
 
     private void doViewsource() {
@@ -113,14 +113,14 @@ public class RuleValidatorWrapper extends DirtyableComposite {
                 showSource(src);
             }
         });
-        
+
     }
 
     private void showSource(String src) {
         PackageBuilderWidget.showSource( src, this.asset.metaData.name );
         LoadingPopup.close();
     }
-    
+
     private void showBuilderErrors(BuilderResult[] results) {
         FormStylePopup pop = new FormStylePopup("images/package_builder.png", "Validation results");
         if (results == null || results.length == 0) {
@@ -137,7 +137,7 @@ public class RuleValidatorWrapper extends DirtyableComposite {
                 } else {
                     errTable.setText( row, 1, res.message );
                 }
-                
+
             }
             ScrollPanel scroll = new ScrollPanel(errTable);
             //scroll.setAlwaysShowScrollBars(true);
@@ -148,13 +148,13 @@ public class RuleValidatorWrapper extends DirtyableComposite {
             pop.addRow( scroll );
 //            pop.setWidth( "70%" );
 //            pop.setHeight( "50%" );
-            
+
         }
         pop.setPopupPosition( 100, 100 );
         pop.show();
         LoadingPopup.close();
     }
-    
-    
-    
+
+
+
 }

@@ -1,13 +1,13 @@
 package org.drools.brms.client.ruleeditor;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -52,19 +52,19 @@ public class ActionToolbar extends Composite {
 
     private FlexTable layout = new FlexTable();
     private Command closeCommand;
-    
+
     private MetaData      metaData;
     private Command checkinAction;
     private Command archiveAction;
     private Command deleteAction;
     private String uuid;
     private HTML state;
-    
+
     public ActionToolbar(final RuleAsset asset,
-                          
+
                          final Command checkin,
                          final Command archiv,
-                         final Command minimiseMaximise, 
+                         final Command minimiseMaximise,
                          final Command delete, boolean readOnly) {
 
         this.metaData = asset.metaData;
@@ -78,19 +78,19 @@ public class ActionToolbar extends Composite {
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         HorizontalPanel saveControls = new HorizontalPanel();
         setState(status);
-        
-        
+
+
         saveControls.add( state );
-        
+
         if (!readOnly) {
-        controls( 
+        controls(
                   formatter,
                   saveControls );
 
         }
-        
+
         windowControls( minimiseMaximise, formatter );
-        
+
         initWidget( layout );
         setWidth( "100%" );
     }
@@ -99,7 +99,7 @@ public class ActionToolbar extends Composite {
      * Sets the visible status display.
      */
     private void setState(String status) {
-        state.setHTML( "Status: <b>[" + status + "]</b>");        
+        state.setHTML( "Status: <b>[" + status + "]</b>");
     }
 
     private void controls(FlexCellFormatter formatter,
@@ -114,33 +114,33 @@ public class ActionToolbar extends Composite {
 
         } );
         saveControls.add( editState );
-        
-        
+
+
         layout.setWidget( 0, 0, saveControls );
-        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_MIDDLE );
-        
-        
-        
+        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
+
+
+
         //Image save = new Image("images/save_edit.gif");
         Button save = new Button("Save changes");
-        save.setTitle( "Check in changes." );        
+        save.setTitle( "Check in changes." );
         save.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 doCheckinConfirm(w);
             }
         });
-        
+
         saveControls.add( save );
-        
+
         Button copy = new Button("Copy");
         copy.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 doCopyDialog(w);
             }
         } );
-        
+
         saveControls.add( copy );
-        
+
         Button archive = new Button("Archive");
         archive.addClickListener(new ClickListener() {
             public void onClick(Widget w) {
@@ -150,36 +150,36 @@ public class ActionToolbar extends Composite {
                 }
             }
         });
-        saveControls.add(archive);        
-        
-        if (this.metaData.versionNumber == 0) {  
+        saveControls.add(archive);
+
+        if (this.metaData.versionNumber == 0) {
         Button delete = new Button( "Delete" );
             delete.addClickListener( new ClickListener() {
-                
+
                 public void onClick(Widget w) {
                     if (Window.confirm( "Are you sure you want to permanently delete this (unversioned) item?" ) ) {
                         deleteAction.execute();
                     }
                 }
             } );
-            saveControls.add( delete );        
+            saveControls.add( delete );
         }
 
     }
-    
+
     private void windowControls(final Command minimiseMaximise,
                                 FlexCellFormatter formatter) {
         HorizontalPanel windowControls = new HorizontalPanel();
-        
+
         Image maxMinImage = new ImageButton("images/max_min.gif");
         maxMinImage.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                minimiseMaximise.execute();                
-            }            
+                minimiseMaximise.execute();
+            }
         });
-        
+
         windowControls.add( maxMinImage );
-       
+
         Image closeImg = new ImageButton("images/close.gif");
         closeImg.setTitle( "Close." );
         closeImg.addClickListener( new ClickListener() {
@@ -187,25 +187,25 @@ public class ActionToolbar extends Composite {
                 closeCommand.execute(  );
             }
         });
-        
+
         windowControls.add( closeImg );
-        
+
         layout.setWidget( 0, 1, windowControls );
-        formatter.setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
-        
+        formatter.setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_TOP );
+
     }
-    
+
     protected void doCopyDialog(Widget w) {
         final FormStylePopup form = new FormStylePopup("images/rule_asset.gif", "Copy this item");
         final TextBox newName = new TextBox();
         final RulePackageSelector newPackage = new RulePackageSelector();
         form.addAttribute( "New name:", newName );
         form.addAttribute( "New package:", newPackage );
-        
+
         Button ok = new Button("Create copy");
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                RepositoryServiceFactory.getService().copyAsset( uuid, newPackage.getSelectedPackage(), newName.getText(), 
+                RepositoryServiceFactory.getService().copyAsset( uuid, newPackage.getSelectedPackage(), newName.getText(),
                                                                  new GenericCallback() {
                                                                     public void onSuccess(Object data) {
                                                                         completedCopying(newName.getText(), newPackage.getSelectedPackage());
@@ -217,22 +217,22 @@ public class ActionToolbar extends Composite {
             }
         } );
         form.addAttribute( "", ok );
-        
+
 		form.setPopupPosition((DirtyableComposite.getWidth() - form.getOffsetWidth()) / 2, 100);
 		form.show();
- 
+
     }
-    
+
     private void completedCopying(String name, String pkg) {
         Window.alert( "Created a new item called [" + name + "] in package: [" + pkg + "] successfully." );
-        
+
     }
 
     /**
      * Called when user wants to checkin.
      */
     protected void doCheckinConfirm(Widget w) {
-        
+
         final CheckinPopup pop = new CheckinPopup(w.getAbsoluteLeft(), w.getAbsoluteTop(), "Check in changes.");
         pop.setCommand( new Command() {
 
@@ -243,7 +243,7 @@ public class ActionToolbar extends Composite {
         });
         pop.show();
     }
-    
+
     /**
      * Show the stats change popup.
      */
@@ -252,7 +252,7 @@ public class ActionToolbar extends Composite {
         pop.setChangeStatusEvent(new Command() {
             public void execute() {
                 setState( pop.getState() );
-            }                    
+            }
         });
         pop.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
         pop.show();
@@ -264,5 +264,5 @@ public class ActionToolbar extends Composite {
     public void setCloseCommand(Command c) {
         this.closeCommand = c;
     }
-    
+
 }

@@ -118,7 +118,7 @@ public class RuleViewer extends Composite {
 
 
         layout.setWidget( 0, 0, toolbar );
-        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE );
+        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_TOP );
 
 
         metaWidget = new MetaDataWidget( this.asset.metaData, readOnly, this.asset.uuid, new Command() {
@@ -152,11 +152,13 @@ public class RuleViewer extends Composite {
         } );
 
         layout.setWidget( 1, 0, editor);
+        formatter.setVerticalAlignment(1, 0, HasVerticalAlignment.ALIGN_TOP);
 
 
         //the document widget
         doco = new RuleDocumentWidget(asset.metaData);
         layout.setWidget( 2, 0, doco );
+        formatter.setVerticalAlignment(2, 0, HasVerticalAlignment.ALIGN_TOP);
     }
 
     void doDelete() {

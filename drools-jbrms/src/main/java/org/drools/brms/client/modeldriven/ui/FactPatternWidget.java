@@ -220,6 +220,9 @@ public class FactPatternWidget extends DirtyableComposite {
         img.setTitle( "This is a formula expression that is evaluated to be true or false." );
 
         pred.add( img );
+        if (c.value == null) {
+        	c.value = "";
+        }
         final TextBox box = new TextBox();
         box.setText( c.value );
         box.addChangeListener( new ChangeListener() {
@@ -397,7 +400,12 @@ public class FactPatternWidget extends DirtyableComposite {
         if ( bindable && !(modeller.getModel().isBoundFactUsed( pattern.boundName )) ) {
             HorizontalPanel varName = new HorizontalPanel();
             final TextBox varTxt = new TextBox();
-            varTxt.setText( pattern.boundName );
+            if (pattern.boundName == null) {
+            	varTxt.setText("");
+            }else {
+                varTxt.setText( pattern.boundName );
+            }
+
             varTxt.setVisibleLength( 3 );
             varName.add( varTxt );
 

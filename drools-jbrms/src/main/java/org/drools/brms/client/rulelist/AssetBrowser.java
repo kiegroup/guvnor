@@ -2,13 +2,13 @@ package org.drools.brms.client.rulelist;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,6 +31,7 @@ import org.drools.brms.client.ruleeditor.NewAssetWizard;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -43,9 +44,9 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
- * This is the category based asset browser (ie it has a category tree browser, as well as 
+ * This is the category based asset browser (ie it has a category tree browser, as well as
  * a search box).
- * 
+ *
  * @author Michael Neale
  */
 public class AssetBrowser extends Composite {
@@ -142,7 +143,8 @@ public class AssetBrowser extends Composite {
                        0,
                        "" );
 
-        Image newRule = new ImageButton( "images/new_rule.gif" );
+        //Image newRule = new ImageButton( "images/new_rule.gif" );
+        Button newRule = new Button("Create new rule");
         newRule.setTitle( "Create new rule" );
 
         newRule.addClickListener( new ClickListener() {
@@ -152,7 +154,7 @@ public class AssetBrowser extends Composite {
         } );
 
         Image showFinder = new ImageButton( "images/system_search_small.png" );
-        showFinder.setTitle( "Show the name finder." );
+        showFinder.setTitle( "Show the rule finder." );
         showFinder.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 table.setWidget( 0,
@@ -162,14 +164,15 @@ public class AssetBrowser extends Composite {
         } );
 
         HorizontalPanel actions = new HorizontalPanel();
-        actions.add( showFinder );
+
         actions.add( newRule );
+        actions.add( showFinder );
         table.setWidget( 0,
                          0,
                          actions );
-        formatter.setHeight( 0,
-                             0,
-                             "5%" );
+// MN       formatter.setHeight( 0,
+//                             0,
+//                             "5%" );
         formatter.setAlignment( 0,
                                 0,
                                 HasHorizontalAlignment.ALIGN_CENTER,
