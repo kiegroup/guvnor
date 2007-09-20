@@ -39,7 +39,9 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
@@ -61,9 +63,9 @@ public class AssetBrowser extends Composite {
         tab.setWidth( "100%" );
         tab.setHeight( "100%" );
 
-        FlexTable explorePanel = doExplorer();
 
-        tab.add( explorePanel,
+
+        tab.add( doExplorer(),
                  "<img src='images/explore.gif'/>Explore",
                  true );
 
@@ -105,29 +107,17 @@ public class AssetBrowser extends Composite {
                 showLoadEditor( key );
             }
         } );
+        table.setWidget(0, 1, quick);
 
-        table.setWidget( 1,
-                         0,
-                         nav );
-        table.setWidget( 0,
-                         1,
-                         quick );
 
+        formatter.setAlignment( 0,
+                                0,
+                                HasHorizontalAlignment.ALIGN_LEFT,
+                                HasVerticalAlignment.ALIGN_TOP );
         formatter.setAlignment( 0,
                                 1,
                                 HasHorizontalAlignment.ALIGN_LEFT,
                                 HasVerticalAlignment.ALIGN_TOP );
-        formatter.setAlignment( 1,
-                                0,
-                                HasHorizontalAlignment.ALIGN_LEFT,
-                                HasVerticalAlignment.ALIGN_TOP );
-        formatter.setAlignment( 0,
-                                0,
-                                HasHorizontalAlignment.ALIGN_LEFT,
-                                HasVerticalAlignment.ALIGN_TOP );
-        formatter.setRowSpan( 0,
-                              1,
-                              3 );
         formatter.setWidth( 0,
                             0,
                             "30%" );
@@ -135,13 +125,12 @@ public class AssetBrowser extends Composite {
                             1,
                             "70%" );
 
-        formatter.setHeight( 0,
-                             0,
-                             "90%" );
+//        formatter.setHeight( 0,
+//                             0,
+//                             "90%" );
 
-        table.setText( 2,
-                       0,
-                       "" );
+
+
 
         //Image newRule = new ImageButton( "images/new_rule.gif" );
         Button newRule = new Button("Create new rule");
@@ -157,9 +146,7 @@ public class AssetBrowser extends Composite {
         showFinder.setTitle( "Show the rule finder." );
         showFinder.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                table.setWidget( 0,
-                                 1,
-                                 quick );
+            		table.setWidget(0, 1, quick);
             }
         } );
 
@@ -167,19 +154,17 @@ public class AssetBrowser extends Composite {
 
         actions.add( newRule );
         actions.add( showFinder );
-        table.setWidget( 0,
-                         0,
-                         actions );
-// MN       formatter.setHeight( 0,
-//                             0,
-//                             "5%" );
-        formatter.setAlignment( 0,
-                                0,
-                                HasHorizontalAlignment.ALIGN_CENTER,
-                                HasVerticalAlignment.ALIGN_TOP );
-        formatter.setStyleName( 0,
-                                0,
-                                "new-asset-Icons" );
+        actions.setStyleName( "new-asset-Icons" );
+
+
+
+        VerticalPanel left = new VerticalPanel();
+        left.add(actions);
+        left.add(nav);
+        left.setWidth("100%");
+
+        table.setWidget(0, 0, left);
+
 
         return table;
     }

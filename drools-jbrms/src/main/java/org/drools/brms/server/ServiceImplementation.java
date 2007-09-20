@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.jcr.ItemExistsException;
 import javax.jcr.RepositoryException;
 
 import org.apache.log4j.Logger;
@@ -159,7 +160,11 @@ public class ServiceImplementation
 
             return asset.getUUID();
         } catch (RulesRepositoryException e) {
-            throw new SerializableException(e.getMessage());
+        	if (e.getCause() instanceof ItemExistsException) {
+        		return "DUPLICATE";
+        	} else {
+        		throw new SerializableException(e.getMessage());
+        	}
         }
 
     }

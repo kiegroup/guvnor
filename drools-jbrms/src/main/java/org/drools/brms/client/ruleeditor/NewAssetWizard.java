@@ -1,13 +1,13 @@
 package org.drools.brms.client.ruleeditor;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,6 +29,7 @@ import org.drools.brms.client.common.WarningPopup;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rulelist.EditItemEvent;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -50,32 +51,32 @@ public class NewAssetWizard extends FormStylePopup {
     private String                 initialCategory;
 
     private ListBox                 formatChooser = getFormatChooser();
-    
+
     private RulePackageSelector packageSelector = new RulePackageSelector();
     private EditItemEvent afterCreate;
     private boolean showCats;
     private String format;
 
-   
+
 
     /** This is used when creating a new rule. */
     public NewAssetWizard(EditItemEvent afterCreate, boolean showCats, String format, String title) {
         super("images/new_wiz.gif", title);
         this.showCats = showCats;
         this.format = format;
-        
+
         this.afterCreate = afterCreate;
 
         addAttribute( "Name:", name );
-        
+
         if (showCats) {
             addAttribute("Initial category:", getCatChooser());
         }
-        
+
         if (format == null) {
             addAttribute( "Type (format) of rule:", this.formatChooser );
-        } 
-        
+        }
+
         addAttribute("Package:", packageSelector);
 
         description.setVisibleLines( 4 );
@@ -102,7 +103,7 @@ public class NewAssetWizard extends FormStylePopup {
                           EditItemEvent event, boolean showCategories, String format2, String title, String currentlySelectedPackage) {
         this(event, showCategories, format2, title);
         packageSelector.selectPackage(currentlySelectedPackage);
-        
+
     }
 
     private Widget getCatChooser() {
@@ -114,16 +115,16 @@ public class NewAssetWizard extends FormStylePopup {
     }
 
     private ListBox getFormatChooser() {
-        
+
         ListBox box = new ListBox();
-        
+
         box.addItem( "Business rule (using guided editor)", AssetFormats.BUSINESS_RULE );
-        box.addItem( "DRL rule (technical rule - text editor)", AssetFormats.DRL );        
+        box.addItem( "DRL rule (technical rule - text editor)", AssetFormats.DRL );
         box.addItem( "Business rule using a DSL (text editor)", AssetFormats.DSL_TEMPLATE_RULE );
         box.addItem( "Decision table (spreadsheet)", AssetFormats.DECISION_SPREADSHEET_XLS );
-        
+
         box.setSelectedIndex( 0 );
-        
+
         return box;
     }
 
@@ -131,19 +132,25 @@ public class NewAssetWizard extends FormStylePopup {
      * When OK is pressed, it will update the repository with the new rule.
      */
     void ok() {
-        
-        if (this.showCats && this.initialCategory == null) {            
+
+        if (this.showCats && this.initialCategory == null) {
             WarningPopup.showMessage( "You have to pick an initial category.", this.getAbsoluteLeft(), this.getAbsoluteTop() );
             return;
         } else if (this.name.getText() == null || "".equals( this.name.getText() )) {
             WarningPopup.showMessage( "Rule must have a name", this.getAbsoluteLeft(), this.getAbsoluteTop() );
             return;
         }
-        
+
         GenericCallback cb = new GenericCallback() {
             public void onSuccess(Object result) {
-                    openEditor((String) result);
-                    hide();
+            		String uuid = (String) result;
+            		if (uuid.startsWith("DUPLICATE")) {
+            			LoadingPopup.close();
+            			Window.alert("An asset with that name already exists in the chosen package. Please use another name");
+            		} else {
+            			openEditor((String) result);
+            			hide();
+            		}
             }
         };
 

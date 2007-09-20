@@ -204,16 +204,13 @@ public class ServiceImplementationTest extends TestCase {
                             "dupes",
                             "rule" );
 
-        try {
-            impl.createNewRule( "testAttemptDupeRule",
+
+            String uuid = impl.createNewRule( "testAttemptDupeRule",
                                 "ya",
                                 "testAttemptDupeRule",
                                 "dupes",
                                 "rule" );
-            fail( "should not allow duplicates." );
-        } catch ( SerializableException e ) {
-            assertNotNull( e.getMessage() );
-        }
+            assertEquals("DUPLICATE", uuid);
 
     }
 
@@ -1203,6 +1200,7 @@ public class ServiceImplementationTest extends TestCase {
         assertNull( results );
 
     }
+
 
     /**
      * This will test creating a package with a BRL rule, check it compiles, and can exectute rules,
