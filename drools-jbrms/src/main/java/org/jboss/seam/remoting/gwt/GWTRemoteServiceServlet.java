@@ -586,14 +586,15 @@ public class GWTRemoteServiceServlet extends HttpServlet {
         // that it's either UTF-8 or ASCII).
         if (contentType.indexOf("charset=") == -1) {
           contentTypeIsOkay = true;
-        } else if (contentType.indexOf("charset=utf-8") != -1) {
+        } else if (contentType.indexOf("charset=utf-8") != -1
+        		|| contentType.indexOf("charset=UTF-8")  != -1) {
           contentTypeIsOkay = true;
         }
       }
     }
     if (!contentTypeIsOkay) {
       throw new ServletException(
-          "Content-Type must be 'text/plain' with 'charset=utf-8' (or unspecified charset)");
+          "Content-Type must be 'text/plain' with 'charset=utf-8' (or unspecified charset). It was : " + contentType);
     }
     InputStream in = request.getInputStream();
     try {
