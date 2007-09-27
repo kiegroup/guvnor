@@ -15,10 +15,6 @@ package org.jboss.seam.remoting.gwt;
  * limitations under the License.
  */
 
-
-
-
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,8 +37,9 @@ import org.jboss.seam.remoting.gwt.GWTToSeamAdapter.ReturnedObject;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializableException;
 import com.google.gwt.user.client.rpc.SerializationException;
-import com.google.gwt.user.server.rpc.impl.ServerSerializableTypeOracle;
-import com.google.gwt.user.server.rpc.impl.ServerSerializableTypeOracleImpl;
+import com.google.gwt.user.server.rpc.RPC;
+import com.google.gwt.user.server.rpc.RPCRequest;
+import com.google.gwt.user.server.rpc.impl.LegacySerializationPolicy;
 import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamReader;
 import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamWriter;
 
@@ -149,14 +146,14 @@ public class GWTRemoteServiceServlet extends HttpServlet {
 
   private final ThreadLocal perThreadResponse = new ThreadLocal();
 
-  private final ServerSerializableTypeOracle serializableTypeOracle;
+//  private final ServerSerializableTypeOracle serializableTypeOracle;
 
   /**
    * The default constructor.
    */
   public GWTRemoteServiceServlet() {
-    serializableTypeOracle = new ServerSerializableTypeOracleImpl(
-        getPackagePaths());
+//    serializableTypeOracle = new ServerSerializableTypeOracleImpl(
+//        getPackagePaths());
   }
 
   /**
@@ -205,11 +202,15 @@ public class GWTRemoteServiceServlet extends HttpServlet {
     // Let subclasses see the serialized request.
     //
     onBeforeRequestDeserialized(payload);
+    
+    
+    RPCRequest rpcRequest = RPC.decodeRequest(payload);
+        
 
     // Create a stream to deserialize the request.
     //
-    ServerSerializationStreamReader streamReader = new ServerSerializationStreamReader(
-        serializableTypeOracle);
+    ServerSerializationStreamReader streamReader = new ServerSerializationStreamReader(Thread.currentThread().getContextClassLoader(), null);
+    
     streamReader.prepareToRead(payload);
 
     // Read the service interface
@@ -291,8 +292,7 @@ public class GWTRemoteServiceServlet extends HttpServlet {
     // Make the call via reflection.
     //
     String responsePayload = GENERIC_FAILURE_MSG;
-    ServerSerializationStreamWriter streamWriter = new ServerSerializationStreamWriter(
-        serializableTypeOracle);
+    ServerSerializationStreamWriter streamWriter = new ServerSerializationStreamWriter(LegacySerializationPolicy.getInstance());
     Throwable caught = null;
     try {
 
@@ -422,7 +422,8 @@ public class GWTRemoteServiceServlet extends HttpServlet {
       }
     }
 
-    String bufferStr = (isException ? "{EX}" : "{OK}") + stream.toString();
+    String bufferStr = (isException ? "//EX" : "//OK") + stream.toString();
+    
     return bufferStr;
   }
 
