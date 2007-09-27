@@ -75,10 +75,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
         this.model = modeller.getModel();
         SuggestionCompletionEngine sce = modeller.getSuggestionCompletions();
-        String enumKey = pattern.factType + "." + fieldName;
-        if (sce.dataEnumLists.containsKey( enumKey )) {
-            this.enumeratedValues = (String[]) sce.dataEnumLists.get( enumKey );
-        }
+        this.enumeratedValues = sce.getEnums(pattern, fieldName);
 
 
         panel = new SimplePanel();
