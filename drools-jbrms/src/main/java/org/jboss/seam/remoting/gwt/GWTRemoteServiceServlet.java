@@ -146,14 +146,10 @@ public class GWTRemoteServiceServlet extends HttpServlet {
 
   private final ThreadLocal perThreadResponse = new ThreadLocal();
 
-//  private final ServerSerializableTypeOracle serializableTypeOracle;
-
   /**
    * The default constructor.
    */
   public GWTRemoteServiceServlet() {
-//    serializableTypeOracle = new ServerSerializableTypeOracleImpl(
-//        getPackagePaths());
   }
 
   /**
@@ -203,10 +199,6 @@ public class GWTRemoteServiceServlet extends HttpServlet {
     //
     onBeforeRequestDeserialized(payload);
     
-    
-    RPCRequest rpcRequest = RPC.decodeRequest(payload);
-        
-
     // Create a stream to deserialize the request.
     //
     ServerSerializationStreamReader streamReader = new ServerSerializationStreamReader(Thread.currentThread().getContextClassLoader(), null);
