@@ -23,6 +23,7 @@ code {
 	border:1px solid #aa9;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	background:#FFF;
 }
@@ -53,6 +54,7 @@ select {
 	cursor:default;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	background:#aa9;
 }
@@ -64,6 +66,7 @@ select {
 .model-builder-Background {
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	padding-left:.5em;
 	border:1px solid #ddd;
@@ -73,6 +76,7 @@ select {
 	border-top:1px solid #ccc;
 	border-bottom:1px solid #ccc;
 	-moz-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	-webkit-border-radius:.7em;
 	border-radius:.7em;
 	background:#FFF;
@@ -82,6 +86,7 @@ select {
 	border-bottom:0 solid #ccc;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	background:#FFF;
 }
@@ -90,6 +95,7 @@ select {
 	border-bottom:1px solid #ccc;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 }
 .modeller-composite-Label {
@@ -103,6 +109,7 @@ select {
 	border:4px solid #red;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	margin:1em;
 	padding:.5em;
@@ -192,6 +199,7 @@ select {
 	border:2px solid #aa9;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	background:#FFFFF0;
 }
@@ -199,6 +207,7 @@ select {
 	border:2px solid #aa9;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	padding:4px;
 	background:#FFF;
@@ -208,6 +217,7 @@ select {
 	width:100%;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	background:#FFF;
 }
@@ -215,6 +225,7 @@ select {
 	border:1px solid #aa9;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	background:#FFF;
 }
@@ -228,6 +239,7 @@ select {
 	font-color:#000!important;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	padding:4px;
 	background:#FFF;
@@ -244,6 +256,7 @@ select {
 	border-collapse:collapse;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	border-style:inset;
 	border-width:1px;
@@ -262,6 +275,7 @@ select {
 	border:1px solid #aa9;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	padding:4px;
 	background:#FF0;
@@ -270,6 +284,7 @@ select {
 	border:1px solid #aa9;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	padding:4px;
 	background:#FFFFF0;
@@ -284,6 +299,7 @@ select {
 	border:1px solid #aa9;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	font-size:smaller;
 }
@@ -337,6 +353,7 @@ select {
 	border-collapse:collapse;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	background:#FFF;
 }
@@ -447,6 +464,7 @@ input,.constraint-value-Editor {
 	border:1px solid #aa9;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	background:#FFFFF0;
 }
@@ -468,6 +486,7 @@ input,.constraint-value-Editor {
 	width:100%;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
+	-khtml-border-radius:.7em;
 	border-radius:.7em;
 	background:#FFFFF0;
 }
