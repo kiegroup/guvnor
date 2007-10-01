@@ -202,6 +202,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
             box.addItem( "Choose ..." );
         }
 
+        boolean selected = false;
+
         for ( int i = 0; i < enumeratedValues.length; i++ ) {
             String v = enumeratedValues[i];
             String val;
@@ -218,10 +220,11 @@ public class ConstraintValueEditor extends DirtyableComposite {
             }
             if (currentValue != null && currentValue.equals( val )) {
                 box.setSelectedIndex( i );
+                selected = true;
             }
         }
 
-        if (currentValue != null && box.getSelectedIndex() == -1) {
+        if (currentValue != null && !selected) {
             //need to add this value
             box.addItem( currentValue, currentValue );
             box.setSelectedIndex( enumeratedValues.length );

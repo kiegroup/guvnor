@@ -177,13 +177,24 @@ public class ActionSetFieldWidget extends DirtyableComposite {
 
     private Widget valueEditor(final ActionFieldValue val) {
 
-        String enumKey = this.variableClass + "." + val.field;
-        if (this.completions.dataEnumLists.containsKey( enumKey )) {
+    	String type = "";
+    	if (this.completions.isGlobalVariable(this.model.variable)) {
+    		type = (String) this.completions.globalTypes.get(this.model.variable);
+    	} else {
+    		type = this.modeller.getModel().getBoundFact(this.model.variable).factType;
+    	}
+
+
+
+    	String[] enums = this.completions.getEnums(type, this.model.fieldValues, val.field);
+
+    	if (enums != null && enums.length > 0) {
+
             return ConstraintValueEditor.enumDropDown( val.value, new ConstraintValueEditor.ValueChanged() {
                 public void valueChanged(String newValue) {
                     val.value = newValue;
                 }
-            }, (String[]) this.completions.dataEnumLists.get( enumKey ) );
+            }, enums );
         } else {
 
             SimplePanel panel = new SimplePanel();

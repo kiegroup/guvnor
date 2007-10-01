@@ -107,13 +107,15 @@ public class ActionInsertFactWidget extends DirtyableComposite {
     }
 
     private Widget valueEditor(final ActionFieldValue val) {
-        String enumKey = this.factType + "." +  val.field;
-        if (this.completions.dataEnumLists.containsKey( enumKey )) {
+
+    	String[] enums = this.completions.getEnums(this.factType, this.model.fieldValues, val.field);
+
+        if (enums != null && enums.length > 0) {
             return ConstraintValueEditor.enumDropDown( val.value, new ConstraintValueEditor.ValueChanged() {
                 public void valueChanged(String newValue) {
                     val.value = newValue;
                 }
-            }, (String[]) this.completions.dataEnumLists.get( enumKey ) );
+            }, enums );
         } else {
             final TextBox box = new TextBox();
             box.setText( val.value );
