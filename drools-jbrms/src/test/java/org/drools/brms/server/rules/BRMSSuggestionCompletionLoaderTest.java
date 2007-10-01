@@ -81,8 +81,8 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
 
         String[] fieldsForType = engine.getFieldCompletions( "Person" );
         assertEquals( 2, fieldsForType.length );
-        assertEquals("name", fieldsForType[0]);
-        assertEquals("birthDate", fieldsForType[1]);
+        assertEquals("birthDate", fieldsForType[0]);
+        assertEquals("name", fieldsForType[1]);
 
         String fieldType = engine.getFieldType( "Person", "name" );
         assertEquals( SuggestionCompletionEngine.TYPE_STRING, fieldType );
