@@ -1,4 +1,6 @@
 package org.jboss.seam.remoting.gwt;
+
+import org.jboss.seam.annotations.remoting.WebRemote;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,9 +17,6 @@ package org.jboss.seam.remoting.gwt;
  * limitations under the License.
  */
 
-
-
-import org.jboss.seam.annotations.WebRemote;
 
 public class AnotherService {
 

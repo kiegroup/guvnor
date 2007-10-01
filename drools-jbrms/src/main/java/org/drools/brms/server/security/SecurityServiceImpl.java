@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 import org.drools.brms.client.rpc.SecurityService;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.WebRemote;
+import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 

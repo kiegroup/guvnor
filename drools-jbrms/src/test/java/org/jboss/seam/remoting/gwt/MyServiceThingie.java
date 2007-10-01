@@ -18,7 +18,7 @@ package org.jboss.seam.remoting.gwt;
 
 
 import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.annotations.WebRemote;
+import org.jboss.seam.annotations.remoting.WebRemote;
 
 public abstract class MyServiceThingie {
 

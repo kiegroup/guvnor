@@ -33,7 +33,7 @@ import org.drools.brms.server.security.SecurityServiceImpl;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.Component;
-import org.jboss.seam.annotations.WebRemote;
+import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.contexts.Contexts;
 /**
  * This class adapts GWT RPC mechanism to Seam actions.
