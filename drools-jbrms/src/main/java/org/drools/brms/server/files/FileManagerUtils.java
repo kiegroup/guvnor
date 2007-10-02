@@ -1,13 +1,13 @@
 package org.drools.brms.server.files;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,14 +17,10 @@ package org.drools.brms.server.files;
 
 
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URLEncoder;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,14 +32,12 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.HTMLFileManagerFields;
 import org.drools.brms.server.util.ClassicDRLImporter;
 import org.drools.brms.server.util.FormData;
-import org.drools.brms.server.util.ClassicDRLImporter.Rule;
+import org.drools.brms.server.util.ClassicDRLImporter.Asset;
 import org.drools.compiler.DroolsParserException;
 import org.drools.repository.AssetItem;
-import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
@@ -92,7 +86,7 @@ public class FileManagerUtils {
         item.checkin( "Attached file: " + fileName );
     }
 
-    /** 
+    /**
      * The get returns files based on UUID of an asset.
      */
     @Restrict("#{identity.loggedIn}")
@@ -134,7 +128,7 @@ public class FileManagerUtils {
 
     /**
      * Load up the approproate package version.
-     * @param packageName The name of the package. 
+     * @param packageName The name of the package.
      * @param packageVersion The version (if it is a snapshot).
      * @param isLatest true if the latest package binary will be used (ie NOT a snapshot).
      * @return The filename if its all good.
@@ -174,7 +168,7 @@ public class FileManagerUtils {
 
     /**
      * This will import DRL from a drl file into a more normalised structure.
-     * If the package does not exist, it will be created. 
+     * If the package does not exist, it will be created.
      * If it does, it will be "merged" in the sense that any new rules in the drl
      * will be created as new assets in the repo, everything else will stay as it was
      * in the repo.
@@ -195,20 +189,16 @@ public class FileManagerUtils {
         }
 
 
-        for ( Rule rule : imp.getRules() ) {
+        for ( Asset as : imp.getAssets() ) {
 
-            if ( existing && pkg.containsAsset( rule.name ) ) {
+            if ( existing && pkg.containsAsset( as.name ) ) {
                 //skip it
             } else {
 
-                AssetItem asset = pkg.addAsset( rule.name, "<imported>" );
+                AssetItem asset = pkg.addAsset( as.name, "<imported>" );
+                asset.updateFormat(as.format);
 
-                if ( imp.isDSLEnabled() ) {
-                    asset.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
-                } else {
-                    asset.updateFormat( AssetFormats.DRL );
-                }
-                asset.updateContent( rule.content );
+                asset.updateContent( as.content );
                 asset.updateExternalSource( "Imported from external DRL" );
             }
         }

@@ -1,0 +1,28 @@
+package foo
+
+import goo.wee
+
+
+function void goo1() {
+	//do something ! { yeah }
+}
+
+function String goo2(String la) {
+	//yeah man !
+	return "whee";
+}
+
+rule "blah"
+ when
+   Whee()
+ then
+   goo();
+end
+
+
+rule "cha"
+  when
+   Sup()
+  then
+   ka();
+end

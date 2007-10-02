@@ -1,13 +1,13 @@
 package org.drools.brms.server.util;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.drools.brms.client.common.AssetFormats;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.FunctionDescr;
@@ -33,7 +36,7 @@ import org.drools.lang.descr.RuleDescr;
 /**
  * This class imports legacy DRL into a structure suitable for storing more
  * normalised in the repository.
- * 
+ *
  * @author Michael Neale
  */
 public class ClassicDRLImporter {
@@ -42,28 +45,28 @@ public class ClassicDRLImporter {
 
     private String       packageName;
 
-    private List<Rule>   rules = new ArrayList<Rule>();
+    private List<Asset>   assets = new ArrayList<Asset>();
 
     private StringBuffer header;
 
     private boolean      usesDSL;
 
+	private static Pattern functionPattern = Pattern.compile("function\\s+.*\\s+(.*)\\(.*\\).*");
 
 
-    
     public ClassicDRLImporter(InputStream in) throws IOException, DroolsParserException {
         String line = "";
         StringBuffer drl = new StringBuffer();
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         while ( (line = reader.readLine())  != null) {
-            drl.append( "\n" + line);        
+            drl.append( "\n" + line);
         }
         this.source = drl.toString();
-        
+
         parse();
     }
-    
-    
+
+
 
     private void parse() throws DroolsParserException {
         StringTokenizer lines = new StringTokenizer( source,
@@ -78,10 +81,19 @@ public class ClassicDRLImporter {
             } else if ( line.startsWith( "rule" ) ) {
                 String ruleName = getRuleName( line );
                 StringBuffer currentRule = new StringBuffer();
-                laConsumeToEnd( lines, currentRule );
+                laConsumeToEnd( lines, currentRule, "end" );
                 addRule( ruleName, currentRule );
 
-            }  else if ( line.startsWith( "expander" ) ) {
+            }  else if (line.startsWith("function")) {
+            	String functionName = getFuncName( line );
+            	StringBuffer currentFunc = new StringBuffer();
+            	currentFunc.append(line + "\n");
+            	laConsumeToEnd( lines, currentFunc, "}");
+            	currentFunc.append("}\n");
+            	addFunction( functionName, currentFunc );
+
+            }else if ( line.startsWith( "expander" ) ) {
+
                 usesDSL = true;
             } else {
 
@@ -94,11 +106,25 @@ public class ClassicDRLImporter {
 
 
 
-    private void laConsumeToEnd(StringTokenizer lines, StringBuffer currentRule) {
+    private void addFunction(String functionName, StringBuffer currentFunc) {
+    	this.assets.add(new Asset(functionName, currentFunc.toString(), AssetFormats.FUNCTION));
+	}
+
+
+
+	private String getFuncName(String line) {
+    	Matcher m = functionPattern.matcher(line);
+    	m.matches();
+    	return m.group(1);
+	}
+
+
+
+	private void laConsumeToEnd(StringTokenizer lines, StringBuffer currentRule, String end) {
         String line;
         while ( true && lines.hasMoreTokens()) {
             line = lines.nextToken();
-            if ( line.trim().startsWith( "end" ) ) {
+            if ( line.trim().startsWith( end ) ) {
                 break;
             }
             currentRule.append( line );
@@ -107,8 +133,13 @@ public class ClassicDRLImporter {
     }
 
     private void addRule(String ruleName, StringBuffer currentRule) {
-        this.rules.add( new Rule( ruleName,
-                                  currentRule.toString() ) );
+    	if (this.isDSLEnabled()) {
+	        this.assets.add( new Asset( ruleName,
+                    currentRule.toString(), AssetFormats.DSL_TEMPLATE_RULE ));
+    	} else {
+	        this.assets.add( new Asset( ruleName,
+	                                  currentRule.toString(), AssetFormats.DRL ));
+    	}
     }
 
     private String getRuleName(String line) throws DroolsParserException {
@@ -123,10 +154,10 @@ public class ClassicDRLImporter {
 
     }
 
-    public List<Rule> getRules() {
-        return this.rules;
+    public List<Asset> getAssets() {
+        return this.assets;
     }
-    
+
 
     public String getPackageName() {
         return this.packageName;
@@ -142,20 +173,22 @@ public class ClassicDRLImporter {
 
     /**
      * Holds a rule to import. The content does not include the "end".
-     * 
+     *
      * @author Michael Neale
      */
-    public static class Rule {
+    public static class Asset {
 
-        public Rule(
-                    String name, String content) {
+		public Asset(
+                    String name, String content, String format) {
             this.name = name;
             this.content = content;
+            this.format = format;
         }
 
+        public String format;
         public String name;
         public String content;
     }
-    
+
 
 }
