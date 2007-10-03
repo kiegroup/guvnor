@@ -157,7 +157,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         AssetItem ruleFlow = pkg.addAsset( "ruleFlow", "" );
         ruleFlow.updateFormat( AssetFormats.RULE_FLOW_RF );
 
-        ruleFlow.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/ruleflow.rf" ) );
+        ruleFlow.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/ruleflow.rfm" ) );
         ruleFlow.checkin( "" );
 
         ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
