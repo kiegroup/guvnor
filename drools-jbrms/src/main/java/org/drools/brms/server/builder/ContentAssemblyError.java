@@ -37,4 +37,8 @@ public class ContentAssemblyError {
     public VersionableItem itemInError;
     public String errorReport;
     
+    public String toString() {
+        return this.errorReport;
+    }
+    
 }
