@@ -10,7 +10,6 @@ import org.drools.brms.client.rulelist.EditItemEvent;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -84,8 +83,6 @@ public class ArchivedAssetManager extends Composite {
         deleteperm.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 RepositoryServiceFactory.getService().removeAsset( listView.getSelectedElementUUID(), new GenericCallback() {
-
-
 
                     public void onSuccess(Object arg0) {
                         showArchivedAssets().execute();

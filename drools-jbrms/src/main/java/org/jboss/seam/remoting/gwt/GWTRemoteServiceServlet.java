@@ -37,8 +37,6 @@ import org.jboss.seam.remoting.gwt.GWTToSeamAdapter.ReturnedObject;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializableException;
 import com.google.gwt.user.client.rpc.SerializationException;
-import com.google.gwt.user.server.rpc.RPC;
-import com.google.gwt.user.server.rpc.RPCRequest;
 import com.google.gwt.user.server.rpc.impl.LegacySerializationPolicy;
 import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamReader;
 import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamWriter;
