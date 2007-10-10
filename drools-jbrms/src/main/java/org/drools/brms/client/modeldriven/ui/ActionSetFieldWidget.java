@@ -19,7 +19,6 @@ package org.drools.brms.client.modeldriven.ui;
 
 import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.DirtyableFlexTable;
-import org.drools.brms.client.common.FieldEditListener;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.Lbl;
@@ -30,20 +29,14 @@ import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brl.ActionSetField;
 import org.drools.brms.client.modeldriven.brl.ActionUpdateField;
 import org.drools.brms.client.modeldriven.brl.FactPattern;
-import org.drools.brms.client.modeldriven.brl.RuleModel;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -184,72 +177,12 @@ public class ActionSetFieldWidget extends DirtyableComposite {
     		type = this.modeller.getModel().getBoundFact(this.model.variable).factType;
     	}
 
-
-
     	String[] enums = this.completions.getEnums(type, this.model.fieldValues, val.field);
-
-    	if (enums != null && enums.length > 0) {
-
-            return ConstraintValueEditor.enumDropDown( val.value, new ConstraintValueEditor.ValueChanged() {
-                public void valueChanged(String newValue) {
-                    val.value = newValue;
-                }
-            }, enums );
-        } else {
-
-            SimplePanel panel = new SimplePanel();
-            final TextBox box = new TextBox();
-            box.setText( val.value );
-            if (val.value.length() != 0) {
-                box.setVisibleLength( val.value.length() );
-            }
-
-            if (val.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
-                box.addKeyboardListener( getNumericFilter( box ));
-            }
-
-            box.addChangeListener( new ChangeListener() {
-                public void onChange(Widget w) {
-                    val.value = box.getText();
-                }
-            });
-
-            box.addKeyboardListener( new FieldEditListener(new Command() {
-                public void execute() {
-                    box.setVisibleLength( box.getText().length() );
-                }
-            }));
-            panel.add( box );
-            return panel;
-        }
+    	return new ActionValueEditor(val, enums);
     }
 
 
-    /**
-     * This will return a keyboard listener for field setters, which
-     * will obey numeric conventions - it will also allow formulas
-     * (a formula is when the first value is a "=" which means
-     * it is meant to be taken as the user typed)
-     */
-    public static KeyboardListener getNumericFilter(final TextBox box) {
-        return new KeyboardListener() {
 
-            public void onKeyDown(Widget arg0, char arg1, int arg2) {
-
-            }
-
-            public void onKeyPress(Widget w, char c, int i) {
-                if (Character.isLetter( c ) && c != '='
-                    && !(box.getText().startsWith( "=" ))) {
-                    ((TextBox) w).cancelKey();
-                }
-            }
-
-            public void onKeyUp(Widget arg0, char arg1, int arg2) {
-            }
-
-        };
-    }
 
 
     private Widget fieldSelector(final ActionFieldValue val) {

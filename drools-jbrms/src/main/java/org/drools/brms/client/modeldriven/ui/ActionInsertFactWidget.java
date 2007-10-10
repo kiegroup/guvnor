@@ -32,14 +32,10 @@ import org.drools.brms.client.modeldriven.brl.ActionInsertLogicalFact;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -107,30 +103,8 @@ public class ActionInsertFactWidget extends DirtyableComposite {
     }
 
     private Widget valueEditor(final ActionFieldValue val) {
-
     	String[] enums = this.completions.getEnums(this.factType, this.model.fieldValues, val.field);
-
-        if (enums != null && enums.length > 0) {
-            return ConstraintValueEditor.enumDropDown( val.value, new ConstraintValueEditor.ValueChanged() {
-                public void valueChanged(String newValue) {
-                    val.value = newValue;
-                }
-            }, enums );
-        } else {
-            final TextBox box = new TextBox();
-            box.setText( val.value );
-            box.addChangeListener( new ChangeListener() {
-                public void onChange(Widget w) {
-                    val.value = box.getText();
-                    modeller.refreshWidget();
-                }
-            });
-
-            if (val.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
-                box.addKeyboardListener( ActionSetFieldWidget.getNumericFilter( box ));
-            }
-            return box;
-        }
+    	return new ActionValueEditor(val, enums);
     }
 
     private Widget fieldSelector(final ActionFieldValue val) {
