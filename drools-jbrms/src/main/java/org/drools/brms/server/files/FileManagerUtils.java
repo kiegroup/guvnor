@@ -192,7 +192,12 @@ public class FileManagerUtils {
         for ( Asset as : imp.getAssets() ) {
 
             if ( existing && pkg.containsAsset( as.name ) ) {
-                //skip it
+            	AssetItem asset = pkg.loadAsset(as.name);
+            	if (asset.getFormat().equals(as.format)) {
+            		asset.updateContent(as.content);
+            		asset.checkin("Imported change form external DRL");
+            	} //skip it if not the right format
+
             } else {
 
                 AssetItem asset = pkg.addAsset( as.name, "<imported>" );
