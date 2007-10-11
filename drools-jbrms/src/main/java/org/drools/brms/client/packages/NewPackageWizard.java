@@ -1,13 +1,13 @@
 package org.drools.brms.client.packages;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -45,12 +45,12 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * This is the wizard used when creating new packages or importing them. 
- * 
+ * This is the wizard used when creating new packages or importing them.
+ *
  * @author Michael Neale
  */
 public class NewPackageWizard extends FormStylePopup {
-    
+
     private TextBox nameBox;
     private TextArea descBox;
     private final FormStyleLayout importLayout = new FormStyleLayout();
@@ -63,28 +63,28 @@ public class NewPackageWizard extends FormStylePopup {
         descBox = new TextArea();
 
         this.afterCreatedEvent = afterCreatedEvent;
-        
-        
+
+
         newPackageLayout.addRow( new HTML("<i><small>Create a new package in the BRMS</small></i>") );
         importLayout.addRow( new HTML("<i><small>Importing a package from an existing DRL will create the package in the BRMS if it " +
                 "does not already exist. If it does exist, any new rules found will be merged into the BRMS package.</small></i>") );
         importLayout.addRow( new HTML("<i><small>Any new rules created will not have any categories assigned initially, " +
-                "but rules will be stored individually (ie normalised). Functions, queries, imports etc will show up in the package configuration.</small></i>") );
+                "but rules and functions will be stored individually (ie normalised). Queries, imports etc will show up in the package configuration.</small></i>") );
         importLayout.addRow( new HTML("<i><small>Any DSLs or models required by the imported package will need to be uploaded seperately.</small></i>") );
-        
-        
+
+
         newPackageLayout.addAttribute( "Name:", nameBox );
         newPackageLayout.addAttribute( "Description:", descBox );
-        
-        
-        
+
+
+
         nameBox.setTitle( "The name of the package. Avoid spaces, use underscore instead." );
-        
+
         RadioButton newPackage = new RadioButton("action", "Create new package");
         RadioButton importPackage = new RadioButton("action", "Import from drl file");
         newPackage.setChecked( true );
         newPackageLayout.setVisible( true );
-        
+
         newPackage.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 newPackageLayout.setVisible( true );
@@ -93,24 +93,24 @@ public class NewPackageWizard extends FormStylePopup {
         });
 
         importLayout.setVisible( false );
-        
+
         importPackage.addClickListener( new ClickListener() {
             public void onClick(Widget arg0) {
                 newPackageLayout.setVisible( false );
-                importLayout.setVisible( true );                
-            }            
+                importLayout.setVisible( true );
+            }
         });
         AbsolutePanel ab = new AbsolutePanel();
         ab.add( newPackage );
         ab.add( importPackage );
         addRow( ab );
-        
+
         addRow(newPackageLayout);
         addRow(importLayout);
-        
-        importLayout.addAttribute( "DRL file to import:", newImportWidget() );
-        
-        
+
+        importLayout.addAttribute( "DRL file to import:", newImportWidget(afterCreatedEvent, this) );
+
+
         Button create = new Button("Create package");
         create.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -126,15 +126,15 @@ public class NewPackageWizard extends FormStylePopup {
 				return text.matches("[a-zA-Z\\.]*");
 			}
         });
-        
+
         newPackageLayout.addAttribute( "", create );
-        
+
         setStyleName( "ks-popups-Popup" );
-        
-        
-        
+
+
+
     }
-    
+
     private void createPackageAction(final String name, final String descr, final Command refresh) {
         LoadingPopup.showMessage( "Creating package - please wait..." );
         RepositoryServiceFactory.getService().createPackage( name, descr, new GenericCallback() {
@@ -143,9 +143,9 @@ public class NewPackageWizard extends FormStylePopup {
                 refresh.execute();
             }
         });
-    }       
+    }
 
-    private Widget newImportWidget() {
+    public static Widget newImportWidget(final Command afterCreatedEvent, final FormStylePopup parent) {
 
         final FormPanel uploadFormPanel = new FormPanel();
         uploadFormPanel.setAction( GWT.getModuleBaseURL() + "package" );
@@ -175,10 +175,10 @@ public class NewPackageWizard extends FormStylePopup {
                 if (event.getResults().indexOf( "OK" ) > -1) {
                     Window.alert( "Package was imported successfully. ");
                     afterCreatedEvent.execute();
-                    hide();
+                    parent.hide();
                 } else {
                     ErrorPopup.showMessage( "Unable to import into the package. [" + event.getResults() + "]"  );
-                }                
+                }
                 LoadingPopup.close();
             }
 
@@ -196,6 +196,6 @@ public class NewPackageWizard extends FormStylePopup {
 
         return uploadFormPanel;
     }
-    
-    
+
+
 }

@@ -26,9 +26,11 @@ import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.common.WarningPopup;
+import org.drools.brms.client.packages.NewPackageWizard;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rulelist.EditItemEvent;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -92,6 +94,7 @@ public class NewAssetWizard extends FormStylePopup {
         } );
 
         addAttribute( "", ok );
+
 
         setStyleName( "ks-popups-Popup" );
     }
