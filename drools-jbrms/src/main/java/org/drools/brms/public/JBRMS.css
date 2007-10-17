@@ -466,7 +466,7 @@ input,.constraint-value-Editor {
 	-webkit-border-radius:.7em;
 	-khtml-border-radius:.7em;
 	border-radius:.7em;
-	background:#FFFFF0;
+	background:#white;
 }
 .dt-editor-DescriptionCell,.dt-editor-CountColumn {
 	font-size:smaller;

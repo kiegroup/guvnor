@@ -1,13 +1,13 @@
 package org.drools.brms.server.files;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,22 +29,23 @@ import org.drools.brms.server.util.FormData;
 
 /**
  * This is for dealing with assets that have an attachment (ie assets that are really an attachment).
- * 
+ *
  * @author Michael Neale
  * @author Fernando Meyer
  */
 public class AssetFileServlet extends RepositoryServlet {
 
     private static final long serialVersionUID = 400L;
-    
+
 
     /**
-     * Posting accepts content of various types - 
+     * Posting accepts content of various types -
      * may be an attachement for an asset, or perhaps a repository import to process.
      */
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException,
                                                        IOException {
+    	System.err.println("Posting to Asset File servlet");
         response.setContentType( "text/plain" );
         FormData uploadItem = new FileManagerUtils().getFormData( request );
 
@@ -62,9 +63,9 @@ public class AssetFileServlet extends RepositoryServlet {
     protected void doGet(HttpServletRequest req,
                          HttpServletResponse res) throws ServletException,
                                                  IOException {
-        
+
         String uuid = (String) req.getParameter( HTMLFileManagerFields.FORM_FIELD_UUID );
-        
+
         if ( uuid != null ) {
             processAttachmentDownload( uuid, res );
         } else {
@@ -72,13 +73,13 @@ public class AssetFileServlet extends RepositoryServlet {
             return;
         }
     }
-    
+
 
     private void processAttachmentDownload(String uuid, HttpServletResponse response) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         String filename = getFileManager().loadFileAttachmentByUUID( uuid, output );
 
-        
+
         response.setContentType( "application/x-download" );
         response.setHeader( "Content-Disposition",
                        "attachment; filename=" + filename + ";");
@@ -87,15 +88,15 @@ public class AssetFileServlet extends RepositoryServlet {
         response.getOutputStream().flush();
     }
 
-    
+
     private String processAttachFileToAsset(FormData uploadItem) throws IOException {
 
         FileManagerUtils manager = getFileManager();
         manager.attachFile( uploadItem );
         uploadItem.getFile().getInputStream().close();
-        
+
         return "OK";
     }
 
-    
+
 }

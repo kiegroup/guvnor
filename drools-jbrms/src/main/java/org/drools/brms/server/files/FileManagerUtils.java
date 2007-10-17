@@ -33,6 +33,8 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.drools.brms.client.common.HTMLFileManagerFields;
+import org.drools.brms.server.contenthandler.ContentHandler;
+import org.drools.brms.server.contenthandler.ModelContentHandler;
 import org.drools.brms.server.util.ClassicDRLImporter;
 import org.drools.brms.server.util.FormData;
 import org.drools.brms.server.util.ClassicDRLImporter.Asset;
@@ -72,18 +74,30 @@ public class FileManagerUtils {
 
         attachFileToAsset( uuid, fileData, fileName );
         uploadItem.getFile().getInputStream().close();
+
     }
 
     /**
      * This utility method attaches a file to an asset.
+     * @throws IOException
      */
     @Restrict("#{identity.loggedIn}")
-    public void attachFileToAsset(String uuid, InputStream fileData, String fileName) {
+    public void attachFileToAsset(String uuid, InputStream fileData, String fileName) throws IOException {
 
         AssetItem item = repository.loadAssetByUUID( uuid );
         item.updateBinaryContentAttachment( fileData );
         item.updateBinaryContentAttachmentFileName( fileName );
         item.checkin( "Attached file: " + fileName );
+
+
+        //special treatment for model attachments.
+
+        ContentHandler handler = ContentHandler.getHandler(item.getFormat());
+        if (handler instanceof ModelContentHandler) {
+        	((ModelContentHandler)handler).modelAttached(item);
+        }
+
+
     }
 
     /**
