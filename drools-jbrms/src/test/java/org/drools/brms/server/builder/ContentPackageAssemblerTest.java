@@ -18,7 +18,10 @@ package org.drools.brms.server.builder;
 
 
 import java.io.InputStream;
+import java.io.StringReader;
+import java.util.List;
 import java.util.Map;
+import java.util.jar.JarInputStream;
 
 import junit.framework.TestCase;
 
@@ -38,11 +41,13 @@ import org.drools.brms.server.selector.AssetSelector;
 import org.drools.brms.server.selector.SelectorManager;
 import org.drools.brms.server.util.BRXMLPersistence;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
+import org.drools.compiler.PackageBuilder;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.rule.Package;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.mvel.MVEL;
 
 /**
  * This will unit test package assembly into a binary.
@@ -170,6 +175,26 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertNotNull(flow);
         assertTrue(flow instanceof RuleFlowProcess);
 
+        //now check we can do some MVEL stuff from the classloader...
+        List<JarInputStream> jars = BRMSPackageBuilder.getJars( pkg );
+        PackageBuilder builder = BRMSPackageBuilder.getInstance( jars );
+        ClassLoader newCL = builder.getPackageBuilderConfiguration().getClassLoader();
+        ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
+
+        //set the CL for the current thread so MVEL can find it
+        Thread.currentThread().setContextClassLoader(newCL);
+
+        Object o = MVEL.eval("new com.billasurf.Board()");
+        assertEquals("com.billasurf.Board", o.getClass().getName());
+        System.err.println(o.toString());
+
+        Thread.currentThread().setContextClassLoader(oldCL);
+
+
+        builder.addPackageFromDrl(new StringReader("package foo\n import com.billasurf.Board"));
+        Object o2 = builder.getTypeResolver().resolveType("Board");
+        assertNotNull(o2);
+        assertEquals("com.billasurf.Board", ((Class)o2).getName());
     }
 
     public void testSimplePackageBuildNoErrors() throws Exception {
