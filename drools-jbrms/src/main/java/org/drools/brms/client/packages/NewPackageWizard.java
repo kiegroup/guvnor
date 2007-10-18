@@ -22,6 +22,7 @@ import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.HTMLFileManagerFields;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
@@ -39,6 +40,7 @@ import com.google.gwt.user.client.ui.FormSubmitEvent;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.KeyboardListener;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
@@ -159,16 +161,20 @@ public class NewPackageWizard extends FormStylePopup {
         upload.setName( HTMLFileManagerFields.CLASSIC_DRL_IMPORT );
         panel.add( upload );
 
-        panel.add( new Button( "Import",
-                               new ClickListener() {
-                                   public void onClick(Widget sender) {
-                                       if (Window.confirm( "Are you sure you want to import this package? If the package already exists in the BRMS it will be merged." )) {
-                                           LoadingPopup.showMessage( "Importing drl package, please wait, as this could take some time..." );
-                                           uploadFormPanel.submit();
-                                       }
-                                   }
 
-                               } ) );
+        panel.add(new Label("upload:"));
+        ImageButton ok = new ImageButton("images/upload.gif", "Import");
+        ok.addClickListener(new ClickListener() {
+            public void onClick(Widget sender) {
+                if (Window.confirm( "Are you sure you want to import this package? If the package already exists in the BRMS it will be merged." )) {
+                    LoadingPopup.showMessage( "Importing drl package, please wait, as this could take some time..." );
+                    uploadFormPanel.submit();
+                }
+            }
+
+        });
+
+        panel.add( ok );
 
         uploadFormPanel.addFormHandler( new FormHandler() {
             public void onSubmitComplete(FormSubmitCompleteEvent event) {

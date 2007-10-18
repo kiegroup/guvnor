@@ -45,16 +45,18 @@ public class AssetFileServlet extends RepositoryServlet {
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException,
                                                        IOException {
-    	System.err.println("Posting to Asset File servlet");
-        response.setContentType( "text/plain" );
+
+        response.setContentType( "text/html" );
         FormData uploadItem = new FileManagerUtils().getFormData( request );
 
         if ( uploadItem.getFile() != null && uploadItem.getUuid() != null ) {
             //attaching to an asset.
             response.getWriter().write( processAttachFileToAsset(uploadItem) );
+
             return;
         }
         response.getWriter().write( "NO-SCRIPT-DATA" );
+
     }
 
     /**

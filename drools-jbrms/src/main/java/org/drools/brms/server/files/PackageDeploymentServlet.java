@@ -58,6 +58,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException,
                                                        IOException {
+    	response.setContentType( "text/html" );
         FormData data = FileManagerUtils.getFormData( request );
         //System.err.println("Filename: " + data.getFile().getName());
 

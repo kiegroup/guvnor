@@ -1,13 +1,13 @@
 package org.drools.brms.client.admin;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@ package org.drools.brms.client.admin;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.HTMLFileManagerFields;
+import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.LoadingPopup;
 
 import com.google.gwt.core.client.GWT;
@@ -34,10 +35,11 @@ import com.google.gwt.user.client.ui.FormSubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormSubmitEvent;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
+ *
  * @author Fernando Meyer
  */
 public class BackupManager extends Composite {
@@ -77,14 +79,14 @@ public class BackupManager extends Composite {
         horiz.add( create );
         return horiz;
     }
-    
+
 //    private Widget cleanRepository() {
 //        HorizontalPanel horiz = new HorizontalPanel();
 //
 //        Button delete = new Button( "Execute" );
 //        delete.addClickListener( new ClickListener() {
 //            public void onClick(Widget w) {
-//                if ( Window.confirm( "Are you REALLY REALLY sure you want to erase you repository contents?" ) ) {  
+//                if ( Window.confirm( "Are you REALLY REALLY sure you want to erase you repository contents?" ) ) {
 //                    RepositoryServiceFactory.getService().clearRulesRepository( new GenericCallback() {
 //                        public void onSuccess(Object data) {
 //                            Window.alert( "Rules repository deleted." );
@@ -95,7 +97,7 @@ public class BackupManager extends Composite {
 //                }
 //            }
 //        } );
-//        
+//
 //        horiz.add( delete );
 //        return horiz;
 //    }
@@ -114,20 +116,23 @@ public class BackupManager extends Composite {
         upload.setName( HTMLFileManagerFields.FILE_UPLOAD_FIELD_NAME_IMPORT );
         panel.add( upload );
 
-        panel.add( new Button( "Import",
-                               new ClickListener() {
-                                   public void onClick(Widget sender) {
-                                       doImportFile( uploadFormPanel );
-                                   }
+        panel.add(new Label("import:"));
+        ImageButton ok = new ImageButton("images/upload.gif");
+        ok.addClickListener(new ClickListener() {
+            public void onClick(Widget sender) {
+                doImportFile( uploadFormPanel );
+            }
 
-                                private void doImportFile(final FormPanel uploadFormPanel) {
-                                       if (Window.confirm( "Are you sure you want to import? this will erase any content in the " +
-                                            "repository currently?" )) {
-                                           LoadingPopup.showMessage( "Importing repository, please wait, as this could take some time..." );
-                                           uploadFormPanel.submit();
-                                       }
-                                }
-                               } ) );
+         private void doImportFile(final FormPanel uploadFormPanel) {
+                if (Window.confirm( "Are you sure you want to import? this will erase any content in the " +
+                     "repository currently?" )) {
+                    LoadingPopup.showMessage( "Importing repository, please wait, as this could take some time..." );
+                    uploadFormPanel.submit();
+                }
+         }
+        });
+
+        panel.add( ok );
 
         uploadFormPanel.addFormHandler( new FormHandler() {
             public void onSubmitComplete(FormSubmitCompleteEvent event) {
@@ -135,7 +140,7 @@ public class BackupManager extends Composite {
                     Window.alert( "Rules repository imported successfully. Please refresh your browser (F5) to show the new content. ");
                 } else {
                     ErrorPopup.showMessage( "Unable to import into the repository. Consult the server logs for error messages." );
-                }                
+                }
                 LoadingPopup.close();
             }
 
@@ -157,11 +162,11 @@ public class BackupManager extends Composite {
     private void exportRepository() {
 
         LoadingPopup.showMessage( "Exporting repository, please wait, as this could take some time..." );
-        
+
         Window.open( GWT.getModuleBaseURL() + "backup?" + HTMLFileManagerFields.FORM_FIELD_REPOSITORY + "=true",
         "downloading",
         "resizable=no,scrollbars=yes,status=no" );
-        
+
         LoadingPopup.close();
     }
 

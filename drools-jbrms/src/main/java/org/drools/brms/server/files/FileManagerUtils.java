@@ -131,8 +131,9 @@ public class FileManagerUtils {
                 FileItem item = (FileItem) it.next();
                 if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.FORM_FIELD_UUID ) ) {
                     data.setUuid( item.getString() );
+                } else if (!item.isFormField()){
+                	data.setFile( item );
                 }
-                data.setFile( item );
             }
             return data;
         } catch ( FileUploadException e ) {
