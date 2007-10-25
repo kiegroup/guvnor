@@ -140,7 +140,7 @@ public class NewAssetWizard extends FormStylePopup {
             WarningPopup.showMessage( "You have to pick an initial category.", this.getAbsoluteLeft(), this.getAbsoluteTop() );
             return;
         } else if (this.name.getText() == null || "".equals( this.name.getText() )) {
-            WarningPopup.showMessage( "Rule must have a name", this.getAbsoluteLeft(), this.getAbsoluteTop() );
+            WarningPopup.showMessage( "Asset must have a name", this.getAbsoluteLeft(), this.getAbsoluteTop() );
             return;
         }
 

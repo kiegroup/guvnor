@@ -128,6 +128,7 @@ public abstract class AssetAttachmentFileWidget extends Composite {
             public void onSubmitComplete(FormSubmitCompleteEvent ev) {
             		LoadingPopup.close();
                     if (ev.getResults().indexOf( "OK" ) > -1) {
+                    	Window.alert("File was uploaded successfully.");
                         viewer.refreshDataAndView();
                     } else {
                         ErrorPopup.showMessage( "Unable to upload the file." );
