@@ -21,6 +21,7 @@ package org.drools.brms.client;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
+import org.drools.brms.client.rpc.UserSecurityContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
@@ -64,10 +65,11 @@ public class LoggedInUserInfo extends Composite{
                     }
 
                     public void onSuccess(Object o) {
-                        if (o == null) {
-                            GenericCallback.showSessionExpiry();
-                        }
-                    }
+                        	UserSecurityContext ctx = (UserSecurityContext) o;
+                        	if (ctx.userName == null) {
+                                GenericCallback.showSessionExpiry();
+                        	}
+                     }
 
                 });
             }

@@ -1,13 +1,13 @@
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,7 @@ package org.drools.brms.client;
 import org.drools.brms.client.JBRMSFeature.ComponentInfo;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
+import org.drools.brms.client.rpc.UserSecurityContext;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Command;
@@ -38,14 +39,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 /**
  * This is the main launching/entry point for the JBRMS web console.
  * It essentially sets the initial layout.
- * 
- * If you hadn't noticed, this is using GWT from google. Refer to GWT docs 
+ *
+ * If you hadn't noticed, this is using GWT from google. Refer to GWT docs
  * if GWT is new to you (it is quite a different way of building web apps).
  */
 public class JBRMSEntryPoint implements EntryPoint, HistoryListener {
 
   private ComponentInfo curInfo;
-  private JBRMSFeature curSink; 
+  private JBRMSFeature curSink;
   private HTML description = new HTML();
   private JBRMSFeatureList list = new JBRMSFeatureList();
   private DockPanel panel = new DockPanel();
@@ -66,7 +67,7 @@ public class JBRMSEntryPoint implements EntryPoint, HistoryListener {
   }
 
   public void onModuleLoad() {
-      
+
     // Load all the sinks.
     JBRMSFeatureConfigurator.configure(list);
 
@@ -89,21 +90,21 @@ public class JBRMSEntryPoint implements EntryPoint, HistoryListener {
     panel.setCellWidth(vp, "100%");
 
     History.addHistoryListener(this);
-    
+
     loggedInUserInfo = new LoggedInUserInfo();
     loginWidget = new LoginWidget();
-    
+
     RootPanel.get().add( loggedInUserInfo );
-    RootPanel.get().add(panel);    
+    RootPanel.get().add(panel);
     RootPanel.get().add( loginWidget );
     loginWidget.setWidth( "100%" );
-    
+
     loggedInUserInfo.setVisible( false );
     panel.setVisible( false );
     loginWidget.setVisible( false );
 
     checkLoggedIn();
-    
+
     // Show the initial screen.
     String initToken = History.getToken();
     if (initToken.length() > 0)
@@ -117,18 +118,22 @@ public class JBRMSEntryPoint implements EntryPoint, HistoryListener {
    * If it is, then we show the app, in all its glory !
    */
   private void checkLoggedIn() {
-      
+
       RepositoryServiceFactory.getSecurityService().getCurrentUser( new GenericCallback() {
-          
+
         public void onSuccess(Object data) {
-            String userName = (String) data;
-            if (userName != null) {
-                loggedInUserInfo.setUserName( userName );
-                loggedInUserInfo.setVisible( true );
-                panel.setVisible( true );
-                loginWidget.setVisible( false );                
-            } else { 
-                
+        	UserSecurityContext ctx  = (UserSecurityContext) data;
+            if (ctx.userName != null) {
+
+	                loggedInUserInfo.setUserName( ctx.userName );
+	                loggedInUserInfo.setVisible( true );
+	                list.disableFeatures(ctx);
+	                panel.setVisible( true );
+	                loginWidget.setVisible( false );
+
+
+            } else {
+
                 loginWidget.setVisible( true );
                 loginWidget.setLoggedInEvent( new Command() {
                     public void execute() {
@@ -138,19 +143,19 @@ public class JBRMSEntryPoint implements EntryPoint, HistoryListener {
                         panel.setVisible( true );
                     }
                 } );
-                
+
             }
         }
 
       });
 
-      
-      
-    
-    
+
+
+
+
   }
-         
-  
+
+
 
 public void show(ComponentInfo info, boolean affectHistory) {
     // Don't bother re-displaying the existing sink. This can be an issue

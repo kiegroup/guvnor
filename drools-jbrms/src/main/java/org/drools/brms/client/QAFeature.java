@@ -24,18 +24,20 @@ import org.drools.brms.client.packages.PackageManagerView;
  *
  * This is also an alternative way of viewing packages.
  */
-public class PackageManagementFeature extends JBRMSFeature {
+public class QAFeature extends JBRMSFeature {
+
+	public static final String TESTING_AND_ANALYSIS = "QA";
 
 	public static ComponentInfo init() {
-		return new ComponentInfo("Packages",
-				"Configure and view packages of business rule assets.") {
+		return new ComponentInfo(TESTING_AND_ANALYSIS,
+				"Test, verify and analyse rules.") {
 			public JBRMSFeature createInstance() {
-				return new PackageManagementFeature();
+				return new QAFeature();
 			}
 		};
 	}
 
-	public PackageManagementFeature() {
+	public QAFeature() {
 		PackageManagerView packageManView = new PackageManagerView();
 		packageManView.setOpenedViewersContainer(JBRMSFeature.openedViewers);
 		initWidget(packageManView);
