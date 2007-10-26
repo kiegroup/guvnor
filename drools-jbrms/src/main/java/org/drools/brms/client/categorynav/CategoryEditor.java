@@ -53,7 +53,7 @@ public class CategoryEditor extends PopupPanel {
 
         table.setWidget( 0, 1, new Label(getTitle( path )));
 
-        table.setWidget( 1, 0, new Label("Cateogory name") );
+        table.setWidget( 1, 0, new Label("Category name") );
         table.setWidget( 1, 1, name );
 
         description.setVisibleLines( 4 );
