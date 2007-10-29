@@ -17,6 +17,7 @@ package org.drools.brms.client;
  */
 
 import org.drools.brms.client.packages.PackageManagerView;
+import org.drools.brms.client.qa.QAManagerWidget;
 
 /**
  * This is the package management feature. For managing packages (namespaces,
@@ -38,9 +39,7 @@ public class QAFeature extends JBRMSFeature {
 	}
 
 	public QAFeature() {
-		PackageManagerView packageManView = new PackageManagerView();
-		packageManView.setOpenedViewersContainer(JBRMSFeature.openedViewers);
-		initWidget(packageManView);
+		initWidget(new QAManagerWidget());
 	}
 
 	public void onShow() {
