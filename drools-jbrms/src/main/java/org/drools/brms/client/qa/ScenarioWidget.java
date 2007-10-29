@@ -7,18 +7,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
 import org.drools.brms.client.modeldriven.testing.Scenario;
 
+import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class ScenarioWidget extends Composite {
 
 	public ScenarioWidget() {
 
+		DirtyableFlexTable layout  = new DirtyableFlexTable();
 
 
 
@@ -37,7 +44,39 @@ public class ScenarioWidget extends Composite {
 		//we want facts and globs separate, but grouped by type
 		Map facts = new HashMap();
 		Map globals = new HashMap();
+		breakUpFactData(factData, facts, globals);
 
+		//now we have them grouped by type and global/fact, so we can render them appropriately.
+		//maps are a map of Type => List of FactData
+
+
+
+		VerticalPanel factPanel = new VerticalPanel();
+		for (Iterator iterator = facts.entrySet().iterator(); iterator.hasNext();) {
+			Map.Entry e = (Map.Entry) iterator.next();
+			factPanel.add(new FactInput((String)e.getKey(), facts, false));
+		}
+		VerticalPanel globalPanel = new VerticalPanel();
+		for (Iterator iterator = globals.entrySet().iterator(); iterator.hasNext();) {
+			Map.Entry e = (Map.Entry) iterator.next();
+			globalPanel.add(new FactInput((String)e.getKey(), globals, true));
+		}
+
+
+		layout.setWidget(0, 0, factPanel);
+		layout.setWidget(1, 0, globalPanel);
+
+
+		layout.setStyleName("model-builder-Background");
+		initWidget(layout);
+
+	}
+
+	/**
+	 * Separate out the elements into the appropriate types.
+	 * Will be keyed on the type name.
+	 */
+    static void breakUpFactData(List factData, Map facts, Map globals) {
 		for (Iterator iterator = factData.iterator(); iterator.hasNext();) {
 			Object f = (Object) iterator.next();
 			if (f instanceof FactData) {
@@ -49,17 +88,9 @@ public class ScenarioWidget extends Composite {
 				}
 			}
 		}
-
-		//now we have them grouped by type and global/fact, so we can render them appropriately.
-		//maps are a map of Type => List of FactData
-
-
-		initWidget(new FactInput("Driver", facts));
-
-
 	}
 
-	private void addToMap(Map globals, FactData fd) {
+	private static void addToMap(Map globals, FactData fd) {
 		if (!globals.containsKey(fd.type)) {
 			globals.put(fd.type, new ArrayList());
 		}
@@ -76,11 +107,15 @@ public class ScenarioWidget extends Composite {
  */
 class FactInput extends Composite {
 	final FlexTable t = new FlexTable();
-	public FactInput(String factType, Map facts) {
+	public FactInput(String factType, Map facts, boolean isGlobal) {
 		//need to keep track of what fields are in what row in the table.
 		Map fields = new HashMap();
-		t.setWidget(0, 0, new Label("Insert " + factType));
-		int col = 0, row = 0;
+		if (isGlobal) {
+			t.setWidget(0, 0, new Label("Global: " + factType));
+		} else {
+			t.setWidget(0, 0, new Label("Insert: " + factType));
+		}
+		int col = 0;
 		List defList = (List) facts.get(factType);
 		for (Iterator iterator = defList.iterator(); iterator.hasNext();) {
 			FactData d = (FactData) iterator.next();
@@ -93,11 +128,23 @@ class FactInput extends Composite {
 					t.setWidget(idx, 0, new Label(fd.name));
 				}
 				int fldRow = ((Integer) fields.get(fd.name)).intValue();
-				t.setWidget(fldRow, col, new Label(fd.value));
+				t.setWidget(fldRow, col, editableCell(fd));
 			}
 		}
 
 		initWidget(t);
+	}
+
+	private Widget editableCell(final FieldData fd) {
+		final TextBox tb = new TextBox();
+		tb.setText(fd.value);
+		tb.setTitle("Value for: " + fd.name);
+		tb.addChangeListener(new ChangeListener() {
+			public void onChange(Widget w) {
+				fd.value = tb.getText();
+			}
+		});
+		return tb;
 	}
 }
 
