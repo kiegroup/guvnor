@@ -12,9 +12,9 @@ public class ScenarioWidgetTest extends TestCase {
 
     public void testMapSeparate() {
         List l = new ArrayList();
-        FactData fd1 = new FactData("Driver", "d1", null, false);
-        FactData fd2 = new FactData("Driver", "d2", null, false);
-        FactData fd3 = new FactData("Driver", "d3", null, true);
+        FactData fd1 = new FactData("Driver", "d1", null, false, false);
+        FactData fd2 = new FactData("Driver", "d2", null, false, false);
+        FactData fd3 = new FactData("Driver", "d3", null, true, false);
         l.add(fd1); l.add(fd2); l.add(fd3);
 
         HashMap facts = new HashMap();

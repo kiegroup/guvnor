@@ -54,12 +54,12 @@ public class ScenarioWidget extends Composite {
 		VerticalPanel factPanel = new VerticalPanel();
 		for (Iterator iterator = facts.entrySet().iterator(); iterator.hasNext();) {
 			Map.Entry e = (Map.Entry) iterator.next();
-			factPanel.add(new FactInput((String)e.getKey(), facts, false));
+			factPanel.add(new DataInputWidget((String)e.getKey(), facts, false));
 		}
 		VerticalPanel globalPanel = new VerticalPanel();
 		for (Iterator iterator = globals.entrySet().iterator(); iterator.hasNext();) {
 			Map.Entry e = (Map.Entry) iterator.next();
-			globalPanel.add(new FactInput((String)e.getKey(), globals, true));
+			globalPanel.add(new DataInputWidget((String)e.getKey(), globals, true));
 		}
 
 
@@ -105,9 +105,9 @@ public class ScenarioWidget extends Composite {
  * For capturing input for all the facts of a given type.
  * @author Michael Neale
  */
-class FactInput extends Composite {
+class DataInputWidget extends Composite {
 	final FlexTable t = new FlexTable();
-	public FactInput(String factType, Map facts, boolean isGlobal) {
+	public DataInputWidget(String factType, Map facts, boolean isGlobal) {
 		//need to keep track of what fields are in what row in the table.
 		Map fields = new HashMap();
 		if (isGlobal) {
