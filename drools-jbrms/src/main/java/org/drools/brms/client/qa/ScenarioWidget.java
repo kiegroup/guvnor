@@ -115,22 +115,44 @@ class DataInputWidget extends Composite {
 		} else {
 			t.setWidget(0, 0, new Label("Insert: " + factType));
 		}
+
+		//This will work out what row is for what field
 		int col = 0;
 		List defList = (List) facts.get(factType);
 		for (Iterator iterator = defList.iterator(); iterator.hasNext();) {
 			FactData d = (FactData) iterator.next();
-			t.setWidget(0, ++col, new Label(d.name));
 			for (int i = 0; i < d.fieldData.length; i++) {
 				FieldData fd = d.fieldData[i];
 				if (!fields.containsKey(fd.name)) {
 					int idx = fields.size() + 1;
 					fields.put(fd.name, new Integer(idx));
-					t.setWidget(idx, 0, new Label(fd.name));
 				}
+			}
+		}
+
+		//now we go through the facts and the fields, adding them to the grid
+		//if a fact is missing a FieldData, we will add it in (so people can enter data later on)
+  		col = 0;
+		for (Iterator iterator = defList.iterator(); iterator.hasNext();) {
+			FactData d = (FactData) iterator.next();
+			t.setWidget(0, ++col, new Label(d.name));
+			Map presentFields = new HashMap(fields);
+			for (int i = 0; i < d.fieldData.length; i++) {
+				FieldData fd = d.fieldData[i];
 				int fldRow = ((Integer) fields.get(fd.name)).intValue();
+				t.setWidget(fldRow, col, editableCell(fd));
+				presentFields.remove(fd.name);
+			}
+
+			for (Iterator missing = presentFields.entrySet().iterator(); missing.hasNext();) {
+				Map.Entry e = (Map.Entry) missing.next();
+				int fldRow = ((Integer) e.getValue()).intValue();
+				FieldData fd = new FieldData((String) e.getKey(), "", false);
+				d.addFieldData(fd);
 				t.setWidget(fldRow, col, editableCell(fd));
 			}
 		}
+
 
 		initWidget(t);
 	}
