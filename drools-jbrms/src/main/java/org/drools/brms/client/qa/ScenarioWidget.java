@@ -29,22 +29,31 @@ public class ScenarioWidget extends Composite {
 
 
 
-		List factData = new ArrayList();
 
-		FactData d1 = new FactData("Driver", "d1", new FieldData[] {new FieldData("age", "42", false), new FieldData("name", "david", false)}, false, false);
-		FactData d2 = new FactData("Driver", "d2", new FieldData[] {new FieldData("name", "michael", false)}, false, false);
-		FactData d3 = new FactData("Driver", "d3", new FieldData[] {new FieldData("name", "michael2", false)}, true, false);
-		FactData d4 = new FactData("Accident", "a1", new FieldData[] {new FieldData("name", "michael2", false)}, true, false);
+		FactData d1 = new FactData("Driver", "d1", new FieldData[] {new FieldData("age", "42", false), new FieldData("name", "david", false)}, false);
+		FactData d2 = new FactData("Driver", "d2", new FieldData[] {new FieldData("name", "michael", false)}, false);
 
-		factData.addAll(Arrays.asList(new FactData[] {d1, d2, d3,d4}));
+
+		FactData d3 = new FactData("Driver", "d3", new FieldData[] {new FieldData("name", "michael2", false)}, false);
+		FactData d4 = new FactData("Accident", "a1", new FieldData[] {new FieldData("name", "michael2", false)}, false);
+
+
+		Scenario sc = new Scenario();
+		sc.fixtures.add(d1);
+		sc.fixtures.add(d2);
+
+		sc.globals.add(d3);
+		sc.globals.add(d4);
+
 
 
 		//now have to sort this out for the view.
 
-		//we want facts and globs separate, but grouped by type
-		Map facts = new HashMap();
-		Map globals = new HashMap();
-		breakUpFactData(factData, facts, globals);
+		//we want data grouped by type, for the purposes of the grid
+
+		Map facts = breakUpFactData(sc.fixtures);
+		Map globals = breakUpFactData(sc.globals);
+
 
 		//now we have them grouped by type and global/fact, so we can render them appropriately.
 		//maps are a map of Type => List of FactData
@@ -76,25 +85,23 @@ public class ScenarioWidget extends Composite {
 	 * Separate out the elements into the appropriate types.
 	 * Will be keyed on the type name.
 	 */
-    static void breakUpFactData(List factData, Map facts, Map globals) {
+    static Map breakUpFactData(List factData) {
+    	Map facts = new HashMap();
 		for (Iterator iterator = factData.iterator(); iterator.hasNext();) {
 			Object f = (Object) iterator.next();
 			if (f instanceof FactData) {
 				FactData fd = (FactData) f;
-				if (fd.isGlobal) {
-					addToMap(globals, fd);
-				} else {
-					addToMap(facts, fd);
-				}
+				addToMap(facts, fd);
 			}
 		}
+		return facts;
 	}
 
-	private static void addToMap(Map globals, FactData fd) {
-		if (!globals.containsKey(fd.type)) {
-			globals.put(fd.type, new ArrayList());
+	private static void addToMap(Map m, FactData fd) {
+		if (!m.containsKey(fd.type)) {
+			m.put(fd.type, new ArrayList());
 		}
-		List l = (List) globals.get(fd.type);
+		List l = (List) m.get(fd.type);
 		l.add(fd);
 	}
 
