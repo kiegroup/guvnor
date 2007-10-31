@@ -1,4 +1,6 @@
+ant gwt-compile
 mvn -o  package -Dmaven.test.skip=true
-cp ./target/drools-jbrms.war /usr/local/share/jboss-4.2.0.GA/server/default/deploy
+cp -v ./target/drools-jbrms.war /usr/local/share/java/jetty-6.1.0/webapps
+
 
 
