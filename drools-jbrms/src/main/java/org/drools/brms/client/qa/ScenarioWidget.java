@@ -1,22 +1,30 @@
 package org.drools.brms.client.qa;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.brms.client.common.DirtyableFlexTable;
+import org.drools.brms.client.common.FormStyleLayout;
+import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
 import org.drools.brms.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -71,10 +79,12 @@ public class ScenarioWidget extends Composite {
 			globalPanel.add(new DataInputWidget((String)e.getKey(), globals, true));
 		}
 
+		ExecutionTrace ex = new ExecutionTrace(new String[] {"rule1", "rule2 - wheeeee"}, false);
+		ExecutionWidget exw = new ExecutionWidget(ex, false, new String[] {"rule1", "rule2", "rule3"});
 
-		layout.setWidget(0, 0, factPanel);
-		layout.setWidget(1, 0, globalPanel);
-
+		layout.setWidget(0, 0, globalPanel);
+		layout.setWidget(1, 0, factPanel);
+		layout.setWidget(2, 0, exw);
 
 		layout.setStyleName("model-builder-Background");
 		initWidget(layout);
@@ -114,6 +124,7 @@ public class ScenarioWidget extends Composite {
  */
 class DataInputWidget extends Composite {
 	final FlexTable t = new FlexTable();
+
 	public DataInputWidget(String factType, Map facts, boolean isGlobal) {
 		//need to keep track of what fields are in what row in the table.
 		Map fields = new HashMap();
@@ -174,6 +185,69 @@ class DataInputWidget extends Composite {
 			}
 		});
 		return tb;
+	}
+
+
+
+
+}
+
+class ExecutionWidget extends Composite {
+	public ExecutionWidget(ExecutionTrace ext, boolean showResults, String[] ruleList) {
+		final SimplePanel p = new SimplePanel();
+		render(ext, showResults, p);
+		initWidget(p);
+	}
+
+	private void render(ExecutionTrace ext, boolean showResults,
+			final SimplePanel p) {
+		FormStyleLayout layout = new FormStyleLayout("images/execution_trace.gif", "Run the rules");
+		p.add(layout);
+
+		if (showResults) {
+			layout.addAttribute("Execution time:", new Label(ext.executionTimeResult + " ms"));
+		}
+
+		ListBox box = new ListBox();
+		for (int i = 0; i < ext.rules.length; i++) {
+			box.addItem(ext.rules[i]);
+		}
+
+		box.setMultipleSelect(true);
+		HorizontalPanel filter = new HorizontalPanel();
+
+		Image add = new ImageButton("images/new_item.gif", "Add a new rule.");
+		add.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				//show list of rules.
+			}
+		});
+		Image remove = new ImageButton("images/trash.gif", "Remove selected rule.");
+		VerticalPanel actions = new VerticalPanel();
+		actions.add(add); actions.add(remove);
+		filter.add(actions);
+
+
+		filter.add(box);
+		VerticalPanel vert = new VerticalPanel();
+		RadioButton include = new RadioButton("inc", "Include all rules listed");
+
+
+
+		RadioButton exclude = new RadioButton("inc", "Exclude all rules listed");
+		RadioButton all = new RadioButton("inc", "All rules");
+		vert.add(include); vert.add(exclude); vert.add(all);
+
+
+
+
+
+		filter.add(vert);
+
+		layout.addAttribute("Rules:", filter);
+
+
+
 	}
 }
 
