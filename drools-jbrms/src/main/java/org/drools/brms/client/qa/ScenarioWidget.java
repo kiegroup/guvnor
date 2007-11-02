@@ -8,17 +8,19 @@ import java.util.Map;
 
 import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.FormStyleLayout;
+import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
 import org.drools.brms.client.modeldriven.testing.Scenario;
 
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -32,42 +34,32 @@ import com.google.gwt.user.client.ui.Widget;
 public class ScenarioWidget extends Composite {
 
 	public ScenarioWidget() {
-
 		DirtyableFlexTable layout  = new DirtyableFlexTable();
+
 
 
 
 
 		FactData d1 = new FactData("Driver", "d1", new FieldData[] {new FieldData("age", "42", false), new FieldData("name", "david", false)}, false);
 		FactData d2 = new FactData("Driver", "d2", new FieldData[] {new FieldData("name", "michael", false)}, false);
-
-
 		FactData d3 = new FactData("Driver", "d3", new FieldData[] {new FieldData("name", "michael2", false)}, false);
 		FactData d4 = new FactData("Accident", "a1", new FieldData[] {new FieldData("name", "michael2", false)}, false);
-
-
 		Scenario sc = new Scenario();
 		sc.fixtures.add(d1);
 		sc.fixtures.add(d2);
-
 		sc.globals.add(d3);
 		sc.globals.add(d4);
-
-
+		sc.rules.add("rule1");
+		sc.rules.add("rule2");
 
 		//now have to sort this out for the view.
-
 		//we want data grouped by type, for the purposes of the grid
-
 		Map facts = breakUpFactData(sc.fixtures);
 		Map globals = breakUpFactData(sc.globals);
 
 
 		//now we have them grouped by type and global/fact, so we can render them appropriately.
 		//maps are a map of Type => List of FactData
-
-
-
 		VerticalPanel factPanel = new VerticalPanel();
 		for (Iterator iterator = facts.entrySet().iterator(); iterator.hasNext();) {
 			Map.Entry e = (Map.Entry) iterator.next();
@@ -79,12 +71,16 @@ public class ScenarioWidget extends Composite {
 			globalPanel.add(new DataInputWidget((String)e.getKey(), globals, true));
 		}
 
-		ExecutionTrace ex = new ExecutionTrace(new String[] {"rule1", "rule2 - wheeeee"}, false);
-		ExecutionWidget exw = new ExecutionWidget(ex, false, new String[] {"rule1", "rule2", "rule3"});
+		ExecutionTrace ex = new ExecutionTrace();
+		ExecutionWidget exw = new ExecutionWidget(ex, false);
 
-		layout.setWidget(0, 0, globalPanel);
-		layout.setWidget(1, 0, factPanel);
-		layout.setWidget(2, 0, exw);
+
+		ConfigWidget conf = new ConfigWidget(sc, new String[] {"rule1", "rule2", "rule3"});
+
+		layout.setWidget(0, 0, conf);
+		layout.setWidget(1, 0, globalPanel);
+		layout.setWidget(2, 0, factPanel);
+		layout.setWidget(3, 0, exw);
 
 		layout.setStyleName("model-builder-Background");
 		initWidget(layout);
@@ -192,37 +188,35 @@ class DataInputWidget extends Composite {
 
 }
 
-class ExecutionWidget extends Composite {
-	public ExecutionWidget(ExecutionTrace ext, boolean showResults, String[] ruleList) {
-		final SimplePanel p = new SimplePanel();
-		render(ext, showResults, p);
-		initWidget(p);
-	}
+class ConfigWidget extends Composite {
+	public ConfigWidget(final Scenario sc, final String[] fullRuleList) {
+		FormStyleLayout layout = new FormStyleLayout("images/scenario_conf.gif", "Rules");
+		final ListBox box = new ListBox(true);
 
-	private void render(ExecutionTrace ext, boolean showResults,
-			final SimplePanel p) {
-		FormStyleLayout layout = new FormStyleLayout("images/execution_trace.gif", "Run the rules");
-		p.add(layout);
-
-		if (showResults) {
-			layout.addAttribute("Execution time:", new Label(ext.executionTimeResult + " ms"));
+		for (int i = 0; i < sc.rules.size(); i++) {
+			box.addItem((String)sc.rules.get(i));
 		}
-
-		ListBox box = new ListBox();
-		for (int i = 0; i < ext.rules.length; i++) {
-			box.addItem(ext.rules[i]);
-		}
-
-		box.setMultipleSelect(true);
 		HorizontalPanel filter = new HorizontalPanel();
 
 		Image add = new ImageButton("images/new_item.gif", "Add a new rule.");
 		add.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
-				//show list of rules.
+				showRulePopup(w, box, fullRuleList, sc.rules);
 			}
 		});
+
 		Image remove = new ImageButton("images/trash.gif", "Remove selected rule.");
+		remove.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				if (box.getSelectedIndex() == -1) {
+					Window.alert("Please choose a rule to remove.");
+				} else {
+					String r = box.getItemText(box.getSelectedIndex());
+					sc.rules.remove(r);
+					box.removeItem(box.getSelectedIndex());
+				}
+			}
+		});
 		VerticalPanel actions = new VerticalPanel();
 		actions.add(add); actions.add(remove);
 		filter.add(actions);
@@ -231,23 +225,83 @@ class ExecutionWidget extends Composite {
 		filter.add(box);
 		VerticalPanel vert = new VerticalPanel();
 		RadioButton include = new RadioButton("inc", "Include all rules listed");
-
+		include.setChecked(sc.rules.size() > 0 && sc.inclusive);
+		include.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				sc.inclusive = true;
+			}
+		});
 
 
 		RadioButton exclude = new RadioButton("inc", "Exclude all rules listed");
+		exclude.setChecked(sc.rules.size() > 0 && !sc.inclusive);
+		exclude.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				sc.inclusive = false;
+			}
+		});
+
 		RadioButton all = new RadioButton("inc", "All rules");
+		all.setChecked(sc.rules.size() ==0);
+		all.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				box.clear();
+				sc.rules.clear();
+			}
+		});
 		vert.add(include); vert.add(exclude); vert.add(all);
 
 
-
-
-
 		filter.add(vert);
+		layout.addAttribute("Rules to filter:", filter);
+		initWidget(layout);
+	}
 
-		layout.addAttribute("Rules:", filter);
+	private void showRulePopup(Widget w, final ListBox box, String[] fullRuleList, final List filterList) {
+		final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", "Select rule");
+		final ListBox rules = new ListBox();
+		for (int i = 0; i < fullRuleList.length; i++) {
+			rules.addItem(fullRuleList[i]);
+		}
+		pop.addRow(rules);
+		Button ok = new Button("Add");
+		pop.addRow(ok);
+		ok.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				String r = rules.getItemText(rules.getSelectedIndex());
+				filterList.add(r);
+				box.addItem(r);
+				pop.hide();
+			}
+		});
+		pop.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
+		pop.show();
+
+	}
+
+
+}
+
+class ExecutionWidget extends Composite {
+	public ExecutionWidget(ExecutionTrace ext, boolean showResults) {
+		final SimplePanel p = new SimplePanel();
+		render(ext, showResults, p);
+		initWidget(p);
+	}
+
+	private void render(final ExecutionTrace ext, boolean showResults,
+			final SimplePanel p) {
+		FormStyleLayout layout = new FormStyleLayout("images/execution_trace.gif", "Run the rules");
+		p.add(layout);
+		if (showResults) {
+			layout.addAttribute("Execution time:", new Label(ext.executionTimeResult + " ms"));
+			layout.addAttribute("Number of rules fired:", new Label(ext.numberOfRulesFired + ""));
+		}
 
 
 
 	}
+
+
 }
 
