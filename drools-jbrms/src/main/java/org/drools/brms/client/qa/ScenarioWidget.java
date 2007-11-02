@@ -1,12 +1,14 @@
 package org.drools.brms.client.qa;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.brms.client.common.DirtyableFlexTable;
+import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
@@ -21,6 +23,9 @@ import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -37,9 +42,7 @@ public class ScenarioWidget extends Composite {
 		DirtyableFlexTable layout  = new DirtyableFlexTable();
 
 
-
-
-
+		//Sample data
 		FactData d1 = new FactData("Driver", "d1", new FieldData[] {new FieldData("age", "42", false), new FieldData("name", "david", false)}, false);
 		FactData d2 = new FactData("Driver", "d2", new FieldData[] {new FieldData("name", "michael", false)}, false);
 		FactData d3 = new FactData("Driver", "d3", new FieldData[] {new FieldData("name", "michael2", false)}, false);
@@ -63,12 +66,12 @@ public class ScenarioWidget extends Composite {
 		VerticalPanel factPanel = new VerticalPanel();
 		for (Iterator iterator = facts.entrySet().iterator(); iterator.hasNext();) {
 			Map.Entry e = (Map.Entry) iterator.next();
-			factPanel.add(new DataInputWidget((String)e.getKey(), facts, false));
+			factPanel.add(new DataInputWidget((String)e.getKey(), facts, false, false));
 		}
 		VerticalPanel globalPanel = new VerticalPanel();
 		for (Iterator iterator = globals.entrySet().iterator(); iterator.hasNext();) {
 			Map.Entry e = (Map.Entry) iterator.next();
-			globalPanel.add(new DataInputWidget((String)e.getKey(), globals, true));
+			globalPanel.add(new DataInputWidget((String)e.getKey(), globals, true, false));
 		}
 
 		ExecutionTrace ex = new ExecutionTrace();
@@ -119,18 +122,29 @@ public class ScenarioWidget extends Composite {
  * @author Michael Neale
  */
 class DataInputWidget extends Composite {
-	final FlexTable t = new FlexTable();
 
-	public DataInputWidget(String factType, Map facts, boolean isGlobal) {
+
+	public DataInputWidget(String factType, Map facts, boolean isGlobal, boolean isModify) {
 		//need to keep track of what fields are in what row in the table.
-		Map fields = new HashMap();
+
+		Grid outer = new Grid(2, 1);
+		outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
+		outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
+		outer.setStyleName("modeller-fact-pattern-Widget");
+
+
 		if (isGlobal) {
-			t.setWidget(0, 0, new Label("Global: " + factType));
-		} else {
-			t.setWidget(0, 0, new Label("Insert: " + factType));
+			outer.setWidget(0, 0, new Label("Global: " + factType));
+		} else if (isModify) {
+			outer.setWidget(0, 0, new Label("Modify: " + factType));
+		} else  {
+			outer.setWidget(0, 0, new Label("Insert: " + factType));
 		}
 
+		final FlexTable t = new FlexTable();
+
 		//This will work out what row is for what field
+		Map fields = new HashMap();
 		int col = 0;
 		List defList = (List) facts.get(factType);
 		for (Iterator iterator = defList.iterator(); iterator.hasNext();) {
@@ -140,6 +154,7 @@ class DataInputWidget extends Composite {
 				if (!fields.containsKey(fd.name)) {
 					int idx = fields.size() + 1;
 					fields.put(fd.name, new Integer(idx));
+					t.setWidget(idx, 0, new Label(fd.name));
 				}
 			}
 		}
@@ -167,8 +182,8 @@ class DataInputWidget extends Composite {
 			}
 		}
 
-
-		initWidget(t);
+		outer.setWidget(1, 0, t);
+		initWidget(outer);
 	}
 
 	private Widget editableCell(final FieldData fd) {
@@ -297,9 +312,35 @@ class ExecutionWidget extends Composite {
 			layout.addAttribute("Execution time:", new Label(ext.executionTimeResult + " ms"));
 			layout.addAttribute("Number of rules fired:", new Label(ext.numberOfRulesFired + ""));
 		}
+		layout.addAttribute("Simulation date:", simulDate(ext));
 
 
+	}
 
+	private Widget simulDate(final ExecutionTrace ext) {
+		final String fmt = "dd-MMM-YYYY";
+		final TextBox dt = new TextBox();
+		if (ext.scenarioSimulatedDate == null) {
+			dt.setText("<current date and time>");
+		} else {
+			dt.setText(ext.scenarioSimulatedDate.toLocaleString());
+		}
+		dt.addChangeListener(new ChangeListener() {
+			public void onChange(Widget w) {
+				if (dt.getText().trim().equals("")) {
+					dt.setText("<current date and time>");
+				} else {
+					try {
+						Date d = new Date(dt.getText());
+						ext.scenarioSimulatedDate = d;
+						dt.setText(d.toLocaleString());
+					} catch (Exception e) {
+						ErrorPopup.showMessage("Bad date format - please try again (try the format of " + fmt + ").");
+					}
+				}
+			}
+		});
+		return dt;
 	}
 
 
