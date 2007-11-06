@@ -15,6 +15,7 @@ import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
+import org.drools.brms.client.modeldriven.testing.RetractFact;
 import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
@@ -35,7 +36,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -48,10 +48,10 @@ public class ScenarioWidget extends Composite {
 
 
         //Sample data
-        FactData d1 = new FactData("Driver", "d1", new FieldData[] {new FieldData("age", "42", false), new FieldData("name", "david", false)}, false);
-        FactData d2 = new FactData("Driver", "d2", new FieldData[] {new FieldData("name", "michael", false)}, false);
-        FactData d3 = new FactData("Driver", "d3", new FieldData[] {new FieldData("name", "michael2", false)}, false);
-        FactData d4 = new FactData("Accident", "a1", new FieldData[] {new FieldData("name", "michael2", false)}, false);
+        FactData d1 = new FactData("Driver", "d1", new FieldData[] {new FieldData("age", "42"), new FieldData("name", "david")}, false);
+        FactData d2 = new FactData("Driver", "d2", new FieldData[] {new FieldData("name", "michael")}, false);
+        FactData d3 = new FactData("Driver", "d3", new FieldData[] {new FieldData("name", "michael2")}, false);
+        FactData d4 = new FactData("Accident", "a1", new FieldData[] {new FieldData("name", "michael2")}, false);
         Scenario sc = new Scenario();
         sc.fixtures.add(d1);
         sc.fixtures.add(d2);
@@ -101,10 +101,21 @@ public class ScenarioWidget extends Composite {
         layout.setWidget(2, 0, new HTML("<hr/>"));
 
 
+
+
         layout.setWidget(3, 0, factPanel);
         layout.setWidget(4, 0, exw);
         layout.setWidget(5, 0, new VerifyFactWidget(vf));
         layout.setWidget(6, 0, new VerifyRulesFiredWidget( ruleFires ));
+        layout.setWidget(7, 0, new RetractWidget(new RetractFact("f1")));
+
+//        layout.getFlexCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER);
+//        layout.getFlexCellFormatter().setHorizontalAlignment(1, 0, HasHorizontalAlignment.ALIGN_CENTER);
+//        layout.getFlexCellFormatter().setHorizontalAlignment(2, 0, HasHorizontalAlignment.ALIGN_CENTER);
+//        layout.getFlexCellFormatter().setHorizontalAlignment(3, 0, HasHorizontalAlignment.ALIGN_CENTER);
+//        layout.getFlexCellFormatter().setHorizontalAlignment(4, 0, HasHorizontalAlignment.ALIGN_CENTER);
+//        layout.getFlexCellFormatter().setHorizontalAlignment(5, 0, HasHorizontalAlignment.ALIGN_CENTER);
+//        layout.getFlexCellFormatter().setHorizontalAlignment(6, 0, HasHorizontalAlignment.ALIGN_CENTER);
 
         layout.setStyleName("model-builder-Background");
         initWidget(layout);
@@ -197,7 +208,7 @@ class DataInputWidget extends Composite {
             for (Iterator missing = presentFields.entrySet().iterator(); missing.hasNext();) {
                 Map.Entry e = (Map.Entry) missing.next();
                 int fldRow = ((Integer) e.getValue()).intValue();
-                FieldData fd = new FieldData((String) e.getKey(), "", false);
+                FieldData fd = new FieldData((String) e.getKey(), "");
                 d.addFieldData(fd);
                 t.setWidget(fldRow, col, editableCell(fd));
             }
@@ -491,3 +502,13 @@ class VerifyRulesFiredWidget extends Composite {
     }
 }
 
+class RetractWidget extends Composite {
+	public RetractWidget(RetractFact ret) {
+        Grid outer = new Grid(1, 1);
+        outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
+        outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
+        outer.setStyleName("modeller-fact-pattern-Widget");
+        outer.setWidget(0, 0, new Label("Retract [" + ret.name + "]"));
+        initWidget(outer);
+	}
+}
