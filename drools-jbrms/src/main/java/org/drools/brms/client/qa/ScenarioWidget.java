@@ -82,12 +82,12 @@ public class ScenarioWidget extends Composite {
         VerticalPanel factPanel = new VerticalPanel();
         for (Iterator iterator = facts.entrySet().iterator(); iterator.hasNext();) {
             Map.Entry e = (Map.Entry) iterator.next();
-            factPanel.add(new DataInputWidget((String)e.getKey(), facts, false, false));
+            factPanel.add(new DataInputWidget((String)e.getKey(), (List) facts.get(e.getKey()), false, false));
         }
         VerticalPanel globalPanel = new VerticalPanel();
         for (Iterator iterator = globals.entrySet().iterator(); iterator.hasNext();) {
             Map.Entry e = (Map.Entry) iterator.next();
-            globalPanel.add(new DataInputWidget((String)e.getKey(), globals, true, false));
+            globalPanel.add(new DataInputWidget((String)e.getKey(), (List) globals.get(e.getKey()), true, false));
         }
 
         ExecutionTrace ex = new ExecutionTrace();
@@ -156,7 +156,7 @@ public class ScenarioWidget extends Composite {
 class DataInputWidget extends Composite {
 
 
-    public DataInputWidget(String factType, Map facts, boolean isGlobal, boolean isModify) {
+    public DataInputWidget(String factType, List defList, boolean isGlobal, boolean isModify) {
 
         Grid outer = new Grid(2, 1);
         outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
@@ -177,7 +177,7 @@ class DataInputWidget extends Composite {
         //This will work out what row is for what field
         Map fields = new HashMap();
         int col = 0;
-        List defList = (List) facts.get(factType);
+
         for (Iterator iterator = defList.iterator(); iterator.hasNext();) {
             FactData d = (FactData) iterator.next();
             for (int i = 0; i < d.fieldData.length; i++) {
