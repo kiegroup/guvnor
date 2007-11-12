@@ -1,6 +1,5 @@
 package org.drools.brms.client.qa;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,6 +14,7 @@ import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
+import org.drools.brms.client.modeldriven.testing.Fixture;
 import org.drools.brms.client.modeldriven.testing.RetractFact;
 import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
@@ -28,7 +28,6 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -43,108 +42,81 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ScenarioWidget extends Composite {
 
-    public ScenarioWidget() {
-        DirtyableFlexTable layout  = new DirtyableFlexTable();
+    public ScenarioWidget(Scenario scenario, String[] ruleList) {
+    	DirtyableFlexTable layout = new DirtyableFlexTable();
+
+        ScenarioHelper hlp = new ScenarioHelper();
+        List fixtures = hlp.lumpyMap(scenario.fixtures);
+
+        int layoutRow = 0;
+
+        for (int i = 0; i < fixtures.size(); i++) {
+			Object f = fixtures.get(i);
+			if (f instanceof ExecutionTrace) {
+				layout.setWidget(layoutRow, 0, new Label("EXPECT"));
+				ExecutionTrace ex = (ExecutionTrace) f;
+				layout.setWidget(layoutRow, 1, new ExecutionWidget(ex, false));
+			} else if (f instanceof Map) {
+				layout.setWidget(layoutRow, 0, new Label("GIVEN"));
+				layoutRow++;
+				Map facts = (Map) f;
+				VerticalPanel vert = new VerticalPanel();
+		        for (Iterator iterator = facts.entrySet().iterator(); iterator.hasNext();) {
+		            Map.Entry e = (Map.Entry) iterator.next();
+		            List factList = (List) facts.get(e.getKey());
+		            vert.add(new DataInputWidget((String)e.getKey(), factList, false));
+		        }
+		        layout.setWidget(layoutRow, 1, vert);
+			} else {
+				List l = (List) f;
+				Fixture first = (Fixture) l.get(0);
+				if (first instanceof VerifyFact) {
+					doVerifyFacts(l, layout, layoutRow);
+				} else if (first instanceof VerifyRuleFired) {
+					layout.setWidget(layoutRow, 1, new VerifyRulesFiredWidget(l));
+				} else {
+					layout.setWidget(layoutRow, 1, new RetractWidget(l));
+				}
+
+			}
+			layoutRow++;
+		}
 
 
-        //Sample data
-        FactData d1 = new FactData("Driver", "d1", new FieldData[] {new FieldData("age", "42"), new FieldData("name", "david")}, false);
-        FactData d2 = new FactData("Driver", "d2", new FieldData[] {new FieldData("name", "michael")}, false);
-        FactData d3 = new FactData("Driver", "d3", new FieldData[] {new FieldData("name", "michael2")}, false);
-        FactData d4 = new FactData("Accident", "a1", new FieldData[] {new FieldData("name", "michael2")}, false);
-        Scenario sc = new Scenario();
-        sc.fixtures.add(d1);
-        sc.fixtures.add(d2);
-        sc.globals.add(d3);
-        sc.globals.add(d4);
-        sc.rules.add("rule1");
-        sc.rules.add("rule2");
+        layout.setWidget(layoutRow, 0, new Label("Configuration"));
+        layoutRow++;
+        //config section
+        ConfigWidget conf = new ConfigWidget(scenario, ruleList);
+        layout.setWidget(layoutRow, 1, conf);
 
-        VerifyFact vf = new VerifyFact("d1", new VerifyField[] {
-            new VerifyField("age", "42", "=="),
-            new VerifyField("name", "michael", "!=")
-
-        });
-
-        VerifyRuleFired vf1 = new VerifyRuleFired("xxx fdsfds", new Integer(42), null);
-        VerifyRuleFired vf2 = new VerifyRuleFired("yyyyy fdsfdsfds fds", null, new Boolean(true));
-        List ruleFires = new ArrayList(); ruleFires.add(vf1); ruleFires.add(vf2);
-
-
-        //now have to sort this out for the view.
-        //we want data grouped by type, for the purposes of the grid
-        Map facts = breakUpFactData(sc.fixtures);
-        Map globals = breakUpFactData(sc.globals);
-
-
-        //now we have them grouped by type and global/fact, so we can render them appropriately.
-        //maps are a map of Type => List of FactData
-        VerticalPanel factPanel = new VerticalPanel();
-        for (Iterator iterator = facts.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry e = (Map.Entry) iterator.next();
-            factPanel.add(new DataInputWidget((String)e.getKey(), (List) facts.get(e.getKey()), false, false));
-        }
+        //global section
+        Map globals = hlp.lumpyMapGlobals(scenario.globals);
         VerticalPanel globalPanel = new VerticalPanel();
         for (Iterator iterator = globals.entrySet().iterator(); iterator.hasNext();) {
             Map.Entry e = (Map.Entry) iterator.next();
-            globalPanel.add(new DataInputWidget((String)e.getKey(), (List) globals.get(e.getKey()), true, false));
+            globalPanel.add(new DataInputWidget((String)e.getKey(), (List) globals.get(e.getKey()), true));
         }
-
-        ExecutionTrace ex = new ExecutionTrace();
-        ExecutionWidget exw = new ExecutionWidget(ex, false);
-
-
-        ConfigWidget conf = new ConfigWidget(sc, new String[] {"rule1", "rule2", "rule3"});
-
-        layout.setWidget(0, 0, conf);
-        layout.setWidget(1, 0, globalPanel);
-        layout.setWidget(2, 0, new HTML("<hr/>"));
-
-
-
-
-        layout.setWidget(3, 0, factPanel);
-        layout.setWidget(4, 0, exw);
-        layout.setWidget(5, 0, new VerifyFactWidget(vf));
-        layout.setWidget(6, 0, new VerifyRulesFiredWidget( ruleFires ));
-        layout.setWidget(7, 0, new RetractWidget(new RetractFact("f1")));
-
-//        layout.getFlexCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER);
-//        layout.getFlexCellFormatter().setHorizontalAlignment(1, 0, HasHorizontalAlignment.ALIGN_CENTER);
-//        layout.getFlexCellFormatter().setHorizontalAlignment(2, 0, HasHorizontalAlignment.ALIGN_CENTER);
-//        layout.getFlexCellFormatter().setHorizontalAlignment(3, 0, HasHorizontalAlignment.ALIGN_CENTER);
-//        layout.getFlexCellFormatter().setHorizontalAlignment(4, 0, HasHorizontalAlignment.ALIGN_CENTER);
-//        layout.getFlexCellFormatter().setHorizontalAlignment(5, 0, HasHorizontalAlignment.ALIGN_CENTER);
-//        layout.getFlexCellFormatter().setHorizontalAlignment(6, 0, HasHorizontalAlignment.ALIGN_CENTER);
+        layout.setWidget(layoutRow, 0, new Label("Globals"));
+        layoutRow++;
+        layout.setWidget(layoutRow, 1, globalPanel);
 
         layout.setStyleName("model-builder-Background");
         initWidget(layout);
 
     }
 
-    /**
-     * Separate out the elements into the appropriate types.
-     * Will be keyed on the type name.
-     */
-    static Map breakUpFactData(List factData) {
-        Map facts = new HashMap();
-        for (Iterator iterator = factData.iterator(); iterator.hasNext();) {
-            Object f = (Object) iterator.next();
-            if (f instanceof FactData) {
-                FactData fd = (FactData) f;
-                addToMap(facts, fd);
-            }
-        }
-        return facts;
-    }
 
-    private static void addToMap(Map m, FactData fd) {
-        if (!m.containsKey(fd.type)) {
-            m.put(fd.type, new ArrayList());
-        }
-        List l = (List) m.get(fd.type);
-        l.add(fd);
-    }
+	private void doVerifyFacts(List l, FlexTable layout, int layoutRow) {
+		VerticalPanel vert = new VerticalPanel();
+		for (Iterator iterator = l.iterator(); iterator.hasNext();) {
+			VerifyFact f = (VerifyFact) iterator.next();
+			vert.add(new VerifyFactWidget(f));
+		}
+		layout.setWidget(layoutRow, 1, vert);
+
+	}
+
+
 
 }
 
@@ -156,7 +128,7 @@ public class ScenarioWidget extends Composite {
 class DataInputWidget extends Composite {
 
 
-    public DataInputWidget(String factType, List defList, boolean isGlobal, boolean isModify) {
+    public DataInputWidget(String factType, List defList, boolean isGlobal) {
 
         Grid outer = new Grid(2, 1);
         outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
@@ -166,10 +138,13 @@ class DataInputWidget extends Composite {
 
         if (isGlobal) {
             outer.setWidget(0, 0, new Label("Global: " + factType));
-        } else if (isModify) {
-            outer.setWidget(0, 0, new Label("Modify: " + factType));
-        } else  {
-            outer.setWidget(0, 0, new Label("Insert: " + factType));
+        } else {
+            FactData first = (FactData) defList.get(0);
+            if (first.isModify) {
+            	outer.setWidget(0, 0, new Label("Modify: " + factType));
+            } else {
+            	outer.setWidget(0, 0, new Label("Insert: " + factType));
+            }
         }
 
         final FlexTable t = new FlexTable();
@@ -503,12 +478,18 @@ class VerifyRulesFiredWidget extends Composite {
 }
 
 class RetractWidget extends Composite {
-	public RetractWidget(RetractFact ret) {
+	public RetractWidget(List retList) {
         Grid outer = new Grid(1, 1);
         outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
         outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         outer.setStyleName("modeller-fact-pattern-Widget");
-        outer.setWidget(0, 0, new Label("Retract [" + ret.name + "]"));
+        outer.setWidget(0, 0, new Label("Retract facts"));
+        VerticalPanel inner = new VerticalPanel();
+        for (Iterator iterator = retList.iterator(); iterator.hasNext();) {
+			RetractFact r = (RetractFact) iterator.next();
+			inner.add(new Label(r.name));
+		}
+        outer.setWidget(1, 0, inner);
         initWidget(outer);
 	}
 }

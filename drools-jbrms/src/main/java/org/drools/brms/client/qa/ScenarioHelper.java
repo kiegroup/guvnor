@@ -29,40 +29,71 @@ public class ScenarioHelper {
 	 * expectations or retractions.
 	 *
 	 * Man, this will be so much nicer with generics.
-	 * @return List<List<Expectation or RetractFact> OR Map<String, List<FactData>> OR ExecutionTrace>
+	 * @return List<List<VeryifyRuleFired or VerifyFact or RetractFact> OR Map<String, List<FactData>> OR ExecutionTrace>
 	 */
 	public List lumpyMap(List fixtures) {
 		List output = new ArrayList();
 
 		Map dataInput = new HashMap();
-		List expectations = new ArrayList();
+		List verifyFact = new ArrayList();
+		List verifyRule = new ArrayList();
 		List retractFacts = new ArrayList();
 
 
 		for (Iterator iterator = fixtures.iterator(); iterator.hasNext();) {
 			Fixture f = (Fixture) iterator.next();
 			if (f instanceof FactData) {
-				FactData fd = (FactData) f;
-				if (! dataInput.containsKey(fd.type)) {
-					dataInput.put(fd.type, new ArrayList());
-				}
-				((List) dataInput.get(fd.type)).add(fd);
+				accumulateFactData(dataInput, f);
 			} else if (f instanceof RetractFact) {
 				retractFacts.add(f);
-			} else if (f instanceof Expectation) {
-				expectations.add(f);
+			} else if (f instanceof VerifyRuleFired) {
+				verifyRule.add(f);
+			} else if (f instanceof VerifyFact) {
+				verifyFact.add(f);
 			} else if (f instanceof ExecutionTrace) {
-				if (expectations.size() > 0) output.add(expectations);
-				if (retractFacts.size() > 0) output.add(retractFacts);
-				if (dataInput.size() > 0) output.add(dataInput);
+				gatherFixtures(output, dataInput, verifyFact, verifyRule,
+						retractFacts);
+
 				output.add(f);
 
-				expectations = new ArrayList();
+				verifyRule = new ArrayList();
+				verifyFact = new ArrayList();
 				retractFacts = new ArrayList();
 				dataInput = new HashMap();
 			}
 		}
+		gatherFixtures(output, dataInput, verifyFact, verifyRule,
+				retractFacts);
+
 		return output;
+	}
+
+	private void gatherFixtures(List output, Map dataInput, List verifyFact,
+			List verifyRule, List retractFacts) {
+		if (verifyRule.size() > 0) output.add(verifyRule);
+		if (verifyFact.size() > 0) output.add(verifyFact);
+		if (retractFacts.size() > 0) output.add(retractFacts);
+		if (dataInput.size() > 0) output.add(dataInput);
+	}
+
+	/**
+	 * Group the globals together by fact type.
+	 */
+ 	public Map lumpyMapGlobals(List globals) {
+ 		Map g = new HashMap();
+ 		for (Iterator iterator = globals.iterator(); iterator.hasNext();) {
+			FactData f = (FactData) iterator.next();
+			accumulateFactData(g, f);
+		}
+ 		return g;
+ 	}
+
+	private void accumulateFactData(Map dataInput, Fixture f) {
+		FactData fd = (FactData) f;
+		if (! dataInput.containsKey(fd.type)) {
+			dataInput.put(fd.type, new ArrayList());
+		}
+		((List) dataInput.get(fd.type)).add(fd);
 	}
 
 

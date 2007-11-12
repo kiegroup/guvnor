@@ -93,10 +93,6 @@ select {
 .modeller-fact-pattern-Widget {
 	border-top:1px solid #ccc;
 	border-bottom:1px solid #ccc;
-	-moz-border-radius:.7em;
-	-webkit-border-radius:.7em;
-	-khtml-border-radius:.7em;
-	border-radius:.7em;
 }
 .modeller-composite-Label {
 	font-style:italic;

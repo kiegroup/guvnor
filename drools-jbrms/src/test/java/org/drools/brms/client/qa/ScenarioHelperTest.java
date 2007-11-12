@@ -50,10 +50,13 @@ public class ScenarioHelperTest extends TestCase {
 		ExecutionTrace ex2 = new ExecutionTrace();
 		l.add(ex2);
 
+		VerifyFact vf3 = new VerifyFact();
+		l.add(vf3);
+
 		ScenarioHelper hlp = new ScenarioHelper();
 
 		List fx = hlp.lumpyMap(l);
-		assertEquals(6, fx.size());
+		assertEquals(8, fx.size());
 
 		Map first  = (Map) fx.get(0);
 		assertEquals(2, first.size());
@@ -71,26 +74,57 @@ public class ScenarioHelperTest extends TestCase {
 
 		assertEquals(ex1, fx.get(1));
 
-		List expectations = (List) fx.get(2);
-		assertEquals(4, expectations.size());
-		assertEquals(vf1, expectations.get(0));
+		List ruleFired = (List) fx.get(2);
+		assertEquals(2, ruleFired.size());
+		assertEquals(vr1, ruleFired.get(0));
+		assertEquals(vr2, ruleFired.get(1));
+
+		List verifyFact = (List) fx.get(3);
+		assertEquals(2, verifyFact.size());
+		assertEquals(vf1, verifyFact.get(0));
+		assertEquals(vf2, verifyFact.get(1));
 
 
-		List retracts = (List) fx.get(3);
+		List retracts = (List) fx.get(4);
 		assertEquals(1, retracts.size());
 		RetractFact ret = (RetractFact) retracts.get(0);
 		assertEquals("y", ret.name);
 
 
-		Map second = (Map) fx.get(4);
+		Map second = (Map) fx.get(5);
 		assertEquals(2, second.size());
 		assertTrue(second.containsKey("Z"));
 		assertTrue(second.containsKey("Q"));
 		fdl = (List) second.get("Q");
 		assertEquals(2, fdl.size());
 
-		assertEquals(ex2, fx.get(5));
+		assertEquals(ex2, fx.get(6));
 
+		List last = (List) fx.get(7);
+		assertEquals(1, last.size());
+		assertEquals(vf3, last.get(0));
+
+	}
+
+	public void testGlobals() {
+		List l = new ArrayList();
+		l.add(new FactData("X", "d", new FieldData[0], true));
+		l.add(new FactData("X", "c", new FieldData[0], true));
+		l.add(new FactData("Q", "a", new FieldData[0], true));
+		l.add(new FactData("Q", "b", new FieldData[0], true));
+
+		ScenarioHelper hlp = new ScenarioHelper();
+		Map m = hlp.lumpyMapGlobals(l);
+		assertEquals(2, m.size());
+		List fd = (List) m.get("X");
+		assertEquals(2, fd.size());
+		assertEquals("d", ((FactData)fd.get(0)).name);
+		assertEquals("c", ((FactData)fd.get(1)).name);
+
+		fd = (List) m.get("Q");
+		assertEquals(2, fd.size());
+		assertEquals("a", ((FactData)fd.get(0)).name);
+		assertEquals("b", ((FactData)fd.get(1)).name);
 
 
 
