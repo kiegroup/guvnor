@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.ErrorPopup;
-import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
@@ -35,18 +34,36 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScenarioWidget extends Composite {
 
-    public ScenarioWidget(Scenario scenario, String[] ruleList) {
-    	DirtyableFlexTable layout = new DirtyableFlexTable();
+    private DirtyableFlexTable layout;
+	private String[] availableRules;
+	private Scenario scenario;
 
-        ScenarioHelper hlp = new ScenarioHelper();
-        List fixtures = hlp.lumpyMap(scenario.fixtures);
+
+
+
+	public ScenarioWidget(Scenario scenario, String[] ruleList) {
+    	layout = new DirtyableFlexTable();
+    	this.availableRules = ruleList;
+    	this.scenario = scenario;
+
+        render();
+
+        layout.setStyleName("model-builder-Background");
+        initWidget(layout);
+
+    }
+
+
+	private void render() {
+		layout.clear();
+		ScenarioHelper hlp = new ScenarioHelper();
+		List fixtures = hlp.lumpyMap(scenario.fixtures);
 
         int layoutRow = 0;
 
@@ -55,7 +72,7 @@ public class ScenarioWidget extends Composite {
 			if (f instanceof ExecutionTrace) {
 				layout.setWidget(layoutRow, 0, new Label("EXPECT"));
 				ExecutionTrace ex = (ExecutionTrace) f;
-				layout.setWidget(layoutRow, 1, new ExecutionWidget(ex, false));
+				layout.setWidget(layoutRow, 1, getExecuteWidget(ex, scenario, availableRules));
 			} else if (f instanceof Map) {
 				layout.setWidget(layoutRow, 0, new Label("GIVEN"));
 				layoutRow++;
@@ -73,7 +90,7 @@ public class ScenarioWidget extends Composite {
 				if (first instanceof VerifyFact) {
 					doVerifyFacts(l, layout, layoutRow);
 				} else if (first instanceof VerifyRuleFired) {
-					layout.setWidget(layoutRow, 1, new VerifyRulesFiredWidget(l));
+					layout.setWidget(layoutRow, 1, new VerifyRulesFiredWidget(l, availableRules, scenario));
 				} else {
 					layout.setWidget(layoutRow, 1, new RetractWidget(l));
 				}
@@ -86,7 +103,7 @@ public class ScenarioWidget extends Composite {
         layout.setWidget(layoutRow, 0, new Label("Configuration"));
         layoutRow++;
         //config section
-        ConfigWidget conf = new ConfigWidget(scenario, ruleList);
+        ConfigWidget conf = new ConfigWidget(scenario, availableRules);
         layout.setWidget(layoutRow, 1, conf);
 
         //global section
@@ -99,11 +116,49 @@ public class ScenarioWidget extends Composite {
         layout.setWidget(layoutRow, 0, new Label("Globals"));
         layoutRow++;
         layout.setWidget(layoutRow, 1, globalPanel);
+	}
 
-        layout.setStyleName("model-builder-Background");
-        initWidget(layout);
 
-    }
+	private Widget getExecuteWidget(final ExecutionTrace ex, final Scenario sc, final String[] ruleList) {
+		FlexTable layout = new FlexTable();
+
+		layout.setWidget(0, 0, new ExecutionWidget(ex));
+		layout.getCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
+
+
+		Button addRule = new Button("Add rule expectation");
+		layout.setWidget(0, 1, addRule);
+		layout.getCellFormatter().setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_RIGHT);
+
+		addRule.addClickListener(new ClickListener()  {
+			public void onClick(final Widget w) {
+		        final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", "Select rule");
+		        final ListBox rules = new ListBox();
+		        for (int i = 0; i < ruleList.length; i++) {
+		            rules.addItem(ruleList[i]);
+		        }
+		        pop.addRow(rules);
+		        Button ok = new Button("Add");
+		        pop.addRow(ok);
+		        ok.addClickListener(new ClickListener() {
+		            public void onClick(Widget w) {
+		                String r = rules.getItemText(rules.getSelectedIndex());
+		                VerifyRuleFired vr = new VerifyRuleFired(r, null, new Boolean(true));
+		                sc.insertAfter(ex, vr);
+		                render();
+		                pop.hide();
+		            }
+		        });
+		        pop.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
+		        pop.show();
+
+			}
+		});
+
+		return layout;
+	}
+
+
 
 
 	private void doVerifyFacts(List l, FlexTable layout, int layoutRow) {
@@ -304,33 +359,80 @@ class ConfigWidget extends Composite {
 }
 
 class ExecutionWidget extends Composite {
-    public ExecutionWidget(ExecutionTrace ext, boolean showResults) {
-        final SimplePanel p = new SimplePanel();
-        render(ext, showResults, p);
+    public ExecutionWidget(final ExecutionTrace ext) {
+
+
+    	final Widget dt = simulDate(ext);
+    	dt.setVisible(ext.scenarioSimulatedDate != null);
+
+    	final ListBox choice = new ListBox();
+    	choice.addItem("Use real date and time");
+    	choice.addItem("Use a simulated date and time");
+    	choice.setSelectedIndex((ext.scenarioSimulatedDate == null) ? 0 : 1);
+    	choice.addChangeListener(new ChangeListener() {
+			public void onChange(Widget w) {
+				if (choice.getSelectedIndex() == 0) {
+					dt.setVisible( false );
+					ext.scenarioSimulatedDate = null;
+				} else {
+					dt.setVisible(true);
+				}
+			}
+		});
+
+    	HorizontalPanel p = new HorizontalPanel();
+    	p.add(new Image("images/execution_trace.gif"));
+    	p.add(choice);
+    	p.add(dt);
+
+
+
         initWidget(p);
     }
 
-    private void render(final ExecutionTrace ext, boolean showResults,
-            final SimplePanel p) {
-        FormStyleLayout layout = new FormStyleLayout("images/execution_trace.gif", "Run the rules");
-        p.add(layout);
-        if (showResults) {
-            layout.addAttribute("Execution time:", new Label(ext.executionTimeResult + " ms"));
-            layout.addAttribute("Number of rules fired:", new Label(ext.numberOfRulesFired + ""));
-        }
-        layout.addAttribute("Simulation date:", simulDate(ext));
 
-
-    }
 
     private Widget simulDate(final ExecutionTrace ext) {
+    	HorizontalPanel ab = new HorizontalPanel();
         final String fmt = "dd-MMM-YYYY";
         final TextBox dt = new TextBox();
         if (ext.scenarioSimulatedDate == null) {
-            dt.setText("<current date and time>");
+            dt.setText("<" + fmt + ">");
         } else {
             dt.setText(ext.scenarioSimulatedDate.toLocaleString());
         }
+
+        final Label dateHint = new Label();
+
+
+
+
+        dt.addKeyboardListener(new KeyboardListener() {
+
+			public void onKeyDown(Widget arg0, char arg1, int arg2) {
+
+
+			}
+
+			public void onKeyPress(Widget arg0, char arg1, int arg2) {
+
+
+			}
+
+			public void onKeyUp(Widget w, char arg1, int arg2) {
+				try {
+
+					Date d = new Date(dt.getText());
+					dateHint.setText(d.toLocaleString());
+
+				} catch (Exception e) {
+					dateHint.setText("...");
+				}
+
+			}
+
+        });
+
         dt.addChangeListener(new ChangeListener() {
             public void onChange(Widget w) {
                 if (dt.getText().trim().equals("")) {
@@ -340,13 +442,16 @@ class ExecutionWidget extends Composite {
                         Date d = new Date(dt.getText());
                         ext.scenarioSimulatedDate = d;
                         dt.setText(d.toLocaleString());
+                        dateHint.setText("");
                     } catch (Exception e) {
                         ErrorPopup.showMessage("Bad date format - please try again (try the format of " + fmt + ").");
                     }
                 }
             }
         });
-        return dt;
+        ab.add(dt);
+        ab.add(dateHint);
+        return ab;
     }
 
 
@@ -399,18 +504,30 @@ class VerifyFactWidget extends Composite {
 }
 
 class VerifyRulesFiredWidget extends Composite {
-    /**
+    private Grid outer;
+
+	/**
      * @param rfl List<VeryfyRuleFired>
+     * @param rules = the list of rules to choose from
+     * @param scenario = the scenario to add/remove from
      */
-    public VerifyRulesFiredWidget(List rfl) {
-        Grid outer = new Grid(2, 1);
+    public VerifyRulesFiredWidget(final List rfl, final String[] rules, final Scenario scenario) {
+        outer = new Grid(2, 1);
         outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
         outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         outer.setStyleName("modeller-fact-pattern-Widget");
+
         outer.setWidget(0, 0, new Label("Expect rules"));
         initWidget(outer);
 
-        FlexTable data = new FlexTable();
+        FlexTable data = render(rfl);
+        outer.setWidget(1, 0, data);
+    }
+
+
+
+	private FlexTable render(List rfl) {
+		FlexTable data = new FlexTable();
 
 
         for (int i = 0; i < rfl.size(); i++) {
@@ -472,9 +589,8 @@ class VerifyRulesFiredWidget extends Composite {
                     public void onKeyUp(Widget arg0, char arg1, int arg2) {}
                 } );
         }
-        outer.setWidget(1, 0, data);
-
-    }
+		return data;
+	}
 }
 
 class RetractWidget extends Composite {
