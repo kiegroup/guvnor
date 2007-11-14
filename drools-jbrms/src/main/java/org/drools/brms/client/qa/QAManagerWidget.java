@@ -1,8 +1,10 @@
 package org.drools.brms.client.qa;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
@@ -28,11 +30,21 @@ public class QAManagerWidget extends Composite {
         tab.setWidth("100%");
         tab.setHeight("30%");
 
-        tab.add( new ScenarioWidget(getDemo(), new String[] {"rule1", "rule2"}),  "<img src='images/test_manager.gif'/>Test", true);
+        tab.add( new ScenarioWidget(getDemo(), new String[] {"rule1", "rule2"}, getSCE()),  "<img src='images/test_manager.gif'/>Test", true);
         tab.add(new Label("TODO"), "<img src='images/analyze.gif'/>Analyze", true);
         tab.selectTab( 0 );
 
         initWidget(tab);
+	}
+
+	private SuggestionCompletionEngine getSCE() {
+		SuggestionCompletionEngine eng = new SuggestionCompletionEngine();
+		eng.fieldsForType = new HashMap();
+
+		eng.fieldsForType.put("Driver", new String[] {"age", "name", "risk"});
+		eng.fieldsForType.put("Accident", new String[] {"severity", "location"});
+		eng.factTypes = new String[] {"Driver", "Accident"};
+		return eng;
 	}
 
 	private Scenario getDemo() {
@@ -51,11 +63,11 @@ public class QAManagerWidget extends Composite {
 
         sc.fixtures.add(new ExecutionTrace());
 
-        VerifyFact vf = new VerifyFact("d1", new VerifyField[] {
-            new VerifyField("age", "42", "=="),
-            new VerifyField("name", "michael", "!=")
+        List fields = new ArrayList();
+        fields.add(new VerifyField("age", "42", "=="));
+        fields.add(new VerifyField("name", "michael", "!="));
 
-        });
+        VerifyFact vf = new VerifyFact("d1", fields);
 
         sc.fixtures.add(vf);
 

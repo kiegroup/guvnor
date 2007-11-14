@@ -10,6 +10,7 @@ import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
@@ -21,6 +22,7 @@ import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
 
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -43,15 +45,16 @@ public class ScenarioWidget extends Composite {
     private DirtyableFlexTable layout;
 	private String[] availableRules;
 	private Scenario scenario;
+	private SuggestionCompletionEngine sce;
 
 
 
 
-	public ScenarioWidget(Scenario scenario, String[] ruleList) {
+	public ScenarioWidget(Scenario scenario, String[] ruleList, SuggestionCompletionEngine eng) {
     	layout = new DirtyableFlexTable();
     	this.availableRules = ruleList;
     	this.scenario = scenario;
-
+    	this.sce = eng;
         render();
 
         layout.setStyleName("model-builder-Background");
@@ -121,13 +124,11 @@ public class ScenarioWidget extends Composite {
 
 	private Widget getExecuteWidget(final ExecutionTrace ex, final Scenario sc, final String[] ruleList) {
 		FlexTable layout = new FlexTable();
-
-		layout.setWidget(0, 0, new ExecutionWidget(ex));
+		Button addRule = new Button("Add rule expectation");
+		layout.setWidget(0, 0, addRule);
 		layout.getCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
 
-
-		Button addRule = new Button("Add rule expectation");
-		layout.setWidget(0, 1, addRule);
+		layout.setWidget(0, 1, new ExecutionWidget(ex));
 		layout.getCellFormatter().setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_RIGHT);
 
 		addRule.addClickListener(new ClickListener()  {
@@ -151,10 +152,8 @@ public class ScenarioWidget extends Composite {
 		        });
 		        pop.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
 		        pop.show();
-
 			}
 		});
-
 		return layout;
 	}
 
@@ -164,12 +163,22 @@ public class ScenarioWidget extends Composite {
 	private void doVerifyFacts(List l, FlexTable layout, int layoutRow) {
 		VerticalPanel vert = new VerticalPanel();
 		for (Iterator iterator = l.iterator(); iterator.hasNext();) {
-			VerifyFact f = (VerifyFact) iterator.next();
-			vert.add(new VerifyFactWidget(f));
+			final VerifyFact f = (VerifyFact) iterator.next();
+			HorizontalPanel h = new HorizontalPanel();
+			h.add(new VerifyFactWidget(f, scenario, sce));
+			Image del = new ImageButton("images/delete_obj.gif", "Delete the expectation for this fact.", new ClickListener() {
+				public void onClick(Widget w) {
+					scenario.removeFixture(f);
+					render();
+				}
+			});
+			h.add(del);
+			vert.add(h);
 		}
 		layout.setWidget(layoutRow, 1, vert);
 
 	}
+
 
 
 
@@ -458,17 +467,56 @@ class ExecutionWidget extends Composite {
 }
 
 class VerifyFactWidget extends Composite {
-    public VerifyFactWidget(VerifyFact vf) {
-        Grid outer = new Grid(2, 1);
+    private Grid outer;
+
+	public VerifyFactWidget(final VerifyFact vf, final Scenario sc, final SuggestionCompletionEngine sce) {
+        outer = new Grid(2, 1);
         outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
         outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         outer.setStyleName("modeller-fact-pattern-Widget");
-        outer.setWidget(0, 0, new Label("Expect [" + vf.factName + "]"));
+        HorizontalPanel ab = new HorizontalPanel();
+        ab.add(new Label("Expect [" + vf.factName + "]"));
+
+        Image add = new ImageButton("images/add_field_to_fact.gif", "Add a field to this expectation.", new ClickListener() {
+			public void onClick(Widget w) {
+				String t = (String) sc.getVariableTypes().get(vf.factName);
+				String[] fields = (String[]) sce.fieldsForType.get(t);
+				final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", "Choose a field to add");
+				final ListBox b = new ListBox();
+				for (int i = 0; i < fields.length; i++) {
+					b.addItem(fields[i]);
+				}
+				pop.addRow(b);
+				Button ok = new Button("OK");
+				ok.addClickListener(new ClickListener() {
+									public void onClick(Widget w) {
+										String f = b.getItemText(b.getSelectedIndex());
+										vf.fieldValues.add(new VerifyField(f, "", "=="));
+								        FlexTable data = render(vf);
+								        outer.setWidget(1, 0, data);
+								        pop.hide();
+									}
+								});
+				pop.addRow(ok);
+				pop.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
+				pop.show();
+
+			}
+		});
+
+        ab.add(add);
+        outer.setWidget(0, 0, ab);
         initWidget(outer);
 
-        FlexTable data = new FlexTable();
-        for (int i = 0; i < vf.fieldValues.length; i++) {
-            final VerifyField fld = vf.fieldValues[i];
+        FlexTable data = render(vf);
+        outer.setWidget(1, 0, data);
+
+    }
+
+	private FlexTable render(final VerifyFact vf) {
+		FlexTable data = new FlexTable();
+        for (int i = 0; i < vf.fieldValues.size(); i++) {
+            final VerifyField fld = (VerifyField) vf.fieldValues.get(i);
             data.setWidget(i, 0, new Label(fld.fieldName + ":"));
             data.getFlexCellFormatter().setHorizontalAlignment(i, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 
@@ -497,10 +545,20 @@ class VerifyFactWidget extends Composite {
             });
             data.setWidget(i, 2, input);
 
-        }
-        outer.setWidget(1, 0, data);
+            Image del = new ImageButton("images/delete_item_small.gif", "Remove this field expectation.", new ClickListener() {
+				public void onClick(Widget w) {
+					vf.fieldValues.remove(fld);
+			        FlexTable data = render(vf);
+			        outer.setWidget(1, 0, data);
 
-    }
+				}
+			});
+            data.setWidget(i, 3, del);
+
+        }
+		return data;
+	}
+
 }
 
 class VerifyRulesFiredWidget extends Composite {
@@ -513,6 +571,7 @@ class VerifyRulesFiredWidget extends Composite {
      */
     public VerifyRulesFiredWidget(final List rfl, final String[] rules, final Scenario scenario) {
         outer = new Grid(2, 1);
+
         outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
         outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         outer.setStyleName("modeller-fact-pattern-Widget");
@@ -520,14 +579,14 @@ class VerifyRulesFiredWidget extends Composite {
         outer.setWidget(0, 0, new Label("Expect rules"));
         initWidget(outer);
 
-        FlexTable data = render(rfl);
+        FlexTable data = render(rfl, scenario);
         outer.setWidget(1, 0, data);
     }
 
 
 
-	private FlexTable render(List rfl) {
-		FlexTable data = new FlexTable();
+	private FlexTable render(final List rfl, final Scenario sc) {
+		FlexTable data = new DirtyableFlexTable();
 
 
         for (int i = 0; i < rfl.size(); i++) {
@@ -575,6 +634,16 @@ class VerifyRulesFiredWidget extends Composite {
             HorizontalPanel h = new HorizontalPanel();
             h.add(b); h.add(num);
             data.setWidget(i, 1, h);
+
+            Image del = new ImageButton("images/delete_item_small.gif", "Remove this rule expectation.", new ClickListener() {
+				public void onClick(Widget w) {
+					rfl.remove(v);
+					sc.removeFixture(v);
+					outer.setWidget(1, 0, render(rfl, sc));
+				}
+			});
+
+            data.setWidget(i, 2, del);
 
             //we only want numbers here...
             num.addKeyboardListener(new KeyboardListener() {
