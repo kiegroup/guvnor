@@ -1,5 +1,6 @@
 package org.drools.brms.client.qa;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -58,7 +59,11 @@ public class ScenarioWidget extends Composite {
         render();
 
         layout.setStyleName("model-builder-Background");
+
+
         initWidget(layout);
+        setWidth("100%");
+        setHeight("100%");
 
     }
 
@@ -68,6 +73,8 @@ public class ScenarioWidget extends Composite {
 		ScenarioHelper hlp = new ScenarioHelper();
 		List fixtures = hlp.lumpyMap(scenario.fixtures);
 
+
+
         int layoutRow = 0;
 
         for (int i = 0; i < fixtures.size(); i++) {
@@ -75,7 +82,10 @@ public class ScenarioWidget extends Composite {
 			if (f instanceof ExecutionTrace) {
 				layout.setWidget(layoutRow, 0, new Label("EXPECT"));
 				ExecutionTrace ex = (ExecutionTrace) f;
-				layout.setWidget(layoutRow, 1, getExecuteWidget(ex, scenario, availableRules));
+
+				layout.setWidget(layoutRow, 1, new ExecutionWidget(ex));
+				layout.setWidget(layoutRow, 2, getNewExpectationButton(ex, scenario, availableRules));
+				layout.getFlexCellFormatter().setHorizontalAlignment(layoutRow, 2, HasHorizontalAlignment.ALIGN_LEFT);
 			} else if (f instanceof Map) {
 				layout.setWidget(layoutRow, 0, new Label("GIVEN"));
 				layoutRow++;
@@ -122,25 +132,20 @@ public class ScenarioWidget extends Composite {
 	}
 
 
-	private Widget getExecuteWidget(final ExecutionTrace ex, final Scenario sc, final String[] ruleList) {
-		FlexTable layout = new FlexTable();
-		Button addRule = new Button("Add rule expectation");
-		layout.setWidget(0, 0, addRule);
-		layout.getCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
+	private Widget getNewExpectationButton(final ExecutionTrace ex,
+			final Scenario sc, final String[] ruleList) {
 
-		layout.setWidget(0, 1, new ExecutionWidget(ex));
-		layout.getCellFormatter().setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_RIGHT);
+		Image add = new ImageButton("images/new_item.gif", "Add a new expectation.", new ClickListener() {
+			public void onClick(Widget w) {
+				final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", "New expectation");
 
-		addRule.addClickListener(new ClickListener()  {
-			public void onClick(final Widget w) {
-		        final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", "Select rule");
 		        final ListBox rules = new ListBox();
 		        for (int i = 0; i < ruleList.length; i++) {
 		            rules.addItem(ruleList[i]);
 		        }
 		        pop.addRow(rules);
 		        Button ok = new Button("Add");
-		        pop.addRow(ok);
+
 		        ok.addClickListener(new ClickListener() {
 		            public void onClick(Widget w) {
 		                String r = rules.getItemText(rules.getSelectedIndex());
@@ -150,12 +155,42 @@ public class ScenarioWidget extends Composite {
 		                pop.hide();
 		            }
 		        });
-		        pop.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
-		        pop.show();
+
+		        HorizontalPanel h = new HorizontalPanel();
+		        h.add(rules);
+		        h.add(ok);
+				pop.addAttribute("Expect a rule:", h);
+
+				final ListBox facts = new ListBox();
+				List names = sc.getFactNamesInScope(ex);
+				for (Iterator iterator = names.iterator(); iterator.hasNext();) {
+					facts.addItem((String) iterator.next());
+				}
+
+				ok = new Button("Add");
+				ok.addClickListener(new ClickListener() {
+					public void onClick(Widget w) {
+						String factName = facts.getItemText(facts.getSelectedIndex());
+						sc.insertAfter(ex, new VerifyFact(factName, new ArrayList()));
+						render();
+					}
+				});
+
+				h = new HorizontalPanel();
+				h.add(facts);
+				h.add(ok);
+				pop.addAttribute("Expect values on a fact:", h);
+
+				pop.setPopupPosition(Window.getClientWidth()/3, Window.getClientHeight()/3 );
+				pop.show();
 			}
 		});
-		return layout;
+
+
+		return add;
 	}
+
+
 
 
 
@@ -168,8 +203,10 @@ public class ScenarioWidget extends Composite {
 			h.add(new VerifyFactWidget(f, scenario, sce));
 			Image del = new ImageButton("images/delete_obj.gif", "Delete the expectation for this fact.", new ClickListener() {
 				public void onClick(Widget w) {
-					scenario.removeFixture(f);
-					render();
+					if (Window.confirm("Are you sure you want to remove this expectation?")) {
+						scenario.removeFixture(f);
+						render();
+					}
 				}
 			});
 			h.add(del);
@@ -547,10 +584,11 @@ class VerifyFactWidget extends Composite {
 
             Image del = new ImageButton("images/delete_item_small.gif", "Remove this field expectation.", new ClickListener() {
 				public void onClick(Widget w) {
-					vf.fieldValues.remove(fld);
-			        FlexTable data = render(vf);
-			        outer.setWidget(1, 0, data);
-
+					if (Window.confirm("Are you sure you want to remove this field expectation?")) {
+						vf.fieldValues.remove(fld);
+				        FlexTable data = render(vf);
+				        outer.setWidget(1, 0, data);
+					}
 				}
 			});
             data.setWidget(i, 3, del);
@@ -637,9 +675,11 @@ class VerifyRulesFiredWidget extends Composite {
 
             Image del = new ImageButton("images/delete_item_small.gif", "Remove this rule expectation.", new ClickListener() {
 				public void onClick(Widget w) {
-					rfl.remove(v);
-					sc.removeFixture(v);
-					outer.setWidget(1, 0, render(rfl, sc));
+					if (Window.confirm("Are you sure you want to remove this rule expectation?")) {
+						rfl.remove(v);
+						sc.removeFixture(v);
+						outer.setWidget(1, 0, render(rfl, sc));
+					}
 				}
 			});
 
