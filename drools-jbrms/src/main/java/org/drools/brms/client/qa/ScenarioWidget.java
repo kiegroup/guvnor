@@ -112,11 +112,13 @@ public class ScenarioWidget extends Composite {
 		}
 
 
-        layout.setWidget(layoutRow, 0, new Label("Configuration"));
+        layout.setWidget(layoutRow, 0, new Label("(configuration)"));
         layoutRow++;
         //config section
         ConfigWidget conf = new ConfigWidget(scenario, availableRules);
         layout.setWidget(layoutRow, 1, conf);
+
+        layoutRow++;
 
         //global section
         Map globals = hlp.lumpyMapGlobals(scenario.globals);
@@ -125,7 +127,7 @@ public class ScenarioWidget extends Composite {
             Map.Entry e = (Map.Entry) iterator.next();
             globalPanel.add(new DataInputWidget((String)e.getKey(), (List) globals.get(e.getKey()), true, scenario, sce, this));
         }
-        layout.setWidget(layoutRow, 0, new Label("Globals"));
+        layout.setWidget(layoutRow, 0, new Label("(globals)"));
         layoutRow++;
         layout.setWidget(layoutRow, 1, globalPanel);
 	}
