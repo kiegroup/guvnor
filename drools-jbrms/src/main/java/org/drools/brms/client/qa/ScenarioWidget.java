@@ -67,7 +67,7 @@ public class ScenarioWidget extends Composite {
     }
 
 
-	private void render() {
+	void render() {
 		layout.clear();
 		ScenarioHelper hlp = new ScenarioHelper();
 		List fixtures = hlp.lumpyMap(scenario.fixtures);
@@ -93,7 +93,7 @@ public class ScenarioWidget extends Composite {
 		        for (Iterator iterator = facts.entrySet().iterator(); iterator.hasNext();) {
 		            Map.Entry e = (Map.Entry) iterator.next();
 		            List factList = (List) facts.get(e.getKey());
-		            vert.add(new DataInputWidget((String)e.getKey(), factList, false, scenario));
+		            vert.add(new DataInputWidget((String)e.getKey(), factList, false, scenario, sce, this));
 		        }
 		        layout.setWidget(layoutRow, 1, vert);
 			} else {
@@ -123,7 +123,7 @@ public class ScenarioWidget extends Composite {
         VerticalPanel globalPanel = new VerticalPanel();
         for (Iterator iterator = globals.entrySet().iterator(); iterator.hasNext();) {
             Map.Entry e = (Map.Entry) iterator.next();
-            globalPanel.add(new DataInputWidget((String)e.getKey(), (List) globals.get(e.getKey()), true, scenario));
+            globalPanel.add(new DataInputWidget((String)e.getKey(), (List) globals.get(e.getKey()), true, scenario, sce, this));
         }
         layout.setWidget(layoutRow, 0, new Label("Globals"));
         layoutRow++;
@@ -230,13 +230,19 @@ class DataInputWidget extends Composite {
 
     private Grid outer;
 	private Scenario scenario;
+	private SuggestionCompletionEngine sce;
+	private String type;
+	private ScenarioWidget parent;
 
 
 
-	public DataInputWidget(String factType, List defList, boolean isGlobal, Scenario sc) {
+	public DataInputWidget(String factType, List defList, boolean isGlobal, Scenario sc, SuggestionCompletionEngine sce, ScenarioWidget parent) {
 
         outer = new Grid(2, 1);
         scenario = sc;
+        this.sce = sce;
+        this.type = factType;
+        this.parent = parent;
         outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
         outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         outer.setStyleName("modeller-fact-pattern-Widget");
@@ -261,8 +267,12 @@ class DataInputWidget extends Composite {
 
 	private FlexTable render(final List defList) {
 		DirtyableFlexTable t = new DirtyableFlexTable();
+		if (defList.size() == 0) {
+			parent.render();
+		}
 
 		//This will work out what row is for what field, addin labels and remove icons
+
         Map fields = new HashMap();
         int col = 0;
         int totalCols = defList.size();
@@ -291,7 +301,39 @@ class DataInputWidget extends Composite {
 
         int totalRows = fields.size();
 
+        //now we put in button to add new fields
+        //Image newField = new ImageButton("images/add_field_to_fact.gif", "Add a field.");
+        Button newField = new Button("Add field");
+        newField.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
 
+				String[] fields = (String[]) sce.fieldsForType.get(type);
+				final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", "Choose a field to add");
+				final ListBox b = new ListBox();
+				for (int i = 0; i < fields.length; i++) {
+					b.addItem(fields[i]);
+				}
+				pop.addRow(b);
+				Button ok = new Button("OK");
+				ok.addClickListener(new ClickListener() {
+									public void onClick(Widget w) {
+										String f = b.getItemText(b.getSelectedIndex());
+										for (Iterator iterator = defList.iterator(); iterator.hasNext();) {
+											FactData fd = (FactData) iterator.next();
+											fd.fieldData.add(new FieldData(f, ""));
+										}
+								        outer.setWidget(1, 0, render(defList));
+								        pop.hide();
+									}
+								});
+				pop.addRow(ok);
+				pop.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
+				pop.show();
+			}
+		});
+
+        t.setWidget(totalRows + 1, 0, newField);
+        t.getFlexCellFormatter().setHorizontalAlignment(totalRows + 1, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 
         //now we go through the facts and the fields, adding them to the grid
         //if a fact is missing a FieldData, we will add it in (so people can enter data later on)
@@ -299,11 +341,11 @@ class DataInputWidget extends Composite {
         for (Iterator iterator = defList.iterator(); iterator.hasNext();) {
             final FactData d = (FactData) iterator.next();
             t.setWidget(0, ++col, new Label(d.name));
-            Image del = new ImageButton("images/delete_item_small.gif", "Remove this row.", new ClickListener() {
+            Image del = new ImageButton("images/delete_item_small.gif", "Remove the column for [" + d.name + "]", new ClickListener() {
 				public void onClick(Widget w) {
 					if (scenario.isFactNameUsed(d)) {
 						Window.alert("Can't remove this column as the name [" + d.name + "] is being used.");
-					} else if (Window.confirm("Are you sure you want to remove this row ?")) {
+					} else if (Window.confirm("Are you sure you want to remove this column ?")) {
 						scenario.removeFixture(d);
 						defList.remove(d);
 						outer.setWidget(1, 0, render(defList));
