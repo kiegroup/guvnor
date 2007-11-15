@@ -23,7 +23,6 @@ import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -229,9 +228,13 @@ public class ScenarioWidget extends Composite {
 class DataInputWidget extends Composite {
 
 
-    public DataInputWidget(String factType, List defList, boolean isGlobal) {
+    private Grid outer;
 
-        Grid outer = new Grid(2, 1);
+
+
+	public DataInputWidget(String factType, List defList, boolean isGlobal) {
+
+        outer = new Grid(2, 1);
         outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
         outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         outer.setStyleName("modeller-fact-pattern-Widget");
@@ -248,20 +251,37 @@ class DataInputWidget extends Composite {
             }
         }
 
-        final FlexTable t = new FlexTable();
+        FlexTable t = render(defList);
 
-        //This will work out what row is for what field
+        outer.setWidget(1, 0, t);
+        initWidget(outer);
+    }
+
+	private FlexTable render(final List defList) {
+		DirtyableFlexTable t = new DirtyableFlexTable();
+
+		//This will work out what row is for what field
         Map fields = new HashMap();
         int col = 0;
-
+        int totalCols = defList.size();
         for (Iterator iterator = defList.iterator(); iterator.hasNext();) {
-            FactData d = (FactData) iterator.next();
-            for (int i = 0; i < d.fieldData.length; i++) {
-                FieldData fd = d.fieldData[i];
+            final FactData d = (FactData) iterator.next();
+            for (int i = 0; i < d.fieldData.size(); i++) {
+                final FieldData fd = (FieldData) d.fieldData.get(i);
                 if (!fields.containsKey(fd.name)) {
                     int idx = fields.size() + 1;
                     fields.put(fd.name, new Integer(idx));
                     t.setWidget(idx, 0, new Label(fd.name + ":"));
+                    Image del = new ImageButton("images/delete_item_small.gif", "Remove this row.", new ClickListener() {
+        				public void onClick(Widget w) {
+        					if (Window.confirm("Are you sure you want to remove this row ?")) {
+        						ScenarioHelper.removeFields(defList, fd.name);
+        						outer.setWidget(1, 0, render(defList));
+
+        					}
+        				}
+        			});
+                    t.setWidget(idx, totalCols + 1, del);
                     t.getCellFormatter().setHorizontalAlignment(idx, 0, HasHorizontalAlignment.ALIGN_RIGHT);
                 }
             }
@@ -274,8 +294,8 @@ class DataInputWidget extends Composite {
             FactData d = (FactData) iterator.next();
             t.setWidget(0, ++col, new Label(d.name));
             Map presentFields = new HashMap(fields);
-            for (int i = 0; i < d.fieldData.length; i++) {
-                FieldData fd = d.fieldData[i];
+            for (int i = 0; i < d.fieldData.size(); i++) {
+                FieldData fd = (FieldData) d.fieldData.get(i);
                 int fldRow = ((Integer) fields.get(fd.name)).intValue();
                 t.setWidget(fldRow, col, editableCell(fd));
                 presentFields.remove(fd.name);
@@ -285,16 +305,16 @@ class DataInputWidget extends Composite {
                 Map.Entry e = (Map.Entry) missing.next();
                 int fldRow = ((Integer) e.getValue()).intValue();
                 FieldData fd = new FieldData((String) e.getKey(), "");
-                d.addFieldData(fd);
+                d.fieldData.add(fd);
                 t.setWidget(fldRow, col, editableCell(fd));
             }
         }
+        return t;
+	}
 
-        outer.setWidget(1, 0, t);
-        initWidget(outer);
-    }
 
-    private Widget editableCell(final FieldData fd) {
+
+	private Widget editableCell(final FieldData fd) {
         final TextBox tb = new TextBox();
         tb.setText(fd.value);
         tb.setTitle("Value for: " + fd.name);

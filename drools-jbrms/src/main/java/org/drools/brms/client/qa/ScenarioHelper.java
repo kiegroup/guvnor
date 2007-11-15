@@ -9,6 +9,7 @@ import java.util.Map;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.Expectation;
 import org.drools.brms.client.modeldriven.testing.FactData;
+import org.drools.brms.client.modeldriven.testing.FieldData;
 import org.drools.brms.client.modeldriven.testing.Fixture;
 import org.drools.brms.client.modeldriven.testing.RetractFact;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
@@ -97,6 +98,17 @@ public class ScenarioHelper {
 	}
 
 
+	static void removeFields(List factData, String field) {
+		for (Iterator iterator = factData.iterator(); iterator.hasNext();) {
+			FactData fa = (FactData) iterator.next();
+			for (Iterator iterator2 = fa.fieldData.iterator(); iterator2.hasNext();) {
+				FieldData fi = (FieldData) iterator2.next();
+				if (fi.name.equals(field)) {
+					iterator2.remove();
+				}
+			}
+		}
+	}
 
 
 

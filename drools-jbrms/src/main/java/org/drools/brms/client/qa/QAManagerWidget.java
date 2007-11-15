@@ -1,6 +1,7 @@
 package org.drools.brms.client.qa;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -49,10 +50,10 @@ public class QAManagerWidget extends Composite {
 
 	private Scenario getDemo() {
         //Sample data
-        FactData d1 = new FactData("Driver", "d1", new FieldData[] {new FieldData("age", "42"), new FieldData("name", "david")}, false);
-        FactData d2 = new FactData("Driver", "d2", new FieldData[] {new FieldData("name", "michael")}, false);
-        FactData d3 = new FactData("Driver", "d3", new FieldData[] {new FieldData("name", "michael2")}, false);
-        FactData d4 = new FactData("Accident", "a1", new FieldData[] {new FieldData("name", "michael2")}, false);
+        FactData d1 = new FactData("Driver", "d1", ls(new FieldData[] {new FieldData("age", "42"), new FieldData("name", "david")}), false);
+        FactData d2 = new FactData("Driver", "d2", ls(new FieldData[] {new FieldData("name", "michael")}), false);
+        FactData d3 = new FactData("Driver", "d3", ls(new FieldData[] {new FieldData("name", "michael2")}), false);
+        FactData d4 = new FactData("Accident", "a1", ls(new FieldData[] {new FieldData("name", "michael2")}), false);
         Scenario sc = new Scenario();
         sc.fixtures.add(d1);
         sc.fixtures.add(d2);
@@ -77,6 +78,14 @@ public class QAManagerWidget extends Composite {
         sc.fixtures.add(vf2);
 
 		return sc;
+	}
+
+	private List ls(FieldData[] fieldDatas) {
+		List ls = new ArrayList();
+		for (int i = 0; i < fieldDatas.length; i++) {
+			ls.add(fieldDatas[i]);
+		}
+		return ls;
 	}
 
 

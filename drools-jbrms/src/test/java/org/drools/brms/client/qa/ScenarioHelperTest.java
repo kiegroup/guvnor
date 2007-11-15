@@ -26,16 +26,16 @@ public class ScenarioHelperTest extends TestCase {
 
 	public void testChunks() {
 		List l = new ArrayList();
-		l.add(new FactData("Q", "x", new FieldData[0], false));
-		l.add(new FactData("Q", "y", new FieldData[0], false));
-		l.add(new FactData("X", "a", new FieldData[0], false));
-		l.add(new FactData("X", "b", new FieldData[0], false));
+		l.add(new FactData("Q", "x", new ArrayList(), false));
+		l.add(new FactData("Q", "y", new ArrayList(), false));
+		l.add(new FactData("X", "a", new ArrayList(), false));
+		l.add(new FactData("X", "b", new ArrayList(), false));
 		ExecutionTrace ex1 = new ExecutionTrace();
 		l.add(ex1);
 
-		l.add(new FactData("Z", "z", new FieldData[0], false));
-		l.add(new FactData("Q", "x", new FieldData[0], true));
-		l.add(new FactData("Q", "y", new FieldData[0], true));
+		l.add(new FactData("Z", "z", new ArrayList(), false));
+		l.add(new FactData("Q", "x", new ArrayList(), true));
+		l.add(new FactData("Q", "y", new ArrayList(), true));
 		l.add(new RetractFact("y"));
 
 		VerifyFact vf1 = new VerifyFact();
@@ -108,10 +108,10 @@ public class ScenarioHelperTest extends TestCase {
 
 	public void testGlobals() {
 		List l = new ArrayList();
-		l.add(new FactData("X", "d", new FieldData[0], true));
-		l.add(new FactData("X", "c", new FieldData[0], true));
-		l.add(new FactData("Q", "a", new FieldData[0], true));
-		l.add(new FactData("Q", "b", new FieldData[0], true));
+		l.add(new FactData("X", "d", new ArrayList(), true));
+		l.add(new FactData("X", "c", new ArrayList(), true));
+		l.add(new FactData("Q", "a", new ArrayList(), true));
+		l.add(new FactData("Q", "b", new ArrayList(), true));
 
 		ScenarioHelper hlp = new ScenarioHelper();
 		Map m = hlp.lumpyMapGlobals(l);
@@ -127,6 +127,35 @@ public class ScenarioHelperTest extends TestCase {
 		assertEquals("b", ((FactData)fd.get(1)).name);
 
 
+
+	}
+
+	public void testRemoveField() {
+		List fieldData = new ArrayList();
+		fieldData.add(new FieldData("q", "1"));
+		fieldData.add(new FieldData("w", "2"));
+		FactData fd = new FactData("X", "x", fieldData, false);
+
+
+
+		List fieldData2 = new ArrayList();
+		fieldData2.add(new FieldData("q", "3"));
+		fieldData2.add(new FieldData("w", "4"));
+		fieldData2.add(new FieldData("x", "5"));
+		FactData fd2 = new FactData("X", "x", fieldData2, false);
+
+		List factData = new ArrayList();
+		factData.add(fd);
+		factData.add(fd2);
+
+		ScenarioHelper.removeFields(factData, "q");
+
+		assertEquals(2, factData.size());
+
+		assertEquals(1, fieldData.size());
+		assertEquals("w", ((FieldData)fieldData.get(0)).name);
+		assertEquals(2, fieldData2.size());
+		assertEquals("w", ((FieldData)fieldData2.get(0)).name);
 
 	}
 
