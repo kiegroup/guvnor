@@ -93,7 +93,7 @@ public class ScenarioWidget extends Composite {
 		        for (Iterator iterator = facts.entrySet().iterator(); iterator.hasNext();) {
 		            Map.Entry e = (Map.Entry) iterator.next();
 		            List factList = (List) facts.get(e.getKey());
-		            vert.add(new DataInputWidget((String)e.getKey(), factList, false));
+		            vert.add(new DataInputWidget((String)e.getKey(), factList, false, scenario));
 		        }
 		        layout.setWidget(layoutRow, 1, vert);
 			} else {
@@ -123,7 +123,7 @@ public class ScenarioWidget extends Composite {
         VerticalPanel globalPanel = new VerticalPanel();
         for (Iterator iterator = globals.entrySet().iterator(); iterator.hasNext();) {
             Map.Entry e = (Map.Entry) iterator.next();
-            globalPanel.add(new DataInputWidget((String)e.getKey(), (List) globals.get(e.getKey()), true));
+            globalPanel.add(new DataInputWidget((String)e.getKey(), (List) globals.get(e.getKey()), true, scenario));
         }
         layout.setWidget(layoutRow, 0, new Label("Globals"));
         layoutRow++;
@@ -229,12 +229,14 @@ class DataInputWidget extends Composite {
 
 
     private Grid outer;
+	private Scenario scenario;
 
 
 
-	public DataInputWidget(String factType, List defList, boolean isGlobal) {
+	public DataInputWidget(String factType, List defList, boolean isGlobal, Scenario sc) {
 
         outer = new Grid(2, 1);
+        scenario = sc;
         outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
         outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         outer.setStyleName("modeller-fact-pattern-Widget");
@@ -260,7 +262,7 @@ class DataInputWidget extends Composite {
 	private FlexTable render(final List defList) {
 		DirtyableFlexTable t = new DirtyableFlexTable();
 
-		//This will work out what row is for what field
+		//This will work out what row is for what field, addin labels and remove icons
         Map fields = new HashMap();
         int col = 0;
         int totalCols = defList.size();
@@ -287,12 +289,28 @@ class DataInputWidget extends Composite {
             }
         }
 
+        int totalRows = fields.size();
+
+
+
         //now we go through the facts and the fields, adding them to the grid
         //if a fact is missing a FieldData, we will add it in (so people can enter data later on)
-          col = 0;
+        col = 0;
         for (Iterator iterator = defList.iterator(); iterator.hasNext();) {
-            FactData d = (FactData) iterator.next();
+            final FactData d = (FactData) iterator.next();
             t.setWidget(0, ++col, new Label(d.name));
+            Image del = new ImageButton("images/delete_item_small.gif", "Remove this row.", new ClickListener() {
+				public void onClick(Widget w) {
+					if (scenario.isFactNameUsed(d)) {
+						Window.alert("Can't remove this column as the name [" + d.name + "] is being used.");
+					} else if (Window.confirm("Are you sure you want to remove this row ?")) {
+						scenario.removeFixture(d);
+						defList.remove(d);
+						outer.setWidget(1, 0, render(defList));
+					}
+				}
+			});
+            t.setWidget(totalRows + 1, col, del);
             Map presentFields = new HashMap(fields);
             for (int i = 0; i < d.fieldData.size(); i++) {
                 FieldData fd = (FieldData) d.fieldData.get(i);
@@ -532,11 +550,11 @@ class VerifyFactWidget extends Composite {
         outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         outer.setStyleName("modeller-fact-pattern-Widget");
         HorizontalPanel ab = new HorizontalPanel();
-        ab.add(new Label("Expect [" + vf.factName + "]"));
+        ab.add(new Label("Expect [" + vf.name + "]"));
 
         Image add = new ImageButton("images/add_field_to_fact.gif", "Add a field to this expectation.", new ClickListener() {
 			public void onClick(Widget w) {
-				String t = (String) sc.getVariableTypes().get(vf.factName);
+				String t = (String) sc.getVariableTypes().get(vf.name);
 				String[] fields = (String[]) sce.fieldsForType.get(t);
 				final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", "Choose a field to add");
 				final ListBox b = new ListBox();
