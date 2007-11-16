@@ -349,6 +349,7 @@ class DataInputWidget extends Composite {
 						Window.alert("Can't remove this column as the name [" + d.name + "] is being used.");
 					} else if (Window.confirm("Are you sure you want to remove this column ?")) {
 						scenario.removeFixture(d);
+
 						defList.remove(d);
 						outer.setWidget(1, 0, render(defList));
 					}
