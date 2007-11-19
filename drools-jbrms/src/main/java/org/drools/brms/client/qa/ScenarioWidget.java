@@ -75,18 +75,19 @@ public class ScenarioWidget extends Composite {
 
 
         int layoutRow = 0;
-
+        ExecutionTrace previousEx = null;
         for (int i = 0; i < fixtures.size(); i++) {
 			Object f = fixtures.get(i);
 			if (f instanceof ExecutionTrace) {
 				layout.setWidget(layoutRow, 0, new Label("EXPECT"));
-				ExecutionTrace ex = (ExecutionTrace) f;
+				previousEx = (ExecutionTrace) f;
 
-				layout.setWidget(layoutRow, 1, new ExecutionWidget(ex));
-				layout.setWidget(layoutRow, 2, getNewExpectationButton(ex, scenario, availableRules));
+				layout.setWidget(layoutRow, 1, new ExecutionWidget(previousEx));
+				layout.setWidget(layoutRow, 2, getNewExpectationButton(previousEx, scenario, availableRules));
 				layout.getFlexCellFormatter().setHorizontalAlignment(layoutRow, 2, HasHorizontalAlignment.ALIGN_LEFT);
 			} else if (f instanceof Map) {
 				layout.setWidget(layoutRow, 0, new Label("GIVEN"));
+				layout.setWidget(layoutRow, 2, getNewDataButton(previousEx));
 				layoutRow++;
 				Map facts = (Map) f;
 				VerticalPanel vert = new VerticalPanel();
@@ -128,8 +129,148 @@ public class ScenarioWidget extends Composite {
             globalPanel.add(new DataInputWidget((String)e.getKey(), (List) globals.get(e.getKey()), true, scenario, sce, this));
         }
         layout.setWidget(layoutRow, 0, new Label("(globals)"));
+        layout.setWidget(layoutRow, 2, getNewGlobalButton());
         layoutRow++;
         layout.setWidget(layoutRow, 1, globalPanel);
+	}
+
+
+
+
+	private Widget getNewGlobalButton() {
+		Image newItem = new ImageButton("images/new_item.gif", "Add a new global to this scenario.", new ClickListener() {
+			public void onClick(Widget w) {
+
+				final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", "New global");
+
+		        final ListBox factTypes = new ListBox();
+		        for (int i = 0; i < sce.factTypes.length; i++) {
+		            factTypes.addItem(sce.factTypes[i]);
+		        }
+		        final TextBox factName = new TextBox();
+		        factName.setVisibleLength(5);
+
+		        Button add = new Button("Add");
+		        add.addClickListener(new ClickListener() {
+					public void onClick(Widget w) {
+						String fn = ("" + factName.getText()).trim();
+						if (fn.equals("")
+								|| factName.getText().indexOf(' ') > -1) {
+							Window.alert("You must enter a valid name.");
+						} else {
+							if (scenario.isFactNameExisting(fn)) {
+								Window.alert("The name [" + fn + "] is already in use. Please choose another name.");
+							} else {
+								scenario.globals.add(new FactData(factTypes.getItemText(factTypes.getSelectedIndex()), factName.getText(), new ArrayList(), false ));
+								render();
+								pop.hide();
+							}
+						}
+					}
+				});
+
+		        HorizontalPanel insertFact = new HorizontalPanel();
+		        insertFact.add(factTypes); insertFact.add(new Label("Fact name:")); insertFact.add(factName); insertFact.add(add);
+		        pop.addAttribute("New global:", insertFact);
+
+				pop.setPopupPosition(Window.getClientWidth()/3, w.getAbsoluteTop() );
+				pop.show();
+			}
+		});
+
+		return newItem;
+	}
+
+
+	/**
+	 * This button gives a choice of modifying data, based on the positional context.
+	 * @param previousEx
+	 */
+	private Widget getNewDataButton(final ExecutionTrace previousEx) {
+		Image newItem = new ImageButton("images/new_item.gif", "Add a new data input to this scenario.", new ClickListener() {
+			public void onClick(Widget w) {
+
+				final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", "New input");
+
+		        final ListBox factTypes = new ListBox();
+		        for (int i = 0; i < sce.factTypes.length; i++) {
+		            factTypes.addItem(sce.factTypes[i]);
+		        }
+		        final TextBox factName = new TextBox();
+		        factName.setVisibleLength(5);
+
+		        Button add = new Button("Add");
+		        add.addClickListener(new ClickListener() {
+					public void onClick(Widget w) {
+						String fn = ("" + factName.getText()).trim();
+						if (fn.equals("")
+								|| factName.getText().indexOf(' ') > -1) {
+							Window.alert("You must enter a valid fact name.");
+						} else {
+							if (scenario.isFactNameExisting(fn)) {
+								Window.alert("The fact name [" + fn + "] is already in use. Please choose another name.");
+							} else {
+								scenario.insertAfter(previousEx, new FactData(factTypes.getItemText(factTypes.getSelectedIndex()), factName.getText(), new ArrayList(), false ));
+								render();
+								pop.hide();
+							}
+						}
+					}
+				});
+
+		        HorizontalPanel insertFact = new HorizontalPanel();
+		        insertFact.add(factTypes); insertFact.add(new Label("Fact name:")); insertFact.add(factName); insertFact.add(add);
+		        pop.addAttribute("Insert a new fact:", insertFact);
+
+		        List varsInScope = scenario.getFactNamesInScope(previousEx, false);
+		        //now we do modifies & retracts
+		        if (varsInScope.size() > 0) {
+		        	final ListBox modifyFacts = new ListBox();
+			        for (int j = 0; j < varsInScope.size(); j++) { modifyFacts.addItem((String) varsInScope.get(j));}
+			        add = new Button("Add");
+			        add.addClickListener(new ClickListener() {
+						public void onClick(Widget w) {
+							String fn = modifyFacts.getItemText(modifyFacts.getSelectedIndex());
+							String type  = (String) scenario.getVariableTypes().get(fn);
+							scenario.insertAfter(previousEx, new FactData(type, fn, new ArrayList(), false));
+							render();
+							pop.hide();
+						}
+					});
+			        HorizontalPanel modifyFact = new HorizontalPanel();
+			        modifyFact.add(modifyFacts); modifyFact.add(add);
+			        pop.addAttribute("Modify an existing fact:", modifyFact);
+
+			        //now we do retracts
+		        	final ListBox retractFacts = new ListBox();
+			        for (int j = 0; j < varsInScope.size(); j++) { retractFacts.addItem((String) varsInScope.get(j));}
+			        add = new Button("Add");
+			        add.addClickListener(new ClickListener() {
+						public void onClick(Widget w) {
+							String fn = retractFacts.getItemText(retractFacts.getSelectedIndex());
+							scenario.insertAfter(previousEx, new RetractFact(fn));
+							render();
+							pop.hide();
+						}
+					});
+			        HorizontalPanel retractFact = new HorizontalPanel();
+			        retractFact.add(retractFacts); retractFact.add(add);
+			        pop.addAttribute("Retract an existing fact:", retractFact);
+
+
+		        }
+
+
+
+
+
+				pop.setPopupPosition(Window.getClientWidth()/3, w.getAbsoluteTop() );
+				pop.show();
+
+			}
+		});
+
+		return newItem;
 	}
 
 
@@ -163,7 +304,7 @@ public class ScenarioWidget extends Composite {
 				pop.addAttribute("Expect a rule:", h);
 
 				final ListBox facts = new ListBox();
-				List names = sc.getFactNamesInScope(ex);
+				List names = sc.getFactNamesInScope(ex, true);
 				for (Iterator iterator = names.iterator(); iterator.hasNext();) {
 					facts.addItem((String) iterator.next());
 				}
@@ -182,7 +323,7 @@ public class ScenarioWidget extends Composite {
 				h.add(ok);
 				pop.addAttribute("Expect values on a fact:", h);
 
-				pop.setPopupPosition(Window.getClientWidth()/3, Window.getClientHeight()/3 );
+				pop.setPopupPosition(Window.getClientWidth()/3, w.getAbsoluteTop() );
 				pop.show();
 			}
 		});
@@ -251,13 +392,13 @@ class DataInputWidget extends Composite {
 
 
         if (isGlobal) {
-            outer.setWidget(0, 0, new Label("Global: " + factType));
+            outer.setWidget(0, 0, getLabel("Global: " + factType, defList));
         } else {
             FactData first = (FactData) defList.get(0);
             if (first.isModify) {
-            	outer.setWidget(0, 0, new Label("Modify: " + factType));
+            	outer.setWidget(0, 0,  getLabel("Modify: " + factType, defList));
             } else {
-            	outer.setWidget(0, 0, new Label("Insert: " + factType));
+            	outer.setWidget(0, 0, getLabel("Insert: " + factType, defList));
             }
         }
 
@@ -266,6 +407,43 @@ class DataInputWidget extends Composite {
         outer.setWidget(1, 0, t);
         initWidget(outer);
     }
+
+	private Widget getLabel(String text, final List defList) {
+        //now we put in button to add new fields
+        //Image newField = new ImageButton("images/add_field_to_fact.gif", "Add a field.");
+        Image newField = new ImageButton("images/add_field_to_fact.gif", "Add a field");
+        newField.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+
+				String[] fields = (String[]) sce.fieldsForType.get(type);
+				final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", "Choose a field to add");
+				final ListBox b = new ListBox();
+				for (int i = 0; i < fields.length; i++) {
+					b.addItem(fields[i]);
+				}
+				pop.addRow(b);
+				Button ok = new Button("OK");
+				ok.addClickListener(new ClickListener() {
+									public void onClick(Widget w) {
+										String f = b.getItemText(b.getSelectedIndex());
+										for (Iterator iterator = defList.iterator(); iterator.hasNext();) {
+											FactData fd = (FactData) iterator.next();
+											fd.fieldData.add(new FieldData(f, ""));
+										}
+								        outer.setWidget(1, 0, render(defList));
+								        pop.hide();
+									}
+								});
+				pop.addRow(ok);
+				pop.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
+				pop.show();
+			}
+		});
+
+        HorizontalPanel h = new HorizontalPanel();
+        h.add(new Label(text)); h.add(newField);
+        return h;
+	}
 
 	private FlexTable render(final List defList) {
 		DirtyableFlexTable t = new DirtyableFlexTable();
@@ -303,38 +481,6 @@ class DataInputWidget extends Composite {
 
         int totalRows = fields.size();
 
-        //now we put in button to add new fields
-        //Image newField = new ImageButton("images/add_field_to_fact.gif", "Add a field.");
-        Button newField = new Button("Add field");
-        newField.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
-
-				String[] fields = (String[]) sce.fieldsForType.get(type);
-				final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", "Choose a field to add");
-				final ListBox b = new ListBox();
-				for (int i = 0; i < fields.length; i++) {
-					b.addItem(fields[i]);
-				}
-				pop.addRow(b);
-				Button ok = new Button("OK");
-				ok.addClickListener(new ClickListener() {
-									public void onClick(Widget w) {
-										String f = b.getItemText(b.getSelectedIndex());
-										for (Iterator iterator = defList.iterator(); iterator.hasNext();) {
-											FactData fd = (FactData) iterator.next();
-											fd.fieldData.add(new FieldData(f, ""));
-										}
-								        outer.setWidget(1, 0, render(defList));
-								        pop.hide();
-									}
-								});
-				pop.addRow(ok);
-				pop.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
-				pop.show();
-			}
-		});
-
-        t.setWidget(totalRows + 1, 0, newField);
         t.getFlexCellFormatter().setHorizontalAlignment(totalRows + 1, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 
         //now we go through the facts and the fields, adding them to the grid
@@ -349,7 +495,6 @@ class DataInputWidget extends Composite {
 						Window.alert("Can't remove this column as the name [" + d.name + "] is being used.");
 					} else if (Window.confirm("Are you sure you want to remove this column ?")) {
 						scenario.removeFixture(d);
-
 						defList.remove(d);
 						outer.setWidget(1, 0, render(defList));
 					}
