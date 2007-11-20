@@ -23,6 +23,9 @@ public class ScenarioHelper {
 
 
 
+	static final String RETRACT_KEY = "retract";
+
+
 	/**
 	 * Called lumpy map - as this takes a flat list of fixtures, and groups things together.
 	 * It will return a list - of which each element will either be a list - or a map.
@@ -53,7 +56,7 @@ public class ScenarioHelper {
 				verifyFact.add(f);
 			} else if (f instanceof ExecutionTrace) {
 				gatherFixtures(output, dataInput, verifyFact, verifyRule,
-						retractFacts);
+						retractFacts, false);
 
 				output.add(f);
 
@@ -64,17 +67,17 @@ public class ScenarioHelper {
 			}
 		}
 		gatherFixtures(output, dataInput, verifyFact, verifyRule,
-				retractFacts);
+				retractFacts, true);
 
 		return output;
 	}
 
 	private void gatherFixtures(List output, Map dataInput, List verifyFact,
-			List verifyRule, List retractFacts) {
+			List verifyRule, List retractFacts, boolean end) {
 		if (verifyRule.size() > 0) output.add(verifyRule);
 		if (verifyFact.size() > 0) output.add(verifyFact);
-		if (retractFacts.size() > 0) output.add(retractFacts);
-		if (dataInput.size() > 0) output.add(dataInput);
+		if (retractFacts.size() > 0) dataInput.put(RETRACT_KEY, retractFacts);
+		if (dataInput.size() > 0 || !end) output.add(dataInput); //want to have a place holder for the GUI
 	}
 
 	/**

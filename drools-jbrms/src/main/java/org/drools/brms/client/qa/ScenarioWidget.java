@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -55,9 +56,11 @@ public class ScenarioWidget extends Composite {
     	this.availableRules = ruleList;
     	this.scenario = scenario;
     	this.sce = eng;
+
         render();
 
         layout.setStyleName("model-builder-Background");
+
 
 
         initWidget(layout);
@@ -73,30 +76,45 @@ public class ScenarioWidget extends Composite {
 		List fixtures = hlp.lumpyMap(scenario.fixtures);
 
 
-
         int layoutRow = 0;
         ExecutionTrace previousEx = null;
         for (int i = 0; i < fixtures.size(); i++) {
 			Object f = fixtures.get(i);
 			if (f instanceof ExecutionTrace) {
-				layout.setWidget(layoutRow, 0, new Label("EXPECT"));
+				HorizontalPanel h = new HorizontalPanel();
+				h.add(new Label("EXPECT"));
+				h.add(getNewExpectationButton(previousEx, scenario, availableRules));
+				layout.setWidget(layoutRow, 0, h);
 				previousEx = (ExecutionTrace) f;
 
 				layout.setWidget(layoutRow, 1, new ExecutionWidget(previousEx));
-				layout.setWidget(layoutRow, 2, getNewExpectationButton(previousEx, scenario, availableRules));
+				//layout.setWidget(layoutRow, 2, getNewExpectationButton(previousEx, scenario, availableRules));
 				layout.getFlexCellFormatter().setHorizontalAlignment(layoutRow, 2, HasHorizontalAlignment.ALIGN_LEFT);
+
 			} else if (f instanceof Map) {
-				layout.setWidget(layoutRow, 0, new Label("GIVEN"));
-				layout.setWidget(layoutRow, 2, getNewDataButton(previousEx));
+				HorizontalPanel h = new HorizontalPanel();
+				h.add(new Label("GIVEN"));
+				h.add(getNewDataButton(previousEx));
+				layout.setWidget(layoutRow, 0, h);
+
 				layoutRow++;
 				Map facts = (Map) f;
 				VerticalPanel vert = new VerticalPanel();
 		        for (Iterator iterator = facts.entrySet().iterator(); iterator.hasNext();) {
 		            Map.Entry e = (Map.Entry) iterator.next();
 		            List factList = (List) facts.get(e.getKey());
-		            vert.add(new DataInputWidget((String)e.getKey(), factList, false, scenario, sce, this));
+		            if (e.getKey().equals(ScenarioHelper.RETRACT_KEY)) {
+		            	vert.add(new RetractWidget(factList, scenario));
+		            } else {
+		            	vert.add(new DataInputWidget((String)e.getKey(), factList, false, scenario, sce, this));
+		            }
 		        }
-		        layout.setWidget(layoutRow, 1, vert);
+
+		        if (facts.size() > 0) {
+		        	layout.setWidget(layoutRow, 1, vert);
+		        } else {
+		        	layout.setWidget(layoutRow, 1, new HTML("<i><small>Add input data and expectations here.</small></i>"));
+		        }
 			} else {
 				List l = (List) f;
 				Fixture first = (Fixture) l.get(0);
@@ -104,17 +122,28 @@ public class ScenarioWidget extends Composite {
 					doVerifyFacts(l, layout, layoutRow);
 				} else if (first instanceof VerifyRuleFired) {
 					layout.setWidget(layoutRow, 1, new VerifyRulesFiredWidget(l, availableRules, scenario));
-				} else {
-					layout.setWidget(layoutRow, 1, new RetractWidget(l));
 				}
 
 			}
 			layoutRow++;
 		}
 
+        //add more execution sections.
+		Button addExecute = new Button("More...");
+		addExecute.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				scenario.fixtures.add(new ExecutionTrace());
+				render();
+			}
+		});
+        layout.setWidget(layoutRow, 0, addExecute);
+        //layout.getFlexCellFormatter().setHorizontalAlignment(layoutRow, 1, HasHorizontalAlignment.ALIGN_CENTER);
+        layoutRow++;
+
 
         layout.setWidget(layoutRow, 0, new Label("(configuration)"));
-        layoutRow++;
+        //layoutRow++;
+
         //config section
         ConfigWidget conf = new ConfigWidget(scenario, availableRules);
         layout.setWidget(layoutRow, 1, conf);
@@ -128,9 +157,12 @@ public class ScenarioWidget extends Composite {
             Map.Entry e = (Map.Entry) iterator.next();
             globalPanel.add(new DataInputWidget((String)e.getKey(), (List) globals.get(e.getKey()), true, scenario, sce, this));
         }
-        layout.setWidget(layoutRow, 0, new Label("(globals)"));
-        layout.setWidget(layoutRow, 2, getNewGlobalButton());
-        layoutRow++;
+        HorizontalPanel h = new HorizontalPanel();
+        h.add(new Label("(globals)"));
+        h.add(getNewGlobalButton());
+        layout.setWidget(layoutRow, 0, h);
+
+        //layoutRow++;
         layout.setWidget(layoutRow, 1, globalPanel);
 	}
 
@@ -232,7 +264,7 @@ public class ScenarioWidget extends Composite {
 						public void onClick(Widget w) {
 							String fn = modifyFacts.getItemText(modifyFacts.getSelectedIndex());
 							String type  = (String) scenario.getVariableTypes().get(fn);
-							scenario.insertAfter(previousEx, new FactData(type, fn, new ArrayList(), false));
+							scenario.insertAfter(previousEx, new FactData(type, fn, new ArrayList(), true));
 							render();
 							pop.hide();
 						}
@@ -675,36 +707,18 @@ class ExecutionWidget extends Composite {
         } else {
             dt.setText(ext.scenarioSimulatedDate.toLocaleString());
         }
-
         final Label dateHint = new Label();
-
-
-
-
         dt.addKeyboardListener(new KeyboardListener() {
-
-			public void onKeyDown(Widget arg0, char arg1, int arg2) {
-
-
-			}
-
-			public void onKeyPress(Widget arg0, char arg1, int arg2) {
-
-
-			}
-
+			public void onKeyDown(Widget arg0, char arg1, int arg2) {}
+			public void onKeyPress(Widget arg0, char arg1, int arg2) {}
 			public void onKeyUp(Widget w, char arg1, int arg2) {
 				try {
-
 					Date d = new Date(dt.getText());
 					dateHint.setText(d.toLocaleString());
-
 				} catch (Exception e) {
 					dateHint.setText("...");
 				}
-
 			}
-
         });
 
         dt.addChangeListener(new ChangeListener() {
@@ -916,13 +930,11 @@ class VerifyRulesFiredWidget extends Composite {
             //we only want numbers here...
             num.addKeyboardListener(new KeyboardListener() {
                     public void onKeyDown(Widget arg0, char arg1, int arg2) {}
-
                     public void onKeyPress(Widget w, char c, int i) {
                         if (Character.isLetter( c ) ) {
                             ((TextBox) w).cancelKey();
                         }
                     }
-
                     public void onKeyUp(Widget arg0, char arg1, int arg2) {}
                 } );
         }
@@ -931,18 +943,35 @@ class VerifyRulesFiredWidget extends Composite {
 }
 
 class RetractWidget extends Composite {
-	public RetractWidget(List retList) {
-        Grid outer = new Grid(1, 1);
-        outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
+	public RetractWidget(List retList, Scenario sc) {
+        FlexTable outer = new FlexTable();
+        render(retList, outer, sc);
+
+        initWidget(outer);
+	}
+
+	private void render(final List retList, final FlexTable outer, final Scenario sc) {
+		outer.clear();
+		outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
         outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         outer.setStyleName("modeller-fact-pattern-Widget");
         outer.setWidget(0, 0, new Label("Retract facts"));
-        VerticalPanel inner = new VerticalPanel();
+        outer.getFlexCellFormatter().setColSpan(0, 0, 2);
+
+        int row = 1;
         for (Iterator iterator = retList.iterator(); iterator.hasNext();) {
-			RetractFact r = (RetractFact) iterator.next();
-			inner.add(new Label(r.name));
+			final RetractFact r = (RetractFact) iterator.next();
+			outer.setWidget(row, 0, new Label(r.name));
+			Image del = new ImageButton("images/delete_item_small.gif", "Remove this retract statement.", new ClickListener() {
+				public void onClick(Widget w) {
+					retList.remove(r);
+					sc.fixtures.remove(r);
+					render(retList, outer, sc);
+				}
+			});
+			outer.setWidget(row, 1, del);
+
+			row++;
 		}
-        outer.setWidget(1, 0, inner);
-        initWidget(outer);
 	}
 }

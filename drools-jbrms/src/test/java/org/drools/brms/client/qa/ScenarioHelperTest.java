@@ -7,6 +7,7 @@ import java.util.Map;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
+import org.drools.brms.client.modeldriven.testing.Fixture;
 import org.drools.brms.client.modeldriven.testing.RetractFact;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
@@ -56,7 +57,7 @@ public class ScenarioHelperTest extends TestCase {
 		ScenarioHelper hlp = new ScenarioHelper();
 
 		List fx = hlp.lumpyMap(l);
-		assertEquals(8, fx.size());
+		assertEquals(7, fx.size());
 
 		Map first  = (Map) fx.get(0);
 		assertEquals(2, first.size());
@@ -85,24 +86,34 @@ public class ScenarioHelperTest extends TestCase {
 		assertEquals(vf2, verifyFact.get(1));
 
 
-		List retracts = (List) fx.get(4);
-		assertEquals(1, retracts.size());
-		RetractFact ret = (RetractFact) retracts.get(0);
-		assertEquals("y", ret.name);
+//		List retracts = (List) fx.get(4);
+//		assertEquals(1, retracts.size());
+//		RetractFact ret = (RetractFact) retracts.get(0);
+//		assertEquals("y", ret.name);
 
 
-		Map second = (Map) fx.get(5);
-		assertEquals(2, second.size());
+		Map second = (Map) fx.get(4);
+		assertEquals(3, second.size());
 		assertTrue(second.containsKey("Z"));
 		assertTrue(second.containsKey("Q"));
 		fdl = (List) second.get("Q");
 		assertEquals(2, fdl.size());
 
-		assertEquals(ex2, fx.get(6));
+		assertTrue(second.containsKey("retract"));
+		List retracts = (List) second.get("retract");
+		assertEquals(1, retracts.size());
+		RetractFact ret = (RetractFact) retracts.get(0);
+		assertEquals("y", ret.name);
 
-		List last = (List) fx.get(7);
+		assertEquals(ex2, fx.get(5));
+
+
+
+		List last = (List) fx.get(6);
 		assertEquals(1, last.size());
 		assertEquals(vf3, last.get(0));
+
+
 
 	}
 
@@ -156,6 +167,29 @@ public class ScenarioHelperTest extends TestCase {
 		assertEquals("w", ((FieldData)fieldData.get(0)).name);
 		assertEquals(2, fieldData2.size());
 		assertEquals("w", ((FieldData)fieldData2.get(0)).name);
+
+	}
+
+	public void testEmptyMap() {
+		//this should check that there is always a map present to force the GUI to show a "GIVEN" section.
+		List<Fixture> fl = new ArrayList<Fixture>();
+		fl.add(new FactData());
+		fl.add(new ExecutionTrace());
+		fl.add(new ExecutionTrace());
+
+		ScenarioHelper hlp = new ScenarioHelper();
+		List r = hlp.lumpyMap(fl);
+		assertEquals(4, r.size());
+		assertTrue(r.get(0) instanceof Map);
+		assertTrue(r.get(1) instanceof ExecutionTrace);
+		assertTrue(r.get(2) instanceof Map);
+		assertTrue(r.get(3) instanceof ExecutionTrace);
+
+		Map r_ = (Map) r.get(2);
+		assertEquals(0, r_.size());
+
+		r_ = (Map) r.get(0);
+		assertEquals(1, r_.size());
 
 	}
 
