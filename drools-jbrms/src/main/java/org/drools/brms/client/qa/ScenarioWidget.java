@@ -57,6 +57,10 @@ public class ScenarioWidget extends Composite {
     	this.scenario = scenario;
     	this.sce = eng;
 
+    	if (scenario.fixtures.size() == 0) {
+    		scenario.fixtures.add(new ExecutionTrace());
+    	}
+
         render();
 
         layout.setStyleName("model-builder-Background");
@@ -81,11 +85,12 @@ public class ScenarioWidget extends Composite {
         for (int i = 0; i < fixtures.size(); i++) {
 			Object f = fixtures.get(i);
 			if (f instanceof ExecutionTrace) {
-				HorizontalPanel h = new HorizontalPanel();
-				h.add(new Label("EXPECT"));
-				h.add(getNewExpectationButton(previousEx, scenario, availableRules));
-				layout.setWidget(layoutRow, 0, h);
 				previousEx = (ExecutionTrace) f;
+				HorizontalPanel h = new HorizontalPanel();
+				h.add(getNewExpectationButton(previousEx, scenario, availableRules));
+				h.add(new Label("EXPECT"));
+				layout.setWidget(layoutRow, 0, h);
+
 
 				layout.setWidget(layoutRow, 1, new ExecutionWidget(previousEx));
 				//layout.setWidget(layoutRow, 2, getNewExpectationButton(previousEx, scenario, availableRules));
@@ -93,8 +98,9 @@ public class ScenarioWidget extends Composite {
 
 			} else if (f instanceof Map) {
 				HorizontalPanel h = new HorizontalPanel();
-				h.add(new Label("GIVEN"));
 				h.add(getNewDataButton(previousEx));
+				h.add(new Label("GIVEN"));
+
 				layout.setWidget(layoutRow, 0, h);
 
 				layoutRow++;
@@ -130,6 +136,7 @@ public class ScenarioWidget extends Composite {
 
         //add more execution sections.
 		Button addExecute = new Button("More...");
+		addExecute.setTitle("Add another section of data and expectations.");
 		addExecute.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				scenario.fixtures.add(new ExecutionTrace());
@@ -158,8 +165,8 @@ public class ScenarioWidget extends Composite {
             globalPanel.add(new DataInputWidget((String)e.getKey(), (List) globals.get(e.getKey()), true, scenario, sce, this));
         }
         HorizontalPanel h = new HorizontalPanel();
-        h.add(new Label("(globals)"));
         h.add(getNewGlobalButton());
+        h.add(new Label("(globals)"));
         layout.setWidget(layoutRow, 0, h);
 
         //layoutRow++;
@@ -333,7 +340,7 @@ public class ScenarioWidget extends Composite {
 		        HorizontalPanel h = new HorizontalPanel();
 		        h.add(rules);
 		        h.add(ok);
-				pop.addAttribute("Expect a rule:", h);
+				pop.addAttribute("Rule:", h);
 
 				final ListBox facts = new ListBox();
 				List names = sc.getFactNamesInScope(ex, true);
@@ -347,13 +354,14 @@ public class ScenarioWidget extends Composite {
 						String factName = facts.getItemText(facts.getSelectedIndex());
 						sc.insertAfter(ex, new VerifyFact(factName, new ArrayList()));
 						render();
+						pop.hide();
 					}
 				});
 
 				h = new HorizontalPanel();
 				h.add(facts);
 				h.add(ok);
-				pop.addAttribute("Expect values on a fact:", h);
+				pop.addAttribute("Fact value:", h);
 
 				pop.setPopupPosition(Window.getClientWidth()/3, w.getAbsoluteTop() );
 				pop.show();
@@ -424,13 +432,13 @@ class DataInputWidget extends Composite {
 
 
         if (isGlobal) {
-            outer.setWidget(0, 0, getLabel("Global: " + factType, defList));
+            outer.setWidget(0, 0, getLabel("Global input " + factType, defList));
         } else {
             FactData first = (FactData) defList.get(0);
             if (first.isModify) {
-            	outer.setWidget(0, 0,  getLabel("Modify: " + factType, defList));
+            	outer.setWidget(0, 0,  getLabel("Modify " + factType, defList));
             } else {
-            	outer.setWidget(0, 0, getLabel("Insert: " + factType, defList));
+            	outer.setWidget(0, 0, getLabel("Fact input " + factType, defList));
             }
         }
 
@@ -443,7 +451,15 @@ class DataInputWidget extends Composite {
 	private Widget getLabel(String text, final List defList) {
         //now we put in button to add new fields
         //Image newField = new ImageButton("images/add_field_to_fact.gif", "Add a field.");
-        Image newField = new ImageButton("images/add_field_to_fact.gif", "Add a field");
+        Image newField = getNewFieldButton(defList);
+
+        HorizontalPanel h = new HorizontalPanel();
+        h.add(new Label(text)); h.add(newField);
+        return h;
+	}
+
+	private Image getNewFieldButton(final List defList) {
+		Image newField = new ImageButton("images/add_field_to_fact.gif", "Add a field");
         newField.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 
@@ -471,10 +487,7 @@ class DataInputWidget extends Composite {
 				pop.show();
 			}
 		});
-
-        HorizontalPanel h = new HorizontalPanel();
-        h.add(new Label(text)); h.add(newField);
-        return h;
+		return newField;
 	}
 
 	private FlexTable render(final List defList) {
@@ -490,6 +503,7 @@ class DataInputWidget extends Composite {
         int totalCols = defList.size();
         for (Iterator iterator = defList.iterator(); iterator.hasNext();) {
             final FactData d = (FactData) iterator.next();
+
             for (int i = 0; i < d.fieldData.size(); i++) {
                 final FieldData fd = (FieldData) d.fieldData.get(i);
                 if (!fields.containsKey(fd.name)) {
@@ -548,6 +562,13 @@ class DataInputWidget extends Composite {
                 d.fieldData.add(fd);
                 t.setWidget(fldRow, col, editableCell(fd));
             }
+        }
+
+        if (fields.size() == 0) {
+        	HorizontalPanel h = new HorizontalPanel();
+        	h.add(new HTML("<i><small>Add fields:</small></i>"));
+        	h.add(getNewFieldButton(defList));
+        	t.setWidget(1, 1, h);
         }
         return t;
 	}
@@ -629,6 +650,9 @@ class ConfigWidget extends Composite {
 
         if (sc.rules.size() > 0) {
         	drop.setSelectedIndex((sc.inclusive) ? 0 : 1);
+        } else {
+        	drop.setSelectedIndex(2);
+        	box.setVisible(false); add.setVisible(false); remove.setVisible(false);
         }
 
 
@@ -754,12 +778,13 @@ class VerifyFactWidget extends Composite {
         outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         outer.setStyleName("modeller-fact-pattern-Widget");
         HorizontalPanel ab = new HorizontalPanel();
-        ab.add(new Label("Expect [" + vf.name + "]"));
+        final String type = (String) sc.getVariableTypes().get(vf.name);
+        ab.add(new Label(type + " [" + vf.name + "] has values:"));
 
         Image add = new ImageButton("images/add_field_to_fact.gif", "Add a field to this expectation.", new ClickListener() {
 			public void onClick(Widget w) {
-				String t = (String) sc.getVariableTypes().get(vf.name);
-				String[] fields = (String[]) sce.fieldsForType.get(t);
+
+				String[] fields = (String[]) sce.fieldsForType.get(type);
 				final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", "Choose a field to add");
 				final ListBox b = new ListBox();
 				for (int i = 0; i < fields.length; i++) {
