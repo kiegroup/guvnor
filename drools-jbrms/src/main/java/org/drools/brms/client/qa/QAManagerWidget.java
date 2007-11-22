@@ -69,15 +69,32 @@ public class QAManagerWidget extends Composite {
         sc.fixtures.add(new ExecutionTrace());
 
         List fields = new ArrayList();
-        fields.add(new VerifyField("age", "42", "=="));
-        fields.add(new VerifyField("name", "michael", "!="));
+        VerifyField vfl = new VerifyField("age", "42", "==");
+        vfl.actualResult = "43";
+        vfl.successResult = new Boolean(false);
+        vfl.explanation = "Not cool jimmy.";
+
+        fields.add(vfl);
+
+        vfl = new VerifyField("name", "michael", "!=");
+        vfl.actualResult = "bob";
+        vfl.successResult = new Boolean(true);
+        vfl.explanation = "Yeah !";
+        fields.add(vfl);
 
         VerifyFact vf = new VerifyFact("d1", fields);
 
         sc.fixtures.add(vf);
 
-        VerifyRuleFired vf1 = new VerifyRuleFired("xxx fdsfds", new Integer(42), null);
-        VerifyRuleFired vf2 = new VerifyRuleFired("yyyyy fdsfdsfds fds", null, new Boolean(true));
+        VerifyRuleFired vf1 = new VerifyRuleFired("Life unverse and everything", new Integer(42), null);
+        vf1.actualResult = new Integer(42);
+        vf1.successResult = new Boolean(true);
+        vf1.explanation = "All good here.";
+
+        VerifyRuleFired vf2 = new VerifyRuleFired("Everything else", null, new Boolean(true));
+        vf2.actualResult = new Integer(0);
+        vf2.successResult = new Boolean(false);
+        vf2.explanation = "Not so good here.";
         sc.fixtures.add(vf1);
         sc.fixtures.add(vf2);
 

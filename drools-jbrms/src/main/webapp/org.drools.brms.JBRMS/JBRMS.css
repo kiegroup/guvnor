@@ -18,6 +18,16 @@ code {
 	height:50px;
 	background:url(images/jbossrules_hdrbkg_blue.gif) repeat-x;
 }
+
+.testSuccessBackground {background: green;}
+.testFailureBackground {background: red;}
+.testBar {
+	border-spacing:0;
+	border-collapse:collapse;
+	padding:0;
+}
+
+
 .gwt-DialogBox {
 	sborder:8px solid #aa9;
 	border:1px solid #aa9;

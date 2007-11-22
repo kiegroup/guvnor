@@ -39,6 +39,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.VerticalSplitPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScenarioWidget extends Composite {
@@ -52,6 +53,9 @@ public class ScenarioWidget extends Composite {
 
 
 	public ScenarioWidget(Scenario scenario, String[] ruleList, SuggestionCompletionEngine eng) {
+		VerticalPanel split = new VerticalPanel();
+
+
     	layout = new DirtyableFlexTable();
     	this.availableRules = ruleList;
     	this.scenario = scenario;
@@ -65,11 +69,13 @@ public class ScenarioWidget extends Composite {
 
         layout.setStyleName("model-builder-Background");
 
+        split.add(new ScenarioResultsWidget(scenario));
+        split.add(layout);
 
 
-        initWidget(layout);
+        initWidget(split);
 
-        layout.setWidget(0, 1, new ScenarioResultsWidget(scenario));
+
 
         setWidth("100%");
         setHeight("100%");
