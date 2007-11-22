@@ -31,7 +31,7 @@ public class QAManagerWidget extends Composite {
         tab.setWidth("100%");
         tab.setHeight("30%");
 
-        tab.add( new ScenarioWidget(getEmpty(), new String[] {"rule1", "rule2"}, getSCE()),  "<img src='images/test_manager.gif'/>Test", true);
+        tab.add( new ScenarioWidget(getDemo(), new String[] {"rule1", "rule2"}, getSCE()),  "<img src='images/test_manager.gif'/>Test", true);
         tab.add(new Label("TODO"), "<img src='images/analyze.gif'/>Analyze", true);
         tab.selectTab( 0 );
 

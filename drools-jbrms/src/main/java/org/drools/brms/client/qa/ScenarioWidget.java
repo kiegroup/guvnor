@@ -68,6 +68,9 @@ public class ScenarioWidget extends Composite {
 
 
         initWidget(layout);
+
+        layout.setWidget(0, 1, new ScenarioResultsWidget(scenario));
+
         setWidth("100%");
         setHeight("100%");
 
@@ -80,7 +83,7 @@ public class ScenarioWidget extends Composite {
 		List fixtures = hlp.lumpyMap(scenario.fixtures);
 
 
-        int layoutRow = 0;
+        int layoutRow = 1;
         ExecutionTrace previousEx = null;
         for (int i = 0; i < fixtures.size(); i++) {
 			Object f = fixtures.get(i);
