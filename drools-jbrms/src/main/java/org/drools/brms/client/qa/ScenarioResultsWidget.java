@@ -11,6 +11,7 @@ import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -74,6 +75,10 @@ public class ScenarioResultsWidget extends Composite {
 		vert.add(results);
 
 
+		vert.setStyleName("model-builder-Background");
+
+		vert.setWidth("100%");
+
 		initWidget(vert);
 	}
 
@@ -98,10 +103,13 @@ public class ScenarioResultsWidget extends Composite {
 			}
 		}
 		VerticalPanel vert = new VerticalPanel();
-		vert.add(g);
+
 		int percent = (int) (((total - failures) / total) * 100);
-		Label p = new Label((int)failures + " out of " + (int)total + " expectations were met. (" + percent + "%)");
+		Widget p = new HTML("<i><small>" + (int)failures + " out of " + (int)total + " expectations were met. (" + percent + "%) </small></i>");
 		vert.add(p);
+		vert.add(g);
+
+		vert.setStyleName("successBar");
 		return vert;
 	}
 

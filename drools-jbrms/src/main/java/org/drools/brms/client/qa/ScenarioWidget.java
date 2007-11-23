@@ -85,6 +85,7 @@ public class ScenarioWidget extends Composite {
 
 	void render() {
 		layout.clear();
+		layout.setWidth("100%");
 		ScenarioHelper hlp = new ScenarioHelper();
 		List fixtures = hlp.lumpyMap(scenario.fixtures);
 
@@ -392,7 +393,7 @@ public class ScenarioWidget extends Composite {
 			final VerifyFact f = (VerifyFact) iterator.next();
 			HorizontalPanel h = new HorizontalPanel();
 			h.add(new VerifyFactWidget(f, scenario, sce));
-			Image del = new ImageButton("images/delete_obj.gif", "Delete the expectation for this fact.", new ClickListener() {
+			Image del = new ImageButton("images/delete_item_small.gif", "Delete the expectation for this fact.", new ClickListener() {
 				public void onClick(Widget w) {
 					if (Window.confirm("Are you sure you want to remove this expectation?")) {
 						scenario.removeFixture(f);
@@ -830,7 +831,7 @@ class VerifyFactWidget extends Composite {
 		FlexTable data = new FlexTable();
         for (int i = 0; i < vf.fieldValues.size(); i++) {
             final VerifyField fld = (VerifyField) vf.fieldValues.get(i);
-            data.setWidget(i, 0, new Label(fld.fieldName + ":"));
+            data.setWidget(i, 1, new Label(fld.fieldName + ":"));
             data.getFlexCellFormatter().setHorizontalAlignment(i, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 
             final ListBox opr = new ListBox();
@@ -847,7 +848,7 @@ class VerifyFactWidget extends Composite {
                 }
             });
 
-            data.setWidget(i, 1, opr);
+            data.setWidget(i, 2, opr);
 
             final TextBox input = new TextBox();
             input.setText(fld.expected);
@@ -856,7 +857,7 @@ class VerifyFactWidget extends Composite {
                     fld.expected = input.getText();
                 }
             });
-            data.setWidget(i, 2, input);
+            data.setWidget(i, 3, input);
 
             Image del = new ImageButton("images/delete_item_small.gif", "Remove this field expectation.", new ClickListener() {
 				public void onClick(Widget w) {
@@ -867,7 +868,18 @@ class VerifyFactWidget extends Composite {
 					}
 				}
 			});
-            data.setWidget(i, 3, del);
+            data.setWidget(i, 4, del);
+
+            if (fld.successResult != null) {
+            	if (fld.successResult.booleanValue()) {
+            		data.setWidget(i, 0, new Image("images/tick_green.gif"));
+            		data.setWidget(i, 5, new HTML("<i><small>(Actual: " + fld.actualResult + ")</small></i>"));
+            	} else {
+            		data.setWidget(i, 0, new Image("images/error.gif"));
+            	}
+            }
+
+
 
         }
 		return data;
@@ -905,7 +917,18 @@ class VerifyRulesFiredWidget extends Composite {
 
         for (int i = 0; i < rfl.size(); i++) {
             final VerifyRuleFired v = (VerifyRuleFired) rfl.get(i);
-            data.setWidget(i, 0, new Label(v.ruleName + ":"));
+
+            if (v.successResult != null) {
+            	if (v.successResult.booleanValue()) {
+            		data.setWidget(i, 0, new Image("images/error.gif"));
+            		data.setWidget(i, 4, new HTML("<i><small>(Actual: " + v.actualResult +")</small></i>"));
+
+            	} else {
+            		data.setWidget(i, 0, new Image("images/tick_green.gif"));
+            	}
+
+            }
+            data.setWidget(i, 1, new Label(v.ruleName + ":"));
             data.getFlexCellFormatter().setAlignment(i, 0, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
 
 
@@ -947,7 +970,7 @@ class VerifyRulesFiredWidget extends Composite {
 
             HorizontalPanel h = new HorizontalPanel();
             h.add(b); h.add(num);
-            data.setWidget(i, 1, h);
+            data.setWidget(i, 2, h);
 
             Image del = new ImageButton("images/delete_item_small.gif", "Remove this rule expectation.", new ClickListener() {
 				public void onClick(Widget w) {
@@ -959,7 +982,9 @@ class VerifyRulesFiredWidget extends Composite {
 				}
 			});
 
-            data.setWidget(i, 2, del);
+            data.setWidget(i, 3, del);
+
+
 
             //we only want numbers here...
             num.addKeyboardListener(new KeyboardListener() {
