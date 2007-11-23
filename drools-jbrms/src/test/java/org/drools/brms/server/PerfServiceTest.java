@@ -117,7 +117,7 @@ public class PerfServiceTest extends TestCase {
 
         time("loaded package"); reset();
 
-        BuilderResult[] results = impl.buildPackage( pkg.getUUID(), null );
+        BuilderResult[] results = impl.buildPackage( pkg.getUUID(), null, true );
 
         time("built"); reset();
         assertNull(results);

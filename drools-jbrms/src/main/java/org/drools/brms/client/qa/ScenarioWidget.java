@@ -725,9 +725,16 @@ class ExecutionWidget extends Composite {
     	p.add(choice);
     	p.add(dt);
 
-
-
-        initWidget(p);
+    	VerticalPanel vert = new VerticalPanel();
+    	if (ext.executionTimeResult != null
+    			&& ext.numberOfRulesFired != null) {
+    		HTML rep = new HTML("<i><small>" + ext.numberOfRulesFired.longValue() + " rules fired in " + ext.executionTimeResult.longValue() + "ms.</small></i>");
+    		vert.add(p);
+    		vert.add(rep);
+    		initWidget(vert);
+    	} else {
+    		initWidget(p);
+    	}
     }
 
 

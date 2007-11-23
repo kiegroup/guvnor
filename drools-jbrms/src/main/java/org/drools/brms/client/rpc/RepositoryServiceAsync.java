@@ -63,7 +63,7 @@ public interface RepositoryServiceAsync
     public void quickFindAsset(java.lang.String p0, int p1, boolean p2, AsyncCallback cb);
     public void removeCategory(java.lang.String p0, AsyncCallback cb);
     public void loadSuggestionCompletionEngine(java.lang.String p0, AsyncCallback cb);
-    public void buildPackage(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
+    public void buildPackage(java.lang.String p0, java.lang.String p1, boolean p2, AsyncCallback cb);
     public void buildPackageSource(java.lang.String p0, AsyncCallback cb);
     public void buildAssetSource(org.drools.brms.client.rpc.RuleAsset p0, AsyncCallback cb);
     public void buildAsset(org.drools.brms.client.rpc.RuleAsset p0, AsyncCallback cb);
@@ -72,6 +72,7 @@ public interface RepositoryServiceAsync
     public void removeAsset(java.lang.String p0, AsyncCallback cb);
     public void renamePackage(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
     public void rebuildSnapshots(AsyncCallback cb);
+    public void listRulesInPackage(java.lang.String p0, AsyncCallback cb);
 
 
 }

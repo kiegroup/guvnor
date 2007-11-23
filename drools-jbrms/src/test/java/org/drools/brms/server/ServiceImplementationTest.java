@@ -955,7 +955,7 @@ public class ServiceImplementationTest extends TestCase {
         item.updateContent( " rule abc \n when \n then \n System.out.println(42); \n end");
         item.checkin( "" );
 
-        BuilderResult[] res = impl.buildPackage( pkg.getUUID(), "" );
+        BuilderResult[] res = impl.buildPackage( pkg.getUUID(), "", true );
         assertNull(res);
 
 
@@ -1148,7 +1148,7 @@ public class ServiceImplementationTest extends TestCase {
         rule1.checkin( "" );
         repo.save();
 
-        BuilderResult[] results = impl.buildPackage( pkg.getUUID(), null );
+        BuilderResult[] results = impl.buildPackage( pkg.getUUID(), null, true );
         assertNull( results );
 
         pkg = repo.loadPackage( "testBinaryPackageCompile" );
@@ -1182,7 +1182,7 @@ public class ServiceImplementationTest extends TestCase {
         rule1.updateContent( "rule 'rule1' \n when p:PersonX() \n then System.err.println(42); \n end" );
         rule1.checkin( "" );
 
-        results = impl.buildPackage( pkg.getUUID(), null );
+        results = impl.buildPackage( pkg.getUUID(), null, true );
         assertNotNull( results );
         assertEquals( 1,
                       results.length );
@@ -1196,7 +1196,7 @@ public class ServiceImplementationTest extends TestCase {
 
         pkg = repo.loadPackageSnapshot( "testBinaryPackageCompile",
                                         "SNAP1" );
-        results = impl.buildPackage( pkg.getUUID(), null );
+        results = impl.buildPackage( pkg.getUUID(), null, true  );
         assertNull( results );
 
     }
@@ -1243,7 +1243,7 @@ public class ServiceImplementationTest extends TestCase {
         rule2.checkin( "" );
         repo.save();
 
-        BuilderResult[] results = impl.buildPackage( pkg.getUUID(), null );
+        BuilderResult[] results = impl.buildPackage( pkg.getUUID(), null, true );
         if ( results != null ) {
             for ( int i = 0; i < results.length; i++ ) {
                 System.err.println( results[i].message );
@@ -1290,7 +1290,7 @@ public class ServiceImplementationTest extends TestCase {
         rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
         rule2.checkin( "" );
 
-        results = impl.buildPackage( pkg.getUUID(), null );
+        results = impl.buildPackage( pkg.getUUID(), null, true );
         assertNotNull( results );
         assertTrue( results.length > 0 );
         //assertEquals(2, results.length);
@@ -1304,7 +1304,7 @@ public class ServiceImplementationTest extends TestCase {
 
         pkg = repo.loadPackageSnapshot( "testBinaryPackageCompileBRL",
                                         "SNAP1" );
-        results = impl.buildPackage( pkg.getUUID(), null );
+        results = impl.buildPackage( pkg.getUUID(), null, true );
         assertNull( results );
 
         //check that the rule name in the model is being set
@@ -1663,8 +1663,90 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    public void testRuleNameList() throws Exception {
+        ServiceImplementation impl = getService();
+        RulesRepository repo = impl.repository;
+
+        //create our package
+        PackageItem pkg = repo.createPackage( "testRuleNameList",
+                                              "" );
+        pkg.updateHeader( "import org.goo.Ber" );
+        AssetItem rule1 = pkg.addAsset( "rule_1",
+                                        "" );
+        rule1.updateFormat( AssetFormats.DRL );
+        rule1.updateContent( "rule 'rule1' \n when p:Person() \n then p.setAge(42); \n end" );
+        rule1.checkin( "" );
+        repo.save();
+
+        AssetItem rule2 = pkg.addAsset( "rule_2",
+        "" );
+        rule2.updateFormat( AssetFormats.DRL );
+        rule2.updateContent( "rule 'rule2' \n when p:Person() \n then p.setAge(42); \n end" );
+		rule2.checkin( "" );
+		repo.save();
+
+		String[] list = impl.listRulesInPackage(pkg.getName());
+		assertEquals(2, list.length);
+		assertEquals("rule1", list[0]);
+		assertEquals("rule2", list[1]);
+
+    }
+
+
+    /**
+     * This idea of this is to not compile packages more then we have to.
+     */
+    public void testBinaryUpToDate() throws Exception {
+        ServiceImplementation impl = getService();
+        RulesRepository repo = impl.repository;
+
+        //create our package
+        PackageItem pkg = repo.createPackage( "testBinaryPackageUpToDate",
+                                              "" );
+        assertFalse(impl.isPackageBinaryUpToDate(pkg));
+        pkg.updateHeader( "import org.drools.Person" );
+        AssetItem rule1 = pkg.addAsset( "rule_1",
+                                        "" );
+        rule1.updateFormat( AssetFormats.DRL );
+        rule1.updateContent( "rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end" );
+        rule1.checkin( "" );
+        repo.save();
+
+        BuilderResult[] results = impl.buildPackage( pkg.getUUID(), null, true );
+        assertNull( results );
+
+        pkg = repo.loadPackage( "testBinaryPackageUpToDate" );
+        byte[] binPackage = pkg.getCompiledPackageBytes();
+
+        assertNotNull( binPackage );
+
+        assertTrue(pkg.getNode().getProperty("drools:binaryUpToDate").getBoolean());
+
+        RuleAsset asset = impl.loadRuleAsset(rule1.getUUID());
+        impl.checkinVersion(asset);
+
+        assertFalse(pkg.getNode().getProperty("drools:binaryUpToDate").getBoolean());
+
+        impl.buildPackage(pkg.getUUID(), null, false );
+
+        assertTrue(pkg.getNode().getProperty("drools:binaryUpToDate").getBoolean());
+
+        PackageConfigData config = impl.loadPackageConfig(pkg.getUUID());
+        impl.savePackage(config);
+
+        assertFalse(pkg.getNode().getProperty("drools:binaryUpToDate").getBoolean());
+        assertFalse(impl.isPackageBinaryUpToDate(pkg));
+        impl.buildPackage(pkg.getUUID(), null, false );
+        assertTrue(pkg.getNode().getProperty("drools:binaryUpToDate").getBoolean());
+        assertTrue(impl.isPackageBinaryUpToDate(pkg));
+
+
+    }
+
+
     private ServiceImplementation getService() throws Exception {
         ServiceImplementation impl = new ServiceImplementation();
+
         impl.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
         return impl;
     }

@@ -61,6 +61,9 @@ public class AssetFormats {
     /** Use a data enum.*/
     public static final String ENUMERATION = "enumeration";
 
+    /** For test scenarios.  */
+    public static final String TEST_SCENARIO = "scenario";
+
     /**
      * The following group the assets together for lists, helpers etc...
      */
@@ -85,5 +88,8 @@ public class AssetFormats {
         }
         return false;
     }
+
+
+
 
 }

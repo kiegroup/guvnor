@@ -66,7 +66,10 @@ public class QAManagerWidget extends Composite {
         sc.rules.add("rule1");
         sc.rules.add("rule2");
 
-        sc.fixtures.add(new ExecutionTrace());
+        ExecutionTrace ext = new ExecutionTrace();
+        ext.numberOfRulesFired = new Long(42);
+        ext.executionTimeResult = new Long(4);
+        sc.fixtures.add(ext);
 
         List fields = new ArrayList();
         VerifyField vfl = new VerifyField("age", "42", "==");

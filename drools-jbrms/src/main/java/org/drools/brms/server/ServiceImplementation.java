@@ -33,11 +33,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.jcr.ItemExistsException;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.ValueFormatException;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.version.VersionException;
 
 import org.apache.log4j.Logger;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.DetailedSerializableException;
 import org.drools.brms.client.rpc.MetaData;
@@ -58,7 +64,11 @@ import org.drools.brms.server.contenthandler.IValidating;
 import org.drools.brms.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.TableDisplayHandler;
+import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.RuleDescr;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -69,6 +79,7 @@ import org.drools.repository.RulesRepositoryAdministrator;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.VersionableItem;
+import org.drools.testframework.ScenarioRunner;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -340,7 +351,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public String checkinVersion(RuleAsset asset) throws SerializableException {
 
-        log.info( "USER:" + repository.getSession().getUserID() +
+    	        log.info( "USER:" + repository.getSession().getUserID() +
         " CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "]  ARCHIVED [" + asset.archived + "]");
 
 
@@ -363,13 +374,34 @@ public class ServiceImplementation
         ContentHandler handler = ContentHandler.getHandler( repoAsset.getFormat() );//new AssetContentFormatHandler();
         handler.storeAssetContent( asset, repoAsset );
 
-        repoAsset.checkin( meta.checkinComment );
+        if (!(asset.metaData.format.equals(AssetFormats.TEST_SCENARIO))
+        		||
+        		asset.metaData.format.equals(AssetFormats.ENUMERATION)) {
+        		setPackageBinaryUpToDate(repoAsset.getPackage(), false);
+        }
 
+        repoAsset.checkin( meta.checkinComment );
 
         return repoAsset.getUUID();
     }
 
-    @WebRemote
+    /**
+     * Sets a flag to say if the binary package is up to date.
+     * Flip it (or remove it) if it is no longer up to date.
+     */
+    private void setPackageBinaryUpToDate(PackageItem p, boolean status) {
+    	try {
+    		p.checkout();
+			p.getNode().setProperty("drools:binaryUpToDate", status);
+			repository.save();
+		} catch (RepositoryException e) {
+			log.error(e);
+		}
+	}
+
+
+
+	@WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadAssetHistory(String uuid) throws SerializableException {
 
@@ -544,6 +576,8 @@ public class ServiceImplementation
             res.errorHeader  = "Package validation errors";
             res.errorMessage = err;
         }
+
+        setPackageBinaryUpToDate(item, false);
 
         return res;
     }
@@ -776,8 +810,13 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public BuilderResult[] buildPackage(String packageUUID, String selectorConfigName) throws SerializableException {
+    public BuilderResult[] buildPackage(String packageUUID, String selectorConfigName, boolean force) throws SerializableException {
+
         PackageItem item = repository.loadPackageByUUID( packageUUID );
+        if (!force && isPackageBinaryUpToDate(item)) {
+        	//we can just return all OK if its up to date.
+        	return null;
+        }
         ContentPackageAssembler asm = new ContentPackageAssembler(item, selectorConfigName);
         if (asm.hasErrors()) {
             BuilderResult[] result = generateBuilderResults( asm );
@@ -792,11 +831,13 @@ public class ServiceImplementation
                 out.flush();
                 out.close();
 
+                this.setPackageBinaryUpToDate(item, true);
                 repository.save();
             } catch (IOException e) {
                 log.error( e );
                 throw new SerializableException(e.getMessage());
             }
+
 
             return null;
 
@@ -804,7 +845,23 @@ public class ServiceImplementation
     }
 
 
-    private BuilderResult[] generateBuilderResults(ContentPackageAssembler asm) {
+    /**
+     * Will return true if the package binary is ok to use as is, or if it should be rebuilt.
+     */
+    boolean isPackageBinaryUpToDate(PackageItem item) {
+		try {
+			if (item.getNode().hasProperty("drools:binaryUpToDate")) {
+				return item.getNode().getProperty("drools:binaryUpToDate").getBoolean();
+			} else {
+				return false;
+			}
+		} catch (RepositoryException e) {
+			log.error(e);
+			throw new RulesRepositoryException(e);
+		}
+	}
+
+	private BuilderResult[] generateBuilderResults(ContentPackageAssembler asm) {
         BuilderResult[] result = new BuilderResult[asm.getErrors().size()];
         for ( int i = 0; i < result.length; i++ ) {
             ContentAssemblyError err = asm.getErrors().get( i );
@@ -933,7 +990,7 @@ public class ServiceImplementation
             String[] snaps = repository.listPackageSnapshots( pkg.getName() );
             for ( String snapName : snaps ) {
                 PackageItem snap = repository.loadPackageSnapshot( pkg.getName(), snapName );
-                BuilderResult[]  res = this.buildPackage( snap.getUUID(), ""  ) ;
+                BuilderResult[]  res = this.buildPackage( snap.getUUID(), "", true  ) ;
                 if (res != null) {
                     StringBuffer buf = new StringBuffer();
                     for ( int i = 0; i < res.length; i++ ) {
@@ -945,6 +1002,28 @@ public class ServiceImplementation
             }
         }
     }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public String[] listRulesInPackage(String packageName) throws SerializableException {
+    	PackageItem item = repository.loadPackage(packageName);
+        ContentPackageAssembler asm = new ContentPackageAssembler(item, false);
+        List<String> result = new ArrayList<String>();
+        DrlParser p = new DrlParser();
+        try {
+			PackageDescr pkg = p.parse(asm.getDRL());
+			for (Iterator iterator = pkg.getRules().iterator(); iterator.hasNext();) {
+				RuleDescr r = (RuleDescr) iterator.next();
+				result.add(r.getName());
+			}
+			return result.toArray(new String[result.size()]);
+		} catch (DroolsParserException e) {
+			log.error(e);
+			return new String[0];
+		}
+    }
+
+
 
 
 

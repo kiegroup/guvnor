@@ -254,7 +254,7 @@ public interface RepositoryService extends RemoteService {
      * in the systems selectors.properties file. This will then apply the filter to the
      * package being built.
      */
-    public BuilderResult[] buildPackage(String packageUUID, String selectorName) throws SerializableException;
+    public BuilderResult[] buildPackage(String packageUUID, String selectorName, boolean force) throws SerializableException;
 
     /**
      * This will return the effective DRL for a package.
@@ -309,5 +309,11 @@ public interface RepositoryService extends RemoteService {
      * an expert will need to look at them.
      */
     public void rebuildSnapshots() throws SerializableException;
+
+
+    /**
+     * This will list the rules available in a package.
+     */
+    public String[] listRulesInPackage(String packageName) throws SerializableException;
 
 }

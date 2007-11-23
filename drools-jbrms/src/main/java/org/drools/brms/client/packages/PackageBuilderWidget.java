@@ -193,7 +193,7 @@ public class PackageBuilderWidget extends Composite {
 
 		DeferredCommand.add(new Command() {
 			public void execute() {
-				RepositoryServiceFactory.getService().buildPackage(conf.uuid, selectorName,
+				RepositoryServiceFactory.getService().buildPackage(conf.uuid, selectorName, true,
 						new GenericCallback() {
 							public void onSuccess(Object data) {
                                 LoadingPopup.close();
