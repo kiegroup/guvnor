@@ -20,12 +20,18 @@ code {
 }
 
 .testSuccessBackground {background: green;}
-.testFailureBackground {background: red;}
+.testFailureBackground {background: #CC0000;}
 .testBar {
 	border-spacing:0;
 	border-collapse:collapse;
 	padding:0;
 }
+.testErrorValue { border: 1px solid #CC0000;
+font-color: #CC000;
+font-size: small;
+font-style: italics;
+}
+
 .successBar {border: 1px; solid #aa9; }
 
 .gwt-DialogBox {

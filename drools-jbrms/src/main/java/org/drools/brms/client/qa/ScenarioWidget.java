@@ -10,6 +10,7 @@ import java.util.Map;
 import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
@@ -21,7 +22,11 @@ import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.brms.client.rpc.RepositoryServiceFactory;
+import org.drools.brms.client.rpc.RuleAsset;
 
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -39,25 +44,26 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.VerticalSplitPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScenarioWidget extends Composite {
 
     private DirtyableFlexTable layout;
-	private String[] availableRules;
+	private ListBox availableRules;
 	private Scenario scenario;
 	private SuggestionCompletionEngine sce;
+	private ChangeListener ruleSelectionCL;
+	private RuleAsset asset;
 
 
 
 
-	public ScenarioWidget(Scenario scenario, String[] ruleList, SuggestionCompletionEngine eng) {
+	public ScenarioWidget(RuleAsset asset, SuggestionCompletionEngine eng) {
 		VerticalPanel split = new VerticalPanel();
-
-
+		this.scenario = (Scenario) asset.content;
+		this.asset = asset;
     	layout = new DirtyableFlexTable();
-    	this.availableRules = ruleList;
+
     	this.scenario = scenario;
     	this.sce = eng;
 
@@ -97,7 +103,7 @@ public class ScenarioWidget extends Composite {
 			if (f instanceof ExecutionTrace) {
 				previousEx = (ExecutionTrace) f;
 				HorizontalPanel h = new HorizontalPanel();
-				h.add(getNewExpectationButton(previousEx, scenario, availableRules));
+				h.add(getNewExpectationButton(previousEx, scenario));
 				h.add(new Label("EXPECT"));
 				layout.setWidget(layoutRow, 0, h);
 
@@ -137,7 +143,7 @@ public class ScenarioWidget extends Composite {
 				if (first instanceof VerifyFact) {
 					doVerifyFacts(l, layout, layoutRow);
 				} else if (first instanceof VerifyRuleFired) {
-					layout.setWidget(layoutRow, 1, new VerifyRulesFiredWidget(l, availableRules, scenario));
+					layout.setWidget(layoutRow, 1, new VerifyRulesFiredWidget(l, scenario));
 				}
 
 			}
@@ -162,7 +168,7 @@ public class ScenarioWidget extends Composite {
         //layoutRow++;
 
         //config section
-        ConfigWidget conf = new ConfigWidget(scenario, availableRules);
+        ConfigWidget conf = new ConfigWidget(scenario, asset.metaData.packageName, this);
         layout.setWidget(layoutRow, 1, conf);
 
         layoutRow++;
@@ -323,34 +329,26 @@ public class ScenarioWidget extends Composite {
 	}
 
 
+
 	private Widget getNewExpectationButton(final ExecutionTrace ex,
-			final Scenario sc, final String[] ruleList) {
+			final Scenario sc) {
 
 		Image add = new ImageButton("images/new_item.gif", "Add a new expectation.", new ClickListener() {
 			public void onClick(Widget w) {
 				final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", "New expectation");
 
-		        final ListBox rules = new ListBox();
-		        for (int i = 0; i < ruleList.length; i++) {
-		            rules.addItem(ruleList[i]);
-		        }
-		        pop.addRow(rules);
-		        Button ok = new Button("Add");
+				Widget selectRule = getRuleSelectionWidget(asset.metaData.packageName, new RuleSelectionEvent()  {
 
-		        ok.addClickListener(new ClickListener() {
-		            public void onClick(Widget w) {
-		                String r = rules.getItemText(rules.getSelectedIndex());
-		                VerifyRuleFired vr = new VerifyRuleFired(r, null, new Boolean(true));
+					public void ruleSelected(String name) {
+		                VerifyRuleFired vr = new VerifyRuleFired(name, null, new Boolean(true));
 		                sc.insertAfter(ex, vr);
 		                render();
 		                pop.hide();
-		            }
-		        });
+					}
 
-		        HorizontalPanel h = new HorizontalPanel();
-		        h.add(rules);
-		        h.add(ok);
-				pop.addAttribute("Rule:", h);
+				});
+
+				pop.addAttribute("Rule:", selectRule);
 
 				final ListBox facts = new ListBox();
 				List names = sc.getFactNamesInScope(ex, true);
@@ -358,7 +356,7 @@ public class ScenarioWidget extends Composite {
 					facts.addItem((String) iterator.next());
 				}
 
-				ok = new Button("Add");
+				Button ok = new Button("Add");
 				ok.addClickListener(new ClickListener() {
 					public void onClick(Widget w) {
 						String factName = facts.getItemText(facts.getSelectedIndex());
@@ -368,7 +366,7 @@ public class ScenarioWidget extends Composite {
 					}
 				});
 
-				h = new HorizontalPanel();
+				HorizontalPanel h = new HorizontalPanel();
 				h.add(facts);
 				h.add(ok);
 				pop.addAttribute("Fact value:", h);
@@ -409,10 +407,85 @@ public class ScenarioWidget extends Composite {
 	}
 
 
+	public Widget getRuleSelectionWidget(final String packageName, final RuleSelectionEvent selected) {
+		final HorizontalPanel h = new HorizontalPanel();
+		final TextBox t = new TextBox();
+		t.setTitle("Enter name of rule, or pick from a list. If there are a very large number of rules, you will need to type in the name.");
+		h.add(t);
+		if (!(availableRules == null)) {
+			availableRules.setSelectedIndex(0);
+			availableRules.removeChangeListener(ruleSelectionCL);
+			ruleSelectionCL  = new ChangeListener() {
+				public void onChange(Widget w) {
+					t.setText(availableRules.getItemText(availableRules.getSelectedIndex()));
+				}
+			};
+
+			availableRules.addChangeListener(ruleSelectionCL);
+			h.add(availableRules);
+
+		} else {
+
+			final Button showList = new Button("(show list)");
+			h.add(showList);
+			showList.addClickListener(new ClickListener() {
+				public void onClick(Widget w) {
+					h.remove(showList);
+					final Image busy = new Image("images/searching.gif");
+					final Label loading = new Label("(loading list)");
+					h.add(busy);
+					h.add(loading);
+
+
+					DeferredCommand.addCommand(new Command() {
+						public void execute() {
+							RepositoryServiceFactory.getService().listRulesInPackage(packageName, new GenericCallback() {
+								public void onSuccess(Object data) {
+									String[] list = (String[]) data;
+									availableRules = new ListBox();
+									availableRules.addItem("-- please choose --");
+									for (int i = 0; i < list.length; i++) {
+										availableRules.addItem(list[i]);
+									}
+									ruleSelectionCL  = new ChangeListener() {
+										public void onChange(Widget w) {
+											t.setText(availableRules.getItemText(availableRules.getSelectedIndex()));
+										}
+									};
+									availableRules.addChangeListener(ruleSelectionCL);
+									availableRules.setSelectedIndex(0);
+									h.add(availableRules);
+									h.remove(busy);
+									h.remove(loading);
+								}
+							});
+						}
+					});
+
+
+				}
+			});
+
+		}
+
+		Button ok = new Button("OK");
+		ok.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				selected.ruleSelected(t.getText());
+			}
+		});
+		h.add(ok);
+		return h;
+	}
 
 
 }
 
+
+
+interface RuleSelectionEvent {
+	public void ruleSelected(String name);
+}
 
 /**
  * For capturing input for all the facts of a given type.
@@ -603,7 +676,7 @@ class DataInputWidget extends Composite {
 }
 
 class ConfigWidget extends Composite {
-    public ConfigWidget(final Scenario sc, final String[] fullRuleList) {
+    public ConfigWidget(final Scenario sc, final String packageName, final ScenarioWidget scWidget) {
 
         final ListBox box = new ListBox(true);
 
@@ -615,7 +688,7 @@ class ConfigWidget extends Composite {
         final Image add = new ImageButton("images/new_item.gif", "Add a new rule.");
         add.addClickListener(new ClickListener() {
             public void onClick(Widget w) {
-                showRulePopup(w, box, fullRuleList, sc.rules);
+                showRulePopup(w, box, packageName, sc.rules, scWidget);
             }
         });
 
@@ -673,23 +746,20 @@ class ConfigWidget extends Composite {
         initWidget(filter);
     }
 
-    private void showRulePopup(Widget w, final ListBox box, String[] fullRuleList, final List filterList) {
+    private void showRulePopup(Widget w, final ListBox box, String packageName, final List filterList, ScenarioWidget scw) {
         final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", "Select rule");
-        final ListBox rules = new ListBox();
-        for (int i = 0; i < fullRuleList.length; i++) {
-            rules.addItem(fullRuleList[i]);
-        }
-        pop.addRow(rules);
-        Button ok = new Button("Add");
-        pop.addRow(ok);
-        ok.addClickListener(new ClickListener() {
-            public void onClick(Widget w) {
-                String r = rules.getItemText(rules.getSelectedIndex());
+
+        Widget ruleSelector = scw.getRuleSelectionWidget(packageName, new RuleSelectionEvent() {
+			public void ruleSelected(String r) {
                 filterList.add(r);
                 box.addItem(r);
                 pop.hide();
-            }
+
+			}
         });
+
+        pop.addRow(ruleSelector);
+
         pop.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
         pop.show();
 
@@ -905,7 +975,7 @@ class VerifyRulesFiredWidget extends Composite {
      * @param rules = the list of rules to choose from
      * @param scenario = the scenario to add/remove from
      */
-    public VerifyRulesFiredWidget(final List rfl, final String[] rules, final Scenario scenario) {
+    public VerifyRulesFiredWidget(final List rfl, final Scenario scenario) {
         outer = new Grid(2, 1);
 
         outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");

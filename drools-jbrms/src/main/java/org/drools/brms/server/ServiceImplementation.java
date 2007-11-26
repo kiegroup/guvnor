@@ -983,6 +983,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] listRulesInPackage(String packageName) throws SerializableException {
+
     	PackageItem item = repository.loadPackage(packageName);
         ContentPackageAssembler asm = new ContentPackageAssembler(item, false);
         List<String> result = new ArrayList<String>();

@@ -1,7 +1,6 @@
 package org.drools.brms.client.qa;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,7 +12,10 @@ import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.brms.client.rpc.MetaData;
+import org.drools.brms.client.rpc.RuleAsset;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabPanel;
@@ -31,7 +33,7 @@ public class QAManagerWidget extends Composite {
         tab.setWidth("100%");
         tab.setHeight("30%");
 
-        tab.add( new ScenarioWidget(getDemo(), new String[] {"rule1", "rule2"}, getSCE()),  "<img src='images/test_manager.gif'/>Test", true);
+        tab.add( new ScenarioWidget(getDemo(), getSCE()),  "<img src='images/test_manager.gif'/>Test", true);
         tab.add(new Label("TODO"), "<img src='images/analyze.gif'/>Analyze", true);
         tab.selectTab( 0 );
 
@@ -52,7 +54,7 @@ public class QAManagerWidget extends Composite {
 		return new Scenario();
 	}
 
-	private Scenario getDemo() {
+	private RuleAsset getDemo() {
         //Sample data
         FactData d1 = new FactData("Driver", "d1", ls(new FieldData[] {new FieldData("age", "42"), new FieldData("name", "david")}), false);
         FactData d2 = new FactData("Driver", "d2", ls(new FieldData[] {new FieldData("name", "michael")}), false);
@@ -101,7 +103,13 @@ public class QAManagerWidget extends Composite {
         sc.fixtures.add(vf1);
         sc.fixtures.add(vf2);
 
-		return sc;
+        RuleAsset asset = new RuleAsset();
+        asset.content = (IsSerializable) sc;
+
+        asset.metaData = new MetaData();
+        asset.metaData.packageName = "com.billasurf.manufacturing";
+
+		return asset;
 	}
 
 	private List ls(FieldData[] fieldDatas) {
