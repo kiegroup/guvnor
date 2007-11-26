@@ -210,11 +210,12 @@ select {
 	background:#FFFFF0;
 }
 .ks-popups-Popup {
-	border:2px solid #aa9;
+	border:6px solid #black;
+	//#aa9;
 	-moz-border-radius:.7em;
 	-webkit-border-radius:.7em;
 	-khtml-border-radius:.7em;
-	border-radius:.7em;
+	border-radius:.5em;
 	padding:4px;
 	background:#FFF;
 }

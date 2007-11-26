@@ -84,6 +84,8 @@ public class FileManagerUtils {
     @Restrict("#{identity.loggedIn}")
     public void attachFileToAsset(String uuid, InputStream fileData, String fileName) throws IOException {
 
+    	//here we should mark the binary data as invalid on the package (which means moving something into repo modle)
+
         AssetItem item = repository.loadAssetByUUID( uuid );
         item.updateBinaryContentAttachment( fileData );
         item.updateBinaryContentAttachmentFileName( fileName );

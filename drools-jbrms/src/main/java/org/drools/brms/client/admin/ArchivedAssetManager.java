@@ -1,10 +1,14 @@
 package org.drools.brms.client.admin;
 
+import java.util.HashMap;
+
 import org.drools.brms.client.common.FormStyleLayout;
+import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.TableDataResult;
+import org.drools.brms.client.ruleeditor.EditorLauncher;
 import org.drools.brms.client.rulelist.AssetItemListViewer;
 import org.drools.brms.client.rulelist.EditItemEvent;
 
@@ -15,6 +19,7 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -38,6 +43,12 @@ public class ArchivedAssetManager extends Composite {
 
         listView = new AssetItemListViewer (new EditItemEvent () {
             public void open(String key) {
+            	FormStylePopup pop = new FormStylePopup("images/snapshot.png", "Archived item");
+            	TabPanel tab = new TabPanel();
+            	pop.addRow(tab);
+            	EditorLauncher.showLoadEditor( new HashMap(), tab, key, true );
+            	pop.setPopupPosition(20, 20);
+            	pop.show();
             }
         }, AssetItemListViewer.ARCHIVED_RULE_LIST_TABLE_ID );
 

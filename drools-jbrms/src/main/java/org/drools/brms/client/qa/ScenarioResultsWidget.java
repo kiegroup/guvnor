@@ -44,10 +44,10 @@ public class ScenarioResultsWidget extends Composite {
 				VerifyRuleFired vr = (VerifyRuleFired)f;
 				HorizontalPanel h = new HorizontalPanel();
 				if (!vr.successResult.booleanValue()) {
-					h.add(new Image("images/error.gif"));
+					h.add(new Image("images/test_failed.png"));
 					failures++;
 				} else {
-					h.add(new Image("images/tick_green.gif"));
+					h.add(new Image("images/test_passed.png"));
 				}
 				h.add(new Label(vr.explanation));
 				results.add(h);
@@ -58,10 +58,10 @@ public class ScenarioResultsWidget extends Composite {
 					VerifyField vfl = (VerifyField) it.next();
 					HorizontalPanel h = new HorizontalPanel();
 					if (!vfl.successResult.booleanValue()) {
-						h.add(new Image("images/error.gif"));
+						h.add(new Image("images/test_failed.png"));
 						failures++;
 					} else {
-						h.add(new Image("images/tick_green.gif"));
+						h.add(new Image("images/test_passed.png"));
 					}
 					h.add(new Label(vfl.explanation));
 					results.add(h);
