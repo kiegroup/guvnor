@@ -313,6 +313,7 @@ public interface RepositoryService extends RemoteService {
 
     /**
      * This will list the rules available in a package.
+     * This has an upper limit of what it will return (it just doesn't make sense to show a list of 20K items !).
      */
     public String[] listRulesInPackage(String packageName) throws SerializableException;
 

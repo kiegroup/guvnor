@@ -1703,7 +1703,7 @@ public class ServiceImplementationTest extends TestCase {
         //create our package
         PackageItem pkg = repo.createPackage( "testBinaryPackageUpToDate",
                                               "" );
-        assertFalse(impl.isPackageBinaryUpToDate(pkg));
+        assertFalse(pkg.isBinaryUpToDate());
         pkg.updateHeader( "import org.drools.Person" );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -1735,10 +1735,10 @@ public class ServiceImplementationTest extends TestCase {
         impl.savePackage(config);
 
         assertFalse(pkg.getNode().getProperty("drools:binaryUpToDate").getBoolean());
-        assertFalse(impl.isPackageBinaryUpToDate(pkg));
+        assertFalse(pkg.isBinaryUpToDate());
         impl.buildPackage(pkg.getUUID(), null, false );
         assertTrue(pkg.getNode().getProperty("drools:binaryUpToDate").getBoolean());
-        assertTrue(impl.isPackageBinaryUpToDate(pkg));
+        assertTrue(pkg.isBinaryUpToDate());
 
 
     }

@@ -377,7 +377,8 @@ public class ServiceImplementation
         if (!(asset.metaData.format.equals(AssetFormats.TEST_SCENARIO))
         		||
         		asset.metaData.format.equals(AssetFormats.ENUMERATION)) {
-        		setPackageBinaryUpToDate(repoAsset.getPackage(), false);
+        		repoAsset.getPackage().updateBinaryUpToDate(false);
+
         }
 
         repoAsset.checkin( meta.checkinComment );
@@ -385,19 +386,7 @@ public class ServiceImplementation
         return repoAsset.getUUID();
     }
 
-    /**
-     * Sets a flag to say if the binary package is up to date.
-     * Flip it (or remove it) if it is no longer up to date.
-     */
-    private void setPackageBinaryUpToDate(PackageItem p, boolean status) {
-    	try {
-    		p.checkout();
-			p.getNode().setProperty("drools:binaryUpToDate", status);
-			repository.save();
-		} catch (RepositoryException e) {
-			log.error(e);
-		}
-	}
+
 
 
 
@@ -559,7 +548,7 @@ public class ServiceImplementation
         item.updateExternalURI( data.externalURI );
         item.updateDescription( data.description );
         item.archiveItem( data.archived );
-
+        item.updateBinaryUpToDate(false);
         item.checkin( data.description );
 
         BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
@@ -577,7 +566,9 @@ public class ServiceImplementation
             res.errorMessage = err;
         }
 
-        setPackageBinaryUpToDate(item, false);
+
+
+
 
         return res;
     }
@@ -813,7 +804,7 @@ public class ServiceImplementation
     public BuilderResult[] buildPackage(String packageUUID, String selectorConfigName, boolean force) throws SerializableException {
 
         PackageItem item = repository.loadPackageByUUID( packageUUID );
-        if (!force && isPackageBinaryUpToDate(item)) {
+        if (!force && item.isBinaryUpToDate()) {
         	//we can just return all OK if its up to date.
         	return null;
         }
@@ -831,7 +822,8 @@ public class ServiceImplementation
                 out.flush();
                 out.close();
 
-                this.setPackageBinaryUpToDate(item, true);
+                item.updateBinaryUpToDate(true);
+
                 repository.save();
             } catch (IOException e) {
                 log.error( e );
@@ -845,21 +837,6 @@ public class ServiceImplementation
     }
 
 
-    /**
-     * Will return true if the package binary is ok to use as is, or if it should be rebuilt.
-     */
-    boolean isPackageBinaryUpToDate(PackageItem item) {
-		try {
-			if (item.getNode().hasProperty("drools:binaryUpToDate")) {
-				return item.getNode().getProperty("drools:binaryUpToDate").getBoolean();
-			} else {
-				return false;
-			}
-		} catch (RepositoryException e) {
-			log.error(e);
-			throw new RulesRepositoryException(e);
-		}
-	}
 
 	private BuilderResult[] generateBuilderResults(ContentPackageAssembler asm) {
         BuilderResult[] result = new BuilderResult[asm.getErrors().size()];
@@ -997,7 +974,7 @@ public class ServiceImplementation
                         buf.append( res[i].toString() );
                         buf.append( '\n' );
                     }
-                    throw new DetailedSerializableException("Unable to rebuild snapshot [" + snapName, buf.toString() );
+                    throw new DetailedSerializableException("Unable to rebuild snapshot [" + snapName, buf.toString() + "]" );
                 }
             }
         }
@@ -1012,9 +989,15 @@ public class ServiceImplementation
         DrlParser p = new DrlParser();
         try {
 			PackageDescr pkg = p.parse(asm.getDRL());
+			int count = 0;
 			for (Iterator iterator = pkg.getRules().iterator(); iterator.hasNext();) {
 				RuleDescr r = (RuleDescr) iterator.next();
 				result.add(r.getName());
+				count++;
+				if (count == 5000) {
+					result.add("More then 5000 rules.");
+					break;
+				}
 			}
 			return result.toArray(new String[result.size()]);
 		} catch (DroolsParserException e) {

@@ -89,6 +89,7 @@ public class FileManagerUtils {
         AssetItem item = repository.loadAssetByUUID( uuid );
         item.updateBinaryContentAttachment( fileData );
         item.updateBinaryContentAttachmentFileName( fileName );
+        item.getPackage().updateBinaryUpToDate(false);
         item.checkin( "Attached file: " + fileName );
 
 

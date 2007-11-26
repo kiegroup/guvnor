@@ -879,8 +879,11 @@ class VerifyFactWidget extends Composite {
 
             if (fld.successResult != null) {
             	if (fld.successResult.booleanValue()) {
-            		data.setWidget(i, 0, new Image("images/test_failed.png"));
-            		data.setWidget(i, 5, new HTML("<i><small>(Actual: " + fld.actualResult + ")</small></i>"));
+            		data.setWidget(i, 0, new Image("images/warning.gif"));
+            		data.setWidget(i, 5, new HTML("(Actual: " + fld.actualResult + ")"));
+
+            		data.getCellFormatter().addStyleName(i, 5, "testErrorValue");
+
             	} else {
             		data.setWidget(i, 0, new Image("images/test_passed.png"));
             	}
@@ -927,8 +930,10 @@ class VerifyRulesFiredWidget extends Composite {
 
             if (v.successResult != null) {
             	if (v.successResult.booleanValue()) {
-            		data.setWidget(i, 0, new Image("images/test_failed.png"));
-            		data.setWidget(i, 4, new HTML("<i><small>(Actual: " + v.actualResult +")</small></i>"));
+            		data.setWidget(i, 0, new Image("images/warning.gif"));
+            		data.setWidget(i, 4, new HTML("(Actual: " + v.actualResult +")"));
+
+            		data.getCellFormatter().addStyleName(i, 4, "testErrorValue");
 
             	} else {
             		data.setWidget(i, 0, new Image("images/test_passed.png"));

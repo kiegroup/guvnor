@@ -73,8 +73,10 @@ public class FileManagerUtilsTest extends TestCase {
 		asset.updateFormat(AssetFormats.MODEL);
 		asset.checkin("");
 
+		pkg.updateBinaryUpToDate(true);
+		repo.save();
 
-
+		assertTrue(pkg.isBinaryUpToDate());
 
 		FileManagerUtils fm = new FileManagerUtils();
 		fm.repository = repo;
@@ -82,6 +84,8 @@ public class FileManagerUtilsTest extends TestCase {
 		fm.attachFileToAsset(asset.getUUID(), this.getClass().getResourceAsStream("/billasurf.jar"), "billasurf.jar");
 
 		pkg = repo.loadPackage("testAttachModelImports");
+
+		assertFalse(pkg.isBinaryUpToDate());
 		assertNotNull(pkg.getHeader());
 		assertTrue(pkg.getHeader().indexOf("import com.billasurf.Board") > -1);
 		assertTrue(pkg.getHeader().indexOf("import com.billasurf.Person") > -1);
