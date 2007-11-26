@@ -22,12 +22,12 @@ import org.apache.log4j.Logger;
 
 /**
  * A PackageItem object aggregates a set of assets (for example, rules). This is advantageous for systems using the JBoss Rules
- * engine where the application might make use of many related rules.  
+ * engine where the application might make use of many related rules.
  * <p>
  * A PackageItem refers to rule nodes within the RulesRepository.  It contains the "master copy" of assets (which may be linked
  * into other packages or other types of containers).
  * This is a container "node".
- * 
+ *
  * @author btruitt
  */
 public class PackageItem extends VersionableItem {
@@ -38,7 +38,7 @@ public class PackageItem extends VersionableItem {
      * for this package.
      */
     public static final String ASSET_FOLDER_NAME                = "assets";
-    
+
     /**
      * The dublin core format attribute.
      */
@@ -49,7 +49,7 @@ public class PackageItem extends VersionableItem {
      */
     public static final String RULE_PACKAGE_TYPE_NAME           = "drools:packageNodeType";
 
-    
+
     public static final String HEADER_PROPERTY_NAME             = "drools:header";
     public static final String EXTERNAL_URI_PROPERTY_NAME             = "drools:externalURI";
 
@@ -59,7 +59,7 @@ public class PackageItem extends VersionableItem {
      * Constructs an object of type RulePackageItem corresponding the specified node
      * @param rulesRepository the rulesRepository that instantiated this object
      * @param node the node to which this object corresponds
-     * @throws RulesRepositoryException 
+     * @throws RulesRepositoryException
      */
     public PackageItem(RulesRepository rulesRepository,
                            Node node) throws RulesRepositoryException {
@@ -67,7 +67,7 @@ public class PackageItem extends VersionableItem {
                node );
 
         try {
-            //make sure this node is a rule package node       
+            //make sure this node is a rule package node
             if ( !(this.node.getPrimaryNodeType().getName().equals( RULE_PACKAGE_TYPE_NAME ) ||
                     isHistoricalVersion())) {
                 String message = this.node.getName() + " is not a node of type " + RULE_PACKAGE_TYPE_NAME + ". It is a node of type: " + this.node.getPrimaryNodeType().getName();
@@ -79,15 +79,15 @@ public class PackageItem extends VersionableItem {
             throw new RulesRepositoryException( e );
         }
     }
-    
+
     PackageItem() {
         super(null, null);
     }
 
 
-    
+
     /**
-     * Return the name of the package. 
+     * Return the name of the package.
      */
     public String getName() {
         try {
@@ -101,7 +101,7 @@ public class PackageItem extends VersionableItem {
             throw new RulesRepositoryException( e );
         }
     }
-    
+
     /**
      * @return true if this package is actually a snapshot.
      */
@@ -112,7 +112,39 @@ public class PackageItem extends VersionableItem {
             throw new IllegalStateException(e);
         }
     }
-    
+
+
+
+    /**
+     * Set this to indicate if the binary is up to date, or not.
+     */
+    public void updateBinaryUpToDate(boolean status) {
+    	try {
+    		checkIsUpdateable();
+    		node.checkout();
+			node.setProperty("drools:binaryUpToDate", status);
+		} catch (RepositoryException e) {
+			log.error(e);
+		}
+    }
+
+    /**
+     * Return true if the binary is "up to date".
+     * @return
+     */
+    public boolean isBinaryUpToDate() {
+		try {
+			if (this.node.hasProperty("drools:binaryUpToDate")) {
+				return node.getProperty("drools:binaryUpToDate").getBoolean();
+			} else {
+				return false;
+			}
+		} catch (RepositoryException e) {
+			log.error(e);
+			throw new RulesRepositoryException(e);
+		}
+    }
+
     /**
      * returns the name of the snapshot, if this package is really a snapshot.
      * If it is not, it will just return the name of the package, so use wisely !
@@ -129,13 +161,13 @@ public class PackageItem extends VersionableItem {
     public AssetItem addAsset(String assetName, String description) {
         return addAsset(assetName, description, null, null);
     }
-    
+
 
     /**
      * This adds a rule to the current physical package (you can move it later).
      * With the given category.
-     * 
-     * This will NOT check the asset in, just create the basic record. 
+     *
+     * This will NOT check the asset in, just create the basic record.
      * @param assetName The name of the asset (the file name minus the extension)
      * @param description A description of the asset.
      * @param initialCategory The initial category the asset is placed in (can belong to multiple ones later).
@@ -161,26 +193,26 @@ public class PackageItem extends VersionableItem {
                 ruleNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME,
                                       AssetItem.DEFAULT_CONTENT_FORMAT );
             }
-            
+
 
             ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT,
                                   "Initial" );
 
             Calendar lastModified = Calendar.getInstance();
-            
-            ruleNode.setProperty( AssetItem.LAST_MODIFIED_PROPERTY_NAME, lastModified );            
+
+            ruleNode.setProperty( AssetItem.LAST_MODIFIED_PROPERTY_NAME, lastModified );
             ruleNode.setProperty( AssetItem.PACKAGE_NAME_PROPERTY, this.getName() );
             ruleNode.setProperty( CREATOR_PROPERTY_NAME, this.node.getSession().getUserID() );
 
-            
+
             AssetItem rule = new AssetItem( this.rulesRepository, ruleNode );
-                        
+
             rule.updateState( StateItem.DRAFT_STATE_NAME );
-            
+
             if (initialCategory != null) {
                 rule.addCategory( initialCategory );
             }
-            
+
             return rule;
 
         } catch ( RepositoryException e ) {
@@ -194,45 +226,45 @@ public class PackageItem extends VersionableItem {
 
     }
 
-    /** 
-     * Remove an asset by name 
-     * After doing this, you will need to check in the package 
+    /**
+     * Remove an asset by name
+     * After doing this, you will need to check in the package
      * as removing an item effects the parent package.
      */
     public void removeAsset(String name) {
         try {
-            this.node.getNode( ASSET_FOLDER_NAME + "/" + name ).remove();            
+            this.node.getNode( ASSET_FOLDER_NAME + "/" + name ).remove();
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
     }
 
-    
-    
-    // The following should be kept for reference on how to add a reference that 
+
+
+    // The following should be kept for reference on how to add a reference that
     //is either locked to a version or follows head - FOR SHARING ASSETS
     //    /**
     //     * Adds a rule to the rule package node this object represents.  The reference to the rule
-    //     * will optionally follow the head version of the specified rule's node or the specific 
+    //     * will optionally follow the head version of the specified rule's node or the specific
     //     * current version.
-    //     * 
-    //     * @param ruleItem the ruleItem corresponding to the node to add to the rule package this 
+    //     *
+    //     * @param ruleItem the ruleItem corresponding to the node to add to the rule package this
     //     *                 object represents
-    //     * @param followRuleHead if true, the reference to the rule node will follow the head version 
-    //     *                       of the node, even if new versions are added. If false, will refer 
+    //     * @param followRuleHead if true, the reference to the rule node will follow the head version
+    //     *                       of the node, even if new versions are added. If false, will refer
     //     *                       specifically to the current version.
     //     * @throws RulesRepositoryException
     //     */
-    //    public void addRuleReference(RuleItem ruleItem, boolean followRuleHead) throws RulesRepositoryException {        
+    //    public void addRuleReference(RuleItem ruleItem, boolean followRuleHead) throws RulesRepositoryException {
     //        try {
     //            ValueFactory factory = this.node.getSession().getValueFactory();
     //            int i = 0;
     //            Value[] newValueArray = null;
-    //            
+    //
     //            try {
     //                Value[] oldValueArray = this.node.getProperty(RULE_REFERENCE_PROPERTY_NAME).getValues();
-    //                newValueArray = new Value[oldValueArray.length + 1];                
-    //                
+    //                newValueArray = new Value[oldValueArray.length + 1];
+    //
     //                for(i=0; i<oldValueArray.length; i++) {
     //                    newValueArray[i] = oldValueArray[i];
     //                }
@@ -243,7 +275,7 @@ public class PackageItem extends VersionableItem {
     //            }
     //            finally {
     //                if(newValueArray != null) { //just here to make the compiler happy
-    //                    if(followRuleHead) {                    
+    //                    if(followRuleHead) {
     //                        newValueArray[i] = factory.createValue(ruleItem.getNode());
     //                    }
     //                    else {
@@ -251,14 +283,14 @@ public class PackageItem extends VersionableItem {
     //                        newValueArray[i] = factory.createValue(ruleItem.getNode().getBaseVersion());
     //                    }
     //                    this.node.checkout();
-    //                    this.node.setProperty(RULE_REFERENCE_PROPERTY_NAME, newValueArray);                
+    //                    this.node.setProperty(RULE_REFERENCE_PROPERTY_NAME, newValueArray);
     //                    this.node.getSession().save();
     //                    this.node.checkin();
     //                }
     //                else {
     //                    throw new RulesRepositoryException("Unexpected null pointer for newValueArray");
     //                }
-    //            }                    
+    //            }
     //        }
     //        catch(UnsupportedRepositoryOperationException e) {
     //            String message = "";
@@ -281,11 +313,11 @@ public class PackageItem extends VersionableItem {
 
 
 //MN: The following should be kept as a reference on how to remove a version tracking reference
-//as a compliment to the above method (which is also commented out !).     
+//as a compliment to the above method (which is also commented out !).
 //    /**
-//     * Removes the specified rule from the rule package node this object represents.  
-//     * 
-//     * @param ruleItem the ruleItem corresponding to the node to remove from the rule package 
+//     * Removes the specified rule from the rule package node this object represents.
+//     *
+//     * @param ruleItem the ruleItem corresponding to the node to remove from the rule package
 //     *                 this object represents
 //     * @throws RulesRepositoryException
 //     */
@@ -319,7 +351,7 @@ public class PackageItem extends VersionableItem {
 //                this.node.checkin();
 //            }
 //        } catch ( PathNotFoundException e ) {
-//            //the property has not been created yet. 
+//            //the property has not been created yet.
 //            return;
 //        } catch ( Exception e ) {
 //            log.error( "Caught exception",
@@ -329,18 +361,18 @@ public class PackageItem extends VersionableItem {
 //    }
 
 
-    //MN: This should be kept as a reference for 
+    //MN: This should be kept as a reference for
     //    /**
     //     * Gets a list of RuleItem objects for each rule node in this rule package
-    //     * 
+    //     *
     //     * @return the List object holding the RuleItem objects in this rule package
-    //     * @throws RulesRepositoryException 
+    //     * @throws RulesRepositoryException
     //     */
     //    public List getRules() throws RulesRepositoryException {
-    //        try {                       
+    //        try {
     //            Value[] valueArray = this.node.getProperty(RULE_REFERENCE_PROPERTY_NAME).getValues();
     //            List returnList = new ArrayList();
-    //           
+    //
     //            for(int i=0; i<valueArray.length; i++) {
     //                Node ruleNode = this.node.getSession().getNodeByUUID(valueArray[i].getString());
     //                returnList.add(new RuleItem(this.rulesRepository, ruleNode));
@@ -348,14 +380,14 @@ public class PackageItem extends VersionableItem {
     //            return returnList;
     //        }
     //        catch(PathNotFoundException e) {
-    //            //the property has not been created yet. 
+    //            //the property has not been created yet.
     //            return new ArrayList();
-    //        }                                       
+    //        }
     //        catch(Exception e) {
     //            log.error("Caught exception: " + e);
     //            throw new RulesRepositoryException(e);
     //        }
-    //    }   
+    //    }
 
     /** Return an iterator for the rules in this package */
     public Iterator getAssets() {
@@ -363,51 +395,51 @@ public class PackageItem extends VersionableItem {
             Node content = getVersionContentNode();
             AssetItemIterator it = new AssetItemIterator( content.getNode( ASSET_FOLDER_NAME ).getNodes(),
                                                         this.rulesRepository );
-            return it;        
+            return it;
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
 
     }
-    
+
     /**
      * This will query any assets stored under this package.
-     * For example, you can pass in <code>"drools:format = 'drl'"</code> to get a list of 
+     * For example, you can pass in <code>"drools:format = 'drl'"</code> to get a list of
      * only a certain type of asset.
-     * 
+     *
      * @param fieldPredicates A predicate string (SQL style).
-     * @return A list of matches. 
+     * @return A list of matches.
      */
     public AssetItemIterator queryAssets(String fieldPredicates, boolean seekArchived) {
         try {
 
             String sql = "SELECT * FROM " + AssetItem.RULE_NODE_TYPE_NAME;
             sql += " WHERE jcr:path LIKE '" + getVersionContentNode().getPath() + "/" + ASSET_FOLDER_NAME + "[%]/%'";
-            if ( fieldPredicates.length() > 0 ) { 
+            if ( fieldPredicates.length() > 0 ) {
                 sql += " and " + fieldPredicates;
             }
-            
+
             if ( seekArchived == false ) {
                 sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
             }
-            
+
             Query q = node.getSession().getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
-            QueryResult res = q.execute();            
-            return new AssetItemIterator(res.getNodes(), this.rulesRepository);        
+            QueryResult res = q.execute();
+            return new AssetItemIterator(res.getNodes(), this.rulesRepository);
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException(e);
         }
     }
-    
+
     public AssetItemIterator queryAssets(String fieldPredicates){
         return queryAssets( fieldPredicates, false );
     }
-    
-    
+
+
     public AssetItemIterator listArchivedAssets () {
         return queryAssets( AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'true'" , true );
     }
-    
+
     /**
      * This will load an iterator for assets of the given format type.
      */
@@ -424,7 +456,7 @@ public class PackageItem extends VersionableItem {
             return queryAssets( predicate );
         }
     }
-    
+
     /**
      * Load a specific rule asset by name.
      */
@@ -433,14 +465,14 @@ public class PackageItem extends VersionableItem {
         try {
             Node content = getVersionContentNode();
             return new AssetItem(
-                        this.rulesRepository, 
+                        this.rulesRepository,
                         content.getNode( ASSET_FOLDER_NAME ).getNode( name ));
         } catch ( RepositoryException e ) {
              throw new RulesRepositoryException(e);
        }
     }
-    
-    
+
+
     /**
      * Returns true if this package item contains an asset of the given name.
      */
@@ -449,14 +481,14 @@ public class PackageItem extends VersionableItem {
         try {
             content = getVersionContentNode();
             return content.getNode( ASSET_FOLDER_NAME ).hasNode( name );
-        }         
+        }
         catch ( RepositoryException e ) {
             throw new RulesRepositoryException(e);
         }
     }
 
     /**
-     * Nicely formats the information contained by the node that this object encapsulates    
+     * Nicely formats the information contained by the node that this object encapsulates
      */
     public String toString() {
         try {
@@ -507,35 +539,35 @@ public class PackageItem extends VersionableItem {
             throw new RulesRepositoryException( e );
         }
     }
-    
+
     /**
      * This will return a list of assets for a given state.
-     * It works through the assets that belong to this package, and 
+     * It works through the assets that belong to this package, and
      * if they are not in the correct state, walks backwards until it finds one
-     * in the correct state. 
-     * 
-     * If it walks all the way back up the versions looking for the "latest" 
-     * version with the appropriate state, and can't find one, 
+     * in the correct state.
+     *
+     * If it walks all the way back up the versions looking for the "latest"
+     * version with the appropriate state, and can't find one,
      * that asset is not included in the result.
-     * 
+     *
      * This will exclude any items that have the "ignoreState" set
      * (so for example, retired items, invalid items etc).
-     * 
+     *
      *  @param state The state of assets to retrieve.
      *  @param ignoreState The statuses to not include in the results (it will look
      *  at the status of the latest one).
      */
     public Iterator getAssetsWithStatus(final StateItem state, final StateItem ignoreState) {
         final Iterator rules = getAssets();
-        
+
         List result = new ArrayList();
         while(rules.hasNext()) {
             AssetItem head = (AssetItem) rules.next();
             if (head.sameState( state )) {
                 result.add( head );
-            } else if (head.sameState( ignoreState )) { 
+            } else if (head.sameState( ignoreState )) {
                 //ignore this one
-            } 
+            }
             else {
                 List fullHistory = new ArrayList();
                 for ( Iterator iter = head.getHistory(); iter.hasNext(); ) {
@@ -544,10 +576,10 @@ public class PackageItem extends VersionableItem {
                         fullHistory.add( element );
                     }
                 }
-                
+
                 sortHistoryByVersionNumber( fullHistory );
-                
-                
+
+
                 Iterator prev = fullHistory.iterator();
                 while (prev.hasNext()) {
                     AssetItem prevRule = (AssetItem) prev.next();
@@ -574,59 +606,59 @@ public class PackageItem extends VersionableItem {
                 if (la1 == la2) return 0;
                 else if (la1 < la2) return 1;
                 else return -1;
-                
+
             }
-            
+
         });
     }
-    
+
     /**
      * This will return a list of assets for a given state.
-     * It works through the assets that belong to this package, and 
+     * It works through the assets that belong to this package, and
      * if they are not in the correct state, walks backwards until it finds one
-     * in the correct state. 
-     * 
-     * If it walks all the way back up the versions looking for the "latest" 
-     * version with the appropriate state, and can't find one, 
+     * in the correct state.
+     *
+     * If it walks all the way back up the versions looking for the "latest"
+     * version with the appropriate state, and can't find one,
      * that asset is not included in the result.
-     */    
+     */
     public Iterator getAssetsWithStatus(final StateItem state) {
         return getAssetsWithStatus( state, null );
     }
-    
+
     /**
      * @return The header contents as pertains to a package of rule assets.
      */
     public String getHeader() {
         return this.getStringProperty( HEADER_PROPERTY_NAME );
     }
-    
+
     /**
      * @return The external URI which will be used to sync this package to an external resource.
      * Generally this will resolve to a directory in (for example) Subversion - with each asset
-     * being a file (with the format property as the file extension). 
+     * being a file (with the format property as the file extension).
      */
     public String getExternalURI() {
         return this.getStringProperty( EXTERNAL_URI_PROPERTY_NAME );
     }
-    
+
     public void updateHeader(String header) {
         updateStringProperty( header, HEADER_PROPERTY_NAME );
     }
-    
+
     public void updateExternalURI(String uri) {
         updateStringProperty( uri, EXTERNAL_URI_PROPERTY_NAME );
     }
-    
+
     /**
-     * Update the checkin comment. 
+     * Update the checkin comment.
      */
     public void updateCheckinComment(String comment) {
         updateStringProperty(comment, VersionableItem.CHECKIN_COMMENT);
-    }    
+    }
 
     /**
-     * This will change the status of this package, and all the contained assets. 
+     * This will change the status of this package, and all the contained assets.
      * No new versions are created of anything.
      * @param newState The status tag to change it to.
      */
@@ -638,7 +670,7 @@ public class PackageItem extends VersionableItem {
             element.updateState( stateItem );
         }
     }
-    
+
     /**
      * If the asset is a binary asset, then use this to update the content
      * (do NOT use text).
@@ -654,22 +686,22 @@ public class PackageItem extends VersionableItem {
             log.error( "Unable to update the assets binary content", e );
             throw new RulesRepositoryException( e );
         }
-    }    
-    
+    }
+
     /**
      * This is a convenience method for returning the binary data as a byte array.
      */
     public byte[] getCompiledPackageBytes() {
-        
+
         try {
             Node ruleNode = getVersionContentNode();
             if ( ruleNode.hasProperty(  COMPILED_PACKAGE_PROPERTY_NAME ) ) {
                 Property data = ruleNode.getProperty( COMPILED_PACKAGE_PROPERTY_NAME );
                 InputStream in = data.getStream();
-                
+
                 // Create the byte array to hold the data
                 byte[] bytes = new byte[(int) data.getLength()];
-            
+
                 // Read in the bytes
                 int offset = 0;
                 int numRead = 0;
@@ -677,14 +709,14 @@ public class PackageItem extends VersionableItem {
                        && (numRead=in.read(bytes, offset, bytes.length-offset)) >= 0) {
                     offset += numRead;
                 }
-            
+
                 // Ensure all the bytes have been read in
                 if (offset < bytes.length) {
                     throw new RulesRepositoryException("Could not completely read binary package for "+ getName());
                 }
-            
+
                 // Close the input stream and return bytes
-                in.close();   
+                in.close();
                 return bytes;
             } else {
                 return null;
@@ -693,10 +725,10 @@ public class PackageItem extends VersionableItem {
             log.error( e );
             if (e instanceof RuntimeException) throw (RuntimeException) e;
             throw new RulesRepositoryException( e );
-        }  
-    }    
-    
-    
+        }
+    }
+
+
 
 
 }
