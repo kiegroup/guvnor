@@ -61,7 +61,33 @@ public class BRMSPackageBuilder extends PackageBuilder {
      * using the given classpath.
      */
     public static BRMSPackageBuilder getInstance(List<JarInputStream> classpath) {
-        ClassLoader parentClassLoader = Thread.currentThread().getContextClassLoader();
+        MapBackedClassLoader loader = createClassLoader(classpath);
+
+
+        // See if we can find a packagebuilder.conf
+        // We do this manually here, as we cannot rely on PackageBuilder doing this correctly
+        // note this chainedProperties already checks System properties too
+        ChainedProperties chainedProperties = new ChainedProperties( BRMSPackageBuilder.class.getClassLoader(), // pass this as it searches currentThread anyway
+                                                                     "packagebuilder.conf",
+                                                                     false ); // false means it ignores any default values
+
+        // the default compiler. This is nominally JANINO but can be overridden by setting drools.dialect.java.compiler to ECLIPSE
+        Properties properties = new Properties();
+        properties.setProperty( "drools.dialect.java.compiler",
+                                chainedProperties.getProperty( "drools.dialect.java.compiler", "JANINO" ) );
+        PackageBuilderConfiguration pkgConf = new PackageBuilderConfiguration( properties );
+        pkgConf.setClassLoader( loader );
+
+        return new BRMSPackageBuilder( pkgConf );
+
+    }
+
+    /**
+     * For a given list of Jars, create a class loader.
+     */
+	public static MapBackedClassLoader createClassLoader(
+			List<JarInputStream> classpath) {
+		ClassLoader parentClassLoader = Thread.currentThread().getContextClassLoader();
         if ( parentClassLoader == null ) {
             parentClassLoader = BRMSPackageBuilder.class.getClassLoader();
         }
@@ -97,25 +123,8 @@ public class BRMSPackageBuilder extends PackageBuilder {
         } catch ( IOException e ) {
             throw new RulesRepositoryException( e );
         }
-
-
-        // See if we can find a packagebuilder.conf
-        // We do this manually here, as we cannot rely on PackageBuilder doing this correctly
-        // note this chainedProperties already checks System properties too
-        ChainedProperties chainedProperties = new ChainedProperties( BRMSPackageBuilder.class.getClassLoader(), // pass this as it searches currentThread anyway
-                                                                     "packagebuilder.conf",
-                                                                     false ); // false means it ignores any default values
-
-        // the default compiler. This is nominally JANINO but can be overridden by setting drools.dialect.java.compiler to ECLIPSE
-        Properties properties = new Properties();
-        properties.setProperty( "drools.dialect.java.compiler",
-                                chainedProperties.getProperty( "drools.dialect.java.compiler", "JANINO" ) );
-        PackageBuilderConfiguration pkgConf = new PackageBuilderConfiguration( properties );
-        pkgConf.setClassLoader( loader );
-
-        return new BRMSPackageBuilder( pkgConf );
-
-    }
+		return loader;
+	}
 
     /**
      * This will return the preferred compiler, according to the System property

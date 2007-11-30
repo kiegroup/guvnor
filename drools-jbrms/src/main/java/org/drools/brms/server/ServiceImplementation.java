@@ -27,20 +27,21 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.jar.JarInputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.jcr.ItemExistsException;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import javax.jcr.ValueFormatException;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.version.VersionException;
 
 import org.apache.log4j.Logger;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.base.ClassTypeResolver;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.testing.Scenario;
@@ -50,6 +51,7 @@ import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.rpc.ScenarioRunResult;
 import org.drools.brms.client.rpc.SnapshotInfo;
 import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
@@ -64,6 +66,8 @@ import org.drools.brms.server.contenthandler.IValidating;
 import org.drools.brms.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.TableDisplayHandler;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -79,6 +83,7 @@ import org.drools.repository.RulesRepositoryAdministrator;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.VersionableItem;
+import org.drools.rule.Package;
 import org.drools.testframework.ScenarioRunner;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -107,6 +112,9 @@ public class ServiceImplementation
     private static final DateFormat dateFormatter = DateFormat.getInstance();
     private static final Logger log = Logger.getLogger( ServiceImplementation.class );
     private MetaDataMapper metaDataMapper = new MetaDataMapper();
+
+    /** Used for a simple cache of binary packages to avoid serialization from the database */
+	static Map<String, RuleBase> ruleBaseCache = Collections.synchronizedMap(new HashMap<String, RuleBase>());
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
@@ -377,7 +385,9 @@ public class ServiceImplementation
         if (!(asset.metaData.format.equals(AssetFormats.TEST_SCENARIO))
         		||
         		asset.metaData.format.equals(AssetFormats.ENUMERATION)) {
-        		repoAsset.getPackage().updateBinaryUpToDate(false);
+        		PackageItem pkg = repoAsset.getPackage();
+        		pkg.updateBinaryUpToDate(false);
+        		this.ruleBaseCache.remove(pkg.getUUID());
 
         }
 
@@ -549,6 +559,7 @@ public class ServiceImplementation
         item.updateDescription( data.description );
         item.archiveItem( data.archived );
         item.updateBinaryUpToDate(false);
+        this.ruleBaseCache.remove(data.uuid);
         item.checkin( data.description );
 
         BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
@@ -822,12 +833,11 @@ public class ServiceImplementation
                 out.flush();
                 out.close();
 
-                item.updateBinaryUpToDate(true);
-
+                updateBinaryPackage(packageUUID, item, asm);
                 repository.save();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.error( e );
-                throw new SerializableException(e.getMessage());
+                throw new DetailedSerializableException("An error occurred building the package.", e.getMessage());
             }
 
 
@@ -835,6 +845,14 @@ public class ServiceImplementation
 
         }
     }
+
+	private void updateBinaryPackage(String packageUUID, PackageItem item,
+			ContentPackageAssembler asm) throws Exception {
+		item.updateBinaryUpToDate(true);
+		RuleBase rb = RuleBaseFactory.newRuleBase();
+		rb.addPackage(asm.getBinaryPackage());
+		this.ruleBaseCache.put(packageUUID, rb);
+	}
 
 
 
@@ -1006,6 +1024,63 @@ public class ServiceImplementation
 			return new String[0];
 		}
     }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+	public ScenarioRunResult runScenario(String packageUUID, Scenario scenario)
+			throws SerializableException {
+    	PackageItem item = this.repository.loadPackageByUUID(packageUUID);
+    	if (item.isBinaryUpToDate() && this.ruleBaseCache.containsKey(packageUUID)) {
+    		return runScenario(packageUUID, scenario, item);
+    	} else {
+    		//we have to build the package, and try again.
+    		if (item.isBinaryUpToDate()) {
+    			this.ruleBaseCache.put(packageUUID, loadRuleBase(item));
+    			return runScenario(packageUUID, scenario, item);
+    		} else {
+    			BuilderResult[] errs = this.buildPackage(packageUUID, null, false);
+    			if (errs == null || errs.length == 0) {
+    				this.ruleBaseCache.put(packageUUID, loadRuleBase(item));
+    				return runScenario(packageUUID, scenario, item);
+    			} else {
+    				return new ScenarioRunResult(errs, null);
+    			}
+    		}
+    	}
+	}
+
+	private RuleBase loadRuleBase(PackageItem item)  throws DetailedSerializableException {
+		try {
+			RuleBase rb = RuleBaseFactory.newRuleBase();
+			DroolsObjectInputStream in = new DroolsObjectInputStream(new ByteArrayInputStream(item.getCompiledPackageBytes()));
+			Package bin = (Package) in.readObject();
+			in.close();
+			rb.addPackage(bin);
+			return rb;
+		} catch (ClassNotFoundException e) {
+			log.error(e);
+			throw new DetailedSerializableException("A required class was not found.", e.getMessage());
+		} catch (Exception e) {
+			log.error(e);
+			throw new DetailedSerializableException("Unable to load a rulebase.", e.getMessage());
+		}
+	}
+
+	private ScenarioRunResult runScenario(String packageUUID,
+			Scenario scenario, PackageItem item)
+			throws DetailedSerializableException {
+		RuleBase rb = ruleBaseCache.get(packageUUID);
+		Package bin = rb.getPackages()[0];
+		List<JarInputStream> jars = BRMSPackageBuilder.getJars(item);
+		ClassTypeResolver res = new ClassTypeResolver(bin.getImports(), BRMSPackageBuilder.createClassLoader(jars));
+		try {
+			new ScenarioRunner(scenario, res, (InternalWorkingMemory) rb.newStatefulSession());
+			return new ScenarioRunResult(null, scenario);
+		} catch (ClassNotFoundException e) {
+			log.error(e);
+			throw new DetailedSerializableException("Unable to load a required class.", e.getMessage());
+		}
+	}
 
 
 

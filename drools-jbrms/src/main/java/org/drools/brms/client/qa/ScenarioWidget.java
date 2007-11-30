@@ -1011,7 +1011,7 @@ class VerifyRulesFiredWidget extends Composite {
 
             }
             data.setWidget(i, 1, new Label(v.ruleName + ":"));
-            data.getFlexCellFormatter().setAlignment(i, 0, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
+            data.getFlexCellFormatter().setAlignment(i, 1, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
 
 
             final ListBox b = new ListBox();

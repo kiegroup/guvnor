@@ -18,6 +18,7 @@ package org.drools.brms.client.rpc;
 
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializableException;
@@ -316,5 +317,14 @@ public interface RepositoryService extends RemoteService {
      * This has an upper limit of what it will return (it just doesn't make sense to show a list of 20K items !).
      */
     public String[] listRulesInPackage(String packageName) throws SerializableException;
+
+    /**
+     *
+     * @param packageName The package name the scenario is to be run in.
+     * @param scenario The scenario to run.
+     * @return The scenario, with the results fields populated.
+     * @throws SerializableException
+     */
+    public ScenarioRunResult runScenario(String packageUUID, Scenario scenario) throws SerializableException;
 
 }
