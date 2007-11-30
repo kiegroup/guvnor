@@ -465,14 +465,10 @@ public class ServiceImplementationTest extends TestCase {
         asset3 = serv.loadRuleAsset( asset2.uuid );
         assertFalse( asset3.metaData.versionNumber == asset2.metaData.versionNumber );
 
-        try {
-            serv.checkinVersion( asset2 );
-            fail( "should have failed optimistic lock." );
-        } catch ( SerializableException e ) {
-            assertNotNull( e.getMessage() );
-            assertEquals( -1,
-                          e.getMessage().indexOf( "server" ) );
-        }
+        String result =  serv.checkinVersion( asset2 );
+        assertTrue(result.startsWith("ERR"));
+        System.err.println(result.substring(5));
+
 
     }
 

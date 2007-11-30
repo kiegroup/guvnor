@@ -188,9 +188,19 @@ public class RuleViewer extends Composite {
 
             public void onSuccess(Object o) {
 
+                String uuid = (String)o;
+                if (uuid == null) {
+                    ErrorPopup.showMessage( "Failed to check in the item. Please contact your system administrator." );
+                    return;
+                }
+
+                if (uuid.startsWith("ERR")) {
+                	ErrorPopup.showMessage(uuid.substring(5));
+                	return;
+                }
+
                 flushSuggestionCompletionCache();
 
-                String uuid = (String)o;
 
                 if ( editor instanceof DirtyableComposite ) {
                     ((DirtyableComposite) editor).resetDirty();
@@ -199,10 +209,6 @@ public class RuleViewer extends Composite {
                 metaWidget.resetDirty();
                 doco.resetDirty();
 
-                if (uuid == null) {
-                    ErrorPopup.showMessage( "Failed to check in the item. Please contact your system administrator." );
-                    return;
-                }
                 refreshDataAndView( );
             }
         });

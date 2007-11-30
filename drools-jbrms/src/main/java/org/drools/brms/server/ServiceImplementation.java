@@ -357,7 +357,7 @@ public class ServiceImplementation
 
         AssetItem repoAsset = repository.loadAssetByUUID( asset.uuid );
         if (asset.metaData.lastModifiedDate.before( repoAsset.getLastModified().getTime())  ) {
-            throw new SerializableException("This asset was saved by someone else previously, and this version will not be overwritten.");
+        	return "ERR: Unable to save this asset, as it has been recently updated by [" + repoAsset.getLastContributor() + "]";
         }
 
 
