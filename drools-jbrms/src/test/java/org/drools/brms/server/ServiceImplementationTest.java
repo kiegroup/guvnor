@@ -1493,6 +1493,19 @@ public class ServiceImplementationTest extends TestCase {
 		//BuilderResult[] results = impl.buildPackage(pkg.getUUID(), null, true);
 		//assertNull(results);
 
+		rule1.updateContent("Junk");
+		rule1.checkin("");
+
+		impl.ruleBaseCache.clear();
+		pkg.updateBinaryUpToDate(false);
+		repo.save();
+		res = impl.runScenario(pkg.getUUID(), sc);
+		assertNotNull(res.errors);
+		assertNull(res.scenario);
+
+		assertTrue(res.errors.length > 0);
+
+
 	}
 
 	private ServiceImplementation getService() throws Exception {
