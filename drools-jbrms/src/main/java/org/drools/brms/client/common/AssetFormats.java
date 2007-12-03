@@ -68,10 +68,10 @@ public class AssetFormats {
      * The following group the assets together for lists, helpers etc...
      */
     public static final String[] BUSINESS_RULE_FORMATS = new String[] {AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE, AssetFormats.DECISION_SPREADSHEET_XLS};
-    public static final String[] TECHNICAL_RULE_FORMATS = new String[] {AssetFormats.DRL, AssetFormats.RULE_FLOW_RF, AssetFormats.ENUMERATION};
+
 
     /**
-     * These define assets that are really package level "things"
+     * These define assets that are really package level "things". Used to decide when to flush any caches.
      */
     private static final String[] PACKAGE_DEPENCENCIES = new String[] {AssetFormats.FUNCTION, AssetFormats.DSL, AssetFormats.MODEL, AssetFormats.ENUMERATION};
 

@@ -238,7 +238,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
         } );
 
         final Image newRuleflow = new ImageButton( "images/ruleflow_small.gif" );
-        newRuleflow.setTitle( "Upload a new ruleflow." );
+        newRuleflow.setTitle( "Create (upload) a new ruleflow." );
         newRuleflow.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 launchWizard( AssetFormats.RULE_FLOW_RF,
@@ -257,6 +257,14 @@ public class PackageExplorerWidget extends DirtyableComposite {
 
         });
 
+        final Image newScenario = new ImageButton("images/test_manager.gif");
+        newScenario.setTitle("Create a new scenario for testing and verification.");
+        newScenario.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				launchWizard(AssetFormats.TEST_SCENARIO, "Create a new scenario for testing and verification.");
+			}
+		});
+
         newWizards.add( newPackage );
         newWizards.add( uploadModel );
         newWizards.add( newRule );
@@ -264,6 +272,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
         newWizards.add( newDSL );
         newWizards.add( newRuleflow );
         newWizards.add( newEnum );
+        newWizards.add( newScenario );
         return newWizards;
 
     }
@@ -278,10 +287,10 @@ public class PackageExplorerWidget extends DirtyableComposite {
                     exTree.clear();
                     for ( int i = 0; i < packages.length; i++ ) {
                         if ( i == 0 ) {
-                            addPackage( packages[i],
+                            renderPackageNodeOnTree( packages[i],
                                         true );
                         } else {
-                            addPackage( packages[i],
+                            renderPackageNodeOnTree( packages[i],
                                         false );
                         }
                     }
@@ -295,7 +304,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
                                                                          public void onSuccess(Object data) {
                                                                              PackageConfigData pack = (PackageConfigData) data;
                                                                              exTree.clear();
-                                                                             addPackage( pack,
+                                                                             renderPackageNodeOnTree( pack,
                                                                                          true );
 
                                                                              LoadingPopup.close();
@@ -325,7 +334,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
      *
      * @param name
      */
-    private void addPackage(final PackageConfigData conf,
+    private void renderPackageNodeOnTree(final PackageConfigData conf,
                             boolean preSelect) {
 
         TreeItem pkg = makeItem( conf.name,
@@ -353,12 +362,12 @@ public class PackageExplorerWidget extends DirtyableComposite {
         pkg.addItem( makeItem( "Technical rule assets",
                                "images/technical_rule_assets.gif",
                                showListEvent( conf.uuid,
-                                              AssetFormats.TECHNICAL_RULE_FORMATS ) ) );
+                                              new String[]{AssetFormats.DRL} ) ) );
         pkg.addItem( makeItem( "Functions",
                                "images/function_assets.gif",
                                showListEvent( conf.uuid,
                                               new String[]{AssetFormats.FUNCTION} ) ) );
-        pkg.addItem( makeItem( "DSL",
+        pkg.addItem( makeItem( "DSL configurations",
                                "images/dsl.gif",
                                showListEvent( conf.uuid,
                                               new String[]{AssetFormats.DSL} ) ) );
@@ -366,6 +375,22 @@ public class PackageExplorerWidget extends DirtyableComposite {
                                "images/model_asset.gif",
                                showListEvent( conf.uuid,
                                               new String[]{AssetFormats.MODEL} ) ) );
+
+        pkg.addItem( makeItem( "Rule Flows",
+                "images/ruleflow_small.gif",
+                showListEvent( conf.uuid,
+                               new String[]{AssetFormats.RULE_FLOW_RF} ) ) );
+
+        pkg.addItem( makeItem( "Enumerations",
+                "images/enumeration.gif",
+                showListEvent( conf.uuid,
+                               new String[]{AssetFormats.ENUMERATION} ) ) );
+
+
+        pkg.addItem(makeItem( "Test Scenarios",
+                               "images/test_manager.gif",
+                               showListEvent( conf.uuid,
+                                              new String[]{AssetFormats.TEST_SCENARIO} ) ) );
 
         exTree.addItem( pkg );
         if ( preSelect ) {
@@ -544,7 +569,7 @@ public class PackageExplorerWidget extends DirtyableComposite {
                                                  title,
                                                  currentlySelectedPackage );
 
-        pop.setPopupPosition( (DirtyableComposite.getWidth() - pop.getOffsetWidth()) / 2,
+        pop.setPopupPosition( (DirtyableComposite.getWidth() - pop.getOffsetWidth()) / 3,
                               100 );
         pop.show();
     }

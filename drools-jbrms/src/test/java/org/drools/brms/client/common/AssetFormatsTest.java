@@ -36,18 +36,7 @@ public class AssetFormatsTest extends TestCase {
             }
         }
 
-        formats = AssetFormats.TECHNICAL_RULE_FORMATS;
-        for ( int i = 0; i < formats.length; i++ ) {
-            String fmt = formats[i];
-            if (! (fmt.equals( AssetFormats.RULE_FLOW_RF )
-                    ||
-                    fmt.equals( AssetFormats.DRL)
-                    ||
-                    fmt.equals(AssetFormats.ENUMERATION))
-            ) {
-                fail("Incorrect grouping of technical rules.");
-            }
-        }
+
 
 
     }
@@ -55,6 +44,7 @@ public class AssetFormatsTest extends TestCase {
     public void testPackageDependencies() {
         assertFalse(AssetFormats.isPackageDependency(AssetFormats.BUSINESS_RULE));
         assertFalse(AssetFormats.isPackageDependency(AssetFormats.DRL));
+        assertFalse(AssetFormats.isPackageDependency(AssetFormats.TEST_SCENARIO));
         assertTrue(AssetFormats.isPackageDependency(AssetFormats.DSL));
         assertTrue(AssetFormats.isPackageDependency(AssetFormats.MODEL));
         assertTrue(AssetFormats.isPackageDependency(AssetFormats.FUNCTION));

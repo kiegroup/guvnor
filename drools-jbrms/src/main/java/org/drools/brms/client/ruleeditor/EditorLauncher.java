@@ -29,6 +29,7 @@ import org.drools.brms.client.modeldriven.ui.RuleModeller;
 import org.drools.brms.client.packages.ModelAttachmentFileWidget;
 import org.drools.brms.client.packages.PackageExplorerWidget;
 import org.drools.brms.client.packages.SuggestionCompletionCache;
+import org.drools.brms.client.qa.ScenarioWidget;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 
@@ -74,6 +75,8 @@ public class EditorLauncher {
             return new RuleValidatorWrapper(new DefaultRuleContentWidget( asset ), asset);
         } else if (asset.metaData.format.equals( AssetFormats.ENUMERATION )) {
             return new RuleValidatorWrapper(new DefaultRuleContentWidget( asset ), asset);
+        } else if (asset.metaData.format.equals(AssetFormats.TEST_SCENARIO)) {
+        	return new ScenarioWidget(asset);
         } else {
             return new DefaultRuleContentWidget( asset );
         }
@@ -92,7 +95,8 @@ public class EditorLauncher {
         result.put( AssetFormats.BUSINESS_RULE, "business_rule.gif" );
         result.put( AssetFormats.DSL_TEMPLATE_RULE, "business_rule.gif" );
         result.put( AssetFormats.RULE_FLOW_RF, "ruleflow_small.gif" );
-
+        result.put( AssetFormats.TEST_SCENARIO, "test_manager.gif");
+        result.put( AssetFormats.ENUMERATION, "enumeration.gif");
 
         return result;
     }

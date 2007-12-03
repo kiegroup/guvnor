@@ -22,6 +22,7 @@ import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.brms.client.packages.SuggestionCompletionCache;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 
@@ -58,14 +59,14 @@ public class ScenarioWidget extends Composite {
 
 
 
-	public ScenarioWidget(RuleAsset asset, SuggestionCompletionEngine eng) {
+	public ScenarioWidget(RuleAsset asset) {
 		VerticalPanel split = new VerticalPanel();
 		this.scenario = (Scenario) asset.content;
 		this.asset = asset;
     	layout = new DirtyableFlexTable();
 
     	this.scenario = scenario;
-    	this.sce = eng;
+    	this.sce = SuggestionCompletionCache.getInstance().getEngineFromCache(asset.metaData.packageName);
 
     	if (scenario.fixtures.size() == 0) {
     		scenario.fixtures.add(new ExecutionTrace());
@@ -75,7 +76,7 @@ public class ScenarioWidget extends Composite {
 
         layout.setStyleName("model-builder-Background");
 
-        split.add(new ScenarioResultsWidget(scenario));
+        //split.add(new ScenarioResultsWidget(scenario));
         split.add(layout);
 
 
@@ -667,6 +668,8 @@ class DataInputWidget extends Composite {
                 fd.value = tb.getText();
             }
         });
+
+        //add stuff to check for numerics
         return tb;
     }
 
@@ -909,7 +912,7 @@ class VerifyFactWidget extends Composite {
         for (int i = 0; i < vf.fieldValues.size(); i++) {
             final VerifyField fld = (VerifyField) vf.fieldValues.get(i);
             data.setWidget(i, 1, new Label(fld.fieldName + ":"));
-            data.getFlexCellFormatter().setHorizontalAlignment(i, 0, HasHorizontalAlignment.ALIGN_RIGHT);
+            data.getFlexCellFormatter().setHorizontalAlignment(i, 1, HasHorizontalAlignment.ALIGN_RIGHT);
 
             final ListBox opr = new ListBox();
             opr.addItem("equals", "==");

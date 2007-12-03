@@ -1496,6 +1496,8 @@ public class ServiceImplementationTest extends TestCase {
 		rule1.updateContent("Junk");
 		rule1.checkin("");
 
+
+
 		impl.ruleBaseCache.clear();
 		pkg.updateBinaryUpToDate(false);
 		repo.save();
@@ -1504,6 +1506,28 @@ public class ServiceImplementationTest extends TestCase {
 		assertNull(res.scenario);
 
 		assertTrue(res.errors.length > 0);
+
+
+		impl.createCategory("/", "sc", "");
+
+		String scenarioId = impl.createNewRule("sc1", "s", "sc", pkg.getName(), AssetFormats.TEST_SCENARIO);
+
+		RuleAsset asset = impl.loadRuleAsset(scenarioId);
+		assertNotNull(asset.content);
+		assertTrue(asset.content instanceof Scenario);
+
+		Scenario sc_ = (Scenario) asset.content;
+		sc_.fixtures.add(new ExecutionTrace());
+		impl.checkinVersion(asset);
+		asset = impl.loadRuleAsset(scenarioId);
+		assertNotNull(asset.content);
+		assertTrue(asset.content instanceof Scenario);
+		sc_ = (Scenario) asset.content;
+		assertEquals(1, sc_.fixtures.size());
+
+
+
+
 
 
 	}
