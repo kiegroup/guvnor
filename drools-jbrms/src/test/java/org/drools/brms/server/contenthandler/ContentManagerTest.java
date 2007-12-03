@@ -1,5 +1,7 @@
 package org.drools.brms.server.contenthandler;
 
+import org.drools.brms.client.common.AssetFormats;
+
 import junit.framework.TestCase;
 
 public class ContentManagerTest extends TestCase {
@@ -9,8 +11,11 @@ public class ContentManagerTest extends TestCase {
 		ContentManager mgr_ = ContentManager.getInstance();
 		assertSame(mgr, mgr_);
 
-		assertEquals(9, mgr.getContentHandlers().size());
+		assertEquals(10, mgr.getContentHandlers().size());
 		assertTrue(mgr.getContentHandlers().get("drl") instanceof DRLFileContentHandler);
+
+		assertTrue(mgr.getContentHandlers().containsKey(AssetFormats.TEST_SCENARIO));
+		assertTrue(mgr.getContentHandlers().get(AssetFormats.TEST_SCENARIO) instanceof ScenarioContentHandler);
 
 	}
 

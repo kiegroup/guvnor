@@ -32,7 +32,7 @@ public class ContentManager {
 
 	private static final Logger log = Logger.getLogger( ContentManager.class );
 	public static String CONTENT_CONFIG_PROPERTIES = "/contenthandler.properties";
-	private static final ContentManager INSTANCE = new ContentManager(CONTENT_CONFIG_PROPERTIES);
+	private static ContentManager INSTANCE;
 
     /**
      * This is a map of the contentHandlers to use.
@@ -87,6 +87,14 @@ public class ContentManager {
 
 
 	public static ContentManager getInstance() {
+		if (INSTANCE == null) {
+			//have to do this annoying thing, as in some cases, letting the classloader
+			//load it up means that it will fail as the classes aren't yet available.
+			//so have to use this nasty anti-pattern here. Sorry.
+			synchronized (ContentManager.class) {
+				ContentManager.INSTANCE = new ContentManager(CONTENT_CONFIG_PROPERTIES);
+			}
+		}
 		return INSTANCE;
 	}
 }
