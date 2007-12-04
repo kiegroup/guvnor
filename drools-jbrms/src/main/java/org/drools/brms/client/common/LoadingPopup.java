@@ -39,7 +39,7 @@ public class LoadingPopup extends PopupPanel {
     Image ok = new Image("images/close.gif");
 
     public LoadingPopup() {
-        super(true);
+        super(false);
         panel.add( errorMessage );
         panel.add( ok );
         panel.add( new Image("images/searching.gif") );

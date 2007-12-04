@@ -815,7 +815,13 @@ public class ServiceImplementation
     public BuilderResult[] buildPackage(String packageUUID, String selectorConfigName, boolean force) throws SerializableException {
 
         PackageItem item = repository.loadPackageByUUID( packageUUID );
-        if (!force && item.isBinaryUpToDate()) {
+        return buildPackage(selectorConfigName, force, item);
+    }
+
+	private BuilderResult[] buildPackage(String selectorConfigName,
+			boolean force, PackageItem item)
+			throws DetailedSerializableException {
+		if (!force && item.isBinaryUpToDate()) {
         	//we can just return all OK if its up to date.
         	return null;
         }
@@ -833,7 +839,7 @@ public class ServiceImplementation
                 out.flush();
                 out.close();
 
-                updateBinaryPackage(packageUUID, item, asm);
+                updateBinaryPackage(item, asm);
                 repository.save();
             } catch (Exception e) {
                 log.error( e );
@@ -844,14 +850,14 @@ public class ServiceImplementation
             return null;
 
         }
-    }
+	}
 
-	private void updateBinaryPackage(String packageUUID, PackageItem item,
+	private void updateBinaryPackage(PackageItem item,
 			ContentPackageAssembler asm) throws Exception {
 		item.updateBinaryUpToDate(true);
 		RuleBase rb = RuleBaseFactory.newRuleBase();
 		rb.addPackage(asm.getBinaryPackage());
-		this.ruleBaseCache.put(packageUUID, rb);
+		this.ruleBaseCache.put(item.getUUID(), rb);
 	}
 
 
@@ -1027,21 +1033,23 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-	public ScenarioRunResult runScenario(String packageUUID, Scenario scenario)
+	public ScenarioRunResult runScenario(String packageName, Scenario scenario)
 			throws SerializableException {
-    	PackageItem item = this.repository.loadPackageByUUID(packageUUID);
-    	if (item.isBinaryUpToDate() && this.ruleBaseCache.containsKey(packageUUID)) {
-    		return runScenario(packageUUID, scenario, item);
+
+    	PackageItem item = this.repository.loadPackage(packageName);
+
+    	if (item.isBinaryUpToDate() && this.ruleBaseCache.containsKey(item.getUUID())) {
+    		return runScenario(scenario, item);
     	} else {
     		//we have to build the package, and try again.
     		if (item.isBinaryUpToDate()) {
-    			this.ruleBaseCache.put(packageUUID, loadRuleBase(item));
-    			return runScenario(packageUUID, scenario, item);
+    			this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item));
+    			return runScenario(scenario, item);
     		} else {
-    			BuilderResult[] errs = this.buildPackage(packageUUID, null, false);
+    			BuilderResult[] errs = this.buildPackage(null, false, item);
     			if (errs == null || errs.length == 0) {
-    				this.ruleBaseCache.put(packageUUID, loadRuleBase(item));
-    				return runScenario(packageUUID, scenario, item);
+    				this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item));
+    				return runScenario( scenario, item);
     			} else {
     				return new ScenarioRunResult(errs, null);
     			}
@@ -1066,10 +1074,10 @@ public class ServiceImplementation
 		}
 	}
 
-	private ScenarioRunResult runScenario(String packageUUID,
+	private ScenarioRunResult runScenario(
 			Scenario scenario, PackageItem item)
 			throws DetailedSerializableException {
-		RuleBase rb = ruleBaseCache.get(packageUUID);
+		RuleBase rb = ruleBaseCache.get(item.getUUID());
 		Package bin = rb.getPackages()[0];
 		List<JarInputStream> jars = BRMSPackageBuilder.getJars(item);
 		ClassTypeResolver res = new ClassTypeResolver(bin.getImports(), BRMSPackageBuilder.createClassLoader(jars));

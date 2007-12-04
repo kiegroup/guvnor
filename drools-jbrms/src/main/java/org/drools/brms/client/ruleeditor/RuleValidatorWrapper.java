@@ -121,7 +121,10 @@ public class RuleValidatorWrapper extends DirtyableComposite {
         LoadingPopup.close();
     }
 
-    private void showBuilderErrors(BuilderResult[] results) {
+    /**
+     * This will show a popup of error messages in compilation.
+     */
+    public static void showBuilderErrors(BuilderResult[] results) {
         FormStylePopup pop = new FormStylePopup("images/package_builder.png", "Validation results");
         if (results == null || results.length == 0) {
             pop.addRow( new HTML("<img src='images/tick_green.gif'/><i>Rule built successfully.</i>") );
@@ -135,7 +138,7 @@ public class RuleValidatorWrapper extends DirtyableComposite {
                 if( res.assetFormat.equals( "package" )) {
                     errTable.setText( row, 1, "[package configuration problem] " + res.message );
                 } else {
-                    errTable.setText( row, 1, res.message );
+                    errTable.setText( row, 1, "[" + res.assetName + "] " + res.message );
                 }
 
             }

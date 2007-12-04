@@ -1468,7 +1468,7 @@ public class ServiceImplementationTest extends TestCase {
 		vf.fieldValues.add(new VerifyField("age", "42", "=="));
 		sc.fixtures.add(vf);
 
-		ScenarioRunResult res = impl.runScenario(pkg.getUUID(), sc);
+		ScenarioRunResult res = impl.runScenario(pkg.getName(), sc);
 		assertEquals(null, res.errors);
 		assertNotNull(res.scenario);
 		assertTrue(vf.wasSuccessful());
@@ -1476,7 +1476,7 @@ public class ServiceImplementationTest extends TestCase {
 
 
 
-		res = impl.runScenario(pkg.getUUID(), sc);
+		res = impl.runScenario(pkg.getName(), sc);
 		assertEquals(null, res.errors);
 		assertNotNull(res.scenario);
 		assertTrue(vf.wasSuccessful());
@@ -1484,7 +1484,7 @@ public class ServiceImplementationTest extends TestCase {
 
 
 		impl.ruleBaseCache.clear();
-		res = impl.runScenario(pkg.getUUID(), sc);
+		res = impl.runScenario(pkg.getName(), sc);
 		assertEquals(null, res.errors);
 		assertNotNull(res.scenario);
 		assertTrue(vf.wasSuccessful());
@@ -1501,7 +1501,7 @@ public class ServiceImplementationTest extends TestCase {
 		impl.ruleBaseCache.clear();
 		pkg.updateBinaryUpToDate(false);
 		repo.save();
-		res = impl.runScenario(pkg.getUUID(), sc);
+		res = impl.runScenario(pkg.getName(), sc);
 		assertNotNull(res.errors);
 		assertNull(res.scenario);
 

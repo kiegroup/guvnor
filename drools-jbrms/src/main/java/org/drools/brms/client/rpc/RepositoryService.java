@@ -325,6 +325,6 @@ public interface RepositoryService extends RemoteService {
      * @return The scenario, with the results fields populated.
      * @throws SerializableException
      */
-    public ScenarioRunResult runScenario(String packageUUID, Scenario scenario) throws SerializableException;
+    public ScenarioRunResult runScenario(String packageName, Scenario scenario) throws SerializableException;
 
 }
