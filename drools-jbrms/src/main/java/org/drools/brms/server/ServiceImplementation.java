@@ -40,6 +40,7 @@ import javax.jcr.RepositoryException;
 
 import org.apache.log4j.Logger;
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassTypeResolver;
 import org.drools.brms.client.common.AssetFormats;
@@ -1059,8 +1060,13 @@ public class ServiceImplementation
 
 	private RuleBase loadRuleBase(PackageItem item)  throws DetailedSerializableException {
 		try {
-			RuleBase rb = RuleBaseFactory.newRuleBase();
-			DroolsObjectInputStream in = new DroolsObjectInputStream(new ByteArrayInputStream(item.getCompiledPackageBytes()));
+			List<JarInputStream> jars = BRMSPackageBuilder.getJars(item);
+			ClassLoader cl = BRMSPackageBuilder.createClassLoader(jars);
+			RuleBase rb = RuleBaseFactory.newRuleBase(new RuleBaseConfiguration(cl));
+
+
+			DroolsObjectInputStream in = new DroolsObjectInputStream(new ByteArrayInputStream(item.getCompiledPackageBytes()),
+					cl);
 			Package bin = (Package) in.readObject();
 			in.close();
 			rb.addPackage(bin);
@@ -1077,12 +1083,14 @@ public class ServiceImplementation
 	private ScenarioRunResult runScenario(
 			Scenario scenario, PackageItem item)
 			throws DetailedSerializableException {
+		//TODO: probably could avoid loading the classes by passing cl in.
 		RuleBase rb = ruleBaseCache.get(item.getUUID());
 		Package bin = rb.getPackages()[0];
 		List<JarInputStream> jars = BRMSPackageBuilder.getJars(item);
-		ClassTypeResolver res = new ClassTypeResolver(bin.getImports(), BRMSPackageBuilder.createClassLoader(jars));
+		ClassLoader cl = BRMSPackageBuilder.createClassLoader(jars);
+		ClassTypeResolver res = new ClassTypeResolver(bin.getImports(), cl);
 		try {
-			new ScenarioRunner(scenario, res, (InternalWorkingMemory) rb.newStatefulSession());
+			new ScenarioRunner(scenario, res, (InternalWorkingMemory) rb.newStatefulSession(false), cl);
 			return new ScenarioRunResult(null, scenario);
 		} catch (ClassNotFoundException e) {
 			log.error(e);

@@ -13,7 +13,6 @@ import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
-import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.FactData;
@@ -25,15 +24,14 @@ import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.brms.client.packages.SuggestionCompletionCache;
+import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.ScenarioRunResult;
-import org.drools.brms.client.ruleeditor.RuleValidatorWrapper;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -48,9 +46,11 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 
 public class ScenarioWidget extends Composite {
 
@@ -551,14 +551,19 @@ class DataInputWidget extends Composite {
 
 	private Image getNewFieldButton(final List defList) {
 		Image newField = new ImageButton("images/add_field_to_fact.gif", "Add a field");
-        newField.addClickListener(new ClickListener() {
+        newField.addClickListener(addFieldCL(defList));
+		return newField;
+	}
+
+	private ClickListener addFieldCL(final List defList) {
+		return new ClickListener() {
 			public void onClick(Widget w) {
 
 				//build up a list of what we have got, don't want to add it twice
 				HashSet existingFields = new HashSet();
 				if (defList.size() > 0) {
 					FactData d = (FactData) defList.get(0);
-					for (Iterator iterator = defList.iterator(); iterator.hasNext();) {
+					for (Iterator iterator = d.fieldData.iterator(); iterator.hasNext();) {
 						FieldData f = (FieldData) iterator.next();
 						existingFields.add(f.name);
 					}
@@ -588,8 +593,7 @@ class DataInputWidget extends Composite {
 				pop.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
 				pop.show();
 			}
-		});
-		return newField;
+		};
 	}
 
 	private FlexTable render(final List defList) {
@@ -667,10 +671,13 @@ class DataInputWidget extends Composite {
         }
 
         if (fields.size() == 0) {
-        	HorizontalPanel h = new HorizontalPanel();
-        	h.add(new HTML("<i><small>Add fields:</small></i>"));
-        	h.add(getNewFieldButton(defList));
-        	t.setWidget(1, 1, h);
+        	//HorizontalPanel h = new HorizontalPanel();
+        	Button b = new Button("Add a field");
+        	b.addClickListener(addFieldCL(defList));
+
+        	//h.add(new HTML("<i><small>Add fields:</small></i>"));
+        	//h.add(getNewFieldButton(defList));
+        	t.setWidget(1, 1, b);
         }
         return t;
 	}
@@ -1140,46 +1147,155 @@ class RetractWidget extends Composite {
 	}
 }
 
+/**
+ * Runs the test, plus shows a summary view of the results.
+ */
 class TestRunnerWidget extends Composite {
+
+	FlexTable results = new FlexTable();
+	Grid layout = new Grid(2, 1);
+
+	private HorizontalPanel busy = new HorizontalPanel();
+	private HorizontalPanel actions = new HorizontalPanel();
+
 	public TestRunnerWidget(final ScenarioWidget parent, final String packageName) {
-		HorizontalPanel h = new HorizontalPanel();
+
 		final Button run = new Button("Run scenario");
-		final HorizontalPanel busy = new HorizontalPanel();
-		busy.setVisible(false);
-		busy.add(new Image("images/busy.gif"));
-		busy.add(new HTML("&nbsp;&nbsp;<i><small><b>Building and running scenario, please wait...</b></small></i>"));
+		run.setTitle("Run this scenario. This will build the package if it is not already built (which may take some time).");
 		run.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
-				busy.setVisible(true);
-				run.setVisible(false);
+				layout.setWidget(0, 0, busy);
 				RepositoryServiceFactory.getService().runScenario(parent.asset.metaData.packageName, (Scenario) parent.asset.content, new GenericCallback () {
 					public void onSuccess(Object data) {
+						layout.setWidget(0, 0, actions);
+						layout.setWidget(0, 1, results);
+						busy.setVisible(false);
+						actions.setVisible(true);
 						ScenarioRunResult result = (ScenarioRunResult) data;
 						if (result.errors != null) {
-							
-							RuleValidatorWrapper.showBuilderErrors(result.errors);
+							showErrors(result.errors);
 						} else {
-							parent.asset.content = result.scenario;
-							parent.showResults = true;
-							parent.renderEditor();
-
+							showResults(parent, result);
 						}
-						busy.setVisible(false);
-						run.setVisible(true);
 					}
 				});
-
-
 			}
 		});
-		h.add(run);
-		h.add(busy);
-		initWidget(h);
+
+		actions.add(run);
+		busy.add(new Image("images/busy.gif"));
+		busy.add(new HTML("&nbsp;&nbsp;<i><small>Building and running scenario, please wait...</small></i>"));
+		layout.setWidget(0, 0, actions);
+		//layout.add(results);
+
+		initWidget(layout);
 	}
 
-	void runScenario(final ScenarioWidget parent, final HorizontalPanel busy) {
+
+	private void showErrors(BuilderResult[] rs) {
+		results.clear();
+		results.setVisible(true);
+
+        FlexTable errTable = new FlexTable();
+        errTable.setStyleName( "build-Results" );
+        for ( int i = 0; i < rs.length; i++ ) {
+            int row = i;
+            final BuilderResult res = rs[i];
+            errTable.setWidget( row, 0, new Image("images/error.gif"));
+            if( res.assetFormat.equals( "package" )) {
+                errTable.setText( row, 1, "[package configuration problem] " + res.message );
+            } else {
+                errTable.setText( row, 1, "[" + res.assetName + "] " + res.message );
+            }
+
+        }
+        ScrollPanel scroll = new ScrollPanel(errTable);
+
+        scroll.setWidth( "100%" );
+        results.setWidget(0, 0, scroll);
 
 	}
+
+	private void showResults(final ScenarioWidget parent,
+			ScenarioRunResult result) {
+		results.clear();
+		results.setVisible(true);
+
+		parent.asset.content = result.scenario;
+		parent.showResults = true;
+		parent.renderEditor();
+
+		int failures = 0;
+		int total = 0;
+		VerticalPanel resultsDetail = new VerticalPanel();
+
+		for (Iterator iterator = result.scenario.fixtures.iterator(); iterator.hasNext();) {
+			Fixture f = (Fixture) iterator.next();
+			if (f instanceof VerifyRuleFired) {
+				total++;
+				VerifyRuleFired vr = (VerifyRuleFired)f;
+				HorizontalPanel h = new HorizontalPanel();
+				if (!vr.successResult.booleanValue()) {
+					h.add(new Image("images/warning.gif"));
+					failures++;
+				} else {
+					h.add(new Image("images/test_passed.png"));
+				}
+				h.add(new Label(vr.explanation));
+				resultsDetail.add(h);
+			} else if (f instanceof VerifyFact) {
+				VerifyFact vf = (VerifyFact)f;
+				for (Iterator it = vf.fieldValues.iterator(); it.hasNext();) {
+					total++;
+					VerifyField vfl = (VerifyField) it.next();
+					HorizontalPanel h = new HorizontalPanel();
+					if (!vfl.successResult.booleanValue()) {
+						h.add(new Image("images/warning.gif"));
+						failures++;
+					} else {
+						h.add(new Image("images/test_passed.png"));
+					}
+					h.add(new Label(vfl.explanation));
+					resultsDetail.add(h);
+				}
+
+			}
+
+		}
+
+		results.setWidget(0, 0, new Label("Results:"));
+		results.setWidget(0, 1, greenBarGoodness(failures, total));
+		results.setWidget(1, 0, new Label("Summary:"));
+		results.setWidget(1, 1, resultsDetail);
+
+
+	}
+
+	private Widget greenBarGoodness(float failures, float total) {
+		Grid g = new Grid(1, 100);
+		g.setStyleName("testBar");
+		CellFormatter cf = g.getCellFormatter();
+		float num = ((total - failures) / total) * 50;
+		for (int i = 0; i < 50; i++) {
+			if (i < num) {
+				cf.setStyleName(0, i, "testSuccessBackground");
+			} else {
+				cf.setStyleName(0, i, "testFailureBackground");
+			}
+		}
+		VerticalPanel vert = new VerticalPanel();
+
+		int percent = (int) (((total - failures) / total) * 100);
+		Widget p = new HTML("<i><small>" + (int)failures + " out of " + (int)total + " expectations were met. (" + percent + "%) </small></i>");
+		vert.add(p);
+		vert.add(g);
+
+		vert.setStyleName("successBar");
+		return vert;
+	}
+
+
+
 
 
 }

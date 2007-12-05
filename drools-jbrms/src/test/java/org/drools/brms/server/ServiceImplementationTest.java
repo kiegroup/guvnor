@@ -1532,6 +1532,54 @@ public class ServiceImplementationTest extends TestCase {
 
 	}
 
+	public void FIXME_testRunScenarioWithJar() throws Exception {
+		ServiceImplementation impl = getService();
+		RulesRepository repo = impl.repository;
+
+		// create our package
+		PackageItem pkg = repo.createPackage("testRunScenarioWithJar", "");
+		AssetItem model = pkg.addAsset("MyModel", "");
+		model.updateFormat(AssetFormats.MODEL);
+		model.updateBinaryContentAttachment(this.getClass()
+				.getResourceAsStream("/billasurf.jar"));
+		model.checkin("");
+
+		pkg.updateHeader("import com.billasurf.Board");
+
+		AssetItem asset = pkg.addAsset("testRule", "");
+		asset.updateFormat(AssetFormats.DRL);
+		asset.updateContent("rule 'MyGoodRule' \n when Board() then System.err.println(42); \n end");
+		asset.checkin("");
+		repo.save();
+
+		Scenario sc = new Scenario();
+		FactData person = new FactData();
+		person.name = "p";
+		person.type = "Board";
+		person.fieldData.add(new FieldData("cost", "42"));
+
+
+		sc.fixtures.add(person);
+		sc.fixtures.add(new ExecutionTrace());
+		VerifyRuleFired vr = new VerifyRuleFired("MyGoodRule", 1, null);
+		sc.fixtures.add(vr);
+
+		VerifyFact vf = new VerifyFact();
+		vf.name = "p";
+
+		vf.fieldValues.add(new VerifyField("cost", "42", "=="));
+		sc.fixtures.add(vf);
+
+		ScenarioRunResult res = impl.runScenario(pkg.getName(), sc);
+		assertEquals(null, res.errors);
+		assertNotNull(res.scenario);
+		assertTrue(vf.wasSuccessful());
+		assertTrue(vr.wasSuccessful());
+
+
+
+	}
+
 	private ServiceImplementation getService() throws Exception {
 		ServiceImplementation impl = new ServiceImplementation();
 
