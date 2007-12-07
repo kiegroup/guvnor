@@ -8,11 +8,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.common.ValueChanged;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.FactData;
@@ -23,6 +25,7 @@ import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.brms.client.modeldriven.ui.ConstraintValueEditor;
 import org.drools.brms.client.packages.SuggestionCompletionCache;
 import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
@@ -486,6 +489,49 @@ public class ScenarioWidget extends Composite {
 		return h;
 	}
 
+	public static Widget editableCell(final ValueChanged changeEvent, String factType, String fieldName, String initialValue, SuggestionCompletionEngine sce) {
+		String key  = factType + "." + fieldName;
+		String flType = (String) sce.fieldTypes.get(key);
+		if (flType.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
+			TextBox box = editableTextBox(changeEvent, fieldName, initialValue);
+	        box.addKeyboardListener( new KeyboardListener() {
+	            public void onKeyDown(Widget arg0, char arg1, int arg2) {}
+	            public void onKeyPress(Widget w, char c, int i) {
+	                if (Character.isLetter( c ) ) {
+	                    ((TextBox) w).cancelKey();
+	                }
+	            }
+	            public void onKeyUp(Widget arg0, char arg1, int arg2) {}
+	        } );
+	        return box;
+		} else if (flType.equals(SuggestionCompletionEngine.TYPE_BOOLEAN )) {
+			String[] c = new String[] {"true", "false"};
+			return ConstraintValueEditor.enumDropDown(initialValue, changeEvent, c);
+		} else {
+			String[] enums = (String[]) sce.dataEnumLists.get(key);
+			if (enums != null) {
+				return ConstraintValueEditor.enumDropDown(initialValue, changeEvent, enums);
+
+			} else {
+				return editableTextBox(changeEvent, fieldName, initialValue);
+			}
+		}
+
+	}
+
+	private static TextBox editableTextBox(final ValueChanged changed,  String fieldName, String initialValue) {
+		final TextBox tb = new TextBox();
+		tb.setText(initialValue);
+		tb.setTitle("Value for: " + fieldName);
+		tb.addChangeListener(new ChangeListener() {
+		    public void onChange(Widget w) {
+		        changed.valueChanged(tb.getText());
+		    }
+		});
+
+		return tb;
+	}
+
 
 }
 
@@ -499,7 +545,7 @@ interface RuleSelectionEvent {
  * For capturing input for all the facts of a given type.
  * @author Michael Neale
  */
-class DataInputWidget extends Composite {
+class DataInputWidget extends DirtyableComposite {
 
 
     private Grid outer;
@@ -657,7 +703,7 @@ class DataInputWidget extends Composite {
             for (int i = 0; i < d.fieldData.size(); i++) {
                 FieldData fd = (FieldData) d.fieldData.get(i);
                 int fldRow = ((Integer) fields.get(fd.name)).intValue();
-                t.setWidget(fldRow, col, editableCell(fd));
+                t.setWidget(fldRow, col, editableCell(fd, d.type));
                 presentFields.remove(fd.name);
             }
 
@@ -666,7 +712,7 @@ class DataInputWidget extends Composite {
                 int fldRow = ((Integer) e.getValue()).intValue();
                 FieldData fd = new FieldData((String) e.getKey(), "");
                 d.fieldData.add(fd);
-                t.setWidget(fldRow, col, editableCell(fd));
+                t.setWidget(fldRow, col, editableCell(fd, d.type));
             }
         }
 
@@ -683,20 +729,77 @@ class DataInputWidget extends Composite {
 	}
 
 
+	/**
+	 * This will provide a cell editor. It will filter non numerics, show choices etc as appropriate.
+	 * @param fd
+	 * @param factType
+	 * @return
+	 */
+	private Widget editableCell(final FieldData fd, String factType) {
 
-	private Widget editableCell(final FieldData fd) {
-        final TextBox tb = new TextBox();
-        tb.setText(fd.value);
-        tb.setTitle("Value for: " + fd.name);
-        tb.addChangeListener(new ChangeListener() {
-            public void onChange(Widget w) {
-                fd.value = tb.getText();
-            }
-        });
+		return ScenarioWidget.editableCell(new ValueChanged() {
+			public void valueChanged(String newValue) {
+				fd.value = newValue;
+				makeDirty();
+			}
+		}, factType, fd.name, fd.value, sce);
+//		String key  = factType + "." + fd.name;
+//		String flType = (String) this.sce.fieldTypes.get(key);
+//		if (flType.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
+//			TextBox box = editableTextBox(fd);
+//            box.addKeyboardListener( new KeyboardListener() {
+//                public void onKeyDown(Widget arg0, char arg1, int arg2) {}
+//                public void onKeyPress(Widget w, char c, int i) {
+//                    if (Character.isLetter( c ) ) {
+//                        ((TextBox) w).cancelKey();
+//                    }
+//                }
+//                public void onKeyUp(Widget arg0, char arg1, int arg2) {}
+//            } );
+//            return box;
+//		} else if (flType.equals(SuggestionCompletionEngine.TYPE_BOOLEAN )) {
+//			String[] c = new String[] {"true", "false"};
+//			return ConstraintValueEditor.enumDropDown(fd.value, new ValueChanged() {
+//				public void valueChanged(String newValue) {
+//					fd.value = newValue;
+//					makeDirty();
+//				}
+//			}, c);
+//
+//		} else {
+//			String[] enums = (String[]) sce.dataEnumLists.get(key);
+//			if (enums != null) {
+//				return ConstraintValueEditor.enumDropDown(fd.value, new ValueChanged() {
+//					public void valueChanged(String newValue) {
+//						fd.value = newValue;
+//						makeDirty();
+//					}
+//				}, enums);
+//
+//			} else {
+//				return editableTextBox(fd);
+//			}
+//		}
 
-        //add stuff to check for numerics
-        return tb;
+
     }
+
+
+
+//	private TextBox editableTextBox(final FieldData fd) {
+//		final TextBox tb = new TextBox();
+//		tb.setText(fd.value);
+//		tb.setTitle("Value for: " + fd.name);
+//		tb.addChangeListener(new ChangeListener() {
+//		    public void onChange(Widget w) {
+//		        fd.value = tb.getText();
+//		    }
+//		});
+//
+//		return tb;
+//	}
+
+
 
 
 
@@ -887,14 +990,17 @@ class ExecutionWidget extends Composite {
 class VerifyFactWidget extends Composite {
     private Grid outer;
 	private boolean showResults;
+	private String type;
+	private SuggestionCompletionEngine sce;
 
 	public VerifyFactWidget(final VerifyFact vf, final Scenario sc, final SuggestionCompletionEngine sce, boolean showResults) {
         outer = new Grid(2, 1);
         outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
         outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         outer.setStyleName("modeller-fact-pattern-Widget");
+        this.sce = sce;
         HorizontalPanel ab = new HorizontalPanel();
-        final String type = (String) sc.getVariableTypes().get(vf.name);
+        type = (String) sc.getVariableTypes().get(vf.name);
         ab.add(new Label(type + " [" + vf.name + "] has values:"));
         this.showResults = showResults;
 
@@ -957,14 +1063,15 @@ class VerifyFactWidget extends Composite {
 
             data.setWidget(i, 2, opr);
 
-            final TextBox input = new TextBox();
-            input.setText(fld.expected);
-            input.addChangeListener(new ChangeListener() {
-                public void onChange(Widget w) {
-                    fld.expected = input.getText();
-                }
-            });
-            data.setWidget(i, 3, input);
+            Widget cellEditor = ScenarioWidget.editableCell(new ValueChanged() {
+
+				public void valueChanged(String newValue) {
+					fld.expected = newValue;
+				}
+
+            }, type, fld.fieldName, fld.expected, sce);
+
+            data.setWidget(i, 3, cellEditor);
 
             Image del = new ImageButton("images/delete_item_small.gif", "Remove this field expectation.", new ClickListener() {
 				public void onClick(Widget w) {

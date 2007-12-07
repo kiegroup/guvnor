@@ -5,6 +5,7 @@ import org.drools.brms.client.common.FieldEditListener;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.InfoPopup;
 import org.drools.brms.client.common.Lbl;
+import org.drools.brms.client.common.ValueChanged;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
 
@@ -49,7 +50,7 @@ public class ActionValueEditor extends DirtyableComposite {
 		root.clear();
 		if (enums != null && enums.length > 0) {
 			root.add(ConstraintValueEditor.enumDropDown(value.value,
-					new ConstraintValueEditor.ValueChanged() {
+					new ValueChanged() {
 						public void valueChanged(String newValue) {
 							value.value = newValue;
 							makeDirty();

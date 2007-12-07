@@ -24,6 +24,7 @@ import org.drools.brms.client.common.FieldEditListener;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.InfoPopup;
 import org.drools.brms.client.common.Lbl;
+import org.drools.brms.client.common.ValueChanged;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.FactPattern;
 import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
@@ -360,9 +361,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
     }
 
 
-    static interface ValueChanged {
-        public void valueChanged(String newValue);
-    }
+
 
 
 }
+

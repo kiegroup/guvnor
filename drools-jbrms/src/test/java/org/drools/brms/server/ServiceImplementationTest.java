@@ -1532,7 +1532,7 @@ public class ServiceImplementationTest extends TestCase {
 
 	}
 
-	public void FIXME_testRunScenarioWithJar() throws Exception {
+	public void testRunScenarioWithJar() throws Exception {
 		ServiceImplementation impl = getService();
 		RulesRepository repo = impl.repository;
 
@@ -1548,7 +1548,7 @@ public class ServiceImplementationTest extends TestCase {
 
 		AssetItem asset = pkg.addAsset("testRule", "");
 		asset.updateFormat(AssetFormats.DRL);
-		asset.updateContent("rule 'MyGoodRule' \n when Board() then System.err.println(42); \n end");
+		asset.updateContent("rule 'MyGoodRule' \n dialect 'mvel' \n when Board() then System.err.println(42); \n end");
 		asset.checkin("");
 		repo.save();
 
@@ -1575,6 +1575,22 @@ public class ServiceImplementationTest extends TestCase {
 		assertNotNull(res.scenario);
 		assertTrue(vf.wasSuccessful());
 		assertTrue(vr.wasSuccessful());
+
+
+		res = impl.runScenario(pkg.getName(), sc);
+		assertEquals(null, res.errors);
+		assertNotNull(res.scenario);
+		assertTrue(vf.wasSuccessful());
+		assertTrue(vr.wasSuccessful());
+
+		impl.ruleBaseCache.clear();
+
+		res = impl.runScenario(pkg.getName(), sc);
+		assertEquals(null, res.errors);
+		assertNotNull(res.scenario);
+		assertTrue(vf.wasSuccessful());
+		assertTrue(vr.wasSuccessful());
+
 
 
 

@@ -67,6 +67,7 @@ import org.drools.brms.server.contenthandler.IValidating;
 import org.drools.brms.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.TableDisplayHandler;
+import org.drools.common.AbstractRuleBase;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DrlParser;
@@ -1036,37 +1037,48 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
 	public ScenarioRunResult runScenario(String packageName, Scenario scenario)
 			throws SerializableException {
-
     	PackageItem item = this.repository.loadPackage(packageName);
 
-    	if (item.isBinaryUpToDate() && this.ruleBaseCache.containsKey(item.getUUID())) {
-    		return runScenario(scenario, item);
-    	} else {
-    		//we have to build the package, and try again.
-    		if (item.isBinaryUpToDate()) {
-    			this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item));
-    			return runScenario(scenario, item);
-    		} else {
-    			BuilderResult[] errs = this.buildPackage(null, false, item);
-    			if (errs == null || errs.length == 0) {
-    				this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item));
-    				return runScenario( scenario, item);
-    			} else {
-    				return new ScenarioRunResult(errs, null);
-    			}
-    		}
-    	}
+    	//nasty classloader needed to make sure we use the same tree the whole time.
+		ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
+
+		try {
+	    	if (item.isBinaryUpToDate() && this.ruleBaseCache.containsKey(item.getUUID())) {
+	    		RuleBase rb = this.ruleBaseCache.get(item.getUUID());
+	    		AbstractRuleBase arb = (AbstractRuleBase) rb;
+	    		//load up the existing class loader from before
+	    		ClassLoader cl = arb.getConfiguration().getClassLoader();
+	    		Thread.currentThread().setContextClassLoader(cl);
+	    		return runScenario(scenario, item, cl);
+	    	} else {
+	        	//load up the classloader we are going to use
+	    		List<JarInputStream> jars = BRMSPackageBuilder.getJars(item);
+	    		ClassLoader cl = BRMSPackageBuilder.createClassLoader(jars);
+	    		Thread.currentThread().setContextClassLoader(cl);
+
+	    		//we have to build the package, and try again.
+	    		if (item.isBinaryUpToDate()) {
+	    			this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item, cl));
+	    			return runScenario(scenario, item, cl);
+	    		} else {
+	    			BuilderResult[] errs = this.buildPackage(null, false, item);
+	    			if (errs == null || errs.length == 0) {
+	    				this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item, cl));
+	    				return runScenario( scenario, item, cl);
+	    			} else {
+	    				return new ScenarioRunResult(errs, null);
+	    			}
+	    		}
+	    	}
+		} finally {
+			Thread.currentThread().setContextClassLoader(originalCL);
+		}
 	}
 
-	private RuleBase loadRuleBase(PackageItem item)  throws DetailedSerializableException {
+	private RuleBase loadRuleBase(PackageItem item, ClassLoader cl)  throws DetailedSerializableException {
 		try {
-			List<JarInputStream> jars = BRMSPackageBuilder.getJars(item);
-			ClassLoader cl = BRMSPackageBuilder.createClassLoader(jars);
 			RuleBase rb = RuleBaseFactory.newRuleBase(new RuleBaseConfiguration(cl));
-
-
-			DroolsObjectInputStream in = new DroolsObjectInputStream(new ByteArrayInputStream(item.getCompiledPackageBytes()),
-					cl);
+			DroolsObjectInputStream in = new DroolsObjectInputStream(new ByteArrayInputStream(item.getCompiledPackageBytes()), cl);
 			Package bin = (Package) in.readObject();
 			in.close();
 			rb.addPackage(bin);
@@ -1081,16 +1093,15 @@ public class ServiceImplementation
 	}
 
 	private ScenarioRunResult runScenario(
-			Scenario scenario, PackageItem item)
+			Scenario scenario, PackageItem item, ClassLoader cl)
 			throws DetailedSerializableException {
-		//TODO: probably could avoid loading the classes by passing cl in.
+
 		RuleBase rb = ruleBaseCache.get(item.getUUID());
 		Package bin = rb.getPackages()[0];
-		List<JarInputStream> jars = BRMSPackageBuilder.getJars(item);
-		ClassLoader cl = BRMSPackageBuilder.createClassLoader(jars);
+
 		ClassTypeResolver res = new ClassTypeResolver(bin.getImports(), cl);
 		try {
-			new ScenarioRunner(scenario, res, (InternalWorkingMemory) rb.newStatefulSession(false), cl);
+			new ScenarioRunner(scenario, res, (InternalWorkingMemory) rb.newStatefulSession(false));
 			return new ScenarioRunResult(null, scenario);
 		} catch (ClassNotFoundException e) {
 			log.error(e);
