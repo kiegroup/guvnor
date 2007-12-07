@@ -1085,7 +1085,7 @@ class VerifyFactWidget extends Composite {
             data.setWidget(i, 4, del);
 
             if (showResults && fld.successResult != null) {
-            	if (fld.successResult.booleanValue()) {
+            	if (!fld.successResult.booleanValue()) {
             		data.setWidget(i, 0, new Image("images/warning.gif"));
             		data.setWidget(i, 5, new HTML("(Actual: " + fld.actualResult + ")"));
 
@@ -1136,7 +1136,7 @@ class VerifyRulesFiredWidget extends Composite {
             final VerifyRuleFired v = (VerifyRuleFired) rfl.get(i);
 
             if (showResults && v.successResult != null) {
-            	if (v.successResult.booleanValue()) {
+            	if (!v.successResult.booleanValue()) {
             		data.setWidget(i, 0, new Image("images/warning.gif"));
             		data.setWidget(i, 4, new HTML("(Actual: " + v.actualResult +")"));
 
@@ -1275,7 +1275,7 @@ class TestRunnerWidget extends Composite {
 				RepositoryServiceFactory.getService().runScenario(parent.asset.metaData.packageName, (Scenario) parent.asset.content, new GenericCallback () {
 					public void onSuccess(Object data) {
 						layout.setWidget(0, 0, actions);
-						layout.setWidget(0, 1, results);
+						layout.setWidget(1, 0, results);
 						busy.setVisible(false);
 						actions.setVisible(true);
 						ScenarioRunResult result = (ScenarioRunResult) data;
@@ -1350,6 +1350,7 @@ class TestRunnerWidget extends Composite {
 				}
 				h.add(new Label(vr.explanation));
 				resultsDetail.add(h);
+				total++;
 			} else if (f instanceof VerifyFact) {
 				VerifyFact vf = (VerifyFact)f;
 				for (Iterator it = vf.fieldValues.iterator(); it.hasNext();) {
@@ -1365,8 +1366,10 @@ class TestRunnerWidget extends Composite {
 					h.add(new Label(vfl.explanation));
 					resultsDetail.add(h);
 				}
+				total++;
 
 			}
+
 
 		}
 
@@ -1379,6 +1382,7 @@ class TestRunnerWidget extends Composite {
 	}
 
 	private Widget greenBarGoodness(float failures, float total) {
+		int successes = (int)total - (int) failures;
 		Grid g = new Grid(1, 100);
 		g.setStyleName("testBar");
 		CellFormatter cf = g.getCellFormatter();
@@ -1393,7 +1397,7 @@ class TestRunnerWidget extends Composite {
 		VerticalPanel vert = new VerticalPanel();
 
 		int percent = (int) (((total - failures) / total) * 100);
-		Widget p = new HTML("<i><small>" + (int)failures + " out of " + (int)total + " expectations were met. (" + percent + "%) </small></i>");
+		Widget p = new HTML("<i><small>" + (int)successes + " out of " + (int)total + " expectations were met. (" + percent + "%) </small></i>");
 		vert.add(p);
 		vert.add(g);
 
