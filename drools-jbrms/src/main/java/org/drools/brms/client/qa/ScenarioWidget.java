@@ -1339,7 +1339,7 @@ class TestRunnerWidget extends Composite {
 		for (Iterator iterator = result.scenario.fixtures.iterator(); iterator.hasNext();) {
 			Fixture f = (Fixture) iterator.next();
 			if (f instanceof VerifyRuleFired) {
-				total++;
+
 				VerifyRuleFired vr = (VerifyRuleFired)f;
 				HorizontalPanel h = new HorizontalPanel();
 				if (!vr.successResult.booleanValue()) {
@@ -1366,7 +1366,7 @@ class TestRunnerWidget extends Composite {
 					h.add(new Label(vfl.explanation));
 					resultsDetail.add(h);
 				}
-				total++;
+
 
 			}
 
