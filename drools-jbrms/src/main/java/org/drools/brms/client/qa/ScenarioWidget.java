@@ -25,6 +25,7 @@ import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.brms.client.modeldriven.ui.ActionValueEditor;
 import org.drools.brms.client.modeldriven.ui.ConstraintValueEditor;
 import org.drools.brms.client.packages.SuggestionCompletionCache;
 import org.drools.brms.client.rpc.BuilderResult;
@@ -493,16 +494,8 @@ public class ScenarioWidget extends Composite {
 		String key  = factType + "." + fieldName;
 		String flType = (String) sce.fieldTypes.get(key);
 		if (flType.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
-			TextBox box = editableTextBox(changeEvent, fieldName, initialValue);
-	        box.addKeyboardListener( new KeyboardListener() {
-	            public void onKeyDown(Widget arg0, char arg1, int arg2) {}
-	            public void onKeyPress(Widget w, char c, int i) {
-	                if (Character.isLetter( c ) ) {
-	                    ((TextBox) w).cancelKey();
-	                }
-	            }
-	            public void onKeyUp(Widget arg0, char arg1, int arg2) {}
-	        } );
+			final TextBox box = editableTextBox(changeEvent, fieldName, initialValue);
+			box.addKeyboardListener(ActionValueEditor.getNumericFilter(box));
 	        return box;
 		} else if (flType.equals(SuggestionCompletionEngine.TYPE_BOOLEAN )) {
 			String[] c = new String[] {"true", "false"};
