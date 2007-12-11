@@ -1099,7 +1099,7 @@ public class ServiceImplementation
 		RuleBase rb = ruleBaseCache.get(item.getUUID());
 		Package bin = rb.getPackages()[0];
 
-		ClassTypeResolver res = new ClassTypeResolver(bin.getImports(), cl);
+		ClassTypeResolver res = new ClassTypeResolver(bin.getImports().keySet(), cl);
 		try {
 			new ScenarioRunner(scenario, res, (InternalWorkingMemory) rb.newStatefulSession(false));
 			return new ScenarioRunResult(null, scenario);

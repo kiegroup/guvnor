@@ -17,7 +17,7 @@ public class ScenarioAssembler {
 
 	public ScenarioAssembler(PackageItem item, Package pkg, Scenario sc) {
 		List<JarInputStream> jars = BRMSPackageBuilder.getJars(item);
-		ClassTypeResolver res = new ClassTypeResolver(pkg.getImports(), BRMSPackageBuilder.createClassLoader(jars));
+		ClassTypeResolver res = new ClassTypeResolver(pkg.getImports().keySet(), BRMSPackageBuilder.createClassLoader(jars));
 
 //		RuleBase rb = RuleBaseFactory.newRuleBase();
 //		rb.addPackage(pkg);
