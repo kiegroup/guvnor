@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -47,11 +48,13 @@ import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.rpc.BuilderResult;
+import org.drools.brms.client.rpc.BulkTestRunResult;
 import org.drools.brms.client.rpc.DetailedSerializableException;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
 import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.rpc.ScenarioResultSummary;
 import org.drools.brms.client.rpc.ScenarioRunResult;
 import org.drools.brms.client.rpc.SnapshotInfo;
 import org.drools.brms.client.rpc.TableConfig;
@@ -86,6 +89,7 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.VersionableItem;
 import org.drools.rule.Package;
+import org.drools.testframework.RuleCoverageListener;
 import org.drools.testframework.ScenarioRunner;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -307,7 +311,21 @@ public class ServiceImplementation
         handler.retrieveAssetContent(asset, pkgItem, item);
 
         return asset;
+
     }
+
+	private RuleAsset loadAsset(AssetItem item) throws SerializableException {
+		RuleAsset asset = new RuleAsset();
+        asset.uuid = item.getUUID();
+        //load standard meta data
+        asset.metaData = populateMetaData( item );
+        // get package header
+        PackageItem pkgItem = repository.loadPackage( asset.metaData.packageName );
+        //load the content
+        ContentHandler handler = ContentHandler.getHandler( asset.metaData.format );
+        handler.retrieveAssetContent(asset, pkgItem, item);
+		return asset;
+	}
 
 
     /**
@@ -1041,38 +1059,41 @@ public class ServiceImplementation
 
     	//nasty classloader needed to make sure we use the same tree the whole time.
 		ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
+		ClassLoader cl = null;
+
 
 		try {
 	    	if (item.isBinaryUpToDate() && this.ruleBaseCache.containsKey(item.getUUID())) {
 	    		RuleBase rb = this.ruleBaseCache.get(item.getUUID());
 	    		AbstractRuleBase arb = (AbstractRuleBase) rb;
 	    		//load up the existing class loader from before
-	    		ClassLoader cl = arb.getConfiguration().getClassLoader();
+	    		cl = arb.getConfiguration().getClassLoader();
 	    		Thread.currentThread().setContextClassLoader(cl);
-	    		return runScenario(scenario, item, cl);
 	    	} else {
 	        	//load up the classloader we are going to use
 	    		List<JarInputStream> jars = BRMSPackageBuilder.getJars(item);
-	    		ClassLoader cl = BRMSPackageBuilder.createClassLoader(jars);
+	    		cl = BRMSPackageBuilder.createClassLoader(jars);
 	    		Thread.currentThread().setContextClassLoader(cl);
 
 	    		//we have to build the package, and try again.
 	    		if (item.isBinaryUpToDate()) {
 	    			this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item, cl));
-	    			return runScenario(scenario, item, cl);
 	    		} else {
 	    			BuilderResult[] errs = this.buildPackage(null, false, item);
 	    			if (errs == null || errs.length == 0) {
 	    				this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item, cl));
-	    				return runScenario( scenario, item, cl);
 	    			} else {
 	    				return new ScenarioRunResult(errs, null);
 	    			}
 	    		}
 	    	}
+	    	return runScenario(scenario, item, cl);
+
 		} finally {
 			Thread.currentThread().setContextClassLoader(originalCL);
 		}
+
+
 	}
 
 	private RuleBase loadRuleBase(PackageItem item, ClassLoader cl)  throws DetailedSerializableException {
@@ -1100,13 +1121,98 @@ public class ServiceImplementation
 		Package bin = rb.getPackages()[0];
 
 		ClassTypeResolver res = new ClassTypeResolver(bin.getImports().keySet(), cl);
+		InternalWorkingMemory workingMemory = (InternalWorkingMemory) rb.newStatefulSession(false);
+		return runScenario(scenario, res, workingMemory);
+	}
+
+	private ScenarioRunResult runScenario(Scenario scenario,
+			ClassTypeResolver res, InternalWorkingMemory workingMemory)
+			throws DetailedSerializableException {
 		try {
-			new ScenarioRunner(scenario, res, (InternalWorkingMemory) rb.newStatefulSession(false));
+			new ScenarioRunner(scenario, res, workingMemory);
 			return new ScenarioRunResult(null, scenario);
 		} catch (ClassNotFoundException e) {
 			log.error(e);
 			throw new DetailedSerializableException("Unable to load a required class.", e.getMessage());
 		}
+	}
+
+	public BulkTestRunResult runScenariosInPackage(String packageUUID)
+			throws SerializableException {
+		PackageItem item = repository.loadPackageByUUID(packageUUID);
+
+		ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
+		ClassLoader cl = null;
+
+
+		try {
+	    	if (item.isBinaryUpToDate() && this.ruleBaseCache.containsKey(item.getUUID())) {
+	     	 	RuleBase rb = this.ruleBaseCache.get(item.getUUID());
+	    		AbstractRuleBase arb = (AbstractRuleBase) rb;
+	    		//load up the existing class loader from before
+	    		cl = arb.getConfiguration().getClassLoader();
+	    		Thread.currentThread().setContextClassLoader(cl);
+	    	} else {
+	        	//load up the classloader we are going to use
+	    		List<JarInputStream> jars = BRMSPackageBuilder.getJars(item);
+	    		cl = BRMSPackageBuilder.createClassLoader(jars);
+	    		Thread.currentThread().setContextClassLoader(cl);
+
+	    		//we have to build the package, and try again.
+	    		if (item.isBinaryUpToDate()) {
+	    			this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item, cl));
+	    		} else {
+	    			BuilderResult[] errs = this.buildPackage(null, false, item);
+	    			if (errs == null || errs.length == 0) {
+	    				this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item, cl));
+	    			} else {
+	    				return new BulkTestRunResult(errs, null, 0, null);
+	    			}
+	    		}
+	    	}
+
+
+	    	AssetItemIterator it  = item.listAssetsByFormat(new String[] {AssetFormats.TEST_SCENARIO});
+	    	List<ScenarioResultSummary> resultSummaries = new ArrayList<ScenarioResultSummary>();
+			RuleBase rb = ruleBaseCache.get(item.getUUID());
+			Package bin = rb.getPackages()[0];
+
+			ClassTypeResolver res = new ClassTypeResolver(bin.getImports().keySet(), cl);
+			InternalWorkingMemory workingMemory = (InternalWorkingMemory) rb.newStatefulSession(false);
+
+			RuleCoverageListener coverage = new RuleCoverageListener(expectedRules(bin));
+			workingMemory.addEventListener(coverage);
+
+	    	while(it.hasNext()) {
+	    		RuleAsset asset = loadAsset((AssetItem) it.next());
+	    		Scenario sc = (Scenario) asset.content;
+	    		sc = runScenario(sc, res, workingMemory).scenario;
+	    		int[] totals = sc.countFailuresTotal();
+	    		resultSummaries.add(new ScenarioResultSummary(totals[0], totals[1], asset.metaData.name, asset.metaData.description, asset.uuid));
+	    	}
+
+	    	ScenarioResultSummary[] summaries = resultSummaries.toArray(new ScenarioResultSummary[resultSummaries.size()]);
+
+	    	BulkTestRunResult result = new BulkTestRunResult(null,
+	    						resultSummaries.toArray(summaries),
+	    						coverage.getPercentCovered(),
+	    						coverage.getUnfiredRules());
+	    	return result;
+
+
+		} finally {
+			Thread.currentThread().setContextClassLoader(originalCL);
+		}
+
+
+	}
+
+	private HashSet<String> expectedRules(Package bin) {
+		HashSet<String> h = new HashSet<String>();
+		for (int i = 0; i < bin.getRules().length; i++) {
+			h.add(bin.getRules()[i].getName());
+		}
+		return h;
 	}
 
 

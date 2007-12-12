@@ -74,6 +74,7 @@ public interface RepositoryServiceAsync
 	public void rebuildSnapshots(AsyncCallback cb);
 	public void listRulesInPackage(java.lang.String p0, AsyncCallback cb);
 	public void runScenario(java.lang.String p0, org.drools.brms.client.modeldriven.testing.Scenario p1, AsyncCallback cb);
+    public void runScenariosInPackage(String packageUUID, AsyncCallback cb);
 
 
 }

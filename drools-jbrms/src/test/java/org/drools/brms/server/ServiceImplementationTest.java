@@ -16,61 +16,29 @@ package org.drools.brms.server;
  * limitations under the License.
  */
 
-import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
+import com.google.gwt.user.client.rpc.IsSerializable;
+import com.google.gwt.user.client.rpc.SerializableException;
 import junit.framework.TestCase;
-
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.StatelessSession;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brl.ActionSetField;
-import org.drools.brms.client.modeldriven.brl.FactPattern;
-import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
-import org.drools.brms.client.modeldriven.brl.RuleModel;
-import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
-import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
-import org.drools.brms.client.modeldriven.testing.FactData;
-import org.drools.brms.client.modeldriven.testing.FieldData;
-import org.drools.brms.client.modeldriven.testing.Scenario;
-import org.drools.brms.client.modeldriven.testing.VerifyFact;
-import org.drools.brms.client.modeldriven.testing.VerifyField;
-import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
-import org.drools.brms.client.rpc.BuilderResult;
-import org.drools.brms.client.rpc.DetailedSerializableException;
-import org.drools.brms.client.rpc.PackageConfigData;
-import org.drools.brms.client.rpc.RepositoryService;
-import org.drools.brms.client.rpc.RuleAsset;
-import org.drools.brms.client.rpc.RuleContentText;
-import org.drools.brms.client.rpc.ScenarioRunResult;
-import org.drools.brms.client.rpc.SnapshotInfo;
-import org.drools.brms.client.rpc.TableConfig;
-import org.drools.brms.client.rpc.TableDataResult;
-import org.drools.brms.client.rpc.TableDataRow;
-import org.drools.brms.client.rpc.ValidatedResponse;
+import org.drools.brms.client.modeldriven.brl.*;
+import org.drools.brms.client.modeldriven.testing.*;
+import org.drools.brms.client.rpc.*;
 import org.drools.brms.server.util.BRXMLPersistence;
+import org.drools.brms.server.util.ScenarioXMLPersistence;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.common.DroolsObjectInputStream;
-import org.drools.repository.AssetItem;
-import org.drools.repository.CategoryItem;
-import org.drools.repository.PackageItem;
-import org.drools.repository.RulesRepository;
-import org.drools.repository.RulesRepositoryException;
-import org.drools.repository.StateItem;
+import org.drools.repository.*;
 import org.drools.rule.Package;
 import org.drools.util.BinaryRuleBaseLoader;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
+import java.util.*;
 
 public class ServiceImplementationTest extends TestCase {
 
@@ -1022,7 +990,7 @@ public class ServiceImplementationTest extends TestCase {
 		RuleModel model2 = new RuleModel();
 		assertNull(model2.name);
 		RuleAsset asset = impl.loadRuleAsset(asset2.getUUID());
-		asset.content = model2;
+		asset.content = (IsSerializable) model2;
 
 		impl.checkinVersion(asset);
 
@@ -1525,11 +1493,6 @@ public class ServiceImplementationTest extends TestCase {
 		sc_ = (Scenario) asset.content;
 		assertEquals(1, sc_.fixtures.size());
 
-
-
-
-
-
 	}
 
 	public void testRunScenarioWithJar() throws Exception {
@@ -1594,6 +1557,92 @@ public class ServiceImplementationTest extends TestCase {
 
 
 
+	}
+
+	public void testRunPackageScenarios() throws Exception {
+		ServiceImplementation impl = getService();
+		RulesRepository repo = impl.repository;
+
+		PackageItem pkg = repo.createPackage("testScenarioRunBulk", "");
+		pkg.updateHeader("import org.drools.Person");
+		AssetItem rule1 = pkg.addAsset("rule_1", "");
+		rule1.updateFormat(AssetFormats.DRL);
+		rule1
+				.updateContent("rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end");
+		rule1.checkin("");
+
+		//this rule will never fire
+		AssetItem rule2 = pkg.addAsset("rule_2", "");
+		rule2.updateFormat(AssetFormats.DRL);
+		rule2.updateContent("rule 'rule2' \n when \np : Person(age == 1000) \n then \np.setAge(46); \n end");
+		rule2.checkin("");
+		repo.save();
+
+
+
+		//first, the green scenario
+		Scenario sc = new Scenario();
+		FactData person = new FactData();
+		person.name = "p";
+		person.type = "Person";
+		person.fieldData.add(new FieldData("age", "40"));
+		person.fieldData.add(new FieldData("name", "michael"));
+
+		sc.fixtures.add(person);
+		sc.fixtures.add(new ExecutionTrace());
+		VerifyRuleFired vr = new VerifyRuleFired("rule1", 1, null);
+		sc.fixtures.add(vr);
+
+		VerifyFact vf = new VerifyFact();
+		vf.name = "p";
+		vf.fieldValues.add(new VerifyField("name", "michael", "=="));
+		vf.fieldValues.add(new VerifyField("age", "42", "=="));
+		sc.fixtures.add(vf);
+
+		AssetItem scenario1 = pkg.addAsset("scen1", "");
+		scenario1.updateFormat(AssetFormats.TEST_SCENARIO);
+		scenario1.updateContent(ScenarioXMLPersistence.getInstance().marshal(sc));
+		scenario1.checkin("");
+
+		//now the bad scenario
+		sc = new Scenario();
+		person = new FactData();
+		person.name = "p";
+		person.type = "Person";
+		person.fieldData.add(new FieldData("age", "40"));
+		person.fieldData.add(new FieldData("name", "michael"));
+
+		sc.fixtures.add(person);
+		sc.fixtures.add(new ExecutionTrace());
+		vr = new VerifyRuleFired("rule2", 1, null);
+		sc.fixtures.add(vr);
+
+
+		AssetItem scenario2 = pkg.addAsset("scen2", "");
+		scenario2.updateFormat(AssetFormats.TEST_SCENARIO);
+		scenario2.updateContent(ScenarioXMLPersistence.getInstance().marshal(sc));
+		scenario2.checkin("");
+
+		BulkTestRunResult result = impl.runScenariosInPackage(pkg.getUUID());
+		assertNull(result.errors);
+
+		assertEquals(50, result.percentCovered);
+		assertEquals(1, result.rulesNotCovered.length);
+		assertEquals("rule2", result.rulesNotCovered[0]);
+
+		assertEquals(2, result.results.length);
+
+		ScenarioResultSummary s1 = result.results[0];
+		assertEquals(0, s1.failures);
+		assertEquals(3, s1.total);
+		assertEquals(scenario1.getUUID(), s1.uuid);
+		assertEquals(scenario1.getName(), s1.scenarioName);
+
+		ScenarioResultSummary s2 = result.results[1];
+		assertEquals(1, s2.failures);
+		assertEquals(1, s2.total);
+		assertEquals(scenario2.getUUID(), s2.uuid);
+		assertEquals(scenario2.getName(), s2.scenarioName);
 	}
 
 	private ServiceImplementation getService() throws Exception {

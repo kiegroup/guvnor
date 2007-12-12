@@ -202,6 +202,11 @@ public class PackageBuilderWidget extends Composite {
 									showBuilderErrors(results, buildResults);
 								}
 							}
+
+							public void onFailure(Throwable t) {
+								buildResults.clear();
+								super.onFailure(t);
+							}
 						});
 			}
 		});

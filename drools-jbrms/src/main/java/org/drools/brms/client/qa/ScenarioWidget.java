@@ -58,20 +58,14 @@ import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 
 public class ScenarioWidget extends Composite {
 
-
 	private ListBox availableRules;
-	//Scenario scenario;
 	private SuggestionCompletionEngine sce;
 	private ChangeListener ruleSelectionCL;
 	RuleAsset asset;
 	DirtyableFlexTable layout;
 	boolean showResults;
 
-
-
 	public ScenarioWidget(RuleAsset asset) {
-
-
 		this.asset = asset;
 		this.layout = new DirtyableFlexTable();
 		this.showResults = false;
@@ -84,7 +78,9 @@ public class ScenarioWidget extends Composite {
     		scenario.fixtures.add(new ExecutionTrace());
     	}
 
-    	layout.setWidget(0, 0, new TestRunnerWidget(this, asset.metaData.packageName));
+    	if (!asset.isreadonly) {
+    		layout.setWidget(0, 0, new TestRunnerWidget(this, asset.metaData.packageName));
+    	}
 
         renderEditor();
 
@@ -1102,7 +1098,6 @@ class VerifyRulesFiredWidget extends Composite {
     private boolean showResults;
 	/**
      * @param rfl List<VeryfyRuleFired>
-     * @param rules = the list of rules to choose from
      * @param scenario = the scenario to add/remove from
      */
     public VerifyRulesFiredWidget(final List rfl, final Scenario scenario, boolean showResults) {
