@@ -20,7 +20,6 @@ package org.drools.brms.client.common;
 import org.drools.brms.client.rpc.DetailedSerializableException;
 import org.drools.brms.client.rpc.SessionExpiredException;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 
@@ -34,6 +33,7 @@ public abstract class GenericCallback
     AsyncCallback {
 
     public void onFailure(Throwable t) {
+    	LoadingPopup.close();
         if (t instanceof SessionExpiredException) {
             showSessionExpiry();
         } else if (t instanceof DetailedSerializableException){

@@ -1,124 +1,179 @@
 package org.drools.brms.client.qa;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collections;
+import java.util.Map;
 
-import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
-import org.drools.brms.client.modeldriven.testing.FactData;
-import org.drools.brms.client.modeldriven.testing.FieldData;
-import org.drools.brms.client.modeldriven.testing.Scenario;
-import org.drools.brms.client.modeldriven.testing.VerifyFact;
-import org.drools.brms.client.modeldriven.testing.VerifyField;
-import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
-import org.drools.brms.client.rpc.MetaData;
-import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.client.common.DirtyableComposite;
+import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.LoadingPopup;
+import org.drools.brms.client.rpc.BulkTestRunResult;
+import org.drools.brms.client.rpc.PackageConfigData;
+import org.drools.brms.client.rpc.RepositoryServiceFactory;
+import org.drools.brms.client.rpc.TableDataResult;
+import org.drools.brms.client.ruleeditor.EditorLauncher;
+import org.drools.brms.client.ruleeditor.NewAssetWizard;
+import org.drools.brms.client.rulelist.AssetItemListViewer;
+import org.drools.brms.client.rulelist.EditItemEvent;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * The parent host widget for all QA schtuff.
- * QA for the purposes of this is testing and analysis tools.
+ * The parent host widget for all QA schtuff. QA for the purposes of this is
+ * testing and analysis tools.
+ *
  * @author Michael Neale
  */
 public class QAManagerWidget extends Composite {
 
+	private final TabPanel tab;
+	private Map openedViewers = Collections.EMPTY_MAP;
+	private EditItemEvent editEvent;
+	private String currentlySelectedPackage;
+	private AssetItemListViewer listView;
+	private String currentUUID;
+
 
 	public QAManagerWidget() {
-		TabPanel tab = new TabPanel();
-        tab.setWidth("100%");
-        tab.setHeight("30%");
+		tab = new TabPanel();
+		tab.setWidth("100%");
+		tab.setHeight("30%");
 
-        tab.add( new ScenarioWidget(getDemo()),  "<img src='images/test_manager.gif'/>Test", true);
-        tab.add(new Label("TODO"), "<img src='images/analyze.gif'/>Analyze", true);
-        tab.selectTab( 0 );
+		editEvent = new EditItemEvent() {
+			public void open(String key) {
+				EditorLauncher.showLoadEditor(openedViewers, tab, key, false);
+			}
+		};
 
-        initWidget(tab);
+		tab.add(getScenarioListView(),
+				"<img src='images/test_manager.gif'/>Scenarios", true);
+		tab.selectTab(0);
+
+		initWidget(tab);
 	}
 
-	private SuggestionCompletionEngine getSCE() {
-		SuggestionCompletionEngine eng = new SuggestionCompletionEngine();
-		eng.fieldsForType = new HashMap();
+	private Widget getScenarioListView() {
 
-		eng.fieldsForType.put("Driver", new String[] {"age", "name", "risk"});
-		eng.fieldsForType.put("Accident", new String[] {"severity", "location"});
-		eng.factTypes = new String[] {"Driver", "Accident"};
-		return eng;
+		VerticalPanel vert = new VerticalPanel();
+		HorizontalPanel actions = new HorizontalPanel();
+
+		final ListBox packageSelector = new ListBox();
+		LoadingPopup.showMessage("Loading package list...");
+		RepositoryServiceFactory.getService().listPackages(
+				new GenericCallback() {
+
+					public void onSuccess(Object o) {
+
+						PackageConfigData[] list = (PackageConfigData[]) o;
+						packageSelector
+								.addItem("--- please choose package ---");
+						for (int i = 0; i < list.length; i++) {
+							packageSelector.addItem(list[i].name, list[i].uuid);
+						}
+						packageSelector.setSelectedIndex(0);
+						LoadingPopup.close();
+					}
+
+				});
+		actions.add(packageSelector);
+		Button newTest = new Button("Create new scenario");
+		newTest.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				launchWizard(AssetFormats.TEST_SCENARIO, "Create a new test scenario.");
+			}
+		});
+		actions.add(newTest);
+
+
+		Button runAll = new Button("Run all scenarios");
+		runAll.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				runAll();
+			}
+		});
+
+		actions.add(runAll);
+		vert.add(actions);
+
+		listView = new AssetItemListViewer(editEvent,
+				AssetItemListViewer.RULE_LIST_TABLE_ID);
+		vert.add(listView);
+
+		packageSelector.addChangeListener(new ChangeListener() {
+
+			public void onChange(Widget w) {
+				if (packageSelector.getSelectedIndex() == 0)
+					return;
+				refreshList(listView, packageSelector.getValue(packageSelector
+						.getSelectedIndex()));
+				currentlySelectedPackage = packageSelector.getItemText(packageSelector.getSelectedIndex());
+			}
+		});
+
+		return vert;
 	}
 
-	private Scenario getEmpty() {
-		return new Scenario();
+	/**
+	 * Run all the scenarios, obviously !
+	 */
+	private void runAll() {
+		LoadingPopup.showMessage("Building and running scenarios... ");
+		RepositoryServiceFactory.getService().runScenariosInPackage(currentUUID, new GenericCallback() {
+			public void onSuccess(Object data) {
+				BulkTestRunResult d = (BulkTestRunResult) data;
+				BulkRunResultWidget w = new BulkRunResultWidget(d, editEvent, tab);
+				tab.add(w, "<img src='images/tick_green.gif'/>" + currentlySelectedPackage, true);
+				tab.selectTab(tab.getWidgetIndex(w));
+				LoadingPopup.close();
+			}
+		});
 	}
 
-	private RuleAsset getDemo() {
-        //Sample data
-        FactData d1 = new FactData("Driver", "d1", ls(new FieldData[] {new FieldData("age", "42"), new FieldData("name", "david")}), false);
-        FactData d2 = new FactData("Driver", "d2", ls(new FieldData[] {new FieldData("name", "michael")}), false);
-        FactData d3 = new FactData("Driver", "d3", ls(new FieldData[] {new FieldData("name", "michael2")}), false);
-        FactData d4 = new FactData("Accident", "a1", ls(new FieldData[] {new FieldData("name", "michael2")}), false);
-        Scenario sc = new Scenario();
-        sc.fixtures.add(d1);
-        sc.fixtures.add(d2);
-        sc.globals.add(d3);
-        sc.globals.add(d4);
-        sc.rules.add("rule1");
-        sc.rules.add("rule2");
+	/**
+	 *
+	 */
+	private void refreshList(final AssetItemListViewer listView,
+			final String uuid) {
 
-        ExecutionTrace ext = new ExecutionTrace();
-        ext.numberOfRulesFired = new Long(42);
-        ext.executionTimeResult = new Long(4);
-        sc.fixtures.add(ext);
+		if (uuid == "")
+			return;
+		this.currentUUID = uuid;
 
-        List fields = new ArrayList();
-        VerifyField vfl = new VerifyField("age", "42", "==");
-        vfl.actualResult = "43";
-        vfl.successResult = new Boolean(false);
-        vfl.explanation = "Not cool jimmy.";
+		LoadingPopup.showMessage("Loading list of scenarios.");
+		final GenericCallback cb = new GenericCallback() {
+			public void onSuccess(Object data) {
+				final TableDataResult table = (TableDataResult) data;
+				listView.loadTableData(table);
+				listView.setWidth("100%");
+				LoadingPopup.close();
+			}
+		};
 
-        fields.add(vfl);
-
-        vfl = new VerifyField("name", "michael", "!=");
-        vfl.actualResult = "bob";
-        vfl.successResult = new Boolean(true);
-        vfl.explanation = "Yeah !";
-        fields.add(vfl);
-
-        VerifyFact vf = new VerifyFact("d1", fields);
-
-        sc.fixtures.add(vf);
-
-        VerifyRuleFired vf1 = new VerifyRuleFired("Life unverse and everything", new Integer(42), null);
-        vf1.actualResult = new Integer(42);
-        vf1.successResult = new Boolean(true);
-        vf1.explanation = "All good here.";
-
-        VerifyRuleFired vf2 = new VerifyRuleFired("Everything else", null, new Boolean(true));
-        vf2.actualResult = new Integer(0);
-        vf2.successResult = new Boolean(false);
-        vf2.explanation = "Not so good here.";
-        sc.fixtures.add(vf1);
-        sc.fixtures.add(vf2);
-
-        RuleAsset asset = new RuleAsset();
-        asset.content = (IsSerializable) sc;
-
-        asset.metaData = new MetaData();
-        asset.metaData.packageName = "com.billasurf.manufacturing";
-
-		return asset;
+		RepositoryServiceFactory.getService().listAssets(uuid,
+				new String[] { AssetFormats.TEST_SCENARIO }, -1, -1, cb);
 	}
 
-	private List ls(FieldData[] fieldDatas) {
-		List ls = new ArrayList();
-		for (int i = 0; i < fieldDatas.length; i++) {
-			ls.add(fieldDatas[i]);
-		}
-		return ls;
-	}
 
+
+	private void launchWizard(String format, String title) {
+		NewAssetWizard pop = new NewAssetWizard(new EditItemEvent() {
+			public void open(String key) {
+				refreshList(listView, currentUUID);
+				editEvent.open(key);
+			}
+		}, false, format, title, currentlySelectedPackage);
+
+		pop.setPopupPosition((DirtyableComposite.getWidth() - pop
+				.getOffsetWidth()) / 3, 100);
+		pop.show();
+	}
 
 }

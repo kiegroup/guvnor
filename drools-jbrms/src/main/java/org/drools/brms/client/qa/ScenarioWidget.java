@@ -92,6 +92,36 @@ public class ScenarioWidget extends Composite {
     }
 
 
+	public static Widget greenBarGoodness(float failures, float total) {
+		int successes = (int)total - (int) failures;
+		Grid g = greenBar(failures, total);
+		VerticalPanel vert = new VerticalPanel();
+		int percent = (int) (((total - failures) / total) * 100);
+		Widget p = new HTML("<i><small>" + (int)successes + " out of " + (int)total + " expectations were met. (" + percent + "%) </small></i>");
+		vert.add(p);
+		vert.add(g);
+
+		vert.setStyleName("successBar");
+		return vert;
+	}
+
+
+
+	public static Grid greenBar(float failures, float total) {
+		Grid g = new Grid(1, 50);
+		g.setStyleName("testBar");
+		CellFormatter cf = g.getCellFormatter();
+		float num = ((total - failures) / total) * 50;
+		for (int i = 0; i < 50; i++) {
+			if (i < num) {
+				cf.setStyleName(0, i, "testSuccessBackground");
+			} else {
+				cf.setStyleName(0, i, "testFailureBackground");
+			}
+		}
+		return g;
+	}
+
 	void renderEditor() {
 
 		final Scenario scenario = (Scenario) asset.content;
@@ -520,6 +550,9 @@ public class ScenarioWidget extends Composite {
 
 		return tb;
 	}
+
+
+
 
 
 }
@@ -1362,36 +1395,14 @@ class TestRunnerWidget extends Composite {
 		}
 
 		results.setWidget(0, 0, new Label("Results:"));
-		results.setWidget(0, 1, greenBarGoodness(failures, total));
+		results.setWidget(0, 1, ScenarioWidget.greenBarGoodness(failures, total));
 		results.setWidget(1, 0, new Label("Summary:"));
 		results.setWidget(1, 1, resultsDetail);
 
 
 	}
 
-	private Widget greenBarGoodness(float failures, float total) {
-		int successes = (int)total - (int) failures;
-		Grid g = new Grid(1, 100);
-		g.setStyleName("testBar");
-		CellFormatter cf = g.getCellFormatter();
-		float num = ((total - failures) / total) * 50;
-		for (int i = 0; i < 50; i++) {
-			if (i < num) {
-				cf.setStyleName(0, i, "testSuccessBackground");
-			} else {
-				cf.setStyleName(0, i, "testFailureBackground");
-			}
-		}
-		VerticalPanel vert = new VerticalPanel();
 
-		int percent = (int) (((total - failures) / total) * 100);
-		Widget p = new HTML("<i><small>" + (int)successes + " out of " + (int)total + " expectations were met. (" + percent + "%) </small></i>");
-		vert.add(p);
-		vert.add(g);
-
-		vert.setStyleName("successBar");
-		return vert;
-	}
 
 
 

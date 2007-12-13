@@ -19,7 +19,6 @@ package org.drools.brms.server;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -1137,6 +1136,8 @@ public class ServiceImplementation
 		}
 	}
 
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
 	public BulkTestRunResult runScenariosInPackage(String packageUUID)
 			throws SerializableException {
 		PackageItem item = repository.loadPackageByUUID(packageUUID);

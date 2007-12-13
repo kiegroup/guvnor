@@ -251,6 +251,10 @@ public class PackageEditor extends FormStyleLayout {
 
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
+            	if (!PackageNameValidator.validatePackageName(name.getText())) {
+            		Window.alert("Not a valid package name.");
+            		return;
+            	}
                 RepositoryServiceFactory.getService().copyPackage( conf.name, name.getText(), new GenericCallback() {
                     public void onSuccess(Object data) {
                         refreshCommand.execute();

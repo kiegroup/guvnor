@@ -199,7 +199,7 @@ public class PackageBuilderWidget extends Composite {
 									showSuccessfulBuild(buildResults);
 								} else {
 									BuilderResult[] results = (BuilderResult[]) data;
-									showBuilderErrors(results, buildResults);
+									showBuilderErrors(results, buildResults, editEvent);
 								}
 							}
 
@@ -270,7 +270,7 @@ public class PackageBuilderWidget extends Composite {
 	/**
 	 * This is called in the unhappy event of there being errors.
 	 */
-	private void showBuilderErrors(BuilderResult[] results, Panel buildResults) {
+	public static void showBuilderErrors(BuilderResult[] results, Panel buildResults, final EditItemEvent editEvent) {
 		buildResults.clear();
 
 		FlexTable errTable = new FlexTable();

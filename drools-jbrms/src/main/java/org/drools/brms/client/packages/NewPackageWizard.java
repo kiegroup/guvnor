@@ -57,15 +57,12 @@ public class NewPackageWizard extends FormStylePopup {
     private TextArea descBox;
     private final FormStyleLayout importLayout = new FormStyleLayout();
     private final FormStyleLayout newPackageLayout = new FormStyleLayout();
-    private Command afterCreatedEvent;
+
 
     public NewPackageWizard(final Command afterCreatedEvent) {
         super( "images/new_wiz.gif", "Create a new package" );
         nameBox = new TextBox();
         descBox = new TextArea();
-
-        this.afterCreatedEvent = afterCreatedEvent;
-
 
         newPackageLayout.addRow( new HTML("<i><small>Create a new package in the BRMS</small></i>") );
         importLayout.addRow( new HTML("<i><small>Importing a package from an existing DRL will create the package in the BRMS if it " +
@@ -74,11 +71,8 @@ public class NewPackageWizard extends FormStylePopup {
                 "but rules and functions will be stored individually (ie normalised). Queries, imports etc will show up in the package configuration.</small></i>") );
         importLayout.addRow( new HTML("<i><small>Any DSLs or models required by the imported package will need to be uploaded seperately.</small></i>") );
 
-
         newPackageLayout.addAttribute( "Name:", nameBox );
         newPackageLayout.addAttribute( "Description:", descBox );
-
-
 
         nameBox.setTitle( "The name of the package. Avoid spaces, use underscore instead." );
 
@@ -116,7 +110,7 @@ public class NewPackageWizard extends FormStylePopup {
         Button create = new Button("Create package");
         create.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-            	if ( validatePackageName(nameBox.getText()) ) {
+            	if ( PackageNameValidator.validatePackageName(nameBox.getText()) ) {
             		createPackageAction(nameBox.getText(), descBox.getText(), afterCreatedEvent);
             		hide();
             	} else {
@@ -124,9 +118,6 @@ public class NewPackageWizard extends FormStylePopup {
             		Window.alert("Invalid package name, use java-style package name");
             	}
             }
-			private boolean validatePackageName(String text) {
-				return text.matches("[a-zA-Z\\.]*");
-			}
         });
 
         newPackageLayout.addAttribute( "", create );
@@ -136,6 +127,8 @@ public class NewPackageWizard extends FormStylePopup {
 
 
     }
+
+
 
     private void createPackageAction(final String name, final String descr, final Command refresh) {
         LoadingPopup.showMessage( "Creating package - please wait..." );
