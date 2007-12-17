@@ -129,7 +129,7 @@ public class QAManagerWidget extends Composite {
 		RepositoryServiceFactory.getService().runScenariosInPackage(currentUUID, new GenericCallback() {
 			public void onSuccess(Object data) {
 				BulkTestRunResult d = (BulkTestRunResult) data;
-				BulkRunResultWidget w = new BulkRunResultWidget(d, editEvent, tab);
+				BulkRunResultWidget w = new BulkRunResultWidget(d, editEvent, tab, currentlySelectedPackage);
 				tab.add(w, "<img src='images/tick_green.gif'/>" + currentlySelectedPackage, true);
 				tab.selectTab(tab.getWidgetIndex(w));
 				LoadingPopup.close();

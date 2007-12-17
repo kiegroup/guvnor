@@ -92,35 +92,6 @@ public class ScenarioWidget extends Composite {
     }
 
 
-	public static Widget greenBarGoodness(float failures, float total) {
-		int successes = (int)total - (int) failures;
-		Grid g = greenBar(failures, total);
-		VerticalPanel vert = new VerticalPanel();
-		int percent = (int) (((total - failures) / total) * 100);
-		Widget p = new HTML("<i><small>" + (int)successes + " out of " + (int)total + " expectations were met. (" + percent + "%) </small></i>");
-		vert.add(p);
-		vert.add(g);
-
-		vert.setStyleName("successBar");
-		return vert;
-	}
-
-
-
-	public static Grid greenBar(float failures, float total) {
-		Grid g = new Grid(1, 50);
-		g.setStyleName("testBar");
-		CellFormatter cf = g.getCellFormatter();
-		float num = ((total - failures) / total) * 50;
-		for (int i = 0; i < 50; i++) {
-			if (i < num) {
-				cf.setStyleName(0, i, "testSuccessBackground");
-			} else {
-				cf.setStyleName(0, i, "testFailureBackground");
-			}
-		}
-		return g;
-	}
 
 	void renderEditor() {
 
@@ -549,6 +520,29 @@ public class ScenarioWidget extends Composite {
 		});
 
 		return tb;
+	}
+
+
+	/**
+	 * Use some CSS trickery to get a percent bar.
+	 */
+	public static Widget getBar(String colour, int width, float percent) {
+		int pixels = (int) (width * (percent / 100));
+		String h = "<div class=\"smallish-progress-wrapper\" style=\"width: " + width + "px\">" +
+					"<div class=\"smallish-progress-bar\" style=\"width: " + pixels + "px; background-color: " + colour + ";\"></div>" +
+					"<div class=\"smallish-progress-text\" style=\"width: " + width + "px\">" + (int)percent
+					+ "%</div></div>";
+		return new HTML(h);
+
+	}
+
+	public static Widget getBar(String colour, int width, int numerator, int denominator) {
+		 	int percent = 0;
+
+			if (denominator != 0) {
+				percent = (int) ((((float)denominator - (float)numerator) / (float)denominator) * 100);
+			}
+			return getBar(colour, width, percent);
 	}
 
 
@@ -1395,7 +1389,12 @@ class TestRunnerWidget extends Composite {
 		}
 
 		results.setWidget(0, 0, new Label("Results:"));
-		results.setWidget(0, 1, ScenarioWidget.greenBarGoodness(failures, total));
+		if (failures > 0) {
+			results.setWidget(0, 1, ScenarioWidget.getBar("#CC0000" , 150, failures, total));
+		} else {
+			results.setWidget(0, 1, ScenarioWidget.getBar("GREEN" , 150, failures, total));
+		}
+
 		results.setWidget(1, 0, new Label("Summary:"));
 		results.setWidget(1, 1, resultsDetail);
 
