@@ -332,4 +332,10 @@ public interface RepositoryService extends RemoteService {
      * This should be pretty obvious what it does !
      */
     public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializableException;
+
+    /**
+     * Analyse the package and get a report for it.
+     */
+    public AnalysisReport analysePackage(String packageUUID) throws SerializableException;
+
 }

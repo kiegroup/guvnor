@@ -46,6 +46,7 @@ import org.drools.base.ClassTypeResolver;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.testing.Scenario;
+import org.drools.brms.client.rpc.AnalysisReport;
 import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.BulkTestRunResult;
 import org.drools.brms.client.rpc.DetailedSerializableException;
@@ -66,6 +67,7 @@ import org.drools.brms.server.builder.ContentPackageAssembler;
 import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.contenthandler.IRuleAsset;
 import org.drools.brms.server.contenthandler.IValidating;
+import org.drools.brms.server.util.AnalysisRunner;
 import org.drools.brms.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.TableDisplayHandler;
@@ -1214,6 +1216,20 @@ public class ServiceImplementation
 			h.add(bin.getRules()[i].getName());
 		}
 		return h;
+	}
+
+	@WebRemote
+    @Restrict("#{identity.loggedIn}")
+	public AnalysisReport analysePackage(String packageUUID)
+			throws SerializableException {
+		String drl = this.buildPackageSource(packageUUID);
+		AnalysisRunner runner = new AnalysisRunner();
+		try {
+			return runner.analyse(drl);
+		} catch (DroolsParserException e) {
+			log.error(e);
+			throw new DetailedSerializableException("Unable to parse the rules.", e.getMessage());
+		}
 	}
 
 

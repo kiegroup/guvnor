@@ -19,6 +19,8 @@ package org.drools.brms.server;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.rpc.SerializableException;
 import junit.framework.TestCase;
+
+import org.apache.commons.io.IOUtils;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.StatelessSession;
@@ -28,6 +30,7 @@ import org.drools.brms.client.modeldriven.brl.*;
 import org.drools.brms.client.modeldriven.testing.*;
 import org.drools.brms.client.rpc.*;
 import org.drools.brms.server.util.BRXMLPersistence;
+import org.drools.brms.server.util.IO;
 import org.drools.brms.server.util.ScenarioXMLPersistence;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
@@ -37,7 +40,9 @@ import org.drools.rule.Package;
 import org.drools.util.BinaryRuleBaseLoader;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.StringReader;
 import java.util.*;
 
 public class ServiceImplementationTest extends TestCase {
@@ -1644,6 +1649,26 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(scenario2.getUUID(), s2.uuid);
 		assertEquals(scenario2.getName(), s2.scenarioName);
 	}
+
+	public void testAnalysis() throws Exception {
+		ServiceImplementation impl = getService();
+		PackageItem pkg = impl.repository.createPackage("testAnalysis", "");
+		AssetItem asset = pkg.addAsset("SomeDRL", "");
+		asset.updateFormat(AssetFormats.DRL);
+
+		asset.updateContent(IO.read(this.getClass().getResourceAsStream("/AnalysisSample.drl")));
+		asset.checkin("");
+		System.err.println(asset.getContent());
+		AnalysisReport report = impl.analysePackage(pkg.getUUID());
+		assertNotNull(report);
+		assertEquals(0, report.errors.length);
+		assertEquals(10, report.warnings.length);
+		assertEquals(1, report.notes.length);
+
+	}
+
+
+
 
 	private ServiceImplementation getService() throws Exception {
 		ServiceImplementation impl = new ServiceImplementation();
