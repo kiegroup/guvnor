@@ -7,6 +7,7 @@ import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
+import org.drools.brms.client.rpc.AnalysisReport;
 import org.drools.brms.client.rpc.BulkTestRunResult;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
@@ -100,7 +101,15 @@ public class QAManagerWidget extends Composite {
 			}
 		});
 
+		Button analysePackage = new Button("Analyse package");
+		analysePackage.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				runAnalysis();
+			}
+		});
+
 		actions.add(runAll);
+		actions.add(analysePackage);
 		vert.add(actions);
 
 		listView = new AssetItemListViewer(editEvent,
@@ -119,6 +128,21 @@ public class QAManagerWidget extends Composite {
 		});
 
 		return vert;
+	}
+
+
+	private void runAnalysis() {
+		LoadingPopup.showMessage("Analysing package...");
+		RepositoryServiceFactory.getService().analysePackage(this.currentUUID, new GenericCallback() {
+			public void onSuccess(Object data) {
+				AnalysisReport rep = (AnalysisReport) data;
+				AnalysisResultWidget w = new AnalysisResultWidget(currentlySelectedPackage, rep);
+				tab.add(w, "<img src='images/package_build.gif'/>" + currentlySelectedPackage, true);
+				tab.selectTab(tab.getWidgetIndex(w));
+				LoadingPopup.close();
+			}
+		});
+
 	}
 
 	/**

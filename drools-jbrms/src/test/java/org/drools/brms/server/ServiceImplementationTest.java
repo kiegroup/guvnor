@@ -1658,7 +1658,7 @@ public class ServiceImplementationTest extends TestCase {
 
 		asset.updateContent(IO.read(this.getClass().getResourceAsStream("/AnalysisSample.drl")));
 		asset.checkin("");
-		System.err.println(asset.getContent());
+
 		AnalysisReport report = impl.analysePackage(pkg.getUUID());
 		assertNotNull(report);
 		assertEquals(0, report.errors.length);
