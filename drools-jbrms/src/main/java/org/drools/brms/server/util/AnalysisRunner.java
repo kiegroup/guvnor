@@ -12,6 +12,7 @@ import org.drools.analytics.components.Field;
 import org.drools.analytics.dao.AnalyticsData;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
+import org.drools.analytics.report.components.Severity;
 import org.drools.brms.client.rpc.AnalysisFactUsage;
 import org.drools.brms.client.rpc.AnalysisFieldUsage;
 import org.drools.brms.client.rpc.AnalysisReport;
@@ -39,9 +40,9 @@ public class AnalysisRunner {
 		AnalyticsResult res = a.getResult();
 
 		AnalysisReport report = new AnalysisReport();
-		report.errors = doLines(res.getBySeverity(AnalyticsMessageBase.Severity.ERROR));
-		report.warnings = doLines(res.getBySeverity(AnalyticsMessageBase.Severity.WARNING));
-		report.notes = doLines(res.getBySeverity(AnalyticsMessageBase.Severity.NOTE));
+		report.errors = doLines(res.getBySeverity(Severity.ERROR));
+		report.warnings = doLines(res.getBySeverity(Severity.WARNING));
+		report.notes = doLines(res.getBySeverity(Severity.NOTE));
 		report.factUsages = doFactUsage(res.getAnalyticsData());
 		return report;
 	}
