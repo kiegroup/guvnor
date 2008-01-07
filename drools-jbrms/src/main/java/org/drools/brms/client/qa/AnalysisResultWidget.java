@@ -18,8 +18,11 @@ public class AnalysisResultWidget extends Composite {
 		FormStyleLayout layout = new FormStyleLayout();
 
 		Tree t = new Tree();
-		TreeItem warnings = new TreeItem("Warnings");
+		TreeItem warnings = new TreeItem("Warnings [" + report.warnings.length + "] items.");
+
 		t.addItem(warnings);
+
+
 
 		for (int i = 0; i < report.warnings.length; i++) {
 			AnalysisReportLine r = report.warnings[i];
@@ -27,10 +30,11 @@ public class AnalysisResultWidget extends Composite {
 			TreeItem reason = new TreeItem("Reason: " + r.reason);
 			w.addItem(reason);
 			TreeItem causes = new TreeItem("Cause:");
+
 			for (int j = 0; j < r.cause.length; j++) {
 				causes.addItem(new TreeItem(r.cause[j]));
 			}
-			w.addItem(causes);
+			if (r.cause.length > 0 ) w.addItem(causes);
 			warnings.addItem(w);
 
 
@@ -38,6 +42,7 @@ public class AnalysisResultWidget extends Composite {
 
 		layout.addRow(t);
 
+		warnings.setState(true);
 		initWidget(layout);
 	}
 
