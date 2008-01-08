@@ -2,7 +2,9 @@ package org.drools.brms.server.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.analytics.Analyzer;
@@ -48,6 +50,9 @@ public class AnalysisRunner {
 	}
 
 	private AnalysisFactUsage[] doFactUsage(AnalyticsData analyticsData) {
+
+		Map<String, String> interned = new HashMap<String, String>();
+
 		List<AnalysisFactUsage> factUsage = new ArrayList<AnalysisFactUsage>();
 		Collection<AnalyticsClass> classes = analyticsData.getAllClasses();
 		for (AnalyticsClass c : classes) {
@@ -61,7 +66,7 @@ public class AnalysisRunner {
 				Collection<AnalyticsRule> cr = analyticsData.getRulesByFieldId(f.getId());
 				List<String> ruleNames = new ArrayList<String>();
 				for (AnalyticsRule analyticsRule : cr) {
-					ruleNames.add(analyticsRule.getRuleName());
+					ruleNames.add(intern(analyticsRule.getRuleName(), interned));
 				}
 				fu.rules = ruleNames.toArray(new String[ruleNames.size()]);
 				fieldUsage.add(fu);
@@ -70,6 +75,19 @@ public class AnalysisRunner {
 			factUsage.add(fact);
 		}
 		return factUsage.toArray(new AnalysisFactUsage[factUsage.size()]);
+	}
+
+	/**
+	 * Doing this to reuse refs to the one name (interning, but not putting in the VMs interned pool
+	 * as there could be quite a lot of rules).
+	 */
+	private String intern(String ruleName, Map<String, String> interned) {
+		if (interned.containsKey(ruleName)) {
+			return interned.get(ruleName);
+		} else {
+			interned.put(ruleName, ruleName);
+			return ruleName;
+		}
 	}
 
 	private AnalysisReportLine[] doLines(
