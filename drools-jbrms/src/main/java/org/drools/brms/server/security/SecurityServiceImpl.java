@@ -67,7 +67,7 @@ public class SecurityServiceImpl
     public UserSecurityContext getCurrentUser() {
         if (Contexts.isApplicationContextActive()) {
         	HashSet<String> disabled = new HashSet<String>();
-        	disabled.add("QA");
+        	//disabled.add("QA");
             if (!Identity.instance().isLoggedIn()) {
                 //check to see if we can autologin
                 return new UserSecurityContext(checkAutoLogin(), disabled);
