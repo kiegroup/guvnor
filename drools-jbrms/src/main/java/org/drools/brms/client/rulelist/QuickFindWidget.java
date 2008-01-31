@@ -23,6 +23,7 @@ import org.drools.brms.client.common.CompletionItemsAsyncReturn;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
+import org.drools.brms.client.common.PrettyFormLayout;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
@@ -83,26 +84,26 @@ public class QuickFindWidget extends Composite {
         srch.add( searchBox );
         srch.add( go );
 
-        archiveBox = new CheckBox("Include archived items in list");
-        archiveBox.setStyleName( "small-Text" );
+        archiveBox = new CheckBox();
+
         archiveBox.setChecked(false);
 
         layout.addAttribute( "Find items with a name matching:", srch );
-        layout.addRow( archiveBox );
-        layout.addRow( new HTML("<hr/>") );
+        layout.addAttribute("Include archived items in list:", archiveBox);
+
 
         listPanel = new FlexTable();
         listPanel.setWidget( 0, 0, new HTML("<img src='images/information.gif'/>&nbsp;Enter the name or part of a name. Alternatively, use the categories to browse.") );
-        layout.addRow(listPanel);
 
-        listPanel.setStyleName( "editable-Surface" );
-
+        PrettyFormLayout pfl = new PrettyFormLayout();
+        pfl.startSection();
+        pfl.addRow(listPanel);
+        pfl.endSection();
+        layout.addRow(pfl);
 
 
 
         searchBox.addKeyboardListener( getKeyboardListener());
-
-        layout.setStyleName( "quick-find" );
 
         initWidget( layout );
     }

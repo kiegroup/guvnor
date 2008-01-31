@@ -2,11 +2,16 @@
 
 	<!-- Inherit the core Web Toolkit stuff.                  -->
 	<inherits name='com.google.gwt.user.User'/>
+    <inherits name="com.gwtext.GwtExt"/>
 
-	<!-- Specify the app entry point class.                   -->
+    <!-- Specify the app entry point class.                   -->
 	<!-- <entry-point class='org.drools.brms.client.JBRMS'/> -->
 	<entry-point class='org.drools.brms.client.JBRMSEntryPoint'/>
-  
+	
+    <script src="js/ext/adapter/yui/yui-utilities.js"></script>
+    <script src="js/ext/adapter/yui/ext-yui-adapter.js"></script>
+	<script src="js/ext/ext-all.js"></script>	
+
 	<servlet path="/jbrmsService" class="org.jboss.seam.remoting.gwt.GWTRemoteServiceServlet" />  
     <servlet path="/asset" class="org.drools.brms.server.files.AssetFileServlet"/>
     <servlet path="/backup" class="org.drools.brms.server.files.RepositoryBackupServlet"/>    

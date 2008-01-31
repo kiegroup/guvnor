@@ -19,6 +19,7 @@ package org.drools.brms.server;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,6 +40,7 @@ import java.util.regex.Pattern;
 import javax.jcr.ItemExistsException;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -67,6 +70,7 @@ import org.drools.brms.server.builder.ContentPackageAssembler;
 import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.contenthandler.IRuleAsset;
 import org.drools.brms.server.contenthandler.IValidating;
+import org.drools.brms.server.contenthandler.ModelContentHandler;
 import org.drools.brms.server.util.AnalysisRunner;
 import org.drools.brms.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.brms.server.util.MetaDataMapper;
@@ -83,6 +87,7 @@ import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.CategoryItem;
+import org.drools.repository.AssetPageList;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryAdministrator;
@@ -270,13 +275,27 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public TableDataResult loadRuleListForCategories(String categoryPath) throws SerializableException {
-        long start = System.currentTimeMillis();
+    public TableDataResult loadRuleListForCategories(String categoryPath, int skip, int numRows) throws SerializableException {
+    	//love you
+        //long time = System.currentTimeMillis();
 
-        List list = repository.findAssetsByCategory( categoryPath );
+        AssetPageList list = repository.findAssetsByCategory( categoryPath, skip, numRows );
         TableDisplayHandler handler = new TableDisplayHandler(TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
-        //log.info("time for load: " + (System.currentTimeMillis() - start) );
-        return handler.loadRuleListTable( list.iterator(), -1 );
+        //log.debug("time for load: " + (System.currentTimeMillis() - time) );
+        return handler.loadRuleListTable( list );
+
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public TableDataResult loadRuleListForState(String stateName, int skip, int numRows) throws SerializableException {
+    	//love you
+        //long time = System.currentTimeMillis();
+
+        AssetPageList list = repository.findAssetsByState( stateName, false, skip, numRows );
+        TableDisplayHandler handler = new TableDisplayHandler(TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
+        //log.debug("time for load: " + (System.currentTimeMillis() - time) );
+        return handler.loadRuleListTable( list );
 
     }
 
@@ -609,17 +628,17 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public TableDataResult listAssets(String uuid,
                                               String formats[],
-                                              int numRows,
-                                              int startRow) throws SerializableException {
+                                              int skip,
+                                              int numRows) throws SerializableException {
+    	if (numRows == 0) {
+    		throw new DetailedSerializableException("Unable to return zero results (bug)", "probably have the parameters around the wrong way, sigh...");
+    	}
         long start = System.currentTimeMillis();
         PackageItem pkg = repository.loadPackageByUUID( uuid );
         AssetItemIterator it = pkg.listAssetsByFormat( formats );
-        if (numRows != -1) {
-            it.skip( startRow );
-        }
         TableDisplayHandler handler = new TableDisplayHandler(TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
         log.debug("time for asset list load: " + (System.currentTimeMillis() - start) );
-        return handler.loadRuleListTable( it, numRows );
+        return handler.loadRuleListTable( it, skip,  numRows );
     }
 
 
@@ -1230,6 +1249,43 @@ public class ServiceImplementation
 			log.error(e);
 			throw new DetailedSerializableException("Unable to parse the rules.", e.getMessage());
 		}
+	}
+
+	@WebRemote
+    @Restrict("#{identity.loggedIn}")
+	public String[] listTypesInPackage(String packageUUID) throws SerializableException {
+
+		PackageItem pkg = this.repository.loadPackageByUUID(packageUUID);
+		List<String> res = new ArrayList<String>();
+		AssetItemIterator it = pkg.listAssetsByFormat(new String[] {AssetFormats.MODEL});
+
+		JarInputStream jis = null;
+
+		try {
+			while(it.hasNext()) {
+				AssetItem asset = (AssetItem) it.next();
+				if (!asset.isArchived()) {
+					jis = new JarInputStream(asset.getBinaryContentAttachment());
+					JarEntry entry = null;
+					while ((entry = jis.getNextJarEntry()) != null) {
+						if (!entry.isDirectory()) {
+							if (entry.getName().endsWith(".class")) {
+								 res.add(ModelContentHandler.convertPathToName(entry.getName()));
+							}
+						}
+					}
+
+				}
+			}
+			return res.toArray(new String[res.size()]);
+		} catch (IOException e) {
+			log.error(e);
+			throw new DetailedSerializableException("Unable to read the jar files in the package.", e.getMessage());
+		} finally {
+			IOUtils.closeQuietly(jis);
+		}
+
+
 	}
 
 

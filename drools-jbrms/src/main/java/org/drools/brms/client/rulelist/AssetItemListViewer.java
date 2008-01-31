@@ -39,6 +39,9 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.widgets.grid.Grid;
+import com.gwtext.client.widgets.grid.event.GridRowListener;
 
 /**
  * This is a viewer for viewing a list of rules for editing/selection.

@@ -22,6 +22,8 @@ import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.rpc.RepositoryServiceAsync;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
@@ -107,34 +109,38 @@ public class CategoryExplorerWidget extends Composite
     /** This will refresh the tree and restore it back to the original state */
     private void loadInitialTree() {
         navTreeWidget.addItem( "Please wait..." );
-        service.loadChildCategories( "/",
-                                     new GenericCallback() {
+        DeferredCommand.addCommand(new Command() {
+			public void execute() {
+		        service.loadChildCategories( "/",
+		                                     new GenericCallback() {
 
 
-                                         public void onSuccess(Object result) {
-                                             selectedPath = null;
-                                             navTreeWidget.removeItems();
-                                             String[] categories = (String[]) result;
+		                                         public void onSuccess(Object result) {
+		                                             selectedPath = null;
+		                                             navTreeWidget.removeItems();
+		                                             String[] categories = (String[]) result;
 
-                                             if (categories.length == 0) {
-                                                 showEmptyTree();
-                                             } else {
-                                                 hideEmptyTree();
-                                             }
-                                             for ( int i = 0; i < categories.length; i++ ) {
-                                                 TreeItem it = new TreeItem();
-                                                 it.setHTML( "<img src=\"images/category_small.gif\"/>" + categories[i] );
-                                                 it.setUserObject( categories[i] );
-                                                 it.addItem( new PendingItem() );
-                                                 navTreeWidget.addItem( it );
-                                             }
-
-
-                                         }
+		                                             if (categories.length == 0) {
+		                                                 showEmptyTree();
+		                                             } else {
+		                                                 hideEmptyTree();
+		                                             }
+		                                             for ( int i = 0; i < categories.length; i++ ) {
+		                                                 TreeItem it = new TreeItem();
+		                                                 it.setHTML( "<img src=\"images/category_small.gif\"/>" + categories[i] );
+		                                                 it.setUserObject( categories[i] );
+		                                                 it.addItem( new PendingItem() );
+		                                                 navTreeWidget.addItem( it );
+		                                             }
 
 
+		                                         }
 
-                                     } );
+
+
+		                                     } );
+			}}
+        );
 
     }
 

@@ -19,10 +19,10 @@ package org.drools.brms.client.ruleeditor;
 
 import java.util.Date;
 
-import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.common.PrettyFormLayout;
 import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  * It also captures edits, but it does not load or save anything itself.
  * @author Michael Neale
  */
-public class MetaDataWidget extends FormStyleLayout {
+public class MetaDataWidget extends PrettyFormLayout {
 
 
     private MetaData data;
@@ -53,9 +53,17 @@ public class MetaDataWidget extends FormStyleLayout {
     private Command refreshView;
     AssetCategoryEditor ed;
 
-	public MetaDataWidget(MetaData d, boolean readOnly, String uuid, Command refreshView) {
+	public MetaDataWidget(final MetaData d, boolean readOnly, String uuid, Command refreshView) {
 
-        setStyleName( "metadata-Widget" );
+		super();
+//        layout = new Form(new FormConfig() {
+//        	{
+//        		setWidth(250);
+//        		//setHeader(d.name);
+//        		setLabelWidth(75);
+//        		setSurroundWithBox(true);
+//        	}
+//        });
 
         if (!readOnly) {
             Image edit = new ImageButton("images/edit.gif", "Rename this asset");
@@ -66,21 +74,31 @@ public class MetaDataWidget extends FormStyleLayout {
             });
             addHeader( "images/meta_data.png", d.name, edit );
         } else {
-            addHeader( "images/asset_version.png", d.name );
+            addHeader( "images/asset_version.png", d.name, null );
         }
+
         this.uuid = uuid;
         this.data = d;
         this.readOnly = readOnly;
         this.refreshView = refreshView;
+
         loadData(d);
+
+
+
 	}
 
 
-    private void loadData(MetaData d) {
-        this.data = d;
-        addAttribute("Categories:", categories());
-        addRow( new HTML("<hr/>") );
 
+
+
+	private void loadData(MetaData d) {
+        this.data = d;
+        startSection();
+        addAttribute("Categories:", categories());
+        endSection();
+
+        startSection();
         addAttribute("Modified on:", readOnlyDate(data.lastModifiedDate));
         addAttribute("by:", readOnlyText(data.lastContributor));
         addAttribute("Note:", readOnlyText( data.checkinComment ));
@@ -92,8 +110,9 @@ public class MetaDataWidget extends FormStyleLayout {
         addAttribute("Created by:", readOnlyText(data.creator));
         addAttribute("Format:", new HTML( "<b>" + data.format + "</b>" ));
 
+        endSection();
 
-        addRow(new HTML("<hr/>"));
+        startSection();
 
         addAttribute("Package:", packageEditor(data.packageName));
         addAttribute("Subject:", editableText(new FieldBinding() {
@@ -139,13 +158,19 @@ public class MetaDataWidget extends FormStyleLayout {
 
         }, "A short description or code indicating the source of the rule."));
 
+        endSection();
+        startSection();
+
         if (!readOnly) {
             addRow( new VersionBrowser(this.uuid, this.data, refreshView) );
         }
+
+        endSection();
     }
 
 
-    private Widget packageEditor(final String packageName) {
+
+	private Widget packageEditor(final String packageName) {
         if (this.readOnly) {
             return readOnlyText( packageName );
         } else {
@@ -181,8 +206,6 @@ public class MetaDataWidget extends FormStyleLayout {
             }
         } );
 
-        pop.setPopupPosition( source.getParent().getParent().getAbsoluteLeft() - 18,
-                              source.getParent().getParent().getAbsoluteTop() );
         pop.show();
     }
 
@@ -206,7 +229,6 @@ public class MetaDataWidget extends FormStyleLayout {
                                                                           "Moved from : " + pkg,
                                                                           new GenericCallback() {
                                                                               public void onSuccess(Object data) {
-                                                                                  makeDirty();
                                                                                   refreshView.execute();
                                                                                   pop.hide();
                                                                               }
@@ -217,8 +239,7 @@ public class MetaDataWidget extends FormStyleLayout {
             }
 
         });
-        pop.setPopupPosition( source.getParent().getParent().getAbsoluteLeft(),
-                              source.getParent().getParent().getAbsoluteTop() );
+
         pop.show();
     }
 
@@ -257,9 +278,9 @@ public class MetaDataWidget extends FormStyleLayout {
             final TextBox box = new TextBox();
             box.setTitle( toolTip );
             box.setText( bind.getValue() );
+            box.setVisibleLength(10);
             ChangeListener listener = new ChangeListener() {
                 public void onChange(Widget w) {
-                    makeDirty();
                     bind.setValue( box.getText() );
                 }
             };
@@ -284,9 +305,6 @@ public class MetaDataWidget extends FormStyleLayout {
     }
 
 
-    public boolean isDirty() {
-        return (ed.isDirty() || dirtyflag) ;
-    }
 
 
 

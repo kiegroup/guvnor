@@ -1,13 +1,13 @@
 package org.drools.brms.client.modeldriven.ui;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,8 +40,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This represents a top level CE, like an OR, NOT, EXIST etc...
- * Contains a list of FactPatterns. 
- * 
+ * Contains a list of FactPatterns.
+ *
  * @author Michael Neale
  *
  */
@@ -58,7 +58,7 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
         this.completions = completions;
         this.pattern = pattern;
         this.modeller = modeller;
- 
+
         this.layout = new DirtyableFlexTable();
         this.layout.setStyleName( "model-builderInner-Background" );
 
@@ -96,7 +96,7 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
                 showFactTypeSelector( w );
             }
         } );
-        
+
         horiz.add( new Label( HumanReadable.getCEDisplayName( pattern.type ) ) );
         horiz.add( edit );
         horiz.setStyleName( "modeller-composite-Label" );
@@ -115,7 +115,7 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
             box.addItem( facts[i] );
         }
         box.setSelectedIndex( 0 );
-        
+
         final FormStylePopup popup = new FormStylePopup( "images/new_fact.gif",
                                                          "New fact pattern..." );
         popup.addAttribute( "choose fact type",
@@ -128,17 +128,14 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
                 popup.hide();
             }
         } );
-        popup.setStyleName( "ks-popups-Popup" );
 
-        popup.setPopupPosition( w.getAbsoluteLeft() - 400,
-                                w.getAbsoluteTop() );
         popup.show();
     }
 
     public boolean isDirty() {
         return layout.hasDirty();
     }
-    
-    
+
+
 
 }

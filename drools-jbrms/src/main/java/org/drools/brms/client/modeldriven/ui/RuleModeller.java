@@ -150,10 +150,10 @@ public class RuleModeller extends DirtyableComposite {
             }
         });
 
-        pop.setStyleName( "ks-popups-Popup" );
+
 
         pop.addAttribute( "Attribute", list );
-        pop.setPopupPosition( w.getAbsoluteLeft() - 400, w.getAbsoluteTop() );
+
         pop.show();
     }
 
@@ -242,7 +242,6 @@ public class RuleModeller extends DirtyableComposite {
                 }
             }
         });
-        popup.setStyleName( "ks-popups-Popup" );
 
         //
         // The list of top level CEs
@@ -288,8 +287,6 @@ public class RuleModeller extends DirtyableComposite {
             });
             popup.addAttribute( "DSL sentence", dsls );
         }
-
-        popup.setPopupPosition( w.getAbsoluteLeft() - 400, w.getAbsoluteTop() );
         popup.show();
 
     }
@@ -303,7 +300,6 @@ public class RuleModeller extends DirtyableComposite {
     protected void showActionSelector(Widget w) {
         final FormStylePopup popup = new FormStylePopup("images/new_fact.gif", "Add a new action...");
 
-        popup.setStyleName( "ks-popups-Popup" );
 
         //
         // First load up the stuff to do with bound variables or globals
@@ -434,9 +430,6 @@ public class RuleModeller extends DirtyableComposite {
             });
             popup.addAttribute( "DSL sentence", dsls );
         }
-
-
-        popup.setPopupPosition( Window.getClientWidth()/3, Window.getClientHeight()/3 );
         popup.show();
     }
 

@@ -26,28 +26,7 @@
   <name>Drools :: Business Rule Management System</name>
 
   <build>
-    <finalName>drools-jbrms</finalName>
-    <!-- Need Java 5 source enabled -->
-    <pluginManagement>
-      <plugins>
-	    <plugin>
-	      <artifactId>maven-clean-plugin</artifactId>
-	      <configuration>
-	        <filesets>
-	          <fileset>
-	            <directory>./</directory>
-	            <includes>
-	              <include>.gwt-cache</include>
-				  <include>repository.xml</include>
-				  <include>repository</include>				
-	            </includes>
-	            <followSymlinks>false</followSymlinks>
-	          </fileset>
-	        </filesets>
-	      </configuration>
-	    </plugin>
-      </plugins>
-    </pluginManagement>    
+    <finalName>drools-jbrms</finalName>    
   </build>
 
 
@@ -113,6 +92,10 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.gwtext</groupId>
+      <artifactId>gwtext</artifactId>
     </dependency>
     <dependency>
      <groupId>com.thoughtworks.xstream</groupId>

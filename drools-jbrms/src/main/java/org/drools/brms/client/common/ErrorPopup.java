@@ -19,116 +19,119 @@ package org.drools.brms.client.common;
 
 import org.drools.brms.client.rpc.DetailedSerializableException;
 
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.ButtonConfig;
+import com.gwtext.client.widgets.LayoutDialog;
+import com.gwtext.client.widgets.LayoutDialogConfig;
+import com.gwtext.client.widgets.event.ButtonListener;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.Form;
+import com.gwtext.client.widgets.form.FormConfig;
+import com.gwtext.client.widgets.layout.BorderLayout;
+import com.gwtext.client.widgets.layout.ContentPanel;
+import com.gwtext.client.widgets.layout.LayoutRegionConfig;
 
 
 /**
  * Generic error dialog popup.
  */
-public class ErrorPopup extends DialogBox {
+public class ErrorPopup  {
 
     public static ErrorPopup instance = null;
-
-    Label errorMessage = new Label();
-    Panel panel = new HorizontalPanel();
-    Image ok = new ImageButton("images/close.gif");
+    //new Image("images/error_dialog.png")
 
 
-    private ErrorPopup(String message, String longMessage) {
-        super(true);
+    private ErrorPopup(final String message, final String longMessage) {
+
+      //create and configure layout dialog
+        final LayoutDialog dialog = new LayoutDialog(new LayoutDialogConfig() {
+        	{
+        		setTitle("Error");
+        		setModal(true);
+        		setWidth(500);
+        		setHeight((longMessage != null) ? 500 : 150);
+        		setShadow(true);
+        		//setMinHeight(300);
+        		//setMinHeight(300);
+        	}
+        }, new LayoutRegionConfig());
 
 
+        //another way to add button
+        dialog.addButton(new Button("OK", new ButtonConfig() {
+        	{
+        		setText("Cancel");
+        		setButtonListener(new ButtonListenerAdapter() {
+        			public void onClick(Button button, EventObject e) {
+        				dialog.hide();
+        			}
+        		});
+        	}
+        }));
 
-        this.errorMessage.setText( message );
+        //add content to the center region
+        BorderLayout layout = dialog.getLayout();
+        ContentPanel contentPanel = new ContentPanel();
 
-        panel.add( new Image("images/error_dialog.png") );
-        VerticalPanel vert = new VerticalPanel();
-        vert.add( errorMessage );
-        panel.add( vert );
 
-        if (longMessage != null) {
-            addDetail(vert, longMessage);
+        VerticalPanel vp = new VerticalPanel();
+        if (longMessage == null) {
+        	vp.add(new HTML("<image src='images/error_dialog.png'/>&nbsp;<strong><b>" + message +"</b></strong>"));
+        } else {
+        	vp.add(new HTML("<image src='images/error_dialog.png'/>&nbsp;<strong><b>" + message +"</b></strong><hr/>"));
         }
 
-        panel.add( ok );
-        final PopupPanel self = this;
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget arg0) {
-                self.hide();
-            }
-        });
-        this.setWidget( panel );
-        this.setPopupPosition( 40, 40 );
-        //setHeight( "150px" );
-        setStyleName( "rule-error-Popup" );
-    }
+        final SimplePanel detailPanel = new SimplePanel();
+        if (longMessage != null && !"".equals(longMessage)) {
+	        Button showD = new Button("Show detail");
+	        showD.addButtonListener(new ButtonListenerAdapter() {
+				public void onClick(Button button, EventObject e) {
+					detailPanel.clear();
+					detailPanel.add(new HTML("<small>" + longMessage + "</small>"));
 
+				}
+	        });
+	        detailPanel.add(showD);
+        }
+        vp.setWidth("100%");
+        vp.add(detailPanel);
+        contentPanel.add(vp);
 
+        layout.add(contentPanel);
 
-
-
-    /**
-     * Add a detailed report section (which is hidden by default).
-     */
-    private void addDetail(Panel panel,
-                           final String detailedError) {
-        VerticalPanel vert = new VerticalPanel();
-        panel.add( vert );
-        final Button show = new Button("Details");
-        vert.add( show );
-
-        final Label detail = new Label(detailedError);
-        detail.setVisible( false );
-
-
-        vert.add( detail );
-
-        show.addClickListener( new ClickListener() {
-
-            public void onClick(Widget w) {
-                detail.setVisible( true );
-                show.setVisible( false );
-            }
-
-        });
+        dialog.show();
 
     }
 
-    public void setMessage(String message) {
-        errorMessage.setText( message );
-    }
 
 
-    public void hide() {
-        errorMessage.setText( "" );
-        super.hide();
-    }
+
+
 
 
     /** Convenience method to popup the message. */
     public static void showMessage(String message) {
-        ErrorPopup p = new ErrorPopup(message, null);
-        LoadingPopup.close();
-
-        p.show();
+    	new ErrorPopup(message, null);
     }
 
     /**
      * For showing a more detailed report.
      */
     public static void showMessage(DetailedSerializableException exception) {
-        ErrorPopup p = new ErrorPopup(exception.getMessage(), exception.getLongDescription());
+        new ErrorPopup(exception.getMessage(), exception.getLongDescription());
         LoadingPopup.close();
-        p.show();
     }
 
 

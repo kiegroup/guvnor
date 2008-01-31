@@ -18,10 +18,8 @@ package org.drools.brms.client.ruleeditor;
 
 
 
-import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
-import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.common.StatusChangePopup;
 import org.drools.brms.client.rpc.MetaData;
@@ -33,15 +31,17 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Ext;
+import com.gwtext.client.widgets.ButtonConfig;
+import com.gwtext.client.widgets.QuickTipsConfig;
+import com.gwtext.client.widgets.Toolbar;
+import com.gwtext.client.widgets.ToolbarButton;
+import com.gwtext.client.widgets.ToolbarSeparator;
+import com.gwtext.client.widgets.ToolbarTextItem;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 
 /**
  * This contains the widgets used to action a rule asset
@@ -50,21 +50,17 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  */
 public class ActionToolbar extends Composite {
 
-    private FlexTable layout = new FlexTable();
-    private Command closeCommand;
-
+	private Toolbar		toolbar;
     private MetaData      metaData;
     private Command checkinAction;
     private Command archiveAction;
     private Command deleteAction;
     private String uuid;
-    private HTML state;
+    private ToolbarTextItem state;
 
     public ActionToolbar(final RuleAsset asset,
-
                          final Command checkin,
                          final Command archiv,
-                         final Command minimiseMaximise,
                          final Command delete, boolean readOnly) {
 
         this.metaData = asset.metaData;
@@ -72,128 +68,141 @@ public class ActionToolbar extends Composite {
         this.uuid = asset.uuid;
         this.archiveAction = archiv;
         this.deleteAction = delete;
-        this.state = new HTML();
+        this.state = new ToolbarTextItem("Status: ");
+
+
+        toolbar = new Toolbar(Ext.generateId());
+
+
         String status = metaData.status;
 
-        FlexCellFormatter formatter = layout.getFlexCellFormatter();
-        HorizontalPanel saveControls = new HorizontalPanel();
         setState(status);
 
-
-        saveControls.add( state );
-
         if (!readOnly) {
-        controls(
-                  formatter,
-                  saveControls );
-
+        	controls();
         }
 
-        windowControls( minimiseMaximise, formatter );
+        toolbar.addItem(this.state);
 
-        initWidget( layout );
-        setWidth( "100%" );
+        initWidget( toolbar );
     }
 
     /**
      * Sets the visible status display.
      */
     private void setState(String status) {
-        state.setHTML( "Status: <b>[" + status + "]</b>");
+        state.setText("Status: [" + status + "]");
     }
 
-    private void controls(FlexCellFormatter formatter,
-                          HorizontalPanel saveControls) {
-        Image editState = new ImageButton("images/edit.gif");
-        editState.setTitle( "Change status." );
-        editState.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                showStatusChanger(w);
-            }
-
-
-        } );
-        saveControls.add( editState );
-
-
-        layout.setWidget( 0, 0, saveControls );
-        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP );
+    private void controls() {
 
 
 
-        //Image save = new Image("images/save_edit.gif");
-        Button save = new Button("Save changes");
-        save.setTitle( "Check in changes." );
-        save.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                doCheckinConfirm(w);
-            }
-        });
+        toolbar.addButton( new ToolbarButton(new ButtonConfig() {
+	        	{
+	        		setText("Save changes");
+	        		setTooltip(getTip("Commit any changes for this asset."));
+	        		setButtonListener(new ButtonListenerAdapter() {
+	        			public void onClick(
+	        					com.gwtext.client.widgets.Button button,
+	        					EventObject e) {
+	                        	doCheckinConfirm(button);
+        				}
+	        			});
+	        		}
+	        	})
+	        );
 
-        saveControls.add( save );
+        toolbar.addButton( new ToolbarButton(new ButtonConfig() {
+        	{
+        		setText("Copy");
+        		setTooltip("Copy this asset.");
+        		setButtonListener(new ButtonListenerAdapter() {
+        			public void onClick(
+        					com.gwtext.client.widgets.Button button,
+        					EventObject e) {
+                        	doCopyDialog(button);
+    				}
+	    			});
+	    		}
+	    	})
+	    );
 
-        Button copy = new Button("Copy");
-        copy.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                doCopyDialog(w);
-            }
-        } );
+        toolbar.addButton( new ToolbarButton(new ButtonConfig() {
+        	{
+        		setText("Archive");
+        		setTooltip(getTip("Archive this asset. This will not permanently delete it."));
+        		setButtonListener(new ButtonListenerAdapter() {
+        			public void onClick(
+        					com.gwtext.client.widgets.Button button,
+        					EventObject e) {
+		                        if (Window.confirm( "Are you sure you want to archive this item?" )) {
+		                            metaData.checkinComment = "Archived Item on " + new java.util.Date().toString();
+		                            archiveAction.execute();
+		                        }
+    				}
+	    			});
+	    		}
+	    	})
+	    );
 
-        saveControls.add( copy );
-
-        Button archive = new Button("Archive");
-        archive.addClickListener(new ClickListener() {
-            public void onClick(Widget w) {
-                if (Window.confirm( "Are you sure you want to archive this item?" )) {
-                    metaData.checkinComment = "Archived Item on " + new java.util.Date().toString();
-                    archiveAction.execute();
-                }
-            }
-        });
-        saveControls.add(archive);
 
         if (this.metaData.versionNumber == 0) {
-        Button delete = new Button( "Delete" );
-            delete.addClickListener( new ClickListener() {
-
-                public void onClick(Widget w) {
-                    if (Window.confirm( "Are you sure you want to permanently delete this (unversioned) item?" ) ) {
-                        deleteAction.execute();
-                    }
-                }
-            } );
-            saveControls.add( delete );
+            toolbar.addButton( new ToolbarButton(new ButtonConfig() {
+            	{
+            		setText("Delete");
+            		setTooltip(getTip("Permanently delete this asset. This will only be shown before the asset is checked in."));
+            		setButtonListener(new ButtonListenerAdapter() {
+            			public void onClick(
+            					com.gwtext.client.widgets.Button button,
+            					EventObject e) {
+		                            if (Window.confirm( "Are you sure you want to permanently delete this (unversioned) item?" ) ) {
+		                                deleteAction.execute();
+		                            }
+        				}
+    	    			});
+    	    		}
+    	    	})
+    	    );
         }
 
-    }
 
-    private void windowControls(final Command minimiseMaximise,
-                                FlexCellFormatter formatter) {
-        HorizontalPanel windowControls = new HorizontalPanel();
+        toolbar.addFill();
 
-        Image maxMinImage = new ImageButton("images/max_min.gif");
-        maxMinImage.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                minimiseMaximise.execute();
-            }
-        });
+        toolbar.addSeparator();
 
-        windowControls.add( maxMinImage );
 
-        Image closeImg = new ImageButton("images/close.gif");
-        closeImg.setTitle( "Close." );
-        closeImg.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                closeCommand.execute(  );
-            }
-        });
+        toolbar.addButton( new ToolbarButton(new ButtonConfig() {
+        	{
+        		setText("Change state");
+        		setTooltip(getTip("Change the status of this asset."));
+        		setButtonListener(new ButtonListenerAdapter() {
+        			public void onClick(
+        					com.gwtext.client.widgets.Button button,
+        					EventObject e) {
+        				showStatusChanger(button);
+    				}
+	    			});
+	    		}
 
-        windowControls.add( closeImg );
 
-        layout.setWidget( 0, 1, windowControls );
-        formatter.setAlignment( 0, 1, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_TOP );
+	    	})
+	    );
+
+
 
     }
+
+	private QuickTipsConfig getTip(final String t) {
+		return new QuickTipsConfig() {
+			{
+				setText(t);
+			}
+
+		};
+	}
+
+
 
     protected void doCopyDialog(Widget w) {
         final FormStylePopup form = new FormStylePopup("images/rule_asset.gif", "Copy this item");
@@ -222,7 +231,7 @@ public class ActionToolbar extends Composite {
         } );
         form.addAttribute( "", ok );
 
-		form.setPopupPosition((DirtyableComposite.getWidth() - form.getOffsetWidth()) / 2, 100);
+		//form.setPopupPosition((DirtyableComposite.getWidth() - form.getOffsetWidth()) / 2, 100);
 		form.show();
 
     }
@@ -262,11 +271,6 @@ public class ActionToolbar extends Composite {
         pop.show();
     }
 
-    /**
-     * This needs to be set to allow the current viewer to be closed.
-     */
-    public void setCloseCommand(Command c) {
-        this.closeCommand = c;
-    }
+
 
 }

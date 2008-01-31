@@ -278,6 +278,45 @@ public class FileManagerUtilsTest extends TestCase {
 
 	}
 
+	public void XXtestHeadOOME() throws Exception {
+		RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper
+				.getSession());
+		PackageItem pkg = repo.createPackage("testHeadOOME", "");
+		pkg.updateHeader("import java.util.List");
+		pkg.updateCompiledPackage(new ByteArrayInputStream("foo".getBytes()));
+		pkg.checkin("");
+		repo.logout();
+
+		int iterations = 0;
+
+		while(true) {
+			iterations++;
+			FileManagerUtils fm = new FileManagerUtils();
+			fm.repository = new RulesRepository(TestEnvironmentSessionHelper
+					.getSession());
+
+			if (iterations % 50 == 0) {
+				updatePackage("testHeadOOME");
+			}
+
+			//fm.repository = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+			fm.getLastModified("testHeadOOME", "LATEST");
+			fm.repository.logout();
+			System.err.println("Number " + iterations + " free mem : " + Runtime.getRuntime().freeMemory());
+		}
+
+	}
+
+	private void updatePackage(String nm) throws Exception {
+		System.err.println("---> Updating the package ");
+		RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+		PackageItem pkg = repo.loadPackage(nm);
+		pkg.updateDescription(System.currentTimeMillis() + "");
+		pkg.checkin("a change");
+		repo.logout();
+
+	}
+
 	private List iteratorToList(Iterator assets) {
 		List<AssetItem> list = new ArrayList<AssetItem>();
 		for (Iterator iter = assets; iter.hasNext();) {

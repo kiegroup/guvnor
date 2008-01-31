@@ -11,8 +11,10 @@ import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.ItemExistsException;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
@@ -59,9 +61,7 @@ import org.apache.log4j.Logger;
  * system, and if there is sufficient demand, we can modify our versioning
  * scheme to be better aligned with JCR's versioning abilities.
  *
- * @author Ben Truitt
- * @author Fernando Meyer
- * @author Michael Neale
+ * @author Ben Truitt - with contributions from Michael Neale and Fernando Meyer over time.
  */
 public class RulesRepository {
 
@@ -520,7 +520,8 @@ public class RulesRepository {
 
         long oldVersionNumber = headVersion.getVersionNumber();
 
-        Version v = (Version) versionToRestore.getNode();
+        Object vToRestore = versionToRestore.getNode();
+        Version v = (Version) vToRestore;
         try {
             headVersion.getNode().restore( v, true );
             AssetItem newHead = loadAssetByUUID( headVersion.getUUID() );
@@ -680,42 +681,63 @@ public class RulesRepository {
      * provided category. Only the latest versions of each RuleItem will be
      * returned (you will have to delve into the rules deepest darkest history
      * yourself... mahahahaha).
+     *
+     * Pass in startRow of 0 to start at zero, numRowsToReturn can be set to -1 should you want it all.
      */
-    public List findAssetsByCategory(String categoryTag, boolean seekArchivedAsset) throws RulesRepositoryException {
-
+    public AssetPageList findAssetsByCategory(String categoryTag, boolean seekArchivedAsset, int skip, int numRowsToReturn) throws RulesRepositoryException {
         CategoryItem item = this.loadCategory( categoryTag );
-        List results = new ArrayList();
-        try {
-            PropertyIterator it = item.getNode().getReferences();
 
-            while ( it.hasNext() ) {
-                Property ruleLink = (Property) it.next();
-                Node parentNode = ruleLink.getParent();
-                if ( isNotSnapshot( parentNode ) && parentNode.getPrimaryNodeType().getName().equals( AssetItem.RULE_NODE_TYPE_NAME ) ) {
-                    if ( seekArchivedAsset || !parentNode.getProperty( AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG ).getBoolean() ) results.add( new AssetItem( this,
-                                                                                                                                                            parentNode ) );
-                }
-            }
-            return results;
+        try {
+            return loadLinkedAssets(seekArchivedAsset, skip, numRowsToReturn,
+					item.getNode());
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
     }
 
     /**
-     * TODO: Comment
+     * Finds the AssetItem's linked to the requested state.
+     * Similar to finding by category.
      */
-    public List findAssetsByCategory(String categoryTag) throws RulesRepositoryException {
-        return this.findAssetsByCategory( categoryTag, false );
+    public AssetPageList findAssetsByState(String stateName, boolean seekArchivedAsset, int skip, int numRowsToReturn) throws RulesRepositoryException {
+    	StateItem item = this.getState(stateName);
+        try {
+            return loadLinkedAssets(seekArchivedAsset, skip, numRowsToReturn,
+					item.getNode());
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
+        }
     }
 
-    /**
-     * TODO: comment
-     * @return
-     * @throws IOException
-     * @throws PathNotFoundException
-     * @throws RepositoryException
-     */
+	private AssetPageList loadLinkedAssets(boolean seekArchivedAsset, int skip,
+			int numRowsToReturn, Node n)
+			throws RepositoryException {
+		int rows = 0;
+        List results = new ArrayList();
+
+		PropertyIterator it = n.getReferences();
+		if (skip > 0) it.skip(skip);
+
+		while ( it.hasNext() && (numRowsToReturn == -1 || rows < numRowsToReturn)) {
+		    Property ruleLink = (Property) it.next();
+		    Node parentNode = ruleLink.getParent();
+		    if ( isNotSnapshot( parentNode ) && parentNode.getPrimaryNodeType().getName().equals( AssetItem.RULE_NODE_TYPE_NAME ) ) {
+		        if ( seekArchivedAsset || !parentNode.getProperty( AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG ).getBoolean() )
+		        	{
+		        		results.add( new AssetItem( this, parentNode ) );
+		        		rows++;
+		        	}
+		    }
+		}
+
+		return new AssetPageList(results, it.getSize(), it.hasNext());
+	}
+
+    public AssetPageList findAssetsByCategory(String categoryTag, int skip, int numRowsToReturn) throws RulesRepositoryException {
+        return this.findAssetsByCategory( categoryTag, false, skip, numRowsToReturn );
+    }
+
+
     public byte[] exportRulesRepository() throws IOException,
                                          PathNotFoundException,
                                          RepositoryException {

@@ -9,10 +9,10 @@ import javax.jcr.NodeIterator;
  * This iterates over nodes and produces RuleItem's.
  * Also allows "skipping" of results to jump to certain items,
  * as per JCRs "skip".
- * 
+ *
  * JCR iterators are/can be lazy, so this makes the most of it for large
  * numbers of assets.
- * 
+ *
  * @author Michael Neale
  */
 public class AssetItemIterator
@@ -46,6 +46,14 @@ public class AssetItemIterator
      */
     public void skip(int i) {
         it.skip( i );
+    }
+
+    /**
+     * @return the size of the underlying iterator's potential data set.
+     * May be -1 if not known.
+     */
+    public long getSize() {
+    	return it.getSize();
     }
 
 }

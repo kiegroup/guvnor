@@ -186,14 +186,16 @@ public class ServiceImplementationTest extends TestCase {
 				"testRuleTableLoad", "rule");
 
 		TableDataResult result = impl
-				.loadRuleListForCategories("testRuleTableLoad");
+				.loadRuleListForCategories("testRuleTableLoad", 0, -1);
 		assertEquals(2, result.data.length);
 
 		String key = result.data[0].id;
 		assertFalse(key.startsWith("testRule"));
 
 		assertEquals(result.data[0].format, "rule");
-		assertTrue(result.data[0].values[0].startsWith("rule"));
+
+
+		assertTrue(result.data[0].values[0].startsWith("testRuleTableLoad"));
 	}
 
 	public void testDateFormatting() throws Exception {
@@ -215,8 +217,10 @@ public class ServiceImplementationTest extends TestCase {
 				"testLoadRuleAsset", "testLoadRuleAsset", "drl");
 
 		TableDataResult res = impl
-				.loadRuleListForCategories("testLoadRuleAsset");
+				.loadRuleListForCategories("testLoadRuleAsset", 0, -1);
 		assertEquals(1, res.data.length);
+		assertEquals(1, res.total);
+		assertFalse(res.hasNext);
 
 		TableDataRow row = res.data[0];
 		String uuid = row.id;
@@ -506,31 +510,35 @@ public class ServiceImplementationTest extends TestCase {
 				"testListByFormat", "testListByFormat");
 
 		TableDataResult res = impl.listAssets(pkgUUID, arr("testListByFormat"),
-				-1, 0);
+				0, -1);
 		assertEquals(4, res.data.length);
 		assertEquals(uuid, res.data[0].id);
 		assertEquals("testListByFormat", res.data[0].values[0]);
 
-		res = impl.listAssets(pkgUUID, arr("testListByFormat"), 4, 0);
+		res = impl.listAssets(pkgUUID, arr("testListByFormat"), 0, 4);
 		assertEquals(4, res.data.length);
 
-		res = impl.listAssets(pkgUUID, arr("testListByFormat"), 2, 0);
+		res = impl.listAssets(pkgUUID, arr("testListByFormat"), 0, 2);
 		assertEquals(2, res.data.length);
 		assertEquals(uuid, res.data[0].id);
+		assertEquals(4, res.total);
+		assertTrue(res.hasNext);
 
 		res = impl.listAssets(pkgUUID, arr("testListByFormat"), 2, 2);
 		assertEquals(2, res.data.length);
 		assertEquals(uuid3, res.data[0].id);
+		assertEquals(4, res.total);
+		assertFalse(res.hasNext);
 
 		uuid = impl.createNewRule("testListByFormat5", "x", cat,
 				"testListByFormat", "otherFormat");
 
-		res = impl.listAssets(pkgUUID, arr("otherFormat"), 40, 0);
+		res = impl.listAssets(pkgUUID, arr("otherFormat"), 0, 40);
 		assertEquals(1, res.data.length);
 		assertEquals(uuid, res.data[0].id);
 
 		res = impl.listAssets(pkgUUID, new String[] { "otherFormat",
-				"testListByFormat" }, 40, 0);
+				"testListByFormat" }, 0, 40);
 		assertEquals(5, res.data.length);
 
 		TableDataResult result = impl.quickFindAsset("testListByForma", 5,
@@ -619,15 +627,15 @@ public class ServiceImplementationTest extends TestCase {
 				"sourcePackage", "drl");
 
 		TableDataResult res = impl.listAssets(destPkgId,
-				new String[] { "drl" }, 2, 0);
+				new String[] { "drl" }, 0, 2);
 		assertEquals(0, res.data.length);
 
 		impl.changeAssetPackage(uuid, "targetPackage", "yeah");
-		res = impl.listAssets(destPkgId, new String[] { "drl" }, 2, 0);
+		res = impl.listAssets(destPkgId, new String[] { "drl" }, 0, 2);
 
 		assertEquals(1, res.data.length);
 
-		res = impl.listAssets(sourcePkgId, new String[] { "drl" }, 2, 0);
+		res = impl.listAssets(sourcePkgId, new String[] { "drl" }, 0, 2);
 
 		assertEquals(0, res.data.length);
 
@@ -773,12 +781,12 @@ public class ServiceImplementationTest extends TestCase {
 				"testRemoveAsset", "testRemoveAsset");
 
 		TableDataResult res = impl.listAssets(pkgUUID, arr("testRemoveAsset"),
-				-1, 0);
+				0, -1);
 		assertEquals(4, res.data.length);
 
 		impl.removeAsset(uuid4);
 
-		res = impl.listAssets(pkgUUID, arr("testRemoveAsset"), -1, 0);
+		res = impl.listAssets(pkgUUID, arr("testRemoveAsset"), 0, -1);
 		assertEquals(3, res.data.length);
 	}
 
@@ -800,17 +808,19 @@ public class ServiceImplementationTest extends TestCase {
 				"testArchiveAsset", "testArchiveAsset");
 
 		TableDataResult res = impl.listAssets(pkgUUID, arr("testArchiveAsset"),
-				-1, 0);
+				0, -1);
 		assertEquals(4, res.data.length);
+		assertEquals(4, res.total);
+		assertFalse(res.hasNext);
 
 		impl.archiveAsset(uuid4, true);
 
-		res = impl.listAssets(pkgUUID, arr("testArchiveAsset"), -1, 0);
+		res = impl.listAssets(pkgUUID, arr("testArchiveAsset"), 0, -1);
 		assertEquals(3, res.data.length);
 
 		impl.archiveAsset(uuid4, false);
 
-		res = impl.listAssets(pkgUUID, arr("testArchiveAsset"), -1, 0);
+		res = impl.listAssets(pkgUUID, arr("testArchiveAsset"), 0, -1);
 		assertEquals(4, res.data.length);
 
 	}
@@ -1687,6 +1697,25 @@ public class ServiceImplementationTest extends TestCase {
 
 		assertNotNull(report.factUsages[0].fields[0].rules[0]);
 
+	}
+
+	public void testListFactTypesAvailableInPackage() throws Exception {
+		ServiceImplementation impl = getService();
+		RulesRepository repo = impl.repository;
+
+		PackageItem pkg = repo.createPackage("testAvailableTypes", "");
+		AssetItem model = pkg.addAsset("MyModel", "");
+		model.updateFormat(AssetFormats.MODEL);
+		model.updateBinaryContentAttachment(this.getClass()
+				.getResourceAsStream("/billasurf.jar"));
+		model.checkin("");
+		repo.save();
+
+		String[] s = impl.listTypesInPackage(pkg.getUUID());
+		assertNotNull(s);
+		assertEquals(2, s.length);
+		assertEquals("com.billasurf.Person", s[0]);
+		assertEquals("com.billasurf.Board", s[1]);
 	}
 
 

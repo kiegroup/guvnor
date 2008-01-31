@@ -18,7 +18,6 @@ package org.drools.brms.client.ruleeditor;
 
 
 import org.drools.brms.client.common.DirtyableComposite;
-import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
@@ -27,16 +26,18 @@ import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
 
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Ext;
+import com.gwtext.client.widgets.ButtonConfig;
+import com.gwtext.client.widgets.Toolbar;
+import com.gwtext.client.widgets.ToolbarButton;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 
 /**
  * This widget wraps a rule asset widget, and provides actions to validate and view source.
@@ -45,22 +46,17 @@ import com.google.gwt.user.client.ui.Widget;
 public class RuleValidatorWrapper extends DirtyableComposite {
 
     private RuleAsset asset;
-    private DirtyableFlexTable layout;
-
-    public boolean isDirty() {
-        return layout.hasDirty();
-    }
+    private VerticalPanel layout = new VerticalPanel();
+	private Widget editor;
 
     public RuleValidatorWrapper(Widget editor, RuleAsset asset) {
         this.asset = asset;
+        this.editor = editor;
 
-        layout = new DirtyableFlexTable();
-        layout.setStyleName( "asset-editor-Layout" );
-        layout.setWidget( 0, 0, editor );
-        if (!asset.isreadonly)
-            layout.setWidget( 1, 0, validatorActions() );
-        layout.getCellFormatter().setAlignment( 1, 0, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_TOP );
-
+        layout.add(editor);
+        if (!asset.isreadonly) {
+        	validatorActions();
+        }
 
         layout.setWidth("100%");
         layout.setHeight( "100%" );
@@ -68,29 +64,39 @@ public class RuleValidatorWrapper extends DirtyableComposite {
         initWidget( layout );
     }
 
-    private Widget validatorActions() {
-        HorizontalPanel horiz = new HorizontalPanel();
-        Button viewSource = new Button("View source");
-        horiz.add( viewSource );
+    private void validatorActions() {
+        Toolbar tb = new Toolbar(Ext.generateId());
+        layout.setCellHeight(editor, "95%");
+        layout.add(tb);
 
-        Button validate = new Button("Validate");
-        horiz.add( validate );
+        tb.addButton(new ToolbarButton(new ButtonConfig() {
+        	{
+        		setText("View source");
+        		setButtonListener(new ButtonListenerAdapter()  {
+        			public void onClick(
+        					com.gwtext.client.widgets.Button button,
+        					EventObject e) {
+                        doViewsource();
+        			}
+        		});
+        	}
+        }));
 
-        viewSource.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                doViewsource();
-            }
+        tb.addSeparator();
 
-        });
+        tb.addButton(new ToolbarButton(new ButtonConfig() {
+        	{
+        		setText("Validate");
+        		setButtonListener(new ButtonListenerAdapter()  {
+        			public void onClick(
+        					com.gwtext.client.widgets.Button button,
+        					EventObject e) {
+        				doValidate();
+        			}
+        		});
+        	}
+        }));
 
-        validate.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                doValidate();
-            }
-        });
-
-        horiz.setStyleName( "asset-validator-Buttons" );
-        return horiz;
     }
 
     private void doValidate() {
@@ -153,7 +159,6 @@ public class RuleValidatorWrapper extends DirtyableComposite {
 //            pop.setHeight( "50%" );
 
         }
-        pop.setPopupPosition( 100, 100 );
         pop.show();
         LoadingPopup.close();
     }

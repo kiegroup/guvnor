@@ -339,7 +339,6 @@ public class ConstraintValueEditor extends DirtyableComposite {
         form.addAttribute( "A formula:", widgets( formula, new InfoPopup( "A formula",
                                                                           "A formula is an expression that calculates and returns a value " + ". That value is used to enforce the constraint." ) ) );
 
-        form.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
         form.show();
     }
 

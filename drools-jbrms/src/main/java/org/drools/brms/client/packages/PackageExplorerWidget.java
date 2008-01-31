@@ -212,8 +212,6 @@ public class PackageExplorerWidget extends DirtyableComposite {
                                                          "Create a new rule asset",
                                                          currentlySelectedPackage );
 
-                pop.setPopupPosition( (DirtyableComposite.getWidth() - pop.getOffsetWidth()) / 2,
-                                      100 );
                 pop.show();
             }
 
@@ -324,8 +322,6 @@ public class PackageExplorerWidget extends DirtyableComposite {
                 refreshTreeView();
             }
         } );
-        pop.setPopupPosition( (DirtyableComposite.getWidth() - pop.getOffsetWidth()) / 2,
-                              100 );
         pop.show();
     }
 
@@ -569,8 +565,6 @@ public class PackageExplorerWidget extends DirtyableComposite {
                                                  title,
                                                  currentlySelectedPackage );
 
-        pop.setPopupPosition( (DirtyableComposite.getWidth() - pop.getOffsetWidth()) / 3,
-                              100 );
         pop.show();
     }
 

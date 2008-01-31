@@ -14,26 +14,6 @@
 
   <build>
     <finalName>drools-repository</finalName>
-    <pluginManagement>
-      <plugins>
-	    <plugin>
-	      <artifactId>maven-clean-plugin</artifactId>
-	      <configuration>
-	        <filesets>
-	          <fileset>
-	            <directory>./</directory>
-	            <includes>
-	              <include>repository**/*</include>
-				  <include>repository*.xml</include>
-				  <include>repository</include>				
-	            </includes>
-	            <followSymlinks>false</followSymlinks>
-	          </fileset>
-	        </filesets>
-	      </configuration>
-	    </plugin>
-      </plugins>
-    </pluginManagement>       
   </build>
 
   <repositories>

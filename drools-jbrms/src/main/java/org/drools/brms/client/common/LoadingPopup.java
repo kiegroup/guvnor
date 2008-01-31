@@ -17,6 +17,7 @@ package org.drools.brms.client.common;
 
 
 
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -24,33 +25,21 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.widgets.MessageBox;
+import com.gwtext.client.widgets.MessageBoxConfig;
 
 
 /**
  * Generic "busy" dialog popup.
  * This is a lazy singleton, only really need one to be shown at time.
  */
-public class LoadingPopup extends PopupPanel {
+public class LoadingPopup  {
 
     public static LoadingPopup instance = null;
 
-    Label errorMessage = new Label();
-    Panel panel = new HorizontalPanel();
-    Image ok = new Image("images/close.gif");
 
-    public LoadingPopup() {
-        super(false);
-        panel.add( errorMessage );
-        panel.add( ok );
-        panel.add( new Image("images/searching.gif") );
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget arg0) {
-                hide();
-            }
-        });
-        this.add( panel );
-        this.setPopupPosition( 0, 0 );
-        setStyleName( "loading-Popup" );
+
+    private LoadingPopup() {
     }
 
 
@@ -58,14 +47,10 @@ public class LoadingPopup extends PopupPanel {
      * Close the single instance of this dialog...
      */
     public static void close() {
-        getInstance().hide();
+        MessageBox.hide();
     }
 
 
-    public void hide() {
-        errorMessage.setText( "" );
-        super.hide();
-    }
 
     public static LoadingPopup getInstance() {
         if (instance == null) {
@@ -75,11 +60,16 @@ public class LoadingPopup extends PopupPanel {
     }
 
     /** Convenience method to popup the message. */
-    public static void showMessage(String message) {
-        LoadingPopup p = getInstance();
+    public static void showMessage(final String message) {
+    	MessageBox.show(new MessageBoxConfig() {
+    		{
 
-        p.errorMessage.setText( message );
-        p.show();
+    			setTitle("Please wait...");
+
+    			setMsg(message);
+    			setClosable(true);
+    		}
+    	});
     }
 
 

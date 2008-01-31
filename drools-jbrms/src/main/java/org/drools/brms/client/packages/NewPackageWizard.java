@@ -122,7 +122,6 @@ public class NewPackageWizard extends FormStylePopup {
 
         newPackageLayout.addAttribute( "", create );
 
-        setStyleName( "ks-popups-Popup" );
 
 
 

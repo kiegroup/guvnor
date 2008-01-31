@@ -59,7 +59,7 @@ public class ModelContentHandler extends ContentHandler {
 			while ((entry = jis.getNextJarEntry()) != null) {
 				if (!entry.isDirectory()) {
 					if (entry.getName().endsWith(".class")) {
-						 buf.append("import " + entry.getName().replace(".class", "").replace("/", "."));
+						 buf.append("import " + convertPathToName(entry.getName()));
 						 buf.append("\n");
 					}
 				}
@@ -70,6 +70,10 @@ public class ModelContentHandler extends ContentHandler {
 			pkg.checkin("Imports setup automatically on model import.");
 
 		}
+	}
+
+	public static String convertPathToName(String name) {
+		return name.replace(".class", "").replace("/", ".");
 	}
 
 }

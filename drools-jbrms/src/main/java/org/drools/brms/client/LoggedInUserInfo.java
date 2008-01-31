@@ -18,12 +18,10 @@ package org.drools.brms.client;
 
 
 
-import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.UserSecurityContext;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -38,22 +36,17 @@ public class LoggedInUserInfo extends Composite{
 
 
     public LoggedInUserInfo() {
-
         widgetcontent = new HTML();
         initWidget( widgetcontent );
     }
 
     public void setUserName(String userName) {
         StringBuffer content = new StringBuffer();
-
-
-
-        content.append( "<div id='user_info'>" );
-        content.append( "Welcome: &nbsp;" + userName );
-        content.append( "&nbsp;&nbsp;&nbsp;<a href='logout.jsp'>[Sign Out]</a>" );
+        content.append( "<div id='user_info' class='headerBarblue'>" );
+        content.append( "<small>Welcome: &nbsp;" + userName );
+        content.append( "&nbsp;&nbsp;&nbsp;<a href='logout.jsp'>[Sign Out]</a></small>" );
         content.append( "</div>" );
         widgetcontent.setHTML( content.toString() );
-
 
         //we have the timer to keep the session alive.
         Timer timer = new Timer() {

@@ -1,4 +1,5 @@
 package org.drools.brms.client;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,49 +16,73 @@ package org.drools.brms.client;
  * limitations under the License.
  */
 
-
-
 import org.drools.brms.client.admin.ArchivedAssetManager;
 import org.drools.brms.client.admin.BackupManager;
 import org.drools.brms.client.admin.CategoryManager;
 import org.drools.brms.client.admin.StateManager;
 
-import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.gwtext.client.widgets.TabPanel;
+import com.gwtext.client.widgets.TabPanelItem;
+
+//import com.google.gwt.user.client.ui.TabPanel;
 
 /**
  * This feature contains the administrative functions of the BRMS.
  */
 public class AdminFeature extends JBRMSFeature {
 
-  private TabPanel tab;
+  //  private TabPanel tab;
 
-  public AdminFeature() {
-      tab = new TabPanel();
-      tab.setWidth( "100%" );
-      tab.setHeight( "100%" );
+    public AdminFeature() {
+        final TabPanel tp = new TabPanel( "tab-1" );
+        tp.setWidth( "100%" );
+        tp.setHeight( "100%" );
 
-      tab.add( new CategoryManager(), "<img src='images/category_small.gif'/>Manage categories", true );
-      tab.add( new StateManager(),  "<img src='images/status_small.gif'/>Manage states", true );
-      tab.add( new ArchivedAssetManager(), "<img src='images/backup_small.gif'/>Manage Archived Assets", true );
-      tab.add( new BackupManager(), "<img src='images/backup_small.gif'/>Import Export", true );
+        TabPanelItem tpCategory = tp.addTab( "tpi1", "<img src='images/category_small.gif'/>Manage categories", false );
+        TabPanelItem tpStateManager = tp.addTab( "tpi2", "<img src='images/status_small.gif'/>Manage states", false );
+        TabPanelItem tpArchivedAssetManager = tp.addTab( "tpi3", "<img src='images/backup_small.gif'/>Manage Archived Assets", false );
+        TabPanelItem tpBackupManager = tp.addTab( "tpi4", "<img src='images/backup_small.gif'/>Import Export", false );
 
-      tab.selectTab( 0 );
+        VerticalPanel vp1 = new VerticalPanel();
+        VerticalPanel vp2 = new VerticalPanel();
+        VerticalPanel vp3 = new VerticalPanel();
+        VerticalPanel vp4 = new VerticalPanel();
 
-      initWidget( tab );
+        vp1.add( new CategoryManager() );
+        vp1.setSpacing( 15 );
+        vp2.add( new StateManager() );
+        vp2.setSpacing( 15 );
+        vp3.add( new ArchivedAssetManager() );
+        vp3.setSpacing( 15 );
+        vp4.add( new BackupManager() );
+        vp4.setSpacing( 15 );
+        
+        tpCategory.setContent( vp1 );
+        tpStateManager.setContent( vp2 );
+        tpArchivedAssetManager.setContent( vp3 );
+        tpBackupManager.setContent( vp4 );
+        
+        tp.activate( 0 );
 
-  }
-
-  public static ComponentInfo init() {
-    return new ComponentInfo("Admin",
-      "Administer the repository") {
-      public JBRMSFeature createInstance() {
-        return new AdminFeature();
-      }
-
-    };
-  }
+        initWidget( tp );
+        
 
 
-  public void onShow() {
-  }
+    //  initWidget( tab );
+
+    }
+
+    public static ComponentInfo init() {
+        return new ComponentInfo( "Admin",
+                                  "Administer the repository" ) {
+            public JBRMSFeature createInstance() {
+                return new AdminFeature();
+            }
+
+        };
+    }
+
+    public void onShow() {
+    }
 }

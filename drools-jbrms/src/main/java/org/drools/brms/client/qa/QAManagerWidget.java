@@ -195,8 +195,7 @@ public class QAManagerWidget extends Composite {
 			}
 		}, false, format, title, currentlySelectedPackage);
 
-		pop.setPopupPosition((DirtyableComposite.getWidth() - pop
-				.getOffsetWidth()) / 3, 100);
+
 		pop.show();
 	}
 

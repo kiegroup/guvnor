@@ -47,7 +47,6 @@ public class ArchivedAssetManager extends Composite {
             	TabPanel tab = new TabPanel();
             	pop.addRow(tab);
             	EditorLauncher.showLoadEditor( new HashMap(), tab, key, true );
-            	pop.setPopupPosition(20, 20);
             	pop.show();
             }
         }, AssetItemListViewer.ARCHIVED_RULE_LIST_TABLE_ID );

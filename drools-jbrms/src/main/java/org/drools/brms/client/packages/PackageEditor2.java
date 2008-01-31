@@ -17,90 +17,108 @@ package org.drools.brms.client.packages;
 
 
 
-import org.drools.brms.client.common.FormStyleLayout;
+import java.util.Date;
+
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.LoadingPopup;
+import org.drools.brms.client.common.PrettyFormLayout;
 import org.drools.brms.client.common.StatusChangePopup;
 import org.drools.brms.client.common.ValidationMessageWidget;
-import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.ValidatedResponse;
+import org.drools.brms.client.rulelist.EditItemEvent;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.data.SimpleStore;
-import com.gwtext.client.widgets.form.ContainerConfig;
-import com.gwtext.client.widgets.form.Field;
-import com.gwtext.client.widgets.form.Form;
-import com.gwtext.client.widgets.form.FormConfig;
-import com.gwtext.client.widgets.form.TextField;
-import com.gwtext.client.widgets.form.TextFieldConfig;
-import com.gwtext.client.widgets.form.event.FieldListener;
-import com.gwtext.client.widgets.form.event.FormListener;
-import com.gwtext.client.widgets.grid.ColumnConfig;
-import com.gwtext.client.widgets.grid.ColumnModel;
-import com.gwtext.client.widgets.grid.Grid;
-import com.gwtext.client.widgets.grid.event.GridRowListener;
 
 /**
  * This is the package editor and viewer for package configuration.
  *
  * @author Michael Neale
  */
-public class PackageEditor extends FormStyleLayout {
+public class PackageEditor2 extends PrettyFormLayout {
 
 
-    private Command dirtyCommand;
-    private Command cleanCommand;
 
     private PackageConfigData conf;
     private HTML status;
     protected ValidatedResponse previousResponse;
-    private Command refreshCommand;
+	private Command close;
+	private Command refreshPackageList;
+	private EditItemEvent editEvent;
 
-    public PackageEditor(PackageConfigData data, Command dirtyCommand, Command cleanCommand, Command refreshCommand) {
+    public PackageEditor2(PackageConfigData data, Command close, Command refreshPackageList, EditItemEvent editEvent) {
         this.conf = data;
-        this.dirtyCommand = dirtyCommand;
-        this.cleanCommand = cleanCommand;
-        this.refreshCommand = refreshCommand;
+        this.close = close;
+        this.refreshPackageList = refreshPackageList;
+        this.editEvent = editEvent;
 
-        setStyleName( "package-Editor" );
+        //setStyleName( "package-Editor" );
         setWidth( "100%" );
         refreshWidgets();
     }
 
     private void refreshWidgets() {
         clear();
-        //addHeader( "images/package_large.png", this.conf.name );
 
+        startSection("Package name: [" + conf.name + "]");
+
+
+        FlexTable headerWidgets = new FlexTable();
+        headerWidgets.setWidget(0, 0, new HTML("<b>Package name:</b>"));
+        headerWidgets.setWidget(0, 1, new Label(this.conf.name));
+        if (!conf.isSnapshot) {
+
+        	//headerWidgets.setWidget(1, 1, modifyWidgets() );
+        	addAttribute("Modify:", modifyWidgets());
+        }
+
+        endSection();
+
+        //addHeader( "images/package_large.png", headerWidgets );
+
+        startSection("Configuration");
 
         addRow( warnings() );
-
+        addAttribute( "Configuration:", header() );
         addAttribute( "Description:", description() );
-        addAttribute( "Header:", header() );
-        //addAttribute( "External repository sync URI:", externalURI() );
-        addRow(new HTML("<hr/>"));
-        addAttribute( "Last modified:", new Label(this.conf.lastModified.toLocaleString())  );
-        addAttribute( "Last contributor:", new Label(this.conf.lasContributor));
+        if (!conf.isSnapshot) {
+            Button save = new Button("Save and validate configuration");
+            save.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                    doSaveAction(null);
+                }
+            } );
+        	addAttribute("", save);
+        }
 
-        addRow(new HTML("<hr/>"));
+        endSection();
+
+        startSection("Build and validate");
+
+        addRow(new PackageBuilderWidget(this.conf, editEvent));
+
+        endSection();
+
+        startSection("Information");
+
+        addAttribute( "Last modified:", new Label(getDateString(conf.lastModified))  );
+        addAttribute( "Last contributor:", new Label(this.conf.lasContributor));
+        addAttribute( "Date created:", new Label(getDateString(this.conf.dateCreated)));
 
         status = new HTML();
         HorizontalPanel statusBar = new HorizontalPanel();
@@ -121,13 +139,20 @@ public class PackageEditor extends FormStyleLayout {
         setState(conf.state);
         addAttribute("Status:", statusBar);
 
-        if (!conf.isSnapshot) {
-            addRow( saveWidgets() );
-        }
-        addRow(new HTML("<hr/>"));
 
+
+        endSection();
 
     }
+
+
+
+	private String getDateString(Date d) {
+		if (d != null)
+			return d.toLocaleString();
+		else
+			return "";
+	}
 
 
 
@@ -176,48 +201,37 @@ public class PackageEditor extends FormStyleLayout {
     /**
      * This will get the save widgets.
      */
-    private Widget saveWidgets() {
+    private Widget modifyWidgets() {
 
         HorizontalPanel horiz = new HorizontalPanel();
 
-            Button save = new Button("Save and validate configuration");
+        Button copy = new Button("Copy");
+        copy.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                showCopyDialog();
+            }
+        } );
+        horiz.add( copy );
 
-            save.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
-                    doSaveAction(null);
+        Button rename = new Button("Rename");
+        rename.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                showRenameDialog();
+            }
+        } );
+        horiz.add( rename );
+
+
+        Button archive = new Button("Archive");
+        archive.addClickListener(new ClickListener() {
+            public void onClick(Widget w) {
+                if ( Window.confirm( "Are you sure you want to archive (remove) this package?" ) ) {
+                    conf.archived = true;
+                    doSaveAction(close);
                 }
-            } );
-            horiz.add( save );
-
-            Button archive = new Button("Archive");
-            archive.addClickListener(new ClickListener() {
-                public void onClick(Widget w) {
-                    if ( Window.confirm( "Are you sure you want to archive (remove) this package?" ) ) {
-                        conf.archived = true;
-                        doSaveAction(refreshCommand);
-                    }
-                }
-            });
-            horiz.add(archive);
-
-
-            Button copy = new Button("Copy");
-            copy.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
-                    showCopyDialog();
-                }
-            } );
-            horiz.add( copy );
-
-            Button rename = new Button("Rename");
-            rename.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
-                    showRenameDialog();
-                }
-            } );
-            horiz.add( rename );
-
-
+            }
+        });
+        horiz.add(archive);
 
         return horiz;
     }
@@ -236,7 +250,7 @@ public class PackageEditor extends FormStyleLayout {
             public void onClick(Widget w) {
                 RepositoryServiceFactory.getService().renamePackage( conf.uuid, name.getText(), new GenericCallback() {
                     public void onSuccess(Object data) {
-                        refreshCommand.execute();
+                        refreshPackageList.execute();
                         Window.alert( "Package renamed successfully." );
                         pop.hide();
                     }
@@ -268,7 +282,7 @@ public class PackageEditor extends FormStyleLayout {
                 }
                 RepositoryServiceFactory.getService().copyPackage( conf.name, name.getText(), new GenericCallback() {
                     public void onSuccess(Object data) {
-                        refreshCommand.execute();
+                        refreshPackageList.execute();
                         Window.alert( "Package copied successfully." );
                         pop.hide();
                     }
@@ -288,8 +302,6 @@ public class PackageEditor extends FormStyleLayout {
         LoadingPopup.showMessage( "Saving package configuration. Please wait ..." );
         RepositoryServiceFactory.getService().savePackage( this.conf, new GenericCallback() {
             public void onSuccess(Object data) {
-
-                cleanCommand.execute();
 
                 previousResponse = (ValidatedResponse) data;
 
@@ -343,123 +355,120 @@ public class PackageEditor extends FormStyleLayout {
 
     private Widget header() {
 
-        final TextArea area = new TextArea();
-        area.setWidth( "100%" );
-        area.setVisibleLines( 8 );
+    	return new PackageHeaderWidget(this.conf);
 
-        area.setCharacterWidth( 100 );
-
-        area.setText( this.conf.header );
-        area.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                 conf.header = area.getText();
-                 dirtyCommand.execute();
-            }
-        });
-
-
-
-        HorizontalPanel panel = new HorizontalPanel();
-        panel.add( area );
-
-        VerticalPanel vert = new VerticalPanel();
-
-        Image max = new Image("images/max_min.gif");
-        max.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                if (area.getVisibleLines() != 32) {
-                    area.setVisibleLines( 32 );
-                } else {
-                    area.setVisibleLines( 8 );
-                }
-            }
-        } );
-        max.setTitle( "Increase view area." );
-        vert.add( max );
-
-        Image newImport = new Image("images/new_import.gif");
-        newImport.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                area.setText( area.getText(  ) + "\n" +
-                              "import <your class here>");
-                conf.header = area.getText();
-            }
-        });
-        vert.add( newImport );
-        newImport.setTitle( "Add a new Type/Class import to the package." );
-
-        Image newGlobal = new Image("images/new_global.gif");
-        newGlobal.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                area.setText( area.getText() + "\n" +
-                              "global <your class here> <variable name>");
-                conf.header = area.getText();
-            }
-        });
-        newGlobal.setTitle( "Add a new global variable declaration." );
-        vert.add( newGlobal );
-
-        Image newFactTemplate = new Image("images/fact_template.gif");
-        newFactTemplate.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                final FactTemplateWizard wiz = new FactTemplateWizard();
-                wiz.setOKClick( new Command() {
-                    public void execute() {
-                        area.setText( area.getText() + "\n" +
-                                      wiz.getTemplateText() );
-                        conf.header = area.getText();
-
-                    }
-                } );
-                wiz.show();
-            }
-        });
-        newFactTemplate.setTitle( "Add a new fact template." );
-        //vert.add( newFactTemplate );
-
-        panel.setWidth( "100%" );
-
-        panel.add( vert );
-        return panel;
+//        final TextArea area = new TextArea();
+//        area.setWidth( "100%" );
+//        area.setVisibleLines( 8 );
+//
+//        area.setCharacterWidth( 100 );
+//
+//        area.setText( this.conf.header );
+//        area.addChangeListener( new ChangeListener() {
+//            public void onChange(Widget w) {
+//                 conf.header = area.getText();
+//            }
+//        });
+//
+//
+//
+//        HorizontalPanel panel = new HorizontalPanel();
+//        panel.add( area );
+//
+//        VerticalPanel vert = new VerticalPanel();
+//
+//        Image max = new Image("images/max_min.gif");
+//        max.addClickListener( new ClickListener() {
+//            public void onClick(Widget w) {
+//                if (area.getVisibleLines() != 32) {
+//                    area.setVisibleLines( 32 );
+//                } else {
+//                    area.setVisibleLines( 8 );
+//                }
+//            }
+//        } );
+//        max.setTitle( "Increase view area." );
+//        vert.add( max );
+//
+//        Image newImport = new Image("images/new_import.gif");
+//        newImport.addClickListener( new ClickListener() {
+//            public void onClick(Widget w) {
+//                area.setText( area.getText(  ) + "\n" +
+//                              "import <your class here>");
+//                conf.header = area.getText();
+//            }
+//        });
+//        vert.add( newImport );
+//        newImport.setTitle( "Add a new Type/Class import to the package." );
+//
+//        Image newGlobal = new Image("images/new_global.gif");
+//        newGlobal.addClickListener( new ClickListener() {
+//            public void onClick(Widget w) {
+//                area.setText( area.getText() + "\n" +
+//                              "global <your class here> <variable name>");
+//                conf.header = area.getText();
+//            }
+//        });
+//        newGlobal.setTitle( "Add a new global variable declaration." );
+//        vert.add( newGlobal );
+//
+//        Image newFactTemplate = new Image("images/fact_template.gif");
+//        newFactTemplate.addClickListener( new ClickListener() {
+//            public void onClick(Widget w) {
+//                final FactTemplateWizard wiz = new FactTemplateWizard();
+//                wiz.setOKClick( new Command() {
+//                    public void execute() {
+//                        area.setText( area.getText() + "\n" +
+//                                      wiz.getTemplateText() );
+//                        conf.header = area.getText();
+//
+//                    }
+//                } );
+//                wiz.show();
+//            }
+//        });
+//        newFactTemplate.setTitle( "Add a new fact template." );
+//        //vert.add( newFactTemplate );
+//
+//        panel.setWidth( "100%" );
+//
+//        panel.add( vert );
+//        return panel;
     }
 
 
-    private HorizontalPanel expandableTextArea(final TextArea area) {
-        HorizontalPanel panel = new HorizontalPanel();
-        panel.add( area );
-
-        Image max = new Image("images/max_min.gif");
-        max.setTitle( "Increase view area" );
-
-        panel.add( max );
-        max.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                if (area.getVisibleLines() != 32) {
-                    area.setVisibleLines( 32 );
-                } else {
-                    area.setVisibleLines( 8 );
-                }
-            }
-        } );
-        return panel;
-    }
+//    private HorizontalPanel expandableTextArea(final TextArea area) {
+//        HorizontalPanel panel = new HorizontalPanel();
+//        panel.add( area );
+//
+//        Image max = new Image("images/max_min.gif");
+//        max.setTitle( "Increase view area" );
+//
+//        panel.add( max );
+//        max.addClickListener( new ClickListener() {
+//            public void onClick(Widget w) {
+//                if (area.getVisibleLines() != 32) {
+//                    area.setVisibleLines( 32 );
+//                } else {
+//                    area.setVisibleLines( 8 );
+//                }
+//            }
+//        } );
+//        return panel;
+//    }
 
     private Widget description() {
-        final TextArea area = new TextArea();
-        area.setWidth( "100%" );
-        area.setVisibleLines( 8 );
-        area.setText( conf.description );
 
-        area.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                conf.description = area.getText();
-                dirtyCommand.execute();
-            }
-        });
+    	final TextBox box = new TextBox();
+    	box.setText(conf.description);
+    	box.addChangeListener(new ChangeListener() {
+			public void onChange(Widget arg0) {
+				conf.description = box.getText();
+			}
+    	});
+    	box.setVisibleLength(64);
 
-        area.setCharacterWidth( 100 );
-
-        return expandableTextArea( area );
+    	return box;
     }
 
 }

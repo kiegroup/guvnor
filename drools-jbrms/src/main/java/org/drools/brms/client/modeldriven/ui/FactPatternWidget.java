@@ -269,7 +269,7 @@ public class FactPatternWidget extends DirtyableComposite {
     private void showPatternPopupForComposite(Widget w, final CompositeFieldConstraint composite) {
         final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
                                                          "Add fields to this constraint" );
-        popup.setStyleName( "ks-popups-Popup" );
+
         final ListBox box = new ListBox();
         box.addItem( "..." );
         String[] fields = this.completions.getFieldCompletions( this.pattern.factType );
@@ -313,7 +313,6 @@ public class FactPatternWidget extends DirtyableComposite {
         horiz.add( infoComp );
         popup.addAttribute( "Multiple field constraint", horiz );
 
-        popup.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
         popup.show();
 
     }
@@ -324,7 +323,7 @@ public class FactPatternWidget extends DirtyableComposite {
     private void showPatternPopup(Widget w) {
         final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
                                                          "Modify constraints for " + pattern.factType );
-        popup.setStyleName( "ks-popups-Popup" );
+
         final ListBox box = new ListBox();
         box.addItem( "..." );
         String[] fields = this.completions.getFieldCompletions( this.pattern.factType );
@@ -386,7 +385,6 @@ public class FactPatternWidget extends DirtyableComposite {
 
         doBindingEditor( popup );
 
-        popup.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
         popup.show();
     }
 
@@ -552,7 +550,7 @@ public class FactPatternWidget extends DirtyableComposite {
             }
         } );
         popup.addAttribute( "Variable name", vn );
-        popup.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+
         popup.show();
     }
 

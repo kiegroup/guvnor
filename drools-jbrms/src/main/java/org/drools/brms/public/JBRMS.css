@@ -20,6 +20,31 @@ code {
 }
 
 
+.VerticalSplitPanel .vsplitter
+{
+    background-color            :    #f3f2e7;
+	border: 1px solid #aa9;
+    /* Pretty much everything */
+    cursor                      :    n-resize;
+
+     /* IE6, IE7, FF2, Safari Win */
+    cursor                      :    row-resize;
+}
+
+.HorizontalSplitPanel .hsplitter
+{
+    background-color            :    #f3f2e7;
+	border: 1px solid #aa9;
+    /* Pretty much everything */
+    cursor                      :    n-resize;
+
+     /* IE6, IE7, FF2, Safari Win */
+    cursor                      :    col-resize;
+}
+
+
+
+
 .testErrorValue { border: 1px solid #CC0000;
 font-color: #CC000;
 font-size: small;
@@ -365,11 +390,11 @@ select {
 	background:#FFF;
 }
 .login-Form {
-	border:1px solid #aa9;
+	border:4px solid #aa9;
 	background:#f6f6f6;
 }
 .resource-name-Label {
-	font-weight:700;
+	#font-weight:700;
 }
 .infoProse {
 	margin:8px;

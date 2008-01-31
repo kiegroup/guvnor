@@ -236,7 +236,6 @@ public class ScenarioWidget extends Composite {
 		        insertFact.add(factTypes); insertFact.add(new Label("Fact name:")); insertFact.add(factName); insertFact.add(add);
 		        pop.addAttribute("New global:", insertFact);
 
-				pop.setPopupPosition(Window.getClientWidth()/3, w.getAbsoluteTop() );
 				pop.show();
 			}
 		});
@@ -324,10 +323,6 @@ public class ScenarioWidget extends Composite {
 		        }
 
 
-
-
-
-				pop.setPopupPosition(Window.getClientWidth()/3, w.getAbsoluteTop() );
 				pop.show();
 
 			}
@@ -379,7 +374,6 @@ public class ScenarioWidget extends Composite {
 				h.add(ok);
 				pop.addAttribute("Fact value:", h);
 
-				pop.setPopupPosition(Window.getClientWidth()/3, w.getAbsoluteTop() );
 				pop.show();
 			}
 		});
@@ -651,7 +645,7 @@ class DataInputWidget extends DirtyableComposite {
 									}
 								});
 				pop.addRow(ok);
-				pop.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
+
 				pop.show();
 			}
 		};
@@ -906,7 +900,6 @@ class ConfigWidget extends Composite {
 
         pop.addRow(ruleSelector);
 
-        pop.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
         pop.show();
 
     }
@@ -1040,7 +1033,6 @@ class VerifyFactWidget extends Composite {
 									}
 								});
 				pop.addRow(ok);
-				pop.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
 				pop.show();
 
 			}

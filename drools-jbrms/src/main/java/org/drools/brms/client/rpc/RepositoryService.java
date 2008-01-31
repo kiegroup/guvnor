@@ -39,7 +39,14 @@ public interface RepositoryService extends RemoteService {
      * Return a a 2d array/grid of results for rules.
      * @param A "/" delimited path to a category.
      */
-    public TableDataResult loadRuleListForCategories(String categoryPath) throws SerializableException;
+    public TableDataResult loadRuleListForCategories(String categoryPath, int skip, int numRows) throws SerializableException;
+
+    /**
+     * Return a a 2d array/grid of results for rules.
+     * @param The name of the state.
+     */
+    public TableDataResult loadRuleListForState(String state, int skip, int numRows) throws SerializableException;
+
 
     /**
      * This will return a TableConfig of header names.
@@ -147,7 +154,7 @@ public interface RepositoryService extends RemoteService {
      * @param numRows The number of rows to return. -1 means all.
      * @param startRow The starting row number if paging - if numRows is -1 then this is ignored.
      */
-    public TableDataResult listAssets(String packageUUID, String formats[], int numRows, int startRow) throws SerializableException;
+    public TableDataResult listAssets(String packageUUID, String formats[], int skip, int numRows) throws SerializableException;
 
     /**
      * Returns a list of valid states.
@@ -338,4 +345,11 @@ public interface RepositoryService extends RemoteService {
      */
     public AnalysisReport analysePackage(String packageUUID) throws SerializableException;
 
+
+    /**
+     * List the fact types (class names) in the scope of a given package.
+     * This may not include things on the "system" classpath, but only things specifically scoped to the package
+     * (eg in jars that have been uploaded to it as an asset).
+     */
+    public String[] listTypesInPackage(String packageUUID) throws SerializableException;
 }

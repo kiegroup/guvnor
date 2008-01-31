@@ -22,21 +22,15 @@ import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
-import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.common.WarningPopup;
-import org.drools.brms.client.packages.NewPackageWizard;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rulelist.EditItemEvent;
 
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
@@ -95,8 +89,6 @@ public class NewAssetWizard extends FormStylePopup {
 
         addAttribute( "", ok );
 
-
-        setStyleName( "ks-popups-Popup" );
     }
 
     /**
@@ -137,10 +129,10 @@ public class NewAssetWizard extends FormStylePopup {
     void ok() {
 
         if (this.showCats && this.initialCategory == null) {
-            WarningPopup.showMessage( "You have to pick an initial category.", this.getAbsoluteLeft(), this.getAbsoluteTop() );
+            Window.alert( "You have to pick an initial category." );
             return;
         } else if (this.name.getText() == null || "".equals( this.name.getText() )) {
-            WarningPopup.showMessage( "Asset must have a name", this.getAbsoluteLeft(), this.getAbsoluteTop() );
+            Window.alert( "Asset must have a name" );
             return;
         }
 

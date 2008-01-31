@@ -76,7 +76,7 @@ public class SecurityServiceImpl
         } else {
         	HashSet<String> disabled = new HashSet<String>();
         	//disabled.add("QA");
-            return new UserSecurityContext("SINGLE USER MODE (DEBUG) USE ONLY", disabled);
+            return new UserSecurityContext(null, new HashSet());//new UserSecurityContext("SINGLE USER MODE (DEBUG) USE ONLY", disabled);
         }
     }
 

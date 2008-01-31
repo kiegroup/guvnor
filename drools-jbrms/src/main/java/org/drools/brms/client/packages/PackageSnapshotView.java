@@ -240,7 +240,7 @@ public class PackageSnapshotView extends Composite {
         Button btn = new Button("Copy");
         btn.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-      		  copy.setPopupPosition((DirtyableComposite.getWidth() - copy.getOffsetWidth()) / 2, 100);
+
     		  copy.show();
             }
         });

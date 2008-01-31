@@ -75,15 +75,30 @@ public class RulesRepositoryTest extends TestCase {
 
     }
 
+    public void testFindByState() throws Exception {
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+        PackageItem pkg = repo.createPackage("testFindByStatePackage", "heheheh");
+        AssetItem asset1 = pkg.addAsset("asset1", "");
+        AssetItem asset2 = pkg.addAsset("asset2", "");
+        repo.createState("testFindByState");
+        repo.save();
+        asset1.updateState("testFindByState");
+        asset2.updateState("testFindByState");
+        asset1.checkin("");
+        asset2.checkin("");
+
+        AssetPageList list = repo.findAssetsByState("testFindByState", true, 0, -1);
+        assertEquals(2, list.assets.size());
+
+
+    }
+
     public void testFindRulesByName() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
-
-
 
         repo.loadDefaultPackage().addAsset( "findRulesByNamex1", "X" );
         repo.loadDefaultPackage().addAsset( "findRulesByNamex2", "X" );
         repo.save();
-
 
         List list = iteratorToList(repo.findAssetsByName( "findRulesByNamex1" ));
 	    assertEquals(1, list.size());
@@ -95,7 +110,6 @@ public class RulesRepositoryTest extends TestCase {
         list = iteratorToList( repo.findAssetsByName( "findRulesByNamex%") );
         assertEquals(2, list.size());
 
-
         repo.createPackageSnapshot( RulesRepository.DEFAULT_PACKAGE, "testFindRulesByName" );
         repo.save();
 
@@ -104,7 +118,6 @@ public class RulesRepositoryTest extends TestCase {
         assertEquals("findRulesByNamex2", item.getName());
         assertEquals("X", item.getDescription());
         assertEquals(1, list.size());
-
 
         list = iteratorToList( repo.findAssetsByName( "findRulesByNamex%" ) );
         assertEquals(2, list.size());
@@ -273,11 +286,11 @@ public class RulesRepositoryTest extends TestCase {
         pkg.addAsset( "testCat2", "x", "/testCategoriesAndSnapshots", "drl");
         repo.save();
 
-        List items = repo.findAssetsByCategory( "/testCategoriesAndSnapshots" );
+        List items = repo.findAssetsByCategory( "/testCategoriesAndSnapshots", 0, -1 ).assets;
         assertEquals(2, items.size());
 
         repo.createPackageSnapshot( "testCategoriesAndSnapshots", "SNAP 1" );
-        items = repo.findAssetsByCategory( "testCategoriesAndSnapshots" );
+        items = repo.findAssetsByCategory( "testCategoriesAndSnapshots", 0, -1  ).assets;
         assertEquals(2, items.size());
 
 

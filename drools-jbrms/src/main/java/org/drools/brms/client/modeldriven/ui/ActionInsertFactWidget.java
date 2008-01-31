@@ -136,7 +136,6 @@ public class ActionInsertFactWidget extends DirtyableComposite {
 
     protected void showAddFieldPopup(Widget w) {
         final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", "Add a field");
-        popup.setStyleName( "ks-popups-Popup" );
         final ListBox box = new ListBox();
         box.addItem( "..." );
 
@@ -157,9 +156,6 @@ public class ActionInsertFactWidget extends DirtyableComposite {
             }
         });
 
-
-
-        popup.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
         popup.show();
 
     }

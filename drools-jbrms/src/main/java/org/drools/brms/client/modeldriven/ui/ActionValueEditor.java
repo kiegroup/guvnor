@@ -175,7 +175,6 @@ public class ActionValueEditor extends DirtyableComposite {
         });
 
         form.addAttribute("Formula:", widgets(formula, new InfoPopup("Formula", "A formula is used when values are calculated, or a variable is used.")));
-        form.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
         form.show();
 	}
 

@@ -16,13 +16,22 @@ package org.drools.brms.client.common;
  * limitations under the License.
  */
 
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 
 public abstract class DirtyableComposite extends Composite implements
 		DirtyableWidget {
+    
 	protected boolean dirtyflag = false;
+	
+	public DirtyableComposite() {
+	}
 
-	/*
+    public void onBrowserEvent(Event event) {
+        super.onBrowserEvent( event );
+    }
+
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.drools.brms.client.common.isDirtable#isDirty()

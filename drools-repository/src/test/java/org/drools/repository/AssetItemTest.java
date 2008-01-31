@@ -126,46 +126,105 @@ public class AssetItemTest extends TestCase {
     }
 
 
+    public void testCategoriesPagination() {
+    		PackageItem pkg = getRepo().createPackage("testPagination", "");
+    		getRepo().loadCategory( "/" ).addCategory( "testPagedTag", "description" );
+
+            AssetItem a = pkg.addAsset("testPage1", "test content");
+            a.addCategory("testPagedTag");
+            a.checkin("");
+
+            a = pkg.addAsset("testPage2", "test content");
+            a.addCategory("testPagedTag");
+            a.checkin("");
+
+            a = pkg.addAsset("testPage3", "test content");
+            a.addCategory("testPagedTag");
+            a.checkin("");
+
+            a = pkg.addAsset("testPage4", "test content");
+            a.addCategory("testPagedTag");
+            a.checkin("");
+
+            a = pkg.addAsset("testPage5", "test content");
+            a.addCategory("testPagedTag");
+            a.checkin("");
+
+            AssetPageList list = getRepo().findAssetsByCategory("testPagedTag", 0, -1);
+            assertEquals(5, list.totalSize);
+            assertEquals(5, list.assets.size());
+            assertEquals(false, list.hasNext);
+
+
+
+            list = getRepo().findAssetsByCategory("testPagedTag", 0, 2);
+            assertEquals(5, list.totalSize);
+            assertEquals(true, list.hasNext);
+            assertEquals(2, list.assets.size());
+
+            assertEquals("testPage1", ((AssetItem)list.assets.get(0)).getName());
+            assertEquals("testPage2", ((AssetItem)list.assets.get(1)).getName());
+
+            list = getRepo().findAssetsByCategory("testPagedTag", 2, 2);
+            assertEquals(5, list.totalSize);
+            assertEquals(true, list.hasNext);
+            assertEquals(2, list.assets.size());
+
+            assertEquals("testPage3", ((AssetItem)list.assets.get(0)).getName());
+            assertEquals("testPage4", ((AssetItem)list.assets.get(1)).getName());
+
+            list = getRepo().findAssetsByCategory("testPagedTag", 2, 3);
+            assertEquals(5, list.totalSize);
+            assertEquals(false, list.hasNext);
+            assertEquals(3, list.assets.size());
+
+            assertEquals("testPage3", ((AssetItem)list.assets.get(0)).getName());
+            assertEquals("testPage4", ((AssetItem)list.assets.get(1)).getName());
+            assertEquals("testPage5", ((AssetItem)list.assets.get(2)).getName());
+
+    }
+
     public void testCategories() {
-            AssetItem ruleItem1 = getDefaultPackage().addAsset("testAddTag", "test content");
+        AssetItem ruleItem1 = getDefaultPackage().addAsset("testAddTag", "test content");
 
-            getRepo().loadCategory( "/" ).addCategory( "testAddTagTestTag", "description" );
+        getRepo().loadCategory( "/" ).addCategory( "testAddTagTestTag", "description" );
 
-            ruleItem1.addCategory("testAddTagTestTag");
-            List tags = ruleItem1.getCategories();
-            assertEquals(1, tags.size());
-            assertEquals("testAddTagTestTag", ((CategoryItem)tags.get(0)).getName());
+        ruleItem1.addCategory("testAddTagTestTag");
+        List tags = ruleItem1.getCategories();
+        assertEquals(1, tags.size());
+        assertEquals("testAddTagTestTag", ((CategoryItem)tags.get(0)).getName());
 
-            getRepo().loadCategory( "/" ).addCategory( "testAddTagTestTag2", "description" );
-            ruleItem1.addCategory("testAddTagTestTag2");
-            tags = ruleItem1.getCategories();
-            assertEquals(2, tags.size());
+        getRepo().loadCategory( "/" ).addCategory( "testAddTagTestTag2", "description" );
+        ruleItem1.addCategory("testAddTagTestTag2");
+        tags = ruleItem1.getCategories();
+        assertEquals(2, tags.size());
 
-            ruleItem1.checkin( "woot" );
+        ruleItem1.checkin( "woot" );
 
-            //now test retrieve by tags
-            List result = getRepo().findAssetsByCategory("testAddTagTestTag");
-            assertEquals(1, result.size());
-            AssetItem retItem = (AssetItem) result.get( 0 );
-            assertEquals("testAddTag", retItem.getName());
+        //now test retrieve by tags
+        List result = getRepo().findAssetsByCategory("testAddTagTestTag", 0, -1).assets;
+        assertEquals(1, result.size());
+        AssetItem retItem = (AssetItem) result.get( 0 );
+        assertEquals("testAddTag", retItem.getName());
 
-            ruleItem1.updateContent( "foo" );
-            ruleItem1.checkin( "latest" );
+        ruleItem1.updateContent( "foo" );
+        ruleItem1.checkin( "latest" );
 
-            result = getRepo().findAssetsByCategory( "testAddTagTestTag" );
+        result = getRepo().findAssetsByCategory( "testAddTagTestTag",0, -1 ).assets;
 
-            assertEquals(1, result.size());
+        assertEquals(1, result.size());
 
-            ruleItem1 = (AssetItem) result.get( 0 );
-            assertEquals(2, ruleItem1.getCategories().size());
+        ruleItem1 = (AssetItem) result.get( 0 );
+        assertEquals(2, ruleItem1.getCategories().size());
 
-            assertEquals("foo", ruleItem1.getContent());
-            AssetItem prev = (AssetItem) ruleItem1.getPrecedingVersion();
-            assertNotNull(prev);
+        assertEquals("foo", ruleItem1.getContent());
+        AssetItem prev = (AssetItem) ruleItem1.getPrecedingVersion();
+        assertNotNull(prev);
 
 
 
     }
+
 
     public void testUpdateCategories() {
         getRepo().loadCategory( "/" ).addCategory( "testUpdateCategoriesOnAsset", "la" );
@@ -197,7 +256,7 @@ public class AssetItemTest extends TestCase {
 
         assertEquals("drl", as1.getFormat());
 
-        List rules = getRepo().findAssetsByCategory( "testFindRulesByCat" );
+        List rules = getRepo().findAssetsByCategory( "testFindRulesByCat", 0, -1 ).assets;
         assertEquals(2, rules.size());
 
         for ( Iterator iter = rules.iterator(); iter.hasNext(); ) {
@@ -292,6 +351,8 @@ public class AssetItemTest extends TestCase {
 
             StateItem stateItem1 = ruleItem1.getState();
             assertEquals(StateItem.DRAFT_STATE_NAME, stateItem1.getName());
+
+
 
             ruleItem1.updateState("TestState1");
             assertNotNull(ruleItem1.getState());

@@ -22,6 +22,8 @@ import java.util.Iterator;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
@@ -38,7 +40,18 @@ public class RulePackageSelector extends Composite {
     public RulePackageSelector() {
         packageList = new ListBox();
 
-        RepositoryServiceFactory.getService().listPackages( new GenericCallback() {
+        DeferredCommand.addCommand(new Command() {
+			public void execute() {
+		        loadPackageList();
+			}
+        });
+
+
+        initWidget( packageList );
+    }
+
+	private void loadPackageList() {
+		RepositoryServiceFactory.getService().listPackages( new GenericCallback() {
 
             public void onSuccess(Object o) {
                 PackageConfigData[] list = (PackageConfigData[]) o;
@@ -54,10 +67,7 @@ public class RulePackageSelector extends Composite {
             }
 
         });
-
-
-        initWidget( packageList );
-    }
+	}
 
     /**
      * Returns the selected package.

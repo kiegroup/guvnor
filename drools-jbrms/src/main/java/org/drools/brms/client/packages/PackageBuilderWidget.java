@@ -137,7 +137,7 @@ public class PackageBuilderWidget extends Composite {
 	 */
 	public static void showSource(final String content, String name) {
 		FormStylePopup pop = new FormStylePopup("images/view_source.gif",
-				"Viewing source for: " + name);
+				"Viewing source for: " + name, null, new Integer(600), Boolean.FALSE);
 		final TextArea area = new TextArea();
 		area.setVisibleLines(30);
 		area.setWidth("100%");
@@ -145,8 +145,7 @@ public class PackageBuilderWidget extends Composite {
 		pop.addRow(area);
 		area.setText(content);
 		area.setEnabled(true);
-		area
-				.setTitle("THIS IS READ ONLY - you may copy and paste, but not edit.");
+		area.setTitle("THIS IS READ ONLY - you may copy and paste, but not edit.");
 
 		area.addKeyboardListener(new KeyboardListener() {
 
@@ -165,8 +164,7 @@ public class PackageBuilderWidget extends Composite {
 		});
 
 		LoadingPopup.close();
-		pop.setPopupPosition((DirtyableComposite.getWidth() - pop
-				.getOffsetWidth()) / 2, 100);
+
 		pop.show();
 
 	}
@@ -399,11 +397,6 @@ public class PackageBuilderWidget extends Composite {
 						});
 			}
 		});
-
-		form.setWidth("50%");
-
-		form.setPopupPosition((DirtyableComposite.getWidth() - form
-				.getOffsetWidth()) / 2, 100);
 		form.show();
 
 		// form.setPopupPosition( Window.getClientWidth() / 3,

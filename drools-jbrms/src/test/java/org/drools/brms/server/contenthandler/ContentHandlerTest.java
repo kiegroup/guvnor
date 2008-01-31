@@ -79,4 +79,8 @@ public class ContentHandlerTest extends TestCase {
 
     }
 
+    public void testNameConvertion() {
+    	assertEquals("com.foo.Bar", ModelContentHandler.convertPathToName("com/foo/Bar.class"));
+    }
+
 }

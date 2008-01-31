@@ -63,6 +63,7 @@ public class EditorLauncher {
         //depending on the format, load the appropriate editor
         if ( asset.metaData.format.equals( AssetFormats.BUSINESS_RULE ) ) {
             return new RuleValidatorWrapper( new RuleModeller( asset  ), asset);
+        	//return new RuleModeller( asset  );
         } else if ( asset.metaData.format.equals( AssetFormats.DSL_TEMPLATE_RULE ) ) {
             return new RuleValidatorWrapper(new DSLRuleEditor( asset ), asset);
         } else if ( asset.metaData.format.equals( AssetFormats.MODEL ) ) {
