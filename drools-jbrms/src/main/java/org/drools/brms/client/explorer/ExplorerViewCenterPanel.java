@@ -130,6 +130,7 @@ public class ExplorerViewCenterPanel extends ContentPanel {
 	public void openPackageEditor(final String uuid, final Command refPackageList) {
 
 		if (!showIfOpen(uuid)) {
+			LoadingPopup.showMessage("Loading package information...");
 			RepositoryServiceFactory.getService().loadPackageConfig(uuid, new GenericCallback() {
 				public void onSuccess(Object data) {
 					PackageConfigData conf = (PackageConfigData) data;

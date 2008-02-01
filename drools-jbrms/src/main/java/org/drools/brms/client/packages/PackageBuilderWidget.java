@@ -53,6 +53,21 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Ext;
+import com.gwtext.client.data.ArrayReader;
+import com.gwtext.client.data.FieldDef;
+import com.gwtext.client.data.MemoryProxy;
+import com.gwtext.client.data.Record;
+import com.gwtext.client.data.RecordDef;
+import com.gwtext.client.data.Store;
+import com.gwtext.client.data.StringFieldDef;
+import com.gwtext.client.widgets.grid.CellMetadata;
+import com.gwtext.client.widgets.grid.ColumnConfig;
+import com.gwtext.client.widgets.grid.ColumnModel;
+import com.gwtext.client.widgets.grid.Grid;
+import com.gwtext.client.widgets.grid.Renderer;
+import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
 
 /**
  * This is the widget for building packages, validating etc. Visually decorates
@@ -68,8 +83,7 @@ public class PackageBuilderWidget extends Composite {
 
 	public PackageBuilderWidget(final PackageConfigData conf,
 			EditItemEvent editEvent) {
-		layout = new FormStyleLayout("images/package_builder.png",
-				"Verify and assemble package");
+		layout = new FormStyleLayout();
 		this.conf = conf;
 		this.editEvent = editEvent;
 
@@ -85,13 +99,6 @@ public class PackageBuilderWidget extends Composite {
 			}
 		});
 
-		Button buildSource = new Button("Show package source");
-		buildSource.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
-				doBuildSource(conf.uuid, conf.name);
-			}
-		});
-		layout.addAttribute("View source for package", buildSource);
 
         HorizontalPanel buildStuff = new HorizontalPanel();
         buildStuff.add( b );
@@ -107,7 +114,7 @@ public class PackageBuilderWidget extends Composite {
 						"<i><small>Building a package will collect all the assets, validate and compile into a deployable package.</small></i>"));
 		layout.addRow(buildResults);
 
-		layout.setStyleName("package-Editor");
+		//layout.setStyleName("package-Editor");
 
 		layout.setWidth("100%");
 
@@ -119,7 +126,7 @@ public class PackageBuilderWidget extends Composite {
 	 */
 	public static void doBuildSource(final String uuid, final String name) {
 		LoadingPopup.showMessage("Assembling package source...");
-		DeferredCommand.add(new Command() {
+		DeferredCommand.addCommand(new Command() {
 			public void execute() {
 				RepositoryServiceFactory.getService().buildPackageSource(uuid,
 						new GenericCallback() {
@@ -137,7 +144,7 @@ public class PackageBuilderWidget extends Composite {
 	 */
 	public static void showSource(final String content, String name) {
 		FormStylePopup pop = new FormStylePopup("images/view_source.gif",
-				"Viewing source for: " + name, null, new Integer(600), Boolean.FALSE);
+				"Viewing source for: " + name, new Integer(600), new Integer(600), Boolean.FALSE);
 		final TextArea area = new TextArea();
 		area.setVisibleLines(30);
 		area.setWidth("100%");
@@ -271,37 +278,119 @@ public class PackageBuilderWidget extends Composite {
 	public static void showBuilderErrors(BuilderResult[] results, Panel buildResults, final EditItemEvent editEvent) {
 		buildResults.clear();
 
-		FlexTable errTable = new FlexTable();
-		errTable.setStyleName("build-Results");
-		errTable.setText(0, 1, "Format");
-		errTable.setText(0, 2, "Name");
-		errTable.setText(0, 3, "Message");
 
+
+		Object[][] data = new Object[results.length][4];
 		for (int i = 0; i < results.length; i++) {
-			int row = i + 1;
-			final BuilderResult res = results[i];
-			errTable.setWidget(row, 0, new Image("images/error.gif"));
-			errTable.setText(row, 1, res.assetFormat);
-			errTable.setText(row, 2, res.assetName);
-			errTable.setText(row, 3, res.message);
-
-			if (!"package".equals(res.assetFormat)) {
-				Button show = new Button("Show");
-				show.addClickListener(new ClickListener() {
-					public void onClick(Widget w) {
-						editEvent.open(res.uuid);
-					}
-				});
-				errTable.setWidget(row, 4, show);
-			}
+			BuilderResult res = results[i];
+			data[i][0] = res.uuid;
+			data[i][1] = res.assetName;
+			data[i][2] = res.assetFormat;
+			data[i][3] = res.message;
 		}
 
-		errTable.setWidth("100%");
-		ScrollPanel scroll = new ScrollPanel(errTable);
-		scroll.setAlwaysShowScrollBars(true);
-		scroll.setSize("100%", "25em");
 
-		buildResults.add(scroll);
+		MemoryProxy proxy = new MemoryProxy(data);
+		RecordDef recordDef = new RecordDef(
+				new FieldDef[]{
+						new StringFieldDef("uuid"),
+						new StringFieldDef("assetName"),
+						new StringFieldDef("assetFormat"),
+						new StringFieldDef("message")
+				}
+		);
+
+		ArrayReader reader = new ArrayReader(recordDef);
+		Store store = new Store(proxy, reader);
+		store.load();
+
+
+		ColumnModel cm  = new ColumnModel(new ColumnConfig[] {
+			new ColumnConfig() {
+				{
+					setHidden(true);
+					setDataIndex("uuid");
+				}
+			},
+			new ColumnConfig() {
+				{
+					setHeader("Name");
+					setSortable(true);
+					setDataIndex("assetName");
+					setRenderer(new Renderer() {
+						public String render(Object value,
+								CellMetadata cellMetadata, Record record,
+								int rowIndex, int colNum, Store store) {
+							return "<img src='images/error.gif'/>" + value;
+						}
+
+					});
+				}
+			},
+			new ColumnConfig() {
+				{
+					setHeader("Format");
+					setSortable(true);
+					setDataIndex("assetFormat");
+				}
+			},
+			new ColumnConfig() {
+				{
+					setHeader("Message");
+					setSortable(true);
+					setDataIndex("message");
+					setWidth(300);
+
+				}
+			}
+		});
+
+
+		Grid g = new Grid(Ext.generateId(), "600px", "300px", store, cm);
+		g.render();
+
+        g.addGridRowListener(new GridRowListenerAdapter() {
+            public void onRowDblClick(Grid grid, int rowIndex, EventObject e) {
+            	if (!grid.getSelectionModel().getSelected().getAsString("assetFormat").equals("Package")) {
+                    String uuid = grid.getSelectionModel().getSelected().getAsString("uuid");
+                    editEvent.open(uuid);
+            	}
+            }
+        });
+
+		buildResults.add(g);
+
+//		FlexTable errTable = new FlexTable();
+//		errTable.setStyleName("build-Results");
+//		errTable.setText(0, 1, "Format");
+//		errTable.setText(0, 2, "Name");
+//		errTable.setText(0, 3, "Message");
+//
+//		for (int i = 0; i < results.length; i++) {
+//			int row = i + 1;
+//			final BuilderResult res = results[i];
+//			errTable.setWidget(row, 0, new Image("images/error.gif"));
+//			errTable.setText(row, 1, res.assetFormat);
+//			errTable.setText(row, 2, res.assetName);
+//			errTable.setText(row, 3, res.message);
+//
+//			if (!"package".equals(res.assetFormat)) {
+//				Button show = new Button("Show");
+//				show.addClickListener(new ClickListener() {
+//					public void onClick(Widget w) {
+//						editEvent.open(res.uuid);
+//					}
+//				});
+//				errTable.setWidget(row, 4, show);
+//			}
+//		}
+//
+//		errTable.setWidth("100%");
+//		ScrollPanel scroll = new ScrollPanel(errTable);
+//		scroll.setAlwaysShowScrollBars(true);
+//		scroll.setSize("100%", "25em");
+//
+//		buildResults.add(scroll);
 
 	}
 

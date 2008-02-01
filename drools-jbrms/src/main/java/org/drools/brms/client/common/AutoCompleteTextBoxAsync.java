@@ -1,13 +1,13 @@
 package org.drools.brms.client.common;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,11 +28,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This nifty utility provides auto completion. Drop in replacement for a text box.
- * I recall lifting it from somewhere on http://del.icio.us/michaelneale/GWT, plus some 
- * small tweaks. 
- * 
+ * I recall lifting it from somewhere on http://del.icio.us/michaelneale/GWT, plus some
+ * small tweaks.
+ *
  * If this gives any back chat, I will shut it down and we can just use a regular text box.
- * 
+ *
  */
 public class AutoCompleteTextBoxAsync extends TextBox
     implements KeyboardListener {
@@ -58,6 +58,8 @@ public class AutoCompleteTextBoxAsync extends TextBox
     this.addKeyboardListener(this);
     choices.sinkEvents(Event.ONCLICK);
     this.setStyleName("AutoCompleteTextBox");
+
+    choicesPopup.setPopupPosition(this.getAbsoluteLeft(), this.getAbsoluteTop() + 20);
 
     choicesPopup.add(choices);
     choicesPopup.addStyleName("AutoCompleteChoices");
@@ -219,10 +221,10 @@ choices.getItemText(0).equals(text))) {
       choices.setSelectedIndex(0);
       choices.setVisibleItemCount(choices.getItemCount() + 1);
 
-      if(!popupAdded) {
-        RootPanel.get().add(choicesPopup);
-        popupAdded = true;
-      }
+//      if(!popupAdded) {
+//        RootPanel.get().add(choicesPopup);
+//        popupAdded = true;
+//      }
       choicesPopup.show();
       visible = true;
       choicesPopup.setPopupPosition(this.getAbsoluteLeft(),
@@ -266,4 +268,4 @@ choices.getItemText(0).equals(text))) {
     this.visible = false;
   }
 
-} 
+}

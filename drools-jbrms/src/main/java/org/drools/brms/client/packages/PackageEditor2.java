@@ -108,17 +108,26 @@ public class PackageEditor2 extends PrettyFormLayout {
 
         endSection();
 
-        startSection("Build and validate");
-
-        addRow(new PackageBuilderWidget(this.conf, editEvent));
-
-        endSection();
+        if (!conf.isSnapshot) {
+	        startSection("Build and validate");
+	        addRow(new PackageBuilderWidget(this.conf, editEvent));
+	        endSection();
+        }
 
         startSection("Information");
 
         addAttribute( "Last modified:", new Label(getDateString(conf.lastModified))  );
         addAttribute( "Last contributor:", new Label(this.conf.lasContributor));
         addAttribute( "Date created:", new Label(getDateString(this.conf.dateCreated)));
+		Button buildSource = new Button("Show package source");
+		buildSource.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				PackageBuilderWidget.doBuildSource(conf.uuid, conf.name);
+			}
+		});
+		addAttribute("View source for package:", buildSource);
+
+
 
         status = new HTML();
         HorizontalPanel statusBar = new HorizontalPanel();
@@ -228,6 +237,8 @@ public class PackageEditor2 extends PrettyFormLayout {
                 if ( Window.confirm( "Are you sure you want to archive (remove) this package?" ) ) {
                     conf.archived = true;
                     doSaveAction(close);
+                    close.execute();
+                    refreshPackageList.execute();
                 }
             }
         });
@@ -251,6 +262,8 @@ public class PackageEditor2 extends PrettyFormLayout {
                 RepositoryServiceFactory.getService().renamePackage( conf.uuid, name.getText(), new GenericCallback() {
                     public void onSuccess(Object data) {
                         refreshPackageList.execute();
+                        conf.name = name.getText();
+                        refreshWidgets();
                         Window.alert( "Package renamed successfully." );
                         pop.hide();
                     }

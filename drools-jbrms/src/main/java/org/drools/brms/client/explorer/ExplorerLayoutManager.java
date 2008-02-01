@@ -1,7 +1,6 @@
 package org.drools.brms.client.explorer;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.brms.client.LoggedInUserInfo;
@@ -9,20 +8,15 @@ import org.drools.brms.client.admin.ArchivedAssetManager;
 import org.drools.brms.client.admin.BackupManager;
 import org.drools.brms.client.admin.CategoryManager;
 import org.drools.brms.client.admin.StateManager;
-import org.drools.brms.client.common.ErrorPopup;
+import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.GenericCallback;
-import org.drools.brms.client.common.LoadingPopup;
-import org.drools.brms.client.packages.PackageManagerView;
-import org.drools.brms.client.packages.SuggestionCompletionCache;
+import org.drools.brms.client.packages.NewPackageWizard;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
-import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.ruleeditor.NewAssetWizard;
-import org.drools.brms.client.ruleeditor.RuleViewer;
 import org.drools.brms.client.rulelist.AssetItemGrid;
 import org.drools.brms.client.rulelist.AssetItemGridDataLoader;
 import org.drools.brms.client.rulelist.EditItemEvent;
-import org.drools.brms.client.rulelist.QuickFindWidget;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -31,9 +25,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Ext;
 import com.gwtext.client.data.Node;
-import com.gwtext.client.data.NodeTraversalCallback;
-import com.gwtext.client.util.DelayedTask;
-import com.gwtext.client.util.Format;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.ButtonConfig;
 import com.gwtext.client.widgets.QuickTips;
@@ -41,30 +32,26 @@ import com.gwtext.client.widgets.TabPanel;
 import com.gwtext.client.widgets.TabPanelItem;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
+import com.gwtext.client.widgets.ToolbarMenuButton;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
-import com.gwtext.client.widgets.event.TabPanelItemListener;
 import com.gwtext.client.widgets.event.TabPanelItemListenerAdapter;
-import com.gwtext.client.widgets.event.TabPanelListener;
-import com.gwtext.client.widgets.event.TabPanelListenerAdapter;
 import com.gwtext.client.widgets.form.Field;
-import com.gwtext.client.widgets.form.TextField;
 import com.gwtext.client.widgets.layout.BorderLayout;
 import com.gwtext.client.widgets.layout.ContentPanel;
 import com.gwtext.client.widgets.layout.LayoutRegion;
 import com.gwtext.client.widgets.layout.LayoutRegionConfig;
-import com.gwtext.client.widgets.layout.event.ContentPanelListener;
-import com.gwtext.client.widgets.layout.event.ContentPanelListenerAdapter;
+import com.gwtext.client.widgets.menu.BaseItem;
+import com.gwtext.client.widgets.menu.Item;
+import com.gwtext.client.widgets.menu.ItemConfig;
+import com.gwtext.client.widgets.menu.Menu;
+import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 import com.gwtext.client.widgets.tree.AsyncTreeNode;
 import com.gwtext.client.widgets.tree.AsyncTreeNodeConfig;
-
 import com.gwtext.client.widgets.tree.TreeNode;
-import com.gwtext.client.widgets.tree.TreeNodeConfig;
 import com.gwtext.client.widgets.tree.TreePanel;
 import com.gwtext.client.widgets.tree.TreePanelConfig;
 import com.gwtext.client.widgets.tree.XMLTreeLoader;
 import com.gwtext.client.widgets.tree.XMLTreeLoaderConfig;
-import com.gwtext.client.widgets.tree.event.TreeNodeListener;
-import com.gwtext.client.widgets.tree.event.TreeNodeListenerAdapter;
 import com.gwtext.client.widgets.tree.event.TreePanelListener;
 import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
 
@@ -134,7 +121,7 @@ public class ExplorerLayoutManager {
                 false);
         TabPanelItem tpBackupManager = tp.addTab("tpi4", "Admin", false);
 
-        VerticalPanel vp1 = new VerticalPanel();
+        VerticalPanel rulesPanel = new VerticalPanel();
         packagesPanel = new VerticalPanel();
         VerticalPanel vp3 = new VerticalPanel();
         VerticalPanel vp4 = new VerticalPanel();
@@ -195,31 +182,24 @@ public class ExplorerLayoutManager {
         centertabbedPanel.openFind();
 
         baseCategory.add(categoryTree);
-        Toolbar tb = new Toolbar(Ext.generateId());
-        vp1.add(tb);
-        tb.addButton(new ToolbarButton(new ButtonConfig() {
-        	{
-                setText("New rule");
-                setButtonListener(new ButtonListenerAdapter() {
-                    public void onClick(Button button, EventObject e) {
-                        NewAssetWizard n = new NewAssetWizard(new EditItemEvent() {
-                            public void open(String key) {
-                               centertabbedPanel.openAsset(key);
-                            }
-                        }, true, null, "New rule" );
-                        n.show();
-                    }
-                });
-        	}
-        }));
-        vp1.add(baseCategory);
-        vp1.setWidth("100%");
+
+        Toolbar rulesToolBar = new Toolbar(Ext.generateId());
+        rulesPanel.add(rulesToolBar);
 
 
-        /** **************************** */
+        rulesToolBar.addButton(new ToolbarMenuButton("Create New", rulesNewMenu()));
+
+
+        rulesPanel.add(baseCategory);
+        rulesPanel.setWidth("100%");
 
 
 
+        Toolbar pkgToolbar = new Toolbar(Ext.generateId());
+        pkgToolbar.addButton(new ToolbarMenuButton("Create New", packageNewMenu()));
+
+        packagesPanel.add(pkgToolbar);
+        packagesPanel.setWidth("100%");
 
         vp3.add(createExamplesExplorer(layout, "drools-deployment"));
 
@@ -260,7 +240,7 @@ public class ExplorerLayoutManager {
 
         /** ****************** */
 
-        tpCategory.setContent(vp1);
+        tpCategory.setContent(rulesPanel);
 
 
         tpPackageExplorer.setContent(packagesPanel);
@@ -282,6 +262,184 @@ public class ExplorerLayoutManager {
         ContentPanel tree = new ContentPanel();
         tree.add(tp);
         layout.add(LayoutRegionConfig.WEST, tree);
+    }
+
+	private Menu rulesNewMenu() {
+		Menu m = new Menu(Ext.generateId());
+
+        m.addItem(new Item("New Business Rule (Guided editor)", new ItemConfig() {
+        	{
+        		setIcon("images/business_rule.gif");
+        		setBaseItemListener(new BaseItemListenerAdapter() {
+        			public void onClick(BaseItem item, EventObject e) {
+        				launchWizard(AssetFormats.BUSINESS_RULE, "New Business Rule (Guided editor)", true);
+        			}
+        		});
+        	}
+        }));
+
+        m.addItem(new Item("New DSL Business Rule (text editor)", new ItemConfig() {
+        	{
+        		setIcon("images/business_rule.gif");
+        		setBaseItemListener(new BaseItemListenerAdapter() {
+        			public void onClick(BaseItem item, EventObject e) {
+        				launchWizard(AssetFormats.DSL_TEMPLATE_RULE, "New Rule using DSL", true);
+        			}
+        		});
+        	}
+        }));
+
+        m.addItem(new Item("New DRL (Technical rule)", new ItemConfig() {
+        	{
+        		setIcon("images/technical_rule_assets.gif");
+        		setBaseItemListener(new BaseItemListenerAdapter() {
+        			public void onClick(BaseItem item, EventObject e) {
+        				launchWizard(AssetFormats.DRL, "New DRL", true);
+        			}
+        		});
+        	}
+        }));
+
+        m.addItem(new Item("New Decision Table (Spreadsheet)", new ItemConfig() {
+        	{
+        		setIcon("images/spreadsheet_small.gif");
+        		setBaseItemListener(new BaseItemListenerAdapter() {
+        			public void onClick(BaseItem item, EventObject e) {
+        				launchWizard(AssetFormats.DECISION_SPREADSHEET_XLS, "New Decision Table (Spreadsheet)", true);
+        			}
+        		});
+        	}
+        }));
+
+        m.addItem(new Item("New Test Scenario", new ItemConfig() {
+        	{
+        		setIcon("images/test_manager.gif");
+        		setBaseItemListener(new BaseItemListenerAdapter() {
+        			public void onClick(BaseItem item, EventObject e) {
+        				launchWizard(AssetFormats.TEST_SCENARIO,
+                                "Create a test scenario.", false);
+        			}
+        		});
+        	}
+        }));
+
+
+
+		return m;
+	}
+
+	private Menu packageNewMenu() {
+		Menu m = new Menu(Ext.generateId());
+        m.addItem(new Item("New Package", new ItemConfig() {
+        	{
+        		setIcon("images/new_package.gif");
+        		setBaseItemListener(new BaseItemListenerAdapter() {
+        			public void onClick(BaseItem item, EventObject e) {
+        				NewPackageWizard wiz = new NewPackageWizard(new Command() {
+							public void execute() {
+								refreshPackageTree();
+							}
+        				});
+        				wiz.show();
+        			}
+        		});
+        	}
+        }));
+        m.addItem(new Item("New Rule", new ItemConfig() {
+        	{
+        		setIcon("images/rule_asset.gif");
+        		setBaseItemListener(new BaseItemListenerAdapter() {
+        			public void onClick(BaseItem item, EventObject e) {
+        				launchWizard(null, "New Rule", true);
+        			}
+        		});
+        	}
+        }));
+        m.addItem(new Item("New Model (jar) of fact classes", new ItemConfig() {
+        	{
+        		setIcon("images/model_asset.gif");
+        		setBaseItemListener(new BaseItemListenerAdapter() {
+        			public void onClick(BaseItem item, EventObject e) {
+        				launchWizard(AssetFormats.MODEL, "New model archive (jar)", false);
+        			}
+        		});
+        	}
+        }));
+        m.addItem(new Item("New Function", new ItemConfig() {
+        	{
+        		setIcon("images/function_assets.gif");
+        		setBaseItemListener(new BaseItemListenerAdapter() {
+        			public void onClick(BaseItem item, EventObject e) {
+        				launchWizard(AssetFormats.FUNCTION, "Create a new function", false);
+        			}
+        		});
+        	}
+        }));
+        m.addItem(new Item("New DSL", new ItemConfig() {
+        	{
+        		setIcon("images/dsl.gif");
+        		setBaseItemListener(new BaseItemListenerAdapter() {
+        			public void onClick(BaseItem item, EventObject e) {
+        				launchWizard(AssetFormats.DSL, "Create a new DSL configuration", false);
+        			}
+        		});
+        	}
+        }));
+
+        m.addItem(new Item("New RuleFlow", new ItemConfig() {
+        	{
+        		setIcon("images/ruleflow_small.gif");
+        		setBaseItemListener(new BaseItemListenerAdapter() {
+        			public void onClick(BaseItem item, EventObject e) {
+        				launchWizard(AssetFormats.RULE_FLOW_RF, "Create a new RuleFlow", false);
+        			}
+        		});
+        	}
+        }));
+
+        m.addItem(new Item("New Enumeration", new ItemConfig() {
+        	{
+        		setIcon("images/new_enumeration.gif");
+        		setBaseItemListener(new BaseItemListenerAdapter() {
+        			public void onClick(BaseItem item, EventObject e) {
+        				launchWizard(AssetFormats.ENUMERATION,
+                                "Create a new enumeration (drop down mapping).", false);
+        			}
+        		});
+        	}
+        }));
+
+        m.addItem(new Item("New Test Scenario", new ItemConfig() {
+        	{
+        		setIcon("images/test_manager.gif");
+        		setBaseItemListener(new BaseItemListenerAdapter() {
+        			public void onClick(BaseItem item, EventObject e) {
+        				launchWizard(AssetFormats.TEST_SCENARIO,
+                                "Create a test scenario.", false);
+        			}
+        		});
+        	}
+        }));
+
+
+
+		return m;
+	}
+
+    private void launchWizard(String format,
+            String title, boolean showCats) {
+
+    	NewAssetWizard pop = new NewAssetWizard( new EditItemEvent() {
+                                   public void open(String key) {
+                                       centertabbedPanel.openAsset(key);
+                                   }
+                               },
+                               showCats,
+                               format,
+                               title,
+                               null );
+
+    	pop.show();
     }
 
 
@@ -415,6 +573,7 @@ public class ExplorerLayoutManager {
         TreeNode root = new TreeNode("Packages");
         root.setAttribute("icon", "images/silk/chart_organisation.gif");
 
+
 		final TreePanel panel = genericExplorerWidget(root);
         cp.add(panel);
         loadPackages(root);
@@ -427,8 +586,7 @@ public class ExplorerLayoutManager {
 		        			centertabbedPanel.openPackageEditor(uuid, new Command() {
 								public void execute() {
 									//refresh the package tree.
-									packagesPanel.remove(1);
-									packagesPanel.add(packageExplorer(centertabbedPanel));
+									refreshPackageTree();
 								}
 		        			});
 	    		} else if (node.getUserObject() instanceof Object[] ){
@@ -525,6 +683,11 @@ public class ExplorerLayoutManager {
 
         return menuTree;
     }
+
+	private void refreshPackageTree() {
+		packagesPanel.remove(1);
+		packagesPanel.add(packageExplorer(centertabbedPanel));
+	}
 
 
 
