@@ -10,9 +10,11 @@ import org.drools.brms.client.admin.CategoryManager;
 import org.drools.brms.client.admin.StateManager;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.packages.NewPackageWizard;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
+import org.drools.brms.client.rpc.SnapshotInfo;
 import org.drools.brms.client.ruleeditor.NewAssetWizard;
 import org.drools.brms.client.rulelist.AssetItemGrid;
 import org.drools.brms.client.rulelist.AssetItemGridDataLoader;
@@ -21,6 +23,7 @@ import org.drools.brms.client.rulelist.EditItemEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Ext;
@@ -34,6 +37,7 @@ import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.ToolbarMenuButton;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.event.TabPanelItemListener;
 import com.gwtext.client.widgets.event.TabPanelItemListenerAdapter;
 import com.gwtext.client.widgets.form.Field;
 import com.gwtext.client.widgets.layout.BorderLayout;
@@ -48,6 +52,7 @@ import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 import com.gwtext.client.widgets.tree.AsyncTreeNode;
 import com.gwtext.client.widgets.tree.AsyncTreeNodeConfig;
 import com.gwtext.client.widgets.tree.TreeNode;
+import com.gwtext.client.widgets.tree.TreeNodeConfig;
 import com.gwtext.client.widgets.tree.TreePanel;
 import com.gwtext.client.widgets.tree.TreePanelConfig;
 import com.gwtext.client.widgets.tree.XMLTreeLoader;
@@ -61,6 +66,7 @@ public class ExplorerLayoutManager {
 
     private BorderLayout layout;
     private boolean packagesLoaded = false;
+	private boolean deploymentPackagesLoaded = false;
 
     ExplorerViewCenterPanel centertabbedPanel;
 
@@ -75,21 +81,13 @@ public class ExplorerLayoutManager {
         QuickTips.init();
 
         layout = createBorderLayout();
-
         centertabbedPanel = new ExplorerViewCenterPanel();
 
         ContentPanel ncp = new ContentPanel("north", "North Title");
 
-
         // setup the main / center panel
         ContentPanel centerPanel = new ContentPanel("center-panel");
-        /*
-        VerticalPanel contentPanel = new VerticalPanel();
-        contentPanel.setWidth("100%");
-        contentPanel.setHeight("100%");
 
-        contentPanel.add(centertabbedPanel);
-        */
         centerPanel.add(centertabbedPanel);
 
         layout.add(LayoutRegionConfig.CENTER, centerPanel);
@@ -117,20 +115,18 @@ public class ExplorerLayoutManager {
 
         TabPanelItem tpCategory = tp.addTab("tpi1", "Rules", false);
         TabPanelItem tpPackageExplorer = tp.addTab("tpi2", "Packages", false);
-        TabPanelItem tpArchivedAssetManager = tp.addTab("tpi3", "Deployment",
+        TabPanelItem tpDeployment = tp.addTab("tpi3", "Deployment",
                 false);
-        TabPanelItem tpBackupManager = tp.addTab("tpi4", "Admin", false);
+        TabPanelItem tpAdmin = tp.addTab("tpi4", "Admin", false);
 
         VerticalPanel rulesPanel = new VerticalPanel();
         packagesPanel = new VerticalPanel();
-        VerticalPanel vp3 = new VerticalPanel();
+        final VerticalPanel deploymentPanel = new VerticalPanel();
         VerticalPanel vp4 = new VerticalPanel();
 
-        // vp1.add(categoriesExplorer(layout, "drools-rules"));
 
         /** **************************** */
-        ContentPanel baseCategory = new ContentPanel("eg-explorer",
-                "BRMS Explorer");
+        ContentPanel baseCategory = new ContentPanel("eg-explorer", "BRMS Explorer");
         baseCategory.setWidth(" 100%");
 
         TreePanel categoryTree = basicTreeStructure(ExplorerNodeConfig
@@ -201,8 +197,6 @@ public class ExplorerLayoutManager {
         packagesPanel.add(pkgToolbar);
         packagesPanel.setWidth("100%");
 
-        vp3.add(createExamplesExplorer(layout, "drools-deployment"));
-
         /** ****************** */
         ContentPanel cp = new ContentPanel("eg-explorer", "BRMS Explorer");
         cp.setWidth(" 100%");
@@ -244,13 +238,26 @@ public class ExplorerLayoutManager {
 
 
         tpPackageExplorer.setContent(packagesPanel);
-        tpArchivedAssetManager.setContent(vp3);
-        tpBackupManager.setContent(vp4);
+        tpDeployment.setContent(deploymentPanel);
+        tpAdmin.setContent(vp4);
+
+        //these panels are lazy loaded to easy startup wait time.
         tpPackageExplorer.addTabPanelItemListener(new TabPanelItemListenerAdapter() {
 			public void onActivate(TabPanelItem tab) {
         		if (!packagesLoaded) {
         			packagesPanel.add(packageExplorer(centertabbedPanel));
         			packagesLoaded = true;
+        		}
+        	}
+        });
+
+        tpDeployment.addTabPanelItemListener(new TabPanelItemListenerAdapter() {
+
+
+			public void onActivate(TabPanelItem tab) {
+        		if (!deploymentPackagesLoaded) {
+        			deploymentPanel.add(deploymentExplorer(centertabbedPanel));
+        			deploymentPackagesLoaded = true;
         		}
         	}
         });
@@ -291,7 +298,7 @@ public class ExplorerLayoutManager {
 
         m.addItem(new Item("New DRL (Technical rule)", new ItemConfig() {
         	{
-        		setIcon("images/technical_rule_assets.gif");
+        		setIcon("images/rule_asset.gif");
         		setBaseItemListener(new BaseItemListenerAdapter() {
         			public void onClick(BaseItem item, EventObject e) {
         				launchWizard(AssetFormats.DRL, "New DRL", true);
@@ -479,96 +486,93 @@ public class ExplorerLayoutManager {
         return new BorderLayout("100%", "100%", north, null, west, null, center );
     }
 
-    private ContentPanel createExamplesExplorer(final BorderLayout layout,
-            final String menuconfig) {
+    private ContentPanel deploymentExplorer(final ExplorerViewCenterPanel tabPanel) {
+        final ContentPanel cp = new ContentPanel(Ext.generateId(), "Deployment Explorer");
+        cp.setWidth("100%");
 
-        // create and configure the main tree
-        final TreePanel menuTree = new TreePanel("eg-tree",
-                new TreePanelConfig() {
-                    {
-                        setAnimate(true);
-                        setEnableDD(true);
-                        setContainerScroll(true);
-                        setRootVisible(true);
-                    }
-                });
-
-
-
-        final XMLTreeLoader loader = new XMLTreeLoader(
-                new XMLTreeLoaderConfig() {
-                    {
-
-                        setDataUrl("site-nav.xml");
-                        setMethod("get");
-                        setRootTag(menuconfig);
-                        setFolderTag("node");
-                        setFolderTitleMapping("@title");
-                        setLeafTitleMapping("@title");
-                        setLeafTag("leaf");
-                    }
-                });
-
-        AsyncTreeNode root = new AsyncTreeNode("", new AsyncTreeNodeConfig() {
-            {
-                setLoader(loader);
-            }
+        final TreeNode root = new TreeNode("Package snapshots", new TreeNodeConfig() {
+        	{
+        		setIcon("images/silk/chart_organisation.gif");
+        	}
         });
 
-        // setup a tree listener that reads the content panel associated with
-        // the
-        // node that is clicked and then displays it in the main / center panel
-        TreePanelListener treePanelListener = new TreePanelListenerAdapter() {
-            public void onClick(TreeNode self, EventObject e) {
-                String screenName = BRMSContentManager.getScreenName(self, self
-                        .getText());
-                if (screens.containsKey(screenName)) {
-                    BRMSContentManager panel = (BRMSContentManager) screens
-                            .get(screenName);
-                    LayoutRegion region = layout
-                            .getRegion(LayoutRegionConfig.CENTER);
-                    region.removeAll(true);
-                    ContentPanel[] panels = panel.getPanels();
-                    for (int i = 0; i < panels.length; i++) {
-                        ContentPanel contentPanel = panels[i];
-                        layout.add(contentPanel);
+		final TreePanel panel = genericExplorerWidget(root);
+        cp.add(panel);
+
+		RepositoryServiceFactory.getService().listPackages(
+                new GenericCallback() {
+                    public void onSuccess(Object data) {
+                        PackageConfigData value[] = (PackageConfigData[]) data;
+                        for (int i = 0; i < value.length; i++) {
+                        	TreeNode pkg = new TreeNode(value[i].name, new TreeNodeConfig() {
+                        		{
+                        			setIcon("images/package.gif");
+                        		}
+                        	});
+                        	pkg.setUserObject(value[i]);
+                        	pkg.appendChild(new TreeNode("Please wait..."));
+                            root.appendChild(pkg);
+                        }
+                        root.expand();
                     }
-                    region.showPanel(0);
-                }
-                System.out.println("Clicked on Node: " + self.getText());
-                System.out.println("Clicked on Node: "
-                        + self.getAttribute("id"));
-            }
-        };
+                });
 
-        // register listener
-        menuTree.addTreePanelListener(treePanelListener);
+		panel.addTreePanelListener(new TreePanelListenerAdapter() {
 
-        menuTree.setRootNode(root);
-        // menuTree.getRootNode().appendChild( child )
-        menuTree.render();
+			public void onCollapse(TreeNode node) {
+				Node[] children = node.getChildNodes();
+				for (int i = 0; i < children.length; i++) {
+					node.removeChild(children[i]);
+				}
+				node.appendChild(new TreeNode("Please wait..."));
+;			}
 
-        // loads tree data asynchronously
-        root.expand();
+			public void onExpand(final TreeNode node) {
 
-        menuTree.expandAll();
+				PackageConfigData conf = (PackageConfigData) node.getUserObject();
+				RepositoryServiceFactory.getService().listSnapshots(conf.name, new GenericCallback() {
+					public void onSuccess(Object data) {
+						final SnapshotInfo[] snaps = (SnapshotInfo[]) data;
+						for (int i = 0; i < snaps.length; i++) {
+							final SnapshotInfo snapInfo = snaps[i];
+							TreeNode snap = new TreeNode(new TreeNodeConfig() {
+								{
+									setQtip(snapInfo.comment);
+									setText(snapInfo.name);
+								}
+							});
+							snap.setUserObject(snapInfo);
 
-        ContentPanel cp = new ContentPanel("eg-explorer", "BRMS Explorer");
+							node.appendChild(snap);
 
-        cp.setWidth(" 100%");
-        cp.add(menuTree);
+						}
+						node.removeChild(node.getFirstChild());
+
+
+					}
+				});
+
+			}
+
+
+			public void onClick(TreeNode node, EventObject e) {
+				if (node.getUserObject() instanceof SnapshotInfo) {
+					SnapshotInfo snap = (SnapshotInfo) node.getUserObject();
+				}
+			}
+		});
 
         return cp;
     }
 
+
     /**
      * Build the package explorer panel.
      */
-    private ContentPanel packageExplorer(
-            final ExplorerViewCenterPanel tabPanel) {
+    private ContentPanel packageExplorer(final ExplorerViewCenterPanel tabPanel) {
 
         final ContentPanel cp = new ContentPanel(Ext.generateId(), "Package Explorer");
-        cp.setWidth(" 100%");
+        cp.setWidth("100%");
 
         TreeNode root = new TreeNode("Packages");
         root.setAttribute("icon", "images/silk/chart_organisation.gif");

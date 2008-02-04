@@ -153,9 +153,7 @@ public class ExplorerNodeConfig {
 								childNode.setUserObject((path.equals("/")) ? current : path + "/" + current);
 								childNode.appendChild(new TreeNode("Please wait..."));
 								childNode.addTreeNodeListener(new TreeNodeListenerAdapter() {
-
 									boolean expanding = false;
-
 
 									public void onExpand(Node node) {
 
@@ -179,8 +177,9 @@ public class ExplorerNodeConfig {
 	}
 
 	private static void infanticide(final TreeNode treeNode) {
-		for (int i = 0; i < treeNode.getChildNodes().length; i++) {
-			treeNode.removeChild(treeNode.getChildNodes()[i]);
+		Node[] children = treeNode.getChildNodes();
+		for (int i = 0; i < children.length; i++) {
+			treeNode.removeChild(children[i]);
 		}
 	}
 
