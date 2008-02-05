@@ -264,7 +264,7 @@ public class PackageBuilderWidget extends Composite {
 	public static String getDownloadLink(PackageConfigData conf) {
 		String hurl = GWT.getModuleBaseURL() + "package/" + conf.name;
 		if (!conf.isSnapshot) {
-			hurl = hurl + "/" + PackageSnapshotView.LATEST_SNAPSHOT;
+			hurl = hurl + "/" + SnapshotView.LATEST_SNAPSHOT;
 		} else {
 			hurl = hurl + "/" + conf.snapshotName;
 		}

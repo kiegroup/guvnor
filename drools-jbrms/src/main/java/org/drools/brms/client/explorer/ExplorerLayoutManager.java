@@ -12,6 +12,7 @@ import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.packages.NewPackageWizard;
+import org.drools.brms.client.packages.SnapshotView;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.SnapshotInfo;
@@ -25,6 +26,7 @@ import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Ext;
 import com.gwtext.client.data.Node;
@@ -36,6 +38,7 @@ import com.gwtext.client.widgets.TabPanelItem;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.ToolbarMenuButton;
+import com.gwtext.client.widgets.event.ButtonListener;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.event.TabPanelItemListener;
 import com.gwtext.client.widgets.event.TabPanelItemListenerAdapter;
@@ -197,6 +200,8 @@ public class ExplorerLayoutManager {
         packagesPanel.add(pkgToolbar);
         packagesPanel.setWidth("100%");
 
+        //deploymentPanel.add(deploymentToolbar());
+
         /** ****************** */
         ContentPanel cp = new ContentPanel("eg-explorer", "BRMS Explorer");
         cp.setWidth(" 100%");
@@ -239,6 +244,8 @@ public class ExplorerLayoutManager {
 
         tpPackageExplorer.setContent(packagesPanel);
         tpDeployment.setContent(deploymentPanel);
+
+
         tpAdmin.setContent(vp4);
 
         //these panels are lazy loaded to easy startup wait time.
@@ -270,6 +277,23 @@ public class ExplorerLayoutManager {
         tree.add(tp);
         layout.add(LayoutRegionConfig.WEST, tree);
     }
+
+	private Widget deploymentToolbar() {
+		Toolbar tb = new Toolbar(Ext.generateId());
+		tb.addButton(new ToolbarButton(new ButtonConfig() {
+			{
+				setText("New deployment snapshot");
+				setButtonListener(new ButtonListenerAdapter() {
+					public void onClick(Button button, EventObject e) {
+
+						super.onClick(button, e);
+					}
+				});
+			}
+		}));
+		// TODO Auto-generated method stub
+		return tb;
+	}
 
 	private Menu rulesNewMenu() {
 		Menu m = new Menu(Ext.generateId());
@@ -493,12 +517,72 @@ public class ExplorerLayoutManager {
         final TreeNode root = new TreeNode("Package snapshots", new TreeNodeConfig() {
         	{
         		setIcon("images/silk/chart_organisation.gif");
+        		setId("snapshotRoot");
         	}
         });
 
 		final TreePanel panel = genericExplorerWidget(root);
         cp.add(panel);
 
+		deploymentListPackages(root);
+
+		panel.addTreePanelListener(new TreePanelListenerAdapter() {
+
+			public void onCollapse(TreeNode node) {
+				Node[] children = node.getChildNodes();
+				for (int i = 0; i < children.length; i++) {
+					node.removeChild(children[i]);
+				}
+				if (node.getId().equals("snapshotRoot")) {
+					deploymentListPackages(root);
+				} else {
+					node.appendChild(new TreeNode("Please wait..."));
+				}
+;			}
+
+			public void onExpand(final TreeNode node) {
+				if (node.getId().equals("snapshotRoot")) {
+					return;
+				}
+				final PackageConfigData conf = (PackageConfigData) node.getUserObject();
+				RepositoryServiceFactory.getService().listSnapshots(conf.name, new GenericCallback() {
+					public void onSuccess(Object data) {
+						final SnapshotInfo[] snaps = (SnapshotInfo[]) data;
+						for (int i = 0; i < snaps.length; i++) {
+							final SnapshotInfo snapInfo = snaps[i];
+							TreeNode snap = new TreeNode(new TreeNodeConfig() {
+								{
+									setQtip(snapInfo.comment);
+									setText(snapInfo.name);
+								}
+							});
+							snap.setUserObject(new Object[] {snapInfo, conf});
+
+							node.appendChild(snap);
+
+						}
+						node.removeChild(node.getFirstChild());
+
+
+					}
+				});
+
+			}
+
+
+			public void onClick(TreeNode node, EventObject e) {
+				if (node.getUserObject() instanceof Object[]) {
+					Object[] o = (Object[]) node.getUserObject();
+					SnapshotInfo snap = (SnapshotInfo) o[0];
+					centertabbedPanel.openSnapshot(snap);
+				}
+			}
+		});
+
+        return cp;
+    }
+
+	private void deploymentListPackages(final TreeNode root) {
 		RepositoryServiceFactory.getService().listPackages(
                 new GenericCallback() {
                     public void onSuccess(Object data) {
@@ -516,54 +600,7 @@ public class ExplorerLayoutManager {
                         root.expand();
                     }
                 });
-
-		panel.addTreePanelListener(new TreePanelListenerAdapter() {
-
-			public void onCollapse(TreeNode node) {
-				Node[] children = node.getChildNodes();
-				for (int i = 0; i < children.length; i++) {
-					node.removeChild(children[i]);
-				}
-				node.appendChild(new TreeNode("Please wait..."));
-;			}
-
-			public void onExpand(final TreeNode node) {
-
-				PackageConfigData conf = (PackageConfigData) node.getUserObject();
-				RepositoryServiceFactory.getService().listSnapshots(conf.name, new GenericCallback() {
-					public void onSuccess(Object data) {
-						final SnapshotInfo[] snaps = (SnapshotInfo[]) data;
-						for (int i = 0; i < snaps.length; i++) {
-							final SnapshotInfo snapInfo = snaps[i];
-							TreeNode snap = new TreeNode(new TreeNodeConfig() {
-								{
-									setQtip(snapInfo.comment);
-									setText(snapInfo.name);
-								}
-							});
-							snap.setUserObject(snapInfo);
-
-							node.appendChild(snap);
-
-						}
-						node.removeChild(node.getFirstChild());
-
-
-					}
-				});
-
-			}
-
-
-			public void onClick(TreeNode node, EventObject e) {
-				if (node.getUserObject() instanceof SnapshotInfo) {
-					SnapshotInfo snap = (SnapshotInfo) node.getUserObject();
-				}
-			}
-		});
-
-        return cp;
-    }
+	}
 
 
     /**
@@ -668,7 +705,8 @@ public class ExplorerLayoutManager {
 		return pn;
 	}
 
-    private TreePanel genericExplorerWidget(final TreeNode childNode) {
+
+    public static TreePanel genericExplorerWidget(final TreeNode childNode) {
         // create and configure the main tree
         final TreePanel menuTree = new TreePanel(Ext.generateId(),
                 new TreePanelConfig() {

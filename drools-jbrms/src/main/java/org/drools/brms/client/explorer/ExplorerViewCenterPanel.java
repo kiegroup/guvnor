@@ -1,28 +1,27 @@
 package org.drools.brms.client.explorer;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.packages.PackageEditor2;
+import org.drools.brms.client.packages.SnapshotView;
 import org.drools.brms.client.packages.SuggestionCompletionCache;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.rpc.SnapshotInfo;
 import org.drools.brms.client.ruleeditor.RuleViewer;
 import org.drools.brms.client.rulelist.EditItemEvent;
 import org.drools.brms.client.rulelist.QuickFindWidget;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.Ext;
 import com.gwtext.client.widgets.TabPanel;
 import com.gwtext.client.widgets.TabPanelItem;
 import com.gwtext.client.widgets.event.TabPanelItemListenerAdapter;
-import com.gwtext.client.widgets.event.TabPanelListener;
 import com.gwtext.client.widgets.layout.ContentPanel;
 
 /**
@@ -31,13 +30,17 @@ import com.gwtext.client.widgets.layout.ContentPanel;
  */
 public class ExplorerViewCenterPanel extends ContentPanel {
 
-	final TabPanel tp = new TabPanel("tab-2");
+	final TabPanel tp;
 	private int index = 0;
 	private HashMap 	openedTabs = new HashMap();
+	private String id = Ext.generateId();
 
 	public ExplorerViewCenterPanel() {
 
 		super(Ext.generateId());
+
+
+		tp = new TabPanel(id);
 
 		tp.setWidth("100%");
 		tp.setHeight("100%");
@@ -56,8 +59,8 @@ public class ExplorerViewCenterPanel extends ContentPanel {
 	 * @param widget The contentx.
 	 * @param key A key which is unique.
 	 */
-	public void addTab (String tabname, boolean closeable, Widget widget, String key) {
-		TabPanelItem localTP = tp.addTab(key, tabname, closeable);
+	public void addTab (String tabname, boolean closeable, Widget widget, final String key) {
+		TabPanelItem localTP = tp.addTab(key + id, tabname, closeable);
 		SimplePanel sp = new SimplePanel();
 		sp.add(widget);
 
@@ -66,7 +69,7 @@ public class ExplorerViewCenterPanel extends ContentPanel {
 
 		localTP.addTabPanelItemListener(new TabPanelItemListenerAdapter() {
 			public void onClose(TabPanelItem tab) {
-				openedTabs.remove(tab.getId());
+				openedTabs.remove(key);
 			}
 		});
 		tp.activate(tp.getCount()-1);
@@ -89,7 +92,7 @@ public class ExplorerViewCenterPanel extends ContentPanel {
 
 
 	public void close(String key) {
-		tp.removeTab(key);
+		tp.removeTab(key + id);
 		openedTabs.remove(key);
 	}
 
@@ -157,6 +160,26 @@ public class ExplorerViewCenterPanel extends ContentPanel {
 					openAsset(uuid);
 				}
 			}), "FIND");
+		}
+	}
+
+
+	public void openSnapshot(final SnapshotInfo snap) {
+
+		if (!showIfOpen(snap.uuid)) {
+			LoadingPopup.showMessage("Loading snapshot...");
+			RepositoryServiceFactory.getService().loadPackageConfig(snap.uuid, new GenericCallback() {
+				public void onSuccess(Object data) {
+					PackageConfigData conf = (PackageConfigData) data;
+					addTab("Snapshot: " + snap.name, true, new SnapshotView(snap, conf, new Command() {
+						public void execute() {
+							close(snap.uuid);
+						}
+					}), snap.uuid);
+					LoadingPopup.close();
+				}
+			});
+
 		}
 	}
 

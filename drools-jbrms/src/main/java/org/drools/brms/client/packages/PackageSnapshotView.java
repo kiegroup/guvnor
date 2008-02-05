@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
  * This contains a list of packages and their deployment snapshots.
- *
+ * @deprecated Use SnapshotView instead.
  * @author Michael Neale
  */
 public class PackageSnapshotView extends Composite {

@@ -47,6 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is the package editor and viewer for package configuration.
+ * This is ALL NEW AND IMPROVED !
  *
  * @author Michael Neale
  */
@@ -115,9 +116,12 @@ public class PackageEditor2 extends PrettyFormLayout {
         }
 
         startSection("Information");
+        if (!conf.isSnapshot) {
+        	addAttribute( "Last modified:", new Label(getDateString(conf.lastModified))  );
+        }
 
-        addAttribute( "Last modified:", new Label(getDateString(conf.lastModified))  );
         addAttribute( "Last contributor:", new Label(this.conf.lasContributor));
+
         addAttribute( "Date created:", new Label(getDateString(this.conf.dateCreated)));
 		Button buildSource = new Button("Show package source");
 		buildSource.addClickListener(new ClickListener() {
