@@ -10,7 +10,6 @@ import org.drools.brms.client.admin.CategoryManager;
 import org.drools.brms.client.admin.StateManager;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.GenericCallback;
-import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.packages.NewPackageWizard;
 import org.drools.brms.client.packages.SnapshotView;
 import org.drools.brms.client.rpc.PackageConfigData;
@@ -24,42 +23,29 @@ import org.drools.brms.client.rulelist.EditItemEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Ext;
 import com.gwtext.client.data.Node;
-import com.gwtext.client.widgets.Button;
-import com.gwtext.client.widgets.ButtonConfig;
 import com.gwtext.client.widgets.QuickTips;
 import com.gwtext.client.widgets.TabPanel;
 import com.gwtext.client.widgets.TabPanelItem;
 import com.gwtext.client.widgets.Toolbar;
-import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.ToolbarMenuButton;
-import com.gwtext.client.widgets.event.ButtonListener;
-import com.gwtext.client.widgets.event.ButtonListenerAdapter;
-import com.gwtext.client.widgets.event.TabPanelItemListener;
 import com.gwtext.client.widgets.event.TabPanelItemListenerAdapter;
 import com.gwtext.client.widgets.form.Field;
 import com.gwtext.client.widgets.layout.BorderLayout;
 import com.gwtext.client.widgets.layout.ContentPanel;
-import com.gwtext.client.widgets.layout.LayoutRegion;
 import com.gwtext.client.widgets.layout.LayoutRegionConfig;
 import com.gwtext.client.widgets.menu.BaseItem;
 import com.gwtext.client.widgets.menu.Item;
 import com.gwtext.client.widgets.menu.ItemConfig;
 import com.gwtext.client.widgets.menu.Menu;
 import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
-import com.gwtext.client.widgets.tree.AsyncTreeNode;
-import com.gwtext.client.widgets.tree.AsyncTreeNodeConfig;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreeNodeConfig;
 import com.gwtext.client.widgets.tree.TreePanel;
 import com.gwtext.client.widgets.tree.TreePanelConfig;
-import com.gwtext.client.widgets.tree.XMLTreeLoader;
-import com.gwtext.client.widgets.tree.XMLTreeLoaderConfig;
 import com.gwtext.client.widgets.tree.event.TreePanelListener;
 import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
 
@@ -200,7 +186,9 @@ public class ExplorerLayoutManager {
         packagesPanel.add(pkgToolbar);
         packagesPanel.setWidth("100%");
 
-        //deploymentPanel.add(deploymentToolbar());
+        Toolbar deployToolbar = new Toolbar(Ext.generateId());
+        deployToolbar.addButton(new ToolbarMenuButton("Deploy...", deploymentMenu()));
+        deploymentPanel.add(deployToolbar);
 
         /** ****************** */
         ContentPanel cp = new ContentPanel("eg-explorer", "BRMS Explorer");
@@ -278,21 +266,33 @@ public class ExplorerLayoutManager {
         layout.add(LayoutRegionConfig.WEST, tree);
     }
 
-	private Widget deploymentToolbar() {
-		Toolbar tb = new Toolbar(Ext.generateId());
-		tb.addButton(new ToolbarButton(new ButtonConfig() {
-			{
-				setText("New deployment snapshot");
-				setButtonListener(new ButtonListenerAdapter() {
-					public void onClick(Button button, EventObject e) {
+	private Menu deploymentMenu() {
 
-						super.onClick(button, e);
-					}
-				});
-			}
-		}));
-		// TODO Auto-generated method stub
-		return tb;
+		Menu m = new Menu(Ext.generateId());
+
+        m.addItem(new Item("New Deployment snapshot", new ItemConfig() {
+        	{
+        		setIcon("images/snapshot_small.gif");
+        		setBaseItemListener(new BaseItemListenerAdapter() {
+        			public void onClick(BaseItem item, EventObject e) {
+        				SnapshotView.showNewSnapshot();
+        			}
+        		});
+        	}
+        }));
+
+        m.addItem(new Item("Rebuild all snapshot binaries", new ItemConfig() {
+        	{
+        		setIcon("images/refresh.gif");
+        		setBaseItemListener(new BaseItemListenerAdapter() {
+        			public void onClick(BaseItem item, EventObject e) {
+        				SnapshotView.rebuildBinaries();
+        			}
+        		});
+        	}
+        }));
+
+        return m;
 	}
 
 	private Menu rulesNewMenu() {

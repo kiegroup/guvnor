@@ -3,7 +3,9 @@ package org.drools.brms.client.packages;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.PrettyFormLayout;
+import org.drools.brms.client.common.RulePackageSelector;
 import org.drools.brms.client.explorer.ExplorerLayoutManager;
 import org.drools.brms.client.explorer.ExplorerNodeConfig;
 import org.drools.brms.client.explorer.ExplorerViewCenterPanel;
@@ -220,6 +222,40 @@ public class SnapshotView extends Composite {
 		});
 		this.gridPanel.add(grid);
 
+	}
+
+	public static void showNewSnapshot() {
+		final FormStylePopup pop = new FormStylePopup("images/snapshot.png", "New snapshot");
+		final RulePackageSelector sel = new RulePackageSelector();
+
+		pop.addAttribute("For package:", sel);
+		Button ok = new Button("OK");
+		pop.addAttribute("", ok);
+		pop.show();
+
+		ok.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				pop.hide();
+				String pkg = sel.getSelectedPackage();
+				PackageBuilderWidget.showSnapshotDialog(pkg);
+			}
+		});
+
+
+	}
+
+	public static void rebuildBinaries() {
+        if (Window.confirm( "Rebuilding the snapshot binaries will take some time, and only needs to be done if" +
+                " the BRMS itself has been updated recently. This will also cause the rule agents to load the rules anew." +
+                " Are you sure you want to do this?" )) {
+            LoadingPopup.showMessage( "Rebuilding snapshots. Please wait, this may take some time..." );
+            RepositoryServiceFactory.getService().rebuildSnapshots( new GenericCallback() {
+                public void onSuccess(Object data) {
+                    LoadingPopup.close();
+                    Window.alert( "Snapshots were rebuilt successfully." );
+                }
+            });
+        }
 	}
 
 }

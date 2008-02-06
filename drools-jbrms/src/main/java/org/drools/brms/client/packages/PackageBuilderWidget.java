@@ -250,7 +250,7 @@ public class PackageBuilderWidget extends Composite {
 		Button snap = new Button("Create snapshot for deployment");
 		snap.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
-				showSnapshotDialog(w);
+				showSnapshotDialog(conf.name);
 			}
 		});
 		vert.add(snap);
@@ -397,7 +397,7 @@ public class PackageBuilderWidget extends Composite {
 	/**
 	 * This will display a dialog for creating a snapshot.
 	 */
-	private void showSnapshotDialog(Widget w) {
+	public static void showSnapshotDialog(final String packageName) {
 		LoadingPopup.showMessage("Loading existing snapshots...");
 		final FormStylePopup form = new FormStylePopup("images/snapshot.png",
 				"Create a snapshot for deployment.");
@@ -412,7 +412,7 @@ public class PackageBuilderWidget extends Composite {
 		final TextBox newName = new TextBox();
 		final String newSnapshotText = "NEW: ";
 
-		RepositoryServiceFactory.getService().listSnapshots(conf.name,
+		RepositoryServiceFactory.getService().listSnapshots(packageName,
 				new GenericCallback() {
 					public void onSuccess(Object data) {
 						SnapshotInfo[] result = (SnapshotInfo[]) data;
@@ -476,7 +476,7 @@ public class PackageBuilderWidget extends Composite {
 				}
 
 				RepositoryServiceFactory.getService().createPackageSnapshot(
-						conf.name, name, replace, comment.getText(),
+						packageName, name, replace, comment.getText(),
 						new GenericCallback() {
 							public void onSuccess(Object data) {
 								Window.alert("The snapshot called: " + name
