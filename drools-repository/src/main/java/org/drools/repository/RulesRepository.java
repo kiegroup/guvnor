@@ -792,7 +792,7 @@ public class RulesRepository {
      * @return an Iterator which will provide RulePackageItem's. This will show
      *         ALL the packages, only returning latest versions, by default.
      */
-    public Iterator listPackages() {
+    public PackageIterator listPackages() {
         Node folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
 
         try {

@@ -15,10 +15,18 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import javax.jcr.version.VersionException;
 
+import org.apache.log4j.Appender;
+import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
+import org.apache.log4j.spi.ErrorHandler;
+import org.apache.log4j.spi.Filter;
+import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * A PackageItem object aggregates a set of assets (for example, rules). This is advantageous for systems using the JBoss Rules
@@ -237,6 +245,18 @@ public class PackageItem extends VersionableItem {
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
+    }
+
+    /**
+     * This will permanently delete this package.
+     */
+    public void remove() {
+    	checkIsUpdateable();
+    	try {
+			this.node.remove();
+		} catch (RepositoryException e) {
+			throw new RulesRepositoryException("Was not able to delete package.", e);
+		}
     }
 
 

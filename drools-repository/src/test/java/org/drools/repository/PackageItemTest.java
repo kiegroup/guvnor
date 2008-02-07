@@ -24,9 +24,29 @@ public class PackageItemTest extends TestCase {
 
         list = iteratorToList( repo.listPackages() );
 
-
-
         assertEquals(prevSize + 1, list.size());
+    }
+
+    public void testPackageRemove() throws Exception {
+        RulesRepository repo = getRepo();
+        PackageItem p = repo.createPackage("removeMe", "");
+        AssetItem a = p.addAsset("Whee", "");
+        a.updateContent("yeah");
+        a.checkin("la");
+        p.addAsset("Waa", "");
+        repo.save();
+
+        int n = iteratorToList(repo.listPackages()).size();
+
+        p = repo.loadPackage("removeMe");
+        p.remove();
+        repo.save();
+
+        int n_ = iteratorToList(repo.listPackages()).size();
+        assertEquals(n - 1, n_);
+
+
+
     }
 
     public void testRulePackageItem() throws Exception {
