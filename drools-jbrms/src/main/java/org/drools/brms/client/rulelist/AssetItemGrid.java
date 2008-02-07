@@ -27,6 +27,7 @@ import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.ruleeditor.EditorLauncher;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.gwtext.client.core.EventObject;
@@ -67,9 +68,11 @@ public class AssetItemGrid extends Composite {
 
     private final EditItemEvent editEvent;
     private SimplePanel layout;
+    private Command 	refresh;
 
     private int currentPosition = 0;
 	protected Store store;
+	private Grid currentGrid;
 
     public AssetItemGrid(final EditItemEvent event, final String tableConfig, final AssetItemGridDataLoader source) {
 
@@ -105,7 +108,9 @@ public class AssetItemGrid extends Composite {
         final int numFlds = rd.getFields().length;
         LoadingPopup.showMessage("Loading data...");
         source.loadData(currentPosition, pageSize, new GenericCallback() {
-            public void onSuccess(Object data) {
+
+
+			public void onSuccess(Object data) {
                 TableDataResult result = (TableDataResult) data;
                 Object[][] gridData = new Object[result.data.length][];
                 for (int i = 0; i < result.data.length; i++) {
@@ -121,29 +126,34 @@ public class AssetItemGrid extends Composite {
                 MemoryProxy proxy = new MemoryProxy(gridData);
                 ArrayReader reader = new ArrayReader(rd);
                 store = new Store(proxy, reader);
-                final Grid g = new Grid(Ext.generateId(), "600px", "600px", store, cm);
-                g.render();
-                g.setLoadMask("Loading data...");
+                currentGrid = new Grid(Ext.generateId(), "600px", "600px", store, cm);
+                currentGrid.render();
+                currentGrid.setLoadMask("Loading data...");
 
-                Toolbar tb = new Toolbar(g.getView().getHeaderPanel(true));
+                Toolbar tb = new Toolbar(currentGrid.getView().getHeaderPanel(true));
                 tb.addItem(new ToolbarTextItem(Format.format(
                                         "Showing item #{0} to {1} of {2} items.",
                                         new String[] {""+(currentPosition + 1), "" + (currentPosition + result.data.length), "" + result.total})));
                 if (currentPosition > 0) {
-                    navButton(source, cm, rd, pageSize, g, false, tb);
+                    navButton(source, cm, rd, pageSize, currentGrid, false, tb);
                 }
                 if (result.hasNext) {
-                    navButton(source, cm, rd, pageSize, g, true, tb);
+                    navButton(source, cm, rd, pageSize, currentGrid, true, tb);
                 }
+
+                refresh = new Command() {
+					public void execute() {
+                        layout.clear();
+                        currentGrid.destroy();
+                        doGrid(source, cm, rd, pageSize);					}
+                };
 
                 tb.addButton(new ToolbarButton(new ButtonConfig() {
                     {
                         setText("Refresh");
                         setButtonListener(new ButtonListenerAdapter() {
                             public void onClick(Button button, EventObject e) {
-                                layout.clear();
-                                g.destroy();
-                                doGrid(source, cm, rd, pageSize);
+                            	refresh.execute();
                             }
                         });
                     }
@@ -151,7 +161,7 @@ public class AssetItemGrid extends Composite {
 
 
 
-                g.addGridRowListener(new GridRowListenerAdapter() {
+                currentGrid.addGridRowListener(new GridRowListenerAdapter() {
                     public void onRowDblClick(Grid grid, int rowIndex, EventObject e) {
                         String uuid = grid.getSelectionModel().getSelected().getAsString("uuid");
                         System.err.println("Opening: " + uuid);
@@ -159,12 +169,22 @@ public class AssetItemGrid extends Composite {
                     }
                 });
                 store.load();
-                layout.add(g);
+                layout.add(currentGrid);
                 LoadingPopup.close();
             }
 
 
         });
+    }
+
+    public String getSelectedRowUUID() {
+    	Record r = currentGrid.getSelectionModel().getSelected();
+    	if (r != null) {
+    		return r.getAsString("uuid");
+    	} else {
+    		return null;
+    	}
+
     }
 
     private void navButton(final AssetItemGridDataLoader source,
@@ -244,6 +264,10 @@ public class AssetItemGrid extends Composite {
 
 
         return new ColumnModel(cfgs);
+    }
+
+    public void refreshGrid() {
+    	this.refresh.execute();
     }
 
 

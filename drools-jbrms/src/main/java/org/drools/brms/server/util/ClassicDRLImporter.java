@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
-import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.RuleDescr;
 
 /**

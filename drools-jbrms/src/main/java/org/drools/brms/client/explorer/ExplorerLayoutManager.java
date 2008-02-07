@@ -7,6 +7,7 @@ import org.drools.brms.client.LoggedInUserInfo;
 import org.drools.brms.client.admin.ArchivedAssetManager;
 import org.drools.brms.client.admin.BackupManager;
 import org.drools.brms.client.admin.CategoryManager;
+import org.drools.brms.client.admin.LogViewer;
 import org.drools.brms.client.admin.StateManager;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.GenericCallback;
@@ -60,6 +61,8 @@ public class ExplorerLayoutManager {
     ExplorerViewCenterPanel centertabbedPanel;
 
 	private VerticalPanel packagesPanel;
+
+	protected String currentPackage;
 
     public BorderLayout getBaseLayout() {
         return layout;
@@ -189,6 +192,7 @@ public class ExplorerLayoutManager {
         Toolbar deployToolbar = new Toolbar(Ext.generateId());
         deployToolbar.addButton(new ToolbarMenuButton("Deploy...", deploymentMenu()));
         deploymentPanel.add(deployToolbar);
+        deploymentPanel.setWidth("100%");
 
         /** ****************** */
         ContentPanel cp = new ContentPanel("eg-explorer", "BRMS Explorer");
@@ -202,20 +206,26 @@ public class ExplorerLayoutManager {
                 int id = Integer.parseInt(self.getAttribute("id"));
                 switch (id) {
                 case 0:
-                    centertabbedPanel.addTab("Category Manager", true, new CategoryManager(), "catman");
+                	if (!centertabbedPanel.showIfOpen("catman"))
+                		centertabbedPanel.addTab("Category Manager", true, new CategoryManager(), "catman");
                     break;
                 case 1:
-                    centertabbedPanel.addTab("Archived Manager", true, new ArchivedAssetManager(), "archman");
+                	if (!centertabbedPanel.showIfOpen("archman"))
+                		centertabbedPanel.addTab("Archived Manager", true, new ArchivedAssetManager(centertabbedPanel), "archman");
                     break;
 
                 case 2:
-                    centertabbedPanel.addTab("State Manager", true, new StateManager(), "stateman");
+                	if (!centertabbedPanel.showIfOpen("stateman"))
+                		centertabbedPanel.addTab("State Manager", true, new StateManager(), "stateman");
                     break;
                 case 3:
-                    centertabbedPanel.addTab("Backup Manager", true, new BackupManager(), "bakman");
+                	if (!centertabbedPanel.showIfOpen("bakman"))
+                		centertabbedPanel.addTab("Backup Manager", true, new BackupManager(), "bakman");
                     break;
 
                 case 4:
+                	if (!centertabbedPanel.showIfOpen("errorLog"))
+                		centertabbedPanel.addTab("Backup Manager", true, new LogViewer(), "errorLog");
                     break;
                 }
 
@@ -381,7 +391,7 @@ public class ExplorerLayoutManager {
         		setIcon("images/rule_asset.gif");
         		setBaseItemListener(new BaseItemListenerAdapter() {
         			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(null, "New Rule", true);
+        				launchWizard(null, "New Rule", true, currentPackage);
         			}
         		});
         	}
@@ -391,7 +401,7 @@ public class ExplorerLayoutManager {
         		setIcon("images/model_asset.gif");
         		setBaseItemListener(new BaseItemListenerAdapter() {
         			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(AssetFormats.MODEL, "New model archive (jar)", false);
+        				launchWizard(AssetFormats.MODEL, "New model archive (jar)", false, currentPackage);
         			}
         		});
         	}
@@ -401,7 +411,7 @@ public class ExplorerLayoutManager {
         		setIcon("images/function_assets.gif");
         		setBaseItemListener(new BaseItemListenerAdapter() {
         			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(AssetFormats.FUNCTION, "Create a new function", false);
+        				launchWizard(AssetFormats.FUNCTION, "Create a new function", false, currentPackage);
         			}
         		});
         	}
@@ -411,7 +421,7 @@ public class ExplorerLayoutManager {
         		setIcon("images/dsl.gif");
         		setBaseItemListener(new BaseItemListenerAdapter() {
         			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(AssetFormats.DSL, "Create a new DSL configuration", false);
+        				launchWizard(AssetFormats.DSL, "Create a new DSL configuration", false, currentPackage);
         			}
         		});
         	}
@@ -422,7 +432,7 @@ public class ExplorerLayoutManager {
         		setIcon("images/ruleflow_small.gif");
         		setBaseItemListener(new BaseItemListenerAdapter() {
         			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(AssetFormats.RULE_FLOW_RF, "Create a new RuleFlow", false);
+        				launchWizard(AssetFormats.RULE_FLOW_RF, "Create a new RuleFlow", false, currentPackage);
         			}
         		});
         	}
@@ -434,7 +444,7 @@ public class ExplorerLayoutManager {
         		setBaseItemListener(new BaseItemListenerAdapter() {
         			public void onClick(BaseItem item, EventObject e) {
         				launchWizard(AssetFormats.ENUMERATION,
-                                "Create a new enumeration (drop down mapping).", false);
+                                "Create a new enumeration (drop down mapping).", false, currentPackage);
         			}
         		});
         	}
@@ -446,7 +456,7 @@ public class ExplorerLayoutManager {
         		setBaseItemListener(new BaseItemListenerAdapter() {
         			public void onClick(BaseItem item, EventObject e) {
         				launchWizard(AssetFormats.TEST_SCENARIO,
-                                "Create a test scenario.", false);
+                                "Create a test scenario.", false, currentPackage);
         			}
         		});
         	}
@@ -458,7 +468,7 @@ public class ExplorerLayoutManager {
 	}
 
     private void launchWizard(String format,
-            String title, boolean showCats) {
+            String title, boolean showCats, String currentlySelectedPackage) {
 
     	NewAssetWizard pop = new NewAssetWizard( new EditItemEvent() {
                                    public void open(String key) {
@@ -468,10 +478,17 @@ public class ExplorerLayoutManager {
                                showCats,
                                format,
                                title,
-                               null );
+                               currentlySelectedPackage );
 
     	pop.show();
     }
+
+
+    private void launchWizard(String format,
+            String title, boolean showCats) {
+    	launchWizard(format, title, showCats, null);
+    }
+
 
 
     private TreePanel basicTreeStructure(TreeNode basenode, TreePanelListenerAdapter listener) {
@@ -623,7 +640,9 @@ public class ExplorerLayoutManager {
         TreePanelListener treePanelListener = new TreePanelListenerAdapter() {
             public void onClick(TreeNode node, EventObject e) {
         		if (node.getUserObject() instanceof PackageConfigData) {
-        			String uuid = ((PackageConfigData) node.getUserObject()).uuid;
+        			PackageConfigData pc = (PackageConfigData) node.getUserObject();
+        			currentPackage = pc.name;
+        			String uuid = pc.uuid;
 		        			centertabbedPanel.openPackageEditor(uuid, new Command() {
 								public void execute() {
 									//refresh the package tree.
@@ -634,6 +653,7 @@ public class ExplorerLayoutManager {
         			Object[] uo = (Object[]) node.getUserObject();
         			final String[] fmts = (String[]) uo[0];
         			final PackageConfigData pc = (PackageConfigData) node.getParentNode().getUserObject();
+        			currentPackage = pc.name;
         			String key = key(fmts, pc);
         			if (!centertabbedPanel.showIfOpen(key)) {
                         AssetItemGrid list = new AssetItemGrid(new EditItemEvent() {

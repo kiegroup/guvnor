@@ -51,6 +51,8 @@ public class ServiceImplementationTest extends TestCase {
 		// ServiceImpl impl = new ServiceImpl(new
 		// RulesRepository(SessionHelper.getSession()));
 
+
+
 		RepositoryService impl = getService();
 
 		String[] originalCats = impl.loadChildCategories("/");
@@ -387,12 +389,33 @@ public class ServiceImplementationTest extends TestCase {
 
 		PackageConfigData[] pkgs = impl.listPackages();
 
+		PackageConfigData[] arch = impl.listArchivedPackages();
+
 		String uuid = impl.createPackage("testCreateArchivedPackage",
 				"this is a new package");
+
+
 		PackageItem item = impl.repository
 				.loadPackage("testCreateArchivedPackage");
+		TableDataResult td = impl.loadArchivedAssets(0, 1000);
+
 		item.archiveItem(true);
+
+
+
+		TableDataResult td2 = impl.loadArchivedAssets(0, 1000);
+		assertEquals(td2.data.length, td.data.length);
+
+		PackageConfigData[] arch2 = impl.listArchivedPackages();
+		assertEquals(arch2.length, arch.length + 1);
+
+
+
 		assertEquals(pkgs.length, impl.listPackages().length);
+
+		item.archiveItem(false);
+		arch2 = impl.listArchivedPackages();
+		assertEquals(arch2.length, arch.length);
 	}
 
 	public void testCreatePackage() throws Exception {
@@ -790,6 +813,17 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(3, res.data.length);
 	}
 
+	public void testRemovePackage() throws Exception {
+		ServiceImplementation impl = getService();
+		int n = impl.listPackages().length;
+		PackageItem p = impl.repository.createPackage("testRemovePackage", "");
+		assertNotNull(impl.loadPackageConfig(p.getUUID()));
+
+		impl.removePackage(p.getUUID());
+		assertEquals(n, impl.listPackages().length);
+	}
+
+
 	public void testArchiveAsset() throws Exception {
 		RepositoryService impl = getService();
 		String cat = "testArchiveAsset";
@@ -813,7 +847,12 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(4, res.total);
 		assertFalse(res.hasNext);
 
+		TableDataResult td = impl.loadArchivedAssets(0, 1000);
+
 		impl.archiveAsset(uuid4, true);
+
+		TableDataResult td2 = impl.loadArchivedAssets(0, 1000);
+		assertTrue(td2.data.length == td.data.length + 1);
 
 		res = impl.listAssets(pkgUUID, arr("testArchiveAsset"), 0, -1);
 		assertEquals(3, res.data.length);
@@ -822,6 +861,9 @@ public class ServiceImplementationTest extends TestCase {
 
 		res = impl.listAssets(pkgUUID, arr("testArchiveAsset"), 0, -1);
 		assertEquals(4, res.data.length);
+
+
+
 
 	}
 
@@ -1717,8 +1759,6 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals("com.billasurf.Person", s[0]);
 		assertEquals("com.billasurf.Board", s[1]);
 	}
-
-
 
 
 	private ServiceImplementation getService() throws Exception {

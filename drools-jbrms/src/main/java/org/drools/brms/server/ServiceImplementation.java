@@ -53,6 +53,7 @@ import org.drools.brms.client.rpc.AnalysisReport;
 import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.BulkTestRunResult;
 import org.drools.brms.client.rpc.DetailedSerializableException;
+import org.drools.brms.client.rpc.LogEntry;
 import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryService;
@@ -73,6 +74,7 @@ import org.drools.brms.server.contenthandler.IValidating;
 import org.drools.brms.server.contenthandler.ModelContentHandler;
 import org.drools.brms.server.util.AnalysisRunner;
 import org.drools.brms.server.util.BRMSSuggestionCompletionLoader;
+import org.drools.brms.server.util.LoggingHelper;
 import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.common.AbstractRuleBase;
@@ -89,6 +91,7 @@ import org.drools.repository.AssetItemIterator;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.AssetPageList;
 import org.drools.repository.PackageItem;
+import org.drools.repository.PackageIterator;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryAdministrator;
 import org.drools.repository.RulesRepositoryException;
@@ -122,7 +125,7 @@ public class ServiceImplementation
 
     private static final long serialVersionUID = 400L;
     private static final DateFormat dateFormatter = DateFormat.getInstance();
-    private static final Logger log = Logger.getLogger( ServiceImplementation.class );
+    private static final Logger log = LoggingHelper.getLogger();
     private MetaDataMapper metaDataMapper = new MetaDataMapper();
 
     /** Used for a simple cache of binary packages to avoid serialization from the database */
@@ -142,7 +145,9 @@ public class ServiceImplementation
 
     }
 
-    @WebRemote
+
+
+	@WebRemote
     @Restrict("#{identity.loggedIn}")
     public Boolean createCategory(String path,
                                   String name,
@@ -245,16 +250,32 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public PackageConfigData[] listPackages() {
-        Iterator pkgs = repository.listPackages();
-        List<PackageConfigData> result = new ArrayList<PackageConfigData>();
+        return listPackages(false);
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public PackageConfigData[] listArchivedPackages() {
+        return listPackages(true);
+    }
+
+
+	private PackageConfigData[] listPackages(boolean archive) {
+		List<PackageConfigData> result = new ArrayList<PackageConfigData>();
+		PackageIterator pkgs = repository.listPackages();
+		pkgs.setArchivedIterator(archive);
         while(pkgs.hasNext()) {
             PackageItem pkg = (PackageItem) pkgs.next();
 
             PackageConfigData data = new PackageConfigData();
             data.uuid = pkg.getUUID();
             data.name = pkg.getName();
-
-            result.add( data );
+            data.archived = pkg.isArchived();
+            if (!archive) {
+            	result.add(data);
+            } else if (archive && data.archived) {
+            	result.add(data);
+            }
         }
 
         Collections.sort( result, new Comparator<Object>() {
@@ -268,9 +289,8 @@ public class ServiceImplementation
 
         });
         PackageConfigData[] resultArr = result.toArray( new PackageConfigData[result.size()] );
-
-        return resultArr;
-    }
+		return resultArr;
+	}
 
 
     @WebRemote
@@ -484,13 +504,14 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public TableDataResult loadArchivedAssets() throws SerializableException {
-
+    public TableDataResult loadArchivedAssets(int skip, int numRows) throws SerializableException {
         List<TableDataRow> result = new ArrayList<TableDataRow>();
 
         AssetItemIterator it = repository.findArchivedAssets();
-
+        it.skip(skip);
+        int count = 0;
         while ( it.hasNext() ) {
+
             AssetItem archived = (AssetItem) it.next();
 
             TableDataRow row = new TableDataRow();
@@ -504,11 +525,13 @@ public class ServiceImplementation
                 row.values[4] = archived.getLastModified().getTime().toLocaleString();
 
                 result.add( row );
+                count++;
+                if (count == numRows) {
+                	break;
+                }
         }
 
-        if (result.size() == 0) {
-            return null;
-        }
+
 
         TableDataResult table = new TableDataResult();
         table.data = result.toArray(new TableDataRow[result.size()]);
@@ -1016,6 +1039,20 @@ public class ServiceImplementation
         }
     }
 
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void removePackage(String uuid) {
+        try {
+            PackageItem item = repository.loadPackageByUUID(uuid);
+            item.remove();
+            repository.save();
+        } catch (RulesRepositoryException e) {
+            log.error( e );
+            throw e;
+        }
+    }
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String renamePackage(String uuid, String newName) {
@@ -1288,7 +1325,12 @@ public class ServiceImplementation
 
 	}
 
+	@WebRemote
+    @Restrict("#{identity.loggedIn}")
+	public LogEntry[] showLog() {
+		return LoggingHelper.getMessages();
 
+	}
 
 
 

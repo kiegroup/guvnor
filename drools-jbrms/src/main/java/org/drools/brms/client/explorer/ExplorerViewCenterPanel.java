@@ -127,6 +127,7 @@ public class ExplorerViewCenterPanel extends ContentPanel {
 	}
 
 
+
 	/**
 	 * Open a package editor if it is not already open.
 	 */

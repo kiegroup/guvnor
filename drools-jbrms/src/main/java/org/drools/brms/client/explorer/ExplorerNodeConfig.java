@@ -78,11 +78,10 @@ public class ExplorerNodeConfig {
 
 		String[][] adminStructure = new String[][] {
 				{ "Categories", "images/category_small.gif" }, // ID 0
-				{ "Archived Assets", "images/backup_small.gif" }, // ID 1
-				{ "State", "images/tag.png" }, // ID 2
-				{ "Import/Export", "images/save_edit.gif" }, // ID 3
-				{ "Users", "images/icoUsers.gif" }, // ID 4
-				{ "Security", "images/login.gif" } }; // ID 5
+				{ "Archived Items", "images/backup_small.gif" }, // ID 1
+				{ "Statuses", "images/tag.png" }, // ID 2
+				{ "Import/Export", "images/save_edit.gif" }, //ID 3
+				{ "Error log", "images/error.gif" }}; // ID 4
 
 		for (int i = 0; i < adminStructure.length; i++) {
 

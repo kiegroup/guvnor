@@ -88,6 +88,12 @@ public interface RepositoryService extends RemoteService {
     public PackageConfigData[] listPackages();
 
     /**
+     * This returns a list of archived packages.
+     */
+    public PackageConfigData[] listArchivedPackages();
+
+
+    /**
      * This loads up all the stuff for a
      * rule asset based on the UUID (always latest and editable version).
      */
@@ -106,7 +112,7 @@ public interface RepositoryService extends RemoteService {
      * for display in a table.
      */
 
-    public TableDataResult loadArchivedAssets() throws SerializableException;
+    public TableDataResult loadArchivedAssets(int skip, int numRows) throws SerializableException;
 
 
     /**
@@ -307,6 +313,12 @@ public interface RepositoryService extends RemoteService {
     public void removeAsset(String uuid);
 
     /**
+     * Permanently remove a package (delete it).
+     * @param uuid of the package.
+     */
+    public void removePackage(String uuid);
+
+    /**
      * Rename a package.
      */
     public String renamePackage(String uuid, String newName);
@@ -352,4 +364,9 @@ public interface RepositoryService extends RemoteService {
      * (eg in jars that have been uploaded to it as an asset).
      */
     public String[] listTypesInPackage(String packageUUID) throws SerializableException;
+
+    /**
+     * This will list the last N log entryies logged by the server. For debugging purposes in the GUI.
+     */
+    public LogEntry[] showLog();
 }

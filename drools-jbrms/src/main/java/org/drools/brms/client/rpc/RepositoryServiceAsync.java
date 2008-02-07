@@ -43,9 +43,10 @@ public interface RepositoryServiceAsync
 	public void exportRepository(AsyncCallback cb);
 	public void clearRulesRepository(AsyncCallback cb);
 	public void listPackages(AsyncCallback cb);
+	public void listArchivedPackages(AsyncCallback cb);
 	public void loadRuleAsset(java.lang.String p0, AsyncCallback cb);
 	public void loadAssetHistory(java.lang.String p0, AsyncCallback cb);
-	public void loadArchivedAssets(AsyncCallback cb);
+	public void loadArchivedAssets(int p0, int p1, AsyncCallback cb);
 	public void checkinVersion(org.drools.brms.client.rpc.RuleAsset p0, AsyncCallback cb);
 	public void restoreVersion(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback cb);
 	public void createPackage(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
@@ -71,6 +72,7 @@ public interface RepositoryServiceAsync
 	public void renameAsset(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
 	public void archiveAsset(java.lang.String p0, boolean p1, AsyncCallback cb);
 	public void removeAsset(java.lang.String p0, AsyncCallback cb);
+	public void removePackage(java.lang.String p0, AsyncCallback cb);
 	public void renamePackage(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
 	public void rebuildSnapshots(AsyncCallback cb);
 	public void listRulesInPackage(java.lang.String p0, AsyncCallback cb);
@@ -78,5 +80,9 @@ public interface RepositoryServiceAsync
 	public void runScenariosInPackage(java.lang.String p0, AsyncCallback cb);
 	public void analysePackage(java.lang.String p0, AsyncCallback cb);
 	public void listTypesInPackage(java.lang.String p0, AsyncCallback cb);
+	public void showLog(AsyncCallback cb);
+
+
+
 
 }
