@@ -18,10 +18,10 @@ package org.drools.brms.client.admin;
 
 
 import org.drools.brms.client.common.ErrorPopup;
-import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.HTMLFileManagerFields;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.LoadingPopup;
+import org.drools.brms.client.common.PrettyFormLayout;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -48,20 +48,21 @@ public class BackupManager extends Composite {
 
     public BackupManager() {
 
-        FormStyleLayout widtab = new FormStyleLayout( "images/backup_large.png",
-                                                      "Import/Export" );
 
+
+        PrettyFormLayout widtab = new PrettyFormLayout( );
+        widtab.addHeader("images/backup_large.png",  new HTML("<b>Import/Export</b>"));
+
+        widtab.startSection("Import from an xml file");
         widtab.addAttribute( "",
-                             new HTML( "<i>Import and Export rules repository</i>" ) );
-        widtab.addRow( new HTML( "<hr/>" ) );
-        widtab.addAttribute( "Import from an xml file",
                              newImportWidget() );
-        widtab.addAttribute( "Export to a zip file",
-                             newExportWidget() );
-        widtab.addRow( new HTML( "<hr/>" ) );
-//        widtab.addAttribute( "Delete rules repository",
-//                             cleanRepository() );
+        widtab.endSection();
 
+        widtab.startSection("Export to a zip file");
+        widtab.addAttribute( "",
+                             newExportWidget() );
+
+        widtab.endSection();
         initWidget( widtab );
 
     }
@@ -161,13 +162,15 @@ public class BackupManager extends Composite {
 
     private void exportRepository() {
 
-        LoadingPopup.showMessage( "Exporting repository, please wait, as this could take some time..." );
+    	if (Window.confirm("Export the repository? This may take some time.")) {
+	        LoadingPopup.showMessage( "Exporting repository, please wait, as this could take some time..." );
 
-        Window.open( GWT.getModuleBaseURL() + "backup?" + HTMLFileManagerFields.FORM_FIELD_REPOSITORY + "=true",
-        "downloading",
-        "resizable=no,scrollbars=yes,status=no" );
+	        Window.open( GWT.getModuleBaseURL() + "backup?" + HTMLFileManagerFields.FORM_FIELD_REPOSITORY + "=true",
+	        "downloading",
+	        "resizable=no,scrollbars=yes,status=no" );
 
-        LoadingPopup.close();
+	        LoadingPopup.close();
+    	}
     }
 
 }

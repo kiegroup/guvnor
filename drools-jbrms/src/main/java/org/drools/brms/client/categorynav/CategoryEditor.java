@@ -18,6 +18,7 @@ package org.drools.brms.client.categorynav;
 
 
 import org.drools.brms.client.common.ErrorPopup;
+import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
@@ -36,29 +37,19 @@ import com.google.gwt.user.client.ui.Widget;
  * This provides a popup for editing a category (name etc).
  * Mainly this is for creating a new category.
  */
-public class CategoryEditor extends PopupPanel {
+public class CategoryEditor extends FormStylePopup {
 
     private String path;
-    private FlexTable table = new FlexTable(); //Using this table for the form layout
     private TextBox name = new TextBox();
     private TextArea description = new TextArea();
 
 
     /** This is used when creating a new category */
     public CategoryEditor(String catPath) {
-        super(true);
+    	super("images/edit_category.gif", getTitle(catPath));
         path = catPath;
 
-        table.setWidget( 0, 0, new ImageButton("images/edit_category.gif") );
-
-        table.setWidget( 0, 1, new Label(getTitle( path )));
-
-        table.setWidget( 1, 0, new Label("Category name") );
-        table.setWidget( 1, 1, name );
-
-        description.setVisibleLines( 4 );
-        table.setWidget( 2, 0, new Label("Description") );
-        table.setWidget( 2, 1, description );
+        addAttribute("Category name", name);
 
         Button ok = new Button("OK");
         ok.addClickListener( new ClickListener() {
@@ -67,24 +58,10 @@ public class CategoryEditor extends PopupPanel {
             }
 
         });
-
-        table.setWidget( 3, 0, ok );
-
-        Button cancel = new Button("Cancel");
-        cancel.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                cancel();
-            }
-
-        });
-
-        table.setWidget( 3, 1, cancel );
-
-        add( table );
-        setStyleName( "ks-popups-Popup" );
+        addAttribute("", ok);
     }
 
-    private String getTitle(String catPath) {
+    private static String getTitle(String catPath) {
         if (catPath == null) {
             return "Create a new top level category.";
         } else {

@@ -225,7 +225,7 @@ public class ExplorerLayoutManager {
 
                 case 4:
                 	if (!centertabbedPanel.showIfOpen("errorLog"))
-                		centertabbedPanel.addTab("Backup Manager", true, new LogViewer(), "errorLog");
+                		centertabbedPanel.addTab("Error Log", true, new LogViewer(), "errorLog");
                     break;
                 }
 

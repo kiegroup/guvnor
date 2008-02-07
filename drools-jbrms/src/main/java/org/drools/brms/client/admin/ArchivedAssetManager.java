@@ -31,14 +31,11 @@ import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 public class ArchivedAssetManager extends Composite {
 
 
-    HorizontalPanel           layout;
 	private AssetItemGrid grid;
 	private ListBox packages = new ListBox(true);
 
     public ArchivedAssetManager(final ExplorerViewCenterPanel tab) {
 
-    	VerticalPanel layout = new VerticalPanel();
-    	layout.setWidth("100%");
 
         PrettyFormLayout pf = new PrettyFormLayout();
 
@@ -47,7 +44,8 @@ public class ArchivedAssetManager extends Composite {
 
         pf.addHeader("images/backup_large.png", header);
 
-        layout.add(pf);
+
+
 
         EditItemEvent edit = new EditItemEvent () {
             public void open(String key) {
@@ -64,8 +62,6 @@ public class ArchivedAssetManager extends Composite {
 
         loadPackages();
         Toolbar tb = new Toolbar(Ext.generateId());
-        tb.addItem(new ToolbarTextItem("Archived packages:"));
-        tb.addItem(new ToolbarSeparator());
         tb.addButton(new ToolbarButton(new ButtonConfig() {
         	{
         		setButtonListener(new ButtonListenerAdapter() {
@@ -106,13 +102,15 @@ public class ArchivedAssetManager extends Composite {
         }));
 
 
+        pf.startSection("Archived packages");
 
-        layout.add(tb);
-        layout.add(packages);
+        pf.addRow(tb);
+        pf.addRow(packages);
+
+
+        pf.endSection();
 
         tb = new Toolbar(Ext.generateId());
-        tb.addItem(new ToolbarTextItem("Archived assets:"));
-        tb.addItem(new ToolbarSeparator());
         tb.addButton(new ToolbarButton(new ButtonConfig() {
         	{
         		setText("Restore selected asset");
@@ -160,13 +158,15 @@ public class ArchivedAssetManager extends Composite {
         		});
         	}
         }));
-        layout.add(tb);
+        pf.startSection("Archived assets");
+        pf.addRow(tb);
 
-        layout.add(grid);
+        pf.addRow(grid);
+
+        pf.endSection();
 
 
-
-        initWidget( layout );
+        initWidget( pf );
     }
 
 
@@ -206,6 +206,9 @@ public class ArchivedAssetManager extends Composite {
 				PackageConfigData[] configs = (PackageConfigData[]) data;
 				for (int i = 0; i < configs.length; i++) {
 						packages.addItem(configs[i].name, configs[i].uuid);
+				}
+				if (configs.length == 0) {
+					packages.addItem("-- no archived packages --");
 				}
 			}
     	});

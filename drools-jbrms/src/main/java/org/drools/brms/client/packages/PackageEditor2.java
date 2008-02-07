@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is the package editor and viewer for package configuration.
- * This is ALL NEW AND IMPROVED !
+ * This is ALL NEW AND IMPROVED ! This one is actually used.
  *
  * @author Michael Neale
  */
@@ -76,7 +76,10 @@ public class PackageEditor2 extends PrettyFormLayout {
     private void refreshWidgets() {
         clear();
 
-        startSection("Package name: [" + conf.name + "]");
+
+
+
+
 
 
         FlexTable headerWidgets = new FlexTable();
@@ -85,10 +88,12 @@ public class PackageEditor2 extends PrettyFormLayout {
         if (!conf.isSnapshot) {
 
         	//headerWidgets.setWidget(1, 1, modifyWidgets() );
-        	addAttribute("Modify:", modifyWidgets());
+        	headerWidgets.setWidget(1, 0, modifyWidgets());
+        	headerWidgets.getFlexCellFormatter().setColSpan(1, 0, 2);
         }
 
-        endSection();
+        addHeader("images/package_large.png", headerWidgets);
+
 
         //addHeader( "images/package_large.png", headerWidgets );
 
