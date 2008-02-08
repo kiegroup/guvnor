@@ -11,6 +11,7 @@ import org.drools.brms.client.rulelist.AssetItemGrid;
 import org.drools.brms.client.rulelist.AssetItemGridDataLoader;
 import org.drools.brms.client.rulelist.EditItemEvent;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -30,10 +31,12 @@ public class ScenarioPackageView extends Composite {
 
 	private VerticalPanel layout;
 
+	private AssetItemGrid grid;
+
 	public ScenarioPackageView(final String packageUUID, String packageName, EditItemEvent editEvent, ExplorerViewCenterPanel centerPanel) {
 		this.editEvent = editEvent;
 
-		AssetItemGrid grid = new AssetItemGrid(editEvent, AssetItemGrid.RULE_LIST_TABLE_ID, new AssetItemGridDataLoader() {
+		grid = new AssetItemGrid(editEvent, AssetItemGrid.RULE_LIST_TABLE_ID, new AssetItemGridDataLoader() {
 			public void loadData(int startRow, int numberOfRows,
 					GenericCallback cb) {
 				RepositoryServiceFactory.getService().listAssets(packageUUID, new String[] {AssetFormats.TEST_SCENARIO},
@@ -69,6 +72,12 @@ public class ScenarioPackageView extends Composite {
 
 	}
 
+	private void refreshShowGrid() {
+		layout.remove(1);
+		layout.add(grid);
+	}
+
+
 	/**
 	 * Run all the scenarios, obviously !
 	 */
@@ -77,7 +86,12 @@ public class ScenarioPackageView extends Composite {
 		RepositoryServiceFactory.getService().runScenariosInPackage(uuid, new GenericCallback() {
 			public void onSuccess(Object data) {
 				BulkTestRunResult d = (BulkTestRunResult) data;
-				BulkRunResultWidget w = new BulkRunResultWidget(d, editEvent);
+				BulkRunResultWidget w = new BulkRunResultWidget(d, editEvent, new Command() {
+					public void execute() {
+						refreshShowGrid();
+					}
+
+				});
 				layout.remove(1);
 				layout.add(w);
 				LoadingPopup.close();

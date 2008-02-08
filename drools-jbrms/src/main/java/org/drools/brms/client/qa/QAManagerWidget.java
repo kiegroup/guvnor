@@ -136,7 +136,7 @@ public class QAManagerWidget extends Composite {
 		RepositoryServiceFactory.getService().analysePackage(this.currentUUID, new GenericCallback() {
 			public void onSuccess(Object data) {
 				AnalysisReport rep = (AnalysisReport) data;
-				AnalysisResultWidget w = new AnalysisResultWidget(currentlySelectedPackage, rep);
+				AnalysisResultWidget w = new AnalysisResultWidget(rep);
 				tab.add(w, "<img src='images/package_build.gif'/>" + currentlySelectedPackage, true);
 				tab.selectTab(tab.getWidgetIndex(w));
 				LoadingPopup.close();
@@ -153,7 +153,7 @@ public class QAManagerWidget extends Composite {
 		RepositoryServiceFactory.getService().runScenariosInPackage(currentUUID, new GenericCallback() {
 			public void onSuccess(Object data) {
 				BulkTestRunResult d = (BulkTestRunResult) data;
-				BulkRunResultWidget w = new BulkRunResultWidget(d, editEvent);
+				BulkRunResultWidget w = new BulkRunResultWidget(d, editEvent, null);
 				tab.add(w, "<img src='images/tick_green.gif'/>" + currentlySelectedPackage, true);
 				tab.selectTab(tab.getWidgetIndex(w));
 				LoadingPopup.close();

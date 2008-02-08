@@ -19,8 +19,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class AnalysisResultWidget extends Composite {
 
-	public AnalysisResultWidget(String packageName, AnalysisReport report) {
-		FormStyleLayout layout = new FormStyleLayout("images/analyse_large.png", "Analysis of package: " + packageName);
+	public AnalysisResultWidget(AnalysisReport report) {
+		FormStyleLayout layout = new FormStyleLayout();
 
 		Tree t = new Tree();
 
@@ -59,6 +59,8 @@ public class AnalysisResultWidget extends Composite {
 
 
 		for (int i = 0; i < factUsages.length; i++) {
+
+			System.err.println("fact usage !");
 			AnalysisFactUsage fu = factUsages[i];
 			TreeItem fact = new TreeItem(new HTML("<img src='images/fact.gif'/>" + fu.name));
 

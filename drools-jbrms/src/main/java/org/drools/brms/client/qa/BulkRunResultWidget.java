@@ -1,6 +1,6 @@
 package org.drools.brms.client.qa;
 
-import org.drools.brms.client.common.FormStyleLayout;
+import org.drools.brms.client.common.PrettyFormLayout;
 import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.packages.PackageBuilderWidget;
 import org.drools.brms.client.rpc.BuilderResult;
@@ -8,6 +8,7 @@ import org.drools.brms.client.rpc.BulkTestRunResult;
 import org.drools.brms.client.rpc.ScenarioResultSummary;
 import org.drools.brms.client.rulelist.EditItemEvent;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -28,14 +29,14 @@ public class BulkRunResultWidget extends Composite {
 
 	private BulkTestRunResult result;
 	private EditItemEvent editEvent;
-	private FormStyleLayout layout;
+	private PrettyFormLayout layout;
 	private SimplePanel parent;
-	private String packageName;
+	private Command close;
 
 
-	public BulkRunResultWidget(BulkTestRunResult result, EditItemEvent editEvent) {
+	public BulkRunResultWidget(BulkTestRunResult result, EditItemEvent editEvent, Command close) {
 
-
+		this.close = close;
 		this.result = result;
 		this.editEvent = editEvent;
 		parent = new SimplePanel();
@@ -96,6 +97,8 @@ public class BulkRunResultWidget extends Composite {
 		}
 		resultsH.add(new SmallLabel("&nbsp;" + totalFailures + " failures out of " + grandTotal + " expectations."));
 
+		layout.startSection();
+
 		layout.addAttribute("Overall result:", new HTML((totalFailures==0) ? "<b>SUCCESS</b>" : "<b>FAILURE</b>"));
 
 
@@ -110,6 +113,7 @@ public class BulkRunResultWidget extends Composite {
 		}
 
 		coveredH.add(new SmallLabel("&nbsp;" + result.percentCovered + "% of the rules were tested."));
+
 		layout.addAttribute("Rules covered:", coveredH);
 
 
@@ -130,16 +134,30 @@ public class BulkRunResultWidget extends Composite {
 		}
 
 
+		layout.endSection();
 
-		layout.addAttribute("Scenarios:", summaryTable);
+		layout.startSection("Scenarios");
+
+		layout.addAttribute("", summaryTable);
+
+		Button c = new Button("Close");
+		c.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				close.execute();
+			}
+		});
+		layout.addRow(c);
+
+		layout.endSection();
 
 	}
 
 
 	private void clear() {
 		parent.clear();
-		layout = new FormStyleLayout();
+		layout = new PrettyFormLayout();
 		parent.add(layout);
+
 	}
 
 	private void showErrors() {
