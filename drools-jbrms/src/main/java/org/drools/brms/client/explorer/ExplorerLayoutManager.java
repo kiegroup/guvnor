@@ -110,6 +110,7 @@ public class ExplorerLayoutManager {
         TabPanelItem tpDeployment = tp.addTab("tpi3", "Deployment",
                 false);
         TabPanelItem tpAdmin = tp.addTab("tpi4", "Admin", false);
+        TabPanelItem tpQA = tp.addTab("tpi5", "QA", false);
 
         VerticalPanel rulesPanel = new VerticalPanel();
         packagesPanel = new VerticalPanel();
@@ -269,6 +270,17 @@ public class ExplorerLayoutManager {
 
 
         tp.activate(0);
+
+
+        VerticalPanel qaPanel = new VerticalPanel();
+        qaPanel.setWidth("100%");
+        TreePanel qaTree = genericExplorerWidget(ExplorerNodeConfig.getQAStructure(centertabbedPanel));
+        qaPanel.add(qaTree);
+
+
+        tpQA.setContent(qaPanel);
+
+
 
 
         ContentPanel tree = new ContentPanel();
@@ -509,7 +521,7 @@ public class ExplorerLayoutManager {
 
         LayoutRegionConfig west = new LayoutRegionConfig();
         west.setSplit(true);
-        west.setInitialSize(300);
+        west.setInitialSize(315);
         west.setMinSize(175);
         west.setMaxSize(400);
         west.setTitlebar(true);
@@ -607,7 +619,7 @@ public class ExplorerLayoutManager {
                         for (int i = 0; i < value.length; i++) {
                         	TreeNode pkg = new TreeNode(value[i].name, new TreeNodeConfig() {
                         		{
-                        			setIcon("images/package.gif");
+                        			setIcon("images/snapshot_small.gif");
                         		}
                         	});
                         	pkg.setUserObject(value[i]);

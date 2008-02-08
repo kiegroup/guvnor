@@ -1,6 +1,7 @@
 package org.drools.brms.client.qa;
 
 import org.drools.brms.client.common.FormStyleLayout;
+import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.packages.PackageBuilderWidget;
 import org.drools.brms.client.rpc.BuilderResult;
 import org.drools.brms.client.rpc.BulkTestRunResult;
@@ -11,13 +12,12 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -33,12 +33,11 @@ public class BulkRunResultWidget extends Composite {
 	private String packageName;
 
 
-	public BulkRunResultWidget(BulkTestRunResult result, EditItemEvent editEvent, final TabPanel tab, String packageName) {
+	public BulkRunResultWidget(BulkTestRunResult result, EditItemEvent editEvent) {
 
 
 		this.result = result;
 		this.editEvent = editEvent;
-		this.packageName = packageName;
 		parent = new SimplePanel();
 
 		if (result.errors != null && result.errors.length > 0) {
@@ -47,19 +46,7 @@ public class BulkRunResultWidget extends Composite {
 			showResult();
 		}
 
-		final BulkRunResultWidget self = this;
 
-		Button close = new Button("Close");
-		close.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
-				tab.remove(self);
-				tab.selectTab(0);
-			}
-		});
-
-
-
-		layout.addAttribute("", close);
 		initWidget(parent);
 	}
 
@@ -78,7 +65,7 @@ public class BulkRunResultWidget extends Composite {
 			totalFailures = totalFailures + s.failures;
 
 			//now render this summary
-			summaryTable.setWidget(i, 0, new Label(s.scenarioName + ":"));
+			summaryTable.setWidget(i, 0, new SmallLabel(s.scenarioName + ":"));
 			summaryTable.getFlexCellFormatter().setHorizontalAlignment(i, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 
 			if (s.failures > 0) {
@@ -87,7 +74,7 @@ public class BulkRunResultWidget extends Composite {
 				summaryTable.setWidget(i, 1, ScenarioWidget.getBar("GREEN", 150, 100));
 			}
 
-			summaryTable.setWidget(i, 2, new Label("[" + s.failures +" failures out of " + s.total + "]"));
+			summaryTable.setWidget(i, 2, new SmallLabel("[" + s.failures +" failures out of " + s.total + "]"));
 			Button open = new Button("Open");
 			open.addClickListener(new ClickListener() {
 				public void onClick(Widget w) {
@@ -107,7 +94,11 @@ public class BulkRunResultWidget extends Composite {
 		} else {
 			resultsH.add(ScenarioWidget.getBar("GREEN", 300, 100));
 		}
-		resultsH.add(new Label(totalFailures + " failures out of " + grandTotal + " expectations."));
+		resultsH.add(new SmallLabel("&nbsp;" + totalFailures + " failures out of " + grandTotal + " expectations."));
+
+		layout.addAttribute("Overall result:", new HTML((totalFailures==0) ? "<b>SUCCESS</b>" : "<b>FAILURE</b>"));
+
+
 
 		layout.addAttribute("Results:", resultsH);
 
@@ -118,7 +109,7 @@ public class BulkRunResultWidget extends Composite {
 			coveredH.add(ScenarioWidget.getBar("GREEN", 300, 100));
 		}
 
-		coveredH.add(new Label(result.percentCovered + "% of the rules were tested."));
+		coveredH.add(new SmallLabel("&nbsp;" + result.percentCovered + "% of the rules were tested."));
 		layout.addAttribute("Rules covered:", coveredH);
 
 
@@ -147,7 +138,7 @@ public class BulkRunResultWidget extends Composite {
 
 	private void clear() {
 		parent.clear();
-		layout = new FormStyleLayout("images/scenario_large.png", "Testing: " + packageName);
+		layout = new FormStyleLayout();
 		parent.add(layout);
 	}
 

@@ -24,8 +24,6 @@ import org.drools.brms.client.rpc.UserSecurityContext;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.HistoryListener;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.gwtext.client.widgets.QuickTips;
 import com.gwtext.client.widgets.form.Field;

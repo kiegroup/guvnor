@@ -2,8 +2,12 @@ package org.drools.brms.client.explorer;
 
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.qa.ScenarioPackageView;
+import org.drools.brms.client.rpc.PackageConfigData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
+import org.drools.brms.client.rulelist.EditItemEvent;
 
+import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreeNodeConfig;
@@ -202,6 +206,81 @@ public class ExplorerNodeConfig {
 				}
 			}
 		});
+
+		return treeNode;
+	}
+
+	public static TreeNode getQAStructure(final ExplorerViewCenterPanel centerPanel) {
+		final TreeNode treeNode = new TreeNode( new TreeNodeConfig() {
+			{
+				setText("QA");
+			}
+		});
+
+
+		final TreeNode scenarios = new TreeNode(new TreeNodeConfig() {
+			{
+				setText("Test Scenarios in packages:");
+				setIcon("images/scenario_conf.gif");
+			}
+		});
+
+		final EditItemEvent edit = new EditItemEvent() {
+			public void open(String key) {centerPanel.openAsset(key);}
+		};
+
+		scenarios.appendChild(new TreeNode("Please wait..."));
+		scenarios.addTreeNodeListener(new TreeNodeListenerAdapter() {
+
+			public void onExpand(Node node) {
+				RepositoryServiceFactory.getService().listPackages(new GenericCallback() {
+					public void onSuccess(Object data) {
+						PackageConfigData[] conf = (PackageConfigData[]) data;
+
+						for (int i = 0; i < conf.length; i++) {
+							final PackageConfigData c = conf[i];
+							TreeNode pkg = new TreeNode(new TreeNodeConfig() {
+								{
+									setText(c.name);
+									setIcon("images/package.gif");
+
+								}
+							});
+							scenarios.appendChild(pkg);
+							pkg.addTreeNodeListener(new TreeNodeListenerAdapter() {
+								public void onClick(Node node, EventObject e) {
+									if (!centerPanel.showIfOpen("scenarios" + c.uuid)) {
+										centerPanel.addTab("Scenarios for " + c.name, true, new ScenarioPackageView(
+												c.uuid, c.name, edit, centerPanel ), "scenarios" + c.uuid);
+									}
+								}
+							});
+						}
+						scenarios.removeChild(scenarios.getFirstChild());
+
+					}
+				});
+			}
+
+
+			public void onCollapse(Node node) {
+				Node[] cs = node.getChildNodes();
+				for (int i = 0; i < cs.length; i++) {
+					node.removeChild(cs[i]);
+				}
+				node.appendChild(new TreeNode("Please wait..."));
+			}
+		});
+		treeNode.appendChild(scenarios);
+
+
+		TreeNode analysis = new TreeNode(new TreeNodeConfig() {
+			{
+				setText("Analysis");
+				setIcon("images/analyze.gif");
+			}
+		});
+		treeNode.appendChild(analysis);
 
 		return treeNode;
 	}
