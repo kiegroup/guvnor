@@ -212,6 +212,7 @@ public class ExplorerNodeConfig {
 	}
 
 	public static TreeNode getQAStructure(final ExplorerViewCenterPanel centerPanel) {
+
 		final TreeNode treeNode = new TreeNode( new TreeNodeConfig() {
 			{
 				setText("QA");
@@ -234,6 +235,7 @@ public class ExplorerNodeConfig {
 		scenarios.addTreeNodeListener(new TreeNodeListenerAdapter() {
 
 			public void onExpand(Node node) {
+
 				RepositoryServiceFactory.getService().listPackages(new GenericCallback() {
 					public void onSuccess(Object data) {
 						PackageConfigData[] conf = (PackageConfigData[]) data;
@@ -283,12 +285,12 @@ public class ExplorerNodeConfig {
 			}
 		});
 
-		analysis.appendChild(new TreeNode("Please wait..."));
 
 		analysis.addTreeNodeListener(new TreeNodeListenerAdapter() {
 
 
 			public void onExpand(Node node) {
+
 				RepositoryServiceFactory.getService().listPackages(new GenericCallback() {
 					public void onSuccess(Object data) {
 						PackageConfigData[] conf = (PackageConfigData[]) data;
@@ -325,6 +327,9 @@ public class ExplorerNodeConfig {
 				node.appendChild(new TreeNode("Please wait..."));
 			}
 		});
+
+
+		analysis.appendChild(new TreeNode("Please wait..."));
 
 
 		treeNode.appendChild(analysis);

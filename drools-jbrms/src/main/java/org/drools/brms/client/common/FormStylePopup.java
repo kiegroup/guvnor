@@ -49,6 +49,10 @@ public class FormStylePopup {
 
     }
 
+    public FormStylePopup() {
+    	form = new FormStyleLayout();
+    }
+
     public FormStylePopup(String image, final String title, Integer width, Integer height, Boolean shadow) {
     	this(image, title);
     	this.shadow = shadow;
