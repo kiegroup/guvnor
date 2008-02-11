@@ -41,9 +41,8 @@ public class RuleDocumentWidget extends DirtyableComposite {
 
 		text = new TextArea();
 
-
         text.setWidth( "100%" );
-        text.setVisibleLines( 10 );
+        text.setVisibleLines( 5 );
         text.setStyleName( "rule-viewer-Documentation" );
         text.setTitle( "This is rule documentation. Human friendly descriptions of the business logic.");
 		initWidget(text);

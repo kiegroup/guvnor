@@ -84,6 +84,7 @@ public class ScenarioWidget extends Composite {
     		layout.add(new TestRunnerWidget(this, asset.metaData.packageName));
     	}
 
+
         renderEditor();
 
 
@@ -101,6 +102,11 @@ public class ScenarioWidget extends Composite {
 
 
 	void renderEditor() {
+
+		if (this.layout.getWidgetCount() == 2) {
+			this.layout.remove(1);
+		}
+
 
 		final Scenario scenario = (Scenario) asset.content;
 		DirtyableFlexTable editorLayout = new DirtyableFlexTable();
@@ -1397,6 +1403,7 @@ class TestRunnerWidget extends Composite {
 		}
 
 		results.setWidget(0, 0, new SmallLabel("Results:"));
+		results.getFlexCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 		if (failures > 0) {
 			results.setWidget(0, 1, ScenarioWidget.getBar("#CC0000" , 150, failures, total));
 		} else {
@@ -1404,6 +1411,7 @@ class TestRunnerWidget extends Composite {
 		}
 
 		results.setWidget(1, 0, new SmallLabel("Summary:"));
+		results.getFlexCellFormatter().setHorizontalAlignment(1, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 		results.setWidget(1, 1, resultsDetail);
 
 
