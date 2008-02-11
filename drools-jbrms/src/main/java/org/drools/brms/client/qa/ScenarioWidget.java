@@ -14,6 +14,8 @@ import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.common.PrettyFormLayout;
+import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.common.ValueChanged;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
@@ -61,12 +63,12 @@ public class ScenarioWidget extends Composite {
 	private SuggestionCompletionEngine sce;
 	private ChangeListener ruleSelectionCL;
 	RuleAsset asset;
-	DirtyableFlexTable layout;
+	VerticalPanel layout;
 	boolean showResults;
 
 	public ScenarioWidget(RuleAsset asset) {
 		this.asset = asset;
-		this.layout = new DirtyableFlexTable();
+		this.layout = new VerticalPanel();
 		this.showResults = false;
 
 
@@ -78,16 +80,22 @@ public class ScenarioWidget extends Composite {
     	}
 
     	if (!asset.isreadonly) {
-    		layout.setWidget(0, 0, new TestRunnerWidget(this, asset.metaData.packageName));
+//    		layout.setWidget(0, 0, new TestRunnerWidget(this, asset.metaData.packageName));
+    		layout.add(new TestRunnerWidget(this, asset.metaData.packageName));
     	}
 
         renderEditor();
 
+
+
+
         initWidget(layout);
 
-        setWidth("100%");
-        setHeight("100%");
         setStyleName("scenario-Viewer");
+
+        layout.setWidth("100%");
+        //layout.setHeight("100%");
+
     }
 
 
@@ -99,7 +107,8 @@ public class ScenarioWidget extends Composite {
 		editorLayout.clear();
 		editorLayout.setWidth("100%");
 		editorLayout.setStyleName("model-builder-Background");
-		this.layout.setWidget(1, 0, editorLayout);
+//		this.layout.setWidget(1, 0, editorLayout);
+		this.layout.add(editorLayout);
 		ScenarioHelper hlp = new ScenarioHelper();
 		List fixtures = hlp.lumpyMap(scenario.fixtures);
 
@@ -112,7 +121,7 @@ public class ScenarioWidget extends Composite {
 				previousEx = (ExecutionTrace) f;
 				HorizontalPanel h = new HorizontalPanel();
 				h.add(getNewExpectationButton(previousEx, scenario));
-				h.add(new Label("EXPECT"));
+				h.add(new SmallLabel("EXPECT"));
 				editorLayout.setWidget(layoutRow, 0, h);
 
 
@@ -123,7 +132,7 @@ public class ScenarioWidget extends Composite {
 			} else if (f instanceof Map) {
 				HorizontalPanel h = new HorizontalPanel();
 				h.add(getNewDataButton(previousEx, scenario));
-				h.add(new Label("GIVEN"));
+				h.add(new SmallLabel("GIVEN"));
 
 				editorLayout.setWidget(layoutRow, 0, h);
 
@@ -172,7 +181,7 @@ public class ScenarioWidget extends Composite {
         layoutRow++;
 
 
-        editorLayout.setWidget(layoutRow, 0, new Label("(configuration)"));
+        editorLayout.setWidget(layoutRow, 0, new SmallLabel("(configuration)"));
         //layoutRow++;
 
         //config section
@@ -190,7 +199,7 @@ public class ScenarioWidget extends Composite {
         }
         HorizontalPanel h = new HorizontalPanel();
         h.add(getNewGlobalButton(scenario));
-        h.add(new Label("(globals)"));
+        h.add(new SmallLabel("(globals)"));
         editorLayout.setWidget(layoutRow, 0, h);
 
         //layoutRow++;
@@ -233,7 +242,7 @@ public class ScenarioWidget extends Composite {
 				});
 
 		        HorizontalPanel insertFact = new HorizontalPanel();
-		        insertFact.add(factTypes); insertFact.add(new Label("Fact name:")); insertFact.add(factName); insertFact.add(add);
+		        insertFact.add(factTypes); insertFact.add(new SmallLabel("Fact name:")); insertFact.add(factName); insertFact.add(add);
 		        pop.addAttribute("New global:", insertFact);
 
 				pop.show();
@@ -281,7 +290,7 @@ public class ScenarioWidget extends Composite {
 				});
 
 		        HorizontalPanel insertFact = new HorizontalPanel();
-		        insertFact.add(factTypes); insertFact.add(new Label("Fact name:")); insertFact.add(factName); insertFact.add(add);
+		        insertFact.add(factTypes); insertFact.add(new SmallLabel("Fact name:")); insertFact.add(factName); insertFact.add(add);
 		        pop.addAttribute("Insert a new fact:", insertFact);
 
 		        List varsInScope = scenario.getFactNamesInScope(previousEx, false);
@@ -434,7 +443,7 @@ public class ScenarioWidget extends Composite {
 				public void onClick(Widget w) {
 					h.remove(showList);
 					final Image busy = new Image("images/searching.gif");
-					final Label loading = new Label("(loading list)");
+					final Label loading = new SmallLabel("(loading list)");
 					h.add(busy);
 					h.add(loading);
 
@@ -600,7 +609,7 @@ class DataInputWidget extends DirtyableComposite {
         Image newField = getNewFieldButton(defList);
 
         HorizontalPanel h = new HorizontalPanel();
-        h.add(new Label(text)); h.add(newField);
+        h.add(new SmallLabel(text)); h.add(newField);
         return h;
 	}
 
@@ -670,7 +679,7 @@ class DataInputWidget extends DirtyableComposite {
                 if (!fields.containsKey(fd.name)) {
                     int idx = fields.size() + 1;
                     fields.put(fd.name, new Integer(idx));
-                    t.setWidget(idx, 0, new Label(fd.name + ":"));
+                    t.setWidget(idx, 0, new SmallLabel(fd.name + ":"));
                     Image del = new ImageButton("images/delete_item_small.gif", "Remove this row.", new ClickListener() {
         				public void onClick(Widget w) {
         					if (Window.confirm("Are you sure you want to remove this row ?")) {
@@ -695,7 +704,7 @@ class DataInputWidget extends DirtyableComposite {
         col = 0;
         for (Iterator iterator = defList.iterator(); iterator.hasNext();) {
             final FactData d = (FactData) iterator.next();
-            t.setWidget(0, ++col, new Label("[" + d.name + "]"));
+            t.setWidget(0, ++col, new SmallLabel("[" + d.name + "]"));
             Image del = new ImageButton("images/delete_item_small.gif", "Remove the column for [" + d.name + "]", new ClickListener() {
 				public void onClick(Widget w) {
 					if (scenario.isFactNameUsed(d)) {
@@ -957,7 +966,7 @@ class ExecutionWidget extends Composite {
         } else {
             dt.setText(ext.scenarioSimulatedDate.toLocaleString());
         }
-        final Label dateHint = new Label();
+        final SmallLabel dateHint = new SmallLabel();
         dt.addKeyboardListener(new KeyboardListener() {
 			public void onKeyDown(Widget arg0, char arg1, int arg2) {}
 			public void onKeyPress(Widget arg0, char arg1, int arg2) {}
@@ -1009,7 +1018,7 @@ class VerifyFactWidget extends Composite {
         this.sce = sce;
         HorizontalPanel ab = new HorizontalPanel();
         type = (String) sc.getVariableTypes().get(vf.name);
-        ab.add(new Label(type + " [" + vf.name + "] has values:"));
+        ab.add(new SmallLabel(type + " [" + vf.name + "] has values:"));
         this.showResults = showResults;
 
         Image add = new ImageButton("images/add_field_to_fact.gif", "Add a field to this expectation.", new ClickListener() {
@@ -1051,7 +1060,7 @@ class VerifyFactWidget extends Composite {
 		FlexTable data = new FlexTable();
         for (int i = 0; i < vf.fieldValues.size(); i++) {
             final VerifyField fld = (VerifyField) vf.fieldValues.get(i);
-            data.setWidget(i, 1, new Label(fld.fieldName + ":"));
+            data.setWidget(i, 1, new SmallLabel(fld.fieldName + ":"));
             data.getFlexCellFormatter().setHorizontalAlignment(i, 1, HasHorizontalAlignment.ALIGN_RIGHT);
 
             final ListBox opr = new ListBox();
@@ -1125,7 +1134,7 @@ class VerifyRulesFiredWidget extends Composite {
         outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         outer.setStyleName("modeller-fact-pattern-Widget");
 
-        outer.setWidget(0, 0, new Label("Expect rules"));
+        outer.setWidget(0, 0, new SmallLabel("Expect rules"));
         initWidget(outer);
 
         FlexTable data = render(rfl, scenario);
@@ -1153,7 +1162,7 @@ class VerifyRulesFiredWidget extends Composite {
             	}
 
             }
-            data.setWidget(i, 1, new Label(v.ruleName + ":"));
+            data.setWidget(i, 1, new SmallLabel(v.ruleName + ":"));
             data.getFlexCellFormatter().setAlignment(i, 1, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
 
 
@@ -1239,13 +1248,13 @@ class RetractWidget extends Composite {
 		outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
         outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         outer.setStyleName("modeller-fact-pattern-Widget");
-        outer.setWidget(0, 0, new Label("Retract facts"));
+        outer.setWidget(0, 0, new SmallLabel("Retract facts"));
         outer.getFlexCellFormatter().setColSpan(0, 0, 2);
 
         int row = 1;
         for (Iterator iterator = retList.iterator(); iterator.hasNext();) {
 			final RetractFact r = (RetractFact) iterator.next();
-			outer.setWidget(row, 0, new Label(r.name));
+			outer.setWidget(row, 0, new SmallLabel(r.name));
 			Image del = new ImageButton("images/delete_item_small.gif", "Remove this retract statement.", new ClickListener() {
 				public void onClick(Widget w) {
 					retList.remove(r);
@@ -1266,7 +1275,8 @@ class RetractWidget extends Composite {
 class TestRunnerWidget extends Composite {
 
 	FlexTable results = new FlexTable();
-	Grid layout = new Grid(2, 1);
+	//Grid layout = new Grid(2, 1);
+	VerticalPanel layout = new VerticalPanel();
 
 	private HorizontalPanel busy = new HorizontalPanel();
 	private HorizontalPanel actions = new HorizontalPanel();
@@ -1277,11 +1287,17 @@ class TestRunnerWidget extends Composite {
 		run.setTitle("Run this scenario. This will build the package if it is not already built (which may take some time).");
 		run.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
-				layout.setWidget(0, 0, busy);
+				//layout.setWidget(0, 0, busy);
+				layout.clear();
+				layout.add(busy);
+
 				RepositoryServiceFactory.getService().runScenario(parent.asset.metaData.packageName, (Scenario) parent.asset.content, new GenericCallback () {
 					public void onSuccess(Object data) {
-						layout.setWidget(0, 0, actions);
-						layout.setWidget(1, 0, results);
+						layout.clear();
+						//layout.setWidget(0, 0, actions);
+						//layout.setWidget(1, 0, results);
+						layout.add(actions);
+						layout.add(results);
 						busy.setVisible(false);
 						actions.setVisible(true);
 						ScenarioRunResult result = (ScenarioRunResult) data;
@@ -1298,7 +1314,8 @@ class TestRunnerWidget extends Composite {
 		actions.add(run);
 		busy.add(new Image("images/busy.gif"));
 		busy.add(new HTML("&nbsp;&nbsp;<i><small>Building and running scenario, please wait...</small></i>"));
-		layout.setWidget(0, 0, actions);
+		//layout.setWidget(0, 0, actions);
+		layout.add(actions);
 		//layout.add(results);
 
 		initWidget(layout);
@@ -1354,7 +1371,7 @@ class TestRunnerWidget extends Composite {
 				} else {
 					h.add(new Image("images/test_passed.png"));
 				}
-				h.add(new Label(vr.explanation));
+				h.add(new SmallLabel(vr.explanation));
 				resultsDetail.add(h);
 				total++;
 			} else if (f instanceof VerifyFact) {
@@ -1369,7 +1386,7 @@ class TestRunnerWidget extends Composite {
 					} else {
 						h.add(new Image("images/test_passed.png"));
 					}
-					h.add(new Label(vfl.explanation));
+					h.add(new SmallLabel(vfl.explanation));
 					resultsDetail.add(h);
 				}
 
@@ -1379,14 +1396,14 @@ class TestRunnerWidget extends Composite {
 
 		}
 
-		results.setWidget(0, 0, new Label("Results:"));
+		results.setWidget(0, 0, new SmallLabel("Results:"));
 		if (failures > 0) {
 			results.setWidget(0, 1, ScenarioWidget.getBar("#CC0000" , 150, failures, total));
 		} else {
 			results.setWidget(0, 1, ScenarioWidget.getBar("GREEN" , 150, failures, total));
 		}
 
-		results.setWidget(1, 0, new Label("Summary:"));
+		results.setWidget(1, 0, new SmallLabel("Summary:"));
 		results.setWidget(1, 1, resultsDetail);
 
 

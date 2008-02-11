@@ -8,4 +8,12 @@ public class SmallLabel extends HTML {
 		super("<small>" + text + "</small>");
 	}
 
+	public SmallLabel() {
+		super();
+	}
+
+	public void setText(String t) {
+		setHTML("<small>" + t + "</small>");
+	}
+
 }
