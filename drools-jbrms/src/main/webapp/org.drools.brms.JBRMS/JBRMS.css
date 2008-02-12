@@ -20,6 +20,31 @@ code {
 }
 
 
+.VerticalSplitPanel .vsplitter
+{
+    background-color            :    #f3f2e7;
+	border: 1px solid #aa9;
+    /* Pretty much everything */
+    cursor                      :    n-resize;
+
+     /* IE6, IE7, FF2, Safari Win */
+    cursor                      :    row-resize;
+}
+
+.HorizontalSplitPanel .hsplitter
+{
+    background-color            :    #f3f2e7;
+	border: 1px solid #aa9;
+    /* Pretty much everything */
+    cursor                      :    n-resize;
+
+     /* IE6, IE7, FF2, Safari Win */
+    cursor                      :    col-resize;
+}
+
+
+
+
 .testErrorValue { border: 1px solid #CC0000;
 font-color: #CC000;
 font-size: small;
@@ -74,12 +99,12 @@ select {
 	padding:1px 4px;
 }
 .model-builder-Background {
-	-moz-border-radius:.7em;
-	-webkit-border-radius:.7em;
-	-khtml-border-radius:.7em;
-	border-radius:.7em;
+	#-moz-border-radius:.7em;
+	#-webkit-border-radius:.7em;
+	#-khtml-border-radius:.7em;
+	#border-radius:.7em;
 	padding-left:.5em;
-	border:1px solid #ddd;
+	#border:1px solid #ddd;
 	background:#FFF;
 }
 .model-builderInner-Background {
@@ -160,10 +185,7 @@ select {
 	border:1px solid #aa9;
 	padding:0;
 }
-.weak-Text {
-	font-size:smaller;
-	color:#ccc;
-}
+
 .gwt-Tree .gwt-TreeItem-selected {
 	background:#FF0;
 }
@@ -365,11 +387,11 @@ select {
 	background:#FFF;
 }
 .login-Form {
-	border:1px solid #aa9;
+	border:4px solid #aa9;
 	background:#f6f6f6;
 }
 .resource-name-Label {
-	font-weight:700;
+	#font-weight:700;
 }
 .infoProse {
 	margin:8px;

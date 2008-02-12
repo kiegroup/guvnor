@@ -2,14 +2,20 @@
 	<head>
 		<meta name='gwt:module' content='org.drools.brms.JBRMS'/>
 		<link rel='stylesheet' href='JBRMS.css'/>
+
 		<title>JBoss Business Rules Management System</title>
 	    <link rel="shortcut icon" href="images/drools.gif" type="image/gif"/>
 	    <link rel="icon" href="images/drools.gif" type="image/gif"/>
+
+	    <link rel="stylesheet" type="text/css" href="js/ext/resources/css/ext-all.css"/>
+    	<link rel="stylesheet" type="text/css" href="js/ext/resources/css/xtheme-gray.css" />
+
+
 	</head>
-	<body>
-	    <!--<div class="headerBarblue"><img src="images/jbossrules_hdrlogo.png" width="279" height="70" /></div> -->
-	    <div class="headerBarblue"><img src="images/hdrlogo_drools50px.gif" /></div>
-		<!-- This script is the bootstrap stuff that simply must be there; it is sent down uncompressed -->
+	<body class="xtheme-gray">
+	    <div id="loadingMessage" halign="center" valign="center"><img src="images/searching.gif">Loading application,
+	    Please wait. <br/><small>Tip: the first time the application is loaded this may take longer then usual.</small></div>
+	    <!-- script is the bootstrap stuff that simply must be there; it is sent down uncompressed -->
 		<script language='javascript' src='gwt.js'></script>
 		<iframe id='__gwt_historyFrame' style='width:0;height:0;border:0'></iframe>
 	</body>
