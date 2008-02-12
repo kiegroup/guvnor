@@ -21,7 +21,7 @@ import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
-import org.drools.brms.client.common.Lbl;
+import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
@@ -34,7 +34,6 @@ import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -108,7 +107,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
     }
 
     private Widget fieldSelector(final ActionFieldValue val) {
-        return new Label(val.field);
+        return new SmallLabel(val.field);
     }
 
     private Widget getAssertLabel() {
@@ -128,7 +127,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
         if (this.model instanceof ActionInsertLogicalFact) {
             assertType = "assertLogical";
         }
-        horiz.add( new Lbl(HumanReadable.getActionDisplayName(assertType) + " " + this.model.factType, "modeller-action-Label") );
+        horiz.add( new SmallLabel("<i>" + HumanReadable.getActionDisplayName(assertType) + " " + this.model.factType + "</i>") );
         horiz.add( edit );
         return horiz;
 

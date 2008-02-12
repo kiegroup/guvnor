@@ -63,7 +63,7 @@ public class FormStyleLayout extends DirtyableComposite {
      */
     public void addAttribute(String lbl,
                              Widget editor) {
-        HTML label = new HTML("<small>" + lbl + "</small>");
+        HTML label = new HTML("<div class='x-form-field'>" + lbl + "</div>");
         layout.setWidget( numInLayout, 0, label );
         formatter.setAlignment( numInLayout, 0, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_TOP );
         layout.setWidget( numInLayout, 1, editor );
@@ -84,7 +84,7 @@ public class FormStyleLayout extends DirtyableComposite {
      * Adds a header at the top.
      */
     protected void addHeader(String image, String title) {
-        HTML name = new HTML("<small><b>" + title + "</b></small>");
+        HTML name = new HTML("<div class='x-form-field'><b>" + title + "</b></div>");
         name.setStyleName( "resource-name-Label" );
         doHeader( image, name );
     }
@@ -99,7 +99,7 @@ public class FormStyleLayout extends DirtyableComposite {
 
 
     protected void addHeader(String image, String title, Widget titleIcon) {
-    	HTML name = new HTML("<small><b>" + title + "</b></small>");
+    	HTML name = new HTML("<div class='x-form-field'><b>" + title + "</b></div>");
         name.setStyleName( "resource-name-Label" );
         HorizontalPanel horiz = new HorizontalPanel();
         horiz.add( name );

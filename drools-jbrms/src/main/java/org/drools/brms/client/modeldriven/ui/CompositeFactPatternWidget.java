@@ -22,6 +22,7 @@ import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.DirtyableVerticalPane;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.CompositeFactPattern;
@@ -29,13 +30,9 @@ import org.drools.brms.client.modeldriven.brl.FactPattern;
 
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -97,7 +94,7 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
             }
         } );
 
-        horiz.add( new Label( HumanReadable.getCEDisplayName( pattern.type ) ) );
+        horiz.add( new SmallLabel( HumanReadable.getCEDisplayName( pattern.type ) ) );
         horiz.add( edit );
         horiz.setStyleName( "modeller-composite-Label" );
         return horiz;

@@ -23,7 +23,7 @@ import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.FieldEditListener;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.InfoPopup;
-import org.drools.brms.client.common.Lbl;
+import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.common.ValueChanged;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.FactPattern;
@@ -313,8 +313,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
 
         form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new Lbl( "Advanced options",
-                              "weak-Text" ) );
+        form.addRow( new SmallLabel( "<i>Advanced options:</i>" ) );
 
         //only want to show variables if we have some !
         if (this.model.getBoundVariablesInScope( this.constraint ).size() > 0) {

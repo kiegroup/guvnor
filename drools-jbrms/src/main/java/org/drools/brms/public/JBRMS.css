@@ -99,12 +99,12 @@ select {
 	padding:1px 4px;
 }
 .model-builder-Background {
-	-moz-border-radius:.7em;
-	-webkit-border-radius:.7em;
-	-khtml-border-radius:.7em;
-	border-radius:.7em;
+	#-moz-border-radius:.7em;
+	#-webkit-border-radius:.7em;
+	#-khtml-border-radius:.7em;
+	#border-radius:.7em;
 	padding-left:.5em;
-	border:1px solid #ddd;
+	#border:1px solid #ddd;
 	background:#FFF;
 }
 .model-builderInner-Background {
@@ -185,10 +185,7 @@ select {
 	border:1px solid #aa9;
 	padding:0;
 }
-.weak-Text {
-	font-size:smaller;
-	color:#ccc;
-}
+
 .gwt-Tree .gwt-TreeItem-selected {
 	background:#FF0;
 }

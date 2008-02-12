@@ -27,6 +27,7 @@ import org.drools.brms.client.common.DirtyableVerticalPane;
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
@@ -97,11 +98,11 @@ public class RuleModeller extends DirtyableComposite {
             }
         });
 
-        layout.setWidget( 0, 0, new Label("WHEN") );
+        layout.setWidget( 0, 0, new SmallLabel("WHEN") );
         layout.setWidget( 0, 2, addPattern );
 
         layout.setWidget( 1, 1, renderLhs(this.model) );
-        layout.setWidget( 2, 0, new Label("THEN") );
+        layout.setWidget( 2, 0, new SmallLabel("THEN") );
 
         Image addAction = new ImageButton("images/new_item.gif");
         addAction.setTitle( "Add an action to this rule." );
@@ -114,7 +115,7 @@ public class RuleModeller extends DirtyableComposite {
 
         layout.setWidget( 3, 1, renderRhs(this.model) );
 
-        layout.setWidget( 4, 0, new Label("(options)") );
+        layout.setWidget( 4, 0, new SmallLabel("(options)") );
         layout.setWidget( 4, 2, getAddAttribute() );
         layout.setWidget( 5, 1, new RuleAttributeWidget(this, this.model) );
     }

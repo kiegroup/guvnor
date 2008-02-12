@@ -23,7 +23,7 @@ import org.drools.brms.client.common.DirtyableHorizontalPane;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.InfoPopup;
-import org.drools.brms.client.common.Lbl;
+import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.CompositeFieldConstraint;
@@ -44,7 +44,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -253,9 +252,9 @@ public class FactPatternWidget extends DirtyableComposite {
         } );
 
         if ( pattern.boundName != null ) {
-            horiz.add( new Label( "[" + pattern.boundName + "] " + pattern.factType  ) );
+            horiz.add( new SmallLabel( "[" + pattern.boundName + "] " + pattern.factType  ) );
         } else {
-            horiz.add( new Label( pattern.factType ) );
+            horiz.add( new SmallLabel( pattern.factType ) );
         }
         horiz.add( edit );
 
@@ -370,7 +369,7 @@ public class FactPatternWidget extends DirtyableComposite {
 
         //popup.addRow( new HTML("<hr/>") );
 
-        popup.addRow( new Lbl("Advanced options", "weak-Text") );
+        popup.addRow( new SmallLabel("<i>Advanced options:</i>") );
         final Button predicate = new Button( "New formula" );
         predicate.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -518,10 +517,10 @@ public class FactPatternWidget extends DirtyableComposite {
                 ab.add( bind );
             }
         } else {
-            ab.add( new Label("[" + con.fieldBinding + "]") );
+            ab.add( new SmallLabel("[" + con.fieldBinding + "]") );
         }
 
-        ab.add(new Label( con.fieldName ));
+        ab.add(new SmallLabel( con.fieldName ));
         return ab;
     }
 

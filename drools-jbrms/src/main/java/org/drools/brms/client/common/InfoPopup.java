@@ -36,7 +36,7 @@ public class InfoPopup extends Composite {
         info.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 final FormStylePopup pop = new FormStylePopup("images/information.gif", title);
-                pop.addRow( new Lbl(message, "small-Text") );
+                pop.addRow( new SmallLabel(message) );
 
                 pop.show();
             }

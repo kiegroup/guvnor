@@ -4,7 +4,7 @@ import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.FieldEditListener;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.InfoPopup;
-import org.drools.brms.client.common.Lbl;
+import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.common.ValueChanged;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
@@ -159,8 +159,7 @@ public class ActionValueEditor extends DirtyableComposite {
         form.addAttribute( "Literal value:", widgets( lit, new InfoPopup( "Literal",
                                                                           "A literal value means the " + "constraint is directly against the value that you type (ie. what you see on screen)." ) ) );
         form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new Lbl( "Advanced",
-                              "weak-Text" ) );
+        form.addRow( new SmallLabel( "<i>Advanced</i>" ) );
 
         Button formula = new Button("Formula");
         formula.addClickListener(new ClickListener() {
