@@ -42,6 +42,18 @@ code {
     cursor                      :    col-resize;
 }
 
+.gwt-SuggestBoxPopup {
+	background: white;
+	border: 1px solid black;
+}
+
+.gwt-SuggestBoxPopup .item {
+	font-size: 0.7em;
+}
+
+.gwt-SuggestBoxPopup .item-selected {
+	background: yellow;
+}
 
 
 

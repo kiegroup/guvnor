@@ -106,6 +106,7 @@ public class ExplorerLayoutManager {
         tp.setHeight("100%");
 
         TabPanelItem tpCategory = tp.addTab("tpi1", "Rules", false);
+        tpCategory.setHeight("100%");
         TabPanelItem tpPackageExplorer = tp.addTab("tpi2", "Packages", false);
         TabPanelItem tpDeployment = tp.addTab("tpi3", "Deployment",
                 false);

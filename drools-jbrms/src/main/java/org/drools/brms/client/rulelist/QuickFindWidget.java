@@ -17,9 +17,9 @@ package org.drools.brms.client.rulelist;
 
 
 
-import org.drools.brms.client.common.AutoCompleteTextBoxAsync;
-import org.drools.brms.client.common.CompletionItemsAsync;
-import org.drools.brms.client.common.CompletionItemsAsyncReturn;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
@@ -35,10 +35,12 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.SuggestBox;
+import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.SuggestOracle.Callback;
+import com.google.gwt.user.client.ui.SuggestOracle.Request;
 
 /**
  * This is for quickly finding an asset by name. Partial completion is allowed.
@@ -49,7 +51,7 @@ public class QuickFindWidget extends Composite {
 
     private final FormStyleLayout layout;
     private final FlexTable listPanel;
-    private final TextBox searchBox;
+    private SuggestBox searchBox;
     private CheckBox archiveBox;
     private EditItemEvent editEvent;
 
@@ -58,19 +60,25 @@ public class QuickFindWidget extends Composite {
     public QuickFindWidget(EditItemEvent editEvent) {
         layout = new FormStyleLayout("images/system_search.png", "");
 
+        searchBox = new SuggestBox(new SuggestOracle() {
+			public void requestSuggestions(Request r, Callback cb) {
+				loadShortList(r.getQuery(), r, cb);
 
-
-        searchBox = new AutoCompleteTextBoxAsync(new CompletionItemsAsync() {
-
-            public void getCompletionItems(String match,
-                                           CompletionItemsAsyncReturn asyncReturn) {
-                loadShortList(match, asyncReturn);
-
-            }
-
-
+			}
         });
-        searchBox.setStyleName( "gwt-TextBox" );
+
+
+//        searchBox = new AutoCompleteTextBoxAsync(new CompletionItemsAsync() {
+//
+//            public void getCompletionItems(String match,
+//                                           CompletionItemsAsyncReturn asyncReturn) {
+//                loadShortList(match, asyncReturn);
+//
+//            }
+//
+//
+//        });
+//        searchBox.setStyleName( "gwt-TextBox" );
 
         this.editEvent = editEvent;
         HorizontalPanel srch = new HorizontalPanel();
@@ -103,7 +111,7 @@ public class QuickFindWidget extends Composite {
 
 
 
-        searchBox.addKeyboardListener( getKeyboardListener());
+      //  searchBox.addKeyboardListener( getKeyboardListener());
 
         initWidget( layout );
     }
@@ -111,47 +119,35 @@ public class QuickFindWidget extends Composite {
     /**
      * This will load a list of items as they are typing.
      */
-    protected void loadShortList(String match, final CompletionItemsAsyncReturn returnItems) {
+    protected void loadShortList(String match, final Request r, final Callback cb) {
         RepositoryServiceFactory.getService().quickFindAsset( match, 5, archiveBox.isChecked() ,new GenericCallback() {
 
 
             public void onSuccess(Object data) {
-                TableDataResult result = (TableDataResult) data;
-                String[] items = new String[result.data.length];
+                final TableDataResult result = (TableDataResult) data;
+                List items = new ArrayList();
                 for ( int i = 0; i < result.data.length; i++ ) {
                     if (!result.data[i].id.equals( "MORE" )) {
-                        items[i] = result.data[i].values[0];
+                    	final String str = result.data[i].values[0];
+                    	items.add( new SuggestOracle.Suggestion() {
+
+							public String getDisplayString() {
+								return str;
+							}
+
+							public String getReplacementString() {
+								return str;
+							}
+
+                    	});
+
                     }
                 }
-                returnItems.itemReturn( items );
+                cb.onSuggestionsReady(r, new SuggestOracle.Response(items));
             }
 
         });
 
-    }
-
-    private KeyboardListener getKeyboardListener() {
-        return new KeyboardListener() {
-            public void onKeyDown(Widget arg0,
-                                  char arg1,
-                                  int arg2) {
-            }
-
-            public void onKeyPress(Widget arg0,
-                                   char arg1,
-                                   int arg2) {
-            }
-
-            public void onKeyUp(Widget arg0,
-                                char arg1,
-                                int arg2) {
-                if (arg1 == KEY_ENTER) {
-
-                    updateList();
-                }
-            }
-
-        };
     }
 
     protected void updateList() {

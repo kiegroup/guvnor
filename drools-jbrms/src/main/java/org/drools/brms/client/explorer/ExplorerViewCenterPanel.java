@@ -16,6 +16,7 @@ import org.drools.brms.client.rulelist.EditItemEvent;
 import org.drools.brms.client.rulelist.QuickFindWidget;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.Ext;
@@ -161,6 +162,7 @@ public class ExplorerViewCenterPanel extends ContentPanel {
 					openAsset(uuid);
 				}
 			}), "FIND");
+
 		}
 	}
 
