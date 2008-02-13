@@ -156,7 +156,7 @@ public class RuleViewer extends Composite {
         //hsp.addStyleName("HorizontalSplitPanel");
 
         hsp.add(metaWidget);
-        hsp.setCellWidth(metaWidget, "15%");
+        hsp.setCellWidth(metaWidget, "25%");
 
         //hsp.setSplitPosition("80%");
         hsp.setHeight("100%");
