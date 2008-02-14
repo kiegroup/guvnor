@@ -796,10 +796,12 @@ public class RulesRepository {
         Node folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
 
         try {
-            if ( !folderNode.hasNode( DEFAULT_PACKAGE ) ) {
-                createPackage( DEFAULT_PACKAGE, "The default rule package" );
-                folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
-            }
+        	synchronized (RulesRepository.class) {
+        		if ( !folderNode.hasNode( DEFAULT_PACKAGE ) ) {
+        			createPackage( DEFAULT_PACKAGE, "The default rule package" );
+        			folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
+        		}
+        	}
             return new PackageIterator( this,
                                         folderNode.getNodes() );
         } catch ( RepositoryException e ) {
