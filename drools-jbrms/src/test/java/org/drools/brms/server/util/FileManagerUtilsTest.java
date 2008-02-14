@@ -31,7 +31,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.fileupload.FileItem;
 import org.drools.brms.client.common.AssetFormats;
-import org.drools.brms.client.packages.PackageSnapshotView;
+import org.drools.brms.client.common.Snapshot;
 import org.drools.brms.server.ServiceImplementation;
 import org.drools.brms.server.files.FileManagerUtils;
 import org.drools.repository.AssetItem;
@@ -158,7 +158,7 @@ public class FileManagerUtilsTest extends TestCase {
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		String fileName = uploadHelper.loadBinaryPackage(pkg.getName(),
-				PackageSnapshotView.LATEST_SNAPSHOT, true, out);
+				Snapshot.LATEST_SNAPSHOT, true, out);
 		assertEquals("testGetBinaryPackageServlet.pkg", fileName);
 		byte[] file = out.toByteArray();
 		assertNotNull(file);

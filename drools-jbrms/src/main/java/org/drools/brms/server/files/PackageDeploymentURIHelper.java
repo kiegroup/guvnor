@@ -1,13 +1,13 @@
 package org.drools.brms.server.files;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,13 +22,13 @@ import java.net.URLDecoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.brms.client.packages.PackageSnapshotView;
+import org.drools.brms.client.common.Snapshot;
 
 /**
  * Works out from the path URI what package is being requested.
  * Uses Regular expression Pattern matching to recover packagename and version
- * it works both with gwt hosted mode and application server standalone. 
- * 
+ * it works both with gwt hosted mode and application server standalone.
+ *
  * @author Michael Neale
  * @author Fernando Meyer
  */
@@ -38,9 +38,9 @@ public class PackageDeploymentURIHelper {
     private String packageName;
 
     public PackageDeploymentURIHelper(String uri) throws UnsupportedEncodingException {
-        
+
         String url = URLDecoder.decode( uri, "UTF-8" );
-        
+
         Pattern pattern = Pattern.compile( ".*/(package|asset)/(.*)" );
         Matcher m = pattern.matcher( url );
         if ( m.matches() ) {
@@ -60,6 +60,6 @@ public class PackageDeploymentURIHelper {
     }
 
     public boolean isLatest() {
-        return PackageSnapshotView.LATEST_SNAPSHOT.equals( version );
+        return Snapshot.LATEST_SNAPSHOT.equals( version );
     }
 }

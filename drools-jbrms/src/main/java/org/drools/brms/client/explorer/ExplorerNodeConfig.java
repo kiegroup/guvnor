@@ -232,9 +232,26 @@ public class ExplorerNodeConfig {
 		};
 
 		scenarios.appendChild(new TreeNode("Please wait..."));
+		treeNode.appendChild(scenarios);
+
+
+		final TreeNode analysis = new TreeNode(new TreeNodeConfig() {
+			{
+				setText("Analysis");
+				setIcon("images/analyze.gif");
+				setExpanded(false);
+			}
+		});
+
+		analysis.appendChild(new TreeNode("Please wait..."));
+
+		treeNode.appendChild(analysis);
+
+
 		scenarios.addTreeNodeListener(new TreeNodeListenerAdapter() {
 
 			public void onExpand(Node node) {
+				System.err.println("-->Loading packages 1");
 
 				RepositoryServiceFactory.getService().listPackages(new GenericCallback() {
 					public void onSuccess(Object data) {
@@ -274,23 +291,13 @@ public class ExplorerNodeConfig {
 				node.appendChild(new TreeNode("Please wait..."));
 			}
 		});
-		treeNode.appendChild(scenarios);
-
-
-		final TreeNode analysis = new TreeNode(new TreeNodeConfig() {
-			{
-				setText("Analysis");
-				setIcon("images/analyze.gif");
-				setExpanded(false);
-			}
-		});
 
 
 		analysis.addTreeNodeListener(new TreeNodeListenerAdapter() {
 
 
 			public void onExpand(Node node) {
-
+				System.err.println("-->Loading packages 2");
 				RepositoryServiceFactory.getService().listPackages(new GenericCallback() {
 					public void onSuccess(Object data) {
 						PackageConfigData[] conf = (PackageConfigData[]) data;
@@ -327,12 +334,6 @@ public class ExplorerNodeConfig {
 				node.appendChild(new TreeNode("Please wait..."));
 			}
 		});
-
-
-		analysis.appendChild(new TreeNode("Please wait..."));
-
-
-		treeNode.appendChild(analysis);
 
 		return treeNode;
 	}

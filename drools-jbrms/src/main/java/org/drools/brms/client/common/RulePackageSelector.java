@@ -51,6 +51,7 @@ public class RulePackageSelector extends Composite {
     }
 
 	private void loadPackageList() {
+		System.err.println("-->Loading packages");
 		RepositoryServiceFactory.getService().listPackages( new GenericCallback() {
 
             public void onSuccess(Object o) {

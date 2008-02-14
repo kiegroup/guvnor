@@ -33,6 +33,7 @@ import com.gwtext.client.widgets.TabPanel;
 import com.gwtext.client.widgets.TabPanelItem;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarMenuButton;
+import com.gwtext.client.widgets.event.TabPanelItemListener;
 import com.gwtext.client.widgets.event.TabPanelItemListenerAdapter;
 import com.gwtext.client.widgets.form.Field;
 import com.gwtext.client.widgets.layout.BorderLayout;
@@ -248,6 +249,8 @@ public class ExplorerLayoutManager {
 
         tpAdmin.setContent(vp4);
 
+
+
         //these panels are lazy loaded to easy startup wait time.
         tpPackageExplorer.addTabPanelItemListener(new TabPanelItemListenerAdapter() {
 			public void onActivate(TabPanelItem tab) {
@@ -270,14 +273,25 @@ public class ExplorerLayoutManager {
         });
 
 
+
+
         tp.activate(0);
 
 
-        VerticalPanel qaPanel = new VerticalPanel();
+        final VerticalPanel qaPanel = new VerticalPanel();
         qaPanel.setWidth("100%");
-        TreePanel qaTree = genericExplorerWidget(ExplorerNodeConfig.getQAStructure(centertabbedPanel));
-        qaPanel.add(qaTree);
 
+        tpQA.addTabPanelItemListener(new TabPanelItemListenerAdapter() {
+        	private boolean qaPackagesLoaded;
+			public void onActivate(TabPanelItem tab) {
+        		if (!qaPackagesLoaded) {
+        	        TreePanel qaTree = genericExplorerWidget(ExplorerNodeConfig.getQAStructure(centertabbedPanel));
+        	        qaPanel.add(qaTree);
+        			qaPackagesLoaded = true;
+        		}
+
+        	}
+        });
 
         tpQA.setContent(qaPanel);
 
@@ -613,6 +627,7 @@ public class ExplorerLayoutManager {
     }
 
 	private void deploymentListPackages(final TreeNode root) {
+		System.err.println("-->Loading packages");
 		RepositoryServiceFactory.getService().listPackages(
                 new GenericCallback() {
                     public void onSuccess(Object data) {
@@ -710,6 +725,7 @@ public class ExplorerLayoutManager {
     }
 
 	private void loadPackages(final TreeNode root) {
+		System.err.println("-->Loading packages");
 		RepositoryServiceFactory.getService().listPackages(
                 new GenericCallback() {
                     public void onSuccess(Object data) {

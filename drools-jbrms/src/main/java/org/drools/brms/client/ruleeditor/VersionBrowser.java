@@ -29,7 +29,6 @@ import org.drools.brms.client.rpc.RuleAsset;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.table.DataModel;
-import org.drools.brms.client.table.SortableTable;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
