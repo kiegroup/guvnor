@@ -1,9 +1,9 @@
 /*
- * Ext JS Library 1.1.1
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.1
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
- * http://www.extjs.com/license
+ * http://extjs.com/license
  */
 
 .x-btn{
@@ -78,12 +78,12 @@
 .x-btn-left{
 	width:3px;
 	height:21px;
-	background:url(../images/default/basic-dialog/btn-sprite.gif) no-repeat 0 0;
+	background:url(../images/default/button/btn-sprite.gif) no-repeat 0 0;
 }
 .x-btn-right{
 	width:3px;
 	height:21px;
-	background:url(../images/default/basic-dialog/btn-sprite.gif) no-repeat 0 -21px;
+	background:url(../images/default/button/btn-sprite.gif) no-repeat 0 -21px;
 }
 .x-btn-left i, .x-btn-right i{
 	display:block;
@@ -93,7 +93,7 @@
     line-height:1px;
 }
 .x-btn-center{
-	background:url(../images/default/basic-dialog/btn-sprite.gif) repeat-x 0 -42px;
+	background:url(../images/default/button/btn-sprite.gif) repeat-x 0 -42px;
 	vertical-align: middle;
 	text-align:center;
 	padding:0 5px;
@@ -130,7 +130,7 @@
     height:21px;
     padding:0 !important;
     display:block;
-    background:transparent url(../images/default/basic-dialog/btn-arrow.gif) no-repeat left 3px;
+    background:transparent url(../images/default/button/btn-arrow.gif) no-repeat left 3px;
 }
 .x-btn-with-menu  .x-btn-center {
     padding-right:2px !important;
@@ -145,4 +145,15 @@
     display:block;
     background:transparent url(../images/default/toolbar/btn-arrow.gif) no-repeat right 3px;
 	padding-right:10px;
+}
+
+/* Toggle button styles */
+.x-btn-pressed .x-btn-left{
+	background: url(../images/default/button/btn-sprite.gif) no-repeat 0 -63px;
+}
+.x-btn-pressed .x-btn-right{
+	background: url(../images/default/button/btn-sprite.gif) no-repeat 0 -84px;
+}
+.x-btn-pressed .x-btn-center{
+	background: url(../images/default/button/btn-sprite.gif) repeat-x 0 -126px;
 }

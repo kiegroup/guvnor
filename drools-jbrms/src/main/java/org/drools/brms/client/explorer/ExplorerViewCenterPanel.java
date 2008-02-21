@@ -16,40 +16,49 @@ import org.drools.brms.client.rulelist.EditItemEvent;
 import org.drools.brms.client.rulelist.QuickFindWidget;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.Ext;
+import com.gwtext.client.core.Margins;
+import com.gwtext.client.core.RegionPosition;
+import com.gwtext.client.widgets.Component;
+import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.TabPanel;
-import com.gwtext.client.widgets.TabPanelItem;
-import com.gwtext.client.widgets.event.TabPanelItemListenerAdapter;
-import com.gwtext.client.widgets.layout.ContentPanel;
+import com.gwtext.client.widgets.event.PanelListenerAdapter;
+import com.gwtext.client.widgets.layout.BorderLayoutData;
 
 /**
  * This is the tab panel manager.
  * @author Fernando Meyer, Michael Neale
  */
-public class ExplorerViewCenterPanel extends ContentPanel {
+public class ExplorerViewCenterPanel {
 
 	final TabPanel tp;
-	private int index = 0;
+
 	private HashMap 	openedTabs = new HashMap();
 	private String id = Ext.generateId();
+	private BorderLayoutData centerLayoutData;
 
 	public ExplorerViewCenterPanel() {
 
-		super(Ext.generateId());
+		tp = new TabPanel();
+
+        tp.setBodyBorder(false);
+        tp.setEnableTabScroll(true);
+        tp.setAutoDestroy(true);
+        tp.setResizeTabs(true);
+        tp.setLayoutOnTabChange(true);
+        tp.setActiveTab(0);
 
 
-		tp = new TabPanel(id);
 
-		tp.setWidth("100%");
-		tp.setHeight("100%");
+        centerLayoutData = new BorderLayoutData(RegionPosition.CENTER);
+        centerLayoutData.setMargins(new Margins(5, 0, 5, 5));
 
-		tp.autoSizeTabs();
-		tp.setResizeTabs(true);
 
-		add(tp);
+	}
+
+	public TabPanel getPanel() {
+		return tp;
 	}
 
 
@@ -61,19 +70,30 @@ public class ExplorerViewCenterPanel extends ContentPanel {
 	 * @param key A key which is unique.
 	 */
 	public void addTab (String tabname, boolean closeable, Widget widget, final String key) {
-		TabPanelItem localTP = tp.addTab(key + id, tabname, closeable);
-		SimplePanel sp = new SimplePanel();
-		sp.add(widget);
-
-		localTP.setContent(sp);
 
 
-		localTP.addTabPanelItemListener(new TabPanelItemListenerAdapter() {
-			public void onClose(TabPanelItem tab) {
+		Panel localTP = new Panel();
+		localTP.setClosable(closeable);
+		localTP.setTitle(tabname);
+		localTP.setId(key + id);
+		localTP.setAutoScroll(true);
+		localTP.add(widget);
+
+		tp.add(localTP, this.centerLayoutData);
+
+		localTP.addListener(new PanelListenerAdapter() {
+
+			public void onDestroy(Component component) {
 				openedTabs.remove(key);
 			}
 		});
-		tp.activate(tp.getCount()-1);
+
+
+		tp.activate(localTP.getId());
+
+
+
+
 		openedTabs.put(key, localTP);
 	}
 
@@ -83,8 +103,11 @@ public class ExplorerViewCenterPanel extends ContentPanel {
 	public boolean showIfOpen(String key) {
 		if (openedTabs.containsKey(key)) {
 			LoadingPopup.close();
-			TabPanelItem tpi = (TabPanelItem) openedTabs.get(key);
-			tpi.activate();
+
+			Panel tpi = (Panel) openedTabs.get(key);
+			this.tp.activate(tpi.getId());
+			//tp.scrollToTab(tpi, true);
+
 			return true;
 		} else {
 			return false;
@@ -93,7 +116,7 @@ public class ExplorerViewCenterPanel extends ContentPanel {
 
 
 	public void close(String key) {
-		tp.removeTab(key + id);
+		tp.remove(key + id);
 		openedTabs.remove(key);
 	}
 

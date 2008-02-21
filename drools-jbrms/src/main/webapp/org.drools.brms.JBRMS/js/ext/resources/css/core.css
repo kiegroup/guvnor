@@ -1,16 +1,16 @@
 /*
- * Ext JS Library 1.1.1
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.1
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
- * http://www.extjs.com/license
+ * http://extjs.com/license
  */
 
 .ext-el-mask {
     z-index: 20000;
     position: absolute;
-    top: 0;
-    left: 0;
+    top:0;
+    left:0;
     -moz-opacity: 0.5;
     opacity: .50;
     filter: alpha(opacity=50);
@@ -32,8 +32,8 @@
     padding:5px 10px 5px 10px;
     background: #eee;
     border:1px solid #a3bad9;
-    color:#333;
-    font:normal 12px tahoma, arial, helvetica, sans-serif;
+    color:#222;
+    font:normal 11px tahoma, arial, helvetica, sans-serif;
     cursor:wait;
 }
 
@@ -47,18 +47,29 @@
 .ext-ie .ext-shim {
     filter: alpha(opacity=0);
 }
+.ext-ie6 .ext-shim {
+    margin-left: 5px;
+    margin-top: 3px;
+}
 
 .x-mask-loading div {
     padding:5px 10px 5px 25px;
-    background: #eee url( '../images/default/grid/loading.gif' ) no-repeat 5px 5px;
+    background: #fbfbfb url( '../images/default/grid/loading.gif' ) no-repeat 5px 5px;
     line-height: 16px;
 }
-
 /* class for hiding elements without using display:none */
-.x-hidden {
+.x-hidden, .x-hide-offsets {
     position:absolute;
     left:-10000px;
     top:-10000px;
+    visibility:hidden;
+}
+.x-hide-display {
+    display:none !important;
+}
+
+.x-hide-visibility {
+    visibility:hidden !important;
 }
 
 .x-masked {
@@ -93,7 +104,7 @@
 }
 
 .x-item-disabled * {
-    color: gray;
+    color: gray !important;
     cursor: default !important;
 }
 
@@ -252,7 +263,7 @@
 
 .loading-indicator {
     font-size: 11px;
-    background-image: url( '../images/default/grid/loading.gif' );
+    background-image: url(../images/default/grid/loading.gif);
     background-repeat: no-repeat;
     background-position: left;
     padding-left: 20px;
@@ -275,11 +286,8 @@
     position: absolute;
     left: 0;
     top: 0;
-    background: white;
+    background-image:url(../images/default/s.gif);
     z-index: 20000;
-    -moz-opacity: 0;
-    opacity: 0;
-    filter: alpha(opacity=0);
 }
 
 .x-clear {
@@ -288,4 +296,19 @@
     overflow:hidden;
     line-height:0;
     font-size:0;
+}
+
+
+.x-spotlight {
+    z-index: 8999;
+    position: absolute;
+    top:0;
+    left:0;
+    -moz-opacity: 0.5;
+    opacity: .50;
+    filter: alpha(opacity=50);
+    background-color: #CCC;
+    width:0;
+    height:0;
+    zoom: 1;
 }

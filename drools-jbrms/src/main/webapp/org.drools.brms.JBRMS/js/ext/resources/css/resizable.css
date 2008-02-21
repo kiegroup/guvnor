@@ -1,9 +1,9 @@
 /*
- * Ext JS Library 1.1.1
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.1
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
- * http://www.extjs.com/license
+ * http://extjs.com/license
  */
 
 .x-resizable-handle {
@@ -121,7 +121,7 @@
     background-position: top right;
 }
 .x-resizable-proxy{
-    border: 1px dashed #6593cf;
+    border: 1px dashed #3b5a82;
     position:absolute;
     overflow:hidden;
     display:none;

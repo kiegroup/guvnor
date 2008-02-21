@@ -1,9 +1,9 @@
 /*
- * Ext JS Library 1.1.1
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.1
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
- * http://www.extjs.com/license
+ * http://extjs.com/license
  */
 
 .x-dd-drag-proxy{
@@ -58,4 +58,18 @@
 }
 .x-dd-drop-ok-add .x-dd-drop-icon{
   background-image: url(../images/default/dd/drop-add.gif);
+}
+
+
+.x-view-selector {
+    position:absolute;
+    left:0;
+    top:0;
+    width:0;
+    background:#c3daf9;
+    border:1px dotted #3399bb;
+	opacity: .5;
+    -moz-opacity: .5;
+    filter:alpha(opacity=50);
+    zoom:1;
 }

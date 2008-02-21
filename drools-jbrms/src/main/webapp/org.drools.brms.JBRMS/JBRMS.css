@@ -1,6 +1,5 @@
 body {
-	font-size:smaller;
-	font-family:"bitstream vera sans","dejavu sans" verdana,helvetica,sans-serif;
+	font-family:tahoma, arial, helvetica, sans-serif;
 	line-height:1.5em;
 	color:#444;
 	margin:0;
@@ -77,7 +76,7 @@ font-style: italics;
 .gwt-DialogBox .Caption {
 	font-weight:700;
 	cursor:default;
-	font-size:smaller;
+
 	margin:2px;
 	padding:3px;
 	background:#FFFFF0;
@@ -106,7 +105,7 @@ select {
 	background:#aa9;
 }
 .gwt-MenuBar .gwt-MenuItem {
-	font-size:smaller;
+
 	cursor:default;
 	padding:1px 4px;
 }
@@ -146,7 +145,7 @@ select {
 }
 .modeller-action-Label {
 	font-style:italic;
-	font-size:smaller;
+
 }
 .version-Popup {
 	border:4px solid #red;
@@ -164,7 +163,7 @@ select {
 	//background:#aa9;
 }
 .gwt-TabBar {
-	font-size:smaller;
+
 	background:#aa9;
 }
 .gwt-TabBar .gwt-TabBarFirst {
@@ -205,36 +204,33 @@ select {
 	cursor:hand;
 	background:#aa9;
 }
-.ks-Sink {
-	border:4px solid #aa9;
-	width:100%;
-	height:24em;
-	font-size:smaller;
-	background:#f6f6f6;
+
+
+.nav-packages {
+    background-image: url( images/package.gif ) !important;
 }
-.ks-Info {
-	font-size:x-small!important;
-	padding:10px 10px 2px;
-	background:#aa9;
+
+.nav-categories {
+    background-image: url( images/rule_asset.gif ) !important;
 }
-.ks-List {
-	margin-bottom:8px;
-	font-size:smaller;
+
+
+.nav-deployment {
+    background-image: url( images/deploy.gif ) !important;
 }
-.ks-List a:link,.ks-List a:visited {
-	text-decoration:none;
-	color:#555;
-	font-weight:700;
-	padding-left:.5em;
+
+.nav-admin {
+    background-image: url( images/rules.gif ) !important;
 }
-.ks-List .ks-SinkItem {
-	width:100%;
-	cursor:hand;
-	padding:.3em 16px .3em .3em;
+
+.nav-qa {
+    background-image: url( images/analyze.gif ) !important;
 }
-.ks-List .ks-SinkItem-selected {
-	background:#aa9;
-}
+
+
+
+
+
 .warning-Popup {
 	border:2px solid #aa9;
 	-moz-border-radius:.7em;
@@ -253,25 +249,12 @@ select {
 	padding:4px;
 	background:#FFF;
 }
-.quick-find {
-	border:1px solid #aa9;
-	width:100%;
-	-moz-border-radius:.7em;
-	-webkit-border-radius:.7em;
-	-khtml-border-radius:.7em;
-	border-radius:.7em;
-	background:#FFF;
-}
+
 .decision-Table-upload {
-	border:1px solid #aa9;
-	-moz-border-radius:.7em;
-	-webkit-border-radius:.7em;
-	-khtml-border-radius:.7em;
-	border-radius:.7em;
+	#border:1px solid #aa9;
 	background:#FFF;
 }
 .metadata-Widget {
-	font-size:smaller;
 	color:#666;
 }
 .rule-error-Popup {
@@ -342,7 +325,7 @@ select {
 	-webkit-border-radius:.7em;
 	-khtml-border-radius:.7em;
 	border-radius:.7em;
-	font-size:smaller;
+
 }
 .dt-editor-Grid {
 	border:1px solid #aa9;
@@ -352,7 +335,7 @@ select {
 }
 .dt-editor-Cell {
 	border:1px solid #aa9;
-	font-size:smaller;
+
 	padding:2px;
 	background:#FFF;
 }
@@ -363,7 +346,7 @@ select {
 }
 .dt-editor-Cell-selected {
 	border:2px solid #aa9;
-	font-size:smaller;
+
 	padding:0;
 	background:#FFF;
 }
@@ -388,7 +371,7 @@ select {
 .rule-List {
 	border:1px solid #aa9;
 	font-family:Arial,sans-serif;
-	font-size:smaller;
+
 	cursor:hand;
 	border-spacing:0;
 	border-collapse:collapse;
@@ -482,7 +465,7 @@ textarea:focus,textarea:active {
 a,a:visited {
 	color:#00008B;
 }
-.gwt-CheckBox,.gwt-HTML,.gwt-Label,.gwt-RadioButton,.gwt-Tree .gwt-TreeItem,.small-Text,.global-Font {
+.gwt-CheckBox,.gwt-RadioButton,.gwt-Tree .gwt-TreeItem,.small-Text,.global-Font {
 	font-size:smaller;
 }
 select:focus,input:focus,input:active,.constraint-value-Editor:focus,.constraint-value-Editor:active {
@@ -502,27 +485,23 @@ input,.constraint-value-Editor {
 	color:#FFF;
 }
 .editable-Surface,.package-Editor {
-	border:1px solid #aa9;
-	-moz-border-radius:.7em;
-	-webkit-border-radius:.7em;
-	-khtml-border-radius:.7em;
-	border-radius:.7em;
+	#border:1px solid #aa9;
 	background:#white;
 }
 .dt-editor-DescriptionCell,.dt-editor-CountColumn {
-	font-size:smaller;
+
 	padding:3px;
 	background:#FFFFF0;
 }
 .dt-editor-DescriptionCell-selected,.dt-editor-CountColumn-selected {
 	color:#FFF;
-	font-size:smaller;
+
 	padding:3px;
 	background:#aa9;
 }
 .rule-viewer-Documentation,.dsl-text-Editor,.default-text-Area {
 	font-family:Arial,sans-serif;
-	font-size:smaller;
+
 	border:1px solid #aa9;
 	width:100%;
 	-moz-border-radius:.7em;

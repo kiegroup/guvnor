@@ -2,14 +2,12 @@ package org.drools.brms.client.admin;
 
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
-import org.drools.brms.client.common.PrettyFormLayout;
 import org.drools.brms.client.rpc.LogEntry;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.core.EventObject;
-import com.gwtext.client.core.Ext;
 import com.gwtext.client.core.SortDir;
 import com.gwtext.client.data.ArrayReader;
 import com.gwtext.client.data.DateFieldDef;
@@ -21,7 +19,6 @@ import com.gwtext.client.data.RecordDef;
 import com.gwtext.client.data.Store;
 import com.gwtext.client.data.StringFieldDef;
 import com.gwtext.client.widgets.Button;
-import com.gwtext.client.widgets.ButtonConfig;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.ToolbarSeparator;
@@ -30,7 +27,7 @@ import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.grid.CellMetadata;
 import com.gwtext.client.widgets.grid.ColumnConfig;
 import com.gwtext.client.widgets.grid.ColumnModel;
-import com.gwtext.client.widgets.grid.Grid;
+import com.gwtext.client.widgets.grid.GridPanel;
 import com.gwtext.client.widgets.grid.Renderer;
 
 public class LogViewer extends Composite {
@@ -127,22 +124,28 @@ public class LogViewer extends Composite {
 				}
 			});
 
-		Grid g = new Grid(Ext.generateId(), "800px", "600px", store, cm);
-		g.render();
+		GridPanel g = new GridPanel();
+		g.setColumnModel(cm);
+		g.setStore(store);
+		g.setWidth(800);
+		g.setHeight(600);
 
-		Toolbar tb = new Toolbar(g.getView().getHeaderPanel(true));
+
+
+
+
+		Toolbar tb = new Toolbar();
+		g.setTopToolbar(tb);
+
 		tb.addItem(new ToolbarTextItem("Showing recent INFO and ERROR messages from the log:"));
 		tb.addItem(new ToolbarSeparator());
-		tb.addButton(new ToolbarButton(new ButtonConfig() {
-			{
-				setText("Reload");
-				setButtonListener(new ButtonListenerAdapter() {
+
+		ToolbarButton reload = new ToolbarButton("Reload");
+		reload.addListener(new ButtonListenerAdapter() {
 					public void onClick(Button button, EventObject e) {
 						refresh();
 					}
 				});
-			}
-		}));
 
 		layout.add(g);
 

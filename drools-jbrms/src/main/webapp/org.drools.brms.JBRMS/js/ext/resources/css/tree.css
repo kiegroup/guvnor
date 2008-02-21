@@ -1,17 +1,24 @@
 /*
- * Ext JS Library 1.1.1
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.1
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
- * http://www.extjs.com/license
+ * http://extjs.com/license
  */
 
+.x-tree .x-panel-body{
+    background-color:#fff;
+}
+.ext-strict .ext-ie .x-tree .x-panel-bwrap{
+    position:relative;
+    overflow:hidden;
+}
 .x-tree-icon, .x-tree-ec-icon, .x-tree-elbow-line, .x-tree-elbow, .x-tree-elbow-end, .x-tree-elbow-plus, .x-tree-elbow-minus, .x-tree-elbow-end-plus, .x-tree-elbow-end-minus{
 	border: 0 none;
 	height: 18px;
 	margin: 0;
 	padding: 0;
-	vertical-align: middle;
+	vertical-align: top;
 	width: 16px;
     background-repeat: no-repeat;
 }
@@ -20,12 +27,14 @@
 	height: 18px;
 	margin: 0;
 	padding: 0;
-	vertical-align: middle;
+	vertical-align: top;
 	width: 16px;
 	background-position:center;
     background-repeat: no-repeat;
 }
-
+.ext-ie .x-tree-node-indent img, .ext-ie .x-tree-node-icon, .ext-ie .x-tree-ec-icon {
+    vertical-align:middle !important;
+}
 /* some default icons for leaf/folder */
 .x-tree-node-collapsed .x-tree-node-icon{
 	background-image:url(../images/default/tree/folder.gif);
@@ -49,7 +58,6 @@ input.x-tree-node-cb {
     margin-left:0;
 }
 
-
 .x-tree-noicon .x-tree-node-icon{
 	width:0; height:0;
 }
@@ -61,7 +69,10 @@ input.x-tree-node-cb {
 	 font-style: italic;
 	 color:#444444;
 }
-
+.ext-ie .x-tree-node-el input {
+    width:15px;
+    height:15px;
+}
 /* Line styles */
 .x-tree-lines .x-tree-elbow{
 	background-image:url(../images/default/tree/elbow.gif);
@@ -114,12 +125,19 @@ input.x-tree-node-cb {
 .ext-ie ul.x-tree-node-ct{
     font-size:0;
     line-height:0;
+    zoom:1;
 }
 .x-tree-node{
 	color: black;
 	font: normal 11px arial, tahoma, helvetica, sans-serif;
 	white-space: nowrap;
 }
+
+.x-tree-node-el {
+    line-height:18px;
+    cursor:pointer;
+}
+
 .x-tree-node a, .x-dd-drag-ghost a{
 	text-decoration:none;
 	color:black;
@@ -171,9 +189,11 @@ input.x-tree-node-cb {
 	 background:#dddddd;
 	 border:1px dotted gray;
 }
-.x-tree-node .x-tree-selected a span{
-	background:#3366cc;
-	color:white;
+.x-tree-node .x-tree-node-over {
+	background-color: #eee;
+}
+.x-tree-node .x-tree-selected {
+	background-color: #d9e8fb;
 }
 .x-dd-drag-ghost .x-tree-node-indent, .x-dd-drag-ghost .x-tree-ec-icon{
 	display:none !important;

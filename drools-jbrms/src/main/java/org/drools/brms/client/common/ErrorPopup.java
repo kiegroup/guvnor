@@ -19,29 +19,14 @@ package org.drools.brms.client.common;
 
 import org.drools.brms.client.rpc.DetailedSerializableException;
 
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.Button;
-import com.gwtext.client.widgets.ButtonConfig;
-import com.gwtext.client.widgets.LayoutDialog;
-import com.gwtext.client.widgets.LayoutDialogConfig;
-import com.gwtext.client.widgets.event.ButtonListener;
+import com.gwtext.client.widgets.Window;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
-import com.gwtext.client.widgets.form.Form;
-import com.gwtext.client.widgets.form.FormConfig;
-import com.gwtext.client.widgets.layout.BorderLayout;
-import com.gwtext.client.widgets.layout.ContentPanel;
-import com.gwtext.client.widgets.layout.LayoutRegionConfig;
+import com.gwtext.client.widgets.layout.VerticalLayout;
 
 
 /**
@@ -55,35 +40,17 @@ public class ErrorPopup  {
 
     private ErrorPopup(final String message, final String longMessage) {
 
-      //create and configure layout dialog
-        final LayoutDialog dialog = new LayoutDialog(new LayoutDialogConfig() {
-        	{
-        		setTitle("Error");
-        		setModal(true);
-        		setWidth(500);
-        		setHeight((longMessage != null) ? 500 : 150);
-        		setShadow(true);
-        		//setMinHeight(300);
-        		//setMinHeight(300);
-        	}
-        }, new LayoutRegionConfig());
+    	Window w = new Window();
+    	w.setTitle("Error");
+    	w.setWidth(500);
+    	w.setHeight((longMessage != null) ? 500 : 150);
+    	w.setModal(true);
+    	w.setShadow(true);
+    	w.setClosable(true);
+    	w.setPlain(true);
 
+    	w.setLayout(new VerticalLayout());
 
-        //another way to add button
-        dialog.addButton(new Button("OK", new ButtonConfig() {
-        	{
-        		setText("Cancel");
-        		setButtonListener(new ButtonListenerAdapter() {
-        			public void onClick(Button button, EventObject e) {
-        				dialog.hide();
-        			}
-        		});
-        	}
-        }));
-
-        //add content to the center region
-        BorderLayout layout = dialog.getLayout();
-        ContentPanel contentPanel = new ContentPanel();
 
 
         VerticalPanel vp = new VerticalPanel();
@@ -96,7 +63,7 @@ public class ErrorPopup  {
         final SimplePanel detailPanel = new SimplePanel();
         if (longMessage != null && !"".equals(longMessage)) {
 	        Button showD = new Button("Show detail");
-	        showD.addButtonListener(new ButtonListenerAdapter() {
+	        showD.addListener(new ButtonListenerAdapter() {
 				public void onClick(Button button, EventObject e) {
 					detailPanel.clear();
 					detailPanel.add(new HTML("<small>" + longMessage + "</small>"));
@@ -107,11 +74,9 @@ public class ErrorPopup  {
         }
         vp.setWidth("100%");
         vp.add(detailPanel);
-        contentPanel.add(vp);
+        w.add(vp);
 
-        layout.add(contentPanel);
-
-        dialog.show();
+        w.show();
 
     }
 

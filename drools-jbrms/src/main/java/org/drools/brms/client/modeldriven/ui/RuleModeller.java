@@ -28,7 +28,6 @@ import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.SmallLabel;
-import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.ActionInsertFact;
@@ -46,14 +45,12 @@ import org.drools.brms.client.modeldriven.brl.RuleModel;
 import org.drools.brms.client.packages.SuggestionCompletionCache;
 import org.drools.brms.client.rpc.RuleAsset;
 
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -193,14 +190,10 @@ public class RuleModeller extends DirtyableComposite {
             final int idx = i;
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                    YesNoDialog diag = new YesNoDialog("Remove this item?", new Command() {
-                        public void execute() {
+                	if (Window.confirm("Remove this item?")) {
                             model.removeRhsItem(idx);
                             refreshWidget();
-                        }
-                    });
-                    diag.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
-                    diag.show();
+                    }
                 }
             } );
             horiz.add( w );
@@ -535,17 +528,13 @@ public class RuleModeller extends DirtyableComposite {
         final int idx = i;
         remove.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                YesNoDialog diag = new YesNoDialog("Remove this entire condition?", new Command() {
-                    public void execute() {
+            	if (Window.confirm("Remove this entire condition?")) {
                         if (model.removeLhsItem(idx)) {
                             refreshWidget();
                         } else {
                             ErrorPopup.showMessage( "Can't remove that item as it is used in the action part of the rule." );
                         }
-                    }
-                });
-                diag.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
-                diag.show();
+                }
             }
         } );
 

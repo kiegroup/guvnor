@@ -1,13 +1,13 @@
 package org.drools.brms.client.common;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,20 +23,20 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Well this one should be pretty obvious what it does. 
+ * Well this one should be pretty obvious what it does.
  * I feel like I have wasted valuable time writing this comment, but I hope
  * you enjoyed reading it.
- * 
+ *
  * @author Michael Neale
  *
  */
-public class StatusChangePopup extends DialogBox {
+public class StatusChangePopup extends FormStylePopup {
 
     private boolean isPackage;
     private String uuid;
@@ -44,17 +44,15 @@ public class StatusChangePopup extends DialogBox {
     private Command changedStatus;
 
     public StatusChangePopup(String uuid, boolean isPackage) {
-        super(true);
-        
+
         this.uuid = uuid;
         this.isPackage = isPackage;
-        
-        setStyleName( "ks-popups-Popup" );
-        
-        setHTML( "<img src='images/status_small.gif'/><b>Change status</b>" );
+
+        super.addRow(new HTML( "<img src='images/status_small.gif'/><b>Change status</b>" ));
+
         HorizontalPanel horiz = new HorizontalPanel();
         final ListBox box = new ListBox();
-        
+
         LoadingPopup.showMessage( "Please wait..." );
         RepositoryServiceFactory.getService().listStates( new GenericCallback() {
             public void onSuccess(Object data) {
@@ -66,13 +64,13 @@ public class StatusChangePopup extends DialogBox {
                 LoadingPopup.close();
             }
         });
-        
+
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 newStatus = box.getItemText( box.getSelectedIndex() );
-            }            
+            }
         });
-     
+
         horiz.add(box);
         Button ok = new Button("Change status");
         ok.addClickListener( new ClickListener() {
@@ -83,19 +81,21 @@ public class StatusChangePopup extends DialogBox {
             }
         });
         horiz.add( ok );
-        
-        
+
+
         Button close = new Button("Cancel");
         close.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                hide();                
-            }            
+                hide();
+            }
         });
         horiz.add( close );
-        
-        
-        
-        setWidget( horiz );
+
+
+        addRow(horiz);
+
+
+
     }
 
     /** Apply the state change */
@@ -106,13 +106,13 @@ public class StatusChangePopup extends DialogBox {
                 changedStatus.execute();
                 LoadingPopup.close();
             }
-        });        
+        });
     }
 
     /**
      * Get what the state was changed to.
      */
-    public String getState() {        
+    public String getState() {
         return this.newStatus;
     }
 
@@ -120,6 +120,6 @@ public class StatusChangePopup extends DialogBox {
      * set the status change event
      */
     public void setChangeStatusEvent(Command command) {
-        this.changedStatus = command;        
+        this.changedStatus = command;
     }
 }

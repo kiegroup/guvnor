@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
@@ -39,7 +38,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -47,14 +45,12 @@ import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
-import com.gwtext.client.core.Ext;
 import com.gwtext.client.data.ArrayReader;
 import com.gwtext.client.data.FieldDef;
 import com.gwtext.client.data.MemoryProxy;
@@ -65,7 +61,7 @@ import com.gwtext.client.data.StringFieldDef;
 import com.gwtext.client.widgets.grid.CellMetadata;
 import com.gwtext.client.widgets.grid.ColumnConfig;
 import com.gwtext.client.widgets.grid.ColumnModel;
-import com.gwtext.client.widgets.grid.Grid;
+import com.gwtext.client.widgets.grid.GridPanel;
 import com.gwtext.client.widgets.grid.Renderer;
 import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
 
@@ -346,11 +342,14 @@ public class PackageBuilderWidget extends Composite {
 		});
 
 
-		Grid g = new Grid(Ext.generateId(), "600px", "300px", store, cm);
-		g.render();
+		//Grid g = new Grid(Ext.generateId(), "600px", "300px", store, cm);
+		GridPanel g = new GridPanel(store, cm);
+		g.setWidth(600);
+		g.setHeight(300);
+
 
         g.addGridRowListener(new GridRowListenerAdapter() {
-            public void onRowDblClick(Grid grid, int rowIndex, EventObject e) {
+            public void onRowDblClick(GridPanel grid, int rowIndex, EventObject e) {
             	if (!grid.getSelectionModel().getSelected().getAsString("assetFormat").equals("Package")) {
                     String uuid = grid.getSelectionModel().getSelected().getAsString("uuid");
                     editEvent.open(uuid);

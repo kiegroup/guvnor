@@ -63,9 +63,8 @@ public class LoadingPopup  {
     public static void showMessage(final String message) {
     	MessageBox.show(new MessageBoxConfig() {
     		{
-
     			setTitle("Please wait...");
-
+    			setWidth(200);
     			setMsg(message);
     			setClosable(true);
     		}

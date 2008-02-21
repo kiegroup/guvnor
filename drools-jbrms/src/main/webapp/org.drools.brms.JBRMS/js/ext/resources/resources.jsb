@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<project path="" name="Ext - Resources" author="Ext JS, LLC" version="1.1.1" copyright="Ext JS Library $version&#xD;&#xA;Copyright(c) 2006-2007, $author.&#xD;&#xA;licensing@extjs.com&#xD;&#xA;&#xD;&#xA;http://www.extjs.com/license" output="C:\apps\www\deploy\ext-1.1.1\resources" source="true" source-dir="$output" minify="False" min-dir="$output\build" doc="False" doc-dir="$output\docs" master="true" master-file="$output\yui-ext.js" zip="true" zip-file="$output\yuo-ext.$version.zip">
+<project path="" name="Ext - Resources" author="Ext JS, LLC" version="2.0.1" copyright="Ext JS Library $version&#xD;&#xA;Copyright(c) 2006-2008, $author.&#xD;&#xA;licensing@extjs.com&#xD;&#xA;&#xD;&#xA;http://extjs.com/license" output="C:\apps\www\deploy\ext-2.0.1\resources" source="true" source-dir="$output" minify="False" min-dir="$output\build" doc="False" doc-dir="$output\docs" master="true" master-file="$output\yui-ext.js" zip="true" zip-file="$output\yuo-ext.$version.zip">
   <directory name="" />
   <target name="All css" file="$output\css\ext-all.css" debug="True" shorthand="False" shorthand-list="YAHOO.util.Dom.setStyle&#xD;&#xA;YAHOO.util.Dom.getStyle&#xD;&#xA;YAHOO.util.Dom.getRegion&#xD;&#xA;YAHOO.util.Dom.getViewportHeight&#xD;&#xA;YAHOO.util.Dom.getViewportWidth&#xD;&#xA;YAHOO.util.Dom.get&#xD;&#xA;YAHOO.util.Dom.getXY&#xD;&#xA;YAHOO.util.Dom.setXY&#xD;&#xA;YAHOO.util.CustomEvent&#xD;&#xA;YAHOO.util.Event.addListener&#xD;&#xA;YAHOO.util.Event.getEvent&#xD;&#xA;YAHOO.util.Event.getTarget&#xD;&#xA;YAHOO.util.Event.preventDefault&#xD;&#xA;YAHOO.util.Event.stopEvent&#xD;&#xA;YAHOO.util.Event.stopPropagation&#xD;&#xA;YAHOO.util.Event.stopEvent&#xD;&#xA;YAHOO.util.Anim&#xD;&#xA;YAHOO.util.Motion&#xD;&#xA;YAHOO.util.Connect.asyncRequest&#xD;&#xA;YAHOO.util.Connect.setForm&#xD;&#xA;YAHOO.util.Dom&#xD;&#xA;YAHOO.util.Event">
-    <include name="css\reset-min.css" />
+    <include name="css\reset.css" />
     <include name="css\core.css" />
     <include name="css\tabs.css" />
     <include name="css\form.css" />
@@ -10,23 +10,21 @@
     <include name="css\toolbar.css" />
     <include name="css\resizable.css" />
     <include name="css\grid.css" />
-    <include name="css\layout.css" />
-    <include name="css\basic-dialog.css" />
     <include name="css\dd.css" />
     <include name="css\tree.css" />
-    <include name="css\qtips.css" />
     <include name="css\date-picker.css" />
+    <include name="css\qtips.css" />
     <include name="css\menu.css" />
     <include name="css\box.css" />
     <include name="css\debug.css" />
     <include name="css\combo.css" />
-    <include name="css\grid3.css" />
     <include name="css\panel.css" />
     <include name="css\window.css" />
-    <include name="css\tabs2.css" />
     <include name="css\editor.css" />
-    <include name="css\layout2.css" />
     <include name="css\borders.css" />
+    <include name="css\layout.css" />
+    <include name="css\progress.css" />
+    <include name="css\dialog.css" />
   </target>
   <file name="images\basic-dialog\gray\close.gif" path="images\basic-dialog\gray" />
   <file name="images\basic-dialog\gray\dlg-bg.gif" path="images\basic-dialog\gray" />
@@ -462,7 +460,6 @@
   <file name="images\default\box\r.gif" path="images\default\box" />
   <file name="images\default\box\tb-blue.gif" path="images\default\box" />
   <file name="images\default\box\tb.gif" path="images\default\box" />
-  <file name="raw-images\shadow.psd" path="raw-images" />
   <file name="images\gray\menu\checked.gif" path="images\gray\menu" />
   <file name="images\gray\menu\group-checked.gif" path="images\gray\menu" />
   <file name="images\gray\menu\menu-parent.gif" path="images\gray\menu" />
@@ -556,8 +553,137 @@
   <file name="css\xtheme-aero.css" path="css" />
   <file name="css\xtheme-gray.css" path="css" />
   <file name="css\xtheme-vista.css" path="css" />
+  <file name="legacy\basic-dialog.css" path="legacy" />
   <file name="images\default\form\clear-trigger.psd" path="images\default\form" />
   <file name="images\default\form\date-trigger.psd" path="images\default\form" />
   <file name="images\default\form\search-trigger.psd" path="images\default\form" />
   <file name="images\default\form\trigger.psd" path="images\default\form" />
+  <file name="images\aero\tabs\tab-close.gif" path="images\aero\tabs" />
+  <file name="images\default\panel\light-hd.gif" path="images\default\panel" />
+  <file name="images\default\panel\tools-sprites-trans.gif" path="images\default\panel" />
+  <file name="images\aero\tabs\scroller-bg.gif" path="images\aero\tabs" />
+  <file name="images\default\tabs\scroller-bg.gif" path="images\default\tabs" />
+  <file name="images\default\grid\group-expand-sprite.gif" path="images\default\grid" />
+  <file name="images\default\grid\group-by.gif" path="images\default\grid" />
+  <file name="images\default\grid\columns.gif" path="images\default\grid" />
+  <file name="css\dialog.css" path="css" />
+  <file name="images\default\basic-dialog\icon-error.gif" path="images\default\basic-dialog" />
+  <file name="images\default\basic-dialog\icon-info.gif" path="images\default\basic-dialog" />
+  <file name="images\default\basic-dialog\icon-question.gif" path="images\default\basic-dialog" />
+  <file name="images\default\basic-dialog\icon-warning.gif" path="images\default\basic-dialog" />
+  <file name="css\progress.css" path="css" />
+  <file name="images\default\widgets\progress-bg.gif" path="images\default\widgets" />
+  <file name="images\default\progress\progress-bg.gif" path="images\default\progress" />
+  <file name="images\default\layout\mini-bottom.gif" path="images\default\layout" />
+  <file name="images\default\layout\mini-left.gif" path="images\default\layout" />
+  <file name="images\default\layout\mini-right.gif" path="images\default\layout" />
+  <file name="images\default\layout\mini-top.gif" path="images\default\layout" />
+  <file name="images\default\shared\blue-loading.gif" path="images\default\shared" />
+  <file name="images\default\shared\large-loading.gif" path="images\default\shared" />
+  <file name="images\default\menu\item-over.gif" path="images\default\menu" />
+  <file name="images\default\tabs\tab-close.gif" path="images\default\tabs" />
+  <file name="images\default\tabs\tab-strip-bg.gif" path="images\default\tabs" />
+  <file name="images\default\tabs\tab-strip-bg.png" path="images\default\tabs" />
+  <file name="images\default\tabs\tab-strip-btm-bg.gif" path="images\default\tabs" />
+  <file name="images\default\toolbar\bg.gif" path="images\default\toolbar" />
+  <file name="images\default\button\btn-arrow.gif" path="images\default\button" />
+  <file name="images\default\button\btn-sprite.gif" path="images\default\button" />
+  <file name="images\default\shared\hd-sprite.gif" path="images\default\shared" />
+  <file name="images\default\window\icon-error.gif" path="images\default\window" />
+  <file name="images\default\window\icon-info.gif" path="images\default\window" />
+  <file name="images\default\window\icon-question.gif" path="images\default\window" />
+  <file name="images\default\window\icon-warning.gif" path="images\default\window" />
+  <file name="images\gray\panel\corners-sprite.gif" path="images\gray\panel" />
+  <file name="images\gray\panel\left-right.gif" path="images\gray\panel" />
+  <file name="images\gray\panel\light-hd.gif" path="images\gray\panel" />
+  <file name="images\gray\panel\tool-sprite-tpl.gif" path="images\gray\panel" />
+  <file name="images\gray\panel\tool-sprites.gif" path="images\gray\panel" />
+  <file name="images\gray\panel\tools-sprites-trans.gif" path="images\gray\panel" />
+  <file name="images\gray\panel\top-bottom.gif" path="images\gray\panel" />
+  <file name="images\gray\panel\top-bottom.png" path="images\gray\panel" />
+  <file name="images\gray\panel\white-corners-sprite.gif" path="images\gray\panel" />
+  <file name="images\gray\panel\white-left-right.gif" path="images\gray\panel" />
+  <file name="images\gray\panel\white-top-bottom.gif" path="images\gray\panel" />
+  <file name="images\gray\qtip\close.gif" path="images\gray\qtip" />
+  <file name="images\gray\toolbar\bg.gif" path="images\gray\toolbar" />
+  <file name="images\gray\toolbar\btn-arrow-light.gif" path="images\gray\toolbar" />
+  <file name="images\gray\toolbar\btn-arrow.gif" path="images\gray\toolbar" />
+  <file name="images\gray\toolbar\btn-over-bg.gif" path="images\gray\toolbar" />
+  <file name="images\gray\toolbar\tb-bg.gif" path="images\gray\toolbar" />
+  <file name="images\gray\tabs\scroller-bg.gif" path="images\gray\tabs" />
+  <file name="images\gray\tabs\tab-close.gif" path="images\gray\tabs" />
+  <file name="images\gray\tabs\tab-strip-bg.gif" path="images\gray\tabs" />
+  <file name="images\gray\tabs\tab-strip-bg.png" path="images\gray\tabs" />
+  <file name="images\gray\tabs\tab-strip-btm-bg.gif" path="images\gray\tabs" />
+  <file name="images\gray\window\icon-error.gif" path="images\gray\window" />
+  <file name="images\gray\window\icon-info.gif" path="images\gray\window" />
+  <file name="images\gray\window\icon-question.gif" path="images\gray\window" />
+  <file name="images\gray\window\icon-warning.gif" path="images\gray\window" />
+  <file name="images\gray\window\left-corners.png" path="images\gray\window" />
+  <file name="images\gray\window\left-corners.psd" path="images\gray\window" />
+  <file name="images\gray\window\left-right.png" path="images\gray\window" />
+  <file name="images\gray\window\left-right.psd" path="images\gray\window" />
+  <file name="images\gray\window\right-corners.png" path="images\gray\window" />
+  <file name="images\gray\window\right-corners.psd" path="images\gray\window" />
+  <file name="images\gray\window\top-bottom.png" path="images\gray\window" />
+  <file name="images\gray\window\top-bottom.psd" path="images\gray\window" />
+  <file name="images\gray\button\btn-arrow.gif" path="images\gray\button" />
+  <file name="images\gray\button\btn-sprite.gif" path="images\gray\button" />
+  <file name="css\xtheme-gray-blue.css" path="css" />
+  <file name="images\gray\window\left-corners.pspimage" path="images\gray\window" />
+  <file name="images\gray\window\right-corners.pspimage" path="images\gray\window" />
+  <file name="images\default\tabs\tabs-sprite.gif" path="images\default\tabs" />
+  <file name="images\gray\tabs\tabs-sprite.gif" path="images\gray\tabs" />
+  <file name="css\xtheme-dark.css" path="css" />
+  <file name="images\dark\button\btn-arrow.gif" path="images\dark\button" />
+  <file name="images\dark\button\btn-sprite.gif" path="images\dark\button" />
+  <file name="images\dark\panel\corners-sprite.gif" path="images\dark\panel" />
+  <file name="images\dark\panel\left-right.gif" path="images\dark\panel" />
+  <file name="images\dark\panel\light-hd.gif" path="images\dark\panel" />
+  <file name="images\dark\panel\tool-sprite-tpl.gif" path="images\dark\panel" />
+  <file name="images\dark\panel\tool-sprites.gif" path="images\dark\panel" />
+  <file name="images\dark\panel\tools-sprites-trans.gif" path="images\dark\panel" />
+  <file name="images\dark\panel\top-bottom.gif" path="images\dark\panel" />
+  <file name="images\dark\panel\top-bottom.png" path="images\dark\panel" />
+  <file name="images\dark\panel\white-corners-sprite.gif" path="images\dark\panel" />
+  <file name="images\dark\panel\white-left-right.gif" path="images\dark\panel" />
+  <file name="images\dark\panel\white-top-bottom.gif" path="images\dark\panel" />
+  <file name="images\dark\qtip\bg.gif" path="images\dark\qtip" />
+  <file name="images\dark\qtip\close.gif" path="images\dark\qtip" />
+  <file name="images\dark\qtip\tip-sprite.gif" path="images\dark\qtip" />
+  <file name="images\dark\tabs\scroller-bg.gif" path="images\dark\tabs" />
+  <file name="images\dark\tabs\tab-btm-inactive-left-bg.gif" path="images\dark\tabs" />
+  <file name="images\dark\tabs\tab-btm-inactive-right-bg.gif" path="images\dark\tabs" />
+  <file name="images\dark\tabs\tab-btm-left-bg.gif" path="images\dark\tabs" />
+  <file name="images\dark\tabs\tab-btm-right-bg.gif" path="images\dark\tabs" />
+  <file name="images\dark\tabs\tab-close.gif" path="images\dark\tabs" />
+  <file name="images\dark\tabs\tab-strip-bg.gif" path="images\dark\tabs" />
+  <file name="images\dark\tabs\tab-strip-bg.png" path="images\dark\tabs" />
+  <file name="images\dark\tabs\tab-strip-btm-bg.gif" path="images\dark\tabs" />
+  <file name="images\dark\tabs\tabs-sprite.gif" path="images\dark\tabs" />
+  <file name="images\dark\toolbar\bg.gif" path="images\dark\toolbar" />
+  <file name="images\dark\toolbar\btn-arrow-light.gif" path="images\dark\toolbar" />
+  <file name="images\dark\toolbar\btn-arrow.gif" path="images\dark\toolbar" />
+  <file name="images\dark\toolbar\btn-over-bg.gif" path="images\dark\toolbar" />
+  <file name="images\dark\toolbar\gray-bg.gif" path="images\dark\toolbar" />
+  <file name="images\dark\toolbar\tb-bg.gif" path="images\dark\toolbar" />
+  <file name="images\dark\toolbar\tb-btn-sprite.gif" path="images\dark\toolbar" />
+  <file name="images\dark\window\icon-error.gif" path="images\dark\window" />
+  <file name="images\dark\window\icon-info.gif" path="images\dark\window" />
+  <file name="images\dark\window\icon-question.gif" path="images\dark\window" />
+  <file name="images\dark\window\icon-warning.gif" path="images\dark\window" />
+  <file name="images\dark\window\left-corners.png" path="images\dark\window" />
+  <file name="images\dark\window\left-corners.pspimage" path="images\dark\window" />
+  <file name="images\dark\window\left-right.png" path="images\dark\window" />
+  <file name="images\dark\window\right-corners.png" path="images\dark\window" />
+  <file name="images\dark\window\top-bottom.png" path="images\dark\window" />
+  <file name="images\dark\gradient-bg.gif" path="images\dark" />
+  <file name="images\dark\s.gif" path="images\dark" />
+  <file name="images\default\tabs\scroll-left.gif" path="images\default\tabs" />
+  <file name="images\default\tabs\scroll-right.gif" path="images\default\tabs" />
+  <file name="css\reset.css" path="css" />
+  <file name="images\gray\tabs\scroll-left.gif" path="images\gray\tabs" />
+  <file name="images\gray\tabs\scroll-right.gif" path="images\gray\tabs" />
+  <file name="images\default\shared\loading-balls.gif" path="images\default\shared" />
+  <file name="raw-images\shadow.psd" path="raw-images" />
 </project>

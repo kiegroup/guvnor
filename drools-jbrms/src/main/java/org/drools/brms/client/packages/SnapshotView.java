@@ -1,6 +1,5 @@
 package org.drools.brms.client.packages;
 
-import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
@@ -31,13 +30,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
-import com.gwtext.client.data.Node;
-import com.gwtext.client.util.Format;
-import com.gwtext.client.widgets.layout.ContentPanel;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
-import com.gwtext.client.widgets.tree.event.TreeNodeListenerAdapter;
-import com.gwtext.client.widgets.tree.event.TreePanelListener;
 import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
 
 /**
@@ -70,13 +64,16 @@ public class SnapshotView extends Composite {
 
 
 		vert.add(head);
+
 		centerPanel = new ExplorerViewCenterPanel();
-		vert.add(centerPanel);
-		centerPanel.setHeight("100%");
-		centerPanel.setWidth("100%");
 
 
+		//MN
 		centerPanel.addTab("Info", false, infoPanel(), "INFO");
+		//centerPanel.addTab("Info", false, new Label("ho"), "INFO");
+
+		vert.add(centerPanel.getPanel());
+
 
 		vert.setWidth("100%");
 		initWidget(vert);
@@ -180,6 +177,7 @@ public class SnapshotView extends Composite {
 		HorizontalPanel h = new HorizontalPanel();
 		h.add(packageTree());
 		h.add(gridPanel);
+		h.setHeight("100%");
 		return h;
 	}
 
@@ -190,7 +188,7 @@ public class SnapshotView extends Composite {
 		TreeNode root = new TreeNode(snapInfo.name);
 		root.appendChild(pkg);
 		TreePanel tp = ExplorerLayoutManager.genericExplorerWidget(root);
-		tp.addTreePanelListener(new TreePanelListenerAdapter() {
+		tp.addListener(new TreePanelListenerAdapter() {
 
 			public void onClick(TreeNode node, EventObject e) {
 				Object uo = node.getUserObject();

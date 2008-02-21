@@ -23,11 +23,14 @@ import org.drools.brms.client.rpc.UserSecurityContext;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.HistoryListener;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.util.CSS;
+import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.QuickTips;
+import com.gwtext.client.widgets.Viewport;
 import com.gwtext.client.widgets.form.Field;
-import com.gwtext.client.widgets.layout.BorderLayout;
 
 /**
  * This is the main launching/entry point for the JBRMS web console.
@@ -38,20 +41,21 @@ import com.gwtext.client.widgets.layout.BorderLayout;
  */
 public class JBRMSEntryPoint
     implements
-    EntryPoint {
+    EntryPoint, HistoryListener {
 
     private LoggedInUserInfo loggedInUserInfo;
 
     public void onModuleLoad() {
-    	DOM.removeChild(RootPanel.getBodyElement(), DOM.getElementById("loadingMessage"));
+    	//DOM.removeChild(RootPanel.getBodyElement(), DOM.getElementById("loadingMessage"));
         Field.setMsgTarget("side");
         QuickTips.init();
+        CSS.swapStyleSheet("theme", "js/ext/resources/css/xtheme-gray.css");
         loggedInUserInfo = new LoggedInUserInfo();
         loggedInUserInfo.setVisible(false);
         checkLoggedIn();
     }
 
-	private BorderLayout createMain() {
+	private Panel createMain() {
 		return (new ExplorerLayoutManager(loggedInUserInfo)).getBaseLayout();
 	}
 
@@ -67,14 +71,16 @@ public class JBRMSEntryPoint
                 if ( ctx.userName != null ) {
                     loggedInUserInfo.setUserName( ctx.userName );
                     loggedInUserInfo.setVisible( true );
-                    RootPanel.get().add(createMain());
+                    new Viewport(createMain());
+                    //RootPanel.get().add(createMain());
                 } else {
                 	final LoginWidget lw = new LoginWidget();
                 	lw.setLoggedInEvent(new Command() {
                         public void execute() {
                             loggedInUserInfo.setUserName( lw.getUserName() );
                             loggedInUserInfo.setVisible( true );
-                            RootPanel.get().add(createMain());
+                            new Viewport(createMain());
+                            //RootPanel.get().add(createMain());
 
                         }
                     } );
@@ -83,6 +89,11 @@ public class JBRMSEntryPoint
             }
         } );
     }
+
+	public void onHistoryChanged(String a) {
+
+
+	}
 
 
 }

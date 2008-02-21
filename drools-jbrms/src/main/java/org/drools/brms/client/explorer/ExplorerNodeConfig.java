@@ -11,7 +11,6 @@ import org.drools.brms.client.rulelist.EditItemEvent;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
 import com.gwtext.client.widgets.tree.TreeNode;
-import com.gwtext.client.widgets.tree.TreeNodeConfig;
 import com.gwtext.client.widgets.tree.event.TreeNodeListenerAdapter;
 
 /*
@@ -65,13 +64,9 @@ public class ExplorerNodeConfig {
 
 	private static TreeNode makeItem(final String txt, final String img,
 			final String[] formats) {
-		TreeNode tn = new TreeNode(new TreeNodeConfig() {
-			{
-				setIcon(img);
-				setText(txt);
-
-			}
-		});
+		TreeNode tn = new TreeNode();
+		tn.setIcon(img);
+		tn.setText(txt);
 		tn.setUserObject(new Object[] {formats, txt});
 		return tn;
 	}
@@ -101,28 +96,19 @@ public class ExplorerNodeConfig {
 	}
 
 	public static TreeNode getRulesStructure () {
+		TreeNode tn = new TreeNode();
+		tn.setText("Rules");
+		tn.setExpanded(true);
 
-		//final TreeNode adminNode = new TreeNode("Rules");
-		return new TreeNode(new TreeNodeConfig() {
-			{
-				setText("Rules");
-				setExpanded(true);
-			}
-		}) {
-			{
-				appendChild(new TreeNode(new TreeNodeConfig() {
-					{
-						setIcon("images/find.gif");
-						setId("FIND");
-						setText("Find");
+		TreeNode tnc = new TreeNode();
+		tnc.setIcon("images/find.gif");
+		tnc.setId("FIND");
+		tnc.setText("Find");
 
-					}
-				}));
-				appendChild(getStatesStructure());
-				appendChild(getCategoriesStructure());
-			}
-
-		};
+		tn.appendChild(tnc);
+		tn.appendChild(getStatesStructure());
+		tn.appendChild(getCategoriesStructure());
+		return tn;
 
 	}
 
@@ -147,16 +133,13 @@ public class ExplorerNodeConfig {
 
 								final String current = value[i];
 								System.err.println("VALUE: " + current + "(" + i + ")");
-								final TreeNode childNode = new TreeNode( new TreeNodeConfig() {
-									{
-										setIcon("images/category_small.gif");
-										setText(current);
-									}
-								});
+								final TreeNode childNode = new TreeNode();
+								childNode.setIcon("images/category_small.gif");
+								childNode.setText(current);
 
 								childNode.setUserObject((path.equals("/")) ? current : path + "/" + current);
 								childNode.appendChild(new TreeNode("Please wait..."));
-								childNode.addTreeNodeListener(new TreeNodeListenerAdapter() {
+								childNode.addListener(new TreeNodeListenerAdapter() {
 									boolean expanding = false;
 
 									public void onExpand(Node node) {
@@ -213,19 +196,13 @@ public class ExplorerNodeConfig {
 
 	public static TreeNode getQAStructure(final ExplorerViewCenterPanel centerPanel) {
 
-		final TreeNode treeNode = new TreeNode( new TreeNodeConfig() {
-			{
-				setText("QA");
-			}
-		});
+		final TreeNode treeNode = new TreeNode();
+		treeNode.setText("QA");
 
 
-		final TreeNode scenarios = new TreeNode(new TreeNodeConfig() {
-			{
-				setText("Test Scenarios in packages:");
-				setIcon("images/scenario_conf.gif");
-			}
-		});
+		final TreeNode scenarios = new TreeNode();
+		scenarios.setText("Test Scenarios in packages:");
+		scenarios.setIcon("images/scenario_conf.gif");
 
 		final EditItemEvent edit = new EditItemEvent() {
 			public void open(String key) {centerPanel.openAsset(key);}
@@ -235,21 +212,16 @@ public class ExplorerNodeConfig {
 		treeNode.appendChild(scenarios);
 
 
-		final TreeNode analysis = new TreeNode(new TreeNodeConfig() {
-			{
-				setText("Analysis");
-				setIcon("images/analyze.gif");
-				setExpanded(false);
-			}
-		});
-
+		final TreeNode analysis = new TreeNode();
+		analysis.setText("Analysis");
+		analysis.setIcon("images/analyze.gif");
+		analysis.setExpanded(false);
 		analysis.appendChild(new TreeNode("Please wait..."));
 
 		treeNode.appendChild(analysis);
 
 
-		scenarios.addTreeNodeListener(new TreeNodeListenerAdapter() {
-
+		scenarios.addListener(new TreeNodeListenerAdapter() {
 			public void onExpand(Node node) {
 				System.err.println("-->Loading packages 1");
 
@@ -259,15 +231,12 @@ public class ExplorerNodeConfig {
 
 						for (int i = 0; i < conf.length; i++) {
 							final PackageConfigData c = conf[i];
-							TreeNode pkg = new TreeNode(new TreeNodeConfig() {
-								{
-									setText(c.name);
-									setIcon("images/package.gif");
+							TreeNode pkg = new TreeNode();
+							pkg.setText(c.name);
+							pkg.setIcon("images/package.gif");
 
-								}
-							});
 							scenarios.appendChild(pkg);
-							pkg.addTreeNodeListener(new TreeNodeListenerAdapter() {
+							pkg.addListener(new TreeNodeListenerAdapter() {
 								public void onClick(Node node, EventObject e) {
 									if (!centerPanel.showIfOpen("scenarios" + c.uuid)) {
 										centerPanel.addTab("Scenarios for " + c.name, true, new ScenarioPackageView(
@@ -293,7 +262,7 @@ public class ExplorerNodeConfig {
 		});
 
 
-		analysis.addTreeNodeListener(new TreeNodeListenerAdapter() {
+		analysis.addListener(new TreeNodeListenerAdapter() {
 
 
 			public void onExpand(Node node) {
@@ -304,15 +273,13 @@ public class ExplorerNodeConfig {
 
 						for (int i = 0; i < conf.length; i++) {
 							final PackageConfigData c = conf[i];
-							TreeNode pkg = new TreeNode(new TreeNodeConfig() {
-								{
-									setText(c.name);
-									setIcon("images/package.gif");
+							TreeNode pkg = new TreeNode();
+							pkg.setText(c.name);
+							pkg.setIcon("images/package.gif");
 
-								}
-							});
+
 							analysis.appendChild(pkg);
-							pkg.addTreeNodeListener(new TreeNodeListenerAdapter() {
+							pkg.addListener(new TreeNodeListenerAdapter() {
 								public void onClick(Node node, EventObject e) {
 									if (!centerPanel.showIfOpen("analysis" + c.uuid)) {
 										centerPanel.addTab("Analysis for " + c.name, true, new AnalysisView(c.uuid, c.name), "analysis" + c.uuid);

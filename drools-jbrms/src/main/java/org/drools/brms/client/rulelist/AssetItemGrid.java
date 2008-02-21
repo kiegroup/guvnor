@@ -31,7 +31,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.gwtext.client.core.EventObject;
-import com.gwtext.client.core.Ext;
 import com.gwtext.client.data.ArrayReader;
 import com.gwtext.client.data.FieldDef;
 import com.gwtext.client.data.MemoryProxy;
@@ -41,7 +40,6 @@ import com.gwtext.client.data.Store;
 import com.gwtext.client.data.StringFieldDef;
 import com.gwtext.client.util.Format;
 import com.gwtext.client.widgets.Button;
-import com.gwtext.client.widgets.ButtonConfig;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.ToolbarTextItem;
@@ -49,7 +47,7 @@ import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.grid.CellMetadata;
 import com.gwtext.client.widgets.grid.ColumnConfig;
 import com.gwtext.client.widgets.grid.ColumnModel;
-import com.gwtext.client.widgets.grid.Grid;
+import com.gwtext.client.widgets.grid.GridPanel;
 import com.gwtext.client.widgets.grid.Renderer;
 import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
 
@@ -72,7 +70,7 @@ public class AssetItemGrid extends Composite {
 
     private int currentPosition = 0;
 	protected Store store;
-	private Grid currentGrid;
+	private GridPanel currentGrid;
 
     public AssetItemGrid(final EditItemEvent event, final String tableConfig, final AssetItemGridDataLoader source) {
 
@@ -126,11 +124,15 @@ public class AssetItemGrid extends Composite {
                 MemoryProxy proxy = new MemoryProxy(gridData);
                 ArrayReader reader = new ArrayReader(rd);
                 store = new Store(proxy, reader);
-                currentGrid = new Grid(Ext.generateId(), "600px", "600px", store, cm);
-                currentGrid.render();
-                currentGrid.setLoadMask("Loading data...");
+                //currentGrid = new Grid(Ext.generateId(), "600px", "600px", store, cm);
+                currentGrid = new GridPanel(store, cm);
+                currentGrid.setWidth(600);
+                currentGrid.setHeight(600);
 
-                Toolbar tb = new Toolbar(currentGrid.getView().getHeaderPanel(true));
+
+
+                Toolbar tb = new Toolbar();
+                currentGrid.setTopToolbar(tb);
                 tb.addItem(new ToolbarTextItem(Format.format(
                                         "Showing item #{0} to {1} of {2} items.",
                                         new String[] {""+(currentPosition + 1), "" + (currentPosition + result.data.length), "" + result.total})));
@@ -148,21 +150,19 @@ public class AssetItemGrid extends Composite {
                         doGrid(source, cm, rd, pageSize);					}
                 };
 
-                tb.addButton(new ToolbarButton(new ButtonConfig() {
-                    {
-                        setText("Refresh");
-                        setButtonListener(new ButtonListenerAdapter() {
-                            public void onClick(Button button, EventObject e) {
-                            	refresh.execute();
-                            }
-                        });
+                ToolbarButton refreshB = new ToolbarButton();
+                refreshB.setText("Refresh");
+                refreshB.addListener(new ButtonListenerAdapter() {
+                    public void onClick(Button button, EventObject e) {
+                    	refresh.execute();
                     }
-                }));
+                });
+                tb.addButton(refreshB);
 
 
 
                 currentGrid.addGridRowListener(new GridRowListenerAdapter() {
-                    public void onRowDblClick(Grid grid, int rowIndex, EventObject e) {
+                    public void onRowDblClick(GridPanel grid, int rowIndex, EventObject e) {
                         String uuid = grid.getSelectionModel().getSelected().getAsString("uuid");
                         System.err.println("Opening: " + uuid);
                         editEvent.open(uuid);
@@ -189,16 +189,14 @@ public class AssetItemGrid extends Composite {
 
     private void navButton(final AssetItemGridDataLoader source,
             final ColumnModel cm, final RecordDef rd,
-            final int pageSize, final Grid g, final boolean forward, Toolbar tb) {
+            final int pageSize, final GridPanel g, final boolean forward, Toolbar tb) {
 
-        ToolbarButton b = new ToolbarButton(new ButtonConfig() {
-            {
-                setText((forward) ? "Next ->" : "<- Previous");
-            }
-        });
+        ToolbarButton b = new ToolbarButton();
+        b.setText((forward) ? "Next ->" : "<- Previous");
+
         tb.addButton(b);
 
-        b.addButtonListener(new ButtonListenerAdapter() {
+        b.addListener(new ButtonListenerAdapter() {
                     public void onClick(Button button, EventObject e) {
                         currentPosition = (forward) ? currentPosition + pageSize : currentPosition - pageSize;
                         layout.clear();

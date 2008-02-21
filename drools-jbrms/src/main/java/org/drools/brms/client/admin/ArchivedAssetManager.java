@@ -12,16 +12,11 @@ import org.drools.brms.client.rulelist.EditItemEvent;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.core.EventObject;
-import com.gwtext.client.core.Ext;
-import com.gwtext.client.widgets.ButtonConfig;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
-import com.gwtext.client.widgets.ToolbarSeparator;
-import com.gwtext.client.widgets.ToolbarTextItem;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 
 /**
@@ -61,45 +56,35 @@ public class ArchivedAssetManager extends Composite {
 
 
         loadPackages();
-        Toolbar tb = new Toolbar(Ext.generateId());
-        tb.addButton(new ToolbarButton(new ButtonConfig() {
-        	{
-        		setButtonListener(new ButtonListenerAdapter() {
-
+        Toolbar tb = new Toolbar();
+        final ToolbarButton restorePackage = new ToolbarButton();
+        restorePackage.addListener(new ButtonListenerAdapter() {
         			public void onClick(
         					com.gwtext.client.widgets.Button button,
         					EventObject e) {
         				restorePackage(packages.getValue(packages.getSelectedIndex()));
-
-
         			}
 
         		});
-        		setText("Restore selected package");
+        restorePackage.setText("Restore selected package");
+        tb.addButton(restorePackage);
 
-        	}
-        }));
 
-        tb.addButton(new ToolbarButton(new ButtonConfig() {
-        	{
-        		setButtonListener(new ButtonListenerAdapter() {
 
+
+        final ToolbarButton delPackage = new ToolbarButton();
+        delPackage.setText("Permanently delete package");
+        delPackage.addListener(new ButtonListenerAdapter() {
         			public void onClick(
         					com.gwtext.client.widgets.Button button,
         					EventObject e) {
         				if (Window.confirm("Are you sure you want to permanently delete this package? This can not be undone.")) {
         					deletePackage(packages.getValue(packages.getSelectedIndex()));
         				}
-
-
         			}
+        });
+        tb.addButton(delPackage);
 
-
-        		});
-        		setText("Permanently delete package");
-
-        	}
-        }));
 
 
         pf.startSection("Archived packages");
@@ -110,14 +95,12 @@ public class ArchivedAssetManager extends Composite {
 
         pf.endSection();
 
-        tb = new Toolbar(Ext.generateId());
-        tb.addButton(new ToolbarButton(new ButtonConfig() {
-        	{
-        		setText("Restore selected asset");
-        		setButtonListener(new ButtonListenerAdapter() {
-        			public void onClick(
-        					com.gwtext.client.widgets.Button button,
-        					EventObject e) {
+        tb = new Toolbar();
+        final ToolbarButton restoreAsset = new ToolbarButton();
+        restoreAsset.setText("Restore selected asset");
+        tb.addButton(restoreAsset);
+        restoreAsset.addListener(new ButtonListenerAdapter() {
+        			public void onClick(com.gwtext.client.widgets.Button button, EventObject e) {
                     	if (grid.getSelectedRowUUID() == null) {
                     		Window.alert("Please select an item to restore.");
                     		return;
@@ -128,15 +111,16 @@ public class ArchivedAssetManager extends Composite {
                                 grid.refreshGrid();
                             }
                         });
-        			}
-        		});
-        	}
-        }));
+        			};
+        });
 
-        tb.addButton(new ToolbarButton(new ButtonConfig() {
-        	{
-        		setText("Delete selected asset");
-        		setButtonListener(new ButtonListenerAdapter() {
+
+        final ToolbarButton deleteAsset = new ToolbarButton();
+        deleteAsset.setText("Delete selected asset");
+        tb.addButton(deleteAsset);
+
+        deleteAsset.addListener(
+        		new ButtonListenerAdapter() {
         			public void onClick(
         					com.gwtext.client.widgets.Button button,
         					EventObject e) {
@@ -156,8 +140,7 @@ public class ArchivedAssetManager extends Composite {
                         });
         			}
         		});
-        	}
-        }));
+
         pf.startSection("Archived assets");
         pf.addRow(tb);
 

@@ -22,7 +22,6 @@ import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.SmallLabel;
-import org.drools.brms.client.common.YesNoDialog;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
@@ -30,7 +29,7 @@ import org.drools.brms.client.modeldriven.brl.ActionSetField;
 import org.drools.brms.client.modeldriven.brl.ActionUpdateField;
 import org.drools.brms.client.modeldriven.brl.FactPattern;
 
-import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -93,14 +92,10 @@ public class ActionSetFieldWidget extends DirtyableComposite {
             Image remove = new ImageButton("images/delete_item_small.gif");
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                    YesNoDialog diag = new YesNoDialog("Remove this item?", new Command() {
-                        public void execute() {
+                	if (Window.confirm("Remove this item?")) {
                             model.removeField( idx );
                             modeller.refreshWidget();
-                        }
-                    });
-                    diag.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
-                    diag.show();
+                	}
                 }
             });
             inner.setWidget( i, 2, remove );

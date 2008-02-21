@@ -34,12 +34,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
-import com.gwtext.client.core.Ext;
-import com.gwtext.client.widgets.ButtonConfig;
 import com.gwtext.client.widgets.QuickTipsConfig;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
-import com.gwtext.client.widgets.ToolbarSeparator;
 import com.gwtext.client.widgets.ToolbarTextItem;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 
@@ -71,7 +68,7 @@ public class ActionToolbar extends Composite {
         this.state = new ToolbarTextItem("Status: ");
 
 
-        toolbar = new Toolbar(Ext.generateId());
+        toolbar = new Toolbar();
 
 
         String status = metaData.status;
@@ -98,99 +95,86 @@ public class ActionToolbar extends Composite {
 
 
 
-        toolbar.addButton( new ToolbarButton(new ButtonConfig() {
-	        	{
-	        		setText("Save changes");
-	        		setTooltip(getTip("Commit any changes for this asset."));
-	        		setButtonListener(new ButtonListenerAdapter() {
+
+    	ToolbarButton save = new ToolbarButton();
+    	save.setText("Save changes");
+		save.setTooltip(getTip("Commit any changes for this asset."));
+		save.addListener(new ButtonListenerAdapter() {
 	        			public void onClick(
 	        					com.gwtext.client.widgets.Button button,
 	        					EventObject e) {
 	                        	doCheckinConfirm(button);
         				}
 	        			});
-	        		}
-	        	})
-	        );
+		toolbar.addButton(save);
 
-        toolbar.addButton( new ToolbarButton(new ButtonConfig() {
-        	{
-        		setText("Copy");
-        		setTooltip("Copy this asset.");
-        		setButtonListener(new ButtonListenerAdapter() {
-        			public void onClick(
-        					com.gwtext.client.widgets.Button button,
-        					EventObject e) {
-                        	doCopyDialog(button);
-    				}
-	    			});
-	    		}
-	    	})
-	    );
 
-        toolbar.addButton( new ToolbarButton(new ButtonConfig() {
-        	{
-        		setText("Archive");
-        		setTooltip(getTip("Archive this asset. This will not permanently delete it."));
-        		setButtonListener(new ButtonListenerAdapter() {
-        			public void onClick(
-        					com.gwtext.client.widgets.Button button,
-        					EventObject e) {
-		                        if (Window.confirm( "Are you sure you want to archive this item?" )) {
-		                            metaData.checkinComment = "Archived Item on " + new java.util.Date().toString();
-		                            archiveAction.execute();
-		                        }
-    				}
-	    			});
-	    		}
-	    	})
-	    );
+		ToolbarButton copy = new ToolbarButton();
+		copy.setText("Copy");
+		copy.setTooltip("Copy this asset.");
+		copy.addListener(new ButtonListenerAdapter() {
+			public void onClick(
+					com.gwtext.client.widgets.Button button,
+					EventObject e) {
+                	doCopyDialog(button);
+			}
+			});
+		toolbar.addButton(copy);
+
+
+		ToolbarButton archive = new ToolbarButton();
+		archive.setText("Archive");
+		archive.setTooltip(getTip("Archive this asset. This will not permanently delete it."));
+		archive.addListener(new ButtonListenerAdapter() {
+			public void onClick(
+					com.gwtext.client.widgets.Button button,
+					EventObject e) {
+                        if (Window.confirm( "Are you sure you want to archive this item?" )) {
+                            metaData.checkinComment = "Archived Item on " + new java.util.Date().toString();
+                            archiveAction.execute();
+                        }
+			}
+			});
+		toolbar.addButton(archive);
+
+
 
 
         if (this.metaData.versionNumber == 0) {
-            toolbar.addButton( new ToolbarButton(new ButtonConfig() {
-            	{
-            		setText("Delete");
-            		setTooltip(getTip("Permanently delete this asset. This will only be shown before the asset is checked in."));
-            		setButtonListener(new ButtonListenerAdapter() {
-            			public void onClick(
-            					com.gwtext.client.widgets.Button button,
-            					EventObject e) {
-		                            if (Window.confirm( "Are you sure you want to permanently delete this (unversioned) item?" ) ) {
-		                                deleteAction.execute();
-		                            }
-        				}
-    	    			});
-    	    		}
-    	    	})
-    	    );
+
+        	ToolbarButton delete = new ToolbarButton();
+        	delete.setText("Delete");
+    		delete.setTooltip(getTip("Permanently delete this asset. This will only be shown before the asset is checked in."));
+    		delete.addListener(new ButtonListenerAdapter() {
+    			public void onClick(
+    					com.gwtext.client.widgets.Button button,
+    					EventObject e) {
+                            if (Window.confirm( "Are you sure you want to permanently delete this (unversioned) item?" ) ) {
+                                deleteAction.execute();
+                            }
+				}
+    			});
+    		toolbar.addButton(delete);
+
         }
 
 
         toolbar.addFill();
-
         toolbar.addSeparator();
 
 
-        toolbar.addButton( new ToolbarButton(new ButtonConfig() {
-        	{
-        		setText("Change state");
-        		setTooltip(getTip("Change the status of this asset."));
-        		setButtonListener(new ButtonListenerAdapter() {
-        			public void onClick(
-        					com.gwtext.client.widgets.Button button,
-        					EventObject e) {
-        				showStatusChanger(button);
-    				}
-	    			});
-	    		}
+        ToolbarButton stateChange = new ToolbarButton();
+        stateChange.setText("Change state");
+		stateChange.setTooltip(getTip("Change the status of this asset."));
+		stateChange.addListener(new ButtonListenerAdapter() {
+			public void onClick(
+					com.gwtext.client.widgets.Button button,
+					EventObject e) {
+				showStatusChanger(button);
+			}
+			});
 
-
-	    	})
-	    );
-
-
-
+		toolbar.addButton(stateChange);
     }
 
 	private QuickTipsConfig getTip(final String t) {
@@ -267,7 +251,7 @@ public class ActionToolbar extends Composite {
                 setState( pop.getState() );
             }
         });
-        pop.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+
         pop.show();
     }
 

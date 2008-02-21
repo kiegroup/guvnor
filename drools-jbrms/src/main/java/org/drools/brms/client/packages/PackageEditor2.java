@@ -207,7 +207,7 @@ public class PackageEditor2 extends PrettyFormLayout {
                 setState( pop.getState() );
             }
         });
-        pop.setPopupPosition( w.getAbsoluteLeft(), w.getAbsoluteTop() );
+
         pop.show();
 
     }

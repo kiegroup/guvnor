@@ -1,9 +1,9 @@
 /*
- * Ext JS Library 1.1.1
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.1
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
- * http://www.extjs.com/license
+ * http://extjs.com/license
  */
 
 .x-tip{
@@ -23,98 +23,112 @@
     cursor:pointer;
     display:none;
 }
-.x-tip .x-tip-top {
-	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -12px;
-	height:6px;
+.x-tip .x-tip-tc {
+	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -62px;
+	padding-top:3px;
     overflow:hidden;
+    zoom:1;
 }
-.x-tip .x-tip-top-left {
+.x-tip .x-tip-tl {
 	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat 0 0;
 	padding-left:6px;
+    overflow:hidden;
     zoom:1;
 }
-.x-tip .x-tip-top-right {
+.x-tip .x-tip-tr {
 	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat right 0;
 	padding-right:6px;
+    overflow:hidden;
     zoom:1;
 }
-.x-tip .x-tip-ft {
-	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -18px;
-	height:6px;
+.x-tip .x-tip-bc {
+	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -121px;
+	height:3px;
     overflow:hidden;
 }
-.x-tip .x-tip-ft-left {
-	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -6px;
+.x-tip .x-tip-bl {
+	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -59px;
 	padding-left:6px;
     zoom:1;
 }
-.x-tip .x-tip-ft-right {
-	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat right -6px;
+.x-tip .x-tip-br {
+	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat right -59px;
 	padding-right:6px;
     zoom:1;
 }
-.x-tip .x-tip-bd {
+.x-tip .x-tip-mc {
     border:0 none;
     font: normal 11px tahoma,arial,helvetica,sans-serif;
 }
-.x-tip .x-tip-bd-left {
-	background: #fff url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -24px;
+.x-tip .x-tip-ml {
+	background: #fff url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -124px;
 	padding-left:6px;
     zoom:1;
 }
-.x-tip .x-tip-bd-right {
-	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat right -24px;
+.x-tip .x-tip-mr {
+	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat right -124px;
 	padding-right:6px;
     zoom:1;
 }
-
-.x-tip h3 {
+.ext-ie .x-tip .x-tip-header,.ext-ie .x-tip .x-tip-tc {
+    font-size:0;
+    line-height:0;
+}
+.x-tip .x-tip-header-text {
     font: bold 11px tahoma,arial,helvetica,sans-serif;
-    margin:0;
-    padding:2px 0;
+    padding:0;
+    margin:0 0 2px 0;
     color:#444;
 }
-.x-tip .x-tip-bd-inner {
+.x-tip .x-tip-body {
     font: normal 11px tahoma,arial,helvetica,sans-serif;
     margin:0 !important;
     line-height:14px;
     color:#444;
     padding:0;
-    float:left;
 }
 
+.x-tip .x-tip-body .loading-indicator {
+    margin:0;
+}
+
+.x-tip-draggable .x-tip-header,.x-tip-draggable .x-tip-header-text {
+    cursor:move;
+}
 
 .x-form-invalid-tip {
 }
 
-.x-form-invalid-tip .x-tip-top {
+.x-form-invalid-tip .x-tip-tc {
+	background: url(../images/default/form/error-tip-corners.gif) repeat-x 0 -12px;
+    padding-top:6px;
+}
+.x-form-invalid-tip .x-tip-tl {
 	background-image: url(../images/default/form/error-tip-corners.gif);
 }
-.x-form-invalid-tip .x-tip-top-left {
+.x-form-invalid-tip .x-tip-tr {
 	background-image: url(../images/default/form/error-tip-corners.gif);
 }
-.x-form-invalid-tip .x-tip-top-right {
+.x-form-invalid-tip .x-tip-bc {
+	background: url(../images/default/form/error-tip-corners.gif) repeat-x 0 -18px;
+    height:6px;
+}
+.x-form-invalid-tip .x-tip-bl {
+	background: url(../images/default/form/error-tip-corners.gif) no-repeat 0 -6px;
+}
+.x-form-invalid-tip .x-tip-br {
+	background: url(../images/default/form/error-tip-corners.gif) no-repeat right -6px;
+}
+.x-form-invalid-tip .x-tip-ml {
 	background-image: url(../images/default/form/error-tip-corners.gif);
 }
-.x-form-invalid-tip .x-tip-ft {
+.x-form-invalid-tip .x-tip-mr {
 	background-image: url(../images/default/form/error-tip-corners.gif);
 }
-.x-form-invalid-tip .x-tip-ft-left {
-	background-image: url(../images/default/form/error-tip-corners.gif);
+.x-form-invalid-tip .x-tip-body {
+    padding:2px;
 }
-.x-form-invalid-tip .x-tip-ft-right {
-	background-image: url(../images/default/form/error-tip-corners.gif);
-}
-.x-form-invalid-tip .x-tip-bd-left {
-	background-image: url(../images/default/form/error-tip-corners.gif);
-}
-.x-form-invalid-tip .x-tip-bd-right {
-	background-image: url(../images/default/form/error-tip-corners.gif);
-}
-.x-form-invalid-tip .x-tip-bd .x-tip-bd-inner {
+.x-form-invalid-tip .x-tip-body {
     padding-left:24px;
     background:transparent url(../images/default/form/exclamation.gif) no-repeat 2px 2px;
-}
-.x-form-invalid-tip .x-tip-bd-inner {
-    padding:2px;
 }

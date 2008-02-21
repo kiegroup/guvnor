@@ -18,11 +18,9 @@ package org.drools.brms.client.common;
 
 
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtext.client.widgets.LayoutDialog;
-import com.gwtext.client.widgets.LayoutDialogConfig;
-import com.gwtext.client.widgets.layout.BorderLayout;
-import com.gwtext.client.widgets.layout.ContentPanel;
-import com.gwtext.client.widgets.layout.LayoutRegionConfig;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.layout.FitLayout;
 
 /**
  * This builds on the FormStyleLayout for providing common popup features in a
@@ -34,7 +32,7 @@ public class FormStylePopup {
 
 
     private FormStyleLayout form;
-	private LayoutDialog dialog;
+	private Window dialog;
 	private String title;
 
 	private Boolean shadow;
@@ -77,35 +75,23 @@ public class FormStylePopup {
 
 
 	public void show() {
-		LayoutRegionConfig center = new LayoutRegionConfig() {
-    	    {
-    	        setAutoScroll(true);
-    	        setAlwaysShowTabs(false);
-    	    }
-    	};
+
+		dialog = new Window();
+		dialog.setAutoScroll(true);
+		dialog.setModal(true);
+		dialog.setWidth((width == null)? 500 : width.intValue());
+		//dialog.setHeight((height == null)? form.getNumAttributes() * 40 + 100 : height.intValue());
+		dialog.setShadow((shadow == null)? true : shadow.booleanValue());
+		dialog.setResizable(true);
+		dialog.setClosable(true);
+		dialog.setTitle(title);
 
 
-    	dialog = new LayoutDialog(new LayoutDialogConfig() {
-    	    {
-    	        setModal(true);
-    	        setWidth((width == null)? 500 : width.intValue());
-    	        setHeight((height == null)? form.getNumAttributes() * 40 + 100 : height.intValue());
-    	        setShadow((shadow == null)? true : shadow.booleanValue());
-    	        setResizable(true);
-    	        setClosable(true);
-    	        setProxyDrag(true);
-    	        setTitle(title);
-    	    }
-    	}, center);
 
-
-    	final BorderLayout layout = dialog.getLayout();
-
-    	ContentPanel cp = new ContentPanel();
-    	layout.add(cp);
-
-
-    	cp.add(form);
+		Panel p = new Panel();
+		p.setLayout(new FitLayout());
+		p.add(form);
+		dialog.add(p);
 
 		this.dialog.show();
 	}

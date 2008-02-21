@@ -7,14 +7,15 @@
     <!-- Specify the app entry point class.                   -->
 	<!-- <entry-point class='org.drools.brms.client.JBRMS'/> -->
 	<entry-point class='org.drools.brms.client.JBRMSEntryPoint'/>
-	
-    <script src="js/ext/adapter/yui/yui-utilities.js"></script>
-    <script src="js/ext/adapter/yui/ext-yui-adapter.js"></script>
-	<script src="js/ext/ext-all.js"></script>	
 
-	<servlet path="/jbrmsService" class="org.jboss.seam.remoting.gwt.GWTRemoteServiceServlet" />  
+	<stylesheet src="js/ext/resources/css/ext-all.css" />
+	<script src="js/ext/adapter/ext/ext-base.js" />
+	<script src="js/ext/ext-all.js" />
+
+
+	<servlet path="/jbrmsService" class="org.jboss.seam.remoting.gwt.GWTRemoteServiceServlet" />
     <servlet path="/asset" class="org.drools.brms.server.files.AssetFileServlet"/>
-    <servlet path="/backup" class="org.drools.brms.server.files.RepositoryBackupServlet"/>    
-    <servlet path="/package" class="org.drools.brms.server.files.PackageDeploymentServlet"/>  
-    
+    <servlet path="/backup" class="org.drools.brms.server.files.RepositoryBackupServlet"/>
+    <servlet path="/package" class="org.drools.brms.server.files.PackageDeploymentServlet"/>
+
 </module>

@@ -33,8 +33,6 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
-import com.gwtext.client.core.Ext;
-import com.gwtext.client.widgets.ButtonConfig;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
@@ -65,37 +63,35 @@ public class RuleValidatorWrapper extends DirtyableComposite {
     }
 
     private void validatorActions() {
-        Toolbar tb = new Toolbar(Ext.generateId());
+        Toolbar tb = new Toolbar();
+
         layout.setCellHeight(editor, "95%");
         layout.add(tb);
 
-        tb.addButton(new ToolbarButton(new ButtonConfig() {
-        	{
-        		setText("View source");
-        		setButtonListener(new ButtonListenerAdapter()  {
-        			public void onClick(
-        					com.gwtext.client.widgets.Button button,
-        					EventObject e) {
-                        doViewsource();
-        			}
-        		});
-        	}
-        }));
+        ToolbarButton viewSource = new ToolbarButton();
+        viewSource.setText("View source");
+        viewSource.addListener(new ButtonListenerAdapter()  {
+			public void onClick(
+					com.gwtext.client.widgets.Button button,
+					EventObject e) {
+                doViewsource();
+			}
+		});
+        tb.addButton(viewSource);
 
         tb.addSeparator();
 
-        tb.addButton(new ToolbarButton(new ButtonConfig() {
-        	{
-        		setText("Validate");
-        		setButtonListener(new ButtonListenerAdapter()  {
+        ToolbarButton validate = new ToolbarButton();
+        validate.setText("Validate");
+        validate.addListener(new ButtonListenerAdapter()  {
         			public void onClick(
         					com.gwtext.client.widgets.Button button,
         					EventObject e) {
         				doValidate();
         			}
         		});
-        	}
-        }));
+        tb.addButton(validate);
+
 
     }
 

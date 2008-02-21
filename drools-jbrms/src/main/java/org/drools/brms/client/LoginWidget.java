@@ -17,7 +17,6 @@ package org.drools.brms.client;
 
 
 
-import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStyleLayout;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
@@ -25,29 +24,18 @@ import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
-import com.gwtext.client.core.Ext;
 import com.gwtext.client.widgets.Button;
-import com.gwtext.client.widgets.ButtonConfig;
-import com.gwtext.client.widgets.LayoutDialog;
-import com.gwtext.client.widgets.LayoutDialogConfig;
-import com.gwtext.client.widgets.Toolbar;
-import com.gwtext.client.widgets.ToolbarButton;
-import com.gwtext.client.widgets.ToolbarTextItem;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.Window;
 import com.gwtext.client.widgets.event.ButtonListener;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
-import com.gwtext.client.widgets.form.Form;
-import com.gwtext.client.widgets.form.FormConfig;
-import com.gwtext.client.widgets.layout.BorderLayout;
-import com.gwtext.client.widgets.layout.ContentPanel;
-import com.gwtext.client.widgets.layout.ContentPanelConfig;
-import com.gwtext.client.widgets.layout.LayoutRegionConfig;
+import com.gwtext.client.widgets.layout.FitLayout;
 
 /**
  * Used for logging in, obviously !
@@ -60,89 +48,46 @@ public class LoginWidget {
     private TextBox userName;
     private PasswordTextBox password;
     private Command loggedInEvent;
-	private LayoutDialog dialog;
+	private Window w;
+
 
 
 
 	public void show() {
-		LayoutRegionConfig center = new LayoutRegionConfig() {
-    	    {
-    	        setAutoScroll(true);
-    	        setTabPosition("top");
-    	        setCloseOnTab(true);
-    	        setAlwaysShowTabs(true);
-    	    }
-    	};
 
-    	dialog = new LayoutDialog(new LayoutDialogConfig() {
-    	    {
-    	        setModal(true);
-    	        setWidth(500);
-    	        setHeight(350);
-    	        setShadow(true);
-    	        setResizable(false);
-    	        setClosable(false);
-    	        setProxyDrag(true);
-    	        setTitle("Sign in");
-    	    }
-    	}, center);
+    	w = new Window();
+    	w.setWidth(400);
+    	//w.setHeight(200);
+    	w.setModal(true);
+    	w.setShadow(false);
+    	w.setClosable(false);
 
-
-
-    	final BorderLayout layout = dialog.getLayout();
-    	layout.beginUpdate();
-
-    	ContentPanel signInPanel = new ContentPanel(Ext.generateId(), "Sign In");
     	final Widget signInForm = getSignInForm();
 
-    	VerticalPanel signInWrapper = new VerticalPanel() {
-    	    {
-    	        setSpacing(30);
-    	        setWidth("100%");
-    	        setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
-    	    }
-    	};
-    	signInWrapper.add(signInForm);
+//    	VerticalPanel signInWrapper = new VerticalPanel() {
+//    	    {
+//    	        setSpacing(30);
+//    	        setWidth("100%");
+//    	        setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+//    	    }
+//    	};
 
-    	signInPanel.add(signInWrapper);
-    	layout.add(LayoutRegionConfig.CENTER, signInPanel);
+    	Panel p = new Panel();
+    	p.add(signInForm);
+    	p.setLayout(new FitLayout());
+//    	signInWrapper.add(signInForm);
 
+    	w.setTitle("Sign In");
 
-    	final Toolbar tb = new Toolbar("my-tb");
-    	tb.addButton(new ToolbarButton("About", new ButtonConfig()));
-    	tb.addSeparator();
-    	tb.addItem(new ToolbarTextItem("Copyright (c) 2006 JBoss, a division of Red Hat."));
-
-    	ContentPanel infoPanel = new ContentPanel(Ext.generateId(), new ContentPanelConfig() {
-    	    {
-    	        setTitle("Info");
-    	        setClosable(true);
-    	        setBackground(true);
-    	        setToolbar(tb);
-    	    }
-    	});
-    	infoPanel.setContent("Drools Business Rule Management System (BRMS). See http://labs.jboss.com/drools/ for more information.");
-
-    	layout.add(LayoutRegionConfig.CENTER, infoPanel);
-    	layout.endUpdate();
+    	w.add(p);
 
 
-        Button login = dialog.addButton("Sign in");
 
 
-        login.addButtonListener( new ButtonListenerAdapter() {
-        	public void onClick(Button button, EventObject e) {
-                LoadingPopup.showMessage( "Logging in..." );
 
-                DeferredCommand.addCommand( new Command() {
-                    public void execute() {
-                        doLogin( loggedInEvent, userName, password );
-                    }
-                });
-            }
 
-        });
-        dialog.show();
+
+        w.show();
         userName.setFocus( true );
 	}
 
@@ -152,10 +97,11 @@ public class LoginWidget {
                 LoadingPopup.close();
                 Boolean success = (Boolean) o;
                 if (!success.booleanValue()) {
-                    Window.alert( "Incorrect username or password." );
+                    com.google.gwt.user.client.Window.alert( "Incorrect username or password." );
                 } else {
                     loggedInEvent.execute();
-                    dialog.destroy();
+                    w.hide();
+                    w.destroy();
                 }
             }
         });
@@ -172,7 +118,22 @@ public class LoginWidget {
         password = new PasswordTextBox();
         password.setTabIndex( 2 );
         layout.addAttribute( "Password:", password );
+    	com.google.gwt.user.client.ui.Button b2 = new com.google.gwt.user.client.ui.Button("Sign in");
 
+    	b2.addClickListener(new ClickListener() {
+
+			public void onClick(Widget arg0) {
+                LoadingPopup.showMessage( "Logging in..." );
+
+                DeferredCommand.addCommand( new Command() {
+                    public void execute() {
+                        doLogin( loggedInEvent, userName, password );
+                    }
+                });
+			}
+
+    	});
+        layout.addAttribute("", b2);
 
         return layout;
 

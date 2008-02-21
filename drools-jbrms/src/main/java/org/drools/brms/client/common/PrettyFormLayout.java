@@ -2,17 +2,13 @@ package org.drools.brms.client.common;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtext.client.core.Ext;
-import com.gwtext.client.util.DOMUtil;
-import com.gwtext.client.widgets.form.Form;
-import com.gwtext.client.widgets.form.FormConfig;
+import com.gwtext.client.widgets.form.FormPanel;
 
 /**
  * Uses ext forms to do a prettier layout.
@@ -50,13 +46,10 @@ public class PrettyFormLayout extends Composite {
 		if (edit != null) h.add(edit);
 
 
-		Form f = newForm(null);
-		String id = Ext.generateId();
-		f.container(id);
-		f.end();
-		f.render();
-		DOMUtil.convertDivToPanel(id).add(h);
+		FormPanel f = newForm(null);
 
+
+		f.add(h);
 		layout.add(f);
 	}
 
@@ -64,39 +57,28 @@ public class PrettyFormLayout extends Composite {
 		HorizontalPanel h = new HorizontalPanel();
 		h.add(new Image(img));
 		h.add(content);
-		Form f = newForm(null);
-		String id = Ext.generateId();
-		f.container(id);
-		f.end();
-		f.render();
-		DOMUtil.convertDivToPanel(id).add(h);
-
+		FormPanel f = newForm(null);
+		f.add(h);
 		layout.add(f);
 	}
 
-	private Form newForm(final String hdr) {
-		return new Form(new FormConfig() {
-			{
-        		setWidth("100%");
-        		setSurroundWithBox(true);
-        		if (hdr != null) {
-        			setHeader(hdr);
-        		}
-			}
-		});
+	private FormPanel newForm(final String hdr) {
+		FormPanel fp = new FormPanel();
+		fp.setWidth("100%");
+		fp.setFrame(true);
+		if (hdr != null) {
+			fp.setTitle(hdr);
+		}
+		return fp;
 	}
 
     public void endSection() {
 
-		Form f = newForm(this.sectionName);
+		FormPanel f = newForm(this.sectionName);
 
-		String id = Ext.generateId();
-		f.container(id);
-		f.end();
-		f.render();
+		f.add(this.currentTable);
 
-		FlowPanel fp = DOMUtil.convertDivToPanel(id);
-		fp.add(this.currentTable);
+
 		this.layout.add(f);
 		this.sectionName = null;
 	}

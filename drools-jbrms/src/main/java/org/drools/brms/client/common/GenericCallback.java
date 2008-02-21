@@ -22,11 +22,6 @@ import org.drools.brms.client.rpc.SessionExpiredException;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
-import com.gwtext.client.widgets.LayoutDialog;
-import com.gwtext.client.widgets.LayoutDialogConfig;
-import com.gwtext.client.widgets.layout.BorderLayout;
-import com.gwtext.client.widgets.layout.ContentPanel;
-import com.gwtext.client.widgets.layout.LayoutRegionConfig;
 
 /**
  * This is a generic call back that handles errors (very simply).
@@ -51,27 +46,10 @@ public abstract class GenericCallback
 
 
     public static void showSessionExpiry() {
-
-
-    	final LayoutDialog dialog = new LayoutDialog(new LayoutDialogConfig() {
-    		{
-    			setTitle("Session expired");
-    			setModal(true);
-    			setWidth(500);
-    			setHeight(300);
-    			setShadow(true);
-    			setMinHeight(300);
-    			setMinHeight(300);
-    		}
-    	}, new LayoutRegionConfig());
-
-    	//add content to the center region
-    	BorderLayout layout = dialog.getLayout();
-    	ContentPanel contentPanel = new ContentPanel();
-    	contentPanel.add(new HTML("<i>Your session expired due to inactivity.</i>" +
-                "&nbsp;&nbsp;&nbsp;Please <a href='/drools-jbrms/'>[Log in].</a>"));
-    	layout.add(contentPanel);
-    	dialog.show();
+    	FormStylePopup pop = new FormStylePopup();
+    	pop.addRow(new HTML("<i><strong>Your session expired due to inactivity.</strong></i><p/>" +
+        "Please <a href='/drools-jbrms/'>[Log in].</a>"));
+    	pop.show();
         LoadingPopup.close();
 
     }

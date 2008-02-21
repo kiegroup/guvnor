@@ -41,6 +41,7 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.SuggestOracle.Callback;
 import com.google.gwt.user.client.ui.SuggestOracle.Request;
+import com.gwtext.client.widgets.form.FormPanel;
 
 /**
  * This is for quickly finding an asset by name. Partial completion is allowed.
@@ -68,18 +69,6 @@ public class QuickFindWidget extends Composite {
         });
 
 
-//        searchBox = new AutoCompleteTextBoxAsync(new CompletionItemsAsync() {
-//
-//            public void getCompletionItems(String match,
-//                                           CompletionItemsAsyncReturn asyncReturn) {
-//                loadShortList(match, asyncReturn);
-//
-//            }
-//
-//
-//        });
-//        searchBox.setStyleName( "gwt-TextBox" );
-
         this.editEvent = editEvent;
         HorizontalPanel srch = new HorizontalPanel();
         Button go = new Button("Go");
@@ -106,12 +95,13 @@ public class QuickFindWidget extends Composite {
         PrettyFormLayout pfl = new PrettyFormLayout();
         pfl.startSection();
         pfl.addRow(listPanel);
+
+
+
+
         pfl.endSection();
         layout.addRow(pfl);
 
-
-
-      //  searchBox.addKeyboardListener( getKeyboardListener());
 
         initWidget( layout );
     }
