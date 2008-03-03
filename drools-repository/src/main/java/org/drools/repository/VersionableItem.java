@@ -30,7 +30,7 @@ public abstract class VersionableItem extends Item {
     public static final String FORMAT_PROPERTY_NAME           = "drools:format";
     public static final String CHECKIN_COMMENT                = "drools:checkinComment";
     public static final String VERSION_NUMBER_PROPERTY_NAME   = "drools:versionNumber";
-    public static final String CONTENT_PROPERTY_ARCHIVE_FLAG = "drools:archive";
+    public static final String CONTENT_PROPERTY_ARCHIVE_FLAG  = "drools:archive";
 
 
     /** Dublin core based fields. */
@@ -43,7 +43,9 @@ public abstract class VersionableItem extends Item {
     public static final String RIGHTS_PROPERTY_NAME           = "drools:rights";
     public static final String COVERAGE_PROPERTY_NAME         = "drools:coverage";
     public static final String PUBLISHER_PROPERTY_NAME        = "drools:publisher";
-
+    
+    
+    
     /**
      * The name of the state property on the rule node type
      */
@@ -95,6 +97,9 @@ public abstract class VersionableItem extends Item {
     public boolean isHistoricalVersion() throws RepositoryException {
         return this.node.getPrimaryNodeType().getName().equals( "nt:version" ) || node.getPrimaryNodeType().getName().equals( "nt:frozenNode" );
     }
+    
+    
+    
 
     /**
      * @return the predessor node of this node in the version history, or null if no predecessor version exists

@@ -7,6 +7,7 @@ import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
 import org.apache.log4j.Logger;
+import org.drools.repository.security.DroolsRepositoryAccessManager;
 
 //import junit.framework.Assert;
 
@@ -57,22 +58,24 @@ public class RepositorySessionUtil {
             try {
                 session = repository.login(new SimpleCredentials("alan_parsons", "password".toCharArray()));
                 RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(session);
+
                 //clear out and setup
                 if (admin.isRepositoryInitialized()) {
                     admin.clearRulesRepository();
                 }
                 config.setupRulesRepository( session );
-                
                 repoInstance = new RulesRepository( session );
+                
+                Session adminSession = repository.login(new SimpleCredentials("ADMINISTRATOR", "password".toCharArray()));
+                //loonie hack
+                DroolsRepositoryAccessManager.adminThreadlocal.set(  adminSession );
                 repo.set( repoInstance );                
             } catch ( Exception e) {
                 throw new RulesRepositoryException();
                 //Assert.fail("Unable to initialise repository :" + e.getMessage());
             }
-            
-
-            
         }
+        
         return (RulesRepository) repoInstance;        
     }
 
