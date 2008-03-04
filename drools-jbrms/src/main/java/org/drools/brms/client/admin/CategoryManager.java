@@ -23,6 +23,10 @@ import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.PrettyFormLayout;
+import org.drools.brms.client.decisiontable.GuidedDecisionTableWidget;
+import org.drools.brms.client.modeldriven.dt.ActionCol;
+import org.drools.brms.client.modeldriven.dt.ConditionCol;
+import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.Window;
@@ -93,7 +97,26 @@ public class CategoryManager extends Composite {
 
         form.endSection();
 
+
+        GuidedDecisionTable dt = new GuidedDecisionTable();
+        dt.data = new String[][] {
+        		new String[] {"a", "b", "c"},
+        		new String[] {"d", "e", "f"}
+        };
+        ConditionCol c1 = new ConditionCol();
+        c1.header = "Driver 1 age";
+        dt.conditionCols.add(c1);
+        ConditionCol c2 = new ConditionCol();
+        c2.header = "Driver 2 age";
+        dt.conditionCols.add(c2);
+
+
+        ActionCol a1 = new ActionCol();
+        a1.header = "Do something !";
+        dt.actionCols.add(a1);
+
         initWidget( form );
+        //initWidget( new GuidedDecisionTableWidget(dt) );
     }
 
 

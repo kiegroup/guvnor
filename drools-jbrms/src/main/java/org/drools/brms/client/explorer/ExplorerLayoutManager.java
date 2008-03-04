@@ -304,7 +304,7 @@ public class ExplorerLayoutManager {
         });
 
         adminPanel.add(adminTree);
-
+        adminPanel.setWidth("100%");
 
 
         tpCategory.add(rulesPanel);
