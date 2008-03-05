@@ -100,8 +100,9 @@ public class CategoryManager extends Composite {
 
         GuidedDecisionTable dt = new GuidedDecisionTable();
         dt.data = new String[][] {
-        		new String[] {"a", "b", "c"},
-        		new String[] {"d", "e", "f"}
+        		new String[] {"1", "a", "b", "c"},
+        		new String[] {"2", "d", "e", "f"},
+        		new String[] {"3", "d", "q", "x"}
         };
         ConditionCol c1 = new ConditionCol();
         c1.header = "Driver 1 age";
@@ -115,8 +116,8 @@ public class CategoryManager extends Composite {
         a1.header = "Do something !";
         dt.actionCols.add(a1);
 
-        initWidget( form );
-        //initWidget( new GuidedDecisionTableWidget(dt) );
+        //initWidget( form );
+        initWidget( new GuidedDecisionTableWidget(dt) );
     }
 
 
