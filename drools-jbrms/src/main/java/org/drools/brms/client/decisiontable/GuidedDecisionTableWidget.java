@@ -32,7 +32,6 @@ import com.gwtext.client.widgets.grid.ColumnModel;
 import com.gwtext.client.widgets.grid.GridPanel;
 import com.gwtext.client.widgets.grid.GroupingView;
 import com.gwtext.client.widgets.grid.Renderer;
-import com.gwtext.client.widgets.grid.RowNumberingColumnConfig;
 import com.gwtext.client.widgets.grid.event.GridCellListenerAdapter;
 import com.gwtext.client.widgets.menu.BaseItem;
 import com.gwtext.client.widgets.menu.Item;
@@ -65,6 +64,9 @@ public class GuidedDecisionTableWidget extends Composite {
 		FieldDef[] fds = new FieldDef[dt.actionCols.size() + dt.conditionCols.size() + 2]; //its +2 as we have counter and description data
 
 		fds[0] = new StringFieldDef("num");
+		fds[1] = new StringFieldDef("desc");
+
+		int colCount = 0;
 
 		BaseColumnConfig[] cols = new BaseColumnConfig[fds.length + 1]; //its +1 as we have the separator -> thing.
 		cols[0] = new ColumnConfig() {
@@ -77,12 +79,19 @@ public class GuidedDecisionTableWidget extends Composite {
 								CellMetadata cellMetadata, Record record,
 								int rowIndex, int colNum, Store store) {
 							return "<span class='x-grid3-cell-inner x-grid3-td-numberer'>" + value + "</span>";
-							//return value;
 						}
 					});
 				}
 			};
-
+		colCount++;
+		cols[1] = new ColumnConfig() {
+			{
+				setDataIndex("desc");
+				setSortable(true);
+				setHeader("Description");
+			}
+		};
+		colCount++;
 
 
 
@@ -90,18 +99,19 @@ public class GuidedDecisionTableWidget extends Composite {
 		for (int i = 0; i < dt.conditionCols.size(); i++) {
 			//here we could also deal with numeric type?
 			final ConditionCol c = (ConditionCol) dt.conditionCols.get(i);
-			fds[i + 1] = new StringFieldDef(c.header);
-			cols[i + 1] = new ColumnConfig() {
+			fds[colCount] = new StringFieldDef(c.header);
+			cols[colCount] = new ColumnConfig() {
 				{
 					setHeader(c.header);
 					setDataIndex(c.header);
 					setSortable(true);
 				}
 			};
+			colCount++;
 		}
 
 		//the split thing
-		cols[dt.conditionCols.size() + 1] = new ColumnConfig() {
+		cols[colCount] = new ColumnConfig() {
 			{
     			setDataIndex("x");
     			setHeader("");
@@ -118,13 +128,14 @@ public class GuidedDecisionTableWidget extends Composite {
     			setWidth(20);
 			}
 		};
+		colCount++;
 
 		for (int i = 0; i < dt.actionCols.size(); i++) {
 			//here we could also deal with numeric type?
 			final ActionCol c = (ActionCol) dt.actionCols.get(i);
-			fds[i + dt.conditionCols.size() + 1] = new StringFieldDef(c.header);
+			fds[colCount-1] = new StringFieldDef(c.header);
 
-			cols[i + dt.conditionCols.size() + 2]  = new ColumnConfig() {
+			cols[colCount]  = new ColumnConfig() {
 				{
 					setHeader(c.header);
 					setDataIndex(c.header);
@@ -132,6 +143,7 @@ public class GuidedDecisionTableWidget extends Composite {
 					setSortable(true);
 				}
 			};
+			colCount++;
 		}
 
 		final RecordDef recordDef = new RecordDef(fds);
@@ -146,6 +158,7 @@ public class GuidedDecisionTableWidget extends Composite {
         store.setReader(reader);
         store.setDataProxy(proxy);
         store.setSortInfo(new SortState("num", SortDir.ASC));
+        store.setGroupField("desc");
         store.load();
 
 
@@ -177,7 +190,8 @@ public class GuidedDecisionTableWidget extends Composite {
         		String val = r.getAsString(dta);
 
         		final Window w = new Window();
-        		w.setWidth(170);
+        		w.setWidth(168);
+        		w.setAutoDestroy(true);
 
         		final TextBox box = new TextBox();
         		box.setText(val);
@@ -197,7 +211,8 @@ public class GuidedDecisionTableWidget extends Composite {
 
         		w.setPosition(e.getPageX(), e.getPageY());
         		w.show();
-        		box.setFocus(true);
+
+        		//box.setFocus(true);
 
 
         	}
@@ -209,10 +224,11 @@ public class GuidedDecisionTableWidget extends Composite {
         	public void onClick(BaseItem item, EventObject e) {
         		Record r = recordDef.createRecord(new Object[recordDef.getFields().length]);
         		r.set("num", store.getRecords().length + 1);
+
         		store.add(r);
         	}
         }));
-        menu.addItem(new Item("Remove selected row...", new BaseItemListenerAdapter() {
+        menu.addItem(new Item("Remove selected row(s)...", new BaseItemListenerAdapter() {
         	public void onClick(BaseItem item, EventObject e) {
         		Record[] selected = grid.getSelectionModel().getSelections();
         		if (com.google.gwt.user.client.Window.confirm("Are you sure you want to delete the selected row(s)? ")) {
