@@ -46,7 +46,7 @@ import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 public class GuidedDecisionTableWidget extends Composite {
 
     private GuidedDecisionTable dt;
-	private boolean DEBUG = true;
+
 
 	public GuidedDecisionTableWidget(GuidedDecisionTable dt) {
 
@@ -62,15 +62,12 @@ public class GuidedDecisionTableWidget extends Composite {
 
 	private GridPanel doGrid() {
 
-		FieldDef[] fds = new FieldDef[dt.actionCols.size() + dt.conditionCols.size() + 1];
+		FieldDef[] fds = new FieldDef[dt.actionCols.size() + dt.conditionCols.size() + 2]; //its +2 as we have counter and description data
 
 		fds[0] = new StringFieldDef("num");
 
-		BaseColumnConfig[] cols = new BaseColumnConfig[fds.length + 1];
-		if (!DEBUG ) {
-			cols[0] = new RowNumberingColumnConfig();
-		} else {
-			cols[0] = new ColumnConfig() {
+		BaseColumnConfig[] cols = new BaseColumnConfig[fds.length + 1]; //its +1 as we have the separator -> thing.
+		cols[0] = new ColumnConfig() {
 				{
 					setDataIndex("num");
 					setWidth(20);
@@ -85,7 +82,6 @@ public class GuidedDecisionTableWidget extends Composite {
 					});
 				}
 			};
-		}
 
 
 

@@ -116,8 +116,8 @@ public class CategoryManager extends Composite {
         a1.header = "Do something !";
         dt.actionCols.add(a1);
 
-        //initWidget( form );
-        initWidget( new GuidedDecisionTableWidget(dt) );
+        initWidget( form );
+        //initWidget( new GuidedDecisionTableWidget(dt) );
     }
 
 
