@@ -25,6 +25,8 @@ import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.PrettyFormLayout;
 import org.drools.brms.client.decisiontable.GuidedDecisionTableWidget;
 import org.drools.brms.client.modeldriven.dt.ActionCol;
+import org.drools.brms.client.modeldriven.dt.ActionSetFieldCol;
+import org.drools.brms.client.modeldriven.dt.AttributeCol;
 import org.drools.brms.client.modeldriven.dt.ConditionCol;
 import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
@@ -100,9 +102,9 @@ public class CategoryManager extends Composite {
 
         GuidedDecisionTable dt = new GuidedDecisionTable();
         dt.data = new String[][] {
-        		new String[] {"1", "a", "b", "c"},
-        		new String[] {"2", "d", "e", "f"},
-        		new String[] {"3", "d", "q", "x"}
+        		new String[] {"1", "des1","", "a", "b", "c"},
+        		new String[] {"2", "des1","" , "d", "e", "f"},
+        		new String[] {"3",  "des3", "groupA", "d", "q", "x"}
         };
         ConditionCol c1 = new ConditionCol();
         c1.header = "Driver 1 age";
@@ -111,8 +113,11 @@ public class CategoryManager extends Composite {
         c2.header = "Driver 2 age";
         dt.conditionCols.add(c2);
 
+        AttributeCol attr = new AttributeCol();
+        attr.attr = "rule-flow";
+        dt.attributeCols.add(attr);
 
-        ActionCol a1 = new ActionCol();
+        ActionCol a1 = new ActionSetFieldCol();
         a1.header = "Do something !";
         dt.actionCols.add(a1);
 

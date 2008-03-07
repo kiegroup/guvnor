@@ -1,6 +1,7 @@
 package org.drools.brms.client.decisiontable;
 
 import org.drools.brms.client.modeldriven.dt.ActionCol;
+import org.drools.brms.client.modeldriven.dt.AttributeCol;
 import org.drools.brms.client.modeldriven.dt.ConditionCol;
 import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
 
@@ -61,7 +62,7 @@ public class GuidedDecisionTableWidget extends Composite {
 
 	private GridPanel doGrid() {
 
-		FieldDef[] fds = new FieldDef[dt.actionCols.size() + dt.conditionCols.size() + 2]; //its +2 as we have counter and description data
+		FieldDef[] fds = new FieldDef[dt.attributeCols.size() + dt.actionCols.size() + dt.conditionCols.size() + 2]; //its +2 as we have counter and description data
 
 		fds[0] = new StringFieldDef("num");
 		fds[1] = new StringFieldDef("desc");
@@ -93,6 +94,20 @@ public class GuidedDecisionTableWidget extends Composite {
 		};
 		colCount++;
 
+
+		//now to attributes
+		for (int i = 0; i < dt.attributeCols.size(); i++) {
+			final AttributeCol attr = (AttributeCol) dt.attributeCols.get(i);
+			fds[colCount] = new StringFieldDef(attr.attr);
+			cols[colCount] = new ColumnConfig() {
+				{
+					setHeader(attr.attr);
+					setDataIndex(attr.attr);
+					setSortable(true);
+				}
+			};
+			colCount++;
+		}
 
 
 		//do all the condition cols
