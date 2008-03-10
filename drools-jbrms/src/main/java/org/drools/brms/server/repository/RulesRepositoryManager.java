@@ -64,7 +64,7 @@ public class RulesRepositoryManager {
     }
     
     @Destroy
-    void close() {
+    public void close() {
         repository.logout();
     }
     
