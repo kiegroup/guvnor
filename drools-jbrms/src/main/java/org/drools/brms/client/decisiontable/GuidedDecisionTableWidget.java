@@ -1,13 +1,24 @@
 package org.drools.brms.client.decisiontable;
 
+import java.util.Iterator;
+import java.util.List;
+
+import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.modeldriven.dt.ActionCol;
 import org.drools.brms.client.modeldriven.dt.AttributeCol;
 import org.drools.brms.client.modeldriven.dt.ConditionCol;
 import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
 
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -26,6 +37,8 @@ import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarMenuButton;
 import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.form.FieldSet;
+import com.gwtext.client.widgets.form.FormPanel;
 import com.gwtext.client.widgets.grid.BaseColumnConfig;
 import com.gwtext.client.widgets.grid.CellMetadata;
 import com.gwtext.client.widgets.grid.ColumnConfig;
@@ -46,23 +59,193 @@ import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 public class GuidedDecisionTableWidget extends Composite {
 
     private GuidedDecisionTable dt;
+	private VerticalPanel layout;
+	private GridPanel grid;
+	private FieldDef[] fds;
+	private VerticalPanel attributeConfigWidget;
 
 
 	public GuidedDecisionTableWidget(GuidedDecisionTable dt) {
 
     	this.dt = dt;
 
-        GridPanel grid = doGrid();
-        VerticalPanel p = new VerticalPanel();
-        p.add(grid);
+
+        layout = new VerticalPanel();
+
+        FormPanel config = new FormPanel();
+        config.setTitle("Table configuration");
+ //         config.setFrame(true);
+        config.setBodyBorder(false);
+
+        FieldSet attributes = new FieldSet("Attributes");
+        attributes.setCollapsible(true);
+        attributes.setFrame(true);
+        attributes.add(getAttributes());
+        config.add(attributes);
 
 
-        initWidget(p);
+
+        layout.add(config);
+
+        refreshGrid();
+
+
+        initWidget(layout);
     }
+
+	private Widget getAttributes() {
+		attributeConfigWidget = new VerticalPanel();
+		refreshAttributeWidget();
+		return attributeConfigWidget;
+	}
+
+	private void refreshAttributeWidget() {
+		this.attributeConfigWidget.clear();
+		for (int i = 0; i < dt.attributeCols.size(); i++) {
+			AttributeCol at = (AttributeCol) dt.attributeCols.get(i);
+			HorizontalPanel hp = new HorizontalPanel();
+			hp.add(removeAttr(at));
+			hp.add(new SmallLabel(at.attr));
+			attributeConfigWidget.add(hp);
+		}
+		attributeConfigWidget.add(newAttr());
+	}
+
+	private Widget newAttr() {
+		ImageButton but = new ImageButton("images/new_item.gif", "Add a new attribute.", new ClickListener() {
+			public void onClick(Widget w) {
+				//show choice of attributes
+				final FormStylePopup pop = new FormStylePopup();
+		        final ListBox list = new ListBox();
+		        list.addItem( "Choose..." );
+
+
+		        if (!hasAttribute("salience", dt.attributeCols)) list.addItem( "salience" );
+		        list.addItem( "enabled" );
+		        list.addItem( "date-effective" );
+		        list.addItem( "date-expires" );
+		        list.addItem( "no-loop" );
+		        list.addItem( "agenda-group" );
+		        list.addItem( "activation-group" );
+		        list.addItem( "duration" );
+		        list.addItem( "auto-focus" );
+		        list.addItem( "lock-on-active" );
+		        list.addItem( "ruleflow-group" );
+
+		        pop.addAttribute("New attribute:", list);
+
+		        Button ok = new Button("Add");
+		        ok.addClickListener(new ClickListener() {
+					public void onClick(Widget w) {
+
+						AttributeCol attr = new AttributeCol();
+						attr.attr = list.getItemText(list.getSelectedIndex());
+						if (attr.attr.equals("Choose...")) {
+							com.google.gwt.user.client.Window.alert("Please pick a valid attribute");
+							return;
+						}
+						dt.attributeCols.add(attr);
+						scrapeData(dt.attributeCols.size() + 1);
+						refreshGrid();
+						refreshAttributeWidget();
+						pop.hide();
+					}
+		        });
+
+		        pop.addAttribute("", ok);
+		        pop.show();
+			}
+
+			private boolean hasAttribute(String at, List attributeCols) {
+				for (Iterator iterator = attributeCols.iterator(); iterator
+						.hasNext();) {
+					AttributeCol c = (AttributeCol) iterator.next();
+					if (c.attr.equals(at)) {
+						return true;
+					}
+				}
+				return false;
+			}
+		});
+		return but;
+	}
+
+	private Widget removeAttr(final AttributeCol at) {
+		Image del = new ImageButton("images/delete_item_small.gif", "Remove this attribute", new ClickListener() {
+			public void onClick(Widget w) {
+				if (com.google.gwt.user.client.Window.confirm("Are you sure you want to delete the column for " + at.attr + " - all data in that column will be removed?")) {
+					dt.attributeCols.remove(at);
+					removeField(at.attr);
+					scrapeData(-1);
+					refreshGrid();
+					refreshAttributeWidget();
+				}
+			}
+		});
+
+		return del;
+	}
+
+	/**
+	 * Here we read the record data from the grid into the data in the model.
+	 * if we have an insertCol - then a new empty column of data will be added in that
+	 * row position.
+	 */
+	private void scrapeData(int insertCol) {
+		Record[] recs = grid.getStore().getRecords();
+		dt.data = new String[recs.length][];
+		for (int i = 0; i < recs.length; i++) {
+			Record r = recs[i];
+			if (insertCol == -1) {
+				String[] row = new String[fds.length];
+				dt.data[i] = row;
+				for (int j = 0; j < fds.length; j++) {
+					row[j] = r.getAsString(fds[j].getName());
+				}
+			} else {
+				String[] row = new String[fds.length + 1];
+				dt.data[i] = row;
+				for (int j = 0; j < fds.length; j++) {
+					if (j < insertCol) {
+						row[j] = r.getAsString(fds[j].getName());
+					} else if (j > insertCol) {
+						row[j + 1] = r.getAsString(fds[j].getName());
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * removes the field from the field def.
+	 * @param headerName
+	 */
+	private void removeField(String headerName) {
+		FieldDef[] fds_ = new FieldDef[fds.length -1];
+		int new_i = 0;
+		for (int i = 0; i < fds.length; i++) {
+			FieldDef fd = fds[i];
+			if (!fd.getName().equals(headerName)) {
+				fds_[new_i] = fd;
+				new_i++;
+			}
+		}
+		this.fds = fds_;
+
+	}
+
+
+	private void refreshGrid() {
+		if (layout.getWidgetCount() > 1) {
+			layout.remove(1);
+		}
+		grid = doGrid();
+        layout.add(grid);
+	}
 
 	private GridPanel doGrid() {
 
-		FieldDef[] fds = new FieldDef[dt.attributeCols.size() + dt.actionCols.size() + dt.conditionCols.size() + 2]; //its +2 as we have counter and description data
+		fds = new FieldDef[dt.attributeCols.size() + dt.actionCols.size() + dt.conditionCols.size() + 2]; //its +2 as we have counter and description data
 
 		fds[0] = new StringFieldDef("num");
 		fds[1] = new StringFieldDef("desc");
