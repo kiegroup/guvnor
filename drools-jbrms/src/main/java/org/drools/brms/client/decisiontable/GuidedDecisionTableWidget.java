@@ -120,17 +120,17 @@ public class GuidedDecisionTableWidget extends Composite {
 		        list.addItem( "Choose..." );
 
 
-		        if (!hasAttribute("salience", dt.attributeCols)) list.addItem( "salience" );
-		        list.addItem( "enabled" );
-		        list.addItem( "date-effective" );
-		        list.addItem( "date-expires" );
-		        list.addItem( "no-loop" );
-		        list.addItem( "agenda-group" );
-		        list.addItem( "activation-group" );
-		        list.addItem( "duration" );
-		        list.addItem( "auto-focus" );
-		        list.addItem( "lock-on-active" );
-		        list.addItem( "ruleflow-group" );
+		        addItem( "salience",list);
+		        addItem( "enabled", list );
+		        addItem( "date-effective", list );
+		        addItem( "date-expires", list );
+		        addItem( "no-loop", list );
+		        addItem( "agenda-group", list );
+		        addItem( "activation-group", list );
+		        addItem( "duration", list );
+		        addItem( "auto-focus", list );
+		        addItem( "lock-on-active", list );
+		        addItem( "ruleflow-group", list );
 
 		        pop.addAttribute("New attribute:", list);
 
@@ -154,6 +154,10 @@ public class GuidedDecisionTableWidget extends Composite {
 
 		        pop.addAttribute("", ok);
 		        pop.show();
+			}
+
+			private void addItem(String at, final ListBox list) {
+				if (!hasAttribute(at, dt.attributeCols)) list.addItem( at );
 			}
 
 			private boolean hasAttribute(String at, List attributeCols) {
