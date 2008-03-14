@@ -29,8 +29,12 @@ import org.drools.brms.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.brms.client.modeldriven.dt.AttributeCol;
 import org.drools.brms.client.modeldriven.dt.ConditionCol;
 import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.brms.client.packages.SuggestionCompletionCache;
+import org.drools.brms.client.rpc.MetaData;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
+import org.drools.brms.client.rpc.RuleAsset;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -108,6 +112,7 @@ public class CategoryManager extends Composite {
         };
         ConditionCol c1 = new ConditionCol();
         c1.header = "Driver 1 age";
+
         dt.conditionCols.add(c1);
         ConditionCol c2 = new ConditionCol();
         c2.header = "Driver 2 age";
@@ -121,8 +126,17 @@ public class CategoryManager extends Composite {
         a1.header = "Do something !";
         dt.actionCols.add(a1);
 
+        SuggestionCompletionCache.getInstance().doAction("com.billasurf.manufacturing.plant", new Command() {
+			public void execute() {
+				System.err.println("loaded SCE");
+			}
+        });
         //initWidget( form );
-        initWidget( new GuidedDecisionTableWidget(dt) );
+        RuleAsset asset_ = new RuleAsset();
+        asset_.metaData = new MetaData();
+        asset_.metaData.packageName = "com.billasurf.manufacturing.plant";
+        asset_.content = dt;
+        initWidget( new GuidedDecisionTableWidget(asset_) );
     }
 
 

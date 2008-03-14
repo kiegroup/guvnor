@@ -6,11 +6,16 @@ import java.util.List;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.SmallLabel;
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.brms.client.modeldriven.dt.ActionCol;
 import org.drools.brms.client.modeldriven.dt.AttributeCol;
 import org.drools.brms.client.modeldriven.dt.ConditionCol;
 import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.brms.client.packages.SuggestionCompletionCache;
+import org.drools.brms.client.rpc.RuleAsset;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -63,27 +68,40 @@ public class GuidedDecisionTableWidget extends Composite {
 	private GridPanel grid;
 	private FieldDef[] fds;
 	private VerticalPanel attributeConfigWidget;
+	private VerticalPanel conditionsConfigWidget;
+	private String packageName;
 
 
-	public GuidedDecisionTableWidget(GuidedDecisionTable dt) {
+	public GuidedDecisionTableWidget(RuleAsset asset) {
 
-    	this.dt = dt;
+    	this.dt = (GuidedDecisionTable) asset.content;
+    	this.packageName = asset.metaData.packageName;
 
 
         layout = new VerticalPanel();
 
         FormPanel config = new FormPanel();
-        config.setTitle("Table configuration");
- //         config.setFrame(true);
+        config.setTitle("Decision table");
+
         config.setBodyBorder(false);
+        config.setCollapsed(true);
+        config.setCollapsible(true);
+
 
         FieldSet attributes = new FieldSet("Attributes");
         attributes.setCollapsible(true);
+
         attributes.setFrame(true);
         attributes.add(getAttributes());
         config.add(attributes);
 
 
+        FieldSet conditions = new FieldSet("Conditions");
+        conditions.setCollapsible(true);
+        conditions.add(getConditions());
+
+
+        config.add(conditions);
 
         layout.add(config);
 
@@ -92,6 +110,81 @@ public class GuidedDecisionTableWidget extends Composite {
 
         initWidget(layout);
     }
+
+	private Widget getConditions() {
+		conditionsConfigWidget = new VerticalPanel();
+		refreshConditionsWidget();
+		return conditionsConfigWidget;
+	}
+
+	private void refreshConditionsWidget() {
+		this.conditionsConfigWidget.clear();
+		for (int i = 0; i < dt.conditionCols.size(); i++) {
+			ConditionCol c = (ConditionCol) dt.conditionCols.get(i);
+			HorizontalPanel hp = new HorizontalPanel();
+			hp.add(removeCondition(c));
+			hp.add(editCondition(c));
+			hp.add(new SmallLabel(c.header));
+			conditionsConfigWidget.add(hp);
+		}
+		conditionsConfigWidget.add(newCondition());
+
+
+
+	}
+
+	private Widget newCondition() {
+		final ConditionCol newCol = new ConditionCol();
+		newCol.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		return new ImageButton("images/new_item.gif", "Add a new condition column", new ClickListener() {
+			public void onClick(Widget w) {
+				GuidedDTColumnConfig dialog = new GuidedDTColumnConfig(getSCE(), dt, new Command() {
+					public void execute() {
+						//want to add in a blank row into the data
+						scrapeData(dt.attributeCols.size() + dt.conditionCols.size() + 1);
+						refreshGrid();
+						refreshConditionsWidget();
+					}
+				}, newCol, true);
+				dialog.show();
+			}
+		});
+	}
+
+	private Widget editCondition(final ConditionCol c) {
+		return new ImageButton("images/edit.gif", "Edit this columns configuration", new ClickListener() {
+			public void onClick(Widget w) {
+				GuidedDTColumnConfig dialog = new GuidedDTColumnConfig(getSCE(), dt, new Command() {
+					public void execute() {
+						scrapeData(-1);
+						refreshGrid();
+						refreshConditionsWidget();
+					}
+				}, c, false);
+				dialog.show();
+			}
+		});
+	}
+
+	protected SuggestionCompletionEngine getSCE() {
+		return SuggestionCompletionCache.getInstance().getEngineFromCache(this.packageName);
+	}
+
+	private Widget removeCondition(final ConditionCol c) {
+		Image del = new ImageButton("images/delete_item_small.gif", "Remove this condition column", new ClickListener() {
+			public void onClick(Widget w) {
+				if (com.google.gwt.user.client.Window.confirm("Are you sure you want to delete the column for " + c.header + " - all data in that column will be removed?")) {
+					dt.conditionCols.remove(c);
+					removeField(c.header);
+					scrapeData(-1);
+					refreshGrid();
+					refreshConditionsWidget();
+				}
+			}
+		});
+
+		return del;
+	}
 
 	private Widget getAttributes() {
 		attributeConfigWidget = new VerticalPanel();
@@ -212,7 +305,7 @@ public class GuidedDecisionTableWidget extends Composite {
 				for (int j = 0; j < fds.length; j++) {
 					if (j < insertCol) {
 						row[j] = r.getAsString(fds[j].getName());
-					} else if (j > insertCol) {
+					} else if (j >= insertCol) {
 						row[j + 1] = r.getAsString(fds[j].getName());
 					}
 				}
@@ -377,8 +470,8 @@ public class GuidedDecisionTableWidget extends Composite {
 
 
         grid.setStore(store);
-        grid.setWidth(500);
-        grid.setHeight(300);
+        grid.setWidth(700);
+        grid.setHeight(500);
 
 
         grid.addGridCellListener(new GridCellListenerAdapter() {

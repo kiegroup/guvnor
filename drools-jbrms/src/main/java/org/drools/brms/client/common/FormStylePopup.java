@@ -38,6 +38,9 @@ public class FormStylePopup {
 	private Boolean shadow;
 	private Integer width;
 	private Integer height;
+	private boolean modal = true;
+	private int popLeft = -1;
+	private int popTop;
 
     public FormStylePopup(String image,
                           final String title) {
@@ -72,19 +75,27 @@ public class FormStylePopup {
     	this.dialog.destroy();
     }
 
+    public void setPopupPosition(int left, int top) {
+    	this.popLeft = left;
+    	this.popTop = top;
+    }
+
 
 
 	public void show() {
 
 		dialog = new Window();
 		dialog.setAutoScroll(true);
-		dialog.setModal(true);
+		dialog.setModal(modal );
 		dialog.setWidth((width == null)? 500 : width.intValue());
 		//dialog.setHeight((height == null)? form.getNumAttributes() * 40 + 100 : height.intValue());
 		dialog.setShadow((shadow == null)? true : shadow.booleanValue());
 		dialog.setResizable(true);
 		dialog.setClosable(true);
 		dialog.setTitle(title);
+		if (popLeft > -1) {
+			dialog.setPosition(popLeft, popTop);
+		}
 
 
 
@@ -94,6 +105,18 @@ public class FormStylePopup {
 		dialog.add(p);
 
 		this.dialog.show();
+	}
+
+	public void setModal(boolean m) {
+		this.modal = m;
+	}
+
+	public void setTitle(String t) {
+		this.title = t;
+	}
+
+	public void setWidth(int i) {
+		this.width = new Integer(i);
 	}
 
 
