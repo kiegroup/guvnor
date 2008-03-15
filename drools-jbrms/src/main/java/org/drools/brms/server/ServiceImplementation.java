@@ -17,29 +17,7 @@ package org.drools.brms.server;
 
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.jcr.ItemExistsException;
-import javax.jcr.RepositoryException;
-
+import com.google.gwt.user.client.rpc.SerializableException;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.drools.RuleBase;
@@ -79,6 +57,7 @@ import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
@@ -88,8 +67,8 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
-import org.drools.repository.CategoryItem;
 import org.drools.repository.AssetPageList;
+import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
 import org.drools.repository.RulesRepository;
@@ -106,7 +85,27 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.annotations.security.Restrict;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import javax.jcr.ItemExistsException;
+import javax.jcr.RepositoryException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This is the implementation of the repository service to drive the GWT based front end.
@@ -895,7 +894,7 @@ public class ServiceImplementation
         } else {
             try {
                 ByteArrayOutputStream bout = new ByteArrayOutputStream();
-                ObjectOutputStream out = new ObjectOutputStream(bout);
+                ObjectOutput out = new DroolsObjectOutputStream(bout);
                 out.writeObject( asm.getBinaryPackage() );
 
                 item.updateCompiledPackage( new ByteArrayInputStream( bout.toByteArray()) );
