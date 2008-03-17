@@ -9,6 +9,7 @@ import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.brms.client.modeldriven.dt.ActionCol;
+import org.drools.brms.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.brms.client.modeldriven.dt.AttributeCol;
 import org.drools.brms.client.modeldriven.dt.ConditionCol;
 import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
@@ -38,6 +39,7 @@ import com.gwtext.client.data.RecordDef;
 import com.gwtext.client.data.SortState;
 import com.gwtext.client.data.Store;
 import com.gwtext.client.data.StringFieldDef;
+import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarMenuButton;
@@ -70,6 +72,7 @@ public class GuidedDecisionTableWidget extends Composite {
 	private VerticalPanel attributeConfigWidget;
 	private VerticalPanel conditionsConfigWidget;
 	private String packageName;
+	private VerticalPanel actionsConfigWidget;
 
 
 	public GuidedDecisionTableWidget(RuleAsset asset) {
@@ -88,7 +91,7 @@ public class GuidedDecisionTableWidget extends Composite {
         config.setCollapsible(true);
 
 
-        FieldSet attributes = new FieldSet("Attributes");
+        FieldSet attributes = new FieldSet("Attribute columns");
         attributes.setCollapsible(true);
 
         attributes.setFrame(true);
@@ -96,12 +99,17 @@ public class GuidedDecisionTableWidget extends Composite {
         config.add(attributes);
 
 
-        FieldSet conditions = new FieldSet("Conditions");
+        FieldSet conditions = new FieldSet("Condition columns");
         conditions.setCollapsible(true);
         conditions.add(getConditions());
-
-
         config.add(conditions);
+
+
+        FieldSet actions = new FieldSet("Action columns");
+        actions.setCollapsible(true);
+        actions.add(getActions());
+        config.add(actions);
+
 
         layout.add(config);
 
@@ -110,6 +118,106 @@ public class GuidedDecisionTableWidget extends Composite {
 
         initWidget(layout);
     }
+
+	private Widget getActions() {
+		actionsConfigWidget = new VerticalPanel();
+		refreshActionsWidget();
+		return actionsConfigWidget;
+	}
+
+	private void refreshActionsWidget() {
+		this.actionsConfigWidget.clear();
+		for (int i = 0; i < dt.actionCols.size(); i++) {
+			ActionCol c = (ActionCol) dt.actionCols.get(i);
+			HorizontalPanel hp = new HorizontalPanel();
+			hp.add(removeAction(c));
+			hp.add(editAction(c));
+			hp.add(new SmallLabel(c.header));
+			actionsConfigWidget.add(hp);
+		}
+		actionsConfigWidget.add(newAction());
+
+	}
+
+	private Widget editAction(ActionCol c) {
+		return new Image("images/edit.gif");
+	}
+
+	private Widget newAction() {
+		return new ImageButton( "images/new_item.gif", "Create a new action column", new ClickListener() {
+			public void onClick(Widget w) {
+				final FormStylePopup pop = new FormStylePopup();
+				pop.setModal(false);
+
+				final ListBox choice = new ListBox();
+				choice.addItem("Set the value of a field", "set");
+				choice.addItem("Set the value of a field on a new fact", "insert");
+				choice.addItem("Retract an existing fact", "retract");
+				Button ok = new Button("OK");
+				ok.addClickListener(new ClickListener() {
+					public void onClick(Widget w) {
+						String s = choice.getValue(choice.getSelectedIndex());
+						if (s.equals("set")) {
+							showSet();
+						} else if (s.equals("insert")) {
+							showInsert();
+						} else if (s.equals("retract")) {
+							showRetract();
+						}
+						pop.hide();
+					}
+
+					private void showRetract() {
+						// TODO Auto-generated method stub
+
+					}
+
+					private void showInsert() {
+						// TODO Auto-generated method stub
+
+					}
+
+					private void showSet() {
+						ActionSetColumn set = new ActionSetColumn(getSCE(), dt, new Command() {
+							public void execute() {
+								//want to add in a blank row into the data
+								scrapeData(dt.attributeCols.size() + dt.conditionCols.size() + dt.actionCols.size() + 1);
+								refreshGrid();
+								refreshActionsWidget();
+							}
+						}, new ActionSetFieldCol(), true);
+						set.show();
+					}
+				});
+
+				pop.addAttribute("Type of action column:", choice);
+
+				pop.addAttribute("", ok);
+
+				pop.show();
+
+			}
+
+		});
+
+
+	}
+
+	private Widget removeAction(final ActionCol c) {
+		Image del = new ImageButton("images/delete_item_small.gif", "Remove this action column", new ClickListener() {
+			public void onClick(Widget w) {
+				if (com.google.gwt.user.client.Window.confirm("Are you sure you want to delete the column for " + c.header + " - all data in that column will be removed?")) {
+					dt.actionCols.remove(c);
+					removeField(c.header);
+					scrapeData(-1);
+					refreshGrid();
+					refreshActionsWidget();
+				}
+			}
+		});
+
+		return del;
+	}
 
 	private Widget getConditions() {
 		conditionsConfigWidget = new VerticalPanel();

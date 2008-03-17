@@ -105,26 +105,26 @@ public class CategoryManager extends Composite {
 
 
         GuidedDecisionTable dt = new GuidedDecisionTable();
-        dt.data = new String[][] {
-        		new String[] {"1", "des1","", "a", "b", "c"},
-        		new String[] {"2", "des1","" , "d", "e", "f"},
-        		new String[] {"3",  "des3", "groupA", "d", "q", "x"}
-        };
-        ConditionCol c1 = new ConditionCol();
-        c1.header = "Driver 1 age";
-
-        dt.conditionCols.add(c1);
-        ConditionCol c2 = new ConditionCol();
-        c2.header = "Driver 2 age";
-        dt.conditionCols.add(c2);
-
-        AttributeCol attr = new AttributeCol();
-        attr.attr = "rule-flow";
-        dt.attributeCols.add(attr);
-
-        ActionCol a1 = new ActionSetFieldCol();
-        a1.header = "Do something !";
-        dt.actionCols.add(a1);
+//        dt.data = new String[][] {
+//        		new String[] {"1", "des1","", "a", "b", "c"},
+//        		new String[] {"2", "des1","" , "d", "e", "f"},
+//        		new String[] {"3",  "des3", "groupA", "d", "q", "x"}
+//        };
+//        ConditionCol c1 = new ConditionCol();
+//        c1.header = "Driver 1 age";
+//
+//        dt.conditionCols.add(c1);
+//        ConditionCol c2 = new ConditionCol();
+//        c2.header = "Driver 2 age";
+//        dt.conditionCols.add(c2);
+//
+//        AttributeCol attr = new AttributeCol();
+//        attr.attr = "rule-flow";
+//        dt.attributeCols.add(attr);
+//
+//        ActionCol a1 = new ActionSetFieldCol();
+//        a1.header = "Do something !";
+//        dt.actionCols.add(a1);
 
         SuggestionCompletionCache.getInstance().doAction("com.billasurf.manufacturing.plant", new Command() {
 			public void execute() {

@@ -13,6 +13,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
@@ -74,13 +75,6 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		pattern.add(changePattern);
 
 
-		Image newPattern = new ImageButton("images/new_item.gif", "Create a new pattern for this column", new ClickListener() {
-			public void onClick(Widget w) {
-				showNewPatternDialog();
-			}
-		});
-
-		pattern.add(newPattern);
 		addAttribute("Pattern:", pattern);
 
 		//now a radio button with the type
@@ -169,7 +163,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
 			}
 		});
-		addRow(apply);
+		addAttribute("", apply);
 
 
 
@@ -208,7 +202,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		}
 		pop.addAttribute("Operator:", box);
 		Button b = new Button("OK");
-		pop.addRow(b);
+		pop.addAttribute("", b);
 		b.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				editingCol.operator = box.getValue(box.getSelectedIndex());
@@ -247,7 +241,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		}
 		pop.addAttribute("Field:", box);
 		Button b = new Button("OK");
-		pop.addRow(b);
+		pop.addAttribute("", b);
 		b.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				editingCol.factField = box.getItemText(box.getSelectedIndex());
@@ -269,12 +263,33 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 	}
 
 	protected void showChangePattern(Widget w) {
-		final FormStylePopup pop = new FormStylePopup();
 
 		final ListBox pats = this.loadPatterns();
-		pop.addAttribute("Choose existing pattern to add column to:", pats);
+		if (pats.getItemCount() == 0) {
+			showNewPatternDialog();
+			return;
+		}
+		final FormStylePopup pop = new FormStylePopup();
 		Button ok = new Button("OK");
-		pop.addRow(ok);
+		HorizontalPanel hp = new HorizontalPanel();
+		hp.add(pats);
+		hp.add(ok);
+
+
+		pop.addAttribute("Choose existing pattern to add column to:", hp);
+		pop.addAttribute("", new HTML("<i><b>---OR---</i></b>"));
+
+		Button createPattern = new Button("Create new fact pattern");
+		createPattern.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				pop.hide();
+				showNewPatternDialog();
+			}
+		});
+		pop.addAttribute("", createPattern);
+
+
+
 
 		ok.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
@@ -309,7 +324,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 				pop.hide();
 			}
 		});
-		pop.addRow(ok);
+		pop.addAttribute("", ok);
 
 		pop.show();
 
