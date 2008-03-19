@@ -7,9 +7,9 @@ import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.InfoPopup;
 import org.drools.brms.client.common.SmallLabel;
-import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.brms.client.modeldriven.dt.ActionCol;
+import org.drools.brms.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.brms.client.modeldriven.dt.ConditionCol;
 import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
 
@@ -21,43 +21,35 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * This is a configuration editor for a column in a the guided decision table.
+ * This is an editor for columns that are for inserting facts.
  * @author Michael Neale
  *
  */
-public class GuidedDTColumnConfig extends FormStylePopup {
+public class ActionInsertColumn extends FormStylePopup {
 
 	private GuidedDecisionTable dt;
 	private SuggestionCompletionEngine sce;
-	private ConditionCol editingCol;
+	private ActionInsertFactCol editingCol;
 	private SmallLabel patternLabel = new SmallLabel();
 	private SmallLabel fieldLabel = new SmallLabel();
-	private SmallLabel operatorLabel = new SmallLabel();
 
-	/**
-	 * Pass in a null col and it will create a new one.
-	 */
-	public GuidedDTColumnConfig(SuggestionCompletionEngine sce, final GuidedDecisionTable dt, final Command refreshGrid, final ConditionCol col, final boolean isNew) {
-		super();
+	public ActionInsertColumn(SuggestionCompletionEngine sce, final GuidedDecisionTable dt, final Command refreshGrid, final ActionInsertFactCol col, final boolean isNew) {
 		this.setModal(false);
 		this.dt = dt;
 		this.sce = sce;
-		this.editingCol = new ConditionCol();
+		this.editingCol = new ActionInsertFactCol();
 		editingCol.boundName = col.boundName;
-		editingCol.constraintValueType = col.constraintValueType;
+		editingCol.type = col.type;
 		editingCol.factField = col.factField;
 		editingCol.factType = col.factType;
 		editingCol.header = col.header;
-		editingCol.operator = col.operator;
 		editingCol.valueList = col.valueList;
 
-
-		setTitle("Condition column configuration");
+		setTitle("Action column configuration (inserting a new fact)");
 
 		final TextBox header = new TextBox();
 		header.setText(col.header);
@@ -69,60 +61,16 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
 
 		HorizontalPanel pattern = new HorizontalPanel();
-		pattern.add(patternLabel);
+		pattern.add(patternLabel );
 		doPatternLabel();
 
-		Image changePattern = new ImageButton("images/edit.gif", "Choose an existing pattern that this column adds to", new ClickListener() {
+		Image changePattern = new ImageButton("images/edit.gif", "Choose a pattern that this column adds data to", new ClickListener() {
 			public void onClick(Widget w) {
 				showChangePattern(w);
 			}
 		});
 		pattern.add(changePattern);
-
-
 		addAttribute("Pattern:", pattern);
-
-		//now a radio button with the type
-		RadioButton literal = new RadioButton("constraintValueType", "Literal value");
-		RadioButton formula = new RadioButton("constraintValueType", "Formula");
-		RadioButton predicate = new RadioButton("constraintValueType", "Predicate");
-
-
-		HorizontalPanel valueTypes = new HorizontalPanel();
-		valueTypes.add(literal);
-		valueTypes.add(formula);
-		valueTypes.add(predicate);
-		addAttribute("Calculation type:", valueTypes);
-
-		switch (editingCol.constraintValueType) {
-			case ISingleFieldConstraint.TYPE_LITERAL:
-				literal.setChecked(true);
-				break;
-			case ISingleFieldConstraint.TYPE_RET_VALUE :
-				formula.setChecked(true);
-				break;
-			case ISingleFieldConstraint.TYPE_PREDICATE :
-				predicate.setChecked(true);
-		}
-
-		literal.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
-				applyConsTypeChange(ISingleFieldConstraint.TYPE_LITERAL);
-			}
-		});
-
-
-		formula.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
-				applyConsTypeChange(ISingleFieldConstraint.TYPE_RET_VALUE);
-			}
-		});
-		predicate.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
-				applyConsTypeChange(ISingleFieldConstraint.TYPE_PREDICATE);
-			}
-		});
-
 
 		HorizontalPanel field = new HorizontalPanel();
 		field.add(fieldLabel);
@@ -135,17 +83,6 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		addAttribute("Field:", field);
 		doFieldLabel();
 
-
-		HorizontalPanel operator = new HorizontalPanel();
-		operator.add(operatorLabel);
-		Image editOp = new ImageButton("images/edit.gif", "Edit the operator that is used to compare data with this field", new ClickListener() {
-			public void onClick(Widget w) {
-				showOperatorChange();
-			}
-		});
-		operator.add(editOp);
-		addAttribute("Operator:", operator);
-		doOperatorLabel();
 
 		final TextBox valueList = new TextBox();
 		valueList.setText(editingCol.valueList);
@@ -163,91 +100,24 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		apply.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				if (isNew) {
-					dt.conditionCols.add(editingCol);
+					dt.actionCols.add(editingCol);
 				} else {
 					col.boundName = editingCol.boundName;
-					col.constraintValueType = editingCol.constraintValueType;
+					col.type = editingCol.type;
 					col.factField = editingCol.factField;
 					col.factType = editingCol.factType;
 					col.header = editingCol.header;
-					col.operator = editingCol.operator;
 					col.valueList = editingCol.valueList;
 				}
 				refreshGrid.execute();
 				hide();
-
 			}
 		});
 		addAttribute("", apply);
 
-
-
-
-
 	}
 
-	private void applyConsTypeChange(int newType) {
-		editingCol.constraintValueType = newType;
-		doFieldLabel();
-		doOperatorLabel();
-	}
-
-
-	private void doOperatorLabel() {
-		if (editingCol.constraintValueType == ISingleFieldConstraint.TYPE_PREDICATE) {
-			operatorLabel.setText("(not needed for predicate)");
-		} else if (nil(editingCol.factType)) {
-			operatorLabel.setText("(please select a pattern first)");
-		} else if (nil(editingCol.factField)) {
-			operatorLabel.setText("(please choose a field first)");
-		} else if (nil(editingCol.operator)) {
-			operatorLabel.setText("(please select a field)");
-		} else {
-			operatorLabel.setText(HumanReadable.getOperatorDisplayName(editingCol.operator));
-		}
-	}
-
-	private void showOperatorChange() {
-		final FormStylePopup pop = new FormStylePopup();
-		pop.setTitle("Set the operator");
-		pop.setModal(false);
-		String[] ops = this.sce.getOperatorCompletions(editingCol.factType, editingCol.factField);
-		final ListBox box = new ListBox();
-		for (int i = 0; i < ops.length; i++) {
-			box.addItem(HumanReadable.getOperatorDisplayName(ops[i]), ops[i]);
-		}
-		pop.addAttribute("Operator:", box);
-		Button b = new Button("OK");
-		pop.addAttribute("", b);
-		b.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
-				editingCol.operator = box.getValue(box.getSelectedIndex());
-				doOperatorLabel();
-				pop.hide();
-			}
-		});
-		pop.show();
-
-	}
-
-	private void doFieldLabel() {
-		if (editingCol.constraintValueType == ISingleFieldConstraint.TYPE_PREDICATE) {
-			fieldLabel.setText("(not needed for predicate)");
-		} else if (nil(editingCol.factType)) {
-			fieldLabel.setText("(please select a pattern first)");
-		}
-		else if (nil(editingCol.factField)) {
-			fieldLabel.setText("(please select a field)");
-		} else {
-			fieldLabel.setText(this.editingCol.factField);
-		}
-	}
-
-	private boolean nil(String s) {
-		return s == null || s.equals("");
-	}
-
-	protected void showFieldChange() {
+	private void showFieldChange() {
 		final FormStylePopup pop = new FormStylePopup();
 		pop.setModal(false);
 		String[] fields = this.sce.getFieldCompletions(this.editingCol.factType);
@@ -261,21 +131,32 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		b.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				editingCol.factField = box.getItemText(box.getSelectedIndex());
+				editingCol.type = sce.getFieldType(editingCol.factType, editingCol.factField);
 				doFieldLabel();
-				doOperatorLabel();
 				pop.hide();
 			}
 		});
 		pop.show();
+
+	}
+
+	private void doFieldLabel() {
+		if (nil(this.editingCol.factField)) {
+			fieldLabel.setText("(please choose fact type)");
+		} else {
+			fieldLabel.setText(editingCol.factField);
+		}
+
+	}
+
+	private boolean nil(String s) {
+		return s == null || s.equals("");
 	}
 
 	private void doPatternLabel() {
 		if (this.editingCol.factType != null) {
 			this.patternLabel.setText(this.editingCol.factType + " [" + editingCol.boundName + "]");
 		}
-		doFieldLabel();
-		doOperatorLabel();
-
 	}
 
 	protected void showChangePattern(Widget w) {
@@ -322,7 +203,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
 	protected void showNewPatternDialog() {
 		final FormStylePopup pop = new FormStylePopup();
-		pop.setTitle("Create a new fact pattern");
+		pop.setTitle("New fact - select the type");
 		final ListBox types = new ListBox();
 		for (int i = 0; i < sce.factTypes.length; i++) {
 			types.addItem(sce.factTypes[i]);
@@ -343,17 +224,19 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		pop.addAttribute("", ok);
 
 		pop.show();
-
 	}
 
 	private ListBox loadPatterns() {
 		Set vars = new HashSet();
 		ListBox patterns = new ListBox();
 		for (int i = 0; i < dt.conditionCols.size(); i++) {
-			ConditionCol c = (ConditionCol) dt.conditionCols.get(i);
-			if (!vars.contains(c.boundName)) {
-				patterns.addItem(c.factType + " [" + c.boundName + "]", c.factType + " " + c.boundName);
-				vars.add(c.boundName);
+			ActionCol col = (ActionCol) dt.actionCols.get(i);
+			if (col instanceof ActionInsertFactCol) {
+				ActionInsertFactCol c = (ActionInsertFactCol) col;
+				if (!vars.contains(c.boundName)) {
+					patterns.addItem(c.factType + " [" + c.boundName + "]", c.factType + " " + c.boundName);
+					vars.add(c.boundName);
+				}
 			}
 		}
 

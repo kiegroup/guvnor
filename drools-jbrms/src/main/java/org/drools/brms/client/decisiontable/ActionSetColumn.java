@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.common.InfoPopup;
 import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.dt.ActionSetFieldCol;
@@ -39,6 +40,7 @@ public class ActionSetColumn extends FormStylePopup {
 		editingCol.factField = col.factField;
 		editingCol.header = col.header;
 		editingCol.type = col.type;
+		editingCol.valueList = col.valueList;
 		super.setModal(false);
 		setTitle("Column configuration (set a field on a fact)");
 
@@ -74,6 +76,18 @@ public class ActionSetColumn extends FormStylePopup {
 		addAttribute("Field:", field);
 		doFieldLabel();
 
+		final TextBox valueList = new TextBox();
+		valueList.setText(editingCol.valueList);
+		valueList.addChangeListener(new ChangeListener() {
+			public void onChange(Widget w) {
+				editingCol.valueList = valueList.getText();
+			}
+		});
+		HorizontalPanel vl = new HorizontalPanel();
+		vl.add(valueList);
+		vl.add(new InfoPopup("Value list", "Value lists are an optional comma separated list of values to show as a drop down."));
+		addAttribute("(optional) value list:", vl);
+
 		Button apply = new Button("Apply changes");
 		apply.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
@@ -85,6 +99,7 @@ public class ActionSetColumn extends FormStylePopup {
 					col.factField = editingCol.factField;
 					col.header = editingCol.header;
 					col.type = editingCol.type;
+					col.valueList = editingCol.valueList;
 				}
 				refreshGrid.execute();
 				hide();
@@ -142,7 +157,7 @@ public class ActionSetColumn extends FormStylePopup {
 		final FormStylePopup pop = new FormStylePopup();
 
 		final ListBox pats = this.loadBoundFacts();
-		pop.addAttribute("Choose fact to set field of:", pats);
+		pop.addAttribute("Choose fact:", pats);
 		Button ok = new Button("OK");
 		pop.addAttribute("", ok);
 
@@ -170,6 +185,11 @@ public class ActionSetColumn extends FormStylePopup {
 		for (Iterator iterator = facts.iterator(); iterator.hasNext();) {
 			String b = (String) iterator.next();
 			box.addItem(b);
+		}
+
+		String[] globs = this.sce.getGlobalVariables();
+		for (int i = 0; i < globs.length; i++) {
+			box.addItem(globs[i]);
 		}
 
 		return box;

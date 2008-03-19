@@ -126,17 +126,19 @@ public class CategoryManager extends Composite {
 //        a1.header = "Do something !";
 //        dt.actionCols.add(a1);
 
-        SuggestionCompletionCache.getInstance().doAction("com.billasurf.manufacturing.plant", new Command() {
-			public void execute() {
-				System.err.println("loaded SCE");
-			}
-        });
         //initWidget( form );
-        RuleAsset asset_ = new RuleAsset();
+        final RuleAsset asset_ = new RuleAsset();
         asset_.metaData = new MetaData();
         asset_.metaData.packageName = "com.billasurf.manufacturing.plant";
         asset_.content = dt;
         initWidget( new GuidedDecisionTableWidget(asset_) );
+        SuggestionCompletionCache.getInstance().doAction("com.billasurf.manufacturing.plant", new Command() {
+			public void execute() {
+				System.err.println("loaded SCE");
+
+			}
+        });
+
     }
 
 
