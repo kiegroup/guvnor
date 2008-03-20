@@ -89,6 +89,7 @@ public class GuidedDecisionTableWidget extends Composite {
 
     	this.dt = (GuidedDecisionTable) asset.content;
     	this.packageName = asset.metaData.packageName;
+    	this.dt.tableName = asset.metaData.name;
 
 
         layout = new VerticalPanel();

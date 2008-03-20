@@ -31,6 +31,8 @@ public class AssetFormatsTest extends TestCase {
                     fmt.equals( AssetFormats.DECISION_SPREADSHEET_XLS )
                     ||
                     fmt.equals( AssetFormats.DSL_TEMPLATE_RULE )
+                    ||
+                    fmt.equals( AssetFormats.DECISION_TABLE_GUIDED )
             ) ) {
                 fail("Incorrect grouping of business rules.");
             }
@@ -44,6 +46,7 @@ public class AssetFormatsTest extends TestCase {
     public void testPackageDependencies() {
         assertFalse(AssetFormats.isPackageDependency(AssetFormats.BUSINESS_RULE));
         assertFalse(AssetFormats.isPackageDependency(AssetFormats.DRL));
+        assertFalse(AssetFormats.isPackageDependency(AssetFormats.DECISION_TABLE_GUIDED));
         assertFalse(AssetFormats.isPackageDependency(AssetFormats.TEST_SCENARIO));
         assertTrue(AssetFormats.isPackageDependency(AssetFormats.DSL));
         assertTrue(AssetFormats.isPackageDependency(AssetFormats.MODEL));

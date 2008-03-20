@@ -55,6 +55,8 @@ public class AssetFormats {
     /** Use a decision table.*/
     public static final String DECISION_SPREADSHEET_XLS = "xls";
 
+    public static final String DECISION_TABLE_GUIDED = "gdst";
+
     /** Use a ruleflow.*/
     public static final String RULE_FLOW_RF = "rf";
 
@@ -67,7 +69,7 @@ public class AssetFormats {
     /**
      * The following group the assets together for lists, helpers etc...
      */
-    public static final String[] BUSINESS_RULE_FORMATS = new String[] {AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE, AssetFormats.DECISION_SPREADSHEET_XLS};
+    public static final String[] BUSINESS_RULE_FORMATS = new String[] {AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE, AssetFormats.DECISION_SPREADSHEET_XLS, AssetFormats.DECISION_TABLE_GUIDED};
 
 
     /**

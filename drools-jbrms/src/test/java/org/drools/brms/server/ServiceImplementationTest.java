@@ -16,36 +16,75 @@ package org.drools.brms.server;
  * limitations under the License.
  */
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-import com.google.gwt.user.client.rpc.SerializableException;
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInput;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import junit.framework.TestCase;
 
-import org.apache.commons.io.IOUtils;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.StatelessSession;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brl.*;
-import org.drools.brms.client.modeldriven.testing.*;
-import org.drools.brms.client.rpc.*;
+import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brl.ActionSetField;
+import org.drools.brms.client.modeldriven.brl.FactPattern;
+import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.brms.client.modeldriven.brl.RuleModel;
+import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.brms.client.modeldriven.dt.ActionSetFieldCol;
+import org.drools.brms.client.modeldriven.dt.ConditionCol;
+import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
+import org.drools.brms.client.modeldriven.testing.FactData;
+import org.drools.brms.client.modeldriven.testing.FieldData;
+import org.drools.brms.client.modeldriven.testing.Scenario;
+import org.drools.brms.client.modeldriven.testing.VerifyFact;
+import org.drools.brms.client.modeldriven.testing.VerifyField;
+import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.brms.client.rpc.AnalysisReport;
+import org.drools.brms.client.rpc.BuilderResult;
+import org.drools.brms.client.rpc.BulkTestRunResult;
+import org.drools.brms.client.rpc.DetailedSerializableException;
+import org.drools.brms.client.rpc.PackageConfigData;
+import org.drools.brms.client.rpc.RepositoryService;
+import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.rpc.RuleContentText;
+import org.drools.brms.client.rpc.ScenarioResultSummary;
+import org.drools.brms.client.rpc.ScenarioRunResult;
+import org.drools.brms.client.rpc.SnapshotInfo;
+import org.drools.brms.client.rpc.TableConfig;
+import org.drools.brms.client.rpc.TableDataResult;
+import org.drools.brms.client.rpc.TableDataRow;
+import org.drools.brms.client.rpc.ValidatedResponse;
 import org.drools.brms.server.util.BRXMLPersistence;
+import org.drools.brms.server.util.GuidedDTXMLPersistence;
 import org.drools.brms.server.util.IO;
 import org.drools.brms.server.util.ScenarioXMLPersistence;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.common.DroolsObjectInputStream;
-import org.drools.repository.*;
+import org.drools.repository.AssetItem;
+import org.drools.repository.CategoryItem;
+import org.drools.repository.PackageItem;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.StateItem;
 import org.drools.rule.Package;
 import org.drools.util.BinaryRuleBaseLoader;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.StringReader;
-import java.io.ObjectInput;
-import java.util.*;
+import com.google.gwt.user.client.rpc.IsSerializable;
+import com.google.gwt.user.client.rpc.SerializableException;
 
+/**
+ * This is really a collection of integration tests.
+ * @author Michael Neale
+ */
 public class ServiceImplementationTest extends TestCase {
 
 	public void testCategory() throws Exception {
@@ -1759,6 +1798,77 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(2, s.length);
 		assertEquals("com.billasurf.Person", s[0]);
 		assertEquals("com.billasurf.Board", s[1]);
+	}
+
+
+	public void testGuidedDTExecute() throws Exception {
+		ServiceImplementation impl = getService();
+		RulesRepository repo = impl.repository;
+		impl.createCategory("/", "decisiontables", "");
+
+		PackageItem pkg = repo.createPackage("testGuidedDTCompile", "");
+		pkg.updateHeader("import org.drools.Person");
+		AssetItem rule1 = pkg.addAsset("rule_1", "");
+		rule1.updateFormat(AssetFormats.DRL);
+		rule1.updateContent("rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end");
+		rule1.checkin("");
+		repo.save();
+
+
+		GuidedDecisionTable dt = new GuidedDecisionTable();
+		ConditionCol col = new ConditionCol();
+		col.boundName = "p";
+		col.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		col.factField = "hair";
+		col.factType = "Person";
+		col.operator = "==";
+		dt.conditionCols.add(col);
+
+		ActionSetFieldCol ac = new ActionSetFieldCol();
+		ac.boundName = "p";
+		ac.factField = "likes";
+		ac.type = SuggestionCompletionEngine.TYPE_STRING;
+		dt.actionCols.add(ac);
+
+		dt.data = new String[][] {
+			new String[] {"1", "descrip", "pink", "cheese"}
+		};
+
+		String uid = impl.createNewRule("decTable", "", "decisiontables", pkg.getName(), AssetFormats.DECISION_TABLE_GUIDED);
+		RuleAsset ass = impl.loadRuleAsset(uid);
+		ass.content = dt;
+		impl.checkinVersion(ass);
+
+		BuilderResult[] results = impl.buildPackage(pkg.getUUID(), null, true);
+		assertNull(results);
+
+		pkg = repo.loadPackage("testGuidedDTCompile");
+		byte[] binPackage = pkg.getCompiledPackageBytes();
+
+		assertNotNull(binPackage);
+
+		ByteArrayInputStream bin = new ByteArrayInputStream(binPackage);
+		ObjectInput in = new DroolsObjectInputStream(bin);
+		Package binPkg = (Package) in.readObject();
+
+		assertEquals(2, binPkg.getRules().length);
+
+		assertNotNull(binPkg);
+		assertTrue(binPkg.isValid());
+
+		Person p = new Person();
+
+
+		p.setHair("pink");
+
+		BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
+		loader.addPackage(new ByteArrayInputStream(binPackage));
+		RuleBase rb = loader.getRuleBase();
+
+		StatelessSession sess = rb.newStatelessSession();
+		sess.execute(p);
+		assertEquals(42, p.getAge());
+		assertEquals("cheese", p.getLikes());
 	}
 
 
