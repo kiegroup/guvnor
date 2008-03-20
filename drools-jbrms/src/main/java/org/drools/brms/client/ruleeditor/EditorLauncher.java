@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.decisiontable.DecisionTableXLSWidget;
+import org.drools.brms.client.decisiontable.GuidedDecisionTableWidget;
 import org.drools.brms.client.modeldriven.ui.RuleModeller;
 import org.drools.brms.client.packages.ModelAttachmentFileWidget;
 import org.drools.brms.client.qa.ScenarioWidget;
@@ -69,6 +70,8 @@ public class EditorLauncher {
             return new RuleValidatorWrapper(new DefaultRuleContentWidget( asset ), asset);
         } else if (asset.metaData.format.equals(AssetFormats.TEST_SCENARIO)) {
         	return new ScenarioWidget(asset);
+        } else if (asset.metaData.format.equals(AssetFormats.DECISION_TABLE_GUIDED)) {
+        	return new RuleValidatorWrapper(new GuidedDecisionTableWidget(asset), asset);
         } else {
             return new DefaultRuleContentWidget( asset );
         }
@@ -89,6 +92,7 @@ public class EditorLauncher {
         result.put( AssetFormats.RULE_FLOW_RF, "ruleflow_small.gif" );
         result.put( AssetFormats.TEST_SCENARIO, "test_manager.gif");
         result.put( AssetFormats.ENUMERATION, "enumeration.gif");
+        result.put( AssetFormats.DECISION_TABLE_GUIDED, "gdst.gif");
 
         return result;
     }

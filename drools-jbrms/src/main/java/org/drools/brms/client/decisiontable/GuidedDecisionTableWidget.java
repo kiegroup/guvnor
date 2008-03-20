@@ -21,6 +21,7 @@ import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.brms.client.modeldriven.ui.ActionValueEditor;
 import org.drools.brms.client.packages.SuggestionCompletionCache;
 import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.ruleeditor.SaveEventListener;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -70,7 +71,7 @@ import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
  * This is the new guided decision table editor for the web.
  * @author Michael Neale
  */
-public class GuidedDecisionTableWidget extends Composite {
+public class GuidedDecisionTableWidget extends Composite implements SaveEventListener {
 
     private GuidedDecisionTable dt;
 	private VerticalPanel layout;
@@ -485,7 +486,8 @@ public class GuidedDecisionTableWidget extends Composite {
 			vp.setWidth("100%");
 			PrettyFormLayout pfl = new PrettyFormLayout();
 			pfl.startSection();
-			pfl.addRow(new HTML("<img src='images/information.gif'/>&nbsp;Configure the columns first, then add rows (rules)."));
+			pfl.addRow(new HTML("<img src='images/information.gif'/>&nbsp;Configure the columns first, then add rows (rules)." +
+					" A fact model (in the current package) will be needed to provide the facts and fields to configure this decision table."));
 
 			pfl.endSection();
 			vp.add(pfl);
@@ -819,6 +821,13 @@ public class GuidedDecisionTableWidget extends Composite {
 
 		w.setPosition(e.getPageX(), e.getPageY());
 		w.show();
+	}
+
+	/**
+	 * Need to copy the data from the record store.
+	 */
+	public void onSave() {
+		this.scrapeData(-1);
 	}
 
 

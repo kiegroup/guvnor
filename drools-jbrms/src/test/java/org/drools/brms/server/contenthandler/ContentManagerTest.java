@@ -11,7 +11,7 @@ public class ContentManagerTest extends TestCase {
 		ContentManager mgr_ = ContentManager.getInstance();
 		assertSame(mgr, mgr_);
 
-		assertEquals(10, mgr.getContentHandlers().size());
+		assertEquals(11, mgr.getContentHandlers().size());
 		assertTrue(mgr.getContentHandlers().get("drl") instanceof DRLFileContentHandler);
 
 		assertTrue(mgr.getContentHandlers().containsKey(AssetFormats.TEST_SCENARIO));

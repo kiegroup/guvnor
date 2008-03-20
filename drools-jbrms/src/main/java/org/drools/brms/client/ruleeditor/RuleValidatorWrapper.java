@@ -41,7 +41,7 @@ import com.gwtext.client.widgets.event.ButtonListenerAdapter;
  * This widget wraps a rule asset widget, and provides actions to validate and view source.
  * @author Michael Neale
  */
-public class RuleValidatorWrapper extends DirtyableComposite {
+public class RuleValidatorWrapper extends DirtyableComposite implements SaveEventListener {
 
     private RuleAsset asset;
     private VerticalPanel layout = new VerticalPanel();
@@ -158,6 +158,13 @@ public class RuleValidatorWrapper extends DirtyableComposite {
         pop.show();
         LoadingPopup.close();
     }
+
+	public void onSave() {
+		if (editor instanceof SaveEventListener) {
+			SaveEventListener el = (SaveEventListener) editor;
+			el.onSave();
+		}
+	}
 
 
 
