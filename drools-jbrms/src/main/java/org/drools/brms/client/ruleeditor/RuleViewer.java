@@ -59,6 +59,7 @@ public class RuleViewer extends Composite {
 
     private ActionToolbar toolbar;
 	private VerticalPanel layout;
+	private HorizontalPanel hsp;
 
 
     public RuleViewer(RuleAsset asset) {
@@ -97,10 +98,17 @@ public class RuleViewer extends Composite {
     private void doWidgets() {
     	layout.clear();
 
+
+    	editor = EditorLauncher.getEditorViewer(asset, this);
+
+
         //the action widgets (checkin/close etc).
         toolbar = new ActionToolbar( asset,
                                      new Command() {
                 public void execute() {
+                	if (editor instanceof SaveEventListener) {
+                		((SaveEventListener) editor).onSave();
+                	}
                     doCheckin();
                 }
                 },
@@ -123,21 +131,16 @@ public class RuleViewer extends Composite {
         layout.setCellHorizontalAlignment(toolbar, HasHorizontalAlignment.ALIGN_LEFT);
         layout.setCellWidth(toolbar, "100%");
 
-        metaWidget = new MetaDataWidget( this.asset.metaData, readOnly, this.asset.uuid, new Command() {
-            public void execute() {
-                refreshDataAndView();
-            }
-
-        });
+        doMetaWidget();
 
 
-        HorizontalPanel hsp = new HorizontalPanel();
+        hsp = new HorizontalPanel();
 
 
         layout.add(hsp);
 
 
-        editor = EditorLauncher.getEditorViewer(asset, this);
+
 
         //the document widget
         doco = new RuleDocumentWidget(asset.metaData);
@@ -156,12 +159,23 @@ public class RuleViewer extends Composite {
         //hsp.addStyleName("HorizontalSplitPanel");
 
         hsp.add(metaWidget);
+
+
+
         hsp.setCellWidth(metaWidget, "25%");
 
         //hsp.setSplitPosition("80%");
         hsp.setHeight("100%");
 
     }
+
+	private void doMetaWidget() {
+		metaWidget = new MetaDataWidget( this.asset.metaData, readOnly, this.asset.uuid, new Command() {
+            public void execute() {
+                refreshMetaWidgetOnly();
+            }
+        });
+	}
 
 
 
@@ -189,7 +203,7 @@ public class RuleViewer extends Composite {
     }
 
     void doCheckin() {
-        layout.clear();
+        //layout.clear();
 
         LoadingPopup.showMessage( "Saving, please wait..." );
         RepositoryServiceFactory.getService().checkinVersion( this.asset, new GenericCallback() {
@@ -217,13 +231,15 @@ public class RuleViewer extends Composite {
 
                 doco.resetDirty();
 
-                refreshDataAndView( );
+                refreshMetaWidgetOnly();
+
             }
         });
     }
 
 
-    /**
+
+	/**
      * In some cases we will want to flush the package dependency stuff for suggestion completions.
      * The user will still need to reload the asset editor though.
      */
@@ -247,6 +263,23 @@ public class RuleViewer extends Composite {
             public void onSuccess(Object a) {
                 asset = (RuleAsset) a;
                 doWidgets();
+                LoadingPopup.close();
+            }
+        });
+    }
+
+    /**
+     * This will only
+     */
+    public void refreshMetaWidgetOnly() {
+    	LoadingPopup.showMessage("Refreshing item...");
+        RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid, new GenericCallback() {
+            public void onSuccess(Object a) {
+                RuleAsset asset_ = (RuleAsset) a;
+                asset.metaData = asset_.metaData;
+                hsp.remove(metaWidget);
+                doMetaWidget();
+                hsp.add(metaWidget);
                 LoadingPopup.close();
             }
         });

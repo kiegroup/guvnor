@@ -245,9 +245,13 @@ public class AssetItemGrid extends Composite {
                                             CellMetadata cellMetadata, Record record,
                                             int rowIndex, int colNum, Store store) {
                                         String fmtIcon = "images/" + EditorLauncher.getAssetFormatIcon(record.getAsString("format"));
+                                        String desc = record.getAsString("Description");
+                                        if (desc == null) {
+                                        	desc = "";
+                                        }
                                         return Format.format("<img src='{0}'/><b>{1}</b><br/><small>{2}</small>", new String[]{fmtIcon,
                                                 (String) value,
-                                                record.getAsString("Description")});
+                                                desc});
                                     }
                                 });
                             }

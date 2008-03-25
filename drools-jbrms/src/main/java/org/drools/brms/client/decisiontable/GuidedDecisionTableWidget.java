@@ -707,6 +707,20 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
         		}
         	}
         }));
+        menu.addItem(new Item("Copy selected row(s)...", new BaseItemListenerAdapter() {
+        	public void onClick(BaseItem item, EventObject e) {
+        		Record[] selected = grid.getSelectionModel().getSelections();
+    			for (int i = 0; i < selected.length; i++) {
+    				Record r = recordDef.createRecord(new Object[recordDef.getFields().length]);
+    				Record orig = selected[i];
+    				for (int j = 0; j < fds.length; j++) {
+						r.set(fds[j].getName(), orig.getAsString(fds[j].getName()));
+					}
+    				store.add(r);
+				}
+    			renumber(store.getRecords());
+        	}
+        }));
         ToolbarMenuButton tbb = new ToolbarMenuButton("Modify...", menu);
 
         tb.addButton(tbb);
@@ -827,6 +841,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	 * Need to copy the data from the record store.
 	 */
 	public void onSave() {
+		System.err.println("saving event fired !");
 		this.scrapeData(-1);
 	}
 
