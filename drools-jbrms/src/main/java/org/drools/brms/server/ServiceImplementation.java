@@ -45,6 +45,7 @@ import org.apache.log4j.Logger;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.util.DroolsStreamUtils;
 import org.drools.base.ClassTypeResolver;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
@@ -78,7 +79,6 @@ import org.drools.brms.server.util.LoggingHelper;
 import org.drools.brms.server.util.MetaDataMapper;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.common.AbstractRuleBase;
-import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.compiler.DrlParser;
@@ -1157,9 +1157,7 @@ public class ServiceImplementation
 	private RuleBase loadRuleBase(PackageItem item, ClassLoader cl)  throws DetailedSerializableException {
 		try {
 			RuleBase rb = RuleBaseFactory.newRuleBase(new RuleBaseConfiguration(cl));
-			DroolsObjectInputStream in = new DroolsObjectInputStream(new ByteArrayInputStream(item.getCompiledPackageBytes()), cl);
-			Package bin = (Package) in.readObject();
-			in.close();
+			Package bin = (Package) DroolsStreamUtils.streamIn(item.getCompiledPackageBytes(), cl);
 			rb.addPackage(bin);
 			return rb;
 		} catch (ClassNotFoundException e) {

@@ -68,7 +68,6 @@ import org.drools.brms.server.util.IO;
 import org.drools.brms.server.util.ScenarioXMLPersistence;
 import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
-import org.drools.common.DroolsObjectInputStream;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
@@ -77,6 +76,7 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.rule.Package;
 import org.drools.util.BinaryRuleBaseLoader;
+import org.drools.util.DroolsStreamUtils;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.rpc.SerializableException;
@@ -945,9 +945,7 @@ public class ServiceImplementationTest extends TestCase {
 
 		assertNotNull(binPackage);
 
-		ByteArrayInputStream bin = new ByteArrayInputStream(binPackage);
-		ObjectInput in = new DroolsObjectInputStream(bin);
-		Package binPkg = (Package) in.readObject();
+		Package binPkg = (Package) DroolsStreamUtils.streamIn(binPackage);
 
 		assertNotNull(binPkg);
 		assertTrue(binPkg.isValid());
@@ -1041,9 +1039,7 @@ public class ServiceImplementationTest extends TestCase {
 
 		assertNotNull(binPackage);
 
-		ByteArrayInputStream bin = new ByteArrayInputStream(binPackage);
-		ObjectInput in = new DroolsObjectInputStream(bin);
-		Package binPkg = (Package) in.readObject();
+        Package binPkg = (Package) DroolsStreamUtils.streamIn(binPackage);
 
 		assertNotNull(binPkg);
 		assertTrue(binPkg.isValid());
@@ -1847,9 +1843,8 @@ public class ServiceImplementationTest extends TestCase {
 
 		assertNotNull(binPackage);
 
-		ByteArrayInputStream bin = new ByteArrayInputStream(binPackage);
-		ObjectInput in = new DroolsObjectInputStream(bin);
-		Package binPkg = (Package) in.readObject();
+        Package binPkg = (Package) DroolsStreamUtils.streamIn(binPackage);
+
 
 		assertEquals(2, binPkg.getRules().length);
 
