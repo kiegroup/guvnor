@@ -27,6 +27,8 @@ import org.drools.brms.client.rpc.RuleContentText;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
 import com.google.gwt.user.client.ui.TextArea;
@@ -53,9 +55,9 @@ public class DSLRuleEditor extends DirtyableComposite {
 
         this.data = cont;
         text = new TextArea();
-//        text.setWidth( "100%" );
+        text.setWidth( "100%" );
 //        text.setHeight( "100%" );
-        text.setVisibleLines( 10 );
+        text.setVisibleLines( 16 );
         text.setText( data.content );
         text.setTitle( "Hint: press control+space for popup assistance, or use one of the icons to the right." );
 
@@ -123,9 +125,11 @@ public class DSLRuleEditor extends DirtyableComposite {
         layout.getCellFormatter().setWidth( 0,
                                             0,
                                             "95%" );
+        layout.getFlexCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP);
         layout.getCellFormatter().setWidth( 0,
                                             1,
                                             "5%" );
+        layout.getFlexCellFormatter().setAlignment(0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
 
         layout.setWidth( "100%" );
         layout.setHeight( "100%" );

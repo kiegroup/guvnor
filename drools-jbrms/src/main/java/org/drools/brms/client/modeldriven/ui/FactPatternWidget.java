@@ -148,7 +148,7 @@ public class FactPatternWidget extends DirtyableComposite {
         //HorizontalPanel ab = new HorizontalPanel();
         //ab.setStyleName( "composite-fact-pattern" );
         horiz.add( edit );
-        horiz.add( new HTML("<i>" + desc + "&nbsp;</i>") );
+        horiz.add( new SmallLabel(desc) );
 
         //horiz.add( ab );
 

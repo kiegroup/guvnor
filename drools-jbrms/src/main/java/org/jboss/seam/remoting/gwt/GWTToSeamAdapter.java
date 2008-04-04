@@ -85,8 +85,11 @@ public class GWTToSeamAdapter {
                     StringWriter sw = new StringWriter();
                     PrintWriter w = new PrintWriter(sw);
                     cause.printStackTrace( w );
-                    DetailedSerializableException det = new DetailedSerializableException("An error occurred executing the action.", sw.toString());
-                    throw new InvocationTargetException(det);
+                    if (cause instanceof DetailedSerializableException) {
+                    	throw new InvocationTargetException(cause);
+                    } else {
+                        throw new InvocationTargetException(new DetailedSerializableException("An error occurred executing the action.", sw.toString()));
+                    }
                 }
             }
 

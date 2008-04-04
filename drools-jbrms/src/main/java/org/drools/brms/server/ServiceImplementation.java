@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.regex.Matcher;
@@ -42,6 +43,7 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -848,7 +850,7 @@ public class ServiceImplementation
             repository.loadCategory( categoryPath ).remove();
             repository.save();
         } catch (RulesRepositoryException e) {
-            throw new SerializableException( e.getMessage() );
+        	throw new DetailedSerializableException("Unable to remove category. It is probably still used (even by archived items).", e.getMessage());
         }
     }
 
@@ -1019,7 +1021,10 @@ public class ServiceImplementation
         try {
             AssetItem item = repository.loadAssetByUUID( uuid );
             item.archiveItem( value );
-            item.checkin( "unarchived" );
+    		PackageItem pkg = item.getPackage();
+    		pkg.updateBinaryUpToDate(false);
+    		this.ruleBaseCache.remove(pkg.getUUID());
+    		item.checkin( "unarchived" );
 
         } catch (RulesRepositoryException e) {
             log.error( e );
@@ -1176,7 +1181,17 @@ public class ServiceImplementation
 		RuleBase rb = ruleBaseCache.get(item.getUUID());
 		Package bin = rb.getPackages()[0];
 
-		ClassTypeResolver res = new ClassTypeResolver(bin.getImports().keySet(), cl);
+
+		Set<String> imps = bin.getImports().keySet();
+		Set<String> allImps = new HashSet<String>(imps);
+		if (bin.getGlobals() != null) {
+			for (Iterator iterator = bin.getGlobals().keySet().iterator(); iterator.hasNext();) {
+				Class c = (Class) bin.getGlobals().get(iterator.next());
+				allImps.add(c.getName());
+			}
+		}
+
+		ClassTypeResolver res = new ClassTypeResolver(allImps, cl);
 		InternalWorkingMemory workingMemory = (InternalWorkingMemory) rb.newStatefulSession(false);
 		return runScenario(scenario, res, workingMemory);
 	}
@@ -1245,6 +1260,13 @@ public class ServiceImplementation
 	    		RuleAsset asset = loadAsset((AssetItem) it.next());
 	    		Scenario sc = (Scenario) asset.content;
 	    		sc = runScenario(sc, res, workingMemory).scenario;
+
+	    		//clean out WM
+	    		Iterator<FactHandle> fhs = workingMemory.iterateFactHandles();
+	    		while(fhs.hasNext()) {
+	    			workingMemory.retract(fhs.next());
+	    		}
+
 	    		int[] totals = sc.countFailuresTotal();
 	    		resultSummaries.add(new ScenarioResultSummary(totals[0], totals[1], asset.metaData.name, asset.metaData.description, asset.uuid));
 	    	}

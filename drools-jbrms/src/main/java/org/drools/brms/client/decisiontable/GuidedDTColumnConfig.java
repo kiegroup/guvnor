@@ -36,7 +36,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 	private SuggestionCompletionEngine sce;
 	private ConditionCol editingCol;
 	private SmallLabel patternLabel = new SmallLabel();
-	private SmallLabel fieldLabel = new SmallLabel();
+	private TextBox fieldLabel = getFieldLabel();
 	private SmallLabel operatorLabel = new SmallLabel();
 
 	/**
@@ -59,13 +59,6 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
 		setTitle("Condition column configuration");
 
-		final TextBox header = new TextBox();
-		header.setText(col.header);
-		header.addChangeListener(new ChangeListener() {
-			public void onChange(Widget w) {
-				editingCol.header = header.getText();
-			} });
-		addAttribute("Column header (description):", header);
 
 
 		HorizontalPanel pattern = new HorizontalPanel();
@@ -159,6 +152,15 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		vl.add(new InfoPopup("Value list", "Value lists are an optional comma separated list of values to show as a drop down."));
 		addAttribute("(optional) value list:", vl);
 
+		final TextBox header = new TextBox();
+		header.setText(col.header);
+		header.addChangeListener(new ChangeListener() {
+			public void onChange(Widget w) {
+				editingCol.header = header.getText();
+			} });
+		addAttribute("Column header (description):", header);
+
+
 		Button apply = new Button("Apply changes");
 		apply.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
@@ -184,6 +186,16 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
 
 
+	}
+
+	private TextBox getFieldLabel() {
+		final TextBox box = new TextBox();
+		box.addChangeListener(new ChangeListener() {
+			public void onChange(Widget w) {
+				editingCol.factField = box.getText();
+			}
+		});
+		return box;
 	}
 
 	private void applyConsTypeChange(int newType) {

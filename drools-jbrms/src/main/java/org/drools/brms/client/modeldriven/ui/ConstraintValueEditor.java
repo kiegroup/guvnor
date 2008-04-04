@@ -225,7 +225,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
             }
         }
 
-        if (currentValue != null && !selected) {
+        if (currentValue != null  && !"".equals(currentValue) && !selected) {
             //need to add this value
             box.addItem( currentValue, currentValue );
             box.setSelectedIndex( enumeratedValues.length );

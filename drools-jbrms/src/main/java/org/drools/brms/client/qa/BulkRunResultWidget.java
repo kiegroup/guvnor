@@ -167,7 +167,12 @@ public class BulkRunResultWidget extends Composite {
 		Panel err = new SimplePanel();
 
 		PackageBuilderWidget.showBuilderErrors(errors, err, editEvent);
+		layout.startSection("Build errors - unable to run scenarios");
+
 		layout.addRow(err);
+
+
+		layout.endSection();
 	}
 
 }

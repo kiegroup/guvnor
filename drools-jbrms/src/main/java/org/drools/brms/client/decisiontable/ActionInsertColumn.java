@@ -35,7 +35,7 @@ public class ActionInsertColumn extends FormStylePopup {
 	private SuggestionCompletionEngine sce;
 	private ActionInsertFactCol editingCol;
 	private SmallLabel patternLabel = new SmallLabel();
-	private SmallLabel fieldLabel = new SmallLabel();
+	private TextBox fieldLabel = getFieldLabel();
 
 	public ActionInsertColumn(SuggestionCompletionEngine sce, final GuidedDecisionTable dt, final Command refreshGrid, final ActionInsertFactCol col, final boolean isNew) {
 		this.setModal(false);
@@ -51,13 +51,6 @@ public class ActionInsertColumn extends FormStylePopup {
 
 		setTitle("Action column configuration (inserting a new fact)");
 
-		final TextBox header = new TextBox();
-		header.setText(col.header);
-		header.addChangeListener(new ChangeListener() {
-			public void onChange(Widget w) {
-				editingCol.header = header.getText();
-			} });
-		addAttribute("Column header (description):", header);
 
 
 		HorizontalPanel pattern = new HorizontalPanel();
@@ -96,6 +89,15 @@ public class ActionInsertColumn extends FormStylePopup {
 		vl.add(new InfoPopup("Value list", "Value lists are an optional comma separated list of values to show as a drop down."));
 		addAttribute("(optional) value list:", vl);
 
+		final TextBox header = new TextBox();
+		header.setText(col.header);
+		header.addChangeListener(new ChangeListener() {
+			public void onChange(Widget w) {
+				editingCol.header = header.getText();
+			} });
+		addAttribute("Column header (description):", header);
+
+
 		Button apply = new Button("Apply changes");
 		apply.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
@@ -115,6 +117,16 @@ public class ActionInsertColumn extends FormStylePopup {
 		});
 		addAttribute("", apply);
 
+	}
+
+	private TextBox getFieldLabel() {
+		final TextBox box = new TextBox();
+		box.addChangeListener(new ChangeListener() {
+			public void onChange(Widget w) {
+				editingCol.factField = box.getText();
+			}
+		});
+		return box;
 	}
 
 	private void showFieldChange() {

@@ -202,7 +202,7 @@ public class ExplorerNodeConfig {
 
 		final TreeNode scenarios = new TreeNode();
 		scenarios.setText("Test Scenarios in packages:");
-		scenarios.setIcon("images/scenario_conf.gif");
+		scenarios.setIcon("images/test_manager.gif");
 
 		final EditItemEvent edit = new EditItemEvent() {
 			public void open(String key) {centerPanel.openAsset(key);}

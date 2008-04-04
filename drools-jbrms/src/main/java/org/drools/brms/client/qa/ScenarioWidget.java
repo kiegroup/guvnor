@@ -222,34 +222,30 @@ public class ScenarioWidget extends Composite {
 				final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", "New global");
 
 		        final ListBox factTypes = new ListBox();
-		        for (int i = 0; i < sce.factTypes.length; i++) {
-		            factTypes.addItem(sce.factTypes[i]);
-		        }
-		        final TextBox factName = new TextBox();
-		        factName.setVisibleLength(5);
+		        for (Iterator iterator = sce.globalTypes.keySet().iterator(); iterator
+						.hasNext();) {
+					String g = (String) iterator.next();
+					factTypes.addItem(g);
+				}
 
 		        Button add = new Button("Add");
 		        add.addClickListener(new ClickListener() {
 					public void onClick(Widget w) {
-						String fn = ("" + factName.getText()).trim();
-						if (fn.equals("")
-								|| factName.getText().indexOf(' ') > -1) {
-							Window.alert("You must enter a valid name.");
-						} else {
+							String fn = factTypes.getItemText(factTypes.getSelectedIndex());
 							if (scenario.isFactNameExisting(fn)) {
 								Window.alert("The name [" + fn + "] is already in use. Please choose another name.");
 							} else {
-								scenario.globals.add(new FactData(factTypes.getItemText(factTypes.getSelectedIndex()), factName.getText(), new ArrayList(), false ));
+								FactData ng = new FactData((String) sce.globalTypes.get(fn), fn, new ArrayList(), false);
+								scenario.globals.add(ng);
 								renderEditor();
 								pop.hide();
 							}
-						}
 					}
 				});
 
 		        HorizontalPanel insertFact = new HorizontalPanel();
-		        insertFact.add(factTypes); insertFact.add(new SmallLabel("Fact name:")); insertFact.add(factName); insertFact.add(add);
-		        pop.addAttribute("New global:", insertFact);
+		        insertFact.add(factTypes); insertFact.add(add);
+		        pop.addAttribute("Global:", insertFact);
 
 				pop.show();
 			}
@@ -384,10 +380,36 @@ public class ScenarioWidget extends Composite {
 					}
 				});
 
+
+
 				HorizontalPanel h = new HorizontalPanel();
 				h.add(facts);
 				h.add(ok);
 				pop.addAttribute("Fact value:", h);
+
+				//add in list box for anon facts
+				final ListBox factTypes = new ListBox();
+				for (int i = 0; i < sce.factTypes.length; i++) {
+					String ft = sce.factTypes[i];
+					factTypes.addItem(ft);
+				}
+
+				ok = new Button("Add");
+				ok.addClickListener(new ClickListener() {
+					public void onClick(Widget w) {
+						String t = factTypes.getItemText(factTypes.getSelectedIndex());
+						sc.insertAfter(ex, new VerifyFact(t, new ArrayList(), true));
+						renderEditor();
+						pop.hide();
+					}
+
+				});
+
+				h = new HorizontalPanel();
+				h.add(factTypes);
+				h.add(ok);
+				pop.addAttribute("Any fact that matches:", h);
+
 
 				pop.show();
 			}
@@ -586,6 +608,7 @@ class DataInputWidget extends DirtyableComposite {
         scenario = sc;
         this.sce = sce;
         this.type = factType;
+
         this.parent = parent;
         outer.getCellFormatter().setStyleName(0, 0, "modeller-fact-TypeHeader");
         outer.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
@@ -953,8 +976,28 @@ class ExecutionWidget extends Composite {
     	if (showResults && ext.executionTimeResult != null
     			&& ext.numberOfRulesFired != null) {
     		HTML rep = new HTML("<i><small>" + ext.numberOfRulesFired.longValue() + " rules fired in " + ext.executionTimeResult.longValue() + "ms.</small></i>");
+
+
+    		final HorizontalPanel h = new HorizontalPanel();
+    		h.add(rep);
+    		vert.add(h);
+
+    		final Button show = new Button("Show rules fired");
+    		show.addClickListener(new ClickListener() {
+				public void onClick(Widget w) {
+					ListBox rules = new ListBox(true);
+					for (int i = 0; i < ext.rulesFired.length; i++) {
+						rules.addItem(ext.rulesFired[i]);
+					}
+					h.add(new SmallLabel("&nbsp:Rules fired:"));
+					h.add(rules);
+					show.setVisible(false);
+				}
+    		});
+    		h.add(show);
+
+
     		vert.add(p);
-    		vert.add(rep);
     		initWidget(vert);
     	} else {
     		initWidget(p);
@@ -1023,8 +1066,13 @@ class VerifyFactWidget extends Composite {
         outer.setStyleName("modeller-fact-pattern-Widget");
         this.sce = sce;
         HorizontalPanel ab = new HorizontalPanel();
-        type = (String) sc.getVariableTypes().get(vf.name);
-        ab.add(new SmallLabel(type + " [" + vf.name + "] has values:"));
+        if (!vf.anonymous) {
+	        type = (String) sc.getVariableTypes().get(vf.name);
+	        ab.add(new SmallLabel(type + " [" + vf.name + "] has values:"));
+        } else {
+        	type = vf.name;
+        	ab.add(new SmallLabel("A fact of type [" + vf.name + "] has values:"));
+        }
         this.showResults = showResults;
 
         Image add = new ImageButton("images/add_field_to_fact.gif", "Add a field to this expectation.", new ClickListener() {
@@ -1193,6 +1241,7 @@ class VerifyRulesFiredWidget extends Composite {
                     String s = b.getValue(b.getSelectedIndex());
                     if (s.equals("y") || s.equals("n")) {
                         num.setVisible(false);
+                        v.expectedFire = (s.equals("y")) ? Boolean.TRUE : Boolean.FALSE;
                         v.expectedCount = null;
                     } else {
                         num.setVisible(true);
@@ -1201,6 +1250,8 @@ class VerifyRulesFiredWidget extends Composite {
                     }
                 }
             });
+
+            b.addItem("Choose...");
 
             num.addChangeListener(new ChangeListener() {
                 public void onChange(Widget w) {

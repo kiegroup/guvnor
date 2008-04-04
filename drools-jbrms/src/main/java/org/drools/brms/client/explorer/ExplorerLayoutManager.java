@@ -102,6 +102,9 @@ public class ExplorerLayoutManager {
         westLayoutData.setMaxSize(350);
         westLayoutData.setSplit(true);
 
+
+
+
         //create the west panel and add it to the main panel applying the west region layout properties
         Panel westPanel = new Panel();
         westPanel.setId("side-nav");
@@ -112,8 +115,6 @@ public class ExplorerLayoutManager {
         westPanel.setCollapsible(true);;//MN createWestPanel();
         westPanel.add(accordion);
         mainPanel.add(westPanel, westLayoutData);
-
-
 
         centerPanelWrappper.add(centertabbedPanel.getPanel());
 
@@ -138,10 +139,11 @@ public class ExplorerLayoutManager {
         northPanel = new Panel();
         DockPanel dock = new DockPanel();
         dock.setVerticalAlignment(DockPanel.ALIGN_MIDDLE);
-        dock.add(new HTML("<div class='headerBarBlue'><img src='images/hdrlogo_drools50px.gif' /></div>"),DockPanel.WEST);
+        dock.add(new HTML("<div class='header'><img src='header_logo.gif' /></div>"),DockPanel.WEST);
         dock.add(uif, DockPanel.EAST);
-        dock.setStyleName("headerBarblue");
+        dock.setStyleName("header");
         dock.setWidth("100%");
+
 
 
 

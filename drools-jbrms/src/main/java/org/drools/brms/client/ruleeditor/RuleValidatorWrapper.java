@@ -129,7 +129,7 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
     public static void showBuilderErrors(BuilderResult[] results) {
         FormStylePopup pop = new FormStylePopup("images/package_builder.png", "Validation results");
         if (results == null || results.length == 0) {
-            pop.addRow( new HTML("<img src='images/tick_green.gif'/><i>Rule built successfully.</i>") );
+            pop.addRow( new HTML("<img src='images/tick_green.gif'/><i>Item validated.</i>") );
         } else {
             FlexTable errTable = new FlexTable();
             errTable.setStyleName( "build-Results" );

@@ -9,14 +9,8 @@ body {
 code {
 	font-size:small;
 }
-.headerBarGrey {
-	height:70px;
-	background:url(images/jbossrules_hdrbkg_grey.gif) repeat-x;
-}
-.headerBarBlue {
-	height:50px;
-	background:url(images/jbossrules_hdrbkg_blue.gif) repeat-x;
-}
+
+
 
 
 .VerticalSplitPanel .vsplitter
@@ -454,21 +448,12 @@ textarea:focus,textarea:active {
 	margin:0;
 	padding:0;
 }
-#user_info {
-	position:absolute;
-	right:1em;
-	top:0;
-	color:#fff;
-	font-size:.9em;
-}
-#user_info a {
-	color:#fff;
-}
+
 a,a:visited {
 	color:#00008B;
 }
 .gwt-CheckBox,.gwt-RadioButton,.gwt-Tree .gwt-TreeItem,.small-Text,.global-Font {
-	font-size:smaller;
+	#font-size:smaller;
 }
 select:focus,input:focus,input:active,.constraint-value-Editor:focus,.constraint-value-Editor:active {
 	color:#000;
@@ -502,14 +487,7 @@ input,.constraint-value-Editor {
 	background:#aa9;
 }
 .rule-viewer-Documentation,.dsl-text-Editor,.default-text-Area {
-	font-family:Arial,sans-serif;
-
 	border:1px solid #aa9;
-	width:100%;
-	-moz-border-radius:.7em;
-	-webkit-border-radius:.7em;
-	-khtml-border-radius:.7em;
-	border-radius:.7em;
 	background:#FFFFF0;
 }
 .rule-ListEvenRow,.DatePicker .weekheader {

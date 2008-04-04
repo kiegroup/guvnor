@@ -820,9 +820,12 @@ public class ServiceImplementationTest extends TestCase {
 		String[] children = impl.loadChildCategories("/");
 		impl.createCategory("/", "testRemoveCategory", "foo");
 
+
 		impl.removeCategory("testRemoveCategory");
 		String[] _children = impl.loadChildCategories("/");
 		assertEquals(children.length, _children.length);
+
+
 
 	}
 
@@ -1503,7 +1506,7 @@ public class ServiceImplementationTest extends TestCase {
 		RulesRepository repo = impl.repository;
 
 		PackageItem pkg = repo.createPackage("testScenarioRun", "");
-		pkg.updateHeader("import org.drools.Person");
+		pkg.updateHeader("import org.drools.Person\n global org.drools.Cheese cheese\n");
 		AssetItem rule1 = pkg.addAsset("rule_1", "");
 		rule1.updateFormat(AssetFormats.DRL);
 		rule1
@@ -1528,6 +1531,12 @@ public class ServiceImplementationTest extends TestCase {
 		vf.fieldValues.add(new VerifyField("name", "michael", "=="));
 		vf.fieldValues.add(new VerifyField("age", "42", "=="));
 		sc.fixtures.add(vf);
+
+		FactData cheese = new FactData();
+		cheese.name = "cheese";
+		cheese.type = "Cheese";
+		cheese.fieldData.add(new FieldData("price", "42"));
+		sc.globals.add(cheese);
 
 		ScenarioRunResult res = impl.runScenario(pkg.getName(), sc);
 		assertEquals(null, res.errors);

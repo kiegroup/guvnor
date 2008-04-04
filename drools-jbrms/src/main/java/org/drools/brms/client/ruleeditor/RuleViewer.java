@@ -280,6 +280,7 @@ public class RuleViewer extends Composite {
                 hsp.remove(metaWidget);
                 doMetaWidget();
                 hsp.add(metaWidget);
+                hsp.setCellWidth(metaWidget, "25%");
                 LoadingPopup.close();
             }
         });

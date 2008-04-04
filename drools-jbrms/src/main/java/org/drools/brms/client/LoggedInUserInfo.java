@@ -42,7 +42,7 @@ public class LoggedInUserInfo extends Composite{
 
     public void setUserName(String userName) {
         StringBuffer content = new StringBuffer();
-        content.append( "<div id='user_info' class='headerBarblue'>" );
+        content.append( "<div class='headerUserInfo'>" );
         content.append( "<small>Welcome: &nbsp;" + userName );
         content.append( "&nbsp;&nbsp;&nbsp;<a href='logout.jsp'>[Sign Out]</a></small>" );
         content.append( "</div>" );

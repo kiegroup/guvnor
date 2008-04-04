@@ -83,6 +83,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	private VerticalPanel actionsConfigWidget;
 	private Map colMap;
 	private SuggestionCompletionEngine sce;
+	private GroupingStore store;
 
 
 	public GuidedDecisionTableWidget(RuleAsset asset) {
@@ -123,6 +124,12 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
         actions.add(getActions());
         config.add(actions);
 
+        FieldSet grouping = new FieldSet("(options)");
+        grouping.setCollapsible(true);
+        grouping.setCollapsed(true);
+        grouping.add(getGrouping());
+        config.add(grouping);
+
 
         layout.add(config);
 
@@ -131,6 +138,55 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
         initWidget(layout);
     }
+
+	private Widget getGrouping() {
+		final ListBox list = new ListBox();
+
+		list.addItem("Description", "desc");
+		for (Iterator iterator = dt.attributeCols.iterator(); iterator.hasNext();) {
+			AttributeCol c = (AttributeCol) iterator.next();
+			list.addItem(c.attr, c.attr);
+			if (c.attr.equals(dt.groupField)) {
+				list.setSelectedIndex(list.getItemCount() - 1);
+			}
+		}
+		for (Iterator iterator = dt.conditionCols.iterator(); iterator.hasNext();) {
+			ConditionCol c = (ConditionCol) iterator.next();
+			list.addItem(c.header, c.header);
+			if (c.header.equals(dt.groupField)) {
+				list.setSelectedIndex(list.getItemCount() - 1);
+			}
+		}
+		for (Iterator iterator = dt.actionCols.iterator(); iterator.hasNext();) {
+			ActionCol c = (ActionCol) iterator.next();
+			list.addItem(c.header, c.header);
+			if (c.header.equals(dt.groupField)) {
+				list.setSelectedIndex(list.getItemCount() - 1);
+			}
+		}
+
+		list.addItem("-- none --", "");
+		if (dt.groupField == null) {
+			list.setSelectedIndex(list.getItemCount() - 1);
+		}
+
+		HorizontalPanel h = new HorizontalPanel();
+		h.add(new SmallLabel("Group by column: "));
+		h.add(list);
+
+		Button ok = new Button("Apply");
+		ok.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				dt.groupField = list.getValue(list.getSelectedIndex());
+				scrapeData(-1);
+				refreshGrid();
+			}
+		});
+
+		h.add(ok);
+
+		return h;
+	}
 
 	private Widget getActions() {
 		actionsConfigWidget = new VerticalPanel();
@@ -456,6 +512,10 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 				}
 			}
 		}
+//		String groupF = store.getGroupField();
+//		if (groupF == null || groupF.equals("")) {
+//			dt.groupField = groupF;
+//		}
 	}
 
 	/**
@@ -533,6 +593,9 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 				setDataIndex("desc");
 				setSortable(true);
 				setHeader("Description");
+				if (dt.descriptionWidth != -1) {
+					setWidth(dt.descriptionWidth);
+				}
 			}
 		};
 		colCount++;
@@ -623,11 +686,14 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
 
         ColumnModel cm = new ColumnModel(cols);
-        final GroupingStore store = new GroupingStore();
+        store = new GroupingStore();
         store.setReader(reader);
         store.setDataProxy(proxy);
         store.setSortInfo(new SortState("num", SortDir.ASC));
-        store.setGroupField("desc");
+        if (this.dt.groupField != null) {
+        	store.setGroupField(dt.groupField);
+        }
+
         store.load();
 
 
@@ -640,12 +706,14 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
         gv.setForceFit(true);
         gv.setGroupTextTpl("{text} ({[values.rs.length]} {[values.rs.length > 1 ? \"Items\" : \"Item\"]})");
 
+
         grid.setView(gv);
 
 
         grid.setStore(store);
         grid.setWidth(700);
         grid.setHeight(500);
+
 
 
         grid.addGridCellListener(new GridCellListenerAdapter() {
@@ -744,7 +812,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 		w.setPlain(true);
 		w.setBodyBorder(false);
 		w.setAutoDestroy(true);
-		w.setTitle("Select value for " + dataIdx);
+		w.setTitle(dataIdx);
 		final ListBox drop = new ListBox();
 		for (int i = 0; i < vals.length; i++) {
 			String v = vals[i].trim();
@@ -802,7 +870,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 		w.setAutoDestroy(true);
 		w.setPlain(true);
 		w.setBodyBorder(false);
-		w.setTitle("Set value for " + dta);
+		w.setTitle(dta);
 		final TextBox box = new TextBox();
 		box.setText(val);
 		box.addKeyboardListener(new KeyboardListenerAdapter() {

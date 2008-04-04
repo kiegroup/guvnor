@@ -46,9 +46,9 @@ public class DefaultRuleContentWidget extends DirtyableComposite {
 
 
         text = new TextArea();
-//        text.setWidth( "100%" );
+        text.setWidth( "100%" );
 //        text.setHeight( "100%" );
-        text.setVisibleLines( 10 );
+        text.setVisibleLines( 16 );
         text.setText( data.content );
 
 

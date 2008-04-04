@@ -27,7 +27,7 @@ public class ActionSetColumn extends FormStylePopup {
 
 	private ActionSetFieldCol editingCol;
 	private SmallLabel bindingLabel = new SmallLabel();
-	private SmallLabel fieldLabel = new SmallLabel();
+	private TextBox fieldLabel = getFieldLabel();
 	private GuidedDecisionTable dt;
 	private SuggestionCompletionEngine sce;
 
@@ -44,13 +44,7 @@ public class ActionSetColumn extends FormStylePopup {
 		super.setModal(false);
 		setTitle("Column configuration (set a field on a fact)");
 
-		final TextBox header = new TextBox();
-		header.setText(col.header);
-		header.addChangeListener(new ChangeListener() {
-			public void onChange(Widget w) {
-				editingCol.header = header.getText();
-			} });
-		addAttribute("Column header (description):", header);
+
 
 		HorizontalPanel pattern = new HorizontalPanel();
 		pattern.add(bindingLabel);
@@ -88,6 +82,15 @@ public class ActionSetColumn extends FormStylePopup {
 		vl.add(new InfoPopup("Value list", "Value lists are an optional comma separated list of values to show as a drop down."));
 		addAttribute("(optional) value list:", vl);
 
+		final TextBox header = new TextBox();
+		header.setText(col.header);
+		header.addChangeListener(new ChangeListener() {
+			public void onChange(Widget w) {
+				editingCol.header = header.getText();
+			} });
+		addAttribute("Column header (description):", header);
+
+
 		Button apply = new Button("Apply changes");
 		apply.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
@@ -109,6 +112,16 @@ public class ActionSetColumn extends FormStylePopup {
 		addAttribute("", apply);
 
 
+	}
+
+	private TextBox getFieldLabel() {
+		final TextBox box = new TextBox();
+		box.addChangeListener(new ChangeListener() {
+			public void onChange(Widget w) {
+				editingCol.factField = box.getText();
+			}
+		});
+		return box;
 	}
 
 	private void showFieldChange() {
