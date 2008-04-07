@@ -24,7 +24,6 @@ import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.RulePackageSelector;
-import org.drools.brms.client.common.WarningPopup;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 import org.drools.brms.client.rulelist.EditItemEvent;
 

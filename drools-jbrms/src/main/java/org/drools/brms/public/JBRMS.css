@@ -115,19 +115,19 @@ select {
 .model-builderInner-Background {
 	border-top:1px solid #ccc;
 	border-bottom:1px solid #ccc;
-	-moz-border-radius:.7em;
-	-khtml-border-radius:.7em;
-	-webkit-border-radius:.7em;
-	border-radius:.7em;
+	#-moz-border-radius:.7em;
+	#-khtml-border-radius:.7em;
+	#-webkit-border-radius:.7em;
+	#border-radius:.7em;
 	background:#FFF;
 }
 .model-builderInnerInner-Background {
 	border-top:0 solid #ccc;
 	border-bottom:0 solid #ccc;
-	-moz-border-radius:.7em;
-	-webkit-border-radius:.7em;
-	-khtml-border-radius:.7em;
-	border-radius:.7em;
+	#-moz-border-radius:.7em;
+	#-webkit-border-radius:.7em;
+	#-khtml-border-radius:.7em;
+	#border-radius:.7em;
 	background:#FFF;
 }
 .modeller-fact-pattern-Widget {
@@ -140,21 +140,6 @@ select {
 .modeller-action-Label {
 	font-style:italic;
 
-}
-.version-Popup {
-	border:4px solid #red;
-	-moz-border-radius:.7em;
-	-webkit-border-radius:.7em;
-	-khtml-border-radius:.7em;
-	border-radius:.7em;
-	margin:1em;
-	padding:.5em;
-	background:#FFF;
-}
-.version-Popup .Caption {
-	font-color:#FFF;
-	font-weight:bold;
-	//background:#aa9;
 }
 .gwt-TabBar {
 
@@ -225,14 +210,7 @@ select {
 
 
 
-.warning-Popup {
-	border:2px solid #aa9;
-	-moz-border-radius:.7em;
-	-webkit-border-radius:.7em;
-	-khtml-border-radius:.7em;
-	border-radius:.7em;
-	background:#FFFFF0;
-}
+
 .ks-popups-Popup {
 	border:6px solid #black;
 	//#aa9;
@@ -251,17 +229,7 @@ select {
 .metadata-Widget {
 	color:#666;
 }
-.rule-error-Popup {
-	border:2px solid #000;
-	font-style:bold!important;
-	font-color:#000!important;
-	-moz-border-radius:.7em;
-	-webkit-border-radius:.7em;
-	-khtml-border-radius:.7em;
-	border-radius:.7em;
-	padding:4px;
-	background:#FFF;
-}
+
 .loading-Popup {
 	border:2px solid #aa9;
 	font-color:#FFF!important;
@@ -289,15 +257,7 @@ select {
 .category-explorer-Tree {
 	width:100%;
 }
-.rule-warning-Popup {
-	border:1px solid #aa9;
-	-moz-border-radius:.7em;
-	-webkit-border-radius:.7em;
-	-khtml-border-radius:.7em;
-	border-radius:.7em;
-	padding:4px;
-	background:#FF0;
-}
+
 .rule-breditor-Table {
 	border:1px solid #aa9;
 	-moz-border-radius:.7em;
