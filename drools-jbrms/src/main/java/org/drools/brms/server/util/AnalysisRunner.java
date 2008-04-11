@@ -7,14 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.analytics.Analyzer;
-import org.drools.analytics.components.AnalyticsClass;
-import org.drools.analytics.components.AnalyticsRule;
-import org.drools.analytics.components.Field;
-import org.drools.analytics.dao.AnalyticsData;
-import org.drools.analytics.dao.AnalyticsResult;
-import org.drools.analytics.report.components.AnalyticsMessageBase;
-import org.drools.analytics.report.components.Severity;
 import org.drools.brms.client.rpc.AnalysisFactUsage;
 import org.drools.brms.client.rpc.AnalysisFieldUsage;
 import org.drools.brms.client.rpc.AnalysisReport;
@@ -23,6 +15,14 @@ import org.drools.brms.client.rpc.DetailedSerializableException;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.verifier.Analyzer;
+import org.drools.verifier.components.AnalyticsClass;
+import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.components.Field;
+import org.drools.verifier.dao.AnalyticsData;
+import org.drools.verifier.dao.AnalyticsResult;
+import org.drools.verifier.report.components.AnalyticsMessageBase;
+import org.drools.verifier.report.components.Severity;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
