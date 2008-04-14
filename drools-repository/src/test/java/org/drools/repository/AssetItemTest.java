@@ -79,6 +79,8 @@ public class AssetItemTest extends TestCase {
             assertNotNull(ruleItem1);
             assertNotNull(ruleItem1.getNode());
             assertEquals("test content", ruleItem1.getContent());
+
+            assertFalse(ruleItem1.isBinary());
     }
 
 
@@ -726,6 +728,8 @@ public class AssetItemTest extends TestCase {
         assertTrue(item.getNode().hasProperty( AssetItem.CONTENT_PROPERTY_BINARY_NAME ));
         item.checkin( "lalalala" );
 
+        assertTrue(item.isBinary());
+
 
 
         item = getRepo().loadDefaultPackage().loadAsset( "testBinaryAsset" );
@@ -735,6 +739,7 @@ public class AssetItemTest extends TestCase {
         byte[] data2 = item.getBinaryContentAsBytes();
         assertEquals(data, new String(data2));
         assertEquals("x.x", item.getBinaryContentAttachmentFileName());
+        assertTrue(item.isBinary());
 
     }
 

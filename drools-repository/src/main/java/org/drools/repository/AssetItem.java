@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 /**
  * The RuleItem class is used to abstract away the details of the underlying JCR repository.
  * It is used to pass information about rules stored in the repository.
- * 
+ *
  * @author btruitt
  */
 public class AssetItem extends CategorisableItem {
@@ -27,7 +27,7 @@ public class AssetItem extends CategorisableItem {
     public static final String CONTENT_PROPERTY_NAME         = "drools:content";
     public static final String CONTENT_PROPERTY_BINARY_NAME  = "drools:binaryContent";
     public static final String CONTENT_PROPERTY_ATTACHMENT_FILENAME = "drools:attachmentFileName";
-    
+
     /**
      * The name of the date effective property on the rule node type
      */
@@ -39,15 +39,15 @@ public class AssetItem extends CategorisableItem {
     public static final String DATE_EXPIRED_PROPERTY_NAME   = "drools:dateExpired";
 
     public static final String PACKAGE_NAME_PROPERTY        = "drools:packageName";
-    
-    
+
+
 
     /**
      * Constructs a RuleItem object, setting its node attribute to the specified node.
-     * 
+     *
      * @param rulesRepository the rulesRepository that instantiated this object
      * @param node the node in the repository that this RuleItem corresponds to
-     * @throws RulesRepositoryException 
+     * @throws RulesRepositoryException
      */
     public AssetItem(RulesRepository rulesRepository,
                      Node node) throws RulesRepositoryException {
@@ -55,7 +55,7 @@ public class AssetItem extends CategorisableItem {
                node );
 
         try {
-            //make sure this node is a rule node       
+            //make sure this node is a rule node
             if ( !(this.node.getPrimaryNodeType().getName().equals( RULE_NODE_TYPE_NAME ) || isHistoricalVersion()) ) {
                 String message = this.node.getName() + " is not a node of type " + RULE_NODE_TYPE_NAME + " nor nt:version. It is a node of type: " + this.node.getPrimaryNodeType().getName();
                 log.error( message );
@@ -67,7 +67,7 @@ public class AssetItem extends CategorisableItem {
             throw new RulesRepositoryException( e );
         }
     }
-    
+
     public AssetItem() {
         super(null, null);
     }
@@ -92,9 +92,22 @@ public class AssetItem extends CategorisableItem {
             throw new RulesRepositoryException( e );
         }
     }
-    
+
     /**
-     * If this asset contains binary data, this is how you return it. 
+     * True if this is a binary asset (or has binary content).
+     */
+    public boolean isBinary() {
+		try {
+			Node ruleNode = getVersionContentNode();
+			return ruleNode.hasProperty( CONTENT_PROPERTY_BINARY_NAME );
+		} catch (RepositoryException e) {
+			log.error(e);
+			throw new RulesRepositoryException(e);
+		}
+    }
+
+    /**
+     * If this asset contains binary data, this is how you return it.
      * Otherwise it will return null.
      */
     public InputStream getBinaryContentAttachment() {
@@ -110,14 +123,14 @@ public class AssetItem extends CategorisableItem {
             log.error( "Caught Exception",
                        e );
             throw new RulesRepositoryException( e );
-        }        
+        }
     }
-    
+
     /** Get the name of the "file" attachment, if one is set. Null otherwise */
     public String getBinaryContentAttachmentFileName() {
         return getStringProperty( CONTENT_PROPERTY_ATTACHMENT_FILENAME );
     }
-    
+
     /**
      * This is a convenience method for returning the binary data as a byte array.
      */
@@ -127,10 +140,10 @@ public class AssetItem extends CategorisableItem {
             if ( ruleNode.hasProperty( CONTENT_PROPERTY_BINARY_NAME ) ) {
                 Property data = ruleNode.getProperty( CONTENT_PROPERTY_BINARY_NAME );
                 InputStream in = data.getStream();
-                
+
                 // Create the byte array to hold the data
                 byte[] bytes = new byte[(int) data.getLength()];
-            
+
                 // Read in the bytes
                 int offset = 0;
                 int numRead = 0;
@@ -138,14 +151,14 @@ public class AssetItem extends CategorisableItem {
                        && (numRead=in.read(bytes, offset, bytes.length-offset)) >= 0) {
                     offset += numRead;
                 }
-            
+
                 // Ensure all the bytes have been read in
                 if (offset < bytes.length) {
                     throw new RulesRepositoryException("Could not completely read asset "+ getName());
                 }
-            
+
                 // Close the input stream and return bytes
-                in.close();   
+                in.close();
                 return bytes;
             } else {
                 return null;
@@ -154,7 +167,7 @@ public class AssetItem extends CategorisableItem {
             log.error( e );
             if (e instanceof RuntimeException) throw (RuntimeException) e;
             throw new RulesRepositoryException( e );
-        }  
+        }
     }
 
 
@@ -180,9 +193,9 @@ public class AssetItem extends CategorisableItem {
 
     /**
      * Creates a new version of this object's rule node, updating the effective date for the
-     * rule node. 
-     *  
-     * @param newDateEffective the new effective date for the rule 
+     * rule node.
+     *
+     * @param newDateEffective the new effective date for the rule
      * @throws RulesRepositoryException
      */
     public void updateDateEffective(Calendar newDateEffective) throws RulesRepositoryException {
@@ -220,9 +233,9 @@ public class AssetItem extends CategorisableItem {
 
     /**
      * Creates a new version of this object's rule node, updating the expired date for the
-     * rule node. 
-     *  
-     * @param newDateExpired the new expired date for the rule 
+     * rule node.
+     *
+     * @param newDateExpired the new expired date for the rule
      * @throws RulesRepositoryException
      */
     public void updateDateExpired(Calendar newDateExpired) throws RulesRepositoryException {
@@ -240,10 +253,10 @@ public class AssetItem extends CategorisableItem {
 
     /**
      * This will update the asset's content (checking it out if it is not already).
-     * This will not save the session or create a new version of the node 
+     * This will not save the session or create a new version of the node
      * (this has to be done seperately, as several properties may change as part of one edit).
      * This is only used if the asset is a textual asset. For binary, use the updateBinaryContent method
-     * instead. 
+     * instead.
      */
     public AssetItem updateContent(String newRuleContent) throws RulesRepositoryException {
         checkout();
@@ -256,7 +269,7 @@ public class AssetItem extends CategorisableItem {
             throw new RulesRepositoryException( e );
         }
     }
-    
+
     /**
      * If the asset is a binary asset, then use this to update the content
      * (do NOT use text).
@@ -264,14 +277,14 @@ public class AssetItem extends CategorisableItem {
 	public AssetItem updateBinaryContentAttachment(InputStream data) {
         checkout();
         try {
-            this.node.setProperty( CONTENT_PROPERTY_BINARY_NAME, data );            
+            this.node.setProperty( CONTENT_PROPERTY_BINARY_NAME, data );
             return this;
         } catch (RepositoryException e ) {
             log.error( "Unable to update the assets binary content", e );
             throw new RulesRepositoryException( e );
         }
     }
-	
+
     /**
      * Optionally set the filename to be associated with the binary content.
      */
@@ -303,10 +316,10 @@ public class AssetItem extends CategorisableItem {
             returnString.append( "Content of rule item named '" + this.getName() + "':\n" );
             returnString.append( "Content: " + this.getContent() + "\n" );
             returnString.append( "------\n" );
-            
+
             returnString.append( "Archived: " + this.isArchived() + "\n" );
             returnString.append( "------\n" );
-            
+
 
             returnString.append( "Date Effective: " + this.getDateEffective() + "\n" );
             returnString.append( "Date Expired: " + this.getDateExpired() + "\n" );
@@ -367,7 +380,7 @@ public class AssetItem extends CategorisableItem {
 
     /**
      * Get the name of the enclosing package.
-     * As assets are stored in versionable subfolders, this means walking up 2 levels in the 
+     * As assets are stored in versionable subfolders, this means walking up 2 levels in the
      * hierarchy to get to the enclosing "package" node.
      */
     public String getPackageName() {
@@ -382,9 +395,9 @@ public class AssetItem extends CategorisableItem {
     }
 
     /**
-     * This will remove the item. 
+     * This will remove the item.
      * The repository will need to be saved for this to take effect.
-     * Typically the package that contains this should be versioned before removing this, 
+     * Typically the package that contains this should be versioned before removing this,
      * to make it easy to roll back.
      */
     public void remove() {
@@ -400,16 +413,16 @@ public class AssetItem extends CategorisableItem {
             throw new RulesRepositoryException( e );
         }
     }
-    
+
     /**
-     * 
+     *
      * @return An iterator over the nodes history.
      */
     public AssetHistoryIterator getHistory() {
         return new AssetHistoryIterator(this.rulesRepository, this.node);
     }
 
-    
+
     /**
      * This will get the package an asset item belongs to.
      */

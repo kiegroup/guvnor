@@ -410,12 +410,11 @@ public class PackageItem extends VersionableItem {
     //    }
 
     /** Return an iterator for the rules in this package */
-    public Iterator getAssets() {
+    public Iterator<AssetItem> getAssets() {
         try {
             Node content = getVersionContentNode();
-            AssetItemIterator it = new AssetItemIterator( content.getNode( ASSET_FOLDER_NAME ).getNodes(),
+            return new AssetItemIterator( content.getNode( ASSET_FOLDER_NAME ).getNodes(),
                                                         this.rulesRepository );
-            return it;
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }

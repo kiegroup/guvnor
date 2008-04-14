@@ -17,7 +17,7 @@ import javax.jcr.NodeIterator;
  */
 public class AssetItemIterator
     implements
-    Iterator {
+    Iterator<AssetItem> {
 
     private NodeIterator    it;
     private RulesRepository rulesRepository;
@@ -32,7 +32,7 @@ public class AssetItemIterator
         return it.hasNext();
     }
 
-    public Object next() {
+    public AssetItem next() {
         return new AssetItem( rulesRepository,
                              (Node) it.next() );
     }
