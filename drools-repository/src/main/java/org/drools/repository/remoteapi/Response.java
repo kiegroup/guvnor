@@ -1,5 +1,7 @@
 package org.drools.repository.remoteapi;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -38,10 +40,23 @@ public abstract class Response {
 
 
 		@Override
-		void writeData(OutputStream out) {
-
-			// TODO Auto-generated method stub
-
+		void writeData(OutputStream out) throws IOException {
+			try {
+				InputStream in = stream;
+				if (!(out instanceof BufferedOutputStream)) out = new BufferedOutputStream(out);
+				if (!(in instanceof BufferedInputStream)) in = new BufferedInputStream(in);
+	            final byte[] buf = new byte[1024];
+	            int len = 0;
+	            while ( (len = in.read( buf )) >= 0 ) {
+	                out.write( buf,
+	                           0,
+	                           len );
+	            }
+			} finally {
+	            out.flush();
+	            out.close();
+	            stream.close();
+			}
 		}
 
 	}

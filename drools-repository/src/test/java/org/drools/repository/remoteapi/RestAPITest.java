@@ -2,14 +2,11 @@ package org.drools.repository.remoteapi;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
+
+import junit.framework.TestCase;
 
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -18,15 +15,13 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.remoteapi.Response.Binary;
 import org.drools.repository.remoteapi.Response.Text;
 
-import junit.framework.TestCase;
-
 public class RestAPITest extends TestCase {
+	String someAsset = "packages/SomeName/SomeFile.drl";
+	String getAList = "packages/SomeName"; //will show a list
+	String getPackageConfig = "packages/SomeName/.package"; //should load package config
 
 
 	public void testGetBasics() throws Exception {
-		String someAsset = "packages/SomeName/SomeFile.drl";
-		String getAList = "packages/SomeName"; //will show a list
-		String getPackageConfig = "packages/SomeName/.package"; //should load package config
 
 
 		RulesRepository repo = RepositorySessionUtil.getRepository();
@@ -46,7 +41,7 @@ public class RestAPITest extends TestCase {
 		asset2.checkin("");
 
 		AssetItem asset3 = pkg.addAsset("asset3", "");
-		ByteArrayInputStream in = new ByteArrayInputStream("a b c".getBytes());
+		ByteArrayInputStream in = new ByteArrayInputStream("abc".getBytes());
 		asset3.updateBinaryContentAttachment(in);
 		asset3.updateFormat("xls");
 		asset3.checkin("");
@@ -118,6 +113,24 @@ public class RestAPITest extends TestCase {
 		byte[] data = out.toByteArray();
 		assertNotNull(data);
 
+		assertEquals("abc", new String(data));
+
+
+	}
+
+	public void testSplit() {
+		RestAPI a = new RestAPI(null);
+		String[] x = a.split("packages/foo/bar");
+		assertEquals(3, x.length);
+		assertEquals("packages", x[0]);
+		assertEquals("foo", x[1]);
+		assertEquals("bar", x[2]);
+
+		x = a.split("/packages/foo/bar");
+		assertEquals(3, x.length);
+		assertEquals("packages", x[0]);
+		assertEquals("foo", x[1]);
+		assertEquals("bar", x[2]);
 
 	}
 }

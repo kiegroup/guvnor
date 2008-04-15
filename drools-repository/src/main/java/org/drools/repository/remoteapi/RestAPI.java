@@ -29,7 +29,7 @@ public class RestAPI {
 	}
 
 	public Response get(String path) throws UnsupportedEncodingException {
-		String[] bits = path.split("/");
+		String[] bits = split(path);
 		if (bits[0].equals("packages")) {
 			String pkgName = bits[1];
 			if (bits.length == 2) {
@@ -42,6 +42,12 @@ public class RestAPI {
 			throw new IllegalArgumentException("Unable to deal with " + path);
 		}
 
+	}
+
+	String[] split(String path) {
+		if (path.startsWith("/")) path = path.substring(1);
+		String[] bits = path.split("/");
+		return bits;
 	}
 
 	private Response loadContent(String pkgName, String resourceFile) throws UnsupportedEncodingException {
@@ -89,14 +95,34 @@ public class RestAPI {
 		return r;
 	}
 
-	public String post(String path, InputStream in) {
-		return null;
+	/** post is for new content. */
+	public void post(String path, InputStream in, boolean binary, String comment) {
+		String[] bits = split(path);
+		if (bits[0].equals("packages")) {
+			String fileName = bits[2];
+			String[] a = fileName.split("\\.");
+			PackageItem pkg = repo.loadPackage(bits[1]);
+			AssetItem asset = pkg.addAsset(a[0], "added remotely");
+			asset.updateFormat(a[1]);
+			if (binary) asset.updateBinaryContentAttachment(in);
+			else {
+				//FAIL !
+			}
+			asset.checkin(comment);
+
+		} else {
+			throw new IllegalArgumentException("Unknown rest path for post.");
+		}
 	}
 
+	/** put is for updating content. It will cause a new revision to be created. */
 	public String put(String path, Date lastModified, InputStream in) {
 		return null;
 	}
 
+	/**
+	 * Should be pretty obvious what this is for.
+	 */
 	public String delete(String path) {
 		return null;
 	}
