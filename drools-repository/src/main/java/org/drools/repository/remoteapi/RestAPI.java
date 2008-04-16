@@ -1,16 +1,18 @@
 package org.drools.repository.remoteapi;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.Iterator;
 
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.remoteapi.Response.Binary;
 import org.drools.repository.remoteapi.Response.Text;
 
@@ -44,9 +46,12 @@ public class RestAPI {
 
 	}
 
-	String[] split(String path) {
+	String[] split(String path) throws UnsupportedEncodingException {
 		if (path.startsWith("/")) path = path.substring(1);
 		String[] bits = path.split("/");
+		for (int i = 0; i < bits.length; i++) {
+			bits[i] = URLDecoder.decode(bits[i], "UTF-8");
+		}
 		return bits;
 	}
 
@@ -58,7 +63,7 @@ public class RestAPI {
 			r.data = pkg.getHeader();
 			return r;
 		} else {
-			String assetName = URLDecoder.decode(resourceFile, "UTF-8").split("\\.")[0];
+			String assetName = resourceFile.split("\\.")[0];
 
 			AssetItem asset = pkg.loadAsset(assetName);
 			if (asset.isBinary()) {
@@ -95,36 +100,103 @@ public class RestAPI {
 		return r;
 	}
 
-	/** post is for new content. */
-	public void post(String path, InputStream in, boolean binary, String comment) {
+	/** post is for new content.
+	 * @throws IOException
+	 * @throws RulesRepositoryException */
+	public void post(String path, InputStream in, boolean binary, String comment) throws RulesRepositoryException, IOException {
 		String[] bits = split(path);
 		if (bits[0].equals("packages")) {
 			String fileName = bits[2];
 			String[] a = fileName.split("\\.");
-			PackageItem pkg = repo.loadPackage(bits[1]);
-			AssetItem asset = pkg.addAsset(a[0], "added remotely");
-			asset.updateFormat(a[1]);
-			if (binary) asset.updateBinaryContentAttachment(in);
-			else {
-				//FAIL !
+			if (a[1].equals("package")) {
+				//new package
+				PackageItem pkg = repo.createPackage(bits[1], "<added remotely>");
+				pkg.updateCheckinComment(comment);
+				pkg.updateHeader(readContent(in));
+				repo.save();
+			} else {
+				//new asset
+				PackageItem pkg = repo.loadPackage(bits[1]);
+				AssetItem asset = pkg.addAsset(a[0], "<added remotely>");
+				asset.updateFormat(a[1]);
+				if (binary) {
+					asset.updateBinaryContentAttachment(in);
+				} else {
+					asset.updateContent(readContent(in));
+				}
+				asset.checkin(comment);
 			}
-			asset.checkin(comment);
-
 		} else {
 			throw new IllegalArgumentException("Unknown rest path for post.");
 		}
 	}
 
-	/** put is for updating content. It will cause a new revision to be created. */
-	public String put(String path, Date lastModified, InputStream in) {
-		return null;
+	private String readContent(InputStream in) throws IOException {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		final byte[] buf = new byte[1024];
+        int len = 0;
+        while ( (len = in.read( buf )) >= 0 ) {
+            out.write( buf,
+                       0,
+                       len );
+        }
+        return new String(out.toByteArray());
+    }
+
+	/**
+	 * Put is for updating content. It will cause a new revision to be created.
+	 * need to also cope with the .package thing
+	 * @throws IOException
+	 */
+	public void put(String path, Calendar lastModified, InputStream in, String comment) throws IOException {
+		String[] bits = split(path);
+		if (bits[0].equals("packages")) {
+			String fileName = bits[2];
+			String[] a = fileName.split("\\.");
+			PackageItem pkg = repo.loadPackage(bits[1]);
+			if (a[1].equals("package")) {
+				//updating package header
+				if (pkg.getLastModified().after(lastModified)) {
+					throw new RulesRepositoryException("The package was modified by: " + pkg.getLastContributor() + ", unable to write changes.");
+				}
+				pkg.updateHeader(readContent(in));
+				pkg.checkin(comment);
+				repo.save();
+			} else {
+				AssetItem as = pkg.loadAsset(a[0]);
+				if (as.getLastModified().after(lastModified)) {
+					throw new RulesRepositoryException("The asset was modified by: " + as.getLastContributor() + ", unable to write changes.");
+				}
+				if (as.isBinary()) {
+					as.updateBinaryContentAttachment(in);
+				} else {
+					as.updateContent(readContent(in));
+				}
+				as.checkin(comment);
+			}
+
+		} else {
+			throw new IllegalArgumentException("Unknown rest path for put");
+		}
+
 	}
 
 	/**
 	 * Should be pretty obvious what this is for.
+	 * @throws UnsupportedEncodingException
 	 */
-	public String delete(String path) {
-		return null;
+	public void delete(String path) throws UnsupportedEncodingException {
+		String[] bits = split(path);
+		if (bits[0].equals("packages")) {
+			String fileName = bits[2].split("\\.")[0];
+			AssetItem asset = repo.loadPackage(bits[1]).loadAsset(fileName);
+			asset.archiveItem(true);
+			asset.checkin("<removed remotely>");
+		}
+		else {
+			throw new IllegalArgumentException("Unknown rest path for put");
+		}
+
 	}
 
 

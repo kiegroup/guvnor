@@ -480,8 +480,8 @@ public class RulesRepositoryTest extends TestCase {
     }
 
 
-    List iteratorToList(Iterator it) {
-        List list = new ArrayList();
+    public static<T> List<T> iteratorToList(Iterator<T> it) {
+        List<T> list = new ArrayList<T>();
         while(it.hasNext()) {
             list.add( it.next() );
         }

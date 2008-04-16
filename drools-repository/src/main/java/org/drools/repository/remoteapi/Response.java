@@ -10,7 +10,6 @@ import java.util.Calendar;
 
 
 public abstract class Response {
-	abstract String getContentType();
 	abstract void writeData(OutputStream out) throws IOException ;
 	public Calendar lastModified;
 
@@ -18,10 +17,6 @@ public abstract class Response {
 	public static class Text extends Response {
 		String data;
 
-		@Override
-		String getContentType() {
-			return "text/plain";
-		}
 
 		@Override
 		void writeData(OutputStream out) throws IOException {
@@ -33,10 +28,6 @@ public abstract class Response {
 
 		InputStream stream;
 
-		@Override
-		String getContentType() {
-			return "application/octet-stream";
-		}
 
 
 		@Override

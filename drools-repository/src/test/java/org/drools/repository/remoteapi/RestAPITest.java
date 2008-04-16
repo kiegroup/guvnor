@@ -2,8 +2,11 @@ package org.drools.repository.remoteapi;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import junit.framework.TestCase;
@@ -12,6 +15,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RepositorySessionUtil;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryTest;
 import org.drools.repository.remoteapi.Response.Binary;
 import org.drools.repository.remoteapi.Response.Text;
 
@@ -55,7 +59,6 @@ public class RestAPITest extends TestCase {
 
 		String url = "packages/testRestGetBasics/.package";
 		Response res = api.get(url);
-		assertEquals("text/plain", res.getContentType());
 		assertNotNull(res.lastModified);
 		assertEquals(pkg.getLastModified(), res.lastModified);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -118,7 +121,129 @@ public class RestAPITest extends TestCase {
 
 	}
 
-	public void testSplit() {
+	public void testPost() throws Exception {
+		RulesRepository repo = RepositorySessionUtil.getRepository();
+		PackageItem pkg = repo.createPackage("testRestPost", "");
+		pkg.updateHeader("This is some header");
+		repo.save();
+
+		RestAPI api = new RestAPI(repo);
+		ByteArrayInputStream in = new ByteArrayInputStream("abc".getBytes());
+		api.post("/packages/testRestPost/asset1.drl", in, false, "a comment");
+
+		AssetItem a = pkg.loadAsset("asset1");
+		assertEquals("drl", a.getFormat());
+		assertEquals("abc", a.getContent());
+		assertEquals("a comment", a.getCheckinComment());
+		assertFalse(a.isBinary());
+
+		in = new ByteArrayInputStream("qed".getBytes());
+		api.post("/packages/testRestPost/asset2.xls", in, true, "a comment");
+		a = pkg.loadAsset("asset2");
+		assertTrue(a.isBinary());
+		String s = new String(a.getBinaryContentAsBytes());
+		assertEquals("qed", s);
+		assertEquals("a comment", a.getCheckinComment());
+		assertEquals("xls", a.getFormat());
+
+		List<AssetItem> assets = RulesRepositoryTest.iteratorToList(repo.loadPackage("testRestPost").listAssetsByFormat(new String[] {"drl", "xls"}));
+		assertEquals(2, assets.size());
+
+	}
+
+	public void testPostNewPackage() throws Exception {
+		RulesRepository repo = RepositorySessionUtil.getRepository();
+		RestAPI api = new RestAPI(repo);
+
+		api.post("/packages/testPostNewPackage/.package", new ByteArrayInputStream("qaz".getBytes()), false, "This is a new package");
+		PackageItem pkg = repo.loadPackage("testPostNewPackage");
+		assertEquals("qaz", pkg.getHeader());
+
+		assertEquals("This is a new package", pkg.getCheckinComment());
+
+
+	}
+
+	public void testPut() throws Exception {
+		//need to test both asset and .package shite.
+		RulesRepository repo = RepositorySessionUtil.getRepository();
+		PackageItem pkg = repo.createPackage("testRestPut", "");
+		pkg.updateHeader("This is some header");
+		repo.save();
+
+		AssetItem asset1 = pkg.addAsset("asset1", "");
+		asset1.updateContent("this is content");
+		asset1.updateFormat("drl");
+		asset1.checkin("");
+
+		Calendar cd = asset1.getLastModified();
+
+		AssetItem asset2 = pkg.addAsset("asset2", "");
+		ByteArrayInputStream in = new ByteArrayInputStream("abc".getBytes());
+		asset2.updateBinaryContentAttachment(in);
+		asset2.updateFormat("xls");
+		asset2.checkin("");
+
+		RestAPI api = new RestAPI(repo);
+		Thread.sleep(42);
+		api.put("packages/testRestPut/asset1.drl", Calendar.getInstance(), new ByteArrayInputStream("qaz".getBytes()), "a new comment");
+
+		AssetItem asset1_ = pkg.loadAsset("asset1");
+		assertEquals("qaz", asset1_.getContent());
+		assertEquals("a new comment", asset1_.getCheckinComment());
+		assertTrue(asset1_.getLastModified().after(cd));
+
+		api.put("packages/testRestPut/asset2.xls", Calendar.getInstance(), new ByteArrayInputStream("def".getBytes()), "a new comment");
+		AssetItem asset2_ = pkg.loadAsset("asset2");
+		assertEquals("def", new String(asset2_.getBinaryContentAsBytes()));
+		assertEquals("a new comment", asset2_.getCheckinComment());
+		assertTrue(asset2_.getLastModified().after(cd));
+
+		//now check updating the package header
+		api.put("packages/testRestPut/.package", Calendar.getInstance(), new ByteArrayInputStream("whee".getBytes()), "hey");
+		pkg = repo.loadPackage("testRestPut");
+		assertEquals("whee", pkg.getHeader());
+
+		try {
+			api.put("packages/testRestPut/asset1.drl", cd, new ByteArrayInputStream("qaz".getBytes()), "a new comment");
+			fail("should not be able to do this as it is stale timestamp.");
+		} catch (Exception e) {
+			assertNotNull(e.getMessage());
+		}
+
+		try {
+			api.put("packages/testRestPut/.package", cd, new ByteArrayInputStream("whee".getBytes()), "hey");
+			fail("should not be able to do this as it is stale timestamp.");
+		} catch (Exception e) {
+			assertNotNull(e.getMessage());
+		}
+
+
+	}
+
+	public void testDelete() throws Exception {
+		RulesRepository repo = RepositorySessionUtil.getRepository();
+		PackageItem pkg = repo.createPackage("testRestDelete", "");
+		pkg.updateHeader("This is some header");
+		repo.save();
+
+		AssetItem asset1 = pkg.addAsset("asset1", "");
+		asset1.updateContent("this is content");
+		asset1.updateFormat("drl");
+		asset1.checkin("");
+
+		RestAPI api = new RestAPI(repo);
+		api.delete("packages/testRestDelete/asset1.drl");
+
+		List l = RulesRepositoryTest.iteratorToList(pkg.listAssetsByFormat(new String[] {"drl"}));
+		assertEquals(0, l.size());
+
+		l = RulesRepositoryTest.iteratorToList(pkg.listArchivedAssets());
+		assertEquals(1, l.size());
+
+	}
+
+	public void testSplit() throws Exception {
 		RestAPI a = new RestAPI(null);
 		String[] x = a.split("packages/foo/bar");
 		assertEquals(3, x.length);
@@ -131,6 +256,13 @@ public class RestAPITest extends TestCase {
 		assertEquals("packages", x[0]);
 		assertEquals("foo", x[1]);
 		assertEquals("bar", x[2]);
+
+		String p = URLEncoder.encode("some package", "UTF-8");
+		String asset = URLEncoder.encode("some asset", "UTF-8");
+		x = a.split("packages/" + p + "/" + asset);
+		assertEquals("packages", x[0]);
+		assertEquals("some package", x[1]);
+		assertEquals("some asset", x[2]);
 
 	}
 }
