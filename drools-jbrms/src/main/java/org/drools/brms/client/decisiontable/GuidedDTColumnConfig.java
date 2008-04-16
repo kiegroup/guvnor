@@ -228,6 +228,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		for (int i = 0; i < ops.length; i++) {
 			box.addItem(HumanReadable.getOperatorDisplayName(ops[i]), ops[i]);
 		}
+		box.addItem("(no operator)", "");
 		pop.addAttribute("Operator:", box);
 		Button b = new Button("OK");
 		pop.addAttribute("", b);

@@ -55,7 +55,7 @@ public class AnalysisResultWidget extends Composite {
 
 		TreeItem root = new TreeItem(new HTML("<img src='images/fact_template.gif'/><b>Show fact usages...</b>"));
 		root.setUserObject(new HTML("<img src='images/fact_template.gif'/><b>Fact usages:</b>"));
-		root.setStyleName("model-builder-Background");
+		root.setStyleName("analysis-Report");
 
 
 		for (int i = 0; i < factUsages.length; i++) {
@@ -95,12 +95,12 @@ public class AnalysisResultWidget extends Composite {
 	private TreeItem renderItems(AnalysisReportLine[] lines, String icon, String msg) {
 		if (lines.length == 0) {
 			TreeItem nil = new TreeItem(new HTML("<i>No " + msg + "</i>"));
-			nil.setStyleName("model-builder-Background");
+			nil.setStyleName("analysis-Report");
 			return nil;
 		}
 		TreeItem lineNode = new TreeItem(new HTML("<img src='" + icon + "' /> &nbsp;  <b>" + msg + "</b> ("+ lines.length + " items)."));
 
-		lineNode.setStyleName("model-builder-Background");
+		lineNode.setStyleName("analysis-Report");
 
 		for (int i = 0; i < lines.length; i++) {
 			AnalysisReportLine r = lines[i];

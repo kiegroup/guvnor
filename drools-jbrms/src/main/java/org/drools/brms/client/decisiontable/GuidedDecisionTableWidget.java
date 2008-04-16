@@ -711,7 +711,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
 
         grid.setStore(store);
-        grid.setWidth(700);
+        grid.setWidth(900);
         grid.setHeight(500);
 
 

@@ -23,6 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.server.contenthandler.DRLFileContentHandler;
 import org.drools.brms.server.util.ClassicDRLImporter.Asset;
 import org.drools.lang.DRLParser;
 
@@ -99,6 +100,13 @@ public class ClassicDRLImporterTest extends TestCase {
         Asset as = imp.getAssets().get(0);
         assertEquals(AssetFormats.DSL_TEMPLATE_RULE, as.format);
 
+    }
+    public void testComplexExample() throws Exception {
+        ClassicDRLImporter imp = new ClassicDRLImporter(getDrl("sample_complex.drl"));
+        assertFalse(imp.isDSLEnabled());
+        assertEquals(2, imp.getAssets().size());
+
+        assertTrue(DRLFileContentHandler.isStandAloneRule(imp.getAssets().get(0).content));
     }
 
     private InputStream getDrl(String file) throws IOException {

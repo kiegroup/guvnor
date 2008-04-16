@@ -112,6 +112,13 @@ select {
 	#border:1px solid #ddd;
 	background:#FFF;
 }
+
+.analysis-Report {
+	padding-left:.5em;
+	background:#FFF;
+	font-size:smaller;
+}
+
 .model-builderInner-Background {
 	border-top:1px solid #ccc;
 	border-bottom:1px solid #ccc;

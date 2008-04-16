@@ -21,15 +21,14 @@ import org.drools.brms.client.categorynav.CategoryExplorerWidget;
 import org.drools.brms.client.categorynav.CategorySelectHandler;
 import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.DirtyableFlexTable;
+import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.rpc.MetaData;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -129,7 +128,6 @@ public class AssetCategoryEditor extends DirtyableComposite {
     private void doOKClick() {
 
         CategorySelector sel = new CategorySelector();
-        sel.setPopupPosition( getAbsoluteLeft(), getAbsoluteTop() );
         sel.show();
     }
 
@@ -153,14 +151,14 @@ public class AssetCategoryEditor extends DirtyableComposite {
     /**
      * This is a popup that allows you to select a category to add to the asset.
      */
-    class CategorySelector extends PopupPanel {
+    class CategorySelector extends FormStylePopup {
 
         public Button ok = new Button("OK");
         private CategoryExplorerWidget selector;
         public String selectedPath;
 
         public CategorySelector() {
-            super(true);
+        	setTitle("Select category to add");
             VerticalPanel vert = new VerticalPanel();
 
             selector = new CategoryExplorerWidget(new CategorySelectHandler() {
@@ -170,12 +168,12 @@ public class AssetCategoryEditor extends DirtyableComposite {
 
             });
 
-            this.setStyleName( "ks-popups-Popup" );
+
 
             vert.add( selector );
             vert.add( ok );
 
-            add( vert );
+            addRow( vert );
 
             ok.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {

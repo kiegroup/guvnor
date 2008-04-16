@@ -1,0 +1,77 @@
+package org.drools.examples.sudoku
+
+import org.drools.examples.sudoku.rules.PossibleCellValue;
+import org.drools.examples.sudoku.rules.ResolvedCellValue;
+
+/**
+ * This rule package defines a set of rules that can be used to solve a partially filled Sudoku grid.
+ * It expects to have objects of type PossibleCellValue and ResolvedCellValue
+ * inserted into the working memory and will then work to remove PossibleCellValues and to
+ * insert ResolvedCellValues until a single ResolvedCellValue is present for each row and column
+ * and no PossibleCellValues remain.
+ *
+ * After each rule fires, it inserts a String object into the working memoru detailing the action that
+ * the fired rule has taken.
+ *
+ * @see org.drools.examples.sudoku.rules.PossibleCellValue
+ * @see org.drools.examples.sudoku.rules.ResolvedCellValue
+ * @author <a href="pbennett@redhat.com">Pete Bennett</a>
+ * @author <a href="mailto:michael.frandsen@syngenio.de">Michael Frandsen</a>
+ * @version $Revision: 1.1 $
+ */
+
+/**
+ * This rule checks for the situation where a given Cell in the Sudoku Grid has been assigned
+ * a definate ResolvedCellValue (i.e. we know what the value in this cell of the Grid is) and
+ * removes any other possible values from this cell (i.e. instances of PossibleCellValue
+ * with the same row and column.
+ */
+rule "#01 once a specific cell has a ResolvedCellValue, remove all the other PossibleCellValues for the same cell"
+	# this rule requires a high salience so that, when it is activated it is executed, as soon as a
+	# ResolvedCellValue is set, we need to clear out the PossibleCellValues for the same cell location,
+	# otherwise other rules misfire - a good example of a valid use for salience
+	salience 50
+	when
+	    # matches all ResolvedCellValues (RCVs) in the grid, and stores them in the $resolved local variable
+	    # note that we also need to store the row and column for $resolved in $resolvedRow and $resolvedColum
+	    # so that the second part of the when clause can access them
+		$resolved : ResolvedCellValue($resolvedRow : row, $resolvedCol : col)
+
+		# matches any PossibleCellValues (PCVs) in the grid with the same row and column as $resolved
+		$possible : PossibleCellValue(row == $resolvedRow, col == $resolvedCol)
+	then
+		# remove the matching PCVs stored in $possible
+		retract($possible);
+
+		# trigger an update for the matched RCV stored in $resolved
+		update ($resolved); # this is done so that listeners can be triggered to know this cell is now resolved
+
+		# insert a new String into the working memory describing in detail what we have done
+		insert ("Rule #1 cleared the other PossibleCellValues for ("+$resolved.getRow()+","+$resolved.getCol()+") as a ResolvedCellValue of "+$resolved.getValue()+" exists for this cell.");
+end
+
+/**
+ * This rule checks for the situation where a given Cell in the SudokuGrid only has
+ * one PossibleCellValue assigned to its row and column. Once we have this situation, we
+ * now that this must be the correct value for the cell so we remove the single PossibleCellValue
+ * and replace it with an equivalent ResolvedCellValue.
+ */
+rule "#02 If a cell has only a single PossibleCellValue, remove it and replace it with the equivalent ResolvedCellValue"
+	salience 35
+	when
+		# macthes all PCVs in the Grid, stores them in $possible
+		$possible : PossibleCellValue ( $possibleRow : row, $possibleCol : col, $possibleValue : value )
+
+		# the not operator only causes this when clause to resolve to true when there are not
+		# any other PCVs with the same row and column but different values to $possible
+		not ( PossibleCellValue ( row == $possibleRow, col == $possibleCol, value != $possibleValue ) )
+	then
+		# remove $possible from the working memory
+		retract($possible);
+
+		# insert a new ResolvedCellValue with the same row, column and value into the working memory
+		insert (new ResolvedCellValue($possible));
+
+		# insert a new String into the working memory describing in detail what we have done
+		insert ("Rule #2 changed the only PossibleCellValue at ("+$possible.getRow()+","+$possible.getCol()+") to a ResolvedCellValue with the value of "+$possible.getValue());
+end
