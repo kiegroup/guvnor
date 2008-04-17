@@ -14,6 +14,7 @@ import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
+import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.PrettyFormLayout;
 import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.common.ValueChanged;
@@ -283,7 +284,7 @@ public class ScenarioWidget extends Composite {
 							if (scenario.isFactNameExisting(fn)) {
 								Window.alert("The fact name [" + fn + "] is already in use. Please choose another name.");
 							} else {
-								scenario.insertAfter(previousEx, new FactData(factTypes.getItemText(factTypes.getSelectedIndex()), factName.getText(), new ArrayList(), false ));
+								scenario.insertBetween(previousEx, new FactData(factTypes.getItemText(factTypes.getSelectedIndex()), factName.getText(), new ArrayList(), false ));
 								renderEditor();
 								pop.hide();
 							}
@@ -305,7 +306,7 @@ public class ScenarioWidget extends Composite {
 						public void onClick(Widget w) {
 							String fn = modifyFacts.getItemText(modifyFacts.getSelectedIndex());
 							String type  = (String) scenario.getVariableTypes().get(fn);
-							scenario.insertAfter(previousEx, new FactData(type, fn, new ArrayList(), true));
+							scenario.insertBetween(previousEx, new FactData(type, fn, new ArrayList(), true));
 							renderEditor();
 							pop.hide();
 						}
@@ -321,7 +322,7 @@ public class ScenarioWidget extends Composite {
 			        add.addClickListener(new ClickListener() {
 						public void onClick(Widget w) {
 							String fn = retractFacts.getItemText(retractFacts.getSelectedIndex());
-							scenario.insertAfter(previousEx, new RetractFact(fn));
+							scenario.insertBetween(previousEx, new RetractFact(fn));
 							renderEditor();
 							pop.hide();
 						}
@@ -355,7 +356,7 @@ public class ScenarioWidget extends Composite {
 
 					public void ruleSelected(String name) {
 		                VerifyRuleFired vr = new VerifyRuleFired(name, null, new Boolean(true));
-		                sc.insertAfter(ex, vr);
+		                sc.insertBetween(ex, vr);
 		                renderEditor();
 		                pop.hide();
 					}
@@ -374,7 +375,7 @@ public class ScenarioWidget extends Composite {
 				ok.addClickListener(new ClickListener() {
 					public void onClick(Widget w) {
 						String factName = facts.getItemText(facts.getSelectedIndex());
-						sc.insertAfter(ex, new VerifyFact(factName, new ArrayList()));
+						sc.insertBetween(ex, new VerifyFact(factName, new ArrayList()));
 						renderEditor();
 						pop.hide();
 					}
@@ -398,7 +399,7 @@ public class ScenarioWidget extends Composite {
 				ok.addClickListener(new ClickListener() {
 					public void onClick(Widget w) {
 						String t = factTypes.getItemText(factTypes.getSelectedIndex());
-						sc.insertAfter(ex, new VerifyFact(t, new ArrayList(), true));
+						sc.insertBetween(ex, new VerifyFact(t, new ArrayList(), true));
 						renderEditor();
 						pop.hide();
 					}
@@ -1335,7 +1336,7 @@ class TestRunnerWidget extends Composite {
 	//Grid layout = new Grid(2, 1);
 	VerticalPanel layout = new VerticalPanel();
 
-	private HorizontalPanel busy = new HorizontalPanel();
+	//private HorizontalPanel busy = new HorizontalPanel();
 	private HorizontalPanel actions = new HorizontalPanel();
 
 	public TestRunnerWidget(final ScenarioWidget parent, final String packageName) {
@@ -1346,16 +1347,18 @@ class TestRunnerWidget extends Composite {
 			public void onClick(Widget w) {
 				//layout.setWidget(0, 0, busy);
 				layout.clear();
-				layout.add(busy);
+				LoadingPopup.showMessage("Building and scenario");
+				//layout.add(busy);
 
 				RepositoryServiceFactory.getService().runScenario(parent.asset.metaData.packageName, (Scenario) parent.asset.content, new GenericCallback () {
 					public void onSuccess(Object data) {
+						LoadingPopup.close();
 						layout.clear();
 						//layout.setWidget(0, 0, actions);
 						//layout.setWidget(1, 0, results);
 						layout.add(actions);
 						layout.add(results);
-						busy.setVisible(false);
+						//busy.setVisible(false);
 						actions.setVisible(true);
 						ScenarioRunResult result = (ScenarioRunResult) data;
 						if (result.errors != null) {
@@ -1369,8 +1372,8 @@ class TestRunnerWidget extends Composite {
 		});
 
 		actions.add(run);
-		busy.add(new Image("images/busy.gif"));
-		busy.add(new HTML("&nbsp;&nbsp;<i><small>Building and running scenario, please wait...</small></i>"));
+		//busy.add(new Image("images/busy.gif"));
+		//busy.add(new HTML("&nbsp;&nbsp;<i><small>Building and running scenario, please wait...</small></i>"));
 		//layout.setWidget(0, 0, actions);
 		layout.add(actions);
 		//layout.add(results);
