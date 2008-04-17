@@ -124,4 +124,20 @@ public class ClassicDRLImporterTest extends TestCase {
                       cleanActual );
     }
 
+    public void testMergeHeader() {
+    	String header = "import foo.bar\nimport wee.waa\n\nglobal goo.ber baz\n";
+    	String toMerge = "import ninja\nimport foo.bar\nimport slack.bladder\n\nimport wee.waa";
+
+    	String result = ClassicDRLImporter.mergeLines(header, toMerge);
+
+    	assertEquals("import foo.bar\nimport wee.waa\n\nglobal goo.ber baz\n\nimport ninja\nimport slack.bladder", result);
+
+    	assertEquals("abc", ClassicDRLImporter.mergeLines("abc", ""));
+
+    	assertEquals("qed", ClassicDRLImporter.mergeLines("qed", null));
+
+    	assertEquals("xyz", ClassicDRLImporter.mergeLines("", "xyz"));
+    	assertEquals("xyz", ClassicDRLImporter.mergeLines(null, "xyz"));
+    }
+
 }

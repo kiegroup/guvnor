@@ -200,6 +200,7 @@ public class FileManagerUtils {
         boolean existing = false;
         if ( repository.containsPackage( imp.getPackageName() ) ) {
             pkg = repository.loadPackage( imp.getPackageName() );
+            pkg.updateHeader(ClassicDRLImporter.mergeLines(pkg.getHeader(), imp.getPackageHeader()));
             existing = true;
         } else {
             pkg = repository.createPackage( imp.getPackageName(), "<imported>" );

@@ -225,7 +225,10 @@ public class FileManagerUtilsTest extends TestCase {
 		assertNotNull(pkg);
 
 		// it should not overwrite this.
-		assertTrue(pkg.getHeader().indexOf("import should not see") == -1);
+		String hdr = pkg.getHeader();
+		assertTrue(hdr.indexOf("import should not see") > -1);
+		assertTrue(hdr.indexOf("import blah") > -1);
+		assertTrue(hdr.indexOf("import should not see") > hdr.indexOf("import blah"));
 
 		rules = iteratorToList(pkg.getAssets());
 		assertEquals(3, rules.size());

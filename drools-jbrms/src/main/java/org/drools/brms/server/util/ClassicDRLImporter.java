@@ -22,7 +22,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -188,6 +191,30 @@ public class ClassicDRLImporter {
         public String name;
         public String content;
     }
+
+    /**
+     * This merges the toMerge new schtuff into the existing. Line by line, simple stuff.
+     */
+	public static String mergeLines(String existing, String toMerge) {
+
+		if (toMerge == null || toMerge.equals("")) {
+			return existing;
+		}
+		if (existing == null  || existing.equals("")) {
+			return toMerge;
+		}
+		Set existingLines =  new HashSet<String>(Arrays.asList(existing.split("\n")));
+		String[] newLines = toMerge.split("\n");
+		for (int i = 0; i < newLines.length; i++) {
+			String newLine = newLines[i].trim();
+
+			if (!newLine.equals("") && !existingLines.contains(newLines[i].trim())) {
+				existing = existing + "\n" + newLines[i];
+			}
+		}
+		return existing;
+
+	}
 
 
 }
