@@ -25,7 +25,7 @@ public class TableDisplayHandlerTest extends TestCase {
 
     public void testRowLoaders() throws Exception {
 
-        RowLoader loader = new RowLoader(TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
+        RowLoader loader = new RowLoader("rulelist");
 
         assertEquals(4, loader.getHeaders().length);
         String[] headers = loader.getHeaders();

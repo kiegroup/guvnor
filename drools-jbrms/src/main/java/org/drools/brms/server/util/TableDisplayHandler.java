@@ -43,8 +43,6 @@ public class TableDisplayHandler {
 
     private RowLoader          ASSET_LIST;
 
-    public static final String DEFAULT_TABLE_TEMPLATE      = "rulelist";
-    public static final String ARCHIVED_RULE_LIST_TABLE_ID = "archivedrulelist";
 
     /**
      * Produce a table dataset for a given iterator.

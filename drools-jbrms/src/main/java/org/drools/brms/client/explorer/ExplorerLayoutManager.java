@@ -108,7 +108,7 @@ public class ExplorerLayoutManager {
         //create the west panel and add it to the main panel applying the west region layout properties
         Panel westPanel = new Panel();
         westPanel.setId("side-nav");
-        westPanel.setTitle("Navigate BRMS");
+        westPanel.setTitle("Navigate Guvnor");
         //westPanel.setAutoScroll(true);
         westPanel.setLayout(new FitLayout());
         westPanel.setWidth(210);
@@ -225,9 +225,9 @@ public class ExplorerLayoutManager {
                         new AssetItemGridDataLoader() {
                             public void loadData(int skip, int numberOfRows, GenericCallback cb) {
                             	if (isState) {
-                            		RepositoryServiceFactory.getService().loadRuleListForState(key.substring(1) , skip, numberOfRows, cb);
+                            		RepositoryServiceFactory.getService().loadRuleListForState(key.substring(1) , skip, numberOfRows, AssetItemGrid.RULE_LIST_TABLE_ID ,cb);
                             	} else {
-                            		RepositoryServiceFactory.getService().loadRuleListForCategories(key, skip, numberOfRows, cb);
+                            		RepositoryServiceFactory.getService().loadRuleListForCategories(key, skip, numberOfRows, AssetItemGrid.RULE_LIST_TABLE_ID , cb);
                             	}
                             }
                         }
@@ -652,10 +652,10 @@ public class ExplorerLayoutManager {
                                 centertabbedPanel.openAsset(uuid);
                             }
                         },
-                        AssetItemGrid.RULE_LIST_TABLE_ID,
+                        AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID,
                         new AssetItemGridDataLoader() {
                             public void loadData(int skip, int numRows, GenericCallback cb) {
-                            	RepositoryServiceFactory.getService().listAssets(pc.uuid, fmts, skip, numRows, cb);
+                            	RepositoryServiceFactory.getService().listAssets(pc.uuid, fmts, skip, numRows,AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID, cb);
                             }
                         }
                         );

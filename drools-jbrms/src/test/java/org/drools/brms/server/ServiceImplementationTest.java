@@ -17,7 +17,6 @@ package org.drools.brms.server;
  */
 
 import java.io.ByteArrayInputStream;
-import java.io.ObjectInput;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -62,8 +61,8 @@ import org.drools.brms.client.rpc.TableConfig;
 import org.drools.brms.client.rpc.TableDataResult;
 import org.drools.brms.client.rpc.TableDataRow;
 import org.drools.brms.client.rpc.ValidatedResponse;
+import org.drools.brms.client.rulelist.AssetItemGrid;
 import org.drools.brms.server.util.BRXMLPersistence;
-import org.drools.brms.server.util.GuidedDTXMLPersistence;
 import org.drools.brms.server.util.IO;
 import org.drools.brms.server.util.ScenarioXMLPersistence;
 import org.drools.brms.server.util.TableDisplayHandler;
@@ -88,10 +87,6 @@ import com.google.gwt.user.client.rpc.SerializableException;
 public class ServiceImplementationTest extends TestCase {
 
 	public void testCategory() throws Exception {
-		// ServiceImpl impl = new ServiceImpl(new
-		// RulesRepository(SessionHelper.getSession()));
-
-
 
 		RepositoryService impl = getService();
 
@@ -215,7 +210,7 @@ public class ServiceImplementationTest extends TestCase {
 	public void testRuleTableLoad() throws Exception {
 		ServiceImplementation impl = getService();
 		TableConfig conf = impl
-				.loadTableConfig(TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
+				.loadTableConfig(AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertNotNull(conf.headers);
 
 		CategoryItem cat = impl.repository.loadCategory("/");
@@ -228,7 +223,7 @@ public class ServiceImplementationTest extends TestCase {
 				"testRuleTableLoad", "rule");
 
 		TableDataResult result = impl
-				.loadRuleListForCategories("testRuleTableLoad", 0, -1);
+				.loadRuleListForCategories("testRuleTableLoad", 0, -1, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(2, result.data.length);
 
 		String key = result.data[0].id;
@@ -243,7 +238,7 @@ public class ServiceImplementationTest extends TestCase {
 	public void testDateFormatting() throws Exception {
 		Calendar cal = Calendar.getInstance();
 		TableDisplayHandler handler = new TableDisplayHandler(
-				TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
+				AssetItemGrid.RULE_LIST_TABLE_ID);
 		String fmt = handler.formatDate(cal);
 		assertNotNull(fmt);
 
@@ -259,7 +254,7 @@ public class ServiceImplementationTest extends TestCase {
 				"testLoadRuleAsset", "testLoadRuleAsset", "drl");
 
 		TableDataResult res = impl
-				.loadRuleListForCategories("testLoadRuleAsset", 0, -1);
+				.loadRuleListForCategories("testLoadRuleAsset", 0, -1, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(1, res.data.length);
 		assertEquals(1, res.total);
 		assertFalse(res.hasNext);
@@ -573,21 +568,21 @@ public class ServiceImplementationTest extends TestCase {
 				"testListByFormat", "testListByFormat");
 
 		TableDataResult res = impl.listAssets(pkgUUID, arr("testListByFormat"),
-				0, -1);
+				0, -1, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(4, res.data.length);
 		assertEquals(uuid, res.data[0].id);
 		assertEquals("testListByFormat", res.data[0].values[0]);
 
-		res = impl.listAssets(pkgUUID, arr("testListByFormat"), 0, 4);
+		res = impl.listAssets(pkgUUID, arr("testListByFormat"), 0, 4, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(4, res.data.length);
 
-		res = impl.listAssets(pkgUUID, arr("testListByFormat"), 0, 2);
+		res = impl.listAssets(pkgUUID, arr("testListByFormat"), 0, 2, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(2, res.data.length);
 		assertEquals(uuid, res.data[0].id);
 		assertEquals(4, res.total);
 		assertTrue(res.hasNext);
 
-		res = impl.listAssets(pkgUUID, arr("testListByFormat"), 2, 2);
+		res = impl.listAssets(pkgUUID, arr("testListByFormat"), 2, 2, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(2, res.data.length);
 		assertEquals(uuid3, res.data[0].id);
 		assertEquals(4, res.total);
@@ -596,12 +591,12 @@ public class ServiceImplementationTest extends TestCase {
 		uuid = impl.createNewRule("testListByFormat5", "x", cat,
 				"testListByFormat", "otherFormat");
 
-		res = impl.listAssets(pkgUUID, arr("otherFormat"), 0, 40);
+		res = impl.listAssets(pkgUUID, arr("otherFormat"), 0, 40, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(1, res.data.length);
 		assertEquals(uuid, res.data[0].id);
 
 		res = impl.listAssets(pkgUUID, new String[] { "otherFormat",
-				"testListByFormat" }, 0, 40);
+				"testListByFormat" }, 0, 40, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(5, res.data.length);
 
 		TableDataResult result = impl.quickFindAsset("testListByForma", 5,
@@ -690,15 +685,15 @@ public class ServiceImplementationTest extends TestCase {
 				"sourcePackage", "drl");
 
 		TableDataResult res = impl.listAssets(destPkgId,
-				new String[] { "drl" }, 0, 2);
+				new String[] { "drl" }, 0, 2, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(0, res.data.length);
 
 		impl.changeAssetPackage(uuid, "targetPackage", "yeah");
-		res = impl.listAssets(destPkgId, new String[] { "drl" }, 0, 2);
+		res = impl.listAssets(destPkgId, new String[] { "drl" }, 0, 2, AssetItemGrid.RULE_LIST_TABLE_ID);
 
 		assertEquals(1, res.data.length);
 
-		res = impl.listAssets(sourcePkgId, new String[] { "drl" }, 0, 2);
+		res = impl.listAssets(sourcePkgId, new String[] { "drl" }, 0, 2,AssetItemGrid.RULE_LIST_TABLE_ID);
 
 		assertEquals(0, res.data.length);
 
@@ -847,12 +842,12 @@ public class ServiceImplementationTest extends TestCase {
 				"testRemoveAsset", "testRemoveAsset");
 
 		TableDataResult res = impl.listAssets(pkgUUID, arr("testRemoveAsset"),
-				0, -1);
+				0, -1, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(4, res.data.length);
 
 		impl.removeAsset(uuid4);
 
-		res = impl.listAssets(pkgUUID, arr("testRemoveAsset"), 0, -1);
+		res = impl.listAssets(pkgUUID, arr("testRemoveAsset"), 0, -1, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(3, res.data.length);
 	}
 
@@ -885,7 +880,7 @@ public class ServiceImplementationTest extends TestCase {
 				"testArchiveAsset", "testArchiveAsset");
 
 		TableDataResult res = impl.listAssets(pkgUUID, arr("testArchiveAsset"),
-				0, -1);
+				0, -1, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(4, res.data.length);
 		assertEquals(4, res.total);
 		assertFalse(res.hasNext);
@@ -897,12 +892,12 @@ public class ServiceImplementationTest extends TestCase {
 		TableDataResult td2 = impl.loadArchivedAssets(0, 1000);
 		assertTrue(td2.data.length == td.data.length + 1);
 
-		res = impl.listAssets(pkgUUID, arr("testArchiveAsset"), 0, -1);
+		res = impl.listAssets(pkgUUID, arr("testArchiveAsset"), 0, -1, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(3, res.data.length);
 
 		impl.archiveAsset(uuid4, false);
 
-		res = impl.listAssets(pkgUUID, arr("testArchiveAsset"), 0, -1);
+		res = impl.listAssets(pkgUUID, arr("testArchiveAsset"), 0, -1, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(4, res.data.length);
 
 

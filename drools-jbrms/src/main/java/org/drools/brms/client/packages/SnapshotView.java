@@ -215,7 +215,7 @@ public class SnapshotView extends Composite {
 		}, AssetItemGrid.RULE_LIST_TABLE_ID, new AssetItemGridDataLoader() {
 			public void loadData(int startRow, int numberOfRows,
 					GenericCallback cb) {
-				RepositoryServiceFactory.getService().listAssets(snapInfo.uuid, assetTypes, startRow, numberOfRows, cb);
+				RepositoryServiceFactory.getService().listAssets(snapInfo.uuid, assetTypes, startRow, numberOfRows, AssetItemGrid.RULE_LIST_TABLE_ID , cb);
 			}
 		});
 		this.gridPanel.add(grid);

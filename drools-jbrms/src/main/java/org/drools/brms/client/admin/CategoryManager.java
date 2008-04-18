@@ -36,9 +36,12 @@ import org.drools.brms.client.rpc.RuleAsset;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -70,16 +73,19 @@ public class CategoryManager extends Composite {
 
         form.addAttribute( "Current categories:", editable );
 
-        Image refresh = new ImageButton( "images/refresh.gif" );
+        HorizontalPanel actions = new HorizontalPanel();
+
+        Button refresh = new Button( "Refresh view" );
         refresh.setTitle( "Refresh categories" );
         refresh.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 explorer.refresh();
             }
         } );
-        form.addAttribute( "Refresh view:", refresh );
+        actions.add(refresh);
+        form.addAttribute("", actions);
 
-        Image newCat = new ImageButton( "images/new.gif" );
+        Button newCat = new Button( "New category" );
         newCat.setTitle( "Create a new category" );
         newCat.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -89,9 +95,19 @@ public class CategoryManager extends Composite {
             }
         } );
 
-        form.addAttribute( "Create a new category:", newCat );
+        actions.add(newCat);
 
-        Image delete = new ImageButton("images/delete_obj.gif");
+        Button rename = new Button("Rename selected");
+        rename.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				renameSelected();
+			}
+        });
+
+        actions.add(rename);
+
+
+        Button delete = new Button("Delete selected");
         delete.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 deleteSelected();
@@ -99,46 +115,26 @@ public class CategoryManager extends Composite {
         } );
         delete.setTitle( "Deletes the currently selected category. You won't be able to delete if the category is in use." );
 
-        form.addAttribute( "Delete the currently selected category:", delete );
+        actions.add(delete);
 
         form.endSection();
 
 
-        GuidedDecisionTable dt = new GuidedDecisionTable();
-//        dt.data = new String[][] {
-//        		new String[] {"1", "des1","", "a", "b", "c"},
-//        		new String[] {"2", "des1","" , "d", "e", "f"},
-//        		new String[] {"3",  "des3", "groupA", "d", "q", "x"}
-//        };
-//        ConditionCol c1 = new ConditionCol();
-//        c1.header = "Driver 1 age";
-//
-//        dt.conditionCols.add(c1);
-//        ConditionCol c2 = new ConditionCol();
-//        c2.header = "Driver 2 age";
-//        dt.conditionCols.add(c2);
-//
-//        AttributeCol attr = new AttributeCol();
-//        attr.attr = "rule-flow";
-//        dt.attributeCols.add(attr);
-//
-//        ActionCol a1 = new ActionSetFieldCol();
-//        a1.header = "Do something !";
-//        dt.actionCols.add(a1);
-
         initWidget( form );
-//        final RuleAsset asset_ = new RuleAsset();
-//        asset_.metaData = new MetaData();
-//        asset_.metaData.packageName = "com.billasurf.manufacturing.plant";
-//        asset_.content = dt;
-//        initWidget( new GuidedDecisionTableWidget(asset_) );
-//        SuggestionCompletionCache.getInstance().doAction("com.billasurf.manufacturing.plant", new Command() {
-//			public void execute() {
-//				System.err.println("loaded SCE");
-//
-//			}
-//        });
 
+    }
+
+    private void renameSelected() {
+
+    	String name = Window.prompt("Please enter the name you would like to change this category to", "");
+    	if (name != null) {
+	    	RepositoryServiceFactory.getService().renameCategory(explorer.getSelectedPath(), name, new GenericCallback()  {
+				public void onSuccess(Object data) {
+					Window.alert("Category renamed");
+					explorer.refresh();
+				}
+	    	});
+    	}
     }
 
 

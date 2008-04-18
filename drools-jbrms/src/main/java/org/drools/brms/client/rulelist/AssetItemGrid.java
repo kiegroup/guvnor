@@ -59,6 +59,7 @@ public class AssetItemGrid extends Composite {
 
 
     public static final String            RULE_LIST_TABLE_ID          = "rulelist";
+    public static final String            PACKAGEVIEW_LIST_TABLE_ID          = "packageviewlist";
     public static final String            ARCHIVED_RULE_LIST_TABLE_ID = "archivedrulelist";
     private static final Map 			  columnConfigs = new HashMap();
     private static final Map		      recordDefs = new HashMap();

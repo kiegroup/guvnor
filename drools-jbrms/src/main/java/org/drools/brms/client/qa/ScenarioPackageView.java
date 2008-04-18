@@ -40,7 +40,7 @@ public class ScenarioPackageView extends Composite {
 			public void loadData(int startRow, int numberOfRows,
 					GenericCallback cb) {
 				RepositoryServiceFactory.getService().listAssets(packageUUID, new String[] {AssetFormats.TEST_SCENARIO},
-						startRow, numberOfRows, cb);
+						startRow, numberOfRows,AssetItemGrid.RULE_LIST_TABLE_ID, cb);
 			}
 		});
 

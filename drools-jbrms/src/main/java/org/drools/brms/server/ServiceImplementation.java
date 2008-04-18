@@ -298,12 +298,12 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public TableDataResult loadRuleListForCategories(String categoryPath, int skip, int numRows) throws SerializableException {
+    public TableDataResult loadRuleListForCategories(String categoryPath, int skip, int numRows, String tableConfig) throws SerializableException {
     	//love you
         //long time = System.currentTimeMillis();
 
         AssetPageList list = repository.findAssetsByCategory( categoryPath, skip, numRows );
-        TableDisplayHandler handler = new TableDisplayHandler(TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
+        TableDisplayHandler handler = new TableDisplayHandler(tableConfig);
         //log.debug("time for load: " + (System.currentTimeMillis() - time) );
         return handler.loadRuleListTable( list );
 
@@ -311,12 +311,12 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public TableDataResult loadRuleListForState(String stateName, int skip, int numRows) throws SerializableException {
+    public TableDataResult loadRuleListForState(String stateName, int skip, int numRows, String tableConfig) throws SerializableException {
     	//love you
         //long time = System.currentTimeMillis();
 
         AssetPageList list = repository.findAssetsByState( stateName, false, skip, numRows );
-        TableDisplayHandler handler = new TableDisplayHandler(TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
+        TableDisplayHandler handler = new TableDisplayHandler(tableConfig);
         //log.debug("time for load: " + (System.currentTimeMillis() - time) );
         return handler.loadRuleListTable( list );
 
@@ -655,14 +655,15 @@ public class ServiceImplementation
     public TableDataResult listAssets(String uuid,
                                               String formats[],
                                               int skip,
-                                              int numRows) throws SerializableException {
+                                              int numRows,
+                                              String tableConfig) throws SerializableException {
     	if (numRows == 0) {
     		throw new DetailedSerializableException("Unable to return zero results (bug)", "probably have the parameters around the wrong way, sigh...");
     	}
         long start = System.currentTimeMillis();
         PackageItem pkg = repository.loadPackageByUUID( uuid );
         AssetItemIterator it = pkg.listAssetsByFormat( formats );
-        TableDisplayHandler handler = new TableDisplayHandler(TableDisplayHandler.DEFAULT_TABLE_TEMPLATE);
+        TableDisplayHandler handler = new TableDisplayHandler(tableConfig);
         log.debug("time for asset list load: " + (System.currentTimeMillis() - start) );
         return handler.loadRuleListTable( it, skip,  numRows );
     }
@@ -1351,6 +1352,13 @@ public class ServiceImplementation
 	public LogEntry[] showLog() {
 		return LoggingHelper.getMessages();
 
+	}
+
+
+	@WebRemote
+    @Restrict("#{identity.loggedIn}")
+	public void renameCategory(String fullPathAndName, String newName) {
+		repository.renameCategory(fullPathAndName, newName);
 	}
 
 

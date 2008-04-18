@@ -39,13 +39,13 @@ public interface RepositoryService extends RemoteService {
      * Return a a 2d array/grid of results for rules.
      * @param A "/" delimited path to a category.
      */
-    public TableDataResult loadRuleListForCategories(String categoryPath, int skip, int numRows) throws SerializableException;
+    public TableDataResult loadRuleListForCategories(String categoryPath, int skip, int numRows, String tableConfig) throws SerializableException;
 
     /**
      * Return a a 2d array/grid of results for rules.
      * @param The name of the state.
      */
-    public TableDataResult loadRuleListForState(String state, int skip, int numRows) throws SerializableException;
+    public TableDataResult loadRuleListForState(String state, int skip, int numRows, String tableConfig) throws SerializableException;
 
 
     /**
@@ -160,7 +160,7 @@ public interface RepositoryService extends RemoteService {
      * @param numRows The number of rows to return. -1 means all.
      * @param startRow The starting row number if paging - if numRows is -1 then this is ignored.
      */
-    public TableDataResult listAssets(String packageUUID, String formats[], int skip, int numRows) throws SerializableException;
+    public TableDataResult listAssets(String packageUUID, String formats[], int skip, int numRows, String tableConfig) throws SerializableException;
 
     /**
      * Returns a list of valid states.
@@ -299,6 +299,11 @@ public interface RepositoryService extends RemoteService {
      * Rename an asset.
      */
     public String renameAsset(String uuid, String newName);
+
+    /**
+     * Rename a category - taking in the full path, and just the new name.
+     */
+    public void renameCategory(String fullPathAndName, String newName);
 
     /**
      * Archive asset based on uuid
