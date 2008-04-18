@@ -18,7 +18,7 @@ import javax.jcr.version.VersionException;
 /**
  * This contains logic for categorisable items
  * (not all versionably items are categorisable).
- * 
+ *
  * @author michael neale
  *
  */
@@ -32,14 +32,14 @@ public abstract class CategorisableItem extends VersionableItem {
 
     /**
      * Adds the specified tag to this object's node. Tags are stored as nodes in a tag area of
-     * the repository. If the specified tag does not already have a corresponding node, a node is 
+     * the repository. If the specified tag does not already have a corresponding node, a node is
      * created for it.
-     * 
+     *
      * Please note that this is mainly intended for rule related assets, not packages
-     * (although it could be used). 
-     *  
+     * (although it could be used).
+     *
      * @param tag the tag to add to the rule. rules can have multiple tags
-     * @throws RulesRepositoryException 
+     * @throws RulesRepositoryException
      */
     public void addCategory(String tag) throws RulesRepositoryException {
         try {
@@ -95,7 +95,7 @@ public abstract class CategorisableItem extends VersionableItem {
     }
 
     /**
-     * This method sets the categories in one hit, making the 
+     * This method sets the categories in one hit, making the
      * ASSUMPTION that the categories were previously set up !
      * (via CategoryItem of course !).
      */
@@ -117,15 +117,23 @@ public abstract class CategorisableItem extends VersionableItem {
 
     /**
      * Gets a list of CategoryItem objects for this assets node.
-     * 
-     * @return a list of TagItem objects for each tag on the rule. If there are no tags, an empty list. 
+     *
+     * @return a list of TagItem objects for each tag on the rule. If there are no tags, an empty list.
      * @throws RulesRepositoryException
      */
-    public List getCategories() throws RulesRepositoryException {
-        try {
-            Node ruleNode = getVersionContentNode();
+    public List<CategoryItem> getCategories() throws RulesRepositoryException {
+    	final List<CategoryItem> cats = new ArrayList<CategoryItem>();
+        doList(new Accum() {
+			public void add(CategoryItem c) {
+				cats.add(c);
+			}
+        });
+        return cats;
+    }
 
-            List returnList = new ArrayList();
+	private void doList(Accum ac) {
+		try {
+            Node ruleNode = getVersionContentNode();
             try {
                 Property tagReferenceProperty = ruleNode.getProperty( CATEGORY_PROPERTY_NAME );
                 Value[] tagValues = tagReferenceProperty.getValues();
@@ -134,7 +142,8 @@ public abstract class CategorisableItem extends VersionableItem {
                         Node tagNode = this.node.getSession().getNodeByUUID( tagValues[i].getString() );
                         CategoryItem tagItem = new CategoryItem( this.rulesRepository,
                                                                  tagNode );
-                        returnList.add( tagItem );
+                        ac.add(tagItem);
+
                     } catch (ItemNotFoundException e) {
                         //ignore
                         log.debug( "Was unable to load a category by UUID - must have been removed." );
@@ -143,18 +152,41 @@ public abstract class CategorisableItem extends VersionableItem {
             } catch ( PathNotFoundException e ) {
                 //the property doesn't even exist yet, so just return nothing
             }
-            return returnList;
         } catch ( RepositoryException e ) {
             log.error( "Error loading cateories", e );
             throw new RulesRepositoryException( e );
         }
+	}
+
+    /**
+     * This will show a summary list of categories.
+     */
+    public String getCategorySummary() {
+    	final StringBuilder sum = new StringBuilder();
+    	doList(new Accum() {
+    		int count = 0;
+			public void add(CategoryItem c) {
+				count++;
+				if (count == 4) {
+					sum.append("...");
+				} else if (count < 4){
+					sum.append(c.getName());
+					sum.append(' ');
+				}
+			}
+    	});
+    	return sum.toString();
+    }
+
+    static interface Accum {
+    	void add(CategoryItem c);
     }
 
     /**
      * Removes the specified tag from this object's rule node.
-     * 
+     *
      * @param tag the tag to remove from the rule
-     * @throws RulesRepositoryException 
+     * @throws RulesRepositoryException
      */
     public void removeCategory(String tag) throws RulesRepositoryException {
         try {

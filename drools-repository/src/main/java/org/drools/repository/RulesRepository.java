@@ -889,6 +889,27 @@ public class RulesRepository {
     }
 
     /**
+     * Rename a category.
+     * @param originalPath The full path to the category.
+     * @param newName The new name (just the name, not the path).
+     */
+    public void renameCategory(String originalPath, String newName) {
+    	try {
+	    	CategoryItem cat = loadCategory(originalPath);
+	        Node node = cat.getNode();
+	        String sourcePath = node.getPath();
+	        String destPath = node.getParent().getPath() + "/" + newName;
+	        this.session.move(sourcePath, destPath);
+	        save();
+    	} catch (RepositoryException e) {
+    		log.error(e);
+    		throw new RulesRepositoryException(e);
+    	}
+    }
+
+
+
+    /**
      * This will rename a package and apply the change immediately.
      * @return the UUID of the package
      */

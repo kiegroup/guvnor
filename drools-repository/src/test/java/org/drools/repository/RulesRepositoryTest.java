@@ -41,6 +41,46 @@ public class RulesRepositoryTest extends TestCase {
 
     }
 
+    public void testCategoryRename() throws Exception {
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+
+        CategoryItem root = repo.loadCategory("/");
+        root.addCategory("testCatRename", "");
+        repo.loadCategory("testCatRename").addCategory("testRename", "");
+
+        repo.renameCategory("testCatRename/testRename", "testAnother");
+
+        CategoryItem cat = repo.loadCategory("testCatRename/testAnother");
+        assertNotNull(cat);
+        try {
+        	repo.loadCategory("testCatRename/testRename");
+        	fail("should not exist.");
+        } catch (RulesRepositoryException e) {
+        	assertNotNull(e.getMessage());
+        }
+
+        PackageItem pkg = repo.createPackage("testCategoryRename", "");
+        AssetItem asset = pkg.addAsset("fooBar", "");
+        asset.addCategory("testCatRename");
+        asset.addCategory("testCatRename/testAnother");
+        asset.checkin("");
+
+
+
+        cat = repo.loadCategory("testCatRename/testAnother");
+        AssetPageList as = repo.findAssetsByCategory("testCatRename/testAnother", 0, -1);
+        assertEquals(1, as.totalSize);
+        assertEquals("fooBar",((AssetItem) as.assets.get(0)).getName());
+
+
+        repo.renameCategory("testCatRename/testAnother", "testYetAnother");
+        as = repo.findAssetsByCategory("testCatRename/testYetAnother", 0, -1);
+        assertEquals(1, as.totalSize);
+        assertEquals("fooBar",((AssetItem) as.assets.get(0)).getName());
+
+
+    }
+
     public void testAddVersionARule() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
         PackageItem pack = repo.createPackage( "testAddVersionARule", "description" );

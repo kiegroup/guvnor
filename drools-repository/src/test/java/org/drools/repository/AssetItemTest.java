@@ -212,6 +212,12 @@ public class AssetItemTest extends TestCase {
         ruleItem1.updateContent( "foo" );
         ruleItem1.checkin( "latest" );
 
+
+        assertTrue(ruleItem1.getCategories().size() > 0);
+        assertNotNull(ruleItem1.getCategorySummary());
+        assertEquals("testAddTagTestTag testAddTagTestTag2 ", ruleItem1.getCategorySummary());
+
+
         result = getRepo().findAssetsByCategory( "testAddTagTestTag",0, -1 ).assets;
 
         assertEquals(1, result.size());
@@ -222,6 +228,7 @@ public class AssetItemTest extends TestCase {
         assertEquals("foo", ruleItem1.getContent());
         AssetItem prev = (AssetItem) ruleItem1.getPrecedingVersion();
         assertNotNull(prev);
+
 
 
 
