@@ -15,6 +15,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RepositorySessionUtil;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.RulesRepositoryTest;
 import org.drools.repository.remoteapi.Response.Binary;
 import org.drools.repository.remoteapi.Response.Text;
@@ -240,6 +241,25 @@ public class RestAPITest extends TestCase {
 
 		l = RulesRepositoryTest.iteratorToList(pkg.listArchivedAssets());
 		assertEquals(1, l.size());
+
+
+		//now test it back from the dead
+		api.post("packages/testRestDelete/asset1.drl", new ByteArrayInputStream("123".getBytes()), false, "new comment");
+		AssetItem ass = pkg.loadAsset("asset1");
+		assertEquals("123", ass.getContent());
+		assertEquals("new comment", ass.getCheckinComment());
+		assertFalse(ass.isArchived());
+		l = RulesRepositoryTest.iteratorToList(pkg.listAssetsByFormat(new String[] {"drl"}));
+		assertEquals(1, l.size());
+
+		try {
+			api.post("packages/testRestDelete/asset1.drl", new ByteArrayInputStream("123".getBytes()), false, "new comment");
+			fail("this should be rejected as its not archived.");
+		} catch (RulesRepositoryException e) {
+			assertNotNull(e.getMessage());
+		}
+
+
 
 	}
 

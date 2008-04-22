@@ -117,8 +117,18 @@ public class RestAPI {
 			} else {
 				//new asset
 				PackageItem pkg = repo.loadPackage(bits[1]);
-				AssetItem asset = pkg.addAsset(a[0], "<added remotely>");
-				asset.updateFormat(a[1]);
+				AssetItem asset;
+				if (pkg.containsAsset(a[0])) {
+					asset = pkg.loadAsset(a[0]);
+					if (asset.isArchived()) {
+						asset.archiveItem(false);
+					} else {
+						throw new RulesRepositoryException("The file " + path + " already exists, and was not archived.");
+					}
+				} else {
+					asset = pkg.addAsset(a[0], "<added remotely>");
+					asset.updateFormat(a[1]);
+				}
 				if (binary) {
 					asset.updateBinaryContentAttachment(in);
 				} else {
