@@ -80,7 +80,7 @@ public class ActionValueEditor extends DirtyableComposite {
 
 
         if (c.value == null || c.value.length() < 5 ) {
-            box.setVisibleLength( 3 );
+            box.setVisibleLength( 6 );
         } else {
             box.setVisibleLength( c.value.length() - 1 );
         }

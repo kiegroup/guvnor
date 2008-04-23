@@ -403,7 +403,7 @@ public class FactPatternWidget extends DirtyableComposite {
                 varTxt.setText( pattern.boundName );
             }
 
-            varTxt.setVisibleLength( 3 );
+            varTxt.setVisibleLength( 6 );
             varName.add( varTxt );
 
             Button bindVar = new Button( "Set" );
