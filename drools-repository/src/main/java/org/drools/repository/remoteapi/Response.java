@@ -10,7 +10,7 @@ import java.util.Calendar;
 
 
 public abstract class Response {
-	abstract void writeData(OutputStream out) throws IOException ;
+	public abstract void writeData(OutputStream out) throws IOException ;
 	public Calendar lastModified;
 
 
@@ -19,7 +19,7 @@ public abstract class Response {
 
 
 		@Override
-		void writeData(OutputStream out) throws IOException {
+		public void writeData(OutputStream out) throws IOException {
 			out.write(data.getBytes());
 		}
 	}
@@ -31,7 +31,7 @@ public abstract class Response {
 
 
 		@Override
-		void writeData(OutputStream out) throws IOException {
+		public void writeData(OutputStream out) throws IOException {
 			try {
 				InputStream in = stream;
 				if (!(out instanceof BufferedOutputStream)) out = new BufferedOutputStream(out);
