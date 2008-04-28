@@ -1,13 +1,13 @@
 package org.drools.brms.client.packages;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.drools.brms.client.common.ErrorPopup;
 import org.drools.brms.client.common.GenericCallback;
+import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
@@ -29,21 +30,21 @@ import com.google.gwt.user.client.Command;
 
 /**
  * This utility cache will maintain a cache of suggestion completion engines,
- * as they are somewhat heavy to load. 
- * If it needs to be loaded, then it will load, and then call the appropriate action, 
+ * as they are somewhat heavy to load.
+ * If it needs to be loaded, then it will load, and then call the appropriate action,
  * and keep it in the cache.
- * 
+ *
  * @author Michael Neale
  *
  */
 public class SuggestionCompletionCache {
 
     private static SuggestionCompletionCache INSTANCE = new SuggestionCompletionCache();
-    
+
     Map cache = new HashMap();
-    
-    
-    
+
+
+
     public static SuggestionCompletionCache getInstance() {
         return INSTANCE;
     }
@@ -54,16 +55,16 @@ public class SuggestionCompletionCache {
      */
     public void doAction(String packageName,
                          Command command) {
-        
+
         if (!this.cache.containsKey( packageName )) {
             loadPackage(packageName, command);
         } else {
             command.execute();
         }
-        
-        
+
+
     }
-    
+
     public SuggestionCompletionEngine getEngineFromCache(String packageName) {
         SuggestionCompletionEngine eng = (SuggestionCompletionEngine) cache.get( packageName );
         if (eng == null) {
@@ -82,6 +83,13 @@ public class SuggestionCompletionCache {
                 cache.put( packageName, engine );
                 command.execute();
             }
+
+            public void onFailure(Throwable t) {
+            	LoadingPopup.close();
+            	ErrorPopup.showMessage("Unable to validate package configuration (eg, DSLs) for [" + packageName + "]. " +
+    			"Suggestion completions may not operate for graphical editors for this package.");
+            	command.execute();
+            }
         });
     }
 
@@ -92,11 +100,11 @@ public class SuggestionCompletionCache {
     public void refreshPackage(String packageName, Command done) {
         if (cache.containsKey( packageName )) {
             cache.remove( packageName );
-            loadPackage( packageName, done );            
+            loadPackage( packageName, done );
         } else {
             done.execute();
         }
-        
+
     }
-    
+
 }
