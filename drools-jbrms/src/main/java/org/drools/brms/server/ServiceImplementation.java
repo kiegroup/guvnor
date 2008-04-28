@@ -979,23 +979,40 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public BuilderResult[] buildAsset(RuleAsset asset) throws SerializableException {
-        AssetItem item = repository.loadAssetByUUID( asset.uuid );
 
-        ContentHandler handler = ContentHandler.getHandler( item.getFormat() );//new AssetContentFormatHandler();
-        handler.storeAssetContent( asset, item );
+    	try {
+
+	        AssetItem item = repository.loadAssetByUUID( asset.uuid );
+
+	        ContentHandler handler = ContentHandler.getHandler( item.getFormat() );//new AssetContentFormatHandler();
+	        handler.storeAssetContent( asset, item );
 
 
-        if (handler instanceof IValidating) {
-            return ((IValidating) handler).validateAsset( item );
-        } else {
+	        if (handler instanceof IValidating) {
+	            return ((IValidating) handler).validateAsset( item );
+	        } else {
 
-            ContentPackageAssembler asm = new ContentPackageAssembler(item);
-            if (!asm.hasErrors()) {
-                return null;
-            } else {
-                return generateBuilderResults( asm );
-            }
-        }
+	            ContentPackageAssembler asm = new ContentPackageAssembler(item);
+	            if (!asm.hasErrors()) {
+	                return null;
+	            } else {
+	                return generateBuilderResults( asm );
+	            }
+	        }
+    	} catch (Exception e) {
+    		log.error(e);
+            BuilderResult[] result = new BuilderResult[1];
+
+            BuilderResult res = new BuilderResult();
+            res.assetName = asset.metaData.name;
+            res.assetFormat = asset.metaData.format;
+            res.message = "Unable to validate this asset. (Check log for detailed messages).";
+            res.uuid = asset.uuid;
+            result[0] = res;
+
+
+            return result;
+    	}
 
     }
 
