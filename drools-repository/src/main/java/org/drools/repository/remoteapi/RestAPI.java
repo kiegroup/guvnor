@@ -47,6 +47,9 @@ public class RestAPI {
 	}
 
 	String[] split(String path) throws UnsupportedEncodingException {
+		if (path.indexOf("api") > -1) {
+			path = path.split("api")[1];
+		}
 		if (path.startsWith("/")) path = path.substring(1);
 		String[] bits = path.split("/");
 		for (int i = 0; i < bits.length; i++) {

@@ -284,5 +284,12 @@ public class RestAPITest extends TestCase {
 		assertEquals("some package", x[1]);
 		assertEquals("some asset", x[2]);
 
+
+		x = a.split("http://localhost:8080/drools-jbrms/org.dooby.doo.X.html/api/packages/foo/bar.drl");
+		assertEquals(3, x.length);
+		assertEquals("packages", x[0]);
+		assertEquals("foo", x[1]);
+		assertEquals("bar.drl", x[2]);
+
 	}
 }
