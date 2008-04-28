@@ -18,6 +18,7 @@ package org.drools.brms.server.files;
 
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import javax.security.auth.login.LoginException;
 import javax.servlet.ServletException;
@@ -55,13 +56,30 @@ public class RestAPIServlet extends RepositoryServlet {
 
 
 
-    protected void doGet(HttpServletRequest req,
-                         HttpServletResponse res) throws ServletException,
+    protected void doGet(final HttpServletRequest req,
+                         final HttpServletResponse res) throws ServletException,
                                                  IOException {
-        authAndInit(req, res);
-        RestAPI api = null;
-        Response apiRes = api.get(req.getRequestURI());
-        apiRes.writeData(res.getOutputStream());
+        doAuthorizedAction(req, res, new A() {
+			public void a() {
+				try {
+
+					RestAPI api = getAPI();
+					Response apiRes = api.get(req.getRequestURI());
+			        res.setContentType( "application/x-download" );
+			        res.setHeader( "Content-Disposition",
+			                       "attachment; filename=data;");
+					apiRes.writeData(res.getOutputStream());
+					res.getOutputStream().flush();
+
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+        });
 
     }
 
@@ -71,7 +89,7 @@ public class RestAPIServlet extends RepositoryServlet {
      * Here we perform the action in the appropriate security context.
      * TODO: add in a closure for the action.
      */
-	private void authAndInit(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	private void doAuthorizedAction(HttpServletRequest req, HttpServletResponse res, A action) throws IOException {
 
         String auth = req.getHeader("Authorization");
 
@@ -80,19 +98,24 @@ public class RestAPIServlet extends RepositoryServlet {
           res.sendError(res.SC_UNAUTHORIZED);
         }
         else {
-          // Allowed, so do it already
+          action.a();
         }
 	}
 
 
 
-	RestAPI getAPI() throws Exception {
+	RestAPI getAPI()  {
 		if (Contexts.isApplicationContextActive()) {
 			RulesRepository repo = (RulesRepository) Component.getInstance( "repository" );
 			return new RestAPI(repo);
 		} else {
-			RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) );
-			return new RestAPI(repo);
+			try {
+				RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) );
+				return new RestAPI(repo);
+			} catch (Exception e) {
+				throw new IllegalStateException("Unable to run tests", e);
+			}
+
 		}
 	}
 
@@ -150,5 +173,9 @@ public class RestAPIServlet extends RepositoryServlet {
     }
 
 
+    /**
+     * For closures. Damn you java when will you catch up with the 70s.
+     */
+    static interface A { public void a(); }
 
 }
