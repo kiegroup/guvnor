@@ -85,13 +85,17 @@ public class RestAPITest extends TestCase {
 		assertTrue(p.containsKey("asset3.xls"));
 
 		assertNotNull(p.getProperty("asset1.drl"));
-		String dt = p.getProperty("asset1.drl");
-		System.err.println(dt);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		Date d= sdf.parse(dt);
+		String prop = p.getProperty("asset1.drl");
+		System.err.println(prop);
+		String[] dt = prop.split(",");
+
+
+		SimpleDateFormat sdf = RestAPI.getISODateFormat();
+		Date d= sdf.parse(dt[0]);
 		assertNotNull(d);
 
-		assertEquals(sdf.format(asset1.getLastModified().getTime()), dt);
+		assertEquals(sdf.format(asset1.getLastModified().getTime()), dt[0]);
+		assertEquals(asset1.getVersionNumber(), Long.parseLong(dt[1]));
 
 
 		//try text

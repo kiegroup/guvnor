@@ -30,6 +30,12 @@ public class RestAPI {
 		this.repo = repo;
 	}
 
+	/**
+	 * This works off:
+	 * packages/<packageName> --> returns list of : <asset name>=<ISO date time last modified>,<versionNumber>
+	 * packages/<packageName>/.package --> the contents of the package header
+	 * packages/<packageName>/<assetName> --> the contents of the package
+	 */
 	public Response get(String path) throws UnsupportedEncodingException {
 		String[] bits = split(path);
 		if (bits[0].equals("packages")) {
@@ -89,11 +95,11 @@ public class RestAPI {
 		PackageItem pkg = repo.loadPackage(URLDecoder.decode(pkgName, "UTF-8"));
 		StringBuilder sb = new StringBuilder();
 		Iterator<AssetItem> it = pkg.getAssets();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		SimpleDateFormat sdf = getISODateFormat();
 
 		while (it.hasNext()) {
 			AssetItem a = it.next();
-			sb.append(a.getName() + "." + a.getFormat() + "=" + sdf.format(a.getLastModified().getTime()));
+			sb.append(a.getName() + "." + a.getFormat() + "=" + sdf.format(a.getLastModified().getTime()) + "," + a.getVersionNumber());
 			sb.append('\n');
 		}
 
@@ -101,6 +107,10 @@ public class RestAPI {
 		r.lastModified = pkg.getLastModified();
 		r.data = sb.toString();
 		return r;
+	}
+
+	public static SimpleDateFormat getISODateFormat() {
+		return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	}
 
 	/** post is for new content.
