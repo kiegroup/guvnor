@@ -22,12 +22,15 @@ import java.io.UnsupportedEncodingException;
 
 import javax.security.auth.login.LoginException;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.apache.util.Base64;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.remoteapi.Response;
 import org.drools.repository.remoteapi.RestAPI;
 import org.jboss.seam.Component;
@@ -39,30 +42,27 @@ import org.jboss.seam.security.Identity;
  *
  * @author Michael Neale
  */
-public class RestAPIServlet extends RepositoryServlet {
+public class RestAPIServlet extends HttpServlet {
 
     private static final long serialVersionUID = 500L;
+    public static final Logger log              = Logger.getLogger( RestAPIServlet.class );
 
-    /**
-     * This is used for importing legacy DRL.
-     */
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response) throws ServletException,
+    @Override
+    protected void doPost(final HttpServletRequest req,
+                          final HttpServletResponse res) throws ServletException,
                                                        IOException {
-
 
 
     }
 
 
 
+    @Override
     protected void doGet(final HttpServletRequest req,
                          final HttpServletResponse res) throws ServletException,
                                                  IOException {
         doAuthorizedAction(req, res, new A() {
-			public void a() {
-				try {
-
+			public void a() throws Exception {
 					RestAPI api = getAPI();
 					Response apiRes = api.get(req.getRequestURI());
 			        res.setContentType( "application/x-download" );
@@ -70,35 +70,39 @@ public class RestAPIServlet extends RepositoryServlet {
 			                       "attachment; filename=data;");
 					apiRes.writeData(res.getOutputStream());
 					res.getOutputStream().flush();
-
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
         });
 
+    }
+
+	@Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+    		throws ServletException, IOException {
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
+    		throws ServletException, IOException {
     }
 
 
 
     /**
      * Here we perform the action in the appropriate security context.
-     * TODO: add in a closure for the action.
      */
 	private void doAuthorizedAction(HttpServletRequest req, HttpServletResponse res, A action) throws IOException {
-
         String auth = req.getHeader("Authorization");
-
         if (!allowUser(auth)) {
           res.setHeader("WWW-Authenticate", "BASIC realm=\"users\"");
-          res.sendError(res.SC_UNAUTHORIZED);
+          res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
         }
         else {
-          action.a();
+        	try {
+        		action.a();
+        	} catch (Exception e) {
+        		log.error(e);
+        		throw new RuntimeException(e);
+        	}
         }
 	}
 
@@ -162,20 +166,12 @@ public class RestAPIServlet extends RepositoryServlet {
 
 
 
-	@Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp)
-    		throws ServletException, IOException {
-    }
 
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
-    		throws ServletException, IOException {
-    }
 
 
     /**
      * For closures. Damn you java when will you catch up with the 70s.
      */
-    static interface A { public void a(); }
+    static interface A { public void a() throws Exception; }
 
 }
