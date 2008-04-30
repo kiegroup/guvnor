@@ -731,6 +731,8 @@ public class AssetItemTest extends TestCase {
         item.updateBinaryContentAttachmentFileName( "x.x" );
         in.close();
 
+        assertEquals(data, item.getContent());
+
         assertFalse(item.getNode().hasProperty( AssetItem.CONTENT_PROPERTY_NAME ));
         assertTrue(item.getNode().hasProperty( AssetItem.CONTENT_PROPERTY_BINARY_NAME ));
         item.checkin( "lalalala" );
@@ -747,6 +749,13 @@ public class AssetItemTest extends TestCase {
         assertEquals(data, new String(data2));
         assertEquals("x.x", item.getBinaryContentAttachmentFileName());
         assertTrue(item.isBinary());
+
+
+        item.updateContent("qed");
+        item.checkin("");
+        item = getRepo().loadAssetByUUID(item.getUUID());
+        assertEquals("qed", item.getContent());
+
 
     }
 

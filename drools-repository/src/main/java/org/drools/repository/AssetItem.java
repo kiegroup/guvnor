@@ -1,5 +1,6 @@
 package org.drools.repository;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -78,6 +79,9 @@ public class AssetItem extends CategorisableItem {
      */
     public String getContent() throws RulesRepositoryException {
         try {
+        	if (isBinary()) {
+        		return new String(this.getBinaryContentAsBytes());
+        	}
             Node ruleNode = getVersionContentNode();
             if ( ruleNode.hasProperty( CONTENT_PROPERTY_NAME ) ) {
                 Property data = ruleNode.getProperty( CONTENT_PROPERTY_NAME );
@@ -261,6 +265,9 @@ public class AssetItem extends CategorisableItem {
     public AssetItem updateContent(String newRuleContent) throws RulesRepositoryException {
         checkout();
         try {
+        	if (this.isBinary()) {
+        		this.updateBinaryContentAttachment(new ByteArrayInputStream(newRuleContent.getBytes()));
+        	}
             this.node.setProperty( CONTENT_PROPERTY_NAME,
                                    newRuleContent );
             return this;
