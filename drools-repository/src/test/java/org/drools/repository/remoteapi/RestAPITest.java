@@ -134,17 +134,19 @@ public class RestAPITest extends TestCase {
 
 		RestAPI api = new RestAPI(repo);
 		ByteArrayInputStream in = new ByteArrayInputStream("abc".getBytes());
-		api.post("/packages/testRestPost/asset1.drl", in, false, "a comment");
+		api.post("/packages/testRestPost/asset1.drl", in, "a comment");
 
 		AssetItem a = pkg.loadAsset("asset1");
+		assertFalse(a.isBinary());
 		assertEquals("drl", a.getFormat());
 		assertEquals("abc", a.getContent());
 		assertEquals("a comment", a.getCheckinComment());
-		assertFalse(a.isBinary());
+
 
 		in = new ByteArrayInputStream("qed".getBytes());
-		api.post("/packages/testRestPost/asset2.xls", in, true, "a comment");
+		api.post("/packages/testRestPost/asset2.xls", in, "a comment");
 		a = pkg.loadAsset("asset2");
+
 		assertTrue(a.isBinary());
 		String s = new String(a.getBinaryContentAsBytes());
 		assertEquals("qed", s);
@@ -160,7 +162,7 @@ public class RestAPITest extends TestCase {
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		RestAPI api = new RestAPI(repo);
 
-		api.post("/packages/testPostNewPackage/.package", new ByteArrayInputStream("qaz".getBytes()), false, "This is a new package");
+		api.post("/packages/testPostNewPackage/.package", new ByteArrayInputStream("qaz".getBytes()), "This is a new package");
 		PackageItem pkg = repo.loadPackage("testPostNewPackage");
 		assertEquals("qaz", pkg.getHeader());
 
@@ -248,7 +250,7 @@ public class RestAPITest extends TestCase {
 
 
 		//now test it back from the dead
-		api.post("packages/testRestDelete/asset1.drl", new ByteArrayInputStream("123".getBytes()), false, "new comment");
+		api.post("packages/testRestDelete/asset1.drl", new ByteArrayInputStream("123".getBytes()), "new comment");
 		AssetItem ass = pkg.loadAsset("asset1");
 		assertEquals("123", ass.getContent());
 		assertEquals("new comment", ass.getCheckinComment());
@@ -257,7 +259,7 @@ public class RestAPITest extends TestCase {
 		assertEquals(1, l.size());
 
 		try {
-			api.post("packages/testRestDelete/asset1.drl", new ByteArrayInputStream("123".getBytes()), false, "new comment");
+			api.post("packages/testRestDelete/asset1.drl", new ByteArrayInputStream("123".getBytes()),  "new comment");
 			fail("this should be rejected as its not archived.");
 		} catch (RulesRepositoryException e) {
 			assertNotNull(e.getMessage());

@@ -7,7 +7,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
 
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -26,8 +29,21 @@ public class RestAPI {
 
 	private final RulesRepository repo;
 
+	private static Properties TEXT_ASSET_TYPES = loadAssetTypes();
+
 	public RestAPI(RulesRepository repo) {
 		this.repo = repo;
+	}
+
+	private static Properties loadAssetTypes() {
+		Properties p = new Properties();
+		try {
+			p.load(RestAPI.class.getResourceAsStream("text_assets.properties"));
+		} catch (IOException e) {
+			System.err.println("Unable to load asset text types properties.");
+			return null;
+		}
+		return p;
 	}
 
 	/**
@@ -116,7 +132,7 @@ public class RestAPI {
 	/** post is for new content.
 	 * @throws IOException
 	 * @throws RulesRepositoryException */
-	public void post(String path, InputStream in, boolean binary, String comment) throws RulesRepositoryException, IOException {
+	public void post(String path, InputStream in, String comment) throws RulesRepositoryException, IOException {
 		String[] bits = split(path);
 		if (bits[0].equals("packages")) {
 			String fileName = bits[2];
@@ -138,15 +154,21 @@ public class RestAPI {
 					} else {
 						throw new RulesRepositoryException("The file " + path + " already exists, and was not archived.");
 					}
+					if (asset.isBinary()) {
+						asset.updateBinaryContentAttachment(in);
+					} else {
+						asset.updateContent(readContent(in));
+					}
 				} else {
 					asset = pkg.addAsset(a[0], "<added remotely>");
 					asset.updateFormat(a[1]);
+					if (TEXT_ASSET_TYPES.containsKey(a[1])) {
+						asset.updateContent(readContent(in));
+					} else {
+						asset.updateBinaryContentAttachment(in);
+					}
 				}
-				if (binary) {
-					asset.updateBinaryContentAttachment(in);
-				} else {
-					asset.updateContent(readContent(in));
-				}
+
 				asset.checkin(comment);
 			}
 		} else {
@@ -179,7 +201,7 @@ public class RestAPI {
 			PackageItem pkg = repo.loadPackage(bits[1]);
 			if (a[1].equals("package")) {
 				//updating package header
-				if (pkg.getLastModified().after(lastModified)) {
+				if (lastModified != null && pkg.getLastModified().after(lastModified)) {
 					throw new RulesRepositoryException("The package was modified by: " + pkg.getLastContributor() + ", unable to write changes.");
 				}
 				pkg.updateHeader(readContent(in));
@@ -187,7 +209,7 @@ public class RestAPI {
 				repo.save();
 			} else {
 				AssetItem as = pkg.loadAsset(a[0]);
-				if (as.getLastModified().after(lastModified)) {
+				if (lastModified != null && as.getLastModified().after(lastModified)) {
 					throw new RulesRepositoryException("The asset was modified by: " + as.getLastContributor() + ", unable to write changes.");
 				}
 				if (as.isBinary()) {
