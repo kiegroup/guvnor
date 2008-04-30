@@ -3,6 +3,7 @@ package org.drools.brms.server.files;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -17,6 +18,8 @@ public class MockHTTPResponse implements HttpServletResponse {
 	String contentType;
 	Map<String, String> headers = new HashMap<String, String>();
 	int errorCode;
+	StringWriter stringWriter = new StringWriter();
+	private PrintWriter writer = new PrintWriter(stringWriter);
 
 
 	public MockHTTPResponse(OutputStream out) {
@@ -135,8 +138,8 @@ public class MockHTTPResponse implements HttpServletResponse {
 	}
 
 	public PrintWriter getWriter() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+
+		return writer ;
 	}
 
 	public boolean isCommitted() {

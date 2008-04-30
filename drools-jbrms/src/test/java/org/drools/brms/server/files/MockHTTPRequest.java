@@ -2,6 +2,7 @@ package org.drools.brms.server.files;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.Enumeration;
@@ -18,10 +19,17 @@ public class MockHTTPRequest implements HttpServletRequest {
 
 	final private String uri;
 	private Map<String, String> headers;
+	ServletInputStream stream;
 
 	public MockHTTPRequest(String uri, Map<String, String> headers) {
 		this.uri = uri;
 		this.headers = headers;
+	}
+
+	public MockHTTPRequest(String uri, Map<String, String> headers, InputStream in) {
+		this.uri = uri;
+		this.headers = headers;
+		this.stream = new MockInput(in);
 	}
 
 	public String getAuthType() {
@@ -173,8 +181,8 @@ public class MockHTTPRequest implements HttpServletRequest {
 	}
 
 	public ServletInputStream getInputStream() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+
+		return stream ;
 	}
 
 	public Locale getLocale() {
@@ -273,4 +281,19 @@ public class MockHTTPRequest implements HttpServletRequest {
 
 	}
 
+
+	static class MockInput extends ServletInputStream {
+
+		private InputStream stream;
+
+		MockInput(InputStream in) {
+			this.stream = in;
+		}
+
+		public int read() throws IOException {
+			// TODO Auto-generated method stub
+			return stream.read();
+		}
+
+	}
 }

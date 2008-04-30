@@ -18,7 +18,10 @@ package org.drools.brms.server.files;
 
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.security.auth.login.LoginException;
 import javax.servlet.ServletException;
@@ -30,7 +33,6 @@ import org.apache.log4j.Logger;
 import org.apache.util.Base64;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
-import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.remoteapi.Response;
 import org.drools.repository.remoteapi.RestAPI;
 import org.jboss.seam.Component;
@@ -51,8 +53,15 @@ public class RestAPIServlet extends HttpServlet {
     protected void doPost(final HttpServletRequest req,
                           final HttpServletResponse res) throws ServletException,
                                                        IOException {
-
-
+        doAuthorizedAction(req, res, new A() {
+			public void a() throws Exception {
+					res.setContentType( "text/html" );
+					RestAPI api = getAPI();
+					String comment = req.getHeader("Checkin-Comment");
+					api.post(req.getRequestURI(), req.getInputStream(), (comment != null)? comment : "");
+					res.getWriter().write( "OK" );
+			}
+        });
     }
 
 
@@ -76,13 +85,47 @@ public class RestAPIServlet extends HttpServlet {
     }
 
 	@Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+    protected void doPut(final HttpServletRequest req, final HttpServletResponse res)
     		throws ServletException, IOException {
+        doAuthorizedAction(req, res, new A() {
+			public void a() throws Exception {
+					res.setContentType( "text/html" );
+					RestAPI api = getAPI();
+					String comment = req.getHeader("Checkin-Comment");
+					Calendar lastMod = getModified(req.getHeader("Last-Modified"));
+					api.put(req.getRequestURI(), lastMod, req.getInputStream(),  (comment != null)? comment : "");
+					res.getWriter().write( "OK" );
+			}
+        });
     }
 
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
+    Calendar getModified(String f) throws ParseException {
+
+		if (f == null) return null;
+		Calendar c = Calendar.getInstance();
+		SimpleDateFormat sdf = RestAPI.getISODateFormat();
+		try {
+			c.setTime(sdf.parse(f));
+		} catch (ParseException e) {
+			DateFormat df = DateFormat.getInstance();
+			c.setTime(df.parse(f));
+		}
+		return c;
+	}
+
+
+
+	@Override
+    protected void doDelete(final HttpServletRequest req, final HttpServletResponse res)
     		throws ServletException, IOException {
+        doAuthorizedAction(req, res, new A() {
+			public void a() throws Exception {
+					res.setContentType( "text/html" );
+					RestAPI api = getAPI();
+					api.delete(req.getRequestURI());
+					res.getWriter().write( "OK" );
+			}
+        });
     }
 
 

@@ -1,5 +1,6 @@
 package org.drools.brms.server.files;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,8 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.util.Base64;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.jboss.seam.mock.MockHttpServletResponse;
 
 import junit.framework.TestCase;
 
@@ -98,13 +101,110 @@ public class RestAPIServletTest extends TestCase {
 		assertEquals("application/x-download", res.contentType);
 		assertEquals(true, res.containsHeader("Content-Disposition"));
 
+	}
+
+	public void testPost() throws Exception {
+		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
+		PackageItem pkg = repo.createPackage("testPostRestServlet", "");
+
+		HashMap<String, String> headers = new HashMap<String, String>() {
+			{
+				put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
+			}
+		};
+
+		ByteArrayInputStream in = new ByteArrayInputStream("some new content".getBytes());
+		RestAPIServlet serv = new RestAPIServlet();
+		MockHTTPRequest req = new MockHTTPRequest("http://foo/api/packages/testPostRestServlet/asset1.drl", headers, in);
+
+		MockHTTPResponse res = new MockHTTPResponse(null);
+		serv.doPost(req, res);
+
+		assertEquals("OK", res.stringWriter.toString());
+
+		AssetItemIterator it = pkg.listAssetsByFormat(new String[] {"drl"});
+		AssetItem ass = it.next();
+		assertEquals("asset1", ass.getName());
+		assertEquals("drl", ass.getFormat());
+		assertFalse(ass.isBinary());
+		assertEquals("some new content", ass.getContent());
 
 
+		in = new ByteArrayInputStream("more content".getBytes());
+		req = new MockHTTPRequest("http://foo/api/packages/testPostRestServlet/asset2.xls", headers, in);
+		res = new MockHTTPResponse(null);
+		serv.doPost(req, res);
+		assertEquals("OK", res.stringWriter.toString());
+
+		AssetItem ass2 = pkg.loadAsset("asset2");
+		assertEquals("xls", ass2.getFormat());
+		assertTrue(ass2.isBinary());
 
 
-
-
+		String out = new String(ass2.getBinaryContentAsBytes());
+		assertEquals("more content", out);
 
 	}
 
+	public void testPut() throws Exception {
+		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
+		PackageItem pkg = repo.createPackage("testPutRestServlet", "");
+		AssetItem ass = pkg.addAsset("asset1", "abc");
+		ass.updateFormat("drl");
+		ass.checkin("");
+		long ver = ass.getVersionNumber();
+
+		HashMap<String, String> headers = new HashMap<String, String>() {
+			{
+				put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
+				put("Checkin-Comment", "hey ho");
+			}
+		};
+
+		ByteArrayInputStream in = new ByteArrayInputStream("some new content".getBytes());
+		RestAPIServlet serv = new RestAPIServlet();
+		MockHTTPRequest req = new MockHTTPRequest("http://foo/api/packages/testPutRestServlet/asset1.drl", headers, in);
+
+
+		MockHTTPResponse res = new MockHTTPResponse(null);
+		serv.doPut(req, res);
+
+		assertEquals("OK", res.stringWriter.toString());
+
+		ass = pkg.loadAsset("asset1");
+		assertEquals("some new content", ass.getContent());
+		assertEquals(ver + 1, ass.getVersionNumber());
+		assertEquals("hey ho", ass.getCheckinComment());
+	}
+
+
+	public void testDelete() throws Exception {
+		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
+		PackageItem pkg = repo.createPackage("testDeleteRestServlet", "");
+		AssetItem ass = pkg.addAsset("asset1", "abc");
+		ass.updateFormat("drl");
+		ass.checkin("");
+
+		HashMap<String, String> headers = new HashMap<String, String>() {
+			{
+				put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
+			}
+		};
+
+		ByteArrayInputStream in = new ByteArrayInputStream("some new content".getBytes());
+		RestAPIServlet serv = new RestAPIServlet();
+		MockHTTPRequest req = new MockHTTPRequest("http://foo/api/packages/testDeleteRestServlet/asset1.drl", headers, in);
+
+		MockHTTPResponse res = new MockHTTPResponse(null);
+		serv.doDelete(req, res);
+
+		assertEquals("OK", res.stringWriter.toString());
+
+
+
+		pkg = repo.loadPackage("testDeleteRestServlet");
+		assertFalse(pkg.listAssetsByFormat(new String[] {"drl"}).hasNext());
+
+
+	}
 }
