@@ -1,13 +1,13 @@
 package org.drools.brms.server.files;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,19 @@ public class DeploymentURIHelperTest extends TestCase {
         helper = new PackageDeploymentURIHelper("/asset/bar/LATEST");
         assertTrue(helper.isLatest());
         assertEquals("bar", helper.getPackageName());
-        
+
+    }
+
+    public void testGetPackageWithDRL() throws Exception {
+    	String uri = "/org.drools.brms.JBRMS/package/boo/ya+man.drl";
+        PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
+
+        assertTrue(helper.isSource());
+        assertEquals( "ya man", helper.getVersion() );
+        assertEquals( "boo", helper.getPackageName() );
+        assertFalse(helper.isLatest());
+
+
     }
 
 }

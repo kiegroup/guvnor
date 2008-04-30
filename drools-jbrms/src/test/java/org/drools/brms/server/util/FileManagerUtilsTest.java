@@ -134,7 +134,7 @@ public class FileManagerUtilsTest extends TestCase {
 		assertEquals("foo.bar", filename);
 	}
 
-	public void testGetBinaryPackage() throws Exception {
+	public void testGetPackageBinaryAndSource() throws Exception {
 
 		RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper
 				.getSession());
@@ -165,12 +165,26 @@ public class FileManagerUtilsTest extends TestCase {
 		assertEquals("foo", new String(file));
 
 		out = new ByteArrayOutputStream();
+		String drlName = uploadHelper.loadSourcePackage(pkg.getName(), Snapshot.LATEST_SNAPSHOT, true, out);
+		String drl = new String(out.toByteArray());
+		assertEquals(pkg.getName() + ".drl", drlName);
+		assertNotNull(drl);
+		assertTrue(drl.indexOf("import java.util.List") > -1);
+
+		out = new ByteArrayOutputStream();
 		fileName = uploadHelper.loadBinaryPackage(pkg.getName(), "SNAPPY 1",
 				false, out);
 		assertEquals("testGetBinaryPackageServlet_SNAPPY+1.pkg", fileName);
 		file = out.toByteArray();
 		assertNotNull(file);
 		assertEquals("foo", new String(file));
+
+		out = new ByteArrayOutputStream();
+		fileName = uploadHelper.loadSourcePackage(pkg.getName(), "SNAPPY 1", false, out);
+		assertEquals("testGetBinaryPackageServlet_SNAPPY+1.drl", fileName);
+		drl = new String(out.toByteArray());
+		assertTrue(drl.indexOf("import java.util.List") > -1);
+
 
 		Thread.sleep(100);
 		impl.createPackageSnapshot(pkg.getName(), "SNAPX", false, "");

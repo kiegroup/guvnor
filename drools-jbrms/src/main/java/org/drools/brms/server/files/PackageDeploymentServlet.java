@@ -96,7 +96,11 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         System.out.println( "PackageIsLatest: " + helper.isLatest() );
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        String fileName = getFileManager().loadBinaryPackage( helper.getPackageName(),
+        FileManagerUtils fm = getFileManager();
+        String fileName = (helper.isSource()) ? fm.loadBinaryPackage( helper.getPackageName(),
+                                        helper.getVersion(), helper.isLatest(), out )
+                                        :
+                                        fm.loadSourcePackage(helper.getPackageName(),
                                         helper.getVersion(), helper.isLatest(), out );
         response.setContentType( "application/x-download" );
         response.setHeader( "Content-Disposition",

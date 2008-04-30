@@ -36,10 +36,16 @@ public class PackageDeploymentURIHelper {
 
     private String version;
     private String packageName;
+	private boolean source;
 
     public PackageDeploymentURIHelper(String uri) throws UnsupportedEncodingException {
 
         String url = URLDecoder.decode( uri, "UTF-8" );
+
+        if (url.endsWith(".drl")) {
+        	source = true;
+        	url = url.substring(0, url.length() - 4);
+        }
 
         Pattern pattern = Pattern.compile( ".*/(package|asset)/(.*)" );
         Matcher m = pattern.matcher( url );
@@ -62,4 +68,9 @@ public class PackageDeploymentURIHelper {
     public boolean isLatest() {
         return Snapshot.LATEST_SNAPSHOT.equals( version );
     }
+
+	public boolean isSource() {
+
+		return source;
+	}
 }

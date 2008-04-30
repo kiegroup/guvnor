@@ -33,6 +33,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.drools.brms.client.common.HTMLFileManagerFields;
+import org.drools.brms.server.builder.ContentPackageAssembler;
 import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.contenthandler.ModelContentHandler;
 import org.drools.brms.server.util.ClassicDRLImporter;
@@ -165,6 +166,34 @@ public class FileManagerUtils {
             out.write( data );
             out.flush();
             return packageName + "_" + URLEncoder.encode( packageVersion, "UTF-8" ) + ".pkg";
+        }
+
+    }
+
+
+    /**
+     * Load up the approproate package version.
+     * @param packageName The name of the package.
+     * @param packageVersion The version (if it is a snapshot).
+     * @param isLatest true if the latest package binary will be used (ie NOT a snapshot).
+     * @return The filename if its all good.
+     */
+    public String loadSourcePackage(String packageName, String packageVersion, boolean isLatest, OutputStream out) throws IOException {
+        PackageItem item = null;
+        if ( isLatest ) {
+            item = repository.loadPackage( packageName );
+            ContentPackageAssembler asm = new ContentPackageAssembler(item, false);
+            String drl = asm.getDRL();
+            out.write( drl.getBytes() );
+            out.flush();
+            return packageName + ".drl";
+        } else {
+            item = repository.loadPackageSnapshot( packageName, packageVersion );
+            ContentPackageAssembler asm = new ContentPackageAssembler(item, false);
+            String drl = asm.getDRL();
+            out.write( drl.getBytes() );
+            out.flush();
+            return packageName + "_" + URLEncoder.encode( packageVersion, "UTF-8" ) + ".drl";
         }
 
     }
