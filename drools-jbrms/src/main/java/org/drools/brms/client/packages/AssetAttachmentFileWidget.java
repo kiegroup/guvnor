@@ -92,7 +92,7 @@ public abstract class AssetAttachmentFileWidget extends Composite {
         dl.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 Window.open( GWT.getModuleBaseURL() + "asset?" +  HTMLFileManagerFields.FORM_FIELD_UUID + "=" + uuid,
-                             "downloading...", "resizable=no,scrollbars=yes,status=no" );
+                             "downloading", "resizable=no,scrollbars=yes,status=no" );
             }
         });
         layout.addAttribute( "Download current version:", dl );

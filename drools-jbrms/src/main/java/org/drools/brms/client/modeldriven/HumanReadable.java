@@ -56,7 +56,7 @@ public class HumanReadable {
         operatorDisplayMap.put( "|| >=", "or greater than (or equal to)" );
         operatorDisplayMap.put( "|| <=", "or less than (or equal to)" );
         operatorDisplayMap.put( "&& >=", "and greater than (or equal to)" );
-        operatorDisplayMap.put( "&& <=", "or less than (or equal to)" );
+        operatorDisplayMap.put( "&& <=", "and less than (or equal to)" );
         operatorDisplayMap.put( "&& contains", "and contains" );
         operatorDisplayMap.put( "|| contains", "or contains" );
         operatorDisplayMap.put( "&& matches", "and matches" );
