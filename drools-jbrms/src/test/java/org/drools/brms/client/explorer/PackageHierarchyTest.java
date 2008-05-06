@@ -1,6 +1,7 @@
 package org.drools.brms.client.explorer;
 
 import org.drools.brms.client.explorer.PackageHierarchy.Folder;
+import org.drools.brms.client.rpc.PackageConfigData;
 
 import junit.framework.TestCase;
 
@@ -8,25 +9,29 @@ public class PackageHierarchyTest extends TestCase {
 
 	public void testSimple() {
 		PackageHierarchy h = new PackageHierarchy();
-		h.addPackage("com.foo");
+		h.addPackage(new PackageConfigData("com.foo"));
 		Folder root = h.root;
 
 		assertEquals(1, root.children.size());
 		Folder f = (Folder) root.children.get(0);
+		assertEquals(null, f.conf);
 		assertEquals("com", f.name);
 		assertEquals(1, f.children.size());
 		f = (Folder) f.children.get(0);
 		assertEquals("foo", f.name);
+		assertNotNull(f.conf);
 
 
-		h.addPackage("com.bar");
+		h.addPackage(new PackageConfigData("com.bar"));
 		f = (Folder) root.children.get(0);
 		assertEquals("com", f.name);
+		assertNull(f.conf);
 		assertEquals(2, f.children.size());
 		f = (Folder) f.children.get(1);
 		assertEquals("bar", f.name);
+		assertNotNull(f.conf);
 
-		h.addPackage("goo.bar.baz");
+		h.addPackage(new PackageConfigData("goo.bar.baz"));
 		assertEquals(2, root.children.size());
 		f = (Folder) root.children.get(1);
 		assertEquals("goo", f.name);
@@ -40,7 +45,7 @@ public class PackageHierarchyTest extends TestCase {
 		assertEquals("baz", f.name);
 
 
-		h.addPackage("goo.char.baz");
+		h.addPackage(new PackageConfigData("goo.char.baz"));
 		assertEquals(2, root.children.size());
 		f = (Folder) root.children.get(1);
 		assertEquals(2, f.children.size());
@@ -50,7 +55,7 @@ public class PackageHierarchyTest extends TestCase {
 		f = (Folder) f.children.get(0);
 		assertEquals("baz", f.name);
 
-		h.addPackage("Whee");
+		h.addPackage(new PackageConfigData("Whee"));
 		assertEquals(3, root.children.size());
 
 
@@ -59,8 +64,8 @@ public class PackageHierarchyTest extends TestCase {
 	public void testComplex() {
 
 		PackageHierarchy h = new PackageHierarchy();
-		h.addPackage("com.bar");
-		h.addPackage("com.bar.baz");
+		h.addPackage(new PackageConfigData("com.bar"));
+		h.addPackage(new PackageConfigData("com.bar.baz"));
 		assertEquals(1, h.root.children.size());
 		Folder f = (Folder) h.root.children.get(0);
 		assertEquals(2, f.children.size());
