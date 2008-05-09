@@ -1,6 +1,7 @@
 package org.drools.brms.client.explorer;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.brms.client.LoggedInUserInfo;
@@ -21,35 +22,24 @@ import org.drools.brms.client.rulelist.AssetItemGrid;
 import org.drools.brms.client.rulelist.AssetItemGridDataLoader;
 import org.drools.brms.client.rulelist.EditItemEvent;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Margins;
-import com.gwtext.client.core.Position;
 import com.gwtext.client.core.RegionPosition;
 import com.gwtext.client.data.Node;
-import com.gwtext.client.widgets.BoxComponent;
-import com.gwtext.client.widgets.Component;
-import com.gwtext.client.widgets.Container;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.QuickTips;
-import com.gwtext.client.widgets.TabPanel;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarMenuButton;
-import com.gwtext.client.widgets.ToolbarTextItem;
-import com.gwtext.client.widgets.event.PanelListener;
 import com.gwtext.client.widgets.event.PanelListenerAdapter;
 import com.gwtext.client.widgets.form.Field;
 import com.gwtext.client.widgets.layout.AccordionLayout;
 import com.gwtext.client.widgets.layout.BorderLayout;
 import com.gwtext.client.widgets.layout.BorderLayoutData;
 import com.gwtext.client.widgets.layout.FitLayout;
-import com.gwtext.client.widgets.layout.HorizontalLayout;
-import com.gwtext.client.widgets.layout.VerticalLayout;
 import com.gwtext.client.widgets.menu.BaseItem;
 import com.gwtext.client.widgets.menu.Item;
 import com.gwtext.client.widgets.menu.Menu;
@@ -555,25 +545,22 @@ public class ExplorerLayoutManager {
 					return;
 				}
 				final PackageConfigData conf = (PackageConfigData) node.getUserObject();
-				RepositoryServiceFactory.getService().listSnapshots(conf.name, new GenericCallback() {
-					public void onSuccess(Object data) {
-						final SnapshotInfo[] snaps = (SnapshotInfo[]) data;
-						for (int i = 0; i < snaps.length; i++) {
-							final SnapshotInfo snapInfo = snaps[i];
-							TreeNode snap = new TreeNode();
-							snap.setTooltip(snapInfo.comment);
-							snap.setText(snapInfo.name);
-
-							snap.setUserObject(new Object[] {snapInfo, conf});
-
-							node.appendChild(snap);
-
+				if (conf != null) {
+					RepositoryServiceFactory.getService().listSnapshots(conf.name, new GenericCallback() {
+						public void onSuccess(Object data) {
+							final SnapshotInfo[] snaps = (SnapshotInfo[]) data;
+							for (int i = 0; i < snaps.length; i++) {
+								final SnapshotInfo snapInfo = snaps[i];
+								TreeNode snap = new TreeNode();
+								snap.setTooltip(snapInfo.comment);
+								snap.setText(snapInfo.name);
+								snap.setUserObject(new Object[] {snapInfo, conf});
+								node.appendChild(snap);
+							}
+							node.removeChild(node.getFirstChild());
 						}
-						node.removeChild(node.getFirstChild());
-
-
-					}
-				});
+					});
+				}
 
 			}
 
@@ -596,6 +583,7 @@ public class ExplorerLayoutManager {
                 new GenericCallback() {
                     public void onSuccess(Object data) {
                         PackageConfigData value[] = (PackageConfigData[]) data;
+
                         for (int i = 0; i < value.length; i++) {
                         	TreeNode pkg = new TreeNode(value[i].name);
                         	pkg.setIcon("images/snapshot_small.gif");
@@ -693,12 +681,37 @@ public class ExplorerLayoutManager {
                 new GenericCallback() {
                     public void onSuccess(Object data) {
                         PackageConfigData value[] = (PackageConfigData[]) data;
+                        PackageHierarchy ph = new PackageHierarchy();
+
                         for (int i = 0; i < value.length; i++) {
-                            root.appendChild(loadPackage(root, value[i]));
+                            //root.appendChild(loadPackage(root, value[i]));
+                        	ph.addPackage(value[i]);
                         }
+                        for (Iterator iterator = ph.root.children.iterator(); iterator
+								.hasNext();) {
+							PackageHierarchy.Folder hf = (PackageHierarchy.Folder) iterator.next();
+							buildOutTree(root, hf);
+						}
+
+                        //root.appendChild(loadPackage(root, value[i]));
                         root.expand();
                     }
                 });
+	}
+
+	private void buildOutTree(TreeNode root, PackageHierarchy.Folder fldr) {
+		if (fldr.conf != null) {
+			root.appendChild(loadPackage(root, fldr.name, fldr.conf));
+		} else {
+			TreeNode tn = new TreeNode();
+			tn.setText(fldr.name);
+			tn.setIcon("images/empty_package.gif");
+			root.appendChild(tn);
+			for (Iterator iterator = fldr.children.iterator(); iterator.hasNext();) {
+				PackageHierarchy.Folder c = (PackageHierarchy.Folder) iterator.next();
+				buildOutTree(tn, c);
+			}
+		}
 	}
 
 	private String key(String[] fmts,
@@ -711,9 +724,9 @@ public class ExplorerLayoutManager {
 	}
 
 	private TreeNode loadPackage(final TreeNode root,
-			PackageConfigData packagedata) {
-		TreeNode pn = ExplorerNodeConfig.getPackageItemStructure(packagedata.name, packagedata.uuid);
-		pn.setUserObject(packagedata);
+			String name, PackageConfigData conf) {
+		TreeNode pn = ExplorerNodeConfig.getPackageItemStructure(name, conf.uuid);
+		pn.setUserObject(conf);
 		return pn;
 	}
 

@@ -1870,6 +1870,19 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals("cheese", p.getLikes());
 	}
 
+	public void testPackageNameSorting() {
+		PackageConfigData c1 = new PackageConfigData("org.foo");
+		PackageConfigData c2 = new PackageConfigData("org.foo.bar");
+
+		List<PackageConfigData> ls = new ArrayList<PackageConfigData>();
+		ls.add(c2);
+		ls.add(c1);
+		ServiceImplementation serv = new ServiceImplementation();
+		serv.sortPackages(ls);
+		assertEquals(c1, ls.get(0));
+		assertEquals(c2, ls.get(1));
+	}
+
 
 	private ServiceImplementation getService() throws Exception {
 		ServiceImplementation impl = new ServiceImplementation();

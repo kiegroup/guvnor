@@ -35,9 +35,6 @@ public class PackageHierarchy {
 	public static class Folder {
 		String name;
 		PackageConfigData conf;
-		boolean hasChildren() {
-			return children.size() > 0;
-		}
 
 		public Folder add(String f, PackageConfigData conf) {
 			Folder n = new Folder();

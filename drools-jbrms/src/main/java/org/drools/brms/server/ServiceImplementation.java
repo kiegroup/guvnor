@@ -281,7 +281,15 @@ public class ServiceImplementation
             }
         }
 
-        Collections.sort( result, new Comparator<Object>() {
+        sortPackages(result);
+        PackageConfigData[] resultArr = result.toArray( new PackageConfigData[result.size()] );
+		return resultArr;
+	}
+
+
+
+	void sortPackages(List<PackageConfigData> result) {
+		Collections.sort( result, new Comparator<Object>() {
 
             public int compare(final Object o1,
                                final Object o2) {
@@ -291,8 +299,6 @@ public class ServiceImplementation
             }
 
         });
-        PackageConfigData[] resultArr = result.toArray( new PackageConfigData[result.size()] );
-		return resultArr;
 	}
 
 
