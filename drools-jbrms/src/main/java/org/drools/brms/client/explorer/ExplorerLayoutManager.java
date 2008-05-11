@@ -583,18 +583,49 @@ public class ExplorerLayoutManager {
                 new GenericCallback() {
                     public void onSuccess(Object data) {
                         PackageConfigData value[] = (PackageConfigData[]) data;
+                        PackageHierarchy ph = new PackageHierarchy();
 
                         for (int i = 0; i < value.length; i++) {
-                        	TreeNode pkg = new TreeNode(value[i].name);
-                        	pkg.setIcon("images/snapshot_small.gif");
-                        	pkg.setUserObject(value[i]);
-                        	pkg.appendChild(new TreeNode("Please wait..."));
-                            root.appendChild(pkg);
+                            //root.appendChild(loadPackage(root, value[i]));
+                        	ph.addPackage(value[i]);
                         }
+                        for (Iterator iterator = ph.root.children.iterator(); iterator
+								.hasNext();) {
+							PackageHierarchy.Folder hf = (PackageHierarchy.Folder) iterator.next();
+							buildDeploymentTree(root, hf);
+						}
+
+//                        for (int i = 0; i < value.length; i++) {
+//                        	TreeNode pkg = new TreeNode(value[i].name);
+//                        	pkg.setIcon("images/snapshot_small.gif");
+//                        	pkg.setUserObject(value[i]);
+//                        	pkg.appendChild(new TreeNode("Please wait..."));
+//                            root.appendChild(pkg);
+//                        }
                         root.expand();
                     }
                 });
 	}
+
+	private void buildDeploymentTree(TreeNode root, PackageHierarchy.Folder fldr) {
+		if (fldr.conf != null) {
+        	TreeNode pkg = new TreeNode(fldr.conf.name);
+        	pkg.setIcon("images/snapshot_small.gif");
+        	pkg.setUserObject(fldr.conf);
+        	pkg.appendChild(new TreeNode("Please wait..."));
+            root.appendChild(pkg);
+		} else {
+			TreeNode tn = new TreeNode();
+			tn.setText(fldr.name);
+			tn.setIcon("images/empty_package.gif");
+			root.appendChild(tn);
+			for (Iterator iterator = fldr.children.iterator(); iterator.hasNext();) {
+				PackageHierarchy.Folder c = (PackageHierarchy.Folder) iterator.next();
+				buildDeploymentTree(tn, c);
+			}
+		}
+	}
+
 
 
     /**
@@ -690,7 +721,7 @@ public class ExplorerLayoutManager {
                         for (Iterator iterator = ph.root.children.iterator(); iterator
 								.hasNext();) {
 							PackageHierarchy.Folder hf = (PackageHierarchy.Folder) iterator.next();
-							buildOutTree(root, hf);
+							buildPkgTree(root, hf);
 						}
 
                         //root.appendChild(loadPackage(root, value[i]));
@@ -699,7 +730,7 @@ public class ExplorerLayoutManager {
                 });
 	}
 
-	private void buildOutTree(TreeNode root, PackageHierarchy.Folder fldr) {
+	private void buildPkgTree(TreeNode root, PackageHierarchy.Folder fldr) {
 		if (fldr.conf != null) {
 			root.appendChild(loadPackage(root, fldr.name, fldr.conf));
 		} else {
@@ -709,10 +740,12 @@ public class ExplorerLayoutManager {
 			root.appendChild(tn);
 			for (Iterator iterator = fldr.children.iterator(); iterator.hasNext();) {
 				PackageHierarchy.Folder c = (PackageHierarchy.Folder) iterator.next();
-				buildOutTree(tn, c);
+				buildPkgTree(tn, c);
 			}
 		}
 	}
+
+
 
 	private String key(String[] fmts,
 			PackageConfigData userObject) {
