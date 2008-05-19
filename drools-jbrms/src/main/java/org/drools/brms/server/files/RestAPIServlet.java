@@ -151,22 +151,37 @@ public class RestAPIServlet extends HttpServlet {
 
 
 
-	RestAPI getAPI()  {
+	/**
+	 * Get a repository instance.
+	 * This will use the Seam identity component, or it will just
+	 * return a repo for test puposes if seam is not active.
+	 */
+	static RulesRepository getRepository() {
 		if (Contexts.isApplicationContextActive()) {
 			RulesRepository repo = (RulesRepository) Component.getInstance( "repository" );
-			return new RestAPI(repo);
+			return repo;
 		} else {
 			try {
 				RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) );
-				return new RestAPI(repo);
+				return repo;
 			} catch (Exception e) {
-				throw new IllegalStateException("Unable to run tests", e);
+				throw new IllegalStateException("Unable to get repo to run tests", e);
 			}
 
 		}
+
 	}
 
-    boolean allowUser(String auth) {
+	RestAPI getAPI()  {
+		return new RestAPI(getRepository());
+	}
+
+	/**
+	 * Check the users credentials.
+	 * This takes the Authorization string from the HTTP request header (the whole lot).
+	 * uses Seam Identity component to set the user up.
+	 */
+    public static boolean allowUser(String auth) {
 		if (auth == null) return false;  // no auth
         if (!auth.toUpperCase().startsWith("BASIC "))
           return false;  // we only do BASIC
@@ -195,7 +210,7 @@ public class RestAPIServlet extends HttpServlet {
 
 
 
-	String[] unpack(String auth) {
+	static String[] unpack(String auth) {
 
         // Get encoded user and password, comes after "BASIC "
         String userpassEncoded = auth.substring(6);

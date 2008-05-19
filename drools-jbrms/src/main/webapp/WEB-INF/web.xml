@@ -34,6 +34,11 @@
 		<servlet-name>RepositoryBackupServlet</servlet-name>
 		<servlet-class>org.drools.brms.server.files.RepositoryBackupServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>WebdavServlet</servlet-name>
+		<servlet-class>net.sf.webdav.WebdavServlet</servlet-class>
+	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>GWTRemotingServlet</servlet-name>
 		<url-pattern>/org.drools.brms.JBRMS/jbrmsService</url-pattern>
@@ -50,10 +55,14 @@
 		<servlet-name>RepositoryBackupServlet</servlet-name>
 		<url-pattern>/org.drools.brms.JBRMS/backup</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>WebdavServlet</servlet-name>
+		<url-pattern>/org.drools.brms.JBRMS/webdav</url-pattern>
+	</servlet-mapping>
 
     <session-config>
         <session-timeout>180</session-timeout>
     </session-config>
-    
+
 
 </web-app>
