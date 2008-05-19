@@ -747,6 +747,28 @@ public class PackageItem extends VersionableItem {
         }
     }
 
+    /**
+     * Creates a nested package.
+     */
+	public PackageItem createPackage(String subPackageName) throws RepositoryException {
+
+		node.checkout();
+        Node rulePackageNode = node.addNode( subPackageName, PackageItem.RULE_PACKAGE_TYPE_NAME );
+
+        rulePackageNode.addNode( PackageItem.ASSET_FOLDER_NAME, "drools:versionableAssetFolder" );
+
+        rulePackageNode.setProperty( PackageItem.TITLE_PROPERTY_NAME, subPackageName );
+
+        rulePackageNode.setProperty( AssetItem.DESCRIPTION_PROPERTY_NAME, "" );
+        rulePackageNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME, PackageItem.PACKAGE_FORMAT );
+        rulePackageNode.setProperty( PackageItem.CREATOR_PROPERTY_NAME, this.rulesRepository.getSession().getUserID() );
+        Calendar lastModified = Calendar.getInstance();
+        rulePackageNode.setProperty( PackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified );
+
+
+		return new PackageItem(this.rulesRepository, rulePackageNode);
+	}
+
 
 
 

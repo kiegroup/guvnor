@@ -239,7 +239,7 @@ public class RestAPI {
 			asset.checkin("<removed remotely>");
 		}
 		else {
-			throw new IllegalArgumentException("Unknown rest path for put");
+			throw new IllegalArgumentException("Unknown rest path for delete");
 		}
 
 	}

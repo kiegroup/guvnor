@@ -36,6 +36,10 @@ public class PackageItemTest extends TestCase {
         p.addAsset("Waa", "");
         repo.save();
 
+
+        PackageItem pkgNested = p.createPackage("NestedGoodness");
+        assertNotNull(pkgNested);
+
         int n = iteratorToList(repo.listPackages()).size();
 
         p = repo.loadPackage("removeMe");
