@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <!-- README: if you have problems running the build.
-  you may need to go up one directory, and run "mvn install" to 
+  you may need to go up one directory, and run "mvn install" to
   make sure all the deps are ready.
-  
+
   If by chance the slackers who maintain the other projects have left the build slight broken,
-  you can skip the tests by doing: 
-  
-  "mvn -Dmaven.test.skip=true install" and it should work. 
-  
+  you can skip the tests by doing:
+
+  "mvn -Dmaven.test.skip=true install" and it should work.
+
   -->
 
   <modelVersion>4.0.0</modelVersion>
@@ -26,7 +26,7 @@
   <name>Drools :: Business Rule Management System</name>
 
   <build>
-    <finalName>drools-jbrms</finalName>    
+    <finalName>drools-jbrms</finalName>
   </build>
 
 
@@ -35,11 +35,11 @@
       <id>basedir</id>
       <url>file://${basedir}/../m2_repo</url>
     </repository>
-  </repositories> 
+  </repositories>
 
   <dependencies>
     <!-- Internal dependencies -->
-    
+
     <!-- first the deps for the repo API itself (Jackrabbit based) -->
     <dependency>
       <groupId>org.drools</groupId>
@@ -49,41 +49,41 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>          
-    </dependency>    
-    
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
-    </dependency>   
+    </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-analytics</artifactId>
-    </dependency>        
-    
-    <!-- jackrabbit (this really should come from repository, not sure why not) 
+    </dependency>
+
+    <!-- jackrabbit (this really should come from repository, not sure why not)
     <dependency>
       <groupId>org.apache.jackrabbit</groupId>
       <artifactId>jackrabbit-core</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.tmatesoft</groupId>
       <artifactId>svnkit</artifactId>
-    </dependency>  
-    
+    </dependency>
+
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-    </dependency>  
+    </dependency>
 
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
-      </dependency>     
+      </dependency>
 	-->
-	
+
     <!-- External dependencies -->
     <!-- now the deps for the web app -->
     <dependency>
@@ -113,7 +113,13 @@
 		<version>2.0.5312</version>
 		<scope>test</scope>
 	</dependency>
-   
+
+	<dependency>
+	    <groupId>net.sf.webdav-servlet</groupId>
+	    <artifactId>webdav-servlet</artifactId>
+	    <version>1.2</version>
+	</dependency>
+
    <!-- seam follows -->
 <!--   <dependency>
     	<groupId>jboss.seam.profiles</groupId>
@@ -139,7 +145,7 @@
 		<artifactId>jta</artifactId>
 		<version>1.0.1B</version>
 	</dependency>
-	
+
 	 <dependency>
 	  <groupId>org.hibernate</groupId>
 	  <artifactId>hibernate</artifactId>
@@ -203,14 +209,14 @@
 		<groupId>javassist</groupId>
 		<artifactId>javassist</artifactId>
 		<version>3.4.GA</version>
-			<scope>runtime</scope>	
+			<scope>runtime</scope>
 	</dependency>
 
 	<dependency>
 		<groupId>dom4j</groupId>
 		<artifactId>dom4j</artifactId>
 		<version>1.6</version>
-			<scope>runtime</scope>	
+			<scope>runtime</scope>
 	</dependency>
 
 	<dependency>
@@ -224,16 +230,16 @@
 		<artifactId>el-ri</artifactId>
 		<version>1.2</version>
 		<scope>runtime</scope>
-	</dependency>  
+	</dependency>
 	<!-- NOT needed as we use janino -->
 	<dependency>
       	<groupId>org.eclipse.jdt</groupId>
       	<artifactId>core</artifactId>
       	<scope>provided</scope>
-	</dependency>  
-	
+	</dependency>
+
 	<!-- NOT needed due to licencing -->
-	<dependency>	
+	<dependency>
 	        <groupId>org.tmatesoft</groupId>
         	<artifactId>svnkit</artifactId>
         	<scope>provided</scope>
