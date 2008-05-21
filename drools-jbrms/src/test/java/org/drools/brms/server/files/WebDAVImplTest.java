@@ -29,6 +29,20 @@ public class WebDAVImplTest extends TestCase {
 
 	}
 
+	public void testBadCopy() throws Exception {
+		//OSX does stupid shit when copying in the same directory
+		//for instance, it creates the copy as foobar.x copy - totally hosing
+		//the file extension.
+		WebDAVImpl imp = new WebDAVImpl(null);
+		try {
+			imp.objectExists("/foo/webdav/packages/foobar/Something.drl copy");
+			fail("should not be allowed");
+		} catch (IllegalArgumentException e) {
+			assertNotNull(e.getMessage());
+		}
+
+	}
+
 	public void testListRoot() throws Exception {
 		WebDAVImpl imp = new WebDAVImpl(null);
 		String[] children = imp.getChildrenNames("foobar/webdav");

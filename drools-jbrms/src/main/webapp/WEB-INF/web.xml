@@ -38,6 +38,11 @@
 		<servlet-name>WebdavServlet</servlet-name>
 		<servlet-class>net.sf.webdav.WebdavServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>RestAPIServlet</servlet-name>
+		<servlet-class>	org.drools.brms.server.files.RestAPIServlet</servlet-class>
+	</servlet>
+
 
 	<servlet-mapping>
 		<servlet-name>GWTRemotingServlet</servlet-name>
@@ -58,6 +63,10 @@
 	<servlet-mapping>
 		<servlet-name>WebdavServlet</servlet-name>
 		<url-pattern>/org.drools.brms.JBRMS/webdav</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>RestAPIServlet</servlet-name>
+		<url-pattern>/org.drools.brms.JBRMS/api</url-pattern>
 	</servlet-mapping>
 
     <session-config>

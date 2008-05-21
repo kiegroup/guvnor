@@ -7,17 +7,23 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.webdav.IWebdavStorage;
 
+import org.apache.commons.io.IOUtils;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 
 public class WebDAVImpl implements IWebdavStorage {
+
+
+	static Map<String, byte[]> osxDoubleData = new HashMap<String, byte[]>();
 
 
     final ThreadLocal<RulesRepository> tlRepo = new ThreadLocal<RulesRepository>();;
@@ -85,6 +91,7 @@ public class WebDAVImpl implements IWebdavStorage {
 
             //for mac OSX, ignore these resource fork files
             if (path[2].startsWith("._")) {
+                this.osxDoubleData.put(uri, null);
                 return;
             }
             if (pkg.containsAsset(resource[0])) {
@@ -237,6 +244,9 @@ public class WebDAVImpl implements IWebdavStorage {
     	if (!path[0].equals("packages")) return false;
         if (repository.containsPackage(path[1])) {
         	PackageItem pkg = repository.loadPackage(path[1]);
+        	if (path[2].startsWith("._")) {
+        		return osxDoubleData.containsKey(uri);
+        	}
         	return pkg.containsAsset(AssetItem.getAssetNameFromFileName(path[2])[0]);
         } else {
         	return false;
@@ -245,13 +255,10 @@ public class WebDAVImpl implements IWebdavStorage {
     }
 
     public boolean objectExists(String uri) throws IOException {
-    	boolean result = internalObjectExists(uri);
-    	if (uri.contains("Premium_Colour_Combinations.brl copy")) {
-    		System.out.println("Object exists:" + result);
-    		throw new IllegalStateException("URI : " + uri);
+    	if (uri.endsWith(" copy")) {
+    		throw new IllegalArgumentException("OSX is not capable of copy and pasting without breaking the file extension.");
     	}
-    	return result;
-
+    	return internalObjectExists(uri);
     }
 
     public boolean internalObjectExists(String uri) throws IOException {
@@ -277,6 +284,9 @@ public class WebDAVImpl implements IWebdavStorage {
                 return !pkg.isArchived();
             } else {
                 PackageItem pkg = repository.loadPackage(path[1]);
+                if (path[2].startsWith("._")){
+                	return this.osxDoubleData.containsKey(uri);
+                }
                 String assetName = AssetItem.getAssetNameFromFileName(path[2])[0];
 
                 return pkg.containsAsset(assetName) && !pkg.loadAsset(assetName).isArchived();
@@ -296,7 +306,11 @@ public class WebDAVImpl implements IWebdavStorage {
             PackageItem pkg = repository.loadPackage(packName);
             if (path.length == 3) {
                 //delete asset
-                String asset = path[2].split("\\.")[0];
+            	if (path[2].startsWith("._")) {
+            		osxDoubleData.remove(uri);
+            		return;
+            	}
+                String asset = AssetItem.getAssetNameFromFileName(path[2])[0];
                 AssetItem item = pkg.loadAsset(asset);
                 item.archiveItem(true);
                 item.checkin("");
@@ -329,6 +343,10 @@ public class WebDAVImpl implements IWebdavStorage {
             }
 
              String packageName = path[1];
+             if (path[2].startsWith("._")) {
+            	 this.osxDoubleData.put(uri, IOUtils.toByteArray(content));
+            	 return;
+             }
              String[] assetName = AssetItem.getAssetNameFromFileName(path[2]);
              PackageItem pkg = repository.loadPackage(packageName);
              AssetItem asset = pkg.loadAsset(assetName[0]);
