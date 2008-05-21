@@ -16,280 +16,356 @@ import net.sf.webdav.IWebdavStorage;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
-import org.drools.rule.TimeMachine;
 
 public class WebDAVImpl implements IWebdavStorage {
 
-	final RulesRepository repository;
 
-	TimeMachine time = new TimeMachine();
+    final ThreadLocal<RulesRepository> tlRepo = new ThreadLocal<RulesRepository>();;
 
-	public WebDAVImpl() {
-		repository = RestAPIServlet.getRepository();
-	}
 
-	public WebDAVImpl(RulesRepository testRepo) {
-		repository = testRepo;
-	}
+    public WebDAVImpl() {
+    }
 
-	public void begin(Principal pr, Hashtable params) throws Exception {
-		//do nothing.
-	}
+    public WebDAVImpl(RulesRepository testRepo) {
+        tlRepo.set(testRepo);
+    }
 
-	public void checkAuthentication() throws SecurityException {
-		//already done
-	}
+    RulesRepository getRepo() {
+    	return tlRepo.get();
+    }
 
-	public void commit() throws IOException {
-		repository.save();
-	}
+    public void begin(Principal pr, Hashtable params) throws Exception {
+    	tlRepo.set(RestAPIServlet.getRepository());
+    }
 
-	public void createFolder(String uri) throws IOException {
+    public void checkAuthentication() throws SecurityException {
+        //already done
+    }
+
+    public void commit() throws IOException {
+    	System.out.println("COMMIT");
+
+        getRepo().save();
+        tlRepo.set(null);
+    }
+
+    public void createFolder(String uri) throws IOException {
+        System.out.println("creating folder:" + uri);
+        String[] path = getPath(uri);
+        if (path[0].equals("packages")) {
+            if (path.length > 2) {
+                throw new UnsupportedOperationException("Can't nest packages.");
+            }
+            RulesRepository repository = getRepo();
+            if (repository.containsPackage(path[1])) {
+                PackageItem pkg = repository.loadPackage(path[1]);
+                pkg.archiveItem(false);
+                pkg.checkin("<restored by webdav>");
+            } else {
+                repository.createPackage(path[1], "<from webdav>");
+            }
+        } else {
+            throw new UnsupportedOperationException("Not able to create folders here...");
+        }
+    }
+
+    public void createResource(String uri) throws IOException {
+        System.out.println("creating resource:" + uri);
+        //for mac OSX, ignore these annoying things
+        if (uri.endsWith(".DS_Store")) return;
+        String[] path = getPath(uri);
+        if (path[0].equals("packages")) {
+            if (path.length > 3) {
+                throw new UnsupportedOperationException("Can't do nested packages.");
+            }
+            String packageName = path[1];
+            String[] resource = AssetItem.getAssetNameFromFileName(path[2]);
+            RulesRepository repository = getRepo();
+            PackageItem pkg = repository.loadPackage(packageName);
+
+            //for mac OSX, ignore these resource fork files
+            if (path[2].startsWith("._")) {
+                return;
+            }
+            if (pkg.containsAsset(resource[0])) {
+
+                AssetItem lazarus = pkg.loadAsset(resource[0]);
+                lazarus.archiveItem(false);
+                lazarus.checkin("<from webdav>");
+            } else {
+                AssetItem asset = pkg.addAsset(resource[0], "");
+                asset.updateFormat(resource[1]);
+                asset.checkin("<from webdav>");
+            }
+
+        } else {
+            throw new UnsupportedOperationException("Can't add assets here.");
+        }
+    }
+
+
+    public String[] getChildrenNames(String uri) throws IOException {
+    	System.out.println("getChildrenNames :" + uri);
+
+    	RulesRepository repository = getRepo();
+        String[] path = getPath(uri);
+        List<String> result = new ArrayList<String>();
+        if (path.length == 0) {
+            return new String[] {"packages"};
+        }
+        if (path[0].equals("packages")) {
+            if (path.length > 2) {
+                return null;
+            }
+            if (path.length == 1) {
+                Iterator<PackageItem> it = repository.listPackages();
+                while(it.hasNext()) {
+                    PackageItem pkg = it.next();
+                    if (!pkg.isArchived()) {
+                        result.add(pkg.getName());
+                    }
+                }
+            } else {
+                PackageItem pkg = repository.loadPackage(path[1]);
+                Iterator<AssetItem> it = pkg.getAssets();
+                while(it.hasNext()) {
+                    AssetItem asset = it.next();
+                    if (!asset.isArchived()) {
+                        result.add(asset.getName() + "." + asset.getFormat());
+                    }
+                }
+            }
+            return result.toArray(new String[result.size()]);
+        } else {
+            throw new UnsupportedOperationException("Not implemented yet");
+        }
+    }
+
+    public Date getCreationDate(String uri) throws IOException {
+    	System.out.println("getCreationDate :" + uri);
+
+    	RulesRepository repository = getRepo();
+        String[] path = getPath(uri);
+        if (path.length < 2) return new Date();
+        if (path[0].equals("packages")) {
+            PackageItem pkg = repository.loadPackage(path[1]);
+            if (path.length == 2) {
+                //dealing with package
+                return pkg.getCreatedDate().getTime();
+            } else {
+                String fileName = path[2];
+                String assetName = fileName.split("\\.")[0];
+                AssetItem asset = pkg.loadAsset(assetName);
+                return asset.getCreatedDate().getTime();
+            }
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public Date getLastModified(String uri) throws IOException {
+    	System.out.println("getLastModified :" + uri);
+
+    	RulesRepository repository = getRepo();
+        String[] path = getPath(uri);
+        if (path.length < 2) return new Date();
+        if (path[0].equals("packages")) {
+            PackageItem pkg = repository.loadPackage(path[1]);
+            if (path.length == 2) {
+                //dealing with package
+                return pkg.getLastModified().getTime();
+            } else {
+                String fileName = path[2];
+                String assetName = AssetItem.getAssetNameFromFileName(fileName)[0];
+                AssetItem asset = pkg.loadAsset(assetName);
+                return asset.getLastModified().getTime();
+            }
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+
+
+    public InputStream getResourceContent(String uri) throws IOException {
+        System.out.println("get resource content:" + uri);
+        return getContent(uri);
+    }
+
+	private InputStream getContent(String uri) {
+		RulesRepository repository = getRepo();
 		String[] path = getPath(uri);
-		if (path[0].equals("packages")) {
-			if (path.length > 2) {
-				throw new UnsupportedOperationException("Can't nest packages.");
-			}
-			if (repository.containsPackage(path[1])) {
-				PackageItem pkg = repository.loadPackage(path[1]);
-				pkg.archiveItem(false);
-				pkg.checkin("<restored by webdav>");
-			} else {
-				repository.createPackage(path[1], "<from webdav>");
-			}
-		} else {
-			throw new UnsupportedOperationException("Not able to create folders here...");
-		}
+        if (path[0].equals("packages")) {
+            String pkg = path[1];
+            String asset = AssetItem.getAssetNameFromFileName(path[2])[0];
+            AssetItem assetItem  = repository.loadPackage(pkg).loadAsset(asset);
+            if (assetItem.isBinary()) {
+                return assetItem.getBinaryContentAttachment();
+            } else {
+                return new ByteArrayInputStream(assetItem.getContent().getBytes());
+            }
+        } else {
+            throw new UnsupportedOperationException();
+        }
 	}
 
-	public void createResource(String uri) throws IOException {
-		String[] path = getPath(uri);
-		if (path[0].equals("packages")) {
-			if (path.length > 3) {
-				throw new UnsupportedOperationException("Can't do nested packages.");
-			}
-			String packageName = path[1];
-			String[] resource = path[2].split("\\.");
+    public long getResourceLength(String uri) throws IOException {
+    	System.out.println("get resource length :" + uri);
 
-			PackageItem pkg = repository.loadPackage(packageName);
-			if (pkg.containsAsset(resource[0])) {
-				AssetItem lazarus = pkg.loadAsset(resource[0]);
-				lazarus.archiveItem(false);
-				lazarus.checkin("<from webdav>");
-			} else {
-				AssetItem asset = pkg.addAsset(resource[0], "");
-				asset.updateFormat(resource[1]);
-				asset.checkin("<from webdav>");
-			}
+    	return 0;
+    }
 
-		} else {
-			throw new UnsupportedOperationException("Can't add assets here.");
-		}
-	}
+    public boolean isFolder(String uri) throws IOException {
+    	System.out.println("is folder :" + uri);
+    	RulesRepository repository = getRepo();
+        String[] path = getPath(uri);
+        if (path.length == 0) return true;
+        if (path.length == 1 && path[0].equals("packages")) {
+            return true;
+        } else if (path.length == 2) {
+        	return repository.containsPackage(path[1]);
+        } else {
+            return false;
+        }
+    }
 
+    public boolean isResource(String uri) throws IOException {
+    	RulesRepository repository = getRepo();
+    	System.out.println("is resource :" + uri);
+    	String[] path = getPath(uri);
+    	if (path.length < 3) return false;
+    	if (!path[0].equals("packages")) return false;
+        if (repository.containsPackage(path[1])) {
+        	PackageItem pkg = repository.loadPackage(path[1]);
+        	return pkg.containsAsset(AssetItem.getAssetNameFromFileName(path[2])[0]);
+        } else {
+        	return false;
+        }
 
-	public String[] getChildrenNames(String uri) throws IOException {
-		String[] path = getPath(uri);
-		List<String> result = new ArrayList<String>();
-		if (path.length == 0) {
-			return new String[] {"packages"};
-		}
-		if (path[0].equals("packages")) {
-			if (path.length > 2) {
-				throw new UnsupportedOperationException("No nested package support");
-			}
-			if (path.length == 1) {
-				Iterator<PackageItem> it = repository.listPackages();
-				while(it.hasNext()) {
-					PackageItem pkg = it.next();
-					if (!pkg.isArchived()) {
-						result.add(pkg.getName());
-					}
-				}
-			} else {
-				PackageItem pkg = repository.loadPackage(path[1]);
-				Iterator<AssetItem> it = pkg.getAssets();
-				while(it.hasNext()) {
-					AssetItem asset = it.next();
-					if (!asset.isArchived()) {
-						result.add(asset.getName() + "." + asset.getFormat());
-					}
-				}
-			}
-			return result.toArray(new String[result.size()]);
-		} else {
-			throw new UnsupportedOperationException("Not implemented yet");
-		}
-	}
+    }
 
-	public Date getCreationDate(String uri) throws IOException {
-		String[] path = getPath(uri);
-		if (path[0].equals("packages")) {
-			PackageItem pkg = repository.loadPackage(path[1]);
-			if (path.length == 2) {
-				//dealing with package
-				return pkg.getCreatedDate().getTime();
-			} else {
-				String fileName = path[2];
-				String assetName = fileName.split("\\.")[0];
-				AssetItem asset = pkg.loadAsset(assetName);
-				return asset.getCreatedDate().getTime();
-			}
-		} else {
-			throw new UnsupportedOperationException();
-		}
-	}
+    public boolean objectExists(String uri) throws IOException {
+    	boolean result = internalObjectExists(uri);
+    	if (uri.contains("Premium_Colour_Combinations.brl copy")) {
+    		System.out.println("Object exists:" + result);
+    		throw new IllegalStateException("URI : " + uri);
+    	}
+    	return result;
 
-	public Date getLastModified(String uri) throws IOException {
-		String[] path = getPath(uri);
-		if (path[0].equals("packages")) {
-			PackageItem pkg = repository.loadPackage(path[1]);
-			if (path.length == 2) {
-				//dealing with package
-				return pkg.getLastModified().getTime();
-			} else {
-				String fileName = path[2];
-				String assetName = fileName.split("\\.")[0];
-				AssetItem asset = pkg.loadAsset(assetName);
-				return asset.getLastModified().getTime();
-			}
-		} else {
-			throw new UnsupportedOperationException();
-		}
-	}
+    }
 
+    public boolean internalObjectExists(String uri) throws IOException {
+    	if (uri.contains("Premium_Colour_Combinations.brl copy")) {
+    		System.out.println("");
 
+    	}
+    	RulesRepository repository = getRepo();
+        System.out.println("object exist check :" + uri);
+        if (uri.endsWith(".DS_Store")) return false;
+        String[] path = getPath(uri);
+        if (path.length == 0) return true;
+        if (path.length == 1 && path[0].equals("packages")) {
+            return true;
+        } else {
+            if (path.length == 1) return false;
+            if (!repository.containsPackage(path[1])) {
+                return false;
+            }
 
-	public InputStream getResourceContent(String uri) throws IOException {
-		String[] path = getPath(uri);
-		if (path[0].equals("packages")) {
-			String pkg = path[1];
-			String asset = path[2].split("\\.")[0];
-			AssetItem assetItem  = repository.loadPackage(pkg).loadAsset(asset);
-			if (assetItem.isBinary()) {
-				return assetItem.getBinaryContentAttachment();
-			} else {
-				return new ByteArrayInputStream(assetItem.getContent().getBytes());
-			}
-		} else {
-			throw new UnsupportedOperationException();
-		}
-	}
+            if (path.length == 2) {
+                PackageItem pkg = repository.loadPackage(path[1]);
+                return !pkg.isArchived();
+            } else {
+                PackageItem pkg = repository.loadPackage(path[1]);
+                String assetName = AssetItem.getAssetNameFromFileName(path[2])[0];
 
-	public long getResourceLength(String uri) throws IOException {
-		//leave this as zero as we don't always know it.
-		return 0;
-	}
+                return pkg.containsAsset(assetName) && !pkg.loadAsset(assetName).isArchived();
+            }
+        }
+    }
 
-	public boolean isFolder(String uri) throws IOException {
-		String[] path = getPath(uri);
-		if (path.length == 0) return true;
-		if (path.length == 1 && path[0].equals("packages")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+    public void removeObject(String uri) throws IOException {
+    	RulesRepository repository = getRepo();
+        System.out.println("remove object:" + uri);
+        String[] path = getPath(uri);
+        if (path.length == 0 || path.length == 1) {
+            throw new IllegalArgumentException();
+        }
+        if (path[0].equals("packages")) {
+            String packName = path[1];
+            PackageItem pkg = repository.loadPackage(packName);
+            if (path.length == 3) {
+                //delete asset
+                String asset = path[2].split("\\.")[0];
+                AssetItem item = pkg.loadAsset(asset);
+                item.archiveItem(true);
+                item.checkin("");
+            } else {
+                //delete package
+                pkg.archiveItem(true);
+                pkg.checkin("");
+            }
+        } else {
+            throw new IllegalArgumentException();
+        }
 
-	public boolean isResource(String uri) throws IOException {
-		return !isFolder(uri);
-	}
+    }
 
-	public boolean objectExists(String uri) throws IOException {
-		String[] path = getPath(uri);
-		if (path.length == 0) return true;
-		if (path.length == 1 && path[0].equals("packages")) {
-			return true;
-		} else {
-			if (path.length == 1) return false;
-			if (!repository.containsPackage(path[1])) {
-				return false;
-			}
+    public void rollback() throws IOException {
+    	System.out.println("ROLLBACK");
 
-			if (path.length == 2) {
-				PackageItem pkg = repository.loadPackage(path[1]);
-				return !pkg.isArchived();
-			} else {
-				PackageItem pkg = repository.loadPackage(path[1]);
-				String assetName = path[2].split("\\.")[0];
-
-				return pkg.containsAsset(assetName) && !pkg.loadAsset(assetName).isArchived();
-			}
-		}
-	}
-
-	public void removeObject(String uri) throws IOException {
-		String[] path = getPath(uri);
-		if (path.length == 0 || path.length == 1) {
-			throw new IllegalArgumentException();
-		}
-		if (path[0].equals("packages")) {
-			String packName = path[1];
-			PackageItem pkg = repository.loadPackage(packName);
-			if (path.length == 3) {
-				//delete asset
-				String asset = path[2].split("\\.")[0];
-				AssetItem item = pkg.loadAsset(asset);
-				item.archiveItem(true);
-				item.checkin("");
-			} else {
-				//delete package
-				pkg.archiveItem(true);
-				pkg.checkin("");
-			}
-		} else {
-			throw new IllegalArgumentException();
-		}
-
-	}
-
-	public void rollback() throws IOException {
-		repository.getSession().logout();
-	}
+    	RulesRepository repository = getRepo();
+        repository.getSession().logout();
+    }
 
     public void setResourceContent(String uri, InputStream content, String contentType, String characterEncoding)  throws IOException {
-    	String[] path = getPath(uri);
-    	if (path[0].equals("packages")) {
-    		if (path.length != 3) {
-    			throw new IllegalArgumentException("Not a valid resource path " + uri);
-    		}
-    		 String packageName = path[1];
-    		 String[] assetName = path[2].split("\\.");
-    		 PackageItem pkg = repository.loadPackage(packageName);
-    		 AssetItem asset = pkg.loadAsset(assetName[0]);
-    		 asset.updateBinaryContentAttachment(content);
-    		 if (shouldCreateNewVersion(asset.getLastModified())) {
-    			 asset.checkin("");
-    		 }
+    	RulesRepository repository = getRepo();
+        System.out.println("set resource content:" + uri);
+        if (uri.endsWith(".DS_Store")) return;
+        String[] path = getPath(uri);
+        if (path[0].equals("packages")) {
+            if (path.length != 3) {
+                throw new IllegalArgumentException("Not a valid resource path " + uri);
+            }
 
-    	} else {
-    		throw new UnsupportedOperationException("Unable to save content to this location.");
-    	}
+             String packageName = path[1];
+             String[] assetName = AssetItem.getAssetNameFromFileName(path[2]);
+             PackageItem pkg = repository.loadPackage(packageName);
+             AssetItem asset = pkg.loadAsset(assetName[0]);
+             asset.updateBinaryContentAttachment(content);
+             if (shouldCreateNewVersion(asset.getLastModified())) {
+                 asset.checkin("");
+             }
 
-		//here we could save, or check in, depending on if enough time has passed to justify
-		//a new version. Otherwise we will pollute the version history with lots of trivial versions.
-	}
+
+        } else {
+            throw new UnsupportedOperationException("Unable to save content to this location.");
+        }
+
+        //here we could save, or check in, depending on if enough time has passed to justify
+        //a new version. Otherwise we will pollute the version history with lots of trivial versions.
+    }
 
 
     /**
      * If enough time has passed, we should create a new version.
      */
-	boolean shouldCreateNewVersion(Calendar lastModified) {
-		Calendar now = Calendar.getInstance();
-		int diff = 86400000; //1 day
-		if (now.getTimeInMillis() - lastModified.getTimeInMillis() > diff) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+    boolean shouldCreateNewVersion(Calendar lastModified) {
+        Calendar now = Calendar.getInstance();
+        int diff = 3600000; //1 hour
+        if (now.getTimeInMillis() - lastModified.getTimeInMillis() > diff) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	String[] getPath(String uri) {
-		if (uri.endsWith("webdav") || uri.endsWith("webdav/")) {
-			return new String[0];
-		}
-		return uri.split("webdav/")[1].split("/");
-	}
+    String[] getPath(String uri) {
+        if (uri.endsWith("webdav") || uri.endsWith("webdav/")) {
+            return new String[0];
+        }
+        return uri.split("webdav/")[1].split("/");
+    }
 
 
 }

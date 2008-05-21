@@ -38,7 +38,7 @@ public class WebDAVImplTest extends TestCase {
 
 	public void testChildrenNames() throws Exception {
 		WebDAVImpl imp = getImpl();
-		RulesRepository repo = imp.repository;
+		RulesRepository repo = imp.getRepo();
 		String[] children = imp.getChildrenNames("http://goo/webdav/packages");
 		assertTrue(children.length > 0);
 		int packageCount = children.length;
@@ -63,6 +63,8 @@ public class WebDAVImplTest extends TestCase {
 		assertEquals("asset1.drl", children[0]);
 		assertEquals("asset2.dsl", children[1]);
 
+		children = imp.getChildrenNames("foo/webdav/packages/testWebDavChildNames1/asset1.drl");
+		assertNull(children);
 
 
 	}
@@ -73,7 +75,7 @@ public class WebDAVImplTest extends TestCase {
 
 	public void testCreateFolder() throws Exception {
 		WebDAVImpl imp = getImpl();
-		RulesRepository repo = imp.repository;
+		RulesRepository repo = imp.getRepo();
 		String[] children = imp.getChildrenNames("http://goo/webdav/packages");
 		int packageCount = children.length;
 
@@ -98,9 +100,21 @@ public class WebDAVImplTest extends TestCase {
 
 	}
 
+	public void testDates() throws Exception {
+		String uri = "/foo/webdav";
+		WebDAVImpl imp = getImpl();
+		assertNotNull(imp.getCreationDate(uri));
+		assertNotNull(imp.getLastModified(uri));
+
+		uri = "/foo/webdav/packages";
+		assertNotNull(imp.getCreationDate(uri));
+		assertNotNull(imp.getLastModified(uri));
+
+	}
+
 	public void testCreateResourceAndCreatedDate() throws Exception {
 		WebDAVImpl imp = getImpl();
-		RulesRepository repo = imp.repository;
+		RulesRepository repo = imp.getRepo();
 		imp.createFolder("foo/bar/webdav/packages/testCreateResourceDAVFolder");
 
 		Thread.sleep(100);
@@ -111,7 +125,15 @@ public class WebDAVImplTest extends TestCase {
 		assertEquals(1, resources.length);
 		assertEquals("asset.drl", resources[0]);
 
+		//should be ignored
+		imp.createResource("fpp/bar/webdav/packages/testCreateResourceDAVFolder/._asset.drl");
+		imp.createResource("fpp/bar/webdav/packages/.DS_Store");
+
+
 		PackageItem pkg = repo.loadPackage("testCreateResourceDAVFolder");
+		assertFalse(pkg.containsAsset("._asset"));
+		assertTrue(pkg.containsAsset("asset"));
+
 		Iterator<AssetItem> it = pkg.getAssets();
 		AssetItem ass = it.next();
 		assertEquals("asset", ass.getName());
@@ -147,7 +169,7 @@ public class WebDAVImplTest extends TestCase {
 
 	public void testResourceContent() throws Exception {
 		WebDAVImpl imp = getImpl();
-		RulesRepository repo = imp.repository;
+		RulesRepository repo = imp.getRepo();
 		PackageItem pkg = repo.createPackage("testWebDAVContent", "");
 
 		AssetItem asset = pkg.addAsset("asset", "something");
@@ -166,6 +188,14 @@ public class WebDAVImplTest extends TestCase {
 		assertEquals("This is binary", IOUtils.toString(data));
 
 
+		AssetItem asset_ = pkg.addAsset("somethingelse", "");
+		asset_.updateFormat("drl");
+		asset_.checkin("");
+
+		data = imp.getResourceContent("foo/webdav/packages/testWebDAVContent/somethingelse.drl");
+		assertEquals("", IOUtils.toString(data));
+
+
 
 
 
@@ -177,13 +207,24 @@ public class WebDAVImplTest extends TestCase {
 		assertTrue(imp.isFolder("/com/foo/webdav/"));
 		assertTrue(imp.isFolder("/com/foo/webdav/packages"));
 		assertTrue(imp.isFolder("/com/foo/webdav/packages/"));
-		assertFalse(imp.isFolder("/com/foo/webdav/packages/something.drl"));
+		assertFalse(imp.isFolder("/com/foo/webdav/packages/somePackage"));
+
+		imp.createFolder("/com/foo/webdav/packages/testDAVIsFolder");
+		assertTrue(imp.isFolder("/com/foo/webdav/packages/testDAVIsFolder"));
+		assertFalse(imp.isFolder("/com/foo/webdav/packages/somePackage/SomeFile.drl"));
 	}
 
 	public void testIsResource() throws Exception {
 		WebDAVImpl imp = getImpl();
 		assertFalse(imp.isResource("/com/foo/webdav/packages"));
-		assertTrue(imp.isResource("/com/foo/webdav/packages/Something.drl"));
+		assertFalse(imp.isResource("/com/foo/webdav/packages/somePackage"));
+		assertFalse(imp.isResource("/com/foo/webdav/packages/somePackage/SomeFile.drl"));
+
+		imp.createFolder("/com/foo/webdav/packages/testDAVIsResource");
+		imp.createResource("/com/foo/webdav/packages/testDAVIsResource/SomeFile.drl");
+
+		assertTrue(imp.isResource("/com/foo/webdav/packages/testDAVIsResource/SomeFile.drl"));
+
 	}
 
 
@@ -245,7 +286,7 @@ public class WebDAVImplTest extends TestCase {
 		String result = IOUtils.toString(imp.getResourceContent("/foo/webdav/packages/testSetDavContent/Something.drl"));
 		assertEquals("some input", result);
 
-		PackageItem pkg = imp.repository.loadPackage("testSetDavContent");
+		PackageItem pkg = imp.getRepo().loadPackage("testSetDavContent");
 		AssetItem asset = pkg.loadAsset("Something");
 		assertEquals("drl", asset.getFormat());
 		assertEquals("some input", asset.getContent());
@@ -256,6 +297,23 @@ public class WebDAVImplTest extends TestCase {
 		assertEquals("some more input", result);
 
 
+	}
+
+	public void testThreadLocal() throws Exception {
+		Thread t = new Thread(new Runnable() {
+			public void run()  {
+				WebDAVImpl i = new WebDAVImpl();
+				assertNull(i.getRepo());
+				try {
+					i.begin(null, null);
+				} catch (Exception e) {
+					fail("should not happen");
+				}
+				assertNotNull(i.getRepo());
+			}
+		});
+		t.start();
+		t.join();
 	}
 
 
