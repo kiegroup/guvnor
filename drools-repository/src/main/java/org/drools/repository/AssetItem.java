@@ -88,7 +88,7 @@ public class AssetItem extends CategorisableItem {
                 return data.getValue().getString();
 
             } else {
-                return null;
+                return "";
             }
         } catch ( Exception e ) {
             log.error( "Caught Exception",
@@ -443,6 +443,34 @@ public class AssetItem extends CategorisableItem {
         } catch (RepositoryException e) {
             throw new RulesRepositoryException(e);
         }
+    }
+
+    /**
+     * This converts a "filename" to an asset name.
+     *
+     * File name is foo.drl -> ["foo", "drl"]
+     *
+     * File name is foo.bar.xls -> ["foo", "bar.xls"]
+     * @param fileName
+     * @return
+     */
+    public static String[] getAssetNameFromFileName(String fileName) {
+
+    	String[] r = new String[] {"", ""};
+    	char[] cs = fileName.toCharArray();
+    	boolean name = true;
+    	for (int i = 0; i < cs.length; i++) {
+    		if (name && cs[i] == '.') {
+    			name = false;
+    		} else if (name) {
+				r[0] = r[0] + cs[i];
+			} else {
+				r[1] = r[1] + cs[i];
+			}
+		}
+    	return r;
+
+
     }
 
 

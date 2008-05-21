@@ -436,6 +436,9 @@ public class PackageItemTest extends TestCase {
     public void testGetRules() {
             PackageItem rulePackageItem1 = getRepo().createPackage("testGetRules", "desc");
 
+            assertFalse(rulePackageItem1.containsAsset("goober"));
+
+
             AssetItem ruleItem1 = rulePackageItem1.addAsset("testGetRules", "desc" );
             ruleItem1.updateContent( "test lhs content" );
 

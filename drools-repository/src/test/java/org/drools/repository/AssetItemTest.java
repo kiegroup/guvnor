@@ -70,6 +70,17 @@ public class AssetItemTest extends TestCase {
 
     }
 
+    public void testGetAssetNameFromFileName() {
+    	String[] asset = AssetItem.getAssetNameFromFileName("foo.bar");
+    	assertEquals("foo", asset[0]);
+    	assertEquals("bar", asset[1]);
+
+    	asset = AssetItem.getAssetNameFromFileName("foo.bar.xls");
+    	assertEquals("foo", asset[0]);
+    	assertEquals("bar.xls", asset[1]);
+
+    }
+
 
     public void testGetContent() {
 
@@ -556,7 +567,7 @@ public class AssetItemTest extends TestCase {
             assertEquals(2, ruleItem1.getVersionNumber());
 
             AssetItem predecessorRuleItem = (AssetItem) ruleItem1.getPrecedingVersion();
-            assertEquals(null, predecessorRuleItem.getContent());
+            assertEquals("", predecessorRuleItem.getContent());
             succeedingRuleItem = (AssetItem) predecessorRuleItem.getSucceedingVersion();
             assertNotNull(succeedingRuleItem);
             assertEquals(ruleItem1.getContent(), succeedingRuleItem.getContent());
@@ -643,7 +654,7 @@ public class AssetItemTest extends TestCase {
 
             assertEquals("test content", nextRuleItem.getContent());
 
-            assertEquals(null, ((AssetItem) iterator.next()).getContent());
+            assertEquals("", ((AssetItem) iterator.next()).getContent());
 
     }
 

@@ -1066,4 +1066,14 @@ public class RulesRepository {
         }
 
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+    	//shouldn't rely on this... but
+    	try {
+    		this.logout();
+    	} catch (Exception e) {
+    		System.err.println("Finalizer error: " + e.getMessage());
+    	}
+    }
 }
