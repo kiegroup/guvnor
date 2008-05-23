@@ -114,11 +114,20 @@
 		<scope>test</scope>
 	</dependency>
 
-	<dependency>
-	    <groupId>net.sf.webdav-servlet</groupId>
-	    <artifactId>webdav-servlet</artifactId>
-	    <version>1.2</version>
-	</dependency>
+
+	<!-- needed for the webdav stuff 	-->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+
+
 
    <!-- seam follows -->
 <!--   <dependency>
