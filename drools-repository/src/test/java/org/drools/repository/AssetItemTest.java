@@ -60,6 +60,24 @@ public class AssetItemTest extends TestCase {
         }
     }
 
+    public void testGetContentLength() throws Exception {
+        RulesRepository repo = getRepo();
+        PackageItem pkg = repo.loadDefaultPackage();
+        AssetItem asset = pkg.addAsset("testGetContentLength", "");
+        assertEquals(0, asset.getContentLength());
+        asset.updateContent("boo");
+        asset.checkin("");
+        assertEquals("boo".getBytes().length, asset.getContentLength() );
+
+        asset = pkg.addAsset("testGetContentLength2", "");
+        assertEquals(0, asset.getContentLength());
+        asset.updateBinaryContentAttachment(new ByteArrayInputStream("foobar".getBytes()));
+        asset.checkin("");
+        assertEquals("foobar".getBytes().length, asset.getContentLength());
+
+
+    }
+
     public void testGetPackageItem() throws Exception {
         RulesRepository repo = getRepo();
         PackageItem def = repo.loadDefaultPackage();

@@ -98,6 +98,29 @@ public class AssetItem extends CategorisableItem {
     }
 
     /**
+     * returns the number of bytes of the content.
+     */
+    public long getContentLength() {
+		try {
+			Node ruleNode = getVersionContentNode();
+			if (ruleNode.hasProperty( CONTENT_PROPERTY_BINARY_NAME )) {
+				   Property data = ruleNode.getProperty( CONTENT_PROPERTY_BINARY_NAME );
+				   return data.getLength();
+			} else {
+	            if ( ruleNode.hasProperty( CONTENT_PROPERTY_NAME ) ) {
+	                Property data = ruleNode.getProperty( CONTENT_PROPERTY_NAME );
+	                return data.getLength();
+	            } else {
+	                return 0;
+	            }
+			}
+		} catch (RepositoryException e) {
+			log.error(e);
+			throw new RulesRepositoryException(e);
+		}
+    }
+
+    /**
      * True if this is a binary asset (or has binary content).
      */
     public boolean isBinary() {
