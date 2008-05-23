@@ -315,6 +315,10 @@ public class WebDAVImplTest extends TestCase {
 		imp.createResource("/foo/webdav/packages/testSetDavContent/Something.drl");
 		imp.setResourceContent("/foo/webdav/packages/testSetDavContent/Something.drl", IOUtils.toInputStream("some input"), null, null);
 
+		AssetItem as = imp.getRepo().loadPackage("testSetDavContent").loadAsset("Something");
+		assertTrue(as.isBinary());
+
+
 		String result = IOUtils.toString(imp.getResourceContent("/foo/webdav/packages/testSetDavContent/Something.drl"));
 		assertEquals("some input", result);
 
