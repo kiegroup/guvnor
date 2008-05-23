@@ -17,9 +17,8 @@
     <servlet path="/asset" class="org.drools.brms.server.files.AssetFileServlet"/>
     <servlet path="/backup" class="org.drools.brms.server.files.RepositoryBackupServlet"/>
     <servlet path="/package" class="org.drools.brms.server.files.PackageDeploymentServlet"/>
-    <servlet path="/webdav" class="net.sf.webdav.WebdavServlet"/>
+    <servlet path="/webdav" class="org.drools.brms.server.files.WebdavServlet"/>
     <servlet path="/api" class="org.drools.brms.server.files.RestAPIServlet"/>
-
 
 
 </module>

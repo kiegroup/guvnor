@@ -36,7 +36,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>WebdavServlet</servlet-name>
-		<servlet-class>net.sf.webdav.WebdavServlet</servlet-class>
+		<servlet-class>org.drools.brms.server.files.WebdavServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>RestAPIServlet</servlet-name>

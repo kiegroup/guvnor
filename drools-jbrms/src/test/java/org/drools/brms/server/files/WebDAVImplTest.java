@@ -1,6 +1,7 @@
 package org.drools.brms.server.files;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,7 +19,7 @@ import junit.framework.TestCase;
 public class WebDAVImplTest extends TestCase {
 
 	public void testPath() {
-		WebDAVImpl imp = new WebDAVImpl(null);
+		WebDAVImpl imp = new WebDAVImpl(new File(""));
 		String[] path = imp.getPath("http://goober/whee/webdav/packages/packagename/resource.drl");
 		assertEquals("packages", path[0]);
 		assertEquals("packagename", path[1]);
@@ -33,9 +34,9 @@ public class WebDAVImplTest extends TestCase {
 		//OSX does stupid shit when copying in the same directory
 		//for instance, it creates the copy as foobar.x copy - totally hosing
 		//the file extension.
-		WebDAVImpl imp = new WebDAVImpl(null);
+		WebDAVImpl imp = new WebDAVImpl(new File(""));
 		try {
-			imp.objectExists("/foo/webdav/packages/foobar/Something.drl copy");
+			imp.objectExists("/foo/webdav/packages/foobar/Something.drl copy 42");
 			fail("should not be allowed");
 		} catch (IllegalArgumentException e) {
 			assertNotNull(e.getMessage());
@@ -44,7 +45,7 @@ public class WebDAVImplTest extends TestCase {
 	}
 
 	public void testListRoot() throws Exception {
-		WebDAVImpl imp = new WebDAVImpl(null);
+		WebDAVImpl imp = new WebDAVImpl(new File(""));
 		String[] children = imp.getChildrenNames("foobar/webdav");
 		assertEquals(1, children.length);
 		assertEquals("packages", children[0]);
@@ -241,6 +242,17 @@ public class WebDAVImplTest extends TestCase {
 
 	}
 
+	public void testResourceLength() throws Exception {
+		WebDAVImpl imp = getImpl();
+		assertEquals(0, imp.getResourceLength("foo/bar/webdav/packages"));
+		imp.createFolder("/foo/webdav/packages/testResourceLengthDAV");
+		imp.createResource("/foo/webdav/packages/testResourceLengthDAV/testResourceLength");
+		assertEquals(0, imp.getResourceLength("/foo/webdav/packages/testResourceLengthDAV/testResourceLength"));
+		imp.setResourceContent("/foo/webdav/packages/testResourceLengthDAV/testResourceLength", IOUtils.toInputStream("some input"), null, null);
+		assertEquals("some input".getBytes().length, imp.getResourceLength("/foo/webdav/packages/testResourceLengthDAV/testResourceLength"));
+
+	}
+
 
 	public void testObjectExists() throws Exception {
 		WebDAVImpl imp = getImpl();
@@ -267,6 +279,10 @@ public class WebDAVImplTest extends TestCase {
 
 		imp.createFolder("foo/webdav/packages/testDavRemoveObjectAsset");
 		imp.createResource("foo/webdav/packages/testDavRemoveObjectAsset/asset.drl");
+
+		AssetItem as = imp.getRepo().loadPackage("testDavRemoveObjectAsset").loadAsset("asset");
+		long origVer = as.getVersionNumber();
+
 		assertTrue(imp.objectExists("foo/webdav/packages/testDavRemoveObjectAsset/asset.drl"));
 		imp.removeObject("foo/webdav/packages/testDavRemoveObjectAsset/asset.drl");
 		assertFalse(imp.objectExists("foo/webdav/packages/testDavRemoveObjectAsset/asset.drl"));
@@ -275,6 +291,8 @@ public class WebDAVImplTest extends TestCase {
 		imp.createResource("foo/webdav/packages/testDavRemoveObjectAsset/asset.drl");
 		assertTrue(imp.objectExists("foo/webdav/packages/testDavRemoveObjectAsset/asset.drl"));
 
+		as = imp.getRepo().loadPackage("testDavRemoveObjectAsset").loadAsset("asset");
+		assertTrue(as.getVersionNumber() > origVer);
 		imp.createFolder("foo/webdav/packages/testDavRemoveObjectFolder");
 		assertTrue(imp.objectExists("foo/webdav/packages/testDavRemoveObjectFolder"));
 
@@ -319,7 +337,7 @@ public class WebDAVImplTest extends TestCase {
 				WebDAVImpl i = new WebDAVImpl();
 				assertNull(i.getRepo());
 				try {
-					i.begin(null, null);
+					i.begin(null);
 				} catch (Exception e) {
 					fail("should not happen");
 				}

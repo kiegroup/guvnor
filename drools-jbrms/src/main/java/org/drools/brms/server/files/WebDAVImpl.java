@@ -1,33 +1,38 @@
 package org.drools.brms.server.files;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
-import net.sf.webdav.IWebdavStorage;
+import net.sf.webdav.WebdavStore;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 
-public class WebDAVImpl implements IWebdavStorage {
+public class WebDAVImpl implements WebdavStore {
 
 
-	static Map<String, byte[]> osxDoubleData = new HashMap<String, byte[]>();
-
+	/** for the rubbish OSX double data (the ._ rubbish) */
+	static Map<String, byte[]> osxDoubleData = Collections.synchronizedMap(new WeakHashMap<String, byte[]>());
 
     final ThreadLocal<RulesRepository> tlRepo = new ThreadLocal<RulesRepository>();;
 
+
+    public WebDAVImpl(File f) {
+
+    }
 
     public WebDAVImpl() {
     }
@@ -40,7 +45,7 @@ public class WebDAVImpl implements IWebdavStorage {
     	return tlRepo.get();
     }
 
-    public void begin(Principal pr, Hashtable params) throws Exception {
+    public void begin(Principal pr) {
     	tlRepo.set(RestAPIServlet.getRepository());
     }
 
@@ -48,14 +53,13 @@ public class WebDAVImpl implements IWebdavStorage {
         //already done
     }
 
-    public void commit() throws IOException {
+    public void commit()  {
     	System.out.println("COMMIT");
-
         getRepo().save();
         tlRepo.set(null);
     }
 
-    public void createFolder(String uri) throws IOException {
+    public void createFolder(String uri)  {
         System.out.println("creating folder:" + uri);
         String[] path = getPath(uri);
         if (path[0].equals("packages")) {
@@ -75,7 +79,7 @@ public class WebDAVImpl implements IWebdavStorage {
         }
     }
 
-    public void createResource(String uri) throws IOException {
+    public void createResource(String uri) {
         System.out.println("creating resource:" + uri);
         //for mac OSX, ignore these annoying things
         if (uri.endsWith(".DS_Store")) return;
@@ -111,7 +115,7 @@ public class WebDAVImpl implements IWebdavStorage {
     }
 
 
-    public String[] getChildrenNames(String uri) throws IOException {
+    public String[] getChildrenNames(String uri) {
     	System.out.println("getChildrenNames :" + uri);
 
     	RulesRepository repository = getRepo();
@@ -148,7 +152,7 @@ public class WebDAVImpl implements IWebdavStorage {
         }
     }
 
-    public Date getCreationDate(String uri) throws IOException {
+    public Date getCreationDate(String uri) {
     	System.out.println("getCreationDate :" + uri);
 
     	RulesRepository repository = getRepo();
@@ -170,7 +174,7 @@ public class WebDAVImpl implements IWebdavStorage {
         }
     }
 
-    public Date getLastModified(String uri) throws IOException {
+    public Date getLastModified(String uri) {
     	System.out.println("getLastModified :" + uri);
 
     	RulesRepository repository = getRepo();
@@ -194,7 +198,7 @@ public class WebDAVImpl implements IWebdavStorage {
 
 
 
-    public InputStream getResourceContent(String uri) throws IOException {
+    public InputStream getResourceContent(String uri) {
         System.out.println("get resource content:" + uri);
         return getContent(uri);
     }
@@ -216,13 +220,26 @@ public class WebDAVImpl implements IWebdavStorage {
         }
 	}
 
-    public long getResourceLength(String uri) throws IOException {
+    public long getResourceLength(String uri) {
     	System.out.println("get resource length :" + uri);
+    	String[] path = getPath(uri);
+    	try {
+    		if (path.length == 3 && path[0].equals("packages")) {
+    			RulesRepository repo = getRepo();
+    			PackageItem pkg = repo.loadPackage(path[1]);
+    			AssetItem asset = pkg.loadAsset(AssetItem.getAssetNameFromFileName(path[2])[0]);
+    			return asset.getContentLength();
+    		} else {
+    			return 0;
+    		}
+		} catch (Exception e) {
+			System.err.println("Not able to get content length");
+			return 0;
+		}
 
-    	return 0;
     }
 
-    public boolean isFolder(String uri) throws IOException {
+    public boolean isFolder(String uri) {
     	System.out.println("is folder :" + uri);
     	RulesRepository repository = getRepo();
         String[] path = getPath(uri);
@@ -236,7 +253,7 @@ public class WebDAVImpl implements IWebdavStorage {
         }
     }
 
-    public boolean isResource(String uri) throws IOException {
+    public boolean isResource(String uri) {
     	RulesRepository repository = getRepo();
     	System.out.println("is resource :" + uri);
     	String[] path = getPath(uri);
@@ -254,14 +271,14 @@ public class WebDAVImpl implements IWebdavStorage {
 
     }
 
-    public boolean objectExists(String uri) throws IOException {
-    	if (uri.endsWith(" copy")) {
+    public boolean objectExists(String uri) {
+    	if (uri.indexOf(" copy ") > 0) {
     		throw new IllegalArgumentException("OSX is not capable of copy and pasting without breaking the file extension.");
     	}
     	return internalObjectExists(uri);
     }
 
-    public boolean internalObjectExists(String uri) throws IOException {
+    public boolean internalObjectExists(String uri) {
     	if (uri.contains("Premium_Colour_Combinations.brl copy")) {
     		System.out.println("");
 
@@ -294,7 +311,7 @@ public class WebDAVImpl implements IWebdavStorage {
         }
     }
 
-    public void removeObject(String uri) throws IOException {
+    public void removeObject(String uri) {
     	RulesRepository repository = getRepo();
         System.out.println("remove object:" + uri);
         String[] path = getPath(uri);
@@ -325,14 +342,14 @@ public class WebDAVImpl implements IWebdavStorage {
 
     }
 
-    public void rollback() throws IOException {
+    public void rollback() {
     	System.out.println("ROLLBACK");
 
     	RulesRepository repository = getRepo();
         repository.getSession().logout();
     }
 
-    public void setResourceContent(String uri, InputStream content, String contentType, String characterEncoding)  throws IOException {
+    public void setResourceContent(String uri, InputStream content, String contentType, String characterEncoding)  {
     	RulesRepository repository = getRepo();
         System.out.println("set resource content:" + uri);
         if (uri.endsWith(".DS_Store")) return;
@@ -344,13 +361,19 @@ public class WebDAVImpl implements IWebdavStorage {
 
              String packageName = path[1];
              if (path[2].startsWith("._")) {
-            	 this.osxDoubleData.put(uri, IOUtils.toByteArray(content));
+            	 try {
+					this.osxDoubleData.put(uri, IOUtils.toByteArray(content));
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
             	 return;
              }
              String[] assetName = AssetItem.getAssetNameFromFileName(path[2]);
              PackageItem pkg = repository.loadPackage(packageName);
              AssetItem asset = pkg.loadAsset(assetName[0]);
              asset.updateBinaryContentAttachment(content);
+             //here we could save, or check in, depending on if enough time has passed to justify
+             //a new version. Otherwise we will pollute the version history with lots of trivial versions.
              if (shouldCreateNewVersion(asset.getLastModified())) {
                  asset.checkin("");
              }
@@ -360,8 +383,6 @@ public class WebDAVImpl implements IWebdavStorage {
             throw new UnsupportedOperationException("Unable to save content to this location.");
         }
 
-        //here we could save, or check in, depending on if enough time has passed to justify
-        //a new version. Otherwise we will pollute the version history with lots of trivial versions.
     }
 
 
@@ -384,6 +405,7 @@ public class WebDAVImpl implements IWebdavStorage {
         }
         return uri.split("webdav/")[1].split("/");
     }
+
 
 
 }
