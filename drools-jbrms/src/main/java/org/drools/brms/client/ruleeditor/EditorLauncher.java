@@ -49,6 +49,9 @@ public class EditorLauncher {
 
     /**
      * This will return the appropriate viewer for the asset.
+     *
+     * TODO: the method to be changed in order to make the editors pluggable
+     * TODO: look at http://gwtreflection.sourceforge.net/
      */
     public static Widget getEditorViewer(RuleAsset asset,
                                          RuleViewer viewer) {
