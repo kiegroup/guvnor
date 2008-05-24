@@ -27,7 +27,7 @@ public class WebDAVImpl implements WebdavStore {
 	/** for the rubbish OSX double data (the ._ rubbish) */
 	static Map<String, byte[]> osxDoubleData = Collections.synchronizedMap(new WeakHashMap<String, byte[]>());
 
-    final ThreadLocal<RulesRepository> tlRepo = new ThreadLocal<RulesRepository>();;
+    final ThreadLocal<RulesRepository> tlRepo = new ThreadLocal<RulesRepository>();
 
 
     public WebDAVImpl(File f) {
@@ -392,11 +392,7 @@ public class WebDAVImpl implements WebdavStore {
     boolean shouldCreateNewVersion(Calendar lastModified) {
         Calendar now = Calendar.getInstance();
         int diff = 3600000; //1 hour
-        if (now.getTimeInMillis() - lastModified.getTimeInMillis() > diff) {
-            return true;
-        } else {
-            return false;
-        }
+        return (now.getTimeInMillis() - lastModified.getTimeInMillis()) > diff;
     }
 
     String[] getPath(String uri) {

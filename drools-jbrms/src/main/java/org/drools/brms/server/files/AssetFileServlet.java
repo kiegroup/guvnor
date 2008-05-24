@@ -47,7 +47,7 @@ public class AssetFileServlet extends RepositoryServlet {
                                                        IOException {
 
         response.setContentType( "text/html" );
-        FormData uploadItem = new FileManagerUtils().getFormData( request );
+        FormData uploadItem = FileManagerUtils.getFormData( request );
 
         if ( uploadItem.getFile() != null && uploadItem.getUuid() != null ) {
             //attaching to an asset.
@@ -66,13 +66,12 @@ public class AssetFileServlet extends RepositoryServlet {
                          HttpServletResponse res) throws ServletException,
                                                  IOException {
 
-        String uuid = (String) req.getParameter( HTMLFileManagerFields.FORM_FIELD_UUID );
+        String uuid = req.getParameter( HTMLFileManagerFields.FORM_FIELD_UUID );
 
         if ( uuid != null ) {
             processAttachmentDownload( uuid, res );
         } else {
             res.sendError( HttpServletResponse.SC_BAD_REQUEST );
-            return;
         }
     }
 
