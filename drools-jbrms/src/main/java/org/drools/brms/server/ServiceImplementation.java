@@ -16,100 +16,54 @@ package org.drools.brms.server;
  */
 
 
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.jcr.ItemExistsException;
-import javax.jcr.RepositoryException;
-
+import com.google.gwt.user.client.rpc.SerializableException;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
-import org.drools.util.DroolsStreamUtils;
 import org.drools.base.ClassTypeResolver;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.testing.Scenario;
-import org.drools.brms.client.rpc.AnalysisReport;
-import org.drools.brms.client.rpc.BuilderResult;
-import org.drools.brms.client.rpc.BulkTestRunResult;
-import org.drools.brms.client.rpc.DetailedSerializableException;
-import org.drools.brms.client.rpc.LogEntry;
-import org.drools.brms.client.rpc.MetaData;
-import org.drools.brms.client.rpc.PackageConfigData;
-import org.drools.brms.client.rpc.RepositoryService;
-import org.drools.brms.client.rpc.RuleAsset;
-import org.drools.brms.client.rpc.ScenarioResultSummary;
-import org.drools.brms.client.rpc.ScenarioRunResult;
-import org.drools.brms.client.rpc.SnapshotInfo;
-import org.drools.brms.client.rpc.TableConfig;
-import org.drools.brms.client.rpc.TableDataResult;
-import org.drools.brms.client.rpc.TableDataRow;
-import org.drools.brms.client.rpc.ValidatedResponse;
+import org.drools.brms.client.rpc.*;
 import org.drools.brms.server.builder.BRMSPackageBuilder;
 import org.drools.brms.server.builder.ContentAssemblyError;
 import org.drools.brms.server.builder.ContentPackageAssembler;
-import org.drools.brms.server.contenthandler.ContentHandler;
-import org.drools.brms.server.contenthandler.IRuleAsset;
-import org.drools.brms.server.contenthandler.IValidating;
-import org.drools.brms.server.contenthandler.ModelContentHandler;
-import org.drools.brms.server.util.AnalysisRunner;
-import org.drools.brms.server.util.BRMSSuggestionCompletionLoader;
-import org.drools.brms.server.util.LoggingHelper;
-import org.drools.brms.server.util.MetaDataMapper;
-import org.drools.brms.server.util.TableDisplayHandler;
+import org.drools.brms.server.contenthandler.*;
+import org.drools.brms.server.util.*;
 import org.drools.common.AbstractRuleBase;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.common.DroolsObjectOutputStream;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.repository.AssetHistoryIterator;
-import org.drools.repository.AssetItem;
-import org.drools.repository.AssetItemIterator;
-import org.drools.repository.CategoryItem;
-import org.drools.repository.AssetPageList;
-import org.drools.repository.PackageItem;
-import org.drools.repository.PackageIterator;
-import org.drools.repository.RulesRepository;
-import org.drools.repository.RulesRepositoryAdministrator;
-import org.drools.repository.RulesRepositoryException;
-import org.drools.repository.StateItem;
-import org.drools.repository.VersionableItem;
+import org.drools.repository.*;
 import org.drools.rule.Package;
 import org.drools.testframework.RuleCoverageListener;
 import org.drools.testframework.ScenarioRunner;
+import org.drools.util.DroolsStreamUtils;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.annotations.security.Restrict;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import javax.jcr.ItemExistsException;
+import javax.jcr.RepositoryException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.text.DateFormat;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This is the implementation of the repository service to drive the GWT based front end.
@@ -344,7 +298,7 @@ public class ServiceImplementation
         PackageItem pkgItem = repository.loadPackage( asset.metaData.packageName );
 
         //load the content
-        ContentHandler handler = ContentHandler.getHandler( asset.metaData.format );
+        ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
         handler.retrieveAssetContent(asset, pkgItem, item);
 
         return asset;
@@ -359,7 +313,7 @@ public class ServiceImplementation
         // get package header
         PackageItem pkgItem = repository.loadPackage( asset.metaData.packageName );
         //load the content
-        ContentHandler handler = ContentHandler.getHandler( asset.metaData.format );
+        ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
         handler.retrieveAssetContent(asset, pkgItem, item);
 		return asset;
 	}
@@ -436,7 +390,7 @@ public class ServiceImplementation
 
 
         repoAsset.updateCategoryList( meta.categories );
-        ContentHandler handler = ContentHandler.getHandler( repoAsset.getFormat() );//new AssetContentFormatHandler();
+        ContentHandler handler = ContentManager.getHandler( repoAsset.getFormat() );//new AssetContentFormatHandler();
         handler.storeAssetContent( asset, repoAsset );
 
         if (!(asset.metaData.format.equals(AssetFormats.TEST_SCENARIO))
@@ -950,7 +904,7 @@ public class ServiceImplementation
     public String buildAssetSource(RuleAsset asset) throws SerializableException {
         AssetItem item = repository.loadAssetByUUID( asset.uuid );
 
-        ContentHandler handler = ContentHandler.getHandler( item.getFormat() );//new AssetContentFormatHandler();
+        ContentHandler handler = ContentManager.getHandler( item.getFormat() );//new AssetContentFormatHandler();
         handler.storeAssetContent( asset, item );
         StringBuffer buf = new StringBuffer();
         if (handler.isRuleAsset()) {
@@ -978,7 +932,7 @@ public class ServiceImplementation
 
 	        AssetItem item = repository.loadAssetByUUID( asset.uuid );
 
-	        ContentHandler handler = ContentHandler.getHandler( item.getFormat() );//new AssetContentFormatHandler();
+	        ContentHandler handler = ContentManager.getHandler( item.getFormat() );//new AssetContentFormatHandler();
 	        handler.storeAssetContent( asset, item );
 
 

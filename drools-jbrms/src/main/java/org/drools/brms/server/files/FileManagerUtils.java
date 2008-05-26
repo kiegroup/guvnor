@@ -16,17 +16,6 @@ package org.drools.brms.server.files;
  */
 
 
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
@@ -35,10 +24,11 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.drools.brms.client.common.HTMLFileManagerFields;
 import org.drools.brms.server.builder.ContentPackageAssembler;
 import org.drools.brms.server.contenthandler.ContentHandler;
+import org.drools.brms.server.contenthandler.ContentManager;
 import org.drools.brms.server.contenthandler.ModelContentHandler;
 import org.drools.brms.server.util.ClassicDRLImporter;
-import org.drools.brms.server.util.FormData;
 import org.drools.brms.server.util.ClassicDRLImporter.Asset;
+import org.drools.brms.server.util.FormData;
 import org.drools.compiler.DroolsParserException;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -50,6 +40,15 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
+
+import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This assists the file manager servlets.
@@ -96,7 +95,7 @@ public class FileManagerUtils {
 
         //special treatment for model attachments.
 
-        ContentHandler handler = ContentHandler.getHandler(item.getFormat());
+        ContentHandler handler = ContentManager.getHandler(item.getFormat());
         if (handler instanceof ModelContentHandler) {
         	((ModelContentHandler)handler).modelAttached(item);
         }

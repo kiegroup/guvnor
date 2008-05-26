@@ -32,12 +32,6 @@ import com.google.gwt.user.client.rpc.SerializableException;
  */
 public abstract class ContentHandler {
 
-    static Map handlers;
-
-    static {
-        handlers = ContentManager.getInstance().getContentHandlers();
-    }
-
     /**
      * When loading asset content.
      * @param asset The target.
@@ -56,13 +50,6 @@ public abstract class ContentHandler {
      */
     public abstract void storeAssetContent(RuleAsset asset,
                                            AssetItem repoAsset) throws SerializableException;
-
-
-    public static ContentHandler getHandler(String format) {
-        ContentHandler h =  (ContentHandler) handlers.get( format );
-        if (h == null) throw new IllegalArgumentException("Unable to handle the content type: " + format);
-        return h;
-    }
 
     /**
      * @return true if the current content type is for a rule asset.

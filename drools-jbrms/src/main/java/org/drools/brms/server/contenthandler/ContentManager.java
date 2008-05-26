@@ -97,4 +97,10 @@ public class ContentManager {
 		}
 		return INSTANCE;
 	}
+
+    public static ContentHandler getHandler(String format) {
+        ContentHandler h = ContentManager.getInstance().getContentHandlers().get( format );
+        if (h == null) throw new IllegalArgumentException("Unable to handle the content type: " + format);
+        return h;
+    }
 }

@@ -16,6 +16,17 @@ package org.drools.brms.server.builder;
  */
 
 
+import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.server.contenthandler.ContentHandler;
+import org.drools.brms.server.contenthandler.ContentManager;
+import org.drools.brms.server.contenthandler.IRuleAsset;
+import org.drools.brms.server.selector.AssetSelector;
+import org.drools.brms.server.selector.SelectorManager;
+import org.drools.compiler.DroolsError;
+import org.drools.compiler.DroolsParserException;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.repository.*;
+import org.drools.rule.Package;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -23,21 +34,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.jar.JarInputStream;
-
-import org.drools.brms.client.common.AssetFormats;
-import org.drools.brms.server.contenthandler.ContentHandler;
-import org.drools.brms.server.contenthandler.IRuleAsset;
-import org.drools.brms.server.selector.AssetSelector;
-import org.drools.brms.server.selector.SelectorManager;
-import org.drools.compiler.DroolsError;
-import org.drools.compiler.DroolsParserException;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.repository.AssetItem;
-import org.drools.repository.AssetItemIterator;
-import org.drools.repository.PackageItem;
-import org.drools.repository.RulesRepositoryException;
-import org.drools.repository.VersionableItem;
-import org.drools.rule.Package;
 
 /**
  * This assembles packages in the BRMS into binary package objects, and deals with errors etc.
@@ -133,7 +129,7 @@ public class ContentPackageAssembler {
      * Builds assets that are "rule" assets (ie things that are not functions etc).
      */
     private void buildAsset(AssetItem asset) {
-        ContentHandler h = ContentHandler.getHandler( asset.getFormat() );
+        ContentHandler h = ContentManager.getHandler( asset.getFormat() );
         if (h instanceof IRuleAsset) {
             try {
                 ((IRuleAsset) h).compile( builder, asset, new ErrorLogger() );
@@ -292,7 +288,7 @@ public class ContentPackageAssembler {
         while (iter.hasNext()) {
             AssetItem asset = (AssetItem) iter.next();
             if (!asset.isArchived()) {
-                ContentHandler h = ContentHandler.getHandler( asset.getFormat() );
+                ContentHandler h = ContentManager.getHandler( asset.getFormat() );
                 if (h instanceof IRuleAsset) {
                     IRuleAsset ruleAsset = (IRuleAsset) h;
                     ruleAsset.assembleDRL( builder, asset, src );
