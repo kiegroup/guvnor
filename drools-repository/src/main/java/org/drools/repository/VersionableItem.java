@@ -468,13 +468,21 @@ public abstract class VersionableItem extends Item {
      * This will check out the node prior to editing.
      */
     public void checkout() {
+        checkout(this.node);
+    }
+
+    /**
+     * This will check out the node prior to editing.
+     * @param targetNode the node to be checked out.
+     */
+    public static void checkout(Node targetNode) {
 
         try {
-            this.node.checkout();
+        	targetNode.checkout();
         } catch ( UnsupportedRepositoryOperationException e ) {
             String message = "";
             try {
-                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + this.node.getName() + ". Are you sure your JCR repository supports versioning? ";
+                message = "Error: Caught UnsupportedRepositoryOperationException when attempting to checkout rule: " + targetNode.getName() + ". Are you sure your JCR repository supports versioning? ";
                 log.error( message,
                            e );
             } catch ( RepositoryException e1 ) {
@@ -490,7 +498,6 @@ public abstract class VersionableItem extends Item {
             throw new RulesRepositoryException( e );
         }
     }
-
     /** 
      * This will save the content (if it hasn't been already) and 
      * then check it in to create a new version.

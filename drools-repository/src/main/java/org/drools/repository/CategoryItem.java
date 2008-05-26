@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.log4j.Logger;
@@ -110,17 +112,27 @@ public class CategoryItem extends Item {
 
     /**
      * This will remove the category and any ones under it. 
-     * This will only work if you have no current assets linked to the category.
+     * This will only work if you have no current assets linked to the category unless the assets are archived.
      */
     public void remove() {
         try {
-            if (this.node.getReferences().hasNext()) {
-                throw new RulesRepositoryException("The category still has some assets linked to it. You will need to remove the links so you can delete the cateogory.");
-            }
+            PropertyIterator pi = this.node.getReferences();
+            while (pi.hasNext()) {
+				Property p = pi.nextProperty();
+				Node parentNode = p.getParent();
+
+				if (parentNode.getProperty(
+					AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).getBoolean()) {
+					CategorisableItem.removeCategory(parentNode, this.node.getName());			
+				} else {
+					throw new RulesRepositoryException(
+					"The category still has some assets linked to it. You will need to remove the links so you can delete the cateogory.");
+				}
+			}
             this.node.remove();
         } catch ( RepositoryException e ) {
             log.error( e );
         }
     }
-    
+ 
 }

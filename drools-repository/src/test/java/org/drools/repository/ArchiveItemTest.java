@@ -48,13 +48,6 @@ public class ArchiveItemTest extends TestCase {
         item.checkin( "archiving item 1" );
         item = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "testFindArchivedAssets3" );
         assertTrue( item.isArchived() );
-
-
-        AssetItemIterator it =  repo.findArchivedAssets();
-
-        List list = iteratorToList( it );
-        assertEquals(3, list.size());
-
     }
 
     public void testArchiveBooleanFlag() throws Exception {

@@ -189,9 +189,20 @@ public abstract class CategorisableItem extends VersionableItem {
      * @throws RulesRepositoryException
      */
     public void removeCategory(String tag) throws RulesRepositoryException {
+    	removeCategory(this.node, tag);
+    }
+    
+    /**
+     * Removes the specified tag from this object's rule node.
+     *
+     * @param targetNode the node from which the tag is to be removed.
+     * @param tag the tag to remove from the rule
+     * @throws RulesRepositoryException
+     */
+    public static void removeCategory(Node targetNode, String tag) throws RulesRepositoryException {
         try {
             //make sure this object's node is the head version
-            if ( this.node.getPrimaryNodeType().getName().equals( "nt:version" ) ) {
+            if (targetNode.getPrimaryNodeType().getName().equals( "nt:version" ) ) {
                 String message = "Error. Tags can only be removed from the head version of a rule node";
                 log.error( message );
                 throw new RulesRepositoryException( message );
@@ -203,13 +214,13 @@ public abstract class CategorisableItem extends VersionableItem {
             int j = 0;
             Value[] newTagValues = null;
             try {
-                tagReferenceProperty = this.node.getProperty( CATEGORY_PROPERTY_NAME );
+                tagReferenceProperty = targetNode.getProperty( CATEGORY_PROPERTY_NAME );
                 Value[] oldTagValues = tagReferenceProperty.getValues();
 
                 //see if the tag was even there
                 boolean wasThere = false;
                 for ( i = 0; i < oldTagValues.length; i++ ) {
-                    Node tagNode = this.node.getSession().getNodeByUUID( oldTagValues[i].getString() );
+                    Node tagNode = targetNode.getSession().getNodeByUUID( oldTagValues[i].getString() );
                     if ( tagNode.getName().equals( tag ) ) {
                         wasThere = true;
                     }
@@ -219,7 +230,7 @@ public abstract class CategorisableItem extends VersionableItem {
                     //copy the array, minus the specified tag
                     newTagValues = new Value[oldTagValues.length + 1];
                     for ( i = 0; i < oldTagValues.length; i++ ) {
-                        Node tagNode = this.node.getSession().getNodeByUUID( oldTagValues[i].getString() );
+                        Node tagNode = targetNode.getSession().getNodeByUUID( oldTagValues[i].getString() );
                         if ( !tagNode.getName().equals( tag ) ) {
                             newTagValues[j] = oldTagValues[i];
                             j++;
@@ -233,11 +244,11 @@ public abstract class CategorisableItem extends VersionableItem {
                 return;
             } finally {
                 if ( newTagValues != null ) {
-                    checkout();
-                    this.node.setProperty( CATEGORY_PROPERTY_NAME,
+                    checkout(targetNode);
+                    targetNode.setProperty( CATEGORY_PROPERTY_NAME,
                                            newTagValues );
                 } else {
-                    log.error( "reached expected path of execution when removing tag '" + tag + "' from ruleNode: " + this.node.getName() );
+                    log.error( "reached expected path of execution when removing tag '" + tag + "' from ruleNode: " + targetNode.getName() );
                 }
             }
         } catch ( Exception e ) {
@@ -246,5 +257,6 @@ public abstract class CategorisableItem extends VersionableItem {
             throw new RulesRepositoryException( e );
         }
     }
+
 
 }

@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
  * @author btruitt
  */
 public abstract class Item {
-    Logger log = Logger.getLogger(Item.class);
+    static Logger log = Logger.getLogger(Item.class);
 
     /**
      * The node within the repository that this item corresponds to

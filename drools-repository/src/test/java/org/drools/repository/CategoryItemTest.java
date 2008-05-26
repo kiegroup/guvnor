@@ -160,6 +160,21 @@ public class CategoryItemTest extends TestCase {
         repo.save();
         
     }
+    
+    
+    public void testRemoveCategoryLinkedWithArchived() {
+        RulesRepository repo = getRepo();
+        repo.loadCategory( "/" ).addCategory( "testRemoveCategoryWithArchivedCat", "a" );
+        AssetItem as = repo.loadDefaultPackage().addAsset( "testRemoveCategoryWithArchivedAsset", "a", "testRemoveCategoryWithArchivedCat", "drl" );
+        as.checkin( "a" );
+        
+        as.archiveItem(true);     
+        
+        repo.loadCategory( "testRemoveCategoryWithArchivedCat" ).remove();
+        repo.save();       
+        
+//        as.remove();   
+    }
 
     private RulesRepository getRepo() {
         return RepositorySessionUtil.getRepository();
