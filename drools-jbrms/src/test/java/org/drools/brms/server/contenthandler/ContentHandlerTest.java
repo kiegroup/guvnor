@@ -29,17 +29,17 @@ import org.drools.repository.RulesRepository;
 public class ContentHandlerTest extends TestCase {
 
     public void testContentFormat() {
-        assertTrue(ContentHandler.getHandler( AssetFormats.DRL ) instanceof DRLFileContentHandler);
-        assertTrue(ContentHandler.getHandler( AssetFormats.DSL ) instanceof DSLDefinitionContentHandler);
-        assertTrue(ContentHandler.getHandler( AssetFormats.DSL_TEMPLATE_RULE ) instanceof DSLRuleContentHandler);
-        assertTrue(ContentHandler.getHandler( AssetFormats.BUSINESS_RULE ) instanceof BRLContentHandler);
-        assertTrue(ContentHandler.getHandler( AssetFormats.DECISION_SPREADSHEET_XLS ) instanceof DecisionTableXLSHandler);
-        assertTrue(ContentHandler.getHandler( AssetFormats.ENUMERATION ) instanceof EnumerationContentHandler);
-        assertTrue(ContentHandler.getHandler( AssetFormats.DECISION_TABLE_GUIDED ) instanceof GuidedDTContentHandler);
+        assertTrue(ContentManager.getHandler( AssetFormats.DRL ) instanceof DRLFileContentHandler);
+        assertTrue(ContentManager.getHandler( AssetFormats.DSL ) instanceof DSLDefinitionContentHandler);
+        assertTrue(ContentManager.getHandler( AssetFormats.DSL_TEMPLATE_RULE ) instanceof DSLRuleContentHandler);
+        assertTrue(ContentManager.getHandler( AssetFormats.BUSINESS_RULE ) instanceof BRLContentHandler);
+        assertTrue(ContentManager.getHandler( AssetFormats.DECISION_SPREADSHEET_XLS ) instanceof DecisionTableXLSHandler);
+        assertTrue(ContentManager.getHandler( AssetFormats.ENUMERATION ) instanceof EnumerationContentHandler);
+        assertTrue(ContentManager.getHandler( AssetFormats.DECISION_TABLE_GUIDED ) instanceof GuidedDTContentHandler);
 
 
         try {
-            ContentHandler.getHandler( "XXX" );
+            ContentManager.getHandler( "XXX" );
             fail("should have thrown an exception");
         } catch (IllegalArgumentException e) {
             assertNotNull(e.getMessage());
@@ -47,15 +47,15 @@ public class ContentHandlerTest extends TestCase {
     }
 
     public void testRuleAssetType() {
-        assertTrue(ContentHandler.getHandler( AssetFormats.DRL ).isRuleAsset());
-        assertTrue(ContentHandler.getHandler( AssetFormats.DSL_TEMPLATE_RULE ).isRuleAsset());
-        assertTrue(ContentHandler.getHandler( AssetFormats.BUSINESS_RULE ).isRuleAsset());
-        assertTrue(ContentHandler.getHandler( AssetFormats.DECISION_SPREADSHEET_XLS ).isRuleAsset());
-        assertTrue(ContentHandler.getHandler( AssetFormats.DECISION_TABLE_GUIDED ).isRuleAsset());
+        assertTrue(ContentManager.getHandler( AssetFormats.DRL ).isRuleAsset());
+        assertTrue(ContentManager.getHandler( AssetFormats.DSL_TEMPLATE_RULE ).isRuleAsset());
+        assertTrue(ContentManager.getHandler( AssetFormats.BUSINESS_RULE ).isRuleAsset());
+        assertTrue(ContentManager.getHandler( AssetFormats.DECISION_SPREADSHEET_XLS ).isRuleAsset());
+        assertTrue(ContentManager.getHandler( AssetFormats.DECISION_TABLE_GUIDED ).isRuleAsset());
 
-        assertFalse(ContentHandler.getHandler( AssetFormats.DSL ).isRuleAsset());
-        assertFalse(ContentHandler.getHandler( AssetFormats.MODEL ).isRuleAsset());
-        assertFalse(ContentHandler.getHandler( AssetFormats.ENUMERATION ).isRuleAsset());
+        assertFalse(ContentManager.getHandler( AssetFormats.DSL ).isRuleAsset());
+        assertFalse(ContentManager.getHandler( AssetFormats.MODEL ).isRuleAsset());
+        assertFalse(ContentManager.getHandler( AssetFormats.ENUMERATION ).isRuleAsset());
     }
 
     public void testValidating() throws Exception {
