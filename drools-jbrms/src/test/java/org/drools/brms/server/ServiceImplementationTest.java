@@ -206,7 +206,22 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals("DUPLICATE", uuid);
 
 	}
+	
+	public void testCreateNewRule() throws Exception {
+		ServiceImplementation impl = getService();
+		impl.repository.createPackage("testCreateNewRule", "desc");
+		impl.createCategory("", "testCreateNewRule", "this is a cat");
 
+		String uuid = impl.createNewRule("testCreateNewRuleName",
+				"an initial desc", "testCreateNewRule", "testCreateNewRule",
+				AssetFormats.DSL_TEMPLATE_RULE);
+		assertNotNull(uuid);
+		assertFalse("".equals(uuid));
+
+		AssetItem dtItem = impl.repository.loadAssetByUUID(uuid);
+		assertEquals(dtItem.getDescription(), "an initial desc");
+	}
+	
 	public void testRuleTableLoad() throws Exception {
 		ServiceImplementation impl = getService();
 		TableConfig conf = impl

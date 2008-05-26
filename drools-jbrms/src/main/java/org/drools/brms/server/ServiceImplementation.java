@@ -225,7 +225,6 @@ public class ServiceImplementation
                                         AssetItem asset) {
         if (format.equals( AssetFormats.DSL_TEMPLATE_RULE )) {
             asset.updateContent( "when\n\nthen\n" );
-            asset.updateDescription( "A dsl is a language mapping from a domain specific language to the rule language." );
         } else if (format.equals( AssetFormats.FUNCTION )) {
             asset.updateContent( "function <returnType> " + ruleName + "(<args here>) {\n\n\n}" );
         } else if (format.equals( AssetFormats.DSL )) {
@@ -236,17 +235,6 @@ public class ServiceImplementation
             asset.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/SampleDecisionTable.xls" ) );
             asset.updateBinaryContentAttachmentFileName( "SampleDecisionTable.xls" );
         } else if (format.equals( AssetFormats.ENUMERATION )) {
-            asset.updateDescription( "An enumeration is a mapping from fields to a list of values." +
-                    "This will mean the rule editor will show a drop down for fields, instead of a text box." +
-                    "The format of this is: 'FactType.fieldName ': ['Value1', 'Value2']\n" +
-                    "You can add more mappings by adding in more lines. " +
-                    "\nFor example:\n\n" +
-                    "'Person.sex' : ['M', 'F']\n" +
-                     "'Person.rating' : ['High', 'Low']\n\n" +
-                     "You can also ad display aliases (so the value used in the rule is separate to the one displayed:\n"  +
-                    "'Person.sex' : ['M=Male', 'F=Female']\n" +
-                    "in the above case, the 'M=Male' means that 'Male' will be displayed as an item in a drop down box, but the value 'M' will be used in the rule. "
-                    );
         }
     }
 
