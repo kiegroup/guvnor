@@ -222,6 +222,27 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(dtItem.getDescription(), "an initial desc");
 	}
 	
+	public void testCreateNewRuleContainsApostrophe() throws Exception {
+		ServiceImplementation impl = getService();
+		impl.repository.createPackage("testCreateNewRuleContainsApostrophe",
+				"desc");
+		impl.createCategory("", "testCreateNewRuleContainsApostrophe",
+				"this is a cat");
+
+		try {
+			impl.createNewRule("testCreateNewRuleContains' character",
+					"an initial desc", "testCreateNewRuleContainsApostrophe",
+					"testCreateNewRuleContainsApostrophe",
+					AssetFormats.DSL_TEMPLATE_RULE);
+			fail("did not get expected exception");
+		} catch (SerializableException e) {
+			assertTrue(e
+					.getMessage()
+					.indexOf(
+							"'testCreateNewRuleContains' character' is not a valid path. ''' not a valid name character") >= 0);
+		}
+	}
+	
 	public void testRuleTableLoad() throws Exception {
 		ServiceImplementation impl = getService();
 		TableConfig conf = impl

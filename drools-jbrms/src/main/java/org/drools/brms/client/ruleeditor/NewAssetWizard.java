@@ -52,6 +52,8 @@ public class NewAssetWizard extends FormStylePopup {
     private boolean showCats;
     private String format;
 
+
+
     /** This is used when creating a new rule. */
     public NewAssetWizard(EditItemEvent afterCreate, boolean showCats, String format, String title) {
         super("images/new_wiz.gif", title);
@@ -144,13 +146,17 @@ public class NewAssetWizard extends FormStylePopup {
     void ok() {
 
         if (this.showCats && this.initialCategory == null) {
-            Window.alert( "You have to pick an initial category." );
-            return;
-        } else if (this.name.getText() == null || "".equals( this.name.getText() )) {
-            Window.alert( "Asset must have a name" );
-            return;
-        }
-
+			Window.alert("You have to pick an initial category.");
+			return;
+		} else {
+			try {
+				validatePathPerJSR170(this.name.getText());
+			} catch (IllegalArgumentException e) {
+				Window.alert(e.getMessage());
+				return;
+			}
+		} 
+        
         GenericCallback cb = new GenericCallback() {
             public void onSuccess(Object result) {
             		String uuid = (String) result;
@@ -188,5 +194,41 @@ public class NewAssetWizard extends FormStylePopup {
         afterCreate.open( uuid );
     }
 
+    /**
+	 * Validate name per JSR-170. Only following characters are valid: char ::=
+	 * nonspace | ' ' nonspace ::= (* Any Unicode character except: '/', ':',
+	 * '[', ']', '*', ''', '"', '|' or any whitespace character *)
+	 * 
+	 * @param jsrPath
+	 */
+	public static void validatePathPerJSR170(String jsrPath)
+			throws IllegalArgumentException {
+		int len = jsrPath == null ? 0 : jsrPath.length();
+
+		if (len == 0) {
+			throw new IllegalArgumentException("empty name is not allowed");
+		}
+
+		int pos = 0;
+
+		while (pos < len) {
+			char c = jsrPath.charAt(pos);
+			pos++;
+
+			switch (c) {
+			case '/':
+			case ':':
+			case '[':
+			case ']':
+			case '*':
+			case '\'':
+			case '\"':
+				throw new IllegalArgumentException("'" + jsrPath
+						+ "' is not valid. '" + c
+						+ "' is not a valid name character");
+			default:
+			}
+		}
+	}
 
 }
