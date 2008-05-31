@@ -103,9 +103,10 @@ public class PopulateDataTest extends TestCase {
     }
 
     private void createPackageSnapshots(ServiceImplementation serv) {
-        serv.createPackageSnapshot( "com.billasurf.finance", "TEST", false, "The testing region." );
-        serv.createPackageSnapshot( "com.billasurf.finance", "PRODUCTION", false, "The testing region." );
-        serv.createPackageSnapshot( "com.billasurf.finance", "PRODUCTION ROLLBACK", false, "The testing region." );
+        serv.createPackageSnapshot( "com.billasurf.manufacturing", "TEST", false, "The testing region." );
+        serv.createPackageSnapshot( "com.billasurf.manufacturing", "PRODUCTION", false, "The testing region." );
+        serv.createPackageSnapshot( "com.billasurf.manufacturing", "PRODUCTION ROLLBACK", false, "The testing region." );
+
     }
 
     private void createSomeRules(ServiceImplementation serv) throws SerializableException {
@@ -115,6 +116,8 @@ public class PopulateDataTest extends TestCase {
         serv.changeState( uuid, "Approved", false );
         uuid = serv.createNewRule( "Fibreglass supplier selection", "This defines XXX.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
         uuid = serv.createNewRule( "Recommended wax", "This defines XXX.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
+        uuid = serv.createNewRule( "SomeDSL", "Ignore me.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.DSL );
+
 
 
 

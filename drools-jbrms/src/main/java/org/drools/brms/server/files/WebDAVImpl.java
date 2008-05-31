@@ -122,20 +122,14 @@ public class WebDAVImpl implements WebdavStore {
         String[] path = getPath(uri);
         List<String> result = new ArrayList<String>();
         if (path.length == 0) {
-            return new String[] {"packages"};
+            return new String[] {"packages", "snapshots"};
         }
         if (path[0].equals("packages")) {
             if (path.length > 2) {
                 return null;
             }
             if (path.length == 1) {
-                Iterator<PackageItem> it = repository.listPackages();
-                while(it.hasNext()) {
-                    PackageItem pkg = it.next();
-                    if (!pkg.isArchived()) {
-                        result.add(pkg.getName());
-                    }
-                }
+                listPackages(repository, result);
             } else {
                 PackageItem pkg = repository.loadPackage(path[1]);
                 Iterator<AssetItem> it = pkg.getAssets();
@@ -146,11 +140,43 @@ public class WebDAVImpl implements WebdavStore {
                     }
                 }
             }
-            return result.toArray(new String[result.size()]);
+
+        } else if (path[0].equals("snapshots")) {
+        	if (path.length > 3) {
+        		return null;
+        	}
+        	if (path.length == 1) {
+        		listPackages(repository, result);
+        	} else if (path.length == 2){
+        		String[] snaps = repository.listPackageSnapshots(path[1]);
+        		return snaps;
+        	} else if (path.length == 3){
+        		Iterator<AssetItem> it  = repository.loadPackageSnapshot(path[1], path[2]).getAssets();
+        		while(it.hasNext()) {
+        		    AssetItem asset = it.next();
+        		    if (!asset.isArchived()) {
+        		    	result.add(asset.getName() + "." + asset.getFormat());
+        		    }
+        		}
+        	} else {
+        		throw new IllegalArgumentException();
+        	}
+
         } else {
-            throw new UnsupportedOperationException("Not implemented yet");
+        	throw new UnsupportedOperationException("Not a valid path : " + path[0]);
         }
+        return result.toArray(new String[result.size()]);
     }
+
+	private void listPackages(RulesRepository repository, List<String> result) {
+		Iterator<PackageItem> it = repository.listPackages();
+		while(it.hasNext()) {
+		    PackageItem pkg = it.next();
+		    if (!pkg.isArchived()) {
+		        result.add(pkg.getName());
+		    }
+		}
+	}
 
     public Date getCreationDate(String uri) {
     	System.out.println("getCreationDate :" + uri);
@@ -165,12 +191,24 @@ public class WebDAVImpl implements WebdavStore {
                 return pkg.getCreatedDate().getTime();
             } else {
                 String fileName = path[2];
-                String assetName = fileName.split("\\.")[0];
+                String assetName = AssetItem.getAssetNameFromFileName(fileName)[0];
                 AssetItem asset = pkg.loadAsset(assetName);
                 return asset.getCreatedDate().getTime();
             }
+        } else if (path[0].equals("snapshots")){
+            if (path.length == 2) {
+            	return new Date();
+            } else if (path.length == 3) {
+            	return repository.loadPackageSnapshot(path[1], path[2]).getCreatedDate().getTime();
+            } else if (path.length == 4) {
+            	PackageItem pkg = repository.loadPackageSnapshot(path[1], path[2]);
+            	AssetItem asset = pkg.loadAsset(AssetItem.getAssetNameFromFileName(path[3])[0]);
+            	return asset.getCreatedDate().getTime();
+            } else {
+            	throw new UnsupportedOperationException();
+            }
         } else {
-            throw new UnsupportedOperationException();
+        	throw new UnsupportedOperationException();
         }
     }
 
@@ -191,6 +229,18 @@ public class WebDAVImpl implements WebdavStore {
                 AssetItem asset = pkg.loadAsset(assetName);
                 return asset.getLastModified().getTime();
             }
+        } else if (path[0].equals("snapshots")){
+            if (path.length == 2) {
+            	return new Date();
+            } else if (path.length == 3) {
+            	return repository.loadPackageSnapshot(path[1], path[2]).getLastModified().getTime();
+            } else if (path.length == 4) {
+            	PackageItem pkg = repository.loadPackageSnapshot(path[1], path[2]);
+            	AssetItem asset = pkg.loadAsset(AssetItem.getAssetNameFromFileName(path[3])[0]);
+            	return asset.getLastModified().getTime();
+            } else {
+            	throw new UnsupportedOperationException();
+            }
         } else {
             throw new UnsupportedOperationException();
         }
@@ -210,24 +260,39 @@ public class WebDAVImpl implements WebdavStore {
             String pkg = path[1];
             String asset = AssetItem.getAssetNameFromFileName(path[2])[0];
             AssetItem assetItem  = repository.loadPackage(pkg).loadAsset(asset);
-            if (assetItem.isBinary()) {
-                return assetItem.getBinaryContentAttachment();
-            } else {
-                return new ByteArrayInputStream(assetItem.getContent().getBytes());
-            }
-        } else {
+            return getAssetData(assetItem);
+        } else if (path[0].equals("snapshots")) {
+        	String pkg = path[1];
+        	String snap = path[2];
+        	String asset = AssetItem.getAssetNameFromFileName(path[3])[0];
+        	AssetItem assetItem = repository.loadPackageSnapshot(pkg, snap).loadAsset(asset);
+        	return getAssetData(assetItem);
+
+        }else {
             throw new UnsupportedOperationException();
         }
+	}
+
+	private InputStream getAssetData(AssetItem assetItem) {
+		if (assetItem.isBinary()) {
+		    return assetItem.getBinaryContentAttachment();
+		} else {
+		    return new ByteArrayInputStream(assetItem.getContent().getBytes());
+		}
 	}
 
     public long getResourceLength(String uri) {
     	System.out.println("get resource length :" + uri);
     	String[] path = getPath(uri);
     	try {
+    		RulesRepository repo = getRepo();
     		if (path.length == 3 && path[0].equals("packages")) {
-    			RulesRepository repo = getRepo();
     			PackageItem pkg = repo.loadPackage(path[1]);
     			AssetItem asset = pkg.loadAsset(AssetItem.getAssetNameFromFileName(path[2])[0]);
+    			return asset.getContentLength();
+    		} else if (path.length == 4 && path[0].equals("snapshots")) {
+    			PackageItem pkg = repo.loadPackageSnapshot(path[1], path[2]);
+    			AssetItem asset = pkg.loadAsset(AssetItem.getAssetNameFromFileName(path[3])[0]);
     			return asset.getContentLength();
     		} else {
     			return 0;
@@ -244,11 +309,14 @@ public class WebDAVImpl implements WebdavStore {
     	RulesRepository repository = getRepo();
         String[] path = getPath(uri);
         if (path.length == 0) return true;
-        if (path.length == 1 && path[0].equals("packages")) {
+        if (path.length == 1 && (path[0].equals("packages") || path[0].equals("snapshots"))) {
             return true;
         } else if (path.length == 2) {
         	return repository.containsPackage(path[1]);
+        } else if (path.length == 3 && path[0].equals("snapshots")) {
+        	return repository.containsPackage(path[1]);
         } else {
+
             return false;
         }
     }
@@ -258,17 +326,25 @@ public class WebDAVImpl implements WebdavStore {
     	System.out.println("is resource :" + uri);
     	String[] path = getPath(uri);
     	if (path.length < 3) return false;
-    	if (!path[0].equals("packages")) return false;
+    	if (!(path[0].equals("packages") || path[0].equals("snapshots"))) return false;
         if (repository.containsPackage(path[1])) {
-        	PackageItem pkg = repository.loadPackage(path[1]);
-        	if (path[2].startsWith("._")) {
-        		return osxDoubleData.containsKey(uri);
+        	if (path[0].equals("packages")) {
+	        	PackageItem pkg = repository.loadPackage(path[1]);
+	        	if (path[2].startsWith("._")) {
+	        		return osxDoubleData.containsKey(uri);
+	        	}
+	        	return pkg.containsAsset(AssetItem.getAssetNameFromFileName(path[2])[0]);
+        	} else {
+        		if (path.length == 4) {
+	        		PackageItem pkg = repository.loadPackageSnapshot(path[1], path[2]);
+	        		return pkg.containsAsset(AssetItem.getAssetNameFromFileName(path[3])[0]);
+        		} else {
+        			return false;
+        		}
         	}
-        	return pkg.containsAsset(AssetItem.getAssetNameFromFileName(path[2])[0]);
         } else {
         	return false;
         }
-
     }
 
     public boolean objectExists(String uri) {
@@ -278,17 +354,14 @@ public class WebDAVImpl implements WebdavStore {
     	return internalObjectExists(uri);
     }
 
-    public boolean internalObjectExists(String uri) {
-    	if (uri.contains("Premium_Colour_Combinations.brl copy")) {
-    		System.out.println("");
+    private boolean internalObjectExists(String uri) {
 
-    	}
     	RulesRepository repository = getRepo();
         System.out.println("object exist check :" + uri);
         if (uri.endsWith(".DS_Store")) return false;
         String[] path = getPath(uri);
         if (path.length == 0) return true;
-        if (path.length == 1 && path[0].equals("packages")) {
+        if (path.length == 1 && (path[0].equals("packages") || path[0].equals("snapshots"))) {
             return true;
         } else {
             if (path.length == 1) return false;
@@ -296,17 +369,32 @@ public class WebDAVImpl implements WebdavStore {
                 return false;
             }
 
-            if (path.length == 2) {
-                PackageItem pkg = repository.loadPackage(path[1]);
-                return !pkg.isArchived();
-            } else {
-                PackageItem pkg = repository.loadPackage(path[1]);
-                if (path[2].startsWith("._")){
-                	return this.osxDoubleData.containsKey(uri);
-                }
-                String assetName = AssetItem.getAssetNameFromFileName(path[2])[0];
+            if (path[0].equals("packages")) {
+	            if (path.length == 2) {
+	                PackageItem pkg = repository.loadPackage(path[1]);
+	                return !pkg.isArchived();
+	            } else {
+	                PackageItem pkg = repository.loadPackage(path[1]);
+	                if (path[2].startsWith("._")){
+	                	return this.osxDoubleData.containsKey(uri);
+	                }
+	                String assetName = AssetItem.getAssetNameFromFileName(path[2])[0];
 
-                return pkg.containsAsset(assetName) && !pkg.loadAsset(assetName).isArchived();
+	                return pkg.containsAsset(assetName) && !pkg.loadAsset(assetName).isArchived();
+	            }
+            } else if (path[0].equals("snapshots")) {
+            	if (path.length == 2) {
+            		return repository.containsPackage(path[1]);
+            	} else if (path.length == 3) {
+            		return repository.containsSnapshot(path[1], path[2]);
+            	} else if (path.length == 4) {
+            		PackageItem pkg = repository.loadPackageSnapshot(path[1], path[2]);
+            		return pkg.containsAsset(AssetItem.getAssetNameFromFileName(path[3])[0]);
+            	} else {
+            		return false;
+            	}
+            } else {
+            	throw new IllegalStateException();
             }
         }
     }
@@ -337,7 +425,7 @@ public class WebDAVImpl implements WebdavStore {
                 pkg.checkin("");
             }
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Not allowed to remove this file.");
         }
 
     }

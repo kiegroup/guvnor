@@ -47,8 +47,9 @@ public class WebDAVImplTest extends TestCase {
 	public void testListRoot() throws Exception {
 		WebDAVImpl imp = new WebDAVImpl(new File(""));
 		String[] children = imp.getChildrenNames("foobar/webdav");
-		assertEquals(1, children.length);
+		assertEquals(2, children.length);
 		assertEquals("packages", children[0]);
+		assertEquals("snapshots", children[1]);
 	}
 
 	public void testChildrenNames() throws Exception {
@@ -333,6 +334,122 @@ public class WebDAVImplTest extends TestCase {
 		assertEquals("some more input", result);
 
 
+	}
+
+	public void testSnapshot() throws Exception {
+		WebDAVImpl imp  = getImpl();
+		imp.createFolder("/foo/webdav/packages/testDavSnapshot");
+		imp.createResource("/foo/webdav/packages/testDavSnapshot/Something.drl");
+		imp.setResourceContent("/foo/webdav/packages/testDavSnapshot/Something.drl", IOUtils.toInputStream("some input"), null, null);
+
+		RulesRepository repo = imp.getRepo();
+
+		repo.createPackageSnapshot("testDavSnapshot", "SNAP1");
+		repo.createPackageSnapshot("testDavSnapshot", "SNAP2");
+
+		String[] packages = imp.getChildrenNames("/foo/webdav/snapshots");
+		assertTrue(packages.length > 0);
+		assertContains("testDavSnapshot", packages);
+
+		String[] snaps = imp.getChildrenNames("/foo/webdav/snapshots/testDavSnapshot");
+		assertEquals(2, snaps.length);
+
+		assertEquals("SNAP1", snaps[0]);
+		assertEquals("SNAP2", snaps[1]);
+
+
+		String[] list = imp.getChildrenNames("/foo/webdav/snapshots/testDavSnapshot/SNAP1");
+		assertEquals(1, list.length);
+		assertEquals("Something.drl", list[0]);
+
+		list = imp.getChildrenNames("/foo/webdav/snapshots/testDavSnapshot/SNAP2");
+		assertEquals(1, list.length);
+		assertEquals("Something.drl", list[0]);
+
+		assertNotNull(imp.getCreationDate("/foo/webdav/snapshots"));
+		assertNotNull(imp.getCreationDate("/foo/webdav/snapshots/testDavSnapshot"));
+		assertNotNull(imp.getCreationDate("/foo/webdav/snapshots/testDavSnapshot/SNAP1"));
+		assertNotNull(imp.getCreationDate("/foo/webdav/snapshots/testDavSnapshot/SNAP1/Something.drl"));
+
+		assertNotNull(imp.getLastModified("/foo/webdav/snapshots"));
+		assertNotNull(imp.getLastModified("/foo/webdav/snapshots/testDavSnapshot"));
+		assertNotNull(imp.getLastModified("/foo/webdav/snapshots/testDavSnapshot/SNAP1"));
+		assertNotNull(imp.getLastModified("/foo/webdav/snapshots/testDavSnapshot/SNAP1/Something.drl"));
+
+		createFolderTry(imp, "/foo/webdav/snapshots/randomAss");
+		createFolderTry(imp, "/foo/webdav/snapshots/testDavSnapshot/SNAPX");
+		createFolderTry(imp, "/foo/webdav/snapshots/testDavSnapshot/SNAP1/Something.drl");
+		createFolderTry(imp, "/foo/webdav/snapshots/testDavSnapshot/SNAP1/Another.drl");
+
+		createResourceTry(imp, "/foo/webdav/snapshots/randomAss");
+		createResourceTry(imp, "/foo/webdav/snapshots/testDavSnapshot/SNAPX");
+		createResourceTry(imp, "/foo/webdav/snapshots/testDavSnapshot/SNAP1/Something.drl");
+		createResourceTry(imp, "/foo/webdav/snapshots/testDavSnapshot/SNAP1/Another.drl");
+
+
+		InputStream in = imp.getResourceContent("/foo/webdav/snapshots/testDavSnapshot/SNAP1/Something.drl");
+		assertEquals("some input", IOUtils.toString(in));
+
+
+		assertEquals(0, imp.getResourceLength("/foo/webdav/snapshots/testDavSnapshot/SNAP1"));
+		assertEquals("some input".getBytes().length, imp.getResourceLength("/foo/webdav/snapshots/testDavSnapshot/SNAP1/Something.drl"));
+
+
+		assertTrue(imp.isFolder("/foo/webdav/snapshots"));
+		assertTrue(imp.isFolder("/foo/webdav/snapshots/testDavSnapshot"));
+		assertTrue(imp.isFolder("/foo/webdav/snapshots/testDavSnapshot/SNAP2"));
+		assertFalse(imp.isFolder("/foo/webdav/snapshots/testDavSnapshot/SNAP2/Something.drl"));
+
+		assertFalse(imp.isResource("/foo/webdav/snapshots"));
+		assertFalse(imp.isResource("/foo/webdav/snapshots/testDavSnapshot"));
+		assertFalse(imp.isResource("/foo/webdav/snapshots/testDavSnapshot/SNAP2"));
+		assertTrue(imp.isResource("/foo/webdav/snapshots/testDavSnapshot/SNAP2/Something.drl"));
+
+		assertFalse(imp.isResource("/foo/webdav/snapshots/testDavSnapshot/SNAP2/DoesNotExist.drl"));
+
+		assertTrue(imp.objectExists("/foo/webdav/snapshots"));
+		assertFalse(imp.objectExists("/foo/webdav/snapshots/testDavSnapshotXX"));
+		assertTrue(imp.objectExists("/foo/webdav/snapshots/testDavSnapshot"));
+		assertTrue(imp.objectExists("/foo/webdav/snapshots/testDavSnapshot/SNAP1"));
+		assertFalse(imp.objectExists("/foo/webdav/snapshots/testDavSnapshot/SNAPX"));
+
+		assertFalse(imp.objectExists("/foo/webdav/snapshots/testDavSnapshot/SNAP1/Foo.drl"));
+		assertTrue(imp.objectExists("/foo/webdav/snapshots/testDavSnapshot/SNAP1/Something.drl"));
+
+		assertNull(imp.getChildrenNames("/foo/webdav/snapshots/testDavSnapshot/SNAP1/Something.drl"));
+
+		try {
+			imp.removeObject("/foo/webdav/snapshots/testDavSnapshot/SNAP1/Something.drl");
+			fail("Should not delete files from snapshots");
+		} catch (Exception e) {
+			assertNotNull(e.getMessage());
+		}
+
+		try {
+			imp.setResourceContent("/foo/webdav/snapshots/testDavSnapshot/SNAP1/Something.drl", null, null, null);
+			fail("should not be allowed to update content in snapshots.");
+		} catch (Exception e) {
+			assertNotNull(e.getMessage());
+		}
+
+	}
+
+	private void createResourceTry(WebDAVImpl imp, String path) {
+		try {
+			imp.createResource(path);
+			fail("Should not be allowed");
+		} catch (UnsupportedOperationException e) {
+			assertNotNull(e.getMessage());
+		}
+	}
+
+	private void createFolderTry(WebDAVImpl imp, String path) {
+		try {
+			imp.createFolder(path);
+			fail("should not be allowed");
+		} catch (UnsupportedOperationException e) {
+			assertNotNull(e.getMessage());
+		}
 	}
 
 	public void testThreadLocal() throws Exception {
