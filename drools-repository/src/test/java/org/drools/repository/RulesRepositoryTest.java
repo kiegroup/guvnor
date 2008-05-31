@@ -333,6 +333,9 @@ public class RulesRepositoryTest extends TestCase {
         items = repo.findAssetsByCategory( "testCategoriesAndSnapshots", 0, -1  ).assets;
         assertEquals(2, items.size());
 
+        assertTrue(repo.containsSnapshot("testCategoriesAndSnapshots", "SNAP 1"));
+        assertFalse(repo.containsSnapshot("testCategoriesAndSnapshots", "SNAP XXXX"));
+
 
     }
 

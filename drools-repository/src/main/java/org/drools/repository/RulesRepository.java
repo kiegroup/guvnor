@@ -98,15 +98,30 @@ public class RulesRepository {
 
     private Session             session;
 
+    private static boolean initialized = false;
+
     /**
      * This requires a JCR session be setup, and the repository be configured.
      */
     public RulesRepository(
                            Session session) {
         this.session = session;
+    	checkForDataMigration(this);
     }
 
-    /**
+    private synchronized static void checkForDataMigration(RulesRepository self) {
+    	if (initialized) return;
+    	if (self.session.getUserID().equals("anonymous")) return;
+    	//need to have check for migration in datastore
+    	PackageIterator pkgs = self.listPackages();
+//    	while(pkgs.hasNext()) {
+//
+//    	}
+
+    	initialized = true;
+	}
+
+	/**
      * Will add a node named 'nodeName' of type 'type' to 'parent' if such a
      * node does not already exist.
      *
@@ -368,6 +383,17 @@ public class RulesRepository {
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
+    }
+
+
+    public boolean containsSnapshot(String packageName, String snapshotName) {
+    	try {
+	    	Node n = this.getAreaNode( PACKAGE_SNAPSHOT_AREA ).getNode( packageName );
+	    	return n.hasNode(snapshotName);
+    	} catch (RepositoryException e) {
+    		log.error(e);
+    		throw new RulesRepositoryException(e);
+    	}
     }
 
 
