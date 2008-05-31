@@ -23,6 +23,7 @@ import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.SessionConfiguration;
 import org.drools.base.ClassTypeResolver;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
@@ -1158,7 +1159,9 @@ public class ServiceImplementation
 		}
 
 		ClassTypeResolver res = new ClassTypeResolver(allImps, cl);
-		InternalWorkingMemory workingMemory = (InternalWorkingMemory) rb.newStatefulSession(false);
+		SessionConfiguration sessionConfiguration = new SessionConfiguration();
+		sessionConfiguration.setKeepReference( false );
+		InternalWorkingMemory workingMemory = (InternalWorkingMemory) rb.newStatefulSession(sessionConfiguration);
 		return runScenario(scenario, res, workingMemory);
 	}
 
@@ -1217,7 +1220,9 @@ public class ServiceImplementation
 			Package bin = rb.getPackages()[0];
 
 			ClassTypeResolver res = new ClassTypeResolver(bin.getImports().keySet(), cl);
-			InternalWorkingMemory workingMemory = (InternalWorkingMemory) rb.newStatefulSession(false);
+			SessionConfiguration sessionConfiguration = new SessionConfiguration();
+			sessionConfiguration.setKeepReference( false );
+			InternalWorkingMemory workingMemory = (InternalWorkingMemory) rb.newStatefulSession( sessionConfiguration);
 
 			RuleCoverageListener coverage = new RuleCoverageListener(expectedRules(bin));
 			workingMemory.addEventListener(coverage);
