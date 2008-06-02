@@ -48,9 +48,9 @@ public class RestAPI {
 
 	/**
 	 * This works off:
-	 * packages/<packageName> --> returns list of : <asset name>=<ISO date time last modified>,<versionNumber>
-	 * packages/<packageName>/.package --> the contents of the package header
-	 * packages/<packageName>/<assetName> --> the contents of the package
+	 * packages/packageName --> returns list of : asset name=ISO date time last modified,versionNumber
+	 * packages/packageName/.package --> the contents of the package header
+	 * packages/packageName/assetName --> the contents of the package
 	 */
 	public Response get(String path) throws UnsupportedEncodingException {
 		String[] bits = split(path);
