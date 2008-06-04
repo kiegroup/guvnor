@@ -31,6 +31,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -92,7 +93,7 @@ public class NewAssetWizard extends FormStylePopup {
                     "in the above case, the 'M=Male' means that 'Male' will be displayed as an item in a drop down box, but the value 'M' will be used in the rule. "
                     );
         }
-        
+
         addAttribute("Initial description:", description);
 
         Button ok = new Button( "OK" );
@@ -118,11 +119,17 @@ public class NewAssetWizard extends FormStylePopup {
     }
 
     private Widget getCatChooser() {
-       return new CategoryExplorerWidget( new CategorySelectHandler() {
+
+       Widget w = new CategoryExplorerWidget( new CategorySelectHandler() {
             public void selected(String selectedPath) {
                 initialCategory = selectedPath;
             }
         });
+       ScrollPanel scroll = new ScrollPanel(w);
+       scroll.setAlwaysShowScrollBars(true);
+       scroll.setSize("300px", "130px");
+       return scroll;
+
     }
 
     private ListBox getFormatChooser() {
@@ -155,8 +162,8 @@ public class NewAssetWizard extends FormStylePopup {
 				Window.alert(e.getMessage());
 				return;
 			}
-		} 
-        
+		}
+
         GenericCallback cb = new GenericCallback() {
             public void onSuccess(Object result) {
             		String uuid = (String) result;
@@ -198,7 +205,7 @@ public class NewAssetWizard extends FormStylePopup {
 	 * Validate name per JSR-170. Only following characters are valid: char ::=
 	 * nonspace | ' ' nonspace ::= (* Any Unicode character except: '/', ':',
 	 * '[', ']', '*', ''', '"', '|' or any whitespace character *)
-	 * 
+	 *
 	 * @param jsrPath
 	 */
 	public static void validatePathPerJSR170(String jsrPath)
