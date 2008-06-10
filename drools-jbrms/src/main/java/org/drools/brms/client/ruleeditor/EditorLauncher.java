@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.client.common.DefaultContentUploadEditor;
 import org.drools.brms.client.decisiontable.DecisionTableXLSWidget;
 import org.drools.brms.client.decisiontable.GuidedDecisionTableWidget;
 import org.drools.brms.client.modeldriven.ui.RuleModeller;
@@ -76,7 +77,7 @@ public class EditorLauncher {
         } else if (asset.metaData.format.equals(AssetFormats.DECISION_TABLE_GUIDED)) {
         	return new RuleValidatorWrapper(new GuidedDecisionTableWidget(asset), asset);
         } else {
-            return new DefaultRuleContentWidget( asset );
+            return new DefaultContentUploadEditor( asset, viewer );
         }
 
     }

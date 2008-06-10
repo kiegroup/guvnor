@@ -16,7 +16,30 @@ package org.drools.brms.server;
  */
 
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.jcr.ItemExistsException;
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.drools.FactHandle;
@@ -28,12 +51,35 @@ import org.drools.base.ClassTypeResolver;
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.testing.Scenario;
-import org.drools.brms.client.rpc.*;
+import org.drools.brms.client.rpc.AnalysisReport;
+import org.drools.brms.client.rpc.BuilderResult;
+import org.drools.brms.client.rpc.BulkTestRunResult;
+import org.drools.brms.client.rpc.DetailedSerializableException;
+import org.drools.brms.client.rpc.LogEntry;
+import org.drools.brms.client.rpc.MetaData;
+import org.drools.brms.client.rpc.PackageConfigData;
+import org.drools.brms.client.rpc.RepositoryService;
+import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.client.rpc.ScenarioResultSummary;
+import org.drools.brms.client.rpc.ScenarioRunResult;
+import org.drools.brms.client.rpc.SnapshotInfo;
+import org.drools.brms.client.rpc.TableConfig;
+import org.drools.brms.client.rpc.TableDataResult;
+import org.drools.brms.client.rpc.TableDataRow;
+import org.drools.brms.client.rpc.ValidatedResponse;
 import org.drools.brms.server.builder.BRMSPackageBuilder;
 import org.drools.brms.server.builder.ContentAssemblyError;
 import org.drools.brms.server.builder.ContentPackageAssembler;
-import org.drools.brms.server.contenthandler.*;
-import org.drools.brms.server.util.*;
+import org.drools.brms.server.contenthandler.ContentHandler;
+import org.drools.brms.server.contenthandler.ContentManager;
+import org.drools.brms.server.contenthandler.IRuleAsset;
+import org.drools.brms.server.contenthandler.IValidating;
+import org.drools.brms.server.contenthandler.ModelContentHandler;
+import org.drools.brms.server.util.AnalysisRunner;
+import org.drools.brms.server.util.BRMSSuggestionCompletionLoader;
+import org.drools.brms.server.util.LoggingHelper;
+import org.drools.brms.server.util.MetaDataMapper;
+import org.drools.brms.server.util.TableDisplayHandler;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.InternalWorkingMemory;
@@ -42,7 +88,18 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.repository.*;
+import org.drools.repository.AssetHistoryIterator;
+import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
+import org.drools.repository.AssetPageList;
+import org.drools.repository.CategoryItem;
+import org.drools.repository.PackageItem;
+import org.drools.repository.PackageIterator;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryAdministrator;
+import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.StateItem;
+import org.drools.repository.VersionableItem;
 import org.drools.rule.Package;
 import org.drools.testframework.RuleCoverageListener;
 import org.drools.testframework.ScenarioRunner;
@@ -53,18 +110,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.annotations.security.Restrict;
 
-import javax.jcr.ItemExistsException;
-import javax.jcr.RepositoryException;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.text.DateFormat;
-import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.gwt.user.client.rpc.SerializableException;
 
 /**
  * This is the implementation of the repository service to drive the GWT based front end.
@@ -545,7 +591,7 @@ public class ServiceImplementation
 
         PackageConfigData data = new PackageConfigData();
         data.uuid = item.getUUID();
-        data.header = item.getHeader();
+        data.header = getDroolsHeader(item);
         data.externalURI = item.getExternalURI();
         data.description = item.getDescription();
         data.name = item.getName();
@@ -569,7 +615,7 @@ public class ServiceImplementation
 
         PackageItem item = repository.loadPackage( data.name );
 
-        item.updateHeader( data.header );
+        updateDroolsHeader( data.header, item );
         item.updateExternalURI( data.externalURI );
         item.updateDescription( data.description );
         item.archiveItem( data.archived );
@@ -591,9 +637,6 @@ public class ServiceImplementation
             res.errorHeader  = "Package validation errors";
             res.errorMessage = err;
         }
-
-
-
 
 
         return res;
@@ -1330,6 +1373,32 @@ public class ServiceImplementation
 	public void renameCategory(String fullPathAndName, String newName) {
 		repository.renameCategory(fullPathAndName, newName);
 	}
+
+    public static String getDroolsHeader(PackageItem pkg) {
+    	if (pkg.containsAsset("drools")) {
+    		return pkg.loadAsset("drools").getContent();
+    	} else {
+    		return "";
+    	}
+    }
+
+	public static void updateDroolsHeader(String string, PackageItem pkg) {
+		pkg.checkout();
+		AssetItem conf;
+		if (pkg.containsAsset("drools")) {
+			conf = pkg.loadAsset("drools");
+			conf.updateContent(string);
+			conf.checkin("");
+		} else {
+			conf = pkg.addAsset("drools", "");
+			conf.updateFormat("package");
+			conf.updateContent(string);
+			conf.checkin("");
+		}
+
+	}
+
+
 
 
 

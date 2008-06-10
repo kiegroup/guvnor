@@ -86,18 +86,18 @@ public class FileManagerUtilsTest extends TestCase {
 		pkg = repo.loadPackage("testAttachModelImports");
 
 		assertFalse(pkg.isBinaryUpToDate());
-		assertNotNull(pkg.getHeader());
-		assertTrue(pkg.getHeader().indexOf("import com.billasurf.Board") > -1);
-		assertTrue(pkg.getHeader().indexOf("import com.billasurf.Person") > -1);
+		assertNotNull(ServiceImplementation.getDroolsHeader(pkg));
+		assertTrue(ServiceImplementation.getDroolsHeader(pkg).indexOf("import com.billasurf.Board") > -1);
+		assertTrue(ServiceImplementation.getDroolsHeader(pkg).indexOf("import com.billasurf.Person") > -1);
 
 
-		pkg.updateHeader("goo wee");
+		ServiceImplementation.updateDroolsHeader("goo wee", pkg);
 		pkg.checkin("");
 
 
 		fm.attachFileToAsset(asset.getUUID(), this.getClass().getResourceAsStream("/billasurf.jar"), "billasurf.jar");
 		pkg = repo.loadPackage("testAttachModelImports");
-		assertEquals("goo wee", pkg.getHeader());
+		assertEquals("goo wee", ServiceImplementation.getDroolsHeader(pkg));
 
 	}
 
@@ -147,7 +147,7 @@ public class FileManagerUtilsTest extends TestCase {
 
 		uploadHelper.repository = repo;
 		PackageItem pkg = repo.createPackage("testGetBinaryPackageServlet", "");
-		pkg.updateHeader("import java.util.List");
+		ServiceImplementation.updateDroolsHeader("import java.util.List", pkg);
 		pkg.updateCompiledPackage(new ByteArrayInputStream("foo".getBytes()));
 		pkg.checkin("");
 
@@ -213,7 +213,11 @@ public class FileManagerUtilsTest extends TestCase {
 		assertNotNull(pkg);
 
 		List<AssetItem> rules = iteratorToList(pkg.getAssets());
-		assertEquals(2, rules.size());
+		assertEquals(3, rules.size());
+
+		AssetItem pkgConf = rules.get(0);
+		assertEquals("drools", pkgConf.getName());
+		rules.remove(0);
 
 		final AssetItem rule1 = rules.get(0);
 		assertEquals("ola", rule1.getName());
@@ -227,8 +231,8 @@ public class FileManagerUtilsTest extends TestCase {
 		assertEquals(AssetFormats.DRL, rule2.getFormat());
 		assertTrue(rule2.getContent().indexOf("when") > -1);
 
-		assertNotNull(pkg.getHeader());
-		assertTrue(pkg.getHeader().indexOf("import") > -1);
+		assertNotNull(ServiceImplementation.getDroolsHeader(pkg));
+		assertTrue(ServiceImplementation.getDroolsHeader(pkg).indexOf("import") > -1);
 
 		// now lets import an existing thing
 		drl = "package testClassicDRLImport\n import should not see \n rule 'ola2' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
@@ -239,13 +243,13 @@ public class FileManagerUtilsTest extends TestCase {
 		assertNotNull(pkg);
 
 		// it should not overwrite this.
-		String hdr = pkg.getHeader();
+		String hdr = ServiceImplementation.getDroolsHeader(pkg);
 		assertTrue(hdr.indexOf("import should not see") > -1);
 		assertTrue(hdr.indexOf("import blah") > -1);
 		assertTrue(hdr.indexOf("import should not see") > hdr.indexOf("import blah"));
 
 		rules = iteratorToList(pkg.getAssets());
-		assertEquals(3, rules.size());
+		assertEquals(4, rules.size());
 
 		// now we will import a change, check that it appears. a change to the
 		// "ola" rule
@@ -276,7 +280,12 @@ public class FileManagerUtilsTest extends TestCase {
 		assertNotNull(pkg);
 
 		List<AssetItem> rules = iteratorToList(pkg.getAssets());
-		assertEquals(2, rules.size());
+		assertEquals(3, rules.size()); //its 3 cause there is the drools.package file
+		AssetItem pkgConf = rules.get(0);
+		assertEquals("drools", pkgConf.getName());
+		assertEquals("package", pkgConf.getFormat());
+		rules.remove(0);//now lets get rid of it
+
 
 		final AssetItem rule1 = rules.get(0);
 		assertEquals("ola", rule1.getName());
@@ -290,8 +299,7 @@ public class FileManagerUtilsTest extends TestCase {
 		assertEquals(AssetFormats.DSL_TEMPLATE_RULE, rule2.getFormat());
 		assertTrue(rule2.getContent().indexOf("when") > -1);
 
-		assertNotNull(pkg.getHeader());
-		assertTrue(pkg.getHeader().indexOf("import") > -1);
+		assertTrue(ServiceImplementation.getDroolsHeader(pkg).indexOf("import") > -1);
 
 	}
 
@@ -299,7 +307,7 @@ public class FileManagerUtilsTest extends TestCase {
 		RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper
 				.getSession());
 		PackageItem pkg = repo.createPackage("testHeadOOME", "");
-		pkg.updateHeader("import java.util.List");
+		ServiceImplementation.updateDroolsHeader("import java.util.List", pkg);
 		pkg.updateCompiledPackage(new ByteArrayInputStream("foo".getBytes()));
 		pkg.checkin("");
 		repo.logout();

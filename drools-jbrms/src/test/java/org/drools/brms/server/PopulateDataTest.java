@@ -77,8 +77,8 @@ public class PopulateDataTest extends TestCase {
 
 
         PackageItem pkg = repo.loadPackage( "com.billasurf.manufacturing.plant" );
-        pkg.updateHeader( "import com.billasurf.Board\nimport com.billasurf.Person" +
-                "\n\nglobal com.billasurf.Person prs" );
+        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Board\nimport com.billasurf.Person" +
+                "\n\nglobal com.billasurf.Person prs", pkg );
         pkg.checkin( "added imports" );
 
         SuggestionCompletionEngine eng = serv.loadSuggestionCompletionEngine( "com.billasurf.manufacturing.plant" );

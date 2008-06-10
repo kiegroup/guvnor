@@ -206,7 +206,7 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals("DUPLICATE", uuid);
 
 	}
-	
+
 	public void testCreateNewRule() throws Exception {
 		ServiceImplementation impl = getService();
 		impl.repository.createPackage("testCreateNewRule", "desc");
@@ -221,7 +221,7 @@ public class ServiceImplementationTest extends TestCase {
 		AssetItem dtItem = impl.repository.loadAssetByUUID(uuid);
 		assertEquals(dtItem.getDescription(), "an initial desc");
 	}
-	
+
 	public void testCreateNewRuleContainsApostrophe() throws Exception {
 		ServiceImplementation impl = getService();
 		impl.repository.createPackage("testCreateNewRuleContainsApostrophe",
@@ -242,7 +242,7 @@ public class ServiceImplementationTest extends TestCase {
 							"'testCreateNewRuleContains' character' is not a valid path. ''' not a valid name character") >= 0);
 		}
 	}
-	
+
 	public void testRuleTableLoad() throws Exception {
 		ServiceImplementation impl = getService();
 		TableConfig conf = impl
@@ -524,7 +524,7 @@ public class ServiceImplementationTest extends TestCase {
 		String uuid = it.getUUID();
 		it.updateCoverage("xyz");
 		it.updateExternalURI("ext");
-		it.updateHeader("header");
+		ServiceImplementation.updateDroolsHeader("header", it);
 		impl.repository.save();
 
 		PackageConfigData data = impl.loadPackageConfig(uuid);
@@ -803,7 +803,7 @@ public class ServiceImplementationTest extends TestCase {
 		}
 
 		PackageItem pkg = repo.createPackage("testSnapshotRebuild", "");
-		pkg.updateHeader("import java.util.List");
+		ServiceImplementation.updateDroolsHeader("import java.util.List", pkg);
 		repo.save();
 
 		AssetItem item = pkg.addAsset("anAsset", "");
@@ -963,7 +963,7 @@ public class ServiceImplementationTest extends TestCase {
 
 		// create our package
 		PackageItem pkg = repo.createPackage("testBinaryPackageCompile", "");
-		pkg.updateHeader("import org.drools.Person");
+		ServiceImplementation.updateDroolsHeader("import org.drools.Person", pkg);
 		AssetItem rule1 = pkg.addAsset("rule_1", "");
 		rule1.updateFormat(AssetFormats.DRL);
 		rule1
@@ -1026,7 +1026,7 @@ public class ServiceImplementationTest extends TestCase {
 
 		// create our package
 		PackageItem pkg = repo.createPackage("testBinaryPackageCompileBRL", "");
-		pkg.updateHeader("import org.drools.Person");
+		ServiceImplementation.updateDroolsHeader("import org.drools.Person", pkg);
 		AssetItem rule2 = pkg.addAsset("rule2", "");
 		rule2.updateFormat(AssetFormats.BUSINESS_RULE);
 
@@ -1151,7 +1151,7 @@ public class ServiceImplementationTest extends TestCase {
 
 		// create our package
 		PackageItem pkg = repo.createPackage("testPackageSource", "");
-		pkg.updateHeader("import org.goo.Ber");
+		ServiceImplementation.updateDroolsHeader("import org.goo.Ber", pkg);
 		AssetItem rule1 = pkg.addAsset("rule_1", "");
 		rule1.updateFormat(AssetFormats.DRL);
 		rule1
@@ -1267,7 +1267,7 @@ public class ServiceImplementationTest extends TestCase {
 				.getResourceAsStream("/billasurf.jar"));
 		model.checkin("");
 
-		pkg.updateHeader("import com.billasurf.Person");
+		ServiceImplementation.updateDroolsHeader("import com.billasurf.Person", pkg);
 
 		AssetItem asset = pkg.addAsset("testRule", "");
 		asset.updateFormat(AssetFormats.DRL);
@@ -1331,7 +1331,7 @@ public class ServiceImplementationTest extends TestCase {
 				.getResourceAsStream("/billasurf.jar"));
 		model.checkin("");
 
-		pkg.updateHeader("import com.billasurf.Person");
+		ServiceImplementation.updateDroolsHeader("import com.billasurf.Person", pkg);
 		impl.createCategory("/", "brl", "");
 
 		String uuid = impl.createNewRule("testBRL", "", "brl",
@@ -1374,13 +1374,13 @@ public class ServiceImplementationTest extends TestCase {
 		assertNull(result);
 
 		List assets = iteratorToList(pkg.getAssets());
-		assertEquals(2, assets.size());
+		assertEquals(3, assets.size());
 		// now lets copy...
 		String newUUID = impl.copyAsset(rule.uuid, rule.metaData.packageName,
 				"ruleName2");
 
 		assets = iteratorToList(pkg.getAssets());
-		assertEquals(3, assets.size());
+		assertEquals(4, assets.size()); //we have 4 due to the drools.package file.
 		RuleAsset asset = impl.loadRuleAsset(newUUID);
 
 		String pkgSource = impl.buildPackageSource(pkg.getUUID());
@@ -1432,7 +1432,7 @@ public class ServiceImplementationTest extends TestCase {
 		}
 		assertNull(result);
 
-		pkg.updateHeader("importxxxx");
+		ServiceImplementation.updateDroolsHeader("importxxxx", pkg);
 		repo.save();
 		result = impl.buildAsset(rule);
 		assertNotNull(result);
@@ -1449,7 +1449,7 @@ public class ServiceImplementationTest extends TestCase {
 
 		// create our package
 		PackageItem pkg = repo.createPackage("testRuleNameList", "");
-		pkg.updateHeader("import org.goo.Ber");
+		ServiceImplementation.updateDroolsHeader("import org.goo.Ber", pkg);
 		AssetItem rule1 = pkg.addAsset("rule_1", "");
 		rule1.updateFormat(AssetFormats.DRL);
 		rule1
@@ -1481,7 +1481,7 @@ public class ServiceImplementationTest extends TestCase {
 		// create our package
 		PackageItem pkg = repo.createPackage("testBinaryPackageUpToDate", "");
 		assertFalse(pkg.isBinaryUpToDate());
-		pkg.updateHeader("import org.drools.Person");
+		ServiceImplementation.updateDroolsHeader("import org.drools.Person", pkg);
 		AssetItem rule1 = pkg.addAsset("rule_1", "");
 		rule1.updateFormat(AssetFormats.DRL);
 		rule1
@@ -1537,7 +1537,7 @@ public class ServiceImplementationTest extends TestCase {
 		RulesRepository repo = impl.repository;
 
 		PackageItem pkg = repo.createPackage("testScenarioRun", "");
-		pkg.updateHeader("import org.drools.Person\n global org.drools.Cheese cheese\n");
+		ServiceImplementation.updateDroolsHeader("import org.drools.Person\n global org.drools.Cheese cheese\n", pkg);
 		AssetItem rule1 = pkg.addAsset("rule_1", "");
 		rule1.updateFormat(AssetFormats.DRL);
 		rule1
@@ -1640,7 +1640,7 @@ public class ServiceImplementationTest extends TestCase {
 				.getResourceAsStream("/billasurf.jar"));
 		model.checkin("");
 
-		pkg.updateHeader("import com.billasurf.Board");
+		ServiceImplementation.updateDroolsHeader("import com.billasurf.Board", pkg);
 
 		AssetItem asset = pkg.addAsset("testRule", "");
 		asset.updateFormat(AssetFormats.DRL);
@@ -1697,7 +1697,7 @@ public class ServiceImplementationTest extends TestCase {
 		RulesRepository repo = impl.repository;
 
 		PackageItem pkg = repo.createPackage("testScenarioRunBulk", "");
-		pkg.updateHeader("import org.drools.Person");
+		ServiceImplementation.updateDroolsHeader("import org.drools.Person", pkg);
 		AssetItem rule1 = pkg.addAsset("rule_1", "");
 		rule1.updateFormat(AssetFormats.DRL);
 		rule1
@@ -1843,7 +1843,7 @@ public class ServiceImplementationTest extends TestCase {
 		impl.createCategory("/", "decisiontables", "");
 
 		PackageItem pkg = repo.createPackage("testGuidedDTCompile", "");
-		pkg.updateHeader("import org.drools.Person");
+		ServiceImplementation.updateDroolsHeader("import org.drools.Person", pkg);
 		AssetItem rule1 = pkg.addAsset("rule_1", "");
 		rule1.updateFormat(AssetFormats.DRL);
 		rule1.updateContent("rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end");

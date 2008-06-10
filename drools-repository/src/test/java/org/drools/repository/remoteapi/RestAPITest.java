@@ -31,7 +31,7 @@ public class RestAPITest extends TestCase {
 
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		PackageItem pkg = repo.createPackage("testRestGetBasics", "");
-		pkg.updateHeader("This is some header");
+		pkg.updateStringProperty("This is some header", PackageItem.HEADER_PROPERTY_NAME);
 		repo.save();
 
 
@@ -66,7 +66,7 @@ public class RestAPITest extends TestCase {
 		res.writeData(out);
 
 		String dotPackage = new String(out.toByteArray());
-		assertEquals(pkg.getHeader(), dotPackage);
+		assertEquals(pkg.getStringProperty(PackageItem.HEADER_PROPERTY_NAME), dotPackage);
 
 		res = api.get("packages/testRestGetBasics");
 		assertTrue(res instanceof Text);
@@ -129,7 +129,7 @@ public class RestAPITest extends TestCase {
 	public void testPost() throws Exception {
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		PackageItem pkg = repo.createPackage("testRestPost", "");
-		pkg.updateHeader("This is some header");
+		pkg.updateStringProperty("This is some header", PackageItem.HEADER_PROPERTY_NAME);
 		repo.save();
 
 		RestAPI api = new RestAPI(repo);
@@ -164,7 +164,7 @@ public class RestAPITest extends TestCase {
 
 		api.post("/packages/testPostNewPackage/.package", new ByteArrayInputStream("qaz".getBytes()), "This is a new package");
 		PackageItem pkg = repo.loadPackage("testPostNewPackage");
-		assertEquals("qaz", pkg.getHeader());
+		assertEquals("qaz", pkg.getStringProperty(PackageItem.HEADER_PROPERTY_NAME));
 
 		assertEquals("This is a new package", pkg.getCheckinComment());
 
@@ -175,7 +175,7 @@ public class RestAPITest extends TestCase {
 		//need to test both asset and .package shite.
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		PackageItem pkg = repo.createPackage("testRestPut", "");
-		pkg.updateHeader("This is some header");
+		pkg.updateStringProperty("This is some header", PackageItem.HEADER_PROPERTY_NAME);
 		repo.save();
 
 		AssetItem asset1 = pkg.addAsset("asset1", "");
@@ -209,7 +209,7 @@ public class RestAPITest extends TestCase {
 		//now check updating the package header
 		api.put("packages/testRestPut/.package", Calendar.getInstance(), new ByteArrayInputStream("whee".getBytes()), "hey");
 		pkg = repo.loadPackage("testRestPut");
-		assertEquals("whee", pkg.getHeader());
+		assertEquals("whee", pkg.getStringProperty(PackageItem.HEADER_PROPERTY_NAME));
 
 		try {
 			api.put("packages/testRestPut/asset1.drl", cd, new ByteArrayInputStream("qaz".getBytes()), "a new comment");
@@ -231,7 +231,7 @@ public class RestAPITest extends TestCase {
 	public void testDelete() throws Exception {
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		PackageItem pkg = repo.createPackage("testRestDelete", "");
-		pkg.updateHeader("This is some header");
+		pkg.updateStringProperty("This is some header", PackageItem.HEADER_PROPERTY_NAME);
 		repo.save();
 
 		AssetItem asset1 = pkg.addAsset("asset1", "");

@@ -31,6 +31,7 @@ import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 
 import org.apache.log4j.Logger;
+import org.drools.repository.migration.MigrateDroolsPackage;
 
 /**
  * RulesRepository is the class that defines the bahavior for the JBoss Rules
@@ -98,7 +99,7 @@ public class RulesRepository {
 
     private Session             session;
 
-    private static boolean initialized = false;
+    static boolean initialized = false;
 
     /**
      * This requires a JCR session be setup, and the repository be configured.
@@ -112,12 +113,14 @@ public class RulesRepository {
     private synchronized static void checkForDataMigration(RulesRepository self) {
     	if (initialized) return;
     	if (self.session.getUserID().equals("anonymous")) return;
-    	//need to have check for migration in datastore
-    	PackageIterator pkgs = self.listPackages();
-//    	while(pkgs.hasNext()) {
-//
-//    	}
-
+    	try {
+    		MigrateDroolsPackage migration = new MigrateDroolsPackage();
+			if (migration.needsMigration(self)) {
+				migration.migrate(self);
+		    }
+		} catch (RepositoryException e) {
+			throw new RulesRepositoryException(e);
+		}
     	initialized = true;
 	}
 

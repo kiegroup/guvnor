@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 
 import org.drools.brms.client.common.AssetFormats;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.server.ServiceImplementation;
 import org.drools.brms.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
@@ -35,11 +36,11 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
 
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         PackageItem item = repo.createPackage( "testLoader", "to test the loader" );
-        item.updateHeader( "import java.util.Date" );
+        ServiceImplementation.updateDroolsHeader("import java.util.Date", item );
         repo.save();
 
         BRMSSuggestionCompletionLoader  loader = new BRMSSuggestionCompletionLoader();
-        String header = item.getHeader();
+        String header = ServiceImplementation.getDroolsHeader(item);
 
 
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( item );
@@ -66,7 +67,7 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
 
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         PackageItem item = repo.createPackage( "testLoader2", "to test the loader for fact templates" );
-        item.updateHeader( "import java.util.Date\ntemplate Person\njava.lang.String name\nDate birthDate\nend" );
+        ServiceImplementation.updateDroolsHeader("import java.util.Date\ntemplate Person\njava.lang.String name\nDate birthDate\nend", item );
         repo.save();
 
         BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
@@ -162,13 +163,13 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
         assertNotNull(loader.getSuggestionEngine( item ));
         assertFalse(loader.hasErrors());
 
-        item.updateHeader( "gooble de gook" );
+        ServiceImplementation.updateDroolsHeader("gooble de gook", item );
         loader = new BRMSSuggestionCompletionLoader();
         loader.getSuggestionEngine( item );
         assertTrue(loader.hasErrors());
 
 
-        item.updateHeader( "import foo.bar; \nglobal goo.Bar baz;" );
+        ServiceImplementation.updateDroolsHeader("import foo.bar; \nglobal goo.Bar baz;", item );
         loader = new BRMSSuggestionCompletionLoader();
         loader.getSuggestionEngine( item );
         assertTrue(loader.hasErrors());

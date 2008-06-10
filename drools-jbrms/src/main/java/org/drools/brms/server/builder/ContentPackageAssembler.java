@@ -17,6 +17,7 @@ package org.drools.brms.server.builder;
 
 
 import org.drools.brms.client.common.AssetFormats;
+import org.drools.brms.server.ServiceImplementation;
 import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.contenthandler.ContentManager;
 import org.drools.brms.server.contenthandler.IRuleAsset;
@@ -119,6 +120,7 @@ public class ContentPackageAssembler {
         while (it.hasNext()) {
 
             AssetItem asset = (AssetItem) it.next();
+
             if (!asset.isArchived() && (selector.isAssetAllowed( asset ))) {
                 buildAsset( asset );
             }
@@ -157,7 +159,7 @@ public class ContentPackageAssembler {
         builder.addPackage( new PackageDescr(pkg.getName()) );
 
         //now we deal with the header (imports, templates, globals).
-        addDrl(pkg.getHeader());
+        addDrl(ServiceImplementation.getDroolsHeader(pkg));
         if (builder.hasErrors()) {
             recordBuilderErrors(pkg);
             //if we have any failures, lets drop out now, no point in going
@@ -260,10 +262,11 @@ public class ContentPackageAssembler {
     }
 
 
+
     public String getDRL() {
         StringBuffer src = new StringBuffer();
         src.append( "package " + this.pkg.getName() + "\n");
-        src.append( this.pkg.getHeader() + "\n\n");
+        src.append( ServiceImplementation.getDroolsHeader(this.pkg) + "\n\n");
 
 
         //now we load up the DSL files
@@ -288,13 +291,15 @@ public class ContentPackageAssembler {
         while (iter.hasNext()) {
             AssetItem asset = (AssetItem) iter.next();
             if (!asset.isArchived()) {
-                ContentHandler h = ContentManager.getHandler( asset.getFormat() );
-                if (h instanceof IRuleAsset) {
-                    IRuleAsset ruleAsset = (IRuleAsset) h;
-                    ruleAsset.assembleDRL( builder, asset, src );
-                }
 
-                src.append( "\n\n" );
+	                ContentHandler h = ContentManager.getHandler( asset.getFormat() );
+	                if (h instanceof IRuleAsset) {
+	                    IRuleAsset ruleAsset = (IRuleAsset) h;
+	                    ruleAsset.assembleDRL( builder, asset, src );
+	                }
+
+	                src.append( "\n\n" );
+
             }
         }
 

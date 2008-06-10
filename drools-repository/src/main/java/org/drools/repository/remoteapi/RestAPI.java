@@ -85,7 +85,7 @@ public class RestAPI {
 		if (resourceFile.equals(".package")) {
 			Text r = new Response.Text();
 			r.lastModified = pkg.getLastModified();
-			r.data = pkg.getHeader();
+			r.data = pkg.getStringProperty( PackageItem.HEADER_PROPERTY_NAME );
 			return r;
 		} else {
 			String assetName = resourceFile.split("\\.")[0];
@@ -141,7 +141,7 @@ public class RestAPI {
 				//new package
 				PackageItem pkg = repo.createPackage(bits[1], "<added remotely>");
 				pkg.updateCheckinComment(comment);
-				pkg.updateHeader(readContent(in));
+				pkg.updateStringProperty(readContent(in), PackageItem.HEADER_PROPERTY_NAME);
 				repo.save();
 			} else {
 				//new asset
@@ -204,7 +204,7 @@ public class RestAPI {
 				if (lastModified != null && pkg.getLastModified().after(lastModified)) {
 					throw new RulesRepositoryException("The package was modified by: " + pkg.getLastContributor() + ", unable to write changes.");
 				}
-				pkg.updateHeader(readContent(in));
+				pkg.updateStringProperty(readContent(in), PackageItem.HEADER_PROPERTY_NAME);
 				pkg.checkin(comment);
 				repo.save();
 			} else {

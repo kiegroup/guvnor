@@ -11,10 +11,10 @@ import javax.jcr.Value;
 
 /**
  * This is the parent class for versionable assets.
- * Contains standard fields based on Dublin Core, and 
+ * Contains standard fields based on Dublin Core, and
  * stuff required for versioning.
  * For dublin core, refer to <a href="http://dublincore.org/documents/dces/">Here</a>
- * 
+ *
  * @see CategorisableItem for more attributes to do with BRMS resources.
  * @author Ben Truitt, Michael Neale
  *
@@ -43,9 +43,9 @@ public abstract class VersionableItem extends Item {
     public static final String RIGHTS_PROPERTY_NAME           = "drools:rights";
     public static final String COVERAGE_PROPERTY_NAME         = "drools:coverage";
     public static final String PUBLISHER_PROPERTY_NAME        = "drools:publisher";
-    
-    
-    
+
+
+
     /**
      * The name of the state property on the rule node type
      */
@@ -67,7 +67,7 @@ public abstract class VersionableItem extends Item {
 
     /**
      * Sets this object's node attribute to the specified node
-     * 
+     *
      * @param rulesRepository the RulesRepository object that this object is being created from
      * @param node the node in the repository that this item corresponds to
      */
@@ -79,17 +79,17 @@ public abstract class VersionableItem extends Item {
 
     /**
      * @return A unique identifier for this items content node.
-     * This UUID is constant even with new versions, it represents the asset, and 
+     * This UUID is constant even with new versions, it represents the asset, and
      * ALL its historical versions.
      */
     public String getUUID() {
         try {
             return this.getVersionContentNode().getUUID();
-        } catch (  RepositoryException e ) {            
+        } catch (  RepositoryException e ) {
             throw new RulesRepositoryException(e);
         }
     }
-    
+
     /**
      * This will return true if the current entity is actually a
      * historical version (which means is effectively read only).
@@ -97,9 +97,9 @@ public abstract class VersionableItem extends Item {
     public boolean isHistoricalVersion() throws RepositoryException {
         return this.node.getPrimaryNodeType().getName().equals( "nt:version" ) || node.getPrimaryNodeType().getName().equals( "nt:frozenNode" );
     }
-    
-    
-    
+
+
+
 
     /**
      * @return the predessor node of this node in the version history, or null if no predecessor version exists
@@ -161,7 +161,7 @@ public abstract class VersionableItem extends Item {
     }
 
     /**
-     * @return an Iterator over VersionableItem objects encapsulating each successor node of this 
+     * @return an Iterator over VersionableItem objects encapsulating each successor node of this
      *         Item's node
      * @throws RulesRepositoryException
      * @Deprecated Until I can work out why it isn't quite kosher.
@@ -172,7 +172,7 @@ public abstract class VersionableItem extends Item {
     }
 
     /**
-     * @return an Iterator over VersionableItem objects encapsulating each predecessor node of this 
+     * @return an Iterator over VersionableItem objects encapsulating each predecessor node of this
      *         Item's node
      * @throws RulesRepositoryException
      * @Deprecated Until I can work out why it isn't quite kosher.
@@ -183,38 +183,38 @@ public abstract class VersionableItem extends Item {
     }
 
     /**
-     * Clients of this method can cast the resulting object to the type of object they are 
-     * calling the method on (e.g. 
+     * Clients of this method can cast the resulting object to the type of object they are
+     * calling the method on (e.g.
      *         <pre>
      *           RuleItem item;
      *           ...
      *           RuleItem predcessor = (RuleItem) item.getPrecedingVersion();
      *         </pre>
-     * @return a VersionableItem object encapsulating the predessor node of this node in the 
+     * @return a VersionableItem object encapsulating the predessor node of this node in the
      *         version history, or null if no predecessor version exists
      * @throws RulesRepositoryException
      */
     public abstract VersionableItem getPrecedingVersion() throws RulesRepositoryException;
 
     /**
-     * Clients of this method can cast the resulting object to the type of object they are 
-     * calling the method on (e.g. 
+     * Clients of this method can cast the resulting object to the type of object they are
+     * calling the method on (e.g.
      *         <pre>
      *           RuleItem item;
      *           ...
      *           RuleItem successor = (RuleItem) item.getSucceedingVersion();
      *         </pre>
-     *         
-     * @return a VersionableItem object encapsulating the successor node of this node in the 
-     *         version history. 
+     *
+     * @return a VersionableItem object encapsulating the successor node of this node in the
+     *         version history.
      * @throws RulesRepositoryException
      */
     public abstract VersionableItem getSucceedingVersion() throws RulesRepositoryException;
 
-    /** 
+    /**
      * Gets the Title of the versionable node.  See the Dublin Core documentation for more
      * explanation: http://dublincore.org/documents/dces/
-     * 
+     *
      * @return the title of the node this object encapsulates
      * @throws RulesRepositoryException
      */
@@ -231,10 +231,10 @@ public abstract class VersionableItem extends Item {
         }
     }
 
-    /** 
+    /**
      * See the Dublin Core documentation for more
      * explanation: http://dublincore.org/documents/dces/
-     * 
+     *
      * @param title the new title for the node
      * @throws RulesRepositoryException
      */
@@ -284,7 +284,7 @@ public abstract class VersionableItem extends Item {
      * uses the JCR node to set a property.
      * This will also update the timestamp.
      */
-    protected void updateStringProperty(String value,
+    public void updateStringProperty(String value,
                                       String prop) {
         try {
             checkIsUpdateable();
@@ -292,7 +292,7 @@ public abstract class VersionableItem extends Item {
             if (value == null) {
                 return;
             }
-            
+
             node.checkout();
             node.setProperty( prop,
                               value );
@@ -307,14 +307,14 @@ public abstract class VersionableItem extends Item {
             throw new RulesRepositoryException( e );
         }
     }
-    
 
-    
+
+
 
     /**
      * See the Dublin Core documentation for more
      * explanation: http://dublincore.org/documents/dces/
-     * 
+     *
      * @return the description of this object's node.
      * @throws RulesRepositoryException
      */
@@ -336,7 +336,7 @@ public abstract class VersionableItem extends Item {
 //        } catch ( RepositoryException e ) {
 //            throw new RulesRepositoryException( e );
 //        }
-        
+
         return getLongProperty( VERSION_NUMBER_PROPERTY_NAME );
     }
 
@@ -363,12 +363,12 @@ public abstract class VersionableItem extends Item {
     }
 
     /**
-     * Creates a new version of this object's node, updating the description content 
+     * Creates a new version of this object's node, updating the description content
      * for the node.
      * <br>
      * See the Dublin Core documentation for more
-     * explanation: http://dublincore.org/documents/dces/ 
-     * 
+     * explanation: http://dublincore.org/documents/dces/
+     *
      * @param newDescriptionContent the new description content for the rule
      * @throws RulesRepositoryException
      */
@@ -392,13 +392,13 @@ public abstract class VersionableItem extends Item {
 
     /**
      * This returns the format of an item.
-     * This is analagous to a file extension 
-     * if the resource was a file (it may contain more information 
-     * then a pure file extension could, however). 
-     * 
+     * This is analagous to a file extension
+     * if the resource was a file (it may contain more information
+     * then a pure file extension could, however).
+     *
      * See the Dublin Core documentation for more
      * explanation: http://dublincore.org/documents/dces/
-     * 
+     *
      * @return the format of this object's node
      * @throws RulesRepositoryException
      */
@@ -416,10 +416,10 @@ public abstract class VersionableItem extends Item {
     }
 
     /**
-     * This sets the format (or "file extension" of the resource). 
+     * This sets the format (or "file extension" of the resource).
      * In some cases this is critical, and generally should not be changed
      * after the initial version is checked in.
-     * 
+     *
      * @param newFormat
      */
     public void updateFormat(String newFormat) {
@@ -428,9 +428,9 @@ public abstract class VersionableItem extends Item {
     }
 
     /**
-     * When retrieving content, if we are dealing with a version in the history, 
+     * When retrieving content, if we are dealing with a version in the history,
      * we need to get the actual content node to retrieve values.
-     * 
+     *
      */
     public Node getVersionContentNode() throws RepositoryException,
                                        PathNotFoundException {
@@ -452,9 +452,9 @@ public abstract class VersionableItem extends Item {
         }
     }
 
-    /** 
+    /**
      * Need to get the name from the content node, not the version node
-     * if it is in fact a version ! 
+     * if it is in fact a version !
      */
     public String getName() {
         try {
@@ -498,8 +498,8 @@ public abstract class VersionableItem extends Item {
             throw new RulesRepositoryException( e );
         }
     }
-    /** 
-     * This will save the content (if it hasn't been already) and 
+    /**
+     * This will save the content (if it hasn't been already) and
      * then check it in to create a new version.
      * It will also set the last modified property.
      */
@@ -539,14 +539,14 @@ public abstract class VersionableItem extends Item {
 
     /**
      * Sets this object's rule node's state property to refer to the specified state node
-     * 
+     *
      * @param stateName the name of the state to set the rule node to
-     * @throws RulesRepositoryException 
+     * @throws RulesRepositoryException
      */
     public void updateState(String stateName) throws RulesRepositoryException {
         try {
 
-            //now set the state property of the rule                              
+            //now set the state property of the rule
             checkout();
 
             StateItem stateItem = this.rulesRepository.getState( stateName );
@@ -560,16 +560,16 @@ public abstract class VersionableItem extends Item {
 
     /**
      * Sets this object's rule node's state property to refer to the specified StateItem's node
-     * 
-     * @param stateItem the StateItem encapsulating the node to refer to from this object's node's state 
+     *
+     * @param stateItem the StateItem encapsulating the node to refer to from this object's node's state
      *                  property
-     * @throws RulesRepositoryException 
+     * @throws RulesRepositoryException
      */
     public void updateState(StateItem stateItem) throws RulesRepositoryException {
         checkIsUpdateable();
         try {
 
-            //now set the state property of the rule                              
+            //now set the state property of the rule
             checkout();
             this.node.setProperty( STATE_PROPERTY_NAME,
                                    stateItem.getNode() );
@@ -582,7 +582,7 @@ public abstract class VersionableItem extends Item {
 
     /**
      * Gets StateItem object corresponding to the state property of this object's node
-     * 
+     *
      * @return a StateItem object corresponding to the state property of this object's node, or null
      *         if the state property is not set
      * @throws RulesRepositoryException
@@ -658,8 +658,8 @@ public abstract class VersionableItem extends Item {
     }
 
     /**
-     * Typically, 
-     * Subject will be expressed as keywords, 
+     * Typically,
+     * Subject will be expressed as keywords,
      * key phrases or classification codes that describe a topic of the resource.
      */
     public String getSubject() {
@@ -681,7 +681,7 @@ public abstract class VersionableItem extends Item {
     }
 
     /**
-     * Typically, Coverage will include spatial location 
+     * Typically, Coverage will include spatial location
      * (a place name or geographic coordinates), temporal period (a period label, date, or date range) or jurisdiction (such as a named administrative entity). Recommended best practice is to select a value from a controlled vocabulary (for example, the Thesaurus of Geographic Names [TGN]) and to use, where appropriate, named places or time periods in preference to numeric identifiers such as sets of coordinates or date ranges.
      */
     public String getCoverage() {
@@ -689,7 +689,7 @@ public abstract class VersionableItem extends Item {
     }
 
     /**
-     *  Examples of Publisher include a person, an organization, or a service. 
+     *  Examples of Publisher include a person, an organization, or a service.
      *  Typically, the name of a Publisher should be used to indicate the entity.
      */
     public String getPublisher() {
@@ -711,7 +711,7 @@ public abstract class VersionableItem extends Item {
 
     }
 
-    protected String getStringProperty(String property) {
+    public String getStringProperty(String property) {
         try {
             Node theNode = getVersionContentNode();
             if ( theNode.hasProperty( property ) ) {
@@ -724,7 +724,7 @@ public abstract class VersionableItem extends Item {
             throw new RulesRepositoryException( e );
         }
     }
-    
+
     protected long getLongProperty(String property) {
         try {
             Node theNode = getVersionContentNode();
@@ -736,12 +736,12 @@ public abstract class VersionableItem extends Item {
             }
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
-        }        
+        }
     }
-    
+
     /**
      * This returns the id of the exact version node (as opposed to the "main" node).
-     * Note that each asset has only one UUID the whole time, but there are also UUIDs 
+     * Note that each asset has only one UUID the whole time, but there are also UUIDs
      * for each item in the history.
      * So while the main UUID version remains constant, the version UUIDs change on each
      * checkin, which is what this method provides.
@@ -757,8 +757,8 @@ public abstract class VersionableItem extends Item {
             throw new RulesRepositoryException(e);
         }
 
-    }    
-    
+    }
+
 
     public VersionableItem archiveItem(boolean data) {
     	checkout();
@@ -773,7 +773,7 @@ public abstract class VersionableItem extends Item {
     }
 
     /**
-     * Test if the VersionableItem is archived 
+     * Test if the VersionableItem is archived
      */
     public boolean isArchived() {
     	try {
@@ -784,6 +784,6 @@ public abstract class VersionableItem extends Item {
     		throw new RulesRepositoryException(e);
     	}
     }
-    
-    
+
+
 }

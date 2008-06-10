@@ -37,6 +37,7 @@ import org.drools.brms.client.modeldriven.brl.ActionSetField;
 import org.drools.brms.client.modeldriven.brl.DSLSentence;
 import org.drools.brms.client.modeldriven.brl.FactPattern;
 import org.drools.brms.client.modeldriven.brl.RuleModel;
+import org.drools.brms.server.ServiceImplementation;
 import org.drools.brms.server.selector.AssetSelector;
 import org.drools.brms.server.selector.SelectorManager;
 import org.drools.brms.server.util.BRXMLPersistence;
@@ -63,7 +64,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         //test the config, no rule assets yet
         RulesRepository repo = getRepo();
         PackageItem pkg = repo.createPackage( "testBuilderPackageConfig", "x" );
-        pkg.updateHeader( "import java.util.List" );
+        ServiceImplementation.updateDroolsHeader( "import java.util.List", pkg );
         AssetItem func = pkg.addAsset( "func1", "a function" );
         func.updateFormat( AssetFormats.FUNCTION );
         func.updateContent( "function void doSomething() { \n System.err.println(List.class.toString()); }" );
@@ -93,12 +94,12 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertEquals(1, assembler.builder.getDSLMappingFiles().size());
 
 
-        pkg.updateHeader( "koo koo ca choo" );
+        ServiceImplementation.updateDroolsHeader( "koo koo ca choo", pkg );
         assembler = new ContentPackageAssembler(pkg);
         assertTrue(assembler.hasErrors());
         assertTrue(assembler.isPackageConfigurationInError());
 
-        pkg.updateHeader( "import java.util.Date" );
+        ServiceImplementation.updateDroolsHeader( "import java.util.Date", pkg );
         assembler = new ContentPackageAssembler(pkg);
         assertTrue(assembler.hasErrors());
         assertTrue(assembler.getErrors().get(0).itemInError instanceof AssetItem);
@@ -112,7 +113,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         }
 
         //fix it up
-        pkg.updateHeader( "import java.util.List" );
+        ServiceImplementation.updateDroolsHeader("import java.util.List", pkg);
         assembler = new ContentPackageAssembler(pkg);
         assertFalse(assembler.hasErrors());
 
@@ -152,7 +153,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
 
-        pkg.updateHeader( "import com.billasurf.Board\n global com.billasurf.Person customer" );
+        ServiceImplementation.updateDroolsHeader("import com.billasurf.Board\n global com.billasurf.Person customer", pkg);
 
         AssetItem rule1 = pkg.addAsset( "rule_1", "" );
         rule1.updateFormat( AssetFormats.DRL );
@@ -207,7 +208,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
 
-        pkg.updateHeader( "import com.billasurf.Board\n global com.billasurf.Person customer" );
+        ServiceImplementation.updateDroolsHeader("import com.billasurf.Board\n global com.billasurf.Person customer", pkg );
 
         AssetItem rule1 = pkg.addAsset( "rule_1", "" );
         rule1.updateFormat( AssetFormats.DRL );
@@ -241,7 +242,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         repo.createPackageSnapshot( pkg.getName(), "SNAP_1" );
 
         //and screw up the the non snapshot one
-        pkg.updateHeader( "koo koo ca choo" );
+        ServiceImplementation.updateDroolsHeader("koo koo ca choo", pkg );
         asm = new ContentPackageAssembler(pkg);
         assertTrue(asm.hasErrors());
 
@@ -263,7 +264,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
 
-        pkg.updateHeader( "import com.billasurf.Board\n global com.billasurf.Person customer" );
+        ServiceImplementation.updateDroolsHeader("import com.billasurf.Board\n global com.billasurf.Person customer", pkg );
 
         AssetItem rule1 = pkg.addAsset( "rule_1", "" );
         rule1.updateFormat( AssetFormats.DRL );
@@ -305,7 +306,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         model.updateFormat( AssetFormats.MODEL );
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
-        pkg.updateHeader( "import com.billasurf.Board\n global com.billasurf.Person customer" );
+        ServiceImplementation.updateDroolsHeader("import com.billasurf.Board\n global com.billasurf.Person customer", pkg );
         repo.save();
 
         AssetItem goodRule = pkg.addAsset( "goodRule", "" );
@@ -344,7 +345,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         model.updateFormat( AssetFormats.MODEL );
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
-        pkg.updateHeader( "import com.billasurf.Board\n global com.billasurf.Person customer" );
+        ServiceImplementation.updateDroolsHeader("import com.billasurf.Board\n global com.billasurf.Person customer", pkg );
         repo.save();
 
         AssetItem func = pkg.addAsset( "func", "" );
@@ -395,7 +396,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         //first, setup the package correctly:
         PackageItem pkg = repo.createPackage( "testShowSource", "" );
 
-        pkg.updateHeader( "import com.billasurf.Board\n global com.billasurf.Person customer" );
+        ServiceImplementation.updateDroolsHeader("import com.billasurf.Board\n global com.billasurf.Person customer", pkg );
         repo.save();
 
         AssetItem func = pkg.addAsset( "func", "" );
@@ -440,7 +441,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         //first, setup the package correctly:
         PackageItem pkg = repo.createPackage( "testXLSDecisionTable", "" );
 
-        pkg.updateHeader( "import org.acme.insurance.Policy\n import org.acme.insurance.Driver" );
+        ServiceImplementation.updateDroolsHeader("import org.acme.insurance.Policy\n import org.acme.insurance.Driver", pkg );
         repo.save();
 
         InputStream xls = this.getClass().getResourceAsStream( "/SampleDecisionTable.xls" );
@@ -499,7 +500,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
         //create our package
         PackageItem pkg = repo.createPackage( "testBRLWithDSLMixedIn", "" );
-        pkg.updateHeader( "import org.drools.Person" );
+        ServiceImplementation.updateDroolsHeader( "import org.drools.Person", pkg );
         AssetItem rule1 = pkg.addAsset( "rule2", "" );
         rule1.updateFormat( AssetFormats.BUSINESS_RULE );
 
@@ -568,7 +569,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
         //create our package
         PackageItem pkg = repo.createPackage( "testCustomSelector", "" );
-        pkg.updateHeader( "import org.drools.Person" );
+        ServiceImplementation.updateDroolsHeader("import org.drools.Person", pkg );
         AssetItem rule1 = pkg.addAsset( "rule1", "" );
         rule1.updateFormat( AssetFormats.DRL );
 

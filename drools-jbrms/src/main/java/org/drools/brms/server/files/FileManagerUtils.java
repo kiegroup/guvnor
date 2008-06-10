@@ -22,6 +22,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.drools.brms.client.common.HTMLFileManagerFields;
+import org.drools.brms.server.ServiceImplementation;
 import org.drools.brms.server.builder.ContentPackageAssembler;
 import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.contenthandler.ContentManager;
@@ -94,7 +95,6 @@ public class FileManagerUtils {
 
 
         //special treatment for model attachments.
-
         ContentHandler handler = ContentManager.getHandler(item.getFormat());
         if (handler instanceof ModelContentHandler) {
         	((ModelContentHandler)handler).modelAttached(item);
@@ -228,11 +228,11 @@ public class FileManagerUtils {
         boolean existing = false;
         if ( repository.containsPackage( imp.getPackageName() ) ) {
             pkg = repository.loadPackage( imp.getPackageName() );
-            pkg.updateHeader(ClassicDRLImporter.mergeLines(pkg.getHeader(), imp.getPackageHeader()));
+            ServiceImplementation.updateDroolsHeader(ClassicDRLImporter.mergeLines(ServiceImplementation.getDroolsHeader(pkg), imp.getPackageHeader()), pkg);
             existing = true;
         } else {
             pkg = repository.createPackage( imp.getPackageName(), "<imported>" );
-            pkg.updateHeader( imp.getPackageHeader() );
+            ServiceImplementation.updateDroolsHeader(imp.getPackageHeader(), pkg );
         }
 
 

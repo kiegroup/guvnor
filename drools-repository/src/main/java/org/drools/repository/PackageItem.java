@@ -8,25 +8,14 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.jcr.AccessDeniedException;
 import javax.jcr.ItemExistsException;
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
-import javax.jcr.version.VersionException;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.ErrorHandler;
-import org.apache.log4j.spi.Filter;
-import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * A PackageItem object aggregates a set of assets (for example, rules). This is advantageous for systems using the JBoss Rules
@@ -648,9 +637,9 @@ public class PackageItem extends VersionableItem {
     /**
      * @return The header contents as pertains to a package of rule assets.
      */
-    public String getHeader() {
-        return this.getStringProperty( HEADER_PROPERTY_NAME );
-    }
+//    public String getHeader() {
+//        return this.getStringProperty( HEADER_PROPERTY_NAME );
+//    }
 
     /**
      * @return The external URI which will be used to sync this package to an external resource.
@@ -661,9 +650,9 @@ public class PackageItem extends VersionableItem {
         return this.getStringProperty( EXTERNAL_URI_PROPERTY_NAME );
     }
 
-    public void updateHeader(String header) {
-        updateStringProperty( header, HEADER_PROPERTY_NAME );
-    }
+//    public void updateHeader(String header) {
+//        updateStringProperty( header, HEADER_PROPERTY_NAME );
+//    }
 
     public void updateExternalURI(String uri) {
         updateStringProperty( uri, EXTERNAL_URI_PROPERTY_NAME );

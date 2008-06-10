@@ -22,6 +22,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.drools.brms.client.rpc.RuleAsset;
+import org.drools.brms.server.ServiceImplementation;
+import org.drools.brms.server.builder.ContentPackageAssembler;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
@@ -51,7 +53,8 @@ public class ModelContentHandler extends ContentHandler {
 		InputStream in = asset.getBinaryContentAttachment();
 
 		PackageItem pkg = asset.getPackage();
-		if (pkg.getHeader() == null || "".equals(pkg.getHeader().trim())) {
+		String header = ServiceImplementation.getDroolsHeader(pkg);
+		if ( header == null || "".equals(header.trim())) {
 			StringBuilder buf = new StringBuilder();
 
 			JarInputStream jis = new JarInputStream(in);
@@ -65,12 +68,15 @@ public class ModelContentHandler extends ContentHandler {
 				}
 			}
 
-			pkg.updateHeader(buf.toString());
+			ServiceImplementation.updateDroolsHeader(buf.toString(), pkg);
+
+			//pkg.updateHeader(buf.toString());
 
 			pkg.checkin("Imports setup automatically on model import.");
 
 		}
 	}
+
 
 	public static String convertPathToName(String name) {
 		return name.replace(".class", "").replace("/", ".");

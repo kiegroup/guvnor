@@ -14,6 +14,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
+import org.drools.repository.migration.MigrateDroolsPackage;
+
 import junit.framework.TestCase;
 
 public class RulesRepositoryTest extends TestCase {
@@ -38,6 +40,10 @@ public class RulesRepositoryTest extends TestCase {
         String userId = repo.getSession().getUserID();
         assertNotNull(userId);
         assertFalse(userId.equals( "" ));
+
+        MigrateDroolsPackage mig = new MigrateDroolsPackage();
+        assertFalse(mig.needsMigration(repo));
+        assertTrue(repo.initialized);
 
     }
 

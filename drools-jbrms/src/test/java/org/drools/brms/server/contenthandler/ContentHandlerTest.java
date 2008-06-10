@@ -38,12 +38,10 @@ public class ContentHandlerTest extends TestCase {
         assertTrue(ContentManager.getHandler( AssetFormats.DECISION_TABLE_GUIDED ) instanceof GuidedDTContentHandler);
 
 
-        try {
-            ContentManager.getHandler( "XXX" );
-            fail("should have thrown an exception");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e.getMessage());
-        }
+
+        assertTrue(ContentManager.getHandler( "XXX" ) instanceof DefaultContentHandler);
+
+
     }
 
     public void testRuleAssetType() {
