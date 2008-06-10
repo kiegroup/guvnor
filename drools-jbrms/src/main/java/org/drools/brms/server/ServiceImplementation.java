@@ -1314,7 +1314,7 @@ public class ServiceImplementation
 	public AnalysisReport analysePackage(String packageUUID)
 			throws SerializableException {
 		String drl = this.buildPackageSource(packageUUID);
-		AnalysisRunner runner = new AnalysisRunner();
+		VerifierRunner runner = new VerifierRunner();
 		try {
 			return runner.analyse(drl);
 		} catch (DroolsParserException e) {

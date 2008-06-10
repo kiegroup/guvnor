@@ -15,47 +15,47 @@ import org.drools.brms.client.rpc.DetailedSerializableException;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.verifier.Analyzer;
-import org.drools.verifier.components.AnalyticsClass;
-import org.drools.verifier.components.AnalyticsRule;
+import org.drools.verifier.Verifier;
+import org.drools.verifier.components.VerifierClass;
+import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.Field;
-import org.drools.verifier.dao.AnalyticsData;
-import org.drools.verifier.dao.AnalyticsResult;
-import org.drools.verifier.report.components.AnalyticsMessageBase;
+import org.drools.verifier.dao.VerifierData;
+import org.drools.verifier.dao.VerifierResult;
+import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.Severity;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
-public class AnalysisRunner {
+public class VerifierRunner {
 
 	public AnalysisReport analyse(String drl) throws DroolsParserException, SerializableException {
 		DrlParser p = new DrlParser();
 		PackageDescr pkg = p.parse(drl);
 		if (p.hasErrors()) {
 			throw new DetailedSerializableException(
-				"Unable to analyse rules due to syntax errors in the rules.",
-				"Please correct syntax errors - build the package before trying the analysis again.");
+				"Unable to verify rules due to syntax errors in the rules.",
+				"Please correct syntax errors - build the package before trying the verifier again.");
 		}
-		Analyzer a = new Analyzer();
+		Verifier a = new Verifier();
 		a.addPackageDescr(pkg);
 		a.fireAnalysis();
-		AnalyticsResult res = a.getResult();
+		VerifierResult res = a.getResult();
 
 		AnalysisReport report = new AnalysisReport();
 		report.errors = doLines(res.getBySeverity(Severity.ERROR));
 		report.warnings = doLines(res.getBySeverity(Severity.WARNING));
 		report.notes = doLines(res.getBySeverity(Severity.NOTE));
-		report.factUsages = doFactUsage(res.getAnalyticsData());
+		report.factUsages = doFactUsage(res.getVerifierData());
 		return report;
 	}
 
-	private AnalysisFactUsage[] doFactUsage(AnalyticsData analyticsData) {
+	private AnalysisFactUsage[] doFactUsage(VerifierData verifierData) {
 
 		Map<String, String> interned = new HashMap<String, String>();
 
 		List<AnalysisFactUsage> factUsage = new ArrayList<AnalysisFactUsage>();
-		Collection<AnalyticsClass> classes = analyticsData.getAllClasses();
-		for (AnalyticsClass c : classes) {
+		Collection<VerifierClass> classes = verifierData.getAllClasses();
+		for (VerifierClass c : classes) {
 			AnalysisFactUsage fact = new AnalysisFactUsage();
 			fact.name = c.getName();
 			List<AnalysisFieldUsage> fieldUsage = new ArrayList<AnalysisFieldUsage>();
@@ -63,10 +63,10 @@ public class AnalysisRunner {
 			for (Field f : flds) {
 				AnalysisFieldUsage fu = new AnalysisFieldUsage();
 				fu.name = f.getName();
-				Collection<AnalyticsRule> cr = analyticsData.getRulesByFieldId(f.getId());
+				Collection<VerifierRule> cr = verifierData.getRulesByFieldId(f.getId());
 				List<String> ruleNames = new ArrayList<String>();
-				for (AnalyticsRule analyticsRule : cr) {
-					ruleNames.add(intern(analyticsRule.getRuleName(), interned));
+				for (VerifierRule verifierRule : cr) {
+					ruleNames.add(intern(verifierRule.getRuleName(), interned));
 				}
 				fu.rules = ruleNames.toArray(new String[ruleNames.size()]);
 				fieldUsage.add(fu);
@@ -91,9 +91,9 @@ public class AnalysisRunner {
 	}
 
 	private AnalysisReportLine[] doLines(
-			Collection<AnalyticsMessageBase> msgs) {
+			Collection<VerifierMessageBase> msgs) {
 		List<AnalysisReportLine> lines = new ArrayList<AnalysisReportLine>();
-		for (AnalyticsMessageBase m : msgs) {
+		for (VerifierMessageBase m : msgs) {
 			AnalysisReportLine line = new AnalysisReportLine();
 			line.description = m.getMessage();
 			line.reason = m.getFaulty().toString();
