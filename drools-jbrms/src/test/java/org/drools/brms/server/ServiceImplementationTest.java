@@ -649,6 +649,30 @@ public class ServiceImplementationTest extends TestCase {
 
 	}
 
+
+	public void testQuickFind() throws Exception  {
+		RepositoryService impl = getService();
+		String cat = "testQuickFind";
+		impl.createCategory("/", cat, "qkfnd");
+		impl.createPackage("testQuickFind",
+				"for testing quick find.");
+		String uuid = impl.createNewRule("myRule1", "desc", cat, "testQuickFind", "drl");
+		TableDataResult res = impl.quickFindAsset("myRule", 20, false);
+		assertEquals(1, res.data.length);
+
+		impl.createNewRule("myRule2", "desc", cat, "testQuickFind", "drl");
+		res = impl.quickFindAsset("myRule", 20, false);
+		assertEquals(2, res.data.length);
+
+		impl.copyAsset(uuid, "testQuickFind", "myRule3");
+		res = impl.quickFindAsset("myRule", 20, false);
+		assertEquals(3, res.data.length);
+
+
+
+	}
+
+
 	public String[] arr(String s) {
 		return new String[] { s };
 	}
