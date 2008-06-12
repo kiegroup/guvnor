@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -109,6 +110,8 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.annotations.security.Restrict;
+import org.mvel.MVEL;
+import org.mvel.templates.TemplateRuntime;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -1396,6 +1399,35 @@ public class ServiceImplementation
 			conf.checkin("");
 		}
 
+	}
+
+
+	@WebRemote
+    @Restrict("#{identity.loggedIn}")
+	public String[] loadDropDownExpression(String[] valuePairs, String expression) {
+		Map<String, String> context = new HashMap<String, String>();
+		for (int i = 0; i < valuePairs.length; i++) {
+			String[] pair = valuePairs[i].split("=");
+			context.put(pair[0], pair[1]);
+		}
+		//first interpolate the pairs
+		expression = (String) TemplateRuntime.eval(expression, context);
+
+		//now we can eval it for real...
+		Object result = MVEL.eval(expression);
+		if (result instanceof String[]) {
+			return (String[]) result;
+		} else if (result instanceof List) {
+			List l = (List) result;
+			String[] xs = new String[l.size()];
+			for (int i = 0; i < xs.length; i++) {
+				Object el = l.get(i);
+				xs[i] = el.toString();
+			}
+			return xs;
+		} else {
+			return null;
+		}
 	}
 
 

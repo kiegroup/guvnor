@@ -656,16 +656,16 @@ public class ServiceImplementationTest extends TestCase {
 		impl.createCategory("/", cat, "qkfnd");
 		impl.createPackage("testQuickFind",
 				"for testing quick find.");
-		String uuid = impl.createNewRule("myRule1", "desc", cat, "testQuickFind", "drl");
-		TableDataResult res = impl.quickFindAsset("myRule", 20, false);
+		String uuid = impl.createNewRule("testQuickFindmyRule1", "desc", cat, "testQuickFind", "drl");
+		TableDataResult res = impl.quickFindAsset("testQuickFindmyRule", 20, false);
 		assertEquals(1, res.data.length);
 
-		impl.createNewRule("myRule2", "desc", cat, "testQuickFind", "drl");
-		res = impl.quickFindAsset("myRule", 20, false);
+		impl.createNewRule("testQuickFindmyRule2", "desc", cat, "testQuickFind", "drl");
+		res = impl.quickFindAsset("testQuickFindmyRule", 20, false);
 		assertEquals(2, res.data.length);
 
-		impl.copyAsset(uuid, "testQuickFind", "myRule3");
-		res = impl.quickFindAsset("myRule", 20, false);
+		impl.copyAsset(uuid, "testQuickFind", "testQuickFindmyRule3");
+		res = impl.quickFindAsset("testQuickFindmyRule", 20, false);
 		assertEquals(3, res.data.length);
 
 
@@ -1941,6 +1941,18 @@ public class ServiceImplementationTest extends TestCase {
 		serv.sortPackages(ls);
 		assertEquals(c1, ls.get(0));
 		assertEquals(c2, ls.get(1));
+	}
+
+	public void testLoadDropDown() throws Exception {
+		ServiceImplementation serv = new ServiceImplementation();
+		String[] pairs = new String[]{"f1=x", "f2=2"};
+		String expression = "['@{f1}', '@{f2}']";
+		String[] r = serv.loadDropDownExpression(pairs, expression);
+		assertEquals(2, r.length);
+
+		assertEquals("x", r[0]);
+		assertEquals("2", r[1]);
+
 	}
 
 

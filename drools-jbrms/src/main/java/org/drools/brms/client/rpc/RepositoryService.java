@@ -374,4 +374,11 @@ public interface RepositoryService extends RemoteService {
      * This will list the last N log entryies logged by the server. For debugging purposes in the GUI.
      */
     public LogEntry[] showLog();
+
+
+    /**
+     * @param valuePairs key=value pairs to be interpolated into the expression.
+     * @param expression The expression, which will then be eval'ed to generate a String[]
+     */
+    public String[] loadDropDownExpression(String[] valuePairs, String expression);
 }

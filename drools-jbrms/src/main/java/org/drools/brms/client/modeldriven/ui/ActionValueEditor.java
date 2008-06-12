@@ -6,6 +6,7 @@ import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.InfoPopup;
 import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.common.ValueChanged;
+import org.drools.brms.client.modeldriven.DropDownData;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
 
@@ -30,12 +31,12 @@ import com.google.gwt.user.client.ui.Widget;
 public class ActionValueEditor extends DirtyableComposite {
 
 	private ActionFieldValue value;
-	private String[] enums;
+	private DropDownData enums;
 	private SimplePanel root;
 
-	public ActionValueEditor(final ActionFieldValue val, final String[] enums) {
+	public ActionValueEditor(final ActionFieldValue val, final DropDownData enums) {
 		if (val.type.equals(SuggestionCompletionEngine.TYPE_BOOLEAN)) {
-			this.enums = new String[] {"true", "false" };
+			this.enums = DropDownData.create(new String[] {"true", "false" });
 		} else {
 			this.enums = enums;
 		}
@@ -48,7 +49,7 @@ public class ActionValueEditor extends DirtyableComposite {
 
 	private void refresh() {
 		root.clear();
-		if (enums != null && enums.length > 0) {
+		if (enums != null && (enums.fixedList != null || enums.queryExpression != null)) {
 			root.add(ConstraintValueEditor.enumDropDown(value.value,
 					new ValueChanged() {
 						public void valueChanged(String newValue) {

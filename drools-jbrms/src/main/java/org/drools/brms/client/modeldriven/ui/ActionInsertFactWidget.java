@@ -22,6 +22,7 @@ import org.drools.brms.client.common.DirtyableFlexTable;
 import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.SmallLabel;
+import org.drools.brms.client.modeldriven.DropDownData;
 import org.drools.brms.client.modeldriven.HumanReadable;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
@@ -97,7 +98,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
     }
 
     private Widget valueEditor(final ActionFieldValue val) {
-    	String[] enums = this.completions.getEnums(this.factType, this.model.fieldValues, val.field);
+    	DropDownData enums = this.completions.getEnums(this.factType, this.model.fieldValues, val.field);
     	return new ActionValueEditor(val, enums);
     }
 

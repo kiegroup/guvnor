@@ -15,9 +15,9 @@ import org.drools.brms.client.common.FormStylePopup;
 import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.ImageButton;
 import org.drools.brms.client.common.LoadingPopup;
-import org.drools.brms.client.common.PrettyFormLayout;
 import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.common.ValueChanged;
+import org.drools.brms.client.modeldriven.DropDownData;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.FactData;
@@ -527,11 +527,11 @@ public class ScenarioWidget extends Composite {
 	        return box;
 		} else if (flType.equals(SuggestionCompletionEngine.TYPE_BOOLEAN )) {
 			String[] c = new String[] {"true", "false"};
-			return ConstraintValueEditor.enumDropDown(initialValue, changeEvent, c);
+			return ConstraintValueEditor.enumDropDown(initialValue, changeEvent, DropDownData.create(c));
 		} else {
 			String[] enums = (String[]) sce.dataEnumLists.get(key);
 			if (enums != null) {
-				return ConstraintValueEditor.enumDropDown(initialValue, changeEvent, enums);
+				return ConstraintValueEditor.enumDropDown(initialValue, changeEvent, DropDownData.create(enums));
 
 			} else {
 				return editableTextBox(changeEvent, fieldName, initialValue);

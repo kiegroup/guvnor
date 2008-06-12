@@ -82,7 +82,7 @@ public interface RepositoryServiceAsync
 	public void analysePackage(java.lang.String p0, AsyncCallback cb);
 	public void listTypesInPackage(java.lang.String p0, AsyncCallback cb);
 	public void showLog(AsyncCallback cb);
-
+	public void loadDropDownExpression(String[] p0, java.lang.String p1, AsyncCallback cb);
 
 
 

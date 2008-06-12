@@ -22,19 +22,25 @@ import java.util.List;
 import org.drools.brms.client.common.DirtyableComposite;
 import org.drools.brms.client.common.FieldEditListener;
 import org.drools.brms.client.common.FormStylePopup;
+import org.drools.brms.client.common.GenericCallback;
 import org.drools.brms.client.common.InfoPopup;
+import org.drools.brms.client.common.LoadingPopup;
 import org.drools.brms.client.common.SmallLabel;
 import org.drools.brms.client.common.ValueChanged;
+import org.drools.brms.client.modeldriven.DropDownData;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.FactPattern;
 import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brl.RuleModel;
 import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.brms.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.FocusListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -59,24 +65,28 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private final Panel      panel;
     private final RuleModel model;
     private final boolean numericValue;
-    private String[] enumeratedValues;
+    private DropDownData dropDownData;
+    //private String[] enumeratedValues;
 
     /**
      * @param con The constraint being edited.
      */
     public ConstraintValueEditor(FactPattern pattern, String fieldName, ISingleFieldConstraint con, RuleModeller modeller, String valueType /* eg is numeric */) {
         this.constraint = con;
+        SuggestionCompletionEngine sce = modeller.getSuggestionCompletions();
         if (valueType.equals( SuggestionCompletionEngine.TYPE_NUMERIC )) {
             this.numericValue = true;
         } else {
             this.numericValue = false;
         }
         if (valueType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN )) {
-            this.enumeratedValues = new String[] {"true", "false" };
+            this.dropDownData = DropDownData.create(new String[] {"true", "false" });
+        } else {
+        	this.dropDownData = sce.getEnums(pattern, fieldName);
         }
         this.model = modeller.getModel();
-        SuggestionCompletionEngine sce = modeller.getSuggestionCompletions();
-        this.enumeratedValues = sce.getEnums(pattern, fieldName);
+
+
 
 
         panel = new SimplePanel();
@@ -157,12 +167,13 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private Widget literalEditor() {
 
         //use a drop down if we have a fixed list
-        if (this.enumeratedValues != null) {
-            return enumDropDown(constraint.value, new ValueChanged() {
-                public void valueChanged(String newValue) {
-                    constraint.value = newValue;
-                }
-            }, this.enumeratedValues);
+        if (this.dropDownData != null) {
+	            return enumDropDown(constraint.value, new ValueChanged() {
+	                public void valueChanged(String newValue) {
+	                    constraint.value = newValue;
+	                }
+	            }, this.dropDownData);
+
         } else {
 
             final TextBox box = boundTextBox(constraint);
@@ -194,16 +205,97 @@ public class ConstraintValueEditor extends DirtyableComposite {
     /**
      * This will do a drop down for enumerated values..
      */
-    public static Widget enumDropDown(//final ISingleFieldConstraint constraint,
-                                       final String currentValue, final ValueChanged valueChanged,
-                                final String[] enumeratedValues) {
+    public static Widget enumDropDown(final String currentValue, final ValueChanged valueChanged,
+                                final DropDownData dropData) {
         final ListBox box = new ListBox();
 
         if (currentValue == null || "".equals( currentValue )) {
             box.addItem( "Choose ..." );
         }
 
-        boolean selected = false;
+        //if we have to do it lazy, we will hit up the server when the widget gets focus
+        if (dropData.fixedList == null && dropData.queryExpression != null) {
+			DeferredCommand.addCommand(new Command() {
+				public void execute() {
+					LoadingPopup.showMessage("Refreshing list...");
+					RepositoryServiceFactory.getService().loadDropDownExpression(dropData.valuePairs, dropData.queryExpression, new GenericCallback() {
+						public void onSuccess(Object data) {
+							LoadingPopup.close();
+							String[] list = (String[]) data;
+							doDropDown(currentValue, list, box);
+						}
+
+						public void onFailure(Throwable t) {
+							LoadingPopup.close();
+							//just do an empty drop down...
+							doDropDown(currentValue, new String[] {"Unable to load list..."}, box);
+						}
+					});
+				}
+			});
+
+//	        box.addFocusListener(new FocusListener() {
+//
+//
+//				public void onFocus(Widget w) {
+//					DeferredCommand.addCommand(new Command() {
+//						public void execute() {
+//							LoadingPopup.showMessage("Refreshing list...");
+//							RepositoryServiceFactory.getService().loadDropDownExpression(dropData.valuePairs, dropData.queryExpression, new GenericCallback() {
+//								public void onSuccess(Object data) {
+//									LoadingPopup.close();
+//									String[] list = (String[]) data;
+//									doDropDown(currentValue, list, box);
+//								}
+//							});
+//						}
+//					});
+//				}
+//				public void onLostFocus(Widget w) {}
+//	        });
+        } else {
+        	//otherwise its just a normal one...
+        	doDropDown(currentValue, dropData.fixedList, box);
+        }
+
+
+        box.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+                valueChanged.valueChanged( box.getValue( box.getSelectedIndex() ) );
+                //constraint.value = box.getValue( box.getSelectedIndex() );
+            }
+        });
+        return box;
+    }
+
+//    /**
+//     * This will do a drop down for enumerated values..
+//     */
+//    public static Widget enumDropDown(//final ISingleFieldConstraint constraint,
+//                                       final String currentValue, final ValueChanged valueChanged,
+//                                final String[] enumeratedValues) {
+//        final ListBox box = new ListBox();
+//
+//        if (currentValue == null || "".equals( currentValue )) {
+//            box.addItem( "Choose ..." );
+//        }
+//
+//        doDropDown(currentValue, enumeratedValues, box);
+//
+//        box.addChangeListener( new ChangeListener() {
+//            public void onChange(Widget w) {
+//                valueChanged.valueChanged( box.getValue( box.getSelectedIndex() ) );
+//                //constraint.value = box.getValue( box.getSelectedIndex() );
+//            }
+//        });
+//        return box;
+//    }
+
+	private static void doDropDown(final String currentValue,
+			final String[] enumeratedValues, final ListBox box) {
+		boolean selected = false;
+
+		box.clear();
 
         for ( int i = 0; i < enumeratedValues.length; i++ ) {
             String v = enumeratedValues[i];
@@ -230,15 +322,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
             box.addItem( currentValue, currentValue );
             box.setSelectedIndex( enumeratedValues.length );
         }
-
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                valueChanged.valueChanged( box.getValue( box.getSelectedIndex() ) );
-                //constraint.value = box.getValue( box.getSelectedIndex() );
-            }
-        });
-        return box;
-    }
+	}
 
     /**
      * 'Person.age' : ['M=Male', 'F=Female']
