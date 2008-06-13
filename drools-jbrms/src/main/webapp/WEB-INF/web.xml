@@ -62,11 +62,11 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>WebdavServlet</servlet-name>
-		<url-pattern>/org.drools.brms.JBRMS/webdav</url-pattern>
+		<url-pattern>/org.drools.brms.JBRMS/webdav/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>RestAPIServlet</servlet-name>
-		<url-pattern>/org.drools.brms.JBRMS/api</url-pattern>
+		<url-pattern>/org.drools.brms.JBRMS/api/*</url-pattern>
 	</servlet-mapping>
 
     <session-config>

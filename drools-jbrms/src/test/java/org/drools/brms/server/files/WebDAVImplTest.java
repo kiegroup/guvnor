@@ -1,20 +1,19 @@
 package org.drools.brms.server.files;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
 import org.apache.commons.io.IOUtils;
 import org.drools.brms.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class WebDAVImplTest extends TestCase {
 
@@ -27,6 +26,16 @@ public class WebDAVImplTest extends TestCase {
 
 		path = imp.getPath("foo/webdav");
 		assertEquals(0, path.length);
+
+		path = imp.getPath("/");
+		assertEquals(0, path.length);
+
+		path = imp.getPath("/packages/packagename/resource.drl");
+		assertEquals("packages", path[0]);
+		assertEquals("packagename", path[1]);
+		assertEquals("resource.drl", path[2]);
+
+
 
 	}
 

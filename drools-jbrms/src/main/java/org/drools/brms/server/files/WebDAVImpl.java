@@ -484,10 +484,19 @@ public class WebDAVImpl implements WebdavStore {
     }
 
     String[] getPath(String uri) {
+    	if (uri.equals("/")) {
+    		return new String[0];
+    	}
+
+
         if (uri.endsWith("webdav") || uri.endsWith("webdav/")) {
             return new String[0];
         }
-        return uri.split("webdav/")[1].split("/");
+        if (uri.indexOf("webdav") > -1) {
+        	return uri.split("webdav/")[1].split("/");
+        } else {
+        	return uri.substring(1).split("/");
+        }
     }
 
 
