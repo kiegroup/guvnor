@@ -14,7 +14,7 @@ public class MigrateDroolsPackageTest extends TestCase {
 	public void testMigrate() throws Exception {
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		Session sess = repo.getSession();
-		sess.getRootNode().getNode("drools.package.migrated").remove();
+		sess.getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME).getNode("drools.package.migrated").remove();
 		sess.save();
 
 		MigrateDroolsPackage mig = new MigrateDroolsPackage();

@@ -799,6 +799,10 @@ public class RulesRepository {
             new RulesRepositoryAdministrator( this.session ).clearRulesRepository();
             this.session.getWorkspace().importXML( "/", new ByteArrayInputStream( byteArray ), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW );
             session.save();
+            MigrateDroolsPackage mig = new MigrateDroolsPackage();
+            if (mig.needsMigration(this)) {
+            	mig.migrate(this);
+            }
         } catch ( RepositoryException e ) {
             e.printStackTrace();
             throw new RulesRepositoryException();

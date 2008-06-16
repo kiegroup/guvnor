@@ -1,5 +1,6 @@
 package org.drools.repository.migration;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.drools.repository.AssetItem;
@@ -15,7 +16,8 @@ import org.drools.repository.RulesRepository;
 public class MigrateDroolsPackage {
 
 	public boolean needsMigration(RulesRepository repo) throws RepositoryException {
-		return !repo.getSession().getRootNode().hasNode("drools.package.migrated");
+		Node root = repo.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
+		return !root.hasNode("drools.package.migrated");
 	}
 
 	public void migrate(RulesRepository repo) throws RepositoryException {
@@ -39,7 +41,7 @@ public class MigrateDroolsPackage {
 
 
     	if (performed) {
-	    	repo.getSession().getRootNode().addNode("drools.package.migrated");
+	    	repo.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME).addNode("drools.package.migrated", "nt:folder");
 	    	repo.save();
 	    	System.out.println("AUTO MIGRATION: drools.package migration completed.");
     	}

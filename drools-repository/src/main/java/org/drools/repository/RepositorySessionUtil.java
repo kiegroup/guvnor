@@ -19,11 +19,11 @@ import org.drools.repository.security.DroolsRepositoryAccessManager;
 public class RepositorySessionUtil {
 
     private static ThreadLocal repo = new ThreadLocal();
-    
+
     private static final Logger log = Logger.getLogger( RepositorySessionUtil.class );
 
     public static boolean deleteDir(File dir) {
-        
+
         if (dir.isDirectory()) {
             String[] children = dir.list();
             for (int i=0; i<children.length; i++) {
@@ -33,26 +33,26 @@ public class RepositorySessionUtil {
                 }
             }
         }
-    
+
         // The directory is now empty so delete it
         return dir.delete();
-    }    
-    
-    
+    }
+
+
     public static RulesRepository getRepository() throws RulesRepositoryException {
         Object repoInstance = repo.get();
         if ( repoInstance == null ) {
-            
+
             File dir = new File( "repository" );
             log.debug( "DELETING test repo: " + dir.getAbsolutePath() );
             deleteDir( dir );
             log.debug( "TEST repo was deleted." );
-            
+
             JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
-            
+
             //create a repo instance (startup)
             Repository repository = config.getJCRRepository(null);
-            
+
             //create a session
             Session session;
             try {
@@ -65,18 +65,17 @@ public class RepositorySessionUtil {
                 }
                 config.setupRulesRepository( session );
                 repoInstance = new RulesRepository( session );
-                
+
                 Session adminSession = repository.login(new SimpleCredentials("ADMINISTRATOR", "password".toCharArray()));
                 //loonie hack
                 DroolsRepositoryAccessManager.adminThreadlocal.set(  adminSession );
-                repo.set( repoInstance );                
+                repo.set( repoInstance );
             } catch ( Exception e) {
-                throw new RulesRepositoryException();
-                //Assert.fail("Unable to initialise repository :" + e.getMessage());
+                throw new RulesRepositoryException(e);
             }
         }
-        
-        return (RulesRepository) repoInstance;        
+
+        return (RulesRepository) repoInstance;
     }
 
 }
