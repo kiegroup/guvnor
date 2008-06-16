@@ -1528,7 +1528,7 @@ public class ServiceImplementationTest extends TestCase {
 		assertTrue(pkg.getNode().getProperty("drools:binaryUpToDate")
 				.getBoolean());
 		assertTrue(pkg.isBinaryUpToDate());
-		assertTrue(impl.ruleBaseCache.containsKey(pkg.getUUID()));
+		assertFalse(impl.ruleBaseCache.containsKey(pkg.getUUID()));
 
 		RuleAsset asset = impl.loadRuleAsset(rule1.getUUID());
 		impl.checkinVersion(asset);
@@ -1541,7 +1541,7 @@ public class ServiceImplementationTest extends TestCase {
 
 		assertTrue(pkg.getNode().getProperty("drools:binaryUpToDate")
 				.getBoolean());
-		assertTrue(impl.ruleBaseCache.containsKey(pkg.getUUID()));
+		assertFalse(impl.ruleBaseCache.containsKey(pkg.getUUID()));
 
 		PackageConfigData config = impl.loadPackageConfig(pkg.getUUID());
 		impl.savePackage(config);

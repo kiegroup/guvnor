@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -135,7 +134,7 @@ public class ServiceImplementation
     private static final Logger log = LoggingHelper.getLogger();
     private MetaDataMapper metaDataMapper = new MetaDataMapper();
 
-    /** Used for a simple cache of binary packages to avoid serialization from the database */
+    /** Used for a simple cache of binary packages to avoid serialization from the database - for test scenarios.*/
 	static Map<String, RuleBase> ruleBaseCache = Collections.synchronizedMap(new HashMap<String, RuleBase>());
 
     @WebRemote
@@ -919,7 +918,7 @@ public class ServiceImplementation
 		item.updateBinaryUpToDate(true);
 		RuleBase rb = RuleBaseFactory.newRuleBase();
 		rb.addPackage(asm.getBinaryPackage());
-		this.ruleBaseCache.put(item.getUUID(), rb);
+		//this.ruleBaseCache.put(item.getUUID(), rb);
 	}
 
 
