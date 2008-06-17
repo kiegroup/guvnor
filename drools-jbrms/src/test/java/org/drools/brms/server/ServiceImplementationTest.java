@@ -1652,6 +1652,48 @@ public class ServiceImplementationTest extends TestCase {
 
 	}
 
+	public void testRunScenarioWithGeneratedBeans() throws Exception {
+		ServiceImplementation impl = getService();
+		RulesRepository repo = impl.repository;
+
+		PackageItem pkg = repo.createPackage("testScenarioRunWithGeneratedBeans", "");
+		ServiceImplementation.updateDroolsHeader("declare GenBean\n name: String \n age: int \nend\n", pkg);
+		AssetItem rule1 = pkg.addAsset("rule_1", "");
+		rule1.updateFormat(AssetFormats.DRL);
+		rule1
+				.updateContent("rule 'rule1' \n when \n p : GenBean(name=='mic') \n then \n p.setAge(42); \n end");
+		rule1.checkin("");
+		repo.save();
+
+		Scenario sc = new Scenario();
+		FactData person = new FactData();
+		person.name = "c";
+		person.type = "GenBean";
+		person.fieldData.add(new FieldData("age", "40"));
+		person.fieldData.add(new FieldData("name", "mic"));
+
+		sc.fixtures.add(person);
+		sc.fixtures.add(new ExecutionTrace());
+		VerifyRuleFired vr = new VerifyRuleFired("rule1", 1, null);
+		sc.fixtures.add(vr);
+
+		VerifyFact vf = new VerifyFact();
+		vf.name = "c";
+		vf.fieldValues.add(new VerifyField("name", "mic", "=="));
+		vf.fieldValues.add(new VerifyField("age", "42", "=="));
+		sc.fixtures.add(vf);
+
+
+		ScenarioRunResult res = impl.runScenario(pkg.getName(), sc);
+		assertEquals(null, res.errors);
+		assertNotNull(res.scenario);
+		assertTrue(vf.wasSuccessful());
+		assertTrue(vr.wasSuccessful());
+
+
+
+	}
+
 	public void testRunScenarioWithJar() throws Exception {
 		ServiceImplementation impl = getService();
 		RulesRepository repo = impl.repository;

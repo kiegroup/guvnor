@@ -1134,7 +1134,7 @@ public class ServiceImplementation
 
     	//nasty classloader needed to make sure we use the same tree the whole time.
 		ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
-		ClassLoader cl = null;
+
 
 
 		try {
@@ -1142,26 +1142,27 @@ public class ServiceImplementation
 	    		RuleBase rb = this.ruleBaseCache.get(item.getUUID());
 	    		AbstractRuleBase arb = (AbstractRuleBase) rb;
 	    		//load up the existing class loader from before
-	    		cl = arb.getConfiguration().getClassLoader();
-	    		Thread.currentThread().setContextClassLoader(cl);
+
 	    	} else {
 	        	//load up the classloader we are going to use
 	    		List<JarInputStream> jars = BRMSPackageBuilder.getJars(item);
-	    		cl = BRMSPackageBuilder.createClassLoader(jars);
-	    		Thread.currentThread().setContextClassLoader(cl);
+	    		ClassLoader buildCl = BRMSPackageBuilder.createClassLoader(jars);
 
 	    		//we have to build the package, and try again.
 	    		if (item.isBinaryUpToDate()) {
-	    			this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item, cl));
+	    			this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item, buildCl));
 	    		} else {
 	    			BuilderResult[] errs = this.buildPackage(null, false, item);
 	    			if (errs == null || errs.length == 0) {
-	    				this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item, cl));
+	    				this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item, buildCl));
 	    			} else {
 	    				return new ScenarioRunResult(errs, null);
 	    			}
 	    		}
 	    	}
+
+    		ClassLoader cl = this.ruleBaseCache.get(item.getUUID()).getPackages()[0].getPackageScopeClassLoader();
+	    	Thread.currentThread().setContextClassLoader(cl);
 	    	return runScenario(scenario, item, cl);
 
 		} finally {
@@ -1202,6 +1203,8 @@ public class ServiceImplementation
 				allImps.add(c.getName());
 			}
 		}
+		allImps.add(bin.getName() + ".*"); //need this for Generated beans to work
+
 
 		ClassTypeResolver res = new ClassTypeResolver(allImps, cl);
 		SessionConfiguration sessionConfiguration = new SessionConfiguration();
