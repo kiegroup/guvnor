@@ -33,7 +33,7 @@ public class DeploymentURIHelperTest extends TestCase {
         helper = new PackageDeploymentURIHelper("/asset/bar/LATEST");
         assertTrue(helper.isLatest());
         assertEquals("bar", helper.getPackageName());
-
+        assertFalse(helper.isAsset());
     }
 
     public void testGetPackageWithDRL() throws Exception {
@@ -44,6 +44,18 @@ public class DeploymentURIHelperTest extends TestCase {
         assertEquals( "ya man", helper.getVersion() );
         assertEquals( "boo", helper.getPackageName() );
         assertFalse(helper.isLatest());
+        assertFalse(helper.isAsset());
+
+    }
+
+    public void testGetAssetDRL() throws Exception {
+    	String uri = "/org.drools.brms.JBRMS/package/packName/LATEST/assetName.drl";
+        PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
+        assertTrue(helper.isSource());
+        assertEquals("LATEST", helper.getVersion());
+        assertEquals("packName", helper.getPackageName());
+        assertEquals("assetName", helper.getAssetName());
+        assertTrue(helper.isAsset());
 
 
     }

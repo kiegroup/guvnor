@@ -36,6 +36,7 @@ public class PackageDeploymentURIHelper {
 
     private String version;
     private String packageName;
+    private String assetName = null;
 	private boolean source;
 
     public PackageDeploymentURIHelper(String uri) throws UnsupportedEncodingException {
@@ -54,6 +55,9 @@ public class PackageDeploymentURIHelper {
             String []mtoks = result.split( "/" );
             this.version = mtoks[1];
             this.packageName = mtoks[0];
+            if (mtoks.length == 3) {
+            	this.assetName = mtoks[2];
+            }
         }
     }
 
@@ -72,5 +76,14 @@ public class PackageDeploymentURIHelper {
 	public boolean isSource() {
 
 		return source;
+	}
+
+	public String getAssetName() {
+		return this.assetName;
+
+	}
+
+	public boolean isAsset() {
+		return assetName != null;
 	}
 }

@@ -100,7 +100,11 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         FileManagerUtils fm = getFileManager();
         String fileName = null;
         if (helper.isSource()) {
-            fileName = fm.loadSourcePackage(helper.getPackageName(), helper.getVersion(), helper.isLatest(), out );
+        	if (helper.isAsset()) {
+        		fileName = fm.loadSourceAsset(helper.getPackageName(), helper.getVersion(), helper.isLatest(), helper.getAssetName(), out);
+        	} else {
+        		fileName = fm.loadSourcePackage(helper.getPackageName(), helper.getVersion(), helper.isLatest(), out );
+        	}
         } else {
         	fileName = fm.loadBinaryPackage( helper.getPackageName(), helper.getVersion(), helper.isLatest(), out );
         }

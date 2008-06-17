@@ -23,14 +23,17 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.drools.brms.client.common.HTMLFileManagerFields;
 import org.drools.brms.server.ServiceImplementation;
+import org.drools.brms.server.builder.BRMSPackageBuilder;
 import org.drools.brms.server.builder.ContentPackageAssembler;
 import org.drools.brms.server.contenthandler.ContentHandler;
 import org.drools.brms.server.contenthandler.ContentManager;
+import org.drools.brms.server.contenthandler.IRuleAsset;
 import org.drools.brms.server.contenthandler.ModelContentHandler;
 import org.drools.brms.server.util.ClassicDRLImporter;
 import org.drools.brms.server.util.ClassicDRLImporter.Asset;
 import org.drools.brms.server.util.FormData;
 import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
@@ -44,6 +47,8 @@ import org.jboss.seam.annotations.security.Restrict;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -270,5 +275,36 @@ public class FileManagerUtils {
         }
         return item.getLastModified().getTimeInMillis();
     }
+
+	public String loadSourceAsset(String packageName, String packageVersion,
+			boolean isLatest, String assetName, ByteArrayOutputStream out) throws IOException {
+        PackageItem pkg = null;
+        if ( isLatest ) {
+            pkg = repository.loadPackage( packageName );
+        } else {
+            pkg = repository.loadPackageSnapshot( packageName, packageVersion );
+        }
+
+        AssetItem item = pkg.loadAsset(assetName);
+        ContentHandler handler = ContentManager.getHandler( item.getFormat() );//new AssetContentFormatHandler();
+        StringBuffer buf = new StringBuffer();
+        if (handler.isRuleAsset()) {
+
+            BRMSPackageBuilder builder = new BRMSPackageBuilder(new PackageBuilderConfiguration());
+            //now we load up the DSL files
+            builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( item.getPackage(), new BRMSPackageBuilder.DSLErrorEvent() {
+                public void recordError(AssetItem asset, String message) {
+                    //ignore at this point...
+                }
+            }));
+            ((IRuleAsset) handler).assembleDRL( builder, item, buf );
+            out.write(buf.toString().getBytes());
+            return item.getName() + ".drl";
+        } else {
+        	out.write(item.getContent().getBytes());
+        	return item.getName() + ".drl";
+        }
+
+	}
 
 }

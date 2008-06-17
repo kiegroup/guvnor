@@ -88,6 +88,19 @@ public class PackageDeploymentServletTest extends TestCase {
 		assertEquals(bin_.length, bin.length);
 
 
+		//now get an individual asset source
+		serv = new PackageDeploymentServlet();
+		req = new MockHTTPRequest("/package/testPDSGetPackage/SNAP1/someRule.drl", null);
+		out = new ByteArrayOutputStream();
+		res = new MockHTTPResponse(out);
+		serv.doGet(req, res);
+
+		assertNotNull(out.toByteArray());
+		drl = new String(out.toByteArray());
+		System.err.println(drl);
+		assertTrue(drl.indexOf("rule") > -1);
+		assertEquals(-1, drl.indexOf("package"));
+
 	}
 
 	private void assertSameArray(byte[] bin_, byte[] bin) {
