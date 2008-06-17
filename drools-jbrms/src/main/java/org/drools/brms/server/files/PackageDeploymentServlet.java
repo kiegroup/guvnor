@@ -94,14 +94,17 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         System.out.println( "PackageName: " + helper.getPackageName() );
         System.out.println( "PackageVersion: " + helper.getVersion() );
         System.out.println( "PackageIsLatest: " + helper.isLatest() );
+        System.out.println( "PackageIsSource: " + helper.isSource() );
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         FileManagerUtils fm = getFileManager();
-        String fileName = (helper.isSource()) ? fm.loadBinaryPackage( helper.getPackageName(),
-                                        helper.getVersion(), helper.isLatest(), out )
-                                        :
-                                        fm.loadSourcePackage(helper.getPackageName(),
-                                        helper.getVersion(), helper.isLatest(), out );
+        String fileName = null;
+        if (helper.isSource()) {
+            fileName = fm.loadSourcePackage(helper.getPackageName(), helper.getVersion(), helper.isLatest(), out );
+        } else {
+        	fileName = fm.loadBinaryPackage( helper.getPackageName(), helper.getVersion(), helper.isLatest(), out );
+        }
+
         response.setContentType( "application/x-download" );
         response.setHeader( "Content-Disposition",
                        "attachment; filename=" + fileName + ";");
