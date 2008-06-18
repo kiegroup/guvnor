@@ -4,7 +4,7 @@
  This is a module specific script for GWT related issues mainly you should only need to worry about this
  if you are modifying the GUI itself.
  
- @author Fernando Meyer, Michael Neale
+ @author Michael Neale
 -->
 <project name="org.drools.brms.JBRMS" default="gwt-compile" basedir="." xmlns:gwt="antlib:de.samaflost.gwttasks">
 	<taskdef uri="antlib:de.samaflost.gwttasks"
@@ -17,7 +17,7 @@
 		<gwt:compile outDir="src/main/webapp" 
 			gwtHome="${gwt.home}"
 			classBase="org.drools.brms.JBRMS" 
-			sourceclasspath="src/main/java; ../drools-compiler/src/main/java; ../m2_repo/com/gwtext/gwtext/2.0.1/gwtext-2.0.1.jar" 
+			sourceclasspath="src/main/java; ../drools-compiler/src/main/java; ../lib/gwtext-2.0.1.jar" 
 		/>
 	</target>
 
