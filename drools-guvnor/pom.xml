@@ -20,13 +20,13 @@
 	  <version>5.0.0.SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-jbrms</artifactId>
+  <artifactId>drools-guvnor</artifactId>
 
   <packaging>war</packaging>
   <name>Drools :: Business Rule Management System</name>
 
   <build>
-    <finalName>drools-jbrms</finalName>
+    <finalName>drools-guvnor</finalName>
   </build>
 
   <dependencies>
