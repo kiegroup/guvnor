@@ -1,9 +1,9 @@
-package org.drools.brms.server.selector
+package org.drools.guvnor.server.selector
 
 dialect "mvel"
 
 import org.drools.repository.AssetItem
-import org.drools.brms.server.selector.Allow
+import org.drools.guvnor.server.selector.Allow
 
 rule "rule1"
 	when

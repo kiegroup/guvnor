@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 public class DeploymentURIHelperTest extends TestCase {
 
     public void testGetPackageToExport() throws Exception {
-        String uri = "/org.drools.brms.JBRMS/package/boo/ya+man";
+        String uri = "/org.drools.guvnor.Guvnor/package/boo/ya+man";
 
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
 
@@ -39,7 +39,7 @@ public class DeploymentURIHelperTest extends TestCase {
     }
 
     public void testGetPackageWithDRL() throws Exception {
-    	String uri = "/org.drools.brms.JBRMS/package/boo/ya+man.drl";
+    	String uri = "/org.drools.guvnor.Guvnor/package/boo/ya+man.drl";
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
 
         assertTrue(helper.isSource());
@@ -51,7 +51,7 @@ public class DeploymentURIHelperTest extends TestCase {
     }
 
     public void testGetAssetDRL() throws Exception {
-    	String uri = "/org.drools.brms.JBRMS/package/packName/LATEST/assetName.drl";
+    	String uri = "/org.drools.guvnor.Guvnor/package/packName/LATEST/assetName.drl";
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
         assertTrue(helper.isSource());
         assertEquals("LATEST", helper.getVersion());
