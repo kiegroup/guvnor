@@ -48,7 +48,7 @@ public abstract class GenericCallback
     public static void showSessionExpiry() {
     	FormStylePopup pop = new FormStylePopup();
     	pop.addRow(new HTML("<i><strong>Your session expired due to inactivity.</strong></i><p/>" +
-        "Please <a href='/drools-jbrms/'>[Log in].</a>"));
+        "Please <a href='/drools-guvnor/'>[Log in].</a>"));
     	pop.show();
         LoadingPopup.close();
 

@@ -13,7 +13,7 @@
 	<script src="js/ext/ext-all.js" />
 
 
-	<servlet path="/jbrmsService" class="org.jboss.seam.remoting.gwt.GWTRemoteServiceServlet" />
+	<servlet path="/guvnorService" class="org.jboss.seam.remoting.gwt.GWTRemoteServiceServlet" />
     <servlet path="/asset" class="org.drools.guvnor.server.files.AssetFileServlet"/>
     <servlet path="/backup" class="org.drools.guvnor.server.files.RepositoryBackupServlet"/>
     <servlet path="/package" class="org.drools.guvnor.server.files.PackageDeploymentServlet"/>
