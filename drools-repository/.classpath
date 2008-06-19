@@ -18,13 +18,13 @@
   <classpathentry kind="var" path="M2_REPO/org/apache/jackrabbit/jackrabbit-spi-commons/1.4/jackrabbit-spi-commons-1.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/jackrabbit/jackrabbit-spi/1.4/jackrabbit-spi-1.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/jackrabbit/jackrabbit-text-extractors/1.4/jackrabbit-text-extractors-1.4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.4.0/xercesImpl-2.4.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.8.0/xercesImpl-2.8.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/2.0.2/xml-apis-2.0.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-core/2.2.0/lucene-core-2.2.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/derby/derby/10.2.1.6/derby-10.2.1.6.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/security/jboss-security-acl/2.0.2-SNAPSHOT/jboss-security-acl-2.0.2-SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/security/acl-spi/2.0.2.Beta5/acl-spi-2.0.2.Beta5.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/security/identity-spi/2.0.2.Beta5/identity-spi-2.0.2.Beta5.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/security/authorization-spi/2.0.2.Beta5/authorization-spi-2.0.2.Beta5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/security/jboss-security-acl-impl/2.0.2-SNAPSHOT/jboss-security-acl-impl-2.0.2-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jboss/security/jboss-security-spi/2.0.2.CR4/jboss-security-spi-2.0.2.CR4.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/jboss-common-core/2.2.1.GA/jboss-common-core-2.2.1.GA.jar"/>
   <classpathentry kind="var" path="M2_REPO/apache-xerces/xml-apis/2.7.1/xml-apis-2.7.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/apache-httpclient/commons-httpclient/2.0.2/commons-httpclient-2.0.2.jar"/>
@@ -34,7 +34,6 @@
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-logging-log4j/2.0.2.GA/jboss-logging-log4j-2.0.2.GA.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/jboss-common-core/2.0.2.GA/jboss-common-core-2.0.2.GA.jar"/>
   <classpathentry kind="var" path="M2_REPO/apache-log4j/log4j/1.2.14/log4j-1.2.14.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jboss/security/jboss-security-acl-impl/2.0.2-SNAPSHOT/jboss-security-acl-impl-2.0.2-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate/3.2.4.sp1/hibernate-3.2.4.sp1.jar"/>
   <classpathentry kind="var" path="M2_REPO/net/sf/ehcache/ehcache/1.2.3/ehcache-1.2.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
