@@ -1,0 +1,24 @@
+<module>
+
+	<!-- Inherit the core Web Toolkit stuff.                  -->
+	<inherits name='com.google.gwt.user.User'/>
+    <inherits name="com.gwtext.GwtExt"/>
+
+    <!-- Specify the app entry point class.                   -->
+	<!-- <entry-point class='org.drools.guvnor.client.JBRMS'/> -->
+	<entry-point class='org.drools.guvnor.client.JBRMSEntryPoint'/>
+
+	<stylesheet src="js/ext/resources/css/ext-all.css" />
+	<script src="js/ext/adapter/ext/ext-base.js" />
+	<script src="js/ext/ext-all.js" />
+
+
+	<servlet path="/jbrmsService" class="org.jboss.seam.remoting.gwt.GWTRemoteServiceServlet" />
+    <servlet path="/asset" class="org.drools.guvnor.server.files.AssetFileServlet"/>
+    <servlet path="/backup" class="org.drools.guvnor.server.files.RepositoryBackupServlet"/>
+    <servlet path="/package" class="org.drools.guvnor.server.files.PackageDeploymentServlet"/>
+    <servlet path="/webdav" class="org.drools.guvnor.server.files.WebdavServlet"/>
+    <servlet path="/api" class="org.drools.guvnor.server.files.RestAPIServlet"/>
+
+
+</module>

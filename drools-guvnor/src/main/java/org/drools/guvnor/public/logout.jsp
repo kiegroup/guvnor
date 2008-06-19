@@ -1,5 +1,5 @@
 <%
 	org.jboss.seam.Seam.invalidateSession();
-    String redirectURL = "JBRMS.html";
+    String redirectURL = "Guvnor.html";
     response.sendRedirect(redirectURL);
 %>

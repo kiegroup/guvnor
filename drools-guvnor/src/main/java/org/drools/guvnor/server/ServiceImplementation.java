@@ -119,7 +119,7 @@ import com.google.gwt.user.client.rpc.SerializableException;
  *
  * @author Michael Neale
  */
-@Name("org.drools.brms.client.rpc.RepositoryService")
+@Name("org.drools.guvnor.client.rpc.RepositoryService")
 @AutoCreate
 public class ServiceImplementation
     implements

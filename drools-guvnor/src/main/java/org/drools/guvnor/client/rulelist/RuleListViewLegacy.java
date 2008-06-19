@@ -28,11 +28,11 @@ public class RuleListViewLegacy {
     
 }
 
-//package org.drools.brms.client.rulelist;
+//package org.drools.guvnor.client.rulelist;
 //
-//import org.drools.brms.client.rpc.RepositoryServiceAsync;
-//import org.drools.brms.client.rpc.RepositoryServiceFactory;
-//import org.drools.brms.client.rpc.TableConfig;
+//import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+//import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+//import org.drools.guvnor.client.rpc.TableConfig;
 //
 //import com.google.gwt.user.client.rpc.AsyncCallback;
 //import com.google.gwt.user.client.ui.ClickListener;

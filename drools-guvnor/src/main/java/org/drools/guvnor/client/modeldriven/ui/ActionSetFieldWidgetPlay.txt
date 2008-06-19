@@ -1,4 +1,4 @@
-package org.drools.brms.client.modeldriven.ui;
+package org.drools.guvnor.client.modeldriven.ui;
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -17,22 +17,22 @@ package org.drools.brms.client.modeldriven.ui;
 
 
 
-import org.drools.brms.client.common.DirtyableComposite;
-import org.drools.brms.client.common.DirtyableFlexTable;
-import org.drools.brms.client.common.FieldEditListener;
-import org.drools.brms.client.common.FormStylePopup;
-import org.drools.brms.client.common.ImageButton;
-import org.drools.brms.client.common.InfoPopup;
-import org.drools.brms.client.common.Lbl;
-import org.drools.brms.client.common.YesNoDialog;
-import org.drools.brms.client.modeldriven.HumanReadable;
-import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brl.ActionSetField;
-import org.drools.brms.client.modeldriven.brl.ActionUpdateField;
-import org.drools.brms.client.modeldriven.brl.FactPattern;
-import org.drools.brms.client.modeldriven.brl.RuleModel;
-import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.common.DirtyableFlexTable;
+import org.drools.guvnor.client.common.FieldEditListener;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.InfoPopup;
+import org.drools.guvnor.client.common.Lbl;
+import org.drools.guvnor.client.common.YesNoDialog;
+import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
+import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
+import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
+import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.modeldriven.brl.RuleModel;
+import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;

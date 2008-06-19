@@ -35,7 +35,7 @@ import org.jboss.seam.security.Identity;
  * This implements security related services.
  * @author Michael Neale
  */
-@Name("org.drools.brms.client.rpc.SecurityService")
+@Name("org.drools.guvnor.client.rpc.SecurityService")
 @AutoCreate
 public class SecurityServiceImpl
     implements

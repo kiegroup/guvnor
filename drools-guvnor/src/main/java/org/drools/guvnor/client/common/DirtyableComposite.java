@@ -34,7 +34,7 @@ public abstract class DirtyableComposite extends Composite implements
     /*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.drools.brms.client.common.isDirtable#isDirty()
+	 * @see org.drools.guvnor.client.common.isDirtable#isDirty()
 	 */
 	public boolean isDirty() {
 		return this.dirtyflag;
@@ -43,7 +43,7 @@ public abstract class DirtyableComposite extends Composite implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.drools.brms.client.common.isDirtable#resetDirty()
+	 * @see org.drools.guvnor.client.common.isDirtable#resetDirty()
 	 */
 	public void resetDirty() {
 		this.dirtyflag = false;
@@ -52,7 +52,7 @@ public abstract class DirtyableComposite extends Composite implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.drools.brms.client.common.isDirtable#makeDirty()
+	 * @see org.drools.guvnor.client.common.isDirtable#makeDirty()
 	 */
 	public void makeDirty() {
 		this.dirtyflag = true;
