@@ -6,7 +6,7 @@
  
  @author Michael Neale
 -->
-<project name="org.drools.brms.JBRMS" default="gwt-compile" basedir="." xmlns:gwt="antlib:de.samaflost.gwttasks">
+<project name="org.drools.guvnor.Guvnor" default="gwt-compile" basedir="." xmlns:gwt="antlib:de.samaflost.gwttasks">
 	<taskdef uri="antlib:de.samaflost.gwttasks"
 	              resource="de/samaflost/gwttasks/antlib.xml"
 	              classpath="../lib/gwttasks.jar"/>
@@ -16,7 +16,7 @@
 	<target name="gwt-compile">
 		<gwt:compile outDir="src/main/webapp" 
 			gwtHome="${gwt.home}"
-			classBase="org.drools.brms.JBRMS" 
+			classBase="org.drools.guvnor.Guvnor" 
 			sourceclasspath="src/main/java; ../drools-compiler/src/main/java; ../lib/gwtext-2.0.1.jar" 
 		/>
 	</target>
@@ -26,7 +26,7 @@
 			bindir="target/classes" 
 			outDir="src/main/webapp" 
 			gwtHome="${gwt.home}" 
-			startPage="org.drools.brms.JBRMS/JBRMS.html" 
+			startPage="org.drools.guvnor.Guvnor/Guvnor.html" 
 		/>
 	</target>
 </project>

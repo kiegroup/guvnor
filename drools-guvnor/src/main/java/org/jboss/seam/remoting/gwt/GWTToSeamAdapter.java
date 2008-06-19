@@ -25,12 +25,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.drools.brms.client.rpc.DetailedSerializableException;
-import org.drools.brms.client.rpc.SecurityService;
-import org.drools.brms.client.rpc.SessionExpiredException;
-import org.drools.brms.server.ServiceImplementation;
-import org.drools.brms.server.security.SecurityServiceImpl;
-import org.drools.brms.server.util.TestEnvironmentSessionHelper;
+import org.drools.guvnor.client.rpc.DetailedSerializableException;
+import org.drools.guvnor.client.rpc.SecurityService;
+import org.drools.guvnor.client.rpc.SessionExpiredException;
+import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.security.SecurityServiceImpl;
+import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.remoting.WebRemote;

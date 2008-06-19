@@ -21,8 +21,8 @@ import java.lang.reflect.InvocationTargetException;
 
 import junit.framework.TestCase;
 
-import org.drools.brms.client.rpc.DetailedSerializableException;
-import org.drools.brms.client.rpc.SessionExpiredException;
+import org.drools.guvnor.client.rpc.DetailedSerializableException;
+import org.drools.guvnor.client.rpc.SessionExpiredException;
 import org.jboss.seam.remoting.gwt.GWTToSeamAdapter.ReturnedObject;
 
 public class GWTToSeamAdapterTest extends TestCase {

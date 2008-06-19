@@ -1,28 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>drools-jbrms</name>
-	<comment>A rule production system</comment>
-	<projects>
-		<project>drools-verifier</project>
-		<project>drools-compiler</project>
-		<project>drools-core</project>
-		<project>drools-decisiontables</project>
-		<project>drools-repository</project>
-	</projects>
-	<buildSpec>
-		<buildCommand>
-			<name>org.maven.ide.eclipse.maven2Builder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-	</buildSpec>
-	<natures>
-		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>org.maven.ide.eclipse.maven2Nature</nature>
-	</natures>
+  <name>drools-guvnor</name>
+  <comment>A rule production system</comment>
+  <projects>
+    <project>drools-compiler</project>
+    <project>drools-core</project>
+    <project>drools-decisiontables</project>
+    <project>drools-templates</project>
+    <project>drools-repository</project>
+    <project>drools-verifier</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.maven.ide.eclipse.maven2Builder</name>
+    </buildCommand>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+    <nature>org.maven.ide.eclipse.maven2Nature</nature>
+  </natures>
 </projectDescription>
