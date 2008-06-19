@@ -62,7 +62,7 @@ public class RepositoryServiceFactory {
             (RepositoryServiceAsync) GWT.create(RepositoryService.class);
         ServiceDefTarget endpoint = (ServiceDefTarget) svc;
         
-        String endpointURL = GWT.getModuleBaseURL() + "jbrmsService";        
+        String endpointURL = GWT.getModuleBaseURL() + "guvnorService";        
         
         endpoint.setServiceEntryPoint(endpointURL);
         return svc;
@@ -80,7 +80,7 @@ public class RepositoryServiceFactory {
         SecurityServiceAsync svc =
             (SecurityServiceAsync) GWT.create(SecurityService.class);
         ServiceDefTarget endpoint = (ServiceDefTarget) svc;
-        String endpointURL = GWT.getModuleBaseURL() + "jbrmsService";        
+        String endpointURL = GWT.getModuleBaseURL() + "guvnorService";        
         endpoint.setServiceEntryPoint(endpointURL);
         return svc;
     }
