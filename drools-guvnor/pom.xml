@@ -23,7 +23,7 @@
   <artifactId>drools-guvnor</artifactId>
 
   <packaging>war</packaging>
-  <name>Drools :: Business Rule Management System</name>
+  <name>Drools :: Guvnor</name>
 
   <build>
     <finalName>drools-guvnor</finalName>
