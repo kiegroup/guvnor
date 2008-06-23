@@ -484,7 +484,12 @@ public class AssetItem extends CategorisableItem {
     	boolean name = true;
     	for (int i = 0; i < cs.length; i++) {
     		if (name && cs[i] == '.') {
-    			name = false;
+    			String rhs = fileName.substring(i);
+    			if (rhs.contains("_") || rhs.contains(" ")) {
+    				r[0] = r[0] + '.'; //its part of the name
+    			} else {
+    				name = false;
+    			}
     		} else if (name) {
 				r[0] = r[0] + cs[i];
 			} else {

@@ -97,6 +97,28 @@ public class AssetItemTest extends TestCase {
     	assertEquals("foo", asset[0]);
     	assertEquals("bar.xls", asset[1]);
 
+    	asset = AssetItem.getAssetNameFromFileName("Rule 261.3 Something foo.drl");
+    	assertEquals("Rule 261.3 Something foo", asset[0]);
+    	assertEquals("drl", asset[1]);
+
+    	asset = AssetItem.getAssetNameFromFileName("Rule_261.3_Something_foo.drl");
+    	assertEquals("Rule_261.3_Something_foo", asset[0]);
+    	assertEquals("drl", asset[1]);
+
+    	asset = AssetItem.getAssetNameFromFileName("Rule 261.3 Something foo.model.drl");
+    	assertEquals("Rule 261.3 Something foo", asset[0]);
+    	assertEquals("model.drl", asset[1]);
+
+    	asset = AssetItem.getAssetNameFromFileName("Rule_261.3_Something_foo.model.drl");
+    	assertEquals("Rule_261.3_Something_foo", asset[0]);
+    	assertEquals("model.drl", asset[1]);
+
+
+//    	System.err.println(asset[0]);
+//    	System.err.println(asset[1]);
+
+
+
     }
 
 
