@@ -195,8 +195,8 @@ public class ContentPackageAssemblerTest extends TestCase {
         Thread.currentThread().setContextClassLoader(oldCL);
 
 
-        builder.addPackageFromDrl(new StringReader("package foo\n import com.billasurf.Board"));
-        Object o2 = builder.getTypeResolver().resolveType("Board");
+        builder.addPackageFromDrl(new StringReader("package foo\n import com.billasurf.Board"));        
+        Object o2 = builder.getPackageRegistry( "foo" ).getTypeResolver().resolveType("Board");
         assertNotNull(o2);
         assertEquals("com.billasurf.Board", ((Class)o2).getName());
     }
