@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.factmodel.FactMetaModel;
 import org.drools.guvnor.client.factmodel.FactModels;
 import org.drools.guvnor.client.factmodel.FieldMetaModel;
@@ -14,18 +16,15 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-import org.drools.repository.RulesRepositoryException;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
-public class FactModelContentHandler extends ContentHandler implements IRuleAsset {
+public class FactModelContentHandler extends ContentHandler {
 
 	@Override
 	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
@@ -36,7 +35,7 @@ public class FactModelContentHandler extends ContentHandler implements IRuleAsse
 			ms.models = models;
 			asset.content = ms;
 		} catch (DroolsParserException e) {
-			System.err.println("Unable to parser the DRL - falling back to text");
+			System.err.println("Unable to parse the DRL for the model - falling back to text (" + e.getMessage() + ")");
 			RuleContentText text = new RuleContentText();
 			text.content = item.getContent();
 			asset.content = text;
@@ -74,7 +73,7 @@ public class FactModelContentHandler extends ContentHandler implements IRuleAsse
     	DrlParser parser = new DrlParser();
     	PackageDescr pkg = parser.parse(drl);
     	if (parser.hasErrors()) {
-    		throw new RulesRepositoryException("The model drl " + drl + " is not valid");
+    		throw new DroolsParserException("The model drl " + drl + " is not valid");
     	}
     	List<TypeDeclarationDescr> types = pkg.getTypeDeclarations();
     	List<FactMetaModel> list = new ArrayList<FactMetaModel>(types.size());
@@ -102,12 +101,5 @@ public class FactModelContentHandler extends ContentHandler implements IRuleAsse
 		return sb.toString().trim();
 	}
 
-	public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset, StringBuffer buf) {
-		buf.append(asset.getContent());
-	}
-
-	public void compile(BRMSPackageBuilder builder, AssetItem asset, ErrorLogger logger) throws DroolsParserException, IOException {
-		builder.addPackageFromDrl( new StringReader(asset.getContent()) );
-	}
 
 }

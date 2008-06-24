@@ -66,6 +66,9 @@ public class AssetFormats {
     /** For test scenarios.  */
     public static final String TEST_SCENARIO = "scenario";
 
+    /** For fact models in drl.     */
+    public static final String DRL_MODEL = "model.drl";
+
     /**
      * The following group the assets together for lists, helpers etc...
      */
@@ -75,7 +78,7 @@ public class AssetFormats {
     /**
      * These define assets that are really package level "things". Used to decide when to flush any caches.
      */
-    private static final String[] PACKAGE_DEPENCENCIES = new String[] {AssetFormats.FUNCTION, AssetFormats.DSL, AssetFormats.MODEL, AssetFormats.ENUMERATION};
+    private static final String[] PACKAGE_DEPENCENCIES = new String[] {AssetFormats.FUNCTION, AssetFormats.DSL, AssetFormats.MODEL, AssetFormats.ENUMERATION, AssetFormats.DRL_MODEL};
 
 
     /**

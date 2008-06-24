@@ -160,12 +160,15 @@ public class ContentPackageAssembler {
 
         //now we deal with the header (imports, templates, globals).
         addDrl(ServiceImplementation.getDroolsHeader(pkg));
+        loadDeclaredTypes();
         if (builder.hasErrors()) {
             recordBuilderErrors(pkg);
             //if we have any failures, lets drop out now, no point in going
             //any further
             return false;
         }
+
+
 
         loadDSLFiles();
 
@@ -183,7 +186,22 @@ public class ContentPackageAssembler {
         return errors.size() == 0;
     }
 
-    private void loadDSLFiles() {
+    private void loadDeclaredTypes() {
+		AssetItemIterator it = this.pkg.listAssetsByFormat(new String[]{AssetFormats.DRL_MODEL} );
+		while (it.hasNext()) {
+			AssetItem as = it.next();
+			try {
+				builder.addPackageFromDrl(new StringReader(as.getContent()));
+			} catch (DroolsParserException e) {
+				this.errors.add(new ContentAssemblyError(as, "Parser exception: " + e.getMessage() ));
+			} catch (IOException e) {
+				this.errors.add(new ContentAssemblyError(as, "IOException: " + e.getMessage()));
+			}
+		}
+
+	}
+
+	private void loadDSLFiles() {
         //now we load up the DSL files
         builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( pkg, new BRMSPackageBuilder.DSLErrorEvent() {
             public void recordError(AssetItem asset, String message) {
@@ -277,8 +295,8 @@ public class ContentPackageAssembler {
         }));
 
 
-        //do the functions.
-        AssetItemIterator it = this.pkg.listAssetsByFormat( new String[] {AssetFormats.FUNCTION} );
+        //do the functions and declared types.
+        AssetItemIterator it = this.pkg.listAssetsByFormat( new String[] {AssetFormats.FUNCTION, AssetFormats.DRL_MODEL} );
         while(it.hasNext()) {
             AssetItem func = (AssetItem) it.next();
             if (!func.isArchived()) {
