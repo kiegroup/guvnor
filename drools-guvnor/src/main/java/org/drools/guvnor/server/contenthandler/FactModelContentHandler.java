@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.factmodel.FactMetaModel;
+import org.drools.guvnor.client.factmodel.FactModels;
 import org.drools.guvnor.client.factmodel.FieldMetaModel;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.compiler.DrlParser;
@@ -28,14 +30,30 @@ public class FactModelContentHandler extends ContentHandler implements IRuleAsse
 	@Override
 	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
 			AssetItem item) throws SerializableException {
-		// TODO Auto-generated method stub
+		try {
+			List<FactMetaModel> models = toModel(item.getContent());
+			FactModels ms = new FactModels();
+			ms.models = models;
+			asset.content = ms;
+		} catch (DroolsParserException e) {
+			System.err.println("Unable to parser the DRL - falling back to text");
+			RuleContentText text = new RuleContentText();
+			text.content = item.getContent();
+			asset.content = text;
+		}
 
 	}
 
 	@Override
 	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
 			throws SerializableException {
-		// TODO Auto-generated method stub
+		if (asset.content instanceof FactModels) {
+			FactModels fm = (FactModels) asset.content;
+			repoAsset.updateContent(toDRL(fm.models));
+		} else {
+			RuleContentText text = (RuleContentText) asset.content;
+			repoAsset.updateContent(text.content);
+		}
 
 	}
 
