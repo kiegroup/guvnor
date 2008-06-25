@@ -195,10 +195,44 @@ public class ContentPackageAssemblerTest extends TestCase {
         Thread.currentThread().setContextClassLoader(oldCL);
 
 
-        builder.addPackageFromDrl(new StringReader("package foo\n import com.billasurf.Board"));        
+        builder.addPackageFromDrl(new StringReader("package foo\n import com.billasurf.Board"));
         Object o2 = builder.getPackageRegistry( "foo" ).getTypeResolver().resolveType("Board");
         assertNotNull(o2);
         assertEquals("com.billasurf.Board", ((Class)o2).getName());
+    }
+
+    public void testSimplePackageWithDeclaredTypes() throws Exception {
+        RulesRepository repo = getRepo();
+
+        PackageItem pkg = repo.createPackage( "testSimplePackageWithDeclaredTypes", "" );
+
+        AssetItem rule1 = pkg.addAsset( "rule_1", "" );
+        rule1.updateFormat( AssetFormats.DRL );
+        rule1.updateContent( "rule 'rule1' \n when Album() \n then System.err.println(42); \n end");
+        rule1.checkin( "" );
+
+
+        AssetItem model = pkg.addAsset( "model", "qed" );
+        model.updateFormat( AssetFormats.DRL_MODEL );
+
+        model.updateContent("declare Album\n genre: String \n end");
+        model.checkin( "" );
+
+        repo.save();
+
+        ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
+        assertFalse(asm.hasErrors());
+        assertNotNull(asm.getBinaryPackage());
+        Package bin = asm.getBinaryPackage();
+        assertEquals(pkg.getName(), bin.getName());
+        assertTrue(bin.isValid());
+
+        asm = new ContentPackageAssembler(pkg, false);
+        String drl = asm.getDRL();
+
+        assertTrue(drl.indexOf("declare Album") > -1);
+
+
     }
 
     public void testSimplePackageBuildNoErrors() throws Exception {

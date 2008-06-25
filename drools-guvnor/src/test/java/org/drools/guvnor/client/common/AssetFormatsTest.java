@@ -54,6 +54,7 @@ public class AssetFormatsTest extends TestCase {
         assertTrue(AssetFormats.isPackageDependency(AssetFormats.MODEL));
         assertTrue(AssetFormats.isPackageDependency(AssetFormats.FUNCTION));
         assertTrue(AssetFormats.isPackageDependency( AssetFormats.ENUMERATION ));
+        assertTrue(AssetFormats.isPackageDependency( AssetFormats.DRL_MODEL ));
     }
 
 }

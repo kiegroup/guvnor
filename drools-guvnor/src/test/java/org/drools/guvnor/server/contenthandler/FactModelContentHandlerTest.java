@@ -11,6 +11,7 @@ import org.drools.guvnor.client.factmodel.FactMetaModel;
 import org.drools.guvnor.client.factmodel.FactModels;
 import org.drools.guvnor.client.factmodel.FieldMetaModel;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
@@ -66,38 +67,7 @@ public class FactModelContentHandlerTest extends TestCase {
 
     }
 
-    public void testSource() throws Exception {
-    	FactModelContentHandler ch = new FactModelContentHandler();
 
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
-        PackageItem pkg = repo.loadDefaultPackage();
-        AssetItem asset = pkg.addAsset( "testDeclaredTypeSource", "" );
-        asset.updateFormat("model.drl");
-        asset.updateContent("declare Foo\n end");
-    	asset.checkin("");
-    	StringBuffer buf = new StringBuffer();
-    	ch.assembleDRL(null, asset, buf);
-
-    	assertEquals("declare Foo\n end", buf.toString());
-
-    }
-
-    public void testCompile() throws Exception {
-    	FactModelContentHandler ch = new FactModelContentHandler();
-
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
-        PackageItem pkg = repo.loadDefaultPackage();
-        AssetItem asset = pkg.addAsset( "testDeclaredTypeCompile", "" );
-        asset.updateFormat("model.drl");
-        asset.updateContent("declare Foo\n name: String\n end");
-    	asset.checkin("");
-
-    	BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance(Collections.EMPTY_LIST);
-
-    	ch.compile(builder, asset, null);
-    	assertFalse(builder.hasErrors());
-
-    }
 
     public void testStore() throws Exception {
     	FactModelContentHandler ch = new FactModelContentHandler();
@@ -128,6 +98,16 @@ public class FactModelContentHandlerTest extends TestCase {
 
     	assertTrue(asset.getContent().indexOf("age: int") > -1);
 
+
+    	asset.updateContent("rubbish here");
+    	asset.checkin("");
+
+    	ch.retrieveAssetContent(ass, pkg, asset);
+    	assertTrue(ass.content instanceof RuleContentText);
+
+    	ch.storeAssetContent(ass, asset);
+
+    	assertEquals("rubbish here", asset.getContent());
 
     }
 }
