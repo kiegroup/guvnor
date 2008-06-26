@@ -8,7 +8,7 @@ import org.drools.guvnor.client.modeldriven.brl.PortableObject;
 public class FactModels implements PortableObject {
 
 	/**
-	 * @gwt.typeArgs <org.drools.brms.client.factmodel.FactMetaModel>
+	 * @gwt.typeArgs <org.drools.guvnor.client.factmodel.FactMetaModel>
 	 */
 	public List models = new ArrayList();
 
