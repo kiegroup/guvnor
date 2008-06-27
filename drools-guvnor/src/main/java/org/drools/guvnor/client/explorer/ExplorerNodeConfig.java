@@ -40,7 +40,7 @@ public class ExplorerNodeConfig {
 		pkg.appendChild( makeItem( "Model",
 		                "images/model_asset.gif",
 
-		                               new String[]{AssetFormats.MODEL} ) ) ;
+		                               new String[]{AssetFormats.MODEL, AssetFormats.DRL_MODEL} ) ) ;
 
 		pkg.appendChild( makeItem( "Rule Flows",
 		 "images/ruleflow_small.gif",

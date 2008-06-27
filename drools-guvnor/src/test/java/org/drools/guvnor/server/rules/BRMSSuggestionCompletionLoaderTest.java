@@ -92,6 +92,32 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
         assertEquals( SuggestionCompletionEngine.TYPE_COMPARABLE, fieldType );
     }
 
+    public void testDeclaredTypes() throws Exception {
+        RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+        PackageItem item = repo.createPackage( "testLoaderDeclaredTypes", "to test the loader for declared types" );
+        AssetItem asset = item.addAsset("MyModel", "");
+        asset.updateFormat(AssetFormats.DRL_MODEL);
+        asset.updateContent("declare Car\n pieceOfRubbish: Boolean \n name: String \nend");
+        asset.checkin("");
+
+        repo.save();
+        BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
+
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( item );
+        assertNotNull(engine);
+        String[] factTypes = engine.getFactTypes();
+        assertEquals(1, factTypes.length);
+        assertEquals("Car", factTypes[0]);
+
+        String[] fields = engine.getFieldCompletions("Car");
+        assertEquals(2, fields.length);
+        assertEquals("pieceOfRubbish", fields[0]);
+        assertEquals("name", fields[1]);
+
+        assertEquals("Boolean", engine.getFieldType("Car", "pieceOfRubbish"));
+        assertEquals("String", engine.getFieldType("Car", "name"));
+    }
+
     public void testLoadDSLs() throws Exception {
         String dsl = "[when]The agents rating is {rating}=doNothing()\n[then]Send a notification to manufacturing '{message}'=foo()";
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());

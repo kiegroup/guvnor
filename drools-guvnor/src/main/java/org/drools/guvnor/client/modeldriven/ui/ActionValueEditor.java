@@ -76,6 +76,9 @@ public class ActionValueEditor extends DirtyableComposite {
         if (c.value == null) {
         	box.setText("");
         } else {
+        	if (c.value.trim().equals("")) {
+        		c.value = "";
+        	}
         	box.setText( c.value );
         }
 

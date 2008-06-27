@@ -1901,6 +1901,16 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(2, s.length);
 		assertEquals("com.billasurf.Person", s[0]);
 		assertEquals("com.billasurf.Board", s[1]);
+
+		AssetItem asset = pkg.addAsset("declaretTypes", "");
+		asset.updateFormat(AssetFormats.DRL_MODEL);
+		asset.updateContent("declare Whee\n name: String \n end");
+		asset.checkin("");
+
+		s = impl.listTypesInPackage(pkg.getUUID());
+		assertEquals(3, s.length);
+		assertEquals("Whee", s[2]);
+
 	}
 
 

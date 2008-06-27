@@ -29,6 +29,7 @@ import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.rules.SuggestionCompletionLoader;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 
 /**
@@ -39,7 +40,19 @@ import org.drools.repository.PackageItem;
 public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
 
     public SuggestionCompletionEngine getSuggestionEngine(PackageItem pkg) {
-            return super.getSuggestionEngine( ServiceImplementation.getDroolsHeader(pkg), getJars( pkg ), getDSLMappingFiles( pkg ), getDataEnums( pkg ));
+
+    		StringBuilder buf = new StringBuilder();
+    		AssetItemIterator it = pkg.listAssetsByFormat(new String[] {AssetFormats.DRL_MODEL});
+    		while(it.hasNext()) {
+    			AssetItem as = it.next();
+    			buf.append(as.getContent());
+    			buf.append('\n');
+    		}
+
+            return super.getSuggestionEngine( ServiceImplementation.getDroolsHeader(pkg) + buf.toString(),
+            									getJars( pkg ),
+            									getDSLMappingFiles( pkg ),
+            									getDataEnums( pkg ));
     }
 
 

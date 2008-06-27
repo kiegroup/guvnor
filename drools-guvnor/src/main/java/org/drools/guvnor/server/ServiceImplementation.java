@@ -88,6 +88,7 @@ import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.guvnor.server.util.VerifierRunner;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -101,6 +102,7 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.VersionableItem;
 import org.drools.rule.Package;
+import org.drools.rule.TypeDeclaration;
 import org.drools.testframework.RuleCoverageListener;
 import org.drools.testframework.ScenarioRunner;
 import org.drools.util.DroolsStreamUtils;
@@ -1334,7 +1336,7 @@ public class ServiceImplementation
 
 		PackageItem pkg = this.repository.loadPackageByUUID(packageUUID);
 		List<String> res = new ArrayList<String>();
-		AssetItemIterator it = pkg.listAssetsByFormat(new String[] {AssetFormats.MODEL});
+		AssetItemIterator it = pkg.listAssetsByFormat(new String[] {AssetFormats.MODEL, AssetFormats.DRL_MODEL});
 
 		JarInputStream jis = null;
 
@@ -1342,14 +1344,29 @@ public class ServiceImplementation
 			while(it.hasNext()) {
 				AssetItem asset = (AssetItem) it.next();
 				if (!asset.isArchived()) {
-					jis = new JarInputStream(asset.getBinaryContentAttachment());
-					JarEntry entry = null;
-					while ((entry = jis.getNextJarEntry()) != null) {
-						if (!entry.isDirectory()) {
-							if (entry.getName().endsWith(".class")) {
-								 res.add(ModelContentHandler.convertPathToName(entry.getName()));
+					if (asset.getFormat().equals(AssetFormats.MODEL)) {
+						jis = new JarInputStream(asset.getBinaryContentAttachment());
+						JarEntry entry = null;
+						while ((entry = jis.getNextJarEntry()) != null) {
+							if (!entry.isDirectory()) {
+								if (entry.getName().endsWith(".class")) {
+									 res.add(ModelContentHandler.convertPathToName(entry.getName()));
+								}
 							}
 						}
+					} else {
+						//its delcared model
+						DrlParser parser = new DrlParser();
+						try {
+							PackageDescr desc = parser.parse(asset.getContent());
+							List<TypeDeclarationDescr> types = desc.getTypeDeclarations();
+							for (TypeDeclarationDescr typeDeclarationDescr : types) {
+								res.add(typeDeclarationDescr.getTypeName());
+							}
+						} catch (DroolsParserException e) {
+							log.error(e);
+						}
+
 					}
 
 				}

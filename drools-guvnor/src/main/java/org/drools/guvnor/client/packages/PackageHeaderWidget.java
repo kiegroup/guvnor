@@ -182,7 +182,13 @@ public class PackageHeaderWidget extends Composite {
 				factList.clear();
 				String[] list = (String[]) data;
 				for (int i = 0; i < list.length; i++) {
-					factList.addItem(list[i]);
+					if (global) {
+						factList.addItem(list[i]);
+					} else {
+						if (list[i].indexOf('.') > -1) {
+							factList.addItem(list[i]);
+						}
+					}
 				}
 			}
 		});

@@ -24,10 +24,12 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.DefaultContentUploadEditor;
 import org.drools.guvnor.client.decisiontable.DecisionTableXLSWidget;
 import org.drools.guvnor.client.decisiontable.GuidedDecisionTableWidget;
+import org.drools.guvnor.client.factmodel.FactModelWidget;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.packages.ModelAttachmentFileWidget;
 import org.drools.guvnor.client.qa.ScenarioWidget;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.RuleContentText;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -76,6 +78,8 @@ public class EditorLauncher {
         	return new ScenarioWidget(asset);
         } else if (asset.metaData.format.equals(AssetFormats.DECISION_TABLE_GUIDED)) {
         	return new RuleValidatorWrapper(new GuidedDecisionTableWidget(asset), asset);
+        } else if (asset.metaData.format.equals(AssetFormats.DRL_MODEL)) {
+        	return new RuleValidatorWrapper(new FactModelWidget(asset), asset);
         } else {
             return new DefaultContentUploadEditor( asset, viewer );
         }

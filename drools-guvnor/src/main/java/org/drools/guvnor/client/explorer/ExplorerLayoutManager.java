@@ -437,11 +437,17 @@ public class ExplorerLayoutManager {
         			}
         		}, "images/rule_asset.gif"));
 
-        m.addItem(new Item("New Model (jar) of fact classes", new BaseItemListenerAdapter() {
+        m.addItem(new Item("Upload new Model jar (fact classes)", new BaseItemListenerAdapter() {
         			public void onClick(BaseItem item, EventObject e) {
         				launchWizard(AssetFormats.MODEL, "New model archive (jar)", false, currentPackage);
         			}
         		}, "images/model_asset.gif"));
+
+        m.addItem(new Item("New Model (in rules)", new BaseItemListenerAdapter() {
+			public void onClick(BaseItem item, EventObject e) {
+				launchWizard(AssetFormats.DRL_MODEL, "New declarative model (using guided editor).", false, currentPackage);
+			}
+		}, "images/model_asset.gif"));
 
         m.addItem(new Item("New Function", new BaseItemListenerAdapter() {
         			public void onClick(BaseItem item, EventObject e) {
