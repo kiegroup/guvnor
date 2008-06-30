@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author michael neale
  */
 
-public class DSLRuleEditor extends DirtyableComposite {
+public class DSLRuleEditor extends DirtyableComposite implements Editor{
 
     private TextArea      text;
     final private RuleContentText data;
@@ -165,4 +165,11 @@ public class DSLRuleEditor extends DirtyableComposite {
         this.data.content = text.getText();
     }
 
+    public String getWrapperClass() {
+        return null;
+    }
+
+    public String getAssetFormat() {
+        return null;
+    }
 }

@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Michael Neale
  */
-public class RuleFlowUploadWidget extends AssetAttachmentFileWidget {
+public class RuleFlowUploadWidget extends AssetAttachmentFileWidget implements Editor {
 
     public RuleFlowUploadWidget(
                                   RuleAsset asset, RuleViewer viewer) {
@@ -44,7 +44,12 @@ public class RuleFlowUploadWidget extends AssetAttachmentFileWidget {
     public String getOverallStyleName() {
         return "decision-Table-upload";
     }
-    
 
+    public String getWrapperClass() {
+        return null;
+    }
 
+    public String getAssetFormat() {
+        return null;
+    }
 }

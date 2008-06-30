@@ -16,30 +16,13 @@ package org.drools.guvnor.client.ruleeditor;
  */
 
 
-
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.*;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
-
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.HorizontalSplitPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.VerticalSplitPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The main layout parent/controller the rule viewer.
@@ -67,9 +50,7 @@ public class RuleViewer extends Composite {
     }
 
     /**
-     * @param UUID The resource to open.
-     * @param format The type of resource (may determine what editor is used).
-     * @param name The name to be displayed.
+     * @param asset The rule asset to open.
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
     public RuleViewer(RuleAsset asset, boolean historicalReadOnly) {
@@ -98,9 +79,9 @@ public class RuleViewer extends Composite {
     private void doWidgets() {
     	layout.clear();
 
-
-    	editor = EditorLauncher.getEditorViewer(asset, this);
-
+    	//editor = EditorLauncher.getEditorViewer(asset, this);
+        EditorLauncher editorLauncher = (EditorLauncher) GWT.create(EditorLauncher.class);
+        editor = editorLauncher.getEditorViewer(asset, this);
 
         //the action widgets (checkin/close etc).
         toolbar = new ActionToolbar( asset,

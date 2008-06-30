@@ -30,6 +30,7 @@ import org.drools.guvnor.client.ruleeditor.EditorLauncher;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.ArrayReader;
 import com.gwtext.client.data.FieldDef;
@@ -245,7 +246,11 @@ public class AssetItemGrid extends Composite {
                                     public String render(Object value,
                                             CellMetadata cellMetadata, Record record,
                                             int rowIndex, int colNum, Store store) {
-                                        String fmtIcon = "images/" + EditorLauncher.getAssetFormatIcon(record.getAsString("format"));
+
+                                        EditorLauncher editorLauncher = (EditorLauncher) GWT.create(EditorLauncher.class);
+
+                                        //String fmtIcon = "images/" + EditorLauncher.getAssetFormatIcon(record.getAsString("format"));
+                                        String fmtIcon = "images/" + editorLauncher.getAssetFormatIcon(record.getAsString("format"));
                                         String desc = record.getAsString("Description");
                                         if (desc == null) {
                                         	desc = "";

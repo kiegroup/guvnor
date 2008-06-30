@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
  * This is the default rule editor widget (just text editor based) - more to come later.
  * @author michael neale
  */
-public class DefaultRuleContentWidget extends DirtyableComposite {
+public class DefaultRuleContentWidget extends DirtyableComposite implements Editor {
 
     private TextArea              text;
     final private RuleContentText data;
@@ -88,4 +88,11 @@ public class DefaultRuleContentWidget extends DirtyableComposite {
         this.data.content = text.getText();
     }
 
+    public String getWrapperClass() {
+        return null;
+    }
+
+    public String getAssetFormat() {
+        return null;
+    }
 }

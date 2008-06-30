@@ -20,5 +20,8 @@
     <servlet path="/webdav" class="org.drools.guvnor.server.files.WebdavServlet"/>
     <servlet path="/api" class="org.drools.guvnor.server.files.RestAPIServlet"/>
 
+    <generate-with class="org.drools.guvnor.rebind.EditorLauncherGenerator">
+       <when-type-assignable class="org.drools.guvnor.client.ruleeditor.EditorLauncher"/>
+    </generate-with>
 
 </module>

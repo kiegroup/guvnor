@@ -16,24 +16,21 @@ package org.drools.guvnor.client.decisiontable;
  */
 
 
-
+import com.google.gwt.user.client.ui.HTML;
 import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.ruleeditor.Editor;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
-
-import com.google.gwt.user.client.ui.HTML;
 
 /**
  * This widget deals with XLS files in "classic" decision tables.
  * 
  * @author Michael Neale
  */
-public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
+public class DecisionTableXLSWidget extends AssetAttachmentFileWidget implements Editor {
 
-    public DecisionTableXLSWidget(
-                                  RuleAsset asset, RuleViewer viewer) {
-        super( asset,
-               viewer );
+    public DecisionTableXLSWidget(RuleAsset asset, RuleViewer viewer) {
+        super( asset, viewer );
         super.addDescription(new HTML("<small><i>This is a decision table in a spreadsheet (XLS). Typically they contain many rules in one sheet.</i></small>"));
     }
 
@@ -44,7 +41,13 @@ public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
     public String getOverallStyleName() {
         return "decision-Table-upload";
     }
-    
 
 
+    public String getWrapperClass() {
+        return null;
+    }
+
+    public String getAssetFormat() {
+        return null;
+    }
 }

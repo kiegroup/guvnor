@@ -16,8 +16,8 @@ package org.drools.guvnor.client.packages;
  */
 
 
-
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.ruleeditor.Editor;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 
 /**
@@ -28,7 +28,7 @@ import org.drools.guvnor.client.ruleeditor.RuleViewer;
  * @author Fernando Meyer
  */
 
-public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget {
+public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget implements Editor {
 
     
     public ModelAttachmentFileWidget(RuleAsset asset, RuleViewer viewer) {
@@ -43,7 +43,14 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget {
     public String getOverallStyleName() {
         return "editable-Surface";
     }
-    
+
+    public String getWrapperClass() {
+        return null;
+    }
+
+    public String getAssetFormat() {
+        return null;
+    }
 }
 
 /*Composite {
