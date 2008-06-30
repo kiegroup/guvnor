@@ -12,12 +12,15 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
+import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.remoteapi.Response.Binary;
 import org.drools.repository.remoteapi.Response.Text;
+
+import com.sun.org.apache.xalan.internal.xsltc.cmdline.getopt.GetOpt;
 
 /**
  * This provides a simple REST style remote friendly API.
@@ -88,23 +91,77 @@ public class RestAPI {
 			r.data = pkg.getStringProperty( PackageItem.HEADER_PROPERTY_NAME );
 			return r;
 		} else {
-			String assetName = resourceFile.split("\\.")[0];
+			if (resourceFile.indexOf("?version=") > -1) {
+				String[] v = resourceFile.split("\\?version\\=");
+				String version = v[1];
+				String assetName = AssetItem.getAssetNameFromFileName(v[0])[0];
+				AssetItem asset = pkg.loadAsset(assetName);
+				if (version.equals("all")) {
+					AssetHistoryIterator it =  asset.getHistory();
+					StringBuilder buf = new StringBuilder();
+					while(it.hasNext()) {
+						AssetItem h = it.next();
+						String checkinComment = h.getCheckinComment();
+						//String lastMo ... hmm what is needed?
+						String lastMofiedBy = h.getLastContributor();
+						if (lastMofiedBy == null || lastMofiedBy.equals("")) {
+							lastMofiedBy = asset.getCreator();
+						}
+						SimpleDateFormat sdf = getISODateFormat();
+						Calendar lastModDate = h.getLastModified();
+						if (lastModDate == null ) {
+							lastModDate = asset.getCreatedDate();
+						}
+						String lastModifiedOn = sdf.format(lastModDate.getTime());
+						buf.append(h.getVersionNumber());
+						buf.append("=");
+						buf.append(lastModifiedOn + "," + lastMofiedBy + "," + checkinComment);
+						if (it.hasNext()) {
+							buf.append('\n');
+						}
 
-			AssetItem asset = pkg.loadAsset(assetName);
-			if (asset.isBinary()) {
-				Binary r = new Response.Binary();
-				r.lastModified = asset.getLastModified();
-				r.stream = asset.getBinaryContentAttachment();
-				return r;
+					}
+					Text r = new Text();
+					r.lastModified = asset.getLastModified();
+					r.data = buf.toString();
+					return r;
+				} else {
+					long versionNumber = Long.parseLong(version);
+					AssetHistoryIterator it =  asset.getHistory();
+					while (it.hasNext()) {
+						AssetItem h = it.next();
+						if (h.getVersionNumber() == versionNumber) {
+							return buildAssetContentResponse(pkg, h);
+						}
+					}
+					//hmm... we didn't find it
+					Text r = new Text();
+					r.lastModified = asset.getLastModified();
+					r.data = "Unknown version number : " + versionNumber;
+					return r;
+				}
 			} else {
-				Text r = new Response.Text();
-				r.lastModified = pkg.getLastModified();
-				r.data = asset.getContent();
-				return r;
+	 			String assetName = AssetItem.getAssetNameFromFileName(resourceFile)[0];
+				AssetItem asset = pkg.loadAsset(assetName);
+				return buildAssetContentResponse(pkg, asset);
 			}
 
 		}
 
+	}
+
+	private Response buildAssetContentResponse(PackageItem pkg, AssetItem asset) {
+		if (asset.isBinary()) {
+			Binary r = new Response.Binary();
+			r.lastModified = asset.getLastModified();
+			r.stream = asset.getBinaryContentAttachment();
+			return r;
+		} else {
+			Text r = new Response.Text();
+			r.lastModified = pkg.getLastModified();
+			r.data = asset.getContent();
+			return r;
+		}
 	}
 
 	private Response listPackage(String pkgName) throws UnsupportedEncodingException {
@@ -125,6 +182,9 @@ public class RestAPI {
 		return r;
 	}
 
+	/**
+	 * This is the format used to sent dates as text, always.
+	 */
 	public static SimpleDateFormat getISODateFormat() {
 		return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	}

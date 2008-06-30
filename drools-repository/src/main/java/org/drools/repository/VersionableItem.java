@@ -353,8 +353,13 @@ public abstract class VersionableItem extends Item {
      */
     public Calendar getLastModified() throws RulesRepositoryException {
         try {
-            Property lastModifiedProperty = getVersionContentNode().getProperty( LAST_MODIFIED_PROPERTY_NAME );
-            return lastModifiedProperty.getDate();
+        	Node n = getVersionContentNode();
+        	if (n.hasProperty(LAST_MODIFIED_PROPERTY_NAME)) {
+	            Property lastModifiedProperty = getVersionContentNode().getProperty( LAST_MODIFIED_PROPERTY_NAME );
+	            return lastModifiedProperty.getDate();
+        	} else {
+        		return null;
+        	}
         } catch ( Exception e ) {
             log.error( "Caught Exception",
                        e );

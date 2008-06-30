@@ -126,6 +126,54 @@ public class RestAPITest extends TestCase {
 
 	}
 
+	public void testGetVersionHistory() throws Exception {
+		RulesRepository repo = RepositorySessionUtil.getRepository();
+		PackageItem pkg = repo.createPackage("testRestGetVersionHistory", "");
+		repo.save();
+
+
+		AssetItem asset1 = pkg.addAsset("asset1", "");
+		asset1.updateContent("this is content");
+		asset1.updateFormat("drl");
+		asset1.checkin("This is something");
+
+		assertEquals(1, asset1.getVersionNumber());
+
+		RestAPI api = new RestAPI(repo);
+		Response res = api.get("packages/testRestGetVersionHistory/asset1.drl?version=all");
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		res.writeData(out);
+		String d = new String(out.toByteArray());
+		//System.err.println(d);
+		assertTrue(d.indexOf(",alan_parsons,This is something") > 0);
+
+
+		asset1.updateContent("new content");
+		asset1.checkin("This is another");
+
+		res = api.get("packages/testRestGetVersionHistory/asset1.drl?version=all");
+		out = new ByteArrayOutputStream();
+
+		res.writeData(out);
+		d = new String(out.toByteArray());
+		System.err.println(d);
+		assertTrue(d.indexOf(",alan_parsons,This is something") > 0);
+		assertTrue(d.indexOf(",alan_parsons,This is another") > 0);
+
+		res = api.get("packages/testRestGetVersionHistory/asset1.drl?version=1");
+		out = new ByteArrayOutputStream();
+
+		res.writeData(out);
+		d = new String(out.toByteArray());
+		assertEquals("this is content", d);
+
+
+
+
+
+	}
+
 	public void testPost() throws Exception {
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		PackageItem pkg = repo.createPackage("testRestPost", "");
