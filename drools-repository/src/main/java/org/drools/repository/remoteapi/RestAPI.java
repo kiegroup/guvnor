@@ -172,7 +172,11 @@ public class RestAPI {
 
 		while (it.hasNext()) {
 			AssetItem a = it.next();
-			sb.append(a.getName() + "." + a.getFormat() + "=" + sdf.format(a.getLastModified().getTime()) + "," + a.getVersionNumber());
+			Calendar lastMod = a.getLastModified();
+			if (lastMod == null) {
+				lastMod = a.getCreatedDate();
+			}
+			sb.append(a.getName() + "." + a.getFormat() + "=" + sdf.format(lastMod.getTime()) + "," + a.getVersionNumber());
 			sb.append('\n');
 		}
 
