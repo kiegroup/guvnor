@@ -1,13 +1,33 @@
 package org.drools.guvnor.client.qa;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.common.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.common.DirtyableFlexTable;
+import org.drools.guvnor.client.common.ErrorPopup;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.testing.*;
+import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
+import org.drools.guvnor.client.modeldriven.testing.FactData;
+import org.drools.guvnor.client.modeldriven.testing.FieldData;
+import org.drools.guvnor.client.modeldriven.testing.Fixture;
+import org.drools.guvnor.client.modeldriven.testing.RetractFact;
+import org.drools.guvnor.client.modeldriven.testing.Scenario;
+import org.drools.guvnor.client.modeldriven.testing.VerifyFact;
+import org.drools.guvnor.client.modeldriven.testing.VerifyField;
+import org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.guvnor.client.modeldriven.ui.ActionValueEditor;
 import org.drools.guvnor.client.modeldriven.ui.ConstraintValueEditor;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
@@ -15,11 +35,30 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
-import org.drools.guvnor.client.ruleeditor.Editor;
 
-import java.util.*;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.KeyboardListener;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
-public class ScenarioWidget extends Composite implements Editor {
+public class ScenarioWidget extends Composite {
 
 	private ListBox availableRules;
 	private SuggestionCompletionEngine sce;
@@ -538,13 +577,9 @@ public class ScenarioWidget extends Composite implements Editor {
 	}
 
 
-    public String getWrapperClass() {
-        return null;
-    }
 
-    public String getAssetFormat() {
-        return null;
-    }
+
+
 }
 
 

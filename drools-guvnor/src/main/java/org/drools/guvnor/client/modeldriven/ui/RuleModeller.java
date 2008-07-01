@@ -16,18 +16,43 @@ package org.drools.guvnor.client.modeldriven.ui;
  */
 
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.common.*;
-import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.*;
-import org.drools.guvnor.client.packages.SuggestionCompletionCache;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.Editor;
 
 import java.util.Iterator;
 import java.util.List;
+
+import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.common.DirtyableFlexTable;
+import org.drools.guvnor.client.common.DirtyableHorizontalPane;
+import org.drools.guvnor.client.common.DirtyableVerticalPane;
+import org.drools.guvnor.client.common.ErrorPopup;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
+import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
+import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
+import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
+import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
+import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
+import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
+import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.modeldriven.brl.IAction;
+import org.drools.guvnor.client.modeldriven.brl.IPattern;
+import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
+import org.drools.guvnor.client.modeldriven.brl.RuleModel;
+import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.rpc.RuleAsset;
+
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is the parent widget that contains the model based rule builder.
@@ -35,7 +60,7 @@ import java.util.List;
  * @author Michael Neale
  *
  */
-public class RuleModeller extends DirtyableComposite implements Editor {
+public class RuleModeller extends DirtyableComposite {
 
     private DirtyableFlexTable layout;
     private SuggestionCompletionEngine completions;
@@ -493,7 +518,9 @@ public class RuleModeller extends DirtyableComposite implements Editor {
     /**
      * This adds the widget to the UI, also adding the remove icon.
      */
-    private Widget wrapLHSWidget(final RuleModel model, int i, Widget w) {
+    private Widget wrapLHSWidget(final RuleModel model,
+                              int i,
+                              Widget w) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
         Image remove = new ImageButton("images/delete_item_small.gif");
@@ -546,11 +573,5 @@ public class RuleModeller extends DirtyableComposite implements Editor {
     }
 
 
-    public String getWrapperClass() {
-        return null;
-    }
 
-    public String getAssetFormat() {
-        return null;
-    }
 }

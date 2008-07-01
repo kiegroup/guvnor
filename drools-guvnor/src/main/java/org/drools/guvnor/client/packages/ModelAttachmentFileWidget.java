@@ -16,21 +16,21 @@ package org.drools.guvnor.client.packages;
  */
 
 
+
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.Editor;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 
 /**
  * This wraps a file uploader utility for model packages.
- * Model packages are jar files. 
- * 
+ * Model packages are jar files.
+ *
  * @author Michael Neale
  * @author Fernando Meyer
  */
 
-public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget implements Editor {
+public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget {
 
-    
+
     public ModelAttachmentFileWidget(RuleAsset asset, RuleViewer viewer) {
         super( asset, viewer );
     }
@@ -39,18 +39,11 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget impleme
     public String getIcon() {
         return "images/model_large.png";
     }
-    
+
     public String getOverallStyleName() {
         return "editable-Surface";
     }
 
-    public String getWrapperClass() {
-        return null;
-    }
-
-    public String getAssetFormat() {
-        return null;
-    }
 }
 
 /*Composite {

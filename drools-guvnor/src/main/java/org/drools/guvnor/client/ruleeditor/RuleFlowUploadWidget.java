@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.HTML;
  * 
  * @author Michael Neale
  */
-public class RuleFlowUploadWidget extends AssetAttachmentFileWidget implements Editor {
+public class RuleFlowUploadWidget extends AssetAttachmentFileWidget {
 
     public RuleFlowUploadWidget(
                                   RuleAsset asset, RuleViewer viewer) {
@@ -40,16 +40,11 @@ public class RuleFlowUploadWidget extends AssetAttachmentFileWidget implements E
     public String getIcon() {
         return "images/ruleflow_large.png";
     }
-    
+
     public String getOverallStyleName() {
         return "decision-Table-upload";
     }
 
-    public String getWrapperClass() {
-        return null;
-    }
 
-    public String getAssetFormat() {
-        return null;
-    }
+
 }

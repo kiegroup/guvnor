@@ -15,6 +15,8 @@ package org.drools.guvnor.client.ruleeditor;
  * limitations under the License.
  */
 
+
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,24 +45,17 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author Michael Neale
  */
-
-public interface EditorLauncher {
-    public Widget getEditorViewer(RuleAsset asset, RuleViewer viewer);
-    public String getAssetFormatIcon(String format);
-}
-
-/*
 public class EditorLauncher {
 
 
     public static final Map TYPE_IMAGES = getTypeImages();
 
-    */
-/**
+    /**
      * This will return the appropriate viewer for the asset.
      *
+     * TODO: the method to be changed in order to make the editors pluggable
+     * TODO: look at http://gwtreflection.sourceforge.net/
      */
-/*
     public static Widget getEditorViewer(RuleAsset asset,
                                          RuleViewer viewer) {
         //depending on the format, load the appropriate editor
@@ -110,12 +105,10 @@ public class EditorLauncher {
         return result;
     }
 
-    */
-/**
+    /**
      * Get the icon name (not the path), including the extension, for the appropriate
      * asset format.
      */
-/*
     public static String getAssetFormatIcon(String format) {
         String result = (String) TYPE_IMAGES.get( format );
         if (result == null) {
@@ -130,4 +123,4 @@ public class EditorLauncher {
 
 
 
-}*/
+}

@@ -1,46 +1,77 @@
 package org.drools.guvnor.client.decisiontable;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.*;
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.core.SortDir;
-import com.gwtext.client.data.*;
-import com.gwtext.client.widgets.Panel;
-import com.gwtext.client.widgets.Toolbar;
-import com.gwtext.client.widgets.ToolbarMenuButton;
-import com.gwtext.client.widgets.Window;
-import com.gwtext.client.widgets.form.FieldSet;
-import com.gwtext.client.widgets.form.FormPanel;
-import com.gwtext.client.widgets.grid.*;
-import com.gwtext.client.widgets.grid.event.GridCellListenerAdapter;
-import com.gwtext.client.widgets.grid.event.GridColumnListenerAdapter;
-import com.gwtext.client.widgets.menu.BaseItem;
-import com.gwtext.client.widgets.menu.Item;
-import com.gwtext.client.widgets.menu.Menu;
-import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
-import org.drools.guvnor.client.modeldriven.dt.*;
+import org.drools.guvnor.client.modeldriven.dt.ActionCol;
+import org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol;
+import org.drools.guvnor.client.modeldriven.dt.ActionSetFieldCol;
+import org.drools.guvnor.client.modeldriven.dt.AttributeCol;
+import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
+import org.drools.guvnor.client.modeldriven.dt.DTColumnConfig;
+import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.guvnor.client.modeldriven.ui.ActionValueEditor;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.Editor;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.KeyboardListener;
+import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.SortDir;
+import com.gwtext.client.data.ArrayReader;
+import com.gwtext.client.data.FieldDef;
+import com.gwtext.client.data.GroupingStore;
+import com.gwtext.client.data.MemoryProxy;
+import com.gwtext.client.data.Record;
+import com.gwtext.client.data.RecordDef;
+import com.gwtext.client.data.SortState;
+import com.gwtext.client.data.Store;
+import com.gwtext.client.data.StringFieldDef;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.Toolbar;
+import com.gwtext.client.widgets.ToolbarMenuButton;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.form.FieldSet;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.grid.BaseColumnConfig;
+import com.gwtext.client.widgets.grid.CellMetadata;
+import com.gwtext.client.widgets.grid.ColumnConfig;
+import com.gwtext.client.widgets.grid.ColumnModel;
+import com.gwtext.client.widgets.grid.GridPanel;
+import com.gwtext.client.widgets.grid.GroupingView;
+import com.gwtext.client.widgets.grid.Renderer;
+import com.gwtext.client.widgets.grid.event.GridCellListenerAdapter;
+import com.gwtext.client.widgets.grid.event.GridColumnListenerAdapter;
+import com.gwtext.client.widgets.menu.BaseItem;
+import com.gwtext.client.widgets.menu.Item;
+import com.gwtext.client.widgets.menu.Menu;
+import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 
 /**
  * This is the new guided decision table editor for the web.
  * @author Michael Neale
  */
-public class GuidedDecisionTableWidget extends Composite implements SaveEventListener, Editor {
+public class GuidedDecisionTableWidget extends Composite implements SaveEventListener {
 
     private GuidedDecisionTable dt;
 	private VerticalPanel layout;
@@ -883,11 +914,4 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	}
 
 
-    public String getWrapperClass() {
-        return null;
-    }
-
-    public String getAssetFormat() {
-        return null;
-    }
 }

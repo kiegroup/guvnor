@@ -1,25 +1,38 @@
 package org.drools.guvnor.client.factmodel;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
-import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
-import com.gwtext.client.widgets.form.FormPanel;
+import java.util.ArrayList;
+
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.ruleeditor.DefaultRuleContentWidget;
-import org.drools.guvnor.client.ruleeditor.Editor;
 
-import java.util.ArrayList;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.KeyboardListener;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.gwtext.client.widgets.form.FormPanel;
 
 /**
  * The editor for fact models (drl declared types).
  *
  * @author Michael Neale
  */
-public class FactModelWidget extends Composite implements Editor {
+public class FactModelWidget extends Composite {
 
 	private RuleAsset asset;
 	private VerticalPanel layout;
@@ -288,11 +301,4 @@ public class FactModelWidget extends Composite implements Editor {
 	}
 
 
-    public String getWrapperClass() {
-        return null;
-    }
-
-    public String getAssetFormat() {
-        return null;
-    }
 }
