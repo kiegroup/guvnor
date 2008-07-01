@@ -30,6 +30,6 @@ public interface Editor {
 
     String getWrapperClass();
 
-    public String  add();
+    public String getAssetFormat();
 
 }
