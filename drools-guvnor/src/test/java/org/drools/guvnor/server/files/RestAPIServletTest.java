@@ -102,6 +102,18 @@ public class RestAPIServletTest extends TestCase {
 		assertEquals("application/x-download", res.contentType);
 		assertEquals(true, res.containsHeader("Content-Disposition"));
 
+		//now try getting some version listings
+		out = new ByteArrayOutputStream();
+		req = new MockHTTPRequest(uri, headers);
+		req.queryString = "version=all";
+		res = new MockHTTPResponse(out);
+		serv.doGet(req, res);
+
+		assertEquals(0, res.errorCode);
+		data = out.toString();
+		assertFalse("some content".equals(data));
+		assertNotNull(data);
+
 	}
 
 	public void testPost() throws Exception {

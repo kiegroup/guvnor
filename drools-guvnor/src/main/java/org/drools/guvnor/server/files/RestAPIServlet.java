@@ -73,7 +73,12 @@ public class RestAPIServlet extends HttpServlet {
         doAuthorizedAction(req, res, new A() {
 			public void a() throws Exception {
 					RestAPI api = getAPI();
-					Response apiRes = api.get(req.getRequestURI());
+					String qString = req.getQueryString();
+					String ur = req.getRequestURI();
+					if (qString != null && qString.length() > 0) {
+						ur = ur + '?' + qString;
+					}
+					Response apiRes = api.get(ur);
 			        res.setContentType( "application/x-download" );
 			        res.setHeader( "Content-Disposition",
 			                       "attachment; filename=data;");

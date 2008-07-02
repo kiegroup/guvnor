@@ -20,6 +20,7 @@ public class MockHTTPRequest implements HttpServletRequest {
 	final private String uri;
 	private Map<String, String> headers;
 	ServletInputStream stream;
+	String queryString;
 
 	public MockHTTPRequest(String uri, Map<String, String> headers) {
 		this.uri = uri;
@@ -87,8 +88,7 @@ public class MockHTTPRequest implements HttpServletRequest {
 	}
 
 	public String getQueryString() {
-		// TODO Auto-generated method stub
-		return null;
+		return queryString;
 	}
 
 	public String getRemoteUser() {
