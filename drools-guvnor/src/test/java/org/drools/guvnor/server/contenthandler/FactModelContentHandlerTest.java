@@ -1,20 +1,16 @@
 package org.drools.guvnor.server.contenthandler;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.derby.diag.ErrorLogReader;
+import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.factmodel.FactMetaModel;
 import org.drools.guvnor.client.factmodel.FactModels;
 import org.drools.guvnor.client.factmodel.FieldMetaModel;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
-import org.drools.guvnor.server.builder.BRMSPackageBuilder;
-import org.drools.guvnor.server.builder.ContentPackageAssembler;
-import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -64,6 +60,20 @@ public class FactModelContentHandlerTest extends TestCase {
     	fm = (FieldMetaModel) mm.fields.get(0);
     	assertEquals("f2", fm.name);
     	assertEquals("String", fm.type);
+
+
+    	drl = "declare FooBar\n\t @role(event)  \nend";
+    	try {
+    		ch.toModel(drl);
+    		fail("should not parse this");
+    	} catch (DroolsParserException e) {
+    		assertNotNull(e.getMessage());
+    	}
+
+
+
+
+
 
     }
 

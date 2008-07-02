@@ -76,11 +76,22 @@ public class FactModelContentHandler extends ContentHandler {
     	for (TypeDeclarationDescr td : types) {
     		FactMetaModel mm = new FactMetaModel();
 			mm.name = td.getTypeName();
+			if (td.getMetaAttributes().size() > 0) {
+				//can't do this yet
+				throw new DroolsParserException("will have to use text for this");
+			}
+
+
 			Map<String, TypeFieldDescr> fields = td.getFields();
 			for (Iterator<String> iterator = fields.keySet().iterator(); iterator.hasNext();) {
 				String fieldName = iterator.next();
 				TypeFieldDescr descr = fields.get(fieldName);
+				if (descr.getMetaAttributes().size() > 0) {
+					//can't do this yet
+					throw new DroolsParserException("using text");
+				}
 				FieldMetaModel fm = new FieldMetaModel(fieldName, descr.getPattern().getObjectType());
+
 				mm.fields.add(fm);
 			}
 			list.add(mm);
