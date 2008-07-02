@@ -160,6 +160,9 @@ public class RestAPITest extends TestCase {
 		System.err.println(d);
 		assertTrue(d.indexOf(",alan_parsons,This is something") > 0);
 		assertTrue(d.indexOf(",alan_parsons,This is another") > 0);
+		assertTrue(d.indexOf("1=") > -1);
+		assertTrue(d.indexOf("2=") > -1);
+		assertEquals(-1, d.indexOf("0="));
 
 		res = api.get("packages/testRestGetVersionHistory/asset1.drl?version=1");
 		out = new ByteArrayOutputStream();

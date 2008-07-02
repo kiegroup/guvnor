@@ -100,24 +100,27 @@ public class RestAPI {
 					AssetHistoryIterator it =  asset.getHistory();
 					StringBuilder buf = new StringBuilder();
 					while(it.hasNext()) {
+
 						AssetItem h = it.next();
-						String checkinComment = h.getCheckinComment();
-						//String lastMo ... hmm what is needed?
-						String lastMofiedBy = h.getLastContributor();
-						if (lastMofiedBy == null || lastMofiedBy.equals("")) {
-							lastMofiedBy = asset.getCreator();
-						}
-						SimpleDateFormat sdf = getISODateFormat();
-						Calendar lastModDate = h.getLastModified();
-						if (lastModDate == null ) {
-							lastModDate = asset.getCreatedDate();
-						}
-						String lastModifiedOn = sdf.format(lastModDate.getTime());
-						buf.append(h.getVersionNumber());
-						buf.append("=");
-						buf.append(lastModifiedOn + "," + lastMofiedBy + "," + checkinComment);
-						if (it.hasNext()) {
-							buf.append('\n');
+						if (h.getVersionNumber() != 0) {
+							String checkinComment = h.getCheckinComment();
+							//String lastMo ... hmm what is needed?
+							String lastMofiedBy = h.getLastContributor();
+							if (lastMofiedBy == null || lastMofiedBy.equals("")) {
+								lastMofiedBy = asset.getCreator();
+							}
+							SimpleDateFormat sdf = getISODateFormat();
+							Calendar lastModDate = h.getLastModified();
+							if (lastModDate == null ) {
+								lastModDate = asset.getCreatedDate();
+							}
+							String lastModifiedOn = sdf.format(lastModDate.getTime());
+							buf.append(h.getVersionNumber());
+							buf.append("=");
+							buf.append(lastModifiedOn + "," + lastMofiedBy + "," + checkinComment);
+							if (it.hasNext()) {
+								buf.append('\n');
+							}
 						}
 
 					}
