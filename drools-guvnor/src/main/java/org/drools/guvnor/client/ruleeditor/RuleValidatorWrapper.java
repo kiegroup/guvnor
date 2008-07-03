@@ -96,7 +96,7 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
     }
 
     private void doValidate() {
-
+    	onSave();
         LoadingPopup.showMessage( "Validating item, please wait..." );
         RepositoryServiceFactory.getService().buildAsset( asset, new GenericCallback() {
             public void onSuccess(Object data) {
@@ -108,6 +108,7 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
     }
 
     private void doViewsource() {
+    	onSave();
         LoadingPopup.showMessage( "Calculating source..." );
         RepositoryServiceFactory.getService().buildAssetSource( this.asset, new GenericCallback() {
             public void onSuccess(Object data) {
