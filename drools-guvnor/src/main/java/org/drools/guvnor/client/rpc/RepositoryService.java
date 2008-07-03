@@ -337,6 +337,15 @@ public interface RepositoryService extends RemoteService {
 
 
     /**
+     * This will force a rebuild of all packages binary data.
+     * No errors are expected, as there will be no change. If there are errors,
+     * an expert will need to look at them.
+     */
+    public void rebuildPackages() throws SerializableException;
+
+
+
+    /**
      * This will list the rules available in a package.
      * This has an upper limit of what it will return (it just doesn't make sense to show a list of 20K items !).
      */

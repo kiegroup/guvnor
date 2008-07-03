@@ -827,7 +827,7 @@ public class ServiceImplementationTest extends TestCase {
 			}
 		}
 
-		PackageItem pkg = repo.createPackage("testSnapshotRebuild", "");
+		final PackageItem pkg = repo.createPackage("testSnapshotRebuild", "");
 		ServiceImplementation.updateDroolsHeader("import java.util.List", pkg);
 		repo.save();
 
@@ -850,8 +850,7 @@ public class ServiceImplementationTest extends TestCase {
 
 		impl.rebuildSnapshots();
 
-		PackageItem snap_ = repo.loadPackageSnapshot("testSnapshotRebuild",
-				"SNAP");
+		PackageItem snap_ = repo.loadPackageSnapshot("testSnapshotRebuild", "SNAP");
 		long newTime = snap_.getLastModified().getTimeInMillis();
 
 		assertTrue(newTime > snapTime);
@@ -867,6 +866,43 @@ public class ServiceImplementationTest extends TestCase {
 			assertNotNull(e.getMessage());
 			assertNotNull(e.getLongDescription());
 		}
+
+
+
+	}
+
+	public void testPackageRebuild() throws Exception {
+
+		ServiceImplementation impl = getService();
+
+		RulesRepository repo = impl.repository;
+
+
+		final PackageItem pkg = repo.createPackage("testPackageRebuild", "");
+		ServiceImplementation.updateDroolsHeader("import java.util.List", pkg);
+		repo.save();
+
+		AssetItem item = pkg.addAsset("anAsset", "");
+		item.updateFormat(AssetFormats.DRL);
+		item.updateContent(" rule abc \n when \n then \n System.out.println(42); \n end");
+		item.checkin("");
+
+		assertNull(pkg.getCompiledPackageBytes());
+
+		long last = pkg.getLastModified().getTimeInMillis();
+		Thread.sleep(100);
+		try {
+			impl.rebuildPackages();
+		} catch (DetailedSerializableException e) {
+			assertNotNull(e.getMessage());
+			assertNotNull(e.getLongDescription());
+		}
+
+		assertFalse(pkg.getLastModified().getTimeInMillis() == last);
+		assertNotNull(pkg.getCompiledPackageBytes());
+
+
+
 
 	}
 

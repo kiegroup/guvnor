@@ -76,6 +76,7 @@ public interface RepositoryServiceAsync
 	public void removePackage(java.lang.String p0, AsyncCallback cb);
 	public void renamePackage(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
 	public void rebuildSnapshots(AsyncCallback cb);
+	public void rebuildPackages(AsyncCallback cb);
 	public void listRulesInPackage(java.lang.String p0, AsyncCallback cb);
 	public void runScenario(java.lang.String p0, org.drools.guvnor.client.modeldriven.testing.Scenario p1, AsyncCallback cb);
 	public void runScenariosInPackage(java.lang.String p0, AsyncCallback cb);
@@ -83,6 +84,7 @@ public interface RepositoryServiceAsync
 	public void listTypesInPackage(java.lang.String p0, AsyncCallback cb);
 	public void showLog(AsyncCallback cb);
 	public void loadDropDownExpression(String[] p0, java.lang.String p1, AsyncCallback cb);
+
 
 
 

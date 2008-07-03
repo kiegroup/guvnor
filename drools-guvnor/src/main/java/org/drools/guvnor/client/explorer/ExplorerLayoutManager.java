@@ -12,6 +12,7 @@ import org.drools.guvnor.client.admin.LogViewer;
 import org.drools.guvnor.client.admin.StateManager;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.packages.NewPackageWizard;
 import org.drools.guvnor.client.packages.SnapshotView;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -23,6 +24,7 @@ import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -482,6 +484,24 @@ public class ExplorerLayoutManager {
                                 "Create a test scenario.", false, currentPackage);
         			}
         		}, "images/test_manager.gif"));
+
+        m.addItem(new Item("Rebuild all package binaries", new BaseItemListenerAdapter() {
+			public void onClick(BaseItem item, EventObject e) {
+				if (Window.confirm("You should only run this if Drools has been upgraded recently " +
+						"(and you have been experiencing errors)." +
+						"This may take some time - are you sure you want to do this? ")) {
+					LoadingPopup.showMessage("Rebuilding package binaries...");
+					RepositoryServiceFactory.getService().rebuildPackages(new GenericCallback() {
+						public void onSuccess(Object data) {
+							LoadingPopup.close();
+						}
+					});
+				}
+
+			}
+		}, "images/refresh.gif"));
+
+
 
 
 

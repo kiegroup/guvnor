@@ -102,7 +102,6 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.VersionableItem;
 import org.drools.rule.Package;
-import org.drools.rule.TypeDeclaration;
 import org.drools.testframework.RuleCoverageListener;
 import org.drools.testframework.ScenarioRunner;
 import org.drools.util.DroolsStreamUtils;
@@ -1447,6 +1446,38 @@ public class ServiceImplementation
 		} else {
 			return null;
 		}
+	}
+
+
+
+	@WebRemote
+	@Restrict("#{identity.loggedIn}")
+	public void rebuildPackages() throws SerializableException {
+        Iterator pkit = repository.listPackages();
+        StringBuffer errs = new StringBuffer();
+        while(pkit.hasNext()) {
+            PackageItem pkg = (PackageItem) pkit.next();
+            try {
+	            BuilderResult[]  res = this.buildPackage( pkg.getUUID(), "", true  ) ;
+	            if (res != null) {
+	            	errs.append("Unable to build package name [" + pkg.getName() + "]\n");
+	                StringBuffer buf = new StringBuffer();
+	                for ( int i = 0; i < res.length; i++ ) {
+	                    buf.append( res[i].toString() );
+	                    buf.append( '\n' );
+	                }
+	                log.warn(buf.toString());
+
+	            }
+            } catch (Exception e) {
+            	log.error(e);
+            	errs.append("An error occurred building package [" + pkg.getName() + "]\n");
+            }
+        }
+
+        if (errs.toString().length() > 0) {
+        	throw new DetailedSerializableException("Unable to rebuild all packages.", errs.toString());
+        }
 	}
 
 
