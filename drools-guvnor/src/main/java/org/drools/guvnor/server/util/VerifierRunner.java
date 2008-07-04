@@ -16,7 +16,7 @@ import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rpc.DetailedSerializableException;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.verifier.Verifier;
-import org.drools.verifier.components.VerifierClass;
+import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.dao.VerifierData;
@@ -54,8 +54,8 @@ public class VerifierRunner {
 		Map<String, String> interned = new HashMap<String, String>();
 
 		List<AnalysisFactUsage> factUsage = new ArrayList<AnalysisFactUsage>();
-		Collection<VerifierClass> classes = verifierData.getAllClasses();
-		for (VerifierClass c : classes) {
+		Collection<ObjectType> classes = verifierData.getAllClasses();
+		for (ObjectType c : classes) {
 			AnalysisFactUsage fact = new AnalysisFactUsage();
 			fact.name = c.getName();
 			List<AnalysisFieldUsage> fieldUsage = new ArrayList<AnalysisFieldUsage>();
