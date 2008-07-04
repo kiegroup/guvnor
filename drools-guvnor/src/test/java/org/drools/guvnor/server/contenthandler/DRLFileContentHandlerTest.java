@@ -70,4 +70,26 @@ public class DRLFileContentHandlerTest extends TestCase {
 
     }
 
+    public void testRuleWithRuleFlowGroup() {
+        String rule = "rule \"DemoRule\" \n "+
+        "    ruleflow-group \"name-of-ruleflow\"  \n" +
+        "    dialect \"mvel\" \n " +
+        " when \n" +
+        " Driver( age > 65 ) \n" +
+        " then \n" +
+        " insert(new Rejection(\" too old \"));" +
+        "end ";
+		DRLFileContentHandler h = new DRLFileContentHandler();
+		assertFalse(h.isStandAloneRule( rule ));
+
+		rule =
+        "    ruleflow-group \"name-of-ruleflow\"  \n" +
+        "    dialect \"mvel\" \n " +
+        " when \n" +
+        " Driver( age > 65 ) \n" +
+        " then \n" +
+        " insert(new Rejection(\" too old \"));";
+		assertTrue(h.isStandAloneRule( rule ));
+    }
+
 }

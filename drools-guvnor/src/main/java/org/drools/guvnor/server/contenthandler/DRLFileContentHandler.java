@@ -61,16 +61,25 @@ public class DRLFileContentHandler extends PlainTextContentHandler implements IR
             	return true;
             }
             //otherwise sniff for a suitable keyword at the start of a line
-            if (tok.startsWith( "package" ) ||
-                    tok.startsWith( "rule" ) ||
-                    tok.startsWith( "end" ) ||
-                    tok.startsWith( "function" ) ||
-                    tok.startsWith( "query" )) {
+            if (startsWithWord( "package", tok ) ||
+                    startsWithWord( "rule", tok ) ||
+                    startsWithWord( "end", tok ) ||
+                    startsWithWord( "function", tok ) ||
+                    startsWithWord( "query", tok )) {
                 return false;
             }
         }
         return true;
 
+    }
+
+    static boolean startsWithWord(String word, String sentence) {
+    	String[] words = sentence.trim().split("\\s");
+    	if (words.length > 0) {
+    		return words[0].equals(word);
+    	} else {
+    		return false;
+    	}
     }
 
     public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset, StringBuffer buf) {
