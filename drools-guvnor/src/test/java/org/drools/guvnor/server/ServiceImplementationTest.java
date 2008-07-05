@@ -1881,7 +1881,7 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(scenario2.getName(), s2.scenarioName);
 	}
 
-	public void testAnalysis() throws Exception {
+	public void testVerifier() throws Exception {
 		ServiceImplementation impl = getService();
 		PackageItem pkg = impl.repository.createPackage("testAnalysis", "");
 		AssetItem asset = pkg.addAsset("SomeDRL", "");
@@ -1894,7 +1894,7 @@ public class ServiceImplementationTest extends TestCase {
 		assertNotNull(report);
 		assertEquals(0, report.errors.length);
 		assertEquals(11, report.warnings.length);
-		assertEquals(1, report.notes.length);
+		assertEquals(16, report.notes.length);
 		assertEquals(2, report.factUsages.length);
 
 		assertNotNull(report.notes[0].description);
