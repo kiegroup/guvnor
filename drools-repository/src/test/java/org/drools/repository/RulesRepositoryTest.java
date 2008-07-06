@@ -16,6 +16,7 @@ import javax.jcr.SimpleCredentials;
 
 import org.drools.repository.migration.MigrateDroolsPackage;
 
+
 import junit.framework.TestCase;
 
 public class RulesRepositoryTest extends TestCase {
@@ -319,7 +320,67 @@ public class RulesRepositoryTest extends TestCase {
             assertTrue(found);
 
     }
+    
+    public void testFindAssetsByState() throws Exception {
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+        repo.loadCategory( "/" ).addCategory( "testFindAssetsByStateCat", "X" );
 
+        PackageItem pkg = repo.createPackage( "testFindAssetsByStatePac", "");
+        pkg.addAsset( "testCat1", "x", "/testFindAssetsByStateCat", "drl");
+        pkg.addAsset( "testCat2", "x", "/testFindAssetsByStateCat", "drl");
+        
+        repo.save();
+        
+        AssetPageList apl = repo.findAssetsByState( "Draft", false, 0, -1, new RepositoryFilter() {
+        	public boolean accept(Object artifact, String action) {
+        		if (!(artifact instanceof AssetItem)) 
+        			return false;
+        		
+
+      			if (((AssetItem)artifact).getName().equalsIgnoreCase("testCat1")) {
+        	        return true;
+        		} else {
+        			return false;
+        		}
+        	}
+            });
+
+        assertEquals(1, apl.assets.size());
+        assertEquals("testCat1", ((AssetItem)apl.assets.get(0)).getName());        
+    }
+    
+    
+    public void testFindAssetsByCategory() throws Exception {
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+        repo.loadCategory( "/" ).addCategory( "testFindAssetsByCategoryUsingFilterCat", "X" );
+
+        PackageItem pkg = repo.createPackage( "testFindAssetsByCategoryUsingFilterPack", "");
+        pkg.addAsset( "testCat1", "x", "/testFindAssetsByCategoryUsingFilterCat", "drl");
+        pkg.addAsset( "testCat2", "x", "/testFindAssetsByCategoryUsingFilterCat", "drl");
+        
+        repo.save();
+
+        List items = repo.findAssetsByCategory( "/testFindAssetsByCategoryUsingFilterCat", 0, -1 ).assets;
+        assertEquals(2, items.size());
+        
+        AssetPageList apl = repo.findAssetsByCategory( "/testFindAssetsByCategoryUsingFilterCat", false, 0, -1, new RepositoryFilter() {
+        	public boolean accept(Object artifact, String action) {
+        		if (!(artifact instanceof AssetItem)) 
+        			return false;
+        		
+
+      			if (((AssetItem)artifact).getName().equalsIgnoreCase("testCat1")) {
+        	        return true;
+        		} else {
+        			return false;
+        		}
+        	}
+            });
+
+        assertEquals(1, apl.assets.size());
+        assertEquals("testCat1", ((AssetItem)apl.assets.get(0)).getName());        
+    }
+    
     /**
      * Here we are testing to make sure that category links don't pick up stuff in snapshots area.
      */
