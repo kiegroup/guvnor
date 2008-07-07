@@ -133,7 +133,7 @@ public class FileManagerUtilsTest extends TestCase {
 
 		assertNotNull(out.toByteArray());
 		assertEquals("foo bar", new String(out.toByteArray()));
-		assertEquals("foo.bar", filename);
+		assertEquals("testGetFilebyUUID.drl", filename);
 	}
 
 	public void testGetPackageBinaryAndSource() throws Exception {

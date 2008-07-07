@@ -121,7 +121,7 @@ public class FileManagerUtils {
         out.write( data );
         out.flush();
 
-        return item.getBinaryContentAttachmentFileName();
+        return item.getName() + "." + item.getFormat();//item.getBinaryContentAttachmentFileName();
     }
 
     /**
