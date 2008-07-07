@@ -34,11 +34,24 @@ public class JettyLauncher {
 
     private Class getJettyServerClassName() throws ClassNotFoundException {
         try {
-            return Class.forName("org.mortbay.start.Main");// jetty 5
+            System.out.println("starting jetty6...");
+            return Class.forName("org.mortbay.jetty.Main");// jetty 6
+        } catch (ClassNotFoundException e1) {
+            System.err.println("jetty6 failed: " + e1.getMessage());
+            try {
+                System.out.println("starting jetty5...");
+                return Class.forName("org.mortbay.start.Main");// jetty 5
+            }
+            catch (ClassNotFoundException e2) {
+                System.err.println("jetty5 failed: " + e1.getMessage());
+                System.out.println("starting jetty4...");
+                return Class.forName("org.mortbay.jetty.Server");// jetty 4 and early versions
+            }
         }
-        catch (ClassNotFoundException e) {
-            return Class.forName("org.mortbay.jetty.Server");// jetty 4 and early versions
-        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        new JettyLauncher().launch(args);
     }
 
 }
