@@ -53,13 +53,17 @@ public class FactModelContentHandlerTest extends TestCase {
     	FactMetaModel mm = list.get(0);
     	assertEquals("FooBar", mm.name);
     	assertEquals(2, mm.fields.size());
-    	FieldMetaModel fm = (FieldMetaModel) mm.fields.get(1);
-    	assertEquals("f1", fm.name);
-    	assertEquals("int", fm.type);
+    	for (int i = 0; i < mm.fields.size(); i++) {
+        	FieldMetaModel fm = (FieldMetaModel) mm.fields.get(1);
+        	if (fm.name.equals("f1")) {
+	        	assertEquals("f1", fm.name);
+	        	assertEquals("int", fm.type);
+        	} else {
+            	assertEquals("f2", fm.name);
+            	assertEquals("String", fm.type);
+        	}
+		}
 
-    	fm = (FieldMetaModel) mm.fields.get(0);
-    	assertEquals("f2", fm.name);
-    	assertEquals("String", fm.type);
 
 
     	drl = "declare FooBar\n\t @role(event)  \nend";
