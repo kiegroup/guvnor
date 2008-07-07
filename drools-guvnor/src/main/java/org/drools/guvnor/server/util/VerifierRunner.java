@@ -54,8 +54,8 @@ public class VerifierRunner {
 		Map<String, String> interned = new HashMap<String, String>();
 
 		List<AnalysisFactUsage> factUsage = new ArrayList<AnalysisFactUsage>();
-		Collection<ObjectType> classes = verifierData.getAllClasses();
-		for (ObjectType c : classes) {
+		Collection<ObjectType> objectTypes = verifierData.getAllObjectTypes();
+		for (ObjectType c : objectTypes) {
 			AnalysisFactUsage fact = new AnalysisFactUsage();
 			fact.name = c.getName();
 			List<AnalysisFieldUsage> fieldUsage = new ArrayList<AnalysisFieldUsage>();
