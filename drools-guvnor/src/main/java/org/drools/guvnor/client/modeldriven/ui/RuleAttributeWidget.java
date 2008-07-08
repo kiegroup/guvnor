@@ -136,7 +136,7 @@ public class RuleAttributeWidget extends DirtyableComposite {
         });
 
         if (at.attributeName.equals( "date-effective" ) || at.attributeName.equals( "date-expires" )) {
-            if (at.value == null || "".equals( at.value )) box.setText( "dd-MMM-yyyy" );
+            if (at.value == null || "".equals( at.value )) box.setText( "" );
 
             box.setVisibleLength( 10 );
         }
