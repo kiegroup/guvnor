@@ -4,10 +4,13 @@ import java.util.ArrayList;
 
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.ruleeditor.DefaultRuleContentWidget;
+import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -32,7 +35,7 @@ import com.gwtext.client.widgets.form.FormPanel;
  *
  * @author Michael Neale
  */
-public class FactModelWidget extends Composite {
+public class FactModelWidget extends Composite implements SaveEventListener {
 
 	private RuleAsset asset;
 	private VerticalPanel layout;
@@ -298,6 +301,20 @@ public class FactModelWidget extends Composite {
 			}
 
 		};
+	}
+
+	public void onAfterSave() {
+		LoadingPopup.showMessage("Refreshing model...");
+		SuggestionCompletionCache.getInstance().loadPackage(this.asset.metaData.packageName, new Command() {
+			public void execute() {
+				LoadingPopup.close();
+			}
+		});
+	}
+
+	public void onSave() {
+		//not needed.
+
 	}
 
 

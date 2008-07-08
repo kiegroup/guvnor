@@ -110,6 +110,9 @@ public class RuleViewer extends Composite {
                 		((SaveEventListener) editor).onSave();
                 	}
                     doCheckin();
+                    if (editor instanceof SaveEventListener) {
+                    	((SaveEventListener) editor).onAfterSave();
+                    }
                 }
                 },
                 new Command() {

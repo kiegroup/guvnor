@@ -9,4 +9,5 @@ public interface SaveEventListener {
 
 	void onSave();
 
+	void onAfterSave();
 }

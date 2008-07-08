@@ -167,6 +167,13 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
 		}
 	}
 
+	public void onAfterSave() {
+		if (editor instanceof SaveEventListener) {
+			SaveEventListener el = (SaveEventListener) editor;
+			el.onAfterSave();
+		}
+	}
+
 
 
 }

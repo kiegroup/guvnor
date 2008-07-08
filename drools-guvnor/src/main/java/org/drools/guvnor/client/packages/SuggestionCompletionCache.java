@@ -75,7 +75,7 @@ public class SuggestionCompletionCache {
     }
 
 
-    void loadPackage(final String packageName, final Command command) {
+    public void loadPackage(final String packageName, final Command command) {
         System.out.println("Loading package Suggestions...");
         RepositoryServiceFactory.getService().loadSuggestionCompletionEngine( packageName, new GenericCallback() {
             public void onSuccess(Object data) {
@@ -86,8 +86,8 @@ public class SuggestionCompletionCache {
 
             public void onFailure(Throwable t) {
             	LoadingPopup.close();
-            	ErrorPopup.showMessage("Unable to validate package configuration (eg, DSLs) for [" + packageName + "]. " +
-    			"Suggestion completions may not operate for graphical editors for this package.");
+            	ErrorPopup.showMessage("Unable to validate package configuration (eg, DSLs, models) for [" + packageName + "]. " +
+    			"Suggestion completions may not operate correctly for graphical editors for this package.");
             	command.execute();
             }
         });

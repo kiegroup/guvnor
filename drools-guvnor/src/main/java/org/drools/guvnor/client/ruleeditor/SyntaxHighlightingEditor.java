@@ -94,4 +94,10 @@ public class SyntaxHighlightingEditor extends DirtyableComposite implements Save
 	}-*/;
 
 
+
+	public void onAfterSave() {
+		//not needed.
+	}
+
+
 }

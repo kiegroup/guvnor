@@ -913,5 +913,10 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 		this.scrapeData(-1);
 	}
 
+	public void onAfterSave() {
+		//not needed.
+
+	}
+
 
 }
