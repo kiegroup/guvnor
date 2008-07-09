@@ -52,6 +52,8 @@ public class PackageBasedPermissionResolverTest extends TestCase {
     	
         assertTrue(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "create"));
         assertTrue(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "create"));
+
+    	Lifecycle.endApplication();
     }    
 	
     //Package.admin can do everything within this package
@@ -77,7 +79,9 @@ public class PackageBasedPermissionResolverTest extends TestCase {
         assertTrue(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "delete"));
         
         assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "read"));
-   } 
+
+    	Lifecycle.endApplication();   
+    } 
     
     //Package.guest can do read only
     public void testPackageGuest() throws Exception {
@@ -103,6 +107,8 @@ public class PackageBasedPermissionResolverTest extends TestCase {
         assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "delete"));
         
         assertFalse(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "read"));
-   } 
+
+    	Lifecycle.endApplication();   
+    } 
     
 }
