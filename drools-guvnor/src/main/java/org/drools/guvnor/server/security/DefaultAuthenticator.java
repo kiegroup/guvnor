@@ -36,6 +36,10 @@ public class DefaultAuthenticator {
             return false;
         }
         log.info( "User logged in via default authentication module (no security check).");
+        
+        //Add everyone as admin.
+		Identity.instance().addRole(RoleTypes.ADMIN);
+		
         return true;
     }
 }
