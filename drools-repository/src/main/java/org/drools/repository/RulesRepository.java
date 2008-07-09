@@ -1073,12 +1073,12 @@ public class RulesRepository {
     /**
      * This will search assets, looking for matches against the name.
      */
-    public NodeIterator queryFullText(String qry) {
+    public AssetItemIterator queryFullText(String qry) {
         try {
-        	String searchPath = "//*[jcr:contains(., '" + qry + "')]";
+        	String searchPath = "/jcr:root/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA +"//element(*, " +AssetItem.RULE_NODE_TYPE_NAME + ")[jcr:contains(., '" + qry + "')]";
             Query q = this.session.getWorkspace().getQueryManager().createQuery( searchPath, Query.XPATH );
             QueryResult res = q.execute();
-            return res.getNodes();
+            return new AssetItemIterator(res.getNodes(), this);
         } catch ( RepositoryException e ) {
             System.out.println( e.getMessage() );
             throw new RulesRepositoryException( e );
@@ -1093,7 +1093,7 @@ public class RulesRepository {
      * @param maxRows - maximum number of rows to return;
      * @param seekArchived - include archived stuff in the results.
      */
-    public AssetItemIterator query(Map<String,String[]> params, boolean seekArchived) {
+    public AssetItemIterator query(Map<String,String[]> params, boolean seekArchived, DateQuery[] dates) {
         try {
 
             String sql = "SELECT " + AssetItem.TITLE_PROPERTY_NAME + ", " + AssetItem.DESCRIPTION_PROPERTY_NAME + ", " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " FROM " + AssetItem.RULE_NODE_TYPE_NAME;
@@ -1101,24 +1101,38 @@ public class RulesRepository {
             for (Iterator<String> iterator = params.keySet().iterator(); iterator.hasNext();) {
 				String fld = iterator.next();
 				String[] options = params.get(fld);
-				if (options.length > 1) {
-					sql += " AND (";
-					for (int i = 0; i < options.length; i++) {
-						sql += fld + " LIKE '" + options[i] + "'";
-						if (i < options.length -1) {
-							sql += " OR ";
+				if (options != null && options.length > 0) {
+					if (options.length > 1) {
+						sql += " AND (";
+						for (int i = 0; i < options.length; i++) {
+							sql += fld + " LIKE '" + options[i] + "'";
+							if (i < options.length -1) {
+								sql += " OR ";
+							}
 						}
+						sql += ")";
+					} else {
+						sql += " AND " + fld + " LIKE '" + options[0] + "'";
 					}
-					sql += ")";
-				} else {
-					sql += " AND " + fld + " LIKE '" + options[0] + "'";
 				}
-
 			}
-
             if ( seekArchived == false ) {
                 sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
             }
+
+            if (dates != null) {
+            	for (int i = 0; i < dates.length; i++) {
+					DateQuery d = dates[i];
+					if (d.after != null) {
+						sql += " AND " + d.field + " > TIMESTAMP '" + d.after + "'";
+					}
+					if (d.before != null) {
+						sql += " AND " + d.field + " < TIMESTAMP '" + d.before + "'";
+					}
+				}
+            }
+
+
             System.out.println(sql);
 
             Query q = this.session.getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
@@ -1132,6 +1146,22 @@ public class RulesRepository {
             throw new RulesRepositoryException( e );
         }
     }
+
+    /**
+     * Used for querying based on date.
+     * @author Michael Neale
+     */
+    public static class DateQuery {
+		private String after;
+		private String before;
+		private String field;
+		public DateQuery(String field, String after, String before) {
+			this.field = field;
+    		this.after = after;
+    		this.before = before;
+    	}
+    }
+
 
     public AssetItemIterator findAssetsByName(String name) {
         return this.findAssetsByName( name, false );

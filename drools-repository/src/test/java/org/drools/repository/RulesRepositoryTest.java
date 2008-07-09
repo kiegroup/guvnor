@@ -18,6 +18,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
+import org.drools.repository.RulesRepository.DateQuery;
 import org.drools.repository.migration.MigrateDroolsPackage;
 
 
@@ -176,6 +177,34 @@ public class RulesRepositoryTest extends TestCase {
 
     }
 
+    public void testQueryText() throws Exception {
+    	RulesRepository repo = RepositorySessionUtil.getRepository();
+    	PackageItem pkg = repo.createPackage("testQueryTest", "");
+    	AssetItem asset = pkg.addAsset("asset1", "testQueryText1");
+    	asset.updateSubject("testQueryText42");
+    	asset.checkin("firstCheckintestQueryTest");
+    	asset.updateFormat("drl");
+    	asset.checkin("firstCheckintestQueryTest2");
+    	pkg.addAsset("asset2", "testQueryText2");
+    	repo.save();
+
+    	List<AssetItem> ls = iteratorToList(repo.queryFullText("testQueryText*"));
+    	assertEquals(2, ls.size());
+
+    	AssetItem as = ls.get(0);
+    	assertEquals("asset1", as.getName());
+
+    	as = ls.get(1);
+    	assertEquals("asset2", as.getName());
+
+
+    	ls = iteratorToList(repo.queryFullText("firstCheckintestQueryTest2"));
+    	assertEquals(1, ls.size());
+
+    	ls = iteratorToList(repo.queryFullText("firstCheckintestQueryTest"));
+    	assertEquals(0, ls.size());
+    }
+
     public void testQuery() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
 
@@ -189,7 +218,7 @@ public class RulesRepositoryTest extends TestCase {
         Map<String, String[]> q = new HashMap<String, String[]>();
         q.put("drools:subject", new String[] {"testQueryXXX42"});
 
-        AssetItemIterator asit = repo.query(q, false);
+        AssetItemIterator asit = repo.query(q, false, null);
         List<AssetItem> results = iteratorToList(asit);
         assertEquals(1, results.size());
         AssetItem as = results.get(0);
@@ -202,7 +231,7 @@ public class RulesRepositoryTest extends TestCase {
         q = new HashMap<String, String[]>();
         q.put("drools:subject", new String[] {"testQueryXXX42"});
         q.put(AssetItem.SOURCE_PROPERTY_NAME, new String[] {"database"});
-        results = iteratorToList(repo.query(q, true));
+        results = iteratorToList(repo.query(q, true, null));
         assertEquals(1, results.size());
         as = results.get(0);
         assertEquals("testQuery", as.getName());
@@ -211,10 +240,57 @@ public class RulesRepositoryTest extends TestCase {
         q = new HashMap<String, String[]>();
         q.put("drools:subject", new String[] {"testQueryXXX42", "wankle"});
         q.put(AssetItem.SOURCE_PROPERTY_NAME, new String[] {"database", "wankle"});
-        results = iteratorToList(repo.query(q, false));
+        results = iteratorToList(repo.query(q, false, null));
         assertEquals(1, results.size());
         as = results.get(0);
         assertEquals("testQuery", as.getName());
+
+        q = new HashMap<String, String[]>();
+        q.put("drools:subject", null);
+        q.put("cruddy", new String[0]);
+        q.put(AssetItem.SOURCE_PROPERTY_NAME, new String[] {"database", "wankle"});
+        results = iteratorToList(repo.query(q, false, null));
+        assertEquals(1, results.size());
+
+
+        //now dates
+        q = new HashMap<String, String[]>();
+        q.put("drools:subject", new String[] {"testQueryXXX42", "wankle"});
+        q.put(AssetItem.SOURCE_PROPERTY_NAME, new String[] {"database", "wankle"});
+        results = iteratorToList(repo.query(q, false, new DateQuery[] {new DateQuery("jcr:created", "1974-07-10T00:00:00.000-05:00", "3074-07-10T00:00:00.000-05:00")}));
+        assertEquals(1, results.size());
+        as = results.get(0);
+        assertEquals("testQuery", as.getName());
+
+        q = new HashMap<String, String[]>();
+        q.put("drools:subject", new String[] {"testQueryXXX42", "wankle"});
+        q.put(AssetItem.SOURCE_PROPERTY_NAME, new String[] {"database", "wankle"});
+        results = iteratorToList(repo.query(q, false, new DateQuery[] {new DateQuery("jcr:created", "1974-07-10T00:00:00.000-05:00", null)}));
+        assertEquals(1, results.size());
+        as = results.get(0);
+        assertEquals("testQuery", as.getName());
+
+        q = new HashMap<String, String[]>();
+        q.put("drools:subject", new String[] {"testQueryXXX42", "wankle"});
+        q.put(AssetItem.SOURCE_PROPERTY_NAME, new String[] {"database", "wankle"});
+        results = iteratorToList(repo.query(q, false, new DateQuery[] {new DateQuery("jcr:created", null, "3074-07-10T00:00:00.000-05:00")}));
+        assertEquals(1, results.size());
+        as = results.get(0);
+        assertEquals("testQuery", as.getName());
+
+
+        //should return nothing:
+        q = new HashMap<String, String[]>();
+        q.put("drools:subject", new String[] {"testQueryXXX42", "wankle"});
+        q.put(AssetItem.SOURCE_PROPERTY_NAME, new String[] {"database", "wankle"});
+        results = iteratorToList(repo.query(q, false, new DateQuery[] {new DateQuery("jcr:created", "3074-07-10T00:00:00.000-05:00", null)}));
+        assertEquals(0, results.size());
+
+        q = new HashMap<String, String[]>();
+        q.put("drools:subject", new String[] {"testQueryXXX42", "wankle"});
+        q.put(AssetItem.SOURCE_PROPERTY_NAME, new String[] {"database", "wankle"});
+        results = iteratorToList(repo.query(q, false, new DateQuery[] {new DateQuery("jcr:created", null, "1974-07-10T00:00:00.000-05:00")}));
+        assertEquals(0, results.size());
 
 
     }
