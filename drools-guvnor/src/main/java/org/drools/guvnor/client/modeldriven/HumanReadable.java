@@ -75,6 +75,7 @@ public class HumanReadable {
         actionDisplayMap.put( "retract", "Retract" );
         actionDisplayMap.put( "set", "Set" );
         actionDisplayMap.put( "modify", "Modify" );
+        actionDisplayMap.put( "call", "Call");
 
     }
 

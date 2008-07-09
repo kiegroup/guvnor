@@ -17,6 +17,9 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
@@ -33,7 +36,11 @@ import org.drools.guvnor.client.modeldriven.brl.FieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.IPattern;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.guvnor.client.modeldriven.ui.factPattern.Connectives;
+import org.drools.guvnor.client.modeldriven.ui.factPattern.PopupCreator;
 
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
@@ -57,37 +64,87 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 public class FactPatternWidget extends DirtyableComposite {
 
     private FactPattern                pattern;
-    private DirtyableFlexTable         layout = new DirtyableFlexTable();
     private SuggestionCompletionEngine completions;
     private RuleModeller               modeller;
+    private DirtyableFlexTable         layout = new DirtyableFlexTable();
+    private Connectives                connectives;
+    private PopupCreator               popupCreator;
     private boolean                    bindable;
 
-    public FactPatternWidget(RuleModeller mod, IPattern p, SuggestionCompletionEngine com, boolean canBind) {
+    public FactPatternWidget(RuleModeller mod, IPattern p,
+            SuggestionCompletionEngine com, boolean canBind) {
         this.pattern = (FactPattern) p;
         this.completions = com;
         this.modeller = mod;
         this.bindable = canBind;
+
+        this.connectives = new Connectives();
+        this.connectives.setCompletions(completions);
+        this.connectives.setModeller(modeller);
+        this.connectives.setPattern(pattern);
+        
+        this.popupCreator = new PopupCreator();
+        this.popupCreator.setBindable(bindable);
+        this.popupCreator.setCompletions(completions);
+        this.popupCreator.setModeller(modeller);
+        this.popupCreator.setPattern(pattern);
 
         layout.setWidget( 0, 0, getPatternLabel() );
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
         formatter.setStyleName( 0, 0, "modeller-fact-TypeHeader" );
 
-        final DirtyableFlexTable inner = new DirtyableFlexTable();
+        ArrayList sortedConst = sortConstraints(pattern.getFieldConstraints());
+        pattern.setFieldConstraints(sortedConst);
+        drawConstraints(sortedConst);
 
-        layout.setWidget( 1, 0, inner );
+        if ( bindable ) layout.setStyleName( "modeller-fact-pattern-Widget" );
+        initWidget( layout );
 
-        for ( int row = 0; row < pattern.getFieldConstraints().length; row++ ) {
+    }
 
-            FieldConstraint constraint = pattern.getFieldConstraints()[row];
+    /**
+     * Render a hierarchy of constraints, hierarchy here means constaints that may
+     * themselves depend on members of constraint objects. With this code, the GUI
+     * enables clicking rules of the form:
+     *
+     *     $result = RoutingResult( NerOption.types contains "arzt" )
+     *     
+     * @param sortedConst a sorted list of constraints to display.
+     * */
+    private void drawConstraints(ArrayList sortedConst) {
+        final DirtyableFlexTable table = new DirtyableFlexTable();
+        layout.setWidget( 1, 0, table );
+        List parents = new ArrayList();
 
-            final int currentRow = row;
+        for (int i = 0; i < sortedConst.size(); i++) {
+            int tabs = -1;
+            FieldConstraint current = (FieldConstraint) sortedConst.get(i);
+            if (current instanceof SingleFieldConstraint) {
+                SingleFieldConstraint single = (SingleFieldConstraint) current;
+                FieldConstraint parent = single.parent;
 
+                for (int j = 0; j < parents.size(); j++) {
+                    FieldConstraint storedParent = (FieldConstraint) parents.get(j);
+                    if (storedParent != null && storedParent.equals(parent)) {
+                        tabs = j + 1;
+                        for(int k = j + 1; k < parents.size(); k++) {
+                            parents.remove(j + 1);
+                        }
+                        parents.add(current);
+                        break;
+                    }
+                }
 
-            renderFieldConstraint( inner, row, constraint, true );
-
+                if (tabs < 0) {
+                    tabs = 0;
+                    parents.add(current);
+                }
+            }
+            renderFieldConstraint(table, i, current, true, tabs);
 
             //now the clear icon
+            final int currentRow = i;
             Image clear = new ImageButton( "images/delete_item_small.gif" );
             clear.setTitle( "Remove this whole restriction" );
             clear.addClickListener( new ClickListener() {
@@ -99,22 +156,58 @@ public class FactPatternWidget extends DirtyableComposite {
                 }
             } );
 
-            inner.setWidget( row, 5, clear );
+            table.setWidget( currentRow, 5, clear );
 
         }
-        if ( bindable ) layout.setStyleName( "modeller-fact-pattern-Widget" );
-        initWidget( layout );
+    }
 
+    /**
+     * Sort the rule constraints such that parent rules are inserted directly before
+     * their child rules.
+     * @param constraints the list of inheriting constraints to sort.
+     * @return a sorted list of constraints ready for display.
+     * */
+    private ArrayList sortConstraints(FieldConstraint[] constraints) {
+        ArrayList sortedConst = new ArrayList(constraints.length);
+        for (int i = 0; i < constraints.length; i++) {
+            FieldConstraint current = constraints[i];
+            if (current instanceof SingleFieldConstraint) {
+                SingleFieldConstraint single = (SingleFieldConstraint) current;
+                int index = sortedConst.indexOf(single.parent);
+                if (single.parent == null) {
+                    sortedConst.add(single);
+                } else if (index >= 0){
+                    sortedConst.add(index + 1, single);
+                } else {
+                    insertSingleFieldConstraint(single, sortedConst);
+                }
+            } else {
+                sortedConst.add(current);
+            }
+        }
+        return sortedConst;
+    }
+
+    /**
+     * Recursively add constraints and their parents.
+     * @param sortedConst the array to fill.
+     * @param fieldConst the constraint to investigate.
+     * */
+    private void insertSingleFieldConstraint(SingleFieldConstraint fieldConst, ArrayList sortedConst) {
+        if (fieldConst.parent instanceof SingleFieldConstraint) {
+            insertSingleFieldConstraint((SingleFieldConstraint) fieldConst.parent, sortedConst);
+        }
+        sortedConst.add(fieldConst);
     }
 
     /**
      * This will render a field constraint into the given table.
      * The row is the row number to stick it into.
      */
-    private void renderFieldConstraint(final DirtyableFlexTable inner, int row, FieldConstraint constraint, boolean showBinding) {
+    private void renderFieldConstraint(final DirtyableFlexTable inner, int row, FieldConstraint constraint, boolean showBinding, int tabs) {
         //if nesting, or predicate, then it will need to span 5 cols.
         if (constraint instanceof SingleFieldConstraint) {
-            renderSingleFieldConstraint( modeller, inner, row, constraint, showBinding );
+            renderSingleFieldConstraint( modeller, inner, row, (SingleFieldConstraint) constraint, showBinding, tabs );
         } else if (constraint instanceof CompositeFieldConstraint) {
             inner.setWidget( row, 0, compositeFieldConstraintEditor((CompositeFieldConstraint) constraint) );
             inner.getFlexCellFormatter().setColSpan( row, 0, 5 );
@@ -133,7 +226,7 @@ public class FactPatternWidget extends DirtyableComposite {
 
         edit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                showPatternPopupForComposite( w, constraint );
+                popupCreator.showPatternPopupForComposite( w, constraint );
             }
 
         } );
@@ -158,7 +251,7 @@ public class FactPatternWidget extends DirtyableComposite {
         inner.setStyleName( "modeller-inner-nested-Constraints" );
         if (nested != null) {
             for ( int i = 0; i < nested.length; i++ ) {
-                this.renderFieldConstraint( inner, i, nested[i], false );
+                this.renderFieldConstraint( inner, i, nested[i], false, 0 );
                 //add in remove icon here...
                 final int currentRow = i;
                 Image clear = new ImageButton( "images/delete_item_small.gif" );
@@ -180,30 +273,31 @@ public class FactPatternWidget extends DirtyableComposite {
         return horiz;
     }
 
+    
+
     /**
      * Applies a single field constraint to the given table, and start row.
      */
-    private void renderSingleFieldConstraint(final RuleModeller modeller, final DirtyableFlexTable inner, int row, FieldConstraint constraint, boolean showBinding) {
-        final SingleFieldConstraint c = (SingleFieldConstraint) constraint;
-        if ( c.constraintValueType != SingleFieldConstraint.TYPE_PREDICATE ) {
-            inner.setWidget( row, 0, fieldLabel( c, showBinding ) );
-
-            inner.setWidget( row, 1, operatorDropDown( c ) );
-            inner.setWidget( row, 2, valueEditor( c, this.pattern.factType ) );
-            inner.setWidget( row, 3, connectives( c, this.pattern.factType ) );
-
+    private void renderSingleFieldConstraint(final RuleModeller modeller,
+            final DirtyableFlexTable inner, int row, final SingleFieldConstraint constraint,
+            boolean showBinding, int tabs) {
+        if ( constraint.constraintValueType != SingleFieldConstraint.TYPE_PREDICATE ) {
+            inner.setWidget( row, 0, fieldLabel(constraint, showBinding, tabs * 20));
+            inner.setWidget( row, 1, operatorDropDown( constraint ) );
+            inner.setWidget( row, 2, valueEditor( constraint, constraint.fieldType ) );
+            inner.setWidget( row, 3, connectives.connectives( constraint, constraint.fieldType ) );
             Image addConnective = new ImageButton( "images/add_connective.gif" );
             addConnective.setTitle( "Add more options to this fields values." );
             addConnective.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                    c.addNewConnective();
+                    constraint.addNewConnective();
                     modeller.refreshWidget();
                 }
             } );
 
             inner.setWidget( row, 4, addConnective );
-        } else if (c.constraintValueType == SingleFieldConstraint.TYPE_PREDICATE) {
-            inner.setWidget( row, 0, predicateEditor(c) );
+        } else if (constraint.constraintValueType == SingleFieldConstraint.TYPE_PREDICATE) {
+            inner.setWidget( row, 0, predicateEditor(constraint) );
             inner.getFlexCellFormatter().setColSpan( row, 0, 5 );
         }
     }
@@ -247,7 +341,7 @@ public class FactPatternWidget extends DirtyableComposite {
 
         edit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                showPatternPopup( w );
+                popupCreator.showPatternPopup( w, pattern.factType, null );
             }
         } );
 
@@ -262,216 +356,9 @@ public class FactPatternWidget extends DirtyableComposite {
 
     }
 
-    /**
-     * This shows a popup for adding fields to a composite
-     */
-    private void showPatternPopupForComposite(Widget w, final CompositeFieldConstraint composite) {
-        final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
-                                                         "Add fields to this constraint" );
-
-        final ListBox box = new ListBox();
-        box.addItem( "..." );
-        String[] fields = this.completions.getFieldCompletions( this.pattern.factType );
-        for ( int i = 0; i < fields.length; i++ ) {
-            box.addItem( fields[i] );
-        }
-
-        box.setSelectedIndex( 0 );
-
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                composite.addConstraint( new SingleFieldConstraint( box.getItemText( box.getSelectedIndex() ) ) );
-                modeller.refreshWidget();
-                popup.hide();
-            }
-        } );
-        popup.addAttribute( "Add a restriction on a field", box );
-
-
-        final ListBox composites = new ListBox();
-        composites.addItem("...");
-        composites.addItem( "All of (And)", CompositeFieldConstraint.COMPOSITE_TYPE_AND );
-        composites.addItem( "Any of (Or)", CompositeFieldConstraint.COMPOSITE_TYPE_OR );
-        composites.setSelectedIndex( 0 );
-
-        composites.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                CompositeFieldConstraint comp = new CompositeFieldConstraint();
-                comp.compositeJunctionType = composites.getValue( composites.getSelectedIndex() );
-                composite.addConstraint( comp );
-                modeller.refreshWidget();
-                popup.hide();
-            }
-        });
-
-        InfoPopup infoComp = new InfoPopup("Multiple field constraints", "You can specify constraints that span multiple fields (and more). The results of all these constraints can be combined with a 'and' or an 'or' logically." +
-                "You can also have other multiple field constraints nested inside these restrictions.");
-
-        HorizontalPanel horiz = new HorizontalPanel();
-        horiz.add( composites );
-        horiz.add( infoComp );
-        popup.addAttribute( "Multiple field constraint", horiz );
-
-        popup.show();
-
-    }
-
-    /**
-     * This shows a popup allowing you to add field constraints to a pattern (its a popup).
-     */
-    private void showPatternPopup(Widget w) {
-        final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
-                                                         "Modify constraints for " + pattern.factType );
-
-        final ListBox box = new ListBox();
-        box.addItem( "..." );
-        String[] fields = this.completions.getFieldCompletions( this.pattern.factType );
-        for ( int i = 0; i < fields.length; i++ ) {
-            box.addItem( fields[i] );
-        }
-
-        box.setSelectedIndex( 0 );
-
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                pattern.addConstraint( new SingleFieldConstraint( box.getItemText( box.getSelectedIndex() ) ) );
-                modeller.refreshWidget();
-                popup.hide();
-            }
-        } );
-        popup.addAttribute( "Add a restriction on a field", box );
-
-
-        final ListBox composites = new ListBox();
-        composites.addItem("...");
-        composites.addItem( "All of (And)", CompositeFieldConstraint.COMPOSITE_TYPE_AND );
-        composites.addItem( "Any of (Or)", CompositeFieldConstraint.COMPOSITE_TYPE_OR );
-        composites.setSelectedIndex( 0 );
-
-        composites.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                CompositeFieldConstraint comp = new CompositeFieldConstraint();
-                comp.compositeJunctionType = composites.getValue( composites.getSelectedIndex() );
-                pattern.addConstraint( comp );
-                modeller.refreshWidget();
-                popup.hide();
-            }
-        });
-
-        InfoPopup infoComp = new InfoPopup("Multiple field constraints", "You can specify constraints that span multiple fields (and more). The results of all these constraints can be combined with a 'and' or an 'or' logically." +
-                "You can also have other multiple field constraints nested inside these restrictions.");
-
-        HorizontalPanel horiz = new HorizontalPanel();
-        horiz.add( composites );
-        horiz.add( infoComp );
-        popup.addAttribute( "Multiple field constraint", horiz );
-
-
-        //popup.addRow( new HTML("<hr/>") );
-
-        popup.addRow( new SmallLabel("<i>Advanced options:</i>") );
-        final Button predicate = new Button( "New formula" );
-        predicate.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                SingleFieldConstraint con = new SingleFieldConstraint();
-                con.constraintValueType = SingleFieldConstraint.TYPE_PREDICATE;
-                pattern.addConstraint( con );
-                modeller.refreshWidget();
-                popup.hide();
-            }
-        } );
-        popup.addAttribute( "Add a new formula style expression", predicate );
-
-        doBindingEditor( popup );
-
-        popup.show();
-    }
-
-    /**
-     * This adds in (optionally) the editor for changing the bound variable name.
-     * If its a bindable pattern, it will show the editor,
-     * if it is already bound, and the name is used, it should
-     * not be editable.
-     */
-    private void doBindingEditor(final FormStylePopup popup) {
-        if ( bindable && !(modeller.getModel().isBoundFactUsed( pattern.boundName )) ) {
-            HorizontalPanel varName = new HorizontalPanel();
-            final TextBox varTxt = new TextBox();
-            if (pattern.boundName == null) {
-            	varTxt.setText("");
-            }else {
-                varTxt.setText( pattern.boundName );
-            }
-
-            varTxt.setVisibleLength( 6 );
-            varName.add( varTxt );
-
-            Button bindVar = new Button( "Set" );
-            bindVar.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
-                    String var = varTxt.getText();
-                    if (modeller.isVariableNameUsed( var )) {
-                        Window.alert( "The variable name [" + var + "] is already taken." );
-                        return;
-                    }
-                    pattern.boundName = varTxt.getText();
-                    modeller.refreshWidget();
-                    popup.hide();
-                }
-            } );
-
-            varName.add( bindVar );
-            popup.addAttribute( "Variable name", varName );
-
-        }
-    }
-
-    private Widget connectives(SingleFieldConstraint c, String factClass) {
-        if ( c.connectives != null && c.connectives.length > 0 ) {
-            DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
-            for ( int i = 0; i < c.connectives.length; i++ ) {
-                ConnectiveConstraint con = c.connectives[i];
-                horiz.add( connectiveOperatorDropDown( con, c.fieldName ) );
-                horiz.add( connectiveValueEditor( con, factClass, c.fieldName ) );
-            }
-            return horiz;
-        } else {
-            //nothing to do
-            return null;
-        }
-
-    }
-
-    private Widget connectiveValueEditor(final ISingleFieldConstraint con, String factClass, String fieldName) {
-        String typeNumeric = this.modeller.getSuggestionCompletions().getFieldType( factClass, fieldName );
-        return new ConstraintValueEditor(pattern, fieldName, con, this.modeller, typeNumeric);
-    }
-
-    private Widget connectiveOperatorDropDown(final ConnectiveConstraint con, String fieldName) {
-        String[] ops = completions.getConnectiveOperatorCompletions( pattern.factType, fieldName );
-        final ListBox box = new ListBox();
-        box.addItem( "--- please choose ---" );
-        for ( int i = 0; i < ops.length; i++ ) {
-            String op = ops[i];
-            box.addItem( HumanReadable.getOperatorDisplayName( op ), op );
-            if ( op.equals( con.operator ) ) {
-                box.setSelectedIndex( i + 1 );
-            }
-
-        }
-
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                con.operator = box.getValue( box.getSelectedIndex() );
-            }
-        } );
-
-        return box;
-    }
-
     private Widget valueEditor(final SingleFieldConstraint c, String factType) {
-        String type = this.modeller.getSuggestionCompletions().getFieldType( factType, c.fieldName );
-        return  new ConstraintValueEditor(pattern, c.fieldName, c, this.modeller,  type);
+        //String type = this.modeller.getSuggestionCompletions().getFieldType( factType, c.fieldName );
+        return  new ConstraintValueEditor(pattern, c.fieldName, c, this.modeller,  c.fieldType);
     }
 
     private Widget operatorDropDown(final SingleFieldConstraint c) {
@@ -503,15 +390,25 @@ public class FactPatternWidget extends DirtyableComposite {
      * be bound (and show the var name) or a icon to create a binding.
      * It will only show the binding option of showBinding is true.
      */
-    private Widget fieldLabel(final SingleFieldConstraint con, boolean showBinding) {//, final Command onChange) {
+    private Widget fieldLabel(final SingleFieldConstraint con, boolean showBinding, int padding) {//, final Command onChange) {
         HorizontalPanel ab = new HorizontalPanel();
         ab.setStyleName( "modeller-field-Label" );
         if (!con.isBound()) {
             if (bindable && showBinding) {
-                Image bind = new ImageButton( "images/add_field_to_fact.gif", "Give this field a variable name that can be used elsewhere." );
+                Image bind = new ImageButton( "images/add_field_to_fact.gif", "Give this field a variable name that can be used elsewhere." + padding );
+                Element element = bind.getElement();
+                DOM.setStyleAttribute(element, "marginLeft", "" + padding + "pt");
+
                 bind.addClickListener( new ClickListener() {
                     public void onClick(Widget w) {
-                        showBindFieldPopup(w, con);
+                        //showBindFieldPopup(w, con);
+                        SingleFieldConstraint constraint = con;
+                        String[] fields = completions.getFieldCompletions( con.fieldType );
+                        if (fields != null) {
+                            popupCreator.showPatternPopup(w, con.fieldType, con);
+                        } else {
+                            popupCreator.showBindFieldPopup(w, con);
+                        }
                     }
                 });
                 ab.add( bind );
@@ -524,34 +421,7 @@ public class FactPatternWidget extends DirtyableComposite {
         return ab;
     }
 
-    /**
-     * Display a little editor for field bindings.
-     */
-    private void showBindFieldPopup(final Widget w, final SingleFieldConstraint con) {
-        final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
-                                                         "Bind the field called [" + con.fieldName + "] to a variable." );
-        final AbsolutePanel vn = new AbsolutePanel();
-        final TextBox varName = new TextBox();
-        final Button ok = new Button("Set");
-        vn.add( varName );
-        vn.add( ok );
 
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                String var = varName.getText();
-                if (modeller.isVariableNameUsed( var )) {
-                    Window.alert( "The variable name [" + var + "] is already taken.");
-                    return;
-                }
-                con.fieldBinding = var;
-                modeller.refreshWidget();
-                popup.hide();
-            }
-        } );
-        popup.addAttribute( "Variable name", vn );
-
-        popup.show();
-    }
 
     public boolean isDirty() {
         return layout.hasDirty();

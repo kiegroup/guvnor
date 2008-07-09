@@ -32,6 +32,7 @@ import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
 import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
+import org.drools.guvnor.client.modeldriven.brl.ActionCallMethod;
 import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
 import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
 import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
@@ -168,7 +169,9 @@ public class RuleModeller extends DirtyableComposite {
             IAction action = model.rhs[i];
 
             Widget w = null;
-            if (action instanceof ActionSetField) {
+            if (action instanceof ActionCallMethod) {
+                w = new ActionCallMethodWidget(this, (ActionCallMethod) action, completions);
+            } else if (action instanceof ActionSetField) {
                 w =  new ActionSetFieldWidget(this, (ActionSetField) action, completions ) ;
             } else if (action instanceof ActionInsertFact) {
                 w = new ActionInsertFactWidget(this, (ActionInsertFact) action, completions );
@@ -302,18 +305,23 @@ public class RuleModeller extends DirtyableComposite {
         final ListBox varBox = new ListBox();
         final ListBox retractBox = new ListBox();
         final ListBox modifyBox = new ListBox();
+        final ListBox callMethodBox = new ListBox();
+
         varBox.addItem( "Choose ..." );
         retractBox.addItem( "Choose ..." );
         modifyBox.addItem( "Choose ..." );
+        callMethodBox.addItem( "Choose ..." );
         for ( Iterator iter = vars.iterator(); iter.hasNext(); ) {
             String v = (String) iter.next();
             varBox.addItem( v );
             retractBox.addItem( v );
             modifyBox.addItem( v );
+            callMethodBox.addItem( v );
         }
         String[] globals = this.completions.getGlobalVariables();
         for ( int i = 0; i < globals.length; i++ ) {
             varBox.addItem( globals[i] );
+            callMethodBox.addItem( globals[i] );
         }
 
         varBox.setSelectedIndex( 0 );
@@ -334,6 +342,13 @@ public class RuleModeller extends DirtyableComposite {
         modifyBox.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 addModify(modifyBox.getItemText( modifyBox.getSelectedIndex() ));
+                popup.hide();
+            }
+        });
+
+        callMethodBox.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+                addModifyField(callMethodBox.getItemText( callMethodBox.getSelectedIndex() ));
                 popup.hide();
             }
         });
@@ -381,6 +396,29 @@ public class RuleModeller extends DirtyableComposite {
             }
         });
 
+        //
+        // The list of DSL sentences
+        //
+        if (completions.getDSLActions().length > 0) {
+            final ListBox dsls = new ListBox();
+            dsls.addItem( "Choose..." );
+            for(int i = 0; i < completions.getDSLActions().length; i++ ) {
+                DSLSentence sen = (DSLSentence) completions.getDSLActions()[ i ];
+                dsls.addItem( sen.toString(), Integer.toString( i ) );
+            }
+
+            dsls.addChangeListener( new ChangeListener() {
+                public void onChange(Widget w) {
+                    int idx = Integer.parseInt( dsls.getValue( dsls.getSelectedIndex() ) );
+                    addNewDSLRhs( (DSLSentence) completions.getDSLActions()[ idx ] );
+                    popup.hide();
+                }
+            });
+            popup.addAttribute( "DSL sentence", dsls );
+        }
+
+        popup.addRow(new HTML("<small>Advanced options:</small>"));
+
         factsToLogicallyAssert.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                String fact = factsToLogicallyAssert.getItemText( factsToLogicallyAssert.getSelectedIndex() );
@@ -402,28 +440,12 @@ public class RuleModeller extends DirtyableComposite {
             popup.addAttribute( "Logically insert a new fact", horiz );
         }
 
-
-
-        //
-        // The list of DSL sentences
-        //
-        if (completions.getDSLActions().length > 0) {
-            final ListBox dsls = new ListBox();
-            dsls.addItem( "Choose..." );
-            for(int i = 0; i < completions.getDSLActions().length; i++ ) {
-                DSLSentence sen = (DSLSentence) completions.getDSLActions()[ i ];
-                dsls.addItem( sen.toString(), Integer.toString( i ) );
-            }
-
-            dsls.addChangeListener( new ChangeListener() {
-                public void onChange(Widget w) {
-                    int idx = Integer.parseInt( dsls.getValue( dsls.getSelectedIndex() ) );
-                    addNewDSLRhs( (DSLSentence) completions.getDSLActions()[ idx ] );
-                    popup.hide();
-                }
-            });
-            popup.addAttribute( "DSL sentence", dsls );
+        if (callMethodBox.getItemCount() > 1) {
+            popup.addAttribute( "Call a method on ", callMethodBox );
         }
+
+
+
         popup.show();
     }
 
@@ -447,6 +469,11 @@ public class RuleModeller extends DirtyableComposite {
 
     protected void addActionSetField(String itemText) {
         this.model.addRhsItem(new ActionSetField(itemText));
+        refreshWidget();
+    }
+
+    protected void addModifyField(String itemText) {
+        this.model.addRhsItem(new ActionCallMethod(itemText));
         refreshWidget();
     }
 
@@ -571,7 +598,4 @@ public class RuleModeller extends DirtyableComposite {
     public SuggestionCompletionEngine getSuggestionCompletions() {
         return this.completions;
     }
-
-
-
 }
