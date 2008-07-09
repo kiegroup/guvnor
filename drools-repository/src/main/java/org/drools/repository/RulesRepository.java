@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -715,7 +716,7 @@ public class RulesRepository {
     public AssetPageList findAssetsByCategory(String categoryTag, boolean seekArchivedAsset, int skip, int numRowsToReturn) throws RulesRepositoryException {
     	return findAssetsByCategory(categoryTag, seekArchivedAsset, skip, numRowsToReturn, null);
     }
-    
+
     /**
      * This will retrieve a list of RuleItem objects - that are allocated to the
      * provided category. Only the latest versions of each RuleItem will be
@@ -743,12 +744,12 @@ public class RulesRepository {
     public AssetPageList findAssetsByState(String stateName, boolean seekArchivedAsset, int skip, int numRowsToReturn) throws RulesRepositoryException {
     	return findAssetsByState(stateName, seekArchivedAsset, skip, numRowsToReturn, null);
     }
-    
+
     /**
      * Finds the AssetItem's linked to the requested state.
      * Similar to finding by category.
      * @param filter an AssetItem filter
-     * 
+     *
      */
     public AssetPageList findAssetsByState(String stateName, boolean seekArchivedAsset, int skip, int numRowsToReturn, RepositoryFilter filter) throws RulesRepositoryException {
     	StateItem item = this.getState(stateName);
@@ -759,7 +760,7 @@ public class RulesRepository {
             throw new RulesRepositoryException( e );
         }
     }
-	
+
 	private AssetPageList loadLinkedAssets(boolean seekArchivedAsset, int skip,
 			int numRowsToReturn, Node n, RepositoryFilter filter)
 			throws RepositoryException {
@@ -1055,6 +1056,70 @@ public class RulesRepository {
             if ( seekArchived == false ) {
                 sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
             }
+
+            Query q = this.session.getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
+
+            QueryResult res = q.execute();
+
+            return new AssetItemIterator( res.getNodes(),
+                                          this );
+        } catch ( RepositoryException e ) {
+            System.out.println( e.getMessage() );
+            throw new RulesRepositoryException( e );
+        }
+    }
+
+
+    /**
+     * This will search assets, looking for matches against the name.
+     */
+    public NodeIterator queryFullText(String qry) {
+        try {
+        	String searchPath = "//*[jcr:contains(., '" + qry + "')]";
+            Query q = this.session.getWorkspace().getQueryManager().createQuery( searchPath, Query.XPATH );
+            QueryResult res = q.execute();
+            return res.getNodes();
+        } catch ( RepositoryException e ) {
+            System.out.println( e.getMessage() );
+            throw new RulesRepositoryException( e );
+        }
+    }
+
+
+    /**
+     * This will do a general predicate search.
+     * @param params - a map of field to a list of possible values (which are or-ed together if there is more then one).
+     * @param position - where to start returning results from.
+     * @param maxRows - maximum number of rows to return;
+     * @param seekArchived - include archived stuff in the results.
+     */
+    public AssetItemIterator query(Map<String,String[]> params, boolean seekArchived) {
+        try {
+
+            String sql = "SELECT " + AssetItem.TITLE_PROPERTY_NAME + ", " + AssetItem.DESCRIPTION_PROPERTY_NAME + ", " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " FROM " + AssetItem.RULE_NODE_TYPE_NAME;
+            sql += " WHERE jcr:path LIKE '/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/%'";
+            for (Iterator<String> iterator = params.keySet().iterator(); iterator.hasNext();) {
+				String fld = iterator.next();
+				String[] options = params.get(fld);
+				if (options.length > 1) {
+					sql += " AND (";
+					for (int i = 0; i < options.length; i++) {
+						sql += fld + " LIKE '" + options[i] + "'";
+						if (i < options.length -1) {
+							sql += " OR ";
+						}
+					}
+					sql += ")";
+				} else {
+					sql += " AND " + fld + " LIKE '" + options[0] + "'";
+				}
+
+			}
+
+            if ( seekArchived == false ) {
+                sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
+            }
+            System.out.println(sql);
 
             Query q = this.session.getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
 

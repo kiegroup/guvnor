@@ -4,11 +4,15 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -172,6 +176,49 @@ public class RulesRepositoryTest extends TestCase {
 
     }
 
+    public void testQuery() throws Exception {
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+
+        AssetItem asset = repo.loadDefaultPackage().addAsset( "testQuery", "wanklerotaryengine1cc" );
+
+        //asset.updateBinaryContentAttachment(new ByteArrayInputStream("testingSearchWankle".getBytes()));
+        asset.updateContent("testingSearchWankle");
+        asset.updateSubject("testQueryXXX42");
+        asset.checkin("");
+
+        Map<String, String[]> q = new HashMap<String, String[]>();
+        q.put("drools:subject", new String[] {"testQueryXXX42"});
+
+        AssetItemIterator asit = repo.query(q, false);
+        List<AssetItem> results = iteratorToList(asit);
+        assertEquals(1, results.size());
+        AssetItem as = results.get(0);
+        assertEquals("testQuery", as.getName());
+
+
+        asset.updateExternalSource("database");
+        asset.checkin("");
+
+        q = new HashMap<String, String[]>();
+        q.put("drools:subject", new String[] {"testQueryXXX42"});
+        q.put(AssetItem.SOURCE_PROPERTY_NAME, new String[] {"database"});
+        results = iteratorToList(repo.query(q, true));
+        assertEquals(1, results.size());
+        as = results.get(0);
+        assertEquals("testQuery", as.getName());
+
+
+        q = new HashMap<String, String[]>();
+        q.put("drools:subject", new String[] {"testQueryXXX42", "wankle"});
+        q.put(AssetItem.SOURCE_PROPERTY_NAME, new String[] {"database", "wankle"});
+        results = iteratorToList(repo.query(q, false));
+        assertEquals(1, results.size());
+        as = results.get(0);
+        assertEquals("testQuery", as.getName());
+
+
+    }
+
 
     public void testLoadRuleByUUIDWithConcurrentSessions() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
@@ -320,7 +367,7 @@ public class RulesRepositoryTest extends TestCase {
             assertTrue(found);
 
     }
-    
+
     public void testFindAssetsByState() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
         repo.loadCategory( "/" ).addCategory( "testFindAssetsByStateCat", "X" );
@@ -328,14 +375,14 @@ public class RulesRepositoryTest extends TestCase {
         PackageItem pkg = repo.createPackage( "testFindAssetsByStatePac", "");
         pkg.addAsset( "testCat1", "x", "/testFindAssetsByStateCat", "drl");
         pkg.addAsset( "testCat2", "x", "/testFindAssetsByStateCat", "drl");
-        
+
         repo.save();
-        
+
         AssetPageList apl = repo.findAssetsByState( "Draft", false, 0, -1, new RepositoryFilter() {
         	public boolean accept(Object artifact, String action) {
-        		if (!(artifact instanceof AssetItem)) 
+        		if (!(artifact instanceof AssetItem))
         			return false;
-        		
+
 
       			if (((AssetItem)artifact).getName().equalsIgnoreCase("testCat1")) {
         	        return true;
@@ -346,10 +393,10 @@ public class RulesRepositoryTest extends TestCase {
             });
 
         assertEquals(1, apl.assets.size());
-        assertEquals("testCat1", ((AssetItem)apl.assets.get(0)).getName());        
+        assertEquals("testCat1", ((AssetItem)apl.assets.get(0)).getName());
     }
-    
-    
+
+
     public void testFindAssetsByCategory() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
         repo.loadCategory( "/" ).addCategory( "testFindAssetsByCategoryUsingFilterCat", "X" );
@@ -357,17 +404,17 @@ public class RulesRepositoryTest extends TestCase {
         PackageItem pkg = repo.createPackage( "testFindAssetsByCategoryUsingFilterPack", "");
         pkg.addAsset( "testCat1", "x", "/testFindAssetsByCategoryUsingFilterCat", "drl");
         pkg.addAsset( "testCat2", "x", "/testFindAssetsByCategoryUsingFilterCat", "drl");
-        
+
         repo.save();
 
         List items = repo.findAssetsByCategory( "/testFindAssetsByCategoryUsingFilterCat", 0, -1 ).assets;
         assertEquals(2, items.size());
-        
+
         AssetPageList apl = repo.findAssetsByCategory( "/testFindAssetsByCategoryUsingFilterCat", false, 0, -1, new RepositoryFilter() {
         	public boolean accept(Object artifact, String action) {
-        		if (!(artifact instanceof AssetItem)) 
+        		if (!(artifact instanceof AssetItem))
         			return false;
-        		
+
 
       			if (((AssetItem)artifact).getName().equalsIgnoreCase("testCat1")) {
         	        return true;
@@ -378,9 +425,9 @@ public class RulesRepositoryTest extends TestCase {
             });
 
         assertEquals(1, apl.assets.size());
-        assertEquals("testCat1", ((AssetItem)apl.assets.get(0)).getName());        
+        assertEquals("testCat1", ((AssetItem)apl.assets.get(0)).getName());
     }
-    
+
     /**
      * Here we are testing to make sure that category links don't pick up stuff in snapshots area.
      */
