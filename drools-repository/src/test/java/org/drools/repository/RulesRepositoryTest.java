@@ -188,7 +188,7 @@ public class RulesRepositoryTest extends TestCase {
     	pkg.addAsset("asset2", "testQueryText2");
     	repo.save();
 
-    	List<AssetItem> ls = iteratorToList(repo.queryFullText("testQueryText*"));
+    	List<AssetItem> ls = iteratorToList(repo.queryFullText("testQueryText*", false));
     	assertEquals(2, ls.size());
 
     	AssetItem as = ls.get(0);
@@ -198,11 +198,25 @@ public class RulesRepositoryTest extends TestCase {
     	assertEquals("asset2", as.getName());
 
 
-    	ls = iteratorToList(repo.queryFullText("firstCheckintestQueryTest2"));
+    	ls = iteratorToList(repo.queryFullText("firstCheckintestQueryTest2", false));
     	assertEquals(1, ls.size());
 
-    	ls = iteratorToList(repo.queryFullText("firstCheckintestQueryTest"));
+    	ls = iteratorToList(repo.queryFullText("firstCheckintestQueryTest", false));
     	assertEquals(0, ls.size());
+
+    	ls = iteratorToList(repo.queryFullText("testQueryText*", false));
+    	assertEquals(2, ls.size());
+
+    	asset.archiveItem(true);
+    	asset.checkin("");
+
+    	ls = iteratorToList(repo.queryFullText("testQueryText*", false));
+    	assertEquals(1, ls.size());
+
+    	ls = iteratorToList(repo.queryFullText("testQueryText*", true));
+    	assertEquals(2, ls.size());
+
+
     }
 
     public void testQuery() throws Exception {

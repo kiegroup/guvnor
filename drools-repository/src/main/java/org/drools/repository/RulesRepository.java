@@ -1073,9 +1073,15 @@ public class RulesRepository {
     /**
      * This will search assets, looking for matches against the name.
      */
-    public AssetItemIterator queryFullText(String qry) {
+    public AssetItemIterator queryFullText(String qry, boolean seekArchived) {
         try {
-        	String searchPath = "/jcr:root/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA +"//element(*, " +AssetItem.RULE_NODE_TYPE_NAME + ")[jcr:contains(., '" + qry + "')]";
+
+        	String searchPath = "/jcr:root/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA +"//element(*, " +AssetItem.RULE_NODE_TYPE_NAME + ")";
+        	if (seekArchived) {
+        		searchPath += "[jcr:contains(., '" + qry + "')]";
+        	} else {
+        		searchPath += "[jcr:contains(., '" + qry + "') and " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false']";
+        	}
             Query q = this.session.getWorkspace().getQueryManager().createQuery( searchPath, Query.XPATH );
             QueryResult res = q.execute();
             return new AssetItemIterator(res.getNodes(), this);
