@@ -50,6 +50,7 @@ import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializableException;
+import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -670,6 +671,38 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(3, res.data.length);
 
 
+
+	}
+
+	public void testTextSearch() throws Exception  {
+		ServiceImplementation impl = getService();
+		String cat = "testTextSearch";
+		impl.createCategory("/", cat, "qkfnd");
+		impl.createPackage("testTextSearch",
+				"for testing search.");
+		String uuid = impl.createNewRule("testTextRule1", "desc", cat, "testTextSearch", "drl");
+		TableDataResult res = impl.queryFullText("testTextRule1", false, 0, -1);
+		assertEquals(1, res.data.length);
+	}
+
+	public void testMetaDataSearch() throws Exception {
+		ServiceImplementation impl = getService();
+		PackageItem pkg = impl.repository.createPackage("testMetaDataSearch", "");
+
+		AssetItem asset = pkg.addAsset("testMetaDataSearchAsset", "");
+		asset.updateSubject("testMetaDataSearch");
+		asset.updateExternalSource("numberwang");
+		asset.checkin("");
+
+		MetaDataQuery[] qr = new MetaDataQuery[2];
+		qr[0] = new MetaDataQuery();
+		qr[0].attribute = AssetItem.SUBJECT_PROPERTY_NAME;
+		qr[0].valueList = "wang, testMetaDataSearch";
+		qr[1] = new MetaDataQuery();
+		qr[1].attribute = AssetItem.SOURCE_PROPERTY_NAME;
+		qr[1].valueList = "numberwang";
+		TableDataResult res = impl.queryMetaData(qr, "10-Jul-1974", null, null,null, false, 0, -1);
+		assertEquals(1, res.data.length);
 
 	}
 

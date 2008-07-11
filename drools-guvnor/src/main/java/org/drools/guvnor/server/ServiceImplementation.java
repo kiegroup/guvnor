@@ -41,6 +41,7 @@ import javax.jcr.ItemExistsException;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.jackrabbit.util.ISO8601;
 import org.apache.log4j.Logger;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
@@ -48,6 +49,12 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.base.ClassTypeResolver;
+import org.drools.common.AbstractRuleBase;
+import org.drools.common.DroolsObjectOutputStream;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.testing.Scenario;
@@ -57,6 +64,7 @@ import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializableException;
 import org.drools.guvnor.client.rpc.LogEntry;
 import org.drools.guvnor.client.rpc.MetaData;
+import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -80,12 +88,6 @@ import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.guvnor.server.util.VerifierRunner;
-import org.drools.common.AbstractRuleBase;
-import org.drools.common.DroolsObjectOutputStream;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
@@ -102,9 +104,11 @@ import org.drools.repository.RulesRepositoryAdministrator;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.VersionableItem;
+import org.drools.repository.RulesRepository.DateQuery;
 import org.drools.rule.Package;
 import org.drools.testframework.RuleCoverageListener;
 import org.drools.testframework.ScenarioRunner;
+import org.drools.util.DateUtils;
 import org.drools.util.DroolsStreamUtils;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -266,7 +270,7 @@ public class ServiceImplementation
     	RepositoryFilter pf = new PackageFilter();
         return listPackages(true, pf);
     }
- 	
+
 	private PackageConfigData[] listPackages(boolean archive, RepositoryFilter filter) {
 		List<PackageConfigData> result = new ArrayList<PackageConfigData>();
 		PackageIterator pkgs = repository.listPackages();
@@ -322,7 +326,7 @@ public class ServiceImplementation
     public TableDataResult loadRuleListForState(String stateName, int skip, int numRows, String tableConfig) throws SerializableException {
     	//love you
         //long time = System.currentTimeMillis();
-    	
+
     	RepositoryFilter filter = new AssetItemFilter();
         AssetPageList list = repository.findAssetsByState( stateName, false, skip, numRows, filter);
         TableDisplayHandler handler = new TableDisplayHandler(tableConfig);
@@ -348,12 +352,12 @@ public class ServiceImplementation
     public RuleAsset loadRuleAsset(String uuid) throws SerializableException {
         AssetItem item = repository.loadAssetByUUID( uuid );
         RuleAsset asset = new RuleAsset();
-        
+
         asset.uuid = uuid;
 
         //load standard meta data
         asset.metaData = populateMetaData( item );
-        
+
     	if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission("ignoredanyway", "read",
 					asset.metaData.packageName);
@@ -361,7 +365,7 @@ public class ServiceImplementation
 
         // get package header
         PackageItem pkgItem = repository.loadPackage( asset.metaData.packageName );
-      
+
         //load the content
         ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
         handler.retrieveAssetContent(asset, pkgItem, item);
@@ -487,12 +491,12 @@ public class ServiceImplementation
         List<TableDataRow> result = new ArrayList<TableDataRow>();
 
         AssetItem item = repository.loadAssetByUUID( uuid );
-        
+
     	if (Contexts.isSessionContextActive()) {
       	    Identity.instance().checkPermission("ignoredanyway", "read", item.getPackage().getUUID());
     	}
 
-      	
+
         AssetHistoryIterator it = item.getHistory();
 
 
@@ -533,7 +537,7 @@ public class ServiceImplementation
     public TableDataResult loadArchivedAssets(int skip, int numRows) throws SerializableException {
         List<TableDataRow> result = new ArrayList<TableDataRow>();
     	RepositoryFilter filter = new AssetItemFilter();
-    	
+
         AssetItemIterator it = repository.findArchivedAssets();
         it.skip(skip);
         int count = 0;
@@ -623,11 +627,11 @@ public class ServiceImplementation
     public PackageConfigData loadPackageConfig(String uuid) {
         PackageItem item = repository.loadPackageByUUID( uuid );
     	//the uuid passed in is the uuid of that deployment bundle, not the package uudi.
-        //we have to figure out the package name. 
+        //we have to figure out the package name.
     	if (Contexts.isSessionContextActive()) {
 		    Identity.instance().checkPermission("ignoredanyway", "read", item.getName());
     	}
-        
+
         PackageConfigData data = new PackageConfigData();
         data.uuid = item.getUUID();
         data.header = getDroolsHeader(item);
@@ -693,10 +697,10 @@ public class ServiceImplementation
                                               int numRows,
                                               String tableConfig) throws SerializableException {
     	//TODO: This does not work for package snapshot. package snspshot's UUID is different
-    	//from its corresponding package. However we seem to expect to get same assets using the 
+    	//from its corresponding package. However we seem to expect to get same assets using the
     	//package snapshot UUID here
     	//Identity.instance().checkPermission("ignoredanyway", "read", uuid);
- 	
+
     	if (numRows == 0) {
     		throw new DetailedSerializableException("Unable to return zero results (bug)", "probably have the parameters around the wrong way, sigh...");
     	}
@@ -708,8 +712,52 @@ public class ServiceImplementation
         return handler.loadRuleListTable( it, skip,  numRows );
     }
 
+    public TableDataResult queryFullText(String text, boolean seekArchived, int skip, int numRows) throws SerializableException {
+    	if (numRows == 0) {
+    		throw new DetailedSerializableException("Unable to return zero results (bug)", "probably have the parameters around the wrong way, sigh...");
+    	}
+    	AssetItemIterator it = repository.queryFullText(text, seekArchived);
+    	TableDisplayHandler handler = new TableDisplayHandler("searchresults");
+    	return handler.loadRuleListTable(it, skip, numRows);
+    }
 
-    @WebRemote
+    public TableDataResult queryMetaData(final MetaDataQuery[] qr, String createdAfter, String createdBefore, String modifiedAfter, String modifiedBefore,
+    		boolean seekArchived, int skip, int numRows) throws SerializableException {
+    	if (numRows == 0) {
+    		throw new DetailedSerializableException("Unable to return zero results (bug)", "probably have the parameters around the wrong way, sigh...");
+    	}
+    	Map<String, String[]> q = new HashMap<String, String[]>() {{
+    		for (int i = 0; i < qr.length; i++) {
+    			String vals = (qr[i].valueList == null) ? "" : qr[i].valueList.trim();
+    			if (vals.length() > 0) {
+    				put(qr[i].attribute, vals.split(",\\s?"));
+    			}
+			}
+    	}};
+
+    	DateQuery[] dates = new DateQuery[2];
+
+
+    	dates[0] = new DateQuery("jcr:created", isoDate(createdAfter), isoDate(createdBefore));
+    	dates[1] = new DateQuery(AssetItem.LAST_MODIFIED_PROPERTY_NAME, isoDate(modifiedAfter), isoDate(modifiedBefore));
+    	AssetItemIterator it = repository.query(q, seekArchived, dates);
+    	TableDisplayHandler handler = new TableDisplayHandler("searchresults");
+    	return handler.loadRuleListTable(it, skip, numRows);
+    }
+
+
+    private String isoDate(String ds) {
+    	if (ds != null && !ds.equals("")) {
+    		Calendar cal = Calendar.getInstance();
+    		cal.setTime( DateUtils.parseDate(ds));
+    		return ISO8601.format(cal);
+    	}
+		return null;
+	}
+
+
+
+	@WebRemote
     @Restrict("#{identity.loggedIn}")
     public String createState(String name) throws SerializableException {
         log.info( "USER:" + repository.getSession().getUserID() +
@@ -747,17 +795,17 @@ public class ServiceImplementation
                                " CHANGING ASSET STATUS. Asset name, uuid: " +
                     "[" + asset.getName() + ", " +asset.getUUID() + "]"
                       +  " to [" + newState + "]");
-            
+
         	if (Contexts.isSessionContextActive()) {
            	    Identity.instance().checkPermission("ignoredanyway", "update", asset.getPackage().getUUID());
         	}
-          
+
             asset.updateState( newState );
         } else {
         	if (Contexts.isSessionContextActive()) {
         	    Identity.instance().checkPermission("ignoredanyway", "update", uuid);
         	}
-        	
+
             PackageItem pkg = repository.loadPackageByUUID( uuid );
             log.info( "USER:" + repository.getSession().getUserID() +
             " CHANGING Package STATUS. Asset name, uuid: " +
@@ -776,7 +824,7 @@ public class ServiceImplementation
     	if (Contexts.isSessionContextActive()) {
     	    Identity.instance().checkPermission("ignoredanyway", "update", newPackage);
     	}
-    	
+
         log.info( "USER:" + repository.getSession().getUserID() +
                            " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]");
         repository.moveRuleItemPackage( newPackage, uuid, comment );
@@ -791,7 +839,7 @@ public class ServiceImplementation
     	if (Contexts.isSessionContextActive()) {
     	    Identity.instance().checkPermission("ignoredanyway", "create", newPackage);
     	}
-   	
+
         return repository.copyAsset( assetUUID, newPackage, newName );
     }
 
@@ -824,7 +872,7 @@ public class ServiceImplementation
     	if (Contexts.isSessionContextActive()) {
     		Identity.instance().checkPermission("ignoredanyway", "read", packageName);
     	}
-  	
+
         log.info( "USER:" + repository.getSession().getUserID() +
          " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
 
@@ -883,7 +931,7 @@ public class ServiceImplementation
         long start = System.currentTimeMillis();
         AssetItemIterator it = repository.findAssetsByName( search, searchArchived ); // search for archived items
         log.debug("Search time: " + (System.currentTimeMillis() - start));
-        
+
         RepositoryFilter filter = new AssetItemFilter();
         for(int i = 0; i < max; i++) {
             if (!it.hasNext()) {
@@ -1029,7 +1077,7 @@ public class ServiceImplementation
     	if (Contexts.isSessionContextActive()) {
     		Identity.instance().checkPermission("ignoredanyway", "read", packageUUID);
     	}
-       	
+
         PackageItem item = repository.loadPackageByUUID( packageUUID );
         ContentPackageAssembler asm = new ContentPackageAssembler(item, false);
         return asm.getDRL();
@@ -1041,7 +1089,7 @@ public class ServiceImplementation
     	if (Contexts.isSessionContextActive()) {
     		Identity.instance().checkPermission("ignoredanyway", "read", asset.metaData.packageName);
     	}
-      	
+
         AssetItem item = repository.loadAssetByUUID( asset.uuid );
 
         ContentHandler handler = ContentManager.getHandler( item.getFormat() );//new AssetContentFormatHandler();
@@ -1070,7 +1118,7 @@ public class ServiceImplementation
     	if (Contexts.isSessionContextActive()) {
     		Identity.instance().checkPermission("ignoredanyway", "read", asset.metaData.packageName);
     	}
-      	
+
     	try {
 
 	        AssetItem item = repository.loadAssetByUUID( asset.uuid );
@@ -1117,8 +1165,8 @@ public class ServiceImplementation
             log.error( e );
             throw e;
         }
-        
-        //If we allow package owner to copy package, we will have to update the permission store 
+
+        //If we allow package owner to copy package, we will have to update the permission store
         //for the newly copied package.
         //Update permission store
 /*    	String copiedUuid = "";
@@ -1141,7 +1189,7 @@ public class ServiceImplementation
     	if (Contexts.isSessionContextActive()) {
     		Identity.instance().checkPermission("ignoredanyway", "update", item.getPackage().getUUID());
     	}
-      	
+
         return repository.renameAsset( uuid, newName );
     }
 
@@ -1150,11 +1198,11 @@ public class ServiceImplementation
     public void archiveAsset(String uuid, boolean value) {
         try {
             AssetItem item = repository.loadAssetByUUID( uuid );
-            
+
         	if (Contexts.isSessionContextActive()) {
         		Identity.instance().checkPermission("ignoredanyway", "update", item.getPackage().getUUID());
         	}
-        	
+
             item.archiveItem( value );
     		PackageItem pkg = item.getPackage();
     		pkg.updateBinaryUpToDate(false);
@@ -1175,7 +1223,7 @@ public class ServiceImplementation
         	if (Contexts.isSessionContextActive()) {
         		Identity.instance().checkPermission("ignoredanyway", "delete", item.getPackage().getUUID());
         	}
-        	
+
             item.remove();
             repository.save();
         } catch (RulesRepositoryException e) {
@@ -1240,7 +1288,7 @@ public class ServiceImplementation
     	if (Contexts.isSessionContextActive()) {
     		Identity.instance().checkPermission("ignoredanyway", "read", packageName);
     	}
-    	
+
     	PackageItem item = repository.loadPackage(packageName);
         ContentPackageAssembler asm = new ContentPackageAssembler(item, false);
         List<String> result = new ArrayList<String>();
@@ -1271,7 +1319,7 @@ public class ServiceImplementation
     	if (Contexts.isSessionContextActive()) {
     		Identity.instance().checkPermission("ignoredanyway", "read", packageName);
     	}
-    	
+
     	PackageItem item = this.repository.loadPackage(packageName);
 
     	//nasty classloader needed to make sure we use the same tree the whole time.
@@ -1370,11 +1418,11 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
 	public BulkTestRunResult runScenariosInPackage(String packageUUID)
-			throws SerializableException {    	
+			throws SerializableException {
     	if (Contexts.isSessionContextActive()) {
     		Identity.instance().checkPermission("ignoredanyway", "read", packageUUID);
     	}
-    	
+
 		PackageItem item = repository.loadPackageByUUID(packageUUID);
 
 		ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
@@ -1467,7 +1515,7 @@ public class ServiceImplementation
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission("ignoredanyway", "read", packageUUID);
 		}
-    	
+
 		String drl = this.buildPackageSource(packageUUID);
 		VerifierRunner runner = new VerifierRunner();
 		try {
@@ -1484,7 +1532,7 @@ public class ServiceImplementation
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission("ignoredanyway", "read", packageUUID);
 		}
-    	
+
 		PackageItem pkg = this.repository.loadPackageByUUID(packageUUID);
 		List<String> res = new ArrayList<String>();
 		AssetItemIterator it = pkg.listAssetsByFormat(new String[] {AssetFormats.MODEL, AssetFormats.DRL_MODEL});
