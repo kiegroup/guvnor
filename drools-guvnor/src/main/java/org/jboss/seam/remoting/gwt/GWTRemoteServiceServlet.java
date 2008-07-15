@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jboss.seam.remoting.gwt.GWTToSeamAdapter.ReturnedObject;
+import org.jboss.seam.security.AuthorizationException;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializableException;
@@ -308,7 +309,14 @@ public class GWTRemoteServiceServlet extends HttpServlet {
         caught = cause;
         // Serialize the exception back to the client if it's a declared
         // exception
-        if (cause instanceof SerializableException) {
+        if (cause instanceof AuthorizationException) {
+        	responsePayload = cause.getMessage();
+        	streamWriter.prepareToWrite();
+        	streamWriter.writeString(responsePayload);
+        	// Don't log the exception on the server
+        	caught = null;        
+        } else if (cause instanceof SerializableException) {
+        
           Class thrownClass = cause.getClass();
           responsePayload = createResponse(streamWriter, thrownClass, cause,
               true);

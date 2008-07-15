@@ -35,6 +35,8 @@ import org.drools.repository.RulesRepository;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.AuthorizationException;
+
 /**
  * This class adapts GWT RPC mechanism to Seam actions.
  *
@@ -87,6 +89,8 @@ public class GWTToSeamAdapter {
                     cause.printStackTrace( w );
                     if (cause instanceof DetailedSerializableException) {
                     	throw new InvocationTargetException(cause);
+                    } else if (cause instanceof AuthorizationException) {
+                    	throw e;
                     } else {
                         throw new InvocationTargetException(new DetailedSerializableException("An error occurred executing the action.", sw.toString()));
                     }
