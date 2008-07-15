@@ -13,6 +13,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.rulelist.QueryWidget;
 import org.drools.guvnor.client.rulelist.QuickFindWidget;
 
 import com.google.gwt.user.client.Command;
@@ -180,7 +181,7 @@ public class ExplorerViewCenterPanel {
 
 	public void openFind() {
 		if (!showIfOpen("FIND")) {
-			this.addTab("Find", true, new QuickFindWidget(new EditItemEvent() {
+			this.addTab("Find", true, new QueryWidget(new EditItemEvent() {
 				public void open(String uuid) {
 					openAsset(uuid);
 				}

@@ -4,6 +4,7 @@
             xmlns:security="http://jboss.com/products/seam/security"
             xmlns:web="http://jboss.com/products/seam/web"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:transaction="http://jboss.com/products/seam/transaction"
             xsi:schemaLocation=
                 "http://jboss.com/products/seam/core http://jboss.com/products/seam/core-2.0.xsd
                  http://jboss.com/products/seam/security http://jboss.com/products/seam/security-2.0.xsd
@@ -12,26 +13,27 @@
 
 
 	<core:init transaction-management-enabled="false"/>
+	<transaction:no-transaction />
 
     <component name="repositoryConfiguration">
 		<!--
 		  *** This is for configuring the "home" directory for the repo storage. the directory must exist. 	***
 	      <property name="homeDirectory">/home/michael/RulesRepository_001</property>
-	    -->  
-	    
-	    <!--   
+	    -->
+
+	    <!--
 	      Optional: this is for creating a configurator for a seperate repository type.
 	      <property name="configurator">org.drools.repository.JackrabbitRepositoryConfigurator</property>
 	    -->
     </component>
-    
+
     <!-- SECURITY CONFIGURATION -->
-    
+
     <!-- default (will take any username, useful if you want to keep track of users but not authenticate -->
     <security:identity authenticate-method="#{defaultAuthenticator.authenticate}"/>
 
 	<!-- NO authentication. This will bypass the login screen when you hit the app. Everyone is "guest" -->
 	<!-- <security:identity authenticate-method="#{nilAuthenticator.authenticate}"/> -->
-	
+
 	<!-- as JAAS is used you can use container specific ones to link up to your login services, eg LDAP -->
 </components>

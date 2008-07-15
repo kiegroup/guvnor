@@ -77,6 +77,7 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.rule.Package;
 import org.drools.util.BinaryRuleBaseLoader;
+import org.drools.util.DateUtils;
 import org.drools.util.DroolsStreamUtils;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -674,7 +675,7 @@ public class ServiceImplementationTest extends TestCase {
 
 	}
 
-	public void testTextSearch() throws Exception  {
+	public void testSearchText() throws Exception  {
 		ServiceImplementation impl = getService();
 		String cat = "testTextSearch";
 		impl.createCategory("/", cat, "qkfnd");
@@ -685,7 +686,7 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(1, res.data.length);
 	}
 
-	public void testMetaDataSearch() throws Exception {
+	public void testSearchMetaData() throws Exception {
 		ServiceImplementation impl = getService();
 		PackageItem pkg = impl.repository.createPackage("testMetaDataSearch", "");
 
@@ -700,8 +701,8 @@ public class ServiceImplementationTest extends TestCase {
 		qr[0].valueList = "wang, testMetaDataSearch";
 		qr[1] = new MetaDataQuery();
 		qr[1].attribute = AssetItem.SOURCE_PROPERTY_NAME;
-		qr[1].valueList = "numberwang";
-		TableDataResult res = impl.queryMetaData(qr, "10-Jul-1974", null, null,null, false, 0, -1);
+		qr[1].valueList = "numberwan*";
+		TableDataResult res = impl.queryMetaData(qr, DateUtils.parseDate("10-Jul-1974"), null, null,null, false, 0, -1);
 		assertEquals(1, res.data.length);
 
 	}

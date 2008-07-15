@@ -52,7 +52,7 @@ public interface RepositoryServiceAsync
 	public void createPackage(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
 	public void loadPackageConfig(java.lang.String p0, AsyncCallback cb);
 	public void savePackage(org.drools.guvnor.client.rpc.PackageConfigData p0, AsyncCallback cb);
-	public void listAssets(java.lang.String p0, String[] p1, int p2, int p3, java.lang.String p4, AsyncCallback cb);
+	public void listAssets(java.lang.String p0, java.lang.String[] p1, int p2, int p3, java.lang.String p4, AsyncCallback cb);
 	public void listStates(AsyncCallback cb);
 	public void createState(java.lang.String p0, AsyncCallback cb);
 	public void changeState(java.lang.String p0, java.lang.String p1, boolean p2, AsyncCallback cb);
@@ -83,10 +83,9 @@ public interface RepositoryServiceAsync
 	public void analysePackage(java.lang.String p0, AsyncCallback cb);
 	public void listTypesInPackage(java.lang.String p0, AsyncCallback cb);
 	public void showLog(AsyncCallback cb);
-	public void loadDropDownExpression(String[] p0, java.lang.String p1, AsyncCallback cb);
-
-
-
+	public void loadDropDownExpression(java.lang.String[] p0, java.lang.String p1, AsyncCallback cb);
+	public void queryFullText(java.lang.String p0, boolean p1, int p2, int p3, AsyncCallback cb);
+	public void queryMetaData(org.drools.guvnor.client.rpc.MetaDataQuery[] p0, java.util.Date p1, java.util.Date p2, java.util.Date p3, java.util.Date p4, boolean p5, int p6, int p7, AsyncCallback cb);
 
 
 

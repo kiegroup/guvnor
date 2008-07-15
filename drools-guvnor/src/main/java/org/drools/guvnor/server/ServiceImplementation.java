@@ -712,6 +712,8 @@ public class ServiceImplementation
         return handler.loadRuleListTable( it, skip,  numRows );
     }
 
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public TableDataResult queryFullText(String text, boolean seekArchived, int skip, int numRows) throws SerializableException {
     	if (numRows == 0) {
     		throw new DetailedSerializableException("Unable to return zero results (bug)", "probably have the parameters around the wrong way, sigh...");
@@ -721,7 +723,9 @@ public class ServiceImplementation
     	return handler.loadRuleListTable(it, skip, numRows);
     }
 
-    public TableDataResult queryMetaData(final MetaDataQuery[] qr, String createdAfter, String createdBefore, String modifiedAfter, String modifiedBefore,
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public TableDataResult queryMetaData(final MetaDataQuery[] qr, Date createdAfter, Date createdBefore, Date modifiedAfter, Date modifiedBefore,
     		boolean seekArchived, int skip, int numRows) throws SerializableException {
     	if (numRows == 0) {
     		throw new DetailedSerializableException("Unable to return zero results (bug)", "probably have the parameters around the wrong way, sigh...");
@@ -746,14 +750,15 @@ public class ServiceImplementation
     }
 
 
-    private String isoDate(String ds) {
-    	if (ds != null && !ds.equals("")) {
+    private String isoDate(Date d) {
+    	if (d != null) {
     		Calendar cal = Calendar.getInstance();
-    		cal.setTime( DateUtils.parseDate(ds));
+    		cal.setTime(d);
     		return ISO8601.format(cal);
     	}
 		return null;
 	}
+
 
 
 
@@ -1325,11 +1330,11 @@ public class ServiceImplementation
     	//nasty classloader needed to make sure we use the same tree the whole time.
 		ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
 
-
+		final RuleBase rb;
 
 		try {
 	    	if (item.isBinaryUpToDate() && this.ruleBaseCache.containsKey(item.getUUID())) {
-	    		RuleBase rb = this.ruleBaseCache.get(item.getUUID());
+	    		rb = this.ruleBaseCache.get(item.getUUID());
 	    		AbstractRuleBase arb = (AbstractRuleBase) rb;
 	    		//load up the existing class loader from before
 
@@ -1340,11 +1345,13 @@ public class ServiceImplementation
 
 	    		//we have to build the package, and try again.
 	    		if (item.isBinaryUpToDate()) {
-	    			this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item, buildCl));
+	    			rb = loadRuleBase(item, buildCl);
+	    			this.ruleBaseCache.put(item.getUUID(), rb);
 	    		} else {
 	    			BuilderResult[] errs = this.buildPackage(null, false, item);
 	    			if (errs == null || errs.length == 0) {
-	    				this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item, buildCl));
+	    				rb = loadRuleBase(item, buildCl);
+	    				this.ruleBaseCache.put(item.getUUID(), rb);
 	    			} else {
 	    				return new ScenarioRunResult(errs, null);
 	    			}
@@ -1353,7 +1360,7 @@ public class ServiceImplementation
 
     		ClassLoader cl = this.ruleBaseCache.get(item.getUUID()).getPackages()[0].getPackageScopeClassLoader();
 	    	Thread.currentThread().setContextClassLoader(cl);
-	    	return runScenario(scenario, item, cl);
+	    	return runScenario(scenario, item, cl, rb);
 
 		} finally {
 			Thread.currentThread().setContextClassLoader(originalCL);
@@ -1378,10 +1385,10 @@ public class ServiceImplementation
 	}
 
 	private ScenarioRunResult runScenario(
-			Scenario scenario, PackageItem item, ClassLoader cl)
+			Scenario scenario, PackageItem item, ClassLoader cl, RuleBase rb)
 			throws DetailedSerializableException {
 
-		RuleBase rb = ruleBaseCache.get(item.getUUID());
+		//RuleBase rb = ruleBaseCache.get(item.getUUID());
 		Package bin = rb.getPackages()[0];
 
 

@@ -17,6 +17,8 @@ package org.drools.guvnor.client.rpc;
 
 
 
+import java.util.Date;
+
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.testing.Scenario;
 
@@ -390,4 +392,32 @@ public interface RepositoryService extends RemoteService {
      * @param expression The expression, which will then be eval'ed to generate a String[]
      */
     public String[] loadDropDownExpression(String[] valuePairs, String expression);
+
+    /**
+     * Runs a full text search using JCR.
+     * @param text
+     * @param seekArchived
+     * @param skip
+     * @param numRows
+     * @return
+     * @throws SerializableException
+     */
+    public TableDataResult queryFullText(String text, boolean seekArchived, int skip, int numRows) throws SerializableException;
+
+    /**
+     * Run a meta data search. All dates are in format as configured for the system. Pass in null and they will not be included in the search (that
+     * applies to any field).
+     * @param qr
+     * @param createdAfter
+     * @param createdBefore
+     * @param modifiedAfter
+     * @param modifiedBefore
+     * @param seekArchived
+     * @param skip
+     * @param numRows
+     * @return
+     * @throws SerializableException
+     */
+    public TableDataResult queryMetaData(final MetaDataQuery[] qr, Date createdAfter, Date createdBefore, Date modifiedAfter, Date modifiedBefore,
+    		boolean seekArchived, int skip, int numRows) throws SerializableException;
 }

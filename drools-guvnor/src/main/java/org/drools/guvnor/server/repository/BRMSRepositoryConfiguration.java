@@ -1,13 +1,13 @@
 package org.drools.guvnor.server.repository;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,8 +16,6 @@ package org.drools.guvnor.server.repository;
  */
 
 
-
-import java.util.Collection;
 
 import javax.jcr.LoginException;
 import javax.jcr.Repository;
@@ -31,6 +29,7 @@ import org.drools.repository.RulesRepositoryAdministrator;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
+import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
@@ -46,23 +45,29 @@ public class BRMSRepositoryConfiguration {
 
     JCRRepositoryConfigurator configurator = new JackrabbitRepositoryConfigurator();
     String repositoryHomeDirectory = null;
-    
+
     Repository repository;
-    
+	private Session sessionForSetup;
+
     @Create
-    public void create() {      
+    public void create() {
         repository = configurator.getJCRRepository( repositoryHomeDirectory );
-        Session sessionForSetup = newSession("admin");
+        sessionForSetup = newSession("admin");
         create( sessionForSetup );
     }
 
 
     void create(Session sessionForSetup) {
-                
+
         RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(sessionForSetup);
         if (!admin.isRepositoryInitialized()) {
             configurator.setupRulesRepository( sessionForSetup );
         }
+        //sessionForSetup.logout();
+    }
+
+    @Destroy
+    public void close() {
         sessionForSetup.logout();
     }
 
@@ -70,19 +75,19 @@ public class BRMSRepositoryConfiguration {
     public void setHomeDirectory(String home) {
         this.repositoryHomeDirectory = home;
     }
-    
+
     public void setRepositoryConfigurator(String clazz) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
             Class cls = Class.forName( clazz );
             this.configurator = (JCRRepositoryConfigurator) cls.newInstance();
     }
-    
-     
+
+
     /**
      * This will create a new Session, based on the current user.
      * @return
      */
     public Session newSession(String userName) {
-        
+
         try {
             return repository.login( new SimpleCredentials(userName, "password".toCharArray()) );
         } catch ( LoginException e ) {
@@ -91,6 +96,6 @@ public class BRMSRepositoryConfiguration {
             throw new RulesRepositoryException( e );
         }
     }
-    
-    
+
+
 }

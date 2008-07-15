@@ -7,4 +7,7 @@ public class MetaDataQuery implements IsSerializable {
 	public String attribute;
 	public String valueList;
 
+	public MetaDataQuery() {}
+	public MetaDataQuery(String attribute) { this.attribute = attribute; }
+
 }
