@@ -1111,14 +1111,14 @@ public class RulesRepository {
 					if (options.length > 1) {
 						sql += " AND (";
 						for (int i = 0; i < options.length; i++) {
-							sql += fld + " LIKE '" + options[i] + "'";
+							sql += fld + " LIKE '" + options[i].replace("*", "%") + "'";
 							if (i < options.length -1) {
 								sql += " OR ";
 							}
 						}
 						sql += ")";
 					} else {
-						sql += " AND " + fld + " LIKE '" + options[0] + "'";
+						sql += " AND " + fld + " LIKE '" + options[0].replace("*", "%") + "'";
 					}
 				}
 			}

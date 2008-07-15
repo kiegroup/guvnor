@@ -54,7 +54,6 @@ public class AssetItem extends CategorisableItem {
                      Node node) throws RulesRepositoryException {
         super( rulesRepository,
                node );
-
         try {
             //make sure this node is a rule node
             if ( !(this.node.getPrimaryNodeType().getName().equals( RULE_NODE_TYPE_NAME ) || isHistoricalVersion()) ) {
