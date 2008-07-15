@@ -87,15 +87,53 @@ public class PackageBasedPermissionResolver implements PermissionResolver,
 	private boolean isPermitted(String requestedAction, String role) {
 		if (RoleTypes.PACKAGE_ADMIN.equalsIgnoreCase(role)) {
 			return true;
-		} else if (RoleTypes.PACKAGE_GUEST.equalsIgnoreCase(role)) {
-			if ("create".equalsIgnoreCase(requestedAction)) {
+		} else if (RoleTypes.PACKAGE_DEVELOPER.equalsIgnoreCase(role)) {
+			if ("package.admin".equalsIgnoreCase(requestedAction)) {
 				return false;
-			} else if ("read".equalsIgnoreCase(requestedAction)) {
+			} else if ("package.developer".equalsIgnoreCase(requestedAction)) {
 				return true;
-			} else if ("update".equalsIgnoreCase(requestedAction)) {
+			} else if ("package.analyst".equalsIgnoreCase(requestedAction)) {
+				return true;
+			} else if ("package.testonly".equalsIgnoreCase(requestedAction)) {
+				return true;
+			} else if ("package.readonly".equalsIgnoreCase(requestedAction)) {
+				return true;
+			}
+		} else if (RoleTypes.PACKAGE_ANALYST.equalsIgnoreCase(role)) {
+			if ("package.admin".equalsIgnoreCase(requestedAction)) {
 				return false;
-			} else if ("delete".equalsIgnoreCase(requestedAction)) {
+			} else if ("package.developer".equalsIgnoreCase(requestedAction)) {
 				return false;
+			} else if ("package.analyst".equalsIgnoreCase(requestedAction)) {
+				return true;
+			} else if ("package.testonly".equalsIgnoreCase(requestedAction)) {
+				return true;
+			} else if ("package.readonly".equalsIgnoreCase(requestedAction)) {
+				return true;
+			}
+		} else if (RoleTypes.PACKAGE_TESTONLY.equalsIgnoreCase(role)) {
+			if ("package.admin".equalsIgnoreCase(requestedAction)) {
+				return false;
+			} else if ("package.developer".equalsIgnoreCase(requestedAction)) {
+				return false;
+			} else if ("package.analyst".equalsIgnoreCase(requestedAction)) {
+				return false;
+			} else if ("package.testonly".equalsIgnoreCase(requestedAction)) {
+				return true;
+			} else if ("package.readonly".equalsIgnoreCase(requestedAction)) {
+				return true;
+			}
+		} else if (RoleTypes.PACKAGE_READONLY.equalsIgnoreCase(role)) {
+			if ("package.admin".equalsIgnoreCase(requestedAction)) {
+				return false;
+			} else if ("package.developer".equalsIgnoreCase(requestedAction)) {
+				return false;
+			} else if ("package.analyst".equalsIgnoreCase(requestedAction)) {
+				return false;
+			} else if ("package.testonly".equalsIgnoreCase(requestedAction)) {
+				return false;
+			} else if ("package.readonly".equalsIgnoreCase(requestedAction)) {
+				return true;
 			}
 		}
 
