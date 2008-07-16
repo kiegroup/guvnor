@@ -1,22 +1,21 @@
 package org.drools.guvnor.client.packages;
 
-import org.drools.guvnor.client.packages.PackageHeaderWidget;
+import junit.framework.TestCase;
+
 import org.drools.guvnor.client.packages.PackageHeaderWidget.Global;
 import org.drools.guvnor.client.packages.PackageHeaderWidget.Import;
 import org.drools.guvnor.client.packages.PackageHeaderWidget.Types;
-
-import junit.framework.TestCase;
 
 public class PackageHeaderWidgetTest extends TestCase {
 
 	public void testEmpty() {
 
-		PackageHeaderWidget.Types t = PackageHeaderWidget.parseHeader(null);
+		PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(null);
 		assertNotNull(t);
 		assertNotNull(t.globals);
 		assertNotNull(t.imports);
 
-		t = PackageHeaderWidget.parseHeader("");
+		t = PackageHeaderHelper.parseHeader("");
 		assertNotNull(t);
 		assertNotNull(t.globals);
 		assertNotNull(t.imports);
@@ -25,7 +24,7 @@ public class PackageHeaderWidgetTest extends TestCase {
 
 	public void testImports() {
 		String s = "import goo.bar.Whee;\n\nimport wee.waah.Foo\nimport nee.Nah";
-		PackageHeaderWidget.Types t = PackageHeaderWidget.parseHeader(s);
+		PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(s);
 		assertNotNull(t);
 		assertNotNull(t.globals);
 		assertNotNull(t.imports);
@@ -45,7 +44,7 @@ public class PackageHeaderWidgetTest extends TestCase {
 
 	public void testGlobals() {
 		String s = "global goo.bar.Whee x;\n\nglobal wee.waah.Foo asd\nglobal nee.Nah d";
-		PackageHeaderWidget.Types t = PackageHeaderWidget.parseHeader(s);
+		PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(s);
 		assertNotNull(t);
 		assertNotNull(t.globals);
 		assertNotNull(t.imports);
@@ -69,7 +68,7 @@ public class PackageHeaderWidgetTest extends TestCase {
 
 	public void testGlobalsImports() {
 		String s = "import goo.bar.Whee;\n\nglobal wee.waah.Foo asd";
-		PackageHeaderWidget.Types t = PackageHeaderWidget.parseHeader(s);
+		PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(s);
 		assertNotNull(t);
 		assertEquals(1, t.imports.size());
 		assertEquals(1, t.globals.size());
@@ -86,22 +85,22 @@ public class PackageHeaderWidgetTest extends TestCase {
 
 	public void testAdvanced() {
 		String s = "import goo.bar.Whee;\nglobal Wee waa;\n \nsomething else maybe dialect !";
-		assertEquals(null, PackageHeaderWidget.parseHeader(s));
+		assertEquals(null, PackageHeaderHelper.parseHeader(s));
 	}
 
 	public void testRenderTypes() {
 		Types t = new Types();
 		t.imports.add(new Import("foo.bar.Baz"));
-		String h = PackageHeaderWidget.renderTypes(t);
+		String h = PackageHeaderHelper.renderTypes(t);
 		assertNotNull(h);
 		assertEquals("import foo.bar.Baz", h.trim());
-		t = PackageHeaderWidget.parseHeader(h);
+		t = PackageHeaderHelper.parseHeader(h);
 		assertEquals(1, t.imports.size());
 		Import i = (Import) t.imports.get(0);
 		assertEquals("foo.bar.Baz", i.type);
 
 		t.globals.add(new Global("foo.Bar", "xs"));
-		h = PackageHeaderWidget.renderTypes(t);
+		h = PackageHeaderHelper.renderTypes(t);
 		assertEquals("import foo.bar.Baz\nglobal foo.Bar xs", h.trim());
 
 	}

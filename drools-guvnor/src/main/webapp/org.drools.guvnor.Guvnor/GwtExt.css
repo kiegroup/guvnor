@@ -24,3 +24,25 @@
 #loading-msg {
     font: normal 10px arial, tahoma, sans-serif;
 }
+
+.x-portlet {
+    margin-bottom:10px;
+}
+
+.x-portal .x-panel-dd-spacer {
+    margin-bottom:10px;
+}
+
+/*
+ * FF3 grid support
+ */
+.x-grid3 table {
+    table-layout:fixed;
+}
+
+/*
+ * FF3 calendar support
+ */
+div.x-date-picker {
+    width:10px;
+}

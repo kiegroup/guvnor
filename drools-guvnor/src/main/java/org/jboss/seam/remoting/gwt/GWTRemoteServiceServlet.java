@@ -197,11 +197,11 @@ public class GWTRemoteServiceServlet extends HttpServlet {
     // Let subclasses see the serialized request.
     //
     onBeforeRequestDeserialized(payload);
-    
+
     // Create a stream to deserialize the request.
     //
     ServerSerializationStreamReader streamReader = new ServerSerializationStreamReader(Thread.currentThread().getContextClassLoader(), null);
-    
+
     streamReader.prepareToRead(payload);
 
     // Read the service interface
@@ -421,7 +421,7 @@ public class GWTRemoteServiceServlet extends HttpServlet {
     }
 
     String bufferStr = (isException ? "//EX" : "//OK") + stream.toString();
-    
+
     return bufferStr;
   }
 
@@ -580,7 +580,7 @@ public class GWTRemoteServiceServlet extends HttpServlet {
     // Content-Type must be specified.
     if (contentType != null) {
       // The type must be plain text.
-      if (contentType.startsWith("text/plain")) {
+      if (contentType.startsWith("text")) {
         // And it must be UTF-8 encoded (or unspecified, in which case we assume
         // that it's either UTF-8 or ASCII).
         if (contentType.indexOf("charset=") == -1) {

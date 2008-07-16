@@ -40,7 +40,6 @@ import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.FocusListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -302,7 +301,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
             String val;
             if (v.indexOf( '=' ) > 0) {
                 //using a mapping
-                String[] splut = splitValue(v);
+                String[] splut = ConstraintValueEditorHelper.splitValue(v);
                 String realValue = splut[0];
                 String display = splut[1];
                 val = realValue;
@@ -324,20 +323,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 	}
 
-    /**
-     * 'Person.age' : ['M=Male', 'F=Female']
-     *
-     * This will split the drop down item into a value and a key.
-     * eg key=value
-     *
-     */
-    public static String[] splitValue(String v) {
-        String[] s = new String[2];
-        int pos = v.indexOf( '=' );
-        s[0] = v.substring( 0, pos );
-        s[1] = v.substring( pos + 1, v.length() );
-        return s;
-    }
+
 
     private TextBox boundTextBox(final ISingleFieldConstraint c) {
         final TextBox box = new TextBox();

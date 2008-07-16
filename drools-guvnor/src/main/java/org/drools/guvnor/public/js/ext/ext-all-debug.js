@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0.1
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -13,12 +13,17 @@ Ext.DomHelper = function(){
     var tableRe = /^table|tbody|tr|td$/i;
     
     
-    
     var createHtml = function(o){
         if(typeof o == 'string'){
             return o;
         }
         var b = "";
+        if (Ext.isArray(o)) {
+            for (var i = 0, l = o.length; i < l; i++) {
+                b += createHtml(o[i]);
+            }
+            return b;
+        }
         if(!o.tag){
             o.tag = "div";
         }
@@ -57,15 +62,8 @@ Ext.DomHelper = function(){
             b += ">";
             var cn = o.children || o.cn;
             if(cn){
-                if(cn instanceof Array){
-                    for(var i = 0, len = cn.length; i < len; i++) {
-                        b += createHtml(cn[i], b);
-                    }
-                }else{
-                    b += createHtml(cn, b);
-                }
-            }
-            if(o.html){
+                b += createHtml(cn);
+            } else if(o.html){
                 b += o.html;
             }
             b += "</" + o.tag + ">";
@@ -76,30 +74,33 @@ Ext.DomHelper = function(){
     
     
     var createDom = function(o, parentNode){
-        var el = document.createElement(o.tag||'div');
-        var useSet = el.setAttribute ? true : false; 
-        for(var attr in o){
-            if(attr == "tag" || attr == "children" || attr == "cn" || attr == "html" || attr == "style" || typeof o[attr] == "function") continue;
-            if(attr=="cls"){
-                el.className = o["cls"];
-            }else{
-                if(useSet) el.setAttribute(attr, o[attr]);
-                else el[attr] = o[attr];
+        var el;
+        if (Ext.isArray(o)) {                       
+            el = document.createDocumentFragment(); 
+            for(var i = 0, l = o.length; i < l; i++) {
+                createDom(o[i], el);
             }
-        }
-        Ext.DomHelper.applyStyles(el, o.style);
-        var cn = o.children || o.cn;
-        if(cn){
-            if(cn instanceof Array){
-                for(var i = 0, len = cn.length; i < len; i++) {
-                    createDom(cn[i], el);
+        } else if (typeof o == "string)") {         
+            el = document.createTextNode(o);
+        } else {
+            el = document.createElement(o.tag||'div');
+            var useSet = !!el.setAttribute; 
+            for(var attr in o){
+                if(attr == "tag" || attr == "children" || attr == "cn" || attr == "html" || attr == "style" || typeof o[attr] == "function") continue;
+                if(attr=="cls"){
+                    el.className = o["cls"];
+                }else{
+                    if(useSet) el.setAttribute(attr, o[attr]);
+                    else el[attr] = o[attr];
                 }
-            }else{
-                createDom(cn, el);
             }
-        }
-        if(o.html){
-            el.innerHTML = o.html;
+            Ext.DomHelper.applyStyles(el, o.style);
+            var cn = o.children || o.cn;
+            if(cn){
+                createDom(cn, el);
+            } else if(o.html){
+                el.innerHTML = o.html;
+            }
         }
         if(parentNode){
            parentNode.appendChild(el);
@@ -341,7 +342,7 @@ Ext.DomHelper = function(){
 
 Ext.Template = function(html){
     var a = arguments;
-    if(html instanceof Array){
+    if(Ext.isArray(html)){
         html = html.join("");
     }else if(a.length > 1){
         var buf = [];
@@ -934,7 +935,7 @@ Ext.DomQuery = function(){
             if(typeof el == "string"){
                 el = document.getElementById(el);
             }
-            var isArray = (el instanceof Array);
+            var isArray = Ext.isArray(el);
             var result = Ext.DomQuery.filter(isArray ? el : [el], ss);
             return isArray ? (result.length == el.length) : (result.length > 0);
         },
@@ -2374,7 +2375,7 @@ El.prototype = {
 
     
     addClass : function(className){
-        if(className instanceof Array){
+        if(Ext.isArray(className)){
             for(var i = 0, len = className.length; i < len; i++) {
             	this.addClass(className[i]);
             }
@@ -2404,7 +2405,7 @@ El.prototype = {
         if(!className || !this.dom.className){
             return this;
         }
-        if(className instanceof Array){
+        if(Ext.isArray(className)){
             for(var i = 0, len = className.length; i < len; i++) {
             	this.removeClass(className[i]);
             }
@@ -3563,7 +3564,7 @@ El.prototype = {
                 e.preventDefault();
             }
         };
-        if(eventName instanceof Array){
+        if(Ext.isArray(eventName)){
             for(var i = 0, len = eventName.length; i < len; i++){
                  this.on(eventName[i], fn);
             }
@@ -3661,7 +3662,7 @@ El.prototype = {
     
     insertSibling: function(el, where, returnDom){
         var rt;
-        if(el instanceof Array){
+        if(Ext.isArray(el)){
             for(var i = 0, len = el.length; i < len; i++){
                 rt = this.insertSibling(el[i], where, returnDom);
             }
@@ -3747,7 +3748,7 @@ El.prototype = {
     
     addKeyListener : function(key, fn, scope){
         var config;
-        if(typeof key != "object" || key instanceof Array){
+        if(typeof key != "object" || Ext.isArray(key)){
             config = {
                 key: key,
                 fn: fn,
@@ -3842,7 +3843,7 @@ El.prototype = {
 
     
     translatePoints : function(x, y){
-        if(typeof x == 'object' || x instanceof Array){
+        if(typeof x == 'object' || Ext.isArray(x)){
             y = x[1]; x = x[0];
         }
         var p = this.getStyle('position');
@@ -4011,7 +4012,7 @@ El.get = function(el){
         return el;
     }else if(el.isComposite){
         return el;
-    }else if(el instanceof Array){
+    }else if(Ext.isArray(el)){
         return El.select(el);
     }else if(el == document){
                 if(!docEl){
@@ -4862,7 +4863,7 @@ Ext.CompositeElement.prototype = {
 
     
     removeElement : function(el, removeDom){
-        if(el instanceof Array){
+        if(Ext.isArray(el)){
             for(var i = 0, len = el.length; i < len; i++){
                 this.removeElement(el[i]);
             }
@@ -4924,7 +4925,7 @@ Ext.CompositeElementLite = function(els){
 Ext.extend(Ext.CompositeElementLite, Ext.CompositeElement, {
     addElements : function(els){
         if(els){
-            if(els instanceof Array){
+            if(Ext.isArray(els)){
                 this.elements = this.elements.concat(els);
             }else{
                 var yels = this.elements;
@@ -5687,7 +5688,7 @@ Date.createParser = function(format) {
 
     var code = "Date." + funcName + " = function(input){\n"
         + "var y = -1, m = -1, d = -1, h = -1, i = -1, s = -1, ms = -1, o, z, u, v;\n"
-        + "var d = new Date();\n"
+        + "input = String(input);var d = new Date();\n"
         + "y = d.getFullYear();\n"
         + "m = d.getMonth();\n"
         + "d = d.getDate();\n"
@@ -5830,13 +5831,13 @@ Date.formatCodeToRegex = function(character, currentGroup) {
         return {g:1,
             c:[
                 "o = results[", currentGroup, "];\n",
-                "var sn = o.substring(0,1);\n",                 "var hr = o.substring(1,3)*1 + Math.floor(o.substring(3,5) / 60);\n",                 "var mn = o.substring(3,5) % 60;\n",                 "o = ((-12 <= (hr*60 + mn)/60) && ((hr*60 + mn)/60 <= 14))?\n",                 "    (sn + String.leftPad(hr, 2, 0) + String.leftPad(mn, 2, 0)) : null;\n"
+                "var sn = o.substring(0,1);\n",                 "var hr = o.substring(1,3)*1 + Math.floor(o.substring(3,5) / 60);\n",                 "var mn = o.substring(3,5) % 60;\n",                 "o = ((-12 <= (hr*60 + mn)/60) && ((hr*60 + mn)/60 <= 14))?\n",                 "    (sn + String.leftPad(hr, 2, '0') + String.leftPad(mn, 2, '0')) : null;\n"
             ].join(""),
             s: "([+\-]\\d{4})"};     case "P":
         return {g:1,
             c:[
                 "o = results[", currentGroup, "];\n",
-                "var sn = o.substring(0,1);\n",                 "var hr = o.substring(1,3)*1 + Math.floor(o.substring(4,6) / 60);\n",                 "var mn = o.substring(4,6) % 60;\n",                 "o = ((-12 <= (hr*60 + mn)/60) && ((hr*60 + mn)/60 <= 14))?\n",                 "    (sn + String.leftPad(hr, 2, 0) + String.leftPad(mn, 2, 0)) : null;\n"
+                "var sn = o.substring(0,1);\n",                 "var hr = o.substring(1,3)*1 + Math.floor(o.substring(4,6) / 60);\n",                 "var mn = o.substring(4,6) % 60;\n",                 "o = ((-12 <= (hr*60 + mn)/60) && ((hr*60 + mn)/60 <= 14))?\n",                 "    (sn + String.leftPad(hr, 2, '0') + String.leftPad(mn, 2, '0')) : null;\n"
             ].join(""),
             s: "([+\-]\\d{2}:\\d{2})"};     case "T":
         return {g:0,
@@ -5895,7 +5896,7 @@ Date.prototype.getWeekOfYear = function() {
 
 Date.prototype.isLeapYear = function() {
     var year = this.getFullYear();
-    return ((year & 3) == 0 && (year % 100 || (year % 400 == 0 && year)));
+    return !!((year & 3) == 0 && (year % 100 || (year % 400 == 0 && year)));
 };
 
 
@@ -6287,7 +6288,7 @@ Ext.extend(Ext.util.MixedCollection, Ext.util.Observable, {
 
 
     addAll : function(objs){
-        if(arguments.length > 1 || objs instanceof Array){
+        if(arguments.length > 1 || Ext.isArray(objs)){
             var args = arguments.length > 1 ? arguments : objs;
             for(var i = 0, len = args.length; i < len; i++){
                 this.add(args[i]);
@@ -6637,9 +6638,9 @@ Ext.util.JSON = new (function(){
     this.encode = function(o){
         if(typeof o == "undefined" || o === null){
             return "null";
-        }else if(o instanceof Array){
+        }else if(Ext.isArray(o)){
             return encodeArray(o);
-        }else if(o instanceof Date){
+        }else if(Ext.isDate(o)){
             return encodeDate(o);
         }else if(typeof o == "string"){
             return encodeString(o);
@@ -6774,7 +6775,7 @@ Ext.util.Format = function(){
             if(!v){
                 return "";
             }
-            if(!(v instanceof Date)){
+            if(!Ext.isDate(v)){
                 v = new Date(Date.parse(v));
             }
             return v.dateFormat(format || "m/d/Y");
@@ -6897,7 +6898,7 @@ Ext.extend(Ext.XTemplate, Ext.Template, {
         }
         var vs = t.target ? t.target.call(this, values, parent) : values;
         parent = t.target ? values : parent;
-        if(t.target && vs instanceof Array){
+        if(t.target && Ext.isArray(vs)){
             var buf = [];
             for(var i = 0, len = vs.length; i < len; i++){
                 buf[buf.length] = t.compiled.call(this, vs[i], parent, i+1, len);
@@ -7075,7 +7076,7 @@ Ext.util.CSS = function(){
    	
    getRule : function(selector, refreshCache){
    		var rs = this.getRules(refreshCache);
-   		if(!(selector instanceof Array)){
+   		if(!Ext.isArray(selector)){
    		    return rs[selector];
    		}
    		for(var i = 0; i < selector.length; i++){
@@ -7089,7 +7090,7 @@ Ext.util.CSS = function(){
    	
    	
    updateRule : function(selector, property, value){
-   		if(!(selector instanceof Array)){
+   		if(!Ext.isArray(selector)){
    			var rule = this.getRule(selector);
    			if(rule){
    				rule.style[property.replace(camelRe, camelFn)] = value;
@@ -7319,7 +7320,7 @@ Ext.KeyMap.prototype = {
 
     
 	addBinding : function(config){
-        if(config instanceof Array){
+        if(Ext.isArray(config)){
             for(var i = 0, len = config.length; i < len; i++){
                 this.addBinding(config[i]);
             }
@@ -7340,7 +7341,7 @@ Ext.KeyMap.prototype = {
             }
             keyCode = ks;
         }
-        var keyArray = keyCode instanceof Array;
+        var keyArray = Ext.isArray(keyCode);
         
         var handler = function(e){
             if((!shift || e.shiftKey) && (!ctrl || e.ctrlKey) &&  (!alt || e.altKey)){
@@ -7371,7 +7372,7 @@ Ext.KeyMap.prototype = {
     
     on : function(key, fn, scope){
         var keyCode, shift, ctrl, alt;
-        if(typeof key == "object" && !(key instanceof Array)){
+        if(typeof key == "object" && !Ext.isArray(key)){
             keyCode = key.key;
             shift = key.shift;
             ctrl = key.ctrl;
@@ -9513,7 +9514,7 @@ Ext.dd.ScrollManager = function(){
     return {
         
         register : function(el){
-            if(el instanceof Array){
+            if(Ext.isArray(el)){
                 for(var i = 0, len = el.length; i < len; i++) {
                 	this.register(el[i]);
                 }
@@ -9525,7 +9526,7 @@ Ext.dd.ScrollManager = function(){
         
         
         unregister : function(el){
-            if(el instanceof Array){
+            if(Ext.isArray(el)){
                 for(var i = 0, len = el.length; i < len; i++) {
                 	this.unregister(el[i]);
                 }
@@ -10221,7 +10222,7 @@ Ext.data.SortTypes = {
         if(!s){
             return 0;
         }
-        if(s instanceof Date){
+        if(Ext.isDate(s)){
             return s.getTime();
         }
     	return Date.parse(String(s));
@@ -10250,7 +10251,7 @@ Ext.data.Record = function(data, id){
 
 Ext.data.Record.create = function(o){
     var f = Ext.extend(Ext.data.Record, {});
-    var p = f.prototype;
+	var p = f.prototype;
     p.fields = new Ext.util.MixedCollection(false, function(field){
         return field.name;
     });
@@ -10376,6 +10377,11 @@ Ext.data.Record.prototype = {
     
     copy : function(newId) {
         return new this.constructor(Ext.apply({}, this.data), newId || this.id);
+    },
+
+    
+    isModified : function(fieldName){
+        return this.modified && this.modified.hasOwnProperty(fieldName);
     }
 };
 
@@ -11010,7 +11016,7 @@ Ext.data.Field = function(config){
                     if(!v){
                         return '';
                     }
-                    if(v instanceof Date){
+                    if(Ext.isDate(v)){
                         return v;
                     }
                     if(dateFormat){
@@ -11043,7 +11049,7 @@ Ext.data.Field.prototype = {
 Ext.data.DataReader = function(meta, recordType){
     
     this.meta = meta;
-    this.recordType = recordType instanceof Array ? 
+    this.recordType = Ext.isArray(recordType) ? 
         Ext.data.Record.create(recordType) : recordType;
 };
 
@@ -11387,7 +11393,7 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
 	        for(var j = 0; j < fl; j++){
 	            f = fi[j];
                 var v = this.ef[j](n);
-                values[f.name] = f.convert((v !== undefined) ? v : f.defaultValue);
+                values[f.name] = f.convert((v !== undefined) ? v : f.defaultValue, n);
 	        }
 	        var record = new Record(values, id);
 	        record.json = n;
@@ -11441,7 +11447,7 @@ Ext.extend(Ext.data.XmlReader, Ext.data.DataReader, {
 	        for(var j = 0, jlen = fields.length; j < jlen; j++){
 	            var f = fields.items[j];
                 var v = q.selectValue(f.mapping || f.name, n, f.defaultValue);
-	            v = f.convert(v);
+	            v = f.convert(v, n);
 	            values[f.name] = v;
 	        }
 	        var record = new recordType(values, id);
@@ -11472,7 +11478,7 @@ Ext.data.ArrayReader = Ext.extend(Ext.data.JsonReader, {
                 var f = fields.items[j];
                 var k = f.mapping !== undefined && f.mapping !== null ? f.mapping : j;
                 var v = n[k] !== undefined ? n[k] : f.defaultValue;
-                v = f.convert(v);
+                v = f.convert(v, n);
                 values[f.name] = v;
             }
 	        var record = new recordType(values, id);
@@ -11662,7 +11668,7 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
     
     appendChild : function(node){
         var multi = false;
-        if(node instanceof Array){
+        if(Ext.isArray(node)){
             multi = node;
         }else if(arguments.length > 1){
             multi = arguments;
@@ -12159,7 +12165,7 @@ Ext.Component = function(config){
     this.initComponent();
 
     if(this.plugins){
-        if(this.plugins instanceof Array){
+        if(Ext.isArray(this.plugins)){
             for(var i = 0, len = this.plugins.length; i < len; i++){
                 this.plugins[i].init(this);
             }
@@ -12184,6 +12190,7 @@ Ext.Component = function(config){
 Ext.Component.AUTO_ID = 1000;
 
 Ext.extend(Ext.Component, Ext.util.Observable, {
+    
     
     
     
@@ -12346,6 +12353,9 @@ Ext.extend(Ext.Component, Ext.util.Observable, {
                 var div = document.createElement('div');
                 Ext.DomHelper.overwrite(div, this.autoEl);
                 this.el = div.firstChild;
+            }
+            if (!this.el.id) {
+            	this.el.id = this.getId();
             }
         }
         if(this.el){
@@ -12553,6 +12563,23 @@ Ext.extend(Ext.Component, Ext.util.Observable, {
             tc.xtypes = c.join('/');
         }
         return tc.xtypes;
+    },
+
+    
+    findParentBy: function(fn) {
+        for (var p = this.ownerCt; (p != null) && !fn(p, this); p = p.ownerCt);
+        return p || null;
+    },
+
+    
+    findParentByType: function(xtype) {
+        return typeof xtype == 'function' ?
+            this.findParentBy(function(p){
+                return p.constructor === xtype;
+            }) :
+            this.findParentBy(function(p){
+                return p.constructor.xtype === xtype;
+            });
     }
 });
 
@@ -12668,6 +12695,11 @@ Ext.Action.prototype = {
     
     removeComponent : function(comp){
         this.items.remove(comp);
+    },
+
+    
+    execute : function(){
+        this.initialConfig.handler.apply(this.initialConfig.scope || window, arguments);
     }
 };
 
@@ -13247,6 +13279,10 @@ Ext.BoxComponent = Ext.extend(Ext.Component, {
     
     
     
+    
+    
+    
+    
 
     initComponent : function(){
         Ext.BoxComponent.superclass.initComponent.call(this);
@@ -13780,7 +13816,7 @@ Ext.Container = Ext.extend(Ext.BoxComponent, {
         var items = this.items;
         if(items){
             delete this.items;
-            if(items instanceof Array){
+            if(Ext.isArray(items)){
                 this.add.apply(this, items);
             }else{
                 this.add(items);
@@ -13822,7 +13858,7 @@ Ext.Container = Ext.extend(Ext.BoxComponent, {
             this.doLayout();
         }
         if(this.monitorResize === true){
-            Ext.EventManager.onWindowResize(this.doLayout, this);
+            Ext.EventManager.onWindowResize(this.doLayout, this, [false]);
         }
     },
 
@@ -13944,11 +13980,11 @@ Ext.Container = Ext.extend(Ext.BoxComponent, {
     },
 
     
-    doLayout : function(){
+    doLayout : function(shallow){
         if(this.rendered && this.layout){
             this.layout.layout();
         }
-        if(this.items){
+        if(shallow !== false && this.items){
             var cs = this.items.items;
             for(var i = 0, len = cs.length; i < len; i++) {
                 var c  = cs[i];
@@ -14595,7 +14631,8 @@ Ext.layout.BorderLayout.Region.prototype = {
                 Ext.layout.BorderLayout.Region.prototype.toolTemplate = tt;
             }
             this.collapsedEl = this.targetEl.createChild({
-                cls: "x-layout-collapsed x-layout-collapsed-"+this.position
+                cls: "x-layout-collapsed x-layout-collapsed-"+this.position,
+                id: this.panel.id + '-xcollapsed'
             });
             this.collapsedEl.enableDisplayMode('block');
 
@@ -15043,7 +15080,8 @@ Ext.extend(Ext.layout.BorderLayout.SplitRegion, Ext.layout.BorderLayout.Region, 
         var ps = this.position;
 
         this.splitEl = ct.createChild({
-            cls: "x-layout-split x-layout-split-"+ps, html: "&#160;"
+            cls: "x-layout-split x-layout-split-"+ps, html: "&#160;",
+            id: this.panel.id + '-xsplit'
         });
 
         if(this.collapseMode == 'mini'){
@@ -15200,7 +15238,7 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
     },
 
         adjustWidthAnchor : function(value, comp){
-        return value - (comp.hideLabel ? 0 : this.labelAdjust);
+        return value - (comp.isFormField  ? (comp.hideLabel ? 0 : this.labelAdjust) : 0);
     },
 
         isValidParent : function(c, target){
@@ -15308,7 +15346,7 @@ Ext.layout.TableLayout = Ext.extend(Ext.layout.ContainerLayout, {
 
         this.currentRow = 0;
         this.currentColumn = 0;
-        this.spanCells = [];
+        this.cells = [];
     },
 
     
@@ -15337,70 +15375,48 @@ Ext.layout.TableLayout = Ext.extend(Ext.layout.ContainerLayout, {
 
     
 	getNextCell : function(c){
-        var td = document.createElement('td'), row, colIndex;
-        if(!this.columns){
-            row = this.getRow(0);
-        }else {
-        	colIndex = this.currentColumn;
-            if(colIndex !== 0 && (colIndex % this.columns === 0)){
-                this.currentRow++;
-                colIndex = (c.colspan || 1);
-            }else{
-                colIndex += (c.colspan || 1);
-            }
-            
-            
-            var cell = this.getNextNonSpan(colIndex, this.currentRow);
-            this.currentColumn = cell[0];
-            if(cell[1] != this.currentRow){
-            	
-            	this.currentRow = cell[1];
-            	if(c.colspan){
-            		
-            		
-            		
-            		
-            		this.currentColumn += c.colspan - 1;
-            	}
-            }
-            row = this.getRow(this.currentRow);
-        }
-        if(c.colspan){
-            td.colSpan = c.colspan;
-        }
-		td.className = 'x-table-layout-cell';
-        if(c.rowspan){
-            td.rowSpan = c.rowspan;
-			var rowIndex = this.currentRow, colspan = c.colspan || 1;
-			
-			for(var r = rowIndex+1; r < rowIndex+c.rowspan; r++){
-				for(var col=this.currentColumn-colspan+1; col <= this.currentColumn; col++){
-					if(!this.spanCells[col]){
-						this.spanCells[col] = [];
-					}
-					this.spanCells[col][r] = 1;
-				}
+		var cell = this.getNextNonSpan(this.currentColumn, this.currentRow);
+		var curCol = this.currentColumn = cell[0], curRow = this.currentRow = cell[1];
+		for(var rowIndex = curRow; rowIndex < curRow + (c.rowspan || 1); rowIndex++){
+			if(!this.cells[rowIndex]){
+				this.cells[rowIndex] = [];
 			}
-        }
-        row.appendChild(td);
-        return td;
-    },
+			for(var colIndex = curCol; colIndex < curCol + (c.colspan || 1); colIndex++){
+				this.cells[rowIndex][colIndex] = true;
+			}
+		}
+		var td = document.createElement('td');
+		if(c.cellId){
+			td.id = c.cellId;
+		}
+		var cls = 'x-table-layout-cell';
+		if(c.cellCls){
+			cls += ' ' + c.cellCls;
+		}
+		td.className = cls;
+		if(c.colspan){
+			td.colSpan = c.colspan;
+		}
+		if(c.rowspan){
+			td.rowSpan = c.rowspan;
+		}
+		this.getRow(curRow).appendChild(td);
+		return td;
+	},
     
     
-    getNextNonSpan: function(colIndex, rowIndex){
-    	var c = (colIndex <= this.columns ? colIndex : this.columns), r = rowIndex;
-        for(var i=c; i <= this.columns; i++){
-        	if(this.spanCells[i] && this.spanCells[i][r]){
-        		if(++c > this.columns){
-        			
-	                return this.getNextNonSpan(1, ++r);
-        		}
-        	}else{
-        		break;
-        	}
-        }
-        return [c,r];
-    },
+	getNextNonSpan: function(colIndex, rowIndex){
+		var cols = this.columns;
+		while((cols && colIndex >= cols) || (this.cells[rowIndex] && this.cells[rowIndex][colIndex])) {
+			if(cols && colIndex >= cols){
+				rowIndex++;
+				colIndex = 0;
+			}else{
+				colIndex++;
+			}
+		}
+		return [colIndex, rowIndex];
+	},
 
     
     renderItem : function(c, position, target){
@@ -15421,9 +15437,38 @@ Ext.Container.LAYOUTS['table'] = Ext.layout.TableLayout;
 
 Ext.layout.AbsoluteLayout = Ext.extend(Ext.layout.AnchorLayout, {
     extraCls: 'x-abs-layout-item',
+    isForm: false,
+    
+    setContainer : function(ct){
+        Ext.layout.AbsoluteLayout.superclass.setContainer.call(this, ct);
+        if(ct.isXType('form')){
+            this.isForm = true;
+        }
+    },
+
     onLayout : function(ct, target){
-        target.position();
+        if(this.isForm){ ct.body.position(); } else { target.position(); }
         Ext.layout.AbsoluteLayout.superclass.onLayout.call(this, ct, target);
+    },
+
+    
+    getAnchorViewSize : function(ct, target){
+        return this.isForm ? ct.body.getStyleSize() : Ext.layout.AbsoluteLayout.superclass.getAnchorViewSize.call(this, ct, target);
+    },
+
+    
+    isValidParent : function(c, target){
+        return this.isForm ? true : Ext.layout.AbsoluteLayout.superclass.isValidParent.call(this, c, target);
+    },
+
+    
+    adjustWidthAnchor : function(value, comp){
+        return value ? value - comp.getPosition(true)[0] : value;
+    },
+
+    
+    adjustHeightAnchor : function(value, comp){
+        return  value ? value - comp.getPosition(true)[1] : value;
     }
     
 });
@@ -15765,13 +15810,13 @@ Ext.Panel = Ext.extend(Ext.Container, {
         }
 
         if(this.tbar && this.topToolbar){
-            if(this.topToolbar instanceof Array){
+            if(Ext.isArray(this.topToolbar)){
                 this.topToolbar = new Ext.Toolbar(this.topToolbar);
             }
             this.topToolbar.render(this.tbar);
         }
         if(this.bbar && this.bottomToolbar){
-            if(this.bottomToolbar instanceof Array){
+            if(Ext.isArray(this.bottomToolbar)){
                 this.bottomToolbar = new Ext.Toolbar(this.bottomToolbar);
             }
             this.bottomToolbar.render(this.bbar);
@@ -15836,6 +15881,7 @@ Ext.Panel = Ext.extend(Ext.Container, {
             Ext.apply(bc, config);
         }
         var btn = new Ext.Button(bc);
+        btn.ownerCt = this;
         if(!this.buttons){
             this.buttons = [];
         }
@@ -16252,6 +16298,8 @@ Ext.Panel = Ext.extend(Ext.Container, {
             typeof this.autoLoad == 'object' ?
                 this.autoLoad : {url: this.autoLoad});
     }
+
+
 });
 Ext.reg('panel', Ext.Panel);
 
@@ -17184,9 +17232,9 @@ Ext.extend(Ext.state.Provider, Ext.util.Observable, {
             enc = "n:" + v;
         }else if(typeof v == "boolean"){
             enc = "b:" + (v ? "1" : "0");
-        }else if(v instanceof Date){
+        }else if(Ext.isDate(v)){
             enc = "d:" + v.toGMTString();
-        }else if(v instanceof Array){
+        }else if(Ext.isArray(v)){
             var flat = "";
             for(var i = 0, len = v.length; i < len; i++){
                 flat += this.encodeValue(v[i]);
@@ -17666,7 +17714,7 @@ Ext.DataView = Ext.extend(Ext.BoxComponent, {
 
     
     select : function(nodeInfo, keepExisting, suppressEvent){
-        if(nodeInfo instanceof Array){
+        if(Ext.isArray(nodeInfo)){
             if(!keepExisting){
                 this.clearSelections(true);
             }
@@ -17760,6 +17808,7 @@ Ext.ColorPalette = function(config){
     }
 };
 Ext.extend(Ext.ColorPalette, Ext.Component, {
+	
     
     itemCls : "x-color-palette",
     
@@ -17780,7 +17829,7 @@ Ext.extend(Ext.ColorPalette, Ext.Component, {
     ],
 
         onRender : function(container, position){
-        var t = new Ext.XTemplate(
+        var t = this.tpl || new Ext.XTemplate(
             '<tpl for="."><a href="#" class="color-{.}" hidefocus="on"><em><span style="background:#{.}" unselectable="on">&#160;</span></em></a></tpl>'
         );
         var el = document.createElement("div");
@@ -17824,6 +17873,8 @@ Ext.extend(Ext.ColorPalette, Ext.Component, {
             this.fireEvent("select", this, color);
         }
     }
+
+    
 });
 Ext.reg('colorpalette', Ext.ColorPalette);
 
@@ -18359,6 +18410,8 @@ Ext.DatePicker = Ext.extend(Ext.Component, {
         this.mbtn.destroy();
         this.todayBtn.destroy();
     }
+
+    
 });
 Ext.reg('datepicker', Ext.DatePicker);
 
@@ -18580,6 +18633,10 @@ Ext.TabPanel = Ext.extend(Ext.Panel,  {
         if(item.iconCls){
             cls += ' x-tab-with-icon';
         }
+        if(item.tabCls){
+            cls += ' ' + item.tabCls;
+        }
+        
         var p = {
             id: this.id + this.idDelimiter + item.getItemId(),
             text: item.title,
@@ -18799,24 +18856,33 @@ Ext.TabPanel = Ext.extend(Ext.Panel,  {
         var tw = this.header.dom.clientWidth;
 
         var wrap = this.stripWrap;
-        var cw = wrap.dom.offsetWidth;
+        var wd = wrap.dom;
+        var cw = wd.offsetWidth;
         var pos = this.getScrollPos();
         var l = this.edge.getOffsetsTo(this.stripWrap)[0] + pos;
 
         if(!this.enableTabScroll || count < 1 || cw < 20){             return;
         }
         if(l <= tw){
-            wrap.dom.scrollLeft = 0;
+            wd.scrollLeft = 0;
             wrap.setWidth(tw);
             if(this.scrolling){
                 this.scrolling = false;
                 this.header.removeClass('x-tab-scrolling');
                 this.scrollLeft.hide();
                 this.scrollRight.hide();
+                if(Ext.isAir){
+                    wd.style.marginLeft = '';
+                    wd.style.marginRight = '';
+                }
             }
         }else{
             if(!this.scrolling){
                 this.header.addClass('x-tab-scrolling');
+                if(Ext.isAir){
+                    wd.style.marginLeft = '18px';
+                    wd.style.marginRight = '18px';
+                }
             }
             tw -= wrap.getMargins('lr');
             wrap.setWidth(tw > 20 ? tw : 20);
@@ -18829,7 +18895,7 @@ Ext.TabPanel = Ext.extend(Ext.Panel,  {
                 }
             }
             this.scrolling = true;
-            if(pos > (l-tw)){                 wrap.dom.scrollLeft = l-tw;
+            if(pos > (l-tw)){                 wd.scrollLeft = l-tw;
             }else{                 this.scrollToTab(this.activeTab, false);
             }
             this.updateScrollButtons();
@@ -18948,6 +19014,11 @@ Ext.TabPanel = Ext.extend(Ext.Panel,  {
     
     
     
+    
+    
+    
+    
+
 });
 Ext.reg('tabpanel', Ext.TabPanel);
 
@@ -18990,6 +19061,7 @@ Ext.Button = Ext.extend(Ext.Component, {
     disabled : false,
     
     pressed : false,
+    
 
     
 
@@ -19003,8 +19075,7 @@ Ext.Button = Ext.extend(Ext.Component, {
     
     type : 'button',
 
-    
-    menuClassTarget: 'tr',
+        menuClassTarget: 'tr',
 
     
     clickEvent : 'click',
@@ -19018,7 +19089,7 @@ Ext.Button = Ext.extend(Ext.Component, {
     buttonSelector : "button:first",
 
     
-    
+
     
     initComponent : function(){
         Ext.Button.superclass.initComponent.call(this);
@@ -19049,12 +19120,10 @@ Ext.Button = Ext.extend(Ext.Component, {
         }
     },
 
-    
-    onRender : function(ct, position){
+        onRender : function(ct, position){
         if(!this.template){
             if(!Ext.Button.buttonTemplate){
-                
-                Ext.Button.buttonTemplate = new Ext.Template(
+                                Ext.Button.buttonTemplate = new Ext.Template(
                     '<table border="0" cellpadding="0" cellspacing="0" class="x-btn-wrap"><tbody><tr>',
                     '<td class="x-btn-left"><i>&#160;</i></td><td class="x-btn-center"><em unselectable="on"><button class="x-btn-text" type="{1}">{0}</button></em></td><td class="x-btn-right"><i>&#160;</i></td>',
                     "</tr></tbody></table>");
@@ -19080,8 +19149,7 @@ Ext.Button = Ext.extend(Ext.Component, {
         Ext.ButtonToggleMgr.register(this);
     },
 
-    
-    initButtonEl : function(btn, btnEl){
+        initButtonEl : function(btn, btnEl){
 
         this.el = btn;
         btn.addClass("x-btn");
@@ -19114,9 +19182,7 @@ Ext.Button = Ext.extend(Ext.Component, {
 
         if(this.handleMouseEvents){
             btn.on("mouseover", this.onMouseOver, this);
-            
-            
-            btn.on("mousedown", this.onMouseDown, this);
+                                    btn.on("mousedown", this.onMouseDown, this);
         }
 
         if(this.menu){
@@ -19138,8 +19204,7 @@ Ext.Button = Ext.extend(Ext.Component, {
         btn.on(this.clickEvent, this.onClick, this);
     },
 
-    
-    afterRender : function(){
+        afterRender : function(){
         Ext.Button.superclass.afterRender.call(this);
         if(Ext.isIE6){
             this.autoWidth.defer(1, this);
@@ -19155,9 +19220,8 @@ Ext.Button = Ext.extend(Ext.Component, {
         }
         this.iconCls = cls;
     },
-    
-    
-    beforeDestroy: function(){
+
+        beforeDestroy: function(){
     	if(this.rendered){
 	        var btn = this.el.child(this.buttonSelector);
 	        if(btn){
@@ -19169,15 +19233,13 @@ Ext.Button = Ext.extend(Ext.Component, {
         }
     },
 
-    
-    onDestroy : function(){
+        onDestroy : function(){
         if(this.rendered){
             Ext.ButtonToggleMgr.unregister(this);
         }
     },
 
-    
-    autoWidth : function(){
+        autoWidth : function(){
         if(this.el){
             this.el.setWidth("auto");
             if(Ext.isIE7 && Ext.isStrict){
@@ -19198,9 +19260,9 @@ Ext.Button = Ext.extend(Ext.Component, {
     
     setHandler : function(handler, scope){
         this.handler = handler;
-        this.scope = scope;  
+        this.scope = scope;
     },
-    
+
     
     setText : function(text){
         this.text = text;
@@ -19209,12 +19271,12 @@ Ext.Button = Ext.extend(Ext.Component, {
         }
         this.autoWidth();
     },
-    
+
     
     getText : function(){
-        return this.text;  
+        return this.text;
     },
-    
+
     
     toggle : function(state){
         state = state === undefined ? !this.pressed : state;
@@ -19233,14 +19295,13 @@ Ext.Button = Ext.extend(Ext.Component, {
             }
         }
     },
-    
+
     
     focus : function(){
         this.el.child(this.buttonSelector).focus();
     },
-    
-    
-    onDisable : function(){
+
+        onDisable : function(){
         if(this.el){
             if(!Ext.isIE6 || !this.text){
                 this.el.addClass(this.disabledClass);
@@ -19250,8 +19311,7 @@ Ext.Button = Ext.extend(Ext.Component, {
         this.disabled = true;
     },
 
-    
-    onEnable : function(){
+        onEnable : function(){
         if(this.el){
             if(!Ext.isIE6 || !this.text){
                 this.el.removeClass(this.disabledClass);
@@ -19282,8 +19342,7 @@ Ext.Button = Ext.extend(Ext.Component, {
         return this.menu && this.menu.isVisible();
     },
 
-    
-    onClick : function(e){
+        onClick : function(e){
         if(e){
             e.preventDefault();
         }
@@ -19299,24 +19358,20 @@ Ext.Button = Ext.extend(Ext.Component, {
             }
             this.fireEvent("click", this, e);
             if(this.handler){
-                
-                this.handler.call(this.scope || this, this, e);
+                                this.handler.call(this.scope || this, this, e);
             }
         }
     },
 
-    
-    isMenuTriggerOver : function(e, internal){
+        isMenuTriggerOver : function(e, internal){
         return this.menu && !internal;
     },
 
-    
-    isMenuTriggerOut : function(e, internal){
+        isMenuTriggerOut : function(e, internal){
         return this.menu && !internal;
     },
 
-    
-    onMouseOver : function(e){
+        onMouseOver : function(e){
         if(!this.disabled){
             var internal = e.within(this.el,  true);
             if(!internal){
@@ -19330,16 +19385,14 @@ Ext.Button = Ext.extend(Ext.Component, {
         }
     },
 
-    
-    monitorMouseOver : function(e){
+        monitorMouseOver : function(e){
         if(e.target != this.el.dom && !e.within(this.el)){
             Ext.getDoc().un('mouseover', this.monitorMouseOver, this);
             this.onMouseOut(e);
         }
     },
 
-    
-    onMouseOut : function(e){
+        onMouseOut : function(e){
         var internal = e.within(this.el) && e.target != this.el.dom;
         this.el.removeClass("x-btn-over");
         this.fireEvent('mouseout', this, e);
@@ -19347,60 +19400,55 @@ Ext.Button = Ext.extend(Ext.Component, {
             this.fireEvent('menutriggerout', this, this.menu, e);
         }
     },
-    
-    onFocus : function(e){
+        onFocus : function(e){
         if(!this.disabled){
             this.el.addClass("x-btn-focus");
         }
     },
-    
-    onBlur : function(e){
+        onBlur : function(e){
         this.el.removeClass("x-btn-focus");
     },
 
-    
-    getClickEl : function(e, isUp){
+        getClickEl : function(e, isUp){
        return this.el;
     },
 
-    
-    onMouseDown : function(e){
+        onMouseDown : function(e){
         if(!this.disabled && e.button == 0){
             this.getClickEl(e).addClass("x-btn-click");
             Ext.getDoc().on('mouseup', this.onMouseUp, this);
         }
     },
-    
-    onMouseUp : function(e){
+        onMouseUp : function(e){
         if(e.button == 0){
             this.getClickEl(e, true).removeClass("x-btn-click");
             Ext.getDoc().un('mouseup', this.onMouseUp, this);
         }
     },
-    
-    onMenuShow : function(e){
+        onMenuShow : function(e){
         this.ignoreNextClick = 0;
         this.el.addClass("x-btn-menu-active");
         this.fireEvent('menushow', this, this.menu);
     },
-    
-    onMenuHide : function(e){
+        onMenuHide : function(e){
         this.el.removeClass("x-btn-menu-active");
         this.ignoreNextClick = this.restoreClick.defer(250, this);
         this.fireEvent('menuhide', this, this.menu);
     },
 
-    
-    restoreClick : function(){
+        restoreClick : function(){
         this.ignoreNextClick = 0;
     }
+
+
+
+    
 });
 Ext.reg('button', Ext.Button);
 
-
 Ext.ButtonToggleMgr = function(){
    var groups = {};
-   
+
    function toggleGroup(btn, state){
        if(state){
            var g = groups[btn.toggleGroup];
@@ -19411,7 +19459,7 @@ Ext.ButtonToggleMgr = function(){
            }
        }
    }
-   
+
    return {
        register : function(btn){
            if(!btn.toggleGroup){
@@ -19424,7 +19472,7 @@ Ext.ButtonToggleMgr = function(){
            g.push(btn);
            btn.on("toggle", toggleGroup);
        },
-       
+
        unregister : function(btn){
            if(!btn.toggleGroup){
                return;
@@ -19589,6 +19637,7 @@ Ext.CycleButton = Ext.extend(Ext.SplitButton, {
     
     
     
+	
 
     
     getItemText : function(item){
@@ -19605,6 +19654,9 @@ Ext.CycleButton = Ext.extend(Ext.SplitButton, {
 
     
     setActiveItem : function(item, suppressEvent){
+        if(typeof item != 'object'){
+            item = this.menu.items.get(item);
+        }
         if(item){
             if(!this.rendered){
                 this.text = this.getItemText(item);
@@ -19617,6 +19669,12 @@ Ext.CycleButton = Ext.extend(Ext.SplitButton, {
                 this.setIconClass(item.iconCls);
             }
             this.activeItem = item;
+            if(!item.checked){
+                item.setChecked(true, true);
+            }
+            if(this.forceIcon){
+                this.setIconClass(this.forceIcon);
+            }
             if(!suppressEvent){
                 this.fireEvent('change', this, item);
             }
@@ -19689,7 +19747,7 @@ Ext.CycleButton = Ext.extend(Ext.SplitButton, {
 Ext.reg('cycle', Ext.CycleButton);
  
  Ext.Toolbar = function(config){
-    if(config instanceof Array){
+    if(Ext.isArray(config)){
         config = {buttons:config};
     }
     Ext.Toolbar.superclass.constructor.call(this, config);
@@ -19710,6 +19768,7 @@ Ext.extend(T, Ext.BoxComponent, {
         if(this.items){
             this.buttons = this.items;
         }
+        
         this.items = new Ext.util.MixedCollection(false, function(o){
             return o.itemId || o.id || Ext.id();
         });
@@ -19798,7 +19857,7 @@ Ext.extend(T, Ext.BoxComponent, {
     
     
     addButton : function(config){
-        if(config instanceof Array){
+        if(Ext.isArray(config)){
             var buttons = [];
             for(var i = 0, len = config.length; i < len; i++) {
                 buttons.push(this.addButton(config[i]));
@@ -19837,7 +19896,7 @@ Ext.extend(T, Ext.BoxComponent, {
     
     
     insertButton : function(index, item){
-        if(item instanceof Array){
+        if(Ext.isArray(item)){
             var buttons = [];
             for(var i = 0, len = item.length; i < len; i++) {
                buttons.push(this.insertButton(index + i, item[i]));
@@ -19929,6 +19988,8 @@ Ext.extend(T, Ext.BoxComponent, {
     onButtonMenuHide : function(btn){
         delete this.activeMenuBtn;
     }
+
+    
 });
 Ext.reg('toolbar', Ext.Toolbar);
 
@@ -20911,6 +20972,7 @@ Ext.extend(Ext.Editor, Ext.Component, {
         if(this.field.msgTarget != 'title'){
             this.field.msgTarget = 'qtip';
         }
+        this.field.inEditor = true;
         this.field.render(this.el);
         if(Ext.isGecko){
             this.field.el.dom.setAttribute('autocomplete', 'off');
@@ -20952,26 +21014,31 @@ Ext.extend(Ext.Editor, Ext.Component, {
         }
         this.startValue = v;
         this.field.setValue(v);
-        if(this.autoSize){
-            var sz = this.boundEl.getSize();
-            switch(this.autoSize){
-                case "width":
-                this.setSize(sz.width,  "");
-                break;
-                case "height":
-                this.setSize("",  sz.height);
-                break;
-                default:
-                this.setSize(sz.width,  sz.height);
-            }
-        }
+        this.doAutoSize();
         this.el.alignTo(this.boundEl, this.alignment);
         this.editing = true;
         this.show();
     },
 
+        doAutoSize : function(){
+        if(this.autoSize){
+            var sz = this.boundEl.getSize();
+            switch(this.autoSize){
+                case "width":
+                    this.setSize(sz.width,  "");
+                break;
+                case "height":
+                    this.setSize("",  sz.height);
+                break;
+                default:
+                    this.setSize(sz.width,  sz.height);
+            }
+        }
+    },
+
     
     setSize : function(w, h){
+        delete this.field.lastSize;
         this.field.setSize(w, h);
         if(this.el){
             this.el.sync();
@@ -21320,7 +21387,7 @@ Ext.MessageBox = function(){
                 }else{
                     d.keyMap.disable();
                 }
-            });
+            }, this, {single:true});
 
             if(opt.wait === true){
                 progressBar.wait(opt.waitConfig);
@@ -21738,12 +21805,12 @@ Ext.QuickTip = Ext.extend(Ext.ToolTip, {
 
     
     register : function(config){
-        var cs = config instanceof Array ? config : arguments;
+        var cs = Ext.isArray(config) ? config : arguments;
         for(var i = 0, len = cs.length; i < len; i++){
             var c = cs[i];
             var target = c.target;
             if(target){
-                if(target instanceof Array){
+                if(Ext.isArray(target)){
                     for(var j = 0, jlen = target.length; j < jlen; j++){
                         this.targets[Ext.id(target[j])] = c;
                     }
@@ -22174,7 +22241,7 @@ Ext.tree.TreePanel = Ext.extend(Ext.Panel, {
         this.el.addClass('x-tree');
         this.innerCt = this.body.createChild({tag:"ul",
                cls:"x-tree-root-ct " +
-               (this.lines ? "x-tree-lines" : "x-tree-no-lines")});
+               (this.useArrows ? 'x-tree-arrows' : this.lines ? "x-tree-lines" : "x-tree-no-lines")});
     },
 
     
@@ -22256,6 +22323,21 @@ Ext.tree.TreePanel = Ext.extend(Ext.Panel, {
     
     
     
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 });
 Ext.reg('treepanel', Ext.tree.TreePanel);
 Ext.tree.TreeEventModel = function(tree){
@@ -22267,8 +22349,10 @@ Ext.tree.TreeEventModel.prototype = {
     initEvents : function(){
         var el = this.tree.getTreeEl();
         el.on('click', this.delegateClick, this);
-        el.on('mouseover', this.delegateOver, this);
-        el.on('mouseout', this.delegateOut, this);
+        if(this.tree.trackMouseOver !== false){
+            el.on('mouseover', this.delegateOver, this);
+            el.on('mouseout', this.delegateOut, this);
+        }
         el.on('dblclick', this.delegateDblClick, this);
         el.on('contextmenu', this.delegateContextMenu, this);
     },
@@ -22296,8 +22380,14 @@ Ext.tree.TreeEventModel.prototype = {
         if(!this.beforeEvent(e)){
             return;
         }
-        t = this.getNodeTarget(e);
-        if(t && !e.within(t, true)){
+        if(e.getTarget('.x-tree-ec-icon', 1)){
+            var n = this.getNode(e);
+            this.onIconOut(e, n);
+            if(n == this.lastEcOver){
+                delete this.lastEcOver;
+            }
+        }
+        if((t = this.getNodeTarget(e)) && !e.within(t, true)){
             this.onNodeOut(e, this.getNode(e));
         }
     },
@@ -22306,8 +22396,15 @@ Ext.tree.TreeEventModel.prototype = {
         if(!this.beforeEvent(e)){
             return;
         }
-        t = this.getNodeTarget(e);
-        if(t){
+        if(this.lastEcOver){ 
+            this.onIconOut(e, this.lastEcOver);
+            delete this.lastEcOver;
+        }
+        if(e.getTarget('.x-tree-ec-icon', 1)){
+            this.lastEcOver = this.getNode(e);
+            this.onIconOver(e, this.lastEcOver);
+        }
+        if(t = this.getNodeTarget(e)){
             this.onNodeOver(e, this.getNode(e));
         }
     },
@@ -22350,6 +22447,14 @@ Ext.tree.TreeEventModel.prototype = {
 
     onNodeOut : function(e, node){
         node.ui.onOut(e);
+    },
+
+    onIconOver : function(e, node){
+        node.ui.addClass('x-tree-ec-over');
+    },
+
+    onIconOut : function(e, node){
+        node.ui.removeClass('x-tree-ec-over');
     },
 
     onIconClick : function(e, node){
@@ -24103,12 +24208,13 @@ Ext.extend(Ext.tree.TreeDropZone, Ext.dd.DropZone, {
             source: dd,
             rawEvent: e,
             dropNode: dropNode,
-            cancel: !dropNode   
+            cancel: !dropNode,
+            dropStatus: false
         };
         var retval = this.tree.fireEvent("beforenodedrop", dropEvent);
         if(retval === false || dropEvent.cancel === true || !dropEvent.dropNode){
             targetNode.ui.endDrop();
-            return false;
+            return dropEvent.dropStatus;
         }
         
         targetNode = dropEvent.target;
@@ -24125,7 +24231,7 @@ Ext.extend(Ext.tree.TreeDropZone, Ext.dd.DropZone, {
     
     completeDrop : function(de){
         var ns = de.dropNode, p = de.point, t = de.target;
-        if(!(ns instanceof Array)){
+        if(!Ext.isArray(ns)){
             ns = [ns];
         }
         var n;
@@ -24276,6 +24382,7 @@ Ext.extend(Ext.tree.TreeEditor, Ext.Editor, {
 
     initEditor : function(tree){
         tree.on('beforeclick', this.beforeNodeClick, this);
+        tree.on('dblclick', this.onNodeDblClick, this);
         this.on('complete', this.updateNode, this);
         this.on('beforestartedit', this.fitToTree, this);
         this.on('startedit', this.bindScroll, this, {delay:10});
@@ -24292,10 +24399,13 @@ Ext.extend(Ext.tree.TreeEditor, Ext.Editor, {
         this.setSize(w, '');
     },
 
-        triggerEdit : function(node){
+        triggerEdit : function(node, defer){
         this.completeEdit();
-        this.editNode = node;
-        this.startEdit(node.ui.textNode, node.text);
+		if(node.attributes.editable !== false){
+			this.editNode = node;
+            this.autoEditTimer = this.startEdit.defer(this.editDelay, this, [node.ui.textNode, node.text]);
+            return false;
+        }
     },
 
         bindScroll : function(){
@@ -24303,13 +24413,15 @@ Ext.extend(Ext.tree.TreeEditor, Ext.Editor, {
     },
 
         beforeNodeClick : function(node, e){
-        var sinceLast = (this.lastClick ? this.lastClick.getElapsed() : 0);
-        this.lastClick = new Date();
-        if(sinceLast > this.editDelay && this.tree.getSelectionModel().isSelected(node)){
+        clearTimeout(this.autoEditTimer);
+        if(this.tree.getSelectionModel().isSelected(node)){
             e.stopEvent();
-            this.triggerEdit(node);
-            return false;
+            return this.triggerEdit(node);
         }
+    },
+
+    onNodeDblClick : function(node, e){
+        clearTimeout(this.autoEditTimer);
     },
 
         updateNode : function(ed, value){
@@ -24320,7 +24432,7 @@ Ext.extend(Ext.tree.TreeEditor, Ext.Editor, {
         onHide : function(){
         Ext.tree.TreeEditor.superclass.onHide.call(this);
         if(this.editNode){
-            this.editNode.ui.focus();
+            this.editNode.ui.focus.defer(50, this.editNode.ui);
         }
     },
 
@@ -24337,7 +24449,7 @@ Ext.extend(Ext.tree.TreeEditor, Ext.Editor, {
 });
 
 Ext.menu.Menu = function(config){
-    if(config instanceof Array){
+    if(Ext.isArray(config)){
         config = {items:config};
     }
     Ext.apply(this, config);
@@ -24363,6 +24475,8 @@ Ext.menu.Menu = function(config){
     Ext.menu.MenuMgr.register(this);
     Ext.menu.Menu.superclass.constructor.call(this);
     var mis = this.items;
+    
+
     this.items = new Ext.util.MixedCollection();
     if(mis){
         this.add.apply(this, mis);
@@ -24401,8 +24515,9 @@ Ext.extend(Ext.menu.Menu, Ext.util.Observable, {
         }
         var el = this.el = this.createEl();
 
-        this.keyNav = new Ext.menu.MenuNav(this);
-
+        if(!this.keyNav){
+            this.keyNav = new Ext.menu.MenuNav(this);
+        }
         if(this.plain){
             el.addClass("x-menu-plain");
         }
@@ -25663,7 +25778,7 @@ Ext.form.Field = Ext.extend(Ext.BoxComponent,  {
         if(typeof w == 'number' && !Ext.isSafari){
             if(Ext.isIE && (tag == 'input' || tag == 'textarea')){
                 if(tag == 'input' && !Ext.isStrict){
-                    return w - 3;
+                    return this.inEditor ? w : w - 3;
                 }
                 if(tag == 'input' && Ext.isStrict){
                     return w - (Ext.isIE6 ? 4 : 1);
@@ -25682,6 +25797,11 @@ Ext.form.Field = Ext.extend(Ext.BoxComponent,  {
         }
         return w;
     }
+
+    
+    
+
+    
 });
 
 
@@ -26330,7 +26450,7 @@ Ext.form.DateField = Ext.extend(Ext.form.TriggerField,  {
     
     format : "m/d/y",
     
-    altFormats : "m/d/Y|m-d-y|m-d-Y|m/d|m-d|md|mdy|mdY|d|Y-m-d",
+    altFormats : "m/d/Y|n/j/Y|n/j/y|m/j/y|n/d/y|m/j/Y|n/d/Y|m-d-y|m-d-Y|m/d|m-d|md|mdy|mdY|d|Y-m-d",
     
     disabledDays : null,
     
@@ -26429,7 +26549,7 @@ Ext.form.DateField = Ext.extend(Ext.form.TriggerField,  {
     },
 
         parseDate : function(value){
-        if(!value || value instanceof Date){
+        if(!value || Ext.isDate(value)){
             return value;
         }
         var v = Date.parseDate(value, this.format);
@@ -26455,8 +26575,7 @@ Ext.form.DateField = Ext.extend(Ext.form.TriggerField,  {
     },
 
         formatDate : function(date){
-        return (!date || !(date instanceof Date)) ?
-               date : date.dateFormat(this.format);
+        return Ext.isDate(date) ? date.dateFormat(this.format) : date;
     },
 
         menuListeners : {
@@ -26538,6 +26657,8 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
     listAlign: 'tl-bl?',
     
     maxHeight: 300,
+    
+    minHeight: 90,
     
     triggerAction: 'query',
     
@@ -27005,14 +27126,19 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
         }
     },
 
-        restrictHeight : function(){
+    	restrictHeight : function(){
         this.innerList.dom.style.height = '';
         var inner = this.innerList.dom;
-        var fw = this.list.getFrameWidth('tb');
+        var pad = this.list.getFrameWidth('tb')+(this.resizable?this.handleHeight:0)+this.assetHeight;
         var h = Math.max(inner.clientHeight, inner.offsetHeight, inner.scrollHeight);
-        this.innerList.setHeight(h < this.maxHeight ? 'auto' : this.maxHeight);
+        var ha = this.getPosition()[1]-Ext.getBody().getScroll().top;
+        var hb = Ext.lib.Dom.getViewHeight()-ha-this.getSize().height;
+        var space = Math.max(ha, hb, this.minHeight || 0)-this.list.shadow.offset-pad-2;
+        h = Math.min(h, space, this.maxHeight);
+        
+        this.innerList.setHeight(h);
         this.list.beginUpdate();
-        this.list.setHeight(this.innerList.getHeight()+fw+(this.resizable?this.handleHeight:0)+this.assetHeight);
+        this.list.setHeight(h+pad);
         this.list.alignTo(this.el, this.listAlign);
         this.list.endUpdate();
     },
@@ -27308,7 +27434,8 @@ Ext.form.Radio = Ext.extend(Ext.form.Checkbox, {
     
     getGroupValue : function(){
     	var p = this.el.up('form') || Ext.getBody();
-        return p.child('input[name='+this.el.dom.name+']:checked', true).value;
+        var c = p.child('input[name='+this.el.dom.name+']:checked', true);
+        return c ? c.value : null;
     },
     
         onClick : function(){
@@ -27323,6 +27450,18 @@ Ext.form.Radio = Ext.extend(Ext.form.Checkbox, {
 				}
 			}, this);
 		}
+    },
+
+    
+    setValue : function(v){
+    	if (typeof v == 'boolean') {
+            Ext.form.Radio.superclass.setValue.call(this, v);
+        } else {
+            var r = this.el.up('form').child('input[name='+this.el.dom.name+'][value='+v+']', true);
+            if (r){
+                r.checked = true;
+            };
+        }
     }
 });
 Ext.reg('radio', Ext.form.Radio);
@@ -27390,10 +27529,13 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
 
     
     
+    
         initEl : function(el){
         this.el = Ext.get(el);
         this.id = this.el.id || Ext.id();
-        this.el.on('submit', this.onSubmit, this);
+        if(!this.standardSubmit){
+            this.el.on('submit', this.onSubmit, this);
+        }
         this.el.addClass('x-form');
     },
 
@@ -27454,6 +27596,13 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
 
     
     submit : function(options){
+        if(this.standardSubmit){
+            var v = this.isValid();
+            if(v){
+                this.el.dom.submit();
+            }
+            return v;
+        }
         this.doAction('submit', options);
         return this;
     },
@@ -27540,7 +27689,7 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
 
     
     markInvalid : function(errors){
-        if(errors instanceof Array){
+        if(Ext.isArray(errors)){
             for(var i = 0, len = errors.length; i < len; i++){
                 var fieldError = errors[i];
                 var f = this.findField(fieldError.id);
@@ -27561,7 +27710,7 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
 
     
     setValues : function(values){
-        if(values instanceof Array){             for(var i = 0, len = values.length; i < len; i++){
+        if(Ext.isArray(values)){             for(var i = 0, len = values.length; i < len; i++){
                 var v = values[i];
                 var f = this.findField(v.id);
                 if(f){
@@ -27842,7 +27991,9 @@ Ext.form.FieldSet = Ext.extend(Ext.Panel, {
         if(!this.el){
             this.el = document.createElement('fieldset');
             this.el.id = this.id;
-            this.el.appendChild(document.createElement('legend')).className = 'x-fieldset-header';
+            if (this.title || this.header || this.checkboxToggle) {
+                this.el.appendChild(document.createElement('legend')).className = 'x-fieldset-header';
+            }
         }
 
         Ext.form.FieldSet.superclass.onRender.call(this, ct, position);
@@ -28449,12 +28600,32 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
     
     adjustFont: function(btn){
         var adjust = btn.itemId == 'increasefontsize' ? 1 : -1;
-        if(Ext.isSafari){ 
-            adjust *= 2;
+
+        var v = parseInt(this.doc.queryCommandValue('FontSize') || 2, 10);
+        if(Ext.isSafari3 || Ext.isAir){
+            
+            
+            if(v <= 10){
+                v = 1 + adjust;
+            }else if(v <= 13){
+                v = 2 + adjust;
+            }else if(v <= 16){
+                v = 3 + adjust;
+            }else if(v <= 18){
+                v = 4 + adjust;
+            }else if(v <= 24){
+                v = 5 + adjust;
+            }else {
+                v = 6 + adjust;
+            }
+            v = v.constrain(1, 6);
+        }else{
+            if(Ext.isSafari){ 
+                adjust *= 2;
+            }
+            v = Math.max(1, v+adjust) + (Ext.isSafari ? 'px' : 0);
         }
-        var v = parseInt(this.doc.queryCommandValue('FontSize')|| 3, 10);
-        v = Math.max(1, v+adjust);
-        this.execCmd('FontSize', v + (Ext.isSafari ? 'px' : 0));
+        this.execCmd('FontSize', v);
     },
 
     onEditorEvent : function(e){
@@ -28708,6 +28879,26 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 });
 Ext.reg('htmleditor', Ext.form.HtmlEditor);
 
@@ -28799,6 +28990,20 @@ Ext.form.TimeField = Ext.extend(Ext.form.ComboBox, {
     
 });
 Ext.reg('timefield', Ext.form.TimeField);
+Ext.form.Label = Ext.extend(Ext.BoxComponent, {
+    onRender : function(ct, position){
+        if(!this.el){
+            this.el = document.createElement('label');
+            this.el.innerHTML = this.text ? Ext.util.Format.htmlEncode(this.text) : (this.html || '');
+            if(this.forId){
+                this.el.setAttribute('htmlFor', this.forId);
+            }
+        }
+        Ext.form.Label.superclass.onRender.call(this, ct, position);
+    }
+});
+
+Ext.reg('label', Ext.form.Label);
 
 Ext.form.Action = function(form, options){
     this.form = form;
@@ -29064,15 +29269,12 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
     
     
     
+    
 
     
     ddText : "{0} selected row{1}",
     
     minColumnWidth : 25,
-    
-    monitorWindowResize : true,
-    
-    maxRowsToMeasure : 0,
     
     trackMouseOver : true,
     
@@ -29110,8 +29312,9 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
         
         
         this.autoScroll = false;
+        this.autoWidth = false;
 
-        if(this.columns && (this.columns instanceof Array)){
+        if(Ext.isArray(this.columns)){
             this.colModel = new Ext.grid.ColumnModel(this.columns);
             delete this.columns;
         }
@@ -29477,6 +29680,24 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
     
     
     
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 });
 Ext.reg('grid', Ext.grid.GridPanel);
 
@@ -29615,6 +29836,11 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
 
         this.mainWrap = new E(cs[0]);
         this.mainHd = new E(this.mainWrap.dom.firstChild);
+
+        if(this.grid.hideHeaders){
+            this.mainHd.setDisplayed(false);
+        }
+
         this.innerHd = this.mainHd.dom.firstChild;
         this.scroller = new E(this.mainWrap.dom.childNodes[1]);
         if(this.forceFit){
@@ -30060,7 +30286,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
     },
 
         beforeUpdate : function(){
-        this.grid.stopEditing();
+        this.grid.stopEditing(true);
     },
 
         updateHeaders : function(){
@@ -30144,7 +30370,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
     },
 
         insertRows : function(dm, firstRow, lastRow, isUpdate){
-        if(firstRow === 0 && lastRow == dm.getCount()-1){
+        if(!isUpdate && firstRow === 0 && lastRow == dm.getCount()-1){
             this.refresh();
         }else{
             if(!isUpdate){
@@ -30330,7 +30556,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
     
     refresh : function(headersToo){
         this.fireEvent("beforerefresh", this);
-        this.grid.stopEditing();
+        this.grid.stopEditing(true);
 
         var result = this.renderBody();
         this.mainBody.update(result);
@@ -30416,10 +30642,6 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
         var cm = this.cm;
         var colCount = cm.getColumnCount();
 
-        if(this.grid.monitorWindowResize === true){
-            Ext.EventManager.onWindowResize(this.onWindowResize, this, true);
-        }
-
         if(this.autoFill){
             this.fitColumns(true, true);
         }else if(this.forceFit){
@@ -30429,14 +30651,6 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
         }
 
         this.renderUI();
-
-            },
-
-        onWindowResize : function(){
-        if(!this.grid.monitorWindowResize || this.grid.autoHeight){
-            return;
-        }
-        this.layout();
     },
 
     
@@ -30555,7 +30769,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
         if(this.headersDisabled || !this.cm.isSortable(index)){
             return;
         }
-      g.stopEditing();
+        g.stopEditing(true);
         g.store.sort(this.cm.getDataIndex(index));
     },
 
@@ -30681,7 +30895,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
             this.activeHdIndex = this.getCellIndex(hd);
             var fly = this.fly(hd);
             this.activeHdRegion = fly.getRegion();
-            if(this.cm.isSortable(this.activeHdIndex) && !this.cm.isFixed(this.activeHdIndex)){
+            if(!this.cm.isMenuDisabled(this.activeHdIndex)){
                 fly.addClass("x-grid3-hd-over");
                 this.activeHdBtn = fly.child('.x-grid3-hd-btn');
                 if(this.activeHdBtn){
@@ -30698,15 +30912,8 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
             var x = e.getPageX();
             var ss = this.activeHd.style;
             if(x - r.left <= hw && this.cm.isResizable(this.activeHdIndex-1)){
-                if(Ext.isSafari){
-                    ss.cursor = 'e-resize';                }else{
-                    ss.cursor = 'col-resize';
-                }
-            }else if(r.right - x <= (!this.activeHdBtn ? hw : 2) && this.cm.isResizable(this.activeHdIndex)){
-                if(Ext.isSafari){
-                    ss.cursor = 'w-resize';                 }else{
-                    ss.cursor = 'col-resize';
-                }
+                ss.cursor = Ext.isAir ? 'move' : Ext.isSafari ? 'e-resize' : 'col-resize';             }else if(r.right - x <= (!this.activeHdBtn ? hw : 2) && this.cm.isResizable(this.activeHdIndex)){
+                ss.cursor = Ext.isAir ? 'move' : Ext.isSafari ? 'w-resize' : 'col-resize';
             }else{
                 ss.cursor = '';
             }
@@ -30965,7 +31172,7 @@ Ext.grid.GroupingView = Ext.extend(Ext.grid.GridView, {
 
     
     toggleGroup : function(group, expanded){
-        this.grid.stopEditing();
+        this.grid.stopEditing(true);
         group = Ext.getDom(group);
         var gel = Ext.fly(group);
         expanded = expanded !== undefined ?
@@ -31516,13 +31723,18 @@ Ext.extend(Ext.grid.GridDragZone, Ext.dd.DragZone, {
 
 Ext.grid.ColumnModel = function(config){
 	
-     this.setConfig(config, true);
-    
     this.defaultWidth = 100;
 
     
     this.defaultSortable = false;
 
+    
+    if(config.columns){
+        Ext.apply(this, config);
+        this.setConfig(config.columns, true);
+    }else{
+        this.setConfig(config, true);
+    }
     this.addEvents(
         
 	    "widthchange",
@@ -31540,6 +31752,7 @@ Ext.grid.ColumnModel = function(config){
     Ext.grid.ColumnModel.superclass.constructor.call(this);
 };
 Ext.extend(Ext.grid.ColumnModel, Ext.util.Observable, {
+    
     
     
     
@@ -31684,6 +31897,11 @@ Ext.extend(Ext.grid.ColumnModel, Ext.util.Observable, {
             return this.defaultSortable;
         }
         return this.config[col].sortable;
+    },
+
+    
+    isMenuDisabled : function(col){
+        return !!this.config[col].menuDisabled;
     },
 
     
@@ -31880,13 +32098,12 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
     
     singleSelect : false,
 
-    
-    initEvents : function(){
+	
+        initEvents : function(){
 
         if(!this.grid.enableDragDrop && !this.grid.enableDrag){
             this.grid.on("rowmousedown", this.handleMouseDown, this);
-        }else{ 
-            this.grid.on("rowclick", function(grid, rowIndex, e) {
+        }else{             this.grid.on("rowclick", function(grid, rowIndex, e) {
                 if(e.button === 0 && !e.shiftKey && !e.ctrlKey) {
                     this.selectRow(rowIndex, false);
                     grid.view.focusRow(rowIndex);
@@ -31932,8 +32149,7 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
         view.on("rowremoved", this.onRemove, this);
     },
 
-    
-    onRefresh : function(){
+        onRefresh : function(){
         var ds = this.grid.store, index;
         var s = this.getSelections();
         this.clearSelections(true);
@@ -31948,15 +32164,13 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
         }
     },
 
-    
-    onRemove : function(v, index, r){
+        onRemove : function(v, index, r){
         if(this.selections.remove(r) !== false){
             this.fireEvent('selectionchange', this);
         }
     },
 
-    
-    onRowUpdated : function(v, index, r){
+        onRowUpdated : function(v, index, r){
         if(this.isSelected(r)){
             v.onRowSelect(index);
         }
@@ -32082,8 +32296,7 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
         return (this.selections.key(id) ? true : false);
     },
 
-    
-    handleMouseDown : function(g, rowIndex, e){
+        handleMouseDown : function(g, rowIndex, e){
         if(e.button !== 0 || this.isLocked()){
             return;
         };
@@ -32091,8 +32304,7 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
         if(e.shiftKey && this.last !== false){
             var last = this.last;
             this.selectRange(last, rowIndex, e.ctrlKey);
-            this.last = last; 
-            view.focusRow(rowIndex);
+            this.last = last;             view.focusRow(rowIndex);
         }else{
             var isSelected = this.isSelected(rowIndex);
             if(e.ctrlKey && isSelected){
@@ -32177,20 +32389,17 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
         }
     },
 
-    
-    restoreLast : function(){
+        restoreLast : function(){
         if(this._last){
             this.last = this._last;
         }
     },
 
-    
-    acceptsNav : function(row, col, cm){
+        acceptsNav : function(row, col, cm){
         return !cm.isHidden(col) && cm.isCellEditable(col, row);
     },
 
-    
-    onEditorKey : function(field, e){
+        onEditorKey : function(field, e){
         var k = e.getKey(), newCell, g = this.grid, ed = g.activeEditor;
         var shift = e.shiftKey;
         if(k == e.TAB){
@@ -32204,11 +32413,13 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
         }else if(k == e.ENTER){
             e.stopEvent();
             ed.completeEdit();
-            if(shift){
-                newCell = g.walkCells(ed.row-1, ed.col, -1, this.acceptsNav, this);
-            }else{
-                newCell = g.walkCells(ed.row+1, ed.col, 1, this.acceptsNav, this);
-            }
+			if(this.moveEditorOnEnter !== false){
+				if(shift){
+					newCell = g.walkCells(ed.row - 1, ed.col, -1, this.acceptsNav, this);
+				}else{
+					newCell = g.walkCells(ed.row + 1, ed.col, 1, this.acceptsNav, this);
+				}
+			}
         }else if(k == e.ESC){
             ed.cancelEdit();
         }
@@ -32441,7 +32652,7 @@ Ext.grid.EditorGridPanel = Ext.extend(Ext.grid.GridPanel, {
     initEvents : function(){
         Ext.grid.EditorGridPanel.superclass.initEvents.call(this);
         
-        this.on("bodyscroll", this.stopEditing, this);
+        this.on("bodyscroll", this.stopEditing, this, [true]);
 
         if(this.clicksToEdit == 1){
             this.on("cellclick", this.onCellDblClick, this);
@@ -32461,19 +32672,23 @@ Ext.grid.EditorGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
     
     onAutoEditClick : function(e, t){
+        if(e.button !== 0){
+            return;
+        }
         var row = this.view.findRowIndex(t);
         var col = this.view.findCellIndex(t);
         if(row !== false && col !== false){
-        if(this.selModel.getSelectedCell){ 
-            var sc = this.selModel.getSelectedCell();
-            if(sc && sc.cell[0] === row && sc.cell[1] === col){
-                this.startEditing(row, col);
+            this.stopEditing();
+            if(this.selModel.getSelectedCell){ 
+                var sc = this.selModel.getSelectedCell();
+                if(sc && sc.cell[0] === row && sc.cell[1] === col){
+                    this.startEditing(row, col);
+                }
+            }else{
+                if(this.selModel.isSelected(row)){
+                    this.startEditing(row, col);
+                }
             }
-        }else{
-            if(this.selModel.isSelected(row)){
-                this.startEditing(row, col);
-            }
-        }
         }
     },
 
@@ -32542,17 +32757,17 @@ Ext.grid.EditorGridPanel = Ext.extend(Ext.grid.GridPanel, {
     },
     
 	preEditValue : function(r, field){
-		return this.autoEncode ? Ext.util.Format.htmlDecode(r.data[field]) : r.data[field];
+		return this.autoEncode && typeof value == 'string' ? Ext.util.Format.htmlDecode(r.data[field]) : r.data[field];
 	},
 	
 	postEditValue : function(value, originalValue, r, field){
-		return this.autoEncode ? Ext.util.Format.htmlEncode(value) : value;
+		return this.autoEncode && typeof value == 'string' ? Ext.util.Format.htmlEncode(value) : value;
 	},
 	    
     
-    stopEditing : function(){
+    stopEditing : function(cancel){
         if(this.activeEditor){
-            this.activeEditor.completeEdit();
+            this.activeEditor[cancel === true ? 'cancelEdit' : 'completeEdit']();
         }
         this.activeEditor = null;
     }
@@ -32620,7 +32835,7 @@ Ext.extend(Ext.grid.PropertyStore, Ext.util.Observable, {
     },
 
         isEditableValue: function(val){
-        if(val && val instanceof Date){
+        if(Ext.isDate(val)){
             return true;
         }else if(typeof val == 'object' || typeof val == 'function'){
             return false;
@@ -32643,8 +32858,8 @@ Ext.grid.PropertyColumnModel = function(grid, store){
     this.grid = grid;
     var g = Ext.grid;
     g.PropertyColumnModel.superclass.constructor.call(this, [
-        {header: this.nameText, width:50, sortable: true, dataIndex:'name', id: 'name'},
-        {header: this.valueText, width:50, resizable:false, dataIndex: 'value', id: 'value'}
+        {header: this.nameText, width:50, sortable: true, dataIndex:'name', id: 'name', menuDisabled:true},
+        {header: this.valueText, width:50, resizable:false, dataIndex: 'value', id: 'value', menuDisabled:true}
     ]);
     this.store = store;
     this.bselect = Ext.DomHelper.append(document.body, {
@@ -32701,7 +32916,7 @@ Ext.extend(Ext.grid.PropertyColumnModel, Ext.grid.ColumnModel, {
 
         renderCell : function(val){
         var rv = val;
-        if(val instanceof Date){
+        if(Ext.isDate(val)){
             rv = this.renderDate(val);
         }else if(typeof val == 'boolean'){
             rv = this.renderBool(val);
@@ -32720,7 +32935,7 @@ Ext.extend(Ext.grid.PropertyColumnModel, Ext.grid.ColumnModel, {
         if(this.grid.customEditors[n]){
             return this.grid.customEditors[n];
         }
-        if(val instanceof Date){
+        if(Ext.isDate(val)){
             return this.editors['date'];
         }else if(typeof val == 'number'){
             return this.editors['number'];
@@ -32812,6 +33027,7 @@ Ext.grid.RowNumberer.prototype = {
 
     
     fixed:true,
+    menuDisabled:true,
     dataIndex: '',
     id: 'numberer',
     rowspan: undefined,
@@ -32834,6 +33050,7 @@ Ext.grid.CheckboxSelectionModel = Ext.extend(Ext.grid.RowSelectionModel, {
     sortable: false,
 
     
+    menuDisabled:true,
     fixed:true,
     dataIndex: '',
     id: 'checker',
@@ -32907,6 +33124,7 @@ Ext.LoadMask = function(el, config){
 Ext.LoadMask.prototype = {
     
     
+    
     msg : 'Loading...',
     
     msgCls : 'x-mask-loading',
@@ -32934,10 +33152,12 @@ Ext.LoadMask.prototype = {
         }
     },
 
+    
     show: function(){
         this.onBeforeLoad();
     },
 
+    
     hide: function(){
         this.onLoad();    
     },
@@ -33189,13 +33409,13 @@ Ext.apply(Ext, {
     },
 
     dump : function(o){
-        if(typeof o == 'string' || typeof o == 'number' || typeof o == 'undefined' || o instanceof Date){
+        if(typeof o == 'string' || typeof o == 'number' || typeof o == 'undefined' || Ext.isDate(o)){
             Ext.log(o);
         }else if(!o){
             Ext.log("null");
         }else if(typeof o != "object"){
             Ext.log('Unknown return type');
-        }else if(o instanceof Array){
+        }else if(Ext.isArray(o)){
             Ext.log('['+o.join(',')+']');
         }else{
             var b = ["{\n"];
