@@ -1,32 +1,45 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<!-- 
+<!--
  This is a module specific script for GWT related issues mainly you should only need to worry about this
  if you are modifying the GUI itself.
- 
+
  @author Michael Neale
 -->
 <project name="org.drools.guvnor.Guvnor" default="gwt-compile" basedir="." xmlns:gwt="antlib:de.samaflost.gwttasks">
 	<taskdef uri="antlib:de.samaflost.gwttasks"
 	              resource="de/samaflost/gwttasks/antlib.xml"
 	              classpath="../lib/gwttasks.jar"/>
-	  
+
 	<property file="build.properties"/>
-	
+
 	<target name="gwt-compile">
-		<gwt:compile outDir="src/main/webapp" 
+		<!--<gwt:compile outDir="src/main/webapp"-->
+		<gwt:compile outDir="target/gwt-compiled-output"
 			gwtHome="${gwt.home}"
-			classBase="org.drools.guvnor.Guvnor" 
-			sourceclasspath="src/main/java; ../drools-compiler/src/main/java; ../lib/gwtext-2.0.1.jar"
+			classBase="org.drools.guvnor.Guvnor"
+			sourceclasspath="src/main/java; ../drools-compiler/src/main/java; ../lib/gwtext.jar"
 		/>
+		<!-- get rid of old -->
+		<delete>
+	      <fileset dir="src/main/webapp/org.drools.guvnor.Guvnor" includes="*.gwt.rpc *.cache.html *.cache.js *.cache.xml *.cache.png"/>
+	    </delete>
+
+		<copy todir="src/main/webapp">
+			<fileset dir="target/gwt-compiled-output">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+
+
 	</target>
 
 	<target name="gwt-shell">
 		<gwt:shell sourceclasspath="src/main/java/; ../drools-compiler/src/main/java"
-			bindir="target/classes" 
-			outDir="src/main/webapp" 
-			gwtHome="${gwt.home}" 
-			startPage="org.drools.guvnor.Guvnor/Guvnor.html" 
+			bindir="target/classes"
+			outDir="src/main/webapp"
+			gwtHome="${gwt.home}"
+			startPage="org.drools.guvnor.Guvnor/Guvnor.html"
 		/>
 	</target>
 </project>
