@@ -102,11 +102,11 @@ public class WebDAVImpl implements WebdavStore {
 
                 AssetItem lazarus = pkg.loadAsset(resource[0]);
                 lazarus.archiveItem(false);
-                lazarus.checkin("<from webdav>");
+                //lazarus.checkin("<from webdav>");
             } else {
                 AssetItem asset = pkg.addAsset(resource[0], "");
                 asset.updateFormat(resource[1]);
-                asset.checkin("<from webdav>");
+                //asset.checkin("<from webdav>");
             }
 
         } else {
@@ -462,9 +462,9 @@ public class WebDAVImpl implements WebdavStore {
              asset.updateBinaryContentAttachment(content);
              //here we could save, or check in, depending on if enough time has passed to justify
              //a new version. Otherwise we will pollute the version history with lots of trivial versions.
-             if (shouldCreateNewVersion(asset.getLastModified())) {
-                 asset.checkin("");
-             }
+             //if (shouldCreateNewVersion(asset.getLastModified())) {
+                 asset.checkin("<content from webdav>");
+             //}
 
 
         } else {
@@ -474,14 +474,7 @@ public class WebDAVImpl implements WebdavStore {
     }
 
 
-    /**
-     * If enough time has passed, we should create a new version.
-     */
-    boolean shouldCreateNewVersion(Calendar lastModified) {
-        Calendar now = Calendar.getInstance();
-        int diff = 3600000; //1 hour
-        return (now.getTimeInMillis() - lastModified.getTimeInMillis()) > diff;
-    }
+
 
     String[] getPath(String uri) {
     	if (uri.equals("/")) {

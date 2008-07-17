@@ -310,15 +310,7 @@ public class WebDAVImplTest extends TestCase {
 
 	}
 
-	public void testShouldCheckIn() throws Exception {
-		WebDAVImpl imp  = getImpl();
-		Calendar recently = Calendar.getInstance();
-		recently.setTimeInMillis(Calendar.getInstance().getTimeInMillis() - 1000);
-		assertFalse(imp.shouldCreateNewVersion(recently));
-		recently.setTimeInMillis(Calendar.getInstance().getTimeInMillis() - 86400001);
-		assertTrue(imp.shouldCreateNewVersion(recently));
 
-	}
 
 	public void testSetContent() throws Exception {
 		WebDAVImpl imp  = getImpl();
@@ -442,6 +434,13 @@ public class WebDAVImplTest extends TestCase {
 			assertNotNull(e.getMessage());
 		}
 
+		assertFalse(imp.objectExists("/foo/webdav/snapshots/defaultPackage/new file"));
+		try {
+			imp.createResource("/foo/webdav/snapshots/defaultPackage/new file");
+			fail("can't touch this");
+		} catch (UnsupportedOperationException e) {
+			assertNotNull(e.getMessage());
+		}
 	}
 
 	private void createResourceTry(WebDAVImpl imp, String path) {
