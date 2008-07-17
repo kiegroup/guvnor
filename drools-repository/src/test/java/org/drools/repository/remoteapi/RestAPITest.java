@@ -171,6 +171,11 @@ public class RestAPITest extends TestCase {
 		d = new String(out.toByteArray());
 		assertEquals("this is content", d);
 
+		res = api.get("packages");
+		res = api.get("packages?version=all");
+
+		res = api.get("snapshots");
+		res = api.get("snapshots?version=all");
 
 
 

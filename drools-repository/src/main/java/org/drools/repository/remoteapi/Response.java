@@ -17,7 +17,11 @@ public abstract class Response {
 	public static class Text extends Response {
 		String data;
 
+		public Text() {}
 
+		public Text(String s) {
+			this.data = s;
+		}
 		@Override
 		public void writeData(OutputStream out) throws IOException {
 			out.write(data.getBytes());

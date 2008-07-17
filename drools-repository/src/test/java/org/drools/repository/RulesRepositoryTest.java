@@ -541,6 +541,8 @@ public class RulesRepositoryTest extends TestCase {
         assertFalse(repo.containsSnapshot("testCategoriesAndSnapshots", "SNAP XXXX"));
 
 
+        assertFalse(repo.containsSnapshot("gooberWhhewasssllllelelelelele", "SNAP"));
+
     }
 
     public void testMoveRulePackage() throws Exception {

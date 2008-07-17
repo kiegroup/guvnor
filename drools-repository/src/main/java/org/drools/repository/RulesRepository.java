@@ -392,7 +392,9 @@ public class RulesRepository {
 
     public boolean containsSnapshot(String packageName, String snapshotName) {
     	try {
-	    	Node n = this.getAreaNode( PACKAGE_SNAPSHOT_AREA ).getNode( packageName );
+    		Node areaNode = this.getAreaNode(PACKAGE_SNAPSHOT_AREA );
+    		if (!areaNode.hasNode(packageName)) return false;
+	    	Node n = areaNode.getNode( packageName );
 	    	return n.hasNode(snapshotName);
     	} catch (RepositoryException e) {
     		log.error(e);
