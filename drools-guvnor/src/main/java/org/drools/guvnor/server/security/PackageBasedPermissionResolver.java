@@ -99,30 +99,6 @@ public class PackageBasedPermissionResolver implements PermissionResolver,
 			} else if ("package.readonly".equalsIgnoreCase(requestedAction)) {
 				return true;
 			}
-		} else if (RoleTypes.PACKAGE_ANALYST.equalsIgnoreCase(role)) {
-			if ("package.admin".equalsIgnoreCase(requestedAction)) {
-				return false;
-			} else if ("package.developer".equalsIgnoreCase(requestedAction)) {
-				return false;
-			} else if ("package.analyst".equalsIgnoreCase(requestedAction)) {
-				return true;
-			} else if ("package.testonly".equalsIgnoreCase(requestedAction)) {
-				return true;
-			} else if ("package.readonly".equalsIgnoreCase(requestedAction)) {
-				return true;
-			}
-		} else if (RoleTypes.PACKAGE_TESTONLY.equalsIgnoreCase(role)) {
-			if ("package.admin".equalsIgnoreCase(requestedAction)) {
-				return false;
-			} else if ("package.developer".equalsIgnoreCase(requestedAction)) {
-				return false;
-			} else if ("package.analyst".equalsIgnoreCase(requestedAction)) {
-				return false;
-			} else if ("package.testonly".equalsIgnoreCase(requestedAction)) {
-				return true;
-			} else if ("package.readonly".equalsIgnoreCase(requestedAction)) {
-				return true;
-			}
 		} else if (RoleTypes.PACKAGE_READONLY.equalsIgnoreCase(role)) {
 			if ("package.admin".equalsIgnoreCase(requestedAction)) {
 				return false;

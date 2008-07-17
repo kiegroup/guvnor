@@ -83,6 +83,7 @@ import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.contenthandler.IValidating;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
+import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
@@ -192,7 +193,7 @@ public class ServiceImplementation
                                  String initialPackage,
                                  String format) throws SerializableException {
 		if (Contexts.isSessionContextActive()) {
-			Identity.instance().checkPermission("ignoredanyway", "package.admin",
+			Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_ADMIN,
 					initialPackage);
 		}
 
@@ -226,7 +227,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public void deleteUncheckedRule(String uuid, String initialPackage) {
     	if (Contexts.isSessionContextActive()) {
-			Identity.instance().checkPermission("ignoredanyway", "package.admin",
+			Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_ADMIN,
 					initialPackage);
 		}
 
@@ -281,9 +282,9 @@ public class ServiceImplementation
             data.uuid = pkg.getUUID();
             data.name = pkg.getName();
             data.archived = pkg.isArchived();
-            if (!archive && (filter == null || filter.accept(data, "package.readonly"))) {
+            if (!archive && (filter == null || filter.accept(data, RoleTypes.PACKAGE_READONLY))) {
             	result.add(data);
-            } else if (archive && data.archived && (filter == null || filter.accept(data, "package.readonly"))) {
+            } else if (archive && data.archived && (filter == null || filter.accept(data, RoleTypes.PACKAGE_READONLY))) {
             	result.add(data);
             }
         }
@@ -358,7 +359,7 @@ public class ServiceImplementation
         asset.metaData = populateMetaData( item );
 
     	if (Contexts.isSessionContextActive()) {
-			Identity.instance().checkPermission("ignoredanyway", "package.readonly",
+			Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_READONLY,
 					asset.metaData.packageName);
 		}
 
@@ -438,7 +439,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public String checkinVersion(RuleAsset asset) throws SerializableException {
     	if (Contexts.isSessionContextActive()) {
-			Identity.instance().checkPermission("ignoredanyway", "package.developer",
+			Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_DEVELOPER,
 					asset.metaData.packageName);
 		}
 
@@ -492,7 +493,7 @@ public class ServiceImplementation
         AssetItem item = repository.loadAssetByUUID( uuid );
 
     	if (Contexts.isSessionContextActive()) {
-      	    Identity.instance().checkPermission("ignoredanyway", "package.readonly", item.getPackage().getUUID());
+      	    Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_READONLY, item.getPackage().getUUID());
     	}
 
 
@@ -626,7 +627,7 @@ public class ServiceImplementation
     	//the uuid passed in is the uuid of that deployment bundle, not the package uudi.
         //we have to figure out the package name.
     	if (Contexts.isSessionContextActive()) {
-		    Identity.instance().checkPermission("ignoredanyway", "package.readonly", item.getName());
+		    Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_READONLY, item.getName());
     	}
 
         PackageConfigData data = new PackageConfigData();
@@ -651,7 +652,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public ValidatedResponse savePackage(PackageConfigData data) throws SerializableException {
     	if (Contexts.isSessionContextActive()) {
-    	    Identity.instance().checkPermission("ignoredanyway", "package.developer", data.uuid);
+    	    Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_DEVELOPER, data.uuid);
     	}
 
     	log.info( "USER:" + repository.getSession().getUserID() +
@@ -824,7 +825,7 @@ public class ServiceImplementation
                                    String newPackage,
                                    String comment) {
     	if (Contexts.isSessionContextActive()) {
-    	    Identity.instance().checkPermission("ignoredanyway", "package.developer", newPackage);
+    	    Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_DEVELOPER, newPackage);
     	}
 
         log.info( "USER:" + repository.getSession().getUserID() +
@@ -839,7 +840,7 @@ public class ServiceImplementation
                           String newPackage,
                           String newName) {
     	if (Contexts.isSessionContextActive()) {
-    	    Identity.instance().checkPermission("ignoredanyway", "package.developer", newPackage);
+    	    Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_DEVELOPER, newPackage);
     	}
 
         return repository.copyAsset( assetUUID, newPackage, newName );
@@ -849,7 +850,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public SnapshotInfo[] listSnapshots(String packageName) {
     	if (Contexts.isSessionContextActive()) {
-    	    Identity.instance().checkPermission("ignoredanyway", "package.developer", packageName);
+    	    Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_DEVELOPER, packageName);
     	}
 
         String[] snaps = repository.listPackageSnapshots( packageName );
@@ -872,7 +873,7 @@ public class ServiceImplementation
                                       boolean replaceExisting,
                                       String comment) {
     	if (Contexts.isSessionContextActive()) {
-    		Identity.instance().checkPermission("ignoredanyway", "package.admin", packageName);
+    		Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_ADMIN, packageName);
     	}
 
         log.info( "USER:" + repository.getSession().getUserID() +
@@ -896,7 +897,7 @@ public class ServiceImplementation
                                      boolean delete,
                                      String newSnapshotName) throws SerializableException {
     	if (Contexts.isSessionContextActive()) {
-    		Identity.instance().checkPermission("ignoredanyway", "package.admin", packageName);
+    		Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_ADMIN, packageName);
     	}
 
         if (delete) {
@@ -940,7 +941,7 @@ public class ServiceImplementation
                 break;
             }
             AssetItem item = (AssetItem) it.next();
-			if (filter.accept(item, "package.readonly")) {
+			if (filter.accept(item, RoleTypes.PACKAGE_READONLY)) {
 				TableDataRow row = new TableDataRow();
 				row.id = item.getUUID();
 				String desc = item.getDescription() + "";
@@ -952,7 +953,7 @@ public class ServiceImplementation
         }
 
         while (it.hasNext()) {
-        	if (filter.accept((AssetItem) it.next(), "package.readonly")) {
+        	if (filter.accept((AssetItem) it.next(), RoleTypes.PACKAGE_READONLY)) {
 				TableDataRow empty = new TableDataRow();
 				empty.id = "MORE";
 				resultList.add(empty);
@@ -990,7 +991,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializableException {
     	if (Contexts.isSessionContextActive()) {
-    		Identity.instance().checkPermission("ignoredanyway", "package.readonly", packageName);
+    		Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_READONLY, packageName);
     	}
         try {
 
@@ -1008,7 +1009,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public BuilderResult[] buildPackage(String packageUUID, String selectorConfigName, boolean force) throws SerializableException {
     	if (Contexts.isSessionContextActive()) {
-    		Identity.instance().checkPermission("ignoredanyway", "package.analyst", packageUUID);
+    		Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_DEVELOPER, packageUUID);
     	}
         PackageItem item = repository.loadPackageByUUID( packageUUID );
         return buildPackage(selectorConfigName, force, item);
@@ -1076,7 +1077,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public String buildPackageSource(String packageUUID) throws SerializableException {
     	if (Contexts.isSessionContextActive()) {
-    		Identity.instance().checkPermission("ignoredanyway", "package.analyst", packageUUID);
+    		Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_DEVELOPER, packageUUID);
     	}
 
         PackageItem item = repository.loadPackageByUUID( packageUUID );
@@ -1088,7 +1089,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public String buildAssetSource(RuleAsset asset) throws SerializableException {
     	if (Contexts.isSessionContextActive()) {
-    		Identity.instance().checkPermission("ignoredanyway", "package.analyst", asset.metaData.packageName);
+    		Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_DEVELOPER, asset.metaData.packageName);
     	}
 
         AssetItem item = repository.loadAssetByUUID( asset.uuid );
@@ -1117,7 +1118,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public BuilderResult[] buildAsset(RuleAsset asset) throws SerializableException {
     	if (Contexts.isSessionContextActive()) {
-    		Identity.instance().checkPermission("ignoredanyway", "package.analyst", asset.metaData.packageName);
+    		Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_DEVELOPER, asset.metaData.packageName);
     	}
 
     	try {
@@ -1187,7 +1188,7 @@ public class ServiceImplementation
     public String renameAsset(String uuid, String newName) {
     	AssetItem item = repository.loadAssetByUUID( uuid );
     	if (Contexts.isSessionContextActive()) {
-    		Identity.instance().checkPermission("ignoredanyway", "package.analyst", item.getPackage().getUUID());
+    		Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_DEVELOPER, item.getPackage().getUUID());
     	}
 
         return repository.renameAsset( uuid, newName );
@@ -1200,7 +1201,7 @@ public class ServiceImplementation
             AssetItem item = repository.loadAssetByUUID( uuid );
 
         	if (Contexts.isSessionContextActive()) {
-        		Identity.instance().checkPermission("ignoredanyway", "package.analyst", item.getPackage().getUUID());
+        		Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_DEVELOPER, item.getPackage().getUUID());
         	}
 
             item.archiveItem( value );
@@ -1221,7 +1222,7 @@ public class ServiceImplementation
         try {
             AssetItem item = repository.loadAssetByUUID( uuid );
         	if (Contexts.isSessionContextActive()) {
-        		Identity.instance().checkPermission("ignoredanyway", "package.analyst", item.getPackage().getUUID());
+        		Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_DEVELOPER, item.getPackage().getUUID());
         	}
 
             item.remove();
@@ -1237,7 +1238,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public void removePackage(String uuid) {
     	if (Contexts.isSessionContextActive()) {
-    		Identity.instance().checkPermission("ignoredanyway", "package.admin", uuid);
+    		Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_ADMIN, uuid);
     	}
         try {
             PackageItem item = repository.loadPackageByUUID(uuid);
@@ -1253,7 +1254,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public String renamePackage(String uuid, String newName) {
     	if (Contexts.isSessionContextActive()) {
-    		Identity.instance().checkPermission("ignoredanyway", "package.admin", uuid);
+    		Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_ADMIN, uuid);
     	}
 
         return repository.renamePackage( uuid, newName );
@@ -1285,7 +1286,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public String[] listRulesInPackage(String packageName) throws SerializableException {
     	if (Contexts.isSessionContextActive()) {
-    		Identity.instance().checkPermission("ignoredanyway", "package.readonly", packageName);
+    		Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_READONLY, packageName);
     	}
 
     	PackageItem item = repository.loadPackage(packageName);
@@ -1316,7 +1317,7 @@ public class ServiceImplementation
 	public ScenarioRunResult runScenario(String packageName, Scenario scenario)
 			throws SerializableException {
     	if (Contexts.isSessionContextActive()) {
-    		Identity.instance().checkPermission("ignoredanyway", "package.testonly", packageName);
+    		Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_DEVELOPER, packageName);
     	}
 
     	PackageItem item = this.repository.loadPackage(packageName);
@@ -1421,7 +1422,7 @@ public class ServiceImplementation
 	public BulkTestRunResult runScenariosInPackage(String packageUUID)
 			throws SerializableException {
     	if (Contexts.isSessionContextActive()) {
-    		Identity.instance().checkPermission("ignoredanyway", "package.testonly", packageUUID);
+    		Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_DEVELOPER, packageUUID);
     	}
 
 		PackageItem item = repository.loadPackageByUUID(packageUUID);
@@ -1514,7 +1515,7 @@ public class ServiceImplementation
 	public AnalysisReport analysePackage(String packageUUID)
 			throws SerializableException {
 		if (Contexts.isSessionContextActive()) {
-			Identity.instance().checkPermission("ignoredanyway", "package.analyst", packageUUID);
+			Identity.instance().checkPermission("ignoredanyway", RoleTypes.PACKAGE_DEVELOPER, packageUUID);
 		}
 
 		String drl = this.buildPackageSource(packageUUID);

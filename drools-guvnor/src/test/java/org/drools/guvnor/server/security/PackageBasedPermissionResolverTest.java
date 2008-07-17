@@ -75,8 +75,6 @@ public class PackageBasedPermissionResolverTest extends TestCase {
     	PackageBasedPermissionResolver resolver = new PackageBasedPermissionResolver();
         assertTrue(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "package.admin"));
     	assertTrue(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "package.developer"));
-        assertTrue(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "package.analyst"));
-        assertTrue(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "package.testonly"));
         assertTrue(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "package.readonly"));
         
         assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.readonly"));
@@ -104,74 +102,13 @@ public class PackageBasedPermissionResolverTest extends TestCase {
         
     	assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.admin"));
     	assertTrue(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.developer"));
-        assertTrue(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.analyst"));
-        assertTrue(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.testonly"));
         assertTrue(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.readonly"));
         
         assertFalse(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "package.readonly"));
 
     	Lifecycle.endApplication();   
-    }
-    
-    //Package.analyst:  can read all contents. Can only edit/create files of "business" type, 
-    //can run tests, and edit tests.
-    public void testPackageAnalyst() throws Exception {
-    	//Mock up SEAM contexts
-    	Map application = new HashMap<String, Object>();    	
-    	Lifecycle.beginApplication(application);
-    	Lifecycle.beginCall();   	
-    	MockIdentity midentity = new MockIdentity();
-    	//this makes Identity.hasRole("admin") return false
-    	midentity.setHasRole(false);    	
-    	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
-    	
-    	
-    	List<PackageBasedPermission> pbps = new ArrayList<PackageBasedPermission>();
-		pbps.add(new PackageBasedPermission("47982482-7912-4881-97ec-e852494383d7", "jervis", RoleTypes.PACKAGE_ANALYST));		
-    	Contexts.getSessionContext().set("packageBasedPermission", pbps);
-    	
-    	PackageBasedPermissionResolver resolver = new PackageBasedPermissionResolver();
-        
-    	assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.admin"));
-    	assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.developer"));
-        assertTrue(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.analyst"));
-        assertTrue(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.testonly"));
-        assertTrue(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.readonly"));
-        
-        assertFalse(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "package.readonly"));
-
-    	Lifecycle.endApplication();   
-    }
-    
-    //Package.testonly:  can create, run, edit, and delete tests only.
-    public void testPackageTestonly() throws Exception {
-    	//Mock up SEAM contexts
-    	Map application = new HashMap<String, Object>();    	
-    	Lifecycle.beginApplication(application);
-    	Lifecycle.beginCall();   	
-    	MockIdentity midentity = new MockIdentity();
-    	//this makes Identity.hasRole("admin") return false
-    	midentity.setHasRole(false);    	
-    	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
-    	
-    	
-    	List<PackageBasedPermission> pbps = new ArrayList<PackageBasedPermission>();
-		pbps.add(new PackageBasedPermission("47982482-7912-4881-97ec-e852494383d7", "jervis", RoleTypes.PACKAGE_TESTONLY));		
-    	Contexts.getSessionContext().set("packageBasedPermission", pbps);
-    	
-    	PackageBasedPermissionResolver resolver = new PackageBasedPermissionResolver();
-        
-    	assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.admin"));
-    	assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.developer"));
-    	assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.analyst"));
-        assertTrue(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.testonly"));
-        assertTrue(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.readonly"));
-        
-        assertFalse(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "package.readonly"));
-
-    	Lifecycle.endApplication();   
-    }
-    
+    }    
+   
     //Package.readonly: read only as the name suggested
     public void testPackageReadOnly() throws Exception {
     	//Mock up SEAM contexts
@@ -192,8 +129,6 @@ public class PackageBasedPermissionResolverTest extends TestCase {
         
         assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.admin"));
         assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.developer"));
-        assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.analyst"));
-        assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.testonly"));
         assertTrue(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.readonly"));
         
         assertFalse(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "package.readonly"));
