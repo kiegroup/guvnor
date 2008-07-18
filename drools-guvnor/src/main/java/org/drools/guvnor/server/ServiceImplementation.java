@@ -253,7 +253,10 @@ public class ServiceImplementation
         } else if (format.equals( AssetFormats.DECISION_SPREADSHEET_XLS )) {
             asset.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/SampleDecisionTable.xls" ) );
             asset.updateBinaryContentAttachmentFileName( "SampleDecisionTable.xls" );
+        }  else if (format.equals( AssetFormats.DRL )) {
+            asset.updateContent( "when\n\t#conditions\nthen\n\t#actions");
         } else if (format.equals( AssetFormats.ENUMERATION )) {
+
         }
     }
 
