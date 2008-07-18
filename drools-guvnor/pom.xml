@@ -149,6 +149,7 @@
 	  <groupId>org.hibernate</groupId>
 	  <artifactId>hibernate</artifactId>
 	  <version>3.2.4.sp1</version>
+	  <scope>provided</scope>
 	  <exclusions>
 	    <exclusion>
 	      <groupId>commons-collections</groupId>
@@ -173,6 +174,7 @@
 	  <groupId>org.hibernate</groupId>
 	  <artifactId>hibernate-annotations</artifactId>
 	  <version>3.3.0.ga</version>
+	  <scope>provided</scope>
 	  <exclusions>
 	    <exclusion>
 	      <groupId>junit</groupId>
@@ -185,6 +187,7 @@
 	  <groupId>org.hibernate</groupId>
 	  <artifactId>hibernate-entitymanager</artifactId>
 	  <version>3.3.1.ga</version>
+	  <scope>provided</scope>
 	  <exclusions>
 	    <exclusion>
 	      <groupId>jboss</groupId>
