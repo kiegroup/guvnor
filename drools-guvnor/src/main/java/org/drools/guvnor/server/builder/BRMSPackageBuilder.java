@@ -74,7 +74,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
         // the default compiler. This is nominally JANINO but can be overridden by setting drools.dialect.java.compiler to ECLIPSE
         Properties properties = new Properties();
         properties.setProperty( "drools.dialect.java.compiler",
-                                chainedProperties.getProperty( "drools.dialect.java.compiler", "JANINO" ) );
+                                chainedProperties.getProperty( "drools.dialect.java.compiler", "ECLIPSE" ) );
         PackageBuilderConfiguration pkgConf = new PackageBuilderConfiguration( properties );
         pkgConf.setClassLoader( loader );
 
