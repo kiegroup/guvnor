@@ -18,7 +18,7 @@
 		<gwt:compile outDir="target/gwt-compiled-output"
 			gwtHome="${gwt.home}"
 			classBase="org.drools.guvnor.Guvnor"
-			sourceclasspath="src/main/java; ../drools-compiler/src/main/java; ../lib/gwtext.jar"
+			sourceclasspath="src/main/java; ../drools-compiler/src/main/java; ../lib/gwtext.jar;../lib/gwt-rolodex-gwt15-1.1.jar"
 		/>
 		<!-- get rid of old -->
 		<delete>
@@ -35,7 +35,7 @@
 	</target>
 
 	<target name="gwt-shell">
-		<gwt:shell sourceclasspath="src/main/java/; ../drools-compiler/src/main/java"
+		<gwt:shell sourceclasspath="src/main/java/; ../drools-compiler/src/main/java; ../lib/gwt-rolodex-gwt15-1.1.jar"
 			bindir="target/classes"
 			outDir="src/main/webapp"
 			gwtHome="${gwt.home}"

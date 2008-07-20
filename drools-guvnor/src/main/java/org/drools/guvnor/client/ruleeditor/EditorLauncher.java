@@ -52,9 +52,6 @@ public class EditorLauncher {
 
     /**
      * This will return the appropriate viewer for the asset.
-     *
-     * TODO: the method to be changed in order to make the editors pluggable
-     * TODO: look at http://gwtreflection.sourceforge.net/
      */
     public static Widget getEditorViewer(RuleAsset asset,
                                          RuleViewer viewer) {
@@ -80,6 +77,8 @@ public class EditorLauncher {
         	return new RuleValidatorWrapper(new GuidedDecisionTableWidget(asset), asset);
         } else if (asset.metaData.format.equals(AssetFormats.DRL_MODEL)) {
         	return new RuleValidatorWrapper(new FactModelWidget(asset), asset);
+        } else if (asset.metaData.format.equals(AssetFormats.IMAGE_SET)) {
+        	return new ImageSetWidget(asset, viewer);
         } else {
             return new DefaultContentUploadEditor( asset, viewer );
         }
