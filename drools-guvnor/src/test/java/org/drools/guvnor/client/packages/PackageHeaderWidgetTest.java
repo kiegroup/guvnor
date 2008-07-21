@@ -100,8 +100,9 @@ public class PackageHeaderWidgetTest extends TestCase {
 		assertEquals("foo.bar.Baz", i.type);
 
 		t.globals.add(new Global("foo.Bar", "xs"));
+		t.globals.add(new Global("whee.wah", "tt"));
 		h = PackageHeaderHelper.renderTypes(t);
-		assertEquals("import foo.bar.Baz\nglobal foo.Bar xs", h.trim());
+		assertEquals("import foo.bar.Baz\nglobal foo.Bar xs\nglobal whee.wah tt", h.trim());
 
 	}
 

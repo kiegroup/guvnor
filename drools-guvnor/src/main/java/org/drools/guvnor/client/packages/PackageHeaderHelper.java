@@ -58,6 +58,9 @@ public class PackageHeaderHelper {
 		for (Iterator it = t.globals.iterator(); it.hasNext();) {
 			Global g = (Global) it.next();
 			sb.append("global " + g.type + " " + g.name);
+			if (it.hasNext()) {
+				sb.append('\n');
+			}
 		}
 		return sb.toString();
 	}

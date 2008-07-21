@@ -89,7 +89,11 @@ public class CategoryManager extends Composite {
         newCat.setTitle( "Create a new category" );
         newCat.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                CategoryEditor newCat = new CategoryEditor( explorer.getSelectedPath() );
+                CategoryEditor newCat = new CategoryEditor( explorer.getSelectedPath(), new Command() {
+					public void execute() {
+						explorer.refresh();
+					}
+                });
 
                 newCat.show();
             }

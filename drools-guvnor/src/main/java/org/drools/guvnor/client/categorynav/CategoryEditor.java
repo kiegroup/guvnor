@@ -20,15 +20,12 @@ package org.drools.guvnor.client.categorynav;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -42,7 +39,13 @@ public class CategoryEditor extends FormStylePopup {
     private String path;
     private TextBox name = new TextBox();
     private TextArea description = new TextArea();
+	private Command refresh;
 
+
+    public CategoryEditor(String catPath, Command refresh) {
+    	this(catPath);
+    	this.refresh = refresh;
+    }
 
     /** This is used when creating a new category */
     public CategoryEditor(String catPath) {
@@ -72,10 +75,11 @@ public class CategoryEditor extends FormStylePopup {
     void ok() {
 
         AsyncCallback cb = new GenericCallback() {
-
-
             public void onSuccess(Object result) {
                 if (((Boolean) result).booleanValue()) {
+                	if (refresh != null) {
+                		refresh.execute();
+                	}
                     hide();
                 } else {
                     ErrorPopup.showMessage( "Category was not successfully created. ");
