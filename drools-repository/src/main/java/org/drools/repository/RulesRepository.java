@@ -778,7 +778,7 @@ public class RulesRepository {
 		    if ( isNotSnapshot( parentNode ) && parentNode.getPrimaryNodeType().getName().equals( AssetItem.RULE_NODE_TYPE_NAME ) ) {
 		        if ( seekArchivedAsset || !parentNode.getProperty( AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG ).getBoolean() ) {
 		        	AssetItem ai = new AssetItem( this, parentNode );
-		        	if(filter == null || filter.accept(ai, "read")) {
+		        	if(filter == null || filter.accept(ai, "repackage.readonly")) {
 		        		results.add(ai);
 		        		rows++;
 		        	}

@@ -43,15 +43,15 @@ public class PackageBasedPermissionResolverTest extends TestCase {
     	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
     	
     	
-    	List<PackageBasedPermission> pbps = new ArrayList<PackageBasedPermission>();
-		pbps.add(new PackageBasedPermission("631b3d79-5b67-42fb-83da-714624970a6b", "jervis", RoleTypes.ADMIN));
-		pbps.add(new PackageBasedPermission("47982482-7912-4881-97ec-e852494383d7", "jervis", RoleTypes.PACKAGE_READONLY));		
+    	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ADMIN, "631b3d79-5b67-42fb-83da-714624970a6b", null));
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "47982482-7912-4881-97ec-e852494383d7", null));		
     	Contexts.getSessionContext().set("packageBasedPermission", pbps);
     	
     	PackageBasedPermissionResolver resolver = new PackageBasedPermissionResolver();
     	
-        assertTrue(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "create"));
-        assertTrue(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "create"));
+        assertTrue(resolver.hasPermission(new PackageUUIDType("631b3d79-5b67-42fb-83da-714624970a6b"), RoleTypes.ADMIN));
+        assertTrue(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.ADMIN));
 
     	Lifecycle.endApplication();
     }    
@@ -68,16 +68,16 @@ public class PackageBasedPermissionResolverTest extends TestCase {
     	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
     	
     	
-    	List<PackageBasedPermission> pbps = new ArrayList<PackageBasedPermission>();
-		pbps.add(new PackageBasedPermission("631b3d79-5b67-42fb-83da-714624970a6b", "jervis", RoleTypes.PACKAGE_ADMIN));
+    	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, "631b3d79-5b67-42fb-83da-714624970a6b", null));
     	Contexts.getSessionContext().set("packageBasedPermission", pbps);
     	
     	PackageBasedPermissionResolver resolver = new PackageBasedPermissionResolver();
-        assertTrue(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "package.admin"));
-    	assertTrue(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "package.developer"));
-        assertTrue(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "package.readonly"));
+        assertTrue(resolver.hasPermission(new PackageUUIDType("631b3d79-5b67-42fb-83da-714624970a6b"), RoleTypes.PACKAGE_ADMIN));
+    	assertTrue(resolver.hasPermission(new PackageUUIDType("631b3d79-5b67-42fb-83da-714624970a6b"), RoleTypes.PACKAGE_DEVELOPER));
+        assertTrue(resolver.hasPermission(new PackageUUIDType("631b3d79-5b67-42fb-83da-714624970a6b"), RoleTypes.PACKAGE_READONLY));
         
-        assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.readonly"));
+        assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", RoleTypes.PACKAGE_READONLY));
 
     	Lifecycle.endApplication();   
     } 
@@ -94,17 +94,17 @@ public class PackageBasedPermissionResolverTest extends TestCase {
     	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
     	
     	
-    	List<PackageBasedPermission> pbps = new ArrayList<PackageBasedPermission>();
-		pbps.add(new PackageBasedPermission("47982482-7912-4881-97ec-e852494383d7", "jervis", RoleTypes.PACKAGE_DEVELOPER));		
+    	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_DEVELOPER, "47982482-7912-4881-97ec-e852494383d7", null));		
     	Contexts.getSessionContext().set("packageBasedPermission", pbps);
     	
     	PackageBasedPermissionResolver resolver = new PackageBasedPermissionResolver();
         
-    	assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.admin"));
-    	assertTrue(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.developer"));
-        assertTrue(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.readonly"));
+    	assertFalse(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.PACKAGE_ADMIN));
+    	assertTrue(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.PACKAGE_DEVELOPER));
+        assertTrue(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.PACKAGE_READONLY));
         
-        assertFalse(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "package.readonly"));
+        assertFalse(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", RoleTypes.PACKAGE_READONLY));
 
     	Lifecycle.endApplication();   
     }    
@@ -121,17 +121,17 @@ public class PackageBasedPermissionResolverTest extends TestCase {
     	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
     	
     	
-    	List<PackageBasedPermission> pbps = new ArrayList<PackageBasedPermission>();
-		pbps.add(new PackageBasedPermission("47982482-7912-4881-97ec-e852494383d7", "jervis", RoleTypes.PACKAGE_READONLY));		
+    	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "47982482-7912-4881-97ec-e852494383d7", null));		
     	Contexts.getSessionContext().set("packageBasedPermission", pbps);
     	
     	PackageBasedPermissionResolver resolver = new PackageBasedPermissionResolver();
         
-        assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.admin"));
-        assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.developer"));
-        assertTrue(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", "package.readonly"));
+        assertFalse(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.PACKAGE_DEVELOPER));
+        assertFalse(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.PACKAGE_DEVELOPER));
+        assertTrue(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.PACKAGE_READONLY));
         
-        assertFalse(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", "package.readonly"));
+        assertFalse(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", RoleTypes.PACKAGE_READONLY));
 
     	Lifecycle.endApplication();   
     } 

@@ -1,12 +1,14 @@
 package org.drools.guvnor.server.security;
 
-public class PackageBasedPermission {
+public class RoleBasedPermission {
 	private String packageUUID;
+	private String categoryPath;
 	private String userName;
 	private String role;
 	
-	public PackageBasedPermission(String packageUUID, String userName, String role) {
+	public RoleBasedPermission(String userName, String role, String packageUUID, String categoryPath) {
 		this.packageUUID = packageUUID;
+		this.categoryPath = categoryPath;		
 		this.userName = userName;
 		this.role = role;		
 	}
@@ -33,6 +35,14 @@ public class PackageBasedPermission {
 
 	public void setPackageUUID(String packageUUID) {
 		this.packageUUID = packageUUID;
+	}
+
+	public String getCategoryPath() {
+		return categoryPath;
+	}
+
+	public void setCategoryPath(String categoryPath) {
+		this.categoryPath = categoryPath;
 	}
 	
 

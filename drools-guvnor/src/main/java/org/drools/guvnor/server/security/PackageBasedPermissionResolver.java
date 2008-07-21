@@ -48,33 +48,39 @@ public class PackageBasedPermissionResolver implements PermissionResolver,
 	}
 
 	public boolean hasPermission(Object target, String action) {
-		List<PackageBasedPermission> permissions = (List<PackageBasedPermission>) Contexts
+		List<RoleBasedPermission> permissions = (List<RoleBasedPermission>) Contexts
 				.getSessionContext().get("packageBasedPermission");
 
 		String targetUUDI = "";
-		if (target instanceof String) {
-			if (isUUDI((String) target)) {
-				targetUUDI = (String) target;
-			} else {
-				try {
-					ServiceImplementation si = (ServiceImplementation) Component
-							.getInstance("org.drools.guvnor.client.rpc.RepositoryService");
-					PackageItem source = si.repository
-							.loadPackage((String) target);
-					targetUUDI = source.getUUID();
-				} catch (RulesRepositoryException e) {
-					//ignore
-				}
+		
+		if (target instanceof PackageUUIDType) {
+			targetUUDI = ((PackageUUIDType) target).getUUID();
+		} else if (target instanceof PackageNameType) {
+			try {
+				ServiceImplementation si = (ServiceImplementation) Component
+						.getInstance("org.drools.guvnor.client.rpc.RepositoryService");
+				PackageItem source = si.repository
+						.loadPackage(((PackageNameType) target)
+								.getPackageName());
+				targetUUDI = source.getUUID();
+			} catch (RulesRepositoryException e) {
+				return false;
 			}
+
+		} else {
+			// PackageBasedPermissionResolver only grants permissions based on package info. 
+			// Return false if the input is not a pacakge info, as this will be the reponsibility 
+			//of other PermissionResolvers in the resolver chain.
+			return false;
 		}
 		
-		//the admin can do everything
+		//admin can do everything
 		if (Identity.instance().hasRole(RoleTypes.ADMIN)) {
 			return true;
 		}
 		
-		for (PackageBasedPermission pbp : permissions) {
-			//only when the user has the permission to operate the specific action on this package
+		for (RoleBasedPermission pbp : permissions) {
+			//only when the user has the permission to perform the specific action on this package
 			if (targetUUDI.equalsIgnoreCase(pbp.getPackageUUID())
 					&& isPermitted(action, pbp.getRole())) {
 				return true;
@@ -92,10 +98,6 @@ public class PackageBasedPermissionResolver implements PermissionResolver,
 				return false;
 			} else if ("package.developer".equalsIgnoreCase(requestedAction)) {
 				return true;
-			} else if ("package.analyst".equalsIgnoreCase(requestedAction)) {
-				return true;
-			} else if ("package.testonly".equalsIgnoreCase(requestedAction)) {
-				return true;
 			} else if ("package.readonly".equalsIgnoreCase(requestedAction)) {
 				return true;
 			}
@@ -104,25 +106,12 @@ public class PackageBasedPermissionResolver implements PermissionResolver,
 				return false;
 			} else if ("package.developer".equalsIgnoreCase(requestedAction)) {
 				return false;
-			} else if ("package.analyst".equalsIgnoreCase(requestedAction)) {
-				return false;
-			} else if ("package.testonly".equalsIgnoreCase(requestedAction)) {
-				return false;
 			} else if ("package.readonly".equalsIgnoreCase(requestedAction)) {
 				return true;
 			}
 		}
 
 		return false;
-	}
-
-	private boolean isUUDI(String uuid) {
-		//hack implementation
-		if (uuid.length() < 36) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 
 	public void filterSetByAction(Set<Object> targets, String action) {

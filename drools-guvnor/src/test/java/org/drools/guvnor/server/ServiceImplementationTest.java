@@ -1917,7 +1917,7 @@ public class ServiceImplementationTest extends TestCase {
 
 	public void testVerifier() throws Exception {
 		ServiceImplementation impl = getService();
-		PackageItem pkg = impl.repository.createPackage("testAnalysis", "");
+		PackageItem pkg = impl.repository.createPackage("testVerifier", "");
 		AssetItem asset = pkg.addAsset("SomeDRL", "");
 		asset.updateFormat(AssetFormats.DRL);
 

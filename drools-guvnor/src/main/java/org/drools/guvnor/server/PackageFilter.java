@@ -1,7 +1,4 @@
 package org.drools.guvnor.server;
-
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.repository.RepositoryFilter;
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -17,6 +14,12 @@ import org.drools.repository.RepositoryFilter;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
+
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.server.security.PackageUUIDType;
+import org.drools.repository.RepositoryFilter;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 
@@ -30,8 +33,7 @@ public class PackageFilter implements RepositoryFilter {
 		if (!Contexts.isSessionContextActive()) {
 			return true;
 		} else {
-			return Identity.instance().hasPermission("ignoredanyway", action,
-					((PackageConfigData) artifact).uuid);
+			return Identity.instance().hasPermission(new PackageUUIDType(((PackageConfigData) artifact).uuid), action);
 		}
 	}
 
