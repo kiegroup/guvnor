@@ -20,8 +20,10 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -64,6 +66,12 @@ import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.security.CategoryBasedPermissionResolver;
+import org.drools.guvnor.server.security.MockIdentity;
+import org.drools.guvnor.server.security.PackageBasedPermissionResolver;
+import org.drools.guvnor.server.security.PackageNameType;
+import org.drools.guvnor.server.security.RoleBasedPermission;
+import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.BRXMLPersistence;
 import org.drools.guvnor.server.util.IO;
 import org.drools.guvnor.server.util.ScenarioXMLPersistence;
@@ -79,6 +87,9 @@ import org.drools.rule.Package;
 import org.drools.util.BinaryRuleBaseLoader;
 import org.drools.util.DateUtils;
 import org.drools.util.DroolsStreamUtils;
+import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.contexts.Lifecycle;
+import org.jboss.seam.security.AuthorizationException;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.rpc.SerializableException;
@@ -342,6 +353,293 @@ public class ServiceImplementationTest extends TestCase {
 		assertTrue(asset.content instanceof RuleContentText);
 	}
 
+	public void testLoadRuleAssetWithRoleBasedAuthrozationAnalyst() throws Exception {
+		try {
+			ServiceImplementation impl = getService();
+			impl.repository.createPackage(
+					"testLoadRuleAssetWithRoleBasedAuthrozation", "desc");
+			impl.createCategory("",
+					"testLoadRuleAssetWithRoleBasedAuthrozationCat1",
+					"this is a cat");
+			impl.createCategory("",
+					"testLoadRuleAssetWithRoleBasedAuthrozationCat2",
+					"this is a cat");
+
+			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+					"description",
+					"testLoadRuleAssetWithRoleBasedAuthrozationCat1",
+					"testLoadRuleAssetWithRoleBasedAuthrozation", "drl");
+			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation2",
+					"description",
+					"testLoadRuleAssetWithRoleBasedAuthrozationCat2",
+					"testLoadRuleAssetWithRoleBasedAuthrozation", "drl");
+
+			TableDataResult res = impl.loadRuleListForCategories(
+					"testLoadRuleAssetWithRoleBasedAuthrozationCat1", 0, -1,
+					AssetItemGrid.RULE_LIST_TABLE_ID);
+			assertEquals(1, res.data.length);
+			assertEquals(1, res.total);
+			assertFalse(res.hasNext);
+
+			TableDataRow row = res.data[0];
+			String uuid = row.id;
+
+			TableDataResult res2 = impl.loadRuleListForCategories(
+					"testLoadRuleAssetWithRoleBasedAuthrozationCat2", 0, -1,
+					AssetItemGrid.RULE_LIST_TABLE_ID);
+			assertEquals(1, res.data.length);
+			assertEquals(1, res.total);
+			assertFalse(res.hasNext);
+
+			TableDataRow row2 = res2.data[0];
+			String uuid2 = row2.id;
+			
+			// Mock up SEAM contexts
+			Map application = new HashMap<String, Object>();
+			Lifecycle.beginApplication(application);
+			Lifecycle.beginCall();
+			MockIdentity midentity = new MockIdentity();
+			// this makes Identity.hasRole("admin") return false
+			midentity.setHasRole(false);
+			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
+			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+			
+			Contexts.getSessionContext().set(
+					"org.jboss.seam.security.identity", midentity);
+			Contexts.getSessionContext().set(
+					"org.drools.guvnor.client.rpc.RepositoryService", impl);
+			
+			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+			pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null,
+					"testLoadRuleAssetWithRoleBasedAuthrozationCat1"));
+			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+
+			
+			//now lets see if we can access this asset with the permissions
+			RuleAsset asset = impl.loadRuleAsset(uuid);
+			try {
+				asset = impl.loadRuleAsset(uuid2);
+				fail("Did not catch expected exception");
+			} catch (AuthorizationException e) {					
+			}
+		} finally {
+			Lifecycle.endApplication();
+		}
+	}
+	
+	public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonly() throws Exception {
+		try {
+			ServiceImplementation impl = getService();
+			impl.repository.createPackage(
+					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack1", "desc");
+			impl.createCategory("",
+					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat1",
+					"this is a cat");
+
+			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+					"description",
+					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat1",
+					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack1", "drl");
+			
+			impl.repository.createPackage(
+					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack2", "desc");
+
+			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+					"description",
+					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat1",
+					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack2", "drl");
+
+
+			TableDataResult res = impl.loadRuleListForCategories(
+					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat1", 0, -1,
+					AssetItemGrid.RULE_LIST_TABLE_ID);
+			TableDataRow row = res.data[0];
+			String uuid = row.id;
+			PackageItem source = impl.repository
+			    .loadPackage("testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack1");
+	        String package1Uuid = source.getUUID();	
+			
+			TableDataRow row2 = res.data[1];
+			String uuid2 = row2.id;
+
+			// Mock up SEAM contexts
+			Map application = new HashMap<String, Object>();
+			Lifecycle.beginApplication(application);
+			Lifecycle.beginCall();
+			MockIdentity midentity = new MockIdentity();
+			// this makes Identity.hasRole("admin") return false
+			midentity.setHasRole(false);
+			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
+			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+			
+			Contexts.getSessionContext().set(
+					"org.jboss.seam.security.identity", midentity);
+			Contexts.getSessionContext().set(
+					"org.drools.guvnor.client.rpc.RepositoryService", impl);
+			
+			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+			pbps.add(new RoleBasedPermission("jervis",
+					RoleTypes.PACKAGE_READONLY,
+					package1Uuid, null));
+
+			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+
+			//now lets see if we can access this asset with the permissions			
+			RuleAsset asset = impl.loadRuleAsset(uuid);
+			try {
+				asset = impl.loadRuleAsset(uuid2);
+				fail("Did not catch expected exception");
+			} catch (AuthorizationException e) {					
+			}
+		} finally {
+			Lifecycle.endApplication();
+		}
+	}
+	
+	public void testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonly() throws Exception {
+		try {
+			ServiceImplementation impl = getService();
+			impl.repository.createPackage(
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack1", "desc");
+			impl.createCategory("",
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyCat1",
+					"this is a cat");
+
+			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+					"description",
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyCat1",
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack1", "drl");
+			
+			impl.repository.createPackage(
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack2", "desc");
+
+			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+					"description",
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyCat1",
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack2", "drl");			
+			
+			impl.repository.createPackage(
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack3", "desc");
+
+			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+					"description",
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyCat1",
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack3", "drl");
+
+			PackageItem source = impl.repository.loadPackage("testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack1");
+            String package1Uuid = source.getUUID();
+			source = impl.repository.loadPackage("testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack2");
+            String package2Uuid = source.getUUID();
+        
+			// Mock up SEAM contexts
+			Map application = new HashMap<String, Object>();
+			Lifecycle.beginApplication(application);
+			Lifecycle.beginCall();
+			MockIdentity midentity = new MockIdentity();
+			// this makes Identity.hasRole("admin") return false
+			midentity.setHasRole(false);
+			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
+			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+			
+			Contexts.getSessionContext().set(
+					"org.jboss.seam.security.identity", midentity);
+			Contexts.getSessionContext().set(
+					"org.drools.guvnor.client.rpc.RepositoryService", impl);
+			
+			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+			pbps.add(new RoleBasedPermission("jervis",
+					RoleTypes.PACKAGE_READONLY,
+					package1Uuid, null));
+			pbps.add(new RoleBasedPermission("jervis",
+					RoleTypes.PACKAGE_DEVELOPER,
+					package2Uuid, null));
+
+			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+			
+			
+			TableDataResult res = impl.loadRuleListForCategories(
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyCat1", 0, -1,
+					AssetItemGrid.RULE_LIST_TABLE_ID);
+			assertEquals(2, res.data.length);
+		} finally {
+			Lifecycle.endApplication();
+		}
+	}
+	
+	public void testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalyst() throws Exception {
+		try {
+			ServiceImplementation impl = getService();
+			impl.repository.createPackage(
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack1", "desc");
+			impl.createCategory("",
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystCat1",
+					"this is a cat");
+
+			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+					"description",
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystCat1",
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack1", "drl");
+			
+			impl.repository.createPackage(
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack2", "desc");
+
+			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+					"description",
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystCat1",
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack2", "drl");			
+			
+			impl.repository.createPackage(
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack3", "desc");
+
+			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+					"description",
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystCat1",
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack3", "drl");
+			
+			PackageItem source = impl.repository.loadPackage("testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack2");
+            String package2Uuid = source.getUUID();
+			source = impl.repository.loadPackage("testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack3");
+            String package3Uuid = source.getUUID();
+            
+			// Mock up SEAM contexts
+			Map application = new HashMap<String, Object>();
+			Lifecycle.beginApplication(application);
+			Lifecycle.beginCall();
+			MockIdentity midentity = new MockIdentity();
+			// this makes Identity.hasRole("admin") return false
+			midentity.setHasRole(false);
+			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
+			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+			
+			Contexts.getSessionContext().set(
+					"org.jboss.seam.security.identity", midentity);
+			Contexts.getSessionContext().set(
+					"org.drools.guvnor.client.rpc.RepositoryService", impl);
+			
+			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+			pbps.add(new RoleBasedPermission("jervis",
+					RoleTypes.ANALYST,
+					null, "testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystCat1"));
+			pbps.add(new RoleBasedPermission("jervis",
+					RoleTypes.PACKAGE_READONLY,
+					package2Uuid, null));
+			pbps.add(new RoleBasedPermission("jervis",
+					RoleTypes.PACKAGE_DEVELOPER,
+					package3Uuid, null));
+			
+			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+			
+			
+			TableDataResult res = impl.loadRuleListForCategories(
+					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystCat1", 0, -1,
+					AssetItemGrid.RULE_LIST_TABLE_ID);
+			assertEquals(3, res.data.length);
+		} finally {
+			Lifecycle.endApplication();
+		}
+	}
+
+	
 	public void testLoadAssetHistoryAndRestore() throws Exception {
 		ServiceImplementation impl = getService();
 		impl.repository.createPackage("testLoadAssetHistory", "desc");

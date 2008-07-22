@@ -135,6 +135,30 @@ public class PackageBasedPermissionResolverTest extends TestCase {
 
     	Lifecycle.endApplication();   
     } 
+        
+    public void testAnalyst() throws Exception {
+    	//Mock up SEAM contexts
+    	Map application = new HashMap<String, Object>();    	
+    	Lifecycle.beginApplication(application);
+    	Lifecycle.beginCall();   	
+    	MockIdentity midentity = new MockIdentity();
+    	//this makes Identity.hasRole("admin") return false
+    	midentity.setHasRole(false);    	
+    	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
+    	
+    	
+    	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "47982482-7912-4881-97ec-e852494383d7", null));		
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category1"));		
+    	Contexts.getSessionContext().set("packageBasedPermission", pbps);
+    	
+    	PackageBasedPermissionResolver resolver = new PackageBasedPermissionResolver();
+        
+        assertTrue(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.ANALYST));
+        assertTrue(resolver.hasPermission(new PackageUUIDType("631b3d79-5b67-42fb-83da-714624970a6b"), RoleTypes.ANALYST));
+
+    	Lifecycle.endApplication();   
+    } 
     
     
 }

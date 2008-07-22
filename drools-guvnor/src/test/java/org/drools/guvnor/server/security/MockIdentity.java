@@ -17,10 +17,18 @@ package org.drools.guvnor.server.security;
 
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.permission.PermissionResolver;
+import org.jboss.seam.security.permission.ResolverChain;
 
 public class MockIdentity extends Identity {
 	private boolean hasRole;
+	private List<PermissionResolver> resolvers = new ArrayList<PermissionResolver>();
 
 	public boolean hasRole(String role) {
 		return hasRole;
@@ -28,5 +36,25 @@ public class MockIdentity extends Identity {
 
 	public void setHasRole(boolean hasRole) {
 		this.hasRole = hasRole;
+	}
+
+	public boolean isLoggedIn(boolean attemptLogin) {
+		return true;
+	}
+
+	public boolean hasPermission(Object target, String action) {
+	      for (PermissionResolver resolver : resolvers)
+	      {
+	         if (resolver.hasPermission(target, action))
+	         {
+	            return true;
+	         }
+	      }
+	      
+	      return false;
+	}
+	
+	public void addPermissionResolver(PermissionResolver r) {
+		resolvers.add(r);
 	}
 }

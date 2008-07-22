@@ -31,7 +31,17 @@ import org.jboss.seam.security.SimplePrincipal;
 import org.jboss.seam.security.permission.PermissionResolver;
 
 /**
- * Resolves package-based permissions. A user might have differnt permissions on different packages.
+ * PermissionResolvers are chained together to resolve permission check, the check returns true if
+ * one of the PermissionResolvers in the chain returns true.
+ * 
+ * This PermissionResolver resolves package-based permissions. It returns true under following situations:
+ * 1. The user is admin
+ * Or
+ * 2. The user has one of the following roles package.admin|package.developer|package.readonly on the requested
+ * package, and requested role requires lower privilege than assigned role(I.e., package.admin>package.developer>package.readonly) 
+ * Or
+ * 3. The user is Analyst
+ * 
  *  
  * @author Jervis Liu
  */
@@ -47,20 +57,34 @@ public class PackageBasedPermissionResolver implements PermissionResolver,
 	public void create() {
 	}
 
-	public boolean hasPermission(Object target, String action) {
+	/**
+     * check permission
+     *
+     * @param requestedPackage
+     *            the requestedPackage must be an instance of PackageUUIDType or PackageNameType, 
+     *            otherwise return false;
+     * @param requestedRole
+     *            the requestedRole must be an instance of String, its value has to be one of the 
+     *            followings: admin|analyst|package.admin|package.developer|package.readonly,
+     *            otherwise return false;
+     * @return true if the permission can be granted on the requested packaged with the 
+     * requested role; return false otherwise.
+     * 
+     */
+	public boolean hasPermission(Object requestedPackage, String requestedRole) {
 		List<RoleBasedPermission> permissions = (List<RoleBasedPermission>) Contexts
 				.getSessionContext().get("packageBasedPermission");
 
 		String targetUUDI = "";
 		
-		if (target instanceof PackageUUIDType) {
-			targetUUDI = ((PackageUUIDType) target).getUUID();
-		} else if (target instanceof PackageNameType) {
+		if (requestedPackage instanceof PackageUUIDType) {
+			targetUUDI = ((PackageUUIDType) requestedPackage).getUUID();
+		} else if (requestedPackage instanceof PackageNameType) {
 			try {
 				ServiceImplementation si = (ServiceImplementation) Component
 						.getInstance("org.drools.guvnor.client.rpc.RepositoryService");
 				PackageItem source = si.repository
-						.loadPackage(((PackageNameType) target)
+						.loadPackage(((PackageNameType) requestedPackage)
 								.getPackageName());
 				targetUUDI = source.getUUID();
 			} catch (RulesRepositoryException e) {
@@ -79,12 +103,15 @@ public class PackageBasedPermissionResolver implements PermissionResolver,
 			return true;
 		}
 		
+		//package based permission check only applies to admin|package.admin|package.dev|package.readonly role. 
+		//For Analyst we always grant permisssion.
 		for (RoleBasedPermission pbp : permissions) {
-			//only when the user has the permission to perform the specific action on this package
-			if (targetUUDI.equalsIgnoreCase(pbp.getPackageUUID())
-					&& isPermitted(action, pbp.getRole())) {
+			if (RoleTypes.ANALYST.equals(pbp.getRole())) {
 				return true;
-			}
+			} else if (targetUUDI.equalsIgnoreCase(pbp.getPackageUUID())
+					&& isPermitted(requestedRole, pbp.getRole())) {
+				return true;
+			} 
 		}
 
 		return false;
@@ -94,19 +121,19 @@ public class PackageBasedPermissionResolver implements PermissionResolver,
 		if (RoleTypes.PACKAGE_ADMIN.equalsIgnoreCase(role)) {
 			return true;
 		} else if (RoleTypes.PACKAGE_DEVELOPER.equalsIgnoreCase(role)) {
-			if ("package.admin".equalsIgnoreCase(requestedAction)) {
+			if (RoleTypes.PACKAGE_ADMIN.equalsIgnoreCase(requestedAction)) {
 				return false;
-			} else if ("package.developer".equalsIgnoreCase(requestedAction)) {
+			} else if (RoleTypes.PACKAGE_DEVELOPER.equalsIgnoreCase(requestedAction)) {
 				return true;
-			} else if ("package.readonly".equalsIgnoreCase(requestedAction)) {
+			} else if (RoleTypes.PACKAGE_READONLY.equalsIgnoreCase(requestedAction)) {
 				return true;
 			}
 		} else if (RoleTypes.PACKAGE_READONLY.equalsIgnoreCase(role)) {
-			if ("package.admin".equalsIgnoreCase(requestedAction)) {
+			if (RoleTypes.PACKAGE_ADMIN.equalsIgnoreCase(requestedAction)) {
 				return false;
-			} else if ("package.developer".equalsIgnoreCase(requestedAction)) {
+			} else if (RoleTypes.PACKAGE_DEVELOPER.equalsIgnoreCase(requestedAction)) {
 				return false;
-			} else if ("package.readonly".equalsIgnoreCase(requestedAction)) {
+			} else if (RoleTypes.PACKAGE_READONLY.equalsIgnoreCase(requestedAction)) {
 				return true;
 			}
 		}

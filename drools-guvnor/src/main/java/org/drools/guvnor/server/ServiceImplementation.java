@@ -326,23 +326,30 @@ public class ServiceImplementation implements RepositoryService {
 
 	@WebRemote
 	@Restrict("#{identity.loggedIn}")
+	/**
+	 * loadRuleListForCategories
+	 * 
+	 * Role-based Authorization check: This method can be accessed if user has 
+	 * following permissions:
+	 * 1. The user has Analyst role and this role has permission to access the category 
+	 * Or.
+	 * 2. The user has one of the following roles: package.readonly|package.admin|package.developer. 
+	 * In this case, this method only returns assets that belong to packages the role has at least
+	 * package.readonly permission to access. 
+	 */
 	public TableDataResult loadRuleListForCategories(String categoryPath,
 			int skip, int numRows, String tableConfig)
 			throws SerializableException {
 		// love you
 		// long time = System.currentTimeMillis();
 
-		// First check the user has permission to access this categoryPath. This
-		// check only applies to
-		// ANALYST role, always return true for
-		// admin|package.admin|package.dev|package.readonly roles.
-		// We will then use AssetItemFilter to enforce package-based
-		// permissions.
+		// First check the user has permission to access this categoryPath. 
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
 					new CategoryPathType(categoryPath), null);
 		}
 
+		//use AssetItemFilter to enforce package-based permissions.
 		RepositoryFilter filter = new AssetItemFilter();
 		AssetPageList list = repository.findAssetsByCategory(categoryPath,
 				false, skip, numRows, filter);
@@ -378,6 +385,14 @@ public class ServiceImplementation implements RepositoryService {
 	/**
 	 * This actually does the hard work of loading up an asset based on its
 	 * format.
+	 * 
+	 * Role-based Authorization check: This method can be accessed if user has 
+	 * following permissions:
+	 * 1. The user has Analyst role and this role has permission to access the category 
+	 * which the asset belongs to.
+	 * Or.
+	 * 2. The user has package.readonly role (or package.admin, package.developer) 
+	 * and this role has permission to access the package which the asset belongs to.
 	 */
 	@WebRemote
 	@Restrict("#{identity.loggedIn}")
@@ -394,6 +409,22 @@ public class ServiceImplementation implements RepositoryService {
 			Identity.instance().checkPermission(
 					new PackageNameType(asset.metaData.packageName),
 					RoleTypes.PACKAGE_READONLY);
+			
+			boolean passed = false;
+			RuntimeException exception = null;
+			for(String cat : asset.metaData.categories) {
+				try {
+					Identity.instance().checkPermission(
+							new CategoryPathType(cat),
+							RoleTypes.ANALYST);
+					passed = true;
+				} catch (RuntimeException e) {
+					exception = e;					
+				}
+			}
+			if(!passed) {
+				throw exception;
+			}
 		}
 
 		// get package header
@@ -476,11 +507,38 @@ public class ServiceImplementation implements RepositoryService {
 
 	@WebRemote
 	@Restrict("#{identity.loggedIn}")
+	/**
+	 * 
+	 * Role-based Authorization check: This method can be accessed if user has 
+	 * following permissions:
+	 * 1. The user has Analyst role and this role has permission to access the category 
+	 * which the asset belongs to.
+	 * Or.
+	 * 2. The user has package.readonly role (or package.admin, package.developer) 
+	 * and this role has permission to access the package which the asset belongs to.
+	 */
 	public String checkinVersion(RuleAsset asset) throws SerializableException {
+
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
 					new PackageNameType(asset.metaData.packageName),
-					RoleTypes.PACKAGE_DEVELOPER);
+					RoleTypes.PACKAGE_READONLY);
+			
+			boolean passed = false;
+			RuntimeException exception = null;
+			for(String cat : asset.metaData.categories) {
+				try {
+					Identity.instance().checkPermission(
+							new CategoryPathType(cat),
+							RoleTypes.ANALYST);
+					passed = true;
+				} catch (RuntimeException e) {
+					exception = e;					
+				}
+			}
+			if(!passed) {
+				throw exception;
+			}
 		}
 
 		log.info("USER:" + repository.getSession().getUserID()
