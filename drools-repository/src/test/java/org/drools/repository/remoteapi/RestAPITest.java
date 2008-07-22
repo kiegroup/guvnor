@@ -171,6 +171,9 @@ public class RestAPITest extends TestCase {
 		d = new String(out.toByteArray());
 		assertEquals("this is content", d);
 
+
+
+
 		res = api.get("packages");
 		res = api.get("packages?version=all");
 
@@ -178,6 +181,53 @@ public class RestAPITest extends TestCase {
 		res = api.get("snapshots?version=all");
 
 
+
+
+	}
+
+	public void testVersionHistoryAndArchived() throws Exception {
+		RulesRepository repo = RepositorySessionUtil.getRepository();
+		PackageItem pkg = repo.createPackage("testVersionHistoryAndArchived", "");
+		repo.save();
+
+
+		AssetItem asset1 = pkg.addAsset("asset1", "");
+		asset1.updateContent("this is content");
+		asset1.updateFormat("drl");
+		asset1.checkin("This is something");
+
+		AssetItem asset2 = pkg.addAsset("asset2", "");
+		asset2.updateContent("this is content");
+		asset2.updateFormat("drl");
+		asset2.checkin("This is another");
+
+		assertEquals(1, asset1.getVersionNumber());
+
+		RestAPI api = new RestAPI(repo);
+		Text res = (Text) api.get("packages/testVersionHistoryAndArchived");
+		System.err.println(res.data);
+		assertTrue(res.data.indexOf("asset2.drl") > -1);
+
+		asset2.archiveItem(true);
+		asset2.checkin("");
+
+		res = (Text) api.get("packages/testVersionHistoryAndArchived");
+		assertEquals(-1, res.data.indexOf("asset2.drl"));
+
+
+		Response resp = api.get("packages/testVersionHistoryAndArchived/asset1.drl?version=all");
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		res.writeData(out);
+		String d = new String(out.toByteArray());
+		assertNotNull(d);
+
+		resp = api.get("packages/testVersionHistoryAndArchived/asset2.drl?version=all");
+		out = new ByteArrayOutputStream();
+
+		resp.writeData(out);
+		d = new String(out.toByteArray());
+		assertEquals("", d);
 
 
 	}

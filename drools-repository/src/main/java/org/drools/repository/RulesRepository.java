@@ -98,6 +98,7 @@ public class RulesRepository {
      */
     public final static String  RULES_REPOSITORY_NAME = "drools:repository";
 
+
     private Session             session;
 
     static boolean initialized = false;
@@ -168,7 +169,7 @@ public class RulesRepository {
         this.session.logout();
     }
 
-    private Node getAreaNode(String areaName) throws RulesRepositoryException {
+    public Node getAreaNode(String areaName) throws RulesRepositoryException {
         Node folderNode = null;
         int tries = 0;
         while ( folderNode == null && tries < 2 ) {

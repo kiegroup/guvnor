@@ -97,12 +97,18 @@ public class RestAPI {
 				String version = v[1];
 				String assetName = AssetItem.getAssetNameFromFileName(v[0])[0];
 				AssetItem asset = pkg.loadAsset(assetName);
+				if (asset.isArchived()) {
+					Text r = new Text();
+					r.data = "";
+					return r;
+				}
 				if (version.equals("all")) {
 					AssetHistoryIterator it =  asset.getHistory();
 					StringBuilder buf = new StringBuilder();
 					while(it.hasNext()) {
 
 						AssetItem h = it.next();
+
 						if (h.getVersionNumber() != 0) {
 							String checkinComment = h.getCheckinComment();
 							//String lastMo ... hmm what is needed?
@@ -176,12 +182,14 @@ public class RestAPI {
 
 		while (it.hasNext()) {
 			AssetItem a = it.next();
-			Calendar lastMod = a.getLastModified();
-			if (lastMod == null) {
-				lastMod = a.getCreatedDate();
+			if (!a.isArchived()) {
+				Calendar lastMod = a.getLastModified();
+				if (lastMod == null) {
+					lastMod = a.getCreatedDate();
+				}
+				sb.append(a.getName() + "." + a.getFormat() + "=" + sdf.format(lastMod.getTime()) + "," + a.getVersionNumber());
+				sb.append('\n');
 			}
-			sb.append(a.getName() + "." + a.getFormat() + "=" + sdf.format(lastMod.getTime()) + "," + a.getVersionNumber());
-			sb.append('\n');
 		}
 
 		Text r = new Response.Text();
