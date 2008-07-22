@@ -52,7 +52,7 @@ public abstract class AssetAttachmentFileWidget extends Composite {
     private FormPanel form;
     private ImageButton ok;
     private RuleViewer viewer;
-    private FormStyleLayout layout;
+    protected FormStyleLayout layout;
     private RuleAsset asset;
 
 
