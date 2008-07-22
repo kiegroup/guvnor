@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure 1.2//EN" "http://jetty.mortbay.org/configure_1_2.dtd">
+<Configure class="org.mortbay.jetty.Server">
+
+    <!-- Configure the listeners -->
+    <Call name="addListener">
+        <Arg>
+            <New class="org.mortbay.http.SocketListener">
+                <Set name="Port">
+                    <SystemProperty name="jetty.port" default="8080"/>
+                </Set>
+                <Set name="MinThreads">5</Set>
+                <Set name="MaxThreads">255</Set>
+                <Set name="MaxIdleTimeMs">30000</Set>
+                <Set name="MaxReadTimeMs">10000</Set>
+                <Set name="MaxStopTimeMs">5000</Set>
+                <Set name="LowResourcePersistTimeMs">2000</Set>
+            </New>
+        </Arg>
+    </Call>
+
+    <Call name="addWebApplication">
+        <Arg>/</Arg>
+        <Arg>src/main/webapp</Arg>
+        <Call name="getWebApplicationHandler">
+            <Set name="usingCookies">false</Set>
+        </Call>
+    </Call>
+
+    <Set name="RequestLog">
+        <New class="org.mortbay.http.NCSARequestLog">
+            <Arg><SystemProperty name="jetty.log" default="./logs"/>/yyyy_mm_dd.request.log
+            </Arg>
+            <Set name="retainDays">90</Set>
+            <Set name="append">true</Set>
+            <Set name="extended">true</Set>
+            <Set name="LogTimeZone">GMT</Set>
+        </New>
+    </Set>
+
+    <Call name="addWebApplication">
+        <Arg>/logs</Arg>
+        <Arg>logs</Arg>
+    </Call>
+
+</Configure>
