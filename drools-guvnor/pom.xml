@@ -87,11 +87,6 @@
       <artifactId>gwt-servlet</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.yesmail.rolodex</groupId>
-      <artifactId>gwt-rolodex-gwt15</artifactId>
-      <version>1.1</version>  
-    </dependency>
-    <dependency>
       <groupId>com.gwtext</groupId>
       <artifactId>gwtext</artifactId>
     </dependency>

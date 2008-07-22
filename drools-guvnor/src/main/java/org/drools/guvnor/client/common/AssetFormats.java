@@ -66,13 +66,10 @@ public class AssetFormats {
     /** For fact models in drl.     */
     public static final String DRL_MODEL = "model.drl";
 
-    /**  for a set of images */
-    public static final String IMAGE_SET = "image-set";
-
     /**
      * The following group the assets together for lists, helpers etc...
      */
-    public static final String[] BUSINESS_RULE_FORMATS = new String[]{AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE, AssetFormats.DECISION_SPREADSHEET_XLS, AssetFormats.DECISION_TABLE_GUIDED, AssetFormats.IMAGE_SET};
+    public static final String[] BUSINESS_RULE_FORMATS = new String[]{AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE, AssetFormats.DECISION_SPREADSHEET_XLS, AssetFormats.DECISION_TABLE_GUIDED};
 
 
     /**

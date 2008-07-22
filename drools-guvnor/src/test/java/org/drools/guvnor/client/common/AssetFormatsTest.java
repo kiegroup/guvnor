@@ -35,9 +35,6 @@ public class AssetFormatsTest extends TestCase {
                     fmt.equals( AssetFormats.DSL_TEMPLATE_RULE )
                     ||
                     fmt.equals( AssetFormats.DECISION_TABLE_GUIDED )
-                    ||
-                    fmt.equals( AssetFormats.IMAGE_SET )
-
             ) ) {
                 fail("Incorrect grouping of business rules.");
             }

@@ -77,8 +77,6 @@ public class EditorLauncher {
         	return new RuleValidatorWrapper(new GuidedDecisionTableWidget(asset), asset);
         } else if (asset.metaData.format.equals(AssetFormats.DRL_MODEL)) {
         	return new RuleValidatorWrapper(new FactModelWidget(asset), asset);
-        } else if (asset.metaData.format.equals(AssetFormats.IMAGE_SET)) {
-        	return new ImageSetWidget(asset, viewer);
         } else {
             return new DefaultContentUploadEditor( asset, viewer );
         }
@@ -116,10 +114,5 @@ public class EditorLauncher {
             return result;
         }
     }
-
-
-
-
-
 
 }

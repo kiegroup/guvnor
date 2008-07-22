@@ -375,7 +375,8 @@ public class ExplorerLayoutManager {
         return m;
 	}
 
-	private Menu rulesNewMenu() {
+    //TODO: refactor this methid to a class, make menus pluggable
+    private Menu rulesNewMenu() {
 		Menu m = new Menu();
 
 		m.addItem( new Item("New Business Rule (Guided editor)", new BaseItemListenerAdapter() {
@@ -409,14 +410,6 @@ public class ExplorerLayoutManager {
 				launchWizard(AssetFormats.DECISION_TABLE_GUIDED, "New Decision Table (Guided editor)", true);
 			}
 		}, "images/gdst.gif"));
-
-        //TODO: new icon
-        //TODO: refactor this methid to a class, make menus pluggable
-        m.addItem(new Item("New ImageSet", new BaseItemListenerAdapter() {
-        			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(AssetFormats.IMAGE_SET, "New ImageSet", true);
-        			}
-        	    }, "images/rule_asset.gif"));
 
         m.addItem(new Item("New Test Scenario", new BaseItemListenerAdapter() {
         			public void onClick(BaseItem item, EventObject e) {
