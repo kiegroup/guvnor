@@ -31,14 +31,10 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.HorizontalSplitPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.VerticalSplitPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -104,21 +100,22 @@ public class RuleViewer extends Composite {
 
         //the action widgets (checkin/close etc).
         toolbar = new ActionToolbar( asset,
-                                     new Command() {
-                public void execute() {
+                                     new ActionToolbar.CheckinAction() {
+                public void doCheckin(String comment) {
                 	if (editor instanceof SaveEventListener) {
                 		((SaveEventListener) editor).onSave();
                 	}
-                    doCheckin();
+                    performCheckIn(comment);
                     if (editor instanceof SaveEventListener) {
                     	((SaveEventListener) editor).onAfterSave();
                     }
                 }
                 },
-                new Command() {
-                    public void execute() {
-                        doArchive();
+                new ActionToolbar.CheckinAction() {
+                    public void doCheckin(String comment) {
+                        doArchive(comment);
                     }
+
                 },
 
                 new Command() {
@@ -199,15 +196,15 @@ public class RuleViewer extends Composite {
      * This responds to the checkin command.
      */
 
-    void doArchive() {
+    private void doArchive(String comment) {
         this.asset.archived = true;
-        this.doCheckin();
+        this.performCheckIn(comment);
         this.closeCommand.execute();
     }
 
-    void doCheckin() {
+    private void performCheckIn(String comment) {
         //layout.clear();
-
+    	this.asset.metaData.checkinComment = comment;
         LoadingPopup.showMessage( "Saving, please wait..." );
         RepositoryServiceFactory.getService().checkinVersion( this.asset, new GenericCallback() {
 

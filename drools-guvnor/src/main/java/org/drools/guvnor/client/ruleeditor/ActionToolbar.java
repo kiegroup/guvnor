@@ -22,7 +22,6 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.common.StatusChangePopup;
-import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 
@@ -48,30 +47,30 @@ import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 public class ActionToolbar extends Composite {
 
 	private Toolbar		toolbar;
-    private MetaData      metaData;
-    private Command checkinAction;
-    private Command archiveAction;
+    private CheckinAction checkinAction;
+    private CheckinAction archiveAction;
     private Command deleteAction;
     private String uuid;
     private ToolbarTextItem state;
+	private boolean notCheckedInYet;
 
     public ActionToolbar(final RuleAsset asset,
-                         final Command checkin,
-                         final Command archiv,
+                         final CheckinAction checkin,
+                         final CheckinAction archiv,
                          final Command delete, boolean readOnly) {
 
-        this.metaData = asset.metaData;
         this.checkinAction = checkin;
         this.uuid = asset.uuid;
         this.archiveAction = archiv;
         this.deleteAction = delete;
-        this.state = new ToolbarTextItem("Status: ");
 
+        this.state = new ToolbarTextItem("Status: ");
+        this.notCheckedInYet = (asset.metaData.versionNumber == 0);
 
         toolbar = new Toolbar();
 
 
-        String status = metaData.status;
+        String status = asset.metaData.status;
 
         setState(status);
 
@@ -130,8 +129,7 @@ public class ActionToolbar extends Composite {
 					com.gwtext.client.widgets.Button button,
 					EventObject e) {
                         if (Window.confirm( "Are you sure you want to archive this item?" )) {
-                            metaData.checkinComment = "Archived Item on " + new java.util.Date().toString();
-                            archiveAction.execute();
+                            archiveAction.doCheckin("Archived Item on " + new java.util.Date().toString());
                         }
 			}
 			});
@@ -140,7 +138,7 @@ public class ActionToolbar extends Composite {
 
 
 
-        if (this.metaData.versionNumber == 0) {
+        if (notCheckedInYet) {
 
         	ToolbarButton delete = new ToolbarButton();
         	delete.setText("Delete");
@@ -234,8 +232,7 @@ public class ActionToolbar extends Composite {
         pop.setCommand( new Command() {
 
             public void execute() {
-                metaData.checkinComment = pop.getCheckinComment();
-                checkinAction.execute();
+                checkinAction.doCheckin(pop.getCheckinComment());
             }
         });
         pop.show();
@@ -255,6 +252,10 @@ public class ActionToolbar extends Composite {
         pop.show();
     }
 
+
+    public static interface CheckinAction {
+    	void doCheckin(String comment);
+    }
 
 
 }
