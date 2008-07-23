@@ -57,7 +57,7 @@ public class RestAPI {
 	 */
 	public Response get(String path) throws UnsupportedEncodingException {
 		String[] bits = split(path);
-		if (bits.length == 1) return new Response.Text("Not a valid URL");
+		if (bits.length == 1) return new Response.Text("");
 		if (bits[0].equals("packages")) {
 			String pkgName = bits[1];
 			if (bits.length == 2) {
@@ -67,7 +67,7 @@ public class RestAPI {
 				return loadContent(pkgName, resourceFile);
 			}
 		} else {
-			throw new IllegalArgumentException("Unable to deal with " + path);
+			return new Response.Text("");//throw new IllegalArgumentException("Unable to deal with " + path);
 		}
 
 	}

@@ -126,6 +126,18 @@ public class RestAPITest extends TestCase {
 
 	}
 
+	public void testGetMisc() throws Exception {
+		RulesRepository repo = RepositorySessionUtil.getRepository();
+		RestAPI api = new RestAPI(repo);
+		api.get("");
+		api.get("/");
+		api.get("packages");
+		api.get("snapshots");
+		api.get("snapshots/defaultPackage");
+
+
+	}
+
 	public void testGetVersionHistory() throws Exception {
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		PackageItem pkg = repo.createPackage("testRestGetVersionHistory", "");
