@@ -54,9 +54,10 @@ public class WebDAVImpl implements WebdavStore {
     }
 
     public void commit()  {
-    	System.out.println("COMMIT");
+    	System.out.println("COMMIT START");
         getRepo().save();
         tlRepo.set(null);
+        System.out.println("COMMIT END");
     }
 
     public void createFolder(String uri)  {

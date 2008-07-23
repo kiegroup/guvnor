@@ -315,8 +315,17 @@ public class WebDAVImplTest extends TestCase {
 	public void testSetContent() throws Exception {
 		WebDAVImpl imp  = getImpl();
 		imp.createFolder("/foo/webdav/packages/testSetDavContent");
+		imp.commit();
+		imp  = getImpl();
 		imp.createResource("/foo/webdav/packages/testSetDavContent/Something.drl");
+		imp.commit();
+		imp  = getImpl();
 		imp.setResourceContent("/foo/webdav/packages/testSetDavContent/Something.drl", IOUtils.toInputStream("some input"), null, null);
+		imp.commit();
+		imp  = getImpl();
+		imp.getResourceContent("/foo/webdav/packages/testSetDavContent/Something.drl");
+		imp.commit();
+		imp  = getImpl();
 
 		AssetItem as = imp.getRepo().loadPackage("testSetDavContent").loadAsset("Something");
 		assertTrue(as.isBinary());
@@ -337,6 +346,7 @@ public class WebDAVImplTest extends TestCase {
 
 
 	}
+
 
 	public void testSnapshot() throws Exception {
 		WebDAVImpl imp  = getImpl();
