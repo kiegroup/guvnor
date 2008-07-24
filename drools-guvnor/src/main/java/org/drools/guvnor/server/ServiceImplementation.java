@@ -410,20 +410,26 @@ public class ServiceImplementation implements RepositoryService {
 					new PackageNameType(asset.metaData.packageName),
 					RoleTypes.PACKAGE_READONLY);
 			
-			boolean passed = false;
-			RuntimeException exception = null;
-			for(String cat : asset.metaData.categories) {
-				try {
-					Identity.instance().checkPermission(
-							new CategoryPathType(cat),
-							RoleTypes.ANALYST);
-					passed = true;
-				} catch (RuntimeException e) {
-					exception = e;					
+			if(asset.metaData.categories.length == 0) {
+				Identity.instance().checkPermission(
+						new CategoryPathType(null),
+						RoleTypes.ANALYST);
+			} else {
+				boolean passed = false;
+				RuntimeException exception = null;
+
+				for (String cat : asset.metaData.categories) {
+					try {
+						Identity.instance().checkPermission(
+								new CategoryPathType(cat), RoleTypes.ANALYST);
+						passed = true;
+					} catch (RuntimeException e) {
+						exception = e;
+					}
 				}
-			}
-			if(!passed) {
-				throw exception;
+				if (!passed) {
+					throw exception;
+				}
 			}
 		}
 

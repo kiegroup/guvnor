@@ -496,6 +496,202 @@ public class ServiceImplementationTest extends TestCase {
 		}
 	}
 	
+	//Access an asset that belongs to no category. e.g., Packages -> Create New -> "upload new Model jar".
+	//The user role is admin
+	public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategory() throws Exception {
+		try {
+			ServiceImplementation impl = getService();
+			impl.repository.createPackage(
+					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPack", "desc");
+			impl.createCategory("",
+					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryCat",
+					"this is a cat");
+
+			String uuid = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+					"description",
+					null,
+					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPack", "drl");
+
+			// Mock up SEAM contexts
+			Map application = new HashMap<String, Object>();
+			Lifecycle.beginApplication(application);
+			Lifecycle.beginCall();
+			MockIdentity midentity = new MockIdentity();
+			// this makes Identity.hasRole("admin") return true
+			midentity.setHasRole(true);
+			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
+			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+			
+			Contexts.getSessionContext().set(
+					"org.jboss.seam.security.identity", midentity);
+			Contexts.getSessionContext().set(
+					"org.drools.guvnor.client.rpc.RepositoryService", impl);
+			
+			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+/*			pbps.add(new RoleBasedPermission("jervis",
+					RoleTypes.PACKAGE_READONLY,
+					package1Uuid, null));*/
+
+			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+
+			//now lets see if we can access this asset with the permissions			
+			RuleAsset asset = impl.loadRuleAsset(uuid);
+			assertNotNull(asset);
+		} finally {
+			Lifecycle.endApplication();
+		}
+	}
+	
+	//Access an asset that belongs to no category. e.g., Packages -> Create New -> "upload new Model jar".
+	//The user role is admin
+	public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPackageAdmin() throws Exception {
+		try {
+			ServiceImplementation impl = getService();
+			PackageItem packageItem = impl.repository.createPackage(
+					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPackageAdminPack", "desc");
+			String packageUuid = packageItem.getUUID();
+			impl.createCategory("",
+					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPackageAdminCat",
+					"this is a cat");
+
+			String uuid = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+					"description",
+					null,
+					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPackageAdminPack", "drl");
+
+			// Mock up SEAM contexts
+			Map application = new HashMap<String, Object>();
+			Lifecycle.beginApplication(application);
+			Lifecycle.beginCall();
+			MockIdentity midentity = new MockIdentity();
+			// this makes Identity.hasRole("admin") return false
+			midentity.setHasRole(false);
+			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
+			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+			
+			Contexts.getSessionContext().set(
+					"org.jboss.seam.security.identity", midentity);
+			Contexts.getSessionContext().set(
+					"org.drools.guvnor.client.rpc.RepositoryService", impl);
+			
+			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+			pbps.add(new RoleBasedPermission("jervis",
+					RoleTypes.PACKAGE_ADMIN,
+					packageUuid, null));
+
+			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+
+			//now lets see if we can access this asset with the permissions			
+			RuleAsset asset = impl.loadRuleAsset(uuid);
+			assertNotNull(asset);
+		} finally {
+			Lifecycle.endApplication();
+		}
+	}
+	
+	//Access an asset that belongs to no category. e.g., Packages -> Create New -> "upload new Model jar".
+	//The user role is analyst
+	public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryAnalyst() throws Exception {
+		try {
+			ServiceImplementation impl = getService();
+			PackageItem packageItem = impl.repository.createPackage(
+					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryAnalystPack", "desc");
+			String packageUuid = packageItem.getUUID();
+			impl.createCategory("",
+					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryAnalystCat",
+					"this is a cat");
+
+			String uuid = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+					"description",
+					null,
+					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryAnalystPack", "drl");
+
+			// Mock up SEAM contexts
+			Map application = new HashMap<String, Object>();
+			Lifecycle.beginApplication(application);
+			Lifecycle.beginCall();
+			MockIdentity midentity = new MockIdentity();
+			// this makes Identity.hasRole("admin") return false
+			midentity.setHasRole(false);
+			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
+			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+			
+			Contexts.getSessionContext().set(
+					"org.jboss.seam.security.identity", midentity);
+			Contexts.getSessionContext().set(
+					"org.drools.guvnor.client.rpc.RepositoryService", impl);
+			
+			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+			pbps.add(new RoleBasedPermission("jervis",
+					RoleTypes.ANALYST,
+					null, "category1"));
+
+			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+
+			//now lets see if we can access this asset with the permissions			
+			try {
+				RuleAsset asset = impl.loadRuleAsset(uuid);
+				fail("Did not catch expected exception");
+			} catch (AuthorizationException e) {					
+			}
+		} finally {
+			Lifecycle.endApplication();
+		}
+	}
+
+	//Access an asset that belongs to no category. The user role is analyst and package.admin. 
+	//The analyst can not access the access the asset, but the package.admin can.
+	public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixed() throws Exception {
+		try {
+			ServiceImplementation impl = getService();
+			PackageItem packageItem = impl.repository.createPackage(
+					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedPack", "desc");
+			String packageUuid = packageItem.getUUID();
+			impl.createCategory("",
+					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedCat",
+					"this is a cat");
+
+			String uuid = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+					"description",
+					null,
+					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedPack", "drl");
+
+			// Mock up SEAM contexts
+			Map application = new HashMap<String, Object>();
+			Lifecycle.beginApplication(application);
+			Lifecycle.beginCall();
+			MockIdentity midentity = new MockIdentity();
+			// this makes Identity.hasRole("admin") return false
+			midentity.setHasRole(false);
+			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
+			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+			
+			Contexts.getSessionContext().set(
+					"org.jboss.seam.security.identity", midentity);
+			Contexts.getSessionContext().set(
+					"org.drools.guvnor.client.rpc.RepositoryService", impl);
+			
+			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+			pbps.add(new RoleBasedPermission("jervis",
+					RoleTypes.ANALYST,
+					null, "category1"));
+			pbps.add(new RoleBasedPermission("jervis",
+					RoleTypes.PACKAGE_ADMIN,
+					packageUuid, null));
+
+			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+
+			//now lets see if we can access this asset with the permissions		
+			try {
+				RuleAsset asset = impl.loadRuleAsset(uuid);
+				fail("Did not catch expected exception");
+			} catch (AuthorizationException e) {					
+			}
+		} finally {
+			Lifecycle.endApplication();
+		}
+	}
+	
 	public void testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonly() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
