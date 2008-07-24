@@ -106,6 +106,9 @@ public class CategoryBasedPermissionResolver implements PermissionResolver,
 	}
 
 	private boolean isPermitted(String requestedPath, String allowedPath) {
+		if(requestedPath == null || allowedPath == null) {
+			return false;
+		}
 		return requestedPath.equals(allowedPath) || isSubPath(allowedPath, requestedPath);
 	}
 	
