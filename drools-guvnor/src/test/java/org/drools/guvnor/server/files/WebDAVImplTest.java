@@ -347,6 +347,30 @@ public class WebDAVImplTest extends TestCase {
 
 	}
 
+	public void testNewAsset() throws Exception {
+		//simulating a full lifecycle of a new asset from webdav
+		WebDAVImpl imp  = getImpl();
+		imp.createFolder("/foo/webdav/packages/testDavNewAsset");
+		imp.commit();
+		imp  = getImpl();
+
+		assertFalse(imp.objectExists("/foo/webdav/packages/testDavNewAsset/Blah.drl"));
+		imp.commit();
+		imp  = getImpl();
+		imp.isFolder("/packages/testDavNewAsset");
+		imp.isFolder("/foo/webdav/packages/testDavNewAsset/Blah.drl");
+		assertFalse(imp.objectExists("/foo/webdav/packages/testDavNewAsset/Blah.drl"));
+		imp.createResource("/foo/webdav/packages/testDavNewAsset/Blah.drl");
+		imp.setResourceContent("/foo/webdav/packages/testDavNewAsset/Blah.drl", IOUtils.toInputStream("blah blah"), null, null);
+		imp.getResourceLength("/foo/webdav/packages/testDavNewAsset/Blah.drl");
+		imp.commit();
+		imp = getImpl();
+
+		assertTrue(imp.objectExists("/foo/webdav/packages/testDavNewAsset/Blah.drl"));
+
+
+	}
+
 
 	public void testSnapshot() throws Exception {
 		WebDAVImpl imp  = getImpl();
