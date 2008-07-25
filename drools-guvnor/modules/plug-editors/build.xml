@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!--
+ @author Anton Arhipov
+-->
+<project name="guvnor.editors-task" default="jar">
+
+    <target name="jar">
+        <delete dir="classes" quiet="true"/>
+        <mkdir dir="classes"/>
+
+        <javac srcdir="src"
+               destdir="classes"
+               debug="on"/>
+        <copy todir="classes">
+            <fileset dir="src"/>
+        </copy>
+        <jar destfile="editors-task.jar" basedir="classes"/>
+
+    </target>
+
+</project>

@@ -1,0 +1,24 @@
+1) 'ant jar' in modules/imageset
+
+2) add rolodex-image-set-0.1.jar and gwt-rolodex-gwt15-1.1.jar to Guvnor's build.xml
+
+*) some manual code now:
+   modify properties / run 'ant plug-editors'
+   
+3) run 'ant gwt-compile'
+
+4) add rolodex-image-set-0.1.jar to Guvnor's pom.xml
+
+    <dependency>
+      <groupId>org.drools.guvnor</groupId>
+      <artifactId>rolodex-image-set</artifactId>
+      <version>0.1</version>
+    </dependency>
+
+5) install the new jar
+   mvn install:install-file -DgroupId=org.drools.guvnor -DartifactId=rolodex-image-set -Dversion=0.1 -Dpackaging=jar -Dfile=modules/imageset/rolodex-image-set-0.1.jar
+
+6) build Guvnor
+   mvn -Dmaven.test.skip=true clean install
+
+That's it!
