@@ -4,10 +4,14 @@
 
 3) some manual code now:
    modify properties / run 'ant plug-editors'
-   
-4) run 'ant gwt-compile'
+   guvnor-editors.properties
+   rules-new-menu.properties
 
-5) add rolodex-image-set-0.1.jar to Guvnor's pom.xml
+4) add <inherits name="org.drools.guvnor.ImageSet"/> to Guvnor.gwt.xml
+
+5) run 'ant gwt-compile'
+
+6) add rolodex-image-set-0.1.jar to Guvnor's pom.xml
 
     <dependency>
       <groupId>org.drools.guvnor</groupId>
@@ -15,12 +19,12 @@
       <version>0.1</version>
     </dependency>
 
-6) install the new jar
+7) install the new jar
    mvn install:install-file -DgroupId=org.drools.guvnor -DartifactId=rolodex-image-set -Dversion=0.1 -Dpackaging=jar -Dfile=modules/imageset/rolodex-image-set-0.1.jar
 
-7) build Guvnor
+8) build Guvnor
    mvn -Dmaven.test.skip=true clean install
 
-8) deploy
+9) deploy
 
 That's it!
