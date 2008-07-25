@@ -35,6 +35,7 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
+import org.drools.guvnor.client.ruleeditor.RuleViewer;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -67,7 +68,11 @@ public class ScenarioWidget extends Composite {
 	VerticalPanel layout;
 	boolean showResults;
 
-	public ScenarioWidget(RuleAsset asset) {
+    public ScenarioWidget(RuleAsset asset, RuleViewer viewer) {
+        this(asset);
+    }
+
+    public ScenarioWidget(RuleAsset asset) {
 		this.asset = asset;
 		this.layout = new VerticalPanel();
 		this.showResults = false;

@@ -36,6 +36,10 @@ public class DefaultRuleContentWidget extends DirtyableComposite {
 
     final private RuleAsset       asset;
 
+    public DefaultRuleContentWidget(RuleAsset a, RuleViewer v) {
+        this(a);
+    }
+
     public DefaultRuleContentWidget(RuleAsset a) {
         asset = a;
         data = (RuleContentText) asset.content;

@@ -45,6 +45,7 @@ import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.ruleeditor.RuleViewer;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -66,6 +67,10 @@ public class RuleModeller extends DirtyableComposite {
     private DirtyableFlexTable layout;
     private SuggestionCompletionEngine completions;
     private RuleModel model;
+
+    public RuleModeller(RuleAsset asset, RuleViewer viewer) {
+        this(asset);
+    }
 
     public RuleModeller(RuleAsset asset) {
         this.model = (RuleModel) asset.content;

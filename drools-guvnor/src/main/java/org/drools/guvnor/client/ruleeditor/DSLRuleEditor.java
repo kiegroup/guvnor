@@ -49,6 +49,10 @@ public class DSLRuleEditor extends DirtyableComposite {
     private DSLSentence[]         conditions;
     private DSLSentence[]         actions;
 
+    public DSLRuleEditor(RuleAsset asset, RuleViewer viewer) {
+        this(asset);
+    }
+
     public DSLRuleEditor(RuleAsset asset) {
 
         RuleContentText cont = (RuleContentText) asset.content;

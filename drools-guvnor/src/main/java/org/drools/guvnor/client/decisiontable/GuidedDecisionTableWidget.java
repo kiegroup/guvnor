@@ -22,6 +22,7 @@ import org.drools.guvnor.client.modeldriven.ui.ActionValueEditor;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
+import org.drools.guvnor.client.ruleeditor.RuleViewer;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -85,8 +86,11 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	private SuggestionCompletionEngine sce;
 	private GroupingStore store;
 
+    public GuidedDecisionTableWidget(RuleAsset asset, RuleViewer viewer) {
+        this(asset);
+    }
 
-	public GuidedDecisionTableWidget(RuleAsset asset) {
+    public GuidedDecisionTableWidget(RuleAsset asset) {
 
 
     	this.dt = (GuidedDecisionTable) asset.content;

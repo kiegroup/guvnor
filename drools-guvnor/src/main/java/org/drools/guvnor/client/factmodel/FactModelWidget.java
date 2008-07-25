@@ -11,6 +11,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.ruleeditor.DefaultRuleContentWidget;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
+import org.drools.guvnor.client.ruleeditor.RuleViewer;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -41,8 +42,11 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 	private VerticalPanel layout;
 	private int editingFact = -1;
 
+    public FactModelWidget(RuleAsset asset, RuleViewer viewer) {
+        this(asset);
+    }
 
-	public FactModelWidget(final RuleAsset asset) {
+    public FactModelWidget(final RuleAsset asset) {
 		this.asset = asset;
 		this.layout = new VerticalPanel();
 
