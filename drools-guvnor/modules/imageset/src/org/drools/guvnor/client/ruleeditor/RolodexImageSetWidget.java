@@ -24,14 +24,12 @@ public class RolodexImageSetWidget extends AssetAttachmentFileWidget {
         super(asset, viewer);
         this.asset = asset;
 
-        if (asset.content != null) {
-            RolodexCardBundle images = getImagesFromAsset();
-            RolodexCard[] rolodexCards = images.getRolodexCards();
-            if (rolodexCards.length > 0) {
-                final RolodexPanel rolodex = new RolodexPanel(images, 3, rolodexCards[0], true);
-                rolodex.setHeight("200px");  //TODO: panel size should be computed based on the image
-                layout.addRow(rolodex);
-            }
+        RolodexCardBundle images = getImagesFromAsset();
+        RolodexCard[] rolodexCards = images.getRolodexCards();
+        if (rolodexCards.length > 0) {
+            final RolodexPanel rolodex = new RolodexPanel(images, 3, rolodexCards[0], true);
+            rolodex.setHeight("200px");  //TODO: panel size should be computed based on the image
+            layout.addRow(rolodex);
         }
     }
 
