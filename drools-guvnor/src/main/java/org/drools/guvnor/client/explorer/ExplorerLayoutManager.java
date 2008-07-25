@@ -238,7 +238,7 @@ public class ExplorerLayoutManager {
 
 
         Toolbar rulesToolBar = new Toolbar();
-        rulesToolBar.addButton(new ToolbarMenuButton("Create New", rulesNewMenu()));
+        rulesToolBar.addButton(new ToolbarMenuButton("Create New", RulesNewMenu.getMenu(this)));
 
         VerticalPanel rulesPanel = new VerticalPanel();
         rulesPanel.add(rulesToolBar);
@@ -368,7 +368,7 @@ public class ExplorerLayoutManager {
 			public void onClick(BaseItem item, EventObject e) {
 				SnapshotView.rebuildBinaries();
 			}
-		});
+		});                        
         rebuild.setIcon("images/refresh.gif");
         m.addItem(rebuild);
 
@@ -526,7 +526,7 @@ public class ExplorerLayoutManager {
     }
 
 
-    private void launchWizard(String format,
+    protected void launchWizard(String format,
             String title, boolean showCats) {
     	launchWizard(format, title, showCats, null);
     }
