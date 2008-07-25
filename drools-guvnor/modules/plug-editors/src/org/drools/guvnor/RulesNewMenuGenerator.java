@@ -29,6 +29,7 @@ public class RulesNewMenuGenerator extends Generator {
             sb.append("      }\n");
             sb.append("    }, \"" + item.icon + "\"));\n\n");
         }
+        sb.append("    return m;\n");
         sb.append("  }\n");
         sb.append("}");
         return sb.toString();
