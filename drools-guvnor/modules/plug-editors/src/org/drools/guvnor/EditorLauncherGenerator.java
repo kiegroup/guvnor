@@ -28,7 +28,7 @@ public class EditorLauncherGenerator extends Generator {
 
         addImports(sb);
 
-        sb.append("\npublic class EditorLauncher {\n\n");
+        sb.append("\npublic class " + className + " {\n\n");
         sb.append("  public static final Map TYPE_IMAGES = getTypeImages();\n\n");
 
         generateGetEditorViewerMethod(sb);
