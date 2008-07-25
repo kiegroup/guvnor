@@ -17,6 +17,7 @@ public class RulesNewMenuGenerator extends Generator {
 
     String generateClassSource() {
         StringBuffer sb = new StringBuffer("package org.drools.guvnor.client.explorer;\n\n");
+        addImports(sb);
         sb.append("\npublic class EditorLauncher {\n\n");
         sb.append("  public static Menu getMenu(final ExplorerLayoutManager manager) {\n");
         sb.append("    Menu m = new Menu();\n\n");
