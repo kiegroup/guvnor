@@ -117,7 +117,9 @@ public class FileManagerUtils {
         AssetItem item = repository.loadAssetByUUID( uuid );
 
         byte[] data = item.getBinaryContentAsBytes();
-
+        if(data == null) {
+           data = new byte[0];
+        }
         out.write( data );
         out.flush();
 
