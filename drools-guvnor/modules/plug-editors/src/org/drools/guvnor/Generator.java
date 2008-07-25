@@ -11,7 +11,7 @@ import java.util.*;
  */
 public abstract class Generator extends Task {
 
-    List<Object> configs;
+    List<Object> configs = new ArrayList<Object>();
     Set<String> imports = new TreeSet<String>();
 
     String configuration;
@@ -64,6 +64,7 @@ public abstract class Generator extends Task {
             System.out.println("loading configuration: " + configuration);
             loadEditorsConfig();
         } catch (IOException e) {
+            e.printStackTrace();
             throw new BuildException(e);
         }
 
