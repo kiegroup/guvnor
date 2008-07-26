@@ -35,7 +35,7 @@
 	</target>
 
 	<target name="gwt-shell">
-		<gwt:shell sourceclasspath="src/main/java/; ../drools-compiler/src/main/java; ../lib/gwt-rolodex-gwt15-1.1.jar"
+		<gwt:shell sourceclasspath="src/main/java/; ../drools-compiler/src/main/java"
 			bindir="target/classes"
 			outDir="src/main/webapp"
 			gwtHome="${gwt.home}"
