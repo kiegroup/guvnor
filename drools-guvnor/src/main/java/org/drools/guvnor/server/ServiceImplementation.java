@@ -524,28 +524,35 @@ public class ServiceImplementation implements RepositoryService {
 	 * and this role has permission to access the package which the asset belongs to.
 	 */
 	public String checkinVersion(RuleAsset asset) throws SerializableException {
-
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
 					new PackageNameType(asset.metaData.packageName),
 					RoleTypes.PACKAGE_READONLY);
 			
-			boolean passed = false;
-			RuntimeException exception = null;
-			for(String cat : asset.metaData.categories) {
-				try {
-					Identity.instance().checkPermission(
-							new CategoryPathType(cat),
-							RoleTypes.ANALYST);
-					passed = true;
-				} catch (RuntimeException e) {
-					exception = e;					
+			if(asset.metaData.categories.length == 0) {
+				Identity.instance().checkPermission(
+						new CategoryPathType(null),
+						RoleTypes.ANALYST);
+			} else {
+				boolean passed = false;
+				RuntimeException exception = null;
+
+				for (String cat : asset.metaData.categories) {
+					try {
+						Identity.instance().checkPermission(
+								new CategoryPathType(cat), RoleTypes.ANALYST);
+						passed = true;
+					} catch (RuntimeException e) {
+						exception = e;
+					}
+				}
+				if (!passed) {
+					throw exception;
 				}
 			}
-			if(!passed) {
-				throw exception;
-			}
 		}
+		
+		
 
 		log.info("USER:" + repository.getSession().getUserID()
 				+ " CHECKING IN asset: [" + asset.metaData.name + "] UUID: ["
