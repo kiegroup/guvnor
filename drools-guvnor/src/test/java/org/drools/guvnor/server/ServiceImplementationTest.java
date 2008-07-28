@@ -640,7 +640,8 @@ public class ServiceImplementationTest extends TestCase {
 	}
 
 	//Access an asset that belongs to no category. The user role is analyst and package.admin. 
-	//The analyst can not access the access the asset, but the package.admin can.
+	//Because the analyst role the user has has no category access to the asset,
+	//the permission can not be granted even though the package.admin role has package access.
 	public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixed() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
