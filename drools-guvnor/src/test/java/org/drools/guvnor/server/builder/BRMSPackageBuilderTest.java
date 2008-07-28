@@ -117,7 +117,7 @@ public class BRMSPackageBuilderTest extends TestCase {
             assertFalse(builder.hasErrors());
 
             JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );
-            assertEquals(JavaDialectConfiguration.JANINO, javaConf.getCompiler());
+            assertEquals(JavaDialectConfiguration.ECLIPSE, javaConf.getCompiler());
 
             String ruleAtom = "rule foo \n when \n Person() \n GenBean(name=='mike')\n then \n System.out.println(42); end";
             builder.addPackageFromDrl( new StringReader(ruleAtom) );
