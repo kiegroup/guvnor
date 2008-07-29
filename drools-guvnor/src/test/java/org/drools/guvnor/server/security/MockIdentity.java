@@ -1,13 +1,13 @@
 package org.drools.guvnor.server.security;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.permission.PermissionResolver;
 import org.jboss.seam.security.permission.ResolverChain;
@@ -50,11 +51,18 @@ public class MockIdentity extends Identity {
 	            return true;
 	         }
 	      }
-	      
+
 	      return false;
 	}
-	
+
 	public void addPermissionResolver(PermissionResolver r) {
 		resolvers.add(r);
+	}
+
+	/**
+	 * Push this mock as the identity to Seam.
+	 */
+	public void inject() {
+		Contexts.getSessionContext().set("org.jboss.seam.security.identity", this);
 	}
 }

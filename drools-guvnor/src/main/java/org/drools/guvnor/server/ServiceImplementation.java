@@ -202,7 +202,7 @@ public class ServiceImplementation implements RepositoryService {
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
 					new PackageNameType(initialPackage),
-					RoleTypes.PACKAGE_ADMIN);
+					RoleTypes.PACKAGE_DEVELOPER);
 		}
 
 		log.info("USER:" + repository.getSession().getUserID()
@@ -1901,7 +1901,11 @@ public class ServiceImplementation implements RepositoryService {
 	@WebRemote
 	@Restrict("#{identity.loggedIn}")
 	public Capabilities getUserCapabilities() {
-		return Capabilities.all();
+		if (Contexts.isSessionContextActive()) {
+			return Capabilities.all();
+		} else {
+			return Capabilities.all();
+		}
 	}
 
 }
