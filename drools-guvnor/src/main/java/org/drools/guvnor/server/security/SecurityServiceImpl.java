@@ -25,6 +25,7 @@ import javax.security.auth.login.LoginException;
 import org.apache.log4j.Logger;
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
+import org.drools.guvnor.client.security.Capabilities;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.remoting.WebRemote;
@@ -102,5 +103,6 @@ public class SecurityServiceImpl
         }
 
     }
+
 
 }

@@ -75,6 +75,7 @@ import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
+import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentAssemblyError;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
@@ -129,7 +130,7 @@ import com.google.gwt.user.client.rpc.SerializableException;
 /**
  * This is the implementation of the repository service to drive the GWT based
  * front end.
- * 
+ *
  * @author Michael Neale
  */
 @Name("org.drools.guvnor.client.rpc.RepositoryService")
@@ -328,14 +329,14 @@ public class ServiceImplementation implements RepositoryService {
 	@Restrict("#{identity.loggedIn}")
 	/**
 	 * loadRuleListForCategories
-	 * 
-	 * Role-based Authorization check: This method can be accessed if user has 
+	 *
+	 * Role-based Authorization check: This method can be accessed if user has
 	 * following permissions:
-	 * 1. The user has Analyst role and this role has permission to access the category 
+	 * 1. The user has Analyst role and this role has permission to access the category
 	 * Or.
-	 * 2. The user has one of the following roles: package.readonly|package.admin|package.developer. 
+	 * 2. The user has one of the following roles: package.readonly|package.admin|package.developer.
 	 * In this case, this method only returns assets that belong to packages the role has at least
-	 * package.readonly permission to access. 
+	 * package.readonly permission to access.
 	 */
 	public TableDataResult loadRuleListForCategories(String categoryPath,
 			int skip, int numRows, String tableConfig)
@@ -343,7 +344,7 @@ public class ServiceImplementation implements RepositoryService {
 		// love you
 		// long time = System.currentTimeMillis();
 
-		// First check the user has permission to access this categoryPath. 
+		// First check the user has permission to access this categoryPath.
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
 					new CategoryPathType(categoryPath), null);
@@ -385,13 +386,13 @@ public class ServiceImplementation implements RepositoryService {
 	/**
 	 * This actually does the hard work of loading up an asset based on its
 	 * format.
-	 * 
-	 * Role-based Authorization check: This method can be accessed if user has 
+	 *
+	 * Role-based Authorization check: This method can be accessed if user has
 	 * following permissions:
-	 * 1. The user has Analyst role and this role has permission to access the category 
+	 * 1. The user has Analyst role and this role has permission to access the category
 	 * which the asset belongs to.
 	 * Or.
-	 * 2. The user has package.readonly role (or package.admin, package.developer) 
+	 * 2. The user has package.readonly role (or package.admin, package.developer)
 	 * and this role has permission to access the package which the asset belongs to.
 	 */
 	@WebRemote
@@ -409,7 +410,7 @@ public class ServiceImplementation implements RepositoryService {
 			Identity.instance().checkPermission(
 					new PackageNameType(asset.metaData.packageName),
 					RoleTypes.PACKAGE_READONLY);
-			
+
 			if(asset.metaData.categories.length == 0) {
 				Identity.instance().checkPermission(
 						new CategoryPathType(null),
@@ -514,13 +515,13 @@ public class ServiceImplementation implements RepositoryService {
 	@WebRemote
 	@Restrict("#{identity.loggedIn}")
 	/**
-	 * 
-	 * Role-based Authorization check: This method can be accessed if user has 
+	 *
+	 * Role-based Authorization check: This method can be accessed if user has
 	 * following permissions:
-	 * 1. The user has Analyst role and this role has permission to access the category 
+	 * 1. The user has Analyst role and this role has permission to access the category
 	 * which the asset belongs to.
 	 * Or.
-	 * 2. The user has package.readonly role (or package.admin, package.developer) 
+	 * 2. The user has package.readonly role (or package.admin, package.developer)
 	 * and this role has permission to access the package which the asset belongs to.
 	 */
 	public String checkinVersion(RuleAsset asset) throws SerializableException {
@@ -528,7 +529,7 @@ public class ServiceImplementation implements RepositoryService {
 			Identity.instance().checkPermission(
 					new PackageNameType(asset.metaData.packageName),
 					RoleTypes.PACKAGE_READONLY);
-			
+
 			if(asset.metaData.categories.length == 0) {
 				Identity.instance().checkPermission(
 						new CategoryPathType(null),
@@ -551,8 +552,8 @@ public class ServiceImplementation implements RepositoryService {
 				}
 			}
 		}
-		
-		
+
+
 
 		log.info("USER:" + repository.getSession().getUserID()
 				+ " CHECKING IN asset: [" + asset.metaData.name + "] UUID: ["
@@ -1895,6 +1896,12 @@ public class ServiceImplementation implements RepositoryService {
 			throw new DetailedSerializableException(
 					"Unable to rebuild all packages.", errs.toString());
 		}
+	}
+
+	@WebRemote
+	@Restrict("#{identity.loggedIn}")
+	public Capabilities getUserCapabilities() {
+		return Capabilities.all();
 	}
 
 }

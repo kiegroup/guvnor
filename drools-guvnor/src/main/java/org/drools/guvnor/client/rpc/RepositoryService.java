@@ -21,6 +21,7 @@ import java.util.Date;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.testing.Scenario;
+import org.drools.guvnor.client.security.Capabilities;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializableException;
@@ -420,4 +421,11 @@ public interface RepositoryService extends RemoteService {
      */
     public TableDataResult queryMetaData(final MetaDataQuery[] qr, Date createdAfter, Date createdBefore, Date modifiedAfter, Date modifiedBefore,
     		boolean seekArchived, int skip, int numRows) throws SerializableException;
+
+    /**
+     * This will return the capabilities which determine what is shown in the GUI.
+     * Based on the users roles and permissions.
+     */
+    public Capabilities getUserCapabilities();
+
 }

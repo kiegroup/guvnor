@@ -28,9 +28,9 @@ import com.google.gwt.user.client.ui.HTML;
  *
  * @author Michael Neale
  */
-public abstract class GenericCallback
+public abstract class GenericCallback<T>
     implements
-    AsyncCallback {
+    AsyncCallback<T> {
 
     public void onFailure(Throwable t) {
     	LoadingPopup.close();
@@ -54,5 +54,4 @@ public abstract class GenericCallback
 
     }
 
-    public abstract void onSuccess(Object data);
 }

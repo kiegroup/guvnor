@@ -20,12 +20,11 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
+import org.drools.guvnor.client.security.Capabilities;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.HistoryListener;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.util.CSS;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.QuickTips;
@@ -56,6 +55,11 @@ public class JBRMSEntryPoint
     }
 
 	private Panel createMain() {
+		RepositoryServiceFactory.getService().getUserCapabilities(new GenericCallback<Capabilities>() {
+			public void onSuccess(Capabilities cp) {
+				System.out.println("Authorization completed...");
+			}
+		});
 		return (new ExplorerLayoutManager(loggedInUserInfo)).getBaseLayout();
 	}
 

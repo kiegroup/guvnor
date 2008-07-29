@@ -17,6 +17,8 @@ package org.drools.guvnor.client.rpc;
 
 
 
+import org.drools.guvnor.client.security.Capabilities;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 
 /**
@@ -40,5 +42,6 @@ public interface SecurityService extends RemoteService {
      * changing the GUI based on security context.
      */
     public UserSecurityContext getCurrentUser();
+
 
 }
