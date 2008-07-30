@@ -1478,14 +1478,16 @@ public class ServiceImplementation implements RepositoryService {
 		try {
 			PackageDescr pkg = p.parse(asm.getDRL());
 			int count = 0;
-			for (Iterator iterator = pkg.getRules().iterator(); iterator
-					.hasNext();) {
-				RuleDescr r = (RuleDescr) iterator.next();
-				result.add(r.getName());
-				count++;
-				if (count == 5000) {
-					result.add("More then 5000 rules.");
-					break;
+			if (pkg != null) {
+				for (Iterator iterator = pkg.getRules().iterator(); iterator
+						.hasNext();) {
+					RuleDescr r = (RuleDescr) iterator.next();
+					result.add(r.getName());
+					count++;
+					if (count == 5000) {
+						result.add("More then 5000 rules.");
+						break;
+					}
 				}
 			}
 			return result.toArray(new String[result.size()]);

@@ -1579,6 +1579,14 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals("rule1", list[0]);
 		assertEquals("rule2", list[1]);
 
+
+		rule2.updateContent("wang");
+		rule2.checkin("");
+
+		list = impl.listRulesInPackage(pkg.getName());
+		assertEquals(0, list.length);
+
+
 	}
 
 	/**
