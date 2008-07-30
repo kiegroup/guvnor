@@ -1,33 +1,19 @@
 package org.drools.guvnor.server.security;
 
 import static org.jboss.seam.ScopeType.APPLICATION;
-import static org.jboss.seam.annotations.Install.FRAMEWORK;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.repository.PackageItem;
-import org.drools.repository.RulesRepository;
-import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.Component;
-import org.jboss.seam.Seam;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.log.LogProvider;
-import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
-import org.jboss.seam.security.Role;
-import org.jboss.seam.security.SimplePrincipal;
 import org.jboss.seam.security.permission.PermissionResolver;
 
 /**
@@ -115,9 +101,17 @@ public class CategoryBasedPermissionResolver implements PermissionResolver,
 		return requestedPath.equals(allowedPath) || isSubPath(allowedPath, requestedPath);
 	}
 
-	private boolean isSubPath(String parentPath, String subPath) {
-		//TODO:
-		return false;
+	boolean isSubPath(String parentPath, String subPath) {
+		parentPath = (parentPath.startsWith("/")) ? parentPath.substring(1) : parentPath;
+		subPath = (subPath.startsWith("/")) ? subPath.substring(1) : subPath;
+		String[] parentTags = parentPath.split("/");
+		String[] subTags = subPath.split("/");
+		if (parentTags.length > subTags.length) return false;
+		for (int i = 0; i < parentTags.length; i++) {
+			if (!parentTags[i].equals(subTags[i])) return false;
+		}
+
+		return true;
 	}
 
 	public void filterSetByAction(Set<Object> targets, String action) {
