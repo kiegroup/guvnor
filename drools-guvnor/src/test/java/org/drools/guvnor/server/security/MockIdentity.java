@@ -19,8 +19,10 @@ package org.drools.guvnor.server.security;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
@@ -29,11 +31,20 @@ import org.jboss.seam.security.permission.ResolverChain;
 
 public class MockIdentity extends Identity {
 	private boolean hasRole;
+	private Set<String> roles = new HashSet<String>();
 	private List<PermissionResolver> resolvers = new ArrayList<PermissionResolver>();
 
-	public boolean hasRole(String role) {
-		return hasRole;
+	@Override
+	public boolean addRole(String r) {
+		roles.add(r);
+		return true;
 	}
+
+	public boolean hasRole(String role) {
+		return hasRole || roles.contains(role);
+	}
+
+
 
 	public void setHasRole(boolean hasRole) {
 		this.hasRole = hasRole;

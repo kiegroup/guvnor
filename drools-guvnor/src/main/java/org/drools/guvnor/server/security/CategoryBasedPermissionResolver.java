@@ -33,15 +33,15 @@ import org.jboss.seam.security.permission.PermissionResolver;
 /**
  * PermissionResolvers are chained together to resolve permission check, the check returns true if
  * one of the PermissionResolvers in the chain returns true.
- * 
+ *
  * This PermissionResolver resolves category-based permissions. It returns true under following situations:
  * 1. The user is admin
  * Or
  * 2. The user has at least one analyst role, and at least one of the analyst role has access to requested category path.
  * Or
  * 3. The user does not have any Analyst role(eg, the user only has other roles like package.admin|package.developer|package.readonly)
- * 
- *  
+ *
+ *
  * @author Jervis Liu
  */
 @Name("org.drools.guvnor.server.security.categoryBasedPermissionResolver")
@@ -60,17 +60,23 @@ public class CategoryBasedPermissionResolver implements PermissionResolver,
      * check permission
      *
      * @param requestedCategoryPath
-     *            the requestedCategoryPath must be an instance of CategoryPathType, 
+     *            the requestedCategoryPath must be an instance of CategoryPathType,
      *            otherwise return false;
      * @param requestedRole
-     *            the requestedRole must be an instance of String, its value has to be one of the 
+     *            the requestedRole must be an instance of String, its value has to be one of the
      *            followings: admin|analyst|package.admin|package.developer|package.readonly,
      *            otherwise return false;
-     * @return true if the permission can be granted on the requested category path with the 
+     * @return true if the permission can be granted on the requested category path with the
      * requested role; return false otherwise.
-     * 
+     *
      */
 	public boolean hasPermission(Object requestedCategoryPath, String requestedRole) {
+
+		//the admin can do everything
+		if (Identity.instance().hasRole(RoleTypes.ADMIN)) {
+			return true;
+		}
+
 		List<RoleBasedPermission> permissions = (List<RoleBasedPermission>) Contexts
 				.getSessionContext().get("packageBasedPermission");
 
@@ -78,17 +84,14 @@ public class CategoryBasedPermissionResolver implements PermissionResolver,
 		if (requestedCategoryPath instanceof CategoryPathType) {
 			requestedPath = ((CategoryPathType)requestedCategoryPath).getCategoryPath();
 		} else {
-			// CategoryBasedPermissionResolver only grants permissions based on categoryPath. 
-			// Return false if the input is not a categoryPath, as this will be the reponsibility 
+			// CategoryBasedPermissionResolver only grants permissions based on categoryPath.
+			// Return false if the input is not a categoryPath, as this will be the reponsibility
 			//of other PermissionResolvers in the resolver chain.
 			return false;
 		}
-		
-		//the admin can do everything
-		if (Identity.instance().hasRole(RoleTypes.ADMIN)) {
-			return true;
-		}
-		
+
+
+
 		//category path based permission check only applies to analyst role. If there is no Analyst
 		//role (eg, only other roles like admin|package.admin|package.dev|package.readonly) we always grant permisssion.
 		boolean isPermitted = true;
@@ -111,9 +114,9 @@ public class CategoryBasedPermissionResolver implements PermissionResolver,
 		}
 		return requestedPath.equals(allowedPath) || isSubPath(allowedPath, requestedPath);
 	}
-	
+
 	private boolean isSubPath(String parentPath, String subPath) {
-		//TODO: 
+		//TODO:
 		return false;
 	}
 
