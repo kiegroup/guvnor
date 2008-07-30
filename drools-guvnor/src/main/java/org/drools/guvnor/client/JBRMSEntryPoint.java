@@ -24,7 +24,9 @@ import org.drools.guvnor.client.security.Capabilities;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.HistoryListener;
+import com.google.gwt.user.client.Window;
 import com.gwtext.client.util.CSS;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.QuickTips;
@@ -45,22 +47,17 @@ public class JBRMSEntryPoint
     private LoggedInUserInfo loggedInUserInfo;
 
     public void onModuleLoad() {
-    	//DOM.removeChild(RootPanel.getBodyElement(), DOM.getElementById("loadingMessage"));
         Field.setMsgTarget("side");
         QuickTips.init();
         CSS.swapStyleSheet("theme", "js/ext/resources/css/xtheme-gray.css");
         loggedInUserInfo = new LoggedInUserInfo();
         loggedInUserInfo.setVisible(false);
         checkLoggedIn();
+        History.addHistoryListener(this);
     }
 
-	private Panel createMain() {
-		RepositoryServiceFactory.getService().getUserCapabilities(new GenericCallback<Capabilities>() {
-			public void onSuccess(Capabilities cp) {
-				System.out.println("Authorization completed...");
-			}
-		});
-		return (new ExplorerLayoutManager(loggedInUserInfo)).getBaseLayout();
+	private Panel createMain(Capabilities caps) {
+		return (new ExplorerLayoutManager(loggedInUserInfo, caps)).getBaseLayout();
 	}
 
 
@@ -75,29 +72,40 @@ public class JBRMSEntryPoint
                 if ( ctx.userName != null ) {
                     loggedInUserInfo.setUserName( ctx.userName );
                     loggedInUserInfo.setVisible( true );
-                    new Viewport(createMain());
-                    //RootPanel.get().add(createMain());
+                    showMain();
                 } else {
                 	final LoginWidget lw = new LoginWidget();
                 	lw.setLoggedInEvent(new Command() {
                         public void execute() {
                             loggedInUserInfo.setUserName( lw.getUserName() );
                             loggedInUserInfo.setVisible( true );
-                            new Viewport(createMain());
-                            //RootPanel.get().add(createMain());
-
+                            showMain();
                         }
                     } );
                 	lw.show();
                 }
             }
+
+
         } );
     }
 
+	private void showMain() {
+		Window.setStatus("Loading user permissions...");
+		RepositoryServiceFactory.getSecurityService().getUserCapabilities(new GenericCallback<Capabilities>() {
+			public void onSuccess(Capabilities cp) {
+				Window.setStatus(" ");
+				new Viewport(createMain(cp));
+
+			}
+		});
+	}
+
 	public void onHistoryChanged(String a) {
 
-
 	}
+
+
 
 
 }

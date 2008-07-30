@@ -1,6 +1,10 @@
 package org.drools.guvnor.client.explorer;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -14,9 +18,10 @@ import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.rulelist.QueryWidget;
-import org.drools.guvnor.client.rulelist.QuickFindWidget;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.HistoryListener;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.Ext;
 import com.gwtext.client.core.Margins;
@@ -25,22 +30,23 @@ import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.TabPanel;
 import com.gwtext.client.widgets.event.PanelListenerAdapter;
+import com.gwtext.client.widgets.event.TabPanelListenerAdapter;
 import com.gwtext.client.widgets.layout.BorderLayoutData;
 
 /**
  * This is the tab panel manager.
  * @author Fernando Meyer, Michael Neale
  */
-public class ExplorerViewCenterPanel {
+public class ExplorerViewCenterPanel implements HistoryListener {
 
 	final TabPanel tp;
 
-	private HashMap 	openedTabs = new HashMap();
+	private HashMap<String, Panel> 	openedTabs = new HashMap<String, Panel>();
+	private Set<String> assetIds = new HashSet<String>();
 	private String id = Ext.generateId();
 	private BorderLayoutData centerLayoutData;
 
 	public ExplorerViewCenterPanel() {
-
 		tp = new TabPanel();
 
         tp.setBodyBorder(false);
@@ -50,10 +56,31 @@ public class ExplorerViewCenterPanel {
         tp.setLayoutOnTabChange(true);
         tp.setActiveTab(0);
 
-
-
         centerLayoutData = new BorderLayoutData(RegionPosition.CENTER);
         centerLayoutData.setMargins(new Margins(5, 0, 5, 5));
+
+        History.addHistoryListener(this);
+
+        final HistoryListener hl = this;
+
+        tp.addListener(new TabPanelListenerAdapter() {
+
+        	public void onTabChange(TabPanel source, Panel tab) {
+        		History.removeHistoryListener(hl);
+        		String tid = tab.getId();
+        		String uuid = tid.substring(0, tid.indexOf(id));
+
+        		if (assetIds.contains(uuid)) {
+        			History.newItem("asset=" + uuid);
+        		}
+        		History.addHistoryListener(hl);
+        	}
+
+        });
+
+
+        String tok = History.getToken();
+        openAssetByToken(tok);
 
 
 	}
@@ -67,7 +94,7 @@ public class ExplorerViewCenterPanel {
 	 * Add a new tab. Should only do this if have checked showIfOpen to avoid dupes being opened.
 	 * @param tabname The displayed tab name.
 	 * @param closeable If you can close it !
-	 * @param widget The contentx.
+	 * @param widget The contents.
 	 * @param key A key which is unique.
 	 */
 	public void addTab (String tabname, boolean closeable, Widget widget, final String key) {
@@ -119,6 +146,7 @@ public class ExplorerViewCenterPanel {
 	public void close(String key) {
 		tp.remove(key + id);
 		openedTabs.remove(key);
+		assetIds.remove(key);
 	}
 
 
@@ -127,28 +155,9 @@ public class ExplorerViewCenterPanel {
      */
 	public void openAsset(
 			final String uuid) {
-		LoadingPopup.showMessage("Loading asset...");
-		if (!showIfOpen(uuid)) {
-			RepositoryServiceFactory.getService().loadRuleAsset(uuid, new GenericCallback() {
-				public void onSuccess(Object data) {
-					final RuleAsset a = (RuleAsset) data;
-					SuggestionCompletionCache.getInstance().doAction(a.metaData.packageName, new Command() {
-						public void execute() {
-							RuleViewer rv = new RuleViewer(a);
-							addTab(a.metaData.name, true, rv, uuid);
-							rv.setCloseCommand(new Command() {
-								public void execute() {
-									close(uuid);
-								}
-							});
-							LoadingPopup.close();
-						}
-					});
-
-				}
-			});
-		}
-
+		assetIds.add(uuid);
+		History.newItem("asset=" + uuid);
+		//we are using history, so it adds to the token
 	}
 
 
@@ -207,6 +216,38 @@ public class ExplorerViewCenterPanel {
 				}
 			});
 
+		}
+	}
+
+	/**
+	 * As we are keeping history, this is where we open assets.
+	 */
+	public void onHistoryChanged(final String tok) {
+		openAssetByToken(tok);
+	}
+
+	private void openAssetByToken(final String tok) {
+		if (tok == null || !(tok.startsWith("asset="))) return;
+		final String uuid = tok.substring(6);
+		LoadingPopup.showMessage("Loading asset...");
+		if (!showIfOpen(uuid)) {
+			RepositoryServiceFactory.getService().loadRuleAsset(uuid, new GenericCallback<RuleAsset>() {
+				public void onSuccess(final RuleAsset a) {
+					SuggestionCompletionCache.getInstance().doAction(a.metaData.packageName, new Command() {
+						public void execute() {
+							RuleViewer rv = new RuleViewer(a);
+							addTab(a.metaData.name, true, rv, uuid);
+							rv.setCloseCommand(new Command() {
+								public void execute() {
+									close(uuid);
+								}
+							});
+							LoadingPopup.close();
+						}
+					});
+
+				}
+			});
 		}
 	}
 

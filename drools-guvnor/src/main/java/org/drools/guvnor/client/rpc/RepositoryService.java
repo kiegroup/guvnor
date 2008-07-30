@@ -422,10 +422,6 @@ public interface RepositoryService extends RemoteService {
     public TableDataResult queryMetaData(final MetaDataQuery[] qr, Date createdAfter, Date createdBefore, Date modifiedAfter, Date modifiedBefore,
     		boolean seekArchived, int skip, int numRows) throws SerializableException;
 
-    /**
-     * This will return the capabilities which determine what is shown in the GUI.
-     * Based on the users roles and permissions.
-     */
-    public Capabilities getUserCapabilities();
+
 
 }

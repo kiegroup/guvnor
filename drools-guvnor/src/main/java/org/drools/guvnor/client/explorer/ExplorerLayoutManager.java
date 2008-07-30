@@ -22,8 +22,10 @@ import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.security.Capabilities;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -67,6 +69,8 @@ public class ExplorerLayoutManager {
 	private Panel northPanel;
 
 	private Panel accordion;
+
+	private Capabilities capabilities;
 
     public Panel getBaseLayout() {
         Panel mainPanel = new Panel();
@@ -121,7 +125,7 @@ public class ExplorerLayoutManager {
 
     }
 
-    public ExplorerLayoutManager(LoggedInUserInfo uif) {
+    public ExplorerLayoutManager(LoggedInUserInfo uif, Capabilities caps) {
         Field.setMsgTarget("side");
         QuickTips.init();
 
@@ -135,10 +139,7 @@ public class ExplorerLayoutManager {
         dock.add(uif, DockPanel.EAST);
         dock.setStyleName("header");
         dock.setWidth("100%");
-
-
-
-
+        this.capabilities = caps;
 
         northPanel.add(dock);
         northPanel.setHeight(50);
@@ -368,7 +369,7 @@ public class ExplorerLayoutManager {
 			public void onClick(BaseItem item, EventObject e) {
 				SnapshotView.rebuildBinaries();
 			}
-		});                        
+		});
         rebuild.setIcon("images/refresh.gif");
         m.addItem(rebuild);
 

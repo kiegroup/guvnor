@@ -44,4 +44,10 @@ public interface SecurityService extends RemoteService {
     public UserSecurityContext getCurrentUser();
 
 
+    /**
+     * This will return the capabilities which determine what is shown in the GUI.
+     * Based on the users roles and permissions.
+     */
+    public Capabilities getUserCapabilities();
+
 }

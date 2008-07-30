@@ -29,6 +29,7 @@ import org.drools.guvnor.client.security.Capabilities;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.remoting.WebRemote;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 
@@ -104,5 +105,14 @@ public class SecurityServiceImpl
 
     }
 
+	@WebRemote
+	@Restrict("#{identity.loggedIn}")
+	public Capabilities getUserCapabilities() {
+		if (Contexts.isSessionContextActive()) {
+			return Capabilities.all();
+		} else {
+			return Capabilities.all();
+		}
+	}
 
 }

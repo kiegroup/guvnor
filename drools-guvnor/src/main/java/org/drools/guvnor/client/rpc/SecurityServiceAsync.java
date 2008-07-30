@@ -17,6 +17,8 @@ package org.drools.guvnor.client.rpc;
 
 
 
+import org.drools.guvnor.client.security.Capabilities;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 
@@ -32,4 +34,5 @@ public interface SecurityServiceAsync extends RemoteService {
 
     public void getCurrentUser(AsyncCallback cb);
 
+    public void getUserCapabilities(AsyncCallback<Capabilities> caps);
 }

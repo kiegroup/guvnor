@@ -1900,14 +1900,6 @@ public class ServiceImplementation implements RepositoryService {
 		}
 	}
 
-	@WebRemote
-	@Restrict("#{identity.loggedIn}")
-	public Capabilities getUserCapabilities() {
-		if (Contexts.isSessionContextActive()) {
-			return Capabilities.all();
-		} else {
-			return Capabilities.all();
-		}
-	}
+
 
 }
