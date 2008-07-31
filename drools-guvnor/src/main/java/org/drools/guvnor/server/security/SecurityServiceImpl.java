@@ -111,7 +111,9 @@ public class SecurityServiceImpl
 		if (Contexts.isSessionContextActive()) {
 			return Capabilities.all();
 		} else {
+			//Capabilities c = new Capabilities();
 			return Capabilities.all();
+			//return c;
 		}
 	}
 

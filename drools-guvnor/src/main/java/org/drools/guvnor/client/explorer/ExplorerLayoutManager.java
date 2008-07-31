@@ -1,8 +1,6 @@
 package org.drools.guvnor.client.explorer;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.drools.guvnor.client.LoggedInUserInfo;
 import org.drools.guvnor.client.admin.ArchivedAssetManager;
@@ -25,7 +23,6 @@ import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.security.Capabilities;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -55,8 +52,6 @@ import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
 
 public class ExplorerLayoutManager {
 
-    private Map screens = new HashMap();
-
     private boolean packagesLoaded = false;
 	private boolean deploymentPackagesLoaded = false;
 
@@ -70,7 +65,7 @@ public class ExplorerLayoutManager {
 
 	private Panel accordion;
 
-	private Capabilities capabilities;
+	private static Capabilities capabilities;
 
     public Panel getBaseLayout() {
         Panel mainPanel = new Panel();
@@ -156,28 +151,38 @@ public class ExplorerLayoutManager {
 
 
 
-        Panel tpCategory = new Panel("Rules");
+        Panel tpCategory = new Panel("Categories");
         tpCategory.setIconCls("nav-categories");
         accordion.add(tpCategory);
 
 
         Panel tpPackageExplorer = new Panel("Packages");
         tpPackageExplorer.setIconCls("nav-packages");
-        accordion.add(tpPackageExplorer);
+
+        if (shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
+        	accordion.add(tpPackageExplorer);
+        }
 
 
 
         Panel tpDeployment = new Panel("Deployment");
         tpDeployment.setIconCls("nav-deployment");
-        accordion.add(tpDeployment);
+
+        if (shouldShow(Capabilities.SHOW_DEPLOYMENT, Capabilities.SHOW_DEPLOYMENT_NEW)) {
+        	accordion.add(tpDeployment);
+        }
 
         Panel tpAdmin = new Panel("Administration");
         tpAdmin.setIconCls("nav-admin");
-        accordion.add(tpAdmin);
+        if (shouldShow(Capabilities.SHOW_ADMIN)) {
+        	accordion.add(tpAdmin);
+        }
 
         Panel tpQA = new Panel("QA");
         tpQA.setIconCls("nav-qa");
-        accordion.add(tpQA);
+        if (shouldShow(Capabilities.SHOW_QA)) {
+        	accordion.add(tpQA);
+        }
 
 
         packagesPanel = new VerticalPanel();
@@ -242,7 +247,9 @@ public class ExplorerLayoutManager {
         rulesToolBar.addButton(new ToolbarMenuButton("Create New", RulesNewMenu.getMenu(this)));
 
         VerticalPanel rulesPanel = new VerticalPanel();
-        rulesPanel.add(rulesToolBar);
+        if (shouldShow(Capabilities.SHOW_CREATE_NEW_ASSET)) {
+        	rulesPanel.add(rulesToolBar);
+        }
         rulesPanel.add(categoryTree);
 
         rulesPanel.setWidth("100%");
@@ -339,20 +346,20 @@ public class ExplorerLayoutManager {
         qaPanel.setWidth("100%");
 
 
-//        tpQA.addListener(new PanelListenerAdapter() {
-//        	private boolean qaPackagesLoaded;
-//        	public void onActivate(Panel panel) {
-//        		if (!qaPackagesLoaded) {
-        	        TreePanel qaTree = genericExplorerWidget(ExplorerNodeConfig.getQAStructure(centertabbedPanel));
-        	        qaPanel.add(qaTree);
-//        			qaPackagesLoaded = true;
-//        		}
-//        	}
-//        });
+        TreePanel qaTree = genericExplorerWidget(ExplorerNodeConfig.getQAStructure(centertabbedPanel));
+        qaPanel.add(qaTree);
+
 
         tpQA.add(qaPanel);
 
     }
+
+	public static boolean shouldShow(Integer... capability) {
+		for (int i = 0; i < capability.length; i++) {
+			if (capabilities.list.contains(capability[i])) {return true;}
+		}
+		return false;
+	}
 
 	private Menu deploymentMenu() {
 		Menu m = new Menu();

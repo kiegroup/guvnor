@@ -7,6 +7,7 @@ import org.drools.guvnor.client.qa.ScenarioPackageView;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.security.Capabilities;
 
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
@@ -106,7 +107,9 @@ public class ExplorerNodeConfig {
 		tnc.setText("Find");
 
 		tn.appendChild(tnc);
-		tn.appendChild(getStatesStructure());
+		if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
+			tn.appendChild(getStatesStructure());
+		}
 		tn.appendChild(getCategoriesStructure());
 		return tn;
 

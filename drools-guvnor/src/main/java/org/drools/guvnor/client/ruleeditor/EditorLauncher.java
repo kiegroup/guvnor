@@ -77,6 +77,8 @@ public class EditorLauncher {
         	return new RuleValidatorWrapper(new GuidedDecisionTableWidget(asset), asset);
         } else if (asset.metaData.format.equals(AssetFormats.DRL_MODEL)) {
         	return new RuleValidatorWrapper(new FactModelWidget(asset), asset);
+        } else if (asset.metaData.format.equals(AssetFormats.DSL)) {
+        	return new RuleValidatorWrapper(new DefaultRuleContentWidget( asset ), asset);
         } else {
             return new DefaultContentUploadEditor( asset, viewer );
         }

@@ -145,7 +145,7 @@ public class ExplorerViewCenterPanel implements HistoryListener {
 
 	public void close(String key) {
 		tp.remove(key + id);
-		openedTabs.remove(key);
+		openedTabs.remove(key).destroy();
 		assetIds.remove(key);
 	}
 
