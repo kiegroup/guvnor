@@ -71,9 +71,11 @@ public class DefaultRuleContentWidget extends DirtyableComposite {
                                   int arg2) {
 
                 if ( arg1 == KEY_TAB ) {
+                	int pos = text.getCursorPos();
                     insertText( "\t" );
-                    text.setCursorPos( text.getCursorPos() + 1 );
+                    text.setCursorPos( pos + 1 );
                     text.cancelKey();
+                    text.setFocus(true);
                 }
             }
         } );

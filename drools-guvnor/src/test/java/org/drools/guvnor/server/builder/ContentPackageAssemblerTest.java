@@ -497,6 +497,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertFalse(asm.hasErrors());
 
         String drl = asm.getDRL();
+        System.out.println(drl);
 
         assertContains( "policy: Policy", drl );
 
@@ -530,6 +531,30 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertNotNull(drl);
         assertContains( "Driverx", drl);
 
+    }
+
+
+    public void testXLSDecisionTableIgnoreImports() throws Exception {
+
+        RulesRepository repo = getRepo();
+
+        //first, setup the package correctly:
+        PackageItem pkg = repo.createPackage( "testXLSDecisionTableIgnoreImports", "" );
+
+        repo.save();
+
+        InputStream xls = this.getClass().getResourceAsStream( "/Sample.xls" );
+        assertNotNull(xls);
+
+        AssetItem asset = pkg.addAsset( "MyDT", "" );
+        asset.updateFormat( AssetFormats.DECISION_SPREADSHEET_XLS );
+        asset.updateBinaryContentAttachment( xls );
+        asset.checkin( "" );
+
+        ContentPackageAssembler asm = new ContentPackageAssembler(pkg, false);
+        String drl = asm.getDRL();
+        System.err.println(drl);
+        assertEquals(-1, drl.indexOf("import"));
     }
 
     public void testBRXMLWithDSLMixedIn() throws Exception {

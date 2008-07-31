@@ -1,13 +1,13 @@
 package org.drools.guvnor.server.contenthandler;
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,7 @@ import com.google.gwt.user.client.rpc.SerializableException;
 
 /**
  * This is for handling XLS content (classic decision tables).
- * 
+ *
  * @author Michael Neale
  */
 public class DecisionTableXLSHandler extends ContentHandler implements IRuleAsset {
@@ -52,16 +52,17 @@ public class DecisionTableXLSHandler extends ContentHandler implements IRuleAsse
 
     public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset, StringBuffer buf) {
         SpreadsheetCompiler comp = new SpreadsheetCompiler();
-        String drl = comp.compile( asset.getBinaryContentAttachment(), InputType.XLS );
+        String drl = comp.compile( false, asset.getBinaryContentAttachment(), InputType.XLS );
         buf.append( drl );
     }
 
     public void compile(BRMSPackageBuilder builder, AssetItem asset, ErrorLogger logger) throws DroolsParserException,
                                                                                         IOException {
-        SpreadsheetCompiler comp = new SpreadsheetCompiler();
-        String drl = comp.compile( builder.getPackage(), asset.getBinaryContentAttachment(), InputType.XLS );
-        builder.addPackageFromDrl( new StringReader(drl) );
-        
+    	StringBuffer buf = new StringBuffer();
+
+    	assembleDRL(builder, asset, buf);
+        builder.addPackageFromDrl( new StringReader(buf.toString()) );
+
     }
 
 }
