@@ -2,18 +2,24 @@ package org.drools.guvnor.server.security;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import javax.jcr.RepositoryException;
+
+import org.drools.repository.RulesRepository;
+import org.drools.repository.security.PermissionManager;
+import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.security.Identity;
+
+@Name("org.drools.guvnor.server.security.RoleBasedPermissionStore")
+@AutoCreate
 public class RoleBasedPermissionStore {
 	private static List<RoleBasedPermission> rbps = new ArrayList<RoleBasedPermission>();
-	
-	//Mock data	
-	static {
-		rbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, "631b3d79-5b67-42fb-83da-714624970a6b", null));
-		rbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "47982482-7912-4881-97ec-e852494383d7", null));		
-		rbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category1"));		
-		rbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category2"));		
-	}
-	
+	@In
+	public RulesRepository repository;
+
 	public RoleBasedPermissionStore() {
 	}
 	
@@ -22,15 +28,63 @@ public class RoleBasedPermissionStore {
 	}
 	
 	public List<RoleBasedPermission> getRoleBasedPermissionsByUserName(String userName) {
-		return rbps;
+		PermissionManager permissionManager = new PermissionManager(repository);
+        List<RoleBasedPermission> permissions = new ArrayList<RoleBasedPermission>();
+        try {
+			Map<String, List<String>> perms = permissionManager.retrieveUserPermissions(userName);
+	    	for (String roleType : perms.keySet()) {
+				List<String> permissionsPerRole = perms.get(roleType);
+				for(String permissionPerRole: permissionsPerRole) {
+					if(permissionPerRole.startsWith("package=")) {
+						String packageUuid = permissionPerRole.substring("package=".length());
+						permissions.add(new RoleBasedPermission(userName, roleType, packageUuid, null));
+					} else if(permissionPerRole.startsWith("category=")) {
+						String categoryPath = permissionPerRole.substring("category=".length());
+						permissions.add(new RoleBasedPermission(userName, roleType, null, categoryPath));
+					} 
+				}
+			}		    	
+		} catch (RepositoryException e) {
+			e.printStackTrace();
+		}
+		
+		return permissions;
 	}	
 	
 	public List<RoleBasedPermission> getRoleBasedPermissionsByPackage(String packageName) {
 		return null;
 	}
 	
-	public void addRoleBasedPermission(RoleBasedPermission rbp) {
-		rbps.add(rbp);		
+	public void addRoleBasedPermission(String userName, RoleBasedPermission rbp) {
+		PermissionManager permissionManager = new PermissionManager(repository);
+		try {
+
+			Map<String, List<String>> perms = permissionManager
+					.retrieveUserPermissions(userName);
+			Object permissionsPerRole = perms.get(rbp.getRole());
+			if (permissionsPerRole != null) {
+					if (rbp.getPackageUUID() != null) {
+						((List<String>) permissionsPerRole).add("package="
+								+ rbp.getPackageUUID());
+					} else if (rbp.getCategoryPath() != null) {
+						((List<String>) permissionsPerRole).add("category="
+								+ rbp.getPackageUUID());
+					}
+
+			} else {
+				List<String> perm = new ArrayList<String>();
+				if (rbp.getPackageUUID() != null) {
+					perm.add("package=" + rbp.getPackageUUID());
+				} else if (rbp.getCategoryPath() != null) {
+					perm.add("category=" + rbp.getCategoryPath());
+				}
+				perms.put(rbp.getRole(), perm);
+			}
+
+			permissionManager.updateUserPermissions(userName, perms);
+		} catch (RepositoryException e) {
+			e.printStackTrace();
+		}
 	}
 
 

@@ -16,10 +16,10 @@ package org.drools.guvnor.server.security;
  */
 
 
-
 import java.util.List;
-
 import org.apache.log4j.Logger;
+
+import org.jboss.seam.Component;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
@@ -32,14 +32,15 @@ import org.jboss.seam.security.Identity;
 public class RoleBasedAuthenticator {
 
     private static final Logger log = Logger.getLogger(RoleBasedAuthenticator.class);
-
+	
     public boolean authenticate() {
         if (SecurityServiceImpl.GUEST_LOGIN.equals( Identity.instance().getUsername())) {
             return false;
         }
         log.info( "User logged in via RoleBasedAuthenticator.");
-
-       	RoleBasedPermissionStore pbps = new RoleBasedPermissionStore();
+        
+        RoleBasedPermissionStore pbps = (RoleBasedPermissionStore) Component
+		.getInstance("org.drools.guvnor.server.security.RoleBasedPermissionStore");
     	List<RoleBasedPermission> permissions = pbps.getRoleBasedPermissionsByUserName(Identity.instance().getUsername());
 
     	//The admin role is added into Identity so that we can call Identity.hadRole("admin")
