@@ -528,7 +528,7 @@ public class ServiceImplementation implements RepositoryService {
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
 					new PackageNameType(asset.metaData.packageName),
-					RoleTypes.PACKAGE_READONLY);
+					RoleTypes.PACKAGE_DEVELOPER);
 
 			if(asset.metaData.categories.length == 0) {
 				Identity.instance().checkPermission(

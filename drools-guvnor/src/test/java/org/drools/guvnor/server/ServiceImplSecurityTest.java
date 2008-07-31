@@ -1,13 +1,16 @@
 package org.drools.guvnor.server;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
@@ -404,16 +407,6 @@ public class ServiceImplSecurityTest extends TestCase {
 		Lifecycle.endApplication();
 	}
 
-
-
-	private ServiceImplementation getService() throws Exception {
-		ServiceImplementation impl = new ServiceImplementation();
-
-		impl.repository = new RulesRepository(TestEnvironmentSessionHelper
-				.getSession());
-		return impl;
-	}
-
 	public void testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonly() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
@@ -555,6 +548,105 @@ public class ServiceImplSecurityTest extends TestCase {
 		} finally {
 			Lifecycle.endApplication();
 		}
+	}
+	
+	public void testCheckinWithPackageReadonly() throws Exception {
+		ServiceImplementation impl = getService();
+		String packageUuid = impl.createPackage(
+				"testCheckinWithPackageReadonlyPack", "desc");
+		impl.createCategory("/", "testCheckinWithPackageReadonlyCat",
+						"this is a description");
+		impl.createCategory("testCheckinWithPackageReadonlyCat", "deeper", "description");
+		String uuid = impl.createNewRule("testChecking",
+				"this is a description", "testCheckinWithPackageReadonlyCat",
+				"testCheckinWithPackageReadonlyPack", "drl");
+		RuleAsset asset = impl.loadRuleAsset(uuid);
+		assertNotNull(asset.metaData.lastModifiedDate);
+		asset.metaData.coverage = "boo";
+		asset.content = new RuleContentText();
+		((RuleContentText) asset.content).content = "yeah !";
+		Thread.sleep(100);
+
+		// Mock up SEAM contexts
+		Map application = new HashMap<String, Object>();
+		Lifecycle.beginApplication(application);
+		Lifecycle.beginCall();
+		MockIdentity midentity = new MockIdentity();
+		// this makes Identity.hasRole("admin") return false
+		midentity.setHasRole(false);
+		midentity.addPermissionResolver(new PackageBasedPermissionResolver());
+		midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+
+		Contexts.getSessionContext().set(
+				"org.jboss.seam.security.identity", midentity);
+		Contexts.getSessionContext().set(
+				"org.drools.guvnor.client.rpc.RepositoryService", impl);
+		List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+		pbps.add(new RoleBasedPermission("jervis",
+				RoleTypes.PACKAGE_READONLY,
+				packageUuid, null));
+		Contexts.getSessionContext().set("packageBasedPermission", pbps);		
+		
+		//now lets see if we can access this asset with the permissions
+		try {
+			impl.checkinVersion(asset);
+			fail("Did not catch expected exception");
+		} catch (AuthorizationException e) {
+		}
+		
+		Lifecycle.endApplication();
+	}
+	
+	public void testCheckinWithPackageDeveloper() throws Exception {
+		ServiceImplementation impl = getService();
+		String packageUuid = impl.createPackage(
+				"testCheckinWithPackageDeveloperPack", "desc");
+		impl.createCategory("/", "testCheckinWithPackageDeveloperCat",
+						"this is a description");
+		impl.createCategory("testCheckinWithPackageDeveloperCat", "deeper", "description");
+		String uuid = impl.createNewRule("testChecking",
+				"this is a description", "testCheckinWithPackageDeveloperCat",
+				"testCheckinWithPackageDeveloperPack", "drl");
+		RuleAsset asset = impl.loadRuleAsset(uuid);
+		assertNotNull(asset.metaData.lastModifiedDate);
+		asset.metaData.coverage = "boo";
+		asset.content = new RuleContentText();
+		((RuleContentText) asset.content).content = "yeah !";
+		Thread.sleep(100);
+
+		// Mock up SEAM contexts
+		Map application = new HashMap<String, Object>();
+		Lifecycle.beginApplication(application);
+		Lifecycle.beginCall();
+		MockIdentity midentity = new MockIdentity();
+		// this makes Identity.hasRole("admin") return false
+		midentity.setHasRole(false);
+		midentity.addPermissionResolver(new PackageBasedPermissionResolver());
+		midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+
+		Contexts.getSessionContext().set(
+				"org.jboss.seam.security.identity", midentity);
+		Contexts.getSessionContext().set(
+				"org.drools.guvnor.client.rpc.RepositoryService", impl);
+		List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+		pbps.add(new RoleBasedPermission("jervis",
+				RoleTypes.PACKAGE_DEVELOPER,
+				packageUuid, null));
+		Contexts.getSessionContext().set("packageBasedPermission", pbps);		
+		
+		//now lets see if we can access this asset with the permissions
+		String uuid2 =  impl.checkinVersion(asset);
+		assertEquals(uuid, uuid2);
+		
+		Lifecycle.endApplication();
+	}
+	
+	private ServiceImplementation getService() throws Exception {
+		ServiceImplementation impl = new ServiceImplementation();
+
+		impl.repository = new RulesRepository(TestEnvironmentSessionHelper
+				.getSession());
+		return impl;
 	}
 
 }
