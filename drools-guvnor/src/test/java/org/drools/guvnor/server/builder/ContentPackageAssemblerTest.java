@@ -554,7 +554,8 @@ public class ContentPackageAssemblerTest extends TestCase {
         ContentPackageAssembler asm = new ContentPackageAssembler(pkg, false);
         String drl = asm.getDRL();
         System.err.println(drl);
-        assertEquals(-1, drl.indexOf("import"));
+
+        assertTrue(drl.indexOf("package ", 2) == -1); //skip a few, make sure we only have one instance of "package "
     }
 
     public void testBRXMLWithDSLMixedIn() throws Exception {
