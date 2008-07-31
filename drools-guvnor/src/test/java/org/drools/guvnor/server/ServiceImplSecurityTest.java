@@ -44,34 +44,14 @@ public class ServiceImplSecurityTest extends TestCase {
 					"testLoadRuleAssetWithRoleBasedAuthrozationCat2",
 					"this is a cat");
 
-			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+			String uuid1 = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
 					"description",
 					"testLoadRuleAssetWithRoleBasedAuthrozationCat1",
 					"testLoadRuleAssetWithRoleBasedAuthrozation", "drl");
-			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation2",
+			String uuid2 = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation2",
 					"description",
 					"testLoadRuleAssetWithRoleBasedAuthrozationCat2",
 					"testLoadRuleAssetWithRoleBasedAuthrozation", "drl");
-
-			TableDataResult res = impl.loadRuleListForCategories(
-					"testLoadRuleAssetWithRoleBasedAuthrozationCat1", 0, -1,
-					AssetItemGrid.RULE_LIST_TABLE_ID);
-			assertEquals(1, res.data.length);
-			assertEquals(1, res.total);
-			assertFalse(res.hasNext);
-
-			TableDataRow row = res.data[0];
-			String uuid = row.id;
-
-			TableDataResult res2 = impl.loadRuleListForCategories(
-					"testLoadRuleAssetWithRoleBasedAuthrozationCat2", 0, -1,
-					AssetItemGrid.RULE_LIST_TABLE_ID);
-			assertEquals(1, res.data.length);
-			assertEquals(1, res.total);
-			assertFalse(res.hasNext);
-
-			TableDataRow row2 = res2.data[0];
-			String uuid2 = row2.id;
 
 			// Mock up SEAM contexts
 			Map application = new HashMap<String, Object>();
@@ -95,7 +75,7 @@ public class ServiceImplSecurityTest extends TestCase {
 
 
 			//now lets see if we can access this asset with the permissions
-			RuleAsset asset = impl.loadRuleAsset(uuid);
+			RuleAsset asset = impl.loadRuleAsset(uuid1);
 			try {
 				asset = impl.loadRuleAsset(uuid2);
 				fail("Did not catch expected exception");
@@ -109,13 +89,13 @@ public class ServiceImplSecurityTest extends TestCase {
 	public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonly() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
-			impl.repository.createPackage(
+			String package1Uuid = impl.createPackage(
 					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack1", "desc");
 			impl.createCategory("",
 					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat1",
 					"this is a cat");
 
-			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+			String uuid1 = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
 					"description",
 					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat1",
 					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack1", "drl");
@@ -123,23 +103,10 @@ public class ServiceImplSecurityTest extends TestCase {
 			impl.repository.createPackage(
 					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack2", "desc");
 
-			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+			String uuid2 = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
 					"description",
 					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat1",
 					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack2", "drl");
-
-
-			TableDataResult res = impl.loadRuleListForCategories(
-					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat1", 0, -1,
-					AssetItemGrid.RULE_LIST_TABLE_ID);
-			TableDataRow row = res.data[0];
-			String uuid = row.id;
-			PackageItem source = impl.repository
-			    .loadPackage("testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack1");
-	        String package1Uuid = source.getUUID();
-
-			TableDataRow row2 = res.data[1];
-			String uuid2 = row2.id;
 
 			// Mock up SEAM contexts
 			Map application = new HashMap<String, Object>();
@@ -163,8 +130,9 @@ public class ServiceImplSecurityTest extends TestCase {
 
 			Contexts.getSessionContext().set("packageBasedPermission", pbps);
 
+			
 			//now lets see if we can access this asset with the permissions
-			RuleAsset asset = impl.loadRuleAsset(uuid);
+			RuleAsset asset = impl.loadRuleAsset(uuid1);
 			try {
 				asset = impl.loadRuleAsset(uuid2);
 				fail("Did not catch expected exception");
@@ -175,51 +143,53 @@ public class ServiceImplSecurityTest extends TestCase {
 		}
 	}
 
-	//Access an asset that belongs to no category. e.g., Packages -> Create New -> "upload new Model jar".
-		//The user role is admin
-		public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategory() throws Exception {
-			try {
-				ServiceImplementation impl = getService();
-				impl.repository.createPackage(
-						"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPack", "desc");
-				impl.createCategory("",
-						"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryCat",
-						"this is a cat");
+	// Access an asset that belongs to no category. e.g., Packages -> Create New
+	// -> "upload new Model jar".
+	// The user role is admin
+	public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategory() throws Exception {
+		try {
+			ServiceImplementation impl = getService();
+			impl.repository.createPackage(
+							"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPack",
+							"desc");
+			impl.createCategory(
+							"",
+							"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryCat",
+							"this is a cat");
 
-				String uuid = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
-						"description",
-						null,
-						"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPack", "drl");
+			String uuid = impl.createNewRule(
+							"testLoadRuleAssetWithRoleBasedAuthrozation",
+							"description",
+							null,
+							"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPack",
+							"drl");
 
-				// Mock up SEAM contexts
-				Map application = new HashMap<String, Object>();
-				Lifecycle.beginApplication(application);
-				Lifecycle.beginCall();
-				MockIdentity midentity = new MockIdentity();
-				// this makes Identity.hasRole("admin") return true
-				midentity.setHasRole(true);
-				midentity.addPermissionResolver(new PackageBasedPermissionResolver());
-				midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+			// Mock up SEAM contexts
+			Map application = new HashMap<String, Object>();
+			Lifecycle.beginApplication(application);
+			Lifecycle.beginCall();
+			MockIdentity midentity = new MockIdentity();
+			// this makes Identity.hasRole("admin") return true
+			midentity.setHasRole(true);
+			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
+			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
 
-				Contexts.getSessionContext().set(
-						"org.jboss.seam.security.identity", midentity);
-				Contexts.getSessionContext().set(
-						"org.drools.guvnor.client.rpc.RepositoryService", impl);
+			Contexts.getSessionContext().set(
+					"org.jboss.seam.security.identity", midentity);
+			Contexts.getSessionContext().set(
+					"org.drools.guvnor.client.rpc.RepositoryService", impl);
 
-				List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-	/*			pbps.add(new RoleBasedPermission("jervis",
-						RoleTypes.PACKAGE_READONLY,
-						package1Uuid, null));*/
+			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
 
-				Contexts.getSessionContext().set("packageBasedPermission", pbps);
+			Contexts.getSessionContext().set("packageBasedPermission", pbps);
 
-				//now lets see if we can access this asset with the permissions
-				RuleAsset asset = impl.loadRuleAsset(uuid);
-				assertNotNull(asset);
-			} finally {
-				Lifecycle.endApplication();
-			}
+			// now lets see if we can access this asset with the permissions
+			RuleAsset asset = impl.loadRuleAsset(uuid);
+			assertNotNull(asset);
+		} finally {
+			Lifecycle.endApplication();
 		}
+	}
 
 	//Access an asset that belongs to no category. e.g., Packages -> Create New -> "upload new Model jar".
 	//The user role is admin
