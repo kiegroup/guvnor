@@ -82,6 +82,16 @@ public class FactModelContentHandlerTest extends TestCase {
     }
 
 
+    public void testFromEmptyDrl() throws Exception {
+    	String drl = "";
+
+    	FactModelContentHandler ch = new FactModelContentHandler();
+    	List<FactMetaModel> list = ch.toModel(drl);
+    	assertNotNull(list);
+
+
+    }
+
 
     public void testStore() throws Exception {
     	FactModelContentHandler ch = new FactModelContentHandler();

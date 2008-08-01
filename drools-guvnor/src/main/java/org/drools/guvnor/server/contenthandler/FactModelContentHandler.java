@@ -1,6 +1,7 @@
 package org.drools.guvnor.server.contenthandler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,8 @@ public class FactModelContentHandler extends ContentHandler {
     	if (parser.hasErrors()) {
     		throw new DroolsParserException("The model drl " + drl + " is not valid");
     	}
+
+    	if (pkg == null) return Collections.emptyList();
     	List<TypeDeclarationDescr> types = pkg.getTypeDeclarations();
     	List<FactMetaModel> list = new ArrayList<FactMetaModel>(types.size());
     	for (TypeDeclarationDescr td : types) {
