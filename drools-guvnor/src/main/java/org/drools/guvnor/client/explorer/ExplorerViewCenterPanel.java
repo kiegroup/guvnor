@@ -54,14 +54,14 @@ public class ExplorerViewCenterPanel {
         centerLayoutData = new BorderLayoutData(RegionPosition.CENTER);
         centerLayoutData.setMargins(new Margins(5, 0, 5, 5));
 
-        HistoryListener hl = new HistoryListener() {
-			public void onHistoryChanged(String a) {
-				if (a != null && a.startsWith("asset=")) {
-					openAssetByToken(a);
-				}
-			}
-        };
-        History.addHistoryListener(hl);
+//        HistoryListener hl = new HistoryListener() {
+//			public void onHistoryChanged(String a) {
+//				if (a != null && a.startsWith("asset=")) {
+//					openAssetByToken(a);
+//				}
+//			}
+//        };
+//        History.addHistoryListener(hl);
 
         String tok = History.getToken();
 
@@ -137,7 +137,8 @@ public class ExplorerViewCenterPanel {
 
 	public void close(String key) {
 		tp.remove(key + id);
-		openedTabs.remove(key).destroy();
+		Panel p = openedTabs.remove(key);
+		if (p != null) p.destroy();
 	}
 
 
@@ -166,7 +167,8 @@ public class ExplorerViewCenterPanel {
 
 				}
 			});
-		}	}
+		}
+	}
 
 
 
