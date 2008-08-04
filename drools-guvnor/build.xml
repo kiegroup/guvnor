@@ -21,7 +21,7 @@
 			classBase="org.drools.guvnor.Guvnor"
 			sourceclasspath="src/main/java; ../drools-compiler/src/main/java; ../lib/gwtext.jar"/>
 		<!-- get rid of old -->
-		<delete>
+	 	 <delete>
 	      <fileset dir="src/main/webapp/org.drools.guvnor.Guvnor" includes="*.gwt.rpc *.cache.html *.cache.js *.cache.xml *.cache.png"/>
 	    </delete>
 
@@ -30,8 +30,9 @@
 				<include name="**/*" />
 			</fileset>
 		</copy>
-
-
+	 	<delete>
+	      <fileset dir="src/main/webapp/.gwt-tmp"/>
+	    </delete>
 	</target>
 
 	<target name="gwt-shell">
