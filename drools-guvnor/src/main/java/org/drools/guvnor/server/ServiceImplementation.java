@@ -75,7 +75,6 @@ import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
-import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentAssemblyError;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
@@ -113,7 +112,6 @@ import org.drools.repository.RulesRepository.DateQuery;
 import org.drools.rule.Package;
 import org.drools.testframework.RuleCoverageListener;
 import org.drools.testframework.ScenarioRunner;
-import org.drools.util.DateUtils;
 import org.drools.util.DroolsStreamUtils;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -223,6 +221,7 @@ public class ServiceImplementation implements RepositoryService {
 			if (e.getCause() instanceof ItemExistsException) {
 				return "DUPLICATE";
 			} else {
+				log.error(e);
 				throw new SerializableException(e.getMessage());
 			}
 		}
@@ -707,21 +706,6 @@ public class ServiceImplementation implements RepositoryService {
 
 	}
 
-	@WebRemote
-	@Restrict("#{s:hasRole('admin')}")
-	public byte[] exportRepository() throws SerializableException {
-
-		log.info("USER:" + repository.getSession().getUserID()
-				+ " EXPORTING repository");
-
-		byte[] exportedOutput = null;
-		try {
-			exportedOutput = repository.exportRulesRepository();
-		} catch (Exception e) {
-			throw new SerializableException("Unable to export repository");
-		}
-		return exportedOutput;
-	}
 
 	@WebRemote
 	@Restrict("#{s:hasRole('admin')}")

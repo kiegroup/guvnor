@@ -73,7 +73,7 @@ public class FactModelContentHandler extends ContentHandler {
     		throw new DroolsParserException("The model drl " + drl + " is not valid");
     	}
 
-    	if (pkg == null) return Collections.emptyList();
+    	if (pkg == null) return new ArrayList<FactMetaModel>();
     	List<TypeDeclarationDescr> types = pkg.getTypeDeclarations();
     	List<FactMetaModel> list = new ArrayList<FactMetaModel>(types.size());
     	for (TypeDeclarationDescr td : types) {

@@ -17,7 +17,6 @@ package org.drools.guvnor.server.security;
 
 
 
-import java.util.Collections;
 import java.util.HashSet;
 
 import javax.security.auth.login.LoginException;
@@ -26,10 +25,6 @@ import org.apache.log4j.Logger;
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.security.Capabilities;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.remoting.WebRemote;
-import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 
@@ -37,8 +32,6 @@ import org.jboss.seam.security.Identity;
  * This implements security related services.
  * @author Michael Neale
  */
-@Name("org.drools.guvnor.client.rpc.SecurityService")
-@AutoCreate
 public class SecurityServiceImpl
     implements
     SecurityService {
@@ -46,7 +39,6 @@ public class SecurityServiceImpl
     public static final String GUEST_LOGIN = "guest";
     private static final Logger log = Logger.getLogger( SecurityServiceImpl.class );
 
-    @WebRemote
     public boolean login(String userName, String password) {
         log.info( "Logging in user [" + userName + "]" );
         if (Contexts.isApplicationContextActive()) {
@@ -65,7 +57,6 @@ public class SecurityServiceImpl
 
     }
 
-    @WebRemote
     public UserSecurityContext getCurrentUser() {
         if (Contexts.isApplicationContextActive()) {
         	HashSet<String> disabled = new HashSet<String>();
@@ -105,8 +96,6 @@ public class SecurityServiceImpl
 
     }
 
-	@WebRemote
-	@Restrict("#{identity.loggedIn}")
 	public Capabilities getUserCapabilities() {
 		if (Contexts.isSessionContextActive()) {
 			return Capabilities.all();

@@ -19,8 +19,12 @@
 
     <!-- servlets - mostly to do with file management -->
 	<servlet>
-		<servlet-name>GWTRemotingServlet</servlet-name>
-		<servlet-class>org.jboss.seam.remoting.gwt.GWTRemoteServiceServlet</servlet-class>
+		<servlet-name>guvnorService</servlet-name>
+		<servlet-class>org.drools.guvnor.server.RepositoryServiceServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>securityService</servlet-name>
+		<servlet-class>org.drools.guvnor.server.SecurityServiceServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>AssetFileServlet</servlet-name>
@@ -45,8 +49,12 @@
 
 
 	<servlet-mapping>
-		<servlet-name>GWTRemotingServlet</servlet-name>
+		<servlet-name>guvnorService</servlet-name>
 		<url-pattern>/org.drools.guvnor.Guvnor/guvnorService</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>securityService</servlet-name>
+		<url-pattern>/org.drools.guvnor.Guvnor/securityService</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>AssetFileServlet</servlet-name>

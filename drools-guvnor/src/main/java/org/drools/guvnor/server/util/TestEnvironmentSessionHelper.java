@@ -20,6 +20,7 @@ package org.drools.guvnor.server.util;
 import java.io.File;
 
 import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
@@ -43,33 +44,37 @@ public class TestEnvironmentSessionHelper {
         return getSession(true);
     }
 
-    public static synchronized Session getSession(boolean erase) throws Exception {
-        if (repository == null) {
+    public static synchronized Session getSession(boolean erase) {
+    	try {
+	        if (repository == null) {
 
-            if (erase) {
-                File repoDir = new File("repository");
-                System.out.println("DELETE test repo dir: " + repoDir.getAbsolutePath());
-                RepositorySessionUtil.deleteDir( repoDir );
-                System.out.println("TEST repo dir deleted.");
-            }
+	            if (erase) {
+	                File repoDir = new File("repository");
+	                System.out.println("DELETE test repo dir: " + repoDir.getAbsolutePath());
+	                RepositorySessionUtil.deleteDir( repoDir );
+	                System.out.println("TEST repo dir deleted.");
+	            }
 
-            JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
-            repository = config.getJCRRepository(null);;
+	            JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
+	            repository = config.getJCRRepository(null);;
 
-            Session testSession = repository.login(
-                                                                     new SimpleCredentials("alan_parsons", "password".toCharArray()));
+	            Session testSession = repository.login(
+	                                                                     new SimpleCredentials("alan_parsons", "password".toCharArray()));
 
-            RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(testSession);
-            if (erase && admin.isRepositoryInitialized()) {
+	            RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(testSession);
+	            if (erase && admin.isRepositoryInitialized()) {
 
-                admin.clearRulesRepository( );
-            }
-            config.setupRulesRepository( testSession );
-            return testSession;
-        } else {
-            return repository.login(
-                             new SimpleCredentials("alan_parsons", "password".toCharArray()));
-        }
+	                admin.clearRulesRepository( );
+	            }
+	            config.setupRulesRepository( testSession );
+	            return testSession;
+	        } else {
+	            return repository.login(
+	                             new SimpleCredentials("alan_parsons", "password".toCharArray()));
+	        }
+    	} catch (RepositoryException e) {
+    		throw new IllegalStateException(e);
+    	}
 
     }
 

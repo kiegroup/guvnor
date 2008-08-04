@@ -1,4 +1,4 @@
-Reachable types computed on: Fri Aug 01 13:17:55 EST 2008
+Reachable types computed on: Mon Aug 04 17:40:09 EST 2008
 com.google.gwt.i18n.client.impl.ConstantMap.OrderedConstantSet<T>
    Serialization status
       Not serializable
@@ -87,7 +87,7 @@ java.util.AbstractList<E>
    Serialization status
       Not serializable
    Path
-      'java.util.Vector<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.util.ArrayList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
 
@@ -95,7 +95,7 @@ java.util.AbstractList<E>
    Serialization status
       Not serializable
    Path
-      'java.util.ArrayList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.util.Vector<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
 

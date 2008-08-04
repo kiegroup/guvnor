@@ -74,10 +74,6 @@ public interface RepositoryService extends RemoteService {
      */
     public void deleteUncheckedRule(String ruleName, String initialPackage);
 
-    /**
-     * Export rules repository to a compressed array of bytes
-     */
-    public byte[] exportRepository() throws SerializableException;
 
     /**
      * Clear the rules repositoty, Use at your own risk.

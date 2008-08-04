@@ -40,7 +40,6 @@ public interface RepositoryServiceAsync
 	public void createCategory(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback cb);
 	public void createNewRule(java.lang.String p0, java.lang.String p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, AsyncCallback cb);
 	public void deleteUncheckedRule(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
-	public void exportRepository(AsyncCallback cb);
 	public void clearRulesRepository(AsyncCallback cb);
 	public void listPackages(AsyncCallback cb);
 	public void listArchivedPackages(AsyncCallback cb);

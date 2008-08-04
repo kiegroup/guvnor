@@ -36,9 +36,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class AsyncInterfaceTest extends TestCase {
 
     public void testService() throws Exception {
-
-        checkService( RepositoryService.class, RepositoryServiceAsync.class );
-        checkService( SecurityService.class, SecurityServiceAsync.class );
+    	try {
+	        checkService( RepositoryService.class, RepositoryServiceAsync.class );
+	        checkService( SecurityService.class, SecurityServiceAsync.class );
+    	} catch (Exception e) {
+    		fail("Async interface is not in sync with service interface. For RepositoryService you can run AsyncInterfaceGenerator.");
+    	}
 
     }
 
@@ -51,7 +54,7 @@ public class AsyncInterfaceTest extends TestCase {
                 paramClasses[i] = sourceParamClasses[i];
             }
             paramClasses[sourceParamClasses.length] = AsyncCallback.class;
-            assertNotNull(clsAsync.getMethod( m.getName(), paramClasses ));
+            assertNotNull("Async interface not in sync (hahaha) with RepositoryService. Run AsyncInterfaceGenerator.main() to regenerate the content of that class." , clsAsync.getMethod( m.getName(), paramClasses ));
         }
     }
 
