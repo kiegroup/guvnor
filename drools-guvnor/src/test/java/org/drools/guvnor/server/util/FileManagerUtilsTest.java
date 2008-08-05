@@ -23,7 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -102,6 +105,7 @@ public class FileManagerUtilsTest extends TestCase {
 		assertEquals("goo wee", ServiceImplementation.getDroolsHeader(pkg));
 
 	}
+
 
 	public void testUploadXmlFile() throws Exception {
 		RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper

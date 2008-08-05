@@ -110,6 +110,15 @@ public class PackageBuilderWidget extends Composite {
 						"<i><small>Building a package will collect all the assets, validate and compile into a deployable package.</small></i>"));
 		layout.addRow(buildResults);
 
+		Button snap = new Button("Create snapshot for deployment");
+		snap.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				showSnapshotDialog(conf.name);
+			}
+		});
+		layout.addAttribute("Take snapshot:", snap);
+
+
 		//layout.setStyleName("package-Editor");
 
 		layout.setWidth("100%");
@@ -190,7 +199,7 @@ public class PackageBuilderWidget extends Composite {
         LoadingPopup.showMessage( "Please wait..." );
 		buildResults.add(busy);
 
-		DeferredCommand.add(new Command() {
+		DeferredCommand.addCommand(new Command() {
 			public void execute() {
 				RepositoryServiceFactory.getService().buildPackage(conf.uuid, selectorName, true,
 						new GenericCallback() {
@@ -243,13 +252,6 @@ public class PackageBuilderWidget extends Composite {
 
 		// vert.add( download );
 		vert.add(html);
-		Button snap = new Button("Create snapshot for deployment");
-		snap.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
-				showSnapshotDialog(conf.name);
-			}
-		});
-		vert.add(snap);
 
 		buildResults.add(vert);
 	}
@@ -402,8 +404,9 @@ public class PackageBuilderWidget extends Composite {
 				"Create a snapshot for deployment.");
 		form
 				.addRow(new HTML(
-						"<i>A package snapshot is essentially a "
-								+ "read only 'locked in' and labelled view of a package at a point in time, which can be used for deployment.</i>"));
+						"<i>A package snapshot is a "
+								+ "read only 'locked in' and labelled view of a package at a point in time, which can be used for deployment.</i>" +
+										"<b>You should build the package before taking a snapshot, generally.</b>"));
 
 		final VerticalPanel vert = new VerticalPanel();
 		form.addAttribute("Choose or create snapshot name:", vert);
