@@ -208,9 +208,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                 final DropDownData dropData) {
         final ListBox box = new ListBox();
 
-        if (currentValue == null || "".equals( currentValue )) {
-            box.addItem( "Choose ..." );
-        }
+
 
         //if we have to do it lazy, we will hit up the server when the widget gets focus
         if (dropData.fixedList == null && dropData.queryExpression != null) {
@@ -264,6 +262,15 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 //constraint.value = box.getValue( box.getSelectedIndex() );
             }
         });
+
+        if (currentValue == null || "".equals( currentValue )) {
+        	int ix = box.getSelectedIndex();
+        	if (ix > -1) {
+	            String val = box.getValue(ix);
+	            valueChanged.valueChanged(val);
+        	}
+        }
+
         return box;
     }
 
