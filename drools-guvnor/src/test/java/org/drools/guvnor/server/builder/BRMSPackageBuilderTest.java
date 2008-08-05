@@ -199,5 +199,16 @@ public class BRMSPackageBuilderTest extends TestCase {
         assertEquals(JavaDialectConfiguration.ECLIPSE, javaConf.getCompiler());
     }
 
+    public void testNamespaceSingle() throws Exception {
+
+        System.setProperty( "drools.dialect.java.compiler", "ECLIPSE" );
+        JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        List<JarInputStream> l = new ArrayList<JarInputStream>();
+        l.add( jis );
+        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l );
+
+        assertFalse(builder.getPackageBuilderConfiguration().isAllowMultipleNamespaces());
+    }
+
 
 }

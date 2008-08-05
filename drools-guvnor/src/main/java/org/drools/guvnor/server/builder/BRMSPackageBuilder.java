@@ -76,6 +76,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
         properties.setProperty( "drools.dialect.java.compiler",
                                 chainedProperties.getProperty( "drools.dialect.java.compiler", "ECLIPSE" ) );
         PackageBuilderConfiguration pkgConf = new PackageBuilderConfiguration( properties );
+        pkgConf.setAllowMultipleNamespaces(false);
         pkgConf.setClassLoader( loader );
 
         return new BRMSPackageBuilder( pkgConf );
