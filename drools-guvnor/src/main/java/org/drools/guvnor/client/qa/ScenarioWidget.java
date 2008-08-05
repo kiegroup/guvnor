@@ -1350,13 +1350,10 @@ class TestRunnerWidget extends Composite {
 		run.setTitle("Run this scenario. This will build the package if it is not already built (which may take some time).");
 		run.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
-				//layout.setWidget(0, 0, busy);
-				layout.clear();
 				LoadingPopup.showMessage("Building and scenario");
-				//layout.add(busy);
-
 				RepositoryServiceFactory.getService().runScenario(parent.asset.metaData.packageName, (Scenario) parent.asset.content, new GenericCallback () {
 					public void onSuccess(Object data) {
+
 						LoadingPopup.close();
 						layout.clear();
 						//layout.setWidget(0, 0, actions);
