@@ -1,11 +1,18 @@
 package org.drools.guvnor.server;
 
+import java.io.IOException;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
+
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.AuthorizationException;
 
+import com.google.gwt.user.server.rpc.RPCServletUtils;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -21,7 +28,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 	 * Michael got tired of trying to read other peoples overly abstracted code, so its just generated dumb code to
 	 * reduce dependencies on libraries.
 	 */
-	ServiceImplementation getService() {
+	RepositoryService getService() {
 		if (Contexts.isApplicationContextActive()) {
 			return (ServiceImplementation) Component.getInstance("org.drools.guvnor.client.rpc.RepositoryService");
 		} else {
@@ -31,6 +38,25 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 			return impl;
 		}
 	}
+
+	@Override
+	protected void doUnexpectedFailure(Throwable e) {
+		if (e.getCause() instanceof AuthorizationException) {
+			HttpServletResponse response = getThreadLocalResponse();
+		    try {
+		      response.setContentType("text/plain");
+		      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		      response.getWriter().write("Sorry, insufficient permissions to perform this action.");
+		    } catch (IOException ex) {
+		      getServletContext().log(
+		          "respondWithUnexpectedFailure failed while sending the previous failure to the client",
+		          ex);
+		    }
+		} else {
+			super.doUnexpectedFailure(e);
+		}
+	}
+
 
 	/**
 	 * START GENERATED CODE SECTION. DO NOT MODIFY WHAT IS BELOW
