@@ -91,6 +91,46 @@ public class PermissionManager {
 		return permsNode;
 	}
 
+	/**
+	 * Returns a list of users and their permissions types for display.
+	 * The Map maps:
+	 *
+	 *  userName => [list of permission types, eg admin, package.admin etc... no IDs]
+	 *  For display purposes only.
+	 * @throws RepositoryException
+	 */
+	public Map<String, List<String>> listUsers() throws RepositoryException {
+		Map<String, List<String>> listing = new HashMap<String, List<String>>();
+		Node root = this.repository.getSession().getRootNode();
+    	Node usersNode = getNode(root, "user_info");
+    	NodeIterator users = usersNode.getNodes();
+    	while (users.hasNext()) {
+			Node userNode = (Node) users.next();
+			listing.put(userNode.getName(), listOfPermTypes(userNode));
+		}
+		return listing;
+	}
+
+	private List<String> listOfPermTypes(Node userNode) throws RepositoryException {
+		List<String> permTypes = new ArrayList<String>();
+		Node permsNode = getNode(userNode, "permissions");
+		PropertyIterator perms = permsNode.getProperties();
+		while (perms.hasNext()) {
+    		Property p = (Property) perms.next();
+    		String name = p.getName();
+    		if (!name.startsWith("jcr")) {
+	    		permTypes.add(name);
+    		}
+
+		}
+		return permTypes;
+	}
+
+	void deleteAllPermissions() throws RepositoryException {
+		Node root = this.repository.getSession().getRootNode();
+		getNode(root, "user_info").remove();
+	}
+
 
 
 

@@ -59,4 +59,56 @@ public class PermissionManagerTest extends TestCase {
 		perms_ = pm.retrieveUserPermissions("nobody");
 		assertEquals(0, perms_.size());
 	}
+
+	public void testListingUsers() throws Exception {
+
+
+		PermissionManager pm = new PermissionManager(RepositorySessionUtil.getRepository());
+		pm.deleteAllPermissions();
+
+		Map<String, List<String>> perms = new HashMap<String, List<String>>() {{
+			put("package.admin", new ArrayList<String>() {{add("1234567890");}});
+			put("package.developer", new ArrayList<String>() {{add("1"); add("2");}});
+			put("analyst", new ArrayList<String>() {{add("HR");}});
+			put("admin", new ArrayList<String>());
+		}};
+		pm.updateUserPermissions("listingUser1", perms);
+
+		perms = new HashMap<String, List<String>>() {{
+			put("admin", new ArrayList<String>());
+		}};
+		pm.updateUserPermissions("listingUser2", perms);
+		pm.updateUserPermissions("listingUser3", perms);
+
+		perms = new HashMap<String, List<String>>() {{
+			put("package.developer", new ArrayList<String>() {{add("1"); add("2");}});
+		}};
+
+		pm.updateUserPermissions("listingUser4", perms);
+		perms = new HashMap<String, List<String>>() {{
+			put("analyst", new ArrayList<String>() {{add("1"); add("2");}});
+		}};
+		pm.updateUserPermissions("listingUser5", perms);
+
+		Map<String, List<String>> result = pm.listUsers();
+		assertNotNull(result);
+		assertEquals(5, result.size());
+		assertTrue(result.containsKey("listingUser1"));
+		assertTrue(result.containsKey("listingUser2"));
+		assertTrue(result.containsKey("listingUser3"));
+		assertTrue(result.containsKey("listingUser4"));
+		assertTrue(result.containsKey("listingUser5"));
+
+		List<String> permTypes = result.get("listingUser1");
+		assertEquals(4, permTypes.size());
+		assertTrue(permTypes.contains("package.developer"));
+
+
+		permTypes = result.get("listingUser5");
+		assertEquals(1, permTypes.size());
+		assertEquals("analyst", permTypes.get(0));
+
+
+	}
+
 }
