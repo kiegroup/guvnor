@@ -89,7 +89,7 @@ public class PackageBasedPermissionResolver implements PermissionResolver,
 
 		} else {
 			// PackageBasedPermissionResolver only grants permissions based on package info.
-			// Return false if the input is not a pacakge info, as this will be the reponsibility
+			// Return false if the input is not a package info, as this will be the responsibility
 			//of other PermissionResolvers in the resolver chain.
 			return false;
 		}
@@ -97,7 +97,7 @@ public class PackageBasedPermissionResolver implements PermissionResolver,
 
 
 		//package based permission check only applies to admin|package.admin|package.dev|package.readonly role.
-		//For Analyst we always grant permisssion.
+		//For Analyst we always grant permission.
 		for (RoleBasedPermission pbp : permissions) {
 			if (RoleTypes.ANALYST.equals(pbp.getRole())) {
 				return true;

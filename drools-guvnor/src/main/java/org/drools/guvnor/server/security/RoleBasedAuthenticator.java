@@ -34,14 +34,14 @@ public class RoleBasedAuthenticator {
     private static final Logger log = Logger.getLogger(RoleBasedAuthenticator.class);
 	
     public boolean authenticate() {
-        if (SecurityServiceImpl.GUEST_LOGIN.equals( Identity.instance().getUsername())) {
+        if (SecurityServiceImpl.GUEST_LOGIN.equals( Identity.instance().getCredentials().getUsername())) {
             return false;
         }
         log.info( "User logged in via RoleBasedAuthenticator.");
         
         RoleBasedPermissionStore pbps = (RoleBasedPermissionStore) Component
 		.getInstance("org.drools.guvnor.server.security.RoleBasedPermissionStore");
-    	List<RoleBasedPermission> permissions = pbps.getRoleBasedPermissionsByUserName(Identity.instance().getUsername());
+    	List<RoleBasedPermission> permissions = pbps.getRoleBasedPermissionsByUserName(Identity.instance().getCredentials().getUsername());
 
     	//The admin role is added into Identity so that we can call Identity.hadRole("admin")
     	//later. Other permissions are stored in session context

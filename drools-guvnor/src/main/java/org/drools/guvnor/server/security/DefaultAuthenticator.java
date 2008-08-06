@@ -32,7 +32,7 @@ public class DefaultAuthenticator {
     private static final Logger log = Logger.getLogger( DefaultAuthenticator.class );
     
     public boolean authenticate() {
-        if (SecurityServiceImpl.GUEST_LOGIN.equals( Identity.instance().getUsername())) {
+        if (SecurityServiceImpl.GUEST_LOGIN.equals( Identity.instance().getCredentials().getUsername())) {
             return false;
         }
         log.info( "User logged in via default authentication module (no security check).");

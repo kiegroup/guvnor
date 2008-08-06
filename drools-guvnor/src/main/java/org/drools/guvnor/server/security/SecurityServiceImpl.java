@@ -42,8 +42,8 @@ public class SecurityServiceImpl
     public boolean login(String userName, String password) {
         log.info( "Logging in user [" + userName + "]" );
         if (Contexts.isApplicationContextActive()) {
-            Identity.instance().setUsername( userName );
-            Identity.instance().setPassword( password );
+            Identity.instance().getCredentials().setUsername(userName);
+            Identity.instance().getCredentials().setPassword(password);
             try {
                 Identity.instance().authenticate();
             } catch ( LoginException e ) {
@@ -65,7 +65,7 @@ public class SecurityServiceImpl
                 //check to see if we can autologin
                 return new UserSecurityContext(checkAutoLogin(), disabled);
             }
-            return new UserSecurityContext(Identity.instance().getUsername(), disabled);
+            return new UserSecurityContext(Identity.instance().getCredentials().getUsername(), disabled);
         } else {
         	HashSet<String> disabled = new HashSet<String>();
         	//disabled.add("QA");
@@ -82,14 +82,14 @@ public class SecurityServiceImpl
      */
     private String checkAutoLogin() {
         Identity id = Identity.instance();
-        id.setUsername( GUEST_LOGIN );
+        id.getCredentials().setUsername( GUEST_LOGIN );
         try {
             id.authenticate();
         } catch ( LoginException e ) {
             return null;
         }
         if (id.isLoggedIn()) {
-            return id.getUsername();
+            return id.getCredentials().getUsername();
         } else {
             return null;
         }
