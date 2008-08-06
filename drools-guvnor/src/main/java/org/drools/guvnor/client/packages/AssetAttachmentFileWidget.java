@@ -53,7 +53,7 @@ public abstract class AssetAttachmentFileWidget extends Composite {
     private ImageButton ok;
     private RuleViewer viewer;
     protected FormStyleLayout layout;
-    private RuleAsset asset;
+    protected RuleAsset asset;
 
 
     public AssetAttachmentFileWidget(final RuleAsset asset, final RuleViewer viewer) {
@@ -61,6 +61,9 @@ public abstract class AssetAttachmentFileWidget extends Composite {
         this.asset = asset;
         initWidgets(asset.uuid, asset.metaData.name);
         initAssetHandlers();
+    }
+
+    public AssetAttachmentFileWidget() {
     }
 
     protected void initWidgets(final String uuid, String formName) {
@@ -157,7 +160,6 @@ public abstract class AssetAttachmentFileWidget extends Composite {
 
     public void addDescription(Widget d) {
         this.layout.addRow( d );
-
     }
 
 }
