@@ -29,7 +29,8 @@ public class TableDataResult
     IsSerializable {
 
     public TableDataRow[] data;
-    public long total;
+    public long total = -1;
     public boolean hasNext;
+    public long currentPosition; //the current cursor position in the result set
 
 }

@@ -310,7 +310,8 @@ public class ServiceImplementationTest extends TestCase {
 		TableDataResult res = impl
 				.loadRuleListForCategories("testLoadRuleAsset", 0, -1, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(1, res.data.length);
-		assertEquals(1, res.total);
+		assertEquals(-1, res.total);
+		assertTrue(res.currentPosition > 0);
 		assertFalse(res.hasNext);
 
 		TableDataRow row = res.data[0];
@@ -1032,7 +1033,7 @@ public class ServiceImplementationTest extends TestCase {
 		assertFalse(res.hasNext);
 
 		TableDataResult td = impl.loadArchivedAssets(0, 1000);
-
+		assertEquals(-1, td.total);
 		impl.archiveAsset(uuid4, true);
 
 		TableDataResult td2 = impl.loadArchivedAssets(0, 1000);

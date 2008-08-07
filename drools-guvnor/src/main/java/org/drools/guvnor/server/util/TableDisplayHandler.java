@@ -59,7 +59,7 @@ public class TableDisplayHandler {
         List<TableDataRow> data = loadRows(list.assets.iterator(), -1);
         TableDataResult result = new TableDataResult();
         result.data = (TableDataRow[]) data.toArray( new TableDataRow[data.size()] );
-        result.total  = list.totalSize;
+        result.currentPosition  = list.currentPosition;
         result.hasNext = list.hasNext;
         return result;
     }
@@ -73,6 +73,7 @@ public class TableDisplayHandler {
         result.data = (TableDataRow[]) data.toArray( new TableDataRow[data.size()] );
         result.total  = it.getSize();
         result.hasNext = it.hasNext();
+        result.currentPosition = it.getPosition();
         return result;
 
     }

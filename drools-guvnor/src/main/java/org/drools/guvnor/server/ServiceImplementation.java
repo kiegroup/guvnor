@@ -686,7 +686,7 @@ public class ServiceImplementation implements RepositoryService {
 
 		TableDataResult table = new TableDataResult();
 		table.data = result.toArray(new TableDataRow[result.size()]);
-
+		table.currentPosition = it.getPosition();
 		return table;
 	}
 

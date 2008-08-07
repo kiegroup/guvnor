@@ -1,6 +1,7 @@
 package org.drools.guvnor.client.rulelist;
 
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.rpc.TableDataResult;
 
 /**
  * This is used by the grid view to load data, in a paged fashion (if possible to do paging).
@@ -14,5 +15,5 @@ public interface AssetItemGridDataLoader {
 	 *
 	 * cb will return TableDataResult type.
 	 */
-	void loadData(int startRow, int numberOfRows, GenericCallback cb);
+	void loadData(int startRow, int numberOfRows, GenericCallback<TableDataResult> cb);
 }

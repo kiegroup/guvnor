@@ -18,6 +18,7 @@ package org.drools.guvnor.client.rulelist;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -69,7 +70,16 @@ public class AssetItemGrid extends Composite {
     private SimplePanel layout;
     private Command 	refresh;
 
-    private int currentPosition = 0;
+
+
+
+    /**
+     * Used for tracking paging.
+     */
+    private Stack<Integer> cursorPositions = getPositionStack();
+
+    private int currentCursorPosition = 0;
+
 	protected Store store;
 	private GridPanel currentGrid;
 
@@ -77,7 +87,6 @@ public class AssetItemGrid extends Composite {
 
         this.editEvent = event;
         this.layout = new SimplePanel();
-
         if (!columnConfigs.containsKey(tableConfig)) {
             RepositoryServiceFactory.getService().loadTableConfig(tableConfig, new GenericCallback() {
                 public void onSuccess(Object data) {
@@ -100,17 +109,21 @@ public class AssetItemGrid extends Composite {
     }
 
 
-    /**
+    private Stack<Integer> getPositionStack() {
+		Stack<Integer> cursorPositions = new Stack<Integer>();
+		cursorPositions.push(0);
+		return cursorPositions;
+	}
+
+
+	/**
      * Actually build the grid.
      */
     private void doGrid(final AssetItemGridDataLoader source, final ColumnModel cm, final RecordDef rd, final int pageSize) {
         final int numFlds = rd.getFields().length;
         LoadingPopup.showMessage("Loading data...");
-        source.loadData(currentPosition, pageSize, new GenericCallback() {
-
-
-			public void onSuccess(Object data) {
-                TableDataResult result = (TableDataResult) data;
+        source.loadData(cursorPositions.peek(), pageSize, new GenericCallback<TableDataResult>() {
+			public void onSuccess(TableDataResult result) {
                 Object[][] gridData = new Object[result.data.length][];
                 for (int i = 0; i < result.data.length; i++) {
                     TableDataRow row = result.data[i];
@@ -134,10 +147,18 @@ public class AssetItemGrid extends Composite {
 
                 Toolbar tb = new Toolbar();
                 currentGrid.setTopToolbar(tb);
-                tb.addItem(new ToolbarTextItem(Format.format(
-                                        "Showing item #{0} to {1} of {2} items.",
-                                        new String[] {""+(currentPosition + 1), "" + (currentPosition + result.data.length), "" + result.total})));
-                if (currentPosition > 0) {
+                if (result.total > -1) {
+	                tb.addItem(new ToolbarTextItem(Format.format(
+	                                        "Showing #{0} of {1} items.",
+	                                        new String[] {"" + result.data.length, "" + result.total})));
+                } else {
+	                tb.addItem(new ToolbarTextItem(Format.format(
+                            "{0} items.",
+                            new String[] {"" + result.data.length})));
+
+                }
+
+                if (cursorPositions.peek() > 0) {
                     navButton(source, cm, rd, pageSize, currentGrid, false, tb);
                 }
                 if (result.hasNext) {
@@ -171,6 +192,8 @@ public class AssetItemGrid extends Composite {
                 });
                 store.load();
                 layout.add(currentGrid);
+                //store the end position
+                currentCursorPosition = (int) result.currentPosition;
                 LoadingPopup.close();
             }
 
@@ -178,7 +201,9 @@ public class AssetItemGrid extends Composite {
         });
     }
 
-    public String getSelectedRowUUID() {
+
+
+	public String getSelectedRowUUID() {
     	Record r = currentGrid.getSelectionModel().getSelected();
     	if (r != null) {
     		return r.getAsString("uuid");
@@ -199,7 +224,14 @@ public class AssetItemGrid extends Composite {
 
         b.addListener(new ButtonListenerAdapter() {
                     public void onClick(Button button, EventObject e) {
-                        currentPosition = (forward) ? currentPosition + pageSize : currentPosition - pageSize;
+                    	if (forward) {
+                    		int newPos = currentCursorPosition - 2;
+                    		if (newPos > 0) {
+                    			cursorPositions.push(newPos);
+                    		}
+                    	} else {
+                    		cursorPositions.pop();
+                    	}
                         layout.clear();
                         g.destroy();
                         doGrid(source, cm, rd, pageSize);
