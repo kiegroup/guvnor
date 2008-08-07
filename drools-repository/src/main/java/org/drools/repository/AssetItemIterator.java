@@ -56,4 +56,12 @@ public class AssetItemIterator
     	return it.getSize();
     }
 
+    /**
+     * Get the position in the result set.
+     */
+    public long getPosition() {
+    	return it.getPosition();
+    }
+
+
 }

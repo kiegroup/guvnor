@@ -44,9 +44,9 @@ public class RepositorySessionUtil {
         if ( repoInstance == null ) {
 
             File dir = new File( "repository" );
-            log.debug( "DELETING test repo: " + dir.getAbsolutePath() );
+            System.out.println( "DELETING test repo: " + dir.getAbsolutePath() );
             deleteDir( dir );
-            log.debug( "TEST repo was deleted." );
+            System.out.println( "TEST repo was deleted." );
 
             JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
 

@@ -768,13 +768,16 @@ public class RulesRepository {
 			int numRowsToReturn, Node n, RepositoryFilter filter)
 			throws RepositoryException {
 		int rows = 0;
-        List results = new ArrayList();
+        List<AssetItem> results = new ArrayList<AssetItem>();
+
 
 		PropertyIterator it = n.getReferences();
 		if (skip > 0) it.skip(skip);
 
 		while ( it.hasNext() && (numRowsToReturn == -1 || rows < numRowsToReturn)) {
+
 		    Property ruleLink = (Property) it.next();
+
 		    Node parentNode = ruleLink.getParent();
 		    if ( isNotSnapshot( parentNode ) && parentNode.getPrimaryNodeType().getName().equals( AssetItem.RULE_NODE_TYPE_NAME ) ) {
 		        if ( seekArchivedAsset || !parentNode.getProperty( AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG ).getBoolean() ) {
@@ -787,7 +790,7 @@ public class RulesRepository {
 		    }
 		}
 
-		return new AssetPageList(results, it.getSize(), it.hasNext());
+		return new AssetPageList(results, it);
 	}
 
     public AssetPageList findAssetsByCategory(String categoryTag, int skip, int numRowsToReturn) throws RulesRepositoryException {

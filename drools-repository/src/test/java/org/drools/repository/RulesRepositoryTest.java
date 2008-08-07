@@ -81,13 +81,11 @@ public class RulesRepositoryTest extends TestCase {
 
         cat = repo.loadCategory("testCatRename/testAnother");
         AssetPageList as = repo.findAssetsByCategory("testCatRename/testAnother", 0, -1);
-        assertEquals(1, as.totalSize);
         assertEquals("fooBar",((AssetItem) as.assets.get(0)).getName());
 
 
         repo.renameCategory("testCatRename/testAnother", "testYetAnother");
         as = repo.findAssetsByCategory("testCatRename/testYetAnother", 0, -1);
-        assertEquals(1, as.totalSize);
         assertEquals("fooBar",((AssetItem) as.assets.get(0)).getName());
 
 
@@ -514,8 +512,72 @@ public class RulesRepositoryTest extends TestCase {
         	}
             });
 
+
         assertEquals(1, apl.assets.size());
         assertEquals("testCat1", ((AssetItem)apl.assets.get(0)).getName());
+
+        pkg.addAsset( "testCat3", "x", "/testFindAssetsByCategoryUsingFilterCat", "drl");
+        pkg.addAsset( "testCat4", "x", "/testFindAssetsByCategoryUsingFilterCat", "drl");
+        pkg.addAsset( "testCat5", "x", "/testFindAssetsByCategoryUsingFilterCat", "drl");
+        pkg.addAsset( "testCat6", "x", "/testFindAssetsByCategoryUsingFilterCat", "drl");
+        pkg.addAsset( "testCat7", "x", "/testFindAssetsByCategoryUsingFilterCat", "drl");
+        pkg.addAsset( "testCat8", "x", "/testFindAssetsByCategoryUsingFilterCat", "drl");
+
+        pkg.loadAsset("testCat1").archiveItem(true).checkin("");
+        pkg.loadAsset("testCat2").archiveItem(true).checkin("");
+        pkg.loadAsset("testCat3").archiveItem(true).checkin("");
+        pkg.loadAsset("testCat4").archiveItem(true).checkin("");
+
+//        apl = repo.findAssetsByCategory( "/testFindAssetsByCategoryUsingFilterCat", 0, 2 );
+//        assertEquals(2, apl.assets.size());
+//        assertTrue(apl.hasNext);
+//
+//        assertEquals(5, apl.currentPosition);
+//        //assertEquals("testCat5", apl.assets.get(0).getName());
+//
+//        apl = repo.findAssetsByCategory( "/testFindAssetsByCategoryUsingFilterCat", 7, 2 );
+//        assertEquals(2, apl.assets.size());
+//        assertFalse(apl.hasNext);
+//        //assertEquals("testCat7", apl.assets.get(0).getName());
+
+        repo.save();
+
+        apl = repo.findAssetsByCategory( "/testFindAssetsByCategoryUsingFilterCat", 0, -1 );
+
+        assertEquals(4, apl.assets.size());
+        List<String> names = new ArrayList<String>();
+
+        for (AssetItem as : apl.assets) {
+        	if (names.contains(as.getName()))  { fail("dupe returned."); }
+        	names.add(as.getName());
+		}
+
+        names = new ArrayList<String>();
+
+
+        boolean hasNext = true;
+        int skip = 0;
+        while (hasNext) {
+        	apl = repo.findAssetsByCategory( "/testFindAssetsByCategoryUsingFilterCat", skip, 2 );
+            for (AssetItem as : apl.assets) {
+            	if (names.contains(as.getName())) { fail("dupe returned"); }
+    			names.add(as.getName());
+    		}
+            //we add the num of results returned, and sub 2 to work out where to start next
+            skip = (int) (apl.currentPosition + apl.assets.size() - 2);
+        	hasNext = apl.hasNext;
+        }
+        assertEquals(4, names.size());
+        assertTrue(names.contains("testCat5"));
+        assertTrue(names.contains("testCat6"));
+        assertTrue(names.contains("testCat7"));
+        assertTrue(names.contains("testCat8"));
+
+
+    }
+
+    public void testFunnyOrdering() throws Exception {
+
     }
 
     /**

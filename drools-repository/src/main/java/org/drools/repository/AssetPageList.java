@@ -2,6 +2,8 @@ package org.drools.repository;
 
 import java.util.List;
 
+import javax.jcr.RangeIterator;
+
 /**
  * Used for holding a page of asset data.
  *
@@ -9,16 +11,14 @@ import java.util.List;
  */
 public class AssetPageList {
 
-	public final List assets;
-	public final long totalSize;
+	public final List<AssetItem> assets;
 	public final boolean hasNext;
+	public long currentPosition;
 
-	public AssetPageList(List categories, long totalSize, boolean hasNext) {
+	public AssetPageList(List<AssetItem> categories, RangeIterator it) {
 		this.assets = categories;
-		this.totalSize = totalSize;
-		this.hasNext = hasNext;
+		this.hasNext = it.hasNext();
+		this.currentPosition = it.getPosition();
 	}
-
-
 
 }

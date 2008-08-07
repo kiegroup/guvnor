@@ -204,14 +204,14 @@ public class AssetItemTest extends TestCase {
             a.checkin("");
 
             AssetPageList list = getRepo().findAssetsByCategory("testPagedTag", 0, -1);
-            assertEquals(5, list.totalSize);
+            assertTrue(list.currentPosition > 0);
             assertEquals(5, list.assets.size());
             assertEquals(false, list.hasNext);
 
 
 
             list = getRepo().findAssetsByCategory("testPagedTag", 0, 2);
-            assertEquals(5, list.totalSize);
+            assertTrue(list.currentPosition > 0);
             assertEquals(true, list.hasNext);
             assertEquals(2, list.assets.size());
 
@@ -219,7 +219,7 @@ public class AssetItemTest extends TestCase {
             assertEquals("testPage2", ((AssetItem)list.assets.get(1)).getName());
 
             list = getRepo().findAssetsByCategory("testPagedTag", 2, 2);
-            assertEquals(5, list.totalSize);
+            assertTrue(list.currentPosition > 0);
             assertEquals(true, list.hasNext);
             assertEquals(2, list.assets.size());
 
@@ -227,7 +227,7 @@ public class AssetItemTest extends TestCase {
             assertEquals("testPage4", ((AssetItem)list.assets.get(1)).getName());
 
             list = getRepo().findAssetsByCategory("testPagedTag", 2, 3);
-            assertEquals(5, list.totalSize);
+            assertTrue(list.currentPosition > 0);
             assertEquals(false, list.hasNext);
             assertEquals(3, list.assets.size());
 
