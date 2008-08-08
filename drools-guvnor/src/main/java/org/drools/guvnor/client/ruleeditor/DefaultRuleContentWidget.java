@@ -94,4 +94,5 @@ public class DefaultRuleContentWidget extends DirtyableComposite {
         this.data.content = text.getText();
     }
 
+
 }

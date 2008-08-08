@@ -68,7 +68,7 @@ public class EditorLauncher {
         } else if (asset.metaData.format.equals( AssetFormats.RULE_FLOW_RF )) {
             return new RuleFlowUploadWidget(asset, viewer);
         } else if (asset.metaData.format.equals( AssetFormats.DRL )) {
-            return new RuleValidatorWrapper(new DefaultRuleContentWidget( asset ), asset);
+            return new RuleValidatorWrapper(new DrlEditor( asset ), asset);
         } else if (asset.metaData.format.equals( AssetFormats.ENUMERATION )) {
             return new RuleValidatorWrapper(new DefaultRuleContentWidget( asset ), asset);
         } else if (asset.metaData.format.equals(AssetFormats.TEST_SCENARIO)) {

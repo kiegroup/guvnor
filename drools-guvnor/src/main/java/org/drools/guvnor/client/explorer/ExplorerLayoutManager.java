@@ -271,8 +271,7 @@ public class ExplorerLayoutManager {
 
         /** ****************** */
 
-        TreePanel adminTree = basicTreeStructure(ExplorerNodeConfig
-                .getAdminStructure(), new TreePanelListenerAdapter() {
+        TreePanel adminTree = basicTreeStructure(ExplorerNodeConfig.getAdminStructure(), new TreePanelListenerAdapter() {
             public void onClick(TreeNode self, EventObject e) {
 
 
