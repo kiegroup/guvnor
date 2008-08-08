@@ -2102,6 +2102,21 @@ public class ServiceImplementationTest extends TestCase {
 
 	}
 
+	public void testListUserPermisisons() throws Exception {
+		ServiceImplementation serv = getService();
+		Map<String, List<String>> r = serv.listUserPermissions();
+		assertNotNull(r);
+	}
+
+	public void testManageUserPermissions() throws Exception {
+		ServiceImplementation serv = getService();
+		Map<String, List<String>> perms = new HashMap<String, List<String>>();
+		serv.updateUserPermissions("googoo", perms);
+
+		Map<String, List<String>> perms_ = serv.retrieveUserPermissions("googoo");
+		assertEquals(0, perms_.size());
+	}
+
 
 	/**
 	 * Set up enough of the Seam environment to test it.

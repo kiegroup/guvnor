@@ -1,10 +1,12 @@
 package org.drools.guvnor.server;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
+import org.drools.guvnor.client.rpc.DetailedSerializableException;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
@@ -12,7 +14,6 @@ import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.AuthorizationException;
 
-import com.google.gwt.user.server.rpc.RPCServletUtils;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -219,6 +220,24 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 	}
 	public org.drools.guvnor.client.rpc.TableDataResult queryMetaData(org.drools.guvnor.client.rpc.MetaDataQuery[] p0, java.util.Date p1, java.util.Date p2, java.util.Date p3, java.util.Date p4, boolean p5, int p6, int p7) throws com.google.gwt.user.client.rpc.SerializableException {
 		 return getService().queryMetaData( p0,  p1,  p2,  p3,  p4,  p5,  p6,  p7);
+	}
+
+	public Map<String, List<String>> listUserPermissions()
+			throws DetailedSerializableException {
+		return getService().listUserPermissions();
+	}
+
+	public Map<String, List<String>> retrieveUserPermissions(String userName) {
+		return getService().retrieveUserPermissions(userName);
+	}
+
+	public void updateUserPermissions(String userName,
+			Map<String, List<String>> perms) {
+		getService().updateUserPermissions(userName, perms);
+	}
+
+	public String[] listAvailablePermissionTypes() {
+		return getService().listAvailablePermissionTypes();
 	}
 
 

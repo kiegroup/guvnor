@@ -1,4 +1,4 @@
-Reachable types computed on: Thu Aug 07 17:04:21 EST 2008
+Reachable types computed on: Fri Aug 08 14:20:33 EST 2008
 com.google.gwt.i18n.client.impl.ConstantMap.OrderedConstantSet<T>
    Serialization status
       Not serializable
@@ -87,7 +87,7 @@ java.util.AbstractList<E>
    Serialization status
       Not serializable
    Path
-      'java.util.ArrayList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.util.AbstractList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
 
@@ -103,7 +103,7 @@ java.util.AbstractList<E>
    Serialization status
       Not serializable
    Path
-      'java.util.AbstractList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.util.ArrayList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
 
@@ -119,7 +119,7 @@ java.util.AbstractSequentialList<E>
    Serialization status
       Not serializable
    Path
-      'java.util.LinkedList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.util.AbstractSequentialList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
 
@@ -127,7 +127,7 @@ java.util.AbstractSequentialList<E>
    Serialization status
       Not serializable
    Path
-      'java.util.AbstractSequentialList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.util.LinkedList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
 

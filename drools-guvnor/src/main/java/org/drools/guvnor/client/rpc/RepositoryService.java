@@ -18,6 +18,8 @@ package org.drools.guvnor.client.rpc;
 
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.testing.Scenario;
@@ -419,5 +421,27 @@ public interface RepositoryService extends RemoteService {
     		boolean seekArchived, int skip, int numRows) throws SerializableException;
 
 
+    /**
+     * @return A map of username : list of permission types for display reasons.
+     */
+    public Map<String, List<String>> listUserPermissions() throws DetailedSerializableException;
 
+    /**
+     * Loads the user permissions.
+     * @param userName
+     * @return A map of permission type to the targets it applies to.
+     */
+    public Map<String, List<String>> retrieveUserPermissions(String userName);
+
+    /**
+     * Update the user permissions - takes the userName, and a map from permission type to the list of targets it applies to.
+     */
+    public void updateUserPermissions(String userName, Map<String, List<String>> perms);
+
+
+    /**
+     * List the available permission types.
+     * @return
+     */
+    public String[] listAvailablePermissionTypes();
 }

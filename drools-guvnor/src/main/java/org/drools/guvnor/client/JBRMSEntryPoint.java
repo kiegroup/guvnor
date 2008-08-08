@@ -70,16 +70,17 @@ public class JBRMSEntryPoint
             public void onSuccess(Object data) {
                 UserSecurityContext ctx = (UserSecurityContext) data;
                 if ( ctx.userName != null ) {
+                	showMain();
                     loggedInUserInfo.setUserName( ctx.userName );
                     loggedInUserInfo.setVisible( true );
-                    showMain();
+
                 } else {
                 	final LoginWidget lw = new LoginWidget();
                 	lw.setLoggedInEvent(new Command() {
                         public void execute() {
+                        	showMain();
                             loggedInUserInfo.setUserName( lw.getUserName() );
                             loggedInUserInfo.setVisible( true );
-                            showMain();
                         }
                     } );
                 	lw.show();

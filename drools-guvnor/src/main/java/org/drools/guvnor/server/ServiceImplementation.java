@@ -109,6 +109,7 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.VersionableItem;
 import org.drools.repository.RulesRepository.DateQuery;
+import org.drools.repository.security.PermissionManager;
 import org.drools.rule.Package;
 import org.drools.testframework.RuleCoverageListener;
 import org.drools.testframework.ScenarioRunner;
@@ -1882,6 +1883,32 @@ public class ServiceImplementation implements RepositoryService {
 			throw new DetailedSerializableException(
 					"Unable to rebuild all packages.", errs.toString());
 		}
+	}
+
+	@Restrict("#{s:hasRole('admin')}")
+	public Map<String, List<String>> listUserPermissions() {
+		PermissionManager pm = new PermissionManager(repository);
+		return pm.listUsers();
+	}
+
+	@Restrict("#{s:hasRole('admin')}")
+	public Map<String, List<String>> retrieveUserPermissions(String userName) {
+		PermissionManager pm = new PermissionManager(repository);
+		return pm.retrieveUserPermissions(userName);
+	}
+
+	@Restrict("#{s:hasRole('admin')}")
+	public void updateUserPermissions(String userName,
+			Map<String, List<String>> perms) {
+		PermissionManager pm = new PermissionManager(repository);
+		System.err.println(perms);
+		log.info("Updating user permissions for userName [" + userName + "] to [" + perms + "]");
+		pm.updateUserPermissions(userName, perms);
+	}
+
+	@Restrict("#{s:hasRole('admin')}")
+	public String[] listAvailablePermissionTypes() {
+		return RoleTypes.listAvailableTypes();
 	}
 
 
