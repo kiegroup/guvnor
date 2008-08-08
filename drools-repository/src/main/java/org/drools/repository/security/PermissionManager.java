@@ -14,6 +14,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
 
 /**
  * Deals with storing permissions for data and so on.
@@ -36,15 +37,19 @@ public class PermissionManager {
      * ADMIN => empty (no list needed for admin)
      * @throws RepositoryException
      */
-    public void updateUserPermissions(String userName, Map<String, List<String>> perms) throws RepositoryException {
-    	Node permsNode = getUserPermissionNode(userName);
-    	for (Iterator<String> iterator = perms.keySet().iterator(); iterator.hasNext();) {
-			String perm = iterator.next();
-			List<String> targets = perms.get(perm);
-			if (targets == null) targets = new ArrayList<String>();
-			permsNode.setProperty(perm, targets.toArray(new String[targets.size()]));
-		}
-    	this.repository.save();
+    public void updateUserPermissions(String userName, Map<String, List<String>> perms) {
+    	try {
+	    	Node permsNode = getUserPermissionNode(userName);
+	    	for (Iterator<String> iterator = perms.keySet().iterator(); iterator.hasNext();) {
+				String perm = iterator.next();
+				List<String> targets = perms.get(perm);
+				if (targets == null) targets = new ArrayList<String>();
+				permsNode.setProperty(perm, targets.toArray(new String[targets.size()]));
+			}
+	    	this.repository.save();
+    	} catch (RepositoryException e) {
+    		throw new RulesRepositoryException(e);
+    	}
     }
 
 	private Node getUserPermissionNode(String userName)
@@ -59,23 +64,27 @@ public class PermissionManager {
      * obtain a mapping of permissions for a given user.
      * @throws RepositoryException
      */
-    public Map<String, List<String>> retrieveUserPermissions(String userName) throws RepositoryException {
-    	Node permsNode = getUserPermissionNode(userName);
-    	PropertyIterator it = permsNode.getProperties();
-    	Map<String, List<String>> result = new HashMap<String, List<String>>(10);
-    	while (it.hasNext()) {
-    		Property p = (Property) it.next();
-    		String name = p.getName();
-    		if (!name.startsWith("jcr")) {
-	    		Value[] vs = p.getValues();
-	    		List<String> perms = new ArrayList<String>();
-	    		for (int i = 0; i < vs.length; i++) {
-					perms.add(vs[i].getString());
-				}
-	    		result.put(name, perms);
-    		}
+    public Map<String, List<String>> retrieveUserPermissions(String userName) {
+    	try {
+	    	Node permsNode = getUserPermissionNode(userName);
+	    	PropertyIterator it = permsNode.getProperties();
+	    	Map<String, List<String>> result = new HashMap<String, List<String>>(10);
+	    	while (it.hasNext()) {
+	    		Property p = (Property) it.next();
+	    		String name = p.getName();
+	    		if (!name.startsWith("jcr")) {
+		    		Value[] vs = p.getValues();
+		    		List<String> perms = new ArrayList<String>();
+		    		for (int i = 0; i < vs.length; i++) {
+						perms.add(vs[i].getString());
+					}
+		    		result.put(name, perms);
+	    		}
+	    	}
+	    	return result;
+    	} catch (RepositoryException e) {
+    		throw new RulesRepositoryException(e);
     	}
-    	return result;
     }
 
     /**
@@ -99,16 +108,20 @@ public class PermissionManager {
 	 *  For display purposes only.
 	 * @throws RepositoryException
 	 */
-	public Map<String, List<String>> listUsers() throws RepositoryException {
-		Map<String, List<String>> listing = new HashMap<String, List<String>>();
-		Node root = this.repository.getSession().getRootNode();
-    	Node usersNode = getNode(root, "user_info");
-    	NodeIterator users = usersNode.getNodes();
-    	while (users.hasNext()) {
-			Node userNode = (Node) users.next();
-			listing.put(userNode.getName(), listOfPermTypes(userNode));
-		}
-		return listing;
+	public Map<String, List<String>> listUsers() {
+		try {
+			Map<String, List<String>> listing = new HashMap<String, List<String>>();
+			Node root = this.repository.getSession().getRootNode();
+	    	Node usersNode = getNode(root, "user_info");
+	    	NodeIterator users = usersNode.getNodes();
+	    	while (users.hasNext()) {
+				Node userNode = (Node) users.next();
+				listing.put(userNode.getName(), listOfPermTypes(userNode));
+			}
+			return listing;
+		} catch (RepositoryException e) {
+    		throw new RulesRepositoryException(e);
+    	}
 	}
 
 	private List<String> listOfPermTypes(Node userNode) throws RepositoryException {
