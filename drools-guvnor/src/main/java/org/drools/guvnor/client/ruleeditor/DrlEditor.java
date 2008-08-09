@@ -11,7 +11,11 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
 public class DrlEditor extends Composite {
 
-	public DrlEditor(RuleAsset a) {
+    public DrlEditor(RuleAsset a, RuleViewer v){
+        this(a);
+    }
+
+    public DrlEditor(RuleAsset a) {
 		final DefaultRuleContentWidget ed = new DefaultRuleContentWidget(a);
 
 		ClickEvent ce = new FactTypeBrowser.ClickEvent() {
