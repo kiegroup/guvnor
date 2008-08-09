@@ -1,0 +1,14 @@
+<module>
+    <!--
+    To include this module to Guvnor it is required:
+     1) to inherit this file in Guvnor.gwt.xml
+     2) run ant plug-editors to regenerate source
+     3) run ant gwt-compile to generate new UI?
+
+    -->
+
+
+
+    <inherits name="org.drools.guvnor.Guvnor" />
+    <inherits name="com.gwtext.Pagebus"/>
+</module>
