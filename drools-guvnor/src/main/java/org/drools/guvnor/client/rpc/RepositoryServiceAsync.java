@@ -17,6 +17,9 @@ package org.drools.guvnor.client.rpc;
 
 
 
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 
@@ -87,7 +90,7 @@ public interface RepositoryServiceAsync
 	public void loadDropDownExpression(java.lang.String[] p0, java.lang.String p1, AsyncCallback cb);
 	public void queryFullText(java.lang.String p0, boolean p1, int p2, int p3, AsyncCallback cb);
 	public void queryMetaData(org.drools.guvnor.client.rpc.MetaDataQuery[] p0, java.util.Date p1, java.util.Date p2, java.util.Date p3, java.util.Date p4, boolean p5, int p6, int p7, AsyncCallback cb);
-	public void listUserPermissions(AsyncCallback cb);
+	public void listUserPermissions(AsyncCallback<Map<String, List<String>>> cb);
 	public void retrieveUserPermissions(java.lang.String p0, AsyncCallback cb);
 	public void updateUserPermissions(java.lang.String p0, java.util.Map p1, AsyncCallback cb);
 	public void listAvailablePermissionTypes(AsyncCallback cb);

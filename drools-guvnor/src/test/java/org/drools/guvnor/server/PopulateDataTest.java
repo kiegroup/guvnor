@@ -18,6 +18,10 @@ package org.drools.guvnor.server;
 
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -26,6 +30,7 @@ import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.files.FileManagerUtils;
+import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -59,9 +64,25 @@ public class PopulateDataTest extends TestCase {
         createSomeRules( serv );
         createPackageSnapshots( serv );
 
+        createPermissions( serv );
+
     }
 
-    private void createModel(ServiceImplementation serv) throws Exception {
+    private void createPermissions(ServiceImplementation serv) {
+    	Map<String, List<String>> perms = new HashMap<String, List<String>>();
+    	perms.put(RoleTypes.ADMIN, new ArrayList());
+		serv.updateUserPermissions("woozle1", perms);
+
+		perms = new HashMap<String, List<String>>();
+		List<String> targets = new ArrayList<String>();
+		targets.add("category=/foo/bar");
+		targets.add("category=/whee");
+		perms.put(RoleTypes.ANALYST, targets);
+		serv.updateUserPermissions("woozle2", perms);
+
+	}
+
+	private void createModel(ServiceImplementation serv) throws Exception {
         RulesRepository repo = serv.repository;
         String uuid = serv.createNewRule( "DomainModel", "This is the business object model", null, "com.billasurf.manufacturing.plant", AssetFormats.MODEL );
         InputStream file = this.getClass().getResourceAsStream( "/billasurf.jar" );

@@ -75,14 +75,15 @@ public class ExplorerNodeConfig {
 	public static TreeNode getAdminStructure() {
 
 		TreeNode adminNode = new TreeNode("Admin");
-		adminNode.setAttribute("icon", "images/managment.gif");
+		//adminNode.setAttribute("icon", "images/managment.gif");
 
 		String[][] adminStructure = new String[][] {
 				{ "Categories", "images/category_small.gif" }, // ID 0
 				{ "Archived Items", "images/backup_small.gif" }, // ID 1
 				{ "Statuses", "images/tag.png" }, // ID 2
 				{ "Import/Export", "images/save_edit.gif" }, //ID 3
-				{ "Error log", "images/error.gif" }}; // ID 4
+				{ "Error log", "images/error.gif" }, // ID 4
+				{ "Security/Permissions", "images/icoUsers.gif" }}; // ID 5
 
 		for (int i = 0; i < adminStructure.length; i++) {
 
@@ -304,6 +305,7 @@ public class ExplorerNodeConfig {
 				node.appendChild(new TreeNode("Please wait..."));
 			}
 		});
+
 
 		return treeNode;
 	}

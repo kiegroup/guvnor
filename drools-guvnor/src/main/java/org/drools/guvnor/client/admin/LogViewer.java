@@ -124,7 +124,7 @@ public class LogViewer extends Composite {
 				}
 			});
 
-		GridPanel g = new GridPanel();
+		final GridPanel g = new GridPanel();
 		g.setColumnModel(cm);
 		g.setStore(store);
 		g.setWidth(800);
@@ -140,14 +140,18 @@ public class LogViewer extends Composite {
 		tb.addItem(new ToolbarTextItem("Showing recent INFO and ERROR messages from the log:"));
 		tb.addItem(new ToolbarSeparator());
 
+		layout.add(g);
+
 		ToolbarButton reload = new ToolbarButton("Reload");
 		reload.addListener(new ButtonListenerAdapter() {
 					public void onClick(Button button, EventObject e) {
+						layout.remove(g);
 						refresh();
 					}
 				});
 
-		layout.add(g);
+		tb.addButton(reload);
+
 
 
 

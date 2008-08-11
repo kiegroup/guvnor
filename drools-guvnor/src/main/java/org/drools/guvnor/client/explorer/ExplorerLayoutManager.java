@@ -7,6 +7,7 @@ import org.drools.guvnor.client.admin.ArchivedAssetManager;
 import org.drools.guvnor.client.admin.BackupManager;
 import org.drools.guvnor.client.admin.CategoryManager;
 import org.drools.guvnor.client.admin.LogViewer;
+import org.drools.guvnor.client.admin.PermissionViewer;
 import org.drools.guvnor.client.admin.StateManager;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -299,6 +300,10 @@ public class ExplorerLayoutManager {
                 	if (!centertabbedPanel.showIfOpen("errorLog"))
                 		centertabbedPanel.addTab("Error Log", true, new LogViewer(), "errorLog");
                     break;
+                case 5:
+                	if (!centertabbedPanel.showIfOpen("securityPermissions"))
+                		centertabbedPanel.addTab("Users and Permissions", true, new PermissionViewer(), "securityPermissions");
+                	break;
                 }
 
             }
