@@ -63,7 +63,52 @@ public class TableDisplayHandler {
         result.hasNext = list.hasNext;
         return result;
     }
+    
+    private TableDataResult loadRuleListTable(
+    		List<AssetItem> assetList, long curPos, boolean hasNext) 
+    	throws SerializableException {
+    	List<TableDataRow> data = loadRows(assetList.iterator(), -1);
+    	TableDataResult result = new TableDataResult();
+    	result.data = (TableDataRow[]) data.toArray(new TableDataRow[data.size()]);
+    	result.currentPosition = curPos;
+    	result.hasNext = hasNext;
+    	return result;
+    }
 
+    public TableDataResult loadRuleListTable(
+    		List<AssetItem> assetList, int skip, int numRows) throws SerializableException {
+    	int size = assetList.size();
+    	boolean hasNext = false;
+    	int startPos = 0;
+    	int endPos = 0;
+
+    	if (numRows != -1) {
+        	if (skip > size) {
+        		List<AssetItem> tempList = new ArrayList<AssetItem>();
+            	return loadRuleListTable(tempList, 0, false);
+        	}    	
+
+        	if (skip > 0) {
+        		startPos = skip;
+        	} else {
+        		skip = 0;
+        	}
+        	
+        	if ((skip + numRows) > size) {
+        		endPos = size;
+        	} else {
+        		endPos = skip + numRows;
+        		hasNext = true;
+        	}   		
+        	
+        	List<AssetItem> tempList2 = assetList.subList(startPos, endPos);
+        	
+        	return loadRuleListTable(tempList2, endPos, hasNext);
+    	}
+    	
+    	return loadRuleListTable(assetList, 0, false);
+    }  
+    
     public TableDataResult loadRuleListTable(AssetItemIterator it, int skip, int numRows) {
     	if (numRows != -1) {
     		it.skip(skip);
@@ -75,7 +120,6 @@ public class TableDisplayHandler {
         result.hasNext = it.hasNext();
         result.currentPosition = it.getPosition();
         return result;
-
     }
 
 	private List<TableDataRow> loadRows(Iterator<AssetItem> it, int numRows) {

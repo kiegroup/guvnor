@@ -826,8 +826,20 @@ public class ServiceImplementation implements RepositoryService {
 					"probably have the parameters around the wrong way, sigh...");
 		}
 		AssetItemIterator it = repository.queryFullText(text, seekArchived);
+		
+		// Add filter for READONLY permission
+		List<AssetItem> resultList = new ArrayList<AssetItem>();
+		RepositoryFilter filter = new PackageFilter();
+		
+		while (it.hasNext()) {
+			AssetItem ai = it.next();
+			if (checkPackagePermissionHelper(filter, ai, RoleTypes.PACKAGE_READONLY)) {
+				resultList.add(ai);
+			}
+		}		
+		
 		TableDisplayHandler handler = new TableDisplayHandler("searchresults");
-		return handler.loadRuleListTable(it, skip, numRows);
+		return handler.loadRuleListTable(resultList, skip, numRows);
 	}
 
 	@WebRemote
@@ -860,10 +872,50 @@ public class ServiceImplementation implements RepositoryService {
 		dates[1] = new DateQuery(AssetItem.LAST_MODIFIED_PROPERTY_NAME,
 				isoDate(modifiedAfter), isoDate(modifiedBefore));
 		AssetItemIterator it = repository.query(q, seekArchived, dates);
+		
+		// Add Filter to check Permission
+		List<AssetItem> resultList = new ArrayList<AssetItem>();
+		
+		RepositoryFilter packageFilter = new PackageFilter();
+		RepositoryFilter categoryFilter = new CategoryFilter();
+		
+		while (it.hasNext()) {
+			AssetItem ai = it.next();
+			if (checkPackagePermissionHelper(packageFilter, ai, RoleTypes.PACKAGE_READONLY) || 
+					checkCategoryPermissionHelper(categoryFilter, ai, RoleTypes.ANALYST)) {
+				resultList.add(ai);
+			}
+		}		
+		
 		TableDisplayHandler handler = new TableDisplayHandler("searchresults");
-		return handler.loadRuleListTable(it, skip, numRows);
+		return handler.loadRuleListTable(resultList, skip, numRows);
 	}
 
+	private boolean checkPackagePermissionHelper(
+			RepositoryFilter filter, AssetItem item, String roleType) {
+		return filter.accept(getConfigDataHelper(item.getPackage().getUUID()), roleType);
+	}
+	
+	private boolean checkCategoryPermissionHelper(
+			RepositoryFilter filter, AssetItem item, String roleType) {
+		List<CategoryItem> tempCateList = item.getCategories();
+		for (Iterator<CategoryItem> i = tempCateList.iterator(); i.hasNext();) {
+			CategoryItem categoryItem = i.next();
+			
+			if (filter.accept(categoryItem.getName(), roleType)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	private PackageConfigData getConfigDataHelper(String uuidStr) {
+		PackageConfigData data = new PackageConfigData();
+		data.uuid = uuidStr;
+		return data;
+	}	
+	
 	private String isoDate(Date d) {
 		if (d != null) {
 			Calendar cal = Calendar.getInstance();
