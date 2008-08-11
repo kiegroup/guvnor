@@ -14,9 +14,9 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
-import org.drools.guvnor.server.security.CategoryBasedPermissionResolver;
+import org.drools.guvnor.server.security.MockRoleBasedPermissionStore;
+import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
 import org.drools.guvnor.server.security.MockIdentity;
-import org.drools.guvnor.server.security.PackageBasedPermissionResolver;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
@@ -58,10 +58,9 @@ public class ServiceImplSecurityTest extends TestCase {
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
-			// this makes Identity.hasRole("admin") return false
-			midentity.setHasRole(false);
-			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
-			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+	    	resolver.setEnableRoleBasedAuthorization(true);	        
+			midentity.addPermissionResolver(resolver);
 
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
@@ -71,7 +70,8 @@ public class ServiceImplSecurityTest extends TestCase {
 			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
 			pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null,
 					"testLoadRuleAssetWithRoleBasedAuthrozationCat1"));
-			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
 
 			//now lets see if we can access this asset with the permissions
@@ -113,10 +113,9 @@ public class ServiceImplSecurityTest extends TestCase {
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
-			// this makes Identity.hasRole("admin") return false
-			midentity.setHasRole(false);
-			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
-			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+	    	resolver.setEnableRoleBasedAuthorization(true);	        
+			midentity.addPermissionResolver(resolver);
 
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
@@ -127,8 +126,8 @@ public class ServiceImplSecurityTest extends TestCase {
 			pbps.add(new RoleBasedPermission("jervis",
 					RoleTypes.PACKAGE_READONLY,
 					package1Uuid, null));
-
-			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
 			
 			//now lets see if we can access this asset with the permissions
@@ -169,10 +168,9 @@ public class ServiceImplSecurityTest extends TestCase {
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
-			// this makes Identity.hasRole("admin") return true
-			midentity.setHasRole(true);
-			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
-			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+	    	resolver.setEnableRoleBasedAuthorization(false);	        
+			midentity.addPermissionResolver(resolver);
 
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
@@ -180,8 +178,8 @@ public class ServiceImplSecurityTest extends TestCase {
 					"org.drools.guvnor.client.rpc.RepositoryService", impl);
 
 			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-
-			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
 			// now lets see if we can access this asset with the permissions
 			RuleAsset asset = impl.loadRuleAsset(uuid);
@@ -213,10 +211,9 @@ public class ServiceImplSecurityTest extends TestCase {
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
-			// this makes Identity.hasRole("admin") return false
-			midentity.setHasRole(false);
-			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
-			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+	    	resolver.setEnableRoleBasedAuthorization(true);	        
+			midentity.addPermissionResolver(resolver);
 
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
@@ -227,8 +224,8 @@ public class ServiceImplSecurityTest extends TestCase {
 			pbps.add(new RoleBasedPermission("jervis",
 					RoleTypes.PACKAGE_ADMIN,
 					packageUuid, null));
-
-			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
 			//now lets see if we can access this asset with the permissions
 			RuleAsset asset = impl.loadRuleAsset(uuid);
@@ -260,10 +257,9 @@ public class ServiceImplSecurityTest extends TestCase {
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
-			// this makes Identity.hasRole("admin") return false
-			midentity.setHasRole(false);
-			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
-			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+	    	resolver.setEnableRoleBasedAuthorization(true);	        
+			midentity.addPermissionResolver(resolver);
 
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
@@ -274,8 +270,8 @@ public class ServiceImplSecurityTest extends TestCase {
 			pbps.add(new RoleBasedPermission("jervis",
 					RoleTypes.ANALYST,
 					null, "category1"));
-
-			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
 			//now lets see if we can access this asset with the permissions
 			try {
@@ -311,10 +307,9 @@ public class ServiceImplSecurityTest extends TestCase {
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
-			// this makes Identity.hasRole("admin") return false
-			midentity.setHasRole(false);
-			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
-			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+	    	resolver.setEnableRoleBasedAuthorization(true);	        
+			midentity.addPermissionResolver(resolver);
 
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
@@ -328,8 +323,8 @@ public class ServiceImplSecurityTest extends TestCase {
 			pbps.add(new RoleBasedPermission("jervis",
 					RoleTypes.PACKAGE_ADMIN,
 					packageUuid, null));
-
-			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
 			//now lets see if we can access this asset with the permissions
 			try {
@@ -417,11 +412,10 @@ public class ServiceImplSecurityTest extends TestCase {
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
-			// this makes Identity.hasRole("admin") return false
-			midentity.setHasRole(false);
-			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
-			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
-
+	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+	    	resolver.setEnableRoleBasedAuthorization(true);	        
+			midentity.addPermissionResolver(resolver);
+			
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
 			Contexts.getSessionContext().set(
@@ -434,8 +428,8 @@ public class ServiceImplSecurityTest extends TestCase {
 			pbps.add(new RoleBasedPermission("jervis",
 					RoleTypes.PACKAGE_DEVELOPER,
 					package2Uuid, null));
-
-			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
 
 			TableDataResult res = impl.loadRuleListForCategories(
@@ -487,10 +481,9 @@ public class ServiceImplSecurityTest extends TestCase {
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
-			// this makes Identity.hasRole("admin") return false
-			midentity.setHasRole(false);
-			midentity.addPermissionResolver(new PackageBasedPermissionResolver());
-			midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+	    	resolver.setEnableRoleBasedAuthorization(true);	        
+			midentity.addPermissionResolver(resolver);
 
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
@@ -507,8 +500,8 @@ public class ServiceImplSecurityTest extends TestCase {
 			pbps.add(new RoleBasedPermission("jervis",
 					RoleTypes.PACKAGE_DEVELOPER,
 					package3Uuid, null));
-
-			Contexts.getSessionContext().set("packageBasedPermission", pbps);
+	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
 
 			TableDataResult res = impl.loadRuleListForCategories(
@@ -542,10 +535,9 @@ public class ServiceImplSecurityTest extends TestCase {
 		Lifecycle.beginApplication(application);
 		Lifecycle.beginCall();
 		MockIdentity midentity = new MockIdentity();
-		// this makes Identity.hasRole("admin") return false
-		midentity.setHasRole(false);
-		midentity.addPermissionResolver(new PackageBasedPermissionResolver());
-		midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+    	resolver.setEnableRoleBasedAuthorization(true);	        
+		midentity.addPermissionResolver(resolver);
 
 		Contexts.getSessionContext().set(
 				"org.jboss.seam.security.identity", midentity);
@@ -555,7 +547,8 @@ public class ServiceImplSecurityTest extends TestCase {
 		pbps.add(new RoleBasedPermission("jervis",
 				RoleTypes.PACKAGE_READONLY,
 				packageUuid, null));
-		Contexts.getSessionContext().set("packageBasedPermission", pbps);		
+    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 		
 		//now lets see if we can access this asset with the permissions
 		try {
@@ -589,10 +582,9 @@ public class ServiceImplSecurityTest extends TestCase {
 		Lifecycle.beginApplication(application);
 		Lifecycle.beginCall();
 		MockIdentity midentity = new MockIdentity();
-		// this makes Identity.hasRole("admin") return false
-		midentity.setHasRole(false);
-		midentity.addPermissionResolver(new PackageBasedPermissionResolver());
-		midentity.addPermissionResolver(new CategoryBasedPermissionResolver());
+    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+    	resolver.setEnableRoleBasedAuthorization(true);	        
+		midentity.addPermissionResolver(resolver);
 
 		Contexts.getSessionContext().set(
 				"org.jboss.seam.security.identity", midentity);
@@ -602,7 +594,8 @@ public class ServiceImplSecurityTest extends TestCase {
 		pbps.add(new RoleBasedPermission("jervis",
 				RoleTypes.PACKAGE_DEVELOPER,
 				packageUuid, null));
-		Contexts.getSessionContext().set("packageBasedPermission", pbps);		
+    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);	
 		
 		//now lets see if we can access this asset with the permissions
 		String uuid2 =  impl.checkinVersion(asset);

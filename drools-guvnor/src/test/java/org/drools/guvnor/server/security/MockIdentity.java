@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.core.Events;
+import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.permission.PermissionResolver;
 import org.jboss.seam.security.permission.ResolverChain;
@@ -74,6 +76,16 @@ public class MockIdentity extends Identity {
 	 * Push this mock as the identity to Seam.
 	 */
 	public void inject() {
-		Contexts.getSessionContext().set("org.jboss.seam.security.identity", this);
+		Contexts.getSessionContext().set("org.jboss.seam.security.identity",
+				this);
 	}
+
+	public Credentials getCredentials() {
+		return new Credentials() {
+			   public String getUsername()
+			   {
+			      return "mockedUser";
+			   }
+		};
+	}   
 }

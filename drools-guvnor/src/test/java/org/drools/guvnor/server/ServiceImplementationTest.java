@@ -67,9 +67,8 @@ import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.security.CategoryBasedPermissionResolver;
+import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
 import org.drools.guvnor.server.security.MockIdentity;
-import org.drools.guvnor.server.security.PackageBasedPermissionResolver;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.BRXMLPersistence;
@@ -2132,9 +2131,11 @@ public class ServiceImplementationTest extends TestCase {
 
 		MockIdentity mi = new MockIdentity();
 		mi.inject();
-		mi.addRole(RoleTypes.ADMIN);
-		mi.addPermissionResolver(new CategoryBasedPermissionResolver());
-		mi.addPermissionResolver(new PackageBasedPermissionResolver());
+		//mi.addRole(RoleTypes.ADMIN);
+		RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+		resolver.setEnableRoleBasedAuthorization(false);
+		mi.addPermissionResolver(new RoleBasedPermissionResolver());
+		//mi.addPermissionResolver(new PackageBasedPermissionResolver());
 
 
 	}
