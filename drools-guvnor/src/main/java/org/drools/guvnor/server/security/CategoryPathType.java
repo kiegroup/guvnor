@@ -12,7 +12,7 @@ public class CategoryPathType {
 		this.categoryPath = categoryPath;
 	}
 	
-	String getCategoryPath() {
+	public String getCategoryPath() {
 		return categoryPath;
 	}
 

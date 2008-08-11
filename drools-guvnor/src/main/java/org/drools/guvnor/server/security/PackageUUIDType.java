@@ -13,7 +13,7 @@ public class PackageUUIDType {
 		this.uuid = uuid;
 	}
 	
-	String getUUID() {
+	public String getUUID() {
 		return uuid;
 	}
 

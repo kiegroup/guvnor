@@ -14,9 +14,8 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
-import org.drools.guvnor.server.security.MockRoleBasedPermissionStore;
-import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
 import org.drools.guvnor.server.security.MockIdentity;
+import org.drools.guvnor.server.security.MockRoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
@@ -27,6 +26,7 @@ import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.permission.PermissionResolver;
+import org.jboss.seam.security.permission.RoleBasedPermissionResolver;
 
 import junit.framework.TestCase;
 

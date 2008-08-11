@@ -13,7 +13,7 @@ public class PackageNameType {
 		this.packageName = packageName;
 	}
 	
-	String getPackageName() {
+	public String getPackageName() {
 		return packageName;
 	}
 

@@ -1,4 +1,4 @@
-package org.drools.guvnor.server.security;
+package org.jboss.seam.security.permission;
 
 import static org.jboss.seam.ScopeType.APPLICATION;
 
@@ -7,6 +7,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.security.CategoryPathType;
+import org.drools.guvnor.server.security.PackageNameType;
+import org.drools.guvnor.server.security.PackageUUIDType;
+import org.drools.guvnor.server.security.RoleBasedPermission;
+import org.drools.guvnor.server.security.RoleBasedPermissionStore;
+import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.Component;
@@ -24,10 +30,10 @@ import org.jboss.seam.security.permission.PermissionResolver;
  * PermissionResolvers are chained together to resolve permission check, the check returns true if
  * one of the PermissionResolvers in the chain returns true.
  *
- * This PermissionResolver resolves category-based permissions and package-based permissions. 
- * 
+ * This PermissionResolver resolves category-based permissions and package-based permissions.
+ *
  * If the input is category-based request, it returns true under following situations:
- * 
+ *
  * For category-based permissions:
  * 1. The user is admin
  * Or
@@ -47,14 +53,14 @@ import org.jboss.seam.security.permission.PermissionResolver;
 
  * @author Jervis Liu
  */
-@Name("org.drools.guvnor.server.security.roleBasedPermissionResolver")
+@Name("org.jboss.seam.security.roleBasedPermissionResolver")
 @Scope(APPLICATION)
 @BypassInterceptors
 @Install(precedence = org.jboss.seam.annotations.Install.APPLICATION)
 @Startup
 public class RoleBasedPermissionResolver implements PermissionResolver,
 		Serializable {
-	
+
 	private boolean enableRoleBasedAuthorization = false;
 
 	@Create
@@ -82,11 +88,11 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 				|| (requestedObject instanceof PackageUUIDType))) {
 			return false;
 		}
-		
+
 		if (!enableRoleBasedAuthorization) {
 			return true;
 		}
-		
+
         RoleBasedPermissionStore pbps = (RoleBasedPermissionStore) Component
 				.getInstance("org.drools.guvnor.server.security.RoleBasedPermissionStore");
 		List<RoleBasedPermission> permissions = pbps
@@ -97,8 +103,8 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 			if (RoleTypes.ADMIN.equalsIgnoreCase(p.getRole())) {
 				return true;
 			}
-		}    	
-    	
+		}
+
 		if (requestedObject instanceof CategoryPathType) {
 			String requestedPath = ((CategoryPathType) requestedObject)
 					.getCategoryPath();
@@ -134,7 +140,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 				} catch (RulesRepositoryException e) {
 					return false;
 				}
-			}			
+			}
 
 			//package based permission check only applies to admin|package.admin|package.dev|package.readonly role.
 			//For Analyst we always grant permission.
@@ -148,7 +154,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 			}
 
 			return false;
-		} 
+		}
 	}
 
 	private boolean isPermittedCategoryPath(String requestedPath, String allowedPath) {
@@ -157,7 +163,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 		}
 		return requestedPath.equals(allowedPath) || isSubPath(allowedPath, requestedPath);
 	}
-	
+
 
 	private boolean isPermittedPackage(String requestedAction, String role) {
 		if (RoleTypes.PACKAGE_ADMIN.equalsIgnoreCase(role)) {
