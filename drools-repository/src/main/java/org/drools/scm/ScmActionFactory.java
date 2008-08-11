@@ -3,9 +3,6 @@ package org.drools.scm;
 import java.io.OutputStream;
 import java.util.List;
 
-import org.tmatesoft.svn.core.SVNException;
-
-
 
 public interface ScmActionFactory {
     public long getLatestRevision() throws Exception ;
