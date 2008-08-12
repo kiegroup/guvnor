@@ -17,6 +17,7 @@ package org.drools.guvnor.server.security;
 
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -101,8 +102,12 @@ public class SecurityServiceImpl
 		if (Contexts.isSessionContextActive()) {
 			return Capabilities.all();
 		} else {
+			CapabilityCalculator c = new CapabilityCalculator();
+			List<RoleBasedPermission> ls = new ArrayList<RoleBasedPermission>();
+			ls.add(new RoleBasedPermission("wee", RoleTypes.ANALYST, null, null));
+			//ls.add(new RoleBasedPermission("wee", RoleTypes.PACKAGE_ADMIN, null, null));
+			//return c.calcCapabilities(ls);
 			return Capabilities.all();
-			//return new C;
 		}
 	}
 

@@ -24,8 +24,10 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.RulePackageSelector;
+import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.security.Capabilities;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -171,7 +173,7 @@ public class MetaDataWidget extends PrettyFormLayout {
 
 
 	private Widget packageEditor(final String packageName) {
-        if (this.readOnly) {
+        if (this.readOnly || !ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
             return readOnlyText( packageName );
         } else {
             HorizontalPanel horiz = new HorizontalPanel();

@@ -50,9 +50,8 @@ public class ActionToolbar extends Composite {
     private CheckinAction checkinAction;
     private CheckinAction archiveAction;
     private Command deleteAction;
-    private String uuid;
     private ToolbarTextItem state;
-	private boolean notCheckedInYet;
+	final private RuleAsset asset;
 
     public ActionToolbar(final RuleAsset asset,
                          final CheckinAction checkin,
@@ -60,12 +59,13 @@ public class ActionToolbar extends Composite {
                          final Command delete, boolean readOnly) {
 
         this.checkinAction = checkin;
-        this.uuid = asset.uuid;
+        //this.uuid = asset.uuid;
         this.archiveAction = archiv;
         this.deleteAction = delete;
+        this.asset = asset;
 
         this.state = new ToolbarTextItem("Status: ");
-        this.notCheckedInYet = (asset.metaData.versionNumber == 0);
+;
 
         toolbar = new Toolbar();
 
@@ -107,6 +107,8 @@ public class ActionToolbar extends Composite {
 	        			});
 		toolbar.addButton(save);
 
+        toolbar.addFill();
+        toolbar.addSeparator();
 
 		ToolbarButton copy = new ToolbarButton();
 		copy.setText("Copy");
@@ -138,7 +140,7 @@ public class ActionToolbar extends Composite {
 
 
 
-        if (notCheckedInYet) {
+        if (notCheckedInYet()) {
 
         	ToolbarButton delete = new ToolbarButton();
         	delete.setText("Delete");
@@ -157,8 +159,7 @@ public class ActionToolbar extends Composite {
         }
 
 
-        toolbar.addFill();
-        toolbar.addSeparator();
+
 
 
         ToolbarButton stateChange = new ToolbarButton();
@@ -175,6 +176,10 @@ public class ActionToolbar extends Composite {
 		toolbar.addButton(stateChange);
     }
 
+	private boolean notCheckedInYet() {
+		return asset.metaData.versionNumber == 0;
+	}
+
 	private QuickTipsConfig getTip(final String t) {
 		return new QuickTipsConfig() {
 			{
@@ -189,9 +194,7 @@ public class ActionToolbar extends Composite {
     protected void doCopyDialog(Widget w) {
         final FormStylePopup form = new FormStylePopup("images/rule_asset.gif", "Copy this item");
         final TextBox newName = new TextBox();
-        final RulePackageSelector newPackage = new RulePackageSelector();
         form.addAttribute( "New name:", newName );
-        form.addAttribute( "New package:", newPackage );
 
         Button ok = new Button("Create copy");
         ok.addClickListener( new ClickListener() {
@@ -200,10 +203,10 @@ public class ActionToolbar extends Composite {
             		Window.alert("Asset name must not be empty.");
             		return;
             	}
-                RepositoryServiceFactory.getService().copyAsset( uuid, newPackage.getSelectedPackage(), newName.getText(),
+                RepositoryServiceFactory.getService().copyAsset( asset.uuid, asset.metaData.packageName, newName.getText(),
                                                                  new GenericCallback() {
                                                                     public void onSuccess(Object data) {
-                                                                        completedCopying(newName.getText(), newPackage.getSelectedPackage());
+                                                                        completedCopying(newName.getText(), asset.metaData.packageName);
                                                                         form.hide();
                                                                     }
 
@@ -242,7 +245,7 @@ public class ActionToolbar extends Composite {
      * Show the stats change popup.
      */
     private void showStatusChanger(Widget w) {
-        final StatusChangePopup pop = new StatusChangePopup(uuid, false);
+        final StatusChangePopup pop = new StatusChangePopup(asset.uuid, false);
         pop.setChangeStatusEvent(new Command() {
             public void execute() {
                 setState( pop.getState() );

@@ -22,9 +22,6 @@ public class RoleBasedPermissionStore {
 	public RoleBasedPermissionStore() {
 	}
 
-	public List<RoleBasedPermission> getRoleBasedPermissions() {
-		return null;
-	}
 
 	public List<RoleBasedPermission> getRoleBasedPermissionsByUserName(
 			String userName) {
