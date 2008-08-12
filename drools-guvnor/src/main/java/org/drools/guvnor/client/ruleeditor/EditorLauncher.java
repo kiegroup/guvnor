@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class EditorLauncher {
 
 
-    public static final Map TYPE_IMAGES = getTypeImages();
+    public static final Map<String, String> TYPE_IMAGES = getTypeImages();
 
     /**
      * This will return the appropriate viewer for the asset.
@@ -79,6 +79,8 @@ public class EditorLauncher {
         	return new RuleValidatorWrapper(new FactModelWidget(asset), asset);
         } else if (asset.metaData.format.equals(AssetFormats.DSL)) {
         	return new RuleValidatorWrapper(new DefaultRuleContentWidget( asset ), asset);
+        } else if (asset.metaData.format.equals(AssetFormats.PROPERTIES)) {
+        	return new PropertiesWidget( asset, viewer );
         } else {
             return new DefaultContentUploadEditor( asset, viewer );
         }
@@ -86,8 +88,8 @@ public class EditorLauncher {
     }
 
 
-    private static Map getTypeImages() {
-        Map result = new HashMap();
+    private static Map<String, String> getTypeImages() {
+        Map<String, String> result = new HashMap<String, String>();
 
         result.put( AssetFormats.DRL, "technical_rule_assets.gif" );
         result.put( AssetFormats.DSL, "dsl.gif" );

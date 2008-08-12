@@ -3,6 +3,7 @@
 	<!-- Inherit the core Web Toolkit stuff.                  -->
 	<inherits name='com.google.gwt.user.User'/>
     <inherits name="com.gwtext.GwtExt"/>
+    <inherits name="com.gwtext.Pagebus"/>
 
     <!-- Specify the app entry point class.                   -->
 	<!-- <entry-point class='org.drools.guvnor.client.JBRMS'/> -->

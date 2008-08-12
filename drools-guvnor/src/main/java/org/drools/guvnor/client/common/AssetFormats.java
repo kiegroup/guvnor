@@ -65,6 +65,10 @@ public class AssetFormats {
 
     /** For fact models in drl.     */
     public static final String DRL_MODEL = "model.drl";
+    
+    public static final String XML = "xml";
+    
+    public static final String PROPERTIES = "properties";
 
     /**
      * The following group the assets together for lists, helpers etc...

@@ -56,6 +56,18 @@ public class RulesNewMenu {
             }
         }, "images/test_manager.gif"));
 
+       /* m.addItem(new Item("New XML", new BaseItemListenerAdapter() {
+            public void onClick(BaseItem item, EventObject e) {
+                manager.launchWizard(AssetFormats.XML, "create XML", true);
+            }
+        }, "images/test_manager.gif"));*/
+
+        m.addItem(new Item("New Properties", new BaseItemListenerAdapter() {
+            public void onClick(BaseItem item, EventObject e) {
+                manager.launchWizard(AssetFormats.PROPERTIES, "New Properties", true);
+            }
+        }, "images/test_manager.gif"));   //TODO: use a new icon
+
         return m;
     }
 
