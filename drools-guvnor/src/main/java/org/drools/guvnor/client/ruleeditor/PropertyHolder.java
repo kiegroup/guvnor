@@ -14,6 +14,7 @@ package org.drools.guvnor.client.ruleeditor;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import org.drools.guvnor.client.modeldriven.brl.PortableObject;
 
 /**
@@ -31,5 +32,9 @@ public class PropertyHolder implements PortableObject {
     public PropertyHolder(String name, String value) {
         this.name = name;
         this.value = value;
+    }
+
+    public String toString() {
+        return "{" + name + "," + value + "}";
     }
 }
