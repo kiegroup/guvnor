@@ -31,6 +31,9 @@
 
     <!-- default (will take any username, useful if you want to keep track of users but not authenticate -->
     <security:identity authenticate-method="#{defaultAuthenticator.authenticate}"/>
+    
+    <!-- This is used to enable or disable role-based authorization. By default it is disabled. -->    
+    <security:role-based-permission-resolver enable-role-based-authorization="false"/>
 
 	<!-- NO authentication. This will bypass the login screen when you hit the app. Everyone is "guest" -->
 	<!-- <security:identity authenticate-method="#{nilAuthenticator.authenticate}"/> -->
