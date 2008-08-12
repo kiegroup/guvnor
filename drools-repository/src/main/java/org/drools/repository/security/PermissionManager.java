@@ -40,6 +40,8 @@ public class PermissionManager {
     public void updateUserPermissions(String userName, Map<String, List<String>> perms) {
     	try {
 	    	Node permsNode = getUserPermissionNode(userName);
+	    	permsNode.remove(); //remove this so we get a fresh set
+	    	permsNode = getUserPermissionNode(userName);
 	    	for (Iterator<String> iterator = perms.keySet().iterator(); iterator.hasNext();) {
 				String perm = iterator.next();
 				List<String> targets = perms.get(perm);
@@ -142,6 +144,16 @@ public class PermissionManager {
 	void deleteAllPermissions() throws RepositoryException {
 		Node root = this.repository.getSession().getRootNode();
 		getNode(root, "user_info").remove();
+	}
+
+	public void removeUserPermissions(String userName) {
+		try {
+	    	Node permsNode = getUserPermissionNode(userName);
+	    	permsNode.getParent().remove(); //remove this so we get a fresh set
+		} catch (RepositoryException e) {
+			throw new RulesRepositoryException(e);
+		}
+
 	}
 
 

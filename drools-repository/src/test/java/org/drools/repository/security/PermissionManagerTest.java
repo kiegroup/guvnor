@@ -43,11 +43,47 @@ public class PermissionManagerTest extends TestCase {
 		List<String> aperms = perms_.get("admin");
 		assertEquals(0, aperms.size());
 
+		perms_.remove("admin");
+		assertEquals(0, perms_.size());
+		pm.updateUserPermissions("wankle2", perms_);
+		perms_ = pm.retrieveUserPermissions("wankle2");
+		assertEquals(0, perms_.size());
+
+
+
 		perms_ = pm.retrieveUserPermissions("wankle");
 
 		padmin = perms_.get("package.admin");
 		assertEquals(1, padmin.size());
 		assertEquals("1234567890", padmin.get(0));
+
+		assertTrue(pm.listUsers().containsKey("wankle"));
+		pm.removeUserPermissions("wankle");
+
+		assertFalse(pm.listUsers().containsKey("wankle"));
+
+
+
+	}
+
+	public void testUpdatePerms() throws Exception {
+		PermissionManager pm = new PermissionManager(RepositorySessionUtil.getRepository());
+		Map<String, List<String>> perms = new HashMap<String, List<String>>() {{
+			put("package.admin", new ArrayList<String>() {{add("1234567890");}});
+			put("package.developer", new ArrayList<String>() {{add("1"); add("2");}});
+			put("analyst", new ArrayList<String>() {{add("HR");}});
+			put("admin", new ArrayList<String>());
+		}};
+		pm.updateUserPermissions("testUpdatePermsWankle", perms);
+
+		perms = pm.retrieveUserPermissions("testUpdatePermsWankle");
+		assertEquals(4, perms.size());
+		perms.remove("package.developer");
+		pm.updateUserPermissions("testUpdatePermsWankle", perms);
+		perms = pm.retrieveUserPermissions("testUpdatePermsWankle");
+		assertEquals(3, perms.size());
+
+
 
 	}
 
