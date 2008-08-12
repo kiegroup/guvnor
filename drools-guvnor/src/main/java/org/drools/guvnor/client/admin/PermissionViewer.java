@@ -1,22 +1,29 @@
 package org.drools.guvnor.client.admin;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
+import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -46,7 +53,6 @@ import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
 public class PermissionViewer extends Composite {
 
 	private VerticalPanel layout;
-	private Map<String, List<String>> currentUsers;
 	private GridPanel grid;
 
 	public PermissionViewer() {
@@ -75,9 +81,6 @@ public class PermissionViewer extends Composite {
 
 	private void showUsers(Map<String,List<String>> users) {
 
-
-
-		this.currentUsers = users;
 
 		//showing a grid - the cols are:
 		//userName, hasAdmin, hasPackage, hasCategory permissions...
@@ -150,7 +153,7 @@ public class PermissionViewer extends Composite {
 		grid = new GridPanel();
 		grid.setColumnModel(cm);
 		grid.setStore(store);
-		grid.setWidth(400);
+		grid.setWidth(550);
 		grid.setHeight(600);
 
         GroupingView gv = new GroupingView();
@@ -188,17 +191,38 @@ public class PermissionViewer extends Composite {
 			}
 		});
 
-//		ToolbarButton create = new ToolbarButton("Create new user");
-//		create.addListener(new ButtonListenerAdapter() {
-//					public void onClick(Button button, EventObject e) {
-//
-//
-//						layout.remove(g);
-//						refresh();
-//					}
-//				});
+		ToolbarButton create = new ToolbarButton("Create new user");
+		create.addListener(new ButtonListenerAdapter() {
+					public void onClick(Button button, EventObject e) {
+						final String userName = Window.prompt("Enter new userName", "New user name");
 
+						if (userName != null) {
+							RepositoryServiceFactory.getService().updateUserPermissions(userName, new HashMap(), new GenericCallback() {
+								public void onSuccess(Object a) {
+									refresh();
+									showEditor(userName);
+								}
+							});
 
+						}
+					}
+				});
+		tb.addButton(create);
+
+		ToolbarButton delete = new ToolbarButton("Delete selected user");
+		delete.addListener(new ButtonListenerAdapter() {
+					public void onClick(Button button, EventObject e) {
+						final String userName = grid.getSelectionModel().getSelected().getAsString("userName");
+						if (userName != null && Window.confirm("Are you sure you want to delete user [" + userName + "]")) {
+							RepositoryServiceFactory.getService().deleteUser(userName, new GenericCallback() {
+								public void onSuccess(Object a) {
+									refresh();
+								}
+							});
+						}
+					}
+				});
+		tb.addButton(delete);
 
 
 
@@ -211,12 +235,27 @@ public class PermissionViewer extends Composite {
 	private void showEditor(final String userName) {
 		LoadingPopup.showMessage("Loading users permissions...");
 		RepositoryServiceFactory.getService().retrieveUserPermissions(userName, new GenericCallback<Map<String, List<String>>>() {
-			public void onSuccess(Map<String, List<String>> perms) {
+			public void onSuccess(final Map<String, List<String>> perms) {
 				FormStylePopup editor = new FormStylePopup("images/managment.gif", "Edit user: " + userName);
 				editor.addRow(new HTML("<i>Users are athenticated by a directory service, here you can define Guvnor specific permissions as needed.</i>"));
 				//now render the actual permissions...
 				VerticalPanel vp = new VerticalPanel();
 				editor.addAttribute("", doPermsPanel(perms, vp));
+				com.google.gwt.user.client.ui.Button save = new com.google.gwt.user.client.ui.Button("Save changes");
+				editor.addAttribute("", save);
+				save.addClickListener(new ClickListener() {
+					public void onClick(Widget w) {
+						LoadingPopup.showMessage("Updating...");
+						RepositoryServiceFactory.getService().updateUserPermissions(userName, perms, new GenericCallback() {
+							public void onSuccess(Object a) {
+								LoadingPopup.close();
+								refresh();
+							}
+						});
+
+					}
+				});
+
 				editor.show();
 				LoadingPopup.close();
 			}
@@ -233,7 +272,7 @@ public class PermissionViewer extends Composite {
 		for (Map.Entry<String, List<String>> perm : perms.entrySet()) {
 			if (perm.getKey().equals("admin")) {
 				HorizontalPanel h = new HorizontalPanel();
-				h.add(new HTML("<b>This user is an administrator</b>"));
+				h.add(new HTML("<b>This user is an administrator:</b>"));
 				com.google.gwt.user.client.ui.Button del = new com.google.gwt.user.client.ui.Button("Remove Admin rights");
 
 				del.addClickListener(new ClickListener() {
@@ -251,13 +290,13 @@ public class PermissionViewer extends Composite {
 				final List<String> permList = perm.getValue();
 
 				Grid g = new Grid(permList.size() + 1, 3);
-				g.setWidget(0, 0, new HTML("<b>" + permType + "</b>"));
+				g.setWidget(0, 0, new HTML("<b>[" + permType + "] for:</b>"));
 
 				for (int i = 0; i < permList.size(); i++) {
 					final String p = permList.get(i);
 					ImageButton del = new ImageButton("images/delete_item_small.gif", "Remove permission.", new ClickListener() {
 						public void onClick(Widget w) {
-							if (Window.confirm("Are you sure you want to remove permission [" + p + "]?")) {
+							if (Window.confirm("Are you sure you want to remove permission [" + p + "] ?")) {
 								permList.remove(p);
 								if (permList.size() == 0) {
 									perms.remove(permType);
@@ -278,7 +317,86 @@ public class PermissionViewer extends Composite {
 		}
 
 		//now to be able to add...
+		ImageButton newPermission = new ImageButton("images/new_item.gif", "Add a new permission", new ClickListener() {
+			public void onClick(Widget w) {
+				final FormStylePopup pop = new FormStylePopup();
+				final ListBox permTypeBox = new ListBox();
+				permTypeBox.addItem("Loading...");
 
+				pop.addAttribute("Permission type:", permTypeBox);
+
+				RepositoryServiceFactory.getService().listAvailablePermissionTypes(new GenericCallback<String[]>() {
+					public void onSuccess(String[] items) {
+						permTypeBox.clear();
+						permTypeBox.addItem("-- please choose --");
+						for (String s : items) {  permTypeBox.addItem(s); }
+					}
+				});
+
+				permTypeBox.addChangeListener(new ChangeListener() {
+					public void onChange(Widget w) {
+
+						final String sel = permTypeBox.getItemText(permTypeBox.getSelectedIndex());
+						if (sel.equals("admin")) {
+							com.google.gwt.user.client.ui.Button ok = new com.google.gwt.user.client.ui.Button("OK");
+							pop.addAttribute("Make this user admin:", ok);
+							ok.addClickListener(new ClickListener() {
+								public void onClick(Widget w) {
+									perms.put("admin", new ArrayList<String>());
+
+									doPermsPanel(perms, vp);
+									pop.hide();
+								}
+							});
+						} else if (sel.startsWith("analyst")) {
+							CategoryExplorerWidget cat = new CategoryExplorerWidget(new CategorySelectHandler() {
+								public void selected(String selectedPath) {
+									if (perms.containsKey(sel)) {
+										perms.get(sel).add("category=" + selectedPath);
+									} else {
+										List<String> ls = new ArrayList<String>();
+										ls.add("category=" + selectedPath);
+										perms.put(sel, ls);
+									}
+									doPermsPanel(perms, vp);
+									pop.hide();
+								}
+							});
+							pop.addAttribute("Select category to provide permission for:", cat);
+						} else if (sel.startsWith("package")) {
+							final RulePackageSelector rps = new RulePackageSelector();
+							com.google.gwt.user.client.ui.Button ok = new com.google.gwt.user.client.ui.Button("OK");
+							ok.addClickListener(new ClickListener() {
+								public void onClick(Widget w) {
+									String pkName = rps.getSelectedPackage();
+									if (perms.containsKey(sel)) {
+										perms.get(sel).add("package=" + pkName);
+									} else {
+										List<String> ls = new ArrayList<String>();
+										ls.add("package=" + pkName);
+										perms.put(sel, ls);
+									}
+
+									doPermsPanel(perms, vp);
+									pop.hide();
+
+
+								}
+							});
+
+							HorizontalPanel hp = new HorizontalPanel();
+							hp.add(rps);
+							hp.add(ok);
+							pop.addAttribute("Select package to apply permission to:", hp);
+						}
+					}
+				});
+
+				pop.show();
+			}
+		});
+
+		vp.add(newPermission);
 
 
 		return vp;

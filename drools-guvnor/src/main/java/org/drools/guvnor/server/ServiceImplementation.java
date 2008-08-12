@@ -1956,11 +1956,19 @@ public class ServiceImplementation implements RepositoryService {
 		System.err.println(perms);
 		log.info("Updating user permissions for userName [" + userName + "] to [" + perms + "]");
 		pm.updateUserPermissions(userName, perms);
+		repository.save();
 	}
 
 	@Restrict("#{s:hasRole('admin')}")
 	public String[] listAvailablePermissionTypes() {
 		return RoleTypes.listAvailableTypes();
+	}
+
+	public void deleteUser(String userName) {
+		log.info("Removing user permissions for user name [" + userName + "]");
+		PermissionManager pm = new PermissionManager(repository);
+		pm.removeUserPermissions(userName);
+		repository.save();
 	}
 
 

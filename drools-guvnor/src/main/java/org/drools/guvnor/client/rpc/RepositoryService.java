@@ -444,4 +444,10 @@ public interface RepositoryService extends RemoteService {
      * @return
      */
     public String[] listAvailablePermissionTypes();
+
+    /**
+     * Removes user security data.
+     */
+    public void deleteUser(String userName);
+
 }

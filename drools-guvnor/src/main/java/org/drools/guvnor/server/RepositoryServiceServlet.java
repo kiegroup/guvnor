@@ -240,6 +240,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 		return getService().listAvailablePermissionTypes();
 	}
 
+	public void deleteUser(String userName) {
+		getService().deleteUser(userName);
+	}
+
 
 
 

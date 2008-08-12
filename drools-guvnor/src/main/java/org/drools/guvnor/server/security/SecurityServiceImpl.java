@@ -18,6 +18,7 @@ package org.drools.guvnor.server.security;
 
 
 import java.util.HashSet;
+import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
@@ -100,9 +101,8 @@ public class SecurityServiceImpl
 		if (Contexts.isSessionContextActive()) {
 			return Capabilities.all();
 		} else {
-			//Capabilities c = new Capabilities();
 			return Capabilities.all();
-			//return c;
+			//return new C;
 		}
 	}
 
