@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -71,7 +72,7 @@ public class QuickFindWidget extends Composite {
 
         this.editEvent = editEvent;
         HorizontalPanel srch = new HorizontalPanel();
-        Button go = new Button("Go");
+        ImageButton go = new ImageButton("images/find.gif");
         go.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                updateList();
