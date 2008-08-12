@@ -14,6 +14,7 @@ package org.drools.guvnor.server.contenthandler;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import com.google.gwt.user.client.rpc.SerializableException;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.PropertiesHolder;
@@ -21,9 +22,12 @@ import org.drools.guvnor.server.util.PropertiesPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+
 /**
- *  Handle *.properties file as a content for rule asset instead of a binary attachment
- *
+ * Handle *.properties file as a content for rule asset instead of a binary attachment
  *
  * @author Anton Arhipov
  */
@@ -41,6 +45,14 @@ public class PropertiesHandler extends ContentHandler {
         PropertiesHolder holder = (PropertiesHolder) asset.content;
         String toSave = PropertiesPersistence.getInstance().marshal(holder);
         System.out.println("toSave = " + toSave);
-        repoAsset.updateContent(toSave);
+
+        try {
+            InputStream input = new ByteArrayInputStream(toSave.getBytes("UTF-8"));
+            repoAsset.updateBinaryContentAttachment(input);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);     //TODO: ?
+        }
+
     }
 }
