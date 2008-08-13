@@ -26,7 +26,7 @@ import java.util.Map;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.security.MockRoleBasedPermissionStore;
-import org.drools.guvnor.server.security.PackageUUIDType;
+import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.jboss.seam.contexts.Contexts;
@@ -44,10 +44,12 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     	Lifecycle.beginCall();
     	MockIdentity midentity = new MockIdentity();
     	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
+    	String package1Name = "testCategoryBasedPermissionAnalystPackageName1";
+    	String package2Name = "testCategoryBasedPermissionAnalystPackageName2";
 
     	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, "631b3d79-5b67-42fb-83da-714624970a6b", null));
-		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "47982482-7912-4881-97ec-e852494383d7", null));
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, package1Name, null));
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, package2Name, null));
 		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category1"));
 		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category2"));
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
@@ -89,19 +91,20 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     	Lifecycle.beginCall();   	
     	MockIdentity midentity = new MockIdentity();
     	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
-    	
+    	String package1Name = "testPackageBasedPermissionAdminPackageName1";
+    	String package2Name = "testPackageBasedPermissionAdminPackageName2";
     	
     	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ADMIN, "631b3d79-5b67-42fb-83da-714624970a6b", null));
-		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "47982482-7912-4881-97ec-e852494383d7", null));		
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ADMIN, package1Name, null));
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, package2Name, null));		
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
     	
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
     	
-        assertTrue(resolver.hasPermission(new PackageUUIDType("631b3d79-5b67-42fb-83da-714624970a6b"), RoleTypes.ADMIN));
-        assertTrue(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.ADMIN));
+        assertTrue(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.ADMIN));
+        assertTrue(resolver.hasPermission(new PackageNameType(package2Name), RoleTypes.ADMIN));
 
     	Lifecycle.endApplication();
     }    
@@ -115,17 +118,19 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     	MockIdentity midentity = new MockIdentity();
     	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);    	
     	
+    	String packageName = "testPackageBasedPermissionPackageAdminPackageName";
+    	
     	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, "631b3d79-5b67-42fb-83da-714624970a6b", null));
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, packageName, null));
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
     	
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
     	
-        assertTrue(resolver.hasPermission(new PackageUUIDType("631b3d79-5b67-42fb-83da-714624970a6b"), RoleTypes.PACKAGE_ADMIN));
-    	assertTrue(resolver.hasPermission(new PackageUUIDType("631b3d79-5b67-42fb-83da-714624970a6b"), RoleTypes.PACKAGE_DEVELOPER));
-        assertTrue(resolver.hasPermission(new PackageUUIDType("631b3d79-5b67-42fb-83da-714624970a6b"), RoleTypes.PACKAGE_READONLY));
+        assertTrue(resolver.hasPermission(new PackageNameType(packageName), RoleTypes.PACKAGE_ADMIN));
+    	assertTrue(resolver.hasPermission(new PackageNameType(packageName), RoleTypes.PACKAGE_DEVELOPER));
+        assertTrue(resolver.hasPermission(new PackageNameType(packageName), RoleTypes.PACKAGE_READONLY));
         
         assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", RoleTypes.PACKAGE_READONLY));
 
@@ -140,21 +145,22 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     	Lifecycle.beginCall();   	
     	MockIdentity midentity = new MockIdentity();	
     	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
-    	
+    	String package1Name = "testPackageBasedPermissionPackageDeveloperPackageName1";
+    	String package2Name = "testPackageBasedPermissionPackageDeveloperPackageName2";
     	
     	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_DEVELOPER, "47982482-7912-4881-97ec-e852494383d7", null));		
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_DEVELOPER, package1Name, null));		
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
     	
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
     	
-    	assertFalse(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.PACKAGE_ADMIN));
-    	assertTrue(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.PACKAGE_DEVELOPER));
-        assertTrue(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.PACKAGE_READONLY));
+    	assertFalse(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.PACKAGE_ADMIN));
+    	assertTrue(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.PACKAGE_DEVELOPER));
+        assertTrue(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.PACKAGE_READONLY));
         
-        assertFalse(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", RoleTypes.PACKAGE_READONLY));
+        assertFalse(resolver.hasPermission(package2Name, RoleTypes.PACKAGE_READONLY));
 
     	Lifecycle.endApplication();   
     }    
@@ -167,21 +173,22 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     	Lifecycle.beginCall();   	
     	MockIdentity midentity = new MockIdentity();
     	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
-    	
+    	String package1Name = "testPackageBasedPermissionPackageReadOnlyPackageName1";
+    	String package2Name = "testPackageBasedPermissionPackageReadOnlyPackageName2";
     	
     	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "47982482-7912-4881-97ec-e852494383d7", null));		
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, package1Name, null));		
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
     	
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
     	
-        assertFalse(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.PACKAGE_DEVELOPER));
-        assertFalse(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.PACKAGE_DEVELOPER));
-        assertTrue(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.PACKAGE_READONLY));
+        assertFalse(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.PACKAGE_DEVELOPER));
+        assertFalse(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.PACKAGE_DEVELOPER));
+        assertTrue(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.PACKAGE_READONLY));
         
-        assertFalse(resolver.hasPermission("631b3d79-5b67-42fb-83da-714624970a6b", RoleTypes.PACKAGE_READONLY));
+        assertFalse(resolver.hasPermission(package2Name, RoleTypes.PACKAGE_READONLY));
 
     	Lifecycle.endApplication();   
     } 
@@ -193,10 +200,11 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     	Lifecycle.beginCall();   	
     	MockIdentity midentity = new MockIdentity();
     	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
-    	
+    	String package1Name = "testPackageBasedPermissionAnalystPackageName1";
+    	String package2Name = "testPackageBasedPermissionAnalystPackageName2";
     	
     	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "47982482-7912-4881-97ec-e852494383d7", null));		
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, package1Name, null));		
 		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category1"));		
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
@@ -204,8 +212,8 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
         
-        assertTrue(resolver.hasPermission(new PackageUUIDType("47982482-7912-4881-97ec-e852494383d7"), RoleTypes.ANALYST));
-        assertTrue(resolver.hasPermission(new PackageUUIDType("631b3d79-5b67-42fb-83da-714624970a6b"), RoleTypes.ANALYST));
+        assertTrue(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.ANALYST));
+        assertTrue(resolver.hasPermission(new PackageNameType(package2Name), RoleTypes.ANALYST));
 
     	Lifecycle.endApplication();   
     } 

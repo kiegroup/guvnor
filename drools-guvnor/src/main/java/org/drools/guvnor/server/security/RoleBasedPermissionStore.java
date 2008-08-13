@@ -33,10 +33,10 @@ public class RoleBasedPermissionStore {
 			List<String> permissionsPerRole = perms.get(roleType);
 			for (String permissionPerRole : permissionsPerRole) {
 				if (permissionPerRole.startsWith("package=")) {
-					String packageUuid = permissionPerRole.substring("package="
+					String packageName = permissionPerRole.substring("package="
 							.length());
 					permissions.add(new RoleBasedPermission(userName, roleType,
-							packageUuid, null));
+							packageName, null));
 				} else if (permissionPerRole.startsWith("category=")) {
 					String categoryPath = permissionPerRole
 							.substring("category=".length());
@@ -60,18 +60,18 @@ public class RoleBasedPermissionStore {
 				.retrieveUserPermissions(userName);
 		Object permissionsPerRole = perms.get(rbp.getRole());
 		if (permissionsPerRole != null) {
-			if (rbp.getPackageUUID() != null) {
+			if (rbp.getPackageName() != null) {
 				((List<String>) permissionsPerRole).add("package="
-						+ rbp.getPackageUUID());
+						+ rbp.getPackageName());
 			} else if (rbp.getCategoryPath() != null) {
 				((List<String>) permissionsPerRole).add("category="
-						+ rbp.getPackageUUID());
+						+ rbp.getPackageName());
 			}
 
 		} else {
 			List<String> perm = new ArrayList<String>();
-			if (rbp.getPackageUUID() != null) {
-				perm.add("package=" + rbp.getPackageUUID());
+			if (rbp.getPackageName() != null) {
+				perm.add("package=" + rbp.getPackageName());
 			} else if (rbp.getCategoryPath() != null) {
 				perm.add("category=" + rbp.getCategoryPath());
 			}

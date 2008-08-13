@@ -124,22 +124,19 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 
 			return isPermitted;
 		} else {
-			String targetUUDI = "";
+			String targetName = "";
 
 			if (requestedObject instanceof PackageUUIDType) {
-				targetUUDI = ((PackageUUIDType) requestedObject).getUUID();
-
-			} else if (requestedObject instanceof PackageNameType) {
+				String targetUUID = ((PackageUUIDType) requestedObject).getUUID();
 				try {
 					ServiceImplementation si = (ServiceImplementation) Component
 							.getInstance("org.drools.guvnor.client.rpc.RepositoryService");
-					PackageItem source = si.repository
-							.loadPackage(((PackageNameType) requestedObject)
-									.getPackageName());
-					targetUUDI = source.getUUID();
+					targetName = si.repository.loadPackageByUUID(targetUUID).getName();
 				} catch (RulesRepositoryException e) {
 					return false;
 				}
+			} else if (requestedObject instanceof PackageNameType) {
+				targetName = ((PackageNameType) requestedObject).getPackageName();
 			}
 
 			//package based permission check only applies to admin|package.admin|package.dev|package.readonly role.
@@ -147,7 +144,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 			for (RoleBasedPermission pbp : permissions) {
 				if (RoleTypes.ANALYST.equals(pbp.getRole())) {
 					return true;
-				} else if (targetUUDI.equalsIgnoreCase(pbp.getPackageUUID())
+				} else if (targetName.equalsIgnoreCase(pbp.getPackageName())
 						&& isPermittedPackage(requestedRole, pbp.getRole())) {
 					return true;
 				}

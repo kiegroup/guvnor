@@ -95,8 +95,8 @@ public class ServiceImplSecurityTest extends TestCase {
 	public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonly() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
-			String package1Uuid = impl.createPackage(
-					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack1", "desc");
+			String package1Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack1"; 
+			String package1Uuid = impl.createPackage(package1Name, "desc");
 			impl.createCategory("",
 					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat1",
 					"this is a cat");
@@ -131,7 +131,7 @@ public class ServiceImplSecurityTest extends TestCase {
 			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
 			pbps.add(new RoleBasedPermission("jervis",
 					RoleTypes.PACKAGE_READONLY,
-					package1Uuid, null));
+					package1Name, null));
 	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
 	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
@@ -149,7 +149,7 @@ public class ServiceImplSecurityTest extends TestCase {
 	}
 
 	// Access an asset that belongs to no category. e.g., Packages -> Create New
-	// -> "upload new Model jar".
+	// -> "upload newï¿½Model jar".
 	// The user role is admin
 	public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategory() throws Exception {
 		try {
@@ -195,13 +195,14 @@ public class ServiceImplSecurityTest extends TestCase {
 		}
 	}
 
-	//Access an asset that belongs to no category. e.g., Packages -> Create New -> "upload new Model jar".
+	//Access an asset that belongs to no category. e.g., Packages -> Create New -> "upload newï¿½Model jar".
 	//The user role is admin
 	public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPackageAdmin() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
 			PackageItem packageItem = impl.repository.createPackage(
 					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPackageAdminPack", "desc");
+			String packageName = packageItem.getName();
 			String packageUuid = packageItem.getUUID();
 			impl.createCategory("",
 					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPackageAdminCat",
@@ -229,7 +230,7 @@ public class ServiceImplSecurityTest extends TestCase {
 			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
 			pbps.add(new RoleBasedPermission("jervis",
 					RoleTypes.PACKAGE_ADMIN,
-					packageUuid, null));
+					packageName, null));
 	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
 	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
@@ -241,7 +242,7 @@ public class ServiceImplSecurityTest extends TestCase {
 		}
 	}
 
-	//Access an asset that belongs to no category. e.g., Packages -> Create New -> "upload new Model jar".
+	//Access an asset that belongs to no category. e.g., Packages -> Create New -> "upload newï¿½Model jar".
 	//The user role is analyst
 	public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryAnalyst() throws Exception {
 		try {
@@ -381,37 +382,26 @@ public class ServiceImplSecurityTest extends TestCase {
 	public void testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonly() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
-			impl.repository.createPackage(
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack1", "desc");
-			impl.createCategory("",
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyCat1",
-					"this is a cat");
+			String package1Name = "testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack1";
+			String category1Name = "testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyCat1"; 
+			
+			impl.repository.createPackage(package1Name, "desc");
+			impl.createCategory("", category1Name, "this is a cat");
 
 			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
-					"description",
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyCat1",
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack1", "drl");
+					"description", category1Name, package1Name, "drl");
 
-			impl.repository.createPackage(
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack2", "desc");
+			String package2Name = "testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack2"; 
+			impl.repository.createPackage(package2Name, "desc");
 
 			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
-					"description",
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyCat1",
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack2", "drl");
+					"description", category1Name, package2Name, "drl");
 
-			impl.repository.createPackage(
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack3", "desc");
+			String package3Name = "testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack3";
+			impl.repository.createPackage(package3Name, "desc");
 
 			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
-					"description",
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyCat1",
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack3", "drl");
-
-			PackageItem source = impl.repository.loadPackage("testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack1");
-	        String package1Uuid = source.getUUID();
-			source = impl.repository.loadPackage("testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack2");
-	        String package2Uuid = source.getUUID();
+					"description", category1Name, package3Name, "drl");
 
 			// Mock up SEAM contexts
 			Map application = new HashMap<String, Object>();
@@ -429,11 +419,11 @@ public class ServiceImplSecurityTest extends TestCase {
 
 			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
 			pbps.add(new RoleBasedPermission("jervis",
-					RoleTypes.PACKAGE_READONLY,
-					package1Uuid, null));
+					RoleTypes.PACKAGE_READONLY, 
+					package1Name, null));
 			pbps.add(new RoleBasedPermission("jervis",
 					RoleTypes.PACKAGE_DEVELOPER,
-					package2Uuid, null));
+					package2Name, null));
 	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
 	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
@@ -450,37 +440,26 @@ public class ServiceImplSecurityTest extends TestCase {
 	public void testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalyst() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
+			String package1Name = "testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack1";
+			String category1Name = "testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystCat1"; 
 			impl.repository.createPackage(
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack1", "desc");
-			impl.createCategory("",
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystCat1",
-					"this is a cat");
+					package1Name, "desc");
+			impl.createCategory("",category1Name, "this is a cat");
 
 			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
-					"description",
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystCat1",
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack1", "drl");
+					"description", category1Name, package1Name, "drl");
 
-			impl.repository.createPackage(
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack2", "desc");
+			String package2Name = "testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack2";
+			impl.repository.createPackage(package2Name, "desc");
 
 			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
-					"description",
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystCat1",
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack2", "drl");
+					"description", category1Name, package2Name, "drl");
 
-			impl.repository.createPackage(
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack3", "desc");
+			String package3Name = "testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack3"; 
+			impl.repository.createPackage(package3Name, "desc");
 
 			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
-					"description",
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystCat1",
-					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack3", "drl");
-
-			PackageItem source = impl.repository.loadPackage("testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack2");
-	        String package2Uuid = source.getUUID();
-			source = impl.repository.loadPackage("testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack3");
-	        String package3Uuid = source.getUUID();
+					"description", category1Name, package3Name, "drl");
 
 			// Mock up SEAM contexts
 			Map application = new HashMap<String, Object>();
@@ -499,13 +478,13 @@ public class ServiceImplSecurityTest extends TestCase {
 			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
 			pbps.add(new RoleBasedPermission("jervis",
 					RoleTypes.ANALYST,
-					null, "testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystCat1"));
+					null, category1Name));
 			pbps.add(new RoleBasedPermission("jervis",
 					RoleTypes.PACKAGE_READONLY,
-					package2Uuid, null));
+					package2Name, null));
 			pbps.add(new RoleBasedPermission("jervis",
 					RoleTypes.PACKAGE_DEVELOPER,
-					package3Uuid, null));
+					package3Name, null));
 	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
 	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
@@ -568,8 +547,8 @@ public class ServiceImplSecurityTest extends TestCase {
 
 	public void testCheckinWithPackageDeveloper() throws Exception {
 		ServiceImplementation impl = getService();
-		String packageUuid = impl.createPackage(
-				"testCheckinWithPackageDeveloperPack", "desc");
+		String packageName = "testCheckinWithPackageDeveloperPack"; 
+		String packageUuid = impl.createPackage(packageName, "desc");
 		impl.createCategory("/", "testCheckinWithPackageDeveloperCat",
 						"this is a description");
 		impl.createCategory("testCheckinWithPackageDeveloperCat", "deeper", "description");
@@ -599,7 +578,7 @@ public class ServiceImplSecurityTest extends TestCase {
 		List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
 		pbps.add(new RoleBasedPermission("jervis",
 				RoleTypes.PACKAGE_DEVELOPER,
-				packageUuid, null));
+				packageName, null));
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
@@ -649,7 +628,7 @@ public class ServiceImplSecurityTest extends TestCase {
  			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
  			pbps.add(new RoleBasedPermission("jervis",
  					RoleTypes.PACKAGE_READONLY,
- 					package3Uuid, null));
+ 					package3Name, null));
  	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
  	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
@@ -701,7 +680,7 @@ public class ServiceImplSecurityTest extends TestCase {
  			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
  			pbps.add(new RoleBasedPermission("jervis",
  					RoleTypes.PACKAGE_READONLY,
- 					packageItem7UUID, null));
+ 					package7Name, null));
  			pbps.add(new RoleBasedPermission("jervis",
  					RoleTypes.ANALYST,
  					null, category7Name));
@@ -763,10 +742,10 @@ public class ServiceImplSecurityTest extends TestCase {
  			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
  			pbps.add(new RoleBasedPermission("jervis",
  					RoleTypes.PACKAGE_READONLY,
- 					packageItem5UUID, null));
+ 					package5Name, null));
  			pbps.add(new RoleBasedPermission("jervis",
  					RoleTypes.PACKAGE_READONLY,
- 					packageItem6UUID, null));
+ 					package6Name, null));
 
  	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
  	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);

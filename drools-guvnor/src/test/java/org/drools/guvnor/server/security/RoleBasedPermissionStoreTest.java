@@ -36,22 +36,22 @@ public class RoleBasedPermissionStoreTest extends TestCase {
 	public void testGetRoleBasedPermissionsByUserName() throws Exception {
 		RoleBasedPermissionStore store = getStore();
 	
-		store.addRoleBasedPermission("jervis", new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, "package1Uuid", null));
-		store.addRoleBasedPermission("jervis", new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "package2Uuid", null));
-		store.addRoleBasedPermission("jervis", new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "package3Uuid", null));
+		store.addRoleBasedPermission("jervis", new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, "package1Name", null));
+		store.addRoleBasedPermission("jervis", new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "package2Name", null));
+		store.addRoleBasedPermission("jervis", new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "package3Name", null));
 		store.addRoleBasedPermission("jervis", new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category1"));
 		store.addRoleBasedPermission("john", new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category2"));
 		List<RoleBasedPermission> perms = store.getRoleBasedPermissionsByUserName("jervis");
 		assertTrue(perms.size() == 4);
 		
 		List<RoleBasedPermission> expectedPerms = new ArrayList<RoleBasedPermission>();
-		expectedPerms.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, "package1Uuid", null));
-		expectedPerms.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "package2Uuid", null));
-		expectedPerms.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "package3Uuid", null));
+		expectedPerms.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, "package1Name", null));
+		expectedPerms.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "package2Name", null));
+		expectedPerms.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "package3Name", null));
 		expectedPerms.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category1"));
 		for(RoleBasedPermission perm : perms) {
 			for(RoleBasedPermission expectedPerm : expectedPerms) {
-				if(perm.getPackageUUID() != null && perm.getPackageUUID().equals(expectedPerm.getPackageUUID()) && 
+				if(perm.getPackageName() != null && perm.getPackageName().equals(expectedPerm.getPackageName()) && 
 						perm.getRole().equals(expectedPerm.getRole()))	 {
 					expectedPerms.remove(expectedPerm);
 					break;
