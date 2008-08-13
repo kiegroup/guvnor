@@ -37,7 +37,6 @@ public class PropertiesHandler extends ContentHandler {
         if (item.getContent() != null) {
             asset.content = PropertiesPersistence.getInstance().unmarshal(item.getContent());
         }
-        System.out.println("CONTENT: >>>>>>>>>>>>>>>>>>>>>> " + item.getContent());
     }
 
     public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)

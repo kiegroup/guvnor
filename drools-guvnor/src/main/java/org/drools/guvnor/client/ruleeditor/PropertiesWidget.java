@@ -23,10 +23,8 @@ import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.form.TextField;
-import com.gwtext.client.widgets.grid.ColumnConfig;
-import com.gwtext.client.widgets.grid.ColumnModel;
-import com.gwtext.client.widgets.grid.EditorGridPanel;
-import com.gwtext.client.widgets.grid.GridEditor;
+import com.gwtext.client.widgets.grid.*;
+import com.gwtext.client.widgets.grid.event.GridRowListener;
 import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
 import org.drools.guvnor.client.rpc.RuleAsset;
 
@@ -86,15 +84,33 @@ public class PropertiesWidget extends AssetAttachmentFileWidget implements SaveE
         final EditorGridPanel grid = new EditorGridPanel();
 
         Toolbar toolbar = new Toolbar();
-        ToolbarButton button = new ToolbarButton("Add ...", new ButtonListenerAdapter() {
+        ToolbarButton add = new ToolbarButton("Add", new ButtonListenerAdapter() {
             public void onClick(Button button, EventObject e) {
-                Record pair = recordDef.createRecord(new Object[]{"", ""});
-                grid.stopEditing();
-                store.insert(0, pair);
-                grid.startEditing(0, 0);
+                addNewField(recordDef, grid);
             }
         });
-        toolbar.addButton(button);
+
+        toolbar.addButton(add);
+
+        /*ToolbarButton delete = new ToolbarButton("Delete", new ButtonListenerAdapter() {
+            public void onClick(Button button, EventObject e) {
+                store.remove(store.getRecordAt(grid.getPosition()[1]));
+                if(store.getTotalCount() == 0){
+                    addNewField(recordDef, grid);
+                }
+            }
+        });
+
+        toolbar.addButton(delete);*/
+
+        ToolbarButton clear = new ToolbarButton("Clear", new ButtonListenerAdapter() {
+            public void onClick(Button button, EventObject e) {
+                store.removeAll();
+                addNewField(recordDef, grid);
+            }
+        });
+
+        toolbar.addButton(clear);
 
         grid.setStore(store);
         grid.setColumnModel(columnModel);
@@ -102,12 +118,19 @@ public class PropertiesWidget extends AssetAttachmentFileWidget implements SaveE
         grid.setHeight(300);
         grid.setTitle("Properties");
         grid.setFrame(true);
-        grid.setClicksToEdit(1);
+        grid.setClicksToEdit(2);
         grid.setTopToolbar(toolbar);
 
         panel.add(grid);
 
         layout.addRow(grid);
+    }
+
+    private void addNewField(RecordDef recordDef, EditorGridPanel grid) {
+        Record pair = recordDef.createRecord(new Object[]{"", ""});
+        grid.stopEditing();
+        store.insert(0, pair);
+        grid.startEditing(0, 0);
     }
 
 
@@ -116,7 +139,7 @@ public class PropertiesWidget extends AssetAttachmentFileWidget implements SaveE
     }
 
     public String getOverallStyleName() {
-        return "";       //TODOL set correct style
+        return "";       //TODO: set correct style
     }
 
     public void onSave() {
@@ -124,7 +147,10 @@ public class PropertiesWidget extends AssetAttachmentFileWidget implements SaveE
 
         Record[] records = store.getRecords();
         for (Record record : records) {
-            result.add(new PropertyHolder(record.getAsString("key"), record.getAsString("value")));
+            String key = record.getAsString("key");
+            if (key != null && !"".equals(key)) {
+                result.add(new PropertyHolder(key, record.getAsString("value")));
+            }
         }
 
         properties.list = result;
