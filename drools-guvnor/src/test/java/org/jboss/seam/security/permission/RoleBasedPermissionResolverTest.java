@@ -28,6 +28,7 @@ import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.security.MockRoleBasedPermissionStore;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.RoleBasedPermission;
+import org.drools.guvnor.server.security.RoleBasedPermissionManager;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
@@ -55,6 +56,11 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
+	    // Put permission list in session.
+	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+	    testManager.create();
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);    	
+    	
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
     	
@@ -99,6 +105,11 @@ public class RoleBasedPermissionResolverTest extends TestCase {
 		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, package2Name, null));		
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
+  
+	    // Put permission list in session.
+	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+	    testManager.create();
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);    	
     	
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
@@ -124,6 +135,11 @@ public class RoleBasedPermissionResolverTest extends TestCase {
 		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, packageName, null));
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
+
+	    // Put permission list in session.
+	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+	    testManager.create();
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);    	
     	
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
@@ -152,6 +168,11 @@ public class RoleBasedPermissionResolverTest extends TestCase {
 		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_DEVELOPER, package1Name, null));		
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
+    
+	    // Put permission list in session.
+	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+	    testManager.create();
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);    	    	
     	
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
@@ -180,6 +201,11 @@ public class RoleBasedPermissionResolverTest extends TestCase {
 		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, package1Name, null));		
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
+  
+	    // Put permission list in session.
+	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+	    testManager.create();
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);    	    	
     	
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
@@ -208,6 +234,11 @@ public class RoleBasedPermissionResolverTest extends TestCase {
 		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category1"));		
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
+  
+	    // Put permission list in session.
+	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+	    testManager.create();
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);    	    	
     	
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);

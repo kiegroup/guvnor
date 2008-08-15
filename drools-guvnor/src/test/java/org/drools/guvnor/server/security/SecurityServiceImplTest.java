@@ -24,7 +24,9 @@ import java.util.Map;
 
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.server.security.SecurityServiceImpl;
+import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
+import org.jboss.seam.security.permission.RoleBasedPermissionResolver;
 import org.jboss.security.identity.RoleType;
 
 import junit.framework.TestCase;
@@ -40,13 +42,47 @@ public class SecurityServiceImplTest extends TestCase {
         SecurityServiceImpl impl = new SecurityServiceImpl();
         assertNotNull(impl.getCurrentUser());
     }
-
+    
     public void testCapabilities() {
     	SecurityServiceImpl impl = new SecurityServiceImpl();
+    	
     	Capabilities c = impl.getUserCapabilities();
     	assertTrue(c.list.size() > 1);
+    }
+    
+    public void testCapabilitiesWithContext() {
+    	SecurityServiceImpl impl = new SecurityServiceImpl();
 
+		// Mock up SEAM contexts
+		Map application = new HashMap<String, Object>();
+		Lifecycle.beginApplication(application);
+		Lifecycle.beginCall();
+		MockIdentity midentity = new MockIdentity();
+		RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+		resolver.setEnableRoleBasedAuthorization(true);
+		midentity.addPermissionResolver(resolver);
 
+		Contexts.getSessionContext().set("org.jboss.seam.security.identity",
+				midentity);
+		Contexts.getSessionContext().set(
+				"org.drools.guvnor.client.rpc.RepositoryService", impl);
+
+		List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "packagename",
+				null));
+    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
+    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
+    	
+		// Put permission list in session.
+		RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+		testManager.create();
+		Contexts.getSessionContext().set("roleBasedPermissionManager",
+				testManager);
+
+		Capabilities c = impl.getUserCapabilities();
+		assertTrue(c.list.size() == 1);
+
+    	Lifecycle.endApplication();
     }
 
 }

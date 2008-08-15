@@ -11,6 +11,7 @@ import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleBasedPermission;
+import org.drools.guvnor.server.security.RoleBasedPermissionManager;
 import org.drools.guvnor.server.security.RoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.repository.PackageItem;
@@ -93,11 +94,13 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 			return true;
 		}
 
-        RoleBasedPermissionStore pbps = (RoleBasedPermissionStore) Component
-				.getInstance("org.drools.guvnor.server.security.RoleBasedPermissionStore");
-		List<RoleBasedPermission> permissions = pbps
-				.getRoleBasedPermissionsByUserName(Identity.instance()
-						.getCredentials().getUsername());
+		// Call relating method directly instead of to utilize relating
+		// method with @Unwrap notation.
+		RoleBasedPermissionManager permManager = (RoleBasedPermissionManager) 
+				Component.getInstance("roleBasedPermissionManager");
+		List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
+		/*List<RoleBasedPermission> permissions = (List<RoleBasedPermission>) Component
+				.getInstance("roleBasedPermissionManager");*/
 
 		for (RoleBasedPermission p : permissions) {
 			if (RoleTypes.ADMIN.equalsIgnoreCase(p.getRole())) {

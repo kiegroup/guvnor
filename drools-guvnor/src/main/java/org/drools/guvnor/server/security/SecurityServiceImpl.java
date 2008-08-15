@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.security.Capabilities;
+import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 
@@ -100,13 +101,12 @@ public class SecurityServiceImpl
 
 	public Capabilities getUserCapabilities() {
 		if (Contexts.isSessionContextActive()) {
-			return Capabilities.all();
-		} else {
 			CapabilityCalculator c = new CapabilityCalculator();
-			List<RoleBasedPermission> ls = new ArrayList<RoleBasedPermission>();
-			ls.add(new RoleBasedPermission("wee", RoleTypes.ANALYST, null, null));
-			//ls.add(new RoleBasedPermission("wee", RoleTypes.PACKAGE_ADMIN, null, null));
-			//return c.calcCapabilities(ls);
+			RoleBasedPermissionManager permManager = (RoleBasedPermissionManager) 
+					Component.getInstance("roleBasedPermissionManager");
+			List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
+			return c.calcCapabilities(permissions);
+		} else {
 			return Capabilities.all();
 		}
 	}

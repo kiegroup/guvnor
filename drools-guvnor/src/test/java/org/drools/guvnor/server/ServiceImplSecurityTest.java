@@ -17,6 +17,7 @@ import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.security.MockRoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleBasedPermission;
+import org.drools.guvnor.server.security.RoleBasedPermissionManager;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
@@ -79,6 +80,10 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
 	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
+ 	    	// Put permission list in session.
+ 	    	RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+ 	    	testManager.create();
+	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);	    	
 
 			//now lets see if we can access this asset with the permissions
 			RuleAsset asset = impl.loadRuleAsset(uuid1);
@@ -135,6 +140,10 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
 	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
+ 	    	// Put permission list in session.
+ 	    	RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+ 	    	testManager.create();
+	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);	    	
 
 			//now lets see if we can access this asset with the permissions
 			RuleAsset asset = impl.loadRuleAsset(uuid1);
@@ -187,6 +196,11 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
 	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
+ 	    	// Put permission list in session.
+ 	    	RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+ 	    	testManager.create();
+	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);	    	
+	    	
 			// now lets see if we can access this asset with the permissions
 			RuleAsset asset = impl.loadRuleAsset(uuid);
 			assertNotNull(asset);
@@ -234,6 +248,11 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
 	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
+ 	    	// Put permission list in session.
+ 	    	RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+ 	    	testManager.create();
+	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);	    	
+	    	
 			//now lets see if we can access this asset with the permissions
 			RuleAsset asset = impl.loadRuleAsset(uuid);
 			assertNotNull(asset);
@@ -280,6 +299,11 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
 	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
+ 	    	// Put permission list in session.
+ 	    	RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+ 	    	testManager.create();
+	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);	    	
+	    	
 			//now lets see if we can access this asset with the permissions
 			try {
 				RuleAsset asset = impl.loadRuleAsset(uuid);
@@ -333,6 +357,11 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
 	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
+ 	    	// Put permission list in session.
+ 	    	RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+ 	    	testManager.create();
+	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);	    	
+	    	
 			//now lets see if we can access this asset with the permissions
 			try {
 				RuleAsset asset = impl.loadRuleAsset(uuid);
@@ -427,6 +456,10 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
 	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
+ 	    	// Put permission list in session.
+ 	    	RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+ 	    	testManager.create();
+	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);	    	
 
 			TableDataResult res = impl.loadRuleListForCategories(
 					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyCat1", 0, -1,
@@ -488,6 +521,10 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
 	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
+ 	    	// Put permission list in session.
+ 	    	RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+ 	    	testManager.create();
+	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);	    	
 
 			TableDataResult res = impl.loadRuleListForCategories(
 					"testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystCat1", 0, -1,
@@ -534,6 +571,11 @@ public class ServiceImplSecurityTest extends TestCase {
 				packageUuid, null));
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
+    	
+	    // Put permission list in session.
+	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+	    testManager.create();
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);    	
 
 		//now lets see if we can access this asset with the permissions
 		try {
@@ -582,6 +624,11 @@ public class ServiceImplSecurityTest extends TestCase {
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
+	    // Put permission list in session.
+	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+	    testManager.create();
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);    	
+    	
 		//now lets see if we can access this asset with the permissions
 		String uuid2 =  impl.checkinVersion(asset);
 		assertEquals(uuid, uuid2);
@@ -632,6 +679,11 @@ public class ServiceImplSecurityTest extends TestCase {
  	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
  	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
+ 	    	// Put permission list in session.
+ 	    	RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+ 	    	testManager.create();
+	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager); 	    	
+ 	    	
  			TableDataResult result = impl.queryFullText("testLoadRuleAssetWithRoleBasedAuthrozation", true, 0, -1);
  			assertEquals(1, result.data.length);
  		} finally {
@@ -691,6 +743,11 @@ public class ServiceImplSecurityTest extends TestCase {
  	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
  	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
+ 	    	// Put permission list in session.
+ 	    	RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+ 	    	testManager.create();
+	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager); 	    	
+ 	    	
  			MetaDataQuery[] qr = new MetaDataQuery[1];
  			qr[0] = new MetaDataQuery();
  			qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
@@ -750,6 +807,11 @@ public class ServiceImplSecurityTest extends TestCase {
  	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
  	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
+ 	    	// Put permission list in session.
+ 	    	RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+ 	    	testManager.create();
+	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager); 	    	
+ 	    	
  			MetaDataQuery[] qr = new MetaDataQuery[1];
  			qr[0] = new MetaDataQuery();
  			qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
@@ -808,7 +870,12 @@ public class ServiceImplSecurityTest extends TestCase {
 
  	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
  	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
-
+ 	    	
+ 	    	// Put permission list in session.
+ 	    	RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+ 	    	testManager.create();
+	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);
+ 	    	
  			MetaDataQuery[] qr = new MetaDataQuery[1];
  			qr[0] = new MetaDataQuery();
  			qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
@@ -867,7 +934,12 @@ public class ServiceImplSecurityTest extends TestCase {
 
  	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
  	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
-
+ 	    	
+ 	    	// Put permission list in session.
+ 	    	RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+ 	    	testManager.create();
+	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);
+ 	    	
  			MetaDataQuery[] qr = new MetaDataQuery[1];
  			qr[0] = new MetaDataQuery();
  			qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
