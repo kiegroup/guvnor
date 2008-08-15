@@ -33,8 +33,6 @@ public class NilAuthenticator {
     
     public boolean authenticate() {
         log.info( "All users are guests.");
-        //Add everyone as admin.
-		Identity.instance().addRole(RoleTypes.ADMIN);
 
         return true;
     }
