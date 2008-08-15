@@ -83,7 +83,7 @@ public class ExplorerNodeConfig {
 				{ "Statuses", "images/tag.png" }, // ID 2
 				{ "Import/Export", "images/save_edit.gif" }, //ID 3
 				{ "Error log", "images/error.gif" }, // ID 4
-				{ "Security/Permissions", "images/icoUsers.gif" }}; // ID 5
+				{ "User permission mappings", "images/icoUsers.gif" }}; // ID 5
 
 		for (int i = 0; i < adminStructure.length; i++) {
 
@@ -176,7 +176,7 @@ public class ExplorerNodeConfig {
 
 	public static TreeNode getStatesStructure () {
 
-		final TreeNode treeNode = new TreeNode("States");
+		final TreeNode treeNode = new TreeNode("Status");
 		treeNode.setAttribute("icon", "images/status_small.gif");
 		treeNode.setAttribute("id",STATES_ID);
 

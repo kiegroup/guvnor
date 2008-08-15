@@ -27,16 +27,23 @@
 	    -->
     </component>
 
-    <!-- SECURITY CONFIGURATION -->
+    <!-- SECURITY IDENTITY CONFIGURATION -->
 
     <!-- default (will take any username, useful if you want to keep track of users but not authenticate -->
     <security:identity authenticate-method="#{defaultAuthenticator.authenticate}"/>
-    
-    <!-- This is used to enable or disable role-based authorization. By default it is disabled. -->    
-    <security:role-based-permission-resolver enable-role-based-authorization="false"/>
+
 
 	<!-- NO authentication. This will bypass the login screen when you hit the app. Everyone is "guest" -->
 	<!-- <security:identity authenticate-method="#{nilAuthenticator.authenticate}"/> -->
 
-	<!-- as JAAS is used you can use container specific ones to link up to your login services, eg LDAP -->
+
+	<!-- FOR EXAMPLE: the following one will use the jaas configuration called "other" - which in jboss AS means you can use properties files for users: -->
+	<!-- <security:identity authenticate-method="#{authenticator.authenticate}" jaas-config-name="other"/> -->
+
+    <!-- as JAAS is used you can use container specific ones to link up to your login services, eg LDAP/AD etc -->
+
+    <!-- SECURITY AUTHORIZATION CONFIGURATION -->
+    <!-- This is used to enable or disable role-based authorization. By default it is disabled. -->
+    <security:role-based-permission-resolver enable-role-based-authorization="false"/>
+
 </components>

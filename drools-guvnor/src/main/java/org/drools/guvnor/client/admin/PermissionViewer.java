@@ -191,7 +191,7 @@ public class PermissionViewer extends Composite {
 			}
 		});
 
-		ToolbarButton create = new ToolbarButton("Create new user");
+		ToolbarButton create = new ToolbarButton("Create new user mapping");
 		create.addListener(new ButtonListenerAdapter() {
 					public void onClick(Button button, EventObject e) {
 						final String userName = Window.prompt("Enter new userName", "New user name");

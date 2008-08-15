@@ -302,7 +302,7 @@ public class ExplorerLayoutManager {
                     break;
                 case 5:
                 	if (!centertabbedPanel.showIfOpen("securityPermissions"))
-                		centertabbedPanel.addTab("Users and Permissions", true, new PermissionViewer(), "securityPermissions");
+                		centertabbedPanel.addTab("User Permission mappings", true, new PermissionViewer(), "securityPermissions");
                 	break;
                 }
 
