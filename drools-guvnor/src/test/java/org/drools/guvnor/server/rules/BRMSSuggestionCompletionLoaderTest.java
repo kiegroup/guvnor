@@ -17,7 +17,10 @@ package org.drools.guvnor.server.rules;
 
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -109,10 +112,11 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
         assertEquals(1, factTypes.length);
         assertEquals("Car", factTypes[0]);
 
-        String[] fields = engine.getFieldCompletions("Car");
-        assertEquals(2, fields.length);
-        assertEquals("pieceOfRubbish", fields[0]);
-        assertEquals("name", fields[1]);
+        List<String> fields = Arrays.asList( engine.getFieldCompletions("Car") );
+        assertEquals(2, fields.size());
+        
+        assertTrue( fields.contains("pieceOfRubbish") );
+        assertTrue( fields.contains("name") );
 
         assertEquals("Boolean", engine.getFieldType("Car", "pieceOfRubbish"));
         assertEquals("String", engine.getFieldType("Car", "name"));
