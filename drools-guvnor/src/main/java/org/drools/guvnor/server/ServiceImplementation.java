@@ -1204,11 +1204,11 @@ public class ServiceImplementation implements RepositoryService {
 					RoleTypes.PACKAGE_DEVELOPER);
 		}
 		PackageItem item = repository.loadPackageByUUID(packageUUID);
-		return buildPackage(selectorConfigName, force, item);
+		return buildPackage(selectorConfigName, force, item, Thread.currentThread().getContextClassLoader() );
 	}
 
 	private BuilderResult[] buildPackage(String selectorConfigName,
-			boolean force, PackageItem item)
+			boolean force, PackageItem item, ClassLoader buildCl)
 			throws DetailedSerializableException {
 		if (!force && item.isBinaryUpToDate()) {
 			// we can just return all OK if its up to date.
@@ -1230,7 +1230,7 @@ public class ServiceImplementation implements RepositoryService {
 				out.flush();
 				out.close();
 
-				updateBinaryPackage(item, asm);
+				updateBinaryPackage(item, asm, buildCl);
 				repository.save();
 			} catch (Exception e) {
 				log.error(e);
@@ -1245,9 +1245,11 @@ public class ServiceImplementation implements RepositoryService {
 	}
 
 	private void updateBinaryPackage(PackageItem item,
-			ContentPackageAssembler asm) throws Exception {
+			ContentPackageAssembler asm, ClassLoader buildCl) throws Exception {
 		item.updateBinaryUpToDate(true);
-		RuleBase rb = RuleBaseFactory.newRuleBase();
+		RuleBaseConfiguration conf = new RuleBaseConfiguration();
+		conf.setClassLoader( buildCl );
+		RuleBase rb = RuleBaseFactory.newRuleBase( conf );
 		rb.addPackage(asm.getBinaryPackage());
 		// this.ruleBaseCache.put(item.getUUID(), rb);
 	}
@@ -1571,7 +1573,7 @@ public class ServiceImplementation implements RepositoryService {
 					rb = loadRuleBase(item, buildCl);
 					this.ruleBaseCache.put(item.getUUID(), rb);
 				} else {
-					BuilderResult[] errs = this.buildPackage(null, false, item);
+					BuilderResult[] errs = this.buildPackage(null, false, item, buildCl);
 					if (errs == null || errs.length == 0) {
 						rb = loadRuleBase(item, buildCl);
 						this.ruleBaseCache.put(item.getUUID(), rb);
@@ -1683,7 +1685,7 @@ public class ServiceImplementation implements RepositoryService {
 					this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item,
 							cl));
 				} else {
-					BuilderResult[] errs = this.buildPackage(null, false, item);
+					BuilderResult[] errs = this.buildPackage(null, false, item, cl);
 					if (errs == null || errs.length == 0) {
 						this.ruleBaseCache.put(item.getUUID(), loadRuleBase(
 								item, cl));
