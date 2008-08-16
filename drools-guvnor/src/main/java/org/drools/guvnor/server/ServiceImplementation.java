@@ -51,6 +51,7 @@ import org.drools.SessionConfiguration;
 import org.drools.base.ClassTypeResolver;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DroolsObjectOutputStream;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
@@ -1580,8 +1581,7 @@ public class ServiceImplementation implements RepositoryService {
 				}
 			}
 
-			ClassLoader cl = this.ruleBaseCache.get(item.getUUID())
-					.getPackages()[0].getPackageScopeClassLoader();
+			ClassLoader cl = ((InternalRuleBase)this.ruleBaseCache.get(item.getUUID())).getRootClassLoader();
 			Thread.currentThread().setContextClassLoader(cl);
 			return runScenario(scenario, item, cl, rb);
 
@@ -1622,8 +1622,7 @@ public class ServiceImplementation implements RepositoryService {
 		if (bin.getGlobals() != null) {
 			for (Iterator iterator = bin.getGlobals().keySet().iterator(); iterator
 					.hasNext();) {
-				Class c = (Class) bin.getGlobals().get(iterator.next());
-				allImps.add(c.getName());
+				allImps.add( bin.getGlobals().get(iterator.next()));
 			}
 		}
 		allImps.add(bin.getName() + ".*"); // need this for Generated beans to
