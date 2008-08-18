@@ -43,7 +43,6 @@ public class PropertiesHandler extends ContentHandler {
             throws SerializableException {
         PropertiesHolder holder = (PropertiesHolder) asset.content;
         String toSave = PropertiesPersistence.getInstance().marshal(holder);
-        System.out.println("toSave = " + toSave);
 
         try {
             InputStream input = new ByteArrayInputStream(toSave.getBytes("UTF-8"));
