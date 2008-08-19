@@ -84,6 +84,7 @@ import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.contenthandler.IValidating;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
+import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.PackageUUIDType;
@@ -178,7 +179,7 @@ public class ServiceImplementation implements RepositoryService {
 	public Boolean createCategory(String path, String name, String description) {
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
-					new PackageNameType(null),
+					new AdminType(),
 					RoleTypes.ADMIN);
 		}
 		
@@ -240,7 +241,7 @@ public class ServiceImplementation implements RepositoryService {
 	public void deleteUncheckedRule(String uuid, String initialPackage) {
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
-					new PackageNameType(initialPackage),
+					new AdminType(),
 					RoleTypes.PACKAGE_ADMIN);
 		}
 
@@ -719,7 +720,7 @@ public class ServiceImplementation implements RepositoryService {
 			throws SerializableException {
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
-					new PackageNameType(null),
+					new AdminType(),
 					RoleTypes.ADMIN);
 		}
 		
@@ -1178,7 +1179,7 @@ public class ServiceImplementation implements RepositoryService {
 	public void clearRulesRepository() {
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
-					new PackageNameType(null),
+					new AdminType(),
 					RoleTypes.ADMIN);
 		}
 		
@@ -1384,7 +1385,7 @@ public class ServiceImplementation implements RepositoryService {
 			throws SerializableException {
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
-					new PackageNameType(null),
+					new AdminType(),
 					RoleTypes.ADMIN);
 		}
 		
@@ -1498,7 +1499,7 @@ public class ServiceImplementation implements RepositoryService {
 	public void rebuildSnapshots() throws SerializableException {
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
-					new PackageNameType(null),
+					new AdminType(),
 					RoleTypes.ADMIN);
 		}
 		
@@ -1866,7 +1867,7 @@ public class ServiceImplementation implements RepositoryService {
 	public LogEntry[] showLog() {
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
-					new PackageNameType(null),
+					new AdminType(),
 					RoleTypes.ADMIN);
 		}
 		
@@ -1970,7 +1971,7 @@ public class ServiceImplementation implements RepositoryService {
 	public Map<String, List<String>> listUserPermissions() {
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
-					new PackageNameType(null),
+					new AdminType(),
 					RoleTypes.ADMIN);
 		}
 		
@@ -1981,7 +1982,7 @@ public class ServiceImplementation implements RepositoryService {
 	public Map<String, List<String>> retrieveUserPermissions(String userName) {
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
-					new PackageNameType(null),
+					new AdminType(),
 					RoleTypes.ADMIN);
 		}
 		
@@ -1993,7 +1994,7 @@ public class ServiceImplementation implements RepositoryService {
 			Map<String, List<String>> perms) {
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
-					new PackageNameType(null),
+					new AdminType(),
 					RoleTypes.ADMIN);
 		}
 		
@@ -2007,7 +2008,7 @@ public class ServiceImplementation implements RepositoryService {
 	public String[] listAvailablePermissionTypes() {
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
-					new PackageNameType(null),
+					new AdminType(),
 					RoleTypes.ADMIN);
 		}
 		

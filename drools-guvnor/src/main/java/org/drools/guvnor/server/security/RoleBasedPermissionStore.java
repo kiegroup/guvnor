@@ -30,6 +30,11 @@ public class RoleBasedPermissionStore {
 		Map<String, List<String>> perms = permissionManager
 				.retrieveUserPermissions(userName);
 		for (String roleType : perms.keySet()) {
+			if(RoleTypes.ADMIN.equals(roleType)) {
+				permissions.add(new RoleBasedPermission(userName, RoleTypes.ADMIN,
+						null, null));	
+			}
+			
 			List<String> permissionsPerRole = perms.get(roleType);
 			for (String permissionPerRole : permissionsPerRole) {
 				if (permissionPerRole.startsWith("package=")) {

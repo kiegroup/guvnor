@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.PackageUUIDType;
@@ -86,6 +87,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 	public boolean hasPermission(Object requestedObject, String requestedRole) {
 		if (!((requestedObject instanceof CategoryPathType)
 				|| (requestedObject instanceof PackageNameType)
+				|| (requestedObject instanceof AdminType)
 				|| (requestedObject instanceof PackageUUIDType))) {
 			return false;
 		}
@@ -98,10 +100,11 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 				Component.getInstance("roleBasedPermissionManager");
 		List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
 
-		for (RoleBasedPermission p : permissions) {
-			if (RoleTypes.ADMIN.equalsIgnoreCase(p.getRole())) {
-				return true;
-			}
+		if(RoleTypes.ADMIN.equals(requestedRole)) {
+			return hasAdminPermission(permissions);
+		} else if (hasAdminPermission(permissions)) {
+			//admin can do everything,no need for further checks.
+			return true;
 		}
 
 		if (requestedObject instanceof CategoryPathType) {
@@ -151,6 +154,15 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 
 			return false;
 		}
+	}
+	
+	private boolean hasAdminPermission(List<RoleBasedPermission> permissions) {
+		for (RoleBasedPermission p : permissions) {
+			if (RoleTypes.ADMIN.equalsIgnoreCase(p.getRole())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private boolean isPermittedCategoryPath(String requestedPath, String allowedPath) {
