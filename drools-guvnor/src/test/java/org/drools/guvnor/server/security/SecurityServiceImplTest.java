@@ -42,14 +42,14 @@ public class SecurityServiceImplTest extends TestCase {
         SecurityServiceImpl impl = new SecurityServiceImpl();
         assertNotNull(impl.getCurrentUser());
     }
-    
+
     public void testCapabilities() {
     	SecurityServiceImpl impl = new SecurityServiceImpl();
-    	
+
     	Capabilities c = impl.getUserCapabilities();
     	assertTrue(c.list.size() > 1);
     }
-    
+
     public void testCapabilitiesWithContext() {
     	SecurityServiceImpl impl = new SecurityServiceImpl();
 
@@ -72,7 +72,7 @@ public class SecurityServiceImplTest extends TestCase {
 				null));
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
-    	
+
 		// Put permission list in session.
 		RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
 		testManager.create();
@@ -83,6 +83,28 @@ public class SecurityServiceImplTest extends TestCase {
 		assertTrue(c.list.size() == 1);
 
     	Lifecycle.endApplication();
+    }
+
+    public void testCapabilitiesContext() throws Exception {
+    	SecurityServiceImpl impl = new SecurityServiceImpl();
+
+		// Mock up SEAM contexts
+		Map application = new HashMap<String, Object>();
+		Lifecycle.beginApplication(application);
+		Lifecycle.beginCall();
+		MockIdentity midentity = new MockIdentity();
+		midentity.addRole(RoleTypes.ADMIN);
+		Contexts.getSessionContext().set("org.jboss.seam.security.identity",
+				midentity);
+
+    	Capabilities c = impl.getUserCapabilities();
+    	assertTrue(c.list.size() > 1);
+
+    	Lifecycle.endApplication();
+
+
+
+
     }
 
 }

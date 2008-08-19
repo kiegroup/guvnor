@@ -101,8 +101,11 @@ public class SecurityServiceImpl
 
 	public Capabilities getUserCapabilities() {
 		if (Contexts.isSessionContextActive()) {
+			if (Identity.instance().hasRole(RoleTypes.ADMIN)) {
+				return Capabilities.all();
+			}
 			CapabilityCalculator c = new CapabilityCalculator();
-			RoleBasedPermissionManager permManager = (RoleBasedPermissionManager) 
+			RoleBasedPermissionManager permManager = (RoleBasedPermissionManager)
 					Component.getInstance("roleBasedPermissionManager");
 			List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
 			return c.calcCapabilities(permissions);
