@@ -1,4 +1,4 @@
-Reachable types computed on: Tue Aug 12 21:37:47 EST 2008
+Reachable types computed on: Tue Aug 19 10:55:32 EST 2008
 com.google.gwt.i18n.client.impl.ConstantMap.OrderedConstantSet<T>
    Serialization status
       Not serializable
@@ -135,7 +135,7 @@ java.util.AbstractSet<E>
    Serialization status
       Not serializable
    Path
-      'java.util.HashSet<E>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
+      'java.util.AbstractSet<E>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
       'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
       Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
 
@@ -143,7 +143,7 @@ java.util.AbstractSet<E>
    Serialization status
       Not serializable
    Path
-      'java.util.AbstractSet<E>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
+      'java.util.HashSet<E>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
       'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
       Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
 

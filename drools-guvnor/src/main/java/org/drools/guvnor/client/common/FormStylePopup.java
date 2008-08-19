@@ -61,6 +61,9 @@ public class FormStylePopup {
     	this.width = width;
     }
 
+    public void clear() {
+    	this.form.clear();
+    }
 
 
     public void addAttribute(String label, Widget wid) {

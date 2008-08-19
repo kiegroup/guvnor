@@ -335,10 +335,11 @@ public class PermissionViewer extends Composite {
 
 				permTypeBox.addChangeListener(new ChangeListener() {
 					public void onChange(Widget w) {
-
+						pop.clear();
 						final String sel = permTypeBox.getItemText(permTypeBox.getSelectedIndex());
 						if (sel.equals("admin")) {
 							com.google.gwt.user.client.ui.Button ok = new com.google.gwt.user.client.ui.Button("OK");
+
 							pop.addAttribute("Make this user admin:", ok);
 							ok.addClickListener(new ClickListener() {
 								public void onClick(Widget w) {

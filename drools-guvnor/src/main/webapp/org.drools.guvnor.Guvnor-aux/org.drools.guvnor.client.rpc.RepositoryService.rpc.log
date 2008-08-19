@@ -1,4 +1,4 @@
-Reachable types computed on: Tue Aug 12 21:37:47 EST 2008
+Reachable types computed on: Tue Aug 19 10:55:32 EST 2008
 com.google.gwt.i18n.client.impl.ConstantMap
    Serialization status
       Not serializable
@@ -13,9 +13,9 @@ com.google.gwt.i18n.client.impl.ConstantMap.OrderedConstantSet<T>
    Serialization status
       Not serializable
    Path
-      'com.google.gwt.i18n.client.impl.ConstantMap.OrderedConstantSet<T>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'com.google.gwt.i18n.client.impl.ConstantMap.OrderedConstantSet<T>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
+      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
+      'org.drools.guvnor.client.rpc.UserSecurityContext' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -153,8 +153,13 @@ java.lang.Boolean
    Serialization status
       Instantiable
    Path
-      'java.lang.Boolean' is reachable from field 'expectedFire' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired'
-      'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.lang.Boolean' is reachable from field 'successResult' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyField'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyField' is reachable from type argument 0 of type 'java.util.List<E>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyFact'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.testing.Fixture'
+      'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from type argument 0 of type 'java.util.List<E>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
+      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -169,7 +174,10 @@ java.lang.Integer
       Instantiable
    Path
       'java.lang.Integer' is reachable from field 'expectedCount' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired'
-      'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.testing.Fixture'
+      'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from type argument 0 of type 'java.util.List<E>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
+      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -189,8 +197,11 @@ java.lang.Number
    Serialization status
       Field serializable
    Path
-      'java.lang.Integer' is reachable from field 'expectedCount' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired'
-      'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.lang.Long' is reachable from field 'executionTimeResult' of type 'org.drools.guvnor.client.modeldriven.testing.ExecutionTrace'
+      'org.drools.guvnor.client.modeldriven.testing.ExecutionTrace' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.testing.Fixture'
+      'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from type argument 0 of type 'java.util.List<E>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
+      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -343,9 +354,9 @@ java.util.AbstractList<E>
    Serialization status
       Not serializable
    Path
-      'java.util.AbstractList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.util.AbstractList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'fieldData' of type 'org.drools.guvnor.client.modeldriven.testing.FactData'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -353,9 +364,9 @@ java.util.AbstractList<E>
    Serialization status
       Not serializable
    Path
-      'java.util.Vector<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.util.Vector<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'fieldData' of type 'org.drools.guvnor.client.modeldriven.testing.FactData'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -363,9 +374,9 @@ java.util.AbstractList<E>
    Serialization status
       Not serializable
    Path
-      'java.util.ArrayList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.util.ArrayList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'fieldData' of type 'org.drools.guvnor.client.modeldriven.testing.FactData'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -426,9 +437,9 @@ java.util.AbstractSequentialList<E>
    Serialization status
       Not serializable
    Path
-      'java.util.AbstractSequentialList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.util.AbstractSequentialList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'fieldData' of type 'org.drools.guvnor.client.modeldriven.testing.FactData'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -436,9 +447,9 @@ java.util.AbstractSequentialList<E>
    Serialization status
       Not serializable
    Path
-      'java.util.LinkedList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.util.LinkedList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'fieldData' of type 'org.drools.guvnor.client.modeldriven.testing.FactData'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -466,9 +477,9 @@ java.util.ArrayList<E>
    Serialization status
       Instantiable
    Path
-      'java.util.ArrayList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.util.ArrayList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'fieldData' of type 'org.drools.guvnor.client.modeldriven.testing.FactData'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -476,9 +487,9 @@ java.util.Arrays.ArrayList<E>
    Serialization status
       Instantiable
    Path
-      'java.util.Arrays.ArrayList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.util.Arrays.ArrayList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'fieldData' of type 'org.drools.guvnor.client.modeldriven.testing.FactData'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -515,9 +526,9 @@ java.util.Collections.5<>
    Serialization status
       Not serializable
    Path
-      'java.util.Collections.5<>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.util.Collections.5<>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'fieldData' of type 'org.drools.guvnor.client.modeldriven.testing.FactData'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -689,9 +700,9 @@ java.util.LinkedList<E>
    Serialization status
       Instantiable
    Path
-      'java.util.LinkedList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.util.LinkedList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'fieldData' of type 'org.drools.guvnor.client.modeldriven.testing.FactData'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -700,18 +711,9 @@ java.util.LinkedList.Node<E>
       Not serializable
    Path
       'java.util.LinkedList.Node<E>' is reachable from field 'header' of type 'java.util.LinkedList<E>'
-      'java.util.LinkedList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
-      'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyFact'
-      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.util.LinkedList<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'fieldData' of type 'org.drools.guvnor.client.modeldriven.testing.FactData'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -719,9 +721,18 @@ java.util.List<E>
    Serialization status
       Not serializable
    Path
-      'java.util.List<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.util.List<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'fieldData' of type 'org.drools.guvnor.client.modeldriven.testing.FactData'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>
+   Serialization status
+      Not serializable
+   Path
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'fieldData' of type 'org.drools.guvnor.client.modeldriven.testing.FactData'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -734,28 +745,22 @@ java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable from field 'models' of type 'org.drools.guvnor.client.factmodel.FactModels'
-      'org.drools.guvnor.client.factmodel.FactModels' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
-      'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'globals' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
-      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
-      'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
 java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>
    Serialization status
       Not serializable
    Path
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
+      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>
+   Serialization status
+      Not serializable
+   Path
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyFact'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.testing.Fixture'
+      'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from type argument 0 of type 'java.util.List<E>'
       'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
       'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -767,6 +772,24 @@ java.util.List<java.lang.String>
    Path
       'java.util.List<java.lang.String>' is reachable from field 'rules' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
       'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.List<java.lang.Integer>
+   Serialization status
+      Not serializable
+   Path
+      'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
+      'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>
+   Serialization status
+      Not serializable
+   Path
+      'java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable from field 'models' of type 'org.drools.guvnor.client.factmodel.FactModels'
+      'org.drools.guvnor.client.factmodel.FactModels' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -797,12 +820,12 @@ java.util.List<org.drools.guvnor.client.modeldriven.dt.ActionCol>
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.List<java.lang.Integer>
+java.util.List<org.drools.guvnor.client.ruleeditor.PropertyHolder>
    Serialization status
       Not serializable
    Path
-      'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
-      'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.util.List<org.drools.guvnor.client.ruleeditor.PropertyHolder>' is reachable from field 'list' of type 'org.drools.guvnor.client.ruleeditor.PropertiesHolder'
+      'org.drools.guvnor.client.ruleeditor.PropertiesHolder' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -941,9 +964,9 @@ java.util.Stack<E>
    Serialization status
       Instantiable
    Path
-      'java.util.Stack<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.util.Stack<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'fieldData' of type 'org.drools.guvnor.client.modeldriven.testing.FactData'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1014,9 +1037,9 @@ java.util.Vector<E>
    Serialization status
       Instantiable
    Path
-      'java.util.Vector<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'java.util.Vector<E>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'fieldData' of type 'org.drools.guvnor.client.modeldriven.testing.FactData'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1040,7 +1063,9 @@ org.drools.guvnor.client.factmodel.FieldMetaModel
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.factmodel.FieldMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'org.drools.guvnor.client.factmodel.FieldMetaModel' is reachable from type argument 0 of type 'java.util.List<E>'
+      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
+      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1073,19 +1098,7 @@ org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionFieldValue'
-      Type 'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue[]'
-      'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue[]' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.brl.ActionFieldList'
-      'org.drools.guvnor.client.modeldriven.brl.ActionFieldList' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
-      'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction[]
-   Serialization status
-      Instantiable
-   Path
-      'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue[]' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.brl.ActionFieldList'
-      'org.drools.guvnor.client.modeldriven.brl.ActionFieldList' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1110,9 +1123,7 @@ org.drools.guvnor.client.modeldriven.brl.ActionFieldValue
    Serialization status
       Instantiable
    Path
-      Type 'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue[]'
-      'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue[]' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.brl.ActionFieldList'
-      'org.drools.guvnor.client.modeldriven.brl.ActionFieldList' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1231,16 +1242,9 @@ org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
-      'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint[]
-   Serialization status
-      Instantiable
-   Path
-      'org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]' is reachable from field 'constraints' of type 'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint'
-      'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.FieldConstraint'
+      'org.drools.guvnor.client.modeldriven.brl.FieldConstraint' is reachable from field 'parent' of type 'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint'
+      'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1251,9 +1255,8 @@ org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint
       Type 'org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint[]'
       'org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint[]' is reachable from field 'connectives' of type 'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint'
       'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.FieldConstraint'
-      Type 'org.drools.guvnor.client.modeldriven.brl.FieldConstraint' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]'
-      'org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]' is reachable from field 'constraints' of type 'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint'
-      'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'org.drools.guvnor.client.modeldriven.brl.FieldConstraint' is reachable from field 'parent' of type 'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint'
+      'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1263,9 +1266,8 @@ org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint[]
    Path
       'org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint[]' is reachable from field 'connectives' of type 'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint'
       'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.FieldConstraint'
-      Type 'org.drools.guvnor.client.modeldriven.brl.FieldConstraint' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]'
-      'org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]' is reachable from field 'constraints' of type 'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint'
-      'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'org.drools.guvnor.client.modeldriven.brl.FieldConstraint' is reachable from field 'parent' of type 'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint'
+      'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1273,7 +1275,9 @@ org.drools.guvnor.client.modeldriven.brl.DSLSentence
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.brl.DSLSentence' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      Type 'org.drools.guvnor.client.modeldriven.brl.DSLSentence' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.DSLSentence[]'
+      'org.drools.guvnor.client.modeldriven.brl.DSLSentence[]' is reachable from field 'conditionDSLSentences' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
+      'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1308,7 +1312,9 @@ org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]
       Instantiable
    Path
       'org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]' is reachable from field 'constraints' of type 'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint'
-      'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.FieldConstraint'
+      'org.drools.guvnor.client.modeldriven.brl.FieldConstraint' is reachable from field 'parent' of type 'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint'
+      'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1334,10 +1340,7 @@ org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.FieldConstraint'
-      Type 'org.drools.guvnor.client.modeldriven.brl.FieldConstraint' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]'
-      'org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]' is reachable from field 'constraints' of type 'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint'
-      'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1370,19 +1373,7 @@ org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.FieldConstraint'
-      Type 'org.drools.guvnor.client.modeldriven.brl.FieldConstraint' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]'
-      'org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]' is reachable from field 'constraints' of type 'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint'
-      'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
-      'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint[]
-   Serialization status
-      Instantiable
-   Path
-      'org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]' is reachable from field 'constraints' of type 'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint'
-      'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1465,9 +1456,7 @@ org.drools.guvnor.client.modeldriven.testing.FactData
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable from type argument 0 of type 'java.util.List<E>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'globals' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
-      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1483,7 +1472,10 @@ org.drools.guvnor.client.modeldriven.testing.RetractFact
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.testing.RetractFact' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'org.drools.guvnor.client.modeldriven.testing.RetractFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.testing.Fixture'
+      'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from type argument 0 of type 'java.util.List<E>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
+      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1499,7 +1491,10 @@ org.drools.guvnor.client.modeldriven.testing.VerifyFact
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.testing.Fixture'
+      'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from type argument 0 of type 'java.util.List<E>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
+      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1507,7 +1502,12 @@ org.drools.guvnor.client.modeldriven.testing.VerifyField
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.testing.VerifyField' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyField' is reachable from type argument 0 of type 'java.util.List<E>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyFact'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.testing.Fixture'
+      'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from type argument 0 of type 'java.util.List<E>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
+      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1515,7 +1515,10 @@ org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.testing.Fixture'
+      'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from type argument 0 of type 'java.util.List<E>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
+      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
@@ -1759,6 +1762,22 @@ org.drools.guvnor.client.rpc.ValidatedResponse
       Instantiable
    Path
       'org.drools.guvnor.client.rpc.ValidatedResponse' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+org.drools.guvnor.client.ruleeditor.PropertiesHolder
+   Serialization status
+      Instantiable
+   Path
+      'org.drools.guvnor.client.ruleeditor.PropertiesHolder' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+org.drools.guvnor.client.ruleeditor.PropertyHolder
+   Serialization status
+      Instantiable
+   Path
+      'org.drools.guvnor.client.ruleeditor.PropertyHolder' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
