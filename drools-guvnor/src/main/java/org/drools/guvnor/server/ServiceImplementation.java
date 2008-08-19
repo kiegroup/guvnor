@@ -175,8 +175,13 @@ public class ServiceImplementation implements RepositoryService {
 	}
 
 	@WebRemote
-	@Restrict("#{s:hasRole('admin')}")
 	public Boolean createCategory(String path, String name, String description) {
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(
+					new PackageNameType(null),
+					RoleTypes.ADMIN);
+		}
+		
 		log.info("USER:" + repository.getSession().getUserID()
 				+ " CREATING cateogory: [" + name + "] in path [" + path + "]");
 
@@ -710,9 +715,14 @@ public class ServiceImplementation implements RepositoryService {
 
 
 	@WebRemote
-	@Restrict("#{s:hasRole('admin')}")
 	public String createPackage(String name, String description)
 			throws SerializableException {
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(
+					new PackageNameType(null),
+					RoleTypes.ADMIN);
+		}
+		
 		log.info("USER:" + repository.getSession().getUserID()
 				+ " CREATING package [" + name + "]");
 		PackageItem item = repository.createPackage(name, description);
@@ -1165,8 +1175,13 @@ public class ServiceImplementation implements RepositoryService {
 	}
 
 	@WebRemote
-	@Restrict("#{s:hasRole('admin')}")
 	public void clearRulesRepository() {
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(
+					new PackageNameType(null),
+					RoleTypes.ADMIN);
+		}
+		
 		RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(
 				repository.getSession());
 		admin.clearRulesRepository();
@@ -1365,9 +1380,14 @@ public class ServiceImplementation implements RepositoryService {
 	}
 
 	@WebRemote
-	@Restrict("#{s:hasRole('admin')}")
 	public void copyPackage(String sourcePackageName, String destPackageName)
 			throws SerializableException {
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(
+					new PackageNameType(null),
+					RoleTypes.ADMIN);
+		}
+		
 		try {
 			repository.copyPackage(sourcePackageName, destPackageName);
 		} catch (RulesRepositoryException e) {
@@ -1475,8 +1495,13 @@ public class ServiceImplementation implements RepositoryService {
 	}
 
 	@WebRemote
-	@Restrict("#{s:hasRole('admin')}")
 	public void rebuildSnapshots() throws SerializableException {
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(
+					new PackageNameType(null),
+					RoleTypes.ADMIN);
+		}
+		
 		Iterator pkit = repository.listPackages();
 		while (pkit.hasNext()) {
 			PackageItem pkg = (PackageItem) pkit.next();
@@ -1838,9 +1863,13 @@ public class ServiceImplementation implements RepositoryService {
 	}
 
 	@WebRemote
-	// @Restrict("#{identity.loggedIn}")
-	@Restrict("#{s:hasRole('admin')}")
 	public LogEntry[] showLog() {
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(
+					new PackageNameType(null),
+					RoleTypes.ADMIN);
+		}
+		
 		return LoggingHelper.getMessages();
 
 	}
@@ -1938,21 +1967,36 @@ public class ServiceImplementation implements RepositoryService {
 		}
 	}
 
-	@Restrict("#{s:hasRole('admin')}")
 	public Map<String, List<String>> listUserPermissions() {
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(
+					new PackageNameType(null),
+					RoleTypes.ADMIN);
+		}
+		
 		PermissionManager pm = new PermissionManager(repository);
 		return pm.listUsers();
 	}
 
-	@Restrict("#{s:hasRole('admin')}")
 	public Map<String, List<String>> retrieveUserPermissions(String userName) {
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(
+					new PackageNameType(null),
+					RoleTypes.ADMIN);
+		}
+		
 		PermissionManager pm = new PermissionManager(repository);
 		return pm.retrieveUserPermissions(userName);
 	}
 
-	@Restrict("#{s:hasRole('admin')}")
 	public void updateUserPermissions(String userName,
 			Map<String, List<String>> perms) {
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(
+					new PackageNameType(null),
+					RoleTypes.ADMIN);
+		}
+		
 		PermissionManager pm = new PermissionManager(repository);
 		System.err.println(perms);
 		log.info("Updating user permissions for userName [" + userName + "] to [" + perms + "]");
@@ -1960,8 +2004,13 @@ public class ServiceImplementation implements RepositoryService {
 		repository.save();
 	}
 
-	@Restrict("#{s:hasRole('admin')}")
 	public String[] listAvailablePermissionTypes() {
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(
+					new PackageNameType(null),
+					RoleTypes.ADMIN);
+		}
+		
 		return RoleTypes.listAvailableTypes();
 	}
 

@@ -94,13 +94,9 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 			return true;
 		}
 
-		// Call relating method directly instead of to utilize relating
-		// method with @Unwrap notation.
 		RoleBasedPermissionManager permManager = (RoleBasedPermissionManager) 
 				Component.getInstance("roleBasedPermissionManager");
 		List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
-		/*List<RoleBasedPermission> permissions = (List<RoleBasedPermission>) Component
-				.getInstance("roleBasedPermissionManager");*/
 
 		for (RoleBasedPermission p : permissions) {
 			if (RoleTypes.ADMIN.equalsIgnoreCase(p.getRole())) {
