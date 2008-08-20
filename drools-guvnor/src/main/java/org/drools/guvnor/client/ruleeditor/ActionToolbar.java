@@ -52,6 +52,7 @@ public class ActionToolbar extends Composite {
     private Command deleteAction;
     private ToolbarTextItem state;
 	final private RuleAsset asset;
+	private Command afterCheckinEvent;
 
     public ActionToolbar(final RuleAsset asset,
                          final CheckinAction checkin,
@@ -142,7 +143,7 @@ public class ActionToolbar extends Composite {
 
         if (notCheckedInYet()) {
 
-        	ToolbarButton delete = new ToolbarButton();
+        	final ToolbarButton delete = new ToolbarButton();
         	delete.setText("Delete");
     		delete.setTooltip(getTip("Permanently delete this asset. This will only be shown before the asset is checked in."));
     		delete.addListener(new ButtonListenerAdapter() {
@@ -155,6 +156,14 @@ public class ActionToolbar extends Composite {
 				}
     			});
     		toolbar.addButton(delete);
+
+    		this.afterCheckinEvent = new Command() {
+
+				public void execute() {
+					delete.setVisible(false);
+				}
+
+    		};
 
         }
 
@@ -230,18 +239,19 @@ public class ActionToolbar extends Composite {
      * Called when user wants to checkin.
      */
     protected void doCheckinConfirm(Widget w) {
-
         final CheckinPopup pop = new CheckinPopup(w.getAbsoluteLeft(), w.getAbsoluteTop(), "Check in changes.");
         pop.setCommand( new Command() {
-
             public void execute() {
                 checkinAction.doCheckin(pop.getCheckinComment());
+                if (afterCheckinEvent != null) afterCheckinEvent.execute();
             }
         });
         pop.show();
     }
 
-    /**
+
+
+	/**
      * Show the stats change popup.
      */
     private void showStatusChanger(Widget w) {
