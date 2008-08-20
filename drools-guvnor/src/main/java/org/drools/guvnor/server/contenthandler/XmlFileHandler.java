@@ -1,6 +1,7 @@
 package org.drools.guvnor.server.contenthandler;
 
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.repository.PackageItem;
 import org.drools.repository.AssetItem;
 import com.google.gwt.user.client.rpc.SerializableException;
@@ -13,20 +14,25 @@ import java.io.UnsupportedEncodingException;
  *
  */
 public class XmlFileHandler extends PlainTextContentHandler {
-   /* public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item)
+    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item)
             throws SerializableException {
         if (item.getContent() != null) {
-            asset.content = null; //PropertiesPersistence.getInstance().unmarshal(item.getContent());
+            RuleContentText text = new RuleContentText();
+            text.content = item.getContent();
+            asset.content = text;
         }
     }
 
     public void storeAssetContent(RuleAsset asset, AssetItem repoAsset) throws SerializableException {
+
+        RuleContentText text = (RuleContentText) asset.content;
+
         try {
-            InputStream input = new ByteArrayInputStream("xml".getBytes("UTF-8"));
+            InputStream input = new ByteArrayInputStream(text.content.getBytes("UTF-8"));
             repoAsset.updateBinaryContentAttachment(input);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            throw new RuntimeException(e);     //TODO: ?
+            throw new RuntimeException(e);     
         }
-    }*/
+    }
 }
