@@ -82,7 +82,7 @@ public class FileManagerUtilsTest extends TestCase {
 		repo.save();
 
 		assertTrue(pkg.isBinaryUpToDate());
-
+		assertEquals("", ServiceImplementation.getDroolsHeader(pkg));
 		FileManagerUtils fm = new FileManagerUtils();
 		fm.repository = repo;
 
