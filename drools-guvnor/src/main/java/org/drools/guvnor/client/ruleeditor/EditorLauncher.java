@@ -1,4 +1,5 @@
 package org.drools.guvnor.client.ruleeditor;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -14,8 +15,6 @@ package org.drools.guvnor.client.ruleeditor;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +46,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class EditorLauncher {
 
-
     public static final Map<String, String> TYPE_IMAGES = getTypeImages();
 
     /**
@@ -57,53 +55,77 @@ public class EditorLauncher {
                                          RuleViewer viewer) {
         //depending on the format, load the appropriate editor
         if ( asset.metaData.format.equals( AssetFormats.BUSINESS_RULE ) ) {
-            return new RuleValidatorWrapper( new RuleModeller( asset  ), asset);
-        	//return new RuleModeller( asset  );
+            return new RuleValidatorWrapper( new RuleModeller( asset ),
+                                             asset );
+            //return new RuleModeller( asset  );
         } else if ( asset.metaData.format.equals( AssetFormats.DSL_TEMPLATE_RULE ) ) {
-            return new RuleValidatorWrapper(new DSLRuleEditor( asset ), asset);
+            return new RuleValidatorWrapper( new DSLRuleEditor( asset ),
+                                             asset );
         } else if ( asset.metaData.format.equals( AssetFormats.MODEL ) ) {
-            return new ModelAttachmentFileWidget( asset, viewer );
-        } else if (asset.metaData.format.equals( AssetFormats.DECISION_SPREADSHEET_XLS )){
-            return new RuleValidatorWrapper(new DecisionTableXLSWidget( asset, viewer ), asset);
-        } else if (asset.metaData.format.equals( AssetFormats.RULE_FLOW_RF )) {
-            return new RuleFlowUploadWidget(asset, viewer);
-        } else if (asset.metaData.format.equals( AssetFormats.DRL )) {
-            return new RuleValidatorWrapper(new DrlEditor( asset ), asset);
-        } else if (asset.metaData.format.equals( AssetFormats.ENUMERATION )) {
-            return new RuleValidatorWrapper(new DefaultRuleContentWidget( asset ), asset);
-        } else if (asset.metaData.format.equals(AssetFormats.TEST_SCENARIO)) {
-        	return new ScenarioWidget(asset);
-        } else if (asset.metaData.format.equals(AssetFormats.DECISION_TABLE_GUIDED)) {
-        	return new RuleValidatorWrapper(new GuidedDecisionTableWidget(asset), asset);
-        } else if (asset.metaData.format.equals(AssetFormats.DRL_MODEL)) {
-        	return new RuleValidatorWrapper(new FactModelWidget(asset), asset);
-        } else if (asset.metaData.format.equals(AssetFormats.DSL)) {
-        	return new RuleValidatorWrapper(new DefaultRuleContentWidget( asset ), asset);
-        } else if (asset.metaData.format.equals(AssetFormats.PROPERTIES)) {
-        	return new PropertiesWidget( asset, viewer );
+            return new ModelAttachmentFileWidget( asset,
+                                                  viewer );
+        } else if ( asset.metaData.format.equals( AssetFormats.DECISION_SPREADSHEET_XLS ) ) {
+            return new RuleValidatorWrapper( new DecisionTableXLSWidget( asset,
+                                                                         viewer ),
+                                             asset );
+        } else if ( asset.metaData.format.equals( AssetFormats.RULE_FLOW_RF ) ) {
+            //            return new RuleFlowUploadWidget(asset, viewer);
+            return new RuleFlowWrapper( asset,
+                                        viewer );
+        } else if ( asset.metaData.format.equals( AssetFormats.DRL ) ) {
+            return new RuleValidatorWrapper( new DrlEditor( asset ),
+                                             asset );
+        } else if ( asset.metaData.format.equals( AssetFormats.ENUMERATION ) ) {
+            return new RuleValidatorWrapper( new DefaultRuleContentWidget( asset ),
+                                             asset );
+        } else if ( asset.metaData.format.equals( AssetFormats.TEST_SCENARIO ) ) {
+            return new ScenarioWidget( asset );
+        } else if ( asset.metaData.format.equals( AssetFormats.DECISION_TABLE_GUIDED ) ) {
+            return new RuleValidatorWrapper( new GuidedDecisionTableWidget( asset ),
+                                             asset );
+        } else if ( asset.metaData.format.equals( AssetFormats.DRL_MODEL ) ) {
+            return new RuleValidatorWrapper( new FactModelWidget( asset ),
+                                             asset );
+        } else if ( asset.metaData.format.equals( AssetFormats.DSL ) ) {
+            return new RuleValidatorWrapper( new DefaultRuleContentWidget( asset ),
+                                             asset );
+        } else if ( asset.metaData.format.equals( AssetFormats.PROPERTIES ) ) {
+            return new PropertiesWidget( asset,
+                                         viewer );
         } else if (asset.metaData.format.equals(AssetFormats.XML)) {
         	return new XmlFileWidget( asset, viewer );
         } else {
-            return new DefaultContentUploadEditor( asset, viewer );
+            return new DefaultContentUploadEditor( asset,
+                                                   viewer );
         }
 
     }
 
-
     private static Map<String, String> getTypeImages() {
         Map<String, String> result = new HashMap<String, String>();
 
-        result.put( AssetFormats.DRL, "technical_rule_assets.gif" );
-        result.put( AssetFormats.DSL, "dsl.gif" );
-        result.put( AssetFormats.FUNCTION, "function_assets.gif" );
-        result.put( AssetFormats.MODEL, "model_asset.gif" );
-        result.put( AssetFormats.DECISION_SPREADSHEET_XLS, "spreadsheet_small.gif" );
-        result.put( AssetFormats.BUSINESS_RULE, "business_rule.gif" );
-        result.put( AssetFormats.DSL_TEMPLATE_RULE, "business_rule.gif" );
-        result.put( AssetFormats.RULE_FLOW_RF, "ruleflow_small.gif" );
-        result.put( AssetFormats.TEST_SCENARIO, "test_manager.gif");
-        result.put( AssetFormats.ENUMERATION, "enumeration.gif");
-        result.put( AssetFormats.DECISION_TABLE_GUIDED, "gdst.gif");
+        result.put( AssetFormats.DRL,
+                    "technical_rule_assets.gif" );
+        result.put( AssetFormats.DSL,
+                    "dsl.gif" );
+        result.put( AssetFormats.FUNCTION,
+                    "function_assets.gif" );
+        result.put( AssetFormats.MODEL,
+                    "model_asset.gif" );
+        result.put( AssetFormats.DECISION_SPREADSHEET_XLS,
+                    "spreadsheet_small.gif" );
+        result.put( AssetFormats.BUSINESS_RULE,
+                    "business_rule.gif" );
+        result.put( AssetFormats.DSL_TEMPLATE_RULE,
+                    "business_rule.gif" );
+        result.put( AssetFormats.RULE_FLOW_RF,
+                    "ruleflow_small.gif" );
+        result.put( AssetFormats.TEST_SCENARIO,
+                    "test_manager.gif" );
+        result.put( AssetFormats.ENUMERATION,
+                    "enumeration.gif" );
+        result.put( AssetFormats.DECISION_TABLE_GUIDED,
+                    "gdst.gif" );
 
         return result;
     }
@@ -114,7 +136,7 @@ public class EditorLauncher {
      */
     public static String getAssetFormatIcon(String format) {
         String result = (String) TYPE_IMAGES.get( format );
-        if (result == null) {
+        if ( result == null ) {
             return "rule_asset.gif";
         } else {
             return result;

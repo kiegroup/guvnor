@@ -4,6 +4,8 @@
 	<inherits name='com.google.gwt.user.User'/>
     <inherits name="com.gwtext.GwtExt"/>
     <inherits name="com.gwtext.Pagebus"/>
+	<inherits name='pl.balon.gwt.diagrams.Diagrams'/>
+	<inherits name='org.cobogw.gwt.user.User'/>
 
     <!-- Specify the app entry point class.                   -->
 	<!-- <entry-point class='org.drools.guvnor.client.JBRMS'/> -->
