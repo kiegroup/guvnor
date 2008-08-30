@@ -38,6 +38,10 @@ public class PermissionManager {
      * @throws RepositoryException
      */
     public void updateUserPermissions(String userName, Map<String, List<String>> perms) {
+    	if (!isValideUserName(userName)) {
+    		return;
+    	}
+    	
     	try {
 	    	Node permsNode = getUserPermissionNode(userName);
 	    	permsNode.remove(); //remove this so we get a fresh set
@@ -68,9 +72,14 @@ public class PermissionManager {
      */
     public Map<String, List<String>> retrieveUserPermissions(String userName) {
     	try {
+	    	Map<String, List<String>> result = new HashMap<String, List<String>>(10);	    	
+	    	if (!isValideUserName(userName)) {
+	    		return result;
+	    	}
+	    	
 	    	Node permsNode = getUserPermissionNode(userName);
 	    	PropertyIterator it = permsNode.getProperties();
-	    	Map<String, List<String>> result = new HashMap<String, List<String>>(10);
+	    	
 	    	while (it.hasNext()) {
 	    		Property p = (Property) it.next();
 	    		String name = p.getName();
@@ -147,6 +156,10 @@ public class PermissionManager {
 	}
 
 	public void removeUserPermissions(String userName) {
+    	if (!isValideUserName(userName)) {
+    		return;
+    	}
+    	
 		try {
 	    	Node permsNode = getUserPermissionNode(userName);
 	    	permsNode.getParent().remove(); //remove this so we get a fresh set
@@ -155,10 +168,11 @@ public class PermissionManager {
 		}
 
 	}
-
-
-
-
-
-
+	
+	private boolean isValideUserName(String userName) {
+		if("".equals(userName.trim()) || userName.trim().length() == 0) {
+			return false;
+		}
+		return true;
+	}
 }

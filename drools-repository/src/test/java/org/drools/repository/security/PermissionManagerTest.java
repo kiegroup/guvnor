@@ -61,9 +61,6 @@ public class PermissionManagerTest extends TestCase {
 		pm.removeUserPermissions("wankle");
 
 		assertFalse(pm.listUsers().containsKey("wankle"));
-
-
-
 	}
 
 	public void testUpdatePerms() throws Exception {
@@ -82,9 +79,6 @@ public class PermissionManagerTest extends TestCase {
 		pm.updateUserPermissions("testUpdatePermsWankle", perms);
 		perms = pm.retrieveUserPermissions("testUpdatePermsWankle");
 		assertEquals(3, perms.size());
-
-
-
 	}
 
 	public void testNilUser() throws Exception {
@@ -97,8 +91,6 @@ public class PermissionManagerTest extends TestCase {
 	}
 
 	public void testListingUsers() throws Exception {
-
-
 		PermissionManager pm = new PermissionManager(RepositorySessionUtil.getRepository());
 		pm.deleteAllPermissions();
 
@@ -143,8 +135,26 @@ public class PermissionManagerTest extends TestCase {
 		permTypes = result.get("listingUser5");
 		assertEquals(1, permTypes.size());
 		assertEquals("analyst", permTypes.get(0));
-
-
 	}
 
+	public void testEmptyUserName() throws Exception {
+		PermissionManager pm = new PermissionManager(RepositorySessionUtil.getRepository());
+		Map<String, List<String>> perms_ = pm.retrieveUserPermissions("");
+		assertEquals(0, perms_.size());
+		
+		perms_ = pm.retrieveUserPermissions("  ");
+		assertEquals(0, perms_.size());
+		
+		Map<String, List<String>> perms = new HashMap<String, List<String>>() {{
+			put("package.admin", new ArrayList<String>() {{add("1234567890");}});
+			put("package.developer", new ArrayList<String>() {{add("1"); add("2");}});
+			put("analyst", new ArrayList<String>() {{add("HR");}});
+			put("admin", new ArrayList<String>());
+		}};
+		pm.updateUserPermissions(" ", perms);
+		pm.updateUserPermissions("", perms);
+		
+		pm.removeUserPermissions("");
+		pm.removeUserPermissions("  ");		
+	}
 }
