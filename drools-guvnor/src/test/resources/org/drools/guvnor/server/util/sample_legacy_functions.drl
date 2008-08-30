@@ -12,6 +12,33 @@ function String goo2(String la) {
 	return "whee";
 }
 
+function String goo3() { return "HELLO"; }
+
+function String goo4() { 
+
+	if( true ) {
+		return "HELLO"; 
+	}
+}
+
+/*
+	function String goo5() { 
+	
+		if( true ) {
+			return "HELLO"; 
+		}
+	}
+*/
+
+function String goo6() { 
+
+		return "HELLO"; 
+	/* } */
+	/* }
+	}
+	} */
+}
+
 rule "blah"
  when
    Whee()
