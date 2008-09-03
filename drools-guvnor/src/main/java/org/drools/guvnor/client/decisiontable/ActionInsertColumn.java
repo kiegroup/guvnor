@@ -241,8 +241,9 @@ public class ActionInsertColumn extends FormStylePopup {
 	private ListBox loadPatterns() {
 		Set vars = new HashSet();
 		ListBox patterns = new ListBox();
-		for (int i = 0; i < dt.conditionCols.size(); i++) {
-			ActionCol col = (ActionCol) dt.actionCols.get(i);
+
+		for (Object o : dt.actionCols) {
+			ActionCol col = (ActionCol) o;
 			if (col instanceof ActionInsertFactCol) {
 				ActionInsertFactCol c = (ActionInsertFactCol) col;
 				if (!vars.contains(c.boundName)) {
@@ -250,6 +251,7 @@ public class ActionInsertColumn extends FormStylePopup {
 					vars.add(c.boundName);
 				}
 			}
+
 		}
 
 		return patterns;
