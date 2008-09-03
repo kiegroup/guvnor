@@ -110,7 +110,7 @@ public class RuleFlowProcessBuilder {
             ref2.setNodeId( connection.getNodeId() );
             ref2.setToType( connection.getToType() );
 
-            Constraint c1 = splitNode.getConstraint( ref1 );
+            Constraint c1 = splitNode.internalGetConstraint( ref1 );
             SplitNode.Constraint c2 = stn.getConstraints().get( ref2 );
 
             updateConstraint( c1,
