@@ -29,6 +29,7 @@ import org.drools.guvnor.client.rulelist.EditItemEvent;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -71,6 +72,14 @@ public class NewAssetWizard extends FormStylePopup {
 
         if (format == null) {
             addAttribute( "Type (format) of rule:", this.formatChooser );
+        } else if (format == "*") {
+        	final TextBox fmt = new TextBox();
+        	addAttribute("File extension (type/format):", fmt);
+        	fmt.addChangeListener(new ChangeListener() {
+				public void onChange(Widget w) {
+					NewAssetWizard.this.format = fmt.getText();
+				}
+        	});
         }
 
         addAttribute("Package:", packageSelector);
@@ -163,6 +172,12 @@ public class NewAssetWizard extends FormStylePopup {
 				return;
 			}
 		}
+
+        String fmt = getFormat();
+        if (fmt == null || fmt.equals("*")) {
+        	Window.alert("Please enter a format/file type");
+        	return;
+        }
 
         GenericCallback cb = new GenericCallback() {
             public void onSuccess(Object result) {

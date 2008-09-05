@@ -28,17 +28,19 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.brl.ActionCallMethod;
 import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
 import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionCallMethod;
 import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
 import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
 import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
 import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
 import org.drools.guvnor.client.modeldriven.brl.IAction;
 import org.drools.guvnor.client.modeldriven.brl.IPattern;
 import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
@@ -46,14 +48,17 @@ import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
+import org.drools.guvnor.client.security.Capabilities;
 
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -185,6 +190,16 @@ public class RuleModeller extends DirtyableComposite {
             } else if (action instanceof DSLSentence) {
                 w = new DSLSentenceWidget((DSLSentence) action);
                 w.setStyleName( "model-builderInner-Background" );
+            } else if (action instanceof FreeFormLine) {
+            	final TextBox tb = new TextBox();
+            	final FreeFormLine ffl = (FreeFormLine) action;
+            	tb.setText(ffl.text);
+            	tb.addChangeListener(new ChangeListener() {
+					public void onChange(Widget arg0) {
+						ffl.text = tb.getText();
+					}
+            	});
+            	w = tb;
             }
 
             //w.setWidth( "100%" );
@@ -250,10 +265,13 @@ public class RuleModeller extends DirtyableComposite {
         //
         String ces[]  = HumanReadable.CONDITIONAL_ELEMENTS;
         final ListBox ceBox = new ListBox();
-        ceBox.addItem( "Choose condition type...", "IGNORE" );
+        ceBox.addItem( "Choose other condition type...", "IGNORE" );
         for ( int i = 0; i < ces.length; i++ ) {
             String ce = ces[i];
             ceBox.addItem( HumanReadable.getCEDisplayName( ce ), ce );
+        }
+        if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
+        	ceBox.addItem("Free form drl", "FF");
         }
         ceBox.setSelectedIndex( 0 );
 
@@ -262,7 +280,12 @@ public class RuleModeller extends DirtyableComposite {
             public void onChange(Widget w) {
                 String s = ceBox.getValue( ceBox.getSelectedIndex() );
                 if (!s.equals( "IGNORE" )) {
-                    addNewCE(s);
+                	if (s.equals("FF")) {
+                		model.addLhsItem(new FreeFormLine());
+                		refreshWidget();
+                	} else {
+	                    addNewCE(s);
+                	}
                     popup.hide();
                 }
             }
@@ -450,6 +473,17 @@ public class RuleModeller extends DirtyableComposite {
         }
 
 
+        if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
+	        Button ff = new Button("Add free form drl");
+	        popup.addAttribute("Free form action ", ff);
+	        ff.addClickListener(new ClickListener() {
+				public void onClick(Widget arg0) {
+					model.addRhsItem(new FreeFormLine());
+					refreshWidget();
+					popup.hide();
+				}
+	        });
+        }
 
         popup.show();
     }
@@ -516,10 +550,21 @@ public class RuleModeller extends DirtyableComposite {
                 vert.add( spacerWidget() );
             } else if (pattern instanceof DSLSentence) {
                 //ignore this time
+            } else if (pattern instanceof FreeFormLine){
+            	final FreeFormLine ffl = (FreeFormLine) pattern;
+            	final TextBox tb = new TextBox();
+            	tb.setText(ffl.text);
+            	tb.setTitle("This is a drl expression (free form)");
+            	tb.addChangeListener(new ChangeListener() {
+            		public void onChange(Widget arg0) {
+            			ffl.text = tb.getText();
+					}
+            	});
+            	vert.add(wrapLHSWidget(model, i, tb));
+            	vert.add( spacerWidget() );
             } else {
                 throw new RuntimeException("I don't know what type of pattern that is.");
             }
-
 
         }
 

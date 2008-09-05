@@ -498,6 +498,15 @@ public class ExplorerLayoutManager {
         			}
         		}, "images/test_manager.gif"));
 
+        m.addItem(new Item("New File", new BaseItemListenerAdapter() {
+			public void onClick(BaseItem item, EventObject e) {
+				launchWizard("*",
+                        "Create a file.", false,  currentPackage);
+			}
+		}, "images/new_file.gif"));
+
+
+
         m.addItem(new Item("Rebuild all package binaries", new BaseItemListenerAdapter() {
 			public void onClick(BaseItem item, EventObject e) {
 				if (Window.confirm("You should only run this if Drools has been upgraded recently " +
