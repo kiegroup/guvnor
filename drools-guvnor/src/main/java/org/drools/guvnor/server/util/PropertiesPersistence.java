@@ -47,9 +47,11 @@ public class PropertiesPersistence {
     public PropertiesHolder unmarshal(String properties) {
         List<PropertyHolder> list = new ArrayList<PropertyHolder>();
         String[] props = properties.split("\n");
-        for (String s : props) {
-            String[] pair = s.split("=");
-            list.add(new PropertyHolder(pair[0], pair[1]));
+        if(props != null && props.length == 2){
+            for (String s : props) {
+                String[] pair = s.split("=");
+                 list.add(new PropertyHolder(pair[0], pair[1]));
+            }
         }
         PropertiesHolder result = new PropertiesHolder();
         result.list = list;
