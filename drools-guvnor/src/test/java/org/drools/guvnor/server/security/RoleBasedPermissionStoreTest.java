@@ -36,12 +36,12 @@ public class RoleBasedPermissionStoreTest extends TestCase {
 	public void testGetRoleBasedPermissionsByUserName() throws Exception {
 		RoleBasedPermissionStore store = getStore();
 	
-		store.addRoleBasedPermission("jervis", new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, "package1Name", null));
-		store.addRoleBasedPermission("jervis", new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "package2Name", null));
-		store.addRoleBasedPermission("jervis", new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "package3Name", null));
-		store.addRoleBasedPermission("jervis", new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category1"));
-		store.addRoleBasedPermission("john", new RoleBasedPermission("john", RoleTypes.ANALYST, null, "category2"));
-		store.addRoleBasedPermission("johnson", new RoleBasedPermission("johnson", RoleTypes.ADMIN, null, null));
+		store.addRoleBasedPermissionForTesting("jervis", new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, "package1Name", null));
+		store.addRoleBasedPermissionForTesting("jervis", new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "package2Name", null));
+		store.addRoleBasedPermissionForTesting("jervis", new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "package3Name", null));
+		store.addRoleBasedPermissionForTesting("jervis", new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category1"));
+		store.addRoleBasedPermissionForTesting("john", new RoleBasedPermission("john", RoleTypes.ANALYST, null, "category2"));
+		store.addRoleBasedPermissionForTesting("johnson", new RoleBasedPermission("johnson", RoleTypes.ADMIN, null, null));
 		
 		List<RoleBasedPermission> perms = store.getRoleBasedPermissionsByUserName("jervis");
 		assertTrue(perms.size() == 4);		

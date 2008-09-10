@@ -182,7 +182,7 @@ public class ServiceImplementation implements RepositoryService {
 					new AdminType(),
 					RoleTypes.ADMIN);
 		}
-		
+
 		log.info("USER:" + repository.getSession().getUserID()
 				+ " CREATING cateogory: [" + name + "] in path [" + path + "]");
 
@@ -421,7 +421,7 @@ public class ServiceImplementation implements RepositoryService {
 			if(asset.metaData.categories.length == 0) {
 				Identity.instance().checkPermission(
 						new CategoryPathType(null),
-						RoleTypes.ANALYST);
+						RoleTypes.ANALYST_READ);
 			} else {
 				boolean passed = false;
 				RuntimeException exception = null;
@@ -429,7 +429,7 @@ public class ServiceImplementation implements RepositoryService {
 				for (String cat : asset.metaData.categories) {
 					try {
 						Identity.instance().checkPermission(
-								new CategoryPathType(cat), RoleTypes.ANALYST);
+								new CategoryPathType(cat), RoleTypes.ANALYST_READ);
 						passed = true;
 					} catch (RuntimeException e) {
 						exception = e;
@@ -723,7 +723,7 @@ public class ServiceImplementation implements RepositoryService {
 					new AdminType(),
 					RoleTypes.ADMIN);
 		}
-		
+
 		log.info("USER:" + repository.getSession().getUserID()
 				+ " CREATING package [" + name + "]");
 		PackageItem item = repository.createPackage(name, description);
@@ -838,18 +838,18 @@ public class ServiceImplementation implements RepositoryService {
 					"probably have the parameters around the wrong way, sigh...");
 		}
 		AssetItemIterator it = repository.queryFullText(text, seekArchived);
-		
+
 		// Add filter for READONLY permission
 		List<AssetItem> resultList = new ArrayList<AssetItem>();
 		RepositoryFilter filter = new PackageFilter();
-		
+
 		while (it.hasNext()) {
 			AssetItem ai = it.next();
 			if (checkPackagePermissionHelper(filter, ai, RoleTypes.PACKAGE_READONLY)) {
 				resultList.add(ai);
 			}
-		}		
-		
+		}
+
 		TableDisplayHandler handler = new TableDisplayHandler("searchresults");
 		return handler.loadRuleListTable(resultList, skip, numRows);
 	}
@@ -884,21 +884,21 @@ public class ServiceImplementation implements RepositoryService {
 		dates[1] = new DateQuery(AssetItem.LAST_MODIFIED_PROPERTY_NAME,
 				isoDate(modifiedAfter), isoDate(modifiedBefore));
 		AssetItemIterator it = repository.query(q, seekArchived, dates);
-		
+
 		// Add Filter to check Permission
 		List<AssetItem> resultList = new ArrayList<AssetItem>();
-		
+
 		RepositoryFilter packageFilter = new PackageFilter();
 		RepositoryFilter categoryFilter = new CategoryFilter();
-		
+
 		while (it.hasNext()) {
 			AssetItem ai = it.next();
-			if (checkPackagePermissionHelper(packageFilter, ai, RoleTypes.PACKAGE_READONLY) || 
-					checkCategoryPermissionHelper(categoryFilter, ai, RoleTypes.ANALYST)) {
+			if (checkPackagePermissionHelper(packageFilter, ai, RoleTypes.PACKAGE_READONLY) ||
+					checkCategoryPermissionHelper(categoryFilter, ai, RoleTypes.ANALYST_READ)) {
 				resultList.add(ai);
 			}
-		}		
-		
+		}
+
 		TableDisplayHandler handler = new TableDisplayHandler("searchresults");
 		return handler.loadRuleListTable(resultList, skip, numRows);
 	}
@@ -907,18 +907,18 @@ public class ServiceImplementation implements RepositoryService {
 			RepositoryFilter filter, AssetItem item, String roleType) {
 		return filter.accept(getConfigDataHelper(item.getPackage().getUUID()), roleType);
 	}
-	
+
 	private boolean checkCategoryPermissionHelper(
 			RepositoryFilter filter, AssetItem item, String roleType) {
 		List<CategoryItem> tempCateList = item.getCategories();
 		for (Iterator<CategoryItem> i = tempCateList.iterator(); i.hasNext();) {
 			CategoryItem categoryItem = i.next();
-			
+
 			if (filter.accept(categoryItem.getName(), roleType)) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -926,8 +926,8 @@ public class ServiceImplementation implements RepositoryService {
 		PackageConfigData data = new PackageConfigData();
 		data.uuid = uuidStr;
 		return data;
-	}	
-	
+	}
+
 	private String isoDate(Date d) {
 		if (d != null) {
 			Calendar cal = Calendar.getInstance();
@@ -1182,7 +1182,7 @@ public class ServiceImplementation implements RepositoryService {
 					new AdminType(),
 					RoleTypes.ADMIN);
 		}
-		
+
 		RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(
 				repository.getSession());
 		admin.clearRulesRepository();
@@ -1388,7 +1388,7 @@ public class ServiceImplementation implements RepositoryService {
 					new AdminType(),
 					RoleTypes.ADMIN);
 		}
-		
+
 		try {
 			repository.copyPackage(sourcePackageName, destPackageName);
 		} catch (RulesRepositoryException e) {
@@ -1502,7 +1502,7 @@ public class ServiceImplementation implements RepositoryService {
 					new AdminType(),
 					RoleTypes.ADMIN);
 		}
-		
+
 		Iterator pkit = repository.listPackages();
 		while (pkit.hasNext()) {
 			PackageItem pkg = (PackageItem) pkit.next();
@@ -1870,7 +1870,7 @@ public class ServiceImplementation implements RepositoryService {
 					new AdminType(),
 					RoleTypes.ADMIN);
 		}
-		
+
 		return LoggingHelper.getMessages();
 
 	}
@@ -1974,7 +1974,7 @@ public class ServiceImplementation implements RepositoryService {
 					new AdminType(),
 					RoleTypes.ADMIN);
 		}
-		
+
 		PermissionManager pm = new PermissionManager(repository);
 		return pm.listUsers();
 	}
@@ -1985,7 +1985,7 @@ public class ServiceImplementation implements RepositoryService {
 					new AdminType(),
 					RoleTypes.ADMIN);
 		}
-		
+
 		PermissionManager pm = new PermissionManager(repository);
 		return pm.retrieveUserPermissions(userName);
 	}
@@ -1997,7 +1997,7 @@ public class ServiceImplementation implements RepositoryService {
 					new AdminType(),
 					RoleTypes.ADMIN);
 		}
-		
+
 		PermissionManager pm = new PermissionManager(repository);
 		System.err.println(perms);
 		log.info("Updating user permissions for userName [" + userName + "] to [" + perms + "]");
@@ -2011,7 +2011,7 @@ public class ServiceImplementation implements RepositoryService {
 					new AdminType(),
 					RoleTypes.ADMIN);
 		}
-		
+
 		return RoleTypes.listAvailableTypes();
 	}
 

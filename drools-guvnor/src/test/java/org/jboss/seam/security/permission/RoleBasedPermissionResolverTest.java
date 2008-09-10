@@ -53,21 +53,69 @@ public class RoleBasedPermissionResolverTest extends TestCase {
 		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, package2Name, null));
 		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category1"));
 		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category2"));
-    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
 	    // Put permission list in session.
 	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
 	    testManager.create();
-    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);    	
-    	
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);
+
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
-    	
+
         assertTrue(resolver.hasPermission(new CategoryPathType("category1"), null));
         assertTrue(resolver.hasPermission(new CategoryPathType("category2"), null));
         assertFalse(resolver.hasPermission(new CategoryPathType("category3/category3"), null));
         assertTrue(resolver.hasPermission(new CategoryPathType("/category1/category2"), null));
+
+        assertTrue(resolver.hasPermission(new CategoryPathType("category2"), RoleTypes.ANALYST));
+        assertTrue(resolver.hasPermission(new CategoryPathType("category2"), RoleTypes.ANALYST_READ));
+
+        assertFalse(resolver.hasPermission(new CategoryPathType("category3/category3"), RoleTypes.ANALYST));
+        assertFalse(resolver.hasPermission(new CategoryPathType("category3/category3"), RoleTypes.ANALYST_READ));
+
+
+
+    	Lifecycle.endApplication();
+    }
+
+
+    public void testCategoryBasedPermissionAnalystReadOnly() throws Exception {
+    	//Mock up SEAM contexts
+    	Map application = new HashMap<String, Object>();
+    	Lifecycle.beginApplication(application);
+    	Lifecycle.beginCall();
+    	MockIdentity midentity = new MockIdentity();
+    	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
+    	String package1Name = "testCategoryBasedPermissionAnalystPackageName1";
+    	String package2Name = "testCategoryBasedPermissionAnalystPackageName2";
+
+    	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, package1Name, null));
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, package2Name, null));
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST_READ, null, "category1"));
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category2"));
+    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
+    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
+
+	    // Put permission list in session.
+	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+	    testManager.create();
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);
+
+    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+    	resolver.setEnableRoleBasedAuthorization(true);
+
+        assertFalse(resolver.hasPermission(new CategoryPathType("category1"), null));
+        assertTrue(resolver.hasPermission(new CategoryPathType("category2"), null));
+        assertFalse(resolver.hasPermission(new CategoryPathType("category3/category3"), null));
+        assertTrue(resolver.hasPermission(new CategoryPathType("category1"), RoleTypes.ANALYST_READ));
+        assertFalse(resolver.hasPermission(new CategoryPathType("category1"), RoleTypes.ANALYST));
+
+        assertTrue(resolver.hasPermission(new CategoryPathType("category2"), RoleTypes.ANALYST));
+        assertTrue(resolver.hasPermission(new CategoryPathType("category2"), RoleTypes.ANALYST_READ));
+
 
     	Lifecycle.endApplication();
     }
@@ -87,166 +135,166 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     	assertFalse(pr.isSubPath("foo1", "foo2"));
     	assertTrue(pr.isSubPath("foo1", "foo1"));
     }
-    
+
 
 	//admin: everything
     public void testPackageBasedPermissionAdmin() throws Exception {
     	//Mock up SEAM contexts
-    	Map application = new HashMap<String, Object>();    	
+    	Map application = new HashMap<String, Object>();
     	Lifecycle.beginApplication(application);
-    	Lifecycle.beginCall();   	
+    	Lifecycle.beginCall();
     	MockIdentity midentity = new MockIdentity();
     	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
     	String package1Name = "testPackageBasedPermissionAdminPackageName1";
     	String package2Name = "testPackageBasedPermissionAdminPackageName2";
-    	
+
     	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
 		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ADMIN, package1Name, null));
-		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, package2Name, null));		
-    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, package2Name, null));
+    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
-  
+
 	    // Put permission list in session.
 	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
 	    testManager.create();
-    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);    	
-    	
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);
+
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
-    	
+
         assertTrue(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.ADMIN));
         assertTrue(resolver.hasPermission(new PackageNameType(package2Name), RoleTypes.ADMIN));
 
     	Lifecycle.endApplication();
-    }    
-	
+    }
+
     //Package.admin: everything for that package, including creating snapshots for that package.
     public void testPackageBasedPermissionPackageAdmin() throws Exception {
     	//Mock up SEAM contexts
-    	Map application = new HashMap<String, Object>();    	
+    	Map application = new HashMap<String, Object>();
     	Lifecycle.beginApplication(application);
-    	Lifecycle.beginCall();   	
+    	Lifecycle.beginCall();
     	MockIdentity midentity = new MockIdentity();
-    	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);    	
-    	
+    	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
+
     	String packageName = "testPackageBasedPermissionPackageAdminPackageName";
-    	
+
     	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
 		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, packageName, null));
-    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
 	    // Put permission list in session.
 	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
 	    testManager.create();
-    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);    	
-    	
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);
+
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
-    	
+
         assertTrue(resolver.hasPermission(new PackageNameType(packageName), RoleTypes.PACKAGE_ADMIN));
     	assertTrue(resolver.hasPermission(new PackageNameType(packageName), RoleTypes.PACKAGE_DEVELOPER));
         assertTrue(resolver.hasPermission(new PackageNameType(packageName), RoleTypes.PACKAGE_READONLY));
-        
+
         assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", RoleTypes.PACKAGE_READONLY));
 
-    	Lifecycle.endApplication();   
-    } 
-    
+    	Lifecycle.endApplication();
+    }
+
     //Package.developer:  everything for that package, NOT snapshots (can view snapshots of that package only)
     public void testPackageBasedPermissionPackageDeveloper() throws Exception {
     	//Mock up SEAM contexts
-    	Map application = new HashMap<String, Object>();    	
+    	Map application = new HashMap<String, Object>();
     	Lifecycle.beginApplication(application);
-    	Lifecycle.beginCall();   	
-    	MockIdentity midentity = new MockIdentity();	
+    	Lifecycle.beginCall();
+    	MockIdentity midentity = new MockIdentity();
     	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
     	String package1Name = "testPackageBasedPermissionPackageDeveloperPackageName1";
     	String package2Name = "testPackageBasedPermissionPackageDeveloperPackageName2";
-    	
+
     	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_DEVELOPER, package1Name, null));		
-    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_DEVELOPER, package1Name, null));
+    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
-    
+
 	    // Put permission list in session.
 	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
 	    testManager.create();
-    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);    	    	
-    	
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);
+
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
-    	
+
     	assertFalse(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.PACKAGE_ADMIN));
     	assertTrue(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.PACKAGE_DEVELOPER));
         assertTrue(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.PACKAGE_READONLY));
-        
+
         assertFalse(resolver.hasPermission(package2Name, RoleTypes.PACKAGE_READONLY));
 
-    	Lifecycle.endApplication();   
-    }    
-   
+    	Lifecycle.endApplication();
+    }
+
     //Package.readonly: read only as the name suggested
     public void testPackageBasedPermissionPackageReadOnly() throws Exception {
     	//Mock up SEAM contexts
-    	Map application = new HashMap<String, Object>();    	
+    	Map application = new HashMap<String, Object>();
     	Lifecycle.beginApplication(application);
-    	Lifecycle.beginCall();   	
+    	Lifecycle.beginCall();
     	MockIdentity midentity = new MockIdentity();
     	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
     	String package1Name = "testPackageBasedPermissionPackageReadOnlyPackageName1";
     	String package2Name = "testPackageBasedPermissionPackageReadOnlyPackageName2";
-    	
+
     	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, package1Name, null));		
-    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, package1Name, null));
+    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
-  
+
 	    // Put permission list in session.
 	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
 	    testManager.create();
-    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);    	    	
-    	
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);
+
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
-    	
+
         assertFalse(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.PACKAGE_DEVELOPER));
         assertFalse(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.PACKAGE_DEVELOPER));
         assertTrue(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.PACKAGE_READONLY));
-        
+
         assertFalse(resolver.hasPermission(package2Name, RoleTypes.PACKAGE_READONLY));
 
-    	Lifecycle.endApplication();   
-    } 
-        
+    	Lifecycle.endApplication();
+    }
+
     public void testPackageBasedPermissionAnalyst() throws Exception {
     	//Mock up SEAM contexts
-    	Map application = new HashMap<String, Object>();    	
+    	Map application = new HashMap<String, Object>();
     	Lifecycle.beginApplication(application);
-    	Lifecycle.beginCall();   	
+    	Lifecycle.beginCall();
     	MockIdentity midentity = new MockIdentity();
     	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
     	String package1Name = "testPackageBasedPermissionAnalystPackageName1";
     	String package2Name = "testPackageBasedPermissionAnalystPackageName2";
-    	
+
     	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, package1Name, null));		
-		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category1"));		
-    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);    
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, package1Name, null));
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category1"));
+    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
-  
+
 	    // Put permission list in session.
 	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
 	    testManager.create();
-    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);    	    	
-    	
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);
+
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
-        
+
         assertTrue(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.ANALYST));
         assertTrue(resolver.hasPermission(new PackageNameType(package2Name), RoleTypes.ANALYST));
 
-    	Lifecycle.endApplication();   
-    } 
-    
+    	Lifecycle.endApplication();
+    }
+
  }

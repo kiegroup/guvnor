@@ -39,7 +39,7 @@ public class CapabilityCalculatorTest extends TestCase {
 		perms = new ArrayList<RoleBasedPermission>();
 		perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_READONLY, null, null));
 		perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_READONLY, null, null));
-		perms.add(new RoleBasedPermission("", RoleTypes.ANALYST, null, null));
+		perms.add(new RoleBasedPermission("", RoleTypes.ANALYST_READ, null, null));
 		perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_DEVELOPER, null, null));
 		caps = loader.calcCapabilities(perms);
 		assertTrue(caps.list.contains(Capabilities.SHOW_PACKAGE_VIEW));

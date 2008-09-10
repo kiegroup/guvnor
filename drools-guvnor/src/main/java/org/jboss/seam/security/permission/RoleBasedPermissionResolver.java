@@ -96,7 +96,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 			return true;
 		}
 
-		RoleBasedPermissionManager permManager = (RoleBasedPermissionManager) 
+		RoleBasedPermissionManager permManager = (RoleBasedPermissionManager)
 				Component.getInstance("roleBasedPermissionManager");
 		List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
 
@@ -115,8 +115,9 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 			//role (e.g, only other roles like admin|package.admin|package.dev|package.readonly) we always grant permisssion.
 			boolean isPermitted = true;
 			//return true when there is no analyst role, or one of the analyst role has permission to access this category
+			String requestedPermType = (requestedRole == null) ? RoleTypes.ANALYST : requestedRole;
 			for (RoleBasedPermission pbp : permissions) {
-				if (RoleTypes.ANALYST.equals(pbp.getRole())) {
+				if (requestedPermType.equals(pbp.getRole()) || (requestedPermType.equals(RoleTypes.ANALYST_READ) && pbp.getRole().equals(RoleTypes.ANALYST))) {
 					isPermitted = false;
 					if(isPermittedCategoryPath(requestedPath, pbp.getCategoryPath())) {
 						return true;
@@ -155,7 +156,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 			return false;
 		}
 	}
-	
+
 	private boolean hasAdminPermission(List<RoleBasedPermission> permissions) {
 		for (RoleBasedPermission p : permissions) {
 			if (RoleTypes.ADMIN.equalsIgnoreCase(p.getRole())) {

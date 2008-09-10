@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.jcr.RepositoryException;
-
 import org.drools.repository.RulesRepository;
 import org.drools.repository.security.PermissionManager;
 import org.jboss.seam.annotations.AutoCreate;
@@ -32,9 +30,9 @@ public class RoleBasedPermissionStore {
 		for (String roleType : perms.keySet()) {
 			if(RoleTypes.ADMIN.equals(roleType)) {
 				permissions.add(new RoleBasedPermission(userName, RoleTypes.ADMIN,
-						null, null));	
+						null, null));
 			}
-			
+
 			List<String> permissionsPerRole = perms.get(roleType);
 			for (String permissionPerRole : permissionsPerRole) {
 				if (permissionPerRole.startsWith("package=")) {
@@ -54,12 +52,8 @@ public class RoleBasedPermissionStore {
 		return permissions;
 	}
 
-	public List<RoleBasedPermission> getRoleBasedPermissionsByPackage(
-			String packageName) {
-		return null;
-	}
 
-	public void addRoleBasedPermission(String userName, RoleBasedPermission rbp) {
+	public void addRoleBasedPermissionForTesting(String userName, RoleBasedPermission rbp) {
 		PermissionManager permissionManager = new PermissionManager(repository);
 		Map<String, List<String>> perms = permissionManager
 				.retrieveUserPermissions(userName);
