@@ -245,9 +245,13 @@ public class PackageEditor2 extends PrettyFormLayout {
             public void onClick(Widget w) {
                 if ( Window.confirm( "Are you sure you want to archive (remove) this package?" ) ) {
                     conf.archived = true;
-                    doSaveAction(close);
-                    close.execute();
-                    refreshPackageList.execute();
+                    Command ref = new Command() {
+						public void execute() {
+		                    close.execute();
+		                    refreshPackageList.execute();
+						}
+                    };
+                    doSaveAction(ref);
                 }
             }
         });
