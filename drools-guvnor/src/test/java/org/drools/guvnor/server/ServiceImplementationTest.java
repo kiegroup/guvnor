@@ -1916,6 +1916,96 @@ public class ServiceImplementationTest extends TestCase {
 		scenario2.updateContent(ScenarioXMLPersistence.getInstance().marshal(sc));
 		scenario2.checkin("");
 
+
+		//love you
+		long time = System.currentTimeMillis();
+		BulkTestRunResult result = impl.runScenariosInPackage(pkg.getUUID());
+		System.err.println("Time taken for runScenariosInPackage " + (System.currentTimeMillis() - time));
+		assertNull(result.errors);
+
+		assertEquals(50, result.percentCovered);
+		assertEquals(1, result.rulesNotCovered.length);
+		assertEquals("rule2", result.rulesNotCovered[0]);
+
+		assertEquals(2, result.results.length);
+
+		ScenarioResultSummary s1 = result.results[0];
+		assertEquals(0, s1.failures);
+		assertEquals(3, s1.total);
+		assertEquals(scenario1.getUUID(), s1.uuid);
+		assertEquals(scenario1.getName(), s1.scenarioName);
+
+		ScenarioResultSummary s2 = result.results[1];
+		assertEquals(1, s2.failures);
+		assertEquals(1, s2.total);
+		assertEquals(scenario2.getUUID(), s2.uuid);
+		assertEquals(scenario2.getName(), s2.scenarioName);
+	}
+
+	public void testRunPackageScenariosWithDeclaredFacts() throws Exception {
+		ServiceImplementation impl = getService();
+		RulesRepository repo = impl.repository;
+
+		PackageItem pkg = repo.createPackage("testScenarioRunBulkWithDeclaredFacts", "");
+		ServiceImplementation.updateDroolsHeader("declare Wang \n age: Integer \n name: String \n end", pkg);
+		AssetItem rule1 = pkg.addAsset("rule_1", "");
+		rule1.updateFormat(AssetFormats.DRL);
+		rule1
+				.updateContent("rule 'rule1' \n when \np : Wang() \n then \np.setAge(42); \n end");
+		rule1.checkin("");
+
+		//this rule will never fire
+		AssetItem rule2 = pkg.addAsset("rule_2", "");
+		rule2.updateFormat(AssetFormats.DRL);
+		rule2.updateContent("rule 'rule2' \n when \np : Wang(age == 1000) \n then \np.setAge(46); \n end");
+		rule2.checkin("");
+		repo.save();
+
+
+
+		//first, the green scenario
+		Scenario sc = new Scenario();
+		FactData person = new FactData();
+		person.name = "p";
+		person.type = "Wang";
+		person.fieldData.add(new FieldData("age", "40"));
+		person.fieldData.add(new FieldData("name", "michael"));
+
+		sc.fixtures.add(person);
+		sc.fixtures.add(new ExecutionTrace());
+		VerifyRuleFired vr = new VerifyRuleFired("rule1", 1, null);
+		sc.fixtures.add(vr);
+
+		VerifyFact vf = new VerifyFact();
+		vf.name = "p";
+		vf.fieldValues.add(new VerifyField("name", "michael", "=="));
+		vf.fieldValues.add(new VerifyField("age", "42", "=="));
+		sc.fixtures.add(vf);
+
+		AssetItem scenario1 = pkg.addAsset("scen1", "");
+		scenario1.updateFormat(AssetFormats.TEST_SCENARIO);
+		scenario1.updateContent(ScenarioXMLPersistence.getInstance().marshal(sc));
+		scenario1.checkin("");
+
+		//now the bad scenario
+		sc = new Scenario();
+		person = new FactData();
+		person.name = "p";
+		person.type = "Wang";
+		person.fieldData.add(new FieldData("age", "40"));
+		person.fieldData.add(new FieldData("name", "michael"));
+
+		sc.fixtures.add(person);
+		sc.fixtures.add(new ExecutionTrace());
+		vr = new VerifyRuleFired("rule2", 1, null);
+		sc.fixtures.add(vr);
+
+
+		AssetItem scenario2 = pkg.addAsset("scen2", "");
+		scenario2.updateFormat(AssetFormats.TEST_SCENARIO);
+		scenario2.updateContent(ScenarioXMLPersistence.getInstance().marshal(sc));
+		scenario2.checkin("");
+
 		BulkTestRunResult result = impl.runScenariosInPackage(pkg.getUUID());
 		assertNull(result.errors);
 

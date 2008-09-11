@@ -75,14 +75,7 @@ public class CategoryManager extends Composite {
 
         HorizontalPanel actions = new HorizontalPanel();
 
-        Button refresh = new Button( "Refresh view" );
-        refresh.setTitle( "Refresh categories" );
-        refresh.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                explorer.refresh();
-            }
-        } );
-        actions.add(refresh);
+
         form.addAttribute("", actions);
 
         Button newCat = new Button( "New category" );

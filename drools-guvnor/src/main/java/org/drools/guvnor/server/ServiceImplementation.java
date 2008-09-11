@@ -1573,6 +1573,10 @@ public class ServiceImplementation implements RepositoryService {
 					RoleTypes.PACKAGE_DEVELOPER);
 		}
 
+		return runScenario(packageName, scenario, null);
+	}
+
+	private ScenarioRunResult runScenario(String packageName, Scenario scenario, RuleCoverageListener coverage) throws SerializableException {
 		PackageItem item = this.repository.loadPackage(packageName);
 
 		// nasty classloader needed to make sure we use the same tree the whole
@@ -1585,9 +1589,6 @@ public class ServiceImplementation implements RepositoryService {
 			if (item.isBinaryUpToDate()
 					&& this.ruleBaseCache.containsKey(item.getUUID())) {
 				rb = this.ruleBaseCache.get(item.getUUID());
-				AbstractRuleBase arb = (AbstractRuleBase) rb;
-				// load up the existing class loader from before
-
 			} else {
 				// load up the classloader we are going to use
 				List<JarInputStream> jars = BRMSPackageBuilder.getJars(item);
@@ -1611,7 +1612,7 @@ public class ServiceImplementation implements RepositoryService {
 
 			ClassLoader cl = ((InternalRuleBase)this.ruleBaseCache.get(item.getUUID())).getRootClassLoader();
 			Thread.currentThread().setContextClassLoader(cl);
-			return runScenario(scenario, item, cl, rb);
+			return runScenario(scenario, item, cl, rb, coverage);
 
 		} finally {
 			Thread.currentThread().setContextClassLoader(originalCL);
@@ -1640,7 +1641,7 @@ public class ServiceImplementation implements RepositoryService {
 	}
 
 	private ScenarioRunResult runScenario(Scenario scenario, PackageItem item,
-			ClassLoader cl, RuleBase rb) throws DetailedSerializableException {
+			ClassLoader cl, RuleBase rb, RuleCoverageListener coverage) throws DetailedSerializableException {
 
 		// RuleBase rb = ruleBaseCache.get(item.getUUID());
 		Package bin = rb.getPackages()[0];
@@ -1661,12 +1662,7 @@ public class ServiceImplementation implements RepositoryService {
 		sessionConfiguration.setKeepReference(false);
 		InternalWorkingMemory workingMemory = (InternalWorkingMemory) rb
 				.newStatefulSession(sessionConfiguration);
-		return runScenario(scenario, res, workingMemory);
-	}
-
-	private ScenarioRunResult runScenario(Scenario scenario,
-			ClassTypeResolver res, InternalWorkingMemory workingMemory)
-			throws DetailedSerializableException {
+		if (coverage != null) workingMemory.addEventListener(coverage);
 		try {
 			new ScenarioRunner(scenario, res, workingMemory);
 			return new ScenarioRunResult(null, scenario);
@@ -1674,8 +1670,11 @@ public class ServiceImplementation implements RepositoryService {
 			log.error(e);
 			throw new DetailedSerializableException(
 					"Unable to load a required class.", e.getMessage());
+		} finally {
+
 		}
 	}
+
 
 	@WebRemote
 	@Restrict("#{identity.loggedIn}")
@@ -1721,33 +1720,18 @@ public class ServiceImplementation implements RepositoryService {
 				}
 			}
 
-			AssetItemIterator it = item
-					.listAssetsByFormat(new String[] { AssetFormats.TEST_SCENARIO });
+			AssetItemIterator it = item.listAssetsByFormat(new String[] { AssetFormats.TEST_SCENARIO });
 			List<ScenarioResultSummary> resultSummaries = new ArrayList<ScenarioResultSummary>();
 			RuleBase rb = ruleBaseCache.get(item.getUUID());
 			Package bin = rb.getPackages()[0];
 
-			ClassTypeResolver res = new ClassTypeResolver(bin.getImports()
-					.keySet(), cl);
-			SessionConfiguration sessionConfiguration = new SessionConfiguration();
-			sessionConfiguration.setKeepReference(false);
-			InternalWorkingMemory workingMemory = (InternalWorkingMemory) rb
-					.newStatefulSession(sessionConfiguration);
-
 			RuleCoverageListener coverage = new RuleCoverageListener(
 					expectedRules(bin));
-			workingMemory.addEventListener(coverage);
 
 			while (it.hasNext()) {
 				RuleAsset asset = loadAsset((AssetItem) it.next());
 				Scenario sc = (Scenario) asset.content;
-				sc = runScenario(sc, res, workingMemory).scenario;
-
-				// clean out WM
-				Iterator<FactHandle> fhs = workingMemory.iterateFactHandles();
-				while (fhs.hasNext()) {
-					workingMemory.retract(fhs.next());
-				}
+				runScenario(item.getName(), sc, coverage);//runScenario(sc, res, workingMemory).scenario;
 
 				int[] totals = sc.countFailuresTotal();
 				resultSummaries.add(new ScenarioResultSummary(totals[0],
