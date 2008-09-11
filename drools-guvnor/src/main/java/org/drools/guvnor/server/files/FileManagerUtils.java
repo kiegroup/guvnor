@@ -1,4 +1,5 @@
 package org.drools.guvnor.server.files;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -14,7 +15,6 @@ package org.drools.guvnor.server.files;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -78,7 +78,9 @@ public class FileManagerUtils {
         InputStream fileData = uploadItem.getFile().getInputStream();
         String fileName = uploadItem.getFile().getName();
 
-        attachFileToAsset( uuid, fileData, fileName );
+        attachFileToAsset( uuid,
+                           fileData,
+                           fileName );
         uploadItem.getFile().getInputStream().close();
 
     }
@@ -88,23 +90,23 @@ public class FileManagerUtils {
      * @throws IOException
      */
     @Restrict("#{identity.loggedIn}")
-    public void attachFileToAsset(String uuid, InputStream fileData, String fileName) throws IOException {
+    public void attachFileToAsset(String uuid,
+                                  InputStream fileData,
+                                  String fileName) throws IOException {
 
-    	//here we should mark the binary data as invalid on the package (which means moving something into repo modle)
+        //here we should mark the binary data as invalid on the package (which means moving something into repo modle)
 
         AssetItem item = repository.loadAssetByUUID( uuid );
         item.updateBinaryContentAttachment( fileData );
         item.updateBinaryContentAttachmentFileName( fileName );
-        item.getPackage().updateBinaryUpToDate(false);
+        item.getPackage().updateBinaryUpToDate( false );
         item.checkin( "Attached file: " + fileName );
 
-
         //special treatment for model attachments.
-        ContentHandler handler = ContentManager.getHandler(item.getFormat());
-        if (handler instanceof ModelContentHandler) {
-        	((ModelContentHandler)handler).modelAttached(item);
+        ContentHandler handler = ContentManager.getHandler( item.getFormat() );
+        if ( handler instanceof ModelContentHandler ) {
+            ((ModelContentHandler) handler).modelAttached( item );
         }
-
 
     }
 
@@ -112,13 +114,14 @@ public class FileManagerUtils {
      * The get returns files based on UUID of an asset.
      */
     @Restrict("#{identity.loggedIn}")
-    public String loadFileAttachmentByUUID(String uuid, OutputStream out) throws IOException {
+    public String loadFileAttachmentByUUID(String uuid,
+                                           OutputStream out) throws IOException {
 
         AssetItem item = repository.loadAssetByUUID( uuid );
 
         byte[] data = item.getBinaryContentAsBytes();
-        if(data == null) {
-           data = new byte[0];
+        if ( data == null ) {
+            data = new byte[0];
         }
         out.write( data );
         out.flush();
@@ -141,8 +144,8 @@ public class FileManagerUtils {
                 FileItem item = (FileItem) it.next();
                 if ( item.isFormField() && item.getFieldName().equals( HTMLFileManagerFields.FORM_FIELD_UUID ) ) {
                     data.setUuid( item.getString() );
-                } else if (!item.isFormField()){
-                	data.setFile( item );
+                } else if ( !item.isFormField() ) {
+                    data.setFile( item );
                 }
             }
             return data;
@@ -158,7 +161,10 @@ public class FileManagerUtils {
      * @param isLatest true if the latest package binary will be used (ie NOT a snapshot).
      * @return The filename if its all good.
      */
-    public String loadBinaryPackage(String packageName, String packageVersion, boolean isLatest, OutputStream out) throws IOException {
+    public String loadBinaryPackage(String packageName,
+                                    String packageVersion,
+                                    boolean isLatest,
+                                    OutputStream out) throws IOException {
         PackageItem item = null;
         if ( isLatest ) {
             item = repository.loadPackage( packageName );
@@ -167,15 +173,16 @@ public class FileManagerUtils {
             out.flush();
             return packageName + ".pkg";
         } else {
-            item = repository.loadPackageSnapshot( packageName, packageVersion );
+            item = repository.loadPackageSnapshot( packageName,
+                                                   packageVersion );
             byte[] data = item.getCompiledPackageBytes();
             out.write( data );
             out.flush();
-            return packageName + "_" + URLEncoder.encode( packageVersion, "UTF-8" ) + ".pkg";
+            return packageName + "_" + URLEncoder.encode( packageVersion,
+                                                          "UTF-8" ) + ".pkg";
         }
 
     }
-
 
     /**
      * Load up the approproate package version.
@@ -184,22 +191,29 @@ public class FileManagerUtils {
      * @param isLatest true if the latest package binary will be used (ie NOT a snapshot).
      * @return The filename if its all good.
      */
-    public String loadSourcePackage(String packageName, String packageVersion, boolean isLatest, OutputStream out) throws IOException {
+    public String loadSourcePackage(String packageName,
+                                    String packageVersion,
+                                    boolean isLatest,
+                                    OutputStream out) throws IOException {
         PackageItem item = null;
         if ( isLatest ) {
             item = repository.loadPackage( packageName );
-            ContentPackageAssembler asm = new ContentPackageAssembler(item, false);
+            ContentPackageAssembler asm = new ContentPackageAssembler( item,
+                                                                       false );
             String drl = asm.getDRL();
             out.write( drl.getBytes() );
             out.flush();
             return packageName + ".drl";
         } else {
-            item = repository.loadPackageSnapshot( packageName, packageVersion );
-            ContentPackageAssembler asm = new ContentPackageAssembler(item, false);
+            item = repository.loadPackageSnapshot( packageName,
+                                                   packageVersion );
+            ContentPackageAssembler asm = new ContentPackageAssembler( item,
+                                                                       false );
             String drl = asm.getDRL();
             out.write( drl.getBytes() );
             out.flush();
-            return packageName + "_" + URLEncoder.encode( packageVersion, "UTF-8" ) + ".drl";
+            return packageName + "_" + URLEncoder.encode( packageVersion,
+                                                          "UTF-8" ) + ".drl";
         }
 
     }
@@ -214,9 +228,27 @@ public class FileManagerUtils {
         }
     }
 
+    public byte[] exportPackageFromRepository(String packageName) {
+        try {
+            return this.repository.exportPackageFromRepository( packageName );
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
+        } catch ( IOException e ) {
+            throw new RulesRepositoryException( e );
+        }
+    }
+
     @Restrict("#{identity.loggedIn}")
     public void importRulesRepository(byte[] data) {
         repository.importRulesRepository( data );
+    }
+
+    @Restrict("#{identity.loggedIn}")
+    public void importPackageToRepository(byte[] data,
+                                          boolean importAsNew) {
+
+        repository.importPackageToRepository( data,
+                                              importAsNew );
     }
 
     /**
@@ -235,27 +267,31 @@ public class FileManagerUtils {
         boolean existing = false;
         if ( repository.containsPackage( imp.getPackageName() ) ) {
             pkg = repository.loadPackage( imp.getPackageName() );
-            ServiceImplementation.updateDroolsHeader(ClassicDRLImporter.mergeLines(ServiceImplementation.getDroolsHeader(pkg), imp.getPackageHeader()), pkg);
+            ServiceImplementation.updateDroolsHeader( ClassicDRLImporter.mergeLines( ServiceImplementation.getDroolsHeader( pkg ),
+                                                                                     imp.getPackageHeader() ),
+                                                      pkg );
             existing = true;
         } else {
-            pkg = repository.createPackage( imp.getPackageName(), "<imported>" );
-            ServiceImplementation.updateDroolsHeader(imp.getPackageHeader(), pkg );
+            pkg = repository.createPackage( imp.getPackageName(),
+                                            "<imported>" );
+            ServiceImplementation.updateDroolsHeader( imp.getPackageHeader(),
+                                                      pkg );
         }
-
 
         for ( Asset as : imp.getAssets() ) {
 
             if ( existing && pkg.containsAsset( as.name ) ) {
-            	AssetItem asset = pkg.loadAsset(as.name);
-            	if (asset.getFormat().equals(as.format)) {
-            		asset.updateContent(as.content);
-            		asset.checkin("Imported change form external DRL");
-            	} //skip it if not the right format
+                AssetItem asset = pkg.loadAsset( as.name );
+                if ( asset.getFormat().equals( as.format ) ) {
+                    asset.updateContent( as.content );
+                    asset.checkin( "Imported change form external DRL" );
+                } //skip it if not the right format
 
             } else {
 
-                AssetItem asset = pkg.addAsset( as.name, "<imported>" );
-                asset.updateFormat(as.format);
+                AssetItem asset = pkg.addAsset( as.name,
+                                                "<imported>" );
+                asset.updateFormat( as.format );
 
                 asset.updateContent( as.content );
                 asset.updateExternalSource( "Imported from external DRL" );
@@ -268,45 +304,55 @@ public class FileManagerUtils {
     /**
      * This will return the last time the package was built.
      */
-    public long getLastModified(String name, String version) {
+    public long getLastModified(String name,
+                                String version) {
         PackageItem item = null;
-        if (version.equals( "LATEST" )) {
+        if ( version.equals( "LATEST" ) ) {
             item = repository.loadPackage( name );
         } else {
-            item = repository.loadPackageSnapshot( name, version );
+            item = repository.loadPackageSnapshot( name,
+                                                   version );
         }
         return item.getLastModified().getTimeInMillis();
     }
 
-	public String loadSourceAsset(String packageName, String packageVersion,
-			boolean isLatest, String assetName, ByteArrayOutputStream out) throws IOException {
+    public String loadSourceAsset(String packageName,
+                                  String packageVersion,
+                                  boolean isLatest,
+                                  String assetName,
+                                  ByteArrayOutputStream out) throws IOException {
         PackageItem pkg = null;
         if ( isLatest ) {
             pkg = repository.loadPackage( packageName );
         } else {
-            pkg = repository.loadPackageSnapshot( packageName, packageVersion );
+            pkg = repository.loadPackageSnapshot( packageName,
+                                                  packageVersion );
         }
 
-        AssetItem item = pkg.loadAsset(assetName);
+        AssetItem item = pkg.loadAsset( assetName );
         ContentHandler handler = ContentManager.getHandler( item.getFormat() );//new AssetContentFormatHandler();
         StringBuffer buf = new StringBuffer();
-        if (handler.isRuleAsset()) {
+        if ( handler.isRuleAsset() ) {
 
-            BRMSPackageBuilder builder = new BRMSPackageBuilder(new PackageBuilderConfiguration());
+            BRMSPackageBuilder builder = new BRMSPackageBuilder( new PackageBuilderConfiguration() );
             //now we load up the DSL files
-            builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( item.getPackage(), new BRMSPackageBuilder.DSLErrorEvent() {
-                public void recordError(AssetItem asset, String message) {
-                    //ignore at this point...
-                }
-            }));
-            ((IRuleAsset) handler).assembleDRL( builder, item, buf );
-            out.write(buf.toString().getBytes());
+            builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( item.getPackage(),
+                                                                        new BRMSPackageBuilder.DSLErrorEvent() {
+                                                                            public void recordError(AssetItem asset,
+                                                                                                    String message) {
+                                                                                //ignore at this point...
+                                                                            }
+                                                                        } ) );
+            ((IRuleAsset) handler).assembleDRL( builder,
+                                                item,
+                                                buf );
+            out.write( buf.toString().getBytes() );
             return item.getName() + ".drl";
         } else {
-        	out.write(item.getContent().getBytes());
-        	return item.getName() + ".drl";
+            out.write( item.getContent().getBytes() );
+            return item.getName() + ".drl";
         }
 
-	}
+    }
 
 }

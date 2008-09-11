@@ -12,10 +12,8 @@ import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.jcr.AccessDeniedException;
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.ItemExistsException;
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
@@ -23,13 +21,9 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.ValueFormatException;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
-import javax.jcr.version.VersionException;
 
 import org.apache.log4j.Logger;
 import org.drools.repository.migration.MigrateDroolsPackage;
@@ -67,7 +61,7 @@ import org.drools.repository.migration.MigrateDroolsPackage;
  */
 public class RulesRepository {
 
-    public static final String         DEFAULT_PACKAGE       = "defaultPackage";
+    public static final String  DEFAULT_PACKAGE       = "defaultPackage";
 
     public static final String  DROOLS_URI            = "http://www.jboss.org/drools-repository/1.0";
 
@@ -98,35 +92,33 @@ public class RulesRepository {
      */
     public final static String  RULES_REPOSITORY_NAME = "drools:repository";
 
-
     private Session             session;
 
-    static boolean initialized = false;
+    static boolean              initialized           = false;
 
     /**
      * This requires a JCR session be setup, and the repository be configured.
      */
-    public RulesRepository(
-                           Session session) {
+    public RulesRepository(Session session) {
         this.session = session;
-    	checkForDataMigration(this);
+        checkForDataMigration( this );
     }
 
     private synchronized static void checkForDataMigration(RulesRepository self) {
-    	if (initialized) return;
-    	if (self.session.getUserID().equals("anonymous")) return;
-    	try {
-    		MigrateDroolsPackage migration = new MigrateDroolsPackage();
-			if (migration.needsMigration(self)) {
-				migration.migrate(self);
-		    }
-		} catch (RepositoryException e) {
-			throw new RulesRepositoryException(e);
-		}
-    	initialized = true;
-	}
+        if ( initialized ) return;
+        if ( self.session.getUserID().equals( "anonymous" ) ) return;
+        try {
+            MigrateDroolsPackage migration = new MigrateDroolsPackage();
+            if ( migration.needsMigration( self ) ) {
+                migration.migrate( self );
+            }
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
+        }
+        initialized = true;
+    }
 
-	/**
+    /**
      * Will add a node named 'nodeName' of type 'type' to 'parent' if such a
      * node does not already exist.
      *
@@ -141,7 +133,9 @@ public class RulesRepository {
      *         node.
      * @throws RulesRepositoryException
      */
-    protected static Node addNodeIfNew(Node parent, String nodeName, String type) throws RulesRepositoryException {
+    protected static Node addNodeIfNew(Node parent,
+                                       String nodeName,
+                                       String type) throws RulesRepositoryException {
         Node node;
         try {
             node = parent.getNode( nodeName );
@@ -150,13 +144,16 @@ public class RulesRepository {
             try {
                 log.debug( new StringBuilder().append( "Adding new node of type: " ).append( type ).append( " named: " ).append( nodeName ).append( " to parent node named " ).append( parent.getName() ) );
 
-                node = parent.addNode( nodeName, type );
+                node = parent.addNode( nodeName,
+                                       type );
             } catch ( Exception e1 ) {
-                log.error( "Caught Exception", e );
+                log.error( "Caught Exception",
+                           e );
                 throw new RulesRepositoryException( e1 );
             }
         } catch ( Exception e ) {
-            log.error( "Caught Exception", e );
+            log.error( "Caught Exception",
+                       e );
             throw new RulesRepositoryException( e );
         }
         return node;
@@ -187,7 +184,8 @@ public class RulesRepository {
                     log.error( "Unable to correct repository corruption" );
                 }
             } catch ( Exception e ) {
-                log.error( "Caught Exception", e );
+                log.error( "Caught Exception",
+                           e );
                 throw new RulesRepositoryException( "Caught exception " + e.getClass().getName(),
                                                     e );
             }
@@ -332,24 +330,30 @@ public class RulesRepository {
      * This will copy an assets content to the new location.
      * @return the UUID of the new asset.
      */
-    public String copyAsset(String uuidSource, String destinationPackage, String destinationName) {
+    public String copyAsset(String uuidSource,
+                            String destinationPackage,
+                            String destinationName) {
         try {
             AssetItem source = loadAssetByUUID( uuidSource );
             String sourcePath = source.getNode().getPath();
 
             String destPath = this.getAreaNode( RULE_PACKAGE_AREA ).getPath() + "/" + destinationPackage + "/" + PackageItem.ASSET_FOLDER_NAME + "/" + destinationName;
-            this.session.getWorkspace().copy( sourcePath, destPath );
+            this.session.getWorkspace().copy( sourcePath,
+                                              destPath );
             AssetItem dest = loadPackage( destinationPackage ).loadAsset( destinationName );
-//            if (dest.getContent() != null ) {
-//                dest.updateContent( dest.getContent().replaceAll( source.getName(), dest.getName() ) );
-//            }
+            //            if (dest.getContent() != null ) {
+            //                dest.updateContent( dest.getContent().replaceAll( source.getName(), dest.getName() ) );
+            //            }
 
-            dest.updateStringProperty( destinationPackage, AssetItem.PACKAGE_NAME_PROPERTY );
-            dest.node.setProperty( AssetItem.VERSION_NUMBER_PROPERTY_NAME, 0 );
+            dest.updateStringProperty( destinationPackage,
+                                       AssetItem.PACKAGE_NAME_PROPERTY );
+            dest.node.setProperty( AssetItem.VERSION_NUMBER_PROPERTY_NAME,
+                                   0 );
             dest.checkin( "Copied from " + source.getPackageName() + "/" + source.getName() );
             return dest.getUUID();
         } catch ( RepositoryException e ) {
-            log.error( "Unable to copy asset.", e );
+            log.error( "Unable to copy asset.",
+                       e );
             throw new RulesRepositoryException( e );
         }
     }
@@ -370,7 +374,8 @@ public class RulesRepository {
             return new PackageItem( this,
                                     rulePackageNode );
         } catch ( RepositoryException e ) {
-            log.error( "Unable to load a rule package. ", e );
+            log.error( "Unable to load a rule package. ",
+                       e );
 
             throw new RulesRepositoryException( "Unable to load a rule package. ",
                                                 e );
@@ -390,21 +395,21 @@ public class RulesRepository {
         }
     }
 
-
-    public boolean containsSnapshot(String packageName, String snapshotName) {
-    	try {
-    		Node areaNode = this.getAreaNode(PACKAGE_SNAPSHOT_AREA );
-    		if (!areaNode.hasNode(packageName)) return false;
-	    	Node n = areaNode.getNode( packageName );
-	    	return n.hasNode(snapshotName);
-    	} catch (RepositoryException e) {
-    		log.error(e);
-    		throw new RulesRepositoryException(e);
-    	}
+    public boolean containsSnapshot(String packageName,
+                                    String snapshotName) {
+        try {
+            Node areaNode = this.getAreaNode( PACKAGE_SNAPSHOT_AREA );
+            if ( !areaNode.hasNode( packageName ) ) return false;
+            Node n = areaNode.getNode( packageName );
+            return n.hasNode( snapshotName );
+        } catch ( RepositoryException e ) {
+            log.error( e );
+            throw new RulesRepositoryException( e );
+        }
     }
 
-
-    public PackageItem loadPackageSnapshot(String packageName, String snapshotName) {
+    public PackageItem loadPackageSnapshot(String packageName,
+                                           String snapshotName) {
         try {
             Node n = this.getAreaNode( PACKAGE_SNAPSHOT_AREA ).getNode( packageName ).getNode( snapshotName );
             return new PackageItem( this,
@@ -419,13 +424,15 @@ public class RulesRepository {
      * This will copy the package to the snapshot area. Creating a copy for
      * deployment, etc.
      */
-    public void createPackageSnapshot(String packageName, String snapshotName) {
+    public void createPackageSnapshot(String packageName,
+                                      String snapshotName) {
         log.debug( "Creating snapshot for [" + packageName + "] called [" + snapshotName + "]" );
         try {
             Node snaps = this.getAreaNode( PACKAGE_SNAPSHOT_AREA );
 
             if ( !snaps.hasNode( packageName ) ) {
-                snaps.addNode( packageName, "nt:folder" );
+                snaps.addNode( packageName,
+                               "nt:folder" );
                 save();
             }
 
@@ -438,10 +445,12 @@ public class RulesRepository {
 
             String source = rulePackageNode.getPath();
 
-            this.session.getWorkspace().copy( source, newName );
+            this.session.getWorkspace().copy( source,
+                                              newName );
 
         } catch ( RepositoryException e ) {
-            log.error( "Unable to create snapshot", e );
+            log.error( "Unable to create snapshot",
+                       e );
             throw new RulesRepositoryException( e );
         }
     }
@@ -449,7 +458,8 @@ public class RulesRepository {
     /**
      * This will remove the specified snapshot.
      */
-    public void removePackageSnapshot(String packageName, String snapshotName) {
+    public void removePackageSnapshot(String packageName,
+                                      String snapshotName) {
         log.debug( "Removing snapshot for [" + packageName + "] called [" + snapshotName + "]" );
         try {
             Node snaps = this.getAreaNode( PACKAGE_SNAPSHOT_AREA );
@@ -466,7 +476,8 @@ public class RulesRepository {
 
             save();
         } catch ( RepositoryException e ) {
-            log.error( "Unable to remove snapshot", e );
+            log.error( "Unable to remove snapshot",
+                       e );
             throw new RulesRepositoryException( e );
         }
     }
@@ -481,7 +492,9 @@ public class RulesRepository {
      * @param newName
      *            The new label. The old one is left intact.
      */
-    public void copyPackageSnapshot(String packageName, String snapshotName, String newName) {
+    public void copyPackageSnapshot(String packageName,
+                                    String snapshotName,
+                                    String newName) {
         log.debug( "Creating snapshot for [" + packageName + "] called [" + snapshotName + "]" );
         try {
             Node snaps = this.getAreaNode( PACKAGE_SNAPSHOT_AREA );
@@ -492,9 +505,11 @@ public class RulesRepository {
 
             String destinationPath = pkgSnaps.getPath() + "/" + newName;
 
-            this.session.getWorkspace().copy( sourceNode.getPath(), destinationPath );
+            this.session.getWorkspace().copy( sourceNode.getPath(),
+                                              destinationPath );
         } catch ( RepositoryException e ) {
-            log.error( "Unable to create snapshot", e );
+            log.error( "Unable to create snapshot",
+                       e );
             throw new RulesRepositoryException( e );
         }
     }
@@ -509,7 +524,8 @@ public class RulesRepository {
             if ( folderNode.hasNode( DEFAULT_PACKAGE ) ) {
                 return loadPackage( DEFAULT_PACKAGE );
             } else {
-                return createPackage( DEFAULT_PACKAGE, "" );
+                return createPackage( DEFAULT_PACKAGE,
+                                      "" );
             }
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
@@ -531,7 +547,8 @@ public class RulesRepository {
             return new PackageItem( this,
                                     rulePackageNode );
         } catch ( Exception e ) {
-            log.error( "Unable to load a rule package by UUID. ", e );
+            log.error( "Unable to load a rule package by UUID. ",
+                       e );
             if ( e instanceof RuntimeException ) {
                 throw (RuntimeException) e;
             } else {
@@ -549,20 +566,25 @@ public class RulesRepository {
      * @param headVersion
      * @param comment
      */
-    public void restoreHistoricalAsset(AssetItem versionToRestore, AssetItem headVersion, String comment) {
+    public void restoreHistoricalAsset(AssetItem versionToRestore,
+                                       AssetItem headVersion,
+                                       String comment) {
 
         long oldVersionNumber = headVersion.getVersionNumber();
 
         Object vToRestore = versionToRestore.getNode();
         Version v = (Version) vToRestore;
         try {
-            headVersion.getNode().restore( v, true );
+            headVersion.getNode().restore( v,
+                                           true );
             AssetItem newHead = loadAssetByUUID( headVersion.getUUID() );
             newHead.checkout();
-            newHead.getNode().setProperty( VersionableItem.VERSION_NUMBER_PROPERTY_NAME, oldVersionNumber );
+            newHead.getNode().setProperty( VersionableItem.VERSION_NUMBER_PROPERTY_NAME,
+                                           oldVersionNumber );
             newHead.checkin( comment );
         } catch ( RepositoryException e ) {
-            log.error( "Unable to restore version of asset.", e );
+            log.error( "Unable to restore version of asset.",
+                       e );
             throw new RulesRepositoryException( e );
         }
     }
@@ -576,7 +598,8 @@ public class RulesRepository {
             return new AssetItem( this,
                                   rulePackageNode );
         } catch ( RepositoryException e ) {
-            log.error( "Unable to load a rule asset by UUID.", e );
+            log.error( "Unable to load a rule asset by UUID.",
+                       e );
             throw new RulesRepositoryException( e );
         }
 
@@ -592,23 +615,31 @@ public class RulesRepository {
      * @return a PackageItem, encapsulating the created node
      * @throws RulesRepositoryException
      */
-    public PackageItem createPackage(String name, String description) throws RulesRepositoryException {
+    public PackageItem createPackage(String name,
+                                     String description) throws RulesRepositoryException {
         Node folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
 
         try {
             // create the node - see section 6.7.22.6 of the spec
-            Node rulePackageNode = folderNode.addNode( name, PackageItem.RULE_PACKAGE_TYPE_NAME );
+            Node rulePackageNode = folderNode.addNode( name,
+                                                       PackageItem.RULE_PACKAGE_TYPE_NAME );
 
-            rulePackageNode.addNode( PackageItem.ASSET_FOLDER_NAME, "drools:versionableAssetFolder" );
+            rulePackageNode.addNode( PackageItem.ASSET_FOLDER_NAME,
+                                     "drools:versionableAssetFolder" );
 
-            rulePackageNode.setProperty( PackageItem.TITLE_PROPERTY_NAME, name );
+            rulePackageNode.setProperty( PackageItem.TITLE_PROPERTY_NAME,
+                                         name );
 
-            rulePackageNode.setProperty( AssetItem.DESCRIPTION_PROPERTY_NAME, description );
-            rulePackageNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME, PackageItem.PACKAGE_FORMAT );
-            rulePackageNode.setProperty( PackageItem.CREATOR_PROPERTY_NAME, this.session.getUserID() );
+            rulePackageNode.setProperty( AssetItem.DESCRIPTION_PROPERTY_NAME,
+                                         description );
+            rulePackageNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME,
+                                         PackageItem.PACKAGE_FORMAT );
+            rulePackageNode.setProperty( PackageItem.CREATOR_PROPERTY_NAME,
+                                         this.session.getUserID() );
 
             Calendar lastModified = Calendar.getInstance();
-            rulePackageNode.setProperty( PackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified );
+            rulePackageNode.setProperty( PackageItem.LAST_MODIFIED_PROPERTY_NAME,
+                                         lastModified );
 
             PackageItem item = new PackageItem( this,
                                                 rulePackageNode );
@@ -619,7 +650,8 @@ public class RulesRepository {
             throw new RulesRepositoryException( "A package name must be unique.",
                                                 e );
         } catch ( RepositoryException e ) {
-            log.error( "Error when creating a new rule package", e );
+            log.error( "Error when creating a new rule package",
+                       e );
             throw new RulesRepositoryException( e );
         }
 
@@ -657,7 +689,9 @@ public class RulesRepository {
     public StateItem createState(String name) {
         try {
             Node folderNode = this.getAreaNode( STATE_AREA );
-            Node stateNode = RulesRepository.addNodeIfNew( folderNode, name, StateItem.STATE_NODE_TYPE_NAME );
+            Node stateNode = RulesRepository.addNodeIfNew( folderNode,
+                                                           name,
+                                                           StateItem.STATE_NODE_TYPE_NAME );
             log.debug( "Created the status [" + name + "]" );
             return new StateItem( this,
                                   stateNode );
@@ -716,8 +750,15 @@ public class RulesRepository {
      * yourself... mahahahaha).
      *
      */
-    public AssetPageList findAssetsByCategory(String categoryTag, boolean seekArchivedAsset, int skip, int numRowsToReturn) throws RulesRepositoryException {
-    	return findAssetsByCategory(categoryTag, seekArchivedAsset, skip, numRowsToReturn, null);
+    public AssetPageList findAssetsByCategory(String categoryTag,
+                                              boolean seekArchivedAsset,
+                                              int skip,
+                                              int numRowsToReturn) throws RulesRepositoryException {
+        return findAssetsByCategory( categoryTag,
+                                     seekArchivedAsset,
+                                     skip,
+                                     numRowsToReturn,
+                                     null );
     }
 
     /**
@@ -729,12 +770,19 @@ public class RulesRepository {
      * Pass in startRow of 0 to start at zero, numRowsToReturn can be set to -1 should you want it all.
      * @param filter an AssetItem filter
      */
-    public AssetPageList findAssetsByCategory(String categoryTag, boolean seekArchivedAsset, int skip, int numRowsToReturn, RepositoryFilter filter) throws RulesRepositoryException {
+    public AssetPageList findAssetsByCategory(String categoryTag,
+                                              boolean seekArchivedAsset,
+                                              int skip,
+                                              int numRowsToReturn,
+                                              RepositoryFilter filter) throws RulesRepositoryException {
         CategoryItem item = this.loadCategory( categoryTag );
 
         try {
-            return loadLinkedAssets(seekArchivedAsset, skip, numRowsToReturn,
-					item.getNode(), filter);
+            return loadLinkedAssets( seekArchivedAsset,
+                                     skip,
+                                     numRowsToReturn,
+                                     item.getNode(),
+                                     filter );
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
@@ -744,8 +792,15 @@ public class RulesRepository {
      * Finds the AssetItem's linked to the requested state.
      * Similar to finding by category.
      */
-    public AssetPageList findAssetsByState(String stateName, boolean seekArchivedAsset, int skip, int numRowsToReturn) throws RulesRepositoryException {
-    	return findAssetsByState(stateName, seekArchivedAsset, skip, numRowsToReturn, null);
+    public AssetPageList findAssetsByState(String stateName,
+                                           boolean seekArchivedAsset,
+                                           int skip,
+                                           int numRowsToReturn) throws RulesRepositoryException {
+        return findAssetsByState( stateName,
+                                  seekArchivedAsset,
+                                  skip,
+                                  numRowsToReturn,
+                                  null );
     }
 
     /**
@@ -754,49 +809,64 @@ public class RulesRepository {
      * @param filter an AssetItem filter
      *
      */
-    public AssetPageList findAssetsByState(String stateName, boolean seekArchivedAsset, int skip, int numRowsToReturn, RepositoryFilter filter) throws RulesRepositoryException {
-    	StateItem item = this.getState(stateName);
+    public AssetPageList findAssetsByState(String stateName,
+                                           boolean seekArchivedAsset,
+                                           int skip,
+                                           int numRowsToReturn,
+                                           RepositoryFilter filter) throws RulesRepositoryException {
+        StateItem item = this.getState( stateName );
         try {
-            return loadLinkedAssets(seekArchivedAsset, skip, numRowsToReturn,
-					item.getNode(), filter);
+            return loadLinkedAssets( seekArchivedAsset,
+                                     skip,
+                                     numRowsToReturn,
+                                     item.getNode(),
+                                     filter );
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
     }
 
-	private AssetPageList loadLinkedAssets(boolean seekArchivedAsset, int skip,
-			int numRowsToReturn, Node n, RepositoryFilter filter)
-			throws RepositoryException {
-		int rows = 0;
+    private AssetPageList loadLinkedAssets(boolean seekArchivedAsset,
+                                           int skip,
+                                           int numRowsToReturn,
+                                           Node n,
+                                           RepositoryFilter filter) throws RepositoryException {
+        int rows = 0;
         List<AssetItem> results = new ArrayList<AssetItem>();
 
+        PropertyIterator it = n.getReferences();
+        if ( skip > 0 ) it.skip( skip );
 
-		PropertyIterator it = n.getReferences();
-		if (skip > 0) it.skip(skip);
+        while ( it.hasNext() && (numRowsToReturn == -1 || rows < numRowsToReturn) ) {
 
-		while ( it.hasNext() && (numRowsToReturn == -1 || rows < numRowsToReturn)) {
+            Property ruleLink = (Property) it.next();
 
-		    Property ruleLink = (Property) it.next();
+            Node parentNode = ruleLink.getParent();
+            if ( isNotSnapshot( parentNode ) && parentNode.getPrimaryNodeType().getName().equals( AssetItem.RULE_NODE_TYPE_NAME ) ) {
+                if ( seekArchivedAsset || !parentNode.getProperty( AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG ).getBoolean() ) {
+                    AssetItem ai = new AssetItem( this,
+                                                  parentNode );
+                    if ( filter == null || filter.accept( ai,
+                                                          "package.readonly" ) ) {
+                        results.add( ai );
+                        rows++;
+                    }
+                }
+            }
+        }
 
-		    Node parentNode = ruleLink.getParent();
-		    if ( isNotSnapshot( parentNode ) && parentNode.getPrimaryNodeType().getName().equals( AssetItem.RULE_NODE_TYPE_NAME ) ) {
-		        if ( seekArchivedAsset || !parentNode.getProperty( AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG ).getBoolean() ) {
-		        	AssetItem ai = new AssetItem( this, parentNode );
-		        	if(filter == null || filter.accept(ai, "package.readonly")) {
-		        		results.add(ai);
-		        		rows++;
-		        	}
-		        }
-		    }
-		}
-
-		return new AssetPageList(results, it);
-	}
-
-    public AssetPageList findAssetsByCategory(String categoryTag, int skip, int numRowsToReturn) throws RulesRepositoryException {
-        return this.findAssetsByCategory( categoryTag, false, skip, numRowsToReturn );
+        return new AssetPageList( results,
+                                  it );
     }
 
+    public AssetPageList findAssetsByCategory(String categoryTag,
+                                              int skip,
+                                              int numRowsToReturn) throws RulesRepositoryException {
+        return this.findAssetsByCategory( categoryTag,
+                                          false,
+                                          skip,
+                                          numRowsToReturn );
+    }
 
     public byte[] exportRulesRepository() throws IOException,
                                          PathNotFoundException,
@@ -812,12 +882,41 @@ public class RulesRepository {
         return bout.toByteArray();
     }
 
+    public byte[] exportPackageFromRepository(String packageName) throws IOException,
+                                                                 PathNotFoundException,
+                                                                 RepositoryException {
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ZipOutputStream zout = new ZipOutputStream( bout );
+
+        zout.putNextEntry( new ZipEntry( "repository_export.xml" ) );
+        zout.write( dumpPackageFromRepositoryXml( packageName ) );
+        zout.closeEntry();
+        zout.finish();
+        return bout.toByteArray();
+    }
+
     public byte[] dumpRepositoryXml() throws PathNotFoundException,
                                      IOException,
                                      RepositoryException {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         session.refresh( false );
-        session.exportSystemView( "/" + RULES_REPOSITORY_NAME, byteOut, false, false );
+        session.exportSystemView( "/" + RULES_REPOSITORY_NAME,
+                                  byteOut,
+                                  false,
+                                  false );
+        return byteOut.toByteArray();
+    }
+
+    public byte[] dumpPackageFromRepositoryXml(String packageName) throws PathNotFoundException,
+                                                                  IOException,
+                                                                  RepositoryException {
+        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        session.refresh( false );
+        session.exportSystemView( "/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/" + packageName,
+                                  byteOut,
+                                  false,
+                                  false );
         return byteOut.toByteArray();
     }
 
@@ -828,11 +927,40 @@ public class RulesRepository {
     public void importRulesRepository(byte[] byteArray) {
         try {
             new RulesRepositoryAdministrator( this.session ).clearRulesRepository();
-            this.session.getWorkspace().importXML( "/", new ByteArrayInputStream( byteArray ), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW );
+            this.session.getWorkspace().importXML( "/",
+                                                   new ByteArrayInputStream( byteArray ),
+                                                   ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW );
             session.save();
             MigrateDroolsPackage mig = new MigrateDroolsPackage();
-            if (mig.needsMigration(this)) {
-            	mig.migrate(this);
+            if ( mig.needsMigration( this ) ) {
+                mig.migrate( this );
+            }
+        } catch ( RepositoryException e ) {
+            e.printStackTrace();
+            throw new RulesRepositoryException();
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+    }
+
+    public void importPackageToRepository(byte[] byteArray,
+                                          boolean importAsNew) {
+        try {
+            if ( importAsNew ) {
+                this.session.getWorkspace().importXML( "/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/",
+                                                       new ByteArrayInputStream( byteArray ),
+                                                       ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW );
+
+            } else {
+
+                this.session.getWorkspace().importXML( "/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/",
+                                                       new ByteArrayInputStream( byteArray ),
+                                                       ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING );
+            }
+            session.save();
+            MigrateDroolsPackage mig = new MigrateDroolsPackage();
+            if ( mig.needsMigration( this ) ) {
+                mig.migrate( this );
             }
         } catch ( RepositoryException e ) {
             e.printStackTrace();
@@ -860,12 +988,13 @@ public class RulesRepository {
         Node folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
 
         try {
-        	synchronized (RulesRepository.class) {
-        		if ( !folderNode.hasNode( DEFAULT_PACKAGE ) ) {
-        			createPackage( DEFAULT_PACKAGE, "The default rule package" );
-        			folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
-        		}
-        	}
+            synchronized ( RulesRepository.class ) {
+                if ( !folderNode.hasNode( DEFAULT_PACKAGE ) ) {
+                    createPackage( DEFAULT_PACKAGE,
+                                   "The default rule package" );
+                    folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
+                }
+            }
             return new PackageIterator( this,
                                         folderNode.getNodes() );
         } catch ( RepositoryException e ) {
@@ -907,7 +1036,9 @@ public class RulesRepository {
      * @param explanation
      *            The reason (which will be added as the checkin message).
      */
-    public void moveRuleItemPackage(String newPackage, String uuid, String explanation) {
+    public void moveRuleItemPackage(String newPackage,
+                                    String uuid,
+                                    String explanation) {
         try {
             AssetItem item = loadAssetByUUID( uuid );
 
@@ -916,10 +1047,12 @@ public class RulesRepository {
             String sourcePath = item.node.getPath();
             String destPath = destPkg.node.getPath() + "/" + PackageItem.ASSET_FOLDER_NAME + "/" + item.getName();
 
-            this.session.move( sourcePath, destPath );
+            this.session.move( sourcePath,
+                               destPath );
 
             item.checkout();
-            item.node.setProperty( AssetItem.PACKAGE_NAME_PROPERTY, newPackage );
+            item.node.setProperty( AssetItem.PACKAGE_NAME_PROPERTY,
+                                   newPackage );
 
             item.checkin( explanation );
 
@@ -933,20 +1066,21 @@ public class RulesRepository {
      * This will rename an assset and apply the change immediately.
      * @return the UUID of the new asset
      */
-    public String renameAsset(String uuid, String newAssetName) {
+    public String renameAsset(String uuid,
+                              String newAssetName) {
         try {
             AssetItem itemOriginal = loadAssetByUUID( uuid );
             log.info( "Renaming asset: " + itemOriginal.getNode().getPath() + " to " + newAssetName );
             Node node = itemOriginal.getNode();
             String sourcePath = node.getPath();
             String destPath = node.getParent().getPath() + "/" + newAssetName;
-            this.session.move( sourcePath, destPath );
-
+            this.session.move( sourcePath,
+                               destPath );
 
             itemOriginal.updateTitle( newAssetName );
-            itemOriginal.checkin( "Renamed asset " +  itemOriginal.getName());
+            itemOriginal.checkin( "Renamed asset " + itemOriginal.getName() );
             return itemOriginal.getUUID();
-        } catch (RepositoryException e) {
+        } catch ( RepositoryException e ) {
             log.error( e );
             throw new RulesRepositoryException( e );
         }
@@ -957,50 +1091,52 @@ public class RulesRepository {
      * @param originalPath The full path to the category.
      * @param newName The new name (just the name, not the path).
      */
-    public void renameCategory(String originalPath, String newName) {
-    	try {
-	    	CategoryItem cat = loadCategory(originalPath);
-	        Node node = cat.getNode();
-	        String sourcePath = node.getPath();
-	        String destPath = node.getParent().getPath() + "/" + newName;
-	        this.session.move(sourcePath, destPath);
-	        save();
-    	} catch (RepositoryException e) {
-    		log.error(e);
-    		throw new RulesRepositoryException(e);
-    	}
+    public void renameCategory(String originalPath,
+                               String newName) {
+        try {
+            CategoryItem cat = loadCategory( originalPath );
+            Node node = cat.getNode();
+            String sourcePath = node.getPath();
+            String destPath = node.getParent().getPath() + "/" + newName;
+            this.session.move( sourcePath,
+                               destPath );
+            save();
+        } catch ( RepositoryException e ) {
+            log.error( e );
+            throw new RulesRepositoryException( e );
+        }
     }
-
-
 
     /**
      * This will rename a package and apply the change immediately.
      * @return the UUID of the package
      */
-    public String renamePackage(String uuid, String newPackageName) {
+    public String renamePackage(String uuid,
+                                String newPackageName) {
         try {
             PackageItem itemOriginal = loadPackageByUUID( uuid );
             log.info( "Renaming package: " + itemOriginal.getNode().getPath() + " to " + newPackageName );
             Node node = itemOriginal.getNode();
             String sourcePath = node.getPath();
             String destPath = node.getParent().getPath() + "/" + newPackageName;
-            this.session.move( sourcePath, destPath );
-
+            this.session.move( sourcePath,
+                               destPath );
 
             itemOriginal.updateTitle( newPackageName );
-            itemOriginal.checkin( "Renamed package " +  itemOriginal.getName());
+            itemOriginal.checkin( "Renamed package " + itemOriginal.getName() );
 
-            PackageItem newPkg = loadPackage(newPackageName);
+            PackageItem newPkg = loadPackage( newPackageName );
 
             for ( Iterator iter = newPkg.getAssets(); iter.hasNext(); ) {
                 AssetItem as = (AssetItem) iter.next();
-                as.updateStringProperty( newPackageName, AssetItem.PACKAGE_NAME_PROPERTY );
+                as.updateStringProperty( newPackageName,
+                                         AssetItem.PACKAGE_NAME_PROPERTY );
             }
 
             save();
 
             return itemOriginal.getUUID();
-        } catch (RepositoryException e) {
+        } catch ( RepositoryException e ) {
             log.error( e );
             throw new RulesRepositoryException( e );
         }
@@ -1036,7 +1172,8 @@ public class RulesRepository {
             sql += " jcr:path LIKE '/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/%'";
             sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'true'";
 
-            Query q = this.session.getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
+            Query q = this.session.getWorkspace().getQueryManager().createQuery( sql,
+                                                                                 Query.SQL );
 
             QueryResult res = q.execute();
 
@@ -1048,11 +1185,11 @@ public class RulesRepository {
         }
     }
 
-
     /**
      * This will search assets, looking for matches against the name.
      */
-    public AssetItemIterator findAssetsByName(String name, boolean seekArchived) {
+    public AssetItemIterator findAssetsByName(String name,
+                                              boolean seekArchived) {
         try {
 
             String sql = "SELECT " + AssetItem.TITLE_PROPERTY_NAME + ", " + AssetItem.DESCRIPTION_PROPERTY_NAME + ", " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " FROM " + AssetItem.RULE_NODE_TYPE_NAME;
@@ -1063,7 +1200,8 @@ public class RulesRepository {
                 sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
             }
 
-            Query q = this.session.getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
+            Query q = this.session.getWorkspace().getQueryManager().createQuery( sql,
+                                                                                 Query.SQL );
 
             QueryResult res = q.execute();
 
@@ -1075,28 +1213,29 @@ public class RulesRepository {
         }
     }
 
-
     /**
      * This will search assets, looking for matches against the name.
      */
-    public AssetItemIterator queryFullText(String qry, boolean seekArchived) {
+    public AssetItemIterator queryFullText(String qry,
+                                           boolean seekArchived) {
         try {
 
-        	String searchPath = "/jcr:root/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA +"//element(*, " +AssetItem.RULE_NODE_TYPE_NAME + ")";
-        	if (seekArchived) {
-        		searchPath += "[jcr:contains(., '" + qry + "')]";
-        	} else {
-        		searchPath += "[jcr:contains(., '" + qry + "') and " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false']";
-        	}
-            Query q = this.session.getWorkspace().getQueryManager().createQuery( searchPath, Query.XPATH );
+            String searchPath = "/jcr:root/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "//element(*, " + AssetItem.RULE_NODE_TYPE_NAME + ")";
+            if ( seekArchived ) {
+                searchPath += "[jcr:contains(., '" + qry + "')]";
+            } else {
+                searchPath += "[jcr:contains(., '" + qry + "') and " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false']";
+            }
+            Query q = this.session.getWorkspace().getQueryManager().createQuery( searchPath,
+                                                                                 Query.XPATH );
             QueryResult res = q.execute();
-            return new AssetItemIterator(res.getNodes(), this);
+            return new AssetItemIterator( res.getNodes(),
+                                          this );
         } catch ( RepositoryException e ) {
             System.out.println( e.getMessage() );
             throw new RulesRepositoryException( e );
         }
     }
-
 
     /**
      * This will do a general predicate search.
@@ -1105,49 +1244,53 @@ public class RulesRepository {
      * @param maxRows - maximum number of rows to return;
      * @param seekArchived - include archived stuff in the results.
      */
-    public AssetItemIterator query(Map<String,String[]> params, boolean seekArchived, DateQuery[] dates) {
+    public AssetItemIterator query(Map<String, String[]> params,
+                                   boolean seekArchived,
+                                   DateQuery[] dates) {
         try {
 
             String sql = "SELECT " + AssetItem.TITLE_PROPERTY_NAME + ", " + AssetItem.DESCRIPTION_PROPERTY_NAME + ", " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " FROM " + AssetItem.RULE_NODE_TYPE_NAME;
             sql += " WHERE jcr:path LIKE '/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/%'";
-            for (Iterator<String> iterator = params.keySet().iterator(); iterator.hasNext();) {
-				String fld = iterator.next();
-				String[] options = params.get(fld);
-				if (options != null && options.length > 0) {
-					if (options.length > 1) {
-						sql += " AND (";
-						for (int i = 0; i < options.length; i++) {
-							sql += fld + " LIKE '" + options[i].replace("*", "%") + "'";
-							if (i < options.length -1) {
-								sql += " OR ";
-							}
-						}
-						sql += ")";
-					} else {
-						sql += " AND " + fld + " LIKE '" + options[0].replace("*", "%") + "'";
-					}
-				}
-			}
+            for ( Iterator<String> iterator = params.keySet().iterator(); iterator.hasNext(); ) {
+                String fld = iterator.next();
+                String[] options = params.get( fld );
+                if ( options != null && options.length > 0 ) {
+                    if ( options.length > 1 ) {
+                        sql += " AND (";
+                        for ( int i = 0; i < options.length; i++ ) {
+                            sql += fld + " LIKE '" + options[i].replace( "*",
+                                                                         "%" ) + "'";
+                            if ( i < options.length - 1 ) {
+                                sql += " OR ";
+                            }
+                        }
+                        sql += ")";
+                    } else {
+                        sql += " AND " + fld + " LIKE '" + options[0].replace( "*",
+                                                                               "%" ) + "'";
+                    }
+                }
+            }
             if ( seekArchived == false ) {
                 sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
             }
 
-            if (dates != null) {
-            	for (int i = 0; i < dates.length; i++) {
-					DateQuery d = dates[i];
-					if (d.after != null) {
-						sql += " AND " + d.field + " > TIMESTAMP '" + d.after + "'";
-					}
-					if (d.before != null) {
-						sql += " AND " + d.field + " < TIMESTAMP '" + d.before + "'";
-					}
-				}
+            if ( dates != null ) {
+                for ( int i = 0; i < dates.length; i++ ) {
+                    DateQuery d = dates[i];
+                    if ( d.after != null ) {
+                        sql += " AND " + d.field + " > TIMESTAMP '" + d.after + "'";
+                    }
+                    if ( d.before != null ) {
+                        sql += " AND " + d.field + " < TIMESTAMP '" + d.before + "'";
+                    }
+                }
             }
 
+            System.out.println( sql );
 
-            System.out.println(sql);
-
-            Query q = this.session.getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
+            Query q = this.session.getWorkspace().getQueryManager().createQuery( sql,
+                                                                                 Query.SQL );
 
             QueryResult res = q.execute();
 
@@ -1164,19 +1307,22 @@ public class RulesRepository {
      * @author Michael Neale
      */
     public static class DateQuery {
-		private String after;
-		private String before;
-		private String field;
-		public DateQuery(String field, String after, String before) {
-			this.field = field;
-    		this.after = after;
-    		this.before = before;
-    	}
+        private String after;
+        private String before;
+        private String field;
+
+        public DateQuery(String field,
+                         String after,
+                         String before) {
+            this.field = field;
+            this.after = after;
+            this.before = before;
+        }
     }
 
-
     public AssetItemIterator findAssetsByName(String name) {
-        return this.findAssetsByName( name, false );
+        return this.findAssetsByName( name,
+                                      false );
     }
 
     /**
@@ -1202,7 +1348,8 @@ public class RulesRepository {
     /**
      * Copy a package to the target name.
      */
-    public void copyPackage(String sourcePackageName, String destPackageName) {
+    public void copyPackage(String sourcePackageName,
+                            String destPackageName) {
         PackageItem source = loadPackage( sourcePackageName );
         String sourcePath;
 
@@ -1213,31 +1360,33 @@ public class RulesRepository {
             if ( this.getAreaNode( RULE_PACKAGE_AREA ).hasNode( destPackageName ) ) {
                 throw new RulesRepositoryException( "Destination already exists." );
             }
-            this.session.getWorkspace().copy( sourcePath, destPath );
+            this.session.getWorkspace().copy( sourcePath,
+                                              destPath );
 
             PackageItem newPkg = loadPackage( destPackageName );
 
             for ( Iterator iter = newPkg.getAssets(); iter.hasNext(); ) {
                 AssetItem as = (AssetItem) iter.next();
-                as.updateStringProperty( destPackageName, AssetItem.PACKAGE_NAME_PROPERTY );
+                as.updateStringProperty( destPackageName,
+                                         AssetItem.PACKAGE_NAME_PROPERTY );
             }
 
             save();
 
         } catch ( RepositoryException e ) {
             log.error( e );
-            throw new RulesRepositoryException(e);
+            throw new RulesRepositoryException( e );
         }
 
     }
 
     @Override
     protected void finalize() throws Throwable {
-    	//shouldn't rely on this... but
-    	try {
-    		this.logout();
-    	} catch (Exception e) {
-    		System.err.println("Finalizer error: " + e.getMessage());
-    	}
+        //shouldn't rely on this... but
+        try {
+            this.logout();
+        } catch ( Exception e ) {
+            System.err.println( "Finalizer error: " + e.getMessage() );
+        }
     }
 }

@@ -1,4 +1,5 @@
 package org.drools.guvnor.server.files;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,8 +16,6 @@ package org.drools.guvnor.server.files;
  * limitations under the License.
  */
 
-
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -28,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.server.util.FormData;
-import org.drools.repository.RulesRepository;
 
 /**
  *
@@ -40,8 +38,8 @@ import org.drools.repository.RulesRepository;
 public class RepositoryBackupServlet extends RepositoryServlet {
 
     private static final long serialVersionUID = 400L;
-    //final FileManagerUtils uploadHelper = new FileManagerUtils();
 
+    //final FileManagerUtils uploadHelper = new FileManagerUtils();
 
     /**
      * This accepts a repository, and will apply it.
@@ -51,7 +49,17 @@ public class RepositoryBackupServlet extends RepositoryServlet {
                                                        IOException {
         response.setContentType( "text/html" );
         FormData uploadItem = FileManagerUtils.getFormData( request );
-        response.getWriter().write(processImportRepository( uploadItem.getFile().getInputStream() ));
+
+        String packageImport = request.getParameter( "packageImport" );
+
+        if ( "true".equals( packageImport ) ) {
+            boolean importAsNew = "true".equals( request.getParameter( "importAsNew" ) );
+
+            response.getWriter().write( processImportPackage( uploadItem.getFile().getInputStream(),
+                                                              importAsNew ) );
+        } else {
+            response.getWriter().write( processImportRepository( uploadItem.getFile().getInputStream() ) );
+        }
     }
 
     /**
@@ -60,14 +68,24 @@ public class RepositoryBackupServlet extends RepositoryServlet {
     protected void doGet(HttpServletRequest req,
                          HttpServletResponse res) throws ServletException,
                                                  IOException {
-            try {
-                processExportRepositoryDownload(res);
-            } catch ( Exception e ) {
-                e.printStackTrace( new PrintWriter( res.getOutputStream() ) );
+        try {
+            String packageName = req.getParameter( "packageName" );
+
+            if ( packageName == null ) {
+                processExportRepositoryDownload( res );
+            } else {
+                processExportPackageFromRepositoryDownload( res,
+                                                            packageName );
             }
+
+        } catch ( Exception e ) {
+            e.printStackTrace( new PrintWriter( res.getOutputStream() ) );
+        }
     }
 
-    private void processExportRepositoryDownload(HttpServletResponse res) throws PathNotFoundException, IOException, RepositoryException {
+    private void processExportRepositoryDownload(HttpServletResponse res) throws PathNotFoundException,
+                                                                         IOException,
+                                                                         RepositoryException {
         res.setContentType( "application/zip" );
         res.setHeader( "Content-Disposition",
                        "inline; filename=repository_export.zip;" );
@@ -76,11 +94,31 @@ public class RepositoryBackupServlet extends RepositoryServlet {
         res.getOutputStream().flush();
     }
 
+    private void processExportPackageFromRepositoryDownload(HttpServletResponse res,
+                                                            String packageName) throws PathNotFoundException,
+                                                                               IOException,
+                                                                               RepositoryException {
+        res.setContentType( "application/zip" );
+        res.setHeader( "Content-Disposition",
+                       "inline; filename=repository_export.zip;" );
+
+        res.getOutputStream().write( getFileManager().exportPackageFromRepository( packageName ) );
+        res.getOutputStream().flush();
+    }
 
     private String processImportRepository(InputStream file) throws IOException {
         byte[] byteArray = new byte[file.available()];
         file.read( byteArray );
         getFileManager().importRulesRepository( byteArray );
+        return "OK";
+    }
+
+    private String processImportPackage(InputStream file,
+                                        boolean importAsNew) throws IOException {
+        byte[] byteArray = new byte[file.available()];
+        file.read( byteArray );
+        getFileManager().importPackageToRepository( byteArray,
+                                                    importAsNew );
         return "OK";
     }
 
