@@ -24,7 +24,7 @@ import org.drools.guvnor.client.security.Capabilities;
 public class CategoriesPanel extends GenericPanel {
 
     public CategoriesPanel(ExplorerViewCenterPanel tabbedPanel) {
-        super("Categories", tabbedPanel);
+        super("Assets view", tabbedPanel);
         setIconCls("nav-categories");
 
         Toolbar rulesToolBar = new Toolbar();

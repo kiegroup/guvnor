@@ -39,7 +39,7 @@ public class ExplorerLayoutManager {
         dock.add(uif, DockPanel.EAST);
         dock.setStyleName("header");
         dock.setWidth("100%");
-        
+
         ExplorerLayoutManager.capabilities = caps;
 
         northPanel.add(dock);
@@ -63,6 +63,11 @@ public class ExplorerLayoutManager {
             accordion.add(tpPackageExplorer);
         }
 
+        Panel tpQA = new QAPanel(centertabbedPanel);
+        if (shouldShow(Capabilities.SHOW_QA)) {
+            accordion.add(tpQA);
+        }
+
         Panel tpDeployment = new DeploymentPanel(centertabbedPanel);
         if (shouldShow(Capabilities.SHOW_DEPLOYMENT, Capabilities.SHOW_DEPLOYMENT_NEW)) {
             accordion.add(tpDeployment);
@@ -73,10 +78,7 @@ public class ExplorerLayoutManager {
             accordion.add(tpAdmin);
         }
 
-        Panel tpQA = new QAPanel(centertabbedPanel);
-        if (shouldShow(Capabilities.SHOW_QA)) {
-            accordion.add(tpQA);
-        }
+
     }
 
     public Panel getBaseLayout() {

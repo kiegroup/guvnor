@@ -30,7 +30,7 @@ public class DeploymentPanel extends GenericPanel {
     private boolean deploymentPackagesLoaded = false;
 
     public DeploymentPanel(ExplorerViewCenterPanel tabbedPanel) {
-        super("Deployment", tabbedPanel);
+        super("Package snapshots", tabbedPanel);
         setIconCls("nav-deployment");
 
         final VerticalPanel deploymentPanel = new VerticalPanel();
@@ -47,7 +47,7 @@ public class DeploymentPanel extends GenericPanel {
                 }
             }
         });
-        
+
         add(deploymentPanel);
 
     }

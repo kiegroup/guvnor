@@ -29,9 +29,6 @@ public class ExplorerNodeConfig {
 		pkg.setAttribute("icon", "images/package.gif");
 
 
-        pkg.appendChild(makeItem( "Attachments",
-		                "images/test_manager.gif",
-		                               new String[]{AssetFormats.XML, AssetFormats.PROPERTIES} ) ) ;
 
         pkg.appendChild( makeItem( "Business rule assets",
                 "images/rule_asset.gif", AssetFormats.BUSINESS_RULE_FORMATS ) );
@@ -63,7 +60,13 @@ public class ExplorerNodeConfig {
 		                "images/test_manager.gif",
 
 		                               new String[]{AssetFormats.TEST_SCENARIO} ) ) ;
-        
+
+        pkg.appendChild(makeItem( "Attachments",
+                "images/new_file.gif",
+                               new String[]{AssetFormats.XML, AssetFormats.PROPERTIES} ) ) ;
+
+
+
         return pkg;
 	}
 
@@ -103,7 +106,7 @@ public class ExplorerNodeConfig {
 
 	public static TreeNode getRulesStructure () {
 		TreeNode tn = new TreeNode();
-		tn.setText("Rules");
+		tn.setText("Assets");
 		tn.setExpanded(true);
 
 		TreeNode tnc = new TreeNode();
@@ -121,7 +124,7 @@ public class ExplorerNodeConfig {
 	}
 
 	public static TreeNode getCategoriesStructure () {
-		final TreeNode treeNode = new TreeNode("Categories");
+		final TreeNode treeNode = new TreeNode("By Category");
 		treeNode.setAttribute("icon", "images/silk/chart_organisation.gif");
 		treeNode.setAttribute("id",CATEGORY_ID);
 		doCategoryNode(treeNode, "/");
@@ -180,7 +183,7 @@ public class ExplorerNodeConfig {
 
 	public static TreeNode getStatesStructure () {
 
-		final TreeNode treeNode = new TreeNode("Status");
+		final TreeNode treeNode = new TreeNode("By Status");
 		treeNode.setAttribute("icon", "images/status_small.gif");
 		treeNode.setAttribute("id",STATES_ID);
 
