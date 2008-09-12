@@ -5,9 +5,9 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.RulePackageSelector;
-import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
+import org.drools.guvnor.client.explorer.GenericPanel;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
@@ -187,7 +187,7 @@ public class SnapshotView extends Composite {
 		pkg.setUserObject(snapInfo);
 		TreeNode root = new TreeNode(snapInfo.name);
 		root.appendChild(pkg);
-		TreePanel tp = ExplorerLayoutManager.genericExplorerWidget(root);
+		TreePanel tp = GenericPanel.genericExplorerWidget(root);
 		tp.addListener(new TreePanelListenerAdapter() {
 
 			public void onClick(TreeNode node, EventObject e) {

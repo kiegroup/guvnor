@@ -6,6 +6,7 @@ import com.gwtext.client.widgets.menu.BaseItem;
 import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 import com.gwtext.client.core.EventObject;
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.explorer.GenericPanel;
 
 /**
  * TODO: this class should be generated via ant task:  'ant plug-editors'
@@ -14,7 +15,7 @@ import org.drools.guvnor.client.common.AssetFormats;
  */
 public class RulesNewMenu {
 
-    public static Menu getMenu(final ExplorerLayoutManager manager) {
+    public static Menu getMenu(final GenericPanel manager) {
         Menu m = new Menu();
 
         m.addItem(new Item("New Business Rule (Guided editor)", new BaseItemListenerAdapter() {
@@ -55,18 +56,6 @@ public class RulesNewMenu {
                         "Create a test scenario.", false);
             }
         }, "images/test_manager.gif"));
-
-        m.addItem(new Item("New Properties", new BaseItemListenerAdapter() {
-            public void onClick(BaseItem item, EventObject e) {
-                manager.launchWizard(AssetFormats.PROPERTIES, "New Properties", true);
-            }
-        }, "images/test_manager.gif"));   //TODO: use a new icon
-
-        m.addItem(new Item("New XML", new BaseItemListenerAdapter() {
-            public void onClick(BaseItem item, EventObject e) {
-                manager.launchWizard(AssetFormats.XML, "New XML", true);
-            }
-        }, "images/test_manager.gif"));   //TODO: use a new icon
 
         return m;
     }

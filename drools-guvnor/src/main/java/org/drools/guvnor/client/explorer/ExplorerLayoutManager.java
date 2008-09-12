@@ -1,72 +1,83 @@
 package org.drools.guvnor.client.explorer;
 
-import java.util.Iterator;
-
-import org.drools.guvnor.client.LoggedInUserInfo;
-import org.drools.guvnor.client.admin.ArchivedAssetManager;
-import org.drools.guvnor.client.admin.BackupManager;
-import org.drools.guvnor.client.admin.CategoryManager;
-import org.drools.guvnor.client.admin.LogViewer;
-import org.drools.guvnor.client.admin.PermissionViewer;
-import org.drools.guvnor.client.admin.StateManager;
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.packages.NewPackageWizard;
-import org.drools.guvnor.client.packages.SnapshotView;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
-import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
-import org.drools.guvnor.client.rulelist.AssetItemGrid;
-import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
-import org.drools.guvnor.client.security.Capabilities;
-
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Margins;
 import com.gwtext.client.core.RegionPosition;
-import com.gwtext.client.data.Node;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.QuickTips;
-import com.gwtext.client.widgets.Toolbar;
-import com.gwtext.client.widgets.ToolbarMenuButton;
-import com.gwtext.client.widgets.event.PanelListenerAdapter;
 import com.gwtext.client.widgets.form.Field;
 import com.gwtext.client.widgets.layout.AccordionLayout;
 import com.gwtext.client.widgets.layout.BorderLayout;
 import com.gwtext.client.widgets.layout.BorderLayoutData;
 import com.gwtext.client.widgets.layout.FitLayout;
-import com.gwtext.client.widgets.menu.BaseItem;
-import com.gwtext.client.widgets.menu.Item;
-import com.gwtext.client.widgets.menu.Menu;
-import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
-import com.gwtext.client.widgets.tree.event.TreePanelListener;
-import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
+import org.drools.guvnor.client.LoggedInUserInfo;
+import org.drools.guvnor.client.security.Capabilities;
 
 public class ExplorerLayoutManager {
 
-    private boolean packagesLoaded = false;
-	private boolean deploymentPackagesLoaded = false;
+    protected static Capabilities capabilities;
 
-    ExplorerViewCenterPanel centertabbedPanel;
+    private ExplorerViewCenterPanel centertabbedPanel;
 
-	private VerticalPanel packagesPanel;
+    private Panel northPanel;
+    private Panel accordion;
 
-	protected String currentPackage;
+    public ExplorerLayoutManager(LoggedInUserInfo uif, Capabilities caps) {
+        Field.setMsgTarget("side");
+        QuickTips.init();
 
-	private Panel northPanel;
+        centertabbedPanel = new ExplorerViewCenterPanel();
 
-	private Panel accordion;
+        //north
+        northPanel = new Panel();
+        DockPanel dock = new DockPanel();
+        dock.setVerticalAlignment(DockPanel.ALIGN_MIDDLE);
+        dock.add(new HTML("<div class='header'><img src='header_logo.gif' /></div>"), DockPanel.WEST);
+        dock.add(uif, DockPanel.EAST);
+        dock.setStyleName("header");
+        dock.setWidth("100%");
+        
+        ExplorerLayoutManager.capabilities = caps;
 
-	private static Capabilities capabilities;
+        northPanel.add(dock);
+        northPanel.setHeight(50);
+
+        // add a navigation for the west area
+        accordion = new Panel();
+        accordion.setLayout(new AccordionLayout(true));
+
+        createNavigationPanels();
+
+        centertabbedPanel.openFind();
+
+    }
+
+    private void createNavigationPanels() {
+        accordion.add(new CategoriesPanel(centertabbedPanel));
+
+        Panel tpPackageExplorer = new PackagesPanel(centertabbedPanel);
+        if (shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
+            accordion.add(tpPackageExplorer);
+        }
+
+        Panel tpDeployment = new DeploymentPanel(centertabbedPanel);
+        if (shouldShow(Capabilities.SHOW_DEPLOYMENT, Capabilities.SHOW_DEPLOYMENT_NEW)) {
+            accordion.add(tpDeployment);
+        }
+
+        Panel tpAdmin = new AdministrationPanel(centertabbedPanel);
+        if (shouldShow(Capabilities.SHOW_ADMIN)) {
+            accordion.add(tpAdmin);
+        }
+
+        Panel tpQA = new QAPanel(centertabbedPanel);
+        if (shouldShow(Capabilities.SHOW_QA)) {
+            accordion.add(tpQA);
+        }
+    }
 
     public Panel getBaseLayout() {
         Panel mainPanel = new Panel();
@@ -84,8 +95,6 @@ public class ExplorerLayoutManager {
         centerPanelWrappper.setBorder(false);
         centerPanelWrappper.setBodyBorder(false);
 
-
-
         //setup the west regions layout properties
         BorderLayoutData westLayoutData = new BorderLayoutData(RegionPosition.WEST);
         westLayoutData.setMargins(new Margins(5, 5, 0, 5));
@@ -94,723 +103,32 @@ public class ExplorerLayoutManager {
         westLayoutData.setMaxSize(350);
         westLayoutData.setSplit(true);
 
-
-
-
         //create the west panel and add it to the main panel applying the west region layout properties
         Panel westPanel = new Panel();
         westPanel.setId("side-nav");
         westPanel.setTitle("Navigate Guvnor");
-        //westPanel.setAutoScroll(true);
         westPanel.setLayout(new FitLayout());
         westPanel.setWidth(210);
-        westPanel.setCollapsible(true);;//MN createWestPanel();
+        westPanel.setCollapsible(true);//MN createWestPanel();
         westPanel.add(accordion);
         mainPanel.add(westPanel, westLayoutData);
 
         centerPanelWrappper.add(centertabbedPanel.getPanel());
 
         mainPanel.add(centerPanelWrappper, centerLayoutData);
-
-
-
         mainPanel.add(northPanel, northLayoutData);
 
-
         return mainPanel;
-
     }
 
-    public ExplorerLayoutManager(LoggedInUserInfo uif, Capabilities caps) {
-        Field.setMsgTarget("side");
-        QuickTips.init();
-
-        centertabbedPanel = new ExplorerViewCenterPanel();
-
-        //north
-        northPanel = new Panel();
-        DockPanel dock = new DockPanel();
-        dock.setVerticalAlignment(DockPanel.ALIGN_MIDDLE);
-        dock.add(new HTML("<div class='header'><img src='header_logo.gif' /></div>"),DockPanel.WEST);
-        dock.add(uif, DockPanel.EAST);
-        dock.setStyleName("header");
-        dock.setWidth("100%");
-        this.capabilities = caps;
-
-        northPanel.add(dock);
-        northPanel.setHeight(50);
-
-
-        // add a navigation for the west area
-        accordion = new Panel();
-        accordion.setLayout(new AccordionLayout(true));
-        //accordion.setId("side-nav");
-        //accordion.setTitle("Showcase Explorer");
-        //accordion.setLayout(new FitLayout());
-        //accordion.setWidth(210);
-        //accordion.setCollapsible(true);
-
-
-
-        Panel tpCategory = new Panel("Categories");
-        tpCategory.setIconCls("nav-categories");
-        accordion.add(tpCategory);
-
-
-        Panel tpPackageExplorer = new Panel("Packages");
-        tpPackageExplorer.setIconCls("nav-packages");
-
-        if (shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
-        	accordion.add(tpPackageExplorer);
-        }
-
-
-
-        Panel tpDeployment = new Panel("Deployment");
-        tpDeployment.setIconCls("nav-deployment");
-
-        if (shouldShow(Capabilities.SHOW_DEPLOYMENT, Capabilities.SHOW_DEPLOYMENT_NEW)) {
-        	accordion.add(tpDeployment);
-        }
-
-        Panel tpAdmin = new Panel("Administration");
-        tpAdmin.setIconCls("nav-admin");
-        if (shouldShow(Capabilities.SHOW_ADMIN)) {
-        	accordion.add(tpAdmin);
-        }
-
-        Panel tpQA = new Panel("QA");
-        tpQA.setIconCls("nav-qa");
-        if (shouldShow(Capabilities.SHOW_QA)) {
-        	accordion.add(tpQA);
-        }
-
-
-        packagesPanel = new VerticalPanel();
-        final VerticalPanel deploymentPanel = new VerticalPanel();
-        VerticalPanel adminPanel = new VerticalPanel();
-
-
-        /** **************************** */
-
-        TreePanel categoryTree = basicTreeStructure(ExplorerNodeConfig
-                .getRulesStructure(), new TreePanelListenerAdapter() {
-
-            public void onClick(final TreeNode self, EventObject e) {
-
-                //this refreshes the list.
-                if (self.getAttribute("id").equals(
-                        ExplorerNodeConfig.CATEGORY_ID)) {
-                    self.getParentNode().replaceChild(
-                            ExplorerNodeConfig.getCategoriesStructure(), self);
-                } else if (self.getAttribute("id").equals(
-                        ExplorerNodeConfig.STATES_ID)) {
-                    self.getParentNode().replaceChild(
-                            ExplorerNodeConfig.getStatesStructure(), self);
-                } else if (self.getAttribute("id").equals("FIND")) {
-                	centertabbedPanel.openFind();
-                } else {
-
-                    final String key = (String) self.getUserObject();
-                    final boolean isState = key.startsWith("-");
-
-                    if (!centertabbedPanel.showIfOpen(key)) {
-                        AssetItemGrid list = new AssetItemGrid(new EditItemEvent() {
-                            public void open(String uuid) {
-                                centertabbedPanel.openAsset( uuid);
-                            }
-                        },
-                        AssetItemGrid.RULE_LIST_TABLE_ID,
-                        new AssetItemGridDataLoader() {
-                            public void loadData(int skip, int numberOfRows, GenericCallback cb) {
-                            	if (isState) {
-                            		RepositoryServiceFactory.getService().loadRuleListForState(key.substring(1) , skip, numberOfRows, AssetItemGrid.RULE_LIST_TABLE_ID ,cb);
-                            	} else {
-                            		RepositoryServiceFactory.getService().loadRuleListForCategories(key, skip, numberOfRows, AssetItemGrid.RULE_LIST_TABLE_ID , cb);
-                            	}
-                            }
-                        }
-                        );
-
-                        centertabbedPanel.addTab(((isState) ?"State: " : "Category: ") + self.getText(), true, list, key);
-                    }
-
-                }
-
+    public static boolean shouldShow(Integer... capability) {
+        for (Integer cap : capability) {
+           if (capabilities.list.contains(cap)) {
+                return true;
             }
-        });
-        centertabbedPanel.openFind();
-
-
-
-
-        Toolbar rulesToolBar = new Toolbar();
-        rulesToolBar.addButton(new ToolbarMenuButton("Create New", RulesNewMenu.getMenu(this)));
-
-        VerticalPanel rulesPanel = new VerticalPanel();
-        if (shouldShow(Capabilities.SHOW_CREATE_NEW_ASSET)) {
-        	rulesPanel.add(rulesToolBar);
         }
-        rulesPanel.add(categoryTree);
-
-        rulesPanel.setWidth("100%");
-        tpCategory.add(rulesPanel);
-
-
-
-
-        Toolbar pkgToolbar = new Toolbar();
-        pkgToolbar.addButton(new ToolbarMenuButton("Create New", packageNewMenu()));
-        packagesPanel.setWidth("100%");
-        packagesPanel.add(pkgToolbar);
-
-
-        Toolbar deployToolbar = new Toolbar();
-        deployToolbar.addButton(new ToolbarMenuButton("Deploy...", deploymentMenu()));
-        deploymentPanel.add(deployToolbar);
-        deploymentPanel.setWidth("100%");
-
-        /** ****************** */
-
-        TreePanel adminTree = basicTreeStructure(ExplorerNodeConfig.getAdminStructure(), new TreePanelListenerAdapter() {
-            public void onClick(TreeNode self, EventObject e) {
-
-
-                int id = Integer.parseInt(self.getAttribute("id"));
-                switch (id) {
-                case 0:
-                	if (!centertabbedPanel.showIfOpen("catman"))
-                		centertabbedPanel.addTab("Category Manager", true, new CategoryManager(), "catman");
-                    break;
-                case 1:
-                	if (!centertabbedPanel.showIfOpen("archman"))
-                		centertabbedPanel.addTab("Archived Manager", true, new ArchivedAssetManager(centertabbedPanel), "archman");
-                    break;
-
-                case 2:
-                	if (!centertabbedPanel.showIfOpen("stateman"))
-                		centertabbedPanel.addTab("State Manager", true, new StateManager(), "stateman");
-                    break;
-                case 3:
-                	if (!centertabbedPanel.showIfOpen("bakman"))
-                		centertabbedPanel.addTab("Backup Manager", true, new BackupManager(), "bakman");
-                    break;
-
-                case 4:
-                	if (!centertabbedPanel.showIfOpen("errorLog"))
-                		centertabbedPanel.addTab("Error Log", true, new LogViewer(), "errorLog");
-                    break;
-                case 5:
-                	if (!centertabbedPanel.showIfOpen("securityPermissions"))
-                		centertabbedPanel.addTab("User Permission mappings", true, new PermissionViewer(), "securityPermissions");
-                	break;
-                }
-
-            }
-        });
-
-        adminPanel.add(adminTree);
-        adminPanel.setWidth("100%");
-
-
-        tpCategory.add(rulesPanel);
-
-
-        tpPackageExplorer.add(packagesPanel);
-        tpDeployment.add(deploymentPanel);
-
-        tpAdmin.add(adminPanel);
-
-
-        //these panels are lazy loaded to easy startup wait time.
-        tpPackageExplorer.addListener(new PanelListenerAdapter() {
-        	public void onExpand(Panel panel) {
-        		if (!packagesLoaded) {
-        			packagesPanel.add(packageExplorer(centertabbedPanel));
-        			packagesLoaded = true;
-        		}
-        	}
-        });
-
-        tpDeployment.addListener(new PanelListenerAdapter() {
-        	public void onExpand(Panel panel) {
-        		if (!deploymentPackagesLoaded) {
-        			deploymentPanel.add(deploymentExplorer(centertabbedPanel));
-        			deploymentPackagesLoaded = true;
-        		}
-        	}
-        });
-
-
-
-
-
-
-        final VerticalPanel qaPanel = new VerticalPanel();
-        qaPanel.setWidth("100%");
-
-
-        TreePanel qaTree = genericExplorerWidget(ExplorerNodeConfig.getQAStructure(centertabbedPanel));
-        qaPanel.add(qaTree);
-
-
-        tpQA.add(qaPanel);
-
+        return false;
     }
-
-	public static boolean shouldShow(Integer... capability) {
-		for (int i = 0; i < capability.length; i++) {
-			if (capabilities.list.contains(capability[i])) {return true;}
-		}
-		return false;
-	}
-
-	private Menu deploymentMenu() {
-		Menu m = new Menu();
-
-        Item nds = new Item("New Deployment snapshot", new BaseItemListenerAdapter() {
-			public void onClick(BaseItem item, EventObject e) {
-				SnapshotView.showNewSnapshot();
-			}
-		});
-        nds.setIcon("images/snapshot_small.gif");
-        m.addItem(nds);
-
-        Item rebuild = new Item("Rebuild all snapshot binaries", new BaseItemListenerAdapter() {
-			public void onClick(BaseItem item, EventObject e) {
-				SnapshotView.rebuildBinaries();
-			}
-		});
-        rebuild.setIcon("images/refresh.gif");
-        m.addItem(rebuild);
-
-        return m;
-	}
-
-    //TODO: refactor this methid to a class, make menus pluggable
-    private Menu rulesNewMenu() {
-		Menu m = new Menu();
-
-		m.addItem( new Item("New Business Rule (Guided editor)", new BaseItemListenerAdapter() {
-				public void onClick(BaseItem item, EventObject e) {
-					launchWizard(AssetFormats.BUSINESS_RULE, "New Business Rule (Guided editor)", true);
-				}
-			}, "images/business_rule.gif"));
-
-
-		m.addItem( new Item("New DSL Business Rule (text editor)",new BaseItemListenerAdapter() {
-				public void onClick(BaseItem item, EventObject e) {
-					launchWizard(AssetFormats.DSL_TEMPLATE_RULE, "New Rule using DSL", true);
-				}
-			}, "images/business_rule.gif"));
-
-
-        m.addItem(new Item("New DRL (Technical rule)", new BaseItemListenerAdapter() {
-        			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(AssetFormats.DRL, "New DRL", true);
-        			}
-        	    }, "images/rule_asset.gif"));
-
-        m.addItem(new Item("New Decision Table (Spreadsheet)", new BaseItemListenerAdapter() {
-        			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(AssetFormats.DECISION_SPREADSHEET_XLS, "New Decision Table (Spreadsheet)", true);
-        			}
-        		}, "images/spreadsheet_small.gif"));
-
-        m.addItem(new Item("New Decision Table (Web - guided editor)", new BaseItemListenerAdapter() {
-			public void onClick(BaseItem item, EventObject e) {
-				launchWizard(AssetFormats.DECISION_TABLE_GUIDED, "New Decision Table (Guided editor)", true);
-			}
-		}, "images/gdst.gif"));
-
-        m.addItem(new Item("New Test Scenario", new BaseItemListenerAdapter() {
-        			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(AssetFormats.TEST_SCENARIO,
-                                "Create a test scenario.", false);
-        			}
-        		}, "images/test_manager.gif"));
-
-		return m;
-	}
-
-	private Menu packageNewMenu() {
-		Menu m = new Menu();
-        m.addItem(new Item("New Package", new BaseItemListenerAdapter() {
-        			public void onClick(BaseItem item, EventObject e) {
-        				NewPackageWizard wiz = new NewPackageWizard(new Command() {
-							public void execute() {
-								refreshPackageTree();
-							}
-        				});
-        				wiz.show();
-        			}
-        		}, "images/new_package.gif"));
-
-        m.addItem(new Item("New Rule", new BaseItemListenerAdapter() {
-        			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(null, "New Rule", true, currentPackage);
-        			}
-        		}, "images/rule_asset.gif"));
-
-        m.addItem(new Item("Upload new Model jar (fact classes)", new BaseItemListenerAdapter() {
-        			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(AssetFormats.MODEL, "New model archive (jar)", false, currentPackage);
-        			}
-        		}, "images/model_asset.gif"));
-
-        m.addItem(new Item("New Model (in rules)", new BaseItemListenerAdapter() {
-			public void onClick(BaseItem item, EventObject e) {
-				launchWizard(AssetFormats.DRL_MODEL, "New declarative model (using guided editor).", false, currentPackage);
-			}
-		}, "images/model_asset.gif"));
-
-        m.addItem(new Item("New Function", new BaseItemListenerAdapter() {
-        			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(AssetFormats.FUNCTION, "Create a new function", false, currentPackage);
-        			}
-        		}, "images/function_assets.gif"));
-
-
-        m.addItem(new Item("New DSL", new BaseItemListenerAdapter() {
-        			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(AssetFormats.DSL, "Create a new DSL configuration", false, currentPackage);
-        			}
-        		}, "images/dsl.gif"));
-
-
-        m.addItem(new Item("New RuleFlow", new BaseItemListenerAdapter() {
-        			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(AssetFormats.RULE_FLOW_RF, "Create a new RuleFlow", false, currentPackage);
-        			}
-        		}, "images/ruleflow_small.gif"));
-
-        m.addItem(new Item("New Enumeration", new BaseItemListenerAdapter() {
-        			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(AssetFormats.ENUMERATION,
-                                "Create a new enumeration (drop down mapping).", false, currentPackage);
-        			}
-        		}, "images/new_enumeration.gif"));
-
-        m.addItem(new Item("New Test Scenario", new BaseItemListenerAdapter() {
-        			public void onClick(BaseItem item, EventObject e) {
-        				launchWizard(AssetFormats.TEST_SCENARIO,
-                                "Create a test scenario.", false, currentPackage);
-        			}
-        		}, "images/test_manager.gif"));
-
-        m.addItem(new Item("New File", new BaseItemListenerAdapter() {
-			public void onClick(BaseItem item, EventObject e) {
-				launchWizard("*",
-                        "Create a file.", false,  currentPackage);
-			}
-		}, "images/new_file.gif"));
-
-
-
-        m.addItem(new Item("Rebuild all package binaries", new BaseItemListenerAdapter() {
-			public void onClick(BaseItem item, EventObject e) {
-				if (Window.confirm("You should only run this if Drools has been upgraded recently " +
-						"(and you have been experiencing errors)." +
-						"This may take some time - are you sure you want to do this? ")) {
-					LoadingPopup.showMessage("Rebuilding package binaries...");
-					RepositoryServiceFactory.getService().rebuildPackages(new GenericCallback() {
-						public void onSuccess(Object data) {
-							LoadingPopup.close();
-						}
-					});
-				}
-
-			}
-		}, "images/refresh.gif"));
-
-
-
-
-
-		return m;
-	}
-
-    private void launchWizard(String format,
-            String title, boolean showCats, String currentlySelectedPackage) {
-
-    	NewAssetWizard pop = new NewAssetWizard( new EditItemEvent() {
-                                   public void open(String key) {
-                                       centertabbedPanel.openAsset(key);
-                                   }
-                               },
-                               showCats,
-                               format,
-                               title,
-                               currentlySelectedPackage );
-
-    	pop.show();
-    }
-
-
-    protected void launchWizard(String format,
-            String title, boolean showCats) {
-    	launchWizard(format, title, showCats, null);
-    }
-
-
-
-    private TreePanel basicTreeStructure(TreeNode basenode, TreePanelListenerAdapter listener) {
-        TreePanel adminTreePanel = genericExplorerWidget(basenode);
-        adminTreePanel.addListener(listener);
-        return adminTreePanel;
-    }
-
-
-    private Panel deploymentExplorer(final ExplorerViewCenterPanel tabPanel) {
-//        final ContentPanel cp = new ContentPanel(Ext.generateId(), "Deployment Explorer");
-//        cp.setWidth("100%");
-
-        final TreeNode root = new TreeNode("Package snapshots");
-        root.setIcon("images/silk/chart_organisation.gif");
-        root.setId("snapshotRoot");
-
-		final TreePanel panel = genericExplorerWidget(root);
-
-
-		deploymentListPackages(root);
-
-		panel.addListener(new TreePanelListenerAdapter() {
-
-			public void onCollapseNode(TreeNode node) {
-				Node[] children = node.getChildNodes();
-				for (int i = 0; i < children.length; i++) {
-					node.removeChild(children[i]);
-				}
-				if (node.getId().equals("snapshotRoot")) {
-					deploymentListPackages(root);
-				} else {
-					node.appendChild(new TreeNode("Please wait..."));
-				}
-;			}
-
-			public void onExpandNode(final TreeNode node) {
-				if (node.getId().equals("snapshotRoot")) {
-					return;
-				}
-				final PackageConfigData conf = (PackageConfigData) node.getUserObject();
-				if (conf != null) {
-					RepositoryServiceFactory.getService().listSnapshots(conf.name, new GenericCallback() {
-						public void onSuccess(Object data) {
-							final SnapshotInfo[] snaps = (SnapshotInfo[]) data;
-							for (int i = 0; i < snaps.length; i++) {
-								final SnapshotInfo snapInfo = snaps[i];
-								TreeNode snap = new TreeNode();
-								snap.setTooltip(snapInfo.comment);
-								snap.setText(snapInfo.name);
-								snap.setUserObject(new Object[] {snapInfo, conf});
-								node.appendChild(snap);
-							}
-							node.removeChild(node.getFirstChild());
-						}
-					});
-				}
-
-			}
-
-
-			public void onClick(TreeNode node, EventObject e) {
-				if (node.getUserObject() instanceof Object[]) {
-					Object[] o = (Object[]) node.getUserObject();
-					SnapshotInfo snap = (SnapshotInfo) o[0];
-					centertabbedPanel.openSnapshot(snap);
-				}
-			}
-		});
-
-        return panel;
-    }
-
-	private void deploymentListPackages(final TreeNode root) {
-		System.err.println("-->Loading packages");
-		RepositoryServiceFactory.getService().listPackages(
-                new GenericCallback() {
-                    public void onSuccess(Object data) {
-                        PackageConfigData value[] = (PackageConfigData[]) data;
-                        PackageHierarchy ph = new PackageHierarchy();
-
-                        for (int i = 0; i < value.length; i++) {
-                            //root.appendChild(loadPackage(root, value[i]));
-                        	ph.addPackage(value[i]);
-                        }
-                        for (Iterator iterator = ph.root.children.iterator(); iterator
-								.hasNext();) {
-							PackageHierarchy.Folder hf = (PackageHierarchy.Folder) iterator.next();
-							buildDeploymentTree(root, hf);
-						}
-
-//                        for (int i = 0; i < value.length; i++) {
-//                        	TreeNode pkg = new TreeNode(value[i].name);
-//                        	pkg.setIcon("images/snapshot_small.gif");
-//                        	pkg.setUserObject(value[i]);
-//                        	pkg.appendChild(new TreeNode("Please wait..."));
-//                            root.appendChild(pkg);
-//                        }
-                        root.expand();
-                    }
-                });
-	}
-
-	private void buildDeploymentTree(TreeNode root, PackageHierarchy.Folder fldr) {
-		if (fldr.conf != null) {
-        	TreeNode pkg = new TreeNode(fldr.conf.name);
-        	pkg.setIcon("images/snapshot_small.gif");
-        	pkg.setUserObject(fldr.conf);
-        	pkg.appendChild(new TreeNode("Please wait..."));
-            root.appendChild(pkg);
-		} else {
-			TreeNode tn = new TreeNode();
-			tn.setText(fldr.name);
-			tn.setIcon("images/empty_package.gif");
-			root.appendChild(tn);
-			for (Iterator iterator = fldr.children.iterator(); iterator.hasNext();) {
-				PackageHierarchy.Folder c = (PackageHierarchy.Folder) iterator.next();
-				buildDeploymentTree(tn, c);
-			}
-		}
-	}
-
-
-
-    /**
-     * Build the package explorer panel.
-     */
-    private Panel packageExplorer(final ExplorerViewCenterPanel tabPanel) {
-
-//        final Panel cp = new Panel("Package Explorer");
-//        cp.setWidth("100%");
-
-        TreeNode root = new TreeNode("Packages");
-        root.setAttribute("icon", "images/silk/chart_organisation.gif");
-
-
-
-		final TreePanel panel = genericExplorerWidget(root);
-
-//        cp.add(panel);
-        loadPackages(root);
-
-
-        TreePanelListener treePanelListener = new TreePanelListenerAdapter() {
-            public void onClick(TreeNode node, EventObject e) {
-        		if (node.getUserObject() instanceof PackageConfigData) {
-        			PackageConfigData pc = (PackageConfigData) node.getUserObject();
-        			currentPackage = pc.name;
-        			String uuid = pc.uuid;
-		        			centertabbedPanel.openPackageEditor(uuid, new Command() {
-								public void execute() {
-									//refresh the package tree.
-									refreshPackageTree();
-								}
-		        			});
-	    		} else if (node.getUserObject() instanceof Object[] ){
-        			Object[] uo = (Object[]) node.getUserObject();
-        			final String[] fmts = (String[]) uo[0];
-        			final PackageConfigData pc = (PackageConfigData) node.getParentNode().getUserObject();
-        			currentPackage = pc.name;
-        			String key = key(fmts, pc);
-        			if (!centertabbedPanel.showIfOpen(key)) {
-                        AssetItemGrid list = new AssetItemGrid(new EditItemEvent() {
-                            public void open(String uuid) {
-                                centertabbedPanel.openAsset(uuid);
-                            }
-                        },
-                        AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID,
-                        new AssetItemGridDataLoader() {
-                            public void loadData(int skip, int numRows, GenericCallback cb) {
-                            	RepositoryServiceFactory.getService().listAssets(pc.uuid, fmts, skip, numRows,AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID, cb);
-                            }
-                        }
-                        );
-
-        				tabPanel.addTab(uo[1] + " [" + pc.name + "]", true, list, key);
-        			}
-        		}
-            }
-
-
-
-
-            public void onCollapse(final TreeNode node) {
-            	if (node.getText().equals("Packages")) {
-            		Node[] children = node.getChildNodes();
-	            	for (int i = 0; i < children.length; i++) {
-						node.removeChild(children[i]);
-					}
-	            	loadPackages(node);
-            	}
-            }
-
-
-        };
-        // register listener
-        panel.addListener(treePanelListener);
-
-
-        return panel;
-    }
-
-	private void loadPackages(final TreeNode root) {
-		System.err.println("-->Loading packages");
-		RepositoryServiceFactory.getService().listPackages(
-                new GenericCallback() {
-                    public void onSuccess(Object data) {
-                        PackageConfigData value[] = (PackageConfigData[]) data;
-                        PackageHierarchy ph = new PackageHierarchy();
-
-                        for (int i = 0; i < value.length; i++) {
-                            //root.appendChild(loadPackage(root, value[i]));
-                        	ph.addPackage(value[i]);
-                        }
-                        for (Iterator iterator = ph.root.children.iterator(); iterator
-								.hasNext();) {
-							PackageHierarchy.Folder hf = (PackageHierarchy.Folder) iterator.next();
-							buildPkgTree(root, hf);
-						}
-
-                        //root.appendChild(loadPackage(root, value[i]));
-                        root.expand();
-                    }
-                });
-	}
-
-	private void buildPkgTree(TreeNode root, PackageHierarchy.Folder fldr) {
-		if (fldr.conf != null) {
-			root.appendChild(loadPackage(root, fldr.name, fldr.conf));
-		} else {
-			TreeNode tn = new TreeNode();
-			tn.setText(fldr.name);
-			tn.setIcon("images/empty_package.gif");
-			root.appendChild(tn);
-			for (Iterator iterator = fldr.children.iterator(); iterator.hasNext();) {
-				PackageHierarchy.Folder c = (PackageHierarchy.Folder) iterator.next();
-				buildPkgTree(tn, c);
-			}
-		}
-	}
-
-
-
-	private String key(String[] fmts,
-			PackageConfigData userObject) {
-		String key = userObject.uuid;
-		for (int i = 0; i < fmts.length; i++) {
-			key = key + fmts[i];
-		}
-		return key;
-	}
-
-	private TreeNode loadPackage(final TreeNode root,
-			String name, PackageConfigData conf) {
-		TreeNode pn = ExplorerNodeConfig.getPackageItemStructure(name, conf.uuid);
-		pn.setUserObject(conf);
-		return pn;
-	}
-
 
     public static TreePanel genericExplorerWidget(final TreeNode childNode) {
         // create and configure the main tree
@@ -824,12 +142,6 @@ public class ExplorerLayoutManager {
         menuTree.setRootNode(childNode);
         return menuTree;
     }
-
-	private void refreshPackageTree() {
-		packagesPanel.remove(1);
-		packagesPanel.add(packageExplorer(centertabbedPanel));
-	}
-
 
 
 }

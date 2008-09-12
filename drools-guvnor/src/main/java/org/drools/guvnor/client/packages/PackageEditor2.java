@@ -31,6 +31,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -135,6 +136,10 @@ public class PackageEditor2 extends PrettyFormLayout {
 			}
 		});
 		addAttribute("View source for package:", buildSource);
+		HTML html = new HTML("<a href='" + getDownloadLink(this.conf)
+				+ "' target='_blank'>Download source</a>");
+
+		addAttribute("Download package source:", html);
 
 
 
@@ -199,6 +204,21 @@ public class PackageEditor2 extends PrettyFormLayout {
             return new SimplePanel();
         }
     }
+
+
+	/**
+	 * Get a download link for the binary package.
+	 */
+	public static String getDownloadLink(PackageConfigData conf) {
+		String hurl = GWT.getModuleBaseURL() + "package/" + conf.name;
+		if (!conf.isSnapshot) {
+			hurl = hurl + "/" + SnapshotView.LATEST_SNAPSHOT + ".drl";
+		} else {
+			hurl = hurl + "/" + conf.snapshotName + ".drl";
+		}
+		final String uri = hurl;
+		return uri;
+	}
 
     protected void showStatusChanger(Widget w) {
         final StatusChangePopup pop = new StatusChangePopup(conf.uuid, true);

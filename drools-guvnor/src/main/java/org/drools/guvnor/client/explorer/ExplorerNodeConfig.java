@@ -28,6 +28,11 @@ public class ExplorerNodeConfig {
 		pkg.setAttribute("uuid", uuid);
 		pkg.setAttribute("icon", "images/package.gif");
 
+
+        pkg.appendChild(makeItem( "Attachments",
+		                "images/test_manager.gif",
+		                               new String[]{AssetFormats.XML, AssetFormats.PROPERTIES} ) ) ;
+
         pkg.appendChild( makeItem( "Business rule assets",
                 "images/rule_asset.gif", AssetFormats.BUSINESS_RULE_FORMATS ) );
         pkg.appendChild( makeItem( "Technical rule assets",
@@ -58,9 +63,8 @@ public class ExplorerNodeConfig {
 		                "images/test_manager.gif",
 
 		                               new String[]{AssetFormats.TEST_SCENARIO} ) ) ;
-
-
-		return pkg;
+        
+        return pkg;
 	}
 
 	private static TreeNode makeItem(final String txt, final String img,

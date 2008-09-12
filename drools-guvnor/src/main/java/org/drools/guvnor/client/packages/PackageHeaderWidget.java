@@ -59,7 +59,7 @@ public class PackageHeaderWidget extends Composite {
 			HorizontalPanel main = new HorizontalPanel();
 
 			VerticalPanel imports = new VerticalPanel();
-			imports.add(new Label("Imported types:"));
+			imports.add(new Label("Imported types"));
 			importList = new ListBox(true);
 
 			doImports(t);
@@ -95,7 +95,7 @@ public class PackageHeaderWidget extends Composite {
 
 
 			VerticalPanel globals = new VerticalPanel();
-			globals.add(new Label("Globals:"));
+			globals.add(new Label("Globals"));
 			globalList = new ListBox(true);
 			doGlobals(t);
 			HorizontalPanel globalCols = new HorizontalPanel();
@@ -128,6 +128,7 @@ public class PackageHeaderWidget extends Composite {
 			globals.add(globalCols);
 
 			main.add(imports);
+			main.add(new HTML("&nbsp;"));
 			main.add(globals);
 
 			Button advanced = new Button() {

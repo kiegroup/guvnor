@@ -33,8 +33,8 @@ public class PackageHierarchy {
 
 
 	public static class Folder {
-		String name;
-		PackageConfigData conf;
+		public String name;
+		public PackageConfigData conf;
 
 		public Folder add(String f, PackageConfigData conf) {
 			Folder n = new Folder();
@@ -49,16 +49,15 @@ public class PackageHierarchy {
 		}
 
 		public Folder contains(String f) {
-			for (int i = 0; i < children.size(); i++) {
-				Folder fld = (Folder) children.get(i);
-				if (fld.name.equals(f)) {
-					return fld;
-				}
-			}
+            for (Folder fld : children) {
+                if (fld.name.equals(f)) {
+                    return fld;
+                }
+            }
 			return null;
 		}
 
-		public List children = new ArrayList();
+		public List<Folder> children = new ArrayList<Folder>();
 	}
 
 }
