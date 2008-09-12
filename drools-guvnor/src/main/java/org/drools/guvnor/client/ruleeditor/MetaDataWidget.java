@@ -1,4 +1,5 @@
 package org.drools.guvnor.client.ruleeditor;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -14,8 +15,6 @@ package org.drools.guvnor.client.ruleeditor;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.util.Date;
 
@@ -33,6 +32,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -48,35 +48,42 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MetaDataWidget extends PrettyFormLayout {
 
-
-    private MetaData data;
-    private boolean readOnly;
-    private String uuid;
-    private Command refreshView;
+    private MetaData    data;
+    private boolean     readOnly;
+    private String      uuid;
+    private Command     refreshView;
     AssetCategoryEditor ed;
 
-	public MetaDataWidget(final MetaData d, boolean readOnly, String uuid, Command refreshView) {
+    public MetaDataWidget(final MetaData d,
+                          boolean readOnly,
+                          String uuid,
+                          Command refreshView) {
 
-		super();
-//        layout = new Form(new FormConfig() {
-//        	{
-//        		setWidth(250);
-//        		//setHeader(d.name);
-//        		setLabelWidth(75);
-//        		setSurroundWithBox(true);
-//        	}
-//        });
+        super();
+        //        layout = new Form(new FormConfig() {
+        //        	{
+        //        		setWidth(250);
+        //        		//setHeader(d.name);
+        //        		setLabelWidth(75);
+        //        		setSurroundWithBox(true);
+        //        	}
+        //        });
 
-        if (!readOnly) {
-            Image edit = new ImageButton("images/edit.gif", "Rename this asset");
+        if ( !readOnly ) {
+            Image edit = new ImageButton( "images/edit.gif",
+                                          "Rename this asset" );
             edit.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                    showRenameAsset(w);
+                    showRenameAsset( w );
                 }
-            });
-            addHeader( "images/meta_data.png", d.name, edit );
+            } );
+            addHeader( "images/meta_data.png",
+                       d.name,
+                       edit );
         } else {
-            addHeader( "images/asset_version.png", d.name, null );
+            addHeader( "images/asset_version.png",
+                       d.name,
+                       null );
         }
 
         this.uuid = uuid;
@@ -84,145 +91,181 @@ public class MetaDataWidget extends PrettyFormLayout {
         this.readOnly = readOnly;
         this.refreshView = refreshView;
 
-        loadData(d);
+        loadData( d );
 
+    }
 
-
-	}
-
-
-
-
-
-	private void loadData(MetaData d) {
+    private void loadData(MetaData d) {
         this.data = d;
         startSection();
-        addAttribute("Categories:", categories());
+        addAttribute( "Categories:",
+                      categories() );
         endSection();
 
         startSection();
-        addAttribute("Modified on:", readOnlyDate(data.lastModifiedDate));
-        addAttribute("by:", readOnlyText(data.lastContributor));
-        addAttribute("Note:", readOnlyText( data.checkinComment ));
-        addAttribute("Version:", getVersionNumberLabel());
+        addAttribute( "Modified on:",
+                      readOnlyDate( data.lastModifiedDate ) );
+        addAttribute( "by:",
+                      readOnlyText( data.lastContributor ) );
+        addAttribute( "Note:",
+                      readOnlyText( data.checkinComment ) );
+        addAttribute( "Version:",
+                      getVersionNumberLabel() );
 
-        if (!readOnly) {
-            addAttribute("Created on:", readOnlyDate( data.createdDate ));
+        if ( !readOnly ) {
+            addAttribute( "Created on:",
+                          readOnlyDate( data.createdDate ) );
         }
-        addAttribute("Created by:", readOnlyText(data.creator));
-        addAttribute("Format:", new HTML( "<b>" + data.format + "</b>" ));
+        addAttribute( "Created by:",
+                      readOnlyText( data.creator ) );
+        addAttribute( "Format:",
+                      new HTML( "<b>" + data.format + "</b>" ) );
 
         endSection();
 
         startSection();
 
-        addAttribute("Package:", packageEditor(data.packageName));
-        addAttribute("Subject:", editableText(new FieldBinding() {
-            public String getValue() {
-                return data.subject;
-            }
+        addAttribute( "Package:",
+                      packageEditor( data.packageName ) );
 
-            public void setValue(String val) {
-                data.subject = val;
-            }
-        }, "A short description of the subject matter."));
+        /******************************/
+        addAttribute( "Disabled:",
+                      editableBoolean( new FieldBooleanBinding() {
+                                           public boolean getValue() {
+                                               return data.disabled;
+                                           }
 
-        addAttribute("Type:", editableText(new FieldBinding() {
-            public String getValue() {
-                return data.type;
-            }
+                                           public void setValue(boolean val) {
+                                               data.disabled = val;
+                                           }
+                                       },
+                                       "Disables this asset." ) );
+        /******************************/
 
-            public void setValue(String val) {
-                data.type = val;
-            }
+        addAttribute( "Subject:",
+                      editableText( new FieldBinding() {
+                                        public String getValue() {
+                                            return data.subject;
+                                        }
 
-        }, "This is for classification purposes."));
+                                        public void setValue(String val) {
+                                            data.subject = val;
+                                        }
+                                    },
+                                    "A short description of the subject matter." ) );
 
-        addAttribute("External link:", editableText(new FieldBinding() {
-            public String getValue() {
-                return data.externalRelation;
-            }
+        addAttribute( "Type:",
+                      editableText( new FieldBinding() {
+                                        public String getValue() {
+                                            return data.type;
+                                        }
 
-            public void setValue(String val) {
-                data.externalRelation = val;
-            }
+                                        public void setValue(String val) {
+                                            data.type = val;
+                                        }
 
-        }, "This is for relating the asset to an external system."));
+                                    },
+                                    "This is for classification purposes." ) );
 
-        addAttribute("Source:", editableText(new FieldBinding() {
-            public String getValue() {
-                return data.externalSource;
-            }
+        addAttribute( "External link:",
+                      editableText( new FieldBinding() {
+                                        public String getValue() {
+                                            return data.externalRelation;
+                                        }
 
-            public void setValue(String val) {
-                data.externalSource = val;
-            }
+                                        public void setValue(String val) {
+                                            data.externalRelation = val;
+                                        }
 
-        }, "A short description or code indicating the source of the rule."));
+                                    },
+                                    "This is for relating the asset to an external system." ) );
+
+        addAttribute( "Source:",
+                      editableText( new FieldBinding() {
+                                        public String getValue() {
+                                            return data.externalSource;
+                                        }
+
+                                        public void setValue(String val) {
+                                            data.externalSource = val;
+                                        }
+
+                                    },
+                                    "A short description or code indicating the source of the rule." ) );
 
         endSection();
         startSection();
 
-        if (!readOnly) {
-            addRow( new VersionBrowser(this.uuid, this.data, refreshView) );
+        if ( !readOnly ) {
+            addRow( new VersionBrowser( this.uuid,
+                                        this.data,
+                                        refreshView ) );
         }
 
         endSection();
     }
 
-
-
-	private Widget packageEditor(final String packageName) {
-        if (this.readOnly || !ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
+    private Widget packageEditor(final String packageName) {
+        if ( this.readOnly || !ExplorerLayoutManager.shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
             return readOnlyText( packageName );
         } else {
             HorizontalPanel horiz = new HorizontalPanel();
             horiz.setStyleName( "metadata-Widget" );
             horiz.add( readOnlyText( packageName ) );
-            Image editPackage = new ImageButton("images/edit.gif");
+            Image editPackage = new ImageButton( "images/edit.gif" );
             editPackage.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                    showEditPackage(packageName, w);
+                    showEditPackage( packageName,
+                                     w );
                 }
-            });
+            } );
             horiz.add( editPackage );
             return horiz;
         }
     }
 
     private void showRenameAsset(Widget source) {
-        final FormStylePopup pop = new FormStylePopup("images/package_large.png", "Rename this item");
+        final FormStylePopup pop = new FormStylePopup( "images/package_large.png",
+                                                       "Rename this item" );
         final TextBox box = new TextBox();
-        pop.addAttribute( "New name", box );
-        Button ok = new Button("Rename item");
-        pop.addAttribute( "", ok );
+        pop.addAttribute( "New name",
+                          box );
+        Button ok = new Button( "Rename item" );
+        pop.addAttribute( "",
+                          ok );
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                RepositoryServiceFactory.getService().renameAsset( uuid, box.getText(), new GenericCallback() {
-                    public void onSuccess(Object data) {
-                        refreshView.execute();
-                        Window.alert( "Item has been renamed" );
-                        pop.hide();
-                    }
-                });
+                RepositoryServiceFactory.getService().renameAsset( uuid,
+                                                                   box.getText(),
+                                                                   new GenericCallback() {
+                                                                       public void onSuccess(Object data) {
+                                                                           refreshView.execute();
+                                                                           Window.alert( "Item has been renamed" );
+                                                                           pop.hide();
+                                                                       }
+                                                                   } );
             }
         } );
 
         pop.show();
     }
 
-
-    private void showEditPackage(final String pkg, Widget source) {
-        final FormStylePopup pop = new FormStylePopup("images/package_large.png", "Move this item to another package");
-        pop.addAttribute( "Current package:", new Label(pkg) );
+    private void showEditPackage(final String pkg,
+                                 Widget source) {
+        final FormStylePopup pop = new FormStylePopup( "images/package_large.png",
+                                                       "Move this item to another package" );
+        pop.addAttribute( "Current package:",
+                          new Label( pkg ) );
         final RulePackageSelector sel = new RulePackageSelector();
-        pop.addAttribute( "New package:", sel );
-        Button ok = new Button("Change package");
-        pop.addAttribute( "", ok );
+        pop.addAttribute( "New package:",
+                          sel );
+        Button ok = new Button( "Change package" );
+        pop.addAttribute( "",
+                          ok );
         ok.addClickListener( new ClickListener() {
 
             public void onClick(Widget w) {
-                if (sel.getSelectedPackage().equals( pkg )) {
+                if ( sel.getSelectedPackage().equals( pkg ) ) {
                     Window.alert( "You need to pick a different package to move this to." );
                     return;
                 }
@@ -237,50 +280,50 @@ public class MetaDataWidget extends PrettyFormLayout {
 
                                                                           } );
 
-
             }
 
-        });
+        } );
 
         pop.show();
     }
 
     private Widget getVersionNumberLabel() {
-        if (data.versionNumber == 0 ) {
-            return new HTML("<i>Not checked in yet</i>");
+        if ( data.versionNumber == 0 ) {
+            return new HTML( "<i>Not checked in yet</i>" );
         } else {
-            return readOnlyText(Long.toString( data.versionNumber) );
+            return readOnlyText( Long.toString( data.versionNumber ) );
         }
 
     }
 
     private Widget readOnlyDate(Date lastModifiedDate) {
-        if (lastModifiedDate == null) {
+        if ( lastModifiedDate == null ) {
             return null;
         } else {
-            return new Label(lastModifiedDate.toLocaleString());
+            return new Label( lastModifiedDate.toLocaleString() );
         }
     }
 
     private Label readOnlyText(String text) {
-        Label lbl = new Label(text);
+        Label lbl = new Label( text );
         lbl.setWidth( "100%" );
         return lbl;
     }
 
     private Widget categories() {
-        ed = new AssetCategoryEditor(this.data, this.readOnly);
+        ed = new AssetCategoryEditor( this.data,
+                                      this.readOnly );
         return ed;
     }
 
-
     /** This binds a field, and returns a text editor for it */
-    private Widget editableText(final FieldBinding bind, String toolTip) {
-        if (!readOnly) {
+    private Widget editableText(final FieldBinding bind,
+                                String toolTip) {
+        if ( !readOnly ) {
             final TextBox box = new TextBox();
             box.setTitle( toolTip );
             box.setText( bind.getValue() );
-            box.setVisibleLength(10);
+            box.setVisibleLength( 10 );
             ChangeListener listener = new ChangeListener() {
                 public void onChange(Widget w) {
                     bind.setValue( box.getText() );
@@ -289,14 +332,53 @@ public class MetaDataWidget extends PrettyFormLayout {
             box.addChangeListener( listener );
             return box;
         } else {
-            return new Label(bind.getValue());
+            return new Label( bind.getValue() );
+        }
+    }
+
+    /**
+     * This binds a field, and returns a check box editor for it.
+     * 
+     * @param bind Interface to bind to.
+     * @param toolTip tool tip.
+     * @return
+     */
+    private Widget editableBoolean(final FieldBooleanBinding bind,
+                                   String toolTip) {
+        if ( !readOnly ) {
+            final CheckBox box = new CheckBox();
+            box.setTitle( toolTip );
+            box.setChecked( bind.getValue() );
+            ClickListener listener = new ClickListener() {
+                public void onClick(Widget w) {
+                    boolean b = box.isChecked();
+                    bind.setValue( b );
+                }
+            };
+            box.addClickListener( listener );
+            return box;
+        } else {
+            final CheckBox box = new CheckBox();
+
+            box.setChecked( bind.getValue() );
+            box.setEnabled( false );
+
+            return box;
         }
     }
 
     /** used to bind fields in the meta data DTO to the form */
     static interface FieldBinding {
         void setValue(String val);
+
         String getValue();
+    }
+
+    /** used to bind fields in the meta data DTO to the form */
+    static interface FieldBooleanBinding {
+        void setValue(boolean val);
+
+        boolean getValue();
     }
 
     /**
@@ -305,9 +387,5 @@ public class MetaDataWidget extends PrettyFormLayout {
     public MetaData getData() {
         return data;
     }
-
-
-
-
 
 }

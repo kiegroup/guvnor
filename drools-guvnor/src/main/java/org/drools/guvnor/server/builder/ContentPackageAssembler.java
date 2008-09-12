@@ -132,7 +132,7 @@ public class ContentPackageAssembler {
      */
     private void buildAsset(AssetItem asset) {
         ContentHandler h = ContentManager.getHandler( asset.getFormat() );
-        if (h instanceof IRuleAsset) {
+        if (h instanceof IRuleAsset && !asset.getDisabled()) {
             try {
                 ((IRuleAsset) h).compile( builder, asset, new ErrorLogger() );
                 if (builder.hasErrors()) {

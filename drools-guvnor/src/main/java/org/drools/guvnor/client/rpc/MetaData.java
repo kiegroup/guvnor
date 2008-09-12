@@ -1,4 +1,5 @@
 package org.drools.guvnor.client.rpc;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.guvnor.client.rpc;
  * limitations under the License.
  */
 
-
-
 import java.util.Date;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -25,39 +24,41 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * This is the DTO for a versionable asset's meta data.
  * ie basically everything except the payload.
  */
-public class MetaData implements IsSerializable  {
+public class MetaData
+    implements
+    IsSerializable {
 
-    public String name = "";
-    public String description = "";
-    
-    public String title = "";
-    public String status = "";
+    public String   name             = "";
+    public String   description      = "";
 
-    public Date lastModifiedDate;
-    public String lastContributor = "";
-    public long versionNumber;
+    public String   title            = "";
+    public String   status           = "";
 
-    public Date createdDate;
-    
-    public String packageName = "";
-    public String[] categories = new String[0];
-    
-    public String format = "";
-    public String type = "";
-    public String creator = "";
-    public String externalSource = "";
-    public String subject = "";
-    public String externalRelation = "";
-    public String rights = ""; 
-    public String coverage = "";
-    public String publisher = "";   
-    public String checkinComment = "";
-    
-    
-    public Date dateEffective;
-    public Date dateExpired;
-    
-    
+    public Date     lastModifiedDate;
+    public String   lastContributor  = "";
+    public long     versionNumber;
+
+    public Date     createdDate;
+
+    public String   packageName      = "";
+    public String[] categories       = new String[0];
+
+    public String   format           = "";
+    public String   type             = "";
+    public String   creator          = "";
+    public String   externalSource   = "";
+    public String   subject          = "";
+    public String   externalRelation = "";
+    public String   rights           = "";
+    public String   coverage         = "";
+    public String   publisher        = "";
+    public String   checkinComment   = "";
+
+    public boolean  disabled         = false;
+
+    public Date     dateEffective;
+    public Date     dateExpired;
+
     /**
      * Remove a category.
      * @param idx The index of the cat to remove.
@@ -66,32 +67,32 @@ public class MetaData implements IsSerializable  {
         String[] newList = new String[categories.length - 1];
         int newIdx = 0;
         for ( int i = 0; i < categories.length; i++ ) {
-            
-            if (i != idx) {
+
+            if ( i != idx ) {
                 newList[newIdx] = categories[i];
                 newIdx++;
             }
-            
+
         }
         this.categories = newList;
     }
-    
+
     /**
      * Add the given cat to the end of the cat list.
      */
     public void addCategory(String cat) {
         for ( int i = 0; i < this.categories.length; i++ ) {
-            if (categories[i].equals( cat )) return;
+            if ( categories[i].equals( cat ) ) return;
         }
         String[] list = this.categories;
         String[] newList = new String[list.length + 1];
-        
+
         for ( int i = 0; i < list.length; i++ ) {
-            newList[i] =  list[i];
+            newList[i] = list[i];
         }
-        newList[list.length] = cat; 
-        
-        this.categories = newList;           
+        newList[list.length] = cat;
+
+        this.categories = newList;
     }
 
 }
