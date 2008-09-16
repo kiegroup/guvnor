@@ -1,4 +1,5 @@
 package org.drools.guvnor.server.builder;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -14,7 +15,6 @@ package org.drools.guvnor.server.builder;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -44,7 +44,7 @@ import java.util.jar.JarInputStream;
  */
 public class ContentPackageAssembler {
 
-    private PackageItem pkg;
+    private PackageItem                pkg;
 
     /**
      * We accumulate errors here. If they come from the builder,
@@ -53,31 +53,37 @@ public class ContentPackageAssembler {
      */
     private List<ContentAssemblyError> errors = new ArrayList<ContentAssemblyError>();
 
-    BRMSPackageBuilder builder;
+    BRMSPackageBuilder                 builder;
 
-    private String selectorConfigName;
+    private String                     selectorConfigName;
 
     /**
      * Use this if you want to build the whole package.
      */
     public ContentPackageAssembler(PackageItem pkg) {
-        this(pkg, null);
+        this( pkg,
+              null );
     }
 
-    public ContentPackageAssembler(PackageItem pkg, boolean compile) {
-        this(pkg, compile, null);
+    public ContentPackageAssembler(PackageItem pkg,
+                                   boolean compile) {
+        this( pkg,
+              compile,
+              null );
     }
 
     /**
      * @param assetPackage The package.
      * @param compile true if we want to build it. False and its just for looking at source.
      */
-    public ContentPackageAssembler(PackageItem assetPackage, boolean compile, String selectorConfigName) {
+    public ContentPackageAssembler(PackageItem assetPackage,
+                                   boolean compile,
+                                   String selectorConfigName) {
         this.pkg = assetPackage;
         this.selectorConfigName = selectorConfigName;
         createBuilder();
 
-        if (compile && preparePackage()) {
+        if ( compile && preparePackage() ) {
             buildPackage();
         }
     }
@@ -85,8 +91,11 @@ public class ContentPackageAssembler {
     /**
      * Use this if you want to build the whole package.
      */
-    public ContentPackageAssembler(PackageItem assetPackage, String selectorConfigName) {
-        this(assetPackage, true, selectorConfigName);
+    public ContentPackageAssembler(PackageItem assetPackage,
+                                   String selectorConfigName) {
+        this( assetPackage,
+              true,
+              selectorConfigName );
     }
 
     /**
@@ -96,13 +105,12 @@ public class ContentPackageAssembler {
         this.pkg = assetToBuild.getPackage();
         createBuilder();
 
-        if (preparePackage()) {
+        if ( preparePackage() ) {
             buildAsset( assetToBuild );
         }
     }
 
-
-    public void createBuilder( ) {
+    public void createBuilder() {
         List<JarInputStream> jars = BRMSPackageBuilder.getJars( pkg );
         builder = BRMSPackageBuilder.getInstance( jars );
     }
@@ -112,16 +120,17 @@ public class ContentPackageAssembler {
      */
     private void buildPackage() {
         AssetSelector selector = SelectorManager.getInstance().getSelector( selectorConfigName );
-        if (selector == null) {
-            this.errors.add( new ContentAssemblyError(this.pkg, "The selector named " + selectorConfigName + " is not available.") );
+        if ( selector == null ) {
+            this.errors.add( new ContentAssemblyError( this.pkg,
+                                                       "The selector named " + selectorConfigName + " is not available." ) );
             return;
         }
         Iterator it = pkg.getAssets();
-        while (it.hasNext()) {
+        while ( it.hasNext() ) {
 
             AssetItem asset = (AssetItem) it.next();
 
-            if (!asset.isArchived() && (selector.isAssetAllowed( asset ))) {
+            if ( !asset.isArchived() && (selector.isAssetAllowed( asset )) ) {
                 buildAsset( asset );
             }
         }
@@ -132,18 +141,20 @@ public class ContentPackageAssembler {
      */
     private void buildAsset(AssetItem asset) {
         ContentHandler h = ContentManager.getHandler( asset.getFormat() );
-        if (h instanceof IRuleAsset && !asset.getDisabled()) {
+        if ( h instanceof IRuleAsset && !asset.getDisabled() ) {
             try {
-                ((IRuleAsset) h).compile( builder, asset, new ErrorLogger() );
-                if (builder.hasErrors()) {
+                ((IRuleAsset) h).compile( builder,
+                                          asset,
+                                          new ErrorLogger() );
+                if ( builder.hasErrors() ) {
                     this.recordBuilderErrors( asset );
                     //clear the errors, so we don't double report.
                     builder.clearErrors();
                 }
             } catch ( DroolsParserException e ) {
-                throw new RulesRepositoryException(e);
+                throw new RulesRepositoryException( e );
             } catch ( IOException e ) {
-                throw new RulesRepositoryException(e);
+                throw new RulesRepositoryException( e );
             }
         }
     }
@@ -156,29 +167,27 @@ public class ContentPackageAssembler {
     private boolean preparePackage() {
 
         //firstly we loadup the classpath
-        builder.addPackage( new PackageDescr(pkg.getName()) );
+        builder.addPackage( new PackageDescr( pkg.getName() ) );
 
         //now we deal with the header (imports, templates, globals).
-        addDrl(ServiceImplementation.getDroolsHeader(pkg));
+        addDrl( ServiceImplementation.getDroolsHeader( pkg ) );
         loadDeclaredTypes();
-        if (builder.hasErrors()) {
-            recordBuilderErrors(pkg);
+        if ( builder.hasErrors() ) {
+            recordBuilderErrors( pkg );
             //if we have any failures, lets drop out now, no point in going
             //any further
             return false;
         }
 
-
-
         loadDSLFiles();
 
         //finally, any functions we will load at this point.
-        AssetItemIterator it = this.pkg.listAssetsByFormat( new String[] {AssetFormats.FUNCTION} );
-        while(it.hasNext()) {
+        AssetItemIterator it = this.pkg.listAssetsByFormat( new String[]{AssetFormats.FUNCTION} );
+        while ( it.hasNext() ) {
             AssetItem func = (AssetItem) it.next();
             addDrl( func.getContent() );
-            if (builder.hasErrors()) {
-                recordBuilderErrors(func);
+            if ( builder.hasErrors() ) {
+                recordBuilderErrors( func );
                 builder.clearErrors();
             }
         }
@@ -187,27 +196,32 @@ public class ContentPackageAssembler {
     }
 
     private void loadDeclaredTypes() {
-		AssetItemIterator it = this.pkg.listAssetsByFormat(new String[]{AssetFormats.DRL_MODEL} );
-		while (it.hasNext()) {
-			AssetItem as = it.next();
-			try {
-				builder.addPackageFromDrl(new StringReader(as.getContent()));
-			} catch (DroolsParserException e) {
-				this.errors.add(new ContentAssemblyError(as, "Parser exception: " + e.getMessage() ));
-			} catch (IOException e) {
-				this.errors.add(new ContentAssemblyError(as, "IOException: " + e.getMessage()));
-			}
-		}
-
-	}
-
-	private void loadDSLFiles() {
-        //now we load up the DSL files
-        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( pkg, new BRMSPackageBuilder.DSLErrorEvent() {
-            public void recordError(AssetItem asset, String message) {
-                errors.add( new ContentAssemblyError(asset, message) );
+        AssetItemIterator it = this.pkg.listAssetsByFormat( new String[]{AssetFormats.DRL_MODEL} );
+        while ( it.hasNext() ) {
+            AssetItem as = it.next();
+            try {
+                builder.addPackageFromDrl( new StringReader( as.getContent() ) );
+            } catch ( DroolsParserException e ) {
+                this.errors.add( new ContentAssemblyError( as,
+                                                           "Parser exception: " + e.getMessage() ) );
+            } catch ( IOException e ) {
+                this.errors.add( new ContentAssemblyError( as,
+                                                           "IOException: " + e.getMessage() ) );
             }
-        }));
+        }
+
+    }
+
+    private void loadDSLFiles() {
+        //now we load up the DSL files
+        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( pkg,
+                                                                    new BRMSPackageBuilder.DSLErrorEvent() {
+                                                                        public void recordError(AssetItem asset,
+                                                                                                String message) {
+                                                                            errors.add( new ContentAssemblyError( asset,
+                                                                                                                  message ) );
+                                                                        }
+                                                                    } ) );
     }
 
     /**
@@ -215,7 +229,7 @@ public class ContentPackageAssembler {
      * @return
      */
     public boolean isPackageConfigurationInError() {
-        if (this.errors.size() > 0) {
+        if ( this.errors.size() > 0 ) {
             return this.errors.get( 0 ).itemInError instanceof PackageItem;
         } else {
             return false;
@@ -223,19 +237,19 @@ public class ContentPackageAssembler {
     }
 
     private void addDrl(String drl) {
-        if ("".equals( drl )) {
+        if ( "".equals( drl ) ) {
             return;
         }
         try {
-            builder.addPackageFromDrl( new StringReader(drl) );
+            builder.addPackageFromDrl( new StringReader( drl ) );
         } catch ( DroolsParserException e ) {
-            throw new RulesRepositoryException("Unexpected error when parsing package.", e);
+            throw new RulesRepositoryException( "Unexpected error when parsing package.",
+                                                e );
         } catch ( IOException e ) {
-            throw new RulesRepositoryException("IO Exception occurred when parsing package.", e);
+            throw new RulesRepositoryException( "IO Exception occurred when parsing package.",
+                                                e );
         }
     }
-
-
 
     /**
      * This will accumulate the errors.
@@ -243,7 +257,8 @@ public class ContentPackageAssembler {
     private void recordBuilderErrors(VersionableItem asset) {
         DroolsError[] errs = builder.getErrors().getErrors();
         for ( int i = 0; i < errs.length; i++ ) {
-            this.errors.add( new ContentAssemblyError(asset, errs[i].getMessage()) );
+            this.errors.add( new ContentAssemblyError( asset,
+                                                       errs[i].getMessage() ) );
         }
 
     }
@@ -252,12 +267,11 @@ public class ContentPackageAssembler {
      * I've got a package people !
      */
     public Package getBinaryPackage() {
-        if (this.hasErrors()) {
-            throw new IllegalStateException("There is no package available, as there were errors.");
+        if ( this.hasErrors() ) {
+            throw new IllegalStateException( "There is no package available, as there were errors." );
         }
         return builder.getPackage();
     }
-
 
     public boolean hasErrors() {
         return errors.size() > 0;
@@ -267,7 +281,6 @@ public class ContentPackageAssembler {
         return this.errors;
     }
 
-
     /**
      * This is passed in to the compilers so extra errors can be added.
      *
@@ -275,52 +288,52 @@ public class ContentPackageAssembler {
      */
     public class ErrorLogger {
         public void logError(ContentAssemblyError err) {
-            errors.add(err);
+            errors.add( err );
         }
     }
 
-
-
     public String getDRL() {
         StringBuffer src = new StringBuffer();
-        src.append( "package " + this.pkg.getName() + "\n");
-        src.append( ServiceImplementation.getDroolsHeader(this.pkg) + "\n\n");
-
+        src.append( "package " + this.pkg.getName() + "\n" );
+        src.append( ServiceImplementation.getDroolsHeader( this.pkg ) + "\n\n" );
 
         //now we load up the DSL files
-        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( pkg, new BRMSPackageBuilder.DSLErrorEvent() {
-            public void recordError(AssetItem asset, String message) {
-                errors.add( new ContentAssemblyError(asset, message) );
-            }
-        }));
-
+        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( pkg,
+                                                                    new BRMSPackageBuilder.DSLErrorEvent() {
+                                                                        public void recordError(AssetItem asset,
+                                                                                                String message) {
+                                                                            errors.add( new ContentAssemblyError( asset,
+                                                                                                                  message ) );
+                                                                        }
+                                                                    } ) );
 
         //do the functions and declared types.
-        AssetItemIterator it = this.pkg.listAssetsByFormat( new String[] {AssetFormats.FUNCTION, AssetFormats.DRL_MODEL} );
-        while(it.hasNext()) {
+        AssetItemIterator it = this.pkg.listAssetsByFormat( new String[]{AssetFormats.FUNCTION, AssetFormats.DRL_MODEL} );
+        while ( it.hasNext() ) {
             AssetItem func = (AssetItem) it.next();
-            if (!func.isArchived()) {
+            if ( !func.isArchived() ) {
                 src.append( func.getContent() + "\n\n" );
             }
         }
 
         //now the rules
         Iterator iter = pkg.getAssets();
-        while (iter.hasNext()) {
+        while ( iter.hasNext() ) {
             AssetItem asset = (AssetItem) iter.next();
-            if (!asset.isArchived()) {
+            if ( !asset.isArchived() ) {
 
-	                ContentHandler h = ContentManager.getHandler( asset.getFormat() );
-	                if (h instanceof IRuleAsset) {
-	                    IRuleAsset ruleAsset = (IRuleAsset) h;
-	                    ruleAsset.assembleDRL( builder, asset, src );
-	                }
+                ContentHandler h = ContentManager.getHandler( asset.getFormat() );
+                if ( h instanceof IRuleAsset && !asset.getDisabled() ) {
+                    IRuleAsset ruleAsset = (IRuleAsset) h;
+                    ruleAsset.assembleDRL( builder,
+                                           asset,
+                                           src );
+                }
 
-	                src.append( "\n\n" );
+                src.append( "\n\n" );
 
             }
         }
-
 
         return src.toString();
     }
