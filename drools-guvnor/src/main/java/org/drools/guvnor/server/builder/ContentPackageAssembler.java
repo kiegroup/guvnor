@@ -125,7 +125,7 @@ public class ContentPackageAssembler {
                                                        "The selector named " + selectorConfigName + " is not available." ) );
             return;
         }
-        Iterator it = pkg.getAssets();
+        Iterator<AssetItem> it = pkg.getAssets();
         while ( it.hasNext() ) {
 
             AssetItem asset = (AssetItem) it.next();
@@ -317,13 +317,13 @@ public class ContentPackageAssembler {
         }
 
         //now the rules
-        Iterator iter = pkg.getAssets();
+        Iterator<AssetItem> iter = pkg.getAssets();
         while ( iter.hasNext() ) {
             AssetItem asset = (AssetItem) iter.next();
-            if ( !asset.isArchived() ) {
+            if ( !asset.isArchived() && !asset.getDisabled() ) {
 
                 ContentHandler h = ContentManager.getHandler( asset.getFormat() );
-                if ( h instanceof IRuleAsset && !asset.getDisabled() ) {
+                if ( h instanceof IRuleAsset ) {
                     IRuleAsset ruleAsset = (IRuleAsset) h;
                     ruleAsset.assembleDRL( builder,
                                            asset,
