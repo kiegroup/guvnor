@@ -21,7 +21,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This contains the results returned to populate a table/grid.
- * This will be enhanced to provide pagination data shortly.
  * @author Michael Neale
  */
 public class TableDataResult
@@ -29,7 +28,7 @@ public class TableDataResult
     IsSerializable {
 
     public TableDataRow[] data;
-    public long total = -1;
+    public long total = -1; //-1 means we won't show a total, as we just don't know...
     public boolean hasNext;
     public long currentPosition; //the current cursor position in the result set
 

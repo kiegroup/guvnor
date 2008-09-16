@@ -54,6 +54,7 @@ import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
 
 /**
  * Uses an awesome grid and does paging for asset lists.
+ * It works well, but here be dragons.
  * @author Michael Neale
  */
 public class AssetItemGrid extends Composite {
@@ -173,7 +174,7 @@ public class AssetItemGrid extends Composite {
                 };
 
                 ToolbarButton refreshB = new ToolbarButton();
-                refreshB.setText("Refresh");
+                refreshB.setText("(refresh list)");
                 refreshB.addListener(new ButtonListenerAdapter() {
                     public void onClick(Button button, EventObject e) {
                     	refresh.execute();
@@ -237,6 +238,23 @@ public class AssetItemGrid extends Composite {
                         doGrid(source, cm, rd, pageSize);
                     }
                 });
+
+        if (!forward) {
+        	ToolbarButton first = new ToolbarButton("(go to first)");
+        	tb.addButton(first);
+        	first.addListener(new ButtonListenerAdapter() {
+        		@Override
+        		public void onClick(Button button, EventObject e) {
+        			cursorPositions.clear();
+        			cursorPositions.push(0);
+                    layout.clear();
+                    g.destroy();
+                    doGrid(source, cm, rd, pageSize);
+        		}
+        	});
+
+
+        }
     }
 
     private RecordDef createRecordDef(TableConfig conf) {

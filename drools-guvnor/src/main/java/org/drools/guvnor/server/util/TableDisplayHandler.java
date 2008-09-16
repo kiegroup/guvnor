@@ -41,7 +41,10 @@ import com.google.gwt.user.client.rpc.SerializableException;
  */
 public class TableDisplayHandler {
 
-    private RowLoader          ASSET_LIST;
+	/** how many rows we show on a grid page */
+
+    private static final int ROWS_PER_PAGE = 40;
+	private RowLoader          ASSET_LIST;
 
 
     /**
@@ -63,9 +66,9 @@ public class TableDisplayHandler {
         result.hasNext = list.hasNext;
         return result;
     }
-    
+
     private TableDataResult loadRuleListTable(
-    		List<AssetItem> assetList, long curPos, boolean hasNext) 
+    		List<AssetItem> assetList, long curPos, boolean hasNext)
     	throws SerializableException {
     	List<TableDataRow> data = loadRows(assetList.iterator(), -1);
     	TableDataResult result = new TableDataResult();
@@ -86,29 +89,29 @@ public class TableDisplayHandler {
         	if (skip > size) {
         		List<AssetItem> tempList = new ArrayList<AssetItem>();
             	return loadRuleListTable(tempList, 0, false);
-        	}    	
+        	}
 
         	if (skip > 0) {
         		startPos = skip;
         	} else {
         		skip = 0;
         	}
-        	
+
         	if ((skip + numRows) > size) {
         		endPos = size;
         	} else {
         		endPos = skip + numRows;
         		hasNext = true;
-        	}   		
-        	
+        	}
+
         	List<AssetItem> tempList2 = assetList.subList(startPos, endPos);
-        	
+
         	return loadRuleListTable(tempList2, endPos, hasNext);
     	}
-    	
+
     	return loadRuleListTable(assetList, 0, false);
-    }  
-    
+    }
+
     public TableDataResult loadRuleListTable(AssetItemIterator it, int skip, int numRows) {
     	if (numRows != -1) {
     		it.skip(skip);
@@ -152,7 +155,7 @@ public class TableDisplayHandler {
         final TableConfig config = new TableConfig();
 
         config.headers = ASSET_LIST.getHeaders();
-        config.rowsPerPage = 40;
+        config.rowsPerPage = ROWS_PER_PAGE;
         return config;
     }
 }
