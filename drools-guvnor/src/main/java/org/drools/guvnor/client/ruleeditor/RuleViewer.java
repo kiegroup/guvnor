@@ -169,6 +169,10 @@ public class RuleViewer extends Composite {
 
     }
 
+    public long getLastSavedTime() {
+    	return toolbar.getLastSavedTime();
+    }
+
 	private void doMetaWidget() {
 		metaWidget = new MetaDataWidget( this.asset.metaData, readOnly, this.asset.uuid, new Command() {
             public void execute() {

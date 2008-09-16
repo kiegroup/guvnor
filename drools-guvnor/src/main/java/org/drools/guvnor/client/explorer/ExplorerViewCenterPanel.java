@@ -1,6 +1,8 @@
 package org.drools.guvnor.client.explorer;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -24,9 +26,12 @@ import com.gwtext.client.core.Ext;
 import com.gwtext.client.core.Margins;
 import com.gwtext.client.core.RegionPosition;
 import com.gwtext.client.widgets.Component;
+import com.gwtext.client.widgets.Container;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.TabPanel;
 import com.gwtext.client.widgets.event.PanelListenerAdapter;
+import com.gwtext.client.widgets.event.TabPanelListener;
+import com.gwtext.client.widgets.event.TabPanelListenerAdapter;
 import com.gwtext.client.widgets.layout.BorderLayoutData;
 
 /**
@@ -41,6 +46,9 @@ public class ExplorerViewCenterPanel {
 	private String id = Ext.generateId();
 	private BorderLayoutData centerLayoutData;
 
+	/** to keep track of what is open, asset wise */
+	private Map<String, RuleViewer> openedAssets = new HashMap<String, RuleViewer>();
+
 	public ExplorerViewCenterPanel() {
 		tp = new TabPanel();
 
@@ -54,16 +62,24 @@ public class ExplorerViewCenterPanel {
         centerLayoutData = new BorderLayoutData(RegionPosition.CENTER);
         centerLayoutData.setMargins(new Margins(5, 0, 5, 5));
 
-//        HistoryListener hl = new HistoryListener() {
-//			public void onHistoryChanged(String a) {
-//				if (a != null && a.startsWith("asset=")) {
-//					openAssetByToken(a);
-//				}
-//			}
-//        };
-//        History.addHistoryListener(hl);
-
         String tok = History.getToken();
+
+        //listener to try and stop people from forgetting to save...
+        tp.addListener(new TabPanelListenerAdapter() {
+        	@Override
+        	public boolean doBeforeRemove(Container self, Component component) {
+        		if (openedAssets.containsKey(component.getId())) {
+        			RuleViewer rv = openedAssets.get(component.getId());
+        			if (rv.getLastSavedTime() > 0) {
+        				if (System.currentTimeMillis() - rv.getLastSavedTime() > 30000) {
+        					return Window.confirm("Are you sure you want to close this item? Any unsaved changes will be lost.");
+        				}
+        			}
+        			return true;
+        		}
+        		return true;
+        	}
+        });
 
         openAssetByToken(tok);
 
@@ -91,26 +107,27 @@ public class ExplorerViewCenterPanel {
 	 */
 	public void addTab (String tabname, boolean closeable, Widget widget, final String key) {
 
-
+		final String panelId = key + id;
 		Panel localTP = new Panel();
 		localTP.setClosable(closeable);
 		localTP.setTitle(tabname);
-		localTP.setId(key + id);
+		localTP.setId(panelId);
 		localTP.setAutoScroll(true);
 		localTP.add(widget);
-
 		tp.add(localTP, this.centerLayoutData);
 
 		localTP.addListener(new PanelListenerAdapter() {
-
 			public void onDestroy(Component component) {
 				openedTabs.remove(key).destroy();
+				openedAssets.remove(panelId);
 			}
 		});
 
+		if (widget instanceof RuleViewer) {
+			this.openedAssets.put(panelId, (RuleViewer) widget);
+		}
 
 		tp.activate(localTP.getId());
-
 
 
 
