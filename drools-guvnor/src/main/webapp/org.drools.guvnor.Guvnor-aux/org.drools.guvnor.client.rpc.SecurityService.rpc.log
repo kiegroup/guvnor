@@ -1,325 +1,139 @@
-Reachable types computed on: Tue Sep 16 18:17:02 EST 2008
-com.google.gwt.i18n.client.impl.ConstantMap.OrderedConstantSet<T>
-   Serialization status
-      Not serializable
-   Path
-      'com.google.gwt.i18n.client.impl.ConstantMap.OrderedConstantSet<T>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
+Reachable types computed on: Wed Sep 17 17:02:46 EST 2008
 com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException
    Serialization status
       Instantiable
    Path
+      'com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException' is reachable as a subtype of type 'class com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException'
       Started from 'com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException'
-
-com.google.gwt.user.client.ui.FastStringMap<T>.1<>
-   Serialization status
-      Not serializable
-   Path
-      'com.google.gwt.user.client.ui.FastStringMap<T>.1<>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-com.google.gwt.user.client.ui.FastStringMap<T>.2<>
-   Serialization status
-      Not serializable
-   Path
-      'com.google.gwt.user.client.ui.FastStringMap<T>.2<>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
 
 java.lang.Exception
    Serialization status
       Field serializable
    Path
+      'java.lang.Exception' is reachable as a supertype of type 'class java.lang.RuntimeException'
+      'java.lang.RuntimeException' is reachable as a supertype of type 'class com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException'
+      'com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException' is reachable as a subtype of type 'class com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException'
       Started from 'com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException'
 
 java.lang.Integer
    Serialization status
       Instantiable
    Path
-      'java.lang.Integer' is reachable from type argument 0 of type 'java.util.List<E>'
+      'java.lang.Integer' is reachable as a subtype of type 'class java.lang.Integer'
+      'java.lang.Integer' is reachable from type argument 0 of type 'java.util.LinkedList<E>'
+      'java.util.LinkedList<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
+      'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
+      Started from 'org.drools.guvnor.client.security.Capabilities'
+
+java.lang.Integer[]
+   Serialization status
+      Instantiable
+   Path
+      'java.lang.Integer' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
+      'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
 
 java.lang.Number
    Serialization status
       Field serializable
    Path
-      'java.lang.Integer' is reachable from type argument 0 of type 'java.util.List<E>'
+      'java.lang.Number' is reachable as a supertype of type 'class java.lang.Integer'
+      'java.lang.Integer' is reachable as a subtype of type 'class java.lang.Integer'
+      'java.lang.Integer' is reachable from type argument 0 of type 'java.util.LinkedList<E>'
+      'java.util.LinkedList<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
+      'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
-
-java.lang.Object
-   Serialization status
-      Not serializable
-   Path
-      Started from 'java.lang.String'
 
 java.lang.RuntimeException
    Serialization status
       Field serializable
    Path
+      'java.lang.RuntimeException' is reachable as a supertype of type 'class com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException'
+      'com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException' is reachable as a subtype of type 'class com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException'
       Started from 'com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException'
 
 java.lang.String
    Serialization status
       Instantiable
    Path
+      'java.lang.String' is reachable as a subtype of type 'class java.lang.String'
       Started from 'java.lang.String'
 
 java.lang.Throwable
    Serialization status
       Field serializable
    Path
+      'java.lang.Throwable' is reachable as a supertype of type 'class java.lang.Exception'
+      'java.lang.Exception' is reachable as a supertype of type 'class java.lang.RuntimeException'
+      'java.lang.RuntimeException' is reachable as a supertype of type 'class com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException'
+      'com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException' is reachable as a subtype of type 'class com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException'
       Started from 'com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException'
 
-java.util.AbstractHashMap<K, V>.EntrySet<>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.AbstractHashMap<K, V>.EntrySet<>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-java.util.AbstractList<E>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.AbstractList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
-      'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
-      Started from 'org.drools.guvnor.client.security.Capabilities'
-
-java.util.AbstractList<E>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.Vector<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
-      'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
-      Started from 'org.drools.guvnor.client.security.Capabilities'
-
-java.util.AbstractList<E>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.ArrayList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
-      'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
-      Started from 'org.drools.guvnor.client.security.Capabilities'
-
-java.util.AbstractMap<K, V>.1<>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.AbstractMap<K, V>.1<>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-java.util.AbstractSequentialList<E>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.LinkedList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
-      'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
-      Started from 'org.drools.guvnor.client.security.Capabilities'
-
-java.util.AbstractSequentialList<E>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.AbstractSequentialList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
-      'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
-      Started from 'org.drools.guvnor.client.security.Capabilities'
-
-java.util.AbstractSet<E>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.AbstractSet<E>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-java.util.AbstractSet<E>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.HashSet<E>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-java.util.ArrayList<E>
+java.util.ArrayList<java.lang.Integer>
    Serialization status
       Instantiable
    Path
-      'java.util.ArrayList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.util.ArrayList<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
+      'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
 
-java.util.Arrays.ArrayList<E>
+java.util.Arrays.ArrayList<java.lang.Integer>
    Serialization status
       Instantiable
    Path
-      'java.util.Arrays.ArrayList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.util.Arrays.ArrayList<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
+      'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
 
-java.util.Collections.5<>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.Collections.5<>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
-      'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
-      Started from 'org.drools.guvnor.client.security.Capabilities'
-
-java.util.Collections.7<>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.Collections.7<>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-java.util.EnumMap<K, V>.EntrySet<>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.EnumMap<K, V>.EntrySet<>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-java.util.EnumSet<E>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.EnumSet<E>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-java.util.EnumSet<E>.EnumSetImpl<E>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.EnumSet<E>.EnumSetImpl<E>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-java.util.HashSet<E>
+java.util.HashSet<java.lang.String>
    Serialization status
       Instantiable
    Path
-      'java.util.HashSet<E>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
+      'java.util.HashSet<java.lang.String>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
       'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
+      'org.drools.guvnor.client.rpc.UserSecurityContext' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.UserSecurityContext'
       Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
 
-java.util.LinkedHashMap<K, V>.EntrySet<>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.LinkedHashMap<K, V>.EntrySet<>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-java.util.LinkedHashSet<E>
+java.util.LinkedHashSet<java.lang.String>
    Serialization status
       Instantiable
    Path
-      'java.util.LinkedHashSet<E>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
+      'java.util.LinkedHashSet<java.lang.String>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
       'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
+      'org.drools.guvnor.client.rpc.UserSecurityContext' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.UserSecurityContext'
       Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
 
-java.util.LinkedList<E>
+java.util.LinkedList<java.lang.Integer>
    Serialization status
       Instantiable
    Path
-      'java.util.LinkedList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.util.LinkedList<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
+      'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
 
-java.util.LinkedList.Node<E>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.LinkedList.Node<E>' is reachable from field 'header' of type 'java.util.LinkedList<E>'
-      'java.util.LinkedList<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
-      'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
-      Started from 'org.drools.guvnor.client.security.Capabilities'
-
-java.util.List<java.lang.Integer>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
-      Started from 'org.drools.guvnor.client.security.Capabilities'
-
-java.util.List<E>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.List<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
-      'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
-      Started from 'org.drools.guvnor.client.security.Capabilities'
-
-java.util.Set<java.lang.String>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-java.util.Set<E>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.Set<E>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-java.util.SortedSet<E>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.SortedSet<E>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-java.util.Stack<E>
+java.util.Stack<java.lang.Integer>
    Serialization status
       Instantiable
    Path
-      'java.util.Stack<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.util.Stack<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
+      'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
 
-java.util.TreeMap<K, V>.EntrySet<>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.TreeMap<K, V>.EntrySet<>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-java.util.TreeMap<K, V>.SubMap<>.1<>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.TreeMap<K, V>.SubMap<>.1<>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-java.util.TreeSet<E>
-   Serialization status
-      Not serializable
-   Path
-      'java.util.TreeSet<E>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
-      'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
-      Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
-
-java.util.Vector<E>
+java.util.Vector<java.lang.Integer>
    Serialization status
       Instantiable
    Path
-      'java.util.Vector<E>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.util.Vector<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
+      'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
 
 org.cobogw.gwt.user.client.rpc.AsyncCallbackCollection
@@ -328,17 +142,20 @@ org.cobogw.gwt.user.client.rpc.AsyncCallbackCollection
    Path
       'org.cobogw.gwt.user.client.rpc.AsyncCallbackCollection' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
+      'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
 
 org.drools.guvnor.client.rpc.UserSecurityContext
    Serialization status
       Instantiable
    Path
+      'org.drools.guvnor.client.rpc.UserSecurityContext' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.UserSecurityContext'
       Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
 
 org.drools.guvnor.client.security.Capabilities
    Serialization status
       Instantiable
    Path
+      'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
 

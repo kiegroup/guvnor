@@ -46,3 +46,11 @@
 div.x-date-picker {
     width:10px;
 }
+
+/*
+ * FF2 / FF3 issue with scrolling when having an EditorGridPanel
+ */
+.ext-gecko .x-grid-editor {
+	position: relative !important;
+	float: left;
+}

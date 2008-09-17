@@ -16,13 +16,10 @@ public class UserSecurityContext implements IsSerializable {
 	public String userName;
 
 
-	/**
-	 * @gwt.typeArgs <java.lang.String>
-	 */
-	public Set disabledFeatures;
+	public Set<String> disabledFeatures;
 
 	public UserSecurityContext() {}
-	public UserSecurityContext(String userName, Set disableFeatures) {
+	public UserSecurityContext(String userName, Set<String> disableFeatures) {
 		this.userName = userName;
 		this.disabledFeatures = disableFeatures;
 	}

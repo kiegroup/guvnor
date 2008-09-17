@@ -47,14 +47,14 @@ public class RuleFlowContentModelBuilder {
 
     /**
      * Creates transfer nodes from RuleFlowProcess nodes.
-     * 
+     *
      * @param nodes from the rule flow XML.
-     * @param model RuleFlowContentModel that contains the transfer nodes for client side.  
+     * @param model RuleFlowContentModel that contains the transfer nodes for client side.
      */
-    private Collection<TransferNode> createNodesAndConnections(Node[] nodes,
+    private List<TransferNode> createNodesAndConnections(Node[] nodes,
                                                                RuleFlowContentModel model) {
 
-        Collection<TransferNode> transferNodes = new ArrayList<TransferNode>();
+        List<TransferNode> transferNodes = new ArrayList<TransferNode>();
 
         for ( int i = 0; i < nodes.length; i++ ) {
             Node node = nodes[i];
@@ -122,7 +122,7 @@ public class RuleFlowContentModelBuilder {
         ForEachTransferNode fetn = new ForEachTransferNode();
         RuleFlowContentModel model = new RuleFlowContentModel();
 
-        Collection<TransferNode> transferNodes = createNodesAndConnections( node.getNodes(),
+        List<TransferNode> transferNodes = createNodesAndConnections( node.getNodes(),
                                                                             model );
 
         model.setNodes( transferNodes );
@@ -133,7 +133,7 @@ public class RuleFlowContentModelBuilder {
 
     /**
      * Checks this node for out and in going connections and creates a transfer object from them.
-     * 
+     *
      * @param model
      * @param node
      */
@@ -157,7 +157,7 @@ public class RuleFlowContentModelBuilder {
 
     /**
      * Creates a single connection to be transferred.
-     * 
+     *
      * @param model
      * @param connection
      */

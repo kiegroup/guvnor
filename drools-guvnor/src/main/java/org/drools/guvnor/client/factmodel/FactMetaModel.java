@@ -14,10 +14,7 @@ public class FactMetaModel implements PortableObject {
 
 	public String name;
 
-	/**
-	 * @gwt.typeArgs <org.drools.guvnor.client.factmodel.FieldMetaModel>
-	 */
-	public List fields = new ArrayList();
+	public List<FieldMetaModel> fields = new ArrayList<FieldMetaModel>();
 
 	public FactMetaModel() {}
 	public FactMetaModel(String name, List fields) {

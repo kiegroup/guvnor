@@ -14,11 +14,10 @@ package org.drools.guvnor.client.ruleeditor;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.drools.guvnor.client.modeldriven.brl.PortableObject;
-
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
+
+import org.drools.guvnor.client.modeldriven.brl.PortableObject;
 
 
 /**
@@ -28,9 +27,6 @@ import java.util.Date;
  */
 public class PropertiesHolder implements PortableObject {
 
-    /**
-	 * @gwt.typeArgs <org.drools.guvnor.client.ruleeditor.PropertyHolder>
-	 */                                                                  
     public List<PropertyHolder> list = new ArrayList<PropertyHolder>();
 
 }

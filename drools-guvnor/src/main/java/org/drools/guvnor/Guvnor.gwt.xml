@@ -25,4 +25,6 @@
     <servlet path="/api" class="org.drools.guvnor.server.files.RestAPIServlet"/>
 
 
+	<set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true" />
+
 </module>

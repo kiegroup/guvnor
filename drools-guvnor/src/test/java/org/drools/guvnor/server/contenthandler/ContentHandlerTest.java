@@ -20,6 +20,7 @@ package org.drools.guvnor.server.contenthandler;
 import junit.framework.TestCase;
 
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.server.contenthandler.BRLContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
@@ -31,6 +32,7 @@ import org.drools.guvnor.server.contenthandler.DefaultContentHandler;
 import org.drools.guvnor.server.contenthandler.EnumerationContentHandler;
 import org.drools.guvnor.server.contenthandler.GuidedDTContentHandler;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
+import org.drools.guvnor.server.util.GuidedDTXMLPersistence;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -88,9 +90,24 @@ public class ContentHandlerTest extends TestCase {
         assertNotNull(result[0].message);
         assertEquals(asset.getUUID(), result[0].uuid);
 
+    }
+
+    public void testEmptyDT() throws Exception {
+        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+        PackageItem pkg = repo.loadDefaultPackage();
+        AssetItem asset = pkg.addAsset( "testEmptyDT", "" );
+        asset.updateFormat(AssetFormats.DECISION_TABLE_GUIDED);
+        GuidedDecisionTable gt = new GuidedDecisionTable();
+        asset.updateContent(GuidedDTXMLPersistence.getInstance().marshal(gt));
+        asset.checkin("");
+
+        GuidedDTContentHandler ch = new GuidedDTContentHandler();
+        ch.compile(null, asset, null);
 
 
     }
+
+
 
     public void testNameConvertion() {
     	assertEquals("com.foo.Bar", ModelContentHandler.convertPathToName("com/foo/Bar.class"));

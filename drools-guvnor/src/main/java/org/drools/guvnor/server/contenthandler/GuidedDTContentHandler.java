@@ -63,9 +63,10 @@ public class GuidedDTContentHandler extends ContentHandler implements IRuleAsset
 	public void compile(BRMSPackageBuilder builder, AssetItem asset,
 			ContentPackageAssembler.ErrorLogger logger)
 			throws DroolsParserException, IOException {
+		String drl = getSourceDRL(asset, builder);
+		if (drl.equals("")) return;
 		builder
-				.addPackageFromDrl(new StringReader(
-						getSourceDRL(asset, builder)));
+				.addPackageFromDrl(new StringReader(drl));
 	}
 
 	public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset,

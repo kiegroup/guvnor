@@ -710,7 +710,7 @@ class DataInputWidget extends DirtyableComposite {
             final FactData d = (FactData) iterator.next();
 
             for (int i = 0; i < d.fieldData.size(); i++) {
-                final FieldData fd = (FieldData) d.fieldData.get(i);
+                final FieldData fd = d.fieldData.get(i);
                 if (!fields.containsKey(fd.name)) {
                     int idx = fields.size() + 1;
                     fields.put(fd.name, new Integer(idx));
@@ -754,7 +754,7 @@ class DataInputWidget extends DirtyableComposite {
             t.setWidget(totalRows + 1, col, del);
             Map presentFields = new HashMap(fields);
             for (int i = 0; i < d.fieldData.size(); i++) {
-                FieldData fd = (FieldData) d.fieldData.get(i);
+                FieldData fd = d.fieldData.get(i);
                 int fldRow = ((Integer) fields.get(fd.name)).intValue();
                 t.setWidget(fldRow, col, editableCell(fd, d.type));
                 presentFields.remove(fd.name);
