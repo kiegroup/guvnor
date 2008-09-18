@@ -1,5 +1,6 @@
 package org.drools.guvnor.client.explorer;
 
+import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
@@ -52,6 +53,13 @@ public abstract class GenericPanel extends Panel {
 
     public void launchWizard(String format, String title, boolean showCats) {
         launchWizard(format, title, showCats, null);
+    }
+
+    /**
+     * Add a widget to this panel.
+     */
+    public void add(Widget w) {
+    	super.add(w);
     }
 
 }

@@ -78,6 +78,10 @@ public class ExplorerLayoutManager {
             accordion.add(tpAdmin);
         }
 
+//        if (shouldShow(Capabilities.SHOW_ADMIN)) {
+//        	accordion.add(new RHQPanel("Operations Network", centertabbedPanel));
+//        }
+
 
     }
 

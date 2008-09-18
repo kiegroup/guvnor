@@ -22,17 +22,26 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.HistoryListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Ext;
+import com.gwtext.client.core.Function;
 import com.gwtext.client.core.Margins;
 import com.gwtext.client.core.RegionPosition;
+import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.Container;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.TabPanel;
+import com.gwtext.client.widgets.Tool;
+import com.gwtext.client.widgets.Toolbar;
+import com.gwtext.client.widgets.ToolbarButton;
+import com.gwtext.client.widgets.Tool.ToolType;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.event.PanelListenerAdapter;
 import com.gwtext.client.widgets.event.TabPanelListener;
 import com.gwtext.client.widgets.event.TabPanelListenerAdapter;
 import com.gwtext.client.widgets.layout.BorderLayoutData;
+import com.gwtext.client.widgets.layout.LayoutData;
 
 /**
  * This is the tab panel manager.
@@ -48,6 +57,8 @@ public class ExplorerViewCenterPanel {
 
 	/** to keep track of what is open, asset wise */
 	private Map<String, RuleViewer> openedAssets = new HashMap<String, RuleViewer>();
+
+	private Button closeAllButton;
 
 	public ExplorerViewCenterPanel() {
 		tp = new TabPanel();
@@ -81,9 +92,25 @@ public class ExplorerViewCenterPanel {
         	}
         });
 
+        addCloseAllButton();
+
         openAssetByToken(tok);
+	}
 
-
+	private void addCloseAllButton() {
+		closeAllButton = new Button("(close all items)");
+        closeAllButton.addListener(new ButtonListenerAdapter() {
+        	@Override
+        	public void onClick(Button button, EventObject e) {
+        		if (Window.confirm("Are you sure you want to close open items?")) {
+        			tp.clear();
+        			openedAssets.clear();
+        			openedTabs.clear();
+        			openFind();
+        		}
+        	}
+        });
+        tp.addButton(closeAllButton);
 	}
 
 	private void openAssetByToken(String tok) {
@@ -132,6 +159,7 @@ public class ExplorerViewCenterPanel {
 
 
 		openedTabs.put(key, localTP);
+
 	}
 
 	/**
@@ -143,7 +171,6 @@ public class ExplorerViewCenterPanel {
 
 			Panel tpi = (Panel) openedTabs.get(key);
 			this.tp.activate(tpi.getId());
-			//tp.scrollToTab(tpi, true);
 
 			return true;
 		} else {
