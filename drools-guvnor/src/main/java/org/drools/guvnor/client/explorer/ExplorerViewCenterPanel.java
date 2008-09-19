@@ -2,7 +2,9 @@ package org.drools.guvnor.client.explorer;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -21,6 +23,8 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.HistoryListener;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Ext;
@@ -55,8 +59,8 @@ public class ExplorerViewCenterPanel {
 	private String id = Ext.generateId();
 	private BorderLayoutData centerLayoutData;
 
-	/** to keep track of what is open, asset wise */
-	private Map<String, RuleViewer> openedAssets = new HashMap<String, RuleViewer>();
+	/** to keep track of what is dirty, filthy */
+	private Set<String> dirtyAssets = new HashSet<String>();
 
 	private Button closeAllButton;
 
@@ -79,14 +83,8 @@ public class ExplorerViewCenterPanel {
         tp.addListener(new TabPanelListenerAdapter() {
         	@Override
         	public boolean doBeforeRemove(Container self, Component component) {
-        		if (openedAssets.containsKey(component.getId())) {
-        			RuleViewer rv = openedAssets.get(component.getId());
-        			if (rv.getLastSavedTime() > 0) {
-        				if (System.currentTimeMillis() - rv.getLastSavedTime() > 30000) {
-        					return Window.confirm("Are you sure you want to close this item? Any unsaved changes will be lost.");
-        				}
-        			}
-        			return true;
+        		if (dirtyAssets.contains(component.getId())) {
+        			return Window.confirm("Are you sure you want to close this item? Any unsaved changes will be lost.");
         		}
         		return true;
         	}
@@ -104,7 +102,7 @@ public class ExplorerViewCenterPanel {
         	public void onClick(Button button, EventObject e) {
         		if (Window.confirm("Are you sure you want to close open items?")) {
         			tp.clear();
-        			openedAssets.clear();
+        			dirtyAssets.clear();
         			openedTabs.clear();
         			openFind();
         		}
@@ -140,18 +138,26 @@ public class ExplorerViewCenterPanel {
 		localTP.setTitle(tabname);
 		localTP.setId(panelId);
 		localTP.setAutoScroll(true);
-		localTP.add(widget);
+		FocusPanel fp = new FocusPanel();
+		fp.add(widget);
+		localTP.add(fp);
 		tp.add(localTP, this.centerLayoutData);
+
 
 		localTP.addListener(new PanelListenerAdapter() {
 			public void onDestroy(Component component) {
 				openedTabs.remove(key).destroy();
-				openedAssets.remove(panelId);
+				dirtyAssets.remove(panelId);
 			}
 		});
 
 		if (widget instanceof RuleViewer) {
-			this.openedAssets.put(panelId, (RuleViewer) widget);
+			fp.addClickListener(new ClickListener() {
+				public void onClick(Widget w) {
+					dirtyAssets.add(panelId);
+				}
+
+			});
 		}
 
 		tp.activate(localTP.getId());

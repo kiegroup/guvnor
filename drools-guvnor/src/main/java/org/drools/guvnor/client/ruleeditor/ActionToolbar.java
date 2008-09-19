@@ -52,7 +52,6 @@ public class ActionToolbar extends Composite {
     private ToolbarTextItem state;
 	final private RuleAsset asset;
 	private Command afterCheckinEvent;
-	protected long lastSavedTime;
 
     public ActionToolbar(final RuleAsset asset,
                          final CheckinAction checkin,
@@ -83,9 +82,6 @@ public class ActionToolbar extends Composite {
         initWidget( toolbar );
     }
 
-    public long getLastSavedTime() {
-    	return this.lastSavedTime;
-    }
 
     /**
      * Sets the visible status display.
@@ -245,7 +241,6 @@ public class ActionToolbar extends Composite {
         final CheckinPopup pop = new CheckinPopup(w.getAbsoluteLeft(), w.getAbsoluteTop(), "Check in changes.");
         pop.setCommand( new Command() {
             public void execute() {
-            	lastSavedTime = System.currentTimeMillis();
                 checkinAction.doCheckin(pop.getCheckinComment());
                 if (afterCheckinEvent != null) afterCheckinEvent.execute();
             }

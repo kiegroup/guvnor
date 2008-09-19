@@ -10,7 +10,9 @@ code {
 	font-size:small;
 }
 
-
+.gwt-Frame {
+	border:0;
+}
 
 
 .VerticalSplitPanel .vsplitter
