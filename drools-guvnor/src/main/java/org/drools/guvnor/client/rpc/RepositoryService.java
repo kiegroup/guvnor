@@ -157,7 +157,7 @@ public interface RepositoryService extends RemoteService {
      * It can also be used for "pagination" by passing in start and
      * finish row numbers.
      * @param packageUUID The package uuid to search inside.
-     * @param format The format to filter on.
+     * @param format The format to filter on. If this is empty - it will look for all non "known" asset types (ie "misc" stuff).
      * @param numRows The number of rows to return. -1 means all.
      * @param startRow The starting row number if paging - if numRows is -1 then this is ignored.
      */

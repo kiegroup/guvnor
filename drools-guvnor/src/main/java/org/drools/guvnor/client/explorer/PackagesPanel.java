@@ -204,7 +204,8 @@ public class PackagesPanel extends GenericPanel {
             }
 
 
-            public void onCollapse(final TreeNode node) {
+            @Override
+            public void onCollapseNode(final TreeNode node) {
                 if (node.getText().equals("Packages")) {
                     Node[] children = node.getChildNodes();
                     for (Node child : children) {

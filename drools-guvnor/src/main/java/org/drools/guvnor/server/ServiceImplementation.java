@@ -43,7 +43,6 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.log4j.Logger;
-import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -89,6 +88,7 @@ import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
+import org.drools.guvnor.server.util.AssetFormatHelper;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
@@ -821,7 +821,12 @@ public class ServiceImplementation implements RepositoryService {
 		}
 		long start = System.currentTimeMillis();
 		PackageItem pkg = repository.loadPackageByUUID(uuid);
-		AssetItemIterator it = pkg.listAssetsByFormat(formats);
+		AssetItemIterator it;
+		if (formats.length > 0) {
+			it = pkg.listAssetsByFormat(formats);
+		} else {
+			it = pkg.listAssetsNotOfFormat(AssetFormatHelper.listRegisteredTypes());
+		}
 		TableDisplayHandler handler = new TableDisplayHandler(tableConfig);
 		log.debug("time for asset list load: "
 				+ (System.currentTimeMillis() - start));

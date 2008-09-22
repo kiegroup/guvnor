@@ -60,7 +60,7 @@ public class ExplorerViewCenterPanel {
 	private BorderLayoutData centerLayoutData;
 
 	/** to keep track of what is dirty, filthy */
-	private Set<String> dirtyAssets = new HashSet<String>();
+	private Map<String, RuleViewer> openedAssetEditors = new HashMap<String, RuleViewer>();
 
 	private Button closeAllButton;
 
@@ -83,8 +83,11 @@ public class ExplorerViewCenterPanel {
         tp.addListener(new TabPanelListenerAdapter() {
         	@Override
         	public boolean doBeforeRemove(Container self, Component component) {
-        		if (dirtyAssets.contains(component.getId())) {
-        			return Window.confirm("Are you sure you want to close this item? Any unsaved changes will be lost.");
+        		if (openedAssetEditors.containsKey(component.getId())) {
+        			RuleViewer rv = openedAssetEditors.get(component.getId());
+        			return (rv.isDirty()) ?
+        					Window.confirm("Are you sure you want to close this item? Any unsaved changes will be lost.")
+        					: true;
         		}
         		return true;
         	}
@@ -102,7 +105,7 @@ public class ExplorerViewCenterPanel {
         	public void onClick(Button button, EventObject e) {
         		if (Window.confirm("Are you sure you want to close open items?")) {
         			tp.clear();
-        			dirtyAssets.clear();
+        			openedAssetEditors.clear();
         			openedTabs.clear();
         			openFind();
         		}
@@ -138,26 +141,19 @@ public class ExplorerViewCenterPanel {
 		localTP.setTitle(tabname);
 		localTP.setId(panelId);
 		localTP.setAutoScroll(true);
-		FocusPanel fp = new FocusPanel();
-		fp.add(widget);
-		localTP.add(fp);
+		localTP.add(widget);
 		tp.add(localTP, this.centerLayoutData);
 
 
 		localTP.addListener(new PanelListenerAdapter() {
 			public void onDestroy(Component component) {
 				openedTabs.remove(key).destroy();
-				dirtyAssets.remove(panelId);
+				openedAssetEditors.remove(panelId);
 			}
 		});
 
 		if (widget instanceof RuleViewer) {
-			fp.addClickListener(new ClickListener() {
-				public void onClick(Widget w) {
-					dirtyAssets.add(panelId);
-				}
-
-			});
+			this.openedAssetEditors.put(panelId, (RuleViewer) widget);
 		}
 
 		tp.activate(localTP.getId());

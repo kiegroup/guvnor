@@ -668,6 +668,22 @@ public class ServiceImplementationTest extends TestCase {
 	}
 
 
+	public void testListUnregisteredAssetFormats() throws Exception {
+		ServiceImplementation impl = getService();
+		PackageItem pkg = impl.repository.createPackage("testListUnregisteredAssetFormats", "");
+		AssetItem as = pkg.addAsset("whee", "");
+		as.updateFormat("drl");
+		as.checkin("");
+
+		as = pkg.addAsset("whee2", "");
+		as.updateFormat("something_silly");
+		as.checkin("");
+
+		TableDataResult res = impl.listAssets(pkg.getUUID(), new String[0], 0, 40, AssetItemGrid.RULE_LIST_TABLE_ID);
+		assertEquals(1, res.data.length);
+	}
+
+
 	public void testQuickFind() throws Exception  {
 		RepositoryService impl = getService();
 		String cat = "testQuickFind";

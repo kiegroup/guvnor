@@ -31,9 +31,12 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.KeyboardListener;
+import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -57,6 +60,10 @@ public class RuleViewer extends Composite {
 	private VerticalPanel layout;
 	private HorizontalPanel hsp;
 
+
+
+
+	private boolean dirty = false;
 
     public RuleViewer(RuleAsset asset) {
         this(asset, false);
@@ -84,6 +91,11 @@ public class RuleViewer extends Composite {
         LoadingPopup.close();
     }
 
+    public boolean isDirty() {
+    	if (this.readOnly) return false;
+    	return dirty;
+    }
+
 
 
 	/**
@@ -109,6 +121,7 @@ public class RuleViewer extends Composite {
                     if (editor instanceof SaveEventListener) {
                     	((SaveEventListener) editor).onAfterSave();
                     }
+                    dirty = false;
                 }
                 },
                 new ActionToolbar.CheckinAction() {
@@ -146,11 +159,17 @@ public class RuleViewer extends Composite {
         doco = new RuleDocumentWidget(asset.metaData);
 
 
+        //need this to listen for changes (but not the action toolbar).
+        //will use click event, its as good as any.
+    	FocusPanel editorFP = new FocusPanel();
+    	FocusPanel metaFP = new FocusPanel();
+    	FocusPanel docoFP = new FocusPanel();
 
         VerticalPanel vert = new VerticalPanel();
-        vert.add(editor);
+        editorFP.add(editor);
+        vert.add(editorFP);
         editor.setHeight("100%");
-        vert.add(doco);
+        docoFP.add(doco);
 
         vert.setWidth("100%");
         vert.setHeight("100%");
@@ -158,7 +177,8 @@ public class RuleViewer extends Composite {
         hsp.add(vert);
         //hsp.addStyleName("HorizontalSplitPanel");
 
-        hsp.add(metaWidget);
+        metaFP.add(metaWidget);
+        hsp.add(metaFP);
 
 
 
@@ -166,6 +186,24 @@ public class RuleViewer extends Composite {
 
         //hsp.setSplitPosition("80%");
         hsp.setHeight("100%");
+
+        metaFP.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				dirty = true;
+			}
+        });
+        docoFP.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				dirty = true;
+			}
+        });
+
+        editorFP.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				dirty = true;
+			}
+        });
+
 
     }
 

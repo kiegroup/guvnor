@@ -61,10 +61,13 @@ public class ExplorerNodeConfig {
 
 		                               new String[]{AssetFormats.TEST_SCENARIO} ) ) ;
 
-        pkg.appendChild(makeItem( "Attachments",
+        pkg.appendChild(makeItem( "XML, Properties",
                 "images/new_file.gif",
                                new String[]{AssetFormats.XML, AssetFormats.PROPERTIES} ) ) ;
 
+        pkg.appendChild(makeItem( "Other assets, documentation",
+                "images/new_file.gif",
+                               new String[0] ) ) ;
 
 
         return pkg;
