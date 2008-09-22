@@ -599,6 +599,39 @@ public class PackageItemTest extends TestCase {
 
     }
 
+    public void testExcludeAssetTypes() throws Exception {
+        PackageItem pkg = getRepo().createPackage( "testExcludeAssetTypes", "" );
+        getRepo().save();
+
+
+        AssetItem item = pkg.addAsset( "a1", "" );
+        item.updateFormat("drl");
+        item.checkin( "la" );
+
+        item = pkg.addAsset( "a2", "wee" );
+        item.updateFormat("xls");
+        item.checkin( "la" );
+
+
+        AssetItemIterator it = pkg.listAssetsNotOfFormat(new String[] {"drl"});
+        List ls = iteratorToList(it);
+        assertEquals(1, ls.size());
+        AssetItem as = (AssetItem) ls.get(0);
+        assertEquals("a2", as.getName());
+
+        it = pkg.listAssetsNotOfFormat(new String[] {"drl", "wang"});
+        ls = iteratorToList(it);
+        assertEquals(1, ls.size());
+        as = (AssetItem) ls.get(0);
+        assertEquals("a2", as.getName());
+
+        it = pkg.listAssetsNotOfFormat(new String[] {"drl", "xls"});
+        ls = iteratorToList(it);
+        assertEquals(0, ls.size());
+
+
+    }
+
     public void testSortHistoryByVersionNumber() {
         PackageItem item = new PackageItem();
         List l = new ArrayList();

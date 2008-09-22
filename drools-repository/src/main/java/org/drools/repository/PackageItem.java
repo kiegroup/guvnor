@@ -465,6 +465,21 @@ public class PackageItem extends VersionableItem {
         }
     }
 
+    public AssetItemIterator listAssetsNotOfFormat(String[] formats) {
+        if (formats.length == 1) {
+            return queryAssets( "not drools:format='" + formats[0] + "'" );
+        } else {
+            String predicate = "not ( ";
+            for ( int i = 0; i < formats.length; i++ ) {
+                predicate = predicate + "drools:format='" + formats[i] + "'";
+                if (!(i == formats.length -1 )) { predicate =  predicate + " OR "; }
+            }
+            predicate = predicate + " ) ";
+            return queryAssets( predicate );
+        }
+
+    }
+
     /**
      * Load a specific rule asset by name.
      */
