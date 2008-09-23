@@ -53,7 +53,7 @@ public class ContentPackageAssembler {
      */
     private List<ContentAssemblyError> errors = new ArrayList<ContentAssemblyError>();
 
-    private BRMSPackageBuilder         builder;
+    BRMSPackageBuilder         builder;
 
     private String                     selectorConfigName;
 
