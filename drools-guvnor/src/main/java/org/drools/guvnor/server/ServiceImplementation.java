@@ -1225,11 +1225,11 @@ public class ServiceImplementation implements RepositoryService {
 					RoleTypes.PACKAGE_DEVELOPER);
 		}
 		PackageItem item = repository.loadPackageByUUID(packageUUID);
-		return buildPackage(selectorConfigName, force, item, Thread.currentThread().getContextClassLoader() );
+		return buildPackage(selectorConfigName, force, item );
 	}
 
 	private BuilderResult[] buildPackage(String selectorConfigName,
-			boolean force, PackageItem item, ClassLoader buildCl)
+			boolean force, PackageItem item)
 			throws DetailedSerializableException {
 		if (!force && item.isBinaryUpToDate()) {
 			// we can just return all OK if its up to date.
@@ -1270,7 +1270,7 @@ public class ServiceImplementation implements RepositoryService {
 			ContentPackageAssembler asm) throws Exception {
 		item.updateBinaryUpToDate(true);
 		RuleBaseConfiguration conf = new RuleBaseConfiguration();
-		// setting the MapBackedClassloader that is the parent of the builder classloader as the parent 
+		// setting the MapBackedClassloader that is the parent of the builder classloader as the parent
 		// of the rulebase classloader
 		conf.setClassLoader( asm.getBuilder().getRootClassLoader().getParent() );
 		RuleBase rb = RuleBaseFactory.newRuleBase( conf );
@@ -1608,7 +1608,7 @@ public class ServiceImplementation implements RepositoryService {
 					rb = loadRuleBase(item, buildCl);
 					this.ruleBaseCache.put(item.getUUID(), rb);
 				} else {
-					BuilderResult[] errs = this.buildPackage(null, false, item, buildCl);
+					BuilderResult[] errs = this.buildPackage(null, false, item);
 					if (errs == null || errs.length == 0) {
 						rb = loadRuleBase(item, buildCl);
 						this.ruleBaseCache.put(item.getUUID(), rb);
@@ -1718,7 +1718,7 @@ public class ServiceImplementation implements RepositoryService {
 					this.ruleBaseCache.put(item.getUUID(), loadRuleBase(item,
 							cl));
 				} else {
-					BuilderResult[] errs = this.buildPackage(null, false, item, cl);
+					BuilderResult[] errs = this.buildPackage(null, false, item);
 					if (errs == null || errs.length == 0) {
 						this.ruleBaseCache.put(item.getUUID(), loadRuleBase(
 								item, cl));
