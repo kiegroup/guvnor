@@ -1251,9 +1251,10 @@ public class ServiceImplementation implements RepositoryService {
 				out.flush();
 				out.close();
 
-				updateBinaryPackage(item, asm, buildCl);
+				updateBinaryPackage(item, asm);
 				repository.save();
 			} catch (Exception e) {
+			    e.printStackTrace();
 				log.error(e);
 				throw new DetailedSerializableException(
 						"An error occurred building the package.", e
@@ -1266,10 +1267,10 @@ public class ServiceImplementation implements RepositoryService {
 	}
 
 	private void updateBinaryPackage(PackageItem item,
-			ContentPackageAssembler asm, ClassLoader buildCl) throws Exception {
+			ContentPackageAssembler asm) throws Exception {
 		item.updateBinaryUpToDate(true);
 		RuleBaseConfiguration conf = new RuleBaseConfiguration();
-		conf.setClassLoader( buildCl );
+		conf.setClassLoader( asm.getBuilder().getRootClassLoader() );
 		RuleBase rb = RuleBaseFactory.newRuleBase( conf );
 		rb.addPackage(asm.getBinaryPackage());
 		// this.ruleBaseCache.put(item.getUUID(), rb);
