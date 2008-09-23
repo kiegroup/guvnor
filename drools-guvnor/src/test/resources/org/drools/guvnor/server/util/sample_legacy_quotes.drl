@@ -1,0 +1,13 @@
+package foo
+
+import goo.wee
+
+
+rule "Wee 'Bar' to TPD Occupation Type 'Any' when AgeNext Birthday >= 64"
+	lock-on-active true
+	ruleflow-group "Projection Convertion"
+	when
+		Foo()
+	then
+		bar();
+end

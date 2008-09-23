@@ -1,4 +1,4 @@
-Reachable types computed on: Mon Sep 22 18:02:17 EST 2008
+Reachable types computed on: Tue Sep 23 15:17:58 EST 2008
 com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException
    Serialization status
       Instantiable
@@ -95,8 +95,7 @@ java.util.HashSet<java.lang.String>
    Serialization status
       Instantiable
    Path
-      'java.util.HashSet<java.lang.String>' is reachable as a supertype of type 'class java.util.LinkedHashSet<java.lang.String>'
-      'java.util.LinkedHashSet<java.lang.String>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
+      'java.util.HashSet<java.lang.String>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
       'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
       'org.drools.guvnor.client.rpc.UserSecurityContext' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.UserSecurityContext'
       Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'
@@ -132,8 +131,7 @@ java.util.Vector<java.lang.Integer>
    Serialization status
       Instantiable
    Path
-      'java.util.Vector<java.lang.Integer>' is reachable as a supertype of type 'class java.util.Stack<java.lang.Integer>'
-      'java.util.Stack<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.util.Vector<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
       'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'

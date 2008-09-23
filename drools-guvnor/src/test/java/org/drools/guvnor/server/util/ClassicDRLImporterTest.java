@@ -59,6 +59,15 @@ public class ClassicDRLImporterTest extends TestCase {
 
     }
 
+    public void testStandardWithQuotes() throws Exception {
+        ClassicDRLImporter imp = new ClassicDRLImporter( getDrl( "sample_legacy_quotes.drl" ) );
+        assertEquals( "foo",
+                      imp.getPackageName() );
+        assertEquals( 1,
+                      imp.getAssets().size() );
+        assertEquals(-1, imp.getAssets().get(0).name.indexOf("'"));
+    }
+
     public void testWithFunction() throws Exception {
         //    	Pattern p = Pattern.compile("function\\s+.*\\s+(.*)\\(.*\\).*");
         //    	Matcher m = p.matcher("function void fooBar() {");

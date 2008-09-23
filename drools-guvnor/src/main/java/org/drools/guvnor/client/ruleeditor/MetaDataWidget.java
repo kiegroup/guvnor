@@ -90,7 +90,7 @@ public class MetaDataWidget extends PrettyFormLayout {
         this.data = d;
         this.readOnly = readOnly;
         this.refreshView = refreshView;
-
+        //setWidth("20%");
         loadData( d );
 
     }
@@ -338,7 +338,7 @@ public class MetaDataWidget extends PrettyFormLayout {
 
     /**
      * This binds a field, and returns a check box editor for it.
-     * 
+     *
      * @param bind Interface to bind to.
      * @param toolTip tool tip.
      * @return

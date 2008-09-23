@@ -142,14 +142,14 @@ public class ClassicDRLImporter {
 
     /**
      * Consumes function to the ending curly bracket.
-     * 
+     *
      * @param lines
      * @param currentFunc
      */
     private void laConsumeBracketsToEnd(int counter,
                                         StringTokenizer lines,
                                         StringBuffer currentFunc) {
-        /* 
+        /*
          * Check if the first line contains matching amount of brackets.
          */
         boolean multilineIsOpen = false;
@@ -260,7 +260,7 @@ public class ClassicDRLImporter {
     //                    return line;
     //                }
     //            }
-    //    
+    //
     //            return "";
     //        }
     //
@@ -301,6 +301,7 @@ public class ClassicDRLImporter {
 
     private void addRule(String ruleName,
                          StringBuffer currentRule) {
+    	ruleName = ruleName.replace('\'', ' ');
         if ( this.isDSLEnabled() ) {
             this.assets.add( new Asset( ruleName,
                                         currentRule.toString(),
