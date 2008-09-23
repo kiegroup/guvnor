@@ -65,6 +65,10 @@ public class PopulateDataTest extends TestCase {
 
         createPermissions( serv );
 
+        PackageItem pkg = serv.repository.loadPackage("com.billasurf.manufacturing.plant");
+
+        serv.buildPackage(pkg.getUUID(), null, true);
+
     }
 
     private void createPermissions(ServiceImplementation serv) {
