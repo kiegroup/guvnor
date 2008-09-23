@@ -1270,7 +1270,9 @@ public class ServiceImplementation implements RepositoryService {
 			ContentPackageAssembler asm) throws Exception {
 		item.updateBinaryUpToDate(true);
 		RuleBaseConfiguration conf = new RuleBaseConfiguration();
-		conf.setClassLoader( asm.getBuilder().getRootClassLoader() );
+		// setting the MapBackedClassloader that is the parent of the builder classloader as the parent 
+		// of the rulebase classloader
+		conf.setClassLoader( asm.getBuilder().getRootClassLoader().getParent() );
 		RuleBase rb = RuleBaseFactory.newRuleBase( conf );
 		rb.addPackage(asm.getBinaryPackage());
 		// this.ruleBaseCache.put(item.getUUID(), rb);
