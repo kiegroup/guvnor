@@ -97,6 +97,10 @@ public class CategoryManager extends Composite {
         Button rename = new Button("Rename selected");
         rename.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
+				if (!explorer.isSelected()) {
+					Window.alert("Please select a category to rename");
+					return;
+				}
 				renameSelected();
 			}
         });
@@ -107,6 +111,10 @@ public class CategoryManager extends Composite {
         Button delete = new Button("Delete selected");
         delete.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
+            	if (!explorer.isSelected())  {
+            		Window.alert("Please select a category to delete.");
+            		return;
+            	}
                 deleteSelected();
             }
         } );

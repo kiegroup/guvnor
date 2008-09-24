@@ -118,6 +118,11 @@ public class CategoryExplorerWidget extends Composite
 		                                         public void onSuccess(Object result) {
 		                                             selectedPath = null;
 		                                             navTreeWidget.removeItems();
+
+		                                             TreeItem root = new TreeItem();
+		                                             root.setHTML("--------<img src=\"images/desc.gif\"/>--------");
+		                                             navTreeWidget.addItem(root);
+
 		                                             String[] categories = (String[]) result;
 
 		                                             if (categories.length == 0) {
@@ -130,10 +135,10 @@ public class CategoryExplorerWidget extends Composite
 		                                                 it.setHTML( "<img src=\"images/category_small.gif\"/>" + categories[i] );
 		                                                 it.setUserObject( categories[i] );
 		                                                 it.addItem( new PendingItem() );
-		                                                 navTreeWidget.addItem( it );
+		                                                 root.addItem( it );
 		                                             }
 
-
+		                                             root.setState(true);
 		                                         }
 
 
@@ -206,8 +211,9 @@ public class CategoryExplorerWidget extends Composite
 
     private String getPath(TreeItem item) {
         String categoryPath = (String) item.getUserObject();
+        if (categoryPath == null) return null;
         TreeItem parent = item.getParentItem();
-        while ( parent != null ) {
+        while ( parent.getUserObject() != null ) {
             categoryPath = ((String)parent.getUserObject()) + "/" + categoryPath;
             parent = parent.getParentItem();
         }
@@ -217,11 +223,17 @@ public class CategoryExplorerWidget extends Composite
     private static class PendingItem extends TreeItem {
         public PendingItem() {
             super( "Please wait..." );
+
         }
     }
 
     public String getSelectedPath() {
         return this.selectedPath;
     }
+
+
+	public boolean isSelected() {
+		return this.selectedPath != null;
+	}
 
 }
