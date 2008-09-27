@@ -53,6 +53,9 @@
   <classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate-validator/3.0.0.ga/hibernate-validator-3.0.0.ga.jar"/>
   <classpathentry kind="var" path="M2_REPO/jboss/javassist/3.3.ga/javassist-3.3.ga.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jboss/security/identity-impl/2.0.2.CR6/identity-impl-2.0.2.CR6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jmock/jmock/2.5.0.1/jmock-2.5.0.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.4.3/slf4j-log4j12-1.4.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/tmatesoft/svnkit/1.1.2/svnkit-1.1.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/ch/ethz/ganymed/ganymed-ssh2/build210/ganymed-ssh2-build210.jar"/>
