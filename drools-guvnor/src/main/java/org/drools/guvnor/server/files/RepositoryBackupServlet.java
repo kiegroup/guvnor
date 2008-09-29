@@ -100,7 +100,7 @@ public class RepositoryBackupServlet extends RepositoryServlet {
                                                                                RepositoryException {
         res.setContentType( "application/zip" );
         res.setHeader( "Content-Disposition",
-                       "inline; filename=repository_export.zip;" );
+                       "inline; filename=" + packageName + ".zip;" );
 
         res.getOutputStream().write( getFileManager().exportPackageFromRepository( packageName ) );
         res.getOutputStream().flush();
