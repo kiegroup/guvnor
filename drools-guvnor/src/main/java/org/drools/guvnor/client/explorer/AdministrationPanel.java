@@ -38,7 +38,7 @@ public class AdministrationPanel extends GenericPanel {
                         break;
                     case 3:
                         if (!centertabbedPanel.showIfOpen("bakman"))
-                            centertabbedPanel.addTab("Backup Manager", true, new BackupManager(), "bakman");
+                            centertabbedPanel.addTab("Import Export", true, new BackupManager(), "bakman");
                         break;
 
                     case 4:

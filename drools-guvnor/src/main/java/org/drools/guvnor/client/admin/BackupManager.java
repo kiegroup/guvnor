@@ -63,7 +63,7 @@ public class BackupManager extends Composite {
         widtab.endSection();
 
         /*
-         * Package import/export 
+         * Package import/export
          */
         widtab.startSection( "Import package from an xml file" );
         CheckBox overWriteCheckBox = new CheckBox();
@@ -263,8 +263,8 @@ public class BackupManager extends Composite {
 
     private void exportPackageFromRepository(String packageName) {
 
-        if ( Window.confirm( "Export the repository? This may take some time." ) ) {
-            LoadingPopup.showMessage( "Exporting repository, please wait, as this could take some time..." );
+        if ( Window.confirm( "Export the package?" ) ) {
+            LoadingPopup.showMessage( "Exporting package, please wait, as this could take some time..." );
 
             Window.open( GWT.getModuleBaseURL() + "backup?" + HTMLFileManagerFields.FORM_FIELD_REPOSITORY + "=true&packageName=true&" + packageName,
                          "downloading",
