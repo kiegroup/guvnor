@@ -55,6 +55,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
@@ -106,10 +108,20 @@ public class RuleModeller extends DirtyableComposite {
             }
         });
 
+        layout.getColumnFormatter().setWidth(0, "8%");
+        layout.getColumnFormatter().setWidth(1, "87%");
+        layout.getColumnFormatter().setWidth(2, "5%");
+
+
+
         layout.setWidget( 0, 0, new SmallLabel("WHEN") );
         layout.setWidget( 0, 2, addPattern );
 
+
+
         layout.setWidget( 1, 1, renderLhs(this.model) );
+        layout.getFlexCellFormatter().setHorizontalAlignment(1, 1, HasHorizontalAlignment.ALIGN_LEFT);
+        layout.getFlexCellFormatter().setVerticalAlignment(1, 1, HasVerticalAlignment.ALIGN_TOP);
         layout.setWidget( 2, 0, new SmallLabel("THEN") );
 
         Image addAction = new ImageButton("images/new_item.gif");
@@ -122,6 +134,8 @@ public class RuleModeller extends DirtyableComposite {
         layout.setWidget( 2, 2, addAction );
 
         layout.setWidget( 3, 1, renderRhs(this.model) );
+        layout.getFlexCellFormatter().setHorizontalAlignment(3, 1, HasHorizontalAlignment.ALIGN_LEFT);
+        layout.getFlexCellFormatter().setVerticalAlignment(3, 1, HasVerticalAlignment.ALIGN_TOP);
 
         layout.setWidget( 4, 0, new SmallLabel("(options)") );
         layout.setWidget( 4, 2, getAddAttribute() );
