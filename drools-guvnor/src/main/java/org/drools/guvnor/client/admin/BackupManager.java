@@ -266,7 +266,7 @@ public class BackupManager extends Composite {
         if ( Window.confirm( "Export the package?" ) ) {
             LoadingPopup.showMessage( "Exporting package, please wait, as this could take some time..." );
 
-            Window.open( GWT.getModuleBaseURL() + "backup?" + HTMLFileManagerFields.FORM_FIELD_REPOSITORY + "=true&packageName=true&" + packageName,
+            Window.open( GWT.getModuleBaseURL() + "backup?" + HTMLFileManagerFields.FORM_FIELD_REPOSITORY + "=true&packageName=" + packageName,
                          "downloading",
                          "resizable=no,scrollbars=yes,status=no" );
 
