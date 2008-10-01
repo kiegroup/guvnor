@@ -217,7 +217,7 @@ public class ContentPackageAssemblerTest extends TestCase {
                       ((Class) o2).getName() );
     }
 
-    public void FIXME_testSimplePackageWithDeclaredTypes() throws Exception {
+    public void testSimplePackageWithDeclaredTypes() throws Exception {
         RulesRepository repo = getRepo();
 
         PackageItem pkg = repo.createPackage( "testSimplePackageWithDeclaredTypes",
@@ -777,7 +777,6 @@ public class ContentPackageAssemblerTest extends TestCase {
         AssetItem rule2 = pkg.addAsset( "rule2",
                                         "" );
         rule2.updateFormat( AssetFormats.DRL );
-
         rule2.updateContent( "when \n Person() \n then \n System.out.println(\"yeah\");\n" );
         rule2.checkin( "" );
 
