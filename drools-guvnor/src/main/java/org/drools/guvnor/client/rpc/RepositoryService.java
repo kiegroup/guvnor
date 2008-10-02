@@ -449,5 +449,25 @@ public interface RepositoryService extends RemoteService {
      * Removes user security data.
      */
     public void deleteUser(String userName);
+    
+
+    /**
+     * Returns the lockers user name
+     * @param uuid
+     * @return Lockers user name or null if there is no lock.
+     */
+    public String getAssetLockerUserName(String uuid);
+
+    /**
+     * Locks the asset, if a lock already exists this over writes it.
+     * @param uuid
+     */
+    public void lockAsset(String uuid);
+
+    /**
+     * Unlocks the asset.
+     * @param uuid
+     */
+    public void unLockAsset(String uuid);
 
 }

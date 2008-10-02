@@ -89,6 +89,7 @@ import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.AssetFormatHelper;
+import org.drools.guvnor.server.util.AssetLockManager;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
@@ -2013,6 +2014,48 @@ public class ServiceImplementation implements RepositoryService {
 		pm.removeUserPermissions(userName);
 		repository.save();
 	}
+	 /* (non-Javadoc)
+     * @see org.drools.guvnor.client.rpc.RepositoryService#getAssetLockerUserName(java.lang.String)
+     */
+    public String getAssetLockerUserName(String uuid) {
+        AssetLockManager alm = AssetLockManager.instance();
+
+        String userName = alm.getAssetLockerUserName( uuid );
+        
+        log.info( "Asset locked by [" + userName + "]" );
+        
+        return userName;
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.guvnor.client.rpc.RepositoryService#lockAsset(java.lang.String)
+     */
+    public void lockAsset(String uuid) {
+        AssetLockManager alm = AssetLockManager.instance();
+
+        String userName;
+        if ( Contexts.isApplicationContextActive() ) {
+            userName = Identity.instance().getUsername();
+        } else {
+            userName = "anonymous";
+        }
+
+        log.info( "Locking asset uuid=" + uuid + " for user [" + userName + "]" );
+        
+        alm.lockAsset( uuid,
+                       userName );
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.guvnor.client.rpc.RepositoryService#unLockAsset(java.lang.String)
+     */
+    public void unLockAsset(String uuid) {
+        AssetLockManager alm = AssetLockManager.instance();
+
+        log.info( "Unlocking asset [" + uuid + "]" );
+        
+        alm.unLockAsset( uuid );
+    }
 
 
 

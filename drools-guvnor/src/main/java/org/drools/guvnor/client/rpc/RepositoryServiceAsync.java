@@ -97,7 +97,9 @@ public interface RepositoryServiceAsync
 	public void updateUserPermissions(java.lang.String p0, java.util.Map p1, AsyncCallback cb);
 	public void listAvailablePermissionTypes(AsyncCallback cb);
 	public void deleteUser(java.lang.String p0, AsyncCallback cb);
-
+	public void getAssetLockerUserName(java.lang.String p0, AsyncCallback cb);
+    public void lockAsset(java.lang.String p0, AsyncCallback cb);
+    public void unLockAsset(java.lang.String p0, AsyncCallback cb);
 
 
 

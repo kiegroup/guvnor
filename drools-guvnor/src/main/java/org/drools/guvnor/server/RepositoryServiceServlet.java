@@ -243,7 +243,27 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 	public void deleteUser(String userName) {
 		getService().deleteUser(userName);
 	}
+	
+	/* (non-Javadoc)
+     * @see org.drools.guvnor.client.rpc.RepositoryService#getAssetLockerUserName(java.lang.String)
+     */
+    public String getAssetLockerUserName(String uuid) {
+        return getService().getAssetLockerUserName( uuid );
+    }
 
+    /* (non-Javadoc)
+     * @see org.drools.guvnor.client.rpc.RepositoryService#lockAsset(java.lang.String)
+     */
+    public void lockAsset(String uuid) {
+        getService().lockAsset( uuid );
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.guvnor.client.rpc.RepositoryService#unLockAsset(java.lang.String)
+     */
+    public void unLockAsset(String uuid) {
+        getService().unLockAsset( uuid );
+    }
 
 
 
