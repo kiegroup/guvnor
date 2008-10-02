@@ -14,6 +14,26 @@
 
 	<property file="build.properties"/>
 
+	<property name="jbossAS.tempdir" location="tempdir" />
+
+	<!-- Creates a stand alone zip. JBoss AS + Guvnor -->
+	<target name="guvnor-standalone" >
+		<get src="http://heanet.dl.sourceforge.net/sourceforge/jboss/${jbossAS.version}.zip" 
+			dest="${jbossAS.version}.zip" />	
+		<mkdir dir="${jbossAS.tempdir}" />
+		<unzip src="${jbossAS.version}.zip" 
+			dest="${jbossAS.tempdir}" />
+		<delete dir="${jbossAS.tempdir}/${jbossAS.version}/docs" />
+		<delete dir="${jbossAS.tempdir}/${jbossAS.version}/server/all" />
+		<delete dir="${jbossAS.tempdir}/${jbossAS.version}/server/minimal" />
+		<copy file="target/drools-guvnor.war" 
+			todir="${jbossAS.tempdir}/${jbossAS.version}/server/default/deploy" />
+		<zip basedir="${jbossAS.tempdir}"
+			destfile="guvnor-standalone.zip" />
+		<delete dir="${jbossAS.tempdir}" />		
+		<delete file="${jbossAS.version}.zip" /> 		
+	</target>
+
     <target name="gwt-compile">
 		<!--<gwt:compile outDir="src/main/webapp"-->
 		<gwt:compile outDir="target/gwt-compiled-output"
