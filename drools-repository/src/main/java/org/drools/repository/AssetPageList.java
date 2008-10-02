@@ -1,5 +1,6 @@
 package org.drools.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.RangeIterator;
@@ -19,6 +20,12 @@ public class AssetPageList {
 		this.assets = categories;
 		this.hasNext = it.hasNext();
 		this.currentPosition = it.getPosition();
+	}
+
+	public AssetPageList() {
+		hasNext = false;
+		currentPosition = 0;
+		assets = new ArrayList<AssetItem>();
 	}
 
 }
