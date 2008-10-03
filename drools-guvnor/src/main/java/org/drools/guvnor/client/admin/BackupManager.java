@@ -65,6 +65,7 @@ public class BackupManager extends Composite {
         /*
          * Package import/export
          */
+        /*
         widtab.startSection( "Import package from an xml file" );
         CheckBox overWriteCheckBox = new CheckBox();
         widtab.addAttribute( "Overwrite existing package",
@@ -81,6 +82,7 @@ public class BackupManager extends Composite {
                              newExportPackageWidget( rps ) );
 
         widtab.endSection();
+        */
 
         initWidget( widtab );
 

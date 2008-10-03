@@ -1,4 +1,4 @@
-Reachable types computed on: Fri Oct 03 11:35:32 EST 2008
+Reachable types computed on: Fri Oct 03 13:01:21 EST 2008
 com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException
    Serialization status
       Instantiable
@@ -20,8 +20,8 @@ java.lang.Integer
       Instantiable
    Path
       'java.lang.Integer' is reachable as a subtype of type 'class java.lang.Integer'
-      'java.lang.Integer' is reachable from type argument 0 of type 'java.util.ArrayList<E>'
-      'java.util.ArrayList<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.lang.Integer' is reachable from type argument 0 of type 'java.util.LinkedList<E>'
+      'java.util.LinkedList<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
       'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
@@ -42,8 +42,8 @@ java.lang.Number
    Path
       'java.lang.Number' is reachable as a supertype of type 'class java.lang.Integer'
       'java.lang.Integer' is reachable as a subtype of type 'class java.lang.Integer'
-      'java.lang.Integer' is reachable from type argument 0 of type 'java.util.ArrayList<E>'
-      'java.util.ArrayList<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.lang.Integer' is reachable from type argument 0 of type 'java.util.LinkedList<E>'
+      'java.util.LinkedList<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
       'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
@@ -131,8 +131,7 @@ java.util.Vector<java.lang.Integer>
    Serialization status
       Instantiable
    Path
-      'java.util.Vector<java.lang.Integer>' is reachable as a supertype of type 'class java.util.Stack<java.lang.Integer>'
-      'java.util.Stack<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.util.Vector<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
       'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
