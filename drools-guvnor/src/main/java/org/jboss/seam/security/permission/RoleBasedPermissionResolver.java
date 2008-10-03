@@ -76,7 +76,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
      *            the requestedObject must be an instance of CategoryPathType,
      *            or PackageNameType or PackageUUIDType.
      *            Otherwise return false;
-     * @param requestedRole
+     * @param requestedPermission
      *            the requestedRole must be an instance of String, its value has to be one of the
      *            followings: admin|analyst|package.admin|package.developer|package.readonly,
      *            otherwise return false;
@@ -84,7 +84,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
      * requested role; return false otherwise.
      *
      */
-	public boolean hasPermission(Object requestedObject, String requestedRole) {
+	public boolean hasPermission(Object requestedObject, String requestedPermission) {
 		if (!((requestedObject instanceof CategoryPathType)
 				|| (requestedObject instanceof PackageNameType)
 				|| (requestedObject instanceof AdminType)
@@ -100,7 +100,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 				Component.getInstance("roleBasedPermissionManager");
 		List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
 
-		if(RoleTypes.ADMIN.equals(requestedRole)) {
+		if(RoleTypes.ADMIN.equals(requestedPermission)) {
 			return hasAdminPermission(permissions);
 		} else if (hasAdminPermission(permissions)) {
 			//admin can do everything,no need for further checks.
@@ -110,22 +110,36 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 		if (requestedObject instanceof CategoryPathType) {
 			String requestedPath = ((CategoryPathType) requestedObject)
 					.getCategoryPath();
-
-			//category path based permission check only applies to analyst role. If there is no Analyst
-			//role (e.g, only other roles like admin|package.admin|package.dev|package.readonly) we always grant permisssion.
-			boolean isPermitted = true;
-			//return true when there is no analyst role, or one of the analyst role has permission to access this category
-			String requestedPermType = (requestedRole == null) ? RoleTypes.ANALYST : requestedRole;
-			for (RoleBasedPermission pbp : permissions) {
-				if (requestedPermType.equals(pbp.getRole()) || (requestedPermType.equals(RoleTypes.ANALYST_READ) && pbp.getRole().equals(RoleTypes.ANALYST))) {
-					isPermitted = false;
-					if(isPermittedCategoryPath(requestedPath, pbp.getCategoryPath())) {
-						return true;
+			String requestedPermType = (requestedPermission == null) ? RoleTypes.ANALYST : requestedPermission;
+			if (requestedPermType.equals("navigate")) {
+				for (RoleBasedPermission p : permissions) {
+					if (p.getCategoryPath() != null) {
+						if (p.getCategoryPath().equals(requestedPath)) return true;
+						if (isSubPath(requestedPath, p.getCategoryPath())) {
+							return true;
+						} else if (isSubPath(p.getCategoryPath(), requestedPath)) {
+							return true;
+						}
 					}
 				}
-			}
+				return false;
+			} else {
+				//category path based permission check only applies to analyst role. If there is no Analyst
+				//role (e.g, only other roles like admin|package.admin|package.dev|package.readonly) we always grant permisssion.
+				boolean isPermitted = true;
+				//return true when there is no analyst role, or one of the analyst role has permission to access this category
 
-			return isPermitted;
+				for (RoleBasedPermission pbp : permissions) {
+					if (requestedPermType.equals(pbp.getRole()) || (requestedPermType.equals(RoleTypes.ANALYST_READ) && pbp.getRole().equals(RoleTypes.ANALYST))) {
+						isPermitted = false;
+						if(isPermittedCategoryPath(requestedPath, pbp.getCategoryPath())) {
+							return true;
+						}
+					}
+				}
+
+				return isPermitted;
+			}
 		} else {
 			String targetName = "";
 
@@ -148,7 +162,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 				if (RoleTypes.ANALYST.equals(pbp.getRole())) {
 					return true;
 				} else if (targetName.equalsIgnoreCase(pbp.getPackageName())
-						&& isPermittedPackage(requestedRole, pbp.getRole())) {
+						&& isPermittedPackage(requestedPermission, pbp.getRole())) {
 					return true;
 				}
 			}

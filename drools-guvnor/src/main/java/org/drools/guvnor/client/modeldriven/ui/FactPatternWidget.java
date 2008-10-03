@@ -82,7 +82,7 @@ public class FactPatternWidget extends DirtyableComposite {
         this.connectives.setCompletions(completions);
         this.connectives.setModeller(modeller);
         this.connectives.setPattern(pattern);
-        
+
         this.popupCreator = new PopupCreator();
         this.popupCreator.setBindable(bindable);
         this.popupCreator.setCompletions(completions);
@@ -109,7 +109,7 @@ public class FactPatternWidget extends DirtyableComposite {
      * enables clicking rules of the form:
      *
      *     $result = RoutingResult( NerOption.types contains "arzt" )
-     *     
+     *
      * @param sortedConst a sorted list of constraints to display.
      * */
     private void drawConstraints(ArrayList sortedConst) {
@@ -221,7 +221,7 @@ public class FactPatternWidget extends DirtyableComposite {
         HorizontalPanel horiz = new HorizontalPanel();
         String desc = null;
 
-        Image edit = new ImageButton( "images/add_field_to_fact.gif" );
+        Image edit = new ImageButton( "images/edit_tiny.gif" );
         edit.setTitle( "Add a field to this nested constraint." );
 
         edit.addClickListener( new ClickListener() {
@@ -273,7 +273,7 @@ public class FactPatternWidget extends DirtyableComposite {
         return horiz;
     }
 
-    
+
 
     /**
      * Applies a single field constraint to the given table, and start row.
@@ -336,7 +336,7 @@ public class FactPatternWidget extends DirtyableComposite {
     private Widget getPatternLabel() {
         HorizontalPanel horiz = new HorizontalPanel();
 
-        Image edit = new ImageButton( "images/add_field_to_fact.gif" );
+        Image edit = new ImageButton( "images/edit_tiny.gif" );
         edit.setTitle( "Add a field to this condition, or bind a varible to this fact." );
 
         edit.addClickListener( new ClickListener() {
@@ -346,7 +346,7 @@ public class FactPatternWidget extends DirtyableComposite {
         } );
 
         if ( pattern.boundName != null ) {
-            horiz.add( new SmallLabel( "[" + pattern.boundName + "] " + pattern.factType  ) );
+            horiz.add( new SmallLabel( pattern.factType  + " <b>[" + pattern.boundName + "]</b>") );
         } else {
             horiz.add( new SmallLabel( pattern.factType ) );
         }
@@ -393,9 +393,10 @@ public class FactPatternWidget extends DirtyableComposite {
     private Widget fieldLabel(final SingleFieldConstraint con, boolean showBinding, int padding) {//, final Command onChange) {
         HorizontalPanel ab = new HorizontalPanel();
         ab.setStyleName( "modeller-field-Label" );
+        ab.add(new SmallLabel( con.fieldName ));
         if (!con.isBound()) {
             if (bindable && showBinding) {
-                Image bind = new ImageButton( "images/add_field_to_fact.gif", "Give this field a variable name that can be used elsewhere." + padding );
+                Image bind = new ImageButton( "images/edit_tiny.gif", "Give this field a variable name that can be used elsewhere." + padding );
                 Element element = bind.getElement();
                 DOM.setStyleAttribute(element, "marginLeft", "" + padding + "pt");
 
@@ -414,10 +415,10 @@ public class FactPatternWidget extends DirtyableComposite {
                 ab.add( bind );
             }
         } else {
-            ab.add( new SmallLabel("[" + con.fieldBinding + "]") );
+            ab.add( new SmallLabel(" <b>[" + con.fieldBinding + "]</b>") );
         }
 
-        ab.add(new SmallLabel( con.fieldName ));
+
         return ab;
     }
 

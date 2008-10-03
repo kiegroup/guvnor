@@ -113,7 +113,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
         HorizontalPanel horiz = new HorizontalPanel();
 
 
-        Image edit = new ImageButton("images/add_field_to_fact.gif");
+        Image edit = new ImageButton("images/edit_tiny.gif");
         edit.setTitle( "Add another field to this so you can set its value." );
         edit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -124,7 +124,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
         if (this.model instanceof ActionUpdateField) {
             modifyType = "modify";
         }
-        horiz.add( new SmallLabel("<i>" + HumanReadable.getActionDisplayName(modifyType) + " [" + model.variable + "]</i>" )) ;
+        horiz.add( new SmallLabel( HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>" )) ;
         horiz.add( edit );
 
         return horiz;

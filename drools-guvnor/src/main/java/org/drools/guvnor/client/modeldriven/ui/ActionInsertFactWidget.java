@@ -110,7 +110,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
         HorizontalPanel horiz = new HorizontalPanel();
 
 
-        Image edit = new ImageButton("images/add_field_to_fact.gif");
+        Image edit = new ImageButton("images/edit_tiny.gif");
         edit.setTitle( "Add another field to this so you can set its value." );
         edit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -123,7 +123,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
         if (this.model instanceof ActionInsertLogicalFact) {
             assertType = "assertLogical";
         }
-        horiz.add( new SmallLabel("<i>" + HumanReadable.getActionDisplayName(assertType) + " " + this.model.factType + "</i>") );
+        horiz.add( new SmallLabel(HumanReadable.getActionDisplayName(assertType) + " <b>" + this.model.factType + "</b>") );
         horiz.add( edit );
         return horiz;
 

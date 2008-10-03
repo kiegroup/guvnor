@@ -42,7 +42,7 @@ public class ErrorPopup  {
 
     	Window w = new Window();
     	w.setTitle("Error");
-    	w.setWidth(500);
+    	w.setWidth(400);
     	w.setHeight((longMessage != null) ? 300 : 150);
     	w.setModal(true);
     	w.setShadow(true);

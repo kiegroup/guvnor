@@ -167,7 +167,7 @@ public class ServiceImplementation implements RepositoryService {
 		List children = item.getChildTags();
 		for (int i = 0; i < children.size(); i++) {
 			String childCategoryName = ((CategoryItem) children.get(i)).getName();
-			if (filter.accept(childCategoryName, null)) {
+			if (filter.acceptNavigate(categoryPath, childCategoryName)) {
 				resultList.add(childCategoryName);
 			}
 		}
@@ -354,8 +354,10 @@ public class ServiceImplementation implements RepositoryService {
 
 		// First check the user has permission to access this categoryPath.
 		if (Contexts.isSessionContextActive()) {
-			Identity.instance().checkPermission(
-					new CategoryPathType(categoryPath), null);
+			if (!Identity.instance().hasPermission(new CategoryPathType(categoryPath), RoleTypes.ANALYST_READ)) {
+				TableDisplayHandler handler = new TableDisplayHandler(tableConfig);
+				return handler.loadRuleListTable(new AssetPageList());
+			}
 		}
 
 		//use AssetItemFilter to enforce package-based permissions.

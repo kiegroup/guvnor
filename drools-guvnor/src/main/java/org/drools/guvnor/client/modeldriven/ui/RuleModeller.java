@@ -459,7 +459,7 @@ public class RuleModeller extends DirtyableComposite {
             popup.addAttribute( "DSL sentence", dsls );
         }
 
-        popup.addRow(new HTML("<small>Advanced options:</small>"));
+        popup.addRow(new HTML("Advanced options:"));
 
         factsToLogicallyAssert.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
@@ -482,12 +482,13 @@ public class RuleModeller extends DirtyableComposite {
             popup.addAttribute( "Logically insert a new fact", horiz );
         }
 
-        if (callMethodBox.getItemCount() > 1) {
-            popup.addAttribute( "Call a method on ", callMethodBox );
-        }
-
 
         if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
+
+	        if (callMethodBox.getItemCount() > 1) {
+	            popup.addAttribute( "Call a method on ", callMethodBox );
+	        }
+
 	        Button ff = new Button("Add free form drl");
 	        popup.addAttribute("Free form action ", ff);
 	        ff.addClickListener(new ClickListener() {

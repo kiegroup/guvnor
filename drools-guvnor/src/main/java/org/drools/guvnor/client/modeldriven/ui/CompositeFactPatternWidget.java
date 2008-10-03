@@ -86,7 +86,7 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
     private Widget getCompositeLabel() {
 
         HorizontalPanel horiz = new HorizontalPanel();
-        Image edit = new ImageButton( "images/add_field_to_fact.gif" );
+        Image edit = new ImageButton( "images/edit_tiny.gif" );
         edit.setTitle( "Add a fact to this constraint. If it is an 'or' type, it will need at least 2." );
         edit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {

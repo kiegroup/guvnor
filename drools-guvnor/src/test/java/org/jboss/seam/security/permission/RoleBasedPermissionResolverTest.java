@@ -136,6 +136,53 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     	assertTrue(pr.isSubPath("foo1", "foo1"));
     }
 
+    /**
+     * This tests that we can navigate the tree if we have sub path permissions.
+     */
+    public void testCategoryBasedSubPerms() throws Exception {
+    	//Mock up SEAM contexts
+    	Map application = new HashMap<String, Object>();
+    	Lifecycle.beginApplication(application);
+    	Lifecycle.beginCall();
+    	MockIdentity midentity = new MockIdentity();
+    	Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
+
+    	List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST_READ, null, "category1/sub1"));
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category2/sub1/sub2"));
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null, "category4"));
+    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
+    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
+
+	    // Put permission list in session.
+	    RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+	    testManager.create();
+    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);
+
+    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+    	resolver.setEnableRoleBasedAuthorization(true);
+
+        assertFalse(resolver.hasPermission(new CategoryPathType("category1"), null));
+        assertFalse(resolver.hasPermission(new CategoryPathType("category2"), null));
+        assertFalse(resolver.hasPermission(new CategoryPathType("category1"), RoleTypes.ANALYST_READ));
+        assertFalse(resolver.hasPermission(new CategoryPathType("category1"), RoleTypes.ANALYST));
+
+        assertTrue(resolver.hasPermission(new CategoryPathType("category1/sub1"), RoleTypes.ANALYST_READ));
+        assertTrue(resolver.hasPermission(new CategoryPathType("category2/sub1/sub2"), RoleTypes.ANALYST));
+        assertTrue(resolver.hasPermission(new CategoryPathType("category2/sub1/sub2"), null));
+
+
+        assertTrue(resolver.hasPermission(new CategoryPathType("category4"), "navigate"));
+        assertTrue(resolver.hasPermission(new CategoryPathType("category1"), "navigate"));
+        assertTrue(resolver.hasPermission(new CategoryPathType("category2"), "navigate"));
+        assertTrue(resolver.hasPermission(new CategoryPathType("category1/sub1"), "navigate"));
+        assertTrue(resolver.hasPermission(new CategoryPathType("category2/sub1"), "navigate"));
+        assertTrue(resolver.hasPermission(new CategoryPathType("category1/sub1/sub2"), "navigate"));
+        assertFalse(resolver.hasPermission(new CategoryPathType("category3"), "navigate"));
+    	Lifecycle.endApplication();
+
+    }
+
 
 	//admin: everything
     public void testPackageBasedPermissionAdmin() throws Exception {

@@ -40,8 +40,8 @@ public class ActionRetractFactWidget extends Composite {
 
         layout.setStyleName( "model-builderInner-Background" );
 
-        layout.setWidget( 0, 0, new SmallLabel("<i>" + HumanReadable.getActionDisplayName( "retract" ) + "</i>")  );
-        layout.setWidget( 0, 1, new SmallLabel("<i>" + "[" + model.variableName + "]" + "</i>") );
+        layout.setWidget( 0, 0, new SmallLabel(HumanReadable.getActionDisplayName( "retract" ))  );
+        layout.setWidget( 0, 1, new SmallLabel("<b>" + "[" + model.variableName + "]" + "</b>") );
 
         initWidget( layout );
     }

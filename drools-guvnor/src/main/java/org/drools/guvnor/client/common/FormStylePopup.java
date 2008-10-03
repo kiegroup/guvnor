@@ -90,7 +90,7 @@ public class FormStylePopup {
 		dialog = new Window();
 		dialog.setAutoScroll(true);
 		dialog.setModal(modal );
-		dialog.setWidth((width == null)? 500 : width.intValue());
+		dialog.setWidth((width == null)? 430 : width.intValue());
 		//dialog.setHeight((height == null)? form.getNumAttributes() * 40 + 100 : height.intValue());
 		dialog.setShadow((shadow == null)? true : shadow.booleanValue());
 		dialog.setResizable(true);
