@@ -165,6 +165,7 @@ public class RoleBasedPermissionResolverTest extends TestCase {
         assertFalse(resolver.hasPermission(new CategoryPathType("category1"), null));
         assertFalse(resolver.hasPermission(new CategoryPathType("category2"), null));
         assertFalse(resolver.hasPermission(new CategoryPathType("category1"), RoleTypes.ANALYST_READ));
+        assertFalse(resolver.hasPermission(new CategoryPathType("category2/sub1"), RoleTypes.ANALYST_READ));
         assertFalse(resolver.hasPermission(new CategoryPathType("category1"), RoleTypes.ANALYST));
 
         assertTrue(resolver.hasPermission(new CategoryPathType("category1/sub1"), RoleTypes.ANALYST_READ));
