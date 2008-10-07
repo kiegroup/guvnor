@@ -5,11 +5,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
@@ -41,11 +43,11 @@ public class PermissionManager {
     	if (!isValideUserName(userName)) {
     		return;
     	}
-    	
+
     	try {
 	    	Node permsNode = getUserPermissionNode(userName);
 	    	permsNode.remove(); //remove this so we get a fresh set
-	    	permsNode = getUserPermissionNode(userName);
+	    	permsNode = getUserPermissionNode(userName).addNode("jcr:content", "nt:unstructured");
 	    	for (Iterator<String> iterator = perms.keySet().iterator(); iterator.hasNext();) {
 				String perm = iterator.next();
 				List<String> targets = perms.get(perm);
@@ -60,8 +62,8 @@ public class PermissionManager {
 
 	private Node getUserPermissionNode(String userName)
 			throws RepositoryException {
-		Node root = this.repository.getSession().getRootNode();
-    	Node permsNode = getNode(getNode(getNode(root, "user_info"), userName), "permissions");
+		Node root = this.repository.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
+    	Node permsNode = getNode(getNode(getNode(root, "user_info", "nt:folder"), userName, "nt:folder"), "permissions", "nt:file");
 		return permsNode;
 	}
 
@@ -72,24 +74,35 @@ public class PermissionManager {
      */
     public Map<String, List<String>> retrieveUserPermissions(String userName) {
     	try {
-	    	Map<String, List<String>> result = new HashMap<String, List<String>>(10);	    	
+	    	Map<String, List<String>> result = new HashMap<String, List<String>>(10);
 	    	if (!isValideUserName(userName)) {
 	    		return result;
 	    	}
-	    	
-	    	Node permsNode = getUserPermissionNode(userName);
+
+	    	if (!getUserPermissionNode(userName).hasNode("jcr:content")) {
+	    		return result;
+	    	}
+	    	Node permsNode = getUserPermissionNode(userName).getNode("jcr:content");
 	    	PropertyIterator it = permsNode.getProperties();
-	    	
+
 	    	while (it.hasNext()) {
 	    		Property p = (Property) it.next();
 	    		String name = p.getName();
 	    		if (!name.startsWith("jcr")) {
-		    		Value[] vs = p.getValues();
-		    		List<String> perms = new ArrayList<String>();
-		    		for (int i = 0; i < vs.length; i++) {
-						perms.add(vs[i].getString());
-					}
-		    		result.put(name, perms);
+
+	    			if (p.getDefinition().isMultiple()) {
+			    		Value[] vs = p.getValues();
+			    		List<String> perms = new ArrayList<String>();
+			    		for (int i = 0; i < vs.length; i++) {
+							perms.add(vs[i].getString());
+						}
+			    		result.put(name, perms);
+	    			} else {
+	    				Value v = p.getValue();
+	    				List<String> perms = new ArrayList<String>(1);
+	    				perms.add(v.getString());
+	    				result.put(name, perms);
+	    			}
 	    		}
 	    	}
 	    	return result;
@@ -101,10 +114,10 @@ public class PermissionManager {
     /**
      * Gets or creates a node.
      */
-	private Node getNode(Node node, String name) throws RepositoryException {
+	private Node getNode(Node node, String name, String nodeType) throws RepositoryException {
 		Node permsNode;
 		if (!node.hasNode(name)) {
-    		permsNode = node.addNode(name);
+    		permsNode = node.addNode(name, nodeType);
     	} else {
     		permsNode = node.getNode(name);
     	}
@@ -122,8 +135,8 @@ public class PermissionManager {
 	public Map<String, List<String>> listUsers() {
 		try {
 			Map<String, List<String>> listing = new HashMap<String, List<String>>();
-			Node root = this.repository.getSession().getRootNode();
-	    	Node usersNode = getNode(root, "user_info");
+			Node root = this.repository.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
+	    	Node usersNode = getNode(root, "user_info", "nt:folder");
 	    	NodeIterator users = usersNode.getNodes();
 	    	while (users.hasNext()) {
 				Node userNode = (Node) users.next();
@@ -137,8 +150,9 @@ public class PermissionManager {
 
 	private List<String> listOfPermTypes(Node userNode) throws RepositoryException {
 		List<String> permTypes = new ArrayList<String>();
-		Node permsNode = getNode(userNode, "permissions");
-		PropertyIterator perms = permsNode.getProperties();
+		Node permsNode = getNode(userNode, "permissions", "nt:file");
+		Node content = getNode(permsNode, "jcr:content", "nt:unstructured");
+		PropertyIterator perms = content.getProperties();
 		while (perms.hasNext()) {
     		Property p = (Property) perms.next();
     		String name = p.getName();
@@ -151,15 +165,15 @@ public class PermissionManager {
 	}
 
 	void deleteAllPermissions() throws RepositoryException {
-		Node root = this.repository.getSession().getRootNode();
-		getNode(root, "user_info").remove();
+		Node root = this.repository.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
+		getNode(root, "user_info", "nt:folder").remove();
 	}
 
 	public void removeUserPermissions(String userName) {
     	if (!isValideUserName(userName)) {
     		return;
     	}
-    	
+
 		try {
 	    	Node permsNode = getUserPermissionNode(userName);
 	    	permsNode.getParent().remove(); //remove this so we get a fresh set
@@ -168,7 +182,7 @@ public class PermissionManager {
 		}
 
 	}
-	
+
 	private boolean isValideUserName(String userName) {
 		if("".equals(userName.trim()) || userName.trim().length() == 0) {
 			return false;
