@@ -73,6 +73,8 @@ public class ExplorerViewCenterPanel {
         tp.setResizeTabs(true);
         tp.setLayoutOnTabChange(true);
         tp.setActiveTab(0);
+        tp.setEnableTabScroll(true);
+        tp.setMinTabWidth(90);
 
         centerLayoutData = new BorderLayoutData(RegionPosition.CENTER);
         centerLayoutData.setMargins(new Margins(5, 0, 5, 5));
