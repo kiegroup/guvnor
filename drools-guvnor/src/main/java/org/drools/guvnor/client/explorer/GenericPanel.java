@@ -30,12 +30,28 @@ public abstract class GenericPanel extends Panel {
         // create and configure the main tree
         final TreePanel menuTree = new TreePanel();
         menuTree.setAnimate(true);
-        menuTree.setEnableDD(true);
+        menuTree.setEnableDD(false);
         menuTree.setContainerScroll(true);
         menuTree.setRootVisible(true);
         menuTree.setBodyBorder(false);
         menuTree.setBorder(false);
         menuTree.setRootNode(childNode);
+        menuTree.setAutoScroll(true);
+        menuTree.setContainerScroll(true);
+
+
+//        menuTree.setTitle("Tree View");
+//        menuTree.setId("nav-tree");
+//        menuTree.setWidth(180);
+//        menuTree.setCollapsible(true);
+//        menuTree.setAnimate(true);
+//        menuTree.setEnableDD(false);
+//        menuTree.setAutoScroll(true);
+//        menuTree.setContainerScroll(true);
+//        menuTree.setRootVisible(false);
+//        menuTree.setBorder(false);
+//        menuTree.setRootNode(childNode);
+
         return menuTree;
     }
 

@@ -2,7 +2,9 @@ package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
 import com.gwtext.client.widgets.Panel;
@@ -158,11 +160,12 @@ public class PackagesPanel extends GenericPanel {
         packagesPanel.add(packageExplorer(centertabbedPanel));
     }
 
-    private Panel packageExplorer(final ExplorerViewCenterPanel tabPanel) {
+    private Widget packageExplorer(final ExplorerViewCenterPanel tabPanel) {
         TreeNode root = new TreeNode("Packages");
         root.setAttribute("icon", "images/silk/chart_organisation.gif");
 
         final TreePanel panel = genericExplorerWidget(root);
+
 
         loadPackages(root);
 
@@ -220,8 +223,11 @@ public class PackagesPanel extends GenericPanel {
         // register listener
         panel.addListener(treePanelListener);
 
+        ScrollPanel scp = new ScrollPanel(panel);
+        scp.setHeight("300px");
 
-        return panel;
+
+        return scp;
     }
 
     private void loadPackages(final TreeNode root) {

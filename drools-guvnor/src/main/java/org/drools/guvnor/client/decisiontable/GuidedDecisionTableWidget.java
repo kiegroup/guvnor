@@ -649,14 +649,15 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 			{
     			setDataIndex("x");
     			setHeader("");
-    			setFixed(true);
+    			//setFixed(true);
+    			setSortable(false);
     			setResizable(false);
-
+    			//setWidth(60);
     			setRenderer(new Renderer() {
 					public String render(Object value,
 							CellMetadata cellMetadata, Record record,
 							int rowIndex, int colNum, Store store) {
-						return "<b>&#8594;</b>";
+						return "<image src='images/production.gif'/>";
 					}
     			});
     			setWidth(20);
