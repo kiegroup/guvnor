@@ -8,6 +8,7 @@ import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 import org.drools.guvnor.client.explorer.GenericPanel;
+import org.drools.guvnor.client.explorer.PackagesPanel;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
@@ -44,14 +45,14 @@ public class SnapshotView extends Composite {
 
 	public static final String LATEST_SNAPSHOT = "LATEST";
 
-	private ExplorerViewCenterPanel centerPanel;
 	private PackageConfigData parentConf;
 	private SnapshotInfo snapInfo;
-	private SimplePanel gridPanel = new SimplePanel();
 
 	private Command close;
 
-	public SnapshotView(SnapshotInfo snapInfo, PackageConfigData parentPackage, Command closeSnap) {
+	private ExplorerViewCenterPanel centerPanel;
+
+	public SnapshotView(SnapshotInfo snapInfo, PackageConfigData parentPackage, Command closeSnap, ExplorerViewCenterPanel center) {
 
 		VerticalPanel vert = new VerticalPanel();
 		this.snapInfo = snapInfo;
@@ -61,18 +62,14 @@ public class SnapshotView extends Composite {
 
 		head.addHeader("images/snapshot.png", header());
 
-
+		this.centerPanel = center;
 
 		vert.add(head);
 
-		centerPanel = new ExplorerViewCenterPanel();
 
 
-		//MN
-		centerPanel.addTab("Info", false, infoPanel(), "INFO");
-		//centerPanel.addTab("Info", false, new Label("ho"), "INFO");
 
-		vert.add(centerPanel.getPanel());
+		vert.add(infoPanel());
 
 
 		vert.setWidth("100%");
@@ -174,11 +171,7 @@ public class SnapshotView extends Composite {
 
 
 	private Widget infoPanel() {
-		HorizontalPanel h = new HorizontalPanel();
-		h.add(packageTree());
-		h.add(gridPanel);
-		h.setHeight("100%");
-		return h;
+		return packageTree();
 	}
 
 
@@ -188,6 +181,7 @@ public class SnapshotView extends Composite {
 		TreeNode root = new TreeNode(snapInfo.name);
 		root.appendChild(pkg);
 		TreePanel tp = GenericPanel.genericExplorerWidget(root);
+		tp.setRootVisible(false);
 		tp.addListener(new TreePanelListenerAdapter() {
 
 			public void onClick(TreeNode node, EventObject e) {
@@ -197,6 +191,7 @@ public class SnapshotView extends Composite {
 					showAssetList((String[]) o);
 				} else if (uo instanceof SnapshotInfo) {
 					SnapshotInfo s = (SnapshotInfo) uo;
+					//todo - add snap notice to this..
 					centerPanel.openPackageEditor(s.uuid, null);
 				}
 
@@ -207,18 +202,33 @@ public class SnapshotView extends Composite {
 	}
 
 	protected void showAssetList(final String[] assetTypes) {
-		this.gridPanel.clear();
-		AssetItemGrid grid = new AssetItemGrid(new EditItemEvent() {
-			public void open(String key) {
-				centerPanel.openAsset(key);
-			}
-		}, AssetItemGrid.RULE_LIST_TABLE_ID, new AssetItemGridDataLoader() {
-			public void loadData(int startRow, int numberOfRows,
-					GenericCallback cb) {
-				RepositoryServiceFactory.getService().listAssets(snapInfo.uuid, assetTypes, startRow, numberOfRows, AssetItemGrid.RULE_LIST_TABLE_ID , cb);
-			}
-		});
-		this.gridPanel.add(grid);
+
+
+		String key = this.snapInfo.uuid;
+		for (int i = 0; i < assetTypes.length; i++) {
+			key = key + assetTypes[i];
+		}
+
+		if (!centerPanel.showIfOpen(key)) {
+			AssetItemGrid grid = new AssetItemGrid(new EditItemEvent() {
+				public void open(String key) {
+					//todo add snap notice to this...
+					centerPanel.openAsset(key);
+				}
+			}, AssetItemGrid.RULE_LIST_TABLE_ID, new AssetItemGridDataLoader() {
+				public void loadData(int startRow, int numberOfRows,
+						GenericCallback cb) {
+					RepositoryServiceFactory.getService().listAssets(snapInfo.uuid, assetTypes, startRow, numberOfRows, AssetItemGrid.RULE_LIST_TABLE_ID , cb);
+				}
+			});
+
+			VerticalPanel vp = new VerticalPanel();
+			vp.add(new HTML("<i><small>Snapshot listing for: " + this.snapInfo.name + "</small></i>"));
+			vp.add(grid);
+			centerPanel.addTab("Snapshot items", true, vp, key);
+		}
+
+
 
 	}
 

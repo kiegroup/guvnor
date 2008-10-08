@@ -17,6 +17,7 @@ public class QAPanel extends GenericPanel {
         final VerticalPanel qaPanel = new VerticalPanel();
         qaPanel.setWidth("100%");
         TreePanel qaTree = genericExplorerWidget(ExplorerNodeConfig.getQAStructure(centertabbedPanel));
+        qaTree.setRootVisible(false);
         qaPanel.add(qaTree);
         add(qaPanel);
     }

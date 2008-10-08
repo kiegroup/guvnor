@@ -260,7 +260,7 @@ public class ExplorerViewCenterPanel {
 
 	public void openSnapshot(final SnapshotInfo snap) {
 
-		if (!showIfOpen(snap.uuid)) {
+		if (!showIfOpen(snap.name + snap.uuid)) {
 			LoadingPopup.showMessage("Loading snapshot...");
 			RepositoryServiceFactory.getService().loadPackageConfig(snap.uuid, new GenericCallback() {
 				public void onSuccess(Object data) {
@@ -269,7 +269,7 @@ public class ExplorerViewCenterPanel {
 						public void execute() {
 							close(snap.uuid);
 						}
-					}), snap.uuid);
+					}, ExplorerViewCenterPanel.this), snap.name + snap.uuid);
 					LoadingPopup.close();
 				}
 			});

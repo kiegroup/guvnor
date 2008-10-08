@@ -215,7 +215,7 @@ public class ExplorerNodeConfig {
 
 
 		final TreeNode scenarios = new TreeNode();
-		scenarios.setText("Test Scenarios in packages:");
+		scenarios.setText("Test Scenarios in packages");
 		scenarios.setIcon("images/test_manager.gif");
 
 		final EditItemEvent edit = new EditItemEvent() {

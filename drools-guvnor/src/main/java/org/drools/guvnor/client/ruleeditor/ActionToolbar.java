@@ -73,7 +73,7 @@ public class ActionToolbar extends Composite {
 
         setState(status);
 
-        if (!readOnly) {
+        if (!readOnly && !asset.isreadonly) {
         	controls();
         }
 
@@ -92,20 +92,17 @@ public class ActionToolbar extends Composite {
 
     private void controls() {
 
-
-
-
-    	ToolbarButton save = new ToolbarButton();
-    	save.setText("Save changes");
-		save.setTooltip(getTip("Commit any changes for this asset."));
-		save.addListener(new ButtonListenerAdapter() {
-	        			public void onClick(
-	        					com.gwtext.client.widgets.Button button,
-	        					EventObject e) {
-	                        	doCheckinConfirm(button);
-        				}
-	        			});
-		toolbar.addButton(save);
+	    	ToolbarButton save = new ToolbarButton();
+	    	save.setText("Save changes");
+			save.setTooltip(getTip("Commit any changes for this asset."));
+			save.addListener(new ButtonListenerAdapter() {
+		        			public void onClick(
+		        					com.gwtext.client.widgets.Button button,
+		        					EventObject e) {
+		                        	doCheckinConfirm(button);
+	        				}
+		        			});
+			toolbar.addButton(save);
 
         toolbar.addFill();
         toolbar.addSeparator();

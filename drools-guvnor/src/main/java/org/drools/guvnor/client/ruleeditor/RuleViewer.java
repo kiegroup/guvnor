@@ -72,7 +72,7 @@ public class RuleViewer extends Composite {
      */
     public RuleViewer(RuleAsset asset, boolean historicalReadOnly) {
         this.asset = asset;
-        this.readOnly = historicalReadOnly;
+        this.readOnly = historicalReadOnly && asset.isreadonly;
 
         this.layout = new VerticalPanel();
 

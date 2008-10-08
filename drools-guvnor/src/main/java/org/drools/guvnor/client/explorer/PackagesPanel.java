@@ -270,7 +270,7 @@ public class PackagesPanel extends GenericPanel {
         return pn;
     }
 
-    private String key(String[] fmts, PackageConfigData userObject) {
+    public static String key(String[] fmts, PackageConfigData userObject) {
         String key = userObject.uuid;
         for (String fmt : fmts) {
             key = key + fmt;

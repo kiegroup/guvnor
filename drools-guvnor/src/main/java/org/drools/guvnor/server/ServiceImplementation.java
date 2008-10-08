@@ -444,15 +444,23 @@ public class ServiceImplementation implements RepositoryService {
 			}
 		}
 
+
 		// get package header
+
+
 		PackageItem pkgItem = repository
 				.loadPackage(asset.metaData.packageName);
+//MN TODO: make the following work for historicals...
+//		PackageItem pkgItem = item.getPackage();
+
 
 		// load the content
 		ContentHandler handler = ContentManager
 				.getHandler(asset.metaData.format);
 		handler.retrieveAssetContent(asset, pkgItem, item);
-
+		if (pkgItem.isSnapshot()) {
+			asset.isreadonly = true;
+		}
 		return asset;
 
 	}
@@ -2023,9 +2031,9 @@ public class ServiceImplementation implements RepositoryService {
         AssetLockManager alm = AssetLockManager.instance();
 
         String userName = alm.getAssetLockerUserName( uuid );
-        
+
         log.info( "Asset locked by [" + userName + "]" );
-        
+
         return userName;
     }
 
@@ -2043,7 +2051,7 @@ public class ServiceImplementation implements RepositoryService {
         }
 
         log.info( "Locking asset uuid=" + uuid + " for user [" + userName + "]" );
-        
+
         alm.lockAsset( uuid,
                        userName );
     }
@@ -2055,7 +2063,7 @@ public class ServiceImplementation implements RepositoryService {
         AssetLockManager alm = AssetLockManager.instance();
 
         log.info( "Unlocking asset [" + uuid + "]" );
-        
+
         alm.unLockAsset( uuid );
     }
 
