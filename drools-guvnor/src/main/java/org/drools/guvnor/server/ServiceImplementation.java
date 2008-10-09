@@ -1236,7 +1236,11 @@ public class ServiceImplementation implements RepositoryService {
 					RoleTypes.PACKAGE_DEVELOPER);
 		}
 		PackageItem item = repository.loadPackageByUUID(packageUUID);
-		return buildPackage(selectorConfigName, force, item );
+		try {
+			return buildPackage(selectorConfigName, force, item );
+		} catch (NoClassDefFoundError e) {
+			throw new DetailedSerializableException("Unable to find a class that was needed when building the package  ["+ e.getMessage() +"]", "Perhaps you are missing them from the model jars, or from the BRMS itself (lib directory).");
+		}
 	}
 
 	private BuilderResult[] buildPackage(String selectorConfigName,

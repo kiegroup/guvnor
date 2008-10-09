@@ -2,7 +2,6 @@ package org.drools.guvnor.client.admin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +10,7 @@ import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.common.SmallLabel;
@@ -25,7 +25,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
@@ -47,7 +46,6 @@ import com.gwtext.client.widgets.grid.ColumnConfig;
 import com.gwtext.client.widgets.grid.ColumnModel;
 import com.gwtext.client.widgets.grid.GridPanel;
 import com.gwtext.client.widgets.grid.GroupingView;
-import com.gwtext.client.widgets.grid.event.GridRowListener;
 import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
 
 public class PermissionViewer extends Composite {
@@ -60,9 +58,18 @@ public class PermissionViewer extends Composite {
 		layout.setHeight("100%");
 		layout.setWidth("100%");
 
+		layout.add(howToTurnOn());
 
 		refresh();
 		initWidget(layout);
+	}
+
+	private Widget howToTurnOn() {
+		HorizontalPanel hp = new HorizontalPanel();
+		hp.add(new HTML("<small><i>TIP: To enable or disable authorization, open components.xml in WEB-INF</i></small>"));
+		InfoPopup pop = new InfoPopup("Enabling authorization", "in components.xml, edit enable-role-based-authorization attribute");
+		hp.add(pop);
+		return hp;
 	}
 
 	private void refresh() {
@@ -70,7 +77,8 @@ public class PermissionViewer extends Composite {
 		RepositoryServiceFactory.getService().listUserPermissions(new GenericCallback<Map<String,List<String>>>() {
 			public void onSuccess(Map<String, List<String>> list) {
 				if (grid != null) {
-					layout.remove(grid);
+					layout.clear();
+					//layout.remove(grid);
 					grid.destroy();
 				}
 				showUsers(list);

@@ -43,7 +43,7 @@ public class AdministrationPanel extends GenericPanel {
 
                     case 4:
                         if (!centertabbedPanel.showIfOpen("errorLog"))
-                            centertabbedPanel.addTab("Error Log", true, new LogViewer(), "errorLog");
+                            centertabbedPanel.addTab("Event Log", true, new LogViewer(), "errorLog");
                         break;
                     case 5:
                         if (!centertabbedPanel.showIfOpen("securityPermissions"))
@@ -52,6 +52,7 @@ public class AdministrationPanel extends GenericPanel {
                 }
             }
         });
+        adminTree.setRootVisible(false);
 
         VerticalPanel adminPanel = new VerticalPanel();
         adminPanel.add(adminTree);

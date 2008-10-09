@@ -54,7 +54,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 		          ex);
 		    }
 		} else {
-			super.doUnexpectedFailure(e);
+				super.doUnexpectedFailure(e);
 		}
 	}
 
@@ -243,7 +243,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 	public void deleteUser(String userName) {
 		getService().deleteUser(userName);
 	}
-	
+
 	/* (non-Javadoc)
      * @see org.drools.guvnor.client.rpc.RepositoryService#getAssetLockerUserName(java.lang.String)
      */

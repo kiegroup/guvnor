@@ -61,7 +61,7 @@ public class ModelContentHandler extends ContentHandler {
 			JarEntry entry = null;
 			while ((entry = jis.getNextJarEntry()) != null) {
 				if (!entry.isDirectory()) {
-					if (entry.getName().endsWith(".class")) {
+					if (entry.getName().endsWith(".class") && entry.getName().indexOf('$') == -1) {
 						 buf.append("import " + convertPathToName(entry.getName()));
 						 buf.append("\n");
 					}

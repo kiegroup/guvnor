@@ -92,7 +92,7 @@ public class ExplorerNodeConfig {
 				{ "Archived Items", "images/backup_small.gif" }, // ID 1
 				{ "Statuses", "images/tag.png" }, // ID 2
 				{ "Import/Export", "images/save_edit.gif" }, //ID 3
-				{ "Error log", "images/error.gif" }, // ID 4
+				{ "Event log", "images/error.gif" }, // ID 4
 				{ "User permission mappings", "images/icoUsers.gif" }}; // ID 5
 
 		for (int i = 0; i < adminStructure.length; i++) {
