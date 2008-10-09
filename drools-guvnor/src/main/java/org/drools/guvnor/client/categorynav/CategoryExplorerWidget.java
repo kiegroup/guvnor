@@ -24,6 +24,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
@@ -176,16 +177,17 @@ public class CategoryExplorerWidget extends Composite
 
         //walk back up to build a tree
         this.selectedPath = getPath( item );
-
+        
         //item.setUserObject( new Boolean( true ) );
 
         service.loadChildCategories( selectedPath,
                                      new GenericCallback() {
 
-                                         public void onSuccess(Object result) {
+                                         public void onSuccess(Object result) {           
                                              TreeItem child = root.getChild( 0 );
                                              if ( child instanceof PendingItem ) {
-                                                 root.removeItem( child );
+                                                 // root.removeItem( child ); 
+                                                 child.setVisible( false );
                                              }
                                              String[] list = (String[]) result;
                                              for ( int i = 0; i < list.length; i++ ) {
@@ -195,7 +197,7 @@ public class CategoryExplorerWidget extends Composite
                                                  it.addItem( new PendingItem() );
 
                                                  root.addItem( it );
-                                             }
+                                             }           
                                          }
 
                                      } );
