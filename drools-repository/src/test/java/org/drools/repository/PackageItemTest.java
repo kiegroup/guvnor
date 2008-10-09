@@ -385,6 +385,13 @@ public class PackageItemTest extends TestCase {
         }
     }
 
+    public void testAddAssetTrailingWhitespace() {
+        PackageItem pkg = getRepo().createPackage("testAddAssetTrailingWhitespace","desc");
+        pkg.addAsset("wee ", "");
+
+        assertNotNull(pkg.loadAsset("wee"));
+    }
+
     public void testAddRuleRuleItem() {
             PackageItem rulePackageItem1 = getRepo().createPackage("testAddRuleRuleItem","desc");
 

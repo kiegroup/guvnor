@@ -174,7 +174,7 @@ public class PackageItem extends VersionableItem {
                             String description, String initialCategory, String format) {
         Node ruleNode;
         try {
-
+        	assetName = assetName.trim();
             Node rulesFolder = this.node.getNode( ASSET_FOLDER_NAME );
             ruleNode = rulesFolder.addNode( assetName,
                                             AssetItem.RULE_NODE_TYPE_NAME );
