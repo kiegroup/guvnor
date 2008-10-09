@@ -101,8 +101,7 @@ public class PackageBuilderWidget extends Composite {
         buildStuff.add( new HTML("&nbsp;&nbsp;<i>(Optional) selector name: </i>") );
         buildStuff.add( selector );
         buildStuff.add( new InfoPopup("Custom selector", "A selector is configured by administrators to choose what assets form part of a package build. " +
-                "This is configured on the server side. The name given is the name of the configuration that the administrator has set." +
-                " This is an optional feature (if you don't know what it is, you probably don't need to use it).") );
+                "This is configured on the server side. See the WEB-INF/classes/selectors.properties for details.") );
 
 		layout.addAttribute("Build binary package:", buildStuff);
 		layout
