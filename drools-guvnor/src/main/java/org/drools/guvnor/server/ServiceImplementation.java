@@ -448,10 +448,9 @@ public class ServiceImplementation implements RepositoryService {
 		// get package header
 
 
-		PackageItem pkgItem = repository
-				.loadPackage(asset.metaData.packageName);
-//MN TODO: make the following work for historicals...
-//		PackageItem pkgItem = item.getPackage();
+//		PackageItem pkgItem = repository
+//				.loadPackage(asset.metaData.packageName);
+		PackageItem pkgItem = item.getPackage();
 
 
 		// load the content
@@ -471,8 +470,7 @@ public class ServiceImplementation implements RepositoryService {
 		// load standard meta data
 		asset.metaData = populateMetaData(item);
 		// get package header
-		PackageItem pkgItem = repository
-				.loadPackage(asset.metaData.packageName);
+		PackageItem pkgItem = item.getPackage();
 		// load the content
 		ContentHandler handler = ContentManager
 				.getHandler(asset.metaData.format);
