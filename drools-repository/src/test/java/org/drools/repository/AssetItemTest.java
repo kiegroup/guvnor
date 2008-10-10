@@ -88,6 +88,41 @@ public class AssetItemTest extends TestCase {
 
     }
 
+    public void testGetPackageItemHistorical() throws Exception {
+        RulesRepository repo = getRepo();
+        PackageItem pkg = repo.createPackage("testGetPackageItemHistorical", "");
+        AssetItem asset = pkg.addAsset("whee", "");
+        asset.checkin("");
+        assertNotNull(asset.getPackage());
+
+        repo.createPackageSnapshot(pkg.getName(), "SNAP");
+
+        PackageItem pkg_ = repo.loadPackageSnapshot(pkg.getName(), "SNAP");
+        AssetItem asset_ = pkg_.loadAsset("whee");
+        PackageItem pkg__ = asset_.getPackage();
+        assertTrue(pkg__.isSnapshot());
+        assertTrue(pkg_.isSnapshot());
+        assertFalse(pkg.isSnapshot());
+        assertEquals(pkg.getName(), pkg__.getName());
+
+        asset.updateDescription("yeah !");
+        asset.checkin("new");
+
+        asset = pkg.loadAsset("whee");
+        assertNotNull(asset.getPackage());
+
+        AssetHistoryIterator it = asset.getHistory();
+        while(it.hasNext()) {
+        	AssetItem as = it.next();
+        	if (as.getVersionNumber() > 0) {
+	        	System.err.println(as.getVersionNumber());
+	        	System.err.println(as.getPackageName());
+	        	assertNotNull(as.getPackage());
+	        	assertEquals(pkg.getName(), as.getPackage().getName());
+        	}
+        }
+    }
+
     public void testGetAssetNameFromFileName() {
     	String[] asset = AssetItem.getAssetNameFromFileName("foo.bar");
     	assertEquals("foo", asset[0]);

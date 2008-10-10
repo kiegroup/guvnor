@@ -501,7 +501,7 @@ public class AssetItem extends CategorisableItem {
 
         try {
             if ( this.isHistoricalVersion() ) {
-                throw new UnsupportedOperationException( "Unable to get package for versioned asset. Use base revision." );
+            	return this.rulesRepository.loadPackage(this.getPackageName());
             }
             return new PackageItem( this.rulesRepository,
                                     this.node.getParent().getParent() );
