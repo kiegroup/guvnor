@@ -17,11 +17,17 @@ import org.drools.repository.RulesRepositoryException;
 public class RowLoader {
 
     private String[] headers;
+    private String[] headerTypes;
     List             extractors;
 
     public String[] getHeaders() {
         return headers;
     }
+
+    public String[] getHeaderTypes() {
+        return headerTypes;
+    }
+
 
     public String[] getRow(AssetItem item) {
         String[] row = new String[headers.length];
@@ -55,7 +61,8 @@ public class RowLoader {
 
         InputStream in = RowLoader.class.getResourceAsStream( "/" + resourcename + ".properties" );
         BufferedReader reader = new BufferedReader( new InputStreamReader( in ) );
-        List fields = new ArrayList();
+        List<String> fields = new ArrayList<String>();
+        List<String> fieldTypes = new ArrayList<String>();
         extractors = new ArrayList();
         String line;
 
@@ -74,6 +81,8 @@ public class RowLoader {
 
                     extractors.add( meth );
 
+                    fieldTypes.add( meth.getGenericReturnType().toString() );
+
                 }
             }
         } catch ( Exception e ) {
@@ -85,12 +94,13 @@ public class RowLoader {
             closeStream( reader );
         }
         headers = (String[]) fields.toArray( new String[fields.size()] );
+        headerTypes = (String[]) fieldTypes.toArray( new String[fieldTypes.size()] );
     }
 
     private void closeStream(BufferedReader reader) {
         try {
             reader.close();
-        } catch (IOException e) {
+        } catch ( IOException e ) {
             e.printStackTrace();
         }
     }

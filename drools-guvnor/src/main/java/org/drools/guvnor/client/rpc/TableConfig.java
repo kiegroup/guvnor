@@ -24,6 +24,7 @@ public class TableConfig
     IsSerializable {
     
     public String[] headers;
+    public String[] headerTypes;
     public int rowsPerPage;
 
 }

@@ -265,6 +265,7 @@ public class ServiceImplementationTest extends TestCase {
 		TableConfig conf = impl
 				.loadTableConfig(AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertNotNull(conf.headers);
+		assertNotNull(conf.headerTypes);
 
 		CategoryItem cat = impl.repository.loadCategory("/");
 		cat.addCategory("testRuleTableLoad", "yeah");

@@ -16,6 +16,7 @@ package org.drools.guvnor.client.rulelist;
  * limitations under the License.
  */
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -28,11 +29,13 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.ruleeditor.EditorLauncher;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.ArrayReader;
+import com.gwtext.client.data.DateFieldDef;
 import com.gwtext.client.data.FieldDef;
 import com.gwtext.client.data.MemoryProxy;
 import com.gwtext.client.data.Record;
@@ -59,212 +62,250 @@ import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
  */
 public class AssetItemGrid extends Composite {
 
-
-    public static final String            RULE_LIST_TABLE_ID          = "rulelist";
-    public static final String            PACKAGEVIEW_LIST_TABLE_ID          = "packageviewlist";
-    public static final String            ARCHIVED_RULE_LIST_TABLE_ID = "archivedrulelist";
-    private static final Map 			  columnConfigs = new HashMap();
-    private static final Map		      recordDefs = new HashMap();
-    private static final Map			  rowsPerPage = new HashMap();
+    public static final String  RULE_LIST_TABLE_ID          = "rulelist";
+    public static final String  PACKAGEVIEW_LIST_TABLE_ID   = "packageviewlist";
+    public static final String  ARCHIVED_RULE_LIST_TABLE_ID = "archivedrulelist";
+    private static final Map    columnConfigs               = new HashMap();
+    private static final Map    recordDefs                  = new HashMap();
+    private static final Map    rowsPerPage                 = new HashMap();
 
     private final EditItemEvent editEvent;
-    private SimplePanel layout;
-    private Command 	refresh;
-
-
-
+    private SimplePanel         layout;
+    private Command             refresh;
 
     /**
      * Used for tracking paging.
      */
-    private Stack<Integer> cursorPositions = getPositionStack();
+    private Stack<Integer>      cursorPositions             = getPositionStack();
 
-    private int currentCursorPosition = 0;
+    private int                 currentCursorPosition       = 0;
 
-	protected Store store;
-	private GridPanel currentGrid;
+    protected Store             store;
+    private GridPanel           currentGrid;
 
-    public AssetItemGrid(final EditItemEvent event, final String tableConfig, final AssetItemGridDataLoader source) {
+    public AssetItemGrid(final EditItemEvent event,
+                         final String tableConfig,
+                         final AssetItemGridDataLoader source) {
 
         this.editEvent = event;
         this.layout = new SimplePanel();
-        if (!columnConfigs.containsKey(tableConfig)) {
-            RepositoryServiceFactory.getService().loadTableConfig(tableConfig, new GenericCallback() {
-                public void onSuccess(Object data) {
-                    TableConfig conf = (TableConfig) data;
-                    ColumnModel cm = createColumnModel(conf);
-                    columnConfigs.put(tableConfig, cm);
-                    RecordDef rd = createRecordDef(conf);
-                    recordDefs.put(tableConfig, rd);
-                    rowsPerPage.put(tableConfig, new Integer(conf.rowsPerPage));
-                    doGrid(source, cm, rd, conf.rowsPerPage);
-                }
-            });
+        if ( !columnConfigs.containsKey( tableConfig ) ) {
+            RepositoryServiceFactory.getService().loadTableConfig( tableConfig,
+                                                                   new GenericCallback() {
+                                                                       public void onSuccess(Object data) {
+                                                                           TableConfig conf = (TableConfig) data;
+                                                                           ColumnModel cm = createColumnModel( conf );
+                                                                           columnConfigs.put( tableConfig,
+                                                                                              cm );
+                                                                           RecordDef rd = createRecordDef( conf );
+                                                                           recordDefs.put( tableConfig,
+                                                                                           rd );
+                                                                           rowsPerPage.put( tableConfig,
+                                                                                            new Integer( conf.rowsPerPage ) );
+                                                                           doGrid( source,
+                                                                                   cm,
+                                                                                   rd,
+                                                                                   conf.rowsPerPage );
+                                                                       }
+                                                                   } );
         } else {
-            doGrid(source,
-                    (ColumnModel) columnConfigs.get(tableConfig),
-                    (RecordDef) recordDefs.get(tableConfig), ((Integer) rowsPerPage.get(tableConfig)).intValue());
+            doGrid( source,
+                    (ColumnModel) columnConfigs.get( tableConfig ),
+                    (RecordDef) recordDefs.get( tableConfig ),
+                    ((Integer) rowsPerPage.get( tableConfig )).intValue() );
         }
 
-        initWidget(layout);
+        initWidget( layout );
     }
-
 
     private Stack<Integer> getPositionStack() {
-		Stack<Integer> cursorPositions = new Stack<Integer>();
-		cursorPositions.push(0);
-		return cursorPositions;
-	}
-
-
-	/**
-     * Actually build the grid.
-     */
-    private void doGrid(final AssetItemGridDataLoader source, final ColumnModel cm, final RecordDef rd, final int pageSize) {
-        final int numFlds = rd.getFields().length;
-        LoadingPopup.showMessage("Loading data...");
-        source.loadData(cursorPositions.peek(), pageSize, new GenericCallback<TableDataResult>() {
-			public void onSuccess(TableDataResult result) {
-                Object[][] gridData = new Object[result.data.length][];
-                for (int i = 0; i < result.data.length; i++) {
-                    TableDataRow row = result.data[i];
-                    Object[] rowData = new Object[numFlds];
-                    rowData[0] = row.id;
-                    rowData[1] = row.format;
-                    for(int j = 2; j < numFlds; j++) {
-                        rowData[j] = row.values[j - 2];
-                    }
-                    gridData[i] = rowData;
-                }
-                MemoryProxy proxy = new MemoryProxy(gridData);
-                ArrayReader reader = new ArrayReader(rd);
-                store = new Store(proxy, reader);
-                //currentGrid = new Grid(Ext.generateId(), "600px", "600px", store, cm);
-                currentGrid = new GridPanel(store, cm);
-                currentGrid.setWidth(600);
-                currentGrid.setHeight(600);
-
-
-
-                Toolbar tb = new Toolbar();
-                currentGrid.setTopToolbar(tb);
-                if (result.total > -1) {
-	                tb.addItem(new ToolbarTextItem(Format.format(
-	                                        "Showing #{0} of {1} items.",
-	                                        new String[] {"" + result.data.length, "" + result.total})));
-                } else {
-	                tb.addItem(new ToolbarTextItem(Format.format(
-                            "{0} items.",
-                            new String[] {"" + result.data.length})));
-
-                }
-
-                if (cursorPositions.peek() > 0) {
-                    navButton(source, cm, rd, pageSize, currentGrid, false, tb);
-                }
-                if (result.hasNext) {
-                    navButton(source, cm, rd, pageSize, currentGrid, true, tb);
-                }
-
-                refresh = new Command() {
-					public void execute() {
-                        layout.clear();
-                        currentGrid.destroy();
-                        doGrid(source, cm, rd, pageSize);					}
-                };
-
-                ToolbarButton refreshB = new ToolbarButton();
-                refreshB.setText("(refresh list)");
-                refreshB.addListener(new ButtonListenerAdapter() {
-                    public void onClick(Button button, EventObject e) {
-                    	refresh.execute();
-                    }
-                });
-                tb.addButton(refreshB);
-
-
-
-                currentGrid.addGridRowListener(new GridRowListenerAdapter() {
-                    public void onRowDblClick(GridPanel grid, int rowIndex, EventObject e) {
-                        String uuid = grid.getSelectionModel().getSelected().getAsString("uuid");
-                        System.err.println("Opening: " + uuid);
-                        editEvent.open(uuid);
-                    }
-                });
-                store.load();
-                layout.add(currentGrid);
-                //store the end position
-                currentCursorPosition = (int) result.currentPosition;
-                LoadingPopup.close();
-            }
-
-
-        });
+        Stack<Integer> cursorPositions = new Stack<Integer>();
+        cursorPositions.push( 0 );
+        return cursorPositions;
     }
 
+    /**
+     * Actually build the grid.
+     */
+    private void doGrid(final AssetItemGridDataLoader source,
+                        final ColumnModel cm,
+                        final RecordDef rd,
+                        final int pageSize) {
+        final int numFlds = rd.getFields().length;
+        LoadingPopup.showMessage( "Loading data..." );
+        source.loadData( cursorPositions.peek(),
+                         pageSize,
+                         new GenericCallback<TableDataResult>() {
+                             public void onSuccess(TableDataResult result) {
+                                 Object[][] gridData = new Object[result.data.length][];
+                                 for ( int i = 0; i < result.data.length; i++ ) {
+                                     TableDataRow row = result.data[i];
+                                     Object[] rowData = new Object[numFlds];
+                                     rowData[0] = row.id;
+                                     rowData[1] = row.format;
+                                     for ( int j = 2; j < numFlds; j++ ) {
+                                         rowData[j] = row.values[j - 2];
+                                     }
+                                     gridData[i] = rowData;
+                                 }
+                                 MemoryProxy proxy = new MemoryProxy( gridData );
+                                 ArrayReader reader = new ArrayReader( rd );
+                                 store = new Store( proxy,
+                                                    reader );
+                                 //currentGrid = new Grid(Ext.generateId(), "600px", "600px", store, cm);
+                                 currentGrid = new GridPanel( store,
+                                                              cm );
+                                 currentGrid.setWidth( 600 );
+                                 currentGrid.setHeight( 600 );
 
+                                 Toolbar tb = new Toolbar();
+                                 currentGrid.setTopToolbar( tb );
+                                 if ( result.total > -1 ) {
+                                     tb.addItem( new ToolbarTextItem( Format.format( "Showing #{0} of {1} items.",
+                                                                                     new String[]{"" + result.data.length, "" + result.total} ) ) );
+                                 } else {
+                                     tb.addItem( new ToolbarTextItem( Format.format( "{0} items.",
+                                                                                     new String[]{"" + result.data.length} ) ) );
 
-	public String getSelectedRowUUID() {
-    	Record r = currentGrid.getSelectionModel().getSelected();
-    	if (r != null) {
-    		return r.getAsString("uuid");
-    	} else {
-    		return null;
-    	}
+                                 }
+
+                                 if ( cursorPositions.peek() > 0 ) {
+                                     navButton( source,
+                                                cm,
+                                                rd,
+                                                pageSize,
+                                                currentGrid,
+                                                false,
+                                                tb );
+                                 }
+                                 if ( result.hasNext ) {
+                                     navButton( source,
+                                                cm,
+                                                rd,
+                                                pageSize,
+                                                currentGrid,
+                                                true,
+                                                tb );
+                                 }
+
+                                 refresh = new Command() {
+                                     public void execute() {
+                                         layout.clear();
+                                         currentGrid.destroy();
+                                         doGrid( source,
+                                                 cm,
+                                                 rd,
+                                                 pageSize );
+                                     }
+                                 };
+
+                                 ToolbarButton refreshB = new ToolbarButton();
+                                 refreshB.setText( "(refresh list)" );
+                                 refreshB.addListener( new ButtonListenerAdapter() {
+                                     public void onClick(Button button,
+                                                         EventObject e) {
+                                         refresh.execute();
+                                     }
+                                 } );
+                                 tb.addButton( refreshB );
+
+                                 currentGrid.addGridRowListener( new GridRowListenerAdapter() {
+                                     public void onRowDblClick(GridPanel grid,
+                                                               int rowIndex,
+                                                               EventObject e) {
+                                         String uuid = grid.getSelectionModel().getSelected().getAsString( "uuid" );
+                                         System.err.println( "Opening: " + uuid );
+                                         editEvent.open( uuid );
+                                     }
+                                 } );
+                                 store.load();
+                                 layout.add( currentGrid );
+                                 //store the end position
+                                 currentCursorPosition = (int) result.currentPosition;
+                                 LoadingPopup.close();
+                             }
+
+                         } );
+    }
+
+    public String getSelectedRowUUID() {
+        Record r = currentGrid.getSelectionModel().getSelected();
+        if ( r != null ) {
+            return r.getAsString( "uuid" );
+        } else {
+            return null;
+        }
 
     }
 
     private void navButton(final AssetItemGridDataLoader source,
-            final ColumnModel cm, final RecordDef rd,
-            final int pageSize, final GridPanel g, final boolean forward, Toolbar tb) {
+                           final ColumnModel cm,
+                           final RecordDef rd,
+                           final int pageSize,
+                           final GridPanel g,
+                           final boolean forward,
+                           Toolbar tb) {
 
         ToolbarButton b = new ToolbarButton();
-        b.setText((forward) ? "Next ->" : "<- Previous");
+        b.setText( (forward) ? "Next ->" : "<- Previous" );
 
-        tb.addButton(b);
+        tb.addButton( b );
 
-        b.addListener(new ButtonListenerAdapter() {
-                    public void onClick(Button button, EventObject e) {
-                    	if (forward) {
-                    		int newPos = currentCursorPosition - 2;
-                    		if (newPos > 0) {
-                    			cursorPositions.push(newPos);
-                    		}
-                    	} else {
-                    		cursorPositions.pop();
-                    	}
-                        layout.clear();
-                        g.destroy();
-                        doGrid(source, cm, rd, pageSize);
+        b.addListener( new ButtonListenerAdapter() {
+            public void onClick(Button button,
+                                EventObject e) {
+                if ( forward ) {
+                    int newPos = currentCursorPosition - 2;
+                    if ( newPos > 0 ) {
+                        cursorPositions.push( newPos );
                     }
-                });
+                } else {
+                    cursorPositions.pop();
+                }
+                layout.clear();
+                g.destroy();
+                doGrid( source,
+                        cm,
+                        rd,
+                        pageSize );
+            }
+        } );
 
-        if (!forward) {
-        	ToolbarButton first = new ToolbarButton("(go to first)");
-        	tb.addButton(first);
-        	first.addListener(new ButtonListenerAdapter() {
-        		@Override
-        		public void onClick(Button button, EventObject e) {
-        			cursorPositions.clear();
-        			cursorPositions.push(0);
+        if ( !forward ) {
+            ToolbarButton first = new ToolbarButton( "(go to first)" );
+            tb.addButton( first );
+            first.addListener( new ButtonListenerAdapter() {
+                @Override
+                public void onClick(Button button,
+                                    EventObject e) {
+                    cursorPositions.clear();
+                    cursorPositions.push( 0 );
                     layout.clear();
                     g.destroy();
-                    doGrid(source, cm, rd, pageSize);
-        		}
-        	});
-
+                    doGrid( source,
+                            cm,
+                            rd,
+                            pageSize );
+                }
+            } );
 
         }
     }
 
     private RecordDef createRecordDef(TableConfig conf) {
         FieldDef[] fd = new FieldDef[conf.headers.length + 2]; //2 as we have format and UUID to tack on.
-        fd[0] = new StringFieldDef("uuid");
-        fd[1] = new StringFieldDef("format");
-        for (int i = 0; i < conf.headers.length; i++) {
-            fd[i + 2] = new StringFieldDef(conf.headers[i]);
+        fd[0] = new StringFieldDef( "uuid" );
+        fd[1] = new StringFieldDef( "format" );
+        for ( int i = 0; i < conf.headers.length; i++ ) {
+
+            if ( conf.headerTypes[i].equals( "class java.util.Calendar" ) ) {
+                fd[i + 2] = new DateFieldDef( conf.headers[i] );
+            } else {
+                fd[i + 2] = new StringFieldDef( conf.headers[i] );
+            }
+
         }
-        return new RecordDef(fd);
+        return new RecordDef( fd );
     }
 
     private ColumnModel createColumnModel(TableConfig conf) {
@@ -273,56 +314,68 @@ public class AssetItemGrid extends Composite {
         //first the UUID
         cfgs[0] = new ColumnConfig() {
             {
-                setHidden(true);
-                setDataIndex("uuid");
+                setHidden( true );
+                setDataIndex( "uuid" );
             }
         };
 
-
         //now the visible headers
-        for (int i = 0; i < conf.headers.length; i++) {
+        for ( int i = 0; i < conf.headers.length; i++ ) {
             final String header = conf.headers[i];
+            final String headerType = conf.headerTypes[i];
 
             cfgs[i + 1] = new ColumnConfig() {
-                    {
-                        if (!header.equals("Description")) {
-                            setHeader(header);
-                            setSortable(true);
-                            setDataIndex(header);
-                            if (header.equals("Name")) { //name is special !
-                                setWidth(220);
-                                setRenderer(new Renderer() {
-                                    public String render(Object value,
-                                            CellMetadata cellMetadata, Record record,
-                                            int rowIndex, int colNum, Store store) {
-                                        String fmtIcon = "images/" + EditorLauncher.getAssetFormatIcon(record.getAsString("format"));
-                                        String desc = record.getAsString("Description");
-                                        if (desc == null) {
-                                        	desc = "";
-                                        }
-                                        return Format.format("<img src='{0}'/><b>{1}</b><br/><small>{2}</small>", new String[]{fmtIcon,
-                                                (String) value,
-                                                desc});
+                {
+                    if ( !header.equals( "Description" ) ) {
+                        setHeader( header );
+                        setSortable( true );
+                        setDataIndex( header );
+                        if ( header.equals( "Name" ) ) { //name is special !
+                            setWidth( 220 );
+                            setRenderer( new Renderer() {
+                                public String render(Object value,
+                                                     CellMetadata cellMetadata,
+                                                     Record record,
+                                                     int rowIndex,
+                                                     int colNum,
+                                                     Store store) {
+                                    String fmtIcon = "images/" + EditorLauncher.getAssetFormatIcon( record.getAsString( "format" ) );
+                                    String desc = record.getAsString( "Description" );
+                                    if ( desc == null ) {
+                                        desc = "";
                                     }
-                                });
-                            }
-                        } else {
-                            setHidden(true); //don't want to show a separate description
+                                    return Format.format( "<img src='{0}'/><b>{1}</b><br/><small>{2}</small>",
+                                                          new String[]{fmtIcon, (String) value, desc} );
+                                }
+                            } );
                         }
-
-
+                        
+                        if ( headerType.equals( "class java.util.Calendar" ) ) {
+                            setRenderer( new Renderer() {
+                                public String render(Object value,
+                                                     CellMetadata cellMetadata,
+                                                     Record record,
+                                                     int rowIndex,
+                                                     int colNum,
+                                                     Store store) {
+                                    DateTimeFormat format = DateTimeFormat.getFormat( "MMM d, yyyy");
+                                    return format.format( (Date) value  );
+                                }
+                            } );
+                        }
+                    } else {
+                        setHidden( true ); //don't want to show a separate description
                     }
-                };
+
+                }
+            };
         }
 
-
-        return new ColumnModel(cfgs);
+        return new ColumnModel( cfgs );
     }
 
     public void refreshGrid() {
-    	this.refresh.execute();
+        this.refresh.execute();
     }
-
-
 
 }

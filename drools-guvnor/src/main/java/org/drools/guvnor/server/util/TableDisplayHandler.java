@@ -155,6 +155,7 @@ public class TableDisplayHandler {
         final TableConfig config = new TableConfig();
 
         config.headers = ASSET_LIST.getHeaders();
+        config.headerTypes = ASSET_LIST.getHeaderTypes();
         config.rowsPerPage = ROWS_PER_PAGE;
         return config;
     }
