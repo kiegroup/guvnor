@@ -31,6 +31,8 @@ import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
+import org.drools.guvnor.server.security.AdminType;
+import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.ClassicDRLImporter;
 import org.drools.guvnor.server.util.FormData;
 import org.drools.guvnor.server.util.ClassicDRLImporter.Asset;
@@ -44,6 +46,8 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.Identity;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -240,6 +244,11 @@ public class FileManagerUtils {
 
     @Restrict("#{identity.loggedIn}")
     public void importRulesRepository(byte[] data) {
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(
+					new AdminType(),
+					RoleTypes.ADMIN);
+		}
         repository.importRulesRepository( data );
     }
 

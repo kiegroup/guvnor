@@ -13,6 +13,7 @@ public class CapabilityCalculatorTest extends TestCase {
 	public void testAdmin() {
 		CapabilityCalculator loader = new CapabilityCalculator();
 		List<RoleBasedPermission> perms = new ArrayList<RoleBasedPermission>();
+		perms.add(new RoleBasedPermission("s", RoleTypes.ADMIN, null, null  ));
 		Capabilities caps = loader.calcCapabilities(perms);
 		assertEquals(7, caps.list.size());
 	}
