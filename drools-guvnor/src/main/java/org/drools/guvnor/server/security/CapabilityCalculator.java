@@ -20,7 +20,7 @@ public class CapabilityCalculator {
 
 	public Capabilities calcCapabilities(List<RoleBasedPermission> permissions) {
 		if (permissions.size() == 0) {
-			return new Capabilities();
+			return Capabilities.all();
 		} else {
 			Capabilities caps = new Capabilities();
 			for (RoleBasedPermission p : permissions) {
