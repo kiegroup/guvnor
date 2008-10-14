@@ -86,9 +86,10 @@ public class FactModelContentHandler extends ContentHandler {
 
 
 			Map<String, TypeFieldDescr> fields = td.getFields();
-			for (Iterator<String> iterator = fields.keySet().iterator(); iterator.hasNext();) {
-				String fieldName = iterator.next();
-				TypeFieldDescr descr = fields.get(fieldName);
+			for (Iterator<Map.Entry<String, TypeFieldDescr>> iterator = fields.entrySet().iterator(); iterator.hasNext();) {
+				Map.Entry<String, TypeFieldDescr> en = iterator.next();
+				String fieldName = en.getKey();
+				TypeFieldDescr descr = en.getValue();
 				if (descr.getMetaAttributes().size() > 0) {
 					//can't do this yet
 					throw new DroolsParserException("using text");

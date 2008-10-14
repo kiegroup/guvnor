@@ -204,7 +204,7 @@ public class ActionToolbar extends Composite {
         Button ok = new Button("Create copy");
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-            	if (newName.getText() == null || newName.equals("")) {
+            	if (newName.getText() == null || newName.getText().equals("")) {
             		Window.alert("Asset name must not be empty.");
             		return;
             	}
