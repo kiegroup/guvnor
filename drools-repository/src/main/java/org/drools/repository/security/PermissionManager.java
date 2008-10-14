@@ -48,9 +48,10 @@ public class PermissionManager {
 	    	Node permsNode = getUserPermissionNode(userName);
 	    	permsNode.remove(); //remove this so we get a fresh set
 	    	permsNode = getUserPermissionNode(userName).addNode("jcr:content", "nt:unstructured");
-	    	for (Iterator<String> iterator = perms.keySet().iterator(); iterator.hasNext();) {
-				String perm = iterator.next();
-				List<String> targets = perms.get(perm);
+	    	for (Iterator<Map.Entry<String, List<String>>> iterator = perms.entrySet().iterator(); iterator.hasNext();) {
+	    		Map.Entry<String, List<String>> en = iterator.next();
+				String perm = en.getKey();
+				List<String> targets = en.getValue();
 				if (targets == null) targets = new ArrayList<String>();
 				permsNode.setProperty(perm, targets.toArray(new String[targets.size()]));
 			}

@@ -18,7 +18,7 @@ public class StateItem extends Item {
     /**
      * All assets when created, or a new version saved, have a status of Draft.
      */
-    public static String DRAFT_STATE_NAME = "Draft";
+    public static final String DRAFT_STATE_NAME = "Draft";
     
     /**
      * The name of the state node type
@@ -54,8 +54,6 @@ public class StateItem extends Item {
             return false;
         } else if (in == this) {
             return true;
-        } else if (in == null) {
-            return false;
         } else {
             StateItem other = (StateItem) in;
             return this.getName().equals( other.getName() );

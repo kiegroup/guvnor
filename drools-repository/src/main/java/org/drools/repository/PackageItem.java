@@ -527,7 +527,7 @@ public class PackageItem extends VersionableItem {
         } catch ( Exception e ) {
             log.error( "Caught Exception",
                        e );
-            return null;
+            return "";
         }
     }
 

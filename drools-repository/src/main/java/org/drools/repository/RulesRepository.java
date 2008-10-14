@@ -1251,9 +1251,10 @@ public class RulesRepository {
 
             String sql = "SELECT " + AssetItem.TITLE_PROPERTY_NAME + ", " + AssetItem.DESCRIPTION_PROPERTY_NAME + ", " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " FROM " + AssetItem.RULE_NODE_TYPE_NAME;
             sql += " WHERE jcr:path LIKE '/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/%'";
-            for ( Iterator<String> iterator = params.keySet().iterator(); iterator.hasNext(); ) {
-                String fld = iterator.next();
-                String[] options = params.get( fld );
+            for ( Iterator<Map.Entry<String, String[]>> iterator = params.entrySet().iterator(); iterator.hasNext(); ) {
+            	Map.Entry<String, String[]> en = iterator.next();
+                String fld = en.getKey();
+                String[] options = en.getValue();
                 if ( options != null && options.length > 0 ) {
                     if ( options.length > 1 ) {
                         sql += " AND (";
