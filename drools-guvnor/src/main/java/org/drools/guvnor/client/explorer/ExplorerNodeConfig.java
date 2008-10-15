@@ -9,6 +9,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.security.Capabilities;
 
+import com.google.gwt.user.client.Window;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
 import com.gwtext.client.widgets.tree.TreeNode;
@@ -141,6 +142,9 @@ public class ExplorerNodeConfig {
 					public void onSuccess(Object data) {
 						final String value[] = (String[]) data;
 						if (value.length == 0) {
+							if (path.equals("/")) {
+								Window.alert("No categories configured. Tip: you will want to go to Administration/Categories and create at least one.");
+							}
 							infanticide(treeNode);
 						} else {
 							for (int i = 0; i < value.length; i++) {
