@@ -84,12 +84,17 @@ public class ExplorerViewCenterPanel {
         //listener to try and stop people from forgetting to save...
         tp.addListener(new TabPanelListenerAdapter() {
         	@Override
-        	public boolean doBeforeRemove(Container self, Component component) {
+        	public boolean doBeforeRemove(Container self, final Component component) {
+        		
         		if (openedAssetEditors.containsKey(component.getId())) {
+        			
         			RuleViewer rv = openedAssetEditors.get(component.getId());
-        			return (rv.isDirty()) ?
-        					Window.confirm("Are you sure you want to close this item? Any unsaved changes will be lost.")
-        					: true;
+        			if (rv.isDirty()) {
+        				component.show();
+        				return Window.confirm("Are you sure you want to close this item? Any unsaved changes will be lost.");
+        			} else {
+        				return true;
+        			}
         		}
         		return true;
         	}
