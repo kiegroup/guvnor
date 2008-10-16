@@ -152,8 +152,8 @@ public class BackupManager extends Composite {
         upload.setName( HTMLFileManagerFields.FILE_UPLOAD_FIELD_NAME_IMPORT );
         panel.add( upload );
 
-        panel.add( new Label( "import:" ) );
-        ImageButton ok = new ImageButton( "images/upload.gif" );
+        //panel.add( new Label( "import:" ) );
+        Button ok = new Button( "Import" );
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget sender) {
                 doImportFile( uploadFormPanel );

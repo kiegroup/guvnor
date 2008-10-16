@@ -18,7 +18,6 @@ package org.drools.guvnor.client.packages;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.HTMLFileManagerFields;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
@@ -50,7 +49,7 @@ public abstract class AssetAttachmentFileWidget extends Composite {
 
 
     private FormPanel form;
-    private ImageButton ok;
+    private Button ok;
     private RuleViewer viewer;
     protected FormStyleLayout layout;
     protected RuleAsset asset;
@@ -77,10 +76,10 @@ public abstract class AssetAttachmentFileWidget extends Composite {
         HorizontalPanel fields = new HorizontalPanel();
         fields.add( getHiddenField(HTMLFileManagerFields.FORM_FIELD_UUID, uuid) );
 
-        ok = new ImageButton("images/upload.gif", "Upload");
+        ok = new Button("Upload");
 
         fields.add( up );
-        fields.add(new Label("upload:"));
+        //fields.add(new Label("upload:"));
         fields.add( ok );
 
         form.add( fields );
