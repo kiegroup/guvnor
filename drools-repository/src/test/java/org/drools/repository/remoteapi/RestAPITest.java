@@ -21,10 +21,32 @@ import org.drools.repository.remoteapi.Response.Binary;
 import org.drools.repository.remoteapi.Response.Text;
 
 public class RestAPITest extends TestCase {
-	String someAsset = "packages/SomeName/SomeFile.drl";
-	String getAList = "packages/SomeName"; //will show a list
-	String getPackageConfig = "packages/SomeName/.package"; //should load package config
+	//String someAsset = "packages/SomeName/SomeFile.drl";
+	//String getAList = "packages/SomeName"; //will show a list
+	//String getPackageConfig = "packages/SomeName/.package"; //should load package config
 
+	
+	public void testGetWithSpaces() throws Exception {
+		RulesRepository repo = RepositorySessionUtil.getRepository();
+		PackageItem pkg = repo.createPackage("testRestGetSpaces", "");
+		AssetItem ass = pkg.addAsset("some space", "");
+		ass.updateFormat("drl");
+		ass.checkin("hey");
+		
+		RestAPI api = new RestAPI(repo);
+		String url = "packages/testRestGetSpaces";
+		Response res = api.get(url);
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		res.writeData(out);
+		
+		assertTrue(new String(out.toByteArray()).indexOf("\\ ") > -1);
+		
+		url = "packages/testRestGetSpaces/some space.drl";
+		res = api.get(url);
+		assertNotNull(res.lastModified);
+		
+	}
 
 	public void testGetBasics() throws Exception {
 

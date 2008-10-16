@@ -187,7 +187,7 @@ public class RestAPI {
 				if (lastMod == null) {
 					lastMod = a.getCreatedDate();
 				}
-				sb.append(a.getName() + "." + a.getFormat() + "=" + sdf.format(lastMod.getTime()) + "," + a.getVersionNumber());
+				sb.append(a.getName().replaceAll("\\s", "\\\\ ") + "." + a.getFormat() + "=" + sdf.format(lastMod.getTime()) + "," + a.getVersionNumber());
 				sb.append('\n');
 			}
 		}
@@ -196,6 +196,10 @@ public class RestAPI {
 		r.lastModified = pkg.getLastModified();
 		r.data = sb.toString();
 		return r;
+	}
+
+	private String escapeSpacesForProps(String s) {
+		return s.replaceAll("\\s", "\\ ");
 	}
 
 	/**
