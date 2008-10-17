@@ -2,17 +2,25 @@
 package org.drools.atom;
 
 import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URI;
 import java.util.List;
 
+import javax.ws.rs.core.UriInfo;
+
 import org.apache.abdera.Abdera;
+import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.testutil.common.AbstractClientServerTestBase;
+import org.drools.repository.PackageItem;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -89,11 +97,46 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
         }
     }  
     
+    @Test
+    public void testAddPackage() throws Exception {
+        String endpointAddress =
+            "http://localhost:9080/repository/packages"; 
+        
+        Entry e = createPackageItemEntry("testPackage2");
+        StringWriter w = new StringWriter();
+        e.writeTo(w);
+        
+        PostMethod post = new PostMethod(endpointAddress);
+        post.setRequestEntity(
+             new StringRequestEntity(w.toString(), "application/atom+xml", null));
+        HttpClient httpclient = new HttpClient();
+        
+        String location = null;
+        try {
+            int result = httpclient.executeMethod(post);
+            assertEquals(201, result);
+            location = post.getResponseHeader("Location").getValue();
+            Document<Entry> entryDoc = abdera.getParser().parse(post.getResponseBodyAsStream());
+            assertEquals(entryDoc.getRoot().toString(), e.toString());
+        } finally {
+            post.releaseConnection();
+        } 
+    }  
+    
     private String getStringFromInputStream(InputStream in) throws Exception {        
         CachedOutputStream bos = new CachedOutputStream();
         IOUtils.copy(in, bos);
         in.close();
         bos.close();
         return bos.getOut().toString();        
+    }
+    
+    private Entry createPackageItemEntry(String packageName) {
+        Factory factory = Abdera.getNewFactory();        
+        Entry e = factory.getAbdera().newEntry();
+
+        e.setTitle(packageName);
+
+        return e;
     }
 }

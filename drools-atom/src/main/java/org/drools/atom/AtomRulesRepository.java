@@ -26,6 +26,59 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 
 
+/**
+ * AtomRulesRepository provides AtomPub interface on top of RulesRepository. 
+ * 
+ * A HTTP GET request to URL http://host:portnumber/repository/packages
+ * returns a list of packages in the repository in Atom feed format. An example looks like below:
+
+<feed xml:base="http://localhost:9080/repository/packages">
+  <title type="text">Packages</title>
+  
+  <entry xml:base="http://localhost:9080/repository/packages">
+    <title type="text">defaultPackage</title>
+    <link href="http://localhost:9080/repository/packages/defaultPackage"/>
+  </entry>
+
+  <entry xml:base="http://localhost:9080/repository/packages">
+    <title type="text">testPackage1</title>
+    <link href="http://localhost:9080/repository/packages/testPackage1"/>
+  </entry>
+</feed>
+
+ * A HTTP GET request to URL http://host:portnumber/repository/packages/testPackage1 
+ * returns testPackag1 in the repository in Atom entry format. An example looks like below:
+
+<entry xml:base="http://localhost:9080/repository/packages/testPackage1">
+  <title type="text">testPackage1</title>
+  <id>5632cf6c-0ef5-4ccc-b7e5-293285c4ce19</id>
+  <link href="http://localhost:9080/repository/packages/testPackage1"/>
+  <updated>2008-10-17T08:12:42.046Z</updated>
+  <content type="text">description=desc1, archived=false</content>
+</entry>   
+
+
+ * A HTTP POST request to URL http://host:portnumber/repository/packages with the data:
+
+<entry xml:base="http://localhost:9080/repository/packages/testPackage1">
+  <title type="text">testPackage1</title>
+</entry>   
+
+ * adds a package named testPackage1
+ *  
+ *  
+ * A HTTP PUT request to URL http://host:portnumber/repository/packages with the data:
+
+<entry xml:base="http://localhost:9080/repository/packages/testPackage1">
+  <title type="text">testPackage1</title>
+  <content type="text">description=desc1, archived=false</content>
+</entry>     
+
+ * updates the package instance whose name is testPackage1
+ * 
+ * @author Jervis Lliu
+ */
+
 @Path("/repository/")
 public class AtomRulesRepository {
 	public RulesRepository repository;
@@ -84,12 +137,15 @@ public class AtomRulesRepository {
     }
             
     @POST
-    @Path("/packages/feed")
+    @Path("/packages")
     @ConsumeMime("application/atom+xml")
     public Response addPackageAsEntry(Entry e, @Context UriInfo uParam) {
+        System.out.println("----invoking addPackageAsEntry with package name: " + e.getTitle());
+
         try {
         	String packageName = e.getTitle();
-
+        	
+            //TODO: Which atom field to use for description?
         	PackageItem packageItem = repository.createPackage(packageName, "desc");
             
             URI uri = 
