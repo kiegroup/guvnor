@@ -5,12 +5,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
+import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
 import org.drools.guvnor.client.modeldriven.dt.ActionCol;
 import org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.guvnor.client.modeldriven.dt.ActionSetFieldCol;
@@ -19,6 +22,7 @@ import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
 import org.drools.guvnor.client.modeldriven.dt.DTColumnConfig;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.guvnor.client.modeldriven.ui.ActionValueEditor;
+import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
@@ -26,6 +30,7 @@ import org.drools.guvnor.client.ruleeditor.RuleViewer;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -108,13 +113,13 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
         config.setCollapsible(true);
 
 
-        FieldSet attributes = new FieldSet("Attribute columns");
-        attributes.setCollapsible(true);
-
-        attributes.setFrame(true);
-        attributes.add(getAttributes());
-        attributes.setCollapsed(dt.attributeCols.size() == 0);
-        config.add(attributes);
+//        FieldSet attributes = new FieldSet("Attribute columns");
+//        attributes.setCollapsible(true);
+//
+//        attributes.setFrame(true);
+//        attributes.add(getAttributes());
+//        attributes.setCollapsed(dt.attributeCols.size() == 0);
+//        config.add(attributes);
 
 
         FieldSet conditions = new FieldSet("Condition columns");
@@ -132,6 +137,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
         grouping.setCollapsible(true);
         grouping.setCollapsed(true);
         grouping.add(getGrouping());
+        grouping.add(getAttributes());
         config.add(grouping);
 
 
@@ -399,6 +405,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
 	private void refreshAttributeWidget() {
 		this.attributeConfigWidget.clear();
+		attributeConfigWidget.add(newAttr());
 		for (int i = 0; i < dt.attributeCols.size(); i++) {
 			AttributeCol at = (AttributeCol) dt.attributeCols.get(i);
 			HorizontalPanel hp = new HorizontalPanel();
@@ -406,51 +413,77 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 			hp.add(new SmallLabel(at.attr));
 			attributeConfigWidget.add(hp);
 		}
-		attributeConfigWidget.add(newAttr());
+		
 	}
 
 	private Widget newAttr() {
-		ImageButton but = new ImageButton("images/new_item.gif", "Add a new attribute.", new ClickListener() {
+		ImageButton but = new ImageButton("images/new_item.gif", "Add a new attribute/metadata.", new ClickListener() {
 			public void onClick(Widget w) {
 				//show choice of attributes
-				final FormStylePopup pop = new FormStylePopup();
-		        final ListBox list = new ListBox();
-		        list.addItem( "Choose..." );
+				final FormStylePopup pop = new FormStylePopup("images/config.png", "Add an option to the rule");
+		        final ListBox list = RuleAttributeWidget.getAttributeList();
+		        final Image addbutton = new ImageButton("images/new_item.gif");
+		        final TextBox box = new TextBox();
+		        box.setVisibleLength( 15 );
+		        
 
+		        list.setSelectedIndex( 0 );
 
-		        addItem( "salience",list);
-		        addItem( "enabled", list );
-		        addItem( "date-effective", list );
-		        addItem( "date-expires", list );
-		        addItem( "no-loop", list );
-		        addItem( "agenda-group", list );
-		        addItem( "activation-group", list );
-		        addItem( "duration", list );
-		        addItem( "auto-focus", list );
-		        addItem( "lock-on-active", list );
-		        addItem( "ruleflow-group", list );
-
-		        pop.addAttribute("New attribute:", list);
-
-		        Button ok = new Button("Add");
-		        ok.addClickListener(new ClickListener() {
-					public void onClick(Widget w) {
-
-						AttributeCol attr = new AttributeCol();
+		        list.addChangeListener( new ChangeListener() {
+		            public void onChange(Widget w) {
+		            	AttributeCol attr = new AttributeCol();
 						attr.attr = list.getItemText(list.getSelectedIndex());
-						if (attr.attr.equals("Choose...")) {
-							com.google.gwt.user.client.Window.alert("Please pick a valid attribute");
-							return;
-						}
+						
 						dt.attributeCols.add(attr);
 						scrapeData(dt.attributeCols.size() + 1);
 						refreshGrid();
 						refreshAttributeWidget();
 						pop.hide();
-					}
+		            }
 		        });
+		        
+		        
+		        
 
-		        pop.addAttribute("", ok);
+//		        Button ok = new Button("Add");
+//		        ok.addClickListener(new ClickListener() {
+//					public void onClick(Widget w) {
+//
+//						AttributeCol attr = new AttributeCol();
+//						attr.attr = list.getItemText(list.getSelectedIndex());
+//						if (attr.attr.equals("Choose...")) {
+//							com.google.gwt.user.client.Window.alert("Please pick a valid attribute");
+//							return;
+//						}
+//						dt.attributeCols.add(attr);
+//						scrapeData(dt.attributeCols.size() + 1);
+//						refreshGrid();
+//						refreshAttributeWidget();
+//						pop.hide();
+//					}
+//		        });
+//		        
+		        addbutton.setTitle( "Add Metadata to the rule." );
+
+		        addbutton.addClickListener( new ClickListener() {
+		            public void onClick(Widget w) {
+		            	
+//		            	model.addMetadata( new RuleMetadata(box.getText(), "") );
+//		            	refreshWidget();
+		                pop.hide();
+		            }
+		        });
+		        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
+		        horiz.add( box );
+		        horiz.add( addbutton );
+		        
+
+
+
+		        
+		        pop.addAttribute( "Metadata: ", horiz );
+		        pop.addAttribute("Attribute:", list);
+//		        pop.addAttribute("", ok);
 		        pop.show();
 			}
 
@@ -469,7 +502,10 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 				return false;
 			}
 		});
-		return but;
+		HorizontalPanel h = new HorizontalPanel();
+		h.add(new SmallLabel("Add Attribute/Metadata: "));
+        h.add( but );
+		return h;
 	}
 
 	private Widget removeAttr(final AttributeCol at) {

@@ -44,6 +44,7 @@ import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
 import org.drools.guvnor.client.modeldriven.brl.IAction;
 import org.drools.guvnor.client.modeldriven.brl.IPattern;
 import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
+import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -159,9 +160,13 @@ public class RuleModeller extends DirtyableComposite {
         return add;
     }
 
+    
     protected void showAttributeSelector(Widget w) {
         final FormStylePopup pop = new FormStylePopup("images/config.png", "Add an option to the rule");
         final ListBox list = RuleAttributeWidget.getAttributeList();
+        final Image addbutton = new ImageButton("images/new_item.gif");
+        final TextBox box = new TextBox();
+        
 
         list.setSelectedIndex( 0 );
 
@@ -172,10 +177,44 @@ public class RuleModeller extends DirtyableComposite {
               pop.hide();
             }
         });
+        box.setVisibleLength( 15 );
+        
+        addbutton.setTitle( "Add Metadata to the rule." );
+
+        addbutton.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+            	
+            	model.addMetadata( new RuleMetadata(box.getText(), "") );
+            	refreshWidget();
+                pop.hide();
+            }
+        });
+        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
+        horiz.add( box );
+        horiz.add( addbutton );
+        
 
 
 
-        pop.addAttribute( "Attribute", list );
+        
+        pop.addAttribute( "Metadata: ", horiz );
+        pop.addAttribute( "Attribute: ", list );
+       
+        //add text field
+        //add button
+        //add listener that adds the rule Attribute
+//        pop.addAttribute( "Metadata:",
+//                editableText( new FieldBinding() {
+//                                  public String getValue() {
+//                                      return data.subject;
+//                                  }
+//
+//                                  public void setValue(String val) {
+//                                      data.subject = val;
+//                                  }
+//                              },
+//                              "A short description of the subject matter." ) );
+        
 
         pop.show();
     }
