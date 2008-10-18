@@ -141,6 +141,7 @@ public class RuleModeller extends DirtyableComposite {
         layout.setWidget( 4, 0, new SmallLabel("(options)") );
         layout.setWidget( 4, 2, getAddAttribute() );
         layout.setWidget( 5, 1, new RuleAttributeWidget(this, this.model) );
+        
     }
 
     public void refreshWidget() {

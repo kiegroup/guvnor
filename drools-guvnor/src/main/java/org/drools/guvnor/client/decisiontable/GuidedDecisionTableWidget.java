@@ -1,5 +1,6 @@
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -12,8 +13,6 @@ import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
-import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
-import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
 import org.drools.guvnor.client.modeldriven.dt.ActionCol;
 import org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.guvnor.client.modeldriven.dt.ActionSetFieldCol;
@@ -21,12 +20,13 @@ import org.drools.guvnor.client.modeldriven.dt.AttributeCol;
 import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
 import org.drools.guvnor.client.modeldriven.dt.DTColumnConfig;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.guvnor.client.modeldriven.dt.MetadataCol;
 import org.drools.guvnor.client.modeldriven.ui.ActionValueEditor;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
+import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -153,6 +153,16 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 		final ListBox list = new ListBox();
 
 		list.addItem("Description", "desc");
+		if(dt.metadataCols == null){
+			dt.metadataCols = new ArrayList<MetadataCol>();
+		}
+		for (Iterator iterator = dt.metadataCols.iterator(); iterator.hasNext();) {
+			MetadataCol c = (MetadataCol) iterator.next();
+			list.addItem(c.attr, c.attr);
+			if (c.attr.equals(dt.groupField)) {
+				list.setSelectedIndex(list.getItemCount() - 1);
+			}
+		}
 		for (Iterator iterator = dt.attributeCols.iterator(); iterator.hasNext();) {
 			AttributeCol c = (AttributeCol) iterator.next();
 			list.addItem(c.attr, c.attr);
@@ -287,7 +297,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
 					private void newActionAdded() {
 						//want to add in a blank row into the data
-						scrapeData(dt.attributeCols.size() + dt.conditionCols.size() + dt.actionCols.size() + 1);
+						scrapeData(dt.metadataCols.size() + dt.attributeCols.size() + dt.conditionCols.size() + dt.actionCols.size() + 1);
 						refreshGrid();
 						refreshActionsWidget();
 
@@ -349,7 +359,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 				GuidedDTColumnConfig dialog = new GuidedDTColumnConfig(getSCE(), dt, new Command() {
 					public void execute() {
 						//want to add in a blank row into the data
-						scrapeData(dt.attributeCols.size() + dt.conditionCols.size() + 1);
+						scrapeData(dt.metadataCols.size() + dt.attributeCols.size() + dt.conditionCols.size() + 1);
 						refreshGrid();
 						refreshConditionsWidget();
 					}
@@ -406,9 +416,31 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	private void refreshAttributeWidget() {
 		this.attributeConfigWidget.clear();
 		attributeConfigWidget.add(newAttr());
+		if(dt.metadataCols.size() > 0){
+			HorizontalPanel hp = new HorizontalPanel();
+			hp.add(new HTML("&nbsp;&nbsp;"));
+			hp.add(new SmallLabel("Metadata: "));
+			attributeConfigWidget.add(hp);
+		}
+		for (int i = 0; i < dt.metadataCols.size(); i++) {
+			MetadataCol at = (MetadataCol) dt.metadataCols.get(i);
+			HorizontalPanel hp = new HorizontalPanel();
+			hp.add(new HTML("&nbsp;&nbsp;&nbsp;&nbsp;"));
+			hp.add(removeMeta(at));
+			hp.add(new SmallLabel(at.attr));
+			attributeConfigWidget.add(hp);
+		}
+		if(dt.attributeCols.size() > 0){
+			HorizontalPanel hp = new HorizontalPanel();
+			hp.add(new HTML("&nbsp;&nbsp;"));
+			hp.add(new SmallLabel("Attributes: "));
+			attributeConfigWidget.add(hp);
+		}
+		
 		for (int i = 0; i < dt.attributeCols.size(); i++) {
 			AttributeCol at = (AttributeCol) dt.attributeCols.get(i);
 			HorizontalPanel hp = new HorizontalPanel();
+			hp.add(new HTML("&nbsp;&nbsp;&nbsp;&nbsp;"));
 			hp.add(removeAttr(at));
 			hp.add(new SmallLabel(at.attr));
 			attributeConfigWidget.add(hp);
@@ -435,7 +467,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 						attr.attr = list.getItemText(list.getSelectedIndex());
 						
 						dt.attributeCols.add(attr);
-						scrapeData(dt.attributeCols.size() + 1);
+						scrapeData(dt.metadataCols.size() + dt.attributeCols.size() + 1);
 						refreshGrid();
 						refreshAttributeWidget();
 						pop.hide();
@@ -467,10 +499,13 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
 		        addbutton.addClickListener( new ClickListener() {
 		            public void onClick(Widget w) {
-		            	
-//		            	model.addMetadata( new RuleMetadata(box.getText(), "") );
-//		            	refreshWidget();
-		                pop.hide();
+		            	MetadataCol met = new MetadataCol();
+		            	met.attr = box.getText();
+		            	dt.metadataCols.add(met);
+		            	scrapeData(dt.metadataCols.size() + 1);
+						refreshGrid();
+						refreshAttributeWidget();
+						pop.hide();
 		            }
 		        });
 		        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
@@ -524,6 +559,21 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 		return del;
 	}
 
+	private Widget removeMeta(final MetadataCol md) {
+		Image del = new ImageButton("images/delete_item_small.gif", "Remove this metadata", new ClickListener() {
+			public void onClick(Widget w) {
+				if (com.google.gwt.user.client.Window.confirm("Are you sure you want to delete the column for " + md.attr + " - all data in that column will be removed?")) {
+					dt.metadataCols.remove(md);
+					removeField(md.attr);
+					scrapeData(-1);
+					refreshGrid();
+					refreshAttributeWidget();
+				}
+			}
+		});
+
+		return del;
+	}
 	/**
 	 * Here we read the record data from the grid into the data in the model.
 	 * if we have an insertCol - then a new empty column of data will be added in that
@@ -603,7 +653,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
 	private GridPanel doGrid() {
 
-		fds = new FieldDef[dt.attributeCols.size() + dt.actionCols.size() + dt.conditionCols.size() + 2]; //its +2 as we have counter and description data
+		fds = new FieldDef[dt.metadataCols.size() + dt.attributeCols.size() + dt.actionCols.size() + dt.conditionCols.size() + 2]; //its +2 as we have counter and description data
 
 		colMap = new HashMap();
 
@@ -639,7 +689,25 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 			}
 		};
 		colCount++;
+		
+		//now to metadata
+		for (int i = 0; i < dt.metadataCols.size(); i++) {
+			final MetadataCol attr = (MetadataCol) dt.metadataCols.get(i);
+			fds[colCount] = new StringFieldDef(attr.attr);
+			cols[colCount] = new ColumnConfig() {
+				{
+					setHeader(attr.attr);
+					setDataIndex(attr.attr);
+					setSortable(true);
+					if (attr.width != -1) {
+						setWidth(attr.width);
+					}
 
+				}
+			};
+			colMap.put(attr.attr, attr);
+			colCount++;
+		}
 
 		//now to attributes
 		for (int i = 0; i < dt.attributeCols.size(); i++) {

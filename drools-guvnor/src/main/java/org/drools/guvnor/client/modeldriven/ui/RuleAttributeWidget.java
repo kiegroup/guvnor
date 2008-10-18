@@ -20,6 +20,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStyleLayout;
+import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
 import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
@@ -28,6 +29,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.ListBox;
@@ -54,11 +57,25 @@ public class RuleAttributeWidget extends DirtyableComposite {
         layout = new FormStyleLayout();
         //Adding metadata here, seems redundant to add a new widget for metadata. Model does handle meta data separate.
         RuleMetadata[] meta = model.metadataList;
+        if(meta.length > 0){
+			HorizontalPanel hp = new HorizontalPanel();
+			//hp.add(new HTML("&nbsp;&nbsp;"));
+			hp.add(new SmallLabel("Metadata: "));
+			//attributeConfigWidget.add(hp);
+			layout.addRow(hp);
+		}
         for ( int i = 0; i < meta.length; i++ ) {
             RuleMetadata rmd = meta[i];
             layout.addAttribute( rmd.attributeName, getEditorWidget(rmd, i));
         }
         RuleAttribute[] attrs = model.attributes;
+        if(attrs.length > 0){
+			HorizontalPanel hp = new HorizontalPanel();
+			//hp.add(new HTML("&nbsp;&nbsp;"));
+			hp.add(new SmallLabel("Attributes: "));
+			//attributeConfigWidget.add(hp);
+			layout.addRow(hp);
+		}
         for ( int i = 0; i < attrs.length; i++ ) {
             RuleAttribute at = attrs[i];
             layout.addAttribute( at.attributeName, getEditorWidget(at, i));
