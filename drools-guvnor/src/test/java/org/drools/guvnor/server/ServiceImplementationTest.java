@@ -60,6 +60,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
+import org.drools.guvnor.client.rpc.SingleScenarioResult;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
@@ -1704,7 +1705,7 @@ public class ServiceImplementationTest extends TestCase {
 		cheese.fieldData.add(new FieldData("price", "42"));
 		sc.globals.add(cheese);
 
-		ScenarioRunResult res = impl.runScenario(pkg.getName(), sc);
+		ScenarioRunResult res = impl.runScenario(pkg.getName(), sc).result;
 		assertEquals(null, res.errors);
 		assertNotNull(res.scenario);
 		assertTrue(vf.wasSuccessful());
@@ -1712,7 +1713,7 @@ public class ServiceImplementationTest extends TestCase {
 
 
 
-		res = impl.runScenario(pkg.getName(), sc);
+		res = impl.runScenario(pkg.getName(), sc).result;
 		assertEquals(null, res.errors);
 		assertNotNull(res.scenario);
 		assertTrue(vf.wasSuccessful());
@@ -1720,7 +1721,7 @@ public class ServiceImplementationTest extends TestCase {
 
 
 		impl.ruleBaseCache.clear();
-		res = impl.runScenario(pkg.getName(), sc);
+		res = impl.runScenario(pkg.getName(), sc).result;
 		assertEquals(null, res.errors);
 		assertNotNull(res.scenario);
 		assertTrue(vf.wasSuccessful());
@@ -1737,7 +1738,7 @@ public class ServiceImplementationTest extends TestCase {
 		impl.ruleBaseCache.clear();
 		pkg.updateBinaryUpToDate(false);
 		repo.save();
-		res = impl.runScenario(pkg.getName(), sc);
+		res = impl.runScenario(pkg.getName(), sc).result;
 		assertNotNull(res.errors);
 		assertNull(res.scenario);
 
@@ -1795,7 +1796,13 @@ public class ServiceImplementationTest extends TestCase {
 		sc.fixtures.add(vf);
 
 
-		ScenarioRunResult res = impl.runScenario(pkg.getName(), sc);
+		SingleScenarioResult res_ = impl.runScenario(pkg.getName(), sc);
+		assertTrue(res_.auditLog.size() > 0);
+		
+		String[] logEntry = res_.auditLog.get(0);
+		assertNotNull(logEntry[0], logEntry[1]);
+		
+		ScenarioRunResult res = res_.result; 
 		assertEquals(null, res.errors);
 		assertNotNull(res.scenario);
 		assertTrue(vf.wasSuccessful());
@@ -1929,14 +1936,14 @@ public class ServiceImplementationTest extends TestCase {
 		vf.fieldValues.add(new VerifyField("cost", "42", "=="));
 		sc.fixtures.add(vf);
 
-		ScenarioRunResult res = impl.runScenario(pkg.getName(), sc);
+		ScenarioRunResult res = impl.runScenario(pkg.getName(), sc).result;
 		assertEquals(null, res.errors);
 		assertNotNull(res.scenario);
 		assertTrue(vf.wasSuccessful());
 		assertTrue(vr.wasSuccessful());
 
 
-		res = impl.runScenario(pkg.getName(), sc);
+		res = impl.runScenario(pkg.getName(), sc).result;
 		assertEquals(null, res.errors);
 		assertNotNull(res.scenario);
 		assertTrue(vf.wasSuccessful());
@@ -1944,7 +1951,7 @@ public class ServiceImplementationTest extends TestCase {
 
 		impl.ruleBaseCache.clear();
 
-		res = impl.runScenario(pkg.getName(), sc);
+		res = impl.runScenario(pkg.getName(), sc).result;
 		assertEquals(null, res.errors);
 		assertNotNull(res.scenario);
 		assertTrue(vf.wasSuccessful());

@@ -84,7 +84,7 @@ public interface RepositoryServiceAsync
 	public void rebuildSnapshots(AsyncCallback cb);
 	public void rebuildPackages(AsyncCallback cb);
 	public void listRulesInPackage(java.lang.String p0, AsyncCallback cb);
-	public void runScenario(java.lang.String p0, org.drools.guvnor.client.modeldriven.testing.Scenario p1, AsyncCallback cb);
+	public void runScenario(java.lang.String p0, org.drools.guvnor.client.modeldriven.testing.Scenario p1, AsyncCallback<SingleScenarioResult> cb);
 	public void runScenariosInPackage(java.lang.String p0, AsyncCallback cb);
 	public void analysePackage(java.lang.String p0, AsyncCallback cb);
 	public void listTypesInPackage(java.lang.String p0, AsyncCallback cb);

@@ -197,7 +197,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 	public java.lang.String[] listRulesInPackage(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializableException {
 		 return getService().listRulesInPackage( p0);
 	}
-	public org.drools.guvnor.client.rpc.ScenarioRunResult runScenario(java.lang.String p0, org.drools.guvnor.client.modeldriven.testing.Scenario p1) throws com.google.gwt.user.client.rpc.SerializableException {
+	public org.drools.guvnor.client.rpc.SingleScenarioResult runScenario(java.lang.String p0, org.drools.guvnor.client.modeldriven.testing.Scenario p1) throws com.google.gwt.user.client.rpc.SerializableException {
 		 return getService().runScenario( p0,  p1);
 	}
 	public org.drools.guvnor.client.rpc.BulkTestRunResult runScenariosInPackage(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializableException {

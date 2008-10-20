@@ -35,6 +35,7 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
+import org.drools.guvnor.client.rpc.SingleScenarioResult;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 
 import com.google.gwt.user.client.Command;
@@ -55,6 +56,7 @@ import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -1342,7 +1344,7 @@ class TestRunnerWidget extends Composite {
 	VerticalPanel layout = new VerticalPanel();
 
 	//private HorizontalPanel busy = new HorizontalPanel();
-	private HorizontalPanel actions = new HorizontalPanel();
+	private SimplePanel actions = new SimplePanel();
 
 	public TestRunnerWidget(final ScenarioWidget parent, final String packageName) {
 
@@ -1351,22 +1353,18 @@ class TestRunnerWidget extends Composite {
 		run.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				LoadingPopup.showMessage("Building and scenario");
-				RepositoryServiceFactory.getService().runScenario(parent.asset.metaData.packageName, (Scenario) parent.asset.content, new GenericCallback () {
-					public void onSuccess(Object data) {
-
+				RepositoryServiceFactory.getService().runScenario(parent.asset.metaData.packageName, (Scenario) parent.asset.content, new GenericCallback<SingleScenarioResult> () {
+					public void onSuccess(SingleScenarioResult data) {
 						LoadingPopup.close();
 						layout.clear();
-						//layout.setWidget(0, 0, actions);
-						//layout.setWidget(1, 0, results);
 						layout.add(actions);
 						layout.add(results);
-						//busy.setVisible(false);
 						actions.setVisible(true);
-						ScenarioRunResult result = (ScenarioRunResult) data;
+						ScenarioRunResult result = data.result;
 						if (result.errors != null) {
 							showErrors(result.errors);
 						} else {
-							showResults(parent, result);
+							showResults(parent, data);
 						}
 					}
 				});
@@ -1409,11 +1407,11 @@ class TestRunnerWidget extends Composite {
 	}
 
 	private void showResults(final ScenarioWidget parent,
-			ScenarioRunResult result) {
+			final SingleScenarioResult data) {
 		results.clear();
 		results.setVisible(true);
 
-		parent.asset.content = result.scenario;
+		parent.asset.content = data.result.scenario;
 		parent.showResults = true;
 		parent.renderEditor();
 
@@ -1421,7 +1419,7 @@ class TestRunnerWidget extends Composite {
 		int total = 0;
 		VerticalPanel resultsDetail = new VerticalPanel();
 
-		for (Iterator iterator = result.scenario.fixtures.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = data.result.scenario.fixtures.iterator(); iterator.hasNext();) {
 			Fixture f = (Fixture) iterator.next();
 			if (f instanceof VerifyRuleFired) {
 
@@ -1469,10 +1467,73 @@ class TestRunnerWidget extends Composite {
 		results.setWidget(1, 0, new SmallLabel("Summary:"));
 		results.getFlexCellFormatter().setHorizontalAlignment(1, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 		results.setWidget(1, 1, resultsDetail);
+		results.setWidget(2, 0, new SmallLabel("Audit log:"));
+		
+		final Button showExp = new Button("Show events");
+		results.setWidget(2, 1, showExp);
+		showExp.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				showExp.setVisible(false);
+				results.setWidget(2, 1, doAuditView(data.auditLog));
+			}
+		});
+		
 
 
 	}
 
+
+
+	private Widget doAuditView(List<String[]> auditLog) {
+		VerticalPanel vp = new VerticalPanel();
+		vp.add(new HTML("<hr/>"));
+		FlexTable g = new FlexTable();
+		String indent = "";
+		int row = 0;
+		boolean firing = false;
+		for (int i = 0; i < auditLog.size(); i++) {
+			String[] lg = auditLog.get(i);
+			
+			int id = Integer.parseInt(lg[0]);
+			if (id <= 7) {
+				if (id <= 3) {
+					if (!firing) {
+						g.setWidget(row, 0, new Image("images/audit_events/" + lg[0] + ".gif"));
+						g.setWidget(row, 1, new SmallLabel(lg[1]));
+					} else {
+						g.setWidget(row, 1, hz(new Image("images/audit_events/" + lg[0] + ".gif"), new SmallLabel(lg[1])));
+					}
+					row++;
+				} else	if (id == 6) {
+					firing = true;
+					g.setWidget(row, 0, new Image("images/audit_events/" + lg[0] + ".gif"));
+					g.setWidget(row, 1, new SmallLabel("<b>" + lg[1] + "</b>"));	
+					row++;
+				} else if (id == 7) {
+					firing = false;
+				} else {
+					g.setWidget(row, 0, new Image("images/audit_events/" + lg[0] + ".gif"));
+					g.setWidget(row, 1, new SmallLabel("<font color='grey'>" +   lg[1] + "</font>"));
+					row++;
+				}
+			} else {
+				g.setWidget(row, 0, new Image("images/audit_events/misc_event.gif"));
+				g.setWidget(row, 1, new SmallLabel("<font color='grey'>" + lg[1] + "</font>"));
+				row++;
+			}
+		}
+		vp.add(g);
+		vp.add(new HTML("<hr/>"));
+		return vp;
+	}
+
+
+	private Widget hz(Image image, SmallLabel smallLabel) {
+		HorizontalPanel h = new HorizontalPanel();
+		h.add(image); 
+		h.add(smallLabel);
+		return h;
+	}
 
 
 

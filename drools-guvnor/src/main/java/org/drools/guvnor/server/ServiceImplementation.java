@@ -47,6 +47,8 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
+import org.drools.audit.WorkingMemoryInMemoryLogger;
+import org.drools.audit.event.LogEvent;
 import org.drools.base.ClassTypeResolver;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DroolsObjectOutputStream;
@@ -70,11 +72,13 @@ import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
+import org.drools.guvnor.client.rpc.SingleScenarioResult;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
+import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentAssemblyError;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
@@ -1586,7 +1590,7 @@ public class ServiceImplementation implements RepositoryService {
 
 	@WebRemote
 	@Restrict("#{identity.loggedIn}")
-	public ScenarioRunResult runScenario(String packageName, Scenario scenario)
+	public SingleScenarioResult runScenario(String packageName, Scenario scenario)
 			throws SerializableException {
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
@@ -1595,9 +1599,10 @@ public class ServiceImplementation implements RepositoryService {
 		}
 
 		return runScenario(packageName, scenario, null);
+		
 	}
 
-	private ScenarioRunResult runScenario(String packageName, Scenario scenario, RuleCoverageListener coverage) throws SerializableException {
+	private SingleScenarioResult runScenario(String packageName, Scenario scenario, RuleCoverageListener coverage) throws SerializableException {
 		PackageItem item = this.repository.loadPackage(packageName);
 
 		// nasty classloader needed to make sure we use the same tree the whole
@@ -1626,7 +1631,9 @@ public class ServiceImplementation implements RepositoryService {
 						rb = loadRuleBase(item, buildCl);
 						this.ruleBaseCache.put(item.getUUID(), rb);
 					} else {
-						return new ScenarioRunResult(errs, null);
+						SingleScenarioResult r = new SingleScenarioResult();
+						r.result = new ScenarioRunResult(errs, null);
+						return r;
 					}
 				}
 			}
@@ -1661,7 +1668,7 @@ public class ServiceImplementation implements RepositoryService {
 		}
 	}
 
-	private ScenarioRunResult runScenario(Scenario scenario, PackageItem item,
+	private SingleScenarioResult runScenario(Scenario scenario, PackageItem item,
 			ClassLoader cl, RuleBase rb, RuleCoverageListener coverage) throws DetailedSerializableException {
 
 		// RuleBase rb = ruleBaseCache.get(item.getUUID());
@@ -1685,8 +1692,12 @@ public class ServiceImplementation implements RepositoryService {
 				.newStatefulSession(sessionConfiguration);
 		if (coverage != null) workingMemory.addEventListener(coverage);
 		try {
+			AuditLogReporter logger = new AuditLogReporter(workingMemory);
 			new ScenarioRunner(scenario, res, workingMemory);
-			return new ScenarioRunResult(null, scenario);
+			SingleScenarioResult r = new SingleScenarioResult();
+			r.auditLog = logger.buildReport();
+			r.result = new ScenarioRunResult(null, scenario);
+			return r;
 		} catch (ClassNotFoundException e) {
 			log.error(e);
 			throw new DetailedSerializableException(
@@ -1695,6 +1706,8 @@ public class ServiceImplementation implements RepositoryService {
 
 		}
 	}
+
+
 
 
 	@WebRemote
