@@ -29,7 +29,7 @@ import org.drools.repository.RulesRepositoryException;
 
 
 /**
- * AtomRulesRepository provides AtomPub interface on top of RulesRepository. 
+ * AtomRulesRepository provides an AtomPub interface on top of RulesRepository. 
  * 
  * A HTTP GET request to URL http://host:portnumber/repository/packages
  * returns a list of packages in the repository in Atom feed format. An example looks like below:
@@ -55,8 +55,9 @@ import org.drools.repository.RulesRepositoryException;
   <title type="text">testPackage1</title>
   <id>5632cf6c-0ef5-4ccc-b7e5-293285c4ce19</id>
   <link href="http://localhost:9080/repository/packages/testPackage1"/>
+  <summary type="text">desc1</summary>
   <updated>2008-10-17T08:12:42.046Z</updated>
-  <content type="text">description=desc1, archived=false</content>
+  <content type="text">archived=false</content>
 </entry>   
 
 
@@ -73,13 +74,14 @@ import org.drools.repository.RulesRepositoryException;
 
 <entry xml:base="http://localhost:9080/repository/packages/testPackage1">
   <title type="text">testPackage1</title>
-  <content type="text">description=desc1, archived=false</content>
+  <summary type="text">desc2</summary>
+  <content type="text">archived=false</content>
 </entry>     
 
  * A HTTP DELETE request to URL http://host:portnumber/repository/packages/testPackage1  
  * delete the package testPackage1
  * 
- * NOTE: Mapping between Atom Entry element and Drools PackageItem:
+ * NOTE: The mapping between Atom Entry element and Drools PackageItem:
  * 
  * atom:title - PackageItem.name
  * atom:id - PackageItem.UUID

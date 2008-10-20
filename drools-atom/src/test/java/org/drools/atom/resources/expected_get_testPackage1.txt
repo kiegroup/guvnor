@@ -1,0 +1,1 @@
+<entry xmlns="http://www.w3.org/2005/Atom" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:base="http://localhost:9080/repository/packages/testPackage1"><title type="text">testPackage1</title><summary type="text">desc1</summary><content type="text">archived=false</content></entry>
