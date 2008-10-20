@@ -20,6 +20,7 @@ package org.drools.guvnor.server.util;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.JarInputStream;
 
 import org.drools.guvnor.client.common.AssetFormats;
@@ -27,7 +28,7 @@ import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.rules.SuggestionCompletionLoader;
-import org.drools.lang.dsl.DSLMappingFile;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
@@ -66,7 +67,7 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
         return list;
     }
 
-    private List<DSLMappingFile> getDSLMappingFiles(PackageItem pkg) {
+    private List<DSLTokenizedMappingFile> getDSLMappingFiles(PackageItem pkg) {
         return BRMSPackageBuilder.getDSLMappingFiles( pkg, new BRMSPackageBuilder.DSLErrorEvent() {
             public void recordError(AssetItem asset, String message) {
                 errors.add( asset.getName() + " : " + message );

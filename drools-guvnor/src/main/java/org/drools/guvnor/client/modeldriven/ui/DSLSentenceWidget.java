@@ -24,13 +24,16 @@ import java.util.List;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.modeldriven.DropDownData;
+import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
+import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 
 import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -43,10 +46,12 @@ public class DSLSentenceWidget extends DirtyableComposite {
     private final DirtyableHorizontalPane horiz;
     private final List  widgets;
     private final DSLSentence sentence;
-    public DSLSentenceWidget(DSLSentence sentence) {
+    private SuggestionCompletionEngine completions;
+    public DSLSentenceWidget(DSLSentence sentence, SuggestionCompletionEngine completions) {
         horiz = new DirtyableHorizontalPane();
         widgets = new ArrayList();
         this.sentence = sentence;
+        this.completions = completions;
         init(  );
     }
 
@@ -65,32 +70,109 @@ public class DSLSentenceWidget extends DirtyableComposite {
         char[] chars = dslLine.toCharArray();
         FieldEditor currentBox = null;
         Label currentLabel = null;
-        for ( int i = 0; i < chars.length; i++ ) {
-            char c = chars[i];
-            if (c == '{') {
-                currentLabel = null;
-                currentBox = new FieldEditor();
-                addWidget( currentBox );
-
-            } else if (c == '}') {
-                currentBox.setVisibleLength( currentBox.getText().length() + 1);
-                currentBox = null;
-            } else {
-                if (currentBox == null && currentLabel == null) {
-                    currentLabel = new SmallLabel();
-                    addWidget( currentLabel );
-                }
-                if (currentLabel != null) {
-                    currentLabel.setText( currentLabel.getText() + c );
-                } else if (currentBox != null) {
-                    currentBox.setText( currentBox.getText() + c );
-                }
-
-            }
+        
+        int startVariable = dslLine.indexOf("{");
+        List<Widget> lineWidgets = new ArrayList<Widget>();
+        
+        String startLabel = "";
+        if(startVariable>0){
+        	startLabel = dslLine.substring(0,startVariable);
+        	
+        }else{
+        	startLabel = dslLine;
         }
-
+        
+        Widget label = getLabel(startLabel);
+    	lineWidgets.add(label);
+        	
+        while(startVariable>0){
+        	int endVariable = dslLine.indexOf("}",startVariable);
+        	String currVariable = dslLine.substring(startVariable+1, endVariable);
+        	
+        	//For now assume If it has a colon then it is a dropdown. Else a textbox
+        	if(currVariable.indexOf(":")>0){
+        		Widget dropDown = getEnumDropdown(currVariable);
+        		lineWidgets.add(dropDown);
+        	}
+        	else{
+        		Widget box = getBox(currVariable);
+        		lineWidgets.add(box);
+        	}        
+        	
+        	//Parse out the next label between variables
+        	startVariable = dslLine.indexOf("{",endVariable);
+        	if(startVariable>0){
+	        	String nextLabel = dslLine.substring(endVariable+1,startVariable);
+	        	Widget currLabel = getLabel(nextLabel);
+	        	lineWidgets.add(currLabel);
+        	}else{
+        		String lastLabel = dslLine.substring(endVariable+1, dslLine.length());
+        		Widget currLabel = getLabel(lastLabel);
+        		lineWidgets.add(currLabel);
+        	}
+        }
+        
+        for(Widget widg : lineWidgets){
+        	addWidget(widg);
+        }
+        updateSentence();
     }
 
+    public Widget getEnumDropdown(String variableDef){
+    	Widget resultWidget = null;
+    	
+    	int firstIndex = variableDef.indexOf(":");
+    	int lastIndex  = variableDef.lastIndexOf(":");
+    	
+    	//If the variable doesn't have two colons then just put in a text box
+    	if(firstIndex<0 || lastIndex<0){
+    		resultWidget =  getBox(variableDef);
+    	}else{
+    		
+    		String varName = variableDef.substring(0,firstIndex);
+    		String enumVal = variableDef.substring(firstIndex+1,lastIndex);
+    		String typeAndField = variableDef.substring(lastIndex+1, variableDef.length());
+    		
+    		int dotIndex = typeAndField.indexOf(".");
+    		String type = typeAndField.substring(0,dotIndex);
+    		String field= typeAndField.substring(dotIndex+1,typeAndField.length());
+    		
+			String[] data = this.completions.getEnumValues(type, field);
+	    	ListBox list = new ListBox();
+	    	
+	    	for(String item : data){
+	    		list.addItem(item);
+	    	}
+	    	
+	    	list.addChangeListener( new ChangeListener() {
+                public void onChange(Widget w) {
+                    updateSentence();
+                    makeDirty();
+                }
+            });
+	    	
+	    	resultWidget = list;
+	    	
+    	}
+    	
+    	return resultWidget;
+    }
+    
+    public Widget getBox(String variableDef){
+    	FieldEditor currentBox = new FieldEditor();
+    	currentBox.setVisibleLength(variableDef.length()+1);
+    	currentBox.setText(variableDef);
+    	
+    	return currentBox;
+    }
+    
+    public Widget getLabel(String labelDef){
+    	Label label = new SmallLabel();
+    	label.setText(labelDef+" ");
+    	
+    	return label;
+    }
+    
     private void addWidget(Widget currentBox) {
         this.horiz.add( currentBox );
         widgets.add( currentBox );
@@ -108,6 +190,9 @@ public class DSLSentenceWidget extends DirtyableComposite {
                 newSentence = newSentence + ((Label) wid).getText();
             } else if (wid instanceof FieldEditor) {
                 newSentence = newSentence + " {" + ((FieldEditor) wid).getText() + "} ";
+            }else if (wid instanceof ListBox){
+            	ListBox box = (ListBox)wid;
+            	newSentence = newSentence + "{"+box.getItemText(box.getSelectedIndex())+ "}";
             }
         }
         this.sentence.sentence = newSentence.trim();

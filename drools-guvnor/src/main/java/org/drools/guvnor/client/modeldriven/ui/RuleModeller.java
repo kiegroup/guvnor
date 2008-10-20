@@ -242,7 +242,7 @@ public class RuleModeller extends DirtyableComposite {
             } else if (action instanceof ActionRetractFact) {
                 w = new ActionRetractFactWidget(this.completions, (ActionRetractFact) action );
             } else if (action instanceof DSLSentence) {
-                w = new DSLSentenceWidget((DSLSentence) action);
+                w = new DSLSentenceWidget((DSLSentence) action,this.completions);
                 w.setStyleName( "model-builderInner-Background" );
             } else if (action instanceof FreeFormLine) {
             	final TextBox tb = new TextBox();
@@ -630,7 +630,7 @@ public class RuleModeller extends DirtyableComposite {
             Widget w = null;
 
             if (pattern instanceof DSLSentence) {
-                w = new DSLSentenceWidget((DSLSentence) pattern);
+                w = new DSLSentenceWidget((DSLSentence) pattern,completions);
 
                 dsls.add( wrapLHSWidget( model, i, w ) );
                 dsls.setStyleName( "model-builderInner-Background" );

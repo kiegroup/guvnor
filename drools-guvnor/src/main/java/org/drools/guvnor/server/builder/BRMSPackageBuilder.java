@@ -35,6 +35,7 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLMappingParseException;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -53,7 +54,7 @@ import org.drools.util.ChainedProperties;
  */
 public class BRMSPackageBuilder extends PackageBuilder {
 
-    private List<DSLMappingFile> dslFiles;
+    private List<DSLTokenizedMappingFile> dslFiles;
     private DefaultExpander expander;
     
     /**
@@ -156,24 +157,24 @@ public class BRMSPackageBuilder extends PackageBuilder {
         super.resetErrors();
     }
 
-    public void setDSLFiles(List<DSLMappingFile> files) {
+    public void setDSLFiles(List<DSLTokenizedMappingFile> files) {
         this.dslFiles = files;
     }
 
-    public List<DSLMappingFile> getDSLMappingFiles() {
+    public List<DSLTokenizedMappingFile> getDSLMappingFiles() {
         return Collections.unmodifiableList( this.dslFiles );
     }
 
     /**
      * Load up all the DSL mappping files for the given package.
      */
-    public static List<DSLMappingFile> getDSLMappingFiles(PackageItem pkg, DSLErrorEvent err) {
-        List<DSLMappingFile> result = new ArrayList<DSLMappingFile>();
+    public static List<DSLTokenizedMappingFile> getDSLMappingFiles(PackageItem pkg, DSLErrorEvent err) {
+        List<DSLTokenizedMappingFile> result = new ArrayList<DSLTokenizedMappingFile>();
         AssetItemIterator it = pkg.listAssetsByFormat( new String[]{AssetFormats.DSL} );
         while ( it.hasNext() ) {
             AssetItem item = (AssetItem) it.next();
             String dslData = item.getContent();
-            DSLMappingFile file = new DSLMappingFile();
+            DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
             try {
                 if ( file.parseAndLoad( new StringReader( dslData ) ) ) {
                     result.add( file );

@@ -24,10 +24,8 @@ import java.util.jar.JarInputStream;
 
 import junit.framework.TestCase;
 
-import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.dsl.DSLMappingFile;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 
@@ -145,8 +143,8 @@ public class BRMSPackageBuilderTest extends TestCase {
 
     public void testGetExpander() {
         BRMSPackageBuilder builder = new BRMSPackageBuilder(null);
-        List<DSLMappingFile> files = new ArrayList<DSLMappingFile>();
-        files.add( new DSLMappingFile() );
+        List<DSLTokenizedMappingFile> files = new ArrayList<DSLTokenizedMappingFile>();
+        files.add( new DSLTokenizedMappingFile() );
         builder.setDSLFiles( files );
         assertTrue(builder.hasDSL());
         assertNotNull(builder.getDSLExpander());
