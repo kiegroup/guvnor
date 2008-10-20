@@ -126,11 +126,11 @@ public class ScenarioWidget extends Composite {
 		ScenarioHelper hlp = new ScenarioHelper();
 		List fixtures = hlp.lumpyMap(scenario.fixtures);
 
-
+		
         int layoutRow = 1;
         ExecutionTrace previousEx = null;
         for (int i = 0; i < fixtures.size(); i++) {
-			Object f = fixtures.get(i);
+			final Object f = fixtures.get(i);
 			if (f instanceof ExecutionTrace) {
 				previousEx = (ExecutionTrace) f;
 				HorizontalPanel h = new HorizontalPanel();
@@ -138,7 +138,17 @@ public class ScenarioWidget extends Composite {
 				h.add(new SmallLabel("EXPECT"));
 				editorLayout.setWidget(layoutRow, 0, h);
 
-
+                final ExecutionTrace et = (ExecutionTrace) previousEx;
+                Image del = new ImageButton("images/delete_item_small.gif", "Delete item.", new ClickListener() {
+                    public void onClick(Widget w) {
+                         if ( Window.confirm( "Are you sure you want to remove this item?" ) ) {
+                             scenario.removeExecutionTrace( et );
+                             renderEditor();
+                         }
+                    }
+                });
+                h.add(del);
+				
 				editorLayout.setWidget(layoutRow, 1, new ExecutionWidget(previousEx, showResults));
 				//layout.setWidget(layoutRow, 2, getNewExpectationButton(previousEx, scenario, availableRules));
 				editorLayout.getFlexCellFormatter().setHorizontalAlignment(layoutRow, 2, HasHorizontalAlignment.ALIGN_LEFT);
@@ -148,6 +158,7 @@ public class ScenarioWidget extends Composite {
 				h.add(getNewDataButton(previousEx, scenario));
 				h.add(new SmallLabel("GIVEN"));
 
+                
 				editorLayout.setWidget(layoutRow, 0, h);
 
 				layoutRow++;
@@ -719,7 +730,7 @@ class DataInputWidget extends DirtyableComposite {
                     t.setWidget(idx, 0, new SmallLabel(fd.name + ":"));
                     Image del = new ImageButton("images/delete_item_small.gif", "Remove this row.", new ClickListener() {
         				public void onClick(Widget w) {
-        					if (Window.confirm("Are you sure you want to remove this row ?")) {
+        					if (Window.confirm("Are you sure you want to remove this row?")) {
         						ScenarioHelper.removeFields(defList, fd.name);
         						outer.setWidget(1, 0, render(defList));
 
