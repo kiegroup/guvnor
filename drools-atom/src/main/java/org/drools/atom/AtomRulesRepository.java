@@ -5,8 +5,10 @@ package org.drools.atom;
 import java.net.URI;
 
 import javax.ws.rs.ConsumeMime;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.ProduceMime;
@@ -74,7 +76,15 @@ import org.drools.repository.RulesRepositoryException;
   <content type="text">description=desc1, archived=false</content>
 </entry>     
 
- * updates the package instance whose name is testPackage1
+ * A HTTP DELETE request to URL http://host:portnumber/repository/packages/testPackage1  
+ * delete the package testPackage1
+ * 
+ * NOTE: Mapping between Atom Entry element and Drools PackageItem:
+ * 
+ * atom:title - PackageItem.name
+ * atom:id - PackageItem.UUID
+ * atom:updated - PackageItem.lastModified 
+ * atom:summary - PackageItem.description
  * 
  * @author Jervis Lliu
  */
@@ -95,7 +105,7 @@ public class AtomRulesRepository {
     
     @GET
     @Path("/packages")
-    @ProduceMime({"application/json", "application/atom+xml" })
+    @ProduceMime({"application/atom+xml" })
     public Feed getPackagesAsFeed(@Context UriInfo uParam) {
         System.out.println("----invoking getPackagesAsFeed");
 
@@ -122,7 +132,7 @@ public class AtomRulesRepository {
     
     @GET
     @Path("/packages/{packageName}/")
-    @ProduceMime({"application/atom+xml", "application/json" })
+    @ProduceMime({"application/atom+xml"})
     public Entry getPackageAsEntry(@PathParam("packageName") String packageName, @Context UriInfo uParam) throws PackageNotFoundFault {
         System.out.println("----invoking getPackageAsEntry with name: " + packageName);
         
@@ -139,13 +149,13 @@ public class AtomRulesRepository {
     @POST
     @Path("/packages")
     @ConsumeMime("application/atom+xml")
+    @ProduceMime({"application/atom+xml"})
     public Response addPackageAsEntry(Entry e, @Context UriInfo uParam) {
         System.out.println("----invoking addPackageAsEntry with package name: " + e.getTitle());
 
         try {
         	String packageName = e.getTitle();
-        	
-            //TODO: Which atom field to use for description?
+
         	PackageItem packageItem = repository.createPackage(packageName, "desc");
             
             URI uri = 
@@ -155,6 +165,51 @@ public class AtomRulesRepository {
         } catch (Exception ex) {
             return Response.serverError().build();
         }
+    }
+    
+    
+    @PUT
+    @Path("/packages")
+    @ConsumeMime("application/atom+xml")
+    @ProduceMime({"application/atom+xml"})
+    public Response updatePackageAsEntry(Entry e, @Context UriInfo uParam) {
+        System.out.println("----invoking updatePackageAsEntry, package name is: " + e.getTitle());
+        try {      	
+        	PackageItem item = repository.loadPackage(e.getTitle());
+        	
+    		item.updateDescription(e.getSummary());
+    		//item.archiveItem(data.archived);
+    		//item.updateBinaryUpToDate(false);
+    		//this.ruleBaseCache.remove(data.uuid);
+    		item.checkin(e.getSummary());
+    		
+            URI uri = 
+            	uParam.getBaseUriBuilder().path("repository", "packages", 
+            			item.getName()).build();
+            return Response.ok(uri).entity(e).build();
+        } catch (Exception ex) {
+        	ex.printStackTrace();
+            return Response.serverError().build();
+        }
+    }    
+
+    @DELETE
+    @Path("/packages/{packageName}/")
+    public Response deletePackage(@PathParam("packageName") String packageName) {
+        System.out.println("----invoking deletePackage with packageName: " + packageName);
+        Response response;
+
+		try {
+			PackageItem item = repository.loadPackage(packageName);
+			item.remove();
+			repository.save();
+			
+			response = Response.ok().build();
+		} catch (RulesRepositoryException e) {
+			response = Response.notModified().build();
+		}
+
+        return response;
     }
         
     private static Entry createPackageItemEntry(PackageItem pkg, UriInfo baseUri) {
@@ -182,16 +237,18 @@ public class AtomRulesRepository {
         }
         e.setTitle(pkg.getName());
         e.setId(pkg.getUUID());
+        e.setSummary(pkg.getDescription());
+        
         URI uri = 
         	baseUri.getBaseUriBuilder().path("repository", "packages",  
         			pkg.getName()).build();
         e.addLink(uri.toString());
         e.setUpdated(pkg.getLastModified().getTime());
         
-        //What content to return?
+        //TODO: What content to return?
         e.setContentElement(factory.newContent());
         e.getContentElement().setContentType(Content.Type.TEXT);
-        e.getContentElement().setValue("description=" + pkg.getDescription() + ", archived=" +  pkg.isArchived());
+        e.getContentElement().setValue("archived=" +  pkg.isArchived());
         
         return e;
     }

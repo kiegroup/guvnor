@@ -1,9 +1,12 @@
 
 package org.drools.atom;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 
 import javax.ws.rs.core.UriInfo;
@@ -14,8 +17,12 @@ import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.DeleteMethod;
+import org.apache.commons.httpclient.methods.FileRequestEntity;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.io.CachedOutputStream;
@@ -91,17 +98,18 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
             String response = getStringFromInputStream(get.getResponseBodyAsStream());
             //System.out.print(response);
             assertTrue(response.indexOf("testPackage1") > 0);
-            assertTrue(response.indexOf("description=desc1, archived=false") > 0);
+            assertTrue(response.indexOf("desc1") > 0);
+            assertTrue(response.indexOf("archived=false") > 0);
         } finally {
             get.releaseConnection();
         }
     }  
     
     @Test
-    public void testAddPackage() throws Exception {
+    public void testAddAndDeletePackage() throws Exception {
+    	//Create a new package called testPackage2
         String endpointAddress =
-            "http://localhost:9080/repository/packages"; 
-        
+            "http://localhost:9080/repository/packages";         
         Entry e = createPackageItemEntry("testPackage2");
         StringWriter w = new StringWriter();
         e.writeTo(w);
@@ -121,7 +129,92 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
         } finally {
             post.releaseConnection();
         } 
+        
+        //Verify the testPackage2 has been created:
+        String endpointAddress2 =
+            "http://localhost:9080/repository/packages/testPackage2"; 
+        GetMethod get2 = new GetMethod(endpointAddress2);
+        get2.setRequestHeader("Content-Type", "*/*");
+        HttpClient httpClient2 = new HttpClient();
+        try {
+            httpClient2.executeMethod(get2);           
+            String response = getStringFromInputStream(get2.getResponseBodyAsStream());
+            //System.out.print(response);
+            assertTrue(response.indexOf("testPackage2") > 0);
+        } finally {
+            get2.releaseConnection();
+        }
+        
+        //Delete the testPackage2
+        DeleteMethod delete = new DeleteMethod(endpointAddress2);
+        delete.setRequestHeader("Content-Type", "*/*");
+        HttpClient httpClient3 = new HttpClient();
+        try {
+            httpClient3.executeMethod(delete);           
+        } finally {
+        	delete.releaseConnection();
+        }
+        
+        //Verify the testPackage2 has been deleted:
+        GetMethod get4 = new GetMethod(endpointAddress2);
+        get4.setRequestHeader("Content-Type", "*/*");
+        HttpClient httpClient4 = new HttpClient();
+        try {
+            httpClient4.executeMethod(get4);           
+            String response = getStringFromInputStream(get4.getResponseBodyAsStream());
+            //System.out.print(response);
+            assertTrue(response.indexOf("org.drools.atom.PackageNotFoundFault") > 0);
+        } finally {
+            get4.releaseConnection();
+        }
     }  
+    
+    @Test
+    public void testUpdatePakcage() throws Exception {
+    	//Update the testPackage1, set its description text from "desc1" to "desc2"
+        String endpointAddress = "http://localhost:9080/repository/packages";
+        File input = new File(getClass().getResource("resources/update_testPackage1.txt").toURI());
+        PutMethod put = new PutMethod(endpointAddress);
+        RequestEntity entity = new FileRequestEntity(input, "application/atom+xml; charset=ISO-8859-1");
+        put.setRequestEntity(entity);
+        HttpClient httpclient = new HttpClient();
+
+        try {
+            int result = httpclient.executeMethod(put);
+            assertEquals(200, result);
+        } finally {
+            // Release current connection to the connection pool once you are
+            // done
+            put.releaseConnection();
+        }
+
+        // Verify result
+        String endpointAddress1 = "http://localhost:9080/repository/packages/testPackage1";
+        URL url = new URL(endpointAddress1);
+        URLConnection connect = url.openConnection();
+        connect.addRequestProperty("Accept", "application/atom+xml");
+        InputStream in = connect.getInputStream();
+        assertNotNull(in);
+        String response = getStringFromInputStream(in);
+        assertTrue(response.indexOf("esc2") > 0);
+
+         // Roll back changes:
+        File input1 = new File(getClass().getResource("resources/expected_get_testPackage1.txt").toURI());
+        PutMethod put1 = new PutMethod(endpointAddress);
+        RequestEntity entity1 = new FileRequestEntity(input1, "application/atom+xml; charset=ISO-8859-1");
+        put1.setRequestEntity(entity1);
+        HttpClient httpclient1 = new HttpClient();
+
+        try {
+            int result = httpclient1.executeMethod(put1);
+            assertEquals(200, result);
+        } finally {
+            // Release current connection to the connection pool once you are
+            // done
+            put1.releaseConnection();
+        }
+    }  
+
     
     private String getStringFromInputStream(InputStream in) throws Exception {        
         CachedOutputStream bos = new CachedOutputStream();
