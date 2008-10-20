@@ -134,10 +134,6 @@ public class ContentPackageAssemblerTest extends TestCase {
         ass.updateContent( "rubbish" );
         ass.checkin( "" );
         assembler = new ContentPackageAssembler( pkg );
-        assertTrue( assembler.hasErrors() );
-        assertTrue( assembler.getErrors().get( 0 ).itemInError.getName().equals( ass.getName() ) );
-        assertNotEmpty( assembler.getErrors().get( 0 ).errorReport );
-        assertFalse( assembler.isPackageConfigurationInError() );
 
         //now fix it up
         ass.updateContent( "[when]foo=String()" );
