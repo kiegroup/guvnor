@@ -112,8 +112,6 @@ public class ClassicDRLImporter {
                                 comment,
                                 "*/" );
 
-                // TODO: What to do with commented lines?
-
                 header.append( comment );
 
             } else if ( line.startsWith( "expander" ) ) {
@@ -247,43 +245,6 @@ public class ClassicDRLImporter {
 
         return line;
     }
-
-    //
-    //        private String consumeUntillEndOfComment(StringTokenizer lines,
-    //                                                 StringBuffer currentRule) {
-    //            String line;
-    //            while ( lines.hasMoreTokens() ) {
-    //                line = lines.nextToken();
-    //                currentRule.append( line );
-    //                currentRule.append( "\n" );
-    //                if ( line.trim().contains( "*/" ) ) {
-    //                    return line;
-    //                }
-    //            }
-    //
-    //            return "";
-    //        }
-    //
-    //    private String removeComments(String line,
-    //                                  int commentMultiLineStart,
-    //                                  int commentMultiLineEnd) {
-    //        if ( commentMultiLineStart == -1 && commentMultiLineEnd != -1 ) {
-    //            line = line.substring( 0,
-    //                                   commentMultiLineEnd );
-    //        } else if ( commentMultiLineStart != -1 && commentMultiLineEnd == -1 ) {
-    //            line = line.substring( commentMultiLineStart,
-    //                                   line.length() - 1 );
-    //        } else if ( commentMultiLineStart != -1 && commentMultiLineEnd != -1 ) {
-    //            line = line.substring( commentMultiLineStart,
-    //                                   commentMultiLineEnd );
-    //            // In case there is another
-    //            line = removeComments( line,
-    //                                   commentMultiLineStart,
-    //                                   commentMultiLineEnd );
-    //        }
-    //
-    //        return line;
-    //    }
 
     private void laConsumeToEnd(StringTokenizer lines,
                                 StringBuffer currentRule,
