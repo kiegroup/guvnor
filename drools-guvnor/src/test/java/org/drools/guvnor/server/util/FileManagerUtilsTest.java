@@ -207,6 +207,40 @@ public class FileManagerUtilsTest extends TestCase {
 
 	}
 
+	/**
+	 * 
+	 * Tests importing when an archived package with the same name exists.
+	 */
+	public void testImportArchivedPackage() throws Exception {
+        FileManagerUtils fm = new FileManagerUtils();
+        fm.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+
+        // Import package
+        String drl = "package testClassicDRLImport\n import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
+        InputStream in = new ByteArrayInputStream( drl.getBytes() );
+        fm.importClassicDRL( in );
+
+        PackageItem pkg = fm.repository.loadPackage( "testClassicDRLImport" );
+        assertNotNull( pkg );
+        assertFalse( pkg.isArchived() );
+
+        // Archive it
+        pkg.archiveItem( true );
+
+        pkg = fm.repository.loadPackage( "testClassicDRLImport" );
+        assertNotNull( pkg );
+        assertTrue( pkg.isArchived() );
+
+        // Import it again
+        InputStream in2 = new ByteArrayInputStream( drl.getBytes() );
+        fm.importClassicDRL( in2 );
+
+        pkg = fm.repository.loadPackage( "testClassicDRLImport" );
+        assertNotNull( pkg );
+        assertFalse( pkg.isArchived() );
+
+    }
+
 	public void testClassicDRLImport() throws Exception {
 		FileManagerUtils fm = new FileManagerUtils();
 		fm.repository = new RulesRepository(TestEnvironmentSessionHelper

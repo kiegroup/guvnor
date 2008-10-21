@@ -395,6 +395,20 @@ public class RulesRepository {
         }
     }
 
+    /**
+     * Check if package is archived.
+     */
+    public boolean isPackageArchived(String name) {
+        Node folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
+        try {
+            Node node = folderNode.getNode( name );
+
+            return node.getProperty( AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG ).getBoolean();
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
+        }
+    }
+
     public boolean containsSnapshot(String packageName,
                                     String snapshotName) {
         try {

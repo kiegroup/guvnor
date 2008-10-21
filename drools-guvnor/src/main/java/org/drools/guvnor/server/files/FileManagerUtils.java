@@ -273,15 +273,27 @@ public class FileManagerUtils {
 
         ClassicDRLImporter imp = new ClassicDRLImporter( drlStream );
         PackageItem pkg = null;
-        boolean existing = false;
-        if ( repository.containsPackage( imp.getPackageName() ) ) {
-            pkg = repository.loadPackage( imp.getPackageName() );
+        
+        
+        String packageName = imp.getPackageName();
+        boolean existing = repository.containsPackage( packageName );
+
+        // Check if the package is archived
+        if ( existing && repository.isPackageArchived( packageName ) ) {
+            // Remove the package so it can be created again.
+            PackageItem item = repository.loadPackage( packageName );
+            item.remove();
+            existing = false;
+        }
+        
+        if ( existing ) {
+            pkg = repository.loadPackage( packageName );
             ServiceImplementation.updateDroolsHeader( ClassicDRLImporter.mergeLines( ServiceImplementation.getDroolsHeader( pkg ),
                                                                                      imp.getPackageHeader() ),
                                                       pkg );
             existing = true;
         } else {
-            pkg = repository.createPackage( imp.getPackageName(),
+            pkg = repository.createPackage( packageName,
                                             "<imported>" );
             ServiceImplementation.updateDroolsHeader( imp.getPackageHeader(),
                                                       pkg );
