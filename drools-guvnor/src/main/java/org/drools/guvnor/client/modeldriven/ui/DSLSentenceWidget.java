@@ -119,40 +119,19 @@ public class DSLSentenceWidget extends DirtyableComposite {
     }
 
     public Widget getEnumDropdown(String variableDef){
+
     	Widget resultWidget = null;
     	
     	int firstIndex = variableDef.indexOf(":");
     	int lastIndex  = variableDef.lastIndexOf(":");
     	
+    	
     	//If the variable doesn't have two colons then just put in a text box
     	if(firstIndex<0 || lastIndex<0){
     		resultWidget =  getBox(variableDef);
     	}else{
-    		
-    		String varName = variableDef.substring(0,firstIndex);
-    		String enumVal = variableDef.substring(firstIndex+1,lastIndex);
-    		String typeAndField = variableDef.substring(lastIndex+1, variableDef.length());
-    		
-    		int dotIndex = typeAndField.indexOf(".");
-    		String type = typeAndField.substring(0,dotIndex);
-    		String field= typeAndField.substring(dotIndex+1,typeAndField.length());
-    		
-			String[] data = this.completions.getEnumValues(type, field);
-	    	ListBox list = new ListBox();
-	    	
-	    	for(String item : data){
-	    		list.addItem(item);
-	    	}
-	    	
-	    	list.addChangeListener( new ChangeListener() {
-                public void onChange(Widget w) {
-                    updateSentence();
-                    makeDirty();
-                }
-            });
-	    	
-	    	resultWidget = list;
-	    	
+    		DSLDropDown dslDropDown = new DSLDropDown(variableDef);
+    		resultWidget = dslDropDown;
     	}
     	
     	return resultWidget;
@@ -178,7 +157,6 @@ public class DSLSentenceWidget extends DirtyableComposite {
         widgets.add( currentBox );
     }
 
-
     /**
      * This will go through the widgets and build up a sentence.
      */
@@ -190,9 +168,15 @@ public class DSLSentenceWidget extends DirtyableComposite {
                 newSentence = newSentence + ((Label) wid).getText();
             } else if (wid instanceof FieldEditor) {
                 newSentence = newSentence + " {" + ((FieldEditor) wid).getText() + "} ";
-            }else if (wid instanceof ListBox){
-            	ListBox box = (ListBox)wid;
-            	newSentence = newSentence + "{"+box.getItemText(box.getSelectedIndex())+ "}";
+            }else if (wid instanceof DSLDropDown){
+            	
+            	//Add the meta-data back to the field so that is shows up as a dropdown when refreshed from repo
+            	DSLDropDown drop  = (DSLDropDown)wid;
+            	ListBox box = drop.getListBox();
+            	String type = drop.getType();
+            	String factAndField = drop.getFactAndField();
+            	
+            	newSentence = newSentence + "{"+box.getItemText(box.getSelectedIndex())+":"+type+":"+factAndField+ "}";
             }
         }
         this.sentence.sentence = newSentence.trim();
@@ -222,10 +206,6 @@ public class DSLSentenceWidget extends DirtyableComposite {
             initWidget( panel );
         }
 
-
-
-
-
         public void setText(String t) {
             box.setText( t );
         }
@@ -243,5 +223,72 @@ public class DSLSentenceWidget extends DirtyableComposite {
         return horiz.hasDirty();
     }
 
+    class DSLDropDown extends DirtyableComposite{
+    	
+    	ListBox resultWidget = null;
+    	//Format for the dropdown def is <varName>:<type>:<Fact.field>
+    	private String varName ="";
+    	private String type  ="";
+    	private String factAndField = ""; 
+
+    	public DSLDropDown(String variableDef){
+	    		
+    		
+    		
+    		int firstIndex = variableDef.indexOf(":");
+        	int lastIndex  = variableDef.lastIndexOf(":");
+    		varName = variableDef.substring(0,firstIndex);
+    		type = variableDef.substring(firstIndex+1,lastIndex);
+    		factAndField = variableDef.substring(lastIndex+1, variableDef.length());
+    		
+    		int dotIndex = factAndField.indexOf(".");
+    		String type = factAndField.substring(0,dotIndex);
+    		String field= factAndField.substring(dotIndex+1,factAndField.length());
+    		
+			String[] data = completions.getEnumValues(type, field);
+	    	ListBox list = new ListBox();
+	    	
+	    	if(data!=null){
+		    	int selected = -1;
+			    	for(int i=0;i<data.length;i++){
+			    		
+			    		if(varName.equals(data[i])){
+			    			selected=i;
+			    		}
+			    		list.addItem(data[i]);
+			    	}
+			    	
+			    	if(selected>=0)
+			    		list.setSelectedIndex(selected);
+	    	}
+	    	list.addChangeListener( new ChangeListener() {
+                public void onChange(Widget w) {
+                    updateSentence();
+                    makeDirty();
+                }
+            });
+	    	
+	    	initWidget(list);
+	    	resultWidget = list;
+    	}
+		public ListBox getListBox() {
+			return resultWidget;
+		}
+		public void setListBox(ListBox resultWidget) {
+			this.resultWidget = resultWidget;
+		}
+		public String getType() {
+			return type;
+		}
+		public void setType(String type) {
+			this.type = type;
+		}
+		public String getFactAndField() {
+			return factAndField;
+		}
+		public void setFactAndField(String factAndField) {
+			this.factAndField = factAndField;
+		}
+    }
 
 }
