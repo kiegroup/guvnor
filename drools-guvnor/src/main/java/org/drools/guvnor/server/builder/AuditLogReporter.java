@@ -20,9 +20,10 @@ public class AuditLogReporter extends WorkingMemoryInMemoryLogger {
 	
 	public List<String[]> buildReport() {
 		List<LogEvent> evs = this.getLogEvents();
-		List<String[]> ls = new ArrayList<String[]>(evs.size());
-		for (LogEvent logEvent : evs) {
-				mapLogEvent(ls, logEvent);
+		int resultSize = Math.min(1000, evs.size());
+		List<String[]> ls = new ArrayList<String[]>(resultSize);
+		for (int i = 0; i < resultSize; i++) {
+			mapLogEvent(ls, evs.get(i));
 		}
 		return ls;
 	}

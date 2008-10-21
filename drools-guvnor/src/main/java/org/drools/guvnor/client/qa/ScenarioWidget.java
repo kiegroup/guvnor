@@ -1430,6 +1430,7 @@ class TestRunnerWidget extends Composite {
 		int total = 0;
 		VerticalPanel resultsDetail = new VerticalPanel();
 
+		
 		for (Iterator iterator = data.result.scenario.fixtures.iterator(); iterator.hasNext();) {
 			Fixture f = (Fixture) iterator.next();
 			if (f instanceof VerifyRuleFired) {
@@ -1462,6 +1463,12 @@ class TestRunnerWidget extends Composite {
 				}
 
 
+			} else if (f instanceof ExecutionTrace) {
+				ExecutionTrace ex = (ExecutionTrace) f;
+				if (ex.numberOfRulesFired == data.result.scenario.maxRuleFirings) {
+					Window.alert("WARNING: The maximum number of rule firings (" + data.result.scenario.maxRuleFirings + ") was reached. " +
+							"It is likely that there is an infinite loop occurring.");
+				}
 			}
 
 
