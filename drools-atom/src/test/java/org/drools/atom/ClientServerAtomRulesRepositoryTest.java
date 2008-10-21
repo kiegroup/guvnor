@@ -60,6 +60,26 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
             get.releaseConnection();
         }
     }        
+    
+    @Test
+    public void testGetAssets() throws Exception {
+        String endpointAddress =
+            "http://localhost:9080/repository/packages/testPackage1/assets"; 
+        GetMethod get = new GetMethod(endpointAddress);
+        get.setRequestHeader("Content-Type", "*/*");
+        //get.setRequestHeader("Accept", type);
+        HttpClient httpClient = new HttpClient();
+        try {
+            httpClient.executeMethod(get);           
+            String response = getStringFromInputStream(get.getResponseBodyAsStream());
+            String expected = getStringFromInputStream(
+                  getClass().getResourceAsStream("resources/expected_get_assets.txt"));            
+
+            assertEquals(response, expected);
+        } finally {
+            get.releaseConnection();
+        }
+    } 
 
     @Test
     public void testGetPackagesUsingAbdera() throws Exception {        
@@ -232,4 +252,5 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
 
         return e;
     }
+
 }

@@ -9,11 +9,13 @@ import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.apache.cxf.jaxrs.provider.AtomEntryProvider;
 import org.apache.cxf.jaxrs.provider.AtomFeedProvider;
 import org.apache.cxf.testutil.common.AbstractTestServerBase;
+import org.drools.repository.PackageItem;
 import org.drools.repository.RepositorySessionUtil;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryAdministrator;
 
 public class AtomRulesRepositoryServer extends AbstractTestServerBase{
-
+	private RulesRepository repo;
     protected void run() {
         JAXRSServerFactoryBean sf = new JAXRSServerFactoryBean();
         sf.setResourceClasses(AtomRulesRepository.class);
@@ -23,8 +25,14 @@ public class AtomRulesRepositoryServer extends AbstractTestServerBase{
         sf.setProviders(providers);
 
         AtomRulesRepository atomRepo = new AtomRulesRepository();
-        RulesRepository repo = RepositorySessionUtil.getRepository();
-        repo.createPackage("testPackage1", "desc1");
+        repo = RepositorySessionUtil.getRepository();
+        PackageItem pkg = repo.createPackage("testPackage1", "desc1");
+        repo.loadCategory( "/" ).addCategory( "AtomRulesRepositoryTestCat", "X" );
+        pkg.addAsset( "testAsset1", "x", "/AtomRulesRepositoryTestCat", "drl");
+        pkg.addAsset( "testAsset2", "x", "/AtomRulesRepositoryTestCat", "drl");
+
+        repo.save();
+
         atomRepo.setRulesRepository(repo);
         // default lifecycle is per-request, change it to singleton
         sf.setResourceProvider(AtomRulesRepository.class,
@@ -33,7 +41,15 @@ public class AtomRulesRepositoryServer extends AbstractTestServerBase{
 
         sf.create();
 	}
+    
+    public void tearDown() throws Exception {
+        super.tearDown();
 
+		RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(
+				repo.getSession());
+		admin.clearRulesRepository();
+    }  
+    
 	public static void main(String[] args) {
         try {
         	AtomRulesRepositoryServer s = new AtomRulesRepositoryServer();

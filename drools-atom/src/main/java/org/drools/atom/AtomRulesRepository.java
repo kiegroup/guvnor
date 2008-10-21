@@ -3,6 +3,7 @@ package org.drools.atom;
 
 
 import java.net.URI;
+import java.util.Iterator;
 
 import javax.ws.rs.ConsumeMime;
 import javax.ws.rs.DELETE;
@@ -22,6 +23,7 @@ import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
+import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
 import org.drools.repository.RulesRepository;
@@ -33,58 +35,80 @@ import org.drools.repository.RulesRepositoryException;
  * 
  * A HTTP GET request to URL http://host:portnumber/repository/packages
  * returns a list of packages in the repository in Atom feed format. An example looks like below:
-
-<feed xml:base="http://localhost:9080/repository/packages">
-  <title type="text">Packages</title>
-  
-  <entry xml:base="http://localhost:9080/repository/packages">
-    <title type="text">defaultPackage</title>
-    <link href="http://localhost:9080/repository/packages/defaultPackage"/>
-  </entry>
-
-  <entry xml:base="http://localhost:9080/repository/packages">
-    <title type="text">testPackage1</title>
-    <link href="http://localhost:9080/repository/packages/testPackage1"/>
-  </entry>
-</feed>
-
+ * 
+ * <feed xml:base="http://localhost:9080/repository/packages">
+ *   <title type="text">Packages</title>
+ *   
+ *   <entry xml:base="http://localhost:9080/repository/packages">
+ *     <title type="text">defaultPackage</title>
+ *     <link href="http://localhost:9080/repository/packages/defaultPackage"/>
+ *   </entry>
+ * 
+ *   <entry xml:base="http://localhost:9080/repository/packages">
+ *     <title type="text">testPackage1</title>
+ *     <link href="http://localhost:9080/repository/packages/testPackage1"/>
+ *   </entry>
+ * </feed>
+ *
+ *
+ * You can navigate from packages to a specific package using the URL link returned.
  * A HTTP GET request to URL http://host:portnumber/repository/packages/testPackage1 
  * returns testPackag1 in the repository in Atom entry format. An example looks like below:
-
-<entry xml:base="http://localhost:9080/repository/packages/testPackage1">
-  <title type="text">testPackage1</title>
-  <id>5632cf6c-0ef5-4ccc-b7e5-293285c4ce19</id>
-  <link href="http://localhost:9080/repository/packages/testPackage1"/>
-  <summary type="text">desc1</summary>
-  <updated>2008-10-17T08:12:42.046Z</updated>
-  <content type="text">archived=false</content>
-</entry>   
-
-
+ * 
+ * <entry xml:base="http://localhost:9080/repository/packages/testPackage1">
+ *   <title type="text">testPackage1</title>
+ *   <id>5632cf6c-0ef5-4ccc-b7e5-293285c4ce19</id>
+ *   <link href="http://localhost:9080/repository/packages/testPackage1"/>
+ *   <summary type="text">desc1</summary>
+ *   <updated>2008-10-17T08:12:42.046Z</updated>
+ *   <content type="text">archived=false</content>
+ * </entry>    
+ * 
  * A HTTP POST request to URL http://host:portnumber/repository/packages with the data:
-
-<entry xml:base="http://localhost:9080/repository/packages/testPackage1">
-  <title type="text">testPackage1</title>
-</entry>   
-
- * adds a package named testPackage1
+ * 
+ * <entry xml:base="http://localhost:9080/repository/packages">
+ *   <title type="text">testPackage1</title>
+ * </entry>   
+ * 
+ * creates a package named testPackage1 in the repository
  *  
  *  
  * A HTTP PUT request to URL http://host:portnumber/repository/packages with the data:
-
-<entry xml:base="http://localhost:9080/repository/packages/testPackage1">
-  <title type="text">testPackage1</title>
-  <summary type="text">desc2</summary>
-  <content type="text">archived=false</content>
-</entry>     
+ * 
+ * <entry xml:base="http://localhost:9080/repository/packages">
+ *   <title type="text">testPackage1</title>
+ *   <summary type="text">desc2</summary>
+ *   <content type="text">archived=false</content>
+ * </entry>     
+ * 
+ * updates testPackage1 in the repository
 
  * A HTTP DELETE request to URL http://host:portnumber/repository/packages/testPackage1  
- * delete the package testPackage1
+ * deletes the package testPackage1
  * 
- * NOTE: The mapping between Atom Entry element and Drools PackageItem:
  * 
- * atom:title - PackageItem.name
- * atom:id - PackageItem.UUID
+ * A HTTP GET request to URL http://host:portnumber/repository/packages/testPackage1/assets
+ * returns a list of assets under the testPackage1 in the repository in Atom feed format. 
+ * An example looks like below:
+ * 
+ * <feed xmlns="http://www.w3.org/2005/Atom" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:base="http://localhost:9080/repository/packages/testPackage1/assets">
+ *   <title type="text">Packages</title>
+ *   
+ *   <entry xml:base="http://localhost:9080/repository/packages/testPackage1/assets">
+ *     <title type="text">testAsset1</title>
+ *     <link href="http://localhost:9080/repository/packages/packageName/asset/testAsset1" />
+ *   </entry>
+ *   
+ *   <entry xml:base="http://localhost:9080/repository/packages/testPackage1/assets">
+ *     <title type="text">testAsset2</title>
+ *     <link href="http://localhost:9080/repository/packages/packageName/asset/testAsset2" />
+ *   </entry>
+ * </feed>
+ * 
+ * NOTE: The mapping between Atom Entry element and Drools PackageItem is as below:
+ * 
+ * atom:title   - PackageItem.name
+ * atom:id      - PackageItem.UUID
  * atom:updated - PackageItem.lastModified 
  * atom:summary - PackageItem.description
  * 
@@ -133,10 +157,33 @@ public class AtomRulesRepository {
     }
     
     @GET
+    @Path("/packages/{packageName}/assets")
+    @ProduceMime({"application/atom+xml" })
+    public Feed getAssetsAsFeed(@Context UriInfo uParam, @PathParam("packageName") String packageName) {
+        System.out.println("----invoking getRulesAsFeed with packageName: " + packageName);
+
+        Factory factory = Abdera.getNewFactory();
+        Feed f = factory.newFeed();
+        f.setBaseUri(uParam.getAbsolutePath().toString());
+		
+        f.setTitle("Assets");
+        
+        PackageItem packageItem = repository.loadPackage(packageName);
+        for ( Iterator iter = packageItem.getAssets(); iter.hasNext(); ) {
+            AssetItem as = (AssetItem) iter.next();
+            Entry e = createAssetItemEntry(as, uParam, packageName);
+            
+            f.addEntry(e);
+        }
+
+        return f;
+    }
+    
+    @GET
     @Path("/packages/{packageName}/")
     @ProduceMime({"application/atom+xml"})
     public Entry getPackageAsEntry(@PathParam("packageName") String packageName, @Context UriInfo uParam) throws PackageNotFoundFault {
-        System.out.println("----invoking getPackageAsEntry with name: " + packageName);
+        System.out.println("----invoking getPackageAsEntry with packageName: " + packageName);
         
         try {
             PackageItem packageItem = repository.loadPackage(packageName);
@@ -164,11 +211,10 @@ public class AtomRulesRepository {
             	uParam.getBaseUriBuilder().path("repository", "packages", 
                                                 packageItem.getName()).build();
             return Response.created(uri).entity(e).build();
-        } catch (Exception ex) {
+        } catch (RulesRepositoryException ex) {
             return Response.serverError().build();
         }
-    }
-    
+    }    
     
     @PUT
     @Path("/packages")
@@ -189,7 +235,7 @@ public class AtomRulesRepository {
             	uParam.getBaseUriBuilder().path("repository", "packages", 
             			item.getName()).build();
             return Response.ok(uri).entity(e).build();
-        } catch (Exception ex) {
+        } catch (RulesRepositoryException ex) {
         	ex.printStackTrace();
             return Response.serverError().build();
         }
@@ -229,7 +275,23 @@ public class AtomRulesRepository {
 
         return e;
     }
+    
+    private static Entry createAssetItemEntry(AssetItem asset, UriInfo baseUri, String packageName) {
+        Factory factory = Abdera.getNewFactory();
+        
+        Entry e = factory.getAbdera().newEntry();
+        if (baseUri != null) {
+            e.setBaseUri(baseUri.getAbsolutePath().toString());
+        }
+        e.setTitle(asset.getName());
+        URI uri = 
+        	baseUri.getBaseUriBuilder().path("repository", "packages", "packageName", "asset",
+        			asset.getName()).build();
+        e.addLink(uri.toString());
 
+        return e;
+    }
+    
     private static Entry createDetailedPackageItemEntry(PackageItem pkg, UriInfo baseUri) {
         Factory factory = Abdera.getNewFactory();
         
