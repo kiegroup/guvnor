@@ -28,8 +28,8 @@ public class AtomRulesRepositoryServer extends AbstractTestServerBase{
         repo = RepositorySessionUtil.getRepository();
         PackageItem pkg = repo.createPackage("testPackage1", "desc1");
         repo.loadCategory( "/" ).addCategory( "AtomRulesRepositoryTestCat", "X" );
-        pkg.addAsset( "testAsset1", "x", "/AtomRulesRepositoryTestCat", "drl");
-        pkg.addAsset( "testAsset2", "x", "/AtomRulesRepositoryTestCat", "drl");
+        pkg.addAsset( "testAsset1", "testAsset1Desc1", "/AtomRulesRepositoryTestCat", "drl");
+        pkg.addAsset( "testAsset2", "testAsset2Desc1", "/AtomRulesRepositoryTestCat", "drl");
 
         repo.save();
 

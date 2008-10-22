@@ -126,6 +126,26 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
     }  
     
     @Test
+    public void testGetAsset() throws Exception {
+        String endpointAddress =
+            "http://localhost:9080/repository/packages/testPackage1/assets/testAsset1"; 
+        GetMethod get = new GetMethod(endpointAddress);
+        get.setRequestHeader("Content-Type", "*/*");
+        //get.setRequestHeader("Accept", type);
+        HttpClient httpClient = new HttpClient();
+        try {
+            httpClient.executeMethod(get);           
+            String response = getStringFromInputStream(get.getResponseBodyAsStream());
+            //System.out.print(response);
+            assertTrue(response.indexOf("testAsset1") > 0);
+            assertTrue(response.indexOf("testAsset1Desc1") > 0);
+            assertTrue(response.indexOf("archived=false") > 0);
+        } finally {
+            get.releaseConnection();
+        }
+    }  
+    
+    @Test
     public void testAddAndDeletePackage() throws Exception {
     	//Create a new package called testPackage2
         String endpointAddress =

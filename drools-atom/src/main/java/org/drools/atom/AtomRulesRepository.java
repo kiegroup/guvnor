@@ -180,7 +180,7 @@ public class AtomRulesRepository {
     }
     
     @GET
-    @Path("/packages/{packageName}/")
+    @Path("/packages/{packageName}")
     @ProduceMime({"application/atom+xml"})
     public Entry getPackageAsEntry(@PathParam("packageName") String packageName, @Context UriInfo uParam) throws PackageNotFoundFault {
         System.out.println("----invoking getPackageAsEntry with packageName: " + packageName);
@@ -195,6 +195,34 @@ public class AtomRulesRepository {
         }
     }
             
+    @GET
+    @Path("/packages/{packageName}/assets/{assetName}")
+    @ProduceMime({"application/atom+xml"})
+    public Entry getAssetAsEntry(@PathParam("packageName") String packageName, 
+    		@Context UriInfo uParam,
+    		@PathParam("assetName") String assetName) throws PackageNotFoundFault {
+        System.out.println("----invoking getPackageAsEntry with packageName: " + packageName + ", assetName: " + assetName);
+        
+        try {             
+            PackageItem packageItem = repository.loadPackage(packageName);
+            for ( Iterator iter = packageItem.getAssets(); iter.hasNext(); ) {
+                AssetItem as = (AssetItem) iter.next();
+                if (as.getName().equals(assetName)) {
+                	return createDetailedAssetItemEntry(as, uParam);
+                }
+            }
+        } catch (RulesRepositoryException e) {
+        	PackageNotFoundDetails details = new PackageNotFoundDetails();
+            details.setName(packageName);
+            throw new PackageNotFoundFault(details);       	
+        }
+        
+        //TODO: Better exception handling
+    	PackageNotFoundDetails details = new PackageNotFoundDetails();
+        details.setName(assetName);
+        throw new PackageNotFoundFault(details);       	
+    }
+    
     @POST
     @Path("/packages")
     @ConsumeMime("application/atom+xml")
@@ -285,7 +313,7 @@ public class AtomRulesRepository {
         }
         e.setTitle(asset.getName());
         URI uri = 
-        	baseUri.getBaseUriBuilder().path("repository", "packages", "packageName", "asset",
+        	baseUri.getBaseUriBuilder().path("repository", "packages", packageName, "assets",
         			asset.getName()).build();
         e.addLink(uri.toString());
 
@@ -313,6 +341,31 @@ public class AtomRulesRepository {
         e.setContentElement(factory.newContent());
         e.getContentElement().setContentType(Content.Type.TEXT);
         e.getContentElement().setValue("archived=" +  pkg.isArchived());
+        
+        return e;
+    }
+    
+    private static Entry createDetailedAssetItemEntry(AssetItem asset, UriInfo baseUri) {
+        Factory factory = Abdera.getNewFactory();
+        
+        Entry e = factory.getAbdera().newEntry();
+        if (baseUri != null) {
+            e.setBaseUri(baseUri.getAbsolutePath().toString());
+        }
+        e.setTitle(asset.getName());
+        e.setId(asset.getUUID());
+        e.setSummary(asset.getDescription());
+        
+        URI uri = 
+        	baseUri.getBaseUriBuilder().path("repository", "packages",  
+        			asset.getName()).build();
+        e.addLink(uri.toString());
+        e.setUpdated(asset.getLastModified().getTime());
+        
+        //TODO: What content to return?
+        e.setContentElement(factory.newContent());
+        e.getContentElement().setContentType(Content.Type.TEXT);
+        e.getContentElement().setValue("archived=" +  asset.isArchived());
         
         return e;
     }
