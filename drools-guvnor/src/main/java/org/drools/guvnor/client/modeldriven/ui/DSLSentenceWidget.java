@@ -18,24 +18,32 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.widgets.Component;
+import com.gwtext.client.widgets.DatePicker;
+import com.gwtext.client.widgets.event.DatePickerListener;
+import com.gwtext.client.widgets.form.DateField;
 
 /**
  * This displays a widget to edit a DSL sentence.
@@ -43,6 +51,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DSLSentenceWidget extends DirtyableComposite {
 
+	private static final String ENUM_TAG = "ENUM";
+	private static final String DATE_TAG = "DATE";
+	private static final String BOOLEAN_TAG = "BOOLEAN";
     private final DirtyableHorizontalPane horiz;
     private final List  widgets;
     private final DSLSentence sentence;
@@ -66,10 +77,6 @@ public class DSLSentenceWidget extends DirtyableComposite {
      * One day, if this is too complex, this will have to be done on the server side.
      */
     public void makeWidgets(String dslLine) {
-
-        char[] chars = dslLine.toCharArray();
-        FieldEditor currentBox = null;
-        Label currentLabel = null;
         
         int startVariable = dslLine.indexOf("{");
         List<Widget> lineWidgets = new ArrayList<Widget>();
@@ -89,15 +96,8 @@ public class DSLSentenceWidget extends DirtyableComposite {
         	int endVariable = dslLine.indexOf("}",startVariable);
         	String currVariable = dslLine.substring(startVariable+1, endVariable);
         	
-        	//For now assume If it has a colon then it is a dropdown. Else a textbox
-        	if(currVariable.indexOf(":")>0){
-        		Widget dropDown = getEnumDropdown(currVariable);
-        		lineWidgets.add(dropDown);
-        	}
-        	else{
-        		Widget box = getBox(currVariable);
-        		lineWidgets.add(box);
-        	}        
+        	Widget varWidget = processVariable(currVariable);
+        	lineWidgets.add(varWidget);
         	
         	//Parse out the next label between variables
         	startVariable = dslLine.indexOf("{",endVariable);
@@ -118,31 +118,67 @@ public class DSLSentenceWidget extends DirtyableComposite {
         updateSentence();
     }
 
+    public Widget processVariable(String currVariable){
+    	
+    	Widget result = null;
+    	//Formats are: <varName>:ENUM:<Field.type>
+    	//			   <varName>:DATE:<dateFormat>
+    	//			   <varName>:BOOLEAN:[checked | unchecked] <-initial value
+    	
+    	int colonIndex = currVariable.indexOf(":");
+    	if(colonIndex>0){
+    		
+    		String definition = currVariable.substring(colonIndex+1,currVariable.length());
+    		
+    		int secondColonIndex = definition.indexOf(":");
+    		if(secondColonIndex>0){
+    			
+    			String type = currVariable.substring(colonIndex+1,colonIndex+secondColonIndex+1);
+    			if(type.equalsIgnoreCase(ENUM_TAG)){
+    				result = getEnumDropdown(currVariable);
+    			}else if(type.equalsIgnoreCase(DATE_TAG)){
+    				result = getDateSelector(currVariable);
+    			}else if(type.equalsIgnoreCase(BOOLEAN_TAG)){
+    				result = getCheckbox(currVariable);
+    			}
+    		}else{
+    			String regex = currVariable.substring(colonIndex+1,currVariable.length());
+    			result = getBox(currVariable,regex);
+    		}
+    	}
+    	else{
+    		result = getBox(currVariable,"");
+    	}  
+    	
+    	return result;
+    }
+    
     public Widget getEnumDropdown(String variableDef){
 
-    	Widget resultWidget = null;
-    	
-    	int firstIndex = variableDef.indexOf(":");
-    	int lastIndex  = variableDef.lastIndexOf(":");
-    	
-    	
-    	//If the variable doesn't have two colons then just put in a text box
-    	if(firstIndex<0 || lastIndex<0){
-    		resultWidget =  getBox(variableDef);
-    	}else{
-    		DSLDropDown dslDropDown = new DSLDropDown(variableDef);
-    		resultWidget = dslDropDown;
-    	}
-    	
+    	Widget resultWidget = new DSLDropDown(variableDef);;	
     	return resultWidget;
     }
     
-    public Widget getBox(String variableDef){
+    public Widget getBox(String variableDef, String regex){
+    	
+    	int colonIndex = variableDef.indexOf(":");
+    	if(colonIndex>0){
+    		variableDef = variableDef.substring(0,colonIndex);
+    	}
     	FieldEditor currentBox = new FieldEditor();
     	currentBox.setVisibleLength(variableDef.length()+1);
     	currentBox.setText(variableDef);
+    	currentBox.setRestriction(regex);
     	
     	return currentBox;
+    }
+    
+    public Widget getCheckbox(String variableDef){
+    	return new DSLCheckBox(variableDef);
+    }
+    
+    public Widget getDateSelector(String variableDef){
+    	return new DSLDateSelector(variableDef);
     }
     
     public Widget getLabel(String labelDef){
@@ -167,7 +203,15 @@ public class DSLSentenceWidget extends DirtyableComposite {
             if (wid instanceof Label) {
                 newSentence = newSentence + ((Label) wid).getText();
             } else if (wid instanceof FieldEditor) {
-                newSentence = newSentence + " {" + ((FieldEditor) wid).getText() + "} ";
+            	FieldEditor editor  = (FieldEditor) wid;
+            	
+            	String varString = editor.getText();
+            	String restriction  =editor.getRestriction();
+            	if(!restriction.equals("")){
+            		varString = varString+":"+restriction;
+            	}
+            	
+                newSentence = newSentence + " {" + varString + "} ";
             }else if (wid instanceof DSLDropDown){
             	
             	//Add the meta-data back to the field so that is shows up as a dropdown when refreshed from repo
@@ -177,17 +221,26 @@ public class DSLSentenceWidget extends DirtyableComposite {
             	String factAndField = drop.getFactAndField();
             	
             	newSentence = newSentence + "{"+box.getItemText(box.getSelectedIndex())+":"+type+":"+factAndField+ "}";
+            }else if(wid instanceof DSLCheckBox){
+            	
+            	DSLCheckBox check = (DSLCheckBox)wid;
+            	boolean checkValue  = check.getCheckedValue();
+            	newSentence = newSentence + "{"+checkValue+":"+check.getType()+":"+checkValue+ "}";
+            }else if(wid instanceof DSLDateSelector){
+            	DSLDateSelector dateSel = (DSLDateSelector)wid;
+            	String dateString = dateSel.getDateString();
+            	newSentence = newSentence + "{"+dateString+":"+dateSel.getType()+":"+dateString+ "}";
             }
         }
         this.sentence.sentence = newSentence.trim();
-
     }
 
     class FieldEditor extends DirtyableComposite {
 
         private TextBox box;
         private HorizontalPanel panel = new HorizontalPanel();
-
+        private String oldValue = "";
+        private String regex = "";
         public FieldEditor() {
             box = new TextBox();
             //box.setStyleName( "dsl-field-TextBox" );
@@ -198,8 +251,16 @@ public class DSLSentenceWidget extends DirtyableComposite {
 
             box.addChangeListener( new ChangeListener() {
                 public void onChange(Widget w) {
-                    updateSentence();
-                    makeDirty();
+                	TextBox otherBox = (TextBox)w;
+
+                	if(!otherBox.getText().matches(regex)){
+                		Window.alert("The value "+otherBox.getText()+" is not valid for this field");
+                		box.setText(oldValue);
+                	}else{
+                		oldValue = otherBox.getText();
+                		updateSentence();
+                		makeDirty();
+                	}
                 }
             });
 
@@ -216,6 +277,22 @@ public class DSLSentenceWidget extends DirtyableComposite {
 
         public String getText() {
             return box.getText();
+        }
+        
+        public void setRestriction(String regex){
+        	this.regex = regex;
+        }
+        
+        public String getRestriction(){
+        	return this.regex;
+        }
+        
+        public boolean isValid(){
+        	boolean result = true;
+        	if(!regex.equals(""))
+        		result = this.box.getText().matches(this.regex);
+        	
+        	return result;
         }
     }
 
@@ -291,4 +368,175 @@ public class DSLSentenceWidget extends DirtyableComposite {
 		}
     }
 
+    class DSLCheckBox extends DirtyableComposite{
+    	CheckBox resultWidget = null;
+    	//Format for the dropdown def is <varName>:<type>:<Fact.field>
+    	private String varName ="";
+
+    	public DSLCheckBox(String variableDef){
+	    	
+    		int firstIndex = variableDef.indexOf(":");
+        	int lastIndex  = variableDef.lastIndexOf(":");
+    		varName = variableDef.substring(0,firstIndex);
+    		String checkedUnchecked = variableDef.substring(lastIndex+1, variableDef.length());
+	    	
+    		resultWidget = new CheckBox();
+	    	if(checkedUnchecked.equalsIgnoreCase("checked")){
+	    		resultWidget.setChecked(true);
+	    	}else{
+	    		resultWidget.setChecked(false);
+	    	}
+		    
+	    	resultWidget.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                	CheckBox box = (CheckBox)w;
+                	resultWidget.setChecked(box.isChecked());
+                	
+                    updateSentence();
+                    makeDirty();
+                }
+            });
+	    	
+	    	resultWidget.setVisible(true);
+	    	initWidget(resultWidget);
+	    	resultWidget = resultWidget;
+    	}
+		public CheckBox getListBox() {
+			return resultWidget;
+		}
+		public void setListBox(CheckBox resultWidget) {
+			this.resultWidget = resultWidget;
+		}
+		public String getType() {
+			return BOOLEAN_TAG;
+		}
+		
+		public boolean getCheckedValue() {
+			return resultWidget.isChecked();
+		}
+		public String getVarName() {
+			return varName;
+		}
+		public void setVarName(String varName) {
+			this.varName = varName;
+		}
+    }
+    
+    class DSLDateSelector extends DirtyableComposite{
+    	DateField resultWidget = null;
+    	//Format for the dropdown def is <varName>:<type>:<Fact.field>
+    	private String varName ="";
+    	private String format  ="";
+    	private DateTimeFormat formatter = DateTimeFormat.getFormat("dd-MMM-yyyy");
+    	public DSLDateSelector(String variableDef){
+	    	
+    		int firstIndex = variableDef.indexOf(":");
+        	int lastIndex  = variableDef.lastIndexOf(":");
+    		varName = variableDef.substring(0,firstIndex);
+    		format = variableDef.substring(lastIndex+1, variableDef.length());
+	    	
+    		Date origDate = null;
+    		try{
+    			origDate = formatter.parse(varName);
+    		}catch(Exception e){
+    			
+    		}
+    		
+    		resultWidget = new DateField();
+    		if(origDate!=null)
+    			resultWidget.setValue(origDate);
+	    	
+	    	resultWidget.addListener( new DatePickerListener() {
+                
+				public boolean doBeforeDestroy(Component component) {
+					return true;
+				}
+
+				public boolean doBeforeHide(Component component) {
+					return true;
+				}
+
+				public boolean doBeforeRender(Component component) {
+					return true;
+				}
+
+				public boolean doBeforeShow(Component component) {
+					return true;
+				}
+
+				public boolean doBeforeStateRestore(Component component,
+						JavaScriptObject state) {
+					return true;
+				}
+
+				public boolean doBeforeStateSave(Component component,
+						JavaScriptObject state) {
+					return true;
+				}
+
+				public void onDestroy(Component component) {
+				}
+
+				public void onDisable(Component component) {
+				}
+
+				public void onEnable(Component component) {
+				}
+
+				public void onHide(Component component) {	
+				}
+
+				public void onRender(Component component) {
+				}
+
+				public void onShow(Component component) {
+				}
+
+				public void onStateRestore(Component component,
+						JavaScriptObject state) {
+				}
+
+				public void onStateSave(Component component,
+						JavaScriptObject state) {
+				}
+
+				public void onSelect(DatePicker dataPicker, Date date) {
+					resultWidget.setValue(date);
+					updateSentence();
+                    makeDirty();
+					
+				}   
+            });
+	    	
+	    	resultWidget.setVisible(true);
+	    	initWidget(resultWidget);
+    	}
+		public DateField getListBox() {
+			return resultWidget;
+		}
+		public void setListBox(DateField resultWidget) {
+			this.resultWidget = resultWidget;
+		}
+		public String getType() {
+			return DATE_TAG;
+		}
+		
+		public String getFormat(){
+			return this.format;
+		}
+		public String getDateString() {
+			Date value  = resultWidget.getValue();
+			String result ="";
+			if(value!=null)
+				result =formatter.format(value); 
+			return  result;
+		}
+		public String getVarName() {
+			return varName;
+		}
+		public void setVarName(String varName) {
+			this.varName = varName;
+		}
+		
+    }
 }
