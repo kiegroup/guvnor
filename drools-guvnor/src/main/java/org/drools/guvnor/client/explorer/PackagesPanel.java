@@ -224,7 +224,7 @@ public class PackagesPanel extends GenericPanel {
         panel.addListener(treePanelListener);
 
         ScrollPanel scp = new ScrollPanel(panel);
-        scp.setHeight("300px");
+        scp.setHeight("500px");
 
 
         return scp;
