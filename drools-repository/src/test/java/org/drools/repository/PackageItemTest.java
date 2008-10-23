@@ -1,6 +1,7 @@
 package org.drools.repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,6 +27,37 @@ public class PackageItemTest extends TestCase {
 
         assertEquals(prevSize + 1, list.size());
     }
+    
+//    public void testAddPackageProperties() throws Exception {
+//        RulesRepository repo = getRepo();
+//        PackageItem item = repo.createPackage( "testListPackages1", "lalalala" );
+//
+//        assertNotNull(item.getCreator());
+//        
+//        HashMap hash = new HashMap();
+//        hash.put("Eligibility rules", "Underage");
+//        
+//        String[] testProp = new String[]{"Test1","Test2"};
+//        
+//        item.node.checkout();
+//        item.node.setProperty("testing", testProp);
+//        //item.node.setProperty("testing", "blah");
+//
+//        String[] newProp = item.getStringPropertyArray( "testing" );
+//        assertTrue((testProp[0]).equals(newProp[0]));
+//        assertTrue(("Test2").equals(newProp[1]));
+//		
+      // assertEquals(testProp[0], );
+//        assertFalse(item.getCreator().equals( "" ));
+//
+//        List list = iteratorToList( repo.listPackages() );
+//        int prevSize = list.size();
+//        repo.createPackage( "testListPackages2", "abc" );
+//
+//        list = iteratorToList( repo.listPackages() );
+//
+//        assertEquals(prevSize + 1, list.size());
+//    }
 
     public void testPackageRemove() throws Exception {
         RulesRepository repo = getRepo();

@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
@@ -44,11 +47,13 @@ public class PackageItem extends VersionableItem {
     /**
      * The name of the rule package node type
      */
-    public static final String RULE_PACKAGE_TYPE_NAME           = "drools:packageNodeType";
+    public static final String RULE_PACKAGE_TYPE_NAME             	  = "drools:packageNodeType";
 
 
-    public static final String HEADER_PROPERTY_NAME             = "drools:header";
+    public static final String HEADER_PROPERTY_NAME                   = "drools:header";
     public static final String EXTERNAL_URI_PROPERTY_NAME             = "drools:externalURI";
+    public static final String CATEGORY_RULE_KEYS_PROPERTY_NAME       = "categoryRuleKeys";
+    public static final String CATEGORY_RULE_VALUES_PROPERTY_NAME     = "categoryRuleValues";
 
     private static final String COMPILED_PACKAGE_PROPERTY_NAME = "drools:compiledPackage";
 
@@ -668,11 +673,62 @@ public class PackageItem extends VersionableItem {
 //    public void updateHeader(String header) {
 //        updateStringProperty( header, HEADER_PROPERTY_NAME );
 //    }
-
+    
     public void updateExternalURI(String uri) {
         updateStringProperty( uri, EXTERNAL_URI_PROPERTY_NAME );
     }
+    public void setCatRules(String map) {
+        updateStringProperty( map, CATEGORY_RULE_KEYS_PROPERTY_NAME );
+    }
 
+    public void updateCategoryRules(String keys, String values) throws RulesRepositoryException {
+    	//System.out.println("(updateCategoryRules) keys: " + keys + " Values: " + values );
+        try {
+        	
+            this.node.checkout();
+            this.updateStringProperty(keys,CATEGORY_RULE_KEYS_PROPERTY_NAME);
+            this.updateStringProperty(values,CATEGORY_RULE_VALUES_PROPERTY_NAME);
+            
+        } catch ( Exception e ) {
+            log.error( "Caught Exception",
+                       e );
+            throw new RulesRepositoryException( e );
+        }
+    }
+    
+    private static HashMap convertFromObjectGraphs(final String[] keys, final String[] values){
+		HashMap hash = new HashMap();
+		
+		for(int i=0; i < keys.length; i++){
+			hash.put(keys[i], values[i]);
+		}
+		return hash;
+    }
+    public String[] convertStringToArray(String tagName){
+    		//System.out.println("(convertStringToArray) Tags: " + tagName);
+            List<String> list = new ArrayList<String>();
+            
+            StringTokenizer tok = new StringTokenizer( tagName,
+                                                       "," );
+            while ( tok.hasMoreTokens() ) {
+                String currentTagName = tok.nextToken();
+                list.add(currentTagName);             
+            }
+
+            return list.toArray(new String[0]);
+       
+    }
+
+    public HashMap<String,String> getCategoryRules(){
+    	return convertFromObjectGraphs(convertStringToArray(getCategoryRules(true)),convertStringToArray(getCategoryRules(false)));
+    }
+    public String getCategoryRules(boolean keys) {
+    	if(keys){
+    		return getStringProperty(CATEGORY_RULE_KEYS_PROPERTY_NAME);
+    	}
+    	return getStringProperty(CATEGORY_RULE_VALUES_PROPERTY_NAME);
+    }
+    
     /**
      * Update the checkin comment.
      */

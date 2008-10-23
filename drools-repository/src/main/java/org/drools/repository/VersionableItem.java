@@ -1,6 +1,10 @@
 package org.drools.repository;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -380,6 +384,7 @@ public abstract class VersionableItem extends Item {
     public void updateDescription(String newDescriptionContent) throws RulesRepositoryException {
         try {
             this.node.checkout();
+            //this.node.setProperty(arg0, arg1);
 
             this.node.setProperty( DESCRIPTION_PROPERTY_NAME,
                                    newDescriptionContent );
@@ -394,7 +399,7 @@ public abstract class VersionableItem extends Item {
             throw new RulesRepositoryException( e );
         }
     }
-
+    
     /**
      * This returns the format of an item.
      * This is analagous to a file extension
@@ -511,6 +516,7 @@ public abstract class VersionableItem extends Item {
     public void checkin(String comment) {
         checkIsUpdateable();
         try {
+        	
             this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance() );
             this.node.setProperty( CHECKIN_COMMENT, comment );
             this.node.setProperty( LAST_CONTRIBUTOR_PROPERTY_NAME, this.node.getSession().getUserID() );
@@ -730,6 +736,26 @@ public abstract class VersionableItem extends Item {
         }
     }
 
+    public String[] getStringPropertyArray(String property) {
+        try {
+            Node theNode = getVersionContentNode();
+            if ( theNode.hasProperty( property ) ) {
+                Property data = theNode.getProperty( property );
+                Value[] values = data.getValues();
+               
+    		    List<String> list = new ArrayList<String>();
+                for (Value value : values) {
+                	list.add(value.getString());
+					
+				}  
+                return list.toArray(new String[0]);
+            } else {
+                return new String[0];
+            }
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
+        }
+    }
     protected long getLongProperty(String property) {
         try {
             Node theNode = getVersionContentNode();

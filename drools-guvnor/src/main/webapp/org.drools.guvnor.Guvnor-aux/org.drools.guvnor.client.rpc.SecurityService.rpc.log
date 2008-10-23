@@ -1,4 +1,4 @@
-Reachable types computed on: Tue Oct 21 15:40:10 CDT 2008
+Reachable types computed on: Thu Oct 23 01:48:15 CDT 2008
 com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException
    Serialization status
       Instantiable
@@ -131,7 +131,8 @@ java.util.Vector<java.lang.Integer>
    Serialization status
       Instantiable
    Path
-      'java.util.Vector<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.util.Vector<java.lang.Integer>' is reachable as a supertype of type 'class java.util.Stack<java.lang.Integer>'
+      'java.util.Stack<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
       'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'

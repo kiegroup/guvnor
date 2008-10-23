@@ -28,6 +28,7 @@
 // for example SVN
 - drools:externalURI (string)
 
+
 /* MN: retiring this structure  - use it in future for shared rules
 - drools:ruleReference (reference)
   multiple
@@ -40,4 +41,5 @@
 
 
 // use this to capture fields which are not known ahead of time 
-- * (undefined)
+- * (undefined) 
+

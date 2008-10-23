@@ -761,6 +761,8 @@ public class ServiceImplementation implements RepositoryService {
 		data.uuid = item.getUUID();
 		data.header = getDroolsHeader(item);
 		data.externalURI = item.getExternalURI();
+		data.catRules = item.getCategoryRules();
+		//System.out.println("Cat Rules: " + data.catRules.toString());
 		data.description = item.getDescription();
 		data.name = item.getName();
 		data.lastModified = item.getLastModified().getTime();
@@ -774,7 +776,37 @@ public class ServiceImplementation implements RepositoryService {
 		}
 		return data;
 	}
+//make sure this stays the same order
+	private static String[] convertToObjectGraph(final Map map, boolean getKeys) {
+		    List list = new ArrayList();
 
+		    for (Iterator i = map.entrySet().iterator(); i.hasNext();) {
+		        Map.Entry entry = (Map.Entry) i.next();
+
+		        if(getKeys){
+		        	list.add(entry.getKey());
+		        }else{
+		        	list.add(entry.getValue());
+		        }
+		    }
+		    //System.out.println("(convertToObjectGraph)list: " + list.toString());
+		    return (String[])list.toArray(new String[0]);
+	}
+	private static String convertMapToString(final Map map, boolean getKeys){
+		//System.out.println("(convertMapToString)map: " + map.toString());
+		String[] sArray = convertToObjectGraph(map,getKeys);
+		String returnVal = new String();
+		for (String string : sArray) {
+			if(returnVal.length() > 0){
+				returnVal += ",";
+			}
+			returnVal += string;
+		}
+		//System.out.println("(convertMapToString)returnVal: " + returnVal);
+		return returnVal;
+	}
+	
+	
 	@WebRemote
 	@Restrict("#{identity.loggedIn}")
 	public ValidatedResponse savePackage(PackageConfigData data)
@@ -790,12 +822,15 @@ public class ServiceImplementation implements RepositoryService {
 		PackageItem item = repository.loadPackage(data.name);
 
 		updateDroolsHeader(data.header, item);
+		item.updateCategoryRules(convertMapToString(data.catRules, true), convertMapToString(data.catRules, false));
+	
 		item.updateExternalURI(data.externalURI);
 		item.updateDescription(data.description);
 		item.archiveItem(data.archived);
 		item.updateBinaryUpToDate(false);
 		this.ruleBaseCache.remove(data.uuid);
 		item.checkin(data.description);
+	
 
 		BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
 		loader.getSuggestionEngine(item);

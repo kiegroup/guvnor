@@ -19,8 +19,10 @@ package org.drools.guvnor.server.contenthandler;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
@@ -73,18 +75,8 @@ public class BRLContentHandler extends ContentHandler implements IRuleAsset {
 		RuleModel model = BRXMLPersistence.getInstance().unmarshal(
 				asset.getContent());
         model.name = asset.getName();
+        model.parentName = this.parentNameFromCategory(asset, model.parentName);  
         
-//        List<CategoryItem> cats = asset.getCategories();
-//        CategoryItem cat = cats.get(0);
-//        String catName = cat.getName();
-//        String catSum = asset.getCategorySummary();
-//        
-        //asset.getPackage()
-      
-        
-//        if(model.name.equals(new String("Bankruptcy history"))){
-//        	model.parentName = "Underage";
-//        }
 		String drl = BRDRLPersistence.getInstance().marshal(model);
 		if (builder.hasDSL() && model.hasDSLSentences()) {
 			drl = builder.getDSLExpander().expand(drl);

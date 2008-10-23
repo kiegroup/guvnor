@@ -217,6 +217,7 @@ public class CategoryExplorerWidget extends Composite
         TreeItem parent = item.getParentItem();
         while ( parent.getUserObject() != null ) {
             categoryPath = ((String)parent.getUserObject()) + "/" + categoryPath;
+            System.out.println("categoryPath: " + categoryPath);
             parent = parent.getParentItem();
         }
         return categoryPath;

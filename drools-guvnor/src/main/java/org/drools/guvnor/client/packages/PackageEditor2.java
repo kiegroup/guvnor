@@ -18,14 +18,20 @@ package org.drools.guvnor.client.packages;
 
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
+import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
+import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.StatusChangePopup;
 import org.drools.guvnor.client.common.ValidationMessageWidget;
+import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
@@ -42,8 +48,10 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -68,7 +76,7 @@ public class PackageEditor2 extends PrettyFormLayout {
         this.close = close;
         this.refreshPackageList = refreshPackageList;
         this.editEvent = editEvent;
-
+       
         //setStyleName( "package-Editor" );
         setWidth( "100%" );
         refreshWidgets();
@@ -77,13 +85,7 @@ public class PackageEditor2 extends PrettyFormLayout {
     private void refreshWidgets() {
         clear();
 
-
-
-
-
-
-
-        FlexTable headerWidgets = new FlexTable();
+FlexTable headerWidgets = new FlexTable();
         headerWidgets.setWidget(0, 0, new HTML("<b>Package name:</b>"));
         headerWidgets.setWidget(0, 1, new Label(this.conf.name));
         if (!conf.isSnapshot) {
@@ -103,6 +105,14 @@ public class PackageEditor2 extends PrettyFormLayout {
         addRow( warnings() );
         addAttribute( "Configuration:", header() );
         addAttribute( "Description:", description() );
+        addAttribute( "Category Rules:", getAddCatRules() );
+        addAttribute( "", getShowCatRules() );
+        
+        
+        
+        
+        
+        
         if (!conf.isSnapshot) {
             Button save = new Button("Save and validate configuration");
             save.addClickListener( new ClickListener() {
@@ -167,7 +177,95 @@ public class PackageEditor2 extends PrettyFormLayout {
         endSection();
 
     }
+    private Widget getShowCatRules(){
+    
+    	if(conf.catRules != null && conf.catRules.size() > 0){
+    		VerticalPanel vp = new VerticalPanel();
+    		
+    		for (Iterator i = conf.catRules.entrySet().iterator(); i.hasNext();) {
+		        Map.Entry entry = (Map.Entry) i.next();
+		        HorizontalPanel hp = new HorizontalPanel();
+    			
+    			hp.add(new SmallLabel("All rules for Category:&nbsp;\"<u>"));
+    			hp.add(new SmallLabel((String)entry.getValue()));
+    			hp.add(new SmallLabel("\"</u>&nbsp; will now extend Rule:&nbsp;\"<u>"));
+    			hp.add(new SmallLabel((String)entry.getKey()));
+    			hp.add(new SmallLabel("</u>\""));
+    			hp.add(getRemoveCatRulesIcon((String)entry.getKey()));
+    			vp.add(hp);
+		     }
+    		return(vp);
+    	}
+    	return new HTML("&nbsp;&nbsp;");
+    	
+    	
+    }
+    private Image getRemoveCatRulesIcon(final String rule) {
+        Image remove = new Image( "images/delete_item_small.gif" );
+        remove.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+            	if (Window.confirm("Remove this Category Rule?")) {
+                        conf.catRules.remove(rule);
+                        refreshWidgets();
+                }
+            }
+        } );
+        return remove;
+    }
+    private Widget getAddCatRules() {
+        Image add = new ImageButton("images/new_item.gif");
+        add.setTitle( "Add a Category Rule to the Package, to automatically add rule LHS to all rules in this category." );
 
+        add.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                showCatRuleSelector(w);
+            }
+        });
+        return add;
+    }
+    private void addToCatRules(String category, String rule){
+    	if(null != category && null != rule){
+    		if(conf.catRules == null){
+    			conf.catRules = new HashMap<String,String>();
+    		}	
+    		conf.catRules.put(rule, category);
+    	}
+    	
+    }
+    protected void showCatRuleSelector(Widget w) {
+        final FormStylePopup pop = new FormStylePopup("images/config.png", "Add a Category Rule to the Package");
+        final ListBox list = RuleAttributeWidget.getAttributeList();
+        final Image addbutton = new ImageButton("images/new_item.gif");
+        final TextBox catName = new TextBox();
+        final TextBox ruleName = new TextBox();
+        
+        
+
+        
+        catName.setVisibleLength( 15 );
+        ruleName.setVisibleLength( 15 );
+        
+        addbutton.setTitle( "Create Category Rule." );
+
+        addbutton.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+            	if(catName.getText().trim().length() > 0 && ruleName.getText().trim().length() > 0){
+            		addToCatRules(catName.getText(), ruleName.getText()); 
+            	}     	
+            	refreshWidgets();
+                pop.hide();
+            }
+        });
+        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
+        horiz.add( ruleName );
+        horiz.add( addbutton );
+        
+        pop.addAttribute( "Category name: ", catName );
+        pop.addAttribute( "Rule name: ", horiz );
+       
+       
+        pop.show();
+    }
 
 
 	private String getDateString(Date d) {
@@ -346,6 +444,7 @@ public class PackageEditor2 extends PrettyFormLayout {
 
     private void doSaveAction(final Command refresh) {
         LoadingPopup.showMessage( "Saving package configuration. Please wait ..." );
+        
         RepositoryServiceFactory.getService().savePackage( this.conf, new GenericCallback() {
             public void onSuccess(Object data) {
 

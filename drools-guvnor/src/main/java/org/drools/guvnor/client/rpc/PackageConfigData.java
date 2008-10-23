@@ -49,5 +49,5 @@ public class PackageConfigData
     public String snapshotName;
     public Date dateCreated;
     public String checkinComment;
-    public HashMap catRules;
+    public HashMap<String,String> catRules;
 }
