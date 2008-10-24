@@ -22,10 +22,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
+import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
@@ -76,7 +79,7 @@ public class PackageEditor2 extends PrettyFormLayout {
         this.close = close;
         this.refreshPackageList = refreshPackageList;
         this.editEvent = editEvent;
-       
+
         //setStyleName( "package-Editor" );
         setWidth( "100%" );
         refreshWidgets();
@@ -107,12 +110,12 @@ FlexTable headerWidgets = new FlexTable();
         addAttribute( "Description:", description() );
         addAttribute( "Category Rules:", getAddCatRules() );
         addAttribute( "", getShowCatRules() );
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
         if (!conf.isSnapshot) {
             Button save = new Button("Save and validate configuration");
             save.addClickListener( new ClickListener() {
@@ -178,14 +181,14 @@ FlexTable headerWidgets = new FlexTable();
 
     }
     private Widget getShowCatRules(){
-    
+
     	if(conf.catRules != null && conf.catRules.size() > 0){
     		VerticalPanel vp = new VerticalPanel();
-    		
+
     		for (Iterator i = conf.catRules.entrySet().iterator(); i.hasNext();) {
 		        Map.Entry entry = (Map.Entry) i.next();
 		        HorizontalPanel hp = new HorizontalPanel();
-    			
+
     			hp.add(new SmallLabel("All rules for Category:&nbsp;\"<u>"));
     			hp.add(new SmallLabel((String)entry.getValue()));
     			hp.add(new SmallLabel("\"</u>&nbsp; will now extend Rule:&nbsp;\"<u>"));
@@ -197,8 +200,8 @@ FlexTable headerWidgets = new FlexTable();
     		return(vp);
     	}
     	return new HTML("&nbsp;&nbsp;");
-    	
-    	
+
+
     }
     private Image getRemoveCatRulesIcon(final String rule) {
         Image remove = new Image( "images/delete_item_small.gif" );
@@ -221,49 +224,53 @@ FlexTable headerWidgets = new FlexTable();
                 showCatRuleSelector(w);
             }
         });
-        return add;
+
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.add(add);
+        hp.add(new InfoPopup("Category parent rules", "This allows you to set 'parent rules' for a category." +
+        		" Any rules appearing in the given category will 'extend' the rule specified - ie inherit the conditions/LHS. "));
+        return hp;
     }
     private void addToCatRules(String category, String rule){
     	if(null != category && null != rule){
     		if(conf.catRules == null){
     			conf.catRules = new HashMap<String,String>();
-    		}	
+    		}
     		conf.catRules.put(rule, category);
     	}
-    	
+
     }
     protected void showCatRuleSelector(Widget w) {
         final FormStylePopup pop = new FormStylePopup("images/config.png", "Add a Category Rule to the Package");
-        final ListBox list = RuleAttributeWidget.getAttributeList();
-        final Image addbutton = new ImageButton("images/new_item.gif");
-        final TextBox catName = new TextBox();
+        final Button addbutton = new Button("OK");
         final TextBox ruleName = new TextBox();
-        
-        
 
-        
-        catName.setVisibleLength( 15 );
+
+
+
+        final CategoryExplorerWidget exw = new CategoryExplorerWidget(new CategorySelectHandler(){
+			public void selected(String selectedPath) { //not needed
+			}
+        });
+
         ruleName.setVisibleLength( 15 );
-        
+
         addbutton.setTitle( "Create Category Rule." );
 
         addbutton.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-            	if(catName.getText().trim().length() > 0 && ruleName.getText().trim().length() > 0){
-            		addToCatRules(catName.getText(), ruleName.getText()); 
-            	}     	
+            	if(exw.getSelectedPath().length() > 0 && ruleName.getText().trim().length() > 0){
+            		addToCatRules(exw.getSelectedPath(), ruleName.getText());
+            	}
             	refreshWidgets();
                 pop.hide();
             }
         });
-        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
-        horiz.add( ruleName );
-        horiz.add( addbutton );
-        
-        pop.addAttribute( "Category name: ", catName );
-        pop.addAttribute( "Rule name: ", horiz );
-       
-       
+
+        pop.addAttribute( "All the rules in category: ", exw );
+        pop.addAttribute( "Will extend the rule called: ", ruleName );
+        pop.addAttribute("", addbutton);
+
         pop.show();
     }
 
@@ -444,7 +451,7 @@ FlexTable headerWidgets = new FlexTable();
 
     private void doSaveAction(final Command refresh) {
         LoadingPopup.showMessage( "Saving package configuration. Please wait ..." );
-        
+
         RepositoryServiceFactory.getService().savePackage( this.conf, new GenericCallback() {
             public void onSuccess(Object data) {
 

@@ -126,7 +126,7 @@ public class ScenarioWidget extends Composite {
 		ScenarioHelper hlp = new ScenarioHelper();
 		List fixtures = hlp.lumpyMap(scenario.fixtures);
 
-		
+
         int layoutRow = 1;
         ExecutionTrace previousEx = null;
         for (int i = 0; i < fixtures.size(); i++) {
@@ -148,7 +148,7 @@ public class ScenarioWidget extends Composite {
                     }
                 });
                 h.add(del);
-				
+
 				editorLayout.setWidget(layoutRow, 1, new ExecutionWidget(previousEx, showResults));
 				//layout.setWidget(layoutRow, 2, getNewExpectationButton(previousEx, scenario, availableRules));
 				editorLayout.getFlexCellFormatter().setHorizontalAlignment(layoutRow, 2, HasHorizontalAlignment.ALIGN_LEFT);
@@ -158,7 +158,7 @@ public class ScenarioWidget extends Composite {
 				h.add(getNewDataButton(previousEx, scenario));
 				h.add(new SmallLabel("GIVEN"));
 
-                
+
 				editorLayout.setWidget(layoutRow, 0, h);
 
 				layoutRow++;
@@ -1430,7 +1430,7 @@ class TestRunnerWidget extends Composite {
 		int total = 0;
 		VerticalPanel resultsDetail = new VerticalPanel();
 
-		
+
 		for (Iterator iterator = data.result.scenario.fixtures.iterator(); iterator.hasNext();) {
 			Fixture f = (Fixture) iterator.next();
 			if (f instanceof VerifyRuleFired) {
@@ -1486,7 +1486,7 @@ class TestRunnerWidget extends Composite {
 		results.getFlexCellFormatter().setHorizontalAlignment(1, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 		results.setWidget(1, 1, resultsDetail);
 		results.setWidget(2, 0, new SmallLabel("Audit log:"));
-		
+
 		final Button showExp = new Button("Show events");
 		results.setWidget(2, 1, showExp);
 		showExp.addClickListener(new ClickListener() {
@@ -1495,7 +1495,7 @@ class TestRunnerWidget extends Composite {
 				results.setWidget(2, 1, doAuditView(data.auditLog));
 			}
 		});
-		
+
 
 
 	}
@@ -1511,7 +1511,7 @@ class TestRunnerWidget extends Composite {
 		boolean firing = false;
 		for (int i = 0; i < auditLog.size(); i++) {
 			String[] lg = auditLog.get(i);
-			
+
 			int id = Integer.parseInt(lg[0]);
 			if (id <= 7) {
 				if (id <= 3) {
@@ -1525,7 +1525,7 @@ class TestRunnerWidget extends Composite {
 				} else	if (id == 6) {
 					firing = true;
 					g.setWidget(row, 0, new Image("images/audit_events/" + lg[0] + ".gif"));
-					g.setWidget(row, 1, new SmallLabel("<b>" + lg[1] + "</b>"));	
+					g.setWidget(row, 1, new SmallLabel("<b>" + lg[1] + "</b>"));
 					row++;
 				} else if (id == 7) {
 					firing = false;
@@ -1548,7 +1548,7 @@ class TestRunnerWidget extends Composite {
 
 	private Widget hz(Image image, SmallLabel smallLabel) {
 		HorizontalPanel h = new HorizontalPanel();
-		h.add(image); 
+		h.add(image);
 		h.add(smallLabel);
 		return h;
 	}
