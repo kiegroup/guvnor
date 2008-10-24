@@ -220,16 +220,16 @@ public class DSLSentenceWidget extends DirtyableComposite {
             	String type = drop.getType();
             	String factAndField = drop.getFactAndField();
             	
-            	newSentence = newSentence + "{"+box.getItemText(box.getSelectedIndex())+":"+type+":"+factAndField+ "}";
+            	newSentence = newSentence + "{"+box.getItemText(box.getSelectedIndex())+":"+type+":"+factAndField+ "} ";
             }else if(wid instanceof DSLCheckBox){
             	
             	DSLCheckBox check = (DSLCheckBox)wid;
             	boolean checkValue  = check.getCheckedValue();
-            	newSentence = newSentence + "{"+checkValue+":"+check.getType()+":"+checkValue+ "}";
+            	newSentence = newSentence + "{"+checkValue+":"+check.getType()+":"+checkValue+ "} ";
             }else if(wid instanceof DSLDateSelector){
             	DSLDateSelector dateSel = (DSLDateSelector)wid;
             	String dateString = dateSel.getDateString();
-            	newSentence = newSentence + "{"+dateString+":"+dateSel.getType()+":"+dateString+ "}";
+            	newSentence = newSentence + "{"+dateString+":"+dateSel.getType()+":"+dateString+ "} ";
             }
         }
         this.sentence.sentence = newSentence.trim();
@@ -253,7 +253,7 @@ public class DSLSentenceWidget extends DirtyableComposite {
                 public void onChange(Widget w) {
                 	TextBox otherBox = (TextBox)w;
 
-                	if(!otherBox.getText().matches(regex)){
+                	if(!regex.equals("") && !otherBox.getText().matches(regex)){
                 		Window.alert("The value "+otherBox.getText()+" is not valid for this field");
                 		box.setText(oldValue);
                 	}else{
@@ -427,7 +427,8 @@ public class DSLSentenceWidget extends DirtyableComposite {
     	//Format for the dropdown def is <varName>:<type>:<Fact.field>
     	private String varName ="";
     	private String format  ="";
-    	private DateTimeFormat formatter = DateTimeFormat.getFormat("dd-MMM-yyyy");
+    	private String defaultFormat = "dd-MMM-yyyy";
+    	private DateTimeFormat formatter = null;
     	public DSLDateSelector(String variableDef){
 	    	
     		int firstIndex = variableDef.indexOf(":");
@@ -435,11 +436,24 @@ public class DSLSentenceWidget extends DirtyableComposite {
     		varName = variableDef.substring(0,firstIndex);
     		format = variableDef.substring(lastIndex+1, variableDef.length());
 	    	
+    		//Ugly ugly way to get a date format
+    		if(format.equals("") || format.equals("default")){
+    			formatter = DateTimeFormat.getFormat(defaultFormat);
+    		}else{
+    			try{
+    				formatter = DateTimeFormat.getFormat(format);
+    			}catch(Exception e){
+    				formatter = DateTimeFormat.getFormat(defaultFormat);
+    			}
+    		}
+    		
     		Date origDate = null;
-    		try{
-    			origDate = formatter.parse(varName);
-    		}catch(Exception e){
-    			
+    		if(!varName.equals("")){
+	    		try{
+	    			origDate = formatter.parse(varName);
+	    		}catch(Exception e){
+	    			
+	    		}
     		}
     		
     		resultWidget = new DateField();

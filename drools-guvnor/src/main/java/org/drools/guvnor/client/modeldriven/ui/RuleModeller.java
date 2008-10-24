@@ -486,7 +486,8 @@ public class RuleModeller extends DirtyableComposite {
             dsls.addItem( "Choose..." );
             for(int i = 0; i < completions.getDSLActions().length; i++ ) {
                 DSLSentence sen = (DSLSentence) completions.getDSLActions()[ i ];
-                dsls.addItem( sen.toString(), Integer.toString( i ) );
+                if(sen!=null)
+                	dsls.addItem( sen.toString(), Integer.toString( i ) );
             }
 
             dsls.addChangeListener( new ChangeListener() {
