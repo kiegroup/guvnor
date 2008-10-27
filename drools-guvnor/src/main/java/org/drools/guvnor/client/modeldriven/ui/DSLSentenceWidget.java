@@ -34,11 +34,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.DatePicker;
@@ -49,26 +51,31 @@ import com.gwtext.client.widgets.form.DateField;
  * This displays a widget to edit a DSL sentence.
  * @author Michael Neale
  */
-public class DSLSentenceWidget extends DirtyableComposite {
+public class DSLSentenceWidget extends Composite {
 
 	private static final String ENUM_TAG = "ENUM";
 	private static final String DATE_TAG = "DATE";
 	private static final String BOOLEAN_TAG = "BOOLEAN";
-    private final DirtyableHorizontalPane horiz;
     private final List  widgets;
     private final DSLSentence sentence;
     private SuggestionCompletionEngine completions;
+	private final VerticalPanel layout;
+	private HorizontalPanel currentRow;
     public DSLSentenceWidget(DSLSentence sentence, SuggestionCompletionEngine completions) {
-        horiz = new DirtyableHorizontalPane();
         widgets = new ArrayList();
         this.sentence = sentence;
         this.completions = completions;
+        this.layout = new VerticalPanel();
+        this.currentRow = new HorizontalPanel();
+        this.layout.add(currentRow);
+        this.layout.setCellWidth(currentRow, "100%");
+        this.layout.setWidth("100%");
         init(  );
     }
 
     private void init( ) {
         makeWidgets(this.sentence.sentence);
-        initWidget( this.horiz );
+        initWidget( this.layout );
     }
 
 
@@ -77,62 +84,73 @@ public class DSLSentenceWidget extends DirtyableComposite {
      * One day, if this is too complex, this will have to be done on the server side.
      */
     public void makeWidgets(String dslLine) {
-        
+
         int startVariable = dslLine.indexOf("{");
         List<Widget> lineWidgets = new ArrayList<Widget>();
-        
+
         String startLabel = "";
         if(startVariable>0){
         	startLabel = dslLine.substring(0,startVariable);
-        	
+
         }else{
         	startLabel = dslLine;
         }
-        
+
         Widget label = getLabel(startLabel);
     	lineWidgets.add(label);
-        	
+
         while(startVariable>0){
         	int endVariable = dslLine.indexOf("}",startVariable);
         	String currVariable = dslLine.substring(startVariable+1, endVariable);
-        	
+
         	Widget varWidget = processVariable(currVariable);
         	lineWidgets.add(varWidget);
-        	
+
         	//Parse out the next label between variables
         	startVariable = dslLine.indexOf("{",endVariable);
+        	String lbl;
         	if(startVariable>0){
-	        	String nextLabel = dslLine.substring(endVariable+1,startVariable);
-	        	Widget currLabel = getLabel(nextLabel);
-	        	lineWidgets.add(currLabel);
+	        	lbl = dslLine.substring(endVariable+1,startVariable);
         	}else{
-        		String lastLabel = dslLine.substring(endVariable+1, dslLine.length());
-        		Widget currLabel = getLabel(lastLabel);
-        		lineWidgets.add(currLabel);
+        		lbl = dslLine.substring(endVariable+1, dslLine.length());
         	}
+
+        	if (lbl.indexOf("\\n") > -1) {
+        		String[] lines = lbl.split("\\\\n");
+        		for (int i = 0; i < lines.length; i++) {
+        			lineWidgets.add(new NewLine());
+					lineWidgets.add(getLabel(lines[i]));
+				}
+        	} else {
+            	Widget currLabel = getLabel(lbl);
+            	lineWidgets.add(currLabel);
+        	}
+
         }
-        
+
         for(Widget widg : lineWidgets){
         	addWidget(widg);
         }
         updateSentence();
     }
 
+    class NewLine extends Widget {}
+
     public Widget processVariable(String currVariable){
-    	
+
     	Widget result = null;
     	//Formats are: <varName>:ENUM:<Field.type>
     	//			   <varName>:DATE:<dateFormat>
     	//			   <varName>:BOOLEAN:[checked | unchecked] <-initial value
-    	
+
     	int colonIndex = currVariable.indexOf(":");
     	if(colonIndex>0){
-    		
+
     		String definition = currVariable.substring(colonIndex+1,currVariable.length());
-    		
+
     		int secondColonIndex = definition.indexOf(":");
     		if(secondColonIndex>0){
-    			
+
     			String type = currVariable.substring(colonIndex+1,colonIndex+secondColonIndex+1);
     			if(type.equalsIgnoreCase(ENUM_TAG)){
     				result = getEnumDropdown(currVariable);
@@ -148,19 +166,19 @@ public class DSLSentenceWidget extends DirtyableComposite {
     	}
     	else{
     		result = getBox(currVariable,"");
-    	}  
-    	
+    	}
+
     	return result;
     }
-    
+
     public Widget getEnumDropdown(String variableDef){
 
-    	Widget resultWidget = new DSLDropDown(variableDef);;	
+    	Widget resultWidget = new DSLDropDown(variableDef);;
     	return resultWidget;
     }
-    
+
     public Widget getBox(String variableDef, String regex){
-    	
+
     	int colonIndex = variableDef.indexOf(":");
     	if(colonIndex>0){
     		variableDef = variableDef.substring(0,colonIndex);
@@ -169,27 +187,33 @@ public class DSLSentenceWidget extends DirtyableComposite {
     	currentBox.setVisibleLength(variableDef.length()+1);
     	currentBox.setText(variableDef);
     	currentBox.setRestriction(regex);
-    	
+
     	return currentBox;
     }
-    
+
     public Widget getCheckbox(String variableDef){
     	return new DSLCheckBox(variableDef);
     }
-    
+
     public Widget getDateSelector(String variableDef){
     	return new DSLDateSelector(variableDef);
     }
-    
+
     public Widget getLabel(String labelDef){
     	Label label = new SmallLabel();
     	label.setText(labelDef+" ");
-    	
+
     	return label;
     }
-    
+
     private void addWidget(Widget currentBox) {
-        this.horiz.add( currentBox );
+    	if (currentBox instanceof NewLine) {
+    		currentRow = new HorizontalPanel();
+    		layout.add(currentRow);
+    		layout.setCellWidth(currentRow, "100%");
+    	} else {
+    		currentRow.add(currentBox);
+    	}
         widgets.add( currentBox );
     }
 
@@ -204,25 +228,25 @@ public class DSLSentenceWidget extends DirtyableComposite {
                 newSentence = newSentence + ((Label) wid).getText();
             } else if (wid instanceof FieldEditor) {
             	FieldEditor editor  = (FieldEditor) wid;
-            	
+
             	String varString = editor.getText();
             	String restriction  =editor.getRestriction();
             	if(!restriction.equals("")){
             		varString = varString+":"+restriction;
             	}
-            	
+
                 newSentence = newSentence + " {" + varString + "} ";
             }else if (wid instanceof DSLDropDown){
-            	
+
             	//Add the meta-data back to the field so that is shows up as a dropdown when refreshed from repo
             	DSLDropDown drop  = (DSLDropDown)wid;
             	ListBox box = drop.getListBox();
             	String type = drop.getType();
             	String factAndField = drop.getFactAndField();
-            	
+
             	newSentence = newSentence + "{"+box.getItemText(box.getSelectedIndex())+":"+type+":"+factAndField+ "} ";
             }else if(wid instanceof DSLCheckBox){
-            	
+
             	DSLCheckBox check = (DSLCheckBox)wid;
             	boolean checkValue  = check.getCheckedValue();
             	newSentence = newSentence + "{"+checkValue+":"+check.getType()+":"+checkValue+ "} ";
@@ -230,6 +254,8 @@ public class DSLSentenceWidget extends DirtyableComposite {
             	DSLDateSelector dateSel = (DSLDateSelector)wid;
             	String dateString = dateSel.getDateString();
             	newSentence = newSentence + "{"+dateString+":"+dateSel.getType()+":"+dateString+ "} ";
+            } else if (wid instanceof NewLine) {
+            	newSentence = newSentence + "\\n";
             }
         }
         this.sentence.sentence = newSentence.trim();
@@ -278,63 +304,60 @@ public class DSLSentenceWidget extends DirtyableComposite {
         public String getText() {
             return box.getText();
         }
-        
+
         public void setRestriction(String regex){
         	this.regex = regex;
         }
-        
+
         public String getRestriction(){
         	return this.regex;
         }
-        
+
         public boolean isValid(){
         	boolean result = true;
         	if(!regex.equals(""))
         		result = this.box.getText().matches(this.regex);
-        	
+
         	return result;
         }
     }
 
-    public boolean isDirty() {
-        return horiz.hasDirty();
-    }
 
     class DSLDropDown extends DirtyableComposite{
-    	
+
     	ListBox resultWidget = null;
     	//Format for the dropdown def is <varName>:<type>:<Fact.field>
     	private String varName ="";
     	private String type  ="";
-    	private String factAndField = ""; 
+    	private String factAndField = "";
 
     	public DSLDropDown(String variableDef){
-	    		
-    		
-    		
+
+
+
     		int firstIndex = variableDef.indexOf(":");
         	int lastIndex  = variableDef.lastIndexOf(":");
     		varName = variableDef.substring(0,firstIndex);
     		type = variableDef.substring(firstIndex+1,lastIndex);
     		factAndField = variableDef.substring(lastIndex+1, variableDef.length());
-    		
+
     		int dotIndex = factAndField.indexOf(".");
     		String type = factAndField.substring(0,dotIndex);
     		String field= factAndField.substring(dotIndex+1,factAndField.length());
-    		
+
 			String[] data = completions.getEnumValues(type, field);
 	    	ListBox list = new ListBox();
-	    	
+
 	    	if(data!=null){
 		    	int selected = -1;
 			    	for(int i=0;i<data.length;i++){
-			    		
+
 			    		if(varName.equals(data[i])){
 			    			selected=i;
 			    		}
 			    		list.addItem(data[i]);
 			    	}
-			    	
+
 			    	if(selected>=0)
 			    		list.setSelectedIndex(selected);
 	    	}
@@ -344,7 +367,7 @@ public class DSLSentenceWidget extends DirtyableComposite {
                     makeDirty();
                 }
             });
-	    	
+
 	    	initWidget(list);
 	    	resultWidget = list;
     	}
@@ -374,29 +397,29 @@ public class DSLSentenceWidget extends DirtyableComposite {
     	private String varName ="";
 
     	public DSLCheckBox(String variableDef){
-	    	
+
     		int firstIndex = variableDef.indexOf(":");
         	int lastIndex  = variableDef.lastIndexOf(":");
     		varName = variableDef.substring(0,firstIndex);
     		String checkedUnchecked = variableDef.substring(lastIndex+1, variableDef.length());
-	    	
+
     		resultWidget = new CheckBox();
 	    	if(checkedUnchecked.equalsIgnoreCase("checked")){
 	    		resultWidget.setChecked(true);
 	    	}else{
 	    		resultWidget.setChecked(false);
 	    	}
-		    
+
 	    	resultWidget.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                 	CheckBox box = (CheckBox)w;
                 	resultWidget.setChecked(box.isChecked());
-                	
+
                     updateSentence();
                     makeDirty();
                 }
             });
-	    	
+
 	    	resultWidget.setVisible(true);
 	    	initWidget(resultWidget);
 	    	resultWidget = resultWidget;
@@ -410,7 +433,7 @@ public class DSLSentenceWidget extends DirtyableComposite {
 		public String getType() {
 			return BOOLEAN_TAG;
 		}
-		
+
 		public boolean getCheckedValue() {
 			return resultWidget.isChecked();
 		}
@@ -421,7 +444,7 @@ public class DSLSentenceWidget extends DirtyableComposite {
 			this.varName = varName;
 		}
     }
-    
+
     class DSLDateSelector extends DirtyableComposite{
     	DateField resultWidget = null;
     	//Format for the dropdown def is <varName>:<type>:<Fact.field>
@@ -430,12 +453,12 @@ public class DSLSentenceWidget extends DirtyableComposite {
     	private String defaultFormat = "dd-MMM-yyyy";
     	private DateTimeFormat formatter = null;
     	public DSLDateSelector(String variableDef){
-	    	
+
     		int firstIndex = variableDef.indexOf(":");
         	int lastIndex  = variableDef.lastIndexOf(":");
     		varName = variableDef.substring(0,firstIndex);
     		format = variableDef.substring(lastIndex+1, variableDef.length());
-	    	
+
     		//Ugly ugly way to get a date format
     		if(format.equals("") || format.equals("default")){
     			formatter = DateTimeFormat.getFormat(defaultFormat);
@@ -446,22 +469,22 @@ public class DSLSentenceWidget extends DirtyableComposite {
     				formatter = DateTimeFormat.getFormat(defaultFormat);
     			}
     		}
-    		
+
     		Date origDate = null;
     		if(!varName.equals("")){
 	    		try{
 	    			origDate = formatter.parse(varName);
 	    		}catch(Exception e){
-	    			
+
 	    		}
     		}
-    		
+
     		resultWidget = new DateField();
     		if(origDate!=null)
     			resultWidget.setValue(origDate);
-	    	
+
 	    	resultWidget.addListener( new DatePickerListener() {
-                
+
 				public boolean doBeforeDestroy(Component component) {
 					return true;
 				}
@@ -497,7 +520,7 @@ public class DSLSentenceWidget extends DirtyableComposite {
 				public void onEnable(Component component) {
 				}
 
-				public void onHide(Component component) {	
+				public void onHide(Component component) {
 				}
 
 				public void onRender(Component component) {
@@ -518,10 +541,10 @@ public class DSLSentenceWidget extends DirtyableComposite {
 					resultWidget.setValue(date);
 					updateSentence();
                     makeDirty();
-					
-				}   
+
+				}
             });
-	    	
+
 	    	resultWidget.setVisible(true);
 	    	initWidget(resultWidget);
     	}
@@ -534,7 +557,7 @@ public class DSLSentenceWidget extends DirtyableComposite {
 		public String getType() {
 			return DATE_TAG;
 		}
-		
+
 		public String getFormat(){
 			return this.format;
 		}
@@ -542,7 +565,7 @@ public class DSLSentenceWidget extends DirtyableComposite {
 			Date value  = resultWidget.getValue();
 			String result ="";
 			if(value!=null)
-				result =formatter.format(value); 
+				result =formatter.format(value);
 			return  result;
 		}
 		public String getVarName() {
@@ -551,6 +574,6 @@ public class DSLSentenceWidget extends DirtyableComposite {
 		public void setVarName(String varName) {
 			this.varName = varName;
 		}
-		
+
     }
 }
