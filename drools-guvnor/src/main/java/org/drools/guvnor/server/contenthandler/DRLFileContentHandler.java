@@ -35,16 +35,23 @@ public class DRLFileContentHandler extends PlainTextContentHandler implements IR
     private String getContent(AssetItem asset) {
         String content = asset.getContent();
         if (isStandAloneRule( content )) {
-            content = wrapRuleDeclaration( asset, content );
+            content = wrapRuleDeclaration( asset.getName(), content );
         }
         return content;
     }
 
-    private String wrapRuleDeclaration(AssetItem asset, String content) {
-        return "rule '" + asset.getName() + "'\n"  + content + "\nend";
+    String wrapRuleDeclaration(String name, String content) {
+        return "rule '" + name + "'\n"  + getContent(content) + "\nend";
     }
 
-    /**
+    String getContent(String content) {
+		if (content != null && content.indexOf("dialect") == -1) {
+			return "dialect 'mvel'\n" + content;
+		}
+		return content;
+	}
+
+	/**
      * This will try and sniff ouf if its a stand alone rule which
      * will use the asset name as the rule name, or if it should be treated as a package
      * (in the latter case, the content is passed as it to the compiler).
@@ -86,7 +93,7 @@ public class DRLFileContentHandler extends PlainTextContentHandler implements IR
         String content = asset.getContent();
         boolean standAlone = isStandAloneRule( content );
         if (standAlone) {
-            buf.append( wrapRuleDeclaration( asset, content ) );
+            buf.append( wrapRuleDeclaration( asset.getName(), content ) );
         } else {
             buf.append( content );
         }

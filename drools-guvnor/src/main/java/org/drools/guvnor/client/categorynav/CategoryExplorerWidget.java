@@ -121,7 +121,7 @@ public class CategoryExplorerWidget extends Composite
 		                                             navTreeWidget.removeItems();
 
 		                                             TreeItem root = new TreeItem();
-		                                             root.setHTML("--------<img src=\"images/desc.gif\"/>--------");
+		                                             root.setHTML("<img src=\"images/desc.gif\"/>");
 		                                             navTreeWidget.addItem(root);
 
 		                                             String[] categories = (String[]) result;
@@ -177,16 +177,16 @@ public class CategoryExplorerWidget extends Composite
 
         //walk back up to build a tree
         this.selectedPath = getPath( item );
-        
+
         //item.setUserObject( new Boolean( true ) );
 
         service.loadChildCategories( selectedPath,
                                      new GenericCallback() {
 
-                                         public void onSuccess(Object result) {           
+                                         public void onSuccess(Object result) {
                                              TreeItem child = root.getChild( 0 );
                                              if ( child instanceof PendingItem ) {
-                                                 // root.removeItem( child ); 
+                                                 // root.removeItem( child );
                                                  child.setVisible( false );
                                              }
                                              String[] list = (String[]) result;
@@ -197,7 +197,7 @@ public class CategoryExplorerWidget extends Composite
                                                  it.addItem( new PendingItem() );
 
                                                  root.addItem( it );
-                                             }           
+                                             }
                                          }
 
                                      } );

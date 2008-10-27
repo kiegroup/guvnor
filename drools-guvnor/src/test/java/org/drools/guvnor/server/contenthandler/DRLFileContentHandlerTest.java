@@ -70,6 +70,26 @@ public class DRLFileContentHandlerTest extends TestCase {
 
     }
 
+    public void testStandAlone() throws Exception {
+    	String rule = "when \nFoo()\nthen\n\tbar()";
+        DRLFileContentHandler h = new DRLFileContentHandler();
+        assertTrue(h.isStandAloneRule( rule ));
+
+        String r = h.wrapRuleDeclaration("whee", rule);
+        assertTrue(r.indexOf("rule 'whee'") > -1);
+        assertTrue(r.indexOf("dialect 'mvel'") > -1);
+
+        rule = "dialect 'java'\nwhen \nFoo()\nthen\n\tbar()";
+        r = h.wrapRuleDeclaration("whee", rule);
+        assertTrue(r.indexOf("rule 'whee'") > -1);
+        assertEquals(-1, r.indexOf("dialect 'mvel'"));
+        assertTrue(r.indexOf("dialect 'java'") > -1);
+
+
+
+
+    }
+
     public void testRuleWithRuleFlowGroup() {
         String rule = "rule \"DemoRule\" \n "+
         "    ruleflow-group \"name-of-ruleflow\"  \n" +

@@ -10,6 +10,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -163,6 +164,10 @@ public class QueryWidget extends Composite {
 		final SimplePanel resultsP = new SimplePanel();
 		go.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
+				if (tx.getText().equals("")) {
+					Window.alert("Please enter some search text");
+					return;
+				}
 				resultsP.clear();
 				AssetItemGrid grid = new AssetItemGrid(openItem, "searchresults", new AssetItemGridDataLoader() {
 					public void loadData(int startRow, int numberOfRows,
