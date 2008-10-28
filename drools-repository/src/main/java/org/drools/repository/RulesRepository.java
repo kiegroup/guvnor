@@ -349,6 +349,7 @@ public class RulesRepository {
                                        AssetItem.PACKAGE_NAME_PROPERTY );
             dest.node.setProperty( AssetItem.VERSION_NUMBER_PROPERTY_NAME,
                                    0 );
+            dest.updateTitle(dest.getName());
             dest.checkin( "Copied from " + source.getPackageName() + "/" + source.getName() );
             return dest.getUUID();
         } catch ( RepositoryException e ) {

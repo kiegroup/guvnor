@@ -651,6 +651,7 @@ public class RulesRepositoryTest extends TestCase {
 
         String uuid = repo.copyAsset( item.getUUID(), "testCopyAsset", "testCopyAssetDestination" );
         AssetItem dest = repo.loadAssetByUUID( uuid );
+        assertEquals(dest.getName(), dest.getTitle());
         assertEquals("la", dest.getContent());
         assertEquals("testCopyAsset", dest.getPackageName());
         assertFalse(uuid.equals( item.getUUID() ));
