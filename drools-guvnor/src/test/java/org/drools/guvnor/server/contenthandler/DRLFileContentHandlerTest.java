@@ -37,6 +37,8 @@ public class DRLFileContentHandlerTest extends TestCase {
 
 		String moreSingle = "rule foo when then end";
 
+		String query = "query FooBar\nend";
+
 		String moreNewRule = "agenda-group 'x' \n when end.bar \n then rule.end.bar";
 
 		String emptyRule = "";
@@ -51,6 +53,7 @@ public class DRLFileContentHandlerTest extends TestCase {
 		assertFalse(h.isStandAloneRule(emptyRule));
 		assertTrue(h.isStandAloneRule(moreNewRule));
 		assertTrue(h.isStandAloneRule(complex));
+		assertFalse(h.isStandAloneRule(query));
 
 	}
 

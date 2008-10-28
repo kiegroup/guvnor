@@ -805,8 +805,8 @@ public class ServiceImplementation implements RepositoryService {
 		//System.out.println("(convertMapToString)returnVal: " + returnVal);
 		return returnVal;
 	}
-	
-	
+
+
 	@WebRemote
 	@Restrict("#{identity.loggedIn}")
 	public ValidatedResponse savePackage(PackageConfigData data)
@@ -823,14 +823,14 @@ public class ServiceImplementation implements RepositoryService {
 
 		updateDroolsHeader(data.header, item);
 		item.updateCategoryRules(convertMapToString(data.catRules, true), convertMapToString(data.catRules, false));
-	
+
 		item.updateExternalURI(data.externalURI);
 		item.updateDescription(data.description);
 		item.archiveItem(data.archived);
 		item.updateBinaryUpToDate(false);
 		this.ruleBaseCache.remove(data.uuid);
 		item.checkin(data.description);
-	
+
 
 		BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
 		loader.getSuggestionEngine(item);
@@ -1185,6 +1185,12 @@ public class ServiceImplementation implements RepositoryService {
 				break;
 			}
 			AssetItem item = (AssetItem) it.next();
+			try {
+				System.err.println("jcr:path=" + item.getNode().getPath());
+			} catch (RepositoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			if (filter.accept(item, RoleTypes.PACKAGE_READONLY)) {
 				TableDataRow row = new TableDataRow();
 				row.id = item.getUUID();
@@ -1634,7 +1640,7 @@ public class ServiceImplementation implements RepositoryService {
 		}
 
 		return runScenario(packageName, scenario, null);
-		
+
 	}
 
 	private SingleScenarioResult runScenario(String packageName, Scenario scenario, RuleCoverageListener coverage) throws SerializableException {
