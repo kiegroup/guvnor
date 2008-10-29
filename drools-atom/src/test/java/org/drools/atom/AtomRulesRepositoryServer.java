@@ -9,6 +9,7 @@ import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.apache.cxf.jaxrs.provider.AtomEntryProvider;
 import org.apache.cxf.jaxrs.provider.AtomFeedProvider;
 import org.apache.cxf.testutil.common.AbstractTestServerBase;
+import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RepositorySessionUtil;
 import org.drools.repository.RulesRepository;
@@ -28,8 +29,10 @@ public class AtomRulesRepositoryServer extends AbstractTestServerBase{
         repo = RepositorySessionUtil.getRepository();
         PackageItem pkg = repo.createPackage("testPackage1", "desc1");
         repo.loadCategory( "/" ).addCategory( "AtomRulesRepositoryTestCat", "X" );
-        pkg.addAsset( "testAsset1", "testAsset1Desc1", "/AtomRulesRepositoryTestCat", "drl");
-        pkg.addAsset( "testAsset2", "testAsset2Desc1", "/AtomRulesRepositoryTestCat", "drl");
+        AssetItem testAsset1 = pkg.addAsset( "testAsset1", "testAsset1Desc1", "/AtomRulesRepositoryTestCat", "drl");
+        testAsset1.updateContent("a new test rule for testAsset1");
+        AssetItem testAsset2 = pkg.addAsset( "testAsset2", "testAsset2Desc1", "/AtomRulesRepositoryTestCat", "drl");
+        testAsset2.updateContent("a new test rule for testAsset2");
 
         repo.save();
 

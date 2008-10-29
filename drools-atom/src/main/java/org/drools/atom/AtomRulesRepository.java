@@ -182,16 +182,16 @@ public class AtomRulesRepository {
     @GET
     @Path("/packages/{packageName}")
     @ProduceMime({"application/atom+xml"})
-    public Entry getPackageAsEntry(@PathParam("packageName") String packageName, @Context UriInfo uParam) throws PackageNotFoundFault {
+    public Entry getPackageAsEntry(@PathParam("packageName") String packageName, @Context UriInfo uParam) throws ResourceNotFoundFault {
         System.out.println("----invoking getPackageAsEntry with packageName: " + packageName);
         
         try {
             PackageItem packageItem = repository.loadPackage(packageName);
             return createDetailedPackageItemEntry(packageItem, uParam);
         } catch (RulesRepositoryException e) {
-        	PackageNotFoundDetails details = new PackageNotFoundDetails();
+        	ResourceNotFoundDetails details = new ResourceNotFoundDetails();
             details.setName(packageName);
-            throw new PackageNotFoundFault(details);       	
+            throw new ResourceNotFoundFault(details);       	
         }
     }
             
@@ -200,7 +200,7 @@ public class AtomRulesRepository {
     @ProduceMime({"application/atom+xml"})
     public Entry getAssetAsEntry(@PathParam("packageName") String packageName, 
     		@Context UriInfo uParam,
-    		@PathParam("assetName") String assetName) throws PackageNotFoundFault {
+    		@PathParam("assetName") String assetName) throws ResourceNotFoundFault {
         System.out.println("----invoking getPackageAsEntry with packageName: " + packageName + ", assetName: " + assetName);
         
         try {             
@@ -212,15 +212,15 @@ public class AtomRulesRepository {
                 }
             }
         } catch (RulesRepositoryException e) {
-        	PackageNotFoundDetails details = new PackageNotFoundDetails();
+        	ResourceNotFoundDetails details = new ResourceNotFoundDetails();
             details.setName(packageName);
-            throw new PackageNotFoundFault(details);       	
+            throw new ResourceNotFoundFault(details);       	
         }
         
         //TODO: Better exception handling
-    	PackageNotFoundDetails details = new PackageNotFoundDetails();
+    	ResourceNotFoundDetails details = new ResourceNotFoundDetails();
         details.setName(assetName);
-        throw new PackageNotFoundFault(details);       	
+        throw new ResourceNotFoundFault(details);       	
     }
     
     @POST
@@ -337,11 +337,6 @@ public class AtomRulesRepository {
         e.addLink(uri.toString());
         e.setUpdated(pkg.getLastModified().getTime());
         
-        //TODO: What content to return?
-        e.setContentElement(factory.newContent());
-        e.getContentElement().setContentType(Content.Type.TEXT);
-        e.getContentElement().setValue("archived=" +  pkg.isArchived());
-        
         return e;
     }
     
@@ -362,10 +357,13 @@ public class AtomRulesRepository {
         e.addLink(uri.toString());
         e.setUpdated(asset.getLastModified().getTime());
         
-        //TODO: What content to return?
-        e.setContentElement(factory.newContent());
-        e.getContentElement().setContentType(Content.Type.TEXT);
-        e.getContentElement().setValue("archived=" +  asset.isArchived());
+        if (!asset.isBinary()) {
+			e.setContentElement(factory.newContent());
+			e.getContentElement().setContentType(Content.Type.TEXT);
+			e.getContentElement().setValue(asset.getContent());
+		} else {
+			// TODO: binary content
+		}
         
         return e;
     }

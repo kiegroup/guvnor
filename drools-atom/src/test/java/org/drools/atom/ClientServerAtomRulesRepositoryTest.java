@@ -117,9 +117,8 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
             httpClient.executeMethod(get);           
             String response = getStringFromInputStream(get.getResponseBodyAsStream());
             //System.out.print(response);
-            assertTrue(response.indexOf("testPackage1") > 0);
-            assertTrue(response.indexOf("desc1") > 0);
-            assertTrue(response.indexOf("archived=false") > 0);
+            assertTrue(response.indexOf("testPackage1</title>") > 0);
+            assertTrue(response.indexOf("desc1</summary>") > 0);
         } finally {
             get.releaseConnection();
         }
@@ -137,9 +136,9 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
             httpClient.executeMethod(get);           
             String response = getStringFromInputStream(get.getResponseBodyAsStream());
             //System.out.print(response);
-            assertTrue(response.indexOf("testAsset1") > 0);
-            assertTrue(response.indexOf("testAsset1Desc1") > 0);
-            assertTrue(response.indexOf("archived=false") > 0);
+            assertTrue(response.indexOf("testAsset1</title>") > 0);
+            assertTrue(response.indexOf("testAsset1Desc1</summary>") > 0);
+            assertTrue(response.indexOf("a new test rule for testAsset1</content>") > 0);
         } finally {
             get.releaseConnection();
         }
@@ -180,7 +179,7 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
             httpClient2.executeMethod(get2);           
             String response = getStringFromInputStream(get2.getResponseBodyAsStream());
             //System.out.print(response);
-            assertTrue(response.indexOf("testPackage2") > 0);
+            assertTrue(response.indexOf("testPackage2</title>") > 0);
         } finally {
             get2.releaseConnection();
         }
@@ -203,7 +202,7 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
             httpClient4.executeMethod(get4);           
             String response = getStringFromInputStream(get4.getResponseBodyAsStream());
             //System.out.print(response);
-            assertTrue(response.indexOf("org.drools.atom.PackageNotFoundFault") > 0);
+            assertTrue(response.indexOf("org.drools.atom.ResourceNotFoundFault") > 0);
         } finally {
             get4.releaseConnection();
         }
@@ -236,7 +235,7 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
         InputStream in = connect.getInputStream();
         assertNotNull(in);
         String response = getStringFromInputStream(in);
-        assertTrue(response.indexOf("esc2") > 0);
+        assertTrue(response.indexOf("desc2</summary>") > 0);
 
          // Roll back changes:
         File input1 = new File(getClass().getResource("resources/expected_get_testPackage1.txt").toURI());
