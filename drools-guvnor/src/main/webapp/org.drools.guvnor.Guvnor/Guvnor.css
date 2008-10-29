@@ -26,6 +26,11 @@ code {
     cursor                      :    row-resize;
 }
 
+.selectable-label:hover {
+	text-decoration: underline;
+    cursor: pointer;
+}
+
 .HorizontalSplitPanel .hsplitter
 {
     background-color            :    #f3f2e7;

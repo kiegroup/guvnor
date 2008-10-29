@@ -20,6 +20,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
@@ -29,6 +30,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
+import org.drools.guvnor.client.explorer.RulesNewMenu;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ActionCallMethod;
@@ -63,6 +65,12 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.widgets.ToolbarMenuButton;
+import com.gwtext.client.widgets.menu.BaseItem;
+import com.gwtext.client.widgets.menu.Item;
+import com.gwtext.client.widgets.menu.Menu;
+import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 
 /**
  * This is the parent widget that contains the model based rule builder.
@@ -141,7 +149,7 @@ public class RuleModeller extends DirtyableComposite {
         layout.setWidget( 4, 0, new SmallLabel("(options)") );
         layout.setWidget( 4, 2, getAddAttribute() );
         layout.setWidget( 5, 1, new RuleAttributeWidget(this, this.model) );
-        
+
     }
 
     public void refreshWidget() {
@@ -161,13 +169,13 @@ public class RuleModeller extends DirtyableComposite {
         return add;
     }
 
-    
+
     protected void showAttributeSelector(Widget w) {
         final FormStylePopup pop = new FormStylePopup("images/config.png", "Add an option to the rule");
         final ListBox list = RuleAttributeWidget.getAttributeList();
         final Image addbutton = new ImageButton("images/new_item.gif");
         final TextBox box = new TextBox();
-        
+
 
         list.setSelectedIndex( 0 );
 
@@ -179,12 +187,12 @@ public class RuleModeller extends DirtyableComposite {
             }
         });
         box.setVisibleLength( 15 );
-        
+
         addbutton.setTitle( "Add Metadata to the rule." );
 
         addbutton.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-            	
+
             	model.addMetadata( new RuleMetadata(box.getText(), "") );
             	refreshWidget();
                 pop.hide();
@@ -193,14 +201,14 @@ public class RuleModeller extends DirtyableComposite {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
         horiz.add( box );
         horiz.add( addbutton );
-        
 
 
 
-        
+
+
         pop.addAttribute( "Metadata: ", horiz );
         pop.addAttribute( "Attribute: ", list );
-       
+
         //add text field
         //add button
         //add listener that adds the rule Attribute
@@ -215,7 +223,7 @@ public class RuleModeller extends DirtyableComposite {
 //                                  }
 //                              },
 //                              "A short description of the subject matter." ) );
-        
+
 
         pop.show();
     }

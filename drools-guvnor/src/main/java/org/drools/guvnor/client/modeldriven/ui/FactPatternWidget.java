@@ -20,6 +20,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
@@ -51,10 +52,18 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.MouseListener;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.widgets.ToolbarMenuButton;
+import com.gwtext.client.widgets.menu.BaseItem;
+import com.gwtext.client.widgets.menu.Item;
+import com.gwtext.client.widgets.menu.Menu;
+import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 
 /**
  * This is the new smart widget that works off the model.
@@ -224,13 +233,13 @@ public class FactPatternWidget extends DirtyableComposite {
         Image edit = new ImageButton( "images/edit_tiny.gif" );
         edit.setTitle( "Add a field to this nested constraint." );
 
-        edit.addClickListener( new ClickListener() {
+        ClickListener click = new ClickListener() {
             public void onClick(Widget w) {
                 popupCreator.showPatternPopupForComposite( w, constraint );
             }
 
-        } );
-
+        };
+        edit.addClickListener( click );
 
         if (constraint.compositeJunctionType.equals(CompositeFieldConstraint.COMPOSITE_TYPE_AND)) {
             desc = "All of:";
@@ -241,7 +250,7 @@ public class FactPatternWidget extends DirtyableComposite {
         //HorizontalPanel ab = new HorizontalPanel();
         //ab.setStyleName( "composite-fact-pattern" );
         horiz.add( edit );
-        horiz.add( new SmallLabel(desc) );
+        horiz.add( new ClickableLabel(desc, click) );
 
         //horiz.add( ab );
 
@@ -339,16 +348,18 @@ public class FactPatternWidget extends DirtyableComposite {
         Image edit = new ImageButton( "images/edit_tiny.gif" );
         edit.setTitle( "Add a field to this condition, or bind a varible to this fact." );
 
-        edit.addClickListener( new ClickListener() {
+        ClickListener click = new ClickListener() {
             public void onClick(Widget w) {
                 popupCreator.showPatternPopup( w, pattern.factType, null );
             }
-        } );
+        };
+
+        edit.addClickListener( click );
 
         if ( pattern.boundName != null ) {
-            horiz.add( new SmallLabel( pattern.factType  + " <b>[" + pattern.boundName + "]</b>") );
+            horiz.add( new ClickableLabel( pattern.factType  + " <b>[" + pattern.boundName + "]</b>", click) );
         } else {
-            horiz.add( new SmallLabel( pattern.factType ) );
+            horiz.add( new ClickableLabel( pattern.factType, click ) );
         }
         horiz.add( edit );
 
@@ -393,14 +404,11 @@ public class FactPatternWidget extends DirtyableComposite {
     private Widget fieldLabel(final SingleFieldConstraint con, boolean showBinding, int padding) {//, final Command onChange) {
         HorizontalPanel ab = new HorizontalPanel();
         ab.setStyleName( "modeller-field-Label" );
-        ab.add(new SmallLabel( con.fieldName ));
+
         if (!con.isBound()) {
             if (bindable && showBinding) {
-                Image bind = new ImageButton( "images/edit_tiny.gif", "Give this field a variable name that can be used elsewhere." + padding );
-                Element element = bind.getElement();
-                DOM.setStyleAttribute(element, "marginLeft", "" + padding + "pt");
 
-                bind.addClickListener( new ClickListener() {
+            	ClickListener click = new ClickListener() {
                     public void onClick(Widget w) {
                         //showBindFieldPopup(w, con);
                         SingleFieldConstraint constraint = con;
@@ -411,10 +419,18 @@ public class FactPatternWidget extends DirtyableComposite {
                             popupCreator.showBindFieldPopup(w, con);
                         }
                     }
-                });
+                };
+
+                Image bind = new ImageButton( "images/edit_tiny.gif", "Give this field a variable name that can be used elsewhere." + padding );
+                Element element = bind.getElement();
+                DOM.setStyleAttribute(element, "marginLeft", "" + padding + "pt");
+
+                bind.addClickListener( click);
+                ab.add( new ClickableLabel(con.fieldName, click));
                 ab.add( bind );
             }
         } else {
+        	ab.add(new SmallLabel(con.fieldName));
             ab.add( new SmallLabel(" <b>[" + con.fieldBinding + "]</b>") );
         }
 

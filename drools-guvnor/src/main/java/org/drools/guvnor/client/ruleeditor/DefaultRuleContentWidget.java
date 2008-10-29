@@ -20,6 +20,7 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
 import com.google.gwt.user.client.ui.TextArea;
@@ -55,6 +56,7 @@ public class DefaultRuleContentWidget extends DirtyableComposite {
         text.setVisibleLines( 16 );
         text.setText( data.content );
 
+        text.getElement().setAttribute("spellcheck", "false");
 
         text.setStyleName( "default-text-Area" );
 

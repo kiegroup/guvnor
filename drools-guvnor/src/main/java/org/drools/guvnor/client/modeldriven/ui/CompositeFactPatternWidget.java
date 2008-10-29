@@ -17,6 +17,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 
 
+import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.DirtyableVerticalPane;
@@ -87,14 +88,15 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
 
         HorizontalPanel horiz = new HorizontalPanel();
         Image edit = new ImageButton( "images/edit_tiny.gif" );
-        edit.setTitle( "Add a fact to this constraint. If it is an 'or' type, it will need at least 2." );
-        edit.addClickListener( new ClickListener() {
+        ClickListener click =  new ClickListener() {
             public void onClick(Widget w) {
                 showFactTypeSelector( w );
             }
-        } );
+        };
+        edit.setTitle( "Add a fact to this constraint. If it is an 'or' type, it will need at least 2." );
+        edit.addClickListener(click);
 
-        horiz.add( new SmallLabel( HumanReadable.getCEDisplayName( pattern.type ) ) );
+        horiz.add( new ClickableLabel( HumanReadable.getCEDisplayName( pattern.type ), click ) );
         horiz.add( edit );
         horiz.setStyleName( "modeller-composite-Label" );
         return horiz;
