@@ -12,10 +12,11 @@ import org.drools.guvnor.client.rulefloweditor.SplitTransferNode;
 import org.drools.guvnor.client.rulefloweditor.TransferConnection;
 import org.drools.guvnor.client.rulefloweditor.TransferNode;
 import org.drools.guvnor.client.rulefloweditor.WorkItemTransferNode;
+import org.drools.knowledge.definitions.process.Connection;
+import org.drools.knowledge.definitions.process.Node;
 import org.drools.process.core.Work;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.workflow.core.Constraint;
-import org.drools.workflow.core.Node;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
@@ -140,15 +141,15 @@ public class RuleFlowContentModelBuilder {
     private void createConnections(RuleFlowContentModel model,
                                    Node node) {
 
-        for ( List<org.drools.workflow.core.Connection> inConnections : node.getIncomingConnections().values() ) {
-            for ( org.drools.workflow.core.Connection connection : inConnections ) {
+        for ( List<Connection> inConnections : node.getIncomingConnections().values() ) {
+            for ( Connection connection : inConnections ) {
                 createConnection( model,
                                   connection );
             }
         }
 
-        for ( List<org.drools.workflow.core.Connection> outConnections : node.getOutgoingConnections().values() ) {
-            for ( org.drools.workflow.core.Connection connection : outConnections ) {
+        for ( List<Connection> outConnections : node.getOutgoingConnections().values() ) {
+            for ( Connection connection : outConnections ) {
                 createConnection( model,
                                   connection );
             }
@@ -162,7 +163,7 @@ public class RuleFlowContentModelBuilder {
      * @param connection
      */
     private void createConnection(RuleFlowContentModel model,
-                                  org.drools.workflow.core.Connection connection) {
+                                  Connection connection) {
         TransferConnection tc = new TransferConnection();
 
         tc.setFromId( connection.getFrom().getId() );

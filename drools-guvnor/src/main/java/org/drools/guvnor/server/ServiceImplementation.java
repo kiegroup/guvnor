@@ -2087,9 +2087,9 @@ public class ServiceImplementation implements RepositoryService {
         AssetLockManager alm = AssetLockManager.instance();
 
         String userName = alm.getAssetLockerUserName( uuid );
-
+        
         log.info( "Asset locked by [" + userName + "]" );
-
+        
         return userName;
     }
 
@@ -2122,7 +2122,5 @@ public class ServiceImplementation implements RepositoryService {
 
         alm.unLockAsset( uuid );
     }
-
-
 
 }

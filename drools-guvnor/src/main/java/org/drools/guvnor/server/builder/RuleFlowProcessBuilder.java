@@ -8,16 +8,16 @@ import org.drools.guvnor.client.rulefloweditor.SplitNode;
 import org.drools.guvnor.client.rulefloweditor.SplitTransferNode;
 import org.drools.guvnor.client.rulefloweditor.TransferNode;
 import org.drools.guvnor.client.rulefloweditor.WorkItemTransferNode;
+import org.drools.knowledge.definitions.process.Node;
+import org.drools.knowledge.definitions.process.NodeContainer;
 import org.drools.process.core.Work;
+import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.workflow.core.Constraint;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.NodeContainer;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.drools.workflow.core.node.Split.ConnectionRef;
-import org.drools.ruleflow.core.RuleFlowProcess;
 
 public class RuleFlowProcessBuilder {
 
