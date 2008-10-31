@@ -1,10 +1,5 @@
 package org.drools.guvnor.server.selector;
 
-import org.drools.guvnor.server.selector.Allow;
-import org.drools.guvnor.server.selector.AssetSelector;
-import org.drools.guvnor.server.selector.RuleBasedSelector;
-import org.drools.guvnor.server.selector.SelectorManager;
-
 import junit.framework.TestCase;
 
 public class SelectorManagerTest extends TestCase {

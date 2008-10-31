@@ -1,11 +1,12 @@
 package org.drools.guvnor.client.ruleeditor;
 
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
+
+import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  *

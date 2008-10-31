@@ -19,23 +19,15 @@ package org.drools.guvnor.server.contenthandler;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
-import org.drools.guvnor.server.util.BRDRLPersistence;
-import org.drools.guvnor.server.util.BRXMLPersistence;
 import org.drools.guvnor.server.util.GuidedDTDRLPersistence;
 import org.drools.guvnor.server.util.GuidedDTXMLPersistence;
 import org.drools.repository.AssetItem;
-import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;

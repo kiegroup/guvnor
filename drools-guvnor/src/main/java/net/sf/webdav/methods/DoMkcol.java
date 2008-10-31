@@ -15,16 +15,17 @@
  */
 package net.sf.webdav.methods;
 
-import net.sf.webdav.WebdavStatus;
-import net.sf.webdav.WebdavStore;
-import net.sf.webdav.ResourceLocks;
-import net.sf.webdav.exceptions.ObjectAlreadyExistsException;
-import net.sf.webdav.exceptions.AccessDeniedException;
-import net.sf.webdav.exceptions.WebdavException;
+import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import net.sf.webdav.ResourceLocks;
+import net.sf.webdav.WebdavStatus;
+import net.sf.webdav.WebdavStore;
+import net.sf.webdav.exceptions.AccessDeniedException;
+import net.sf.webdav.exceptions.ObjectAlreadyExistsException;
+import net.sf.webdav.exceptions.WebdavException;
 
 public class DoMkcol extends DeterminableMethod {
 

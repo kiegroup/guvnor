@@ -28,7 +28,6 @@ import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.packages.ModelAttachmentFileWidget;
 import org.drools.guvnor.client.qa.ScenarioWidget;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.RuleContentText;
 
 import com.google.gwt.user.client.ui.Widget;
 

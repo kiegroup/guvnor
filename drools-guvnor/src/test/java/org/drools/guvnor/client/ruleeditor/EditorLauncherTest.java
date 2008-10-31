@@ -17,10 +17,9 @@ package org.drools.guvnor.client.ruleeditor;
 
 
 
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.ruleeditor.EditorLauncher;
-
 import junit.framework.TestCase;
+
+import org.drools.guvnor.client.common.AssetFormats;
 
 public class EditorLauncherTest extends TestCase {
 

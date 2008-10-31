@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
-import org.drools.guvnor.client.modeldriven.testing.Expectation;
 import org.drools.guvnor.client.modeldriven.testing.FactData;
 import org.drools.guvnor.client.modeldriven.testing.FieldData;
 import org.drools.guvnor.client.modeldriven.testing.Fixture;

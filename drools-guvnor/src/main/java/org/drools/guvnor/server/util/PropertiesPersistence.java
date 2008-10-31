@@ -14,11 +14,11 @@ package org.drools.guvnor.server.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.guvnor.client.ruleeditor.PropertiesHolder;
 import org.drools.guvnor.client.ruleeditor.PropertyHolder;
-
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * used to convert PropertiesHolder to text and back

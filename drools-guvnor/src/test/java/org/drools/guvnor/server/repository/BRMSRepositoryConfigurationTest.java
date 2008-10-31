@@ -20,8 +20,6 @@ package org.drools.guvnor.server.repository;
 
 
 
-import org.drools.guvnor.server.repository.BRMSRepositoryConfiguration;
-
 import junit.framework.TestCase;
 
 public class BRMSRepositoryConfigurationTest extends TestCase {

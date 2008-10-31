@@ -15,18 +15,19 @@
  */
 package net.sf.webdav.methods;
 
-import net.sf.webdav.exceptions.AccessDeniedException;
-import net.sf.webdav.exceptions.ObjectAlreadyExistsException;
-import net.sf.webdav.exceptions.WebdavException;
-import net.sf.webdav.exceptions.ObjectNotFoundException;
-import net.sf.webdav.WebdavStatus;
-import net.sf.webdav.ResourceLocks;
-import net.sf.webdav.WebdavStore;
+import java.io.IOException;
+import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Hashtable;
-import java.io.IOException;
+
+import net.sf.webdav.ResourceLocks;
+import net.sf.webdav.WebdavStatus;
+import net.sf.webdav.WebdavStore;
+import net.sf.webdav.exceptions.AccessDeniedException;
+import net.sf.webdav.exceptions.ObjectAlreadyExistsException;
+import net.sf.webdav.exceptions.ObjectNotFoundException;
+import net.sf.webdav.exceptions.WebdavException;
 
 public class DoDelete extends ReportingMethod {
 

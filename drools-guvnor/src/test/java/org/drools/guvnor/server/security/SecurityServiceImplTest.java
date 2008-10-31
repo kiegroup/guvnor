@@ -22,14 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.drools.guvnor.client.security.Capabilities;
-import org.drools.guvnor.server.security.SecurityServiceImpl;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.permission.RoleBasedPermissionResolver;
-import org.jboss.security.identity.RoleType;
-
-import junit.framework.TestCase;
 
 public class SecurityServiceImplTest extends TestCase {
 

@@ -10,8 +10,8 @@ import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.ruleeditor.DefaultRuleContentWidget;
-import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
+import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;

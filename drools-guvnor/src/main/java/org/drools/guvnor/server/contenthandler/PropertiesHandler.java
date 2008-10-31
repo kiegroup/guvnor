@@ -15,16 +15,17 @@ package org.drools.guvnor.server.contenthandler;
  * limitations under the License.
  */
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.PropertiesHolder;
 import org.drools.guvnor.server.util.PropertiesPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import com.google.gwt.user.client.rpc.SerializableException;
 
 /**
  * Handle *.properties file as a content for rule asset instead of a binary attachment

@@ -18,8 +18,6 @@ package org.drools.guvnor.server.contenthandler;
 
 import junit.framework.TestCase;
 
-import org.drools.guvnor.server.contenthandler.DRLFileContentHandler;
-
 public class DRLFileContentHandlerTest extends TestCase {
 
 	public void testSniffDRLType() throws Exception {

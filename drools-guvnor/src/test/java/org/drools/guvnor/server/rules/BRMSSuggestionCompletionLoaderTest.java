@@ -17,7 +17,6 @@ package org.drools.guvnor.server.rules;
 
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +26,6 @@ import junit.framework.TestCase;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.rules.SuggestionCompletionLoader;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;

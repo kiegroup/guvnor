@@ -1,5 +1,12 @@
 package org.drools.guvnor.client.explorer;
 
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rulelist.AssetItemGrid;
+import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
+import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.security.Capabilities;
+
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.Toolbar;
@@ -7,16 +14,6 @@ import com.gwtext.client.widgets.ToolbarMenuButton;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
 import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
-import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
-import org.drools.guvnor.client.explorer.RulesNewMenu;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rulelist.AssetItemGrid;
-import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
-import org.drools.guvnor.client.security.Capabilities;
 
 /**
  * @author Anton Arhipov

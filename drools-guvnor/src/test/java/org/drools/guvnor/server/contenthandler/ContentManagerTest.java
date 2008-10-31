@@ -1,11 +1,8 @@
 package org.drools.guvnor.server.contenthandler;
 
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.server.contenthandler.ContentManager;
-import org.drools.guvnor.server.contenthandler.DRLFileContentHandler;
-import org.drools.guvnor.server.contenthandler.ScenarioContentHandler;
-
 import junit.framework.TestCase;
+
+import org.drools.guvnor.client.common.AssetFormats;
 
 public class ContentManagerTest extends TestCase {
 

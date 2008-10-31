@@ -23,7 +23,6 @@ import java.util.jar.JarInputStream;
 
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 

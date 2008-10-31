@@ -1,12 +1,12 @@
 package org.drools.guvnor.client.explorer;
 
-import com.gwtext.client.widgets.menu.Menu;
-import com.gwtext.client.widgets.menu.Item;
-import com.gwtext.client.widgets.menu.BaseItem;
-import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
-import com.gwtext.client.core.EventObject;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.explorer.GenericPanel;
+
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.widgets.menu.BaseItem;
+import com.gwtext.client.widgets.menu.Item;
+import com.gwtext.client.widgets.menu.Menu;
+import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 
 /**
  * TODO: this class should be generated via ant task:  'ant plug-editors'

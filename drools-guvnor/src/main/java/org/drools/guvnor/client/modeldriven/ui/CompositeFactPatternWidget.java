@@ -23,7 +23,6 @@ import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.DirtyableVerticalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;

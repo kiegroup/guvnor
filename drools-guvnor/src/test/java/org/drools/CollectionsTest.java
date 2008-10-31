@@ -1,10 +1,14 @@
 package org.drools;
 
+import static org.drools.nvbj.List;
+import static org.drools.nvbj.Map;
+import static org.drools.nvbj.__;
+import static org.drools.nvbj.println;
+
 import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
-import static org.drools.nvbj.*;
 
 
 public class CollectionsTest extends TestCase {

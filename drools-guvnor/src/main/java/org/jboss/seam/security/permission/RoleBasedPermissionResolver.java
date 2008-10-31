@@ -13,9 +13,7 @@ import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleBasedPermissionManager;
-import org.drools.guvnor.server.security.RoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleTypes;
-import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.Create;
@@ -24,9 +22,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.security.Identity;
-import org.jboss.seam.security.permission.PermissionResolver;
 
 /**
  * PermissionResolvers are chained together to resolve permission check, the check returns true if

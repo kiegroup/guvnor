@@ -20,7 +20,6 @@ package org.drools.guvnor.server.util;
 import junit.framework.TestCase;
 
 import org.drools.guvnor.client.rpc.MetaData;
-import org.drools.guvnor.server.util.MetaDataMapper;
 
 public class MetaDataMapperTest extends TestCase {
 

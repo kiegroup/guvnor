@@ -28,11 +28,6 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtext.client.core.EventObject;
-
-import com.gwtext.client.widgets.Window;
-import com.gwtext.client.widgets.event.ButtonListenerAdapter;
-import com.gwtext.client.widgets.layout.FitLayout;
 
 /**
  * Used for logging in, obviously !

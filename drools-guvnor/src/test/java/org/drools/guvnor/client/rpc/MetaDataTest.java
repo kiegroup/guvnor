@@ -17,8 +17,6 @@ package org.drools.guvnor.client.rpc;
 
 
 
-import org.drools.guvnor.client.rpc.MetaData;
-
 import junit.framework.TestCase;
 
 public class MetaDataTest extends TestCase {

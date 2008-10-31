@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -67,10 +66,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.security.MockIdentity;
-import org.drools.guvnor.server.security.PackageNameType;
-import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.BRXMLPersistence;
 import org.drools.guvnor.server.util.IO;
 import org.drools.guvnor.server.util.ScenarioXMLPersistence;
@@ -86,11 +82,8 @@ import org.drools.rule.Package;
 import org.drools.util.BinaryRuleBaseLoader;
 import org.drools.util.DateUtils;
 import org.drools.util.DroolsStreamUtils;
-import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
-import org.jboss.seam.security.AuthorizationException;
-import org.jboss.seam.security.permission.PermissionResolver;
 import org.jboss.seam.security.permission.RoleBasedPermissionResolver;
 
 import com.google.gwt.user.client.rpc.IsSerializable;

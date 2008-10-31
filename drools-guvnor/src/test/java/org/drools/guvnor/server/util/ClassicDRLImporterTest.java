@@ -18,16 +18,12 @@ package org.drools.guvnor.server.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import junit.framework.TestCase;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.contenthandler.DRLFileContentHandler;
-import org.drools.guvnor.server.util.ClassicDRLImporter;
 import org.drools.guvnor.server.util.ClassicDRLImporter.Asset;
-import org.drools.lang.DRLParser;
-
-import junit.framework.TestCase;
 
 public class ClassicDRLImporterTest extends TestCase {
 

@@ -1,10 +1,7 @@
 package org.drools.guvnor.client.explorer;
 
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -21,14 +18,10 @@ import org.drools.guvnor.client.rulelist.QueryWidget;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.HistoryListener;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.Ext;
-import com.gwtext.client.core.Function;
 import com.gwtext.client.core.Margins;
 import com.gwtext.client.core.RegionPosition;
 import com.gwtext.client.widgets.Button;
@@ -36,16 +29,10 @@ import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.Container;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.TabPanel;
-import com.gwtext.client.widgets.Tool;
-import com.gwtext.client.widgets.Toolbar;
-import com.gwtext.client.widgets.ToolbarButton;
-import com.gwtext.client.widgets.Tool.ToolType;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.event.PanelListenerAdapter;
-import com.gwtext.client.widgets.event.TabPanelListener;
 import com.gwtext.client.widgets.event.TabPanelListenerAdapter;
 import com.gwtext.client.widgets.layout.BorderLayoutData;
-import com.gwtext.client.widgets.layout.LayoutData;
 
 /**
  * This is the tab panel manager.

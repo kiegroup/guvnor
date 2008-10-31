@@ -2,8 +2,6 @@ package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.widgets.tree.TreePanel;
-import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 
 /**
  * @author Anton Arhipov

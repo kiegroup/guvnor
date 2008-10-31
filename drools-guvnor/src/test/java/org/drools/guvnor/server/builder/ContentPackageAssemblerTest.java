@@ -38,9 +38,6 @@ import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.builder.BRMSPackageBuilder;
-import org.drools.guvnor.server.builder.ContentAssemblyError;
-import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.selector.AssetSelector;
 import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.util.BRXMLPersistence;
@@ -51,7 +48,7 @@ import org.drools.repository.RulesRepository;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.ruleflow.core.RuleFlowProcess;
-import org.mvel.MVEL;
+import org.mvel2.MVEL;
 
 /**
  * This will unit test package assembly into a binary.

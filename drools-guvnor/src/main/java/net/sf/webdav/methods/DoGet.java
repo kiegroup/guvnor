@@ -15,15 +15,16 @@
  */
 package net.sf.webdav.methods;
 
-import net.sf.webdav.MimeTyper;
-import net.sf.webdav.ResourceLocks;
-import net.sf.webdav.WebdavStore;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.webdav.MimeTyper;
+import net.sf.webdav.ResourceLocks;
+import net.sf.webdav.WebdavStore;
 
 public class DoGet extends DoHead {
 

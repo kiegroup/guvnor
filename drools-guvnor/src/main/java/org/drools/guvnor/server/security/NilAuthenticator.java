@@ -19,7 +19,6 @@ package org.drools.guvnor.server.security;
 
 import org.apache.log4j.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.security.Identity;
 
 /**
  * This will let any user in, effectively removing any authentication (as the system 

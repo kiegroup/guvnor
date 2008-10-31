@@ -17,9 +17,6 @@ package org.drools.guvnor.server.repository;
 
 
 
-import org.drools.guvnor.server.repository.BRMSRepositoryConfiguration;
-import org.drools.guvnor.server.repository.RulesRepositoryManager;
-
 import junit.framework.TestCase;
 
 public class RulesRepositoryManagerTest extends TestCase {

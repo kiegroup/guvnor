@@ -16,17 +16,18 @@ implied.
  */
 package net.sf.webdav.methods;
 
-import net.sf.webdav.WebdavStore;
-import net.sf.webdav.ResourceLocks;
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import net.sf.webdav.MimeTyper;
+import net.sf.webdav.ResourceLocks;
 import net.sf.webdav.WebdavStatus;
+import net.sf.webdav.WebdavStore;
 import net.sf.webdav.exceptions.AccessDeniedException;
 import net.sf.webdav.exceptions.ObjectAlreadyExistsException;
 import net.sf.webdav.exceptions.WebdavException;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 public class DoHead extends AbstractMethod {
 

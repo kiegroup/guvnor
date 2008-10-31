@@ -1,12 +1,13 @@
 package org.drools.guvnor.client.explorer;
 
+import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
+import org.drools.guvnor.client.rulelist.EditItemEvent;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
 import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
-import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
 
 /**
  * @author Anton Arhipov

@@ -2,15 +2,14 @@ package org.drools.guvnor.server.files;
 
 import java.io.ByteArrayOutputStream;
 
+import junit.framework.TestCase;
+
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.files.PackageDeploymentServlet;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
-
-import junit.framework.TestCase;
 
 public class PackageDeploymentServletTest extends TestCase {
 

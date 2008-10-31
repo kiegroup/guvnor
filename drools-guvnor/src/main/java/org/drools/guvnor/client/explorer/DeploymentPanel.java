@@ -1,5 +1,11 @@
 package org.drools.guvnor.client.explorer;
 
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.packages.SnapshotView;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.SnapshotInfo;
+
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
@@ -14,13 +20,6 @@ import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
 import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
-import org.drools.guvnor.client.explorer.PackageHierarchy;
-import org.drools.guvnor.client.packages.SnapshotView;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
 
 /**
  * @author Anton Arhipov

@@ -20,7 +20,6 @@ package org.drools.guvnor.client.common;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 

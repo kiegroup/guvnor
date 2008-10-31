@@ -1,10 +1,9 @@
 package org.drools.guvnor.client.explorer;
 
-import org.drools.guvnor.client.explorer.PackageHierarchy;
+import junit.framework.TestCase;
+
 import org.drools.guvnor.client.explorer.PackageHierarchy.Folder;
 import org.drools.guvnor.client.rpc.PackageConfigData;
-
-import junit.framework.TestCase;
 
 public class PackageHierarchyTest extends TestCase {
 

@@ -1,14 +1,15 @@
 package org.drools.guvnor.server.contenthandler;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
-import org.drools.repository.PackageItem;
 import org.drools.repository.AssetItem;
-import com.google.gwt.user.client.rpc.SerializableException;
+import org.drools.repository.PackageItem;
 
-import java.io.InputStream;
-import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
+import com.google.gwt.user.client.rpc.SerializableException;
 
 /**
  *

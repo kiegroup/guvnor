@@ -17,7 +17,6 @@ package org.drools.guvnor.client.ruleeditor;
 
 
 
-import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
 
 import com.google.gwt.user.client.Command;

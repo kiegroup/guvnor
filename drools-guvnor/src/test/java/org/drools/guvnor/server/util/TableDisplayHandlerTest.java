@@ -19,8 +19,6 @@ package org.drools.guvnor.server.util;
 
 import java.lang.reflect.Method;
 
-import org.drools.guvnor.server.util.RowLoader;
-
 import junit.framework.TestCase;
 
 public class TableDisplayHandlerTest extends TestCase {

@@ -15,19 +15,20 @@
  */
 package net.sf.webdav.methods;
 
+import java.io.IOException;
+import java.util.Hashtable;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.webdav.ResourceLocks;
+import net.sf.webdav.WebdavStatus;
+import net.sf.webdav.WebdavStore;
 import net.sf.webdav.exceptions.AccessDeniedException;
 import net.sf.webdav.exceptions.ObjectAlreadyExistsException;
 import net.sf.webdav.exceptions.ObjectNotFoundException;
 import net.sf.webdav.exceptions.WebdavException;
-import net.sf.webdav.WebdavStatus;
-import net.sf.webdav.WebdavStore;
-import net.sf.webdav.ResourceLocks;
 import net.sf.webdav.fromcatalina.RequestUtil;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Hashtable;
 
 public class DoCopy extends ReportingMethod {
 

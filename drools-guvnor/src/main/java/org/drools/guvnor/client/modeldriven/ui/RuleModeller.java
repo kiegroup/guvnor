@@ -20,7 +20,6 @@ package org.drools.guvnor.client.modeldriven.ui;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
@@ -30,7 +29,6 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
-import org.drools.guvnor.client.explorer.RulesNewMenu;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ActionCallMethod;
@@ -65,12 +63,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.widgets.ToolbarMenuButton;
-import com.gwtext.client.widgets.menu.BaseItem;
-import com.gwtext.client.widgets.menu.Item;
-import com.gwtext.client.widgets.menu.Menu;
-import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 
 /**
  * This is the parent widget that contains the model based rule builder.

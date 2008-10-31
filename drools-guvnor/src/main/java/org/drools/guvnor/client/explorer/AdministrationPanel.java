@@ -1,13 +1,17 @@
 package org.drools.guvnor.client.explorer;
 
+import org.drools.guvnor.client.admin.ArchivedAssetManager;
+import org.drools.guvnor.client.admin.BackupManager;
+import org.drools.guvnor.client.admin.CategoryManager;
+import org.drools.guvnor.client.admin.LogViewer;
+import org.drools.guvnor.client.admin.PermissionViewer;
+import org.drools.guvnor.client.admin.StateManager;
+
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
 import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
-import org.drools.guvnor.client.admin.*;
-import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 
 /**
  * @author Anton Arhipov

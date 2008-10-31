@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;

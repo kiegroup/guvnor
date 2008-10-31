@@ -1,7 +1,5 @@
 package org.drools.guvnor.client.packages;
 
-import org.drools.guvnor.client.packages.PackageNameValidator;
-
 import junit.framework.TestCase;
 
 public class NewPackageWizardTest extends TestCase {

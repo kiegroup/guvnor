@@ -20,7 +20,6 @@ package org.drools.guvnor.client.packages;
 import junit.framework.TestCase;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 
 import com.google.gwt.user.client.Command;
 

@@ -17,9 +17,6 @@ package org.drools.guvnor.client.rpc;
 
 
 
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 

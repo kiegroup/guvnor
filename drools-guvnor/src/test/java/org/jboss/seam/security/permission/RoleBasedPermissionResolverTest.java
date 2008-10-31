@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.security.MockRoleBasedPermissionStore;
@@ -32,9 +34,6 @@ import org.drools.guvnor.server.security.RoleBasedPermissionManager;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
-import org.jboss.seam.security.Identity;
-
-import junit.framework.TestCase;
 
 public class RoleBasedPermissionResolverTest extends TestCase {
 

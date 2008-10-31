@@ -7,30 +7,24 @@ import java.util.Map;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.common.FieldEditListener;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.brl.ActionCallMethod;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
-import org.drools.guvnor.client.modeldriven.brl.ActionCallMethod;
-import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
-import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.KeyboardListener;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 

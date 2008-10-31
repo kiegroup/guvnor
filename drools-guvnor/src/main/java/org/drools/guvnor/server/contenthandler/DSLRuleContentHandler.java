@@ -29,7 +29,6 @@ import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentAssemblyError;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.lang.ExpanderException;
-import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;

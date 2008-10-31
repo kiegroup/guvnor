@@ -1,29 +1,29 @@
 package net.sf.webdav;
 
-import net.sf.webdav.exceptions.UnauthenticatedException;
-import net.sf.webdav.exceptions.WebdavException;
-import net.sf.webdav.fromcatalina.MD5Encoder;
-import net.sf.webdav.methods.DoCopy;
-import net.sf.webdav.methods.DoDelete;
-import net.sf.webdav.methods.DoGet;
-import net.sf.webdav.methods.DoLock;
-import net.sf.webdav.methods.DoMkcol;
-import net.sf.webdav.methods.DoMove;
-import net.sf.webdav.methods.DoOptions;
-import net.sf.webdav.methods.DoPropfind;
-import net.sf.webdav.methods.DoPut;
-import net.sf.webdav.methods.DoHead;
-import net.sf.webdav.methods.DoNotImplemented;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
 import java.util.HashMap;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.webdav.exceptions.UnauthenticatedException;
+import net.sf.webdav.exceptions.WebdavException;
+import net.sf.webdav.methods.DoCopy;
+import net.sf.webdav.methods.DoDelete;
+import net.sf.webdav.methods.DoGet;
+import net.sf.webdav.methods.DoHead;
+import net.sf.webdav.methods.DoLock;
+import net.sf.webdav.methods.DoMkcol;
+import net.sf.webdav.methods.DoMove;
+import net.sf.webdav.methods.DoNotImplemented;
+import net.sf.webdav.methods.DoOptions;
+import net.sf.webdav.methods.DoPropfind;
+import net.sf.webdav.methods.DoPut;
 
 public class WebDavServletBean extends HttpServlet {
 

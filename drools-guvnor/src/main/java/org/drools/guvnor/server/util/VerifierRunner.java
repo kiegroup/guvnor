@@ -16,13 +16,13 @@ import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rpc.DetailedSerializableException;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.verifier.Verifier;
+import org.drools.verifier.components.Field;
 import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.components.VerifierRule;
-import org.drools.verifier.components.Field;
 import org.drools.verifier.dao.VerifierData;
 import org.drools.verifier.dao.VerifierResult;
-import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.VerifierMessageBase;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 

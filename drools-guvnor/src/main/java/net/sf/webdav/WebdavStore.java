@@ -23,11 +23,11 @@
 
 package net.sf.webdav;
 
-import net.sf.webdav.exceptions.WebdavException;
-
 import java.io.InputStream;
 import java.security.Principal;
 import java.util.Date;
+
+import net.sf.webdav.exceptions.WebdavException;
 
 /**
  * Interface for simple implementation of any store for the WebdavServlet

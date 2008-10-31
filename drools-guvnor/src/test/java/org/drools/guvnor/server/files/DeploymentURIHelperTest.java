@@ -17,8 +17,6 @@ package org.drools.guvnor.server.files;
 
 
 
-import org.drools.guvnor.server.files.PackageDeploymentURIHelper;
-
 import junit.framework.TestCase;
 
 public class DeploymentURIHelperTest extends TestCase {

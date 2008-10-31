@@ -42,7 +42,6 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.SuggestOracle.Callback;
 import com.google.gwt.user.client.ui.SuggestOracle.Request;
-import com.gwtext.client.widgets.form.FormPanel;
 
 /**
  * This is for quickly finding an asset by name. Partial completion is allowed.

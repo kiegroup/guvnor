@@ -10,7 +10,6 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.dt.ActionCol;
 import org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol;
-import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 
 import com.google.gwt.user.client.Command;

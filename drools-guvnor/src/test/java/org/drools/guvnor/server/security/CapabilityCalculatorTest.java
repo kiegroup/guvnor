@@ -3,9 +3,9 @@ package org.drools.guvnor.server.security;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.security.Capabilities;
-
 import junit.framework.TestCase;
+
+import org.drools.guvnor.client.security.Capabilities;
 
 public class CapabilityCalculatorTest extends TestCase {
 

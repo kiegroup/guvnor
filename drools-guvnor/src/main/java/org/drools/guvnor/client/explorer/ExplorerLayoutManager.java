@@ -1,5 +1,8 @@
 package org.drools.guvnor.client.explorer;
 
+import org.drools.guvnor.client.LoggedInUserInfo;
+import org.drools.guvnor.client.security.Capabilities;
+
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.gwtext.client.core.Margins;
@@ -13,8 +16,6 @@ import com.gwtext.client.widgets.layout.BorderLayoutData;
 import com.gwtext.client.widgets.layout.FitLayout;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
-import org.drools.guvnor.client.LoggedInUserInfo;
-import org.drools.guvnor.client.security.Capabilities;
 
 public class ExplorerLayoutManager {
 

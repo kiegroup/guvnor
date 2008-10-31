@@ -17,8 +17,6 @@ package org.drools.guvnor.client.common;
 
 
 
-import org.drools.guvnor.client.common.AssetFormats;
-
 import junit.framework.TestCase;
 
 public class AssetFormatsTest extends TestCase {

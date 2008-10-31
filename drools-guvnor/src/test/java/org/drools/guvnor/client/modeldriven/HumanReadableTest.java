@@ -17,8 +17,6 @@ package org.drools.guvnor.client.modeldriven;
 
 
 
-import org.drools.guvnor.client.modeldriven.HumanReadable;
-
 import junit.framework.TestCase;
 
 public class HumanReadableTest extends TestCase {

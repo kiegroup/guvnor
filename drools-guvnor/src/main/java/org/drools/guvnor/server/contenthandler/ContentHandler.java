@@ -17,12 +17,10 @@ package org.drools.guvnor.server.contenthandler;
 
 
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.repository.AssetItem;

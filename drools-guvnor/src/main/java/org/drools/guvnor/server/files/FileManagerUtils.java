@@ -16,6 +16,17 @@ package org.drools.guvnor.server.files;
  * limitations under the License.
  */
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
@@ -48,17 +59,6 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * This assists the file manager servlets.

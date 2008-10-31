@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
 import org.drools.guvnor.client.modeldriven.testing.FactData;
 import org.drools.guvnor.client.modeldriven.testing.FieldData;
@@ -11,9 +13,6 @@ import org.drools.guvnor.client.modeldriven.testing.Fixture;
 import org.drools.guvnor.client.modeldriven.testing.RetractFact;
 import org.drools.guvnor.client.modeldriven.testing.VerifyFact;
 import org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired;
-import org.drools.guvnor.client.qa.ScenarioHelper;
-
-import junit.framework.TestCase;
 
 public class ScenarioHelperTest extends TestCase {
 

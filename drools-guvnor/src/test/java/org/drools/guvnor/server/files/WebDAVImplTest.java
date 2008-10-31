@@ -2,7 +2,6 @@ package org.drools.guvnor.server.files;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -10,7 +9,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.commons.io.IOUtils;
-import org.drools.guvnor.server.files.WebDAVImpl;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;

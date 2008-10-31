@@ -7,16 +7,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import junit.framework.TestCase;
+
 import org.apache.util.Base64;
-import org.drools.guvnor.server.files.RestAPIServlet;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
-import org.jboss.seam.mock.MockHttpServletResponse;
-
-import junit.framework.TestCase;
 
 public class RestAPIServletTest extends TestCase {
 

@@ -1,18 +1,18 @@
 package org.drools.guvnor.server;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import junit.framework.TestCase;
+
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.security.MockRoleBasedPermissionStore;
@@ -28,14 +28,6 @@ import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.permission.PermissionResolver;
 import org.jboss.seam.security.permission.RoleBasedPermissionResolver;
-
- import org.drools.guvnor.client.common.AssetFormats;
- import org.drools.guvnor.client.rpc.MetaDataQuery;
- import org.drools.guvnor.client.rpc.RepositoryService;
- import org.drools.guvnor.client.rpc.RuleAsset;
- import org.drools.guvnor.client.rpc.RuleContentText;
-
-import junit.framework.TestCase;
 
 public class ServiceImplSecurityTest extends TestCase {
 

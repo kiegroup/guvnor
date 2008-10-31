@@ -15,21 +15,30 @@ package org.drools.guvnor.client.ruleeditor;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
+import org.drools.guvnor.client.rpc.RuleAsset;
+
 import com.gwtext.client.core.EventObject;
-import com.gwtext.client.data.*;
+import com.gwtext.client.data.ArrayReader;
+import com.gwtext.client.data.FieldDef;
+import com.gwtext.client.data.MemoryProxy;
+import com.gwtext.client.data.Record;
+import com.gwtext.client.data.RecordDef;
+import com.gwtext.client.data.Store;
+import com.gwtext.client.data.StringFieldDef;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.form.TextField;
-import com.gwtext.client.widgets.grid.*;
-import com.gwtext.client.widgets.grid.event.GridRowListener;
-import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
-import org.drools.guvnor.client.rpc.RuleAsset;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.gwtext.client.widgets.grid.ColumnConfig;
+import com.gwtext.client.widgets.grid.ColumnModel;
+import com.gwtext.client.widgets.grid.EditorGridPanel;
+import com.gwtext.client.widgets.grid.GridEditor;
 
 /**
  * Properties (key/value pairs) editor with a file attachment.

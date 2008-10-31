@@ -15,15 +15,16 @@
  */
 package net.sf.webdav.methods;
 
-import net.sf.webdav.WebdavStatus;
-import net.sf.webdav.fromcatalina.XMLWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Hashtable;
-import java.util.Enumeration;
-import java.io.IOException;
-import java.io.Writer;
+
+import net.sf.webdav.WebdavStatus;
+import net.sf.webdav.fromcatalina.XMLWriter;
 
 public abstract class ReportingMethod extends AbstractMethod {
 

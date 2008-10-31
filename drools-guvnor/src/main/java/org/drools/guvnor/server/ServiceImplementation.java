@@ -47,8 +47,6 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
-import org.drools.audit.WorkingMemoryInMemoryLogger;
-import org.drools.audit.event.LogEvent;
 import org.drools.base.ClassTypeResolver;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DroolsObjectOutputStream;
@@ -128,8 +126,8 @@ import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
-import org.mvel.MVEL;
-import org.mvel.templates.TemplateRuntime;
+import org.mvel2.MVEL;
+import org.mvel2.templates.TemplateRuntime;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 

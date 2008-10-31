@@ -19,18 +19,12 @@ package org.drools.guvnor.server.security;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
-import org.drools.repository.RulesRepository;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.contexts.Lifecycle;
-import org.jboss.seam.security.Identity;
 
 import junit.framework.TestCase;
+
+import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import org.drools.repository.RulesRepository;
 
 public class RoleBasedPermissionStoreTest extends TestCase {
 	public void testGetRoleBasedPermissionsByUserName() throws Exception {
