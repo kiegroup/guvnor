@@ -17,10 +17,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
+import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarMenuButton;
 import com.gwtext.client.widgets.event.PanelListenerAdapter;
+import com.gwtext.client.widgets.event.SplitButtonListenerAdapter;
 import com.gwtext.client.widgets.menu.BaseItem;
 import com.gwtext.client.widgets.menu.Item;
 import com.gwtext.client.widgets.menu.Menu;
@@ -44,8 +46,17 @@ public class PackagesPanel extends GenericPanel {
         setIconCls("nav-packages");
 
         Toolbar pkgToolbar = new Toolbar();
-        pkgToolbar.addButton(new ToolbarMenuButton("Create New", packageNewMenu()));
+        final ToolbarMenuButton menuButton = new ToolbarMenuButton("Create New", packageNewMenu());
+        pkgToolbar.addButton( menuButton );
 
+        menuButton.addListener( new SplitButtonListenerAdapter() {
+
+            public void onClick(Button button,
+                                EventObject e) {
+                menuButton.showMenu();
+            }
+        } );
+        
         packagesPanel = new VerticalPanel();
         packagesPanel.setWidth("100%");
         packagesPanel.add(pkgToolbar);

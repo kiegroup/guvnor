@@ -9,8 +9,10 @@ import org.drools.guvnor.client.security.Capabilities;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.core.EventObject;
+import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarMenuButton;
+import com.gwtext.client.widgets.event.SplitButtonListenerAdapter;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
 import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
@@ -25,8 +27,18 @@ public class CategoriesPanel extends GenericPanel {
         setIconCls("nav-categories");
 
         Toolbar rulesToolBar = new Toolbar();
-        rulesToolBar.addButton(new ToolbarMenuButton("Create New", RulesNewMenu.getMenu(this)));
 
+        final ToolbarMenuButton menuButton = new ToolbarMenuButton( "Create New",
+                                                            RulesNewMenu.getMenu( this ) );
+        rulesToolBar.addButton( menuButton );
+        menuButton.addListener( new SplitButtonListenerAdapter() {
+
+            public void onClick(Button button,
+                                EventObject e) {
+                menuButton.showMenu();
+            }
+        } );
+        
         VerticalPanel rulesPanel = new VerticalPanel();
         if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_CREATE_NEW_ASSET)) {
             rulesPanel.add(rulesToolBar);
@@ -82,6 +94,5 @@ public class CategoriesPanel extends GenericPanel {
         rulesPanel.setWidth("100%");
         add(rulesPanel);
     }
-
 
 }

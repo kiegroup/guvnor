@@ -9,10 +9,12 @@ import org.drools.guvnor.client.rpc.SnapshotInfo;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
+import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarMenuButton;
 import com.gwtext.client.widgets.event.PanelListenerAdapter;
+import com.gwtext.client.widgets.event.SplitButtonListenerAdapter;
 import com.gwtext.client.widgets.menu.BaseItem;
 import com.gwtext.client.widgets.menu.Item;
 import com.gwtext.client.widgets.menu.Menu;
@@ -34,10 +36,18 @@ public class DeploymentPanel extends GenericPanel {
 
         final VerticalPanel deploymentPanel = new VerticalPanel();
         Toolbar deployToolbar = new Toolbar();
-        deployToolbar.addButton(new ToolbarMenuButton("Deploy...", deploymentMenu()));
+        final ToolbarMenuButton menuButton = new ToolbarMenuButton("Deploy...", deploymentMenu());
+        deployToolbar.addButton( menuButton );
         deploymentPanel.add(deployToolbar);
         deploymentPanel.setWidth("100%");
 
+        menuButton.addListener( new SplitButtonListenerAdapter() {
+            public void onClick(Button button,
+                                EventObject e) {
+                menuButton.showMenu();
+            }
+        } );
+        
         addListener(new PanelListenerAdapter() {
             public void onExpand(Panel panel) {
                 if (!deploymentPackagesLoaded) {
