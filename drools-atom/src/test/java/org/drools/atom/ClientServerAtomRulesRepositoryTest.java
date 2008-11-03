@@ -139,6 +139,8 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
             assertTrue(response.indexOf("testAsset1</title>") > 0);
             assertTrue(response.indexOf("testAsset1Desc1</summary>") > 0);
             assertTrue(response.indexOf("a new test rule for testAsset1</content>") > 0);
+            assertTrue(response.indexOf("</metadata>") > 0);
+
         } finally {
             get.releaseConnection();
         }

@@ -17,11 +17,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.namespace.QName;
 
 import org.apache.abdera.Abdera;
 import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -356,6 +358,55 @@ public class AtomRulesRepository {
         			asset.getName()).build();
         e.addLink(uri.toString());
         e.setUpdated(asset.getLastModified().getTime());
+        
+        //meta data
+/*        StringProperty property = e.addExtension(MetaDataExtensionFactory.PROPERTY);
+        property.setValue("false");*/
+        String NS = "http://overlord.jboss.org/drools/1.0";
+        QName METADATA = new QName(NS, "metadata");
+        
+        ExtensibleElement extension = e.addExtension(METADATA);
+        //extension.declareNS(NS, "drools");
+        QName PROPERTY = new QName(NS, "property");
+        ExtensibleElement childExtension = extension.addExtension(PROPERTY);
+        childExtension.setAttributeValue("name", "archived");
+        childExtension.setText(asset.isArchived()?"true":"false");
+        
+        childExtension = extension.addExtension(PROPERTY);
+        childExtension.setAttributeValue("name", "checkinComment");
+        childExtension.setText(asset.getCheckinComment());        
+        
+        childExtension = extension.addExtension(PROPERTY);
+        childExtension.setAttributeValue("name", "categorySummary");
+        childExtension.setText(asset.getCategorySummary());  
+        
+        childExtension = extension.addExtension(PROPERTY);
+        childExtension.setAttributeValue("name", "coverage");
+        childExtension.setText(asset.getCoverage()); 
+               
+        childExtension = extension.addExtension(PROPERTY);
+        childExtension.setAttributeValue("name", "creator");
+        childExtension.setText(asset.getCreator()); 
+        
+        childExtension = extension.addExtension(PROPERTY);
+        childExtension.setAttributeValue("name", "format");
+        childExtension.setText(asset.getFormat()); 
+        
+        childExtension = extension.addExtension(PROPERTY);
+        childExtension.setAttributeValue("name", "lastContributor");
+        childExtension.setText(asset.getLastContributor());         
+        
+        childExtension = extension.addExtension(PROPERTY);
+        childExtension.setAttributeValue("name", "packageName");
+        childExtension.setText(asset.getPackageName());         
+        
+        childExtension = extension.addExtension(PROPERTY);
+        childExtension.setAttributeValue("name", "publisher");
+        childExtension.setText(asset.getPublisher()); 
+                
+        childExtension = extension.addExtension(PROPERTY);
+        childExtension.setAttributeValue("name", "stateDescription");
+        childExtension.setText(asset.getStateDescription());         
         
         if (!asset.isBinary()) {
 			e.setContentElement(factory.newContent());
