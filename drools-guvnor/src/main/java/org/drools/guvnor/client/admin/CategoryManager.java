@@ -49,7 +49,7 @@ public class CategoryManager extends Composite {
 
         PrettyFormLayout form = new PrettyFormLayout();
         form.addHeader("images/edit_category.gif", new HTML("<b>Edit categories</b>"));
-        form.startSection("Categories aid in managing large numbers of rules/assets. A shallow hierarchy is recommented.");
+        form.startSection("Categories aid in managing large numbers of rules/assets. A shallow hierarchy is recommended.");
 
         explorer = new CategoryExplorerWidget(new CategorySelectHandler() {
             public void selected(String sel) {

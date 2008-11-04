@@ -2,6 +2,7 @@ package org.drools.guvnor.client.common;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -41,26 +42,26 @@ public class PrettyFormLayout extends Composite {
 
 	public void addHeader(String img, String name, Image edit) {
 		HorizontalPanel h = new HorizontalPanel();
-		h.add(new Image(img));
-		h.add(new Label(name));
-		if (edit != null) h.add(edit);
+        h.add( new Image( img ) );
+        h.add( new HTML( "&nbsp;" ) );
+        h.add( new Label( name ) );
+        if ( edit != null ) h.add( edit );
 
+        FormPanel f = newForm( null );
 
-		FormPanel f = newForm(null);
-
-
-		f.add(h);
-		layout.add(f);
+        f.add( h );
+        layout.add( f );
 	}
 
 	public void addHeader(String img, Widget content) {
-		HorizontalPanel h = new HorizontalPanel();
-		h.add(new Image(img));
-		h.add(content);
-		FormPanel f = newForm(null);
-		f.add(h);
-		layout.add(f);
-	}
+        HorizontalPanel h = new HorizontalPanel();
+        h.add( new Image( img ) );
+        h.add( new HTML( "&nbsp;" ) );
+        h.add( content );
+        FormPanel f = newForm( null );
+        f.add( h );
+        layout.add( f );
+    }
 
 	private FormPanel newForm(final String hdr) {
 		FormPanel fp = new FormPanel();

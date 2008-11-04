@@ -271,6 +271,9 @@ select {
 .category-explorer-Tree {
 	width:100%;
 }
+.category-explorer-Tree img{
+	vertical-align: middle;
+}
 
 .rule-breditor-Table {
 	border:1px solid #aa9;

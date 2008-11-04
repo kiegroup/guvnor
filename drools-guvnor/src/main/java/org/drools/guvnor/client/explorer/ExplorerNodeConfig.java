@@ -89,19 +89,19 @@ public class ExplorerNodeConfig {
 		//adminNode.setAttribute("icon", "images/managment.gif");
 
 		String[][] adminStructure = new String[][] {
-				{ "Categories", "images/category_small.gif" }, // ID 0
-				{ "Archived Items", "images/backup_small.gif" }, // ID 1
-				{ "Statuses", "images/tag.png" }, // ID 2
-				{ "Import/Export", "images/save_edit.gif" }, //ID 3
-				{ "Event log", "images/error.gif" }, // ID 4
-				{ "User permission mappings", "images/icoUsers.gif" }}; // ID 5
+				{ "Category", "images/category_small.gif", "0"}, // ID 0
+                { "Status", "images/tag.png", "2" }, // ID 2
+				{ "Archive", "images/backup_small.gif", "1" }, // ID 1
+                { "Event log", "images/error.gif", "4" }, // ID 4
+                { "User permission", "images/icoUsers.gif", "5" }, // ID 5
+				{ "Import/Export", "images/save_edit.gif", "3" }}; //ID 3
 
 		for (int i = 0; i < adminStructure.length; i++) {
 
 			String[] packageData = adminStructure[i];
 			TreeNode localChildNode = new TreeNode(packageData[0]);
 			localChildNode.setAttribute("icon", packageData[1]);
-			localChildNode.setAttribute("id", String.valueOf(i));
+			localChildNode.setAttribute("id", packageData[2]);
 
 			adminNode.appendChild(localChildNode);
 		}

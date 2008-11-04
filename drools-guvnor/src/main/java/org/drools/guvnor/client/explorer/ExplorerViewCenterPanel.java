@@ -93,7 +93,7 @@ public class ExplorerViewCenterPanel {
 	}
 
 	private void addCloseAllButton() {
-		closeAllButton = new Button("(close all items)");
+		closeAllButton = new Button("Close all items");
         closeAllButton.addListener(new ButtonListenerAdapter() {
         	@Override
         	public void onClick(Button button, EventObject e) {

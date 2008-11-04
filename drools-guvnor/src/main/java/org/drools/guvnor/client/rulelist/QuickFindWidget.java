@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -71,7 +70,7 @@ public class QuickFindWidget extends Composite {
 
         this.editEvent = editEvent;
         HorizontalPanel srch = new HorizontalPanel();
-        ImageButton go = new ImageButton("images/find.gif");
+        Button go = new Button("Search");
         go.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                updateList();
@@ -79,14 +78,14 @@ public class QuickFindWidget extends Composite {
         } );
 
         srch.add( searchBox );
-        srch.add( go );
 
         archiveBox = new CheckBox();
 
         archiveBox.setChecked(false);
 
         layout.addAttribute( "Find items with a name matching:", srch );
-        layout.addAttribute("Include archived items in list:", archiveBox);
+        layout.addAttribute("Include archived assets in results:", archiveBox);
+        layout.addAttribute("", go );
 
 
         listPanel = new FlexTable();
