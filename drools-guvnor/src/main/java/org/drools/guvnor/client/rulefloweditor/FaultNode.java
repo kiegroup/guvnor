@@ -1,4 +1,3 @@
-package org.drools.guvnor.client.rulefloweditor;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -16,6 +15,24 @@ package org.drools.guvnor.client.rulefloweditor;
  * limitations under the License.
  */
 
-public class ForEachNode extends ElementContainerNode {
+package org.drools.guvnor.client.rulefloweditor;
+
+/**
+ * @author Toni Rikkola
+ *
+ */
+public class FaultNode extends RuleFlowBaseNode {
+
+    public Corners getCorners() {
+        return Corners.ROUNDED;
+    }
+
+    public String getImagePath() {
+        return FAULT_GIF;
+    }
+
+    public String getStyle() {
+        return YELLOW_RULE_FLOW_NODE_STYLE;
+    }
 
 }

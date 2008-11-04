@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
-import org.drools.guvnor.client.rulefloweditor.ForEachTransferNode;
 import org.drools.guvnor.client.rulefloweditor.HumanTaskTransferNode;
+import org.drools.guvnor.client.rulefloweditor.ElementContainerTransferNode;
 import org.drools.guvnor.client.rulefloweditor.SplitNode;
 import org.drools.guvnor.client.rulefloweditor.SplitTransferNode;
 import org.drools.guvnor.client.rulefloweditor.TransferConnection;
@@ -21,6 +21,7 @@ import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
 import org.drools.workflow.core.node.EventNode;
+import org.drools.workflow.core.node.FaultNode;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Join;
@@ -53,7 +54,7 @@ public class RuleFlowContentModelBuilder {
      * @param model RuleFlowContentModel that contains the transfer nodes for client side.
      */
     private List<TransferNode> createNodesAndConnections(Node[] nodes,
-                                                               RuleFlowContentModel model) {
+                                                         RuleFlowContentModel model) {
 
         List<TransferNode> transferNodes = new ArrayList<TransferNode>();
 
@@ -76,7 +77,11 @@ public class RuleFlowContentModelBuilder {
 
             } else if ( type == TransferNode.Type.FOR_EACH ) {
 
-                tn = createForEachNodeNode( (ForEachNode) node );
+                tn = createRuleFlowContentModelTransferNode( ((ForEachNode) node).getNodes() );
+
+            } else if ( type == TransferNode.Type.COMPOSITE ) {
+
+                tn = createRuleFlowContentModelTransferNode( ((CompositeNode) node).getNodes() );
 
             } else {
 
@@ -96,16 +101,12 @@ public class RuleFlowContentModelBuilder {
             tn.setY( (Integer) node.getMetaData( "y" ) );
 
             Integer height = (Integer) node.getMetaData( "height" );
-            if ( height == null ) {
-                tn.setHeight( 40 );
-            } else {
+            if ( height != null ) {
                 tn.setHeight( height );
             }
 
             Integer width = (Integer) node.getMetaData( "width" );
-            if ( width == null ) {
-                tn.setWidth( 80 );
-            } else {
+            if ( width != null ) {
                 tn.setWidth( width );
             }
 
@@ -118,13 +119,13 @@ public class RuleFlowContentModelBuilder {
         return transferNodes;
     }
 
-    private ForEachTransferNode createForEachNodeNode(ForEachNode node) {
+    private ElementContainerTransferNode createRuleFlowContentModelTransferNode(Node[] nodes) {
 
-        ForEachTransferNode fetn = new ForEachTransferNode();
+        ElementContainerTransferNode fetn = new ElementContainerTransferNode();
         RuleFlowContentModel model = new RuleFlowContentModel();
 
-        List<TransferNode> transferNodes = createNodesAndConnections( node.getNodes(),
-                                                                            model );
+        List<TransferNode> transferNodes = createNodesAndConnections( nodes,
+                                                                      model );
 
         model.setNodes( transferNodes );
         fetn.setContentModel( model );
@@ -288,10 +289,13 @@ public class RuleFlowContentModelBuilder {
             return TransferNode.Type.HUMANTASK;
         } else if ( node instanceof WorkItemNode ) {
             return TransferNode.Type.WORK_ITEM;
+        } else if ( node instanceof FaultNode ) {
+            return TransferNode.Type.FAULT;
         } else if ( node instanceof EventNode ) {
             return TransferNode.Type.EVENT;
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException( "Unkown node type " + node );
+
     }
 }

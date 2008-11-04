@@ -44,11 +44,13 @@ public class RuleFlowViewer extends AbsolutePanel {
 
             RuleFlowBaseNode node = RuleFlowNodeFactory.createNode( tn );
 
+            System.out.println( "tn " + tn );
+
             if ( node != null ) {
 
-                if ( node instanceof ForEachNode ) {
-                    addForEachSubNodes( (ForEachNode) node,
-                                        parametersForm );
+                if ( node instanceof ElementContainerNode ) {
+                    addElementContainerNodeSubNodes( (ElementContainerNode) node,
+                                                     parametersForm );
                 }
 
                 node.addParametersForm( parametersForm );
@@ -74,15 +76,15 @@ public class RuleFlowViewer extends AbsolutePanel {
         }
     }
 
-    private void addForEachSubNodes(ForEachNode fen,
-                                    FormStyleLayout parametersForm) {
+    private void addElementContainerNodeSubNodes(ElementContainerNode fen,
+                                                 FormStyleLayout parametersForm) {
         for ( RuleFlowBaseNode node : fen.getNodes().values() ) {
 
             node.addParametersForm( parametersForm );
 
-            if ( node instanceof ForEachNode ) {
-                addForEachSubNodes( (ForEachNode) node,
-                                    parametersForm );
+            if ( node instanceof ElementContainerNode ) {
+                addElementContainerNodeSubNodes( (ElementContainerNode) node,
+                                                 parametersForm );
             }
         }
     }
@@ -97,10 +99,10 @@ public class RuleFlowViewer extends AbsolutePanel {
             }
         }
 
-        // For each nodes have connections too.
+        // Nodes in ElementContainerNode have connections too.
         for ( RuleFlowBaseNode node : nodes.values() ) {
-            if ( node instanceof ForEachNode ) {
-                ((ForEachNode) node).update();
+            if ( node instanceof ElementContainerNode ) {
+                ((ElementContainerNode) node).update();
             }
         }
     }

@@ -1,18 +1,35 @@
+/*
+ * Copyright 2005 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.guvnor.server.builder;
 
 import java.util.Collection;
 
-import org.drools.guvnor.client.rulefloweditor.ForEachTransferNode;
+import org.drools.guvnor.client.rulefloweditor.ElementContainerTransferNode;
 import org.drools.guvnor.client.rulefloweditor.HumanTaskTransferNode;
 import org.drools.guvnor.client.rulefloweditor.SplitNode;
 import org.drools.guvnor.client.rulefloweditor.SplitTransferNode;
 import org.drools.guvnor.client.rulefloweditor.TransferNode;
 import org.drools.guvnor.client.rulefloweditor.WorkItemTransferNode;
+import org.drools.guvnor.client.rulefloweditor.TransferNode.Type;
 import org.drools.knowledge.definitions.process.Node;
-import org.drools.knowledge.definitions.process.NodeContainer;
 import org.drools.process.core.Work;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Split;
@@ -33,17 +50,17 @@ public class RuleFlowProcessBuilder {
         }
     }
 
-    public static void updateContainer(NodeContainer nodeContainer,
-                                       Collection<TransferNode> contentNodes) {
-
-        for ( TransferNode tn : contentNodes ) {
-
-            Node node = nodeContainer.getNode( tn.getId() );
-
-            updateNode( tn,
-                        node );
-        }
-    }
+    //    public static void updateContainer(NodeContainer nodeContainer,
+    //                                       Collection<TransferNode> contentNodes) {
+    //
+    //        for ( TransferNode tn : contentNodes ) {
+    //
+    //            Node node = nodeContainer.getNode( tn.getId() );
+    //
+    //            updateNode( tn,
+    //                        node );
+    //        }
+    //    }
 
     private static void updateNode(TransferNode tn,
                                    Node node) {
@@ -65,10 +82,19 @@ public class RuleFlowProcessBuilder {
             updateSplitNode( (SplitTransferNode) tn,
                              (Split) node );
 
-        } else if ( tn instanceof ForEachTransferNode ) {
+        } else if ( tn instanceof ElementContainerTransferNode ) {
 
-            updateForEach( (ForEachTransferNode) tn,
-                           (ForEachNode) node );
+            if ( tn.getType() == Type.FOR_EACH ) {
+
+                updateForEach( (ElementContainerTransferNode) tn,
+                               (ForEachNode) node );
+
+            } else if ( tn.getType() == Type.COMPOSITE ) {
+
+                updateComposite( (ElementContainerTransferNode) tn,
+                                 (CompositeNode) node );
+
+            }
         }
     }
 
@@ -118,12 +144,24 @@ public class RuleFlowProcessBuilder {
         }
     }
 
-    private static void updateForEach(ForEachTransferNode tn,
+    private static void updateForEach(ElementContainerTransferNode tn,
                                       ForEachNode foreachNode) {
 
         for ( TransferNode subTn : tn.getContentModel().getNodes() ) {
 
             Node subNode = foreachNode.getNode( subTn.getId() );
+
+            updateNode( subTn,
+                        subNode );
+        }
+    }
+
+    private static void updateComposite(ElementContainerTransferNode tn,
+                                        CompositeNode compositeNode) {
+
+        for ( TransferNode subTn : tn.getContentModel().getNodes() ) {
+
+            Node subNode = compositeNode.getNode( subTn.getId() );
 
             updateNode( subTn,
                         subNode );

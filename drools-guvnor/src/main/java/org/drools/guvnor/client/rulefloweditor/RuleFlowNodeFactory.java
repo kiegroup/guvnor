@@ -33,7 +33,7 @@ public class RuleFlowNodeFactory {
     public static RuleFlowBaseNode createNode(TransferNode tn) {
 
         RuleFlowBaseNode n;
-
+        
         if ( tn.getType() == Type.START ) {
 
             n = new StartNode();
@@ -76,7 +76,21 @@ public class RuleFlowNodeFactory {
 
         } else if ( tn.getType() == Type.FOR_EACH ) {
 
-            n = createForEach( (ForEachTransferNode) tn );
+            n = createElementContainerNode( new ForEachNode(),
+                                            (ElementContainerTransferNode) tn );
+
+        } else if ( tn.getType() == Type.FAULT ) {
+
+            n = new FaultNode();
+
+        } else if ( tn.getType() == Type.EVENT ) {
+
+            n = new EventNode();
+
+        } else if ( tn.getType() == Type.COMPOSITE ) {
+
+            n = createElementContainerNode( new CompositeNode(),
+                                            (ElementContainerTransferNode) tn );
 
         } else if ( tn.getType() == Type.END ) {
 
@@ -84,7 +98,8 @@ public class RuleFlowNodeFactory {
 
         } else {
 
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException( "Unkown node type " + tn );
+
         }
 
         fillRuleFlowBaseNode( n,
@@ -92,9 +107,8 @@ public class RuleFlowNodeFactory {
         return n;
     }
 
-    private static RuleFlowBaseNode createForEach(ForEachTransferNode tn) {
-
-        ForEachNode node = new ForEachNode();
+    private static RuleFlowBaseNode createElementContainerNode(ElementContainerNode node,
+                                                               ElementContainerTransferNode tn) {
 
         for ( TransferNode subNode : tn.getContentModel().getNodes() ) {
             RuleFlowBaseNode baseNode = createNode( subNode );
@@ -192,12 +206,12 @@ public class RuleFlowNodeFactory {
         } else {
             panel.setHeight( tn.getHeight() + "px" );
 
-            if ( node instanceof ForEachNode ) {
+            if ( node instanceof ElementContainerNode ) {
 
                 // Add nodes that are in for each node 
                 AbsolutePanel ap = new AbsolutePanel();
 
-                ForEachNode fen = (ForEachNode) node;
+                ElementContainerNode fen = (ElementContainerNode) node;
 
                 for ( RuleFlowBaseNode baseNode : fen.getNodes().values() ) {
                     ap.add( baseNode,

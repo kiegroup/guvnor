@@ -77,7 +77,23 @@ public class TransferRuleFlowNodeFactory {
 
         } else if ( node instanceof ForEachNode ) {
 
-            tn = createForEach( (ForEachNode) node );
+            tn = ElementContainerTransferNode( (ForEachNode) node );
+            tn.setType( Type.FOR_EACH );
+
+        } else if ( node instanceof FaultNode ) {
+
+            tn = new TransferNode();
+            tn.setType( Type.FAULT );
+
+        } else if ( node instanceof EventNode ) {
+
+            tn = new TransferNode();
+            tn.setType( Type.EVENT );
+
+        } else if ( node instanceof CompositeNode ) {
+
+            tn = ElementContainerTransferNode( (CompositeNode) node );
+            tn.setType( Type.COMPOSITE );
 
         } else if ( node instanceof EndNode ) {
 
@@ -86,7 +102,7 @@ public class TransferRuleFlowNodeFactory {
 
         } else {
 
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException( "Unkown node type " + node );
 
         }
 
@@ -95,9 +111,9 @@ public class TransferRuleFlowNodeFactory {
         return tn;
     }
 
-    private static TransferNode createForEach(ForEachNode node) {
+    private static TransferNode ElementContainerTransferNode(ElementContainerNode node) {
 
-        ForEachTransferNode fetn = new ForEachTransferNode();
+        ElementContainerTransferNode fetn = new ElementContainerTransferNode();
         List<TransferNode> baseNodes = new ArrayList<TransferNode>();
 
         for ( RuleFlowBaseNode subNode : node.getNodes().values() ) {

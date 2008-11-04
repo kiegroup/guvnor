@@ -24,9 +24,7 @@ public class TransferNode
 
     public static enum Type
             implements IsSerializable {
-        START, HUMANTASK, JOIN, SUB_PROCESS, MILESTONE, TIMER, ACTION_NODE, RULESET, SPLIT, END,
-        //WORK_ITEM,
-        FOR_EACH, COMPOSITE, EVENT, WORK_ITEM
+        START, HUMANTASK, JOIN, SUB_PROCESS, MILESTONE, TIMER, ACTION_NODE, RULESET, SPLIT, END, FOR_EACH, COMPOSITE, EVENT, WORK_ITEM, FAULT
     }
 
     private String name;
@@ -39,9 +37,9 @@ public class TransferNode
 
     private int    y;
 
-    private int    width;
+    protected int    width  = 80;
 
-    private int    height;
+    protected int    height = 40;
 
     public void setName(String name) {
         this.name = name;

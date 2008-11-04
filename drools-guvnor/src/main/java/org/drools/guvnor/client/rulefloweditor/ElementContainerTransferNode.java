@@ -16,6 +16,23 @@ package org.drools.guvnor.client.rulefloweditor;
  * limitations under the License.
  */
 
-public class ForEachNode extends ElementContainerNode {
+import org.drools.guvnor.client.rpc.RuleFlowContentModel;
+
+public class ElementContainerTransferNode extends TransferNode {
+
+    private RuleFlowContentModel contentModel;
+
+    public ElementContainerTransferNode() {
+        this.width = 200;
+        this.height = 150;
+    }
+
+    public void setContentModel(RuleFlowContentModel contentModel) {
+        this.contentModel = contentModel;
+    }
+
+    public RuleFlowContentModel getContentModel() {
+        return contentModel;
+    }
 
 }

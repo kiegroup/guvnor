@@ -85,7 +85,7 @@
     <dependency>
       <groupId>pl.balon.gwt</groupId>
       <artifactId>gwt-diagrams</artifactId>
-      <version>0.1</version>
+      <version>0.2-RC00</version>
     </dependency>
     <dependency>
       <groupId>org.cobogw.gwt</groupId>

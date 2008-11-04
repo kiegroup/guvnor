@@ -1,4 +1,3 @@
-package org.drools.guvnor.client.rulefloweditor;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -16,18 +15,12 @@ package org.drools.guvnor.client.rulefloweditor;
  * limitations under the License.
  */
 
-import org.drools.guvnor.client.rpc.RuleFlowContentModel;
+package org.drools.guvnor.client.rulefloweditor;
 
-public class ForEachTransferNode extends TransferNode {
-
-    private RuleFlowContentModel contentModel;
-
-    public void setContentModel(RuleFlowContentModel contentModel) {
-        this.contentModel = contentModel;
-    }
-
-    public RuleFlowContentModel getContentModel() {
-        return contentModel;
-    }
+/**
+ * @author Toni Rikkola
+ *
+ */
+public class CompositeNode extends ElementContainerNode {
 
 }

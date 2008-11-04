@@ -46,6 +46,8 @@ abstract class RuleFlowBaseNode extends FocusPanel
     protected static final String PROCESS_GIF                 = "images/ruleflow/process.gif";
     protected static final String QUESTION_GIF                = "images/ruleflow/question.gif";
     protected static final String TIMER_GIF                   = "images/ruleflow/timer.gif";
+    protected static final String FAULT_GIF                   = "images/ruleflow/fault.gif";
+    protected static final String EVENT_GIF                   = "images/ruleflow/event.gif";
 
     private long                  id;
     private int                   x;
