@@ -421,7 +421,6 @@ public class DSLSentenceWidget extends Composite {
 
 	    	resultWidget.setVisible(true);
 	    	initWidget(resultWidget);
-	    	resultWidget = resultWidget;
     	}
 		public CheckBox getListBox() {
 			return resultWidget;
