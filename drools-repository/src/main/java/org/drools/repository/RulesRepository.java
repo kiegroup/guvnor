@@ -349,7 +349,7 @@ public class RulesRepository {
                                        AssetItem.PACKAGE_NAME_PROPERTY );
             dest.node.setProperty( AssetItem.VERSION_NUMBER_PROPERTY_NAME,
                                    0 );
-            dest.updateTitle(dest.getName());
+            dest.updateTitle( dest.getName() );
             dest.checkin( "Copied from " + source.getPackageName() + "/" + source.getName() );
             return dest.getUUID();
         } catch ( RepositoryException e ) {
@@ -379,6 +379,23 @@ public class RulesRepository {
                        e );
 
             throw new RulesRepositoryException( "Unable to load a rule package. ",
+                                                e );
+
+        }
+    }
+
+    public StateItem loadState(String name) throws RulesRepositoryException {
+        try {
+            Node folderNode = this.getAreaNode( STATE_AREA );
+            Node ruleStateNode = folderNode.getNode( name );
+
+            return new StateItem( this,
+                                  ruleStateNode );
+        } catch ( RepositoryException e ) {
+            log.error( "Unable to load a status. ",
+                       e );
+
+            throw new RulesRepositoryException( "Unable to load a status. ",
                                                 e );
 
         }
@@ -1122,6 +1139,22 @@ public class RulesRepository {
         }
     }
 
+    public void renameState(String oldName,
+                            String newName) {
+        try {
+            StateItem state = loadState( oldName );
+            Node node = state.getNode();
+            String sourcePath = node.getPath();
+            String destPath = node.getParent().getPath() + "/" + newName;
+            this.session.move( sourcePath,
+                               destPath );
+            save();
+        } catch ( RepositoryException e ) {
+            log.error( e );
+            throw new RulesRepositoryException( e );
+        }
+    }
+
     /**
      * This will rename a package and apply the change immediately.
      * @return the UUID of the package
@@ -1267,7 +1300,7 @@ public class RulesRepository {
             String sql = "SELECT " + AssetItem.TITLE_PROPERTY_NAME + ", " + AssetItem.DESCRIPTION_PROPERTY_NAME + ", " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " FROM " + AssetItem.RULE_NODE_TYPE_NAME;
             sql += " WHERE jcr:path LIKE '/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/%'";
             for ( Iterator<Map.Entry<String, String[]>> iterator = params.entrySet().iterator(); iterator.hasNext(); ) {
-            	Map.Entry<String, String[]> en = iterator.next();
+                Map.Entry<String, String[]> en = iterator.next();
                 String fld = en.getKey();
                 String[] options = en.getValue();
                 if ( options != null && options.length > 0 ) {

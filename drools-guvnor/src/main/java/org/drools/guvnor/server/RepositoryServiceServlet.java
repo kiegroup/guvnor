@@ -14,6 +14,7 @@ import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.AuthorizationException;
 
+import com.google.gwt.user.client.rpc.SerializableException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -128,6 +129,12 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 	public java.lang.String createState(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializableException {
 		 return getService().createState( p0);
 	}
+    public void removeState(String name) throws SerializableException {
+        getService().removeState( name );
+    }
+    public void renameState(String oldName, String newName) throws SerializableException {
+        getService().renameState( oldName, newName );
+    }
 	public void changeState(java.lang.String p0, java.lang.String p1, boolean p2)  {
 		getService().changeState( p0,  p1,  p2);
 	}
@@ -264,6 +271,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     public void unLockAsset(String uuid) {
         getService().unLockAsset( uuid );
     }
+
 
 
 

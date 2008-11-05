@@ -172,6 +172,21 @@ public interface RepositoryService extends RemoteService {
      * @return the UUID of the created StateItem.
      */
     public String createState(String name) throws SerializableException;
+    
+    /**
+     * Renames a state.
+     * @param oldName states old name.
+     * @param newName states new name.
+     * @throws SerializableException
+     */
+    public void renameState(String oldName, String newName) throws SerializableException;
+    
+    /**
+     * Removes a state.
+     * @param name state name that will be removed.
+     * @throws SerializableException
+     */
+    public void removeState(String name) throws SerializableException;
 
 
     /**
