@@ -20,7 +20,7 @@ public class MigrateDroolsPackageTest extends TestCase {
 		MigrateDroolsPackage mig = new MigrateDroolsPackage();
 
 		PackageItem pkg = repo.createPackage("testMigratePackage", "");
-		pkg.updateStringProperty("some header", pkg.HEADER_PROPERTY_NAME);
+		pkg.updateStringProperty("some header", PackageItem.HEADER_PROPERTY_NAME);
 		sess.save();
 
 		repo.createPackageSnapshot("testMigratePackage", "SNAP1");

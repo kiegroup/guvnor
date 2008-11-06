@@ -51,7 +51,7 @@ public class MigrateDroolsPackage {
 		if (!pkg.containsAsset("drools")) {
 			AssetItem asset = pkg.addAsset("drools", "");
 			asset.updateFormat("package");
-			asset.updateContent(pkg.getStringProperty(pkg.HEADER_PROPERTY_NAME));
+			asset.updateContent(pkg.getStringProperty(PackageItem.HEADER_PROPERTY_NAME));
 			asset.checkin("");
 		}
 	}
