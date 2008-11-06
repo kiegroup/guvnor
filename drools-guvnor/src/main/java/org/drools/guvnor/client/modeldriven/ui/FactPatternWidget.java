@@ -244,7 +244,7 @@ public class FactPatternWidget extends DirtyableComposite {
         inner.setStyleName( "modeller-inner-nested-Constraints" );
         if (nested != null) {
             for ( int i = 0; i < nested.length; i++ ) {
-                this.renderFieldConstraint( inner, i, nested[i], true, 0 );
+                this.renderFieldConstraint( inner, i, nested[i], false, 0 );
                 //add in remove icon here...
                 final int currentRow = i;
                 Image clear = new ImageButton( "images/delete_item_small.gif" );
@@ -412,7 +412,10 @@ public class FactPatternWidget extends DirtyableComposite {
                 bind.addClickListener( click);
                 ab.add( new ClickableLabel(con.fieldName, click));
                 ab.add( bind );
+            } else {
+                ab.add(new SmallLabel(con.fieldName));
             }
+            
         } else {
         	ab.add(new SmallLabel(con.fieldName));
             ab.add( new SmallLabel(" <b>[" + con.fieldBinding + "]</b>") );
