@@ -820,7 +820,6 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
 
         grid.setStore(store);
-        System.out.println("Col count: " + cm.getColumnCount());
 
         int width = 900;
         if (cm.getColumnCount() > 10) {
