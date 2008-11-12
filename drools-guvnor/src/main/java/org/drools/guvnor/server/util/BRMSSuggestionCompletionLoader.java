@@ -49,7 +49,7 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
     			buf.append('\n');
     		}
 
-            return super.getSuggestionEngine( ServiceImplementation.getDroolsHeader(pkg) + buf.toString(),
+            return super.getSuggestionEngine( ServiceImplementation.getDroolsHeader(pkg) + "\n" + buf.toString(),
             									getJars( pkg ),
             									getDSLMappingFiles( pkg ),
             									getDataEnums( pkg ));
