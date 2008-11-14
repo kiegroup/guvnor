@@ -2,13 +2,17 @@
 package org.drools.atom;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.apache.cxf.jaxrs.provider.AtomEntryProvider;
 import org.apache.cxf.jaxrs.provider.AtomFeedProvider;
 import org.apache.cxf.testutil.common.AbstractTestServerBase;
+import org.drools.repository.Artifact;
+import org.drools.repository.ArtifactManager;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RepositorySessionUtil;
@@ -34,6 +38,19 @@ public class AtomRulesRepositoryServer extends AbstractTestServerBase{
         AssetItem testAsset2 = pkg.addAsset( "testAsset2", "testAsset2Desc1", "/AtomRulesRepositoryTestCat", "drl");
         testAsset2.updateContent("a new test rule for testAsset2");
 
+        ArtifactManager artifactManager = new ArtifactManager(repo);
+        Artifact artifact = new Artifact();
+		Map<String, List<String>> metadata = new HashMap<String, List<String>>() {{
+			put("archived", new ArrayList<String>() {{add("true");}});
+			put("format", new ArrayList<String>() {{add("drl");}});
+			put("multi-value-property", new ArrayList<String>() {{add("value1"); add("value2");}});
+		}};
+		artifact.setMetadata(metadata);
+		artifact.setName("testArtifact1");
+		artifact.setDescription("desc1");
+		artifact.setContent("the string content of testArtifact1");		
+		artifactManager.createArtifact(artifact);
+        
         repo.save();
 
         atomRepo.setRulesRepository(repo);

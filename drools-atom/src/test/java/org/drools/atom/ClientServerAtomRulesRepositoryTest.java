@@ -255,7 +255,191 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
             put1.releaseConnection();
         }
     }  
+    
+    @Test
+    public void testAddAndUpdateESBJar() throws Exception {
+        String endpointAddress =
+            "http://localhost:9080/repository/esbs"; 
+        
+        PostMethod post = new PostMethod(endpointAddress);
+        File testESBJar = new File(getClass().getResource("resources/Quickstart_helloworld.esb").toURI());
+        post.setRequestEntity(
+             new FileRequestEntity(testESBJar, "application/esb"));
+        HttpClient httpclient = new HttpClient();
+        post.addRequestHeader("Slug", "Quickstart_helloworld.esb");
+        Entry entry = null;
+        
+        try {
+            int result = httpclient.executeMethod(post);
+            assertEquals(201, result);
+            //String response = getStringFromInputStream(post.getResponseBodyAsStream());
+            //System.out.print(response);
+			Document<Entry> doc = abdera.getParser().parse(post.getResponseBodyAsStream());
+			entry = doc.getRoot();
 
+			assertEquals("Quickstart_helloworld.esb", entry.getTitle());
+			assertEquals("/repository/esbs/Quickstart_helloworld.esb", entry.getContentSrc().getPath());
+			assertEquals("MEDIA", entry.getContentType().name());
+
+        } finally {
+            post.releaseConnection();
+        } 
+        
+    	//Update artifact Quickstart_helloworld.esb
+        entry.setSummary("desc for esb");
+        String endpointAddress1 = "http://localhost:9080/repository/artifacts";
+        PutMethod put = new PutMethod(endpointAddress1);
+        System.out.println("***********" + entry.toString());
+        put.setRequestEntity(new StringRequestEntity(entry.toString(), "application/atom+xml", null));
+        HttpClient httpclient1 = new HttpClient();
+
+        try {
+            int result = httpclient1.executeMethod(put);
+            assertEquals(200, result);
+        } finally {
+            // Release current connection to the connection pool once you are
+            // done
+            put.releaseConnection();
+        }
+        
+        // Verify result
+        String endpointAddress2 = "http://localhost:9080/repository/artifacts/Quickstart_helloworld.esb";
+        URL url = new URL(endpointAddress2);
+        URLConnection connect = url.openConnection();
+        connect.addRequestProperty("Accept", "application/atom+xml");
+        InputStream in = connect.getInputStream();
+        assertNotNull(in);
+		Document<Entry> doc = abdera.getParser().parse(in);
+		entry = doc.getRoot();
+
+		assertEquals("Quickstart_helloworld.esb", entry.getTitle());
+		assertEquals("/repository/esbs/Quickstart_helloworld.esb", entry.getContentSrc().getPath());
+		assertEquals("MEDIA", entry.getContentType().name());
+		assertEquals("desc for esb", entry.getSummary());
+		
+		//Get back the binary content of ESB Jar
+        String endpointAddress3 = "http://localhost:9080/repository/esbs/Quickstart_helloworld.esb";
+        URL url3 = new URL(endpointAddress3);
+        URLConnection connect3 = url3.openConnection();
+        connect3.addRequestProperty("Accept", "application/esb");
+        InputStream in3 = connect3.getInputStream();
+        assertNotNull(in);
+		
+         // Roll back changes:
+/*        File input1 = new File(getClass().getResource("resources/expected_get_testPackage1.txt").toURI());
+        PutMethod put1 = new PutMethod(endpointAddress);
+        RequestEntity entity1 = new FileRequestEntity(input1, "application/atom+xml; charset=ISO-8859-1");
+        put1.setRequestEntity(entity1);
+        HttpClient httpclient1 = new HttpClient();
+
+        try {
+            int result = httpclient1.executeMethod(put1);
+            assertEquals(200, result);
+        } finally {
+            // Release current connection to the connection pool once you are
+            // done
+            put1.releaseConnection();
+        }*/
+    }      
+    
+    @Test
+    public void testGetMetaDataTypes() throws Exception {
+        String endpointAddress =
+            "http://localhost:9080/repository/metadatatypes"; 
+        GetMethod get = new GetMethod(endpointAddress);
+        get.setRequestHeader("Content-Type", "*/*");
+        //get.setRequestHeader("Accept", type);
+        HttpClient httpClient = new HttpClient();
+        try {
+            httpClient.executeMethod(get);           
+            //String response = getStringFromInputStream(get.getResponseBodyAsStream());
+			Document<Feed> doc = abdera.getParser().parse(
+					get.getResponseBodyAsStream());
+			Feed feed = doc.getRoot();
+
+			assertEquals("http://localhost:9080/repository/metadatatypes", feed
+					.getBaseUri().toString());
+			assertEquals("Metadata types", feed.getTitle());
+			List<Entry> entries = feed.getEntries();
+			assertEquals(entries.size(), 4);	
+			
+        } finally {
+            get.releaseConnection();
+        }
+    }
+    
+    @Test
+    public void testAddAndDeleteMetaDataTypes() throws Exception {       
+        //Add a new metadata type called ServiceCategory
+        String endpointAddress =
+            "http://localhost:9080/repository/metadatatypes"; 
+        PostMethod post = new PostMethod(endpointAddress);
+        File newMetaData = new File(getClass().getResource("resources/add_metadata_servicecategory.txt").toURI());
+        post.setRequestEntity(
+             new FileRequestEntity(newMetaData, "application/atom+xml"));
+        HttpClient httpclient = new HttpClient();
+        
+        try {
+            int result = httpclient.executeMethod(post);
+            assertEquals(201, result);
+        } finally {
+            post.releaseConnection();
+        }       
+                
+        // Verify result
+        endpointAddress =
+            "http://localhost:9080/repository/metadatatypes"; 
+        GetMethod get = new GetMethod(endpointAddress);
+        get.setRequestHeader("Content-Type", "*/*");
+        //get.setRequestHeader("Accept", type);
+        HttpClient httpClient = new HttpClient();
+        try {
+            httpClient.executeMethod(get);           
+            //String response = getStringFromInputStream(get.getResponseBodyAsStream());
+			Document<Feed> doc = abdera.getParser().parse(
+					get.getResponseBodyAsStream());
+			Feed feed = doc.getRoot();
+
+			assertEquals("http://localhost:9080/repository/metadatatypes", feed
+					.getBaseUri().toString());
+			assertEquals("Metadata types", feed.getTitle());
+			List<Entry> entries = feed.getEntries();
+			assertEquals(entries.size(), 5);	
+			
+        } finally {
+            get.releaseConnection();
+        }		
+        
+        //Delete
+        endpointAddress =
+            "http://localhost:9080/repository/metadatatypes/serviceCategory"; 
+        DeleteMethod delete = new DeleteMethod(endpointAddress);
+        delete.setRequestHeader("Content-Type", "*/*");
+        httpClient = new HttpClient();
+        try {
+        	httpClient.executeMethod(delete);           
+        } finally {
+        	delete.releaseConnection();
+        }    
+        
+        // Verify it has been deleted
+        endpointAddress =
+            "http://localhost:9080/repository/metadatatypes"; 
+        get = new GetMethod(endpointAddress);
+        get.setRequestHeader("Content-Type", "*/*");
+        httpClient = new HttpClient();
+        try {
+            httpClient.executeMethod(get);           
+            //String response = getStringFromInputStream(get.getResponseBodyAsStream());
+			Document<Feed> doc = abdera.getParser().parse(
+					get.getResponseBodyAsStream());
+			Feed feed = doc.getRoot();
+			List<Entry> entries = feed.getEntries();
+			assertEquals(entries.size(), 4);				
+        } finally {
+            get.releaseConnection();
+        }	
+    } 
     
     private String getStringFromInputStream(InputStream in) throws Exception {        
         CachedOutputStream bos = new CachedOutputStream();

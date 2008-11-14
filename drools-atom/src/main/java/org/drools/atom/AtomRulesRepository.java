@@ -2,17 +2,22 @@
 package org.drools.atom;
 
 
+import java.io.InputStream;
 import java.net.URI;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import javax.ws.rs.ConsumeMime;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.ProduceMime;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -25,11 +30,15 @@ import org.apache.abdera.model.Content;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
+import org.drools.repository.Artifact;
+import org.drools.repository.ArtifactManager;
 import org.drools.repository.AssetItem;
+import org.drools.repository.MetaData;
 import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.security.PermissionManager;
 
 
 /**
@@ -133,7 +142,7 @@ public class AtomRulesRepository {
     
     @GET
     @Path("/packages")
-    @ProduceMime({"application/atom+xml" })
+    @Produces({"application/atom+xml" })
     public Feed getPackagesAsFeed(@Context UriInfo uParam) {
         System.out.println("----invoking getPackagesAsFeed");
 
@@ -159,8 +168,87 @@ public class AtomRulesRepository {
     }
     
     @GET
+    @Path("/packages/{packageName}")
+    @Produces({"application/atom+xml"})
+    public Entry getPackageAsEntry(@PathParam("packageName") String packageName, @Context UriInfo uParam) throws ResourceNotFoundFault {
+        System.out.println("----invoking getPackageAsEntry with packageName: " + packageName);
+        
+        try {
+            PackageItem packageItem = repository.loadPackage(packageName);
+            return createDetailedPackageItemEntry(packageItem, uParam);
+        } catch (RulesRepositoryException e) {
+        	ResourceNotFoundDetails details = new ResourceNotFoundDetails();
+            details.setName(packageName);
+            throw new ResourceNotFoundFault(details);       	
+        }
+    }
+                   
+    @POST
+    @Path("/packages")
+    @Consumes("application/atom+xml")
+    @Produces({"application/atom+xml"})
+    public Response addPackageAsEntry(Entry e, @Context UriInfo uParam) {
+        System.out.println("----invoking addPackageAsEntry with package name: " + e.getTitle());
+
+        try {
+        	String packageName = e.getTitle();
+
+        	PackageItem packageItem = repository.createPackage(packageName, "desc");
+            
+            URI uri = 
+            	uParam.getBaseUriBuilder().path("repository").path("packages").path(packageItem.getName()).build();
+            return Response.created(uri).entity(e).build();
+        } catch (RulesRepositoryException ex) {
+            return Response.serverError().build();
+        }
+    }   
+    
+    @PUT
+    @Path("/packages")
+    @Consumes("application/atom+xml")
+    @Produces({"application/atom+xml"})
+    public Response updatePackageAsEntry(Entry e, @Context UriInfo uParam) {
+        System.out.println("----invoking updatePackageAsEntry, package name is: " + e.getTitle());
+        try {      	
+        	PackageItem item = repository.loadPackage(e.getTitle());
+        	
+    		item.updateDescription(e.getSummary());
+    		//item.archiveItem(data.archived);
+    		//item.updateBinaryUpToDate(false);
+    		//this.ruleBaseCache.remove(data.uuid);
+    		item.checkin(e.getSummary());
+    		
+            URI uri = 
+            	uParam.getBaseUriBuilder().path("repository").path("packages").path(item.getName()).build();
+            return Response.ok(uri).entity(e).build();
+        } catch (RulesRepositoryException ex) {
+        	ex.printStackTrace();
+            return Response.serverError().build();
+        }
+    }
+        
+    @DELETE
+    @Path("/packages/{packageName}/")
+    public Response deletePackage(@PathParam("packageName") String packageName) {
+        System.out.println("----invoking deletePackage with packageName: " + packageName);
+        Response response;
+
+		try {
+			PackageItem item = repository.loadPackage(packageName);
+			item.remove();
+			repository.save();
+			
+			response = Response.ok().build();
+		} catch (RulesRepositoryException e) {
+			response = Response.notModified().build();
+		}
+
+        return response;
+    }
+    
+    @GET
     @Path("/packages/{packageName}/assets")
-    @ProduceMime({"application/atom+xml" })
+    @Produces({"application/atom+xml" })
     public Feed getAssetsAsFeed(@Context UriInfo uParam, @PathParam("packageName") String packageName) {
         System.out.println("----invoking getRulesAsFeed with packageName: " + packageName);
 
@@ -180,26 +268,10 @@ public class AtomRulesRepository {
 
         return f;
     }
-    
-    @GET
-    @Path("/packages/{packageName}")
-    @ProduceMime({"application/atom+xml"})
-    public Entry getPackageAsEntry(@PathParam("packageName") String packageName, @Context UriInfo uParam) throws ResourceNotFoundFault {
-        System.out.println("----invoking getPackageAsEntry with packageName: " + packageName);
-        
-        try {
-            PackageItem packageItem = repository.loadPackage(packageName);
-            return createDetailedPackageItemEntry(packageItem, uParam);
-        } catch (RulesRepositoryException e) {
-        	ResourceNotFoundDetails details = new ResourceNotFoundDetails();
-            details.setName(packageName);
-            throw new ResourceNotFoundFault(details);       	
-        }
-    }
-            
+
     @GET
     @Path("/packages/{packageName}/assets/{assetName}")
-    @ProduceMime({"application/atom+xml"})
+    @Produces({"application/atom+xml"})
     public Entry getAssetAsEntry(@PathParam("packageName") String packageName, 
     		@Context UriInfo uParam,
     		@PathParam("assetName") String assetName) throws ResourceNotFoundFault {
@@ -225,63 +297,198 @@ public class AtomRulesRepository {
         throw new ResourceNotFoundFault(details);       	
     }
     
+    @GET
+    @Path("/artifacts/{artifactName}")
+    @Produces({"application/atom+xml"})
+    public Entry getArtifactAsEntry(@PathParam("artifactName") String artifactName, 
+    		@Context UriInfo uParam) throws ResourceNotFoundFault {
+        System.out.println("----invoking getArtifactAsEntry with artifactName: " + artifactName);
+        
+        try {             
+        	ArtifactManager artifactManager = new ArtifactManager(repository);
+        	Artifact artifact = artifactManager.getArtifact(artifactName);
+        	Map<String, MetaData>metadataTypes = artifactManager.getMetadataTypes();
+ 
+            return createDetailedArtifactEntry(artifact, metadataTypes, uParam);
+        } catch (RulesRepositoryException e) {
+        	ResourceNotFoundDetails details = new ResourceNotFoundDetails();
+            details.setName(artifactName);
+            throw new ResourceNotFoundFault(details);       	
+        }
+     	
+    }
+    
     @POST
-    @Path("/packages")
-    @ConsumeMime("application/atom+xml")
-    @ProduceMime({"application/atom+xml"})
-    public Response addPackageAsEntry(Entry e, @Context UriInfo uParam) {
-        System.out.println("----invoking addPackageAsEntry with package name: " + e.getTitle());
+    @Path("/artifacts")
+    @Consumes("application/atom+xml")
+    @Produces({"application/atom+xml"})
+    public Response addArtifactAsEntry(Entry e, @Context UriInfo uParam) {
+        System.out.println("----invoking addArtifactAsEntry with package name: " + e.getTitle());
 
         try {
-        	String packageName = e.getTitle();
+        	String artifactName = e.getTitle();
 
-        	PackageItem packageItem = repository.createPackage(packageName, "desc");
+        	ArtifactManager artifactManager = new ArtifactManager(repository);
+        	Artifact artifact = new Artifact();
+        	artifact.setName(artifactName);
+        	artifact.setDescription(e.getSummary());
+        	artifactManager.createArtifact(artifact);
             
             URI uri = 
-            	uParam.getBaseUriBuilder().path("repository", "packages", 
-                                                packageItem.getName()).build();
+            	uParam.getBaseUriBuilder().path("repository").path("artifacts").path( 
+            			artifactName).build();
             return Response.created(uri).entity(e).build();
         } catch (RulesRepositoryException ex) {
             return Response.serverError().build();
         }
-    }    
+    }  
+    
+    @POST
+    @Path("/esbs")
+    @Consumes("application/esb")
+    @Produces({"application/atom+xml"})
+    public Response addArtifactAsEntryMediaType(InputStream is, @Context UriInfo uParam) {
+        System.out.println("----invoking addArtifactAsEntryMediaType----");
+
+    	String name = null;
+    	List<String> slugHeaders = headers.getRequestHeader("Slug");
+    	if(slugHeaders != null) {
+    		name = slugHeaders.get(0);
+    	}
+    	
+    	if(name == null || name.equals("")) {
+    		return Response.serverError().build();
+    	}
+    	
+        try {
+        	ArtifactManager artifactManager = new ArtifactManager(repository);
+        	artifactManager.createEBSJar(name, is);
+
+         	Artifact artifact = artifactManager.getArtifact(name);
+         	
+         	Map<String, MetaData>metadataTypes = artifactManager.getMetadataTypes();
+
+            Entry e = createDetailedArtifactEntry(artifact, metadataTypes, uParam);
+            URI uri = uParam.getBaseUriBuilder().path("repository").path("artifacts").path(name).build();
+            return Response.created(uri).entity(e).build();
+        } catch (Exception ex) {
+        	ex.printStackTrace();
+            return Response.serverError().build();
+        }
+    } 
     
     @PUT
-    @Path("/packages")
-    @ConsumeMime("application/atom+xml")
-    @ProduceMime({"application/atom+xml"})
-    public Response updatePackageAsEntry(Entry e, @Context UriInfo uParam) {
+    @Path("/artifacts")
+    @Consumes("application/atom+xml")
+    @Produces({"application/atom+xml"})
+    public Response updateArtifactAsEntry(Entry e, @Context UriInfo uParam) {
         System.out.println("----invoking updatePackageAsEntry, package name is: " + e.getTitle());
         try {      	
-        	PackageItem item = repository.loadPackage(e.getTitle());
-        	
-    		item.updateDescription(e.getSummary());
-    		//item.archiveItem(data.archived);
-    		//item.updateBinaryUpToDate(false);
-    		//this.ruleBaseCache.remove(data.uuid);
-    		item.checkin(e.getSummary());
-    		
+           	ArtifactManager artifactManager = new ArtifactManager(repository);
+
+           	Artifact artifact = artifactManager.getArtifact(e.getTitle());
+
+           	if (e.getSummary() != null) {
+				artifact.setDescription(e.getSummary());
+			}
+           	
+           	if (!(e.getContentType() == Content.Type.MEDIA) && e.getContent() != null) {
+				artifact.setContent(e.getContent());
+			}
+           	artifact.setLastModified(Calendar.getInstance());
+        	artifactManager.updateArtifact(artifact);
+  		
             URI uri = 
-            	uParam.getBaseUriBuilder().path("repository", "packages", 
-            			item.getName()).build();
-            return Response.ok(uri).entity(e).build();
+            	uParam.getBaseUriBuilder().path("repository").path("artifacts").path(e.getTitle()).build();
+            
+            Map<String, MetaData>metadataTypes = artifactManager.getMetadataTypes();
+        	Entry updatedEntry = createDetailedArtifactEntry(artifact, metadataTypes, uParam);
+
+            return Response.ok(uri).entity(updatedEntry).build();
         } catch (RulesRepositoryException ex) {
         	ex.printStackTrace();
             return Response.serverError().build();
         }
     }    
 
+    @GET
+    @Path("/esbs/{esbName}")
+    @Produces({"application/esb"})
+    public InputStream getArtifactAsEntryMediaType(@PathParam("esbName") String esbName, @Context UriInfo uParam) {
+        System.out.println("----invoking getArtifactAsEntryMediaType----");
+
+        try {
+        	ArtifactManager artifactManager = new ArtifactManager(repository);
+         	InputStream is = artifactManager.getEBSJar(esbName);
+
+            URI uri = uParam.getBaseUriBuilder().path("repository").path("esbs").path(esbName).build();
+            return is;
+        } catch (Exception ex) {
+        	ex.printStackTrace();
+        	return null;
+            //return Response.serverError().build();
+        }
+    }
+        
+    @GET
+    @Path("/metadatatypes")
+    @Produces({"application/atom+xml" })
+    public Feed getMetadataTypesAsFeed(@Context UriInfo uParam) {
+        System.out.println("----invoking getMetadataTypesAsFeed");
+
+        Factory factory = Abdera.getNewFactory();
+        Feed f = factory.newFeed();
+        f.setBaseUri(uParam.getAbsolutePath().toString());
+		
+        f.setTitle("Metadata types");
+        
+    	ArtifactManager artifactManager = new ArtifactManager(repository);
+    	Map<String, MetaData>metadataTypes = artifactManager.getMetadataTypes();
+    	
+        for (String key : metadataTypes.keySet()) {
+        	MetaData md = metadataTypes.get(key);
+           
+            f.addEntry(createMetadataTypeEntry(md, uParam));
+        }
+
+        return f;
+    }    
+    
+    @POST
+    @Path("/metadatatypes")
+    @Consumes("application/atom+xml")
+    @Produces({"application/atom+xml"})
+    public Response addMetaDataTypeAsEntry(Entry e, @Context UriInfo uParam) {
+        System.out.println("----invoking addMetaDataTypeAsEntry with metadata name: " + e.getTitle());
+
+        try {
+        	MetaData md = new MetaData();
+        	md.setMetaDataName(e.getTitle());
+        	md.setMetaDataType(e.getContent());
+        	md.setDescription(e.getSummary());
+        	
+        	ArtifactManager artifactManager = new ArtifactManager(repository);
+        	artifactManager.createMetadataType(md);
+            
+            URI uri = 
+            	uParam.getBaseUriBuilder().path("repository").path("metadatatypes").path(e.getTitle()).build();
+            return Response.created(uri).entity(e).build();
+        } catch (RulesRepositoryException ex) {
+            return Response.serverError().build();
+        }
+    }   
+    
     @DELETE
-    @Path("/packages/{packageName}/")
-    public Response deletePackage(@PathParam("packageName") String packageName) {
-        System.out.println("----invoking deletePackage with packageName: " + packageName);
+    @Path("/metadatatypes/{metadataname}/")
+    public Response deleteMetaDataType(@PathParam("metadataname") String metaDataName) {
+        System.out.println("----invoking deleteMetaDataType with metaDataName: " + metaDataName);
         Response response;
 
 		try {
-			PackageItem item = repository.loadPackage(packageName);
-			item.remove();
-			repository.save();
-			
+        	ArtifactManager artifactManager = new ArtifactManager(repository);
+        	
+        	artifactManager.deleteMetadataType(metaDataName);
+        	
 			response = Response.ok().build();
 		} catch (RulesRepositoryException e) {
 			response = Response.notModified().build();
@@ -289,7 +496,7 @@ public class AtomRulesRepository {
 
         return response;
     }
-        
+    
     private static Entry createPackageItemEntry(PackageItem pkg, UriInfo baseUri) {
         Factory factory = Abdera.getNewFactory();
         
@@ -299,8 +506,7 @@ public class AtomRulesRepository {
         }
         e.setTitle(pkg.getName());
         URI uri = 
-        	baseUri.getBaseUriBuilder().path("repository", "packages", 
-        			pkg.getName()).build();
+        	baseUri.getBaseUriBuilder().path("repository").path("packages").path(pkg.getName()).build();
         e.addLink(uri.toString());
 
         return e;
@@ -315,8 +521,7 @@ public class AtomRulesRepository {
         }
         e.setTitle(asset.getName());
         URI uri = 
-        	baseUri.getBaseUriBuilder().path("repository", "packages", packageName, "assets",
-        			asset.getName()).build();
+        	baseUri.getBaseUriBuilder().path("repository").path("packages").path(packageName).path("assets").path(asset.getName()).build();
         e.addLink(uri.toString());
 
         return e;
@@ -334,8 +539,7 @@ public class AtomRulesRepository {
         e.setSummary(pkg.getDescription());
         
         URI uri = 
-        	baseUri.getBaseUriBuilder().path("repository", "packages",  
-        			pkg.getName()).build();
+        	baseUri.getBaseUriBuilder().path("repository").path("packages").path(pkg.getName()).build();
         e.addLink(uri.toString());
         e.setUpdated(pkg.getLastModified().getTime());
         
@@ -354,8 +558,7 @@ public class AtomRulesRepository {
         e.setSummary(asset.getDescription());
         
         URI uri = 
-        	baseUri.getBaseUriBuilder().path("repository", "packages",  
-        			asset.getName()).build();
+        	baseUri.getBaseUriBuilder().path("repository").path("packages").path(asset.getName()).build();
         e.addLink(uri.toString());
         e.setUpdated(asset.getLastModified().getTime());
         
@@ -416,6 +619,97 @@ public class AtomRulesRepository {
 			// TODO: binary content
 		}
         
+        return e;
+    }
+    
+    private static Entry createDetailedArtifactEntry(Artifact artifact, Map<String, MetaData>metadataTypes, UriInfo baseUri) {
+    	String artifactName = artifact.getName();
+    	Map<String, List<String>> metadata = artifact.getMetadata();
+    	
+        Factory factory = Abdera.getNewFactory();
+        
+        Entry e = factory.getAbdera().newEntry();
+        if (baseUri != null) {
+            e.setBaseUri(baseUri.getAbsolutePath().toString());
+        }
+        e.setTitle(artifactName);
+        //e.setId(asset.getUUID());
+        e.setSummary(artifact.getDescription());
+        e.setUpdated(artifact.getLastModified().toString());
+        
+        URI uri = 
+        	baseUri.getBaseUriBuilder().path("repository").path("artifacts").path(artifactName).build();
+        e.addLink(uri.toString());
+        //e.setUpdated(asset.getLastModified().getTime());
+        
+        //meta data
+/*        StringProperty property = e.addExtension(MetaDataExtensionFactory.PROPERTY);
+        property.setValue("false");*/
+        String NS = "http://overlord.jboss.org/drools/1.0";
+        QName METADATA = new QName(NS, "metadata");
+        
+        ExtensibleElement extension = e.addExtension(METADATA);
+        //extension.declareNS(NS, "drools");
+        QName PROPERTY = new QName(NS, "property");
+        QName VALUE = new QName(NS, "value");
+        
+        for (String key : metadata.keySet()) {
+        	String metadataType = null;
+        	if(metadataTypes.get(key) != null) {
+        		metadataType = metadataTypes.get(key).getMetaDataType(); 
+        	}
+        	
+        	if(ArtifactManager.METADATA_TYPE_STRING.equals(metadataType)) {
+            	List<String> value = metadata.get(key);
+                ExtensibleElement childExtension = extension.addExtension(PROPERTY);
+                childExtension.setAttributeValue("name", key);
+                childExtension.addSimpleExtension(VALUE, value.get(0));
+                //childExtension.setText(value.get(0));
+			} else if (ArtifactManager.METADATA_TYPE_MULTI_VALUE_STRING.equals(metadataType)) {
+				List<String> values = metadata.get(key);
+				ExtensibleElement childExtension = extension
+						.addExtension(PROPERTY);
+				childExtension.setAttributeValue("name", key);
+				for(String value : values) {
+	                childExtension.addSimpleExtension(VALUE, value);					
+				}
+			} else {
+				//Default to string
+            	List<String> value = metadata.get(key);
+                ExtensibleElement childExtension = extension.addExtension(PROPERTY);
+                childExtension.setAttributeValue("name", key);
+                childExtension.setText(value.get(0));		
+			}
+         }
+         
+        if (!artifact.isBinary()) {
+			e.setContentElement(factory.newContent());
+			e.getContentElement().setContentType(Content.Type.TEXT);
+			e.getContentElement().setValue(artifact.getContent());
+		} else {
+			e.setContentElement(factory.newContent());
+			e.getContentElement().setContentType(Content.Type.MEDIA);
+			e.getContentElement().setSrc(artifact.getSrcLink());
+		}
+        
+        return e;
+    }
+      
+    private static Entry createMetadataTypeEntry(MetaData md, UriInfo baseUri) {
+        Factory factory = Abdera.getNewFactory();
+        
+        Entry e = factory.getAbdera().newEntry();
+        if (baseUri != null) {
+            e.setBaseUri(baseUri.getAbsolutePath().toString());
+        }
+        e.setTitle(md.getMetaDataName());
+        e.setSummary(md.getDescription());
+        e.setContent(md.getMetaDataType());
+        URI uri = 
+        	baseUri.getBaseUriBuilder().path("repository").path("metadatatypes").path(md.getMetaDataName()
+        		).build();
+        e.addLink(uri.toString());
+
         return e;
     }
     
