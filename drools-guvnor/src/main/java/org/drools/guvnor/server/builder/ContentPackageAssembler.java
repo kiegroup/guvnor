@@ -173,9 +173,9 @@ public class ContentPackageAssembler {
         //firstly we loadup the classpath
         builder.addPackage( new PackageDescr( pkg.getName() ) );
 
+        loadDeclaredTypes();
         //now we deal with the header (imports, templates, globals).
         addDrl( ServiceImplementation.getDroolsHeader( pkg ) );
-        loadDeclaredTypes();
         if ( builder.hasErrors() ) {
             recordBuilderErrors( pkg );
             //if we have any failures, lets drop out now, no point in going
