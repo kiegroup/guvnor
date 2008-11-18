@@ -46,11 +46,11 @@ public class ServiceImplSecurityTest extends TestCase {
 			String uuid1 = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
 					"description",
 					"testLoadRuleAssetWithRoleBasedAuthrozationCat1",
-					"testLoadRuleAssetWithRoleBasedAuthrozation", "drl");
+					"testLoadRuleAssetWithRoleBasedAuthrozation", AssetFormats.DRL);
 			String uuid2 = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation2",
 					"description",
 					"testLoadRuleAssetWithRoleBasedAuthrozationCat2",
-					"testLoadRuleAssetWithRoleBasedAuthrozation", "drl");
+					"testLoadRuleAssetWithRoleBasedAuthrozation", AssetFormats.DRL);
 
 			// Mock up SEAM contexts
 			Map application = new HashMap<String, Object>();
@@ -101,7 +101,7 @@ public class ServiceImplSecurityTest extends TestCase {
 			String uuid1 = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
 					"description",
 					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat1",
-					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack1", "drl");
+					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack1", AssetFormats.DRL);
 
 			impl.repository.createPackage(
 					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack2", "desc");
@@ -109,7 +109,7 @@ public class ServiceImplSecurityTest extends TestCase {
 			String uuid2 = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
 					"description",
 					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat1",
-					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack2", "drl");
+					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack2", AssetFormats.DRL);
 
 			// Mock up SEAM contexts
 			Map application = new HashMap<String, Object>();
@@ -168,7 +168,7 @@ public class ServiceImplSecurityTest extends TestCase {
 							"description",
 							null,
 							"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPack",
-							"drl");
+							AssetFormats.DRL);
 
 			// Mock up SEAM contexts
 			Map application = new HashMap<String, Object>();
@@ -217,7 +217,7 @@ public class ServiceImplSecurityTest extends TestCase {
 			String uuid = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
 					"description",
 					null,
-					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPackageAdminPack", "drl");
+					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryPackageAdminPack", AssetFormats.DRL);
 
 			// Mock up SEAM contexts
 			Map application = new HashMap<String, Object>();
@@ -268,7 +268,7 @@ public class ServiceImplSecurityTest extends TestCase {
 			String uuid = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
 					"description",
 					null,
-					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryAnalystPack", "drl");
+					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryAnalystPack", AssetFormats.DRL);
 
 			// Mock up SEAM contexts
 			Map application = new HashMap<String, Object>();
@@ -323,7 +323,7 @@ public class ServiceImplSecurityTest extends TestCase {
 			String uuid = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
 					"description",
 					null,
-					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedPack", "drl");
+					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedPack", AssetFormats.DRL);
 
 			// Mock up SEAM contexts
 			Map application = new HashMap<String, Object>();
@@ -410,19 +410,19 @@ public class ServiceImplSecurityTest extends TestCase {
 			impl.createCategory("", category1Name, "this is a cat");
 
 			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
-					"description", category1Name, package1Name, "drl");
+					"description", category1Name, package1Name, AssetFormats.DRL);
 
 			String package2Name = "testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack2"; 
 			impl.repository.createPackage(package2Name, "desc");
 
 			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
-					"description", category1Name, package2Name, "drl");
+					"description", category1Name, package2Name, AssetFormats.DRL);
 
 			String package3Name = "testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyPack3";
 			impl.repository.createPackage(package3Name, "desc");
 
 			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
-					"description", category1Name, package3Name, "drl");
+					"description", category1Name, package3Name, AssetFormats.DRL);
 
 			// Mock up SEAM contexts
 			Map application = new HashMap<String, Object>();
@@ -472,19 +472,19 @@ public class ServiceImplSecurityTest extends TestCase {
 			impl.createCategory("",category1Name, "this is a cat");
 
 			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
-					"description", category1Name, package1Name, "drl");
+					"description", category1Name, package1Name, AssetFormats.DRL);
 
 			String package2Name = "testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack2";
 			impl.repository.createPackage(package2Name, "desc");
 
 			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
-					"description", category1Name, package2Name, "drl");
+					"description", category1Name, package2Name, AssetFormats.DRL);
 
 			String package3Name = "testloadRuleListForCategoriesWithRoleBasedAuthrozationAnalystPack3"; 
 			impl.repository.createPackage(package3Name, "desc");
 
 			impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
-					"description", category1Name, package3Name, "drl");
+					"description", category1Name, package3Name, AssetFormats.DRL);
 
 			// Mock up SEAM contexts
 			Map application = new HashMap<String, Object>();
@@ -536,7 +536,7 @@ public class ServiceImplSecurityTest extends TestCase {
 		impl.createCategory("testCheckinWithPackageReadonlyCat", "deeper", "description");
 		String uuid = impl.createNewRule("testChecking",
 				"this is a description", "testCheckinWithPackageReadonlyCat",
-				"testCheckinWithPackageReadonlyPack", "drl");
+				"testCheckinWithPackageReadonlyPack", AssetFormats.DRL);
 		RuleAsset asset = impl.loadRuleAsset(uuid);
 		assertNotNull(asset.metaData.lastModifiedDate);
 		asset.metaData.coverage = "boo";
@@ -588,7 +588,7 @@ public class ServiceImplSecurityTest extends TestCase {
 		impl.createCategory("testCheckinWithPackageDeveloperCat", "deeper", "description");
 		String uuid = impl.createNewRule("testChecking",
 				"this is a description", "testCheckinWithPackageDeveloperCat",
-				"testCheckinWithPackageDeveloperPack", "drl");
+				"testCheckinWithPackageDeveloperPack", AssetFormats.DRL);
 		RuleAsset asset = impl.loadRuleAsset(uuid);
 		assertNotNull(asset.metaData.lastModifiedDate);
 		asset.metaData.coverage = "boo";
@@ -640,7 +640,7 @@ public class ServiceImplSecurityTest extends TestCase {
  			String uuid3 = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
  					"ReadonlyFilterDescription",
  					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat3",
- 					package3Name, "drl");
+ 					package3Name, AssetFormats.DRL);
 
  			String package4Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack4";
  			impl.repository.createPackage(package4Name, "desc");
@@ -648,7 +648,7 @@ public class ServiceImplSecurityTest extends TestCase {
  			String uuid2 = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
  					"ReadonlyFilterDescription",
  					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat3",
- 					package4Name, "drl");
+ 					package4Name, AssetFormats.DRL);
 
  			// Mock up SEAM contexts
  			Map application = new HashMap<String, Object>();
@@ -697,7 +697,7 @@ public class ServiceImplSecurityTest extends TestCase {
  			impl.createCategory("", category7Name, "this is a rabbit");
 
  			String uuid7 = impl.createNewRule(rule7Name,
- 					"MetaDataFilterDescription7", category7Name, package7Name, "drl");
+ 					"MetaDataFilterDescription7", category7Name, package7Name, AssetFormats.DRL);
 
  			String package8Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack8";
  			String category8Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat8";
@@ -705,7 +705,7 @@ public class ServiceImplSecurityTest extends TestCase {
  			String packageItem8UUID = packageItem8.getUUID();
  			impl.createCategory("", category8Name, "this is a mouse");
  			String uuid8 = impl.createNewRule(rule8Name,
- 					"MetaDataFilterDescription8", category8Name, package8Name, "drl");
+ 					"MetaDataFilterDescription8", category8Name, package8Name, AssetFormats.DRL);
 
  			// Mock up SEAM contexts
  			Map application = new HashMap<String, Object>();
@@ -764,7 +764,7 @@ public class ServiceImplSecurityTest extends TestCase {
  			String packageItem5UUID = packageItem5.getUUID();
  			impl.createCategory("", category5Name, "this is a cat");
  			String uuid7 = impl.createNewRule(rule5Name,
- 					"MetaDataFilter2Description5", category5Name, package5Name, "drl");
+ 					"MetaDataFilter2Description5", category5Name, package5Name, AssetFormats.DRL);
 
  			String package6Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack6";
  			String category6Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat6";
@@ -772,7 +772,7 @@ public class ServiceImplSecurityTest extends TestCase {
  			String packageItem6UUID = packageItem6.getUUID();
  			impl.createCategory("", category6Name, "this is a dog");
  			String uuid6 = impl.createNewRule(rule6Name,
- 					"MetaDataFilter2Description6", category6Name, package6Name, "drl");
+ 					"MetaDataFilter2Description6", category6Name, package6Name, AssetFormats.DRL);
 
  			// Mock up SEAM contexts
  			Map application = new HashMap<String, Object>();
@@ -828,7 +828,7 @@ public class ServiceImplSecurityTest extends TestCase {
  			String packageItem9UUID = packageItem9.getUUID();
  			impl.createCategory("", category9Name, "this is a pigeon");
  			String uuid9 = impl.createNewRule(rule9Name,
- 					"MetaDataFilter3Description9", category9Name, package9Name, "drl");
+ 					"MetaDataFilter3Description9", category9Name, package9Name, AssetFormats.DRL);
 
  			String package10Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack10";
  			String category10Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat10";
@@ -836,7 +836,7 @@ public class ServiceImplSecurityTest extends TestCase {
  			String packageItem10UUID = packageItem10.getUUID();
  			impl.createCategory("", category10Name, "this is a sparrow");
  			String uuid10 = impl.createNewRule(rule10Name,
- 					"MetaDataFilter3Description10", category10Name, package10Name, "drl");
+ 					"MetaDataFilter3Description10", category10Name, package10Name, AssetFormats.DRL);
 
  			// Mock up SEAM contexts
  			Map application = new HashMap<String, Object>();
@@ -892,7 +892,7 @@ public class ServiceImplSecurityTest extends TestCase {
  			String packageItem11UUID = packageItem11.getUUID();
  			impl.createCategory("", category11Name, "this is a dock");
  			String uuid11 = impl.createNewRule(rule11Name,
- 					"DisplayHandlerDescription11", category11Name, package11Name, "drl");
+ 					"DisplayHandlerDescription11", category11Name, package11Name, AssetFormats.DRL);
 
  			String package12Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack12";
  			String category12Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat12";
@@ -900,7 +900,7 @@ public class ServiceImplSecurityTest extends TestCase {
  			String packageItem12UUID = packageItem12.getUUID();
  			impl.createCategory("", category12Name, "this is a sparrow");
  			String uuid12 = impl.createNewRule(rule12Name,
- 					"DisplayHandlerDescription12", category12Name, package12Name, "drl");
+ 					"DisplayHandlerDescription12", category12Name, package12Name, AssetFormats.DRL);
 
  			// Mock up SEAM contexts
  			Map application = new HashMap<String, Object>();

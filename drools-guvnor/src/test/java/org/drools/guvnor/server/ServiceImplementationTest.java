@@ -299,7 +299,7 @@ public class ServiceImplementationTest extends TestCase {
 		impl.createCategory("", "testLoadRuleAsset", "this is a cat");
 
 		impl.createNewRule("testLoadRuleAsset", "description",
-				"testLoadRuleAsset", "testLoadRuleAsset", "drl");
+				"testLoadRuleAsset", "testLoadRuleAsset", AssetFormats.DRL);
 
 		TableDataResult res = impl
 				.loadRuleListForCategories("testLoadRuleAsset", 0, -1, AssetItemGrid.RULE_LIST_TABLE_ID);
@@ -323,7 +323,7 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals("testLoadRuleAsset", asset.metaData.name);
 		assertEquals("testLoadRuleAsset", asset.metaData.title);
 		assertEquals("testLoadRuleAsset", asset.metaData.packageName);
-		assertEquals("drl", asset.metaData.format);
+		assertEquals(AssetFormats.DRL, asset.metaData.format);
 		assertNotNull(asset.metaData.createdDate);
 
 		assertEquals(1, asset.metaData.categories.length);
@@ -350,6 +350,10 @@ public class ServiceImplementationTest extends TestCase {
 				AssetFormats.DSL_TEMPLATE_RULE);
 		asset = impl.loadRuleAsset(uuid);
 		assertTrue(asset.content instanceof RuleContentText);
+		
+		
+		//asset
+		
 	}
 
 	public void testLoadAssetHistoryAndRestore() throws Exception {
@@ -358,7 +362,7 @@ public class ServiceImplementationTest extends TestCase {
 		impl.createCategory("", "testLoadAssetHistory", "this is a cat");
 
 		String uuid = impl.createNewRule("testLoadAssetHistory", "description",
-				"testLoadAssetHistory", "testLoadAssetHistory", "drl");
+				"testLoadAssetHistory", "testLoadAssetHistory", AssetFormats.DRL);
 		RuleAsset asset = impl.loadRuleAsset(uuid);
 		impl.checkinVersion(asset); // 1
 		asset = impl.loadRuleAsset(uuid);
@@ -405,7 +409,7 @@ public class ServiceImplementationTest extends TestCase {
 
 		String uuid = serv.createNewRule("testChecking",
 				"this is a description", "testCheckinCategory",
-				RulesRepository.DEFAULT_PACKAGE, "drl");
+				RulesRepository.DEFAULT_PACKAGE, AssetFormats.DRL);
 
 		RuleAsset asset = serv.loadRuleAsset(uuid);
 
@@ -667,7 +671,7 @@ public class ServiceImplementationTest extends TestCase {
 		ServiceImplementation impl = getService();
 		PackageItem pkg = impl.repository.createPackage("testListUnregisteredAssetFormats", "");
 		AssetItem as = pkg.addAsset("whee", "");
-		as.updateFormat("drl");
+		as.updateFormat(AssetFormats.DRL);
 		as.checkin("");
 
 		as = pkg.addAsset("whee2", "");
@@ -685,11 +689,11 @@ public class ServiceImplementationTest extends TestCase {
 		impl.createCategory("/", cat, "qkfnd");
 		impl.createPackage("testQuickFind",
 				"for testing quick find.");
-		String uuid = impl.createNewRule("testQuickFindmyRule1", "desc", cat, "testQuickFind", "drl");
+		String uuid = impl.createNewRule("testQuickFindmyRule1", "desc", cat, "testQuickFind", AssetFormats.DRL);
 		TableDataResult res = impl.quickFindAsset("testQuickFindmyRule", 20, false);
 		assertEquals(1, res.data.length);
 
-		impl.createNewRule("testQuickFindmyRule2", "desc", cat, "testQuickFind", "drl");
+		impl.createNewRule("testQuickFindmyRule2", "desc", cat, "testQuickFind", AssetFormats.DRL);
 		res = impl.quickFindAsset("testQuickFindmyRule", 20, false);
 		assertEquals(2, res.data.length);
 
@@ -707,7 +711,7 @@ public class ServiceImplementationTest extends TestCase {
 		impl.createCategory("/", cat, "qkfnd");
 		impl.createPackage("testTextSearch",
 				"for testing search.");
-		String uuid = impl.createNewRule("testTextRule1", "desc", cat, "testTextSearch", "drl");
+		String uuid = impl.createNewRule("testTextRule1", "desc", cat, "testTextSearch", AssetFormats.DRL);
 		TableDataResult res = impl.queryFullText("testTextRule1", false, 0, -1);
 		assertEquals(1, res.data.length);
 	}
@@ -763,9 +767,9 @@ public class ServiceImplementationTest extends TestCase {
 
 		String packagUUID = impl.createPackage("testStatus", "description");
 		String ruleUUID = impl.createNewRule("testStatus", "desc", null,
-				"testStatus", "drl");
+				"testStatus", AssetFormats.DRL);
 		String ruleUUID2 = impl.createNewRule("testStatus2", "desc", null,
-				"testStatus", "drl");
+				"testStatus", AssetFormats.DRL);
 		impl.createState("testState");
 
 		RuleAsset asset = impl.loadRuleAsset(ruleUUID);
@@ -803,7 +807,7 @@ public class ServiceImplementationTest extends TestCase {
 		String cat = impl.loadChildCategories("/")[0];
 
 		String uuid = impl.createNewRule("testMovePackage", "desc", cat,
-				"sourcePackage", "drl");
+				"sourcePackage", AssetFormats.DRL);
 
 		TableDataResult res = impl.listAssets(destPkgId,
 				new String[] { "drl" }, 0, 2, AssetItemGrid.RULE_LIST_TABLE_ID);
@@ -824,7 +828,7 @@ public class ServiceImplementationTest extends TestCase {
 		RepositoryService impl = getService();
 		impl.createCategory("/", "templates", "ya");
 		String uuid = impl.createNewRule("testCopyAsset", "", "templates",
-				RulesRepository.DEFAULT_PACKAGE, "drl");
+				RulesRepository.DEFAULT_PACKAGE, AssetFormats.DRL);
 		String uuid2 = impl.copyAsset(uuid, RulesRepository.DEFAULT_PACKAGE,
 				"testCopyAsset2");
 		assertNotSame(uuid, uuid2);
@@ -841,7 +845,7 @@ public class ServiceImplementationTest extends TestCase {
 		impl.createCategory("/", "snapshotTesting", "y");
 		impl.createPackage("testSnapshot", "d");
 		String uuid = impl.createNewRule("testSnapshotRule", "",
-				"snapshotTesting", "testSnapshot", "drl");
+				"snapshotTesting", "testSnapshot", AssetFormats.DRL);
 
 		impl.createPackageSnapshot("testSnapshot", "X", false, "ya");
 		SnapshotInfo[] snaps = impl.listSnapshots("testSnapshot");
