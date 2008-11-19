@@ -144,6 +144,11 @@ public class ServiceImplementation
     implements
     RepositoryService {
 
+	/**
+	 * Maximum number of rules to display in "list rules in package" method
+	 */
+	private static final int MAX_RULES_TO_SHOW_IN_PACKAGE_LIST = 5000;
+	
     @In
     public RulesRepository          repository;
 
@@ -1630,12 +1635,16 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] listRulesInPackage(String packageName) throws SerializableException {
+    	
+    	// check security
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( packageName ),
                                                  RoleTypes.PACKAGE_READONLY );
         }
 
+        // load package
         PackageItem item = repository.loadPackage( packageName );
+        
         ContentPackageAssembler asm = new ContentPackageAssembler( item,
                                                                    false );
         List<String> result = new ArrayList<String>();
@@ -1648,8 +1657,8 @@ public class ServiceImplementation
                     RuleDescr r = (RuleDescr) iterator.next();
                     result.add( r.getName() );
                     count++;
-                    if ( count == 5000 ) {
-                        result.add( "More then 5000 rules." );
+					if (count == MAX_RULES_TO_SHOW_IN_PACKAGE_LIST) {
+						result.add("More then " + MAX_RULES_TO_SHOW_IN_PACKAGE_LIST + " rules.");
                         break;
                     }
                 }
