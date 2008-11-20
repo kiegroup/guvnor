@@ -367,13 +367,16 @@ public class ServiceImplementation
         if ( Contexts.isSessionContextActive() ) {
             if ( !Identity.instance().hasPermission( new CategoryPathType( categoryPath ),
                                                      RoleTypes.ANALYST_READ ) ) {
+                
                 TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
                 return handler.loadRuleListTable( new AssetPageList() );
             }
         }
-
+        
         //use AssetItemFilter to enforce package-based permissions.
-        RepositoryFilter filter = new AssetItemFilter();
+//        RepositoryFilter filter = new AssetItemFilter();
+        // Filter is null since the permission is checked on category level.
+        RepositoryFilter filter = null;
         AssetPageList list = repository.findAssetsByCategory( categoryPath,
                                                               false,
                                                               skip,
