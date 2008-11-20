@@ -91,8 +91,12 @@ public class EditorLauncher {
         } else if ( asset.metaData.format.equals( AssetFormats.PROPERTIES ) ) {
             return new PropertiesWidget( asset,
                                          viewer );
-        } else if (asset.metaData.format.equals(AssetFormats.XML)) {
-        	return new XmlFileWidget( asset, viewer );
+        } else if ( asset.metaData.format.equals( AssetFormats.XML ) ) {
+            return new XmlFileWidget( asset,
+                                      viewer );
+        } else if ( asset.metaData.format.equals( AssetFormats.FUNCTION ) ) {
+            return new RuleValidatorWrapper( new FunctionEditor( asset ),
+                                             asset );
         } else {
             return new DefaultContentUploadEditor( asset,
                                                    viewer );
