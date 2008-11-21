@@ -1,30 +1,21 @@
 package org.drools.repository;
 
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.jcr.Node;
-import javax.jcr.Property;
-
 public class MetaData {   
-	String metaDataName;
-	String metaDataType;
-	String description;
+	private String name;
+	private String metaDataType;
+	private String description;
+	
 	public String getDescription() {
 		return description;
 	}
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getMetaDataName() {
-		return metaDataName;
+	public String geName() {
+		return name;
 	}
-	public void setMetaDataName(String metaDataName) {
-		this.metaDataName = metaDataName;
+	public void setName(String name) {
+		this.name = name;
 	}
 	public String getMetaDataType() {
 		return metaDataType;

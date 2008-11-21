@@ -10,11 +10,14 @@ import java.net.URLConnection;
 import java.util.List;
 
 import javax.ws.rs.core.UriInfo;
+import javax.xml.namespace.QName;
 
 import org.apache.abdera.Abdera;
 import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Document;
+import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.DeleteMethod;
@@ -27,7 +30,9 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.testutil.common.AbstractClientServerTestBase;
+import org.drools.repository.ArtifactManager;
 import org.drools.repository.PackageItem;
+import org.drools.repository.Phase;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -257,6 +262,119 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
     }  
     
     @Test
+    public void testAddAndUpdateArtifact() throws Exception {
+        String endpointAddress =
+            "http://localhost:9080/repository/artifacts"; 
+        
+    	
+        Factory factory = Abdera.getNewFactory();        
+        Entry entry = factory.getAbdera().newEntry();
+        entry.setTitle("testArtifact1");
+        entry.setContent("the content of testArtifact1 in String format");
+       
+        PostMethod post = new PostMethod(endpointAddress);
+        post.setRequestEntity(new StringRequestEntity(entry.toString(), "application/atom+xml", null));
+        HttpClient httpclient = new HttpClient();
+
+        try {
+            int result = httpclient.executeMethod(post);
+            assertEquals(201, result);
+            //String response = getStringFromInputStream(post.getResponseBodyAsStream());
+            //System.out.print(response);
+			Document<Entry> doc = abdera.getParser().parse(post.getResponseBodyAsStream());
+			entry = doc.getRoot();
+
+			assertEquals("testArtifact1", entry.getTitle());
+			assertEquals("the content of testArtifact1 in String format", entry.getContent());
+			assertEquals("TEXT", entry.getContentType().name());
+        } finally {
+            post.releaseConnection();
+        } 
+        
+    	//Update artifact testArtifact1
+        entry.setSummary("desc for testArtifact1");
+        String NS = "http://overlord.jboss.org/drools/1.0";
+        QName METADATA = new QName(NS, "metadata");
+        QName PROPERTY = new QName(NS, "property");
+        QName VALUE = new QName(NS, "value");
+        QName LIFECYCLE = new QName(NS, "lifecycle");
+        ExtensibleElement metadataExtension  = entry.getExtension(METADATA);
+        if(metadataExtension == null) {
+        	metadataExtension = entry.addExtension(METADATA);
+        }
+        ExtensibleElement childExtension = metadataExtension.addExtension(PROPERTY);
+
+        childExtension.setAttributeValue("name", "archived");
+        childExtension.addSimpleExtension(VALUE, "false");
+        
+		String[] values = new String[]{"value1", "value2"};
+		childExtension = metadataExtension.addExtension(PROPERTY);
+		childExtension.setAttributeValue("name", "multi-value-property");
+		for(String value : values) {
+            childExtension.addSimpleExtension(VALUE, value);					
+		}		
+        
+        childExtension = metadataExtension.addExtension(LIFECYCLE);
+		childExtension.setAttributeValue("name", "DefaultLifeCycle");
+		childExtension.setAttributeValue("phase", "created");
+		
+        String endpointAddress1 = "http://localhost:9080/repository/artifacts";
+        PutMethod put = new PutMethod(endpointAddress1);
+        put.setRequestEntity(new StringRequestEntity(entry.toString(), "application/atom+xml", null));
+        HttpClient httpclient1 = new HttpClient();
+
+        try {
+            int result = httpclient1.executeMethod(put);
+            assertEquals(200, result);
+        } finally {
+            // Release current connection to the connection pool once you are
+            // done
+            put.releaseConnection();
+        }
+        
+        // Verify result
+        String endpointAddress2 = "http://localhost:9080/repository/artifacts/testArtifact1";
+        URL url = new URL(endpointAddress2);
+        URLConnection connect = url.openConnection();
+        connect.addRequestProperty("Accept", "application/atom+xml");
+        InputStream in = connect.getInputStream();
+        assertNotNull(in);
+		Document<Entry> doc = abdera.getParser().parse(in);
+		entry = doc.getRoot();
+
+		assertEquals("testArtifact1", entry.getTitle());
+		assertEquals("the content of testArtifact1 in String format", entry.getContent());
+		assertEquals("TEXT", entry.getContentType().name());
+		assertEquals("desc for testArtifact1", entry.getSummary());
+
+        metadataExtension  = entry.getExtension(METADATA); 
+        ExtensibleElement lifeCycleExtension = metadataExtension.getExtension(LIFECYCLE);
+		assertEquals("DefaultLifeCycle", lifeCycleExtension.getAttributeValue("name"));       
+		assertEquals("created", lifeCycleExtension.getAttributeValue("phase")); 
+		
+        List<ExtensibleElement> propertyExtensions = metadataExtension.getExtensions(PROPERTY);
+		assertEquals(3, propertyExtensions.size());  		
+
+		int expectedExtensionFound = 0;
+		int totalPhasesFound = 0;
+		for (ExtensibleElement expectedExtension : propertyExtensions) {
+			totalPhasesFound++;
+			if (expectedExtension.getAttributeValue("name").equals("archived")) {
+				assertEquals("false", expectedExtension.getSimpleExtension(VALUE));
+				expectedExtensionFound++;
+			} else if (expectedExtension.getAttributeValue("name").equals("multi-value-property")) {
+				expectedExtensionFound++;
+			} 
+		}		
+
+		assertEquals(2, expectedExtensionFound);
+		assertEquals(3, totalPhasesFound);
+		//a Abdera bug?
+/*	       List<Element> propertyExtensions1 = metadataExtension.getExtensions();
+	       assertEquals(4, propertyExtensions1.size());  */
+    }  
+    
+    @Test
     public void testAddAndUpdateESBJar() throws Exception {
         String endpointAddress =
             "http://localhost:9080/repository/esbs"; 
@@ -287,6 +405,15 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
         
     	//Update artifact Quickstart_helloworld.esb
         entry.setSummary("desc for esb");
+        String NS = "http://overlord.jboss.org/drools/1.0";
+        QName METADATA = new QName(NS, "metadata");
+        QName LIFECYCLE = new QName(NS, "lifecycle");
+        ExtensibleElement metadataExtension  = entry.getExtension(METADATA);
+
+        ExtensibleElement childExtension = metadataExtension.addExtension(LIFECYCLE);
+		childExtension.setAttributeValue("name", "DefaultLifeCycle");
+		childExtension.setAttributeValue("phase", "created");
+				
         String endpointAddress1 = "http://localhost:9080/repository/artifacts";
         PutMethod put = new PutMethod(endpointAddress1);
         System.out.println("***********" + entry.toString());
@@ -316,6 +443,11 @@ public class ClientServerAtomRulesRepositoryTest extends AbstractClientServerTes
 		assertEquals("/repository/esbs/Quickstart_helloworld.esb", entry.getContentSrc().getPath());
 		assertEquals("MEDIA", entry.getContentType().name());
 		assertEquals("desc for esb", entry.getSummary());
+        metadataExtension  = entry.getExtension(METADATA); 
+        ExtensibleElement lifeCycleExtension = metadataExtension.getExtension(LIFECYCLE);
+		assertEquals("DefaultLifeCycle", lifeCycleExtension.getAttributeValue("name"));       
+		assertEquals("created", lifeCycleExtension.getAttributeValue("phase"));            
+        
 		
 		//Get back the binary content of ESB Jar
         String endpointAddress3 = "http://localhost:9080/repository/esbs/Quickstart_helloworld.esb";

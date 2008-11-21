@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Content;
+import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
@@ -43,85 +44,6 @@ import org.drools.repository.security.PermissionManager;
 
 /**
  * AtomRulesRepository provides an AtomPub interface on top of RulesRepository. 
- * 
- * A HTTP GET request to URL http://host:portnumber/repository/packages
- * returns a list of packages in the repository in Atom feed format. An example looks like below:
- * 
- * <feed xml:base="http://localhost:9080/repository/packages">
- *   <title type="text">Packages</title>
- *   
- *   <entry xml:base="http://localhost:9080/repository/packages">
- *     <title type="text">defaultPackage</title>
- *     <link href="http://localhost:9080/repository/packages/defaultPackage"/>
- *   </entry>
- * 
- *   <entry xml:base="http://localhost:9080/repository/packages">
- *     <title type="text">testPackage1</title>
- *     <link href="http://localhost:9080/repository/packages/testPackage1"/>
- *   </entry>
- * </feed>
- *
- *
- * You can navigate from packages to a specific package using the URL link returned.
- * A HTTP GET request to URL http://host:portnumber/repository/packages/testPackage1 
- * returns testPackag1 in the repository in Atom entry format. An example looks like below:
- * 
- * <entry xml:base="http://localhost:9080/repository/packages/testPackage1">
- *   <title type="text">testPackage1</title>
- *   <id>5632cf6c-0ef5-4ccc-b7e5-293285c4ce19</id>
- *   <link href="http://localhost:9080/repository/packages/testPackage1"/>
- *   <summary type="text">desc1</summary>
- *   <updated>2008-10-17T08:12:42.046Z</updated>
- *   <content type="text">archived=false</content>
- * </entry>    
- * 
- * A HTTP POST request to URL http://host:portnumber/repository/packages with the data:
- * 
- * <entry xml:base="http://localhost:9080/repository/packages">
- *   <title type="text">testPackage1</title>
- * </entry>   
- * 
- * creates a package named testPackage1 in the repository
- *  
- *  
- * A HTTP PUT request to URL http://host:portnumber/repository/packages with the data:
- * 
- * <entry xml:base="http://localhost:9080/repository/packages">
- *   <title type="text">testPackage1</title>
- *   <summary type="text">desc2</summary>
- *   <content type="text">archived=false</content>
- * </entry>     
- * 
- * updates testPackage1 in the repository
-
- * A HTTP DELETE request to URL http://host:portnumber/repository/packages/testPackage1  
- * deletes the package testPackage1
- * 
- * 
- * A HTTP GET request to URL http://host:portnumber/repository/packages/testPackage1/assets
- * returns a list of assets under the testPackage1 in the repository in Atom feed format. 
- * An example looks like below:
- * 
- * <feed xmlns="http://www.w3.org/2005/Atom" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:base="http://localhost:9080/repository/packages/testPackage1/assets">
- *   <title type="text">Packages</title>
- *   
- *   <entry xml:base="http://localhost:9080/repository/packages/testPackage1/assets">
- *     <title type="text">testAsset1</title>
- *     <link href="http://localhost:9080/repository/packages/packageName/asset/testAsset1" />
- *   </entry>
- *   
- *   <entry xml:base="http://localhost:9080/repository/packages/testPackage1/assets">
- *     <title type="text">testAsset2</title>
- *     <link href="http://localhost:9080/repository/packages/packageName/asset/testAsset2" />
- *   </entry>
- * </feed>
- * 
- * NOTE: The mapping between Atom Entry element and Drools PackageItem is as below:
- * 
- * atom:title   - PackageItem.name
- * atom:id      - PackageItem.UUID
- * atom:updated - PackageItem.lastModified 
- * atom:summary - PackageItem.description
  * 
  * @author Jervis Lliu
  */
@@ -323,7 +245,7 @@ public class AtomRulesRepository {
     @Consumes("application/atom+xml")
     @Produces({"application/atom+xml"})
     public Response addArtifactAsEntry(Entry e, @Context UriInfo uParam) {
-        System.out.println("----invoking addArtifactAsEntry with package name: " + e.getTitle());
+        System.out.println("----invoking addArtifactAsEntry with artifact name: " + e.getTitle());
 
         try {
         	String artifactName = e.getTitle();
@@ -332,6 +254,7 @@ public class AtomRulesRepository {
         	Artifact artifact = new Artifact();
         	artifact.setName(artifactName);
         	artifact.setDescription(e.getSummary());
+        	artifact.setContent(e.getContent());
         	artifactManager.createArtifact(artifact);
             
             URI uri = 
@@ -382,7 +305,7 @@ public class AtomRulesRepository {
     @Consumes("application/atom+xml")
     @Produces({"application/atom+xml"})
     public Response updateArtifactAsEntry(Entry e, @Context UriInfo uParam) {
-        System.out.println("----invoking updatePackageAsEntry, package name is: " + e.getTitle());
+        System.out.println("----invoking updatePackageAsEntry artifact name is: " + e.getTitle());
         try {      	
            	ArtifactManager artifactManager = new ArtifactManager(repository);
 
@@ -396,6 +319,68 @@ public class AtomRulesRepository {
 				artifact.setContent(e.getContent());
 			}
            	artifact.setLastModified(Calendar.getInstance());
+           	
+           	Map<String, Object> metadata = new HashMap<String, Object>();
+            String NS = "http://overlord.jboss.org/drools/1.0";
+            QName METADATA = new QName(NS, "metadata");
+            QName PROPERTY = new QName(NS, "property");
+            QName LIFECYCLE = new QName(NS, "lifecycle");
+            
+            ExtensibleElement metadataExtension = e.getExtension(METADATA);
+            if(metadataExtension != null) {
+            	List<Element> a1 = metadataExtension.getExtensions();
+               	List<Element> a2 = metadataExtension.getElements();
+               	Element child = metadataExtension.getFirstChild();
+               	while(child != null) {
+                	QName name = child.getQName();
+                	if(name.equals(PROPERTY)) {
+                		List<Element> propertyValues = child.getElements();
+            			String key = child.getAttributeValue("name");
+                		if(propertyValues.size() == 1) {
+                			String value = propertyValues.get(0).getText();
+                			metadata.put(key, value);
+                		} else if (propertyValues.size() > 1) {
+                			String[] value = new String[propertyValues.size()];
+                			int i = 0;
+                			for(Element valueElement : propertyValues) {
+                    			value[i] = valueElement.getText();
+                    			i++;                    			          				
+                			}
+                			metadata.put(key, value); 
+                		}            		
+                	} else if (name.equals(LIFECYCLE)) {
+            			String lifeCycleName = child.getAttributeValue("name");
+            			String phase = child.getAttributeValue("phase");
+            			metadata.put(lifeCycleName, phase);     
+                	}
+                	child = child.getNextSibling();
+               	}
+              	
+/*                           	
+            for(Element child : metadataExtension.getExtensions()) {
+            	QName name = child.getQName();
+            	if(name.equals(PROPERTY)) {
+            		List<Element> propertyValues = child.getElements();
+        			String key = child.getAttributeValue("name");
+            		if(propertyValues.size() == 1) {
+            			String value = propertyValues.get(0).getText();
+            			metadata.put(key, value);
+            		} else if (propertyValues.size() > 1) {
+            			for(Element valueElement : propertyValues) {
+                			String value = valueElement.getText();
+                			metadata.put(key, value);           				
+            			}
+            		}            		
+            	} else if (name.equals(LIFECYCLE)) {
+        			String lifeCycleName = child.getAttributeValue("name");
+        			String phase = child.getAttributeValue("phase");
+        			metadata.put(lifeCycleName, phase);     
+            	}
+            }*/
+            }
+            
+            artifact.setMetadata(metadata);
+    		
         	artifactManager.updateArtifact(artifact);
   		
             URI uri = 
@@ -463,7 +448,7 @@ public class AtomRulesRepository {
 
         try {
         	MetaData md = new MetaData();
-        	md.setMetaDataName(e.getTitle());
+        	md.setName(e.getTitle());
         	md.setMetaDataType(e.getContent());
         	md.setDescription(e.getSummary());
         	
@@ -624,7 +609,7 @@ public class AtomRulesRepository {
     
     private static Entry createDetailedArtifactEntry(Artifact artifact, Map<String, MetaData>metadataTypes, UriInfo baseUri) {
     	String artifactName = artifact.getName();
-    	Map<String, List<String>> metadata = artifact.getMetadata();
+    	Map<String, Object> metadata = artifact.getMetadata();
     	
         Factory factory = Abdera.getNewFactory();
         
@@ -640,18 +625,15 @@ public class AtomRulesRepository {
         URI uri = 
         	baseUri.getBaseUriBuilder().path("repository").path("artifacts").path(artifactName).build();
         e.addLink(uri.toString());
-        //e.setUpdated(asset.getLastModified().getTime());
-        
+         
         //meta data
-/*        StringProperty property = e.addExtension(MetaDataExtensionFactory.PROPERTY);
-        property.setValue("false");*/
         String NS = "http://overlord.jboss.org/drools/1.0";
         QName METADATA = new QName(NS, "metadata");
         
         ExtensibleElement extension = e.addExtension(METADATA);
-        //extension.declareNS(NS, "drools");
         QName PROPERTY = new QName(NS, "property");
         QName VALUE = new QName(NS, "value");
+        QName LIFECYCLE = new QName(NS, "lifecycle");
         
         for (String key : metadata.keySet()) {
         	String metadataType = null;
@@ -660,25 +642,31 @@ public class AtomRulesRepository {
         	}
         	
         	if(ArtifactManager.METADATA_TYPE_STRING.equals(metadataType)) {
-            	List<String> value = metadata.get(key);
+            	String value = (String)metadata.get(key);
                 ExtensibleElement childExtension = extension.addExtension(PROPERTY);
                 childExtension.setAttributeValue("name", key);
-                childExtension.addSimpleExtension(VALUE, value.get(0));
+                childExtension.addSimpleExtension(VALUE, value);
                 //childExtension.setText(value.get(0));
 			} else if (ArtifactManager.METADATA_TYPE_MULTI_VALUE_STRING.equals(metadataType)) {
-				List<String> values = metadata.get(key);
+				String[] values = (String[])metadata.get(key);
 				ExtensibleElement childExtension = extension
 						.addExtension(PROPERTY);
 				childExtension.setAttributeValue("name", key);
 				for(String value : values) {
 	                childExtension.addSimpleExtension(VALUE, value);					
 				}
+			} else if (ArtifactManager.METADATA_TYPE_LIFE_CYCLE.equals(metadataType)) {
+				String value = (String)metadata.get(key);
+				ExtensibleElement childExtension = extension
+						.addExtension(LIFECYCLE);
+				childExtension.setAttributeValue("name", key);
+				childExtension.setAttributeValue("phase", value);
 			} else {
 				//Default to string
-            	List<String> value = metadata.get(key);
+				String value = metadata.get(key).toString();
                 ExtensibleElement childExtension = extension.addExtension(PROPERTY);
                 childExtension.setAttributeValue("name", key);
-                childExtension.setText(value.get(0));		
+                childExtension.setText(value);		
 			}
          }
          
@@ -702,11 +690,11 @@ public class AtomRulesRepository {
         if (baseUri != null) {
             e.setBaseUri(baseUri.getAbsolutePath().toString());
         }
-        e.setTitle(md.getMetaDataName());
+        e.setTitle(md.geName());
         e.setSummary(md.getDescription());
         e.setContent(md.getMetaDataType());
         URI uri = 
-        	baseUri.getBaseUriBuilder().path("repository").path("metadatatypes").path(md.getMetaDataName()
+        	baseUri.getBaseUriBuilder().path("repository").path("metadatatypes").path(md.geName()
         		).build();
         e.addLink(uri.toString());
 

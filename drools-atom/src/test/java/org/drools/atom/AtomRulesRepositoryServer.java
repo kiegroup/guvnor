@@ -40,10 +40,12 @@ public class AtomRulesRepositoryServer extends AbstractTestServerBase{
 
         ArtifactManager artifactManager = new ArtifactManager(repo);
         Artifact artifact = new Artifact();
-		Map<String, List<String>> metadata = new HashMap<String, List<String>>() {{
-			put("archived", new ArrayList<String>() {{add("true");}});
-			put("format", new ArrayList<String>() {{add("drl");}});
-			put("multi-value-property", new ArrayList<String>() {{add("value1"); add("value2");}});
+		Map<String, Object> metadata = new HashMap<String, Object>() {{
+			put("archived", "true");
+			put("format", "drl");
+			put("multi-value-property", new String[]{"value1", "value2"});
+			put("DefaultLifeCycle", "production");
+
 		}};
 		artifact.setMetadata(metadata);
 		artifact.setName("testArtifact1");

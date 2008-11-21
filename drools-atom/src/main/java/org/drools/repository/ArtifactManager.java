@@ -7,14 +7,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
@@ -28,30 +26,72 @@ public class ArtifactManager {
     
     public static final String METADATA_TYPE_STRING = "metadata_type_string";
     public static final String METADATA_TYPE_MULTI_VALUE_STRING = "metadata_type_multi_value_string";
-    
+    public static final String METADATA_TYPE_LIFE_CYCLE = "metadata_type_life_cycle";
+   
     public ArtifactManager(RulesRepository repo) {
         this.repository = repo;
         
+        //below are meta data types we supported out-of-box
         MetaData md = new MetaData();
-        md.setMetaDataName("archived");
+        md.setName("archived");
         md.setMetaDataType(METADATA_TYPE_STRING);
         md.setDescription("is archived or not");        
         createMetadataType(md);
         
         md = new MetaData();
-        md.setMetaDataName("format");
+        md.setName("format");
         md.setMetaDataType(METADATA_TYPE_STRING);
-        createMetadataType(md);
+        createMetadataType(md);  
         
         md = new MetaData();
-        md.setMetaDataName("description");
-        md.setMetaDataType(METADATA_TYPE_STRING);
-        createMetadataType(md);        
-        
-        md = new MetaData();
-        md.setMetaDataName("multi-value-property");
+        md.setName("multi-value-property");
         md.setMetaDataType(METADATA_TYPE_MULTI_VALUE_STRING);
         createMetadataType(md);
+        
+        md = new MetaData();
+        md.setName("DefaultLifeCycle");
+        md.setMetaDataType(METADATA_TYPE_LIFE_CYCLE);
+        createMetadataType(md);
+        
+        //below is the default lifecycle we provide out-of-box
+		LifeCycle lc = new LifeCycle();
+		lc.setDescription("This is the default LifeCycle");
+		lc.setName("DefaultLifeCycle");
+
+		Phase phase = new Phase();
+		phase.setName("created");
+		phase.setDescription("The initial phase");
+		phase.setInitialPhase(true);
+		phase.setNextPhase("developed");
+		lc.addPhase(phase);
+
+		phase = new Phase();
+		phase.setName("developed");
+		phase.setDescription("Developed phase");
+		phase.setInitialPhase(false);
+		phase.setNextPhase("tested");
+		lc.addPhase(phase);
+		
+		phase = new Phase();
+		phase.setName("tested");
+		phase.setDescription("Tested phase");
+		phase.setInitialPhase(false);
+		phase.setNextPhase("production");
+		lc.addPhase(phase);
+		
+		phase = new Phase();
+		phase.setName("production");
+		phase.setDescription("Production phase");
+		phase.setInitialPhase(false);
+		phase.setNextPhase("retired");
+		lc.addPhase(phase);
+		
+		phase = new Phase();
+		phase.setName("retired");
+		phase.setDescription("Retired phase");
+		lc.addPhase(phase);
+
+		createLifeCycle(lc);
     }
 
     /**
@@ -61,7 +101,7 @@ public class ArtifactManager {
      */
     public void createArtifact(Artifact artifact) {
     	try {
-    		//TODO: should allow creating an artifact if it exists already
+    		//TODO: should not allow creating an artifact if it exists already
 	    	Node artifactNode = getArtifactNode(artifact.getName());
 	    	artifactNode.remove(); //remove this so we get a fresh set
 	    	artifactNode = getArtifactNode(artifact.getName()).addNode("jcr:content", "nt:unstructured");
@@ -80,21 +120,40 @@ public class ArtifactManager {
             Calendar lastModified = Calendar.getInstance();
             artifactNode.setProperty(AssetItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
             
-            Map<String, List<String>> metadata = artifact.getMetadata();
+            Map<String, Object> metadata = artifact.getMetadata();
+            Map<String, MetaData> metadataTypes = getMetadataTypes();
 
-            if (artifact.getMetadata() != null) {
-				for (Iterator<Map.Entry<String, List<String>>> iterator = metadata
+            if (metadata != null) {
+				for (Iterator<Map.Entry<String, Object>> iterator = metadata
 						.entrySet().iterator(); iterator.hasNext();) {
-					Map.Entry<String, List<String>> en = iterator.next();
+					Map.Entry<String, Object> en = iterator.next();
 					String key = en.getKey();
-					List<String> targets = en.getValue();
-					if (targets == null) {
-						targets = new ArrayList<String>();
-					}
-					if(targets.size() == 1) {
-					    artifactNode.setProperty(key, targets.get(0));
+					Object value = en.getValue();
+					MetaData md =  metadataTypes.get(key);
+					if (md != null) {
+						if (METADATA_TYPE_STRING.equals(md.getMetaDataType())) {
+							if(!(value instanceof String)) {
+								throw new RulesRepositoryException("Incompatible types. Expect String for " + key);
+							}
+							String targetValue = (String)value;
+							artifactNode.setProperty(key, targetValue);
+
+						} else if (METADATA_TYPE_MULTI_VALUE_STRING.equals(md.getMetaDataType())) {
+							if(!(value instanceof String[])) {
+								throw new RulesRepositoryException("Incompatible types. Expect String[] for " + key);
+							}
+							String[] targetValue = (String[]) value;
+							artifactNode.setProperty(key, targetValue);
+						} else if (METADATA_TYPE_LIFE_CYCLE.equals(md.getMetaDataType())) {
+							if(!(value instanceof String)) {
+								throw new RulesRepositoryException("Incompatible types. Expect String for " + key);
+							}
+							String phaseName = (String)value;
+							artifactNode.setProperty(key, phaseName);
+						}
 					} else {
-						artifactNode.setProperty(key, targets.toArray(new String[targets.size()]));
+						// default to string for unknown meta data types
+						artifactNode.setProperty(key, value.toString());
 					}
 				}
 			}
@@ -144,21 +203,39 @@ public class ArtifactManager {
             Calendar lastModified = Calendar.getInstance();
             artifactNode.setProperty(AssetItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
             
-            Map<String, List<String>> metadata = artifact.getMetadata();
+            Map<String, Object> metadata = artifact.getMetadata();
+            Map<String, MetaData> metadataTypes = getMetadataTypes();
 
             if (metadata != null) {
-				for (Iterator<Map.Entry<String, List<String>>> iterator = metadata
+				for (Iterator<Map.Entry<String, Object>> iterator = metadata
 						.entrySet().iterator(); iterator.hasNext();) {
-					Map.Entry<String, List<String>> en = iterator.next();
+					Map.Entry<String, Object> en = iterator.next();
 					String key = en.getKey();
-					List<String> targets = en.getValue();
-					if (targets == null) {
-						targets = new ArrayList<String>();
-					}
-					if(targets.size() == 1) {
-					    artifactNode.setProperty(key, targets.get(0));
+					Object value = en.getValue();
+					MetaData md =  metadataTypes.get(key);
+					if (md != null) {
+						if (METADATA_TYPE_STRING.equals(md.getMetaDataType())) {
+							if(!(value instanceof String)) {
+								throw new RulesRepositoryException("Incompatible types. Expect String for " + key);
+							}
+							String targetValue = (String)value;
+							artifactNode.setProperty(key, targetValue);
+						} else if (METADATA_TYPE_MULTI_VALUE_STRING.equals(md.getMetaDataType())) {
+							if(!(value instanceof String[])) {
+								throw new RulesRepositoryException("Incompatible types. Expect String[] for " + key);
+							}
+							String[] targetValue = (String[]) value;
+							artifactNode.setProperty(key, targetValue);
+						} else if (METADATA_TYPE_LIFE_CYCLE.equals(md.getMetaDataType())) {
+							if(!(value instanceof String)) {
+								throw new RulesRepositoryException("Incompatible types. Expect String for " + key);
+							}
+							String phaseName = (String)value;
+							artifactNode.setProperty(key, phaseName);
+						}
 					} else {
-						artifactNode.setProperty(key, targets.toArray(new String[targets.size()]));
+						// default to string for unknown meta data types
+						artifactNode.setProperty(key, value.toString());
 					}
 				}
 			}
@@ -180,10 +257,10 @@ public class ArtifactManager {
 	    	this.repository.save();
     	} catch (RepositoryException e) {
             if ( e instanceof ItemExistsException ) {
-                throw new RulesRepositoryException( "An artifact of that name already exists in that package.",
-                                                    e );
+                throw new RulesRepositoryException("An artifact of that name already exists in that package.",
+                                                    e);
             } else {
-                throw new RulesRepositoryException( e );
+                throw new RulesRepositoryException(e);
             }
     	}
     }
@@ -195,10 +272,11 @@ public class ArtifactManager {
 	    	}
 	    	
     		Artifact artifact = new Artifact();
-	    	Map<String, List<String>> metadata = new HashMap<String, List<String>>(10);
+	    	Map<String, Object> metadata = new HashMap<String, Object>(10);
 	    	
-	    	Node permsNode = getArtifactNode(artifactName).getNode("jcr:content");
-	    	PropertyIterator it = permsNode.getProperties();
+	    	Node node = getArtifactNode(artifactName).getNode("jcr:content");
+	    	PropertyIterator it = node.getProperties();
+	        Map<String, MetaData> metadataTypes = getMetadataTypes();
 
 	    	while (it.hasNext()) {
 	    		Property p = (Property) it.next();
@@ -206,45 +284,50 @@ public class ArtifactManager {
 	    		if (!name.startsWith("jcr")) {
 	    			if(AssetItem.TITLE_PROPERTY_NAME.equals(name)) {
 	    				artifact.setName(p.getValue().getString());
-	    				continue;
 	    			} else if(AssetItem.DESCRIPTION_PROPERTY_NAME.equals(name)) {
 	    				artifact.setDescription(p.getValue().getString());
-	    				continue;
 	    			} else if(AssetItem.CONTENT_PROPERTY_NAME.equals(name)) {
 	    				artifact.setContent(p.getValue().getString());
-	    				continue;
 	    			} else if(AssetItem.CONTENT_PROPERTY_BINARY_NAME.equals(name)) {
 	    				artifact.setBinaryContent(p.getValue().getStream());
-	    				continue;
 	    			} else if(AssetItem.LAST_MODIFIED_PROPERTY_NAME.equals(name)) {
 	    				artifact.setLastModified(p.getValue().getDate());
-	    				continue;
 	    			} else if("drools:srcLink".equals(name)) {
 	    				artifact.setSrcLink(p.getValue().getString());
-	    				continue;
-	    			} 
-
-	    			//other properties are treated as meta data
-	    			if (p.getDefinition().isMultiple()) {
-			    		Value[] vs = p.getValues();
-			    		List<String> perms = new ArrayList<String>();
-			    		for (int i = 0; i < vs.length; i++) {
-							perms.add(vs[i].getString());
+	    			} else if (metadataTypes.get(name) != null) {
+						if (METADATA_TYPE_STRING.equals(metadataTypes.get(name).getMetaDataType())) {
+							metadata.put(name, p.getValue().getString());
+						} else if (METADATA_TYPE_MULTI_VALUE_STRING.equals(metadataTypes.get(name)
+										.getMetaDataType())) {
+							Value[] vs = p.getValues();
+							String[] values = new String[vs.length];
+							for (int i = 0; i < vs.length; i++) {
+								values[i] = vs[i].getString();
+							}
+							metadata.put(name, values);
+						} else if (METADATA_TYPE_LIFE_CYCLE.equals(metadataTypes.get(name)
+										.getMetaDataType())) {			
+							metadata.put(name, p.getValue().getString());
 						}
-			    		metadata.put(name, perms);
-	    			} else {
-	    				Value v = p.getValue();
-	    				List<String> perms = new ArrayList<String>(1);
-	    				perms.add(v.getString());
-	    				metadata.put(name, perms);
-	    			}
+					} else {
+						// other properties are treated as meta data
+						if (p.getDefinition().isMultiple()) {
+							Value[] vs = p.getValues();
+							String[] values = new String[vs.length];
+							for (int i = 0; i < vs.length; i++) {
+								values[i] = vs[i].getString();
+							}
+							metadata.put(name, values);
+						} else {
+							metadata.put(name, p.getValue().getString());
+						}
+					}
 	    		}
 	    	}
 	    	artifact.setMetadata(metadata);
 	    	if(artifact.getName() == null) {
 	    		artifact.setName(artifactName);
-	    	}
-	    	
+	    	}	    	
 	    	
 	    	return artifact;
     	} catch (RepositoryException e) {
@@ -314,9 +397,9 @@ public class ArtifactManager {
      */
     public void createMetadataType(MetaData metaData) {
     	try {
-	    	Node metadataTypeNode = getMetaDataTypeNode(metaData.getMetaDataName());
+	    	Node metadataTypeNode = getMetaDataTypeNode(metaData.geName());
 	    	metadataTypeNode.remove(); //remove this so we get a fresh set
-	    	metadataTypeNode = getMetaDataTypeNode(metaData.getMetaDataName()).addNode("jcr:content", "nt:unstructured");
+	    	metadataTypeNode = getMetaDataTypeNode(metaData.geName()).addNode("jcr:content", "nt:unstructured");
 	    	
 	    	metadataTypeNode.setProperty("metadata_type", metaData.getMetaDataType()); 	
 	    	
@@ -342,7 +425,7 @@ public class ArtifactManager {
          	while (nodes.hasNext()) {
          		MetaData md = new MetaData();         		
         		Node node = nodes.nextNode();
-        		md.setMetaDataName(node.getName());
+        		md.setName(node.getName());
         		md.setMetaDataType(node.getNode("jcr:content").getProperty("metadata_type").getString());
         		md.setDescription(node.getNode("jcr:content").getProperty(AssetItem.DESCRIPTION_PROPERTY_NAME).getString());
         		metaDataList.put(node.getName(), md);
@@ -364,6 +447,85 @@ public class ArtifactManager {
  		} catch (RepositoryException e) {
  			throw new RulesRepositoryException(e);
  		}
+    }
+    
+    public void createLifeCycle(LifeCycle lifeCycle) {
+    	try {
+	    	Node lifeCycleNode = getLifeCycleNode(lifeCycle.getName());
+	    	lifeCycleNode.remove(); //remove this so we get a fresh set
+	    	lifeCycleNode = getLifeCycleNode(lifeCycle.getName());
+/*	    	Node lifeCycleContentNode = lifeCycleNode.addNode("jcr:content", "nt:unstructured");
+			// JCR wont create a property if its value is null
+			//REVISIT: Set Phase.description default to "" instead?
+			if (lifeCycle.getDescription() != null) {
+				lifeCycleContentNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME,
+						lifeCycle.getDescription());
+			} else {
+				lifeCycleContentNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME,
+						"");
+			}*/
+			
+	    	for (Phase phase : lifeCycle.getPhases()) {
+				Node phaseNode = lifeCycleNode.addNode(phase.getName(),
+						"nt:file");
+				phaseNode = phaseNode.addNode("jcr:content", "nt:unstructured");
+				// JCR wont create a property if its value is null
+				if (phase.getDescription() != null) {
+					phaseNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME,
+							phase.getDescription());
+				} else {
+					phaseNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME,
+							"");
+				}
+				phaseNode.setProperty("isInitialPhase", phase.isInitialPhase());
+				if (phase.getNextPhase() != null) {
+					phaseNode.setProperty("nextPhase", phase.getNextPhase());		
+				} 				
+			}
+
+	    	this.repository.save();
+    	} catch (RepositoryException e) {
+			throw new RulesRepositoryException(e);
+		}   	
+    }
+    
+    public Map<String, LifeCycle>  getLifeCycles() {
+       	Map<String, LifeCycle> lifeCycleList = new HashMap<String, LifeCycle>();
+
+ 		try{
+    		Node root = this.repository.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
+        	NodeIterator lifeCycleNodes = getNode(root, "life_cycles", "nt:folder").getNodes();
+         	while (lifeCycleNodes.hasNext()) {
+         		LifeCycle lc = new LifeCycle();         		
+        		Node lifeCycleNode = lifeCycleNodes.nextNode();
+        		lc.setName(lifeCycleNode.getName());
+        		//lc.setDescription(lifeCycleNode.getNode("jcr:content").getProperty(AssetItem.DESCRIPTION_PROPERTY_NAME).getString());
+        		
+            	NodeIterator phaseNodes = lifeCycleNode.getNodes();      		
+             	while (phaseNodes.hasNext()) {
+            		Node phaseNode = phaseNodes.nextNode();
+            		if(phaseNode.getName().equals("jcr:content")) {
+            			continue;
+            		}
+            		
+             		Phase phase = new Phase();         		
+            		phase.setName(phaseNode.getName());
+            		phase.setDescription(phaseNode.getNode("jcr:content").getProperty(AssetItem.DESCRIPTION_PROPERTY_NAME).getString());
+               		phase.setInitialPhase(phaseNode.getNode("jcr:content").getProperty("isInitialPhase").getBoolean());
+               		if (phaseNode.getNode("jcr:content").hasProperty("nextPhase")) {
+						phase.setNextPhase(phaseNode.getNode("jcr:content")
+								.getProperty("nextPhase").getString());
+					}
+              		lc.addPhase(phase);
+            	}  	
+             	lifeCycleList.put(lc.getName(), lc);
+          	}
+
+ 		} catch (RepositoryException e) {
+ 			throw new RulesRepositoryException(e);
+ 		}
+ 		
+    	return lifeCycleList;	
     }
     
 	private Node getArtifactNode(String artifactName)
@@ -388,9 +550,20 @@ public class ArtifactManager {
 				esbJarName, "nt:file");
 		return node;
 	}	
+	
+	private Node getLifeCycleNode(String lifeCycleName)
+			throws RepositoryException {
+		Node root = this.repository.getSession().getRootNode().getNode(
+				RulesRepository.RULES_REPOSITORY_NAME);
+		Node node = getNode(getNode(root, "life_cycles", "nt:folder"),
+				lifeCycleName, "nt:folder");
+		return node;
+	}
+	
     /**
      * Gets or creates a node.
      */
+	//REVIST: do not do adding new node 
 	private Node getNode(Node node, String name, String nodeType) throws RepositoryException {
 		Node resultNode;
 		if (!node.hasNode(name)) {

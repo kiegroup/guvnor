@@ -2,23 +2,19 @@ package org.drools.repository;
 
 import java.io.InputStream;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.jcr.Node;
-import javax.jcr.Property;
-
 public class Artifact {   
-	String name;
-	String description;
-	Map<String, List<String>> metadata;	
-	String content;	
-	boolean isBinary;
-	InputStream binaryContent;
-	Calendar lastModified;
-	String srcLink;
+	private String name;
+	private String description;
+	private Map<String, Object> metadata;	
+	private String content;	
+	private boolean isBinary;
+	private InputStream binaryContent;
+	private Calendar lastModified;
+	private String srcLink;
 	
 	public String getName() {
 		return name;
@@ -55,10 +51,10 @@ public class Artifact {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Map<String, List<String>> getMetadata() {
+	public Map<String, Object> getMetadata() {
 		return metadata;
 	}
-	public void setMetadata(Map<String, List<String>> metadata) {
+	public void setMetadata(Map<String, Object> metadata) {
 		this.metadata = metadata;
 	}
 	public boolean isBinary() {
@@ -83,12 +79,12 @@ public class Artifact {
 
             returnString.append( "Meta data: " );
             
-            Map<String, List<String>> metadata = this.getMetadata();            
+            Map<String, Object> metadata = this.getMetadata();            
 
-	    	for (Iterator<Map.Entry<String, List<String>>> iterator = metadata.entrySet().iterator(); iterator.hasNext();) {
-	    		Map.Entry<String, List<String>> en = iterator.next();
+	    	for (Iterator<Map.Entry<String, Object>> iterator = metadata.entrySet().iterator(); iterator.hasNext();) {
+	    		Map.Entry<String, Object> en = iterator.next();
 				String key = en.getKey();
-				List<String> value = en.getValue();
+				Object value = en.getValue();
 				returnString.append(key + ": " + value + "\n" );
 			}
 
