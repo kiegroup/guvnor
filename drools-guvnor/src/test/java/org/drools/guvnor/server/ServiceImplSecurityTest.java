@@ -456,7 +456,7 @@ public class ServiceImplSecurityTest extends TestCase {
 			TableDataResult res = impl.loadRuleListForCategories(
 					"testloadRuleListForCategoriesWithRoleBasedAuthrozationPackageReadonlyCat1", 0, -1,
 					AssetItemGrid.RULE_LIST_TABLE_ID);
-			assertEquals(2, res.data.length);
+			assertEquals(3, res.data.length);
 		} finally {
 			Lifecycle.endApplication();
 		}
