@@ -405,9 +405,8 @@ public class FactPatternWidget extends DirtyableComposite {
                     }
                 };
 
-                Image bind = new ImageButton( "images/edit_tiny.gif", "Give this field a variable name that can be used elsewhere." + padding );
-                Element element = bind.getElement();
-                DOM.setStyleAttribute(element, "marginLeft", "" + padding + "pt");
+                Image bind = new ImageButton( "images/edit_tiny.gif", "Give this field a variable name that can be used elsewhere.");
+                DOM.setStyleAttribute(bind.getElement(), "marginLeft", "" + padding + "pt");
 
                 bind.addClickListener( click);
                 ab.add( new ClickableLabel(con.fieldName, click));
