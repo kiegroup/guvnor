@@ -359,7 +359,7 @@ public class FactPatternWidget extends DirtyableComposite {
     private Widget operatorDropDown(final SingleFieldConstraint c) {
         String[] ops = completions.getOperatorCompletions( pattern.factType, c.fieldName );
         final ListBox box = new ListBox();
-        box.addItem( "--- please choose ---" );
+        box.addItem( "--- please choose ---", "" );
         for ( int i = 0; i < ops.length; i++ ) {
             String op = ops[i];
             box.addItem( HumanReadable.getOperatorDisplayName( op ), op );
@@ -372,8 +372,8 @@ public class FactPatternWidget extends DirtyableComposite {
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 c.operator = box.getValue( box.getSelectedIndex() );
+                if (c.operator.equals("")) c.operator = null;
                 modeller.makeDirty();
-                System.out.println( "Set operator to :" + c.operator );
             }
         } );
 
