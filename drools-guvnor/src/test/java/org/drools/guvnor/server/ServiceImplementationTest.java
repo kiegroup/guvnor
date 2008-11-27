@@ -17,6 +17,7 @@ package org.drools.guvnor.server;
  */
 
 import java.io.ByteArrayInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,12 +33,7 @@ import org.drools.RuleBase;
 import org.drools.StatelessSession;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
-import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.guvnor.client.modeldriven.brl.*;
 import org.drools.guvnor.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
@@ -1242,7 +1238,7 @@ public class ServiceImplementationTest extends TestCase {
 		RuleModel model2 = new RuleModel();
 		assertNull(model2.name);
 		RuleAsset asset = impl.loadRuleAsset(asset2.getUUID());
-		asset.content = (IsSerializable) model2;
+		asset.content = (PortableObject) model2;
 
 		impl.checkinVersion(asset);
 

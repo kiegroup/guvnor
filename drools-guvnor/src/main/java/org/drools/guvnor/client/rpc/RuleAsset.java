@@ -19,6 +19,10 @@ package org.drools.guvnor.client.rpc;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import java.io.Serializable;
+
+import org.drools.guvnor.client.modeldriven.brl.PortableObject;
+
 /**
  * This is the "payload" of a rule asset.
  * Includes the meta data.
@@ -27,10 +31,10 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class RuleAsset
     implements
-    IsSerializable {
+    Serializable {
     
     public MetaData metaData;
-    public IsSerializable content;
+    public PortableObject content;
 
     public String uuid;
     public boolean archived = false;

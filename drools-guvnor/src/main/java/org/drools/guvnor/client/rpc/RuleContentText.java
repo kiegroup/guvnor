@@ -17,7 +17,9 @@ package org.drools.guvnor.client.rpc;
 
 
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import org.drools.guvnor.client.modeldriven.brl.PortableObject;
+
+import java.io.Serializable;
 
 /**
  * This is the guts of a plain text (advanced) rule.
@@ -25,7 +27,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class RuleContentText
     implements
-    IsSerializable {
+        PortableObject {
     
     public String content;
 }

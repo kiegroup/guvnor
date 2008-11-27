@@ -19,12 +19,14 @@ package org.drools.guvnor.client.modeldriven.brl;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import java.io.Serializable;
+
 /**
  * This interface means the object will be squirted over the wire to the GWT client.
  * It also means that the object is part of BRL serialization.
  * 
  * @author Michael Neale
  */
-public interface PortableObject extends IsSerializable {
+public interface PortableObject extends Serializable {
 
 }

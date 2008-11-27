@@ -56,7 +56,8 @@ public class TestEnvironmentSessionHelper {
 	            }
 
 	            JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
-	            repository = config.getJCRRepository(null);;
+                String home = System.getProperty("guvnor.repository.dir");
+	            repository = config.getJCRRepository(home);
 
 	            Session testSession = repository.login(
 	                                                                     new SimpleCredentials("alan_parsons", "password".toCharArray()));

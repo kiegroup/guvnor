@@ -1,9 +1,10 @@
 package org.drools.guvnor.client.factmodel;
 
+import org.drools.guvnor.client.modeldriven.brl.PortableObject;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.drools.guvnor.client.modeldriven.brl.PortableObject;
+import java.io.Serializable;
 
 public class FactModels implements PortableObject {
 

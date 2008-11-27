@@ -19,15 +19,15 @@ package org.drools.guvnor.client.rpc;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.io.Serializable;
 
 import org.drools.guvnor.client.rulefloweditor.TransferConnection;
 import org.drools.guvnor.client.rulefloweditor.TransferNode;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
+import org.drools.guvnor.client.modeldriven.brl.PortableObject;
 
 public class RuleFlowContentModel
     implements
-    IsSerializable {
+        PortableObject {
 
     private List<TransferNode>       nodes       = new ArrayList<TransferNode>();
     private Collection<TransferConnection> connections = new ArrayList<TransferConnection>();
