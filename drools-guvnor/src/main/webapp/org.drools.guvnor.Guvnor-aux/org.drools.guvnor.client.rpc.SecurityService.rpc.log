@@ -1,4 +1,4 @@
-Reachable types computed on: Thu Nov 27 15:08:38 EST 2008
+Reachable types computed on: Fri Nov 28 11:52:36 EST 2008
 com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException
    Serialization status
       Instantiable
@@ -20,9 +20,8 @@ java.lang.Integer
       Instantiable
    Path
       'java.lang.Integer' is reachable as a subtype of type 'class java.lang.Integer'
-      Type 'java.lang.Integer' is reachable from array type 'java.lang.Integer[]'
-      'java.lang.Integer' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
-      'java.util.Arrays.ArrayList<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.lang.Integer' is reachable from type argument 0 of type 'java.util.ArrayList<E>'
+      'java.util.ArrayList<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
       'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'
@@ -43,9 +42,8 @@ java.lang.Number
    Path
       'java.lang.Number' is reachable as a supertype of type 'class java.lang.Integer'
       'java.lang.Integer' is reachable as a subtype of type 'class java.lang.Integer'
-      Type 'java.lang.Integer' is reachable from array type 'java.lang.Integer[]'
-      'java.lang.Integer' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
-      'java.util.Arrays.ArrayList<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
+      'java.lang.Integer' is reachable from type argument 0 of type 'java.util.ArrayList<E>'
+      'java.util.ArrayList<java.lang.Integer>' is reachable as a subtype of type 'interface java.util.List<java.lang.Integer>'
       'java.util.List<java.lang.Integer>' is reachable from field 'list' of type 'org.drools.guvnor.client.security.Capabilities'
       'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'

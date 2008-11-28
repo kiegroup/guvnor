@@ -1,6 +1,8 @@
 package org.drools.guvnor.client.factmodel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
@@ -41,6 +43,17 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 	private RuleAsset asset;
 	private VerticalPanel layout;
 	private int editingFact = -1;
+    private static Map<String, String> TYPE_DESCRIPTIONS = new HashMap<String, String>() {
+        {
+            put ("Integer", "Whole number (integer)");
+            put ("Boolean", "True or False");
+            put ("java.lang.Date", "Date");
+            put ("java.math.BigDecimal", "Decimal number");
+            put ("String", "Text");
+
+        }
+    };
+
 
     public FactModelWidget(RuleAsset asset, RuleViewer viewer) {
         this(asset);
@@ -130,7 +143,7 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 				formatter.setHorizontalAlignment(j + 1, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 
 				HorizontalPanel type = new HorizontalPanel();
-				type.add(new SmallLabel(fm.type));
+				type.add(new SmallLabel(getDesc(fm)));
 				ImageButton del = new ImageButton("images/delete_item_small.gif");
 				del.addClickListener(new ClickListener() {
 					public void onClick(Widget w) {
@@ -176,8 +189,15 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 
 	}
 
+    private String getDesc(FieldMetaModel fm) {
+        if (TYPE_DESCRIPTIONS.containsKey(fm.type)) {
+            return TYPE_DESCRIPTIONS.get(fm.type);
+        }
+        return fm.type;
+    }
 
-	/**
+
+    /**
 	 * Display the field editor.
 	 */
 	private void showFieldEditor(final FactModels models, final FactMetaModel mm, final FieldMetaModel field) {
@@ -188,20 +208,17 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 		fieldType.addKeyboardListener(noSpaceListener());
 		if (field != null) {
 			fieldName.setText(field.name);
-			fieldType.setText(field.type);
+			fieldType.setText(getDesc(field));
 		}
 		HorizontalPanel typeP = new HorizontalPanel();
 		typeP.add(fieldType);
 		final ListBox typeChoice = new ListBox();
 		typeChoice.addItem("-- choose type --");
 
-		typeChoice.addItem("String");
-		typeChoice.addItem("Integer");
-		typeChoice.addItem("Boolean");
-		typeChoice.addItem("Float");
-		typeChoice.addItem("Long");
-		typeChoice.addItem("Double");
-		typeChoice.addItem("java.util.Date");
+        for (String k : TYPE_DESCRIPTIONS.keySet()) {
+            typeChoice.addItem(TYPE_DESCRIPTIONS.get(k), k);
+        }
+
 
 		int idx = models.models.indexOf(mm);
 		for (int i = 0; i < idx; i++) {
@@ -211,7 +228,7 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 		typeChoice.setSelectedIndex(0);
 		typeChoice.addChangeListener(new ChangeListener() {
 			public void onChange(Widget w) {
-				fieldType.setText(typeChoice.getItemText(typeChoice.getSelectedIndex()));
+				fieldType.setText(typeChoice.getValue(typeChoice.getSelectedIndex()));
 			}
 		});
 
