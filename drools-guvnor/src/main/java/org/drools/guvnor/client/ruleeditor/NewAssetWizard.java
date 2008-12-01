@@ -165,12 +165,7 @@ public class NewAssetWizard extends FormStylePopup {
 			Window.alert("You have to pick an initial category.");
 			return;
 		} else {
-			try {
-				validatePathPerJSR170(this.name.getText());
-			} catch (IllegalArgumentException e) {
-				Window.alert(e.getMessage());
-				return;
-			}
+			if (!validatePathPerJSR170(this.name.getText())) return;
 		}
 
         String fmt = getFormat();
@@ -223,12 +218,12 @@ public class NewAssetWizard extends FormStylePopup {
 	 *
 	 * @param jsrPath
 	 */
-	public static void validatePathPerJSR170(String jsrPath)
-			throws IllegalArgumentException {
+	public static boolean validatePathPerJSR170(String jsrPath) {
 		int len = jsrPath == null ? 0 : jsrPath.length();
 
 		if (len == 0) {
-			throw new IllegalArgumentException("empty name is not allowed");
+			Window.alert("empty name is not allowed");
+			return false;
 		}
 
 		int pos = 0;
@@ -245,12 +240,15 @@ public class NewAssetWizard extends FormStylePopup {
 			case '*':
 			case '\'':
 			case '\"':
-				throw new IllegalArgumentException("'" + jsrPath
+				Window.alert("'" + jsrPath
 						+ "' is not valid. '" + c
 						+ "' is not a valid name character");
+				return false;
 			default:
 			}
 		}
+
+		return true;
 	}
 
 }

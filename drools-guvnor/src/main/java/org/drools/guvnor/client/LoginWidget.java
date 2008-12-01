@@ -23,11 +23,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 
 /**
  * Used for logging in, obviously !
@@ -36,61 +32,55 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class LoginWidget {
 
-
-
-
-
-
-
 	private Command loggedInEvent;
 	private String userNameLoggedIn;
 
 	public void show() {
-
-		final FormStylePopup pop = new FormStylePopup("images/login.gif", "BRMS login");
-
+		final FormStylePopup pop = new FormStylePopup("images/login.gif", "Guvnor login");
 
 		final TextBox userName = new TextBox();
 		pop.addAttribute("User name:", userName);
 
-
 		final PasswordTextBox password = new PasswordTextBox();
 		pop.addAttribute("Password: ", password);
 
+        KeyboardListener kl = new KeyboardListenerAdapter() {
+            @Override
+            public void onKeyUp(Widget sender, char keyCode, int modifiers) {
+                if (keyCode == KeyboardListener.KEY_ENTER) {
+                    doLogin(userName, password, pop);
+                }
+            }
+        };
+
+        userName.addKeyboardListener(kl);
+        password.addKeyboardListener(kl);
 		Button b = new Button("OK");
-
-
 		b.addClickListener(new ClickListener() {
 			public void onClick(Widget arg0) {
-				LoadingPopup.showMessage("Authenticating...");
-		        RepositoryServiceFactory.login( userName.getText(), password.getText(), new GenericCallback() {
-					public void onSuccess(Object o) {
-		            	userNameLoggedIn = userName.getText();
-		                LoadingPopup.close();
-		                Boolean success = (Boolean) o;
-		                if (!success.booleanValue()) {
-		                    com.google.gwt.user.client.Window.alert( "Incorrect username or password." );
-		                } else {
-		                    loggedInEvent.execute();
-		                    pop.hide();
-		                }
-		            }
-		        });
+                doLogin(userName, password, pop);
 			}
-
 		});
-
-
 		pop.addAttribute("", b);
-
 		pop.show();
-
-
-
-
-
 	}
 
+    private void doLogin(final TextBox userName, PasswordTextBox password, final FormStylePopup pop) {
+        LoadingPopup.showMessage("Authenticating...");
+        RepositoryServiceFactory.login( userName.getText(), password.getText(), new GenericCallback() {
+            public void onSuccess(Object o) {
+                userNameLoggedIn = userName.getText();
+                LoadingPopup.close();
+                Boolean success = (Boolean) o;
+                if (!success.booleanValue()) {
+                    com.google.gwt.user.client.Window.alert( "Incorrect username or password." );
+                } else {
+                    loggedInEvent.execute();
+                    pop.hide();
+                }
+            }
+        });
+    }
 
 
     /**

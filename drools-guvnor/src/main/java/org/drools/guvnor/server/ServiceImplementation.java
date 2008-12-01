@@ -148,7 +148,7 @@ public class ServiceImplementation
 	 * Maximum number of rules to display in "list rules in package" method
 	 */
 	private static final int MAX_RULES_TO_SHOW_IN_PACKAGE_LIST = 5000;
-	
+
     @In
     public RulesRepository          repository;
 
@@ -367,12 +367,12 @@ public class ServiceImplementation
         if ( Contexts.isSessionContextActive() ) {
             if ( !Identity.instance().hasPermission( new CategoryPathType( categoryPath ),
                                                      RoleTypes.ANALYST_READ ) ) {
-                
+
                 TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
                 return handler.loadRuleListTable( new AssetPageList() );
             }
         }
-        
+
         //use AssetItemFilter to enforce package-based permissions.
 //        RepositoryFilter filter = new AssetItemFilter();
         // Filter is null since the permission is checked on category level.
@@ -1211,8 +1211,7 @@ public class ServiceImplementation
                                           int max,
                                           boolean searchArchived) {
 
-        String search = Pattern.compile( "*",
-                                         Pattern.LITERAL ).matcher( searchText ).replaceAll( Matcher.quoteReplacement( "%" ) );
+        String search = searchText.replace('*', '%');
 
         if ( !search.endsWith( "%" ) ) {
             search += "%";
@@ -1236,7 +1235,6 @@ public class ServiceImplementation
             try {
                 System.err.println( "jcr:path=" + item.getNode().getPath() );
             } catch ( RepositoryException e ) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             if ( filter.accept( item,
@@ -1638,7 +1636,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] listRulesInPackage(String packageName) throws SerializableException {
-    	
+
     	// check security
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( packageName ),
@@ -1647,7 +1645,7 @@ public class ServiceImplementation
 
         // load package
         PackageItem item = repository.loadPackage( packageName );
-        
+
         ContentPackageAssembler asm = new ContentPackageAssembler( item,
                                                                    false );
         List<String> result = new ArrayList<String>();

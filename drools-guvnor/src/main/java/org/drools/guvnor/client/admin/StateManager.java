@@ -20,6 +20,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -86,7 +87,7 @@ public class StateManager extends Composite {
                     Window.alert( "Please select a status to remove." );
                     return;
                 }
-                
+
                 removeStatus();
 
             }
@@ -114,7 +115,7 @@ public class StateManager extends Composite {
                                                                }
                                                            } );
     }
-    
+
     private void renameSelected() {
 
         String newName = Window.prompt( "Please enter the name you would like to change this status to",
@@ -123,9 +124,12 @@ public class StateManager extends Composite {
         String oldName = currentStatuses.getItemText( currentStatuses.getSelectedIndex() );
 
         if ( newName != null ) {
+        	if (!NewAssetWizard.validatePathPerJSR170(newName)) {
+        		return;
+        	}
             RepositoryServiceFactory.getService().renameState( oldName,
                                                                newName,
-                                                               new GenericCallback() {
+                                                               new GenericCallback<Object>() {
                                                                    public void onSuccess(Object data) {
                                                                        Window.alert( "Status renamed." );
                                                                        refreshList();

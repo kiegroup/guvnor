@@ -61,7 +61,7 @@ public class WebdavServlet extends WebDavServletBean {
     		super.service(req, resp);
         }
 
-        System.err.println("WebDAV servlet time: " + (System.currentTimeMillis() - time));
+        //System.err.println("WebDAV servlet time: " + (System.currentTimeMillis() - time));
 	}
 
 

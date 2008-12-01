@@ -88,7 +88,7 @@ public class RuleViewer extends Composite {
 
     public boolean isDirty() {
     	if (readOnly) return false;
-    	return (System.currentTimeMillis() - lastSaved) > 30000;
+    	return (System.currentTimeMillis() - lastSaved) > 3600000;
     }
 
 	/**

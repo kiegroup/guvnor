@@ -1,4 +1,4 @@
-Reachable types computed on: Fri Nov 28 11:52:36 EST 2008
+Reachable types computed on: Mon Dec 01 11:12:23 EST 2008
 com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException
    Serialization status
       Instantiable
@@ -95,8 +95,7 @@ java.util.HashSet<java.lang.String>
    Serialization status
       Instantiable
    Path
-      'java.util.HashSet<java.lang.String>' is reachable as a supertype of type 'class java.util.LinkedHashSet<java.lang.String>'
-      'java.util.LinkedHashSet<java.lang.String>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
+      'java.util.HashSet<java.lang.String>' is reachable as a subtype of type 'interface java.util.Set<java.lang.String>'
       'java.util.Set<java.lang.String>' is reachable from field 'disabledFeatures' of type 'org.drools.guvnor.client.rpc.UserSecurityContext'
       'org.drools.guvnor.client.rpc.UserSecurityContext' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.UserSecurityContext'
       Started from 'org.drools.guvnor.client.rpc.UserSecurityContext'

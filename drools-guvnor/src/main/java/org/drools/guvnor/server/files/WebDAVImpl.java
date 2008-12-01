@@ -53,14 +53,14 @@ public class WebDAVImpl implements WebdavStore {
     }
 
     public void commit()  {
-    	System.out.println("COMMIT START");
+    	//System.out.println("COMMIT START");
         getRepo().save();
         tlRepo.set(null);
-        System.out.println("COMMIT END");
+        //System.out.println("COMMIT END");
     }
 
     public void createFolder(String uri)  {
-        System.out.println("creating folder:" + uri);
+        //System.out.println("creating folder:" + uri);
         String[] path = getPath(uri);
         if (path[0].equals("packages")) {
             if (path.length > 2) {
@@ -80,7 +80,7 @@ public class WebDAVImpl implements WebdavStore {
     }
 
     public void createResource(String uri) {
-        System.out.println("creating resource:" + uri);
+        //System.out.println("creating resource:" + uri);
         //for mac OSX, ignore these annoying things
         if (uri.endsWith(".DS_Store")) return;
         String[] path = getPath(uri);
@@ -116,7 +116,7 @@ public class WebDAVImpl implements WebdavStore {
 
 
     public String[] getChildrenNames(String uri) {
-    	System.out.println("getChildrenNames :" + uri);
+    	//System.out.println("getChildrenNames :" + uri);
 
     	RulesRepository repository = getRepo();
         String[] path = getPath(uri);
@@ -179,7 +179,7 @@ public class WebDAVImpl implements WebdavStore {
 	}
 
     public Date getCreationDate(String uri) {
-    	System.out.println("getCreationDate :" + uri);
+    	//System.out.println("getCreationDate :" + uri);
 
     	RulesRepository repository = getRepo();
         String[] path = getPath(uri);
@@ -213,7 +213,7 @@ public class WebDAVImpl implements WebdavStore {
     }
 
     public Date getLastModified(String uri) {
-    	System.out.println("getLastModified :" + uri);
+    	//System.out.println("getLastModified :" + uri);
 
     	RulesRepository repository = getRepo();
         String[] path = getPath(uri);
@@ -249,7 +249,7 @@ public class WebDAVImpl implements WebdavStore {
 
 
     public InputStream getResourceContent(String uri) {
-        System.out.println("get resource content:" + uri);
+        //System.out.println("get resource content:" + uri);
         return getContent(uri);
     }
 
@@ -282,7 +282,7 @@ public class WebDAVImpl implements WebdavStore {
 	}
 
     public long getResourceLength(String uri) {
-    	System.out.println("get resource length :" + uri);
+    	//System.out.println("get resource length :" + uri);
     	String[] path = getPath(uri);
     	try {
     		RulesRepository repo = getRepo();
@@ -305,7 +305,7 @@ public class WebDAVImpl implements WebdavStore {
     }
 
     public boolean isFolder(String uri) {
-    	System.out.println("is folder :" + uri);
+    	//System.out.println("is folder :" + uri);
     	RulesRepository repository = getRepo();
         String[] path = getPath(uri);
         if (path.length == 0) return true;
@@ -323,7 +323,7 @@ public class WebDAVImpl implements WebdavStore {
 
     public boolean isResource(String uri) {
     	RulesRepository repository = getRepo();
-    	System.out.println("is resource :" + uri);
+    	//System.out.println("is resource :" + uri);
     	String[] path = getPath(uri);
     	if (path.length < 3) return false;
     	if (!(path[0].equals("packages") || path[0].equals("snapshots"))) return false;
@@ -357,7 +357,7 @@ public class WebDAVImpl implements WebdavStore {
     private boolean internalObjectExists(String uri) {
 
     	RulesRepository repository = getRepo();
-        System.out.println("object exist check :" + uri);
+        //System.out.println("object exist check :" + uri);
         if (uri.endsWith(".DS_Store")) return false;
         String[] path = getPath(uri);
         if (path.length == 0) return true;
@@ -401,7 +401,7 @@ public class WebDAVImpl implements WebdavStore {
 
     public void removeObject(String uri) {
     	RulesRepository repository = getRepo();
-        System.out.println("remove object:" + uri);
+        //System.out.println("remove object:" + uri);
         String[] path = getPath(uri);
         if (path.length == 0 || path.length == 1) {
             throw new IllegalArgumentException();
@@ -431,7 +431,7 @@ public class WebDAVImpl implements WebdavStore {
     }
 
     public void rollback() {
-    	System.out.println("ROLLBACK");
+    	//System.out.println("ROLLBACK");
 
     	RulesRepository repository = getRepo();
         repository.getSession().logout();
@@ -439,7 +439,7 @@ public class WebDAVImpl implements WebdavStore {
 
     public void setResourceContent(String uri, InputStream content, String contentType, String characterEncoding)  {
     	RulesRepository repository = getRepo();
-        System.out.println("set resource content:" + uri);
+        //System.out.println("set resource content:" + uri);
         if (uri.endsWith(".DS_Store")) return;
         String[] path = getPath(uri);
         if (path[0].equals("packages")) {

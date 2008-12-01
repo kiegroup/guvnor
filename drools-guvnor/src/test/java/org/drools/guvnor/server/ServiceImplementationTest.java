@@ -346,10 +346,10 @@ public class ServiceImplementationTest extends TestCase {
 				AssetFormats.DSL_TEMPLATE_RULE);
 		asset = impl.loadRuleAsset(uuid);
 		assertTrue(asset.content instanceof RuleContentText);
-		
-		
+
+
 		//asset
-		
+
 	}
 
 	public void testLoadAssetHistoryAndRestore() throws Exception {
@@ -697,6 +697,8 @@ public class ServiceImplementationTest extends TestCase {
 		res = impl.quickFindAsset("testQuickFindmyRule", 20, false);
 		assertEquals(3, res.data.length);
 
+		res = impl.quickFindAsset("testQuickFindm*Rule", 20, false);
+		assertEquals(3, res.data.length);
 
 
 	}
@@ -1791,11 +1793,11 @@ public class ServiceImplementationTest extends TestCase {
 
 		SingleScenarioResult res_ = impl.runScenario(pkg.getName(), sc);
 		assertTrue(res_.auditLog.size() > 0);
-		
+
 		String[] logEntry = res_.auditLog.get(0);
 		assertNotNull(logEntry[0], logEntry[1]);
-		
-		ScenarioRunResult res = res_.result; 
+
+		ScenarioRunResult res = res_.result;
 		assertEquals(null, res.errors);
 		assertNotNull(res.scenario);
 		assertTrue(vf.wasSuccessful());

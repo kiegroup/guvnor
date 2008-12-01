@@ -21,8 +21,10 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.TextBox;
@@ -40,7 +42,6 @@ public class StatusEditor extends FormStylePopup {
     public StatusEditor(Command refresh) {
         super( "images/edit_category.gif",
                "Create new status" );
-        // TODO: Edit status image
         this.refresh = refresh;
 
         addAttribute( "Status name",
@@ -62,14 +63,15 @@ public class StatusEditor extends FormStylePopup {
         if ( "".equals( this.name.getText() ) ) {
             ErrorPopup.showMessage( "Can't have an empty status name." );
         } else {
-            createStatus( name );
+    		if (!NewAssetWizard.validatePathPerJSR170(this.name.getText())) return;
+    		createStatus( name );
         }
     }
 
     private void createStatus(final TextBox box) {
         LoadingPopup.showMessage( "Creating status" );
         RepositoryServiceFactory.getService().createState( box.getText(),
-                                                           new GenericCallback() {
+                                                           new GenericCallback<Object>() {
                                                                public void onSuccess(Object data) {
                                                                    if ( data != null ) {
                                                                        if ( refresh != null ) {
