@@ -6,10 +6,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.drools.guvnor.client.rpc.DetailedSerializableException;
 import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.AuthorizationException;
@@ -18,13 +21,13 @@ import com.google.gwt.user.client.rpc.SerializableException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
- * GWT RPC service endpoint for Repository service.
+ * GWT RPC service endpoint for Repository service. A place to hang some exception handling, but mostly just passing on through.
  *
  * @author Michael Neale
  */
 public class RepositoryServiceServlet extends RemoteServiceServlet implements RepositoryService {
 
-
+    private static final Logger     log              = LoggingHelper.getLogger();
 	/**
 	 * This is used by the pass through methods below.
 	 * Michael got tired of trying to read other peoples overly abstracted code, so its just generated dumb code to
@@ -46,6 +49,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 		if (e.getCause() instanceof AuthorizationException) {
 			HttpServletResponse response = getThreadLocalResponse();
 		    try {
+		      log.error(e.getCause());
 		      response.setContentType("text/plain");
 		      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		      response.getWriter().write("Sorry, insufficient permissions to perform this action.");
@@ -54,6 +58,19 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 		          "respondWithUnexpectedFailure failed while sending the previous failure to the client",
 		          ex);
 		    }
+		} else if (e.getCause() instanceof RulesRepositoryException) {
+			log.error(e.getCause());
+			HttpServletResponse response = getThreadLocalResponse();
+		      response.setContentType("text/plain");
+		      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		      try {
+		    	  response.getWriter().write(e.getCause().getMessage());
+		      } catch (IOException ex) {
+			      getServletContext().log(
+				          "respondWithUnexpectedFailure failed while sending the previous failure to the client",
+				          ex);
+		      }
+
 		} else {
 				super.doUnexpectedFailure(e);
 		}
