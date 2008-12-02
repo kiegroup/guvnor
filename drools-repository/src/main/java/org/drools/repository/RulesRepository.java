@@ -516,6 +516,7 @@ public class RulesRepository {
 
     /**
      * Copies a snapshot to the new location/label.
+     * If one exists at that location, it will be replaced.
      *
      * @param packageName
      *            The name of the package.
@@ -533,9 +534,16 @@ public class RulesRepository {
 
             Node pkgSnaps = snaps.getNode( packageName );
 
+
             Node sourceNode = pkgSnaps.getNode( snapshotName );
+            if (pkgSnaps.hasNode(newName)) {
+            	pkgSnaps.getNode(newName).remove();
+            	pkgSnaps.save();
+            }
 
             String destinationPath = pkgSnaps.getPath() + "/" + newName;
+
+
 
             this.session.getWorkspace().copy( sourceNode.getPath(),
                                               destinationPath );

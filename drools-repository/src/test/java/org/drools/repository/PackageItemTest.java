@@ -27,18 +27,18 @@ public class PackageItemTest extends TestCase {
 
         assertEquals(prevSize + 1, list.size());
     }
-    
+
 //    public void testAddPackageProperties() throws Exception {
 //        RulesRepository repo = getRepo();
 //        PackageItem item = repo.createPackage( "testListPackages1", "lalalala" );
 //
 //        assertNotNull(item.getCreator());
-//        
+//
 //        HashMap hash = new HashMap();
 //        hash.put("Eligibility rules", "Underage");
-//        
+//
 //        String[] testProp = new String[]{"Test1","Test2"};
-//        
+//
 //        item.node.checkout();
 //        item.node.setProperty("testing", testProp);
 //        //item.node.setProperty("testing", "blah");
@@ -46,7 +46,7 @@ public class PackageItemTest extends TestCase {
 //        String[] newProp = item.getStringPropertyArray( "testing" );
 //        assertTrue((testProp[0]).equals(newProp[0]));
 //        assertTrue(("Test2").equals(newProp[1]));
-//		
+//
       // assertEquals(testProp[0], );
 //        assertFalse(item.getCreator().equals( "" ));
 //
@@ -244,6 +244,13 @@ public class PackageItemTest extends TestCase {
         repo.copyPackageSnapshot( "testPackageSnapshot", "BOO", "BOO2" );
         res = repo.listPackageSnapshots( "testPackageSnapshot" );
         assertEquals(2, res.length);
+
+
+
+        repo.copyPackageSnapshot( "testPackageSnapshot", "BOO", "BOO2" );
+        res = repo.listPackageSnapshots( "testPackageSnapshot" );
+        assertEquals(2, res.length);
+
 
         assertEquals("BOO", res[0]);
         assertEquals("BOO2", res[1]);
