@@ -23,6 +23,7 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.rpc.MetaData;
 
 import com.google.gwt.user.client.ui.Button;
@@ -106,7 +107,7 @@ public class AssetCategoryEditor extends DirtyableComposite {
         for ( int i = 0; i < data.categories.length; i++ ) {
             final int idx = i;
 
-            list.setText( i, 0, data.categories[i] );
+            list.setWidget( i, 0, new SmallLabel(data.categories[i]) );
             if (!readOnly) {
 
 	            Image del = new ImageButton("images/trash.gif");

@@ -40,7 +40,12 @@ public class DefaultRuleContentWidget extends DirtyableComposite {
         this(a);
     }
 
+
     public DefaultRuleContentWidget(RuleAsset a) {
+    	this(a, -1);
+    }
+
+    public DefaultRuleContentWidget(RuleAsset a, int visibleLines) {
         asset = a;
         data = (RuleContentText) asset.content;
 
@@ -51,8 +56,7 @@ public class DefaultRuleContentWidget extends DirtyableComposite {
 
         text = new TextArea();
         text.setWidth( "100%" );
-//        text.setHeight( "100%" );
-        text.setVisibleLines( 16 );
+        text.setVisibleLines((visibleLines == -1) ?  16 : visibleLines );
         text.setText( data.content );
 
         text.getElement().setAttribute("spellcheck", "false");

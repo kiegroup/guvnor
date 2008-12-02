@@ -27,6 +27,7 @@ import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -64,7 +65,14 @@ public class NewAssetWizard extends FormStylePopup {
 
         this.afterCreate = afterCreate;
 
+
         addAttribute( "Name:", name );
+
+        this.setAfterShow(new Command() {
+			public void execute() {
+				name.setFocus(true);			}
+        });
+
 
         if (showCats) {
             addAttribute("Initial category:", getCatChooser());
@@ -116,6 +124,7 @@ public class NewAssetWizard extends FormStylePopup {
         addAttribute( "", ok );
 
     }
+
 
     /**
      * This will create a new asset wizard with the given preselected package.

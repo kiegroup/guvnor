@@ -16,7 +16,7 @@ public class DrlEditor extends Composite {
     }
 
     public DrlEditor(RuleAsset a) {
-		final DefaultRuleContentWidget ed = new DefaultRuleContentWidget(a);
+		final DefaultRuleContentWidget ed = new DefaultRuleContentWidget(a, 26);
 
 		ClickEvent ce = new FactTypeBrowser.ClickEvent() {
 			public void selected(String text) {

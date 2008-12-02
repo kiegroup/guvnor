@@ -18,11 +18,13 @@ package org.drools.guvnor.client.ruleeditor;
 
 import java.util.Date;
 
+import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.RulePackageSelector;
+import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -34,25 +36,32 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.widgets.form.FormPanel;
 
 /**
  * This displays the metadata for a versionable asset.
  * It also captures edits, but it does not load or save anything itself.
  * @author Michael Neale
  */
-public class MetaDataWidget extends PrettyFormLayout {
+public class MetaDataWidget extends Composite {
 
     private MetaData    data;
     private boolean     readOnly;
     private String      uuid;
     private Command     refreshView;
+    private VerticalPanel layout = new VerticalPanel();
     AssetCategoryEditor ed;
+	private FormStyleLayout currentSection;
+	private String currentSectionName;
 
     public MetaDataWidget(final MetaData d,
                           boolean readOnly,
@@ -92,25 +101,30 @@ public class MetaDataWidget extends PrettyFormLayout {
         this.refreshView = refreshView;
         //setWidth("20%");
         loadData( d );
+        initWidget(layout);
 
     }
 
-    private void loadData(MetaData d) {
+    private void addHeader(String img, String name, Image edit) {
+    	startSection(name);
+
+    	HorizontalPanel hp = new HorizontalPanel();
+    	hp.add(new SmallLabel("<b>" + name + "</b>"));
+    	if (edit != null) hp.add(edit);
+    	currentSection.addAttribute("Title:", hp);
+	}
+
+	private void loadData(MetaData d) {
         this.data = d;
-        startSection();
         addAttribute( "Categories:",
                       categories() );
-        endSection();
 
-        startSection();
         addAttribute( "Modified on:",
                       readOnlyDate( data.lastModifiedDate ) );
         addAttribute( "by:",
                       readOnlyText( data.lastContributor ) );
         addAttribute( "Note:",
                       readOnlyText( data.checkinComment ) );
-        addAttribute( "Version:",
-                      getVersionNumberLabel() );
 
         if ( !readOnly ) {
             addAttribute( "Created on:",
@@ -119,28 +133,28 @@ public class MetaDataWidget extends PrettyFormLayout {
         addAttribute( "Created by:",
                       readOnlyText( data.creator ) );
         addAttribute( "Format:",
-                      new HTML( "<b>" + data.format + "</b>" ) );
+                      new SmallLabel( "<b>" + data.format + "</b>" ) );
+
+        addAttribute( "Package:",
+                packageEditor( data.packageName ) );
+
+        addAttribute( "Is Disabled:",
+                editableBoolean( new FieldBooleanBinding() {
+                                     public boolean getValue() {
+                                         return data.disabled;
+                                     }
+
+                                     public void setValue(boolean val) {
+                                         data.disabled = val;
+                                     }
+                                 },
+                                 "Disables this asset. It will not be included in any processing." ) );
 
         endSection();
 
-        startSection();
+        startSection("Other meta data ...");
 
-        addAttribute( "Package:",
-                      packageEditor( data.packageName ) );
 
-        /******************************/
-        addAttribute( "Disabled:",
-                      editableBoolean( new FieldBooleanBinding() {
-                                           public boolean getValue() {
-                                               return data.disabled;
-                                           }
-
-                                           public void setValue(boolean val) {
-                                               data.disabled = val;
-                                           }
-                                       },
-                                       "Disables this asset." ) );
-        /******************************/
 
         addAttribute( "Subject:",
                       editableText( new FieldBinding() {
@@ -193,8 +207,10 @@ public class MetaDataWidget extends PrettyFormLayout {
                                     },
                                     "A short description or code indicating the source of the rule." ) );
 
-        endSection();
-        startSection();
+        endSection(true);
+        startSection("Version history ...");
+        addAttribute( "Current version number:",
+                getVersionNumberLabel() );
 
         if ( !readOnly ) {
             addRow( new VersionBrowser( this.uuid,
@@ -202,10 +218,38 @@ public class MetaDataWidget extends PrettyFormLayout {
                                         refreshView ) );
         }
 
-        endSection();
+        endSection(true);
     }
 
-    private Widget packageEditor(final String packageName) {
+    private void addRow(VersionBrowser versionBrowser) {
+    	this.currentSection.addRow(versionBrowser);
+	}
+
+	private void addAttribute(String string, Widget editable) {
+		this.currentSection.addAttribute(string, editable);
+	}
+
+	private void endSection() {
+		endSection(false);
+	}
+
+	private void endSection(boolean collapsed) {
+        FormPanel config = new FormPanel();
+        config.setTitle(currentSectionName);
+        config.setCollapsible(true);
+        config.setCollapsed(collapsed);
+        config.add(this.currentSection);
+        layout.add(config);
+	}
+
+	private void startSection(String name) {
+    	currentSection = new FormStyleLayout();
+    	currentSectionName = name;
+	}
+
+
+
+	private Widget packageEditor(final String packageName) {
         if ( this.readOnly || !ExplorerLayoutManager.shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
             return readOnlyText( packageName );
         } else {
@@ -300,12 +344,12 @@ public class MetaDataWidget extends PrettyFormLayout {
         if ( lastModifiedDate == null ) {
             return null;
         } else {
-            return new Label( lastModifiedDate.toLocaleString() );
+            return new SmallLabel( lastModifiedDate.toLocaleString() );
         }
     }
 
     private Label readOnlyText(String text) {
-        Label lbl = new Label( text );
+        SmallLabel lbl = new SmallLabel( text );
         lbl.setWidth( "100%" );
         return lbl;
     }

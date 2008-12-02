@@ -17,9 +17,12 @@ package org.drools.guvnor.client.common;
 
 
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.event.WindowListener;
+import com.gwtext.client.widgets.event.WindowListenerAdapter;
 import com.gwtext.client.widgets.layout.FitLayout;
 
 /**
@@ -40,6 +43,7 @@ public class FormStylePopup {
 	private boolean modal = true;
 	private int popLeft = -1;
 	private int popTop;
+	private Command afterShowEvent;
 
     public FormStylePopup(String image,
                           final String title) {
@@ -84,7 +88,9 @@ public class FormStylePopup {
     	this.popTop = top;
     }
 
-
+    public void setAfterShow(Command c) {
+    	this.afterShowEvent = c;
+    }
 
 	public void show() {
 
@@ -112,9 +118,20 @@ public class FormStylePopup {
 		p.setBodyBorder(false);
 		p.setPaddings(0);
 
+		if (this.afterShowEvent != null) {
+			this.dialog.addListener(new WindowListenerAdapter() {
+				@Override
+				public void onActivate(Panel panel) {
+					afterShowEvent.execute();
+				}
+			});
+		}
 
 		this.dialog.show();
+
+
 	}
+
 
 	public void setModal(boolean m) {
 		this.modal = m;
