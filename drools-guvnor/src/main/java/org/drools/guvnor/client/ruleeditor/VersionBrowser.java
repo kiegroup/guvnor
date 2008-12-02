@@ -19,6 +19,7 @@ package org.drools.guvnor.client.ruleeditor;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
@@ -68,10 +69,14 @@ public class VersionBrowser extends Composite {
         this.uuid = uuid;
         HorizontalPanel wrapper = new HorizontalPanel();
 
+        ClickListener cl = new ClickListener() {
+            public void onClick(Widget w) {
+                clickLoadHistory();
+            }
+        } ;
         layout = new FlexTable();
-        layout.setWidget( 0,
-                          0,
-                          new Label( "Version history" ) );
+        ClickableLabel vh = new ClickableLabel( "Version history", cl );
+        layout.setWidget( 0, 0, vh );
         layout.getCellFormatter().setStyleName( 0, 0, "metadata-Widget" );
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         formatter.setHorizontalAlignment( 0,
@@ -80,11 +85,8 @@ public class VersionBrowser extends Composite {
 
         refresh = new ImageButton( "images/refresh.gif" );
 
-        refresh.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                clickLoadHistory();
-            }
-        } );
+
+        refresh.addClickListener( cl );
 
         layout.setWidget( 0,
                           1,
@@ -123,28 +125,23 @@ public class VersionBrowser extends Composite {
     protected void loadHistoryData() {
 
         RepositoryServiceFactory.getService().loadAssetHistory( this.uuid,
-                                                                new GenericCallback() {
+                                                                new GenericCallback<TableDataResult>() {
 
-                                                                    public void onSuccess(Object data) {
-                                                                        if ( data == null ) {
+                                                                    public void onSuccess(TableDataResult table) {
+                                                                        if ( table == null ) {
                                                                             layout.setWidget( 1, 0, new Label( "No history." ) );
                                                                             showStaticIcon();
                                                                             return;
                                                                         }
-                                                                        TableDataResult table = (TableDataResult) data;
                                                                         TableDataRow[] rows = table.data;
-                                                                        Arrays.sort(rows, new Comparator() {
+                                                                        Arrays.sort(rows, new Comparator<TableDataRow>() {
 																			public int compare(
-																					Object o1,
-																					Object o2) {
-																				TableDataRow r1 = (TableDataRow) o1;
-																				TableDataRow r2 = (TableDataRow) o2;
+																					TableDataRow r1,
+																					TableDataRow r2) {
 																				return r2.values[0].compareTo(r1.values[0]);
 																			}
-
                                                                         });
 
-                                                                        //String[] header = new String[]{"Version number", "Comment", "Date Modified", "Status"};
 
                                                                         final ListBox history = new ListBox(true);
 
