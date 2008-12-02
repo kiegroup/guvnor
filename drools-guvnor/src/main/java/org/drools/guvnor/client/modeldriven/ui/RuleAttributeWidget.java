@@ -29,6 +29,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.KeyboardListener;
@@ -40,10 +41,10 @@ import com.google.gwt.user.client.ui.Widget;
  * Displays a list of rule options (attributes).
  *
  * @author Michael Neale
- * 
+ *
  * Added support for metadata - Michael Rhoden 10/17/08
  */
-public class RuleAttributeWidget extends DirtyableComposite {
+public class RuleAttributeWidget extends Composite {
 
     private FormStyleLayout layout;
     private RuleModel model;
@@ -79,7 +80,7 @@ public class RuleAttributeWidget extends DirtyableComposite {
             RuleAttribute at = attrs[i];
             layout.addAttribute( at.attributeName, getEditorWidget(at, i));
         }
-        
+
 
         initWidget( layout );
     }
@@ -131,7 +132,7 @@ public class RuleAttributeWidget extends DirtyableComposite {
         return horiz;
 
     }
-    
+
     private Widget getEditorWidget(final RuleMetadata rm, final int idx) {
         Widget editor = null;
 
@@ -171,7 +172,6 @@ public class RuleAttributeWidget extends DirtyableComposite {
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 at.value = box.getText();
-                makeDirty();
             }
         });
 
@@ -214,7 +214,6 @@ public class RuleAttributeWidget extends DirtyableComposite {
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 rm.value = box.getText();
-                makeDirty();
             }
         });
 
@@ -255,7 +254,7 @@ public class RuleAttributeWidget extends DirtyableComposite {
         } );
         return remove;
     }
-    
+
     private Image getRemoveMetaIcon(final int idx) {
         Image remove = new Image( "images/delete_item_small.gif" );
         remove.addClickListener( new ClickListener() {
@@ -268,9 +267,6 @@ public class RuleAttributeWidget extends DirtyableComposite {
         } );
         return remove;
     }
-    
-    public boolean isDirty() {
-        return layout.isDirty();
-    }
+
 
 }

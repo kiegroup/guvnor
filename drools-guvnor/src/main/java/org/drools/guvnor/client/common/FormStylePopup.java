@@ -37,7 +37,6 @@ public class FormStylePopup {
 
 	private Boolean shadow;
 	private Integer width;
-	private Integer height;
 	private boolean modal = true;
 	private int popLeft = -1;
 	private int popTop;
@@ -54,10 +53,12 @@ public class FormStylePopup {
     	form = new FormStyleLayout();
     }
 
-    public FormStylePopup(String image, final String title, Integer width, Integer height, Boolean shadow) {
+
+
+
+    public FormStylePopup(String image, final String title, Integer width,  Boolean shadow) {
     	this(image, title);
     	this.shadow = shadow;
-    	this.height = height;
     	this.width = width;
     }
 
@@ -90,8 +91,11 @@ public class FormStylePopup {
 		dialog = new Window();
 		dialog.setAutoScroll(true);
 		dialog.setModal(modal );
+		dialog.setPlain(true);
+		dialog.setConstrainHeader(true);
+		dialog.setBodyBorder(false);
+		dialog.setBorder(false);
 		dialog.setWidth((width == null)? 430 : width.intValue());
-		//dialog.setHeight((height == null)? form.getNumAttributes() * 40 + 100 : height.intValue());
 		dialog.setShadow((shadow == null)? true : shadow.booleanValue());
 		dialog.setResizable(true);
 		dialog.setClosable(true);
@@ -101,11 +105,13 @@ public class FormStylePopup {
 		}
 
 
-
 		Panel p = new Panel();
 		p.setLayout(new FitLayout());
 		p.add(form);
 		dialog.add(p);
+		p.setBodyBorder(false);
+		p.setPaddings(0);
+
 
 		this.dialog.show();
 	}

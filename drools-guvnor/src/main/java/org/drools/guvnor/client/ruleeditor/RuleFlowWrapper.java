@@ -17,8 +17,8 @@ import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 
 /**
- * 
- * 
+ *
+ *
  * @author Toni Rikkola
  *
  */
@@ -80,11 +80,10 @@ public class RuleFlowWrapper extends Composite
         FormStylePopup pop = new FormStylePopup( "images/view_source.gif",
                                                  "Viewing diagram",
                                                  new Integer( 600 ),
-                                                 new Integer( 600 ),
                                                  Boolean.FALSE );
         pop.addRow( ruleFlowViewer );
         pop.addRow( parameterPanel );
-        
+
         pop.show();
 
         LoadingPopup.close();

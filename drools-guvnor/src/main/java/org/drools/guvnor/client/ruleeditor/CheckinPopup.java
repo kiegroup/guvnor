@@ -22,6 +22,8 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.KeyboardListener;
+import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -41,26 +43,39 @@ public class CheckinPopup {
 
 
     public CheckinPopup(int left, int top, String message) {
-        pop = new FormStylePopup("images/checkin.gif", message);
+        pop = new FormStylePopup();
+        pop.setTitle(message);
         comment = new TextArea();
         comment.setWidth( "100%" );
-        save = new Button("Save");
-        pop.addAttribute( "Comment", comment );
-        pop.addAttribute( "", save);
+        comment.setTitle("Add an optional check in comment");
+
+        save = new Button("Check in");
+        pop.addRow(comment);
+        pop.addRow(save);
 
     }
 
     public void setCommand(final Command checkin) {
-        save.addClickListener( new ClickListener() {
+    	final ClickListener cl = new ClickListener() {
             public void onClick(Widget w) {
                 checkin.execute();
                 pop.hide();
             }
+        };
+        save.addClickListener( cl );
+        comment.addKeyboardListener(new KeyboardListenerAdapter() {
+        	@Override
+        	public void onKeyUp(Widget sender, char keyCode, int modifiers) {
+        		if (keyCode == KeyboardListener.KEY_ENTER) {
+        			cl.onClick(null);
+        		}
+        	}
         });
     }
 
     public void show() {
 		pop.show();
+		comment.setFocus(true);
     }
 
     public String getCheckinComment() {

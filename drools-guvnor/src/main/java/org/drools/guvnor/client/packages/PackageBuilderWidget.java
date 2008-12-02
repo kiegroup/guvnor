@@ -147,8 +147,8 @@ public class PackageBuilderWidget extends Composite {
 	 * Popup the view source dialog, showing the given content.
 	 */
 	public static void showSource(final String content, String name) {
-		FormStylePopup pop = new FormStylePopup("images/view_source.gif",
-				"Viewing source for: " + name, new Integer(600), new Integer(600), Boolean.FALSE);
+		final FormStylePopup pop = new FormStylePopup("images/view_source.gif",
+				"Viewing source for: " + name, new Integer(600), Boolean.FALSE);
 		final TextArea area = new TextArea();
 		area.setVisibleLines(30);
 		area.setWidth("100%");
@@ -173,6 +173,7 @@ public class PackageBuilderWidget extends Composite {
 			}
 
 		});
+
 
 		LoadingPopup.close();
 

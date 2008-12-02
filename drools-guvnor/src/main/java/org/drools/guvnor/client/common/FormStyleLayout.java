@@ -17,6 +17,8 @@ package org.drools.guvnor.client.common;
 
 
 
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -31,9 +33,9 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  *
  * @author Michael Neale
  */
-public class FormStyleLayout extends DirtyableComposite {
+public class FormStyleLayout extends Composite {
 
-    private DirtyableFlexTable layout = new DirtyableFlexTable();
+    private FlexTable layout = new FlexTable();
     private FlexCellFormatter formatter = layout.getFlexCellFormatter();
     private int numInLayout = 0;
 
@@ -112,9 +114,7 @@ public class FormStyleLayout extends DirtyableComposite {
         layout.setWidget( row, col, widget );
     }
 
-    public boolean isDirty() {
-        return layout.hasDirty();
-    }
+
 
     public int getNumAttributes() {
     	return numInLayout;

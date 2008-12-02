@@ -198,7 +198,7 @@ public class VersionBrowser extends Composite {
                 asset.metaData.name = metaData.name;
 
                 final FormStylePopup pop = new FormStylePopup("images/snapshot.png", "Version number [" + asset.metaData.versionNumber + "] of [" + asset.metaData.name + "]",
-                		new Integer(800), new Integer(500), new Boolean(false));
+                		new Integer(800), new Boolean(false));
 
                 Button restore = new Button("Restore this version");
                 restore.addClickListener( new ClickListener() {
