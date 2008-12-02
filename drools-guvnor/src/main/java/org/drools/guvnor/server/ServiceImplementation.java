@@ -433,6 +433,7 @@ public class ServiceImplementation
     public RuleAsset loadRuleAsset(String uuid) throws SerializableException {
         AssetItem item = repository.loadAssetByUUID( uuid );
         RuleAsset asset = new RuleAsset();
+        boolean hasRightsToEdit = true;
 
         asset.uuid = uuid;
 
@@ -443,6 +444,8 @@ public class ServiceImplementation
             Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
                                                  RoleTypes.PACKAGE_READONLY );
 
+            // TODO: What about package read only, does is it really read only?
+            
             if ( asset.metaData.categories.length == 0 ) {
                 Identity.instance().checkPermission( new CategoryPathType( null ),
                                                      RoleTypes.ANALYST_READ );
@@ -451,12 +454,20 @@ public class ServiceImplementation
                 RuntimeException exception = null;
 
                 for ( String cat : asset.metaData.categories ) {
+                	// Check if user has a permission to read this asset.
                     try {
                         Identity.instance().checkPermission( new CategoryPathType( cat ),
                                                              RoleTypes.ANALYST_READ );
                         passed = true;
                     } catch ( RuntimeException e ) {
                         exception = e;
+                    }
+                    // Check if user has permission to edit this asset
+                    try {
+                    	Identity.instance().checkPermission( new CategoryPathType( cat ),
+                    			RoleTypes.ANALYST );
+                    } catch ( RuntimeException e ) {
+                    	hasRightsToEdit = false;
                     }
                 }
                 if ( !passed ) {
@@ -476,7 +487,7 @@ public class ServiceImplementation
         handler.retrieveAssetContent( asset,
                                       pkgItem,
                                       item );
-        if ( pkgItem.isSnapshot() ) {
+        if ( pkgItem.isSnapshot() || !hasRightsToEdit ) {
             asset.isreadonly = true;
         }
         return asset;

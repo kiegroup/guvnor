@@ -20,6 +20,7 @@ import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleBasedPermissionManager;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import org.drools.guvnor.server.util.ClassicDRLImporter.Asset;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
@@ -302,6 +303,146 @@ public class ServiceImplSecurityTest extends TestCase {
 				fail("Did not catch expected exception");
 			} catch (AuthorizationException e) {
 			}
+		} finally {
+			Lifecycle.endApplication();
+		}
+	}
+	
+	public void testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategory()
+			throws Exception {
+		try {
+
+			String category1 = "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryCat";
+
+			ServiceImplementation impl = getService();
+			PackageItem packageItem = impl.repository
+					.createPackage(
+							"testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryPack",
+							"desc");
+			String packageUuid = packageItem.getUUID();
+			impl.createCategory("", category1, "this is a cat");
+
+			String uuid = impl
+					.createNewRule(
+							"testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategory",
+							"description",
+							category1,
+							"testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryPack",
+							AssetFormats.DRL);
+
+			// Mock up SEAM contexts
+			Map application = new HashMap<String, Object>();
+			Lifecycle.beginApplication(application);
+			Lifecycle.beginCall();
+			MockIdentity midentity = new MockIdentity();
+			RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+			resolver.setEnableRoleBasedAuthorization(true);
+			midentity.addPermissionResolver(resolver);
+
+			Contexts.getSessionContext().set(
+					"org.jboss.seam.security.identity", midentity);
+			Contexts.getSessionContext().set(
+					"org.drools.guvnor.client.rpc.RepositoryService", impl);
+
+			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+			pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null,
+					category1));
+			MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(
+					pbps);
+			Contexts
+					.getSessionContext()
+					.set(
+							"org.drools.guvnor.server.security.RoleBasedPermissionStore",
+							store);
+
+			// Put permission list in session.
+			RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+			testManager.create();
+			Contexts.getSessionContext().set("roleBasedPermissionManager",
+					testManager);
+
+			// now lets see if we can access this asset with the permissions
+			RuleAsset asset = null;
+			try {
+				asset = impl.loadRuleAsset(uuid);
+			} catch (AuthorizationException e) {
+				fail("User has permissions for the category");
+			}
+			
+			// Check that asset is not read only with analyst.
+			assertNotNull(asset);
+			assertFalse(asset.isreadonly);
+			
+		} finally {
+			Lifecycle.endApplication();
+		}
+	}
+	
+	public void testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryReadOnly()
+			throws Exception {
+		try {
+
+			String category1 = "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryReadOnlyCat";
+
+			ServiceImplementation impl = getService();
+			PackageItem packageItem = impl.repository
+					.createPackage(
+							"testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryReadOnlyPack",
+							"desc");
+			String packageUuid = packageItem.getUUID();
+			impl.createCategory("", category1, "this is a cat");
+
+			String uuid = impl
+					.createNewRule(
+							"testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryReadOnly",
+							"description",
+							category1,
+							"testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryReadOnlyPack",
+							AssetFormats.DRL);
+
+			// Mock up SEAM contexts
+			Map application = new HashMap<String, Object>();
+			Lifecycle.beginApplication(application);
+			Lifecycle.beginCall();
+			MockIdentity midentity = new MockIdentity();
+			RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+			resolver.setEnableRoleBasedAuthorization(true);
+			midentity.addPermissionResolver(resolver);
+
+			Contexts.getSessionContext().set(
+					"org.jboss.seam.security.identity", midentity);
+			Contexts.getSessionContext().set(
+					"org.drools.guvnor.client.rpc.RepositoryService", impl);
+
+			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+			pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST_READ,
+					null, category1));
+			MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(
+					pbps);
+			Contexts
+					.getSessionContext()
+					.set(
+							"org.drools.guvnor.server.security.RoleBasedPermissionStore",
+							store);
+
+			// Put permission list in session.
+			RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+			testManager.create();
+			Contexts.getSessionContext().set("roleBasedPermissionManager",
+					testManager);
+
+			// now lets see if we can access this asset with the permissions
+			RuleAsset asset = null;
+			try {
+				asset = impl.loadRuleAsset(uuid);
+			} catch (AuthorizationException e) {
+				fail("User has permissions for the category");
+			}
+
+			// Check that asset is read only with analyst.readonly.
+			assertNotNull(asset);
+			assertTrue(asset.isreadonly);
+
 		} finally {
 			Lifecycle.endApplication();
 		}

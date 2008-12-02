@@ -119,16 +119,27 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 				}
 				return false;
 			} else {
-				//category path based permission check only applies to analyst role. If there is no Analyst
-				//role (e.g, only other roles like admin|package.admin|package.dev|package.readonly) we always grant permisssion.
+				//category path based permission check only applies to analyst and analyst.readonly role. If there is no Analyst or Analyst.readonly
+				//role (e.g, only other roles like admin|package.admin|package.dev|package.readonly) we always grant permission.
 				boolean isPermitted = true;
 				//return true when there is no analyst role, or one of the analyst role has permission to access this category
-
+				
 				for (RoleBasedPermission pbp : permissions) {
-					if (requestedPermType.equals(pbp.getRole()) || (requestedPermType.equals(RoleTypes.ANALYST_READ) && pbp.getRole().equals(RoleTypes.ANALYST))) {
+
+					// Check if there is a analyst or analyst.readonly role
+					if (pbp.getRole().equals(RoleTypes.ANALYST)
+							|| pbp.getRole().equals(RoleTypes.ANALYST_READ)) {
 						isPermitted = false;
-						if(isPermittedCategoryPath(requestedPath, pbp.getCategoryPath())) {
-							return true;
+
+						// Check if user has permissions for the current category
+						if (requestedPermType.equals(pbp.getRole())
+								|| (requestedPermType
+										.equals(RoleTypes.ANALYST_READ) && pbp
+										.getRole().equals(RoleTypes.ANALYST))) {
+							if (isPermittedCategoryPath(requestedPath, pbp
+									.getCategoryPath())) {
+								return true;
+							}
 						}
 					}
 				}
@@ -154,7 +165,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
 			//package based permission check only applies to admin|package.admin|package.dev|package.readonly role.
 			//For Analyst we always grant permission.
 			for (RoleBasedPermission pbp : permissions) {
-				if (RoleTypes.ANALYST.equals(pbp.getRole())) {
+				if (RoleTypes.ANALYST.equals(pbp.getRole()) || RoleTypes.ANALYST_READ.equals(pbp.getRole())) {
 					return true;
 				} else if (targetName.equalsIgnoreCase(pbp.getPackageName())
 						&& isPermittedPackage(requestedPermission, pbp.getRole())) {
