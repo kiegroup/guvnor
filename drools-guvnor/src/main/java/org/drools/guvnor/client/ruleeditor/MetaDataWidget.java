@@ -333,7 +333,7 @@ public class MetaDataWidget extends Composite {
 
     private Widget getVersionNumberLabel() {
         if ( data.versionNumber == 0 ) {
-            return new HTML( "<i>Not checked in yet</i>" );
+            return new SmallLabel( "<i>Not checked in yet</i>" );
         } else {
             return readOnlyText( Long.toString( data.versionNumber ) );
         }
