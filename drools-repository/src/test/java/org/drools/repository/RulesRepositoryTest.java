@@ -1010,22 +1010,22 @@ public class RulesRepositoryTest extends TestCase {
 
         assertNotNull( repo.loadState( newName ) );
     }
-    
+
     public void testRemoveState() {
         RulesRepository repo = RepositorySessionUtil.getRepository();
         StateItem[] items = repo.listStates();
         assertTrue( items.length > 0 );
-        
+
         final String name = "stateThatHasALongNameAndWillBeRenamed";
         repo.createState( name );
-        
+
         StateItem[] items2 = repo.listStates();
         assertEquals( items.length + 1,
                       items2.length );
-        
+
         repo.loadState( name ).remove();
         repo.save();
-        
+
         StateItem[] items3 = repo.listStates();
         assertEquals( items2.length -1,
                       items3.length );
@@ -1035,7 +1035,7 @@ public class RulesRepositoryTest extends TestCase {
         } catch ( RulesRepositoryException e ) {
             // Works
         }
-        
+
     }
 
     public void testImportExport() {
@@ -1055,6 +1055,10 @@ public class RulesRepositoryTest extends TestCase {
             assertFalse( repo.containsPackage( "testImportExport" ) );
             repo.importRulesRepository( repository_unitest );
             assertTrue( repo.containsPackage( "testImportExport" ) );
+
+            repo.importRepository(new ByteArrayInputStream(repository_unitest));
+            assertTrue( repo.containsPackage( "testImportExport" ) );
+
         } catch ( Exception e ) {
             fail( "Can't throw any exception." );
             e.printStackTrace();

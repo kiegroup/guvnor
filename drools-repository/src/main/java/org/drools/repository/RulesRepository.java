@@ -3,6 +3,7 @@ package org.drools.repository;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -961,8 +962,24 @@ public class RulesRepository {
     }
 
     /**
-     *
-     * @param byteArray
+     * Import the repository from a stream.
+     */
+    public void importRepository(InputStream in) {
+        new RulesRepositoryAdministrator( this.session ).clearRulesRepository();
+        try {
+	        this.session.getWorkspace().importXML( "/", in,
+	                                               ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW );
+        	session.save();
+        } catch (RepositoryException e) {
+        	throw new RulesRepositoryException(e);
+        } catch (IOException e) {
+        	throw new RulesRepositoryException(e);
+		}
+    }
+
+    /**
+     * Clean and import the rules repository.
+     * Will run any needed migrations as well.
      */
     public void importRulesRepository(byte[] byteArray) {
         try {
