@@ -172,7 +172,7 @@ public interface RepositoryService extends RemoteService {
      * @return the UUID of the created StateItem.
      */
     public String createState(String name) throws SerializableException;
-    
+
     /**
      * Renames a state.
      * @param oldName states old name.
@@ -180,7 +180,7 @@ public interface RepositoryService extends RemoteService {
      * @throws SerializableException
      */
     public void renameState(String oldName, String newName) throws SerializableException;
-    
+
     /**
      * Removes a state.
      * @param name state name that will be removed.
@@ -463,7 +463,7 @@ public interface RepositoryService extends RemoteService {
      * Removes user security data.
      */
     public void deleteUser(String userName);
-    
+
 
     /**
      * Returns the lockers user name
@@ -483,5 +483,11 @@ public interface RepositoryService extends RemoteService {
      * @param uuid
      */
     public void unLockAsset(String uuid);
+
+    /**
+     * Installs the sample repository, wiping out what was already there.
+     * Generally shouldn't call this unless it is new !
+     */
+    public void installSampleRepository() throws SerializableException;
 
 }

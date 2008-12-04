@@ -172,7 +172,8 @@ public class BackupManager extends Composite {
         uploadFormPanel.addFormHandler( new FormHandler() {
             public void onSubmitComplete(FormSubmitCompleteEvent event) {
                 if ( event.getResults().indexOf( "OK" ) > -1 ) {
-                    Window.alert( "Rules repository imported successfully. Please refresh your browser (F5) to show the new content. " );
+                    Window.alert( "Rules repository imported successfully. Browser will now refresh to show the new content. " );
+                    Window.Location.reload();
                 } else {
                     ErrorPopup.showMessage( "Unable to import into the repository. Consult the server logs for error messages." );
                 }
@@ -194,6 +195,7 @@ public class BackupManager extends Composite {
         return uploadFormPanel;
     }
 
+    //NOTE: this is not used as it was flawed. Its ok to leave the code, GWT will compile it out anyway.
     private Widget newImportPackageWidget(final CheckBox overWriteCheckBox) {
 
         final FormPanel uploadFormPanel = new FormPanel();

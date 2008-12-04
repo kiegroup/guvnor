@@ -71,8 +71,8 @@ public class StatusEditor extends FormStylePopup {
     private void createStatus(final TextBox box) {
         LoadingPopup.showMessage( "Creating status" );
         RepositoryServiceFactory.getService().createState( box.getText(),
-                                                           new GenericCallback<Object>() {
-                                                               public void onSuccess(Object data) {
+                                                           new GenericCallback<String>() {
+                                                               public void onSuccess(String data) {
                                                                    if ( data != null ) {
                                                                        if ( refresh != null ) {
                                                                            box.setText( "" );

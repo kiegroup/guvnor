@@ -143,7 +143,7 @@ public class ExplorerNodeConfig {
 						final String value[] = (String[]) data;
 						if (value.length == 0) {
 							if (path.equals("/")) {
-								Window.alert("No categories configured. Tip: you will want to go to Administration/Categories and create at least one.");
+								doNewRepoDialog();
 							}
 							infanticide(treeNode);
 						} else {
@@ -177,6 +177,11 @@ public class ExplorerNodeConfig {
 						}
 					}
 
+					private void doNewRepoDialog() {
+						NewRepoDialog diag = new NewRepoDialog();
+						diag.show();
+					}
+
 
 				});
 	}
@@ -195,11 +200,8 @@ public class ExplorerNodeConfig {
 		treeNode.setAttribute("id",STATES_ID);
 
 
-		RepositoryServiceFactory.getService().listStates(new GenericCallback() {
-			public void onSuccess(Object data) {
-				String value[] = (String[]) data;
-
-
+		RepositoryServiceFactory.getService().listStates(new GenericCallback<String[]>() {
+			public void onSuccess(String[] value) {
 				for (int i = 0; i < value.length; i++) {
 					TreeNode childNode = new TreeNode(value[i]);
 					childNode.setAttribute("icon", "images/category_small.gif");

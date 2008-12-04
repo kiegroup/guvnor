@@ -2225,6 +2225,17 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(0, perms_.size());
 	}
 
+	public void testImportSampleRepository() throws Exception {
+		ServiceImplementation serv = getService();
+		serv.installSampleRepository();
+		PackageConfigData[] cfgs = serv.listPackages();
+		assertEquals(2, cfgs.length);
+		assertTrue(cfgs[0].name.equals("mortgages") || cfgs[1].name.equals("mortgages"));
+		String puuid = (cfgs[0].name.equals("mortgages")) ? cfgs[0].uuid : cfgs[1].uuid;
+		BulkTestRunResult res = serv.runScenariosInPackage(puuid);
+		assertEquals(null, res.errors);
+	}
+
 
 	/**
 	 * Set up enough of the Seam environment to test it.

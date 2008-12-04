@@ -2109,6 +2109,7 @@ public class ServiceImplementation
         }
     }
 
+    @Restrict("#{identity.loggedIn}")
     public Map<String, List<String>> listUserPermissions() {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new AdminType(),
@@ -2119,6 +2120,7 @@ public class ServiceImplementation
         return pm.listUsers();
     }
 
+    @Restrict("#{identity.loggedIn}")
     public Map<String, List<String>> retrieveUserPermissions(String userName) {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new AdminType(),
@@ -2129,6 +2131,7 @@ public class ServiceImplementation
         return pm.retrieveUserPermissions( userName );
     }
 
+    @Restrict("#{identity.loggedIn}")
     public void updateUserPermissions(String userName,
                                       Map<String, List<String>> perms) {
         if ( Contexts.isSessionContextActive() ) {
@@ -2144,6 +2147,7 @@ public class ServiceImplementation
         repository.save();
     }
 
+    @Restrict("#{identity.loggedIn}")
     public String[] listAvailablePermissionTypes() {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new AdminType(),
@@ -2153,6 +2157,7 @@ public class ServiceImplementation
         return RoleTypes.listAvailableTypes();
     }
 
+    @Restrict("#{identity.loggedIn}")
     public void deleteUser(String userName) {
         log.info( "Removing user permissions for user name [" + userName + "]" );
         PermissionManager pm = new PermissionManager( repository );
@@ -2163,6 +2168,7 @@ public class ServiceImplementation
     /* (non-Javadoc)
     * @see org.drools.guvnor.client.rpc.RepositoryService#getAssetLockerUserName(java.lang.String)
     */
+    @Restrict("#{identity.loggedIn}")
     public String getAssetLockerUserName(String uuid) {
         AssetLockManager alm = AssetLockManager.instance();
 
@@ -2176,6 +2182,7 @@ public class ServiceImplementation
     /* (non-Javadoc)
      * @see org.drools.guvnor.client.rpc.RepositoryService#lockAsset(java.lang.String)
      */
+    @Restrict("#{identity.loggedIn}")
     public void lockAsset(String uuid) {
         AssetLockManager alm = AssetLockManager.instance();
 
@@ -2195,12 +2202,21 @@ public class ServiceImplementation
     /* (non-Javadoc)
      * @see org.drools.guvnor.client.rpc.RepositoryService#unLockAsset(java.lang.String)
      */
+    @Restrict("#{identity.loggedIn}")
     public void unLockAsset(String uuid) {
         AssetLockManager alm = AssetLockManager.instance();
-
         log.info( "Unlocking asset [" + uuid + "]" );
-
         alm.unLockAsset( uuid );
     }
+
+    @Restrict("#{identity.loggedIn}")
+	public void installSampleRepository() throws SerializableException {
+		if ( Contexts.isApplicationContextActive() ) {
+			Identity.instance().checkPermission(new AdminType(), RoleTypes.ADMIN);
+		}
+		repository.importRepository(this.getClass().getResourceAsStream("/mortgage-sample-repository.xml"));
+		this.rebuildPackages();
+		this.rebuildSnapshots();
+	}
 
 }

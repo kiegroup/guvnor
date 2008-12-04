@@ -60,19 +60,19 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 		    }
 		} else if (e.getCause() instanceof RulesRepositoryException) {
 			log.error(e.getCause());
-			HttpServletResponse response = getThreadLocalResponse();
-		      response.setContentType("text/plain");
-		      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		      try {
-		    	  response.getWriter().write(e.getCause().getMessage());
-		      } catch (IOException ex) {
-			      getServletContext().log(
-				          "respondWithUnexpectedFailure failed while sending the previous failure to the client",
-				          ex);
-		      }
-
+ 			HttpServletResponse response = getThreadLocalResponse();
+ 		   response.setContentType("text/plain");
+		   response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		   try {
+			   response.getWriter().write(e.getCause().getMessage());
+		   } catch (IOException ex) {
+		      getServletContext().log(
+			          "respondWithUnexpectedFailure failed while sending the previous failure to the client",
+			          ex);
+		   }
 		} else {
-				super.doUnexpectedFailure(e);
+			log.error(e.getCause());
+			super.doUnexpectedFailure(e);
 		}
 	}
 
@@ -289,9 +289,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
         getService().unLockAsset( uuid );
     }
 
-
-
-
+    public void installSampleRepository() throws SerializableException {
+        getService().installSampleRepository();
+    }
 
 
 }
