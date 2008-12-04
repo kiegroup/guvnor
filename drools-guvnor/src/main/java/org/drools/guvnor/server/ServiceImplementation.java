@@ -1085,31 +1085,38 @@ public class ServiceImplementation
                 try {
 					RuleAsset ruleAsset = loadAsset(asset);
 
-					// Check category permissions
-					boolean passed = false;
-					RuntimeException exception = null;
+					if (ruleAsset.metaData.categories.length == 0) {
+						Identity.instance().checkPermission(
+								new CategoryPathType(null),
+								RoleTypes.ANALYST_READ);
+					} else {
 
-					for (String cat : ruleAsset.metaData.categories) {
-						try {
-							Identity.instance().checkPermission(
-									new CategoryPathType(cat),
-									RoleTypes.ANALYST);
-							passed = true;
-						} catch (RuntimeException e) {
-							exception = e;
+						// Check category permissions
+						boolean passed = false;
+						RuntimeException exception = null;
+
+						for (String cat : ruleAsset.metaData.categories) {
+							try {
+								Identity.instance().checkPermission(
+										new CategoryPathType(cat),
+										RoleTypes.ANALYST);
+								passed = true;
+							} catch (RuntimeException e) {
+								exception = e;
+							}
 						}
-					}
-					if (!passed) {
-						throw exception;
+						if (!passed) {
+							throw exception;
+						}
 					}
 				} catch (RulesRepositoryException e) {
 					// This was not a rule asset
 				} catch (SerializableException e) {
 					// This was not a rule asset
 				}
-            }
 
-            asset.updateState( newState );
+				asset.updateState(newState);
+			}
         } else {
             if ( Contexts.isSessionContextActive() ) {
                 Identity.instance().checkPermission( new PackageUUIDType( uuid ),
