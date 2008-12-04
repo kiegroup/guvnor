@@ -26,100 +26,115 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.drools.guvnor.server.security.AdminType;
+import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.FormData;
+import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.Identity;
 
 /**
- *
+ * 
  * This servlet deals with import and export of the repository to XML/zip files.
- *
+ * 
  * @author Michael Neale
  * @author Fernando Meyer
  */
 public class RepositoryBackupServlet extends RepositoryServlet {
 
-    private static final long serialVersionUID = 400L;
+	private static final long serialVersionUID = 400L;
 
-    //final FileManagerUtils uploadHelper = new FileManagerUtils();
+	// final FileManagerUtils uploadHelper = new FileManagerUtils();
 
-    /**
-     * This accepts a repository, and will apply it.
-     */
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response) throws ServletException,
-                                                       IOException {
-        response.setContentType( "text/html" );
-        FormData uploadItem = FileManagerUtils.getFormData( request );
+	/**
+	 * This accepts a repository, and will apply it.
+	 */
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 
-        String packageImport = request.getParameter( "packageImport" );
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(new AdminType(),
+					RoleTypes.ADMIN);
+		}
 
-        if ( "true".equals( packageImport ) ) {
-            boolean importAsNew = "true".equals( request.getParameter( "importAsNew" ) );
+		response.setContentType("text/html");
+		FormData uploadItem = FileManagerUtils.getFormData(request);
 
-            response.getWriter().write( processImportPackage( uploadItem.getFile().getInputStream(),
-                                                              importAsNew ) );
-        } else {
-            response.getWriter().write( processImportRepository( uploadItem.getFile().getInputStream() ) );
-        }
-    }
+		String packageImport = request.getParameter("packageImport");
 
-    /**
-     * Explore the repo, provide a download
-     */
-    protected void doGet(HttpServletRequest req,
-                         HttpServletResponse res) throws ServletException,
-                                                 IOException {
-        try {
-            String packageName = req.getParameter( "packageName" );
+		if ("true".equals(packageImport)) {
+			boolean importAsNew = "true".equals(request
+					.getParameter("importAsNew"));
 
-            if ( packageName == null ) {
-                processExportRepositoryDownload( res );
-            } else {
-                processExportPackageFromRepositoryDownload( res,
-                                                            packageName );
-            }
+			response.getWriter().write(
+					processImportPackage(uploadItem.getFile().getInputStream(),
+							importAsNew));
+		} else {
+			response.getWriter().write(
+					processImportRepository(uploadItem.getFile()
+							.getInputStream()));
+		}
+	}
 
-        } catch ( Exception e ) {
-            e.printStackTrace( new PrintWriter( res.getOutputStream() ) );
-        }
-    }
+	/**
+	 * Explore the repo, provide a download
+	 */
+	protected void doGet(HttpServletRequest req, HttpServletResponse res)
+			throws ServletException, IOException {
 
-    private void processExportRepositoryDownload(HttpServletResponse res) throws PathNotFoundException,
-                                                                         IOException,
-                                                                         RepositoryException {
-        res.setContentType( "application/zip" );
-        res.setHeader( "Content-Disposition",
-                       "inline; filename=repository_export.zip;" );
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(new AdminType(),
+					RoleTypes.ADMIN);
+		}
 
-        res.getOutputStream().write( getFileManager().exportRulesRepository() );
-        res.getOutputStream().flush();
-    }
+		try {
+			String packageName = req.getParameter("packageName");
 
-    private void processExportPackageFromRepositoryDownload(HttpServletResponse res,
-                                                            String packageName) throws PathNotFoundException,
-                                                                               IOException,
-                                                                               RepositoryException {
-        res.setContentType( "application/zip" );
-        res.setHeader( "Content-Disposition",
-                       "inline; filename=" + packageName + ".zip;" );
+			if (packageName == null) {
+				processExportRepositoryDownload(res);
+			} else {
+				processExportPackageFromRepositoryDownload(res, packageName);
+			}
 
-        res.getOutputStream().write( getFileManager().exportPackageFromRepository( packageName ) );
-        res.getOutputStream().flush();
-    }
+		} catch (Exception e) {
+			e.printStackTrace(new PrintWriter(res.getOutputStream()));
+		}
+	}
 
-    private String processImportRepository(InputStream file) throws IOException {
-        byte[] byteArray = new byte[file.available()];
-        file.read( byteArray );
-        getFileManager().importRulesRepository( byteArray );
-        return "OK";
-    }
+	private void processExportRepositoryDownload(HttpServletResponse res)
+			throws PathNotFoundException, IOException, RepositoryException {
+		res.setContentType("application/zip");
+		res.setHeader("Content-Disposition",
+				"inline; filename=repository_export.zip;");
 
-    private String processImportPackage(InputStream file,
-                                        boolean importAsNew) throws IOException {
-        byte[] byteArray = new byte[file.available()];
-        file.read( byteArray );
-        getFileManager().importPackageToRepository( byteArray,
-                                                    importAsNew );
-        return "OK";
-    }
+		res.getOutputStream().write(getFileManager().exportRulesRepository());
+		res.getOutputStream().flush();
+	}
+
+	private void processExportPackageFromRepositoryDownload(
+			HttpServletResponse res, String packageName)
+			throws PathNotFoundException, IOException, RepositoryException {
+		res.setContentType("application/zip");
+		res.setHeader("Content-Disposition", "inline; filename=" + packageName
+				+ ".zip;");
+
+		res.getOutputStream().write(
+				getFileManager().exportPackageFromRepository(packageName));
+		res.getOutputStream().flush();
+	}
+
+	private String processImportRepository(InputStream file) throws IOException {
+		byte[] byteArray = new byte[file.available()];
+		file.read(byteArray);
+		getFileManager().importRulesRepository(byteArray);
+		return "OK";
+	}
+
+	private String processImportPackage(InputStream file, boolean importAsNew)
+			throws IOException {
+		byte[] byteArray = new byte[file.available()];
+		file.read(byteArray);
+		getFileManager().importPackageToRepository(byteArray, importAsNew);
+		return "OK";
+	}
 
 }
