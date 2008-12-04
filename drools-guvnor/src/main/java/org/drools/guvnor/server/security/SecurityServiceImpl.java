@@ -44,8 +44,21 @@ public class SecurityServiceImpl
     public boolean login(String userName, String password) {
         log.info( "Logging in user [" + userName + "]" );
         if (Contexts.isApplicationContextActive()) {
+
+        	// Check for banned characters in user name
+        	// These will cause the session to jam if you let them go further
+			char[] bannedChars = { '\'', '*', '[', ']' };
+			for (int i = 0; i < bannedChars.length; i++) {
+				char c = bannedChars[i];
+				if (userName.indexOf(c) >= 0) {
+					log.error("Not a valid name character " + c);
+					return false;
+				}
+			}
+        	
             Identity.instance().getCredentials().setUsername(userName);
-            Identity.instance().getCredentials().setPassword(password);
+            Identity.instance().getCredentials().setPassword(password); 
+        	            
             try {
                 Identity.instance().authenticate();
             } catch ( LoginException e ) {

@@ -433,7 +433,6 @@ public class ServiceImplementation
     public RuleAsset loadRuleAsset(String uuid) throws SerializableException {
         AssetItem item = repository.loadAssetByUUID( uuid );
         RuleAsset asset = new RuleAsset();
-        boolean hasRightsToEdit = true;
 
         asset.uuid = uuid;
 
@@ -443,8 +442,6 @@ public class ServiceImplementation
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
                                                  RoleTypes.PACKAGE_READONLY );
-
-            // TODO: What about package read only, does is it really read only?
             
             if ( asset.metaData.categories.length == 0 ) {
                 Identity.instance().checkPermission( new CategoryPathType( null ),
@@ -461,13 +458,6 @@ public class ServiceImplementation
                         passed = true;
                     } catch ( RuntimeException e ) {
                         exception = e;
-                    }
-                    // Check if user has permission to edit this asset
-                    try {
-                    	Identity.instance().checkPermission( new CategoryPathType( cat ),
-                    			RoleTypes.ANALYST );
-                    } catch ( RuntimeException e ) {
-                    	hasRightsToEdit = false;
                     }
                 }
                 if ( !passed ) {
@@ -487,7 +477,7 @@ public class ServiceImplementation
         handler.retrieveAssetContent( asset,
                                       pkgItem,
                                       item );
-        if ( pkgItem.isSnapshot() || !hasRightsToEdit ) {
+        if ( pkgItem.isSnapshot() ) { 
             asset.isreadonly = true;
         }
         return asset;
@@ -1091,6 +1081,32 @@ public class ServiceImplementation
             if ( Contexts.isSessionContextActive() ) {
                 Identity.instance().checkPermission( new PackageUUIDType( asset.getPackage().getUUID() ),
                                                      RoleTypes.PACKAGE_DEVELOPER );
+                
+                try {
+					RuleAsset ruleAsset = loadAsset(asset);
+
+					// Check category permissions
+					boolean passed = false;
+					RuntimeException exception = null;
+
+					for (String cat : ruleAsset.metaData.categories) {
+						try {
+							Identity.instance().checkPermission(
+									new CategoryPathType(cat),
+									RoleTypes.ANALYST);
+							passed = true;
+						} catch (RuntimeException e) {
+							exception = e;
+						}
+					}
+					if (!passed) {
+						throw exception;
+					}
+				} catch (RulesRepositoryException e) {
+					// This was not a rule asset
+				} catch (SerializableException e) {
+					// This was not a rule asset
+				}
             }
 
             asset.updateState( newState );
