@@ -21,8 +21,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class NewRepoDialog extends FormStylePopup {
 
 	public NewRepoDialog() {
-		super("images/new_wiz.gif", "Welcome to Guvnor !");
-		setTitle("New Repository");
+		//super("images/new_wiz.gif", "Welcome to Guvnor !");
+		setTitle("Welcome to Guvnor");
+		setWidth(300);
 
 		addAttribute("", new SmallLabel("<b>This looks like a brand new repository.</b>"));
 		addAttribute("", new SmallLabel("<b>Would you like to Install a sample repository?<b>"));

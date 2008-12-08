@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import junit.framework.TestCase;
 
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
@@ -102,6 +103,22 @@ public class PackageDeploymentServletTest extends TestCase {
 		assertEquals(-1, drl.indexOf("package"));
 
 	}
+
+//	public void testScenarios() throws Exception {
+//		String puuid = impl.repository.loadPackage("testPDSGetPackage").getUUID();
+//		BulkTestRunResult result = impl.runScenariosInPackage(puuid);
+//
+//		//now run the scenarios
+//		serv = new PackageDeploymentServlet();
+//		req = new MockHTTPRequest("/package/testPDSGetPackage/SNAP1/SCENARIOS", null);
+//		out = new ByteArrayOutputStream();
+//		res = new MockHTTPResponse(out);
+//		serv.doGet(req, res);
+//		String testResult = new String(out.toByteArray());
+//		assertNotNull(testResult);
+//		assertEquals("wee", testResult);
+//
+//	}
 
 	private void assertSameArray(byte[] bin_, byte[] bin) {
 		for (int i = 0; i < bin.length; i++) {

@@ -106,6 +106,10 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         		fileName = fm.loadSourcePackage(helper.getPackageName(), helper.getVersion(), helper.isLatest(), out );
         	}
         } else {
+        	if (req.getRequestURI().endsWith("SCENARIOS")) {
+        		
+        		throw new IllegalAccessError();
+        	}
         	fileName = fm.loadBinaryPackage( helper.getPackageName(), helper.getVersion(), helper.isLatest(), out );
         }
 

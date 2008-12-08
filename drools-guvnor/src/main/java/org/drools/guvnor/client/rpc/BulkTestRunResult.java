@@ -23,4 +23,16 @@ public class BulkTestRunResult implements IsSerializable {
 	public int percentCovered;
 	public String[] rulesNotCovered;
 
+	public String toString() {
+		if (errors != null && errors.length > 0) return "Unable to run tests";
+		if (results == null || results.length == 0) return "No test scenarios found.";
+		String res = "";
+		if (results != null) {
+			for (int i = 0; i < results.length; i++) {
+				res  = res + "\n" + results[i].toString();
+			}
+		}
+		return res;
+	}
+
 }

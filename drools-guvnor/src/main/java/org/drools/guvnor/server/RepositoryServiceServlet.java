@@ -33,7 +33,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 	 * Michael got tired of trying to read other peoples overly abstracted code, so its just generated dumb code to
 	 * reduce dependencies on libraries.
 	 */
-	RepositoryService getService() {
+	public static RepositoryService getService() {
 		if (Contexts.isApplicationContextActive()) {
 			return (ServiceImplementation) Component.getInstance("org.drools.guvnor.client.rpc.RepositoryService");
 		} else {

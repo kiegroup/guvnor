@@ -92,9 +92,11 @@ public class DSLRuleEditor extends DirtyableComposite {
                 }
 
                 if ( arg1 == KEY_TAB ) {
+                	int nextPos = text.getCursorPos() + 1;
+                	text.cancelKey();
                     insertText( "\t" );
-                    text.setCursorPos( text.getCursorPos() + 1 );
-                    text.cancelKey();
+                    text.setCursorPos( nextPos );
+
                 }
             }
         } );

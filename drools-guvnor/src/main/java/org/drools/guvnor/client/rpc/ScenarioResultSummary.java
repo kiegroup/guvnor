@@ -26,4 +26,9 @@ public class ScenarioResultSummary implements IsSerializable {
 		this.uuid = uuid;
 	}
 
+	public String toString() {
+		if (failures == 0) return "SUCCESS " + scenarioName;
+		return "FAIL " + scenarioName + " (" + failures + " failures out of " + total + ")";
+	}
+
 }

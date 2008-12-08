@@ -21,13 +21,17 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.packages.PackageBuilderWidget;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -128,10 +132,19 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
      * This will show a popup of error messages in compilation.
      */
     public static void showBuilderErrors(BuilderResult[] results) {
-        FormStylePopup pop = new FormStylePopup("images/package_builder.png", "Validation results");
+
         if (results == null || results.length == 0) {
-            pop.addRow( new HTML("<img src='images/tick_green.gif'/><i>Item validated.</i>") );
+        	FormStylePopup pop = new FormStylePopup();
+        	pop.setWidth(200);
+        	pop.setTitle("Validation results...");
+        	HorizontalPanel h = new HorizontalPanel();
+        	h.add(new SmallLabel("<img src='images/tick_green.gif'/><i>Item validated successfully.</i>"));
+
+
+            pop.addRow( h );
+            pop.show();
         } else {
+        	FormStylePopup pop = new FormStylePopup("images/package_builder.png", "Validation results");
             FlexTable errTable = new FlexTable();
             errTable.setStyleName( "build-Results" );
             for ( int i = 0; i < results.length; i++ ) {
@@ -154,9 +167,9 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
             pop.addRow( scroll );
 //            pop.setWidth( "70%" );
 //            pop.setHeight( "50%" );
-
+            pop.show();
         }
-        pop.show();
+
         LoadingPopup.close();
     }
 
