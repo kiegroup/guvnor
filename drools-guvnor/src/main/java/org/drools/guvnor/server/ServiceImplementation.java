@@ -34,11 +34,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.jcr.ItemExistsException;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.IOUtils;
@@ -442,7 +439,7 @@ public class ServiceImplementation
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
                                                  RoleTypes.PACKAGE_READONLY );
-            
+
             if ( asset.metaData.categories.length == 0 ) {
                 Identity.instance().checkPermission( new CategoryPathType( null ),
                                                      RoleTypes.ANALYST_READ );
@@ -477,7 +474,7 @@ public class ServiceImplementation
         handler.retrieveAssetContent( asset,
                                       pkgItem,
                                       item );
-        if ( pkgItem.isSnapshot() ) { 
+        if ( pkgItem.isSnapshot() ) {
             asset.isreadonly = true;
         }
         return asset;
@@ -1081,7 +1078,7 @@ public class ServiceImplementation
             if ( Contexts.isSessionContextActive() ) {
                 Identity.instance().checkPermission( new PackageUUIDType( asset.getPackage().getUUID() ),
                                                      RoleTypes.PACKAGE_DEVELOPER );
-                
+
                 try {
 					RuleAsset ruleAsset = loadAsset(asset);
 
@@ -1847,10 +1844,13 @@ public class ServiceImplementation
             Identity.instance().checkPermission( new PackageUUIDType( packageUUID ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
-
         PackageItem item = repository.loadPackageByUUID( packageUUID );
+        return runScenariosInPackage(item);
+    }
 
-        ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
+	public BulkTestRunResult runScenariosInPackage(PackageItem item)
+			throws DetailedSerializableException, SerializableException {
+		ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
         ClassLoader cl = null;
 
         try {
@@ -1921,8 +1921,7 @@ public class ServiceImplementation
         } finally {
             Thread.currentThread().setContextClassLoader( originalCL );
         }
-
-    }
+	}
 
     private HashSet<String> expectedRules(Package bin) {
         HashSet<String> h = new HashSet<String>();

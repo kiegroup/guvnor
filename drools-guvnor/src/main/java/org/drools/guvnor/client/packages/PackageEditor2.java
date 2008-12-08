@@ -131,7 +131,7 @@ FlexTable headerWidgets = new FlexTable();
 	        endSection();
         }
 
-        startSection("Information");
+        startSection("Information and important URLs");
         if (!conf.isSnapshot) {
         	addAttribute( "Last modified:", new Label(getDateString(conf.lastModified))  );
         }
@@ -145,11 +145,19 @@ FlexTable headerWidgets = new FlexTable();
 				PackageBuilderWidget.doBuildSource(conf.uuid, conf.name);
 			}
 		});
-		addAttribute("View source for package:", buildSource);
-		HTML html = new HTML("<a href='" + getDownloadLink(this.conf)
-				+ "' target='_blank'>Download source</a>");
 
-		addAttribute("Download package source:", html);
+		addAttribute("Show package source:", buildSource);
+		HTML html = new HTML("<a href='" + getSourceDownload(this.conf)
+				+ "' target='_blank'>" + getSourceDownload(this.conf) + "</a>");
+		addAttribute("URL for package source:", h(html, "Use this URL to download the source, or in the 'runtime agent' to access the rules in source form"));
+
+		HTML html2 = new HTML("<a href='" + getBinaryDownload(this.conf)
+				+ "' target='_blank'>" + getBinaryDownload(this.conf) + "</a>");
+		addAttribute("URL for package binary:", h(html2, "Use this url in the 'runtime agent' to fetch a pre compiled binary."));
+
+		HTML html3 = new HTML("<a href='" + getScenarios(this.conf)
+				+ "' target='_blank'>" + getScenarios(this.conf) + "</a>");
+		addAttribute("URL for running tests:", h(html3, "Use this url to run the scenarios remotely and collect results."));
 
 
 
@@ -177,7 +185,14 @@ FlexTable headerWidgets = new FlexTable();
         endSection();
 
     }
-    private Widget getShowCatRules(){
+    private Widget h(Widget w, String string) {
+		HorizontalPanel hp = new HorizontalPanel();
+		hp.add(w);
+		hp.add(new InfoPopup("Tip...",string));
+		return hp;
+	}
+
+	private Widget getShowCatRules(){
 
     	if(conf.catRules != null && conf.catRules.size() > 0){
     		VerticalPanel vp = new VerticalPanel();
@@ -308,15 +323,30 @@ FlexTable headerWidgets = new FlexTable();
     }
 
 
+    static String getSourceDownload(PackageConfigData conf) {
+    	return makeLink (conf) + ".drl";
+    }
+
+    static String getBinaryDownload(PackageConfigData conf) {
+    	return makeLink (conf);
+    }
+
+    static String getScenarios(PackageConfigData conf) {
+    	return makeLink (conf) + "/SCENARIOS";
+    }
+
+
+
+
 	/**
 	 * Get a download link for the binary package.
 	 */
-	public static String getDownloadLink(PackageConfigData conf) {
+	public static String makeLink(PackageConfigData conf) {
 		String hurl = GWT.getModuleBaseURL() + "package/" + conf.name;
 		if (!conf.isSnapshot) {
-			hurl = hurl + "/" + SnapshotView.LATEST_SNAPSHOT + ".drl";
+			hurl = hurl + "/" + SnapshotView.LATEST_SNAPSHOT ;
 		} else {
-			hurl = hurl + "/" + conf.snapshotName + ".drl";
+			hurl = hurl + "/" + conf.snapshotName ;
 		}
 		final String uri = hurl;
 		return uri;

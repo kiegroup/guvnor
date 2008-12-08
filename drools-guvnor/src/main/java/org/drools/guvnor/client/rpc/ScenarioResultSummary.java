@@ -28,7 +28,7 @@ public class ScenarioResultSummary implements IsSerializable {
 
 	public String toString() {
 		if (failures == 0) return "SUCCESS " + scenarioName;
-		return "FAIL " + scenarioName + " (" + failures + " failures out of " + total + ")";
+		return "FAILURE " + scenarioName + " (" + failures + " failures out of " + total + ")";
 	}
 
 }

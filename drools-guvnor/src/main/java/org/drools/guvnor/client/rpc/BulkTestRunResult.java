@@ -32,7 +32,7 @@ public class BulkTestRunResult implements IsSerializable {
 				res  = res + "\n" + results[i].toString();
 			}
 		}
-		return res;
+		return res.trim();
 	}
 
 }

@@ -6,7 +6,10 @@ import org.drools.guvnor.client.admin.CategoryManager;
 import org.drools.guvnor.client.admin.LogViewer;
 import org.drools.guvnor.client.admin.PermissionViewer;
 import org.drools.guvnor.client.admin.StateManager;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.SmallLabel;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.tree.TreeNode;
@@ -53,6 +56,16 @@ public class AdministrationPanel extends GenericPanel {
                         if (!centertabbedPanel.showIfOpen("securityPermissions"))
                             centertabbedPanel.addTab("User Permission mappings", true, new PermissionViewer(), "securityPermissions");
                         break;
+                    case 6:
+                    	FormStylePopup pop  = new FormStylePopup();
+                    	pop.setWidth(600);
+                    	pop.setTitle("WebDAV url for this repository");
+                		String hurl = GWT.getModuleBaseURL() + "webdav";
+                		pop.addAttribute("WebDAV URL:", new SmallLabel("<b>" + hurl + "</b>"));
+                		pop.show();
+                        break;
+
+
                 }
             }
         });

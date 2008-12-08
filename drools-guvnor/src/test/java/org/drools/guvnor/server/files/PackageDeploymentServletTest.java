@@ -104,21 +104,37 @@ public class PackageDeploymentServletTest extends TestCase {
 
 	}
 
-//	public void testScenarios() throws Exception {
-//		String puuid = impl.repository.loadPackage("testPDSGetPackage").getUUID();
-//		BulkTestRunResult result = impl.runScenariosInPackage(puuid);
-//
-//		//now run the scenarios
-//		serv = new PackageDeploymentServlet();
-//		req = new MockHTTPRequest("/package/testPDSGetPackage/SNAP1/SCENARIOS", null);
-//		out = new ByteArrayOutputStream();
-//		res = new MockHTTPResponse(out);
-//		serv.doGet(req, res);
-//		String testResult = new String(out.toByteArray());
-//		assertNotNull(testResult);
-//		assertEquals("wee", testResult);
-//
-//	}
+	public void testScenarios() throws Exception {
+		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
+
+		ServiceImplementation impl = new ServiceImplementation();
+		impl.repository = repo;
+
+		PackageItem pkg = repo.createPackage("testScenariosURL", "");
+		impl.createPackageSnapshot("testScenariosURL", "SNAP1", false, "");
+
+
+		//now run the scenarios
+		PackageDeploymentServlet serv = new PackageDeploymentServlet();
+		MockHTTPRequest req = new MockHTTPRequest("/package/testScenariosURL/LATEST/SCENARIOS", null);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		MockHTTPResponse res = new MockHTTPResponse(out);
+		serv.doGet(req, res);
+		String testResult = new String(out.toByteArray());
+		assertNotNull(testResult);
+		assertEquals("No test scenarios found.", testResult);
+
+
+		serv = new PackageDeploymentServlet();
+		req = new MockHTTPRequest("/package/testScenariosURL/SNAP1/SCENARIOS", null);
+		out = new ByteArrayOutputStream();
+		res = new MockHTTPResponse(out);
+		serv.doGet(req, res);
+		testResult = new String(out.toByteArray());
+		assertNotNull(testResult);
+		assertEquals("No test scenarios found.", testResult);
+
+	}
 
 	private void assertSameArray(byte[] bin_, byte[] bin) {
 		for (int i = 0; i < bin.length; i++) {

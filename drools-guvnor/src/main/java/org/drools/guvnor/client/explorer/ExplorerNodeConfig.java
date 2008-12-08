@@ -94,7 +94,8 @@ public class ExplorerNodeConfig {
 				{ "Archive", "images/backup_small.gif", "1" }, // ID 1
                 { "Event log", "images/error.gif", "4" }, // ID 4
                 { "User permission", "images/icoUsers.gif", "5" }, // ID 5
-				{ "Import/Export", "images/save_edit.gif", "3" }}; //ID 3
+				{ "Import/Export", "images/save_edit.gif", "3" }, //ID 3
+				{ "WebDAV", "images/information.gif", "6" }}; //ID 6
 
 		for (int i = 0; i < adminStructure.length; i++) {
 

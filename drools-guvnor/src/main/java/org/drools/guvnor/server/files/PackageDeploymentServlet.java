@@ -25,8 +25,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.compiler.DroolsParserException;
+import org.drools.guvnor.client.rpc.BulkTestRunResult;
+import org.drools.guvnor.client.rpc.DetailedSerializableException;
+import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.server.RepositoryServiceServlet;
+import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.FormData;
+import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
+
+import com.google.gwt.user.client.rpc.SerializableException;
 
 /**
  * This servlet deals with providing packages in binary form.
@@ -107,10 +115,10 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         	}
         } else {
         	if (req.getRequestURI().endsWith("SCENARIOS")) {
-        		
-        		throw new IllegalAccessError();
+        		doRunScenarios(helper, out);
+        	} else {
+        		fileName = fm.loadBinaryPackage( helper.getPackageName(), helper.getVersion(), helper.isLatest(), out );
         	}
-        	fileName = fm.loadBinaryPackage( helper.getPackageName(), helper.getVersion(), helper.isLatest(), out );
         }
 
         response.setContentType( "application/x-download" );
@@ -121,6 +129,27 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         response.getOutputStream().flush();
 
     }
+
+	private void doRunScenarios(PackageDeploymentURIHelper helper,
+			ByteArrayOutputStream out) throws IOException {
+		ServiceImplementation serv = RepositoryServiceServlet.getService();
+		PackageItem pkg;
+		if (helper.isLatest()) {
+			pkg = serv.repository.loadPackage(helper.getPackageName());
+		} else {
+			pkg = serv.repository.loadPackageSnapshot(helper.getPackageName(), helper.getVersion());
+		}
+		try {
+			BulkTestRunResult result = serv.runScenariosInPackage(pkg);
+			out.write(result.toString().getBytes());
+		} catch (DetailedSerializableException e) {
+			log.error(e);
+			out.write(e.getMessage().getBytes());
+		} catch (SerializableException e) {
+			log.error(e);
+			out.write(e.getMessage().getBytes());
+		}
+	}
 
 
 
