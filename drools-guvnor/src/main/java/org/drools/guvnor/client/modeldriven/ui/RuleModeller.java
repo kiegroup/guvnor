@@ -291,7 +291,9 @@ public class RuleModeller extends DirtyableComposite {
      * Pops up the fact selector.
      */
     protected void showConditionSelector(final Widget w) {
-        final FormStylePopup popup = new FormStylePopup("images/new_fact.gif", "Add a condition to the rule...");
+        final FormStylePopup popup = new FormStylePopup();
+        popup.setTitle("Add a condition to the rule...");
+
 
         //
         // The list of facts
@@ -366,6 +368,10 @@ public class RuleModeller extends DirtyableComposite {
             });
             popup.addAttribute( "DSL sentence", dsls );
         }
+
+        if (completions.getDSLConditions().length == 0 && facts.length == 0) {
+        	popup.addRow(new HTML("<div class='highlight'>Note: No model has been defined.<br/>Tip: You will want to import or define a model for this user interface to work !</div>"));
+        }
         popup.show();
 
     }
@@ -377,7 +383,8 @@ public class RuleModeller extends DirtyableComposite {
     }
 
     protected void showActionSelector(Widget w) {
-        final FormStylePopup popup = new FormStylePopup("images/new_fact.gif", "Add a new action...");
+        final FormStylePopup popup = new FormStylePopup();
+        popup.setTitle("Add a new action...");
 
 
         //

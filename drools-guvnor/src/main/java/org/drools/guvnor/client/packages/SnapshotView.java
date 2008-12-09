@@ -132,6 +132,7 @@ public class SnapshotView extends Composite {
                         public void onSuccess(Object data) {
                             close.execute();
                             Window.alert("Snapshot was deleted.");
+
                         }
                     });
                 }

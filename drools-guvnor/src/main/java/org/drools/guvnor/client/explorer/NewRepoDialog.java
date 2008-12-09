@@ -9,6 +9,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -25,8 +26,8 @@ public class NewRepoDialog extends FormStylePopup {
 		setTitle("Welcome to Guvnor");
 		setWidth(300);
 
-		addAttribute("", new SmallLabel("<b>This looks like a brand new repository.</b>"));
-		addAttribute("", new SmallLabel("<b>Would you like to Install a sample repository?<b>"));
+		addAttribute("", new HTML("<div class='highlight'><b>This looks like a brand new repository.<br/>" +
+				"Would you like to Install a sample repository?</b></div>"));
 
 		HorizontalPanel hp = new HorizontalPanel();
 

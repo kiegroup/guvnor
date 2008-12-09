@@ -299,6 +299,9 @@ select {
 
 }
 
+.highlight {
+	background:#FF0;
+}
 
 .dt-editor-Grid {
 	border:1px solid #aa9;

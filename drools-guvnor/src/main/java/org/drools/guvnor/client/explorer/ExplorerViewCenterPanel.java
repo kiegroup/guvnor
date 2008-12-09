@@ -259,7 +259,7 @@ public class ExplorerViewCenterPanel {
 				public void onSuccess(PackageConfigData conf) {
 					addTab("Snapshot: " + snap.name, true, new SnapshotView(snap, conf, new Command() {
 						public void execute() {
-							close(snap.uuid);
+							close(snap.name + snap.uuid);
 						}
 					}, ExplorerViewCenterPanel.this), snap.name + snap.uuid);
 					LoadingPopup.close();
