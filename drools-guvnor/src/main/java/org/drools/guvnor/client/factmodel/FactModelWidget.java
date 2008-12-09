@@ -2,6 +2,7 @@ package org.drools.guvnor.client.factmodel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -78,23 +79,6 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 		setStyleName("model-builder-Background");
 	}
 
-	private void loadTestData(final RuleAsset asset) {
-		FactModels TEMP = new FactModels();
-		FactMetaModel fm1 = new FactMetaModel();
-		fm1.name = "Person";
-		fm1.fields.add(new FieldMetaModel("age", "int"));
-		fm1.fields.add(new FieldMetaModel("name", "String"));
-		TEMP.models.add(fm1);
-
-		fm1 = new FactMetaModel();
-		fm1.name = "Vehicle";
-		fm1.fields.add(new FieldMetaModel("age", "int"));
-		fm1.fields.add(new FieldMetaModel("type", "String"));
-		TEMP.models.add(fm1);
-
-
-		asset.content = TEMP;
-	}
 
 	private void renderEditor() {
 		layout.clear();
@@ -174,20 +158,35 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 
 
 		}
-		Button addNewFact = new Button("Add new fact type");
+		final Button addNewFact = new Button("Add new fact type");
 		addNewFact.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				String type = Window.prompt("New type", "Enter new type name");
 				if (type != null)  {
-					m.models.add(new FactMetaModel(type, new ArrayList()));
-					editingFact = m.models.size() -1;
-					renderEditor();
+					if (uniqueName(type, m.models)) {
+						m.models.add(new FactMetaModel(type, new ArrayList()));
+						editingFact = m.models.size() -1;
+						renderEditor();
+					} else {
+						Window.alert("The type name [" + type + "] already exists, please choose another name.");
+						addNewFact.click();
+					}
 				}
 			}
 		});
 		layout.add(addNewFact);
 
 	}
+
+	private boolean uniqueName(String type, List<FactMetaModel> models) {
+		for (FactMetaModel m : models) {
+			if (m.name.equals(type)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 
     private String getDesc(FieldMetaModel fm) {
         if (TYPE_DESCRIPTIONS.containsKey(fm.type)) {

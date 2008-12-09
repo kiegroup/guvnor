@@ -114,7 +114,7 @@ public class NewPackageWizard extends FormStylePopup {
             		hide();
             	} else {
             		nameBox.setText("");
-            		Window.alert("Invalid package name, use java-style package name");
+            		Window.alert("Invalid package name. Please use a name that is of the style [abc] or perhaps [abc.def].");
             	}
             }
         });

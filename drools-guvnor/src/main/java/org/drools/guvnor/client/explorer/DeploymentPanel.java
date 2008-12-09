@@ -9,6 +9,7 @@ import org.drools.guvnor.client.rpc.SnapshotInfo;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
+import com.gwtext.client.data.NodeTraversalCallback;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Toolbar;
@@ -47,7 +48,7 @@ public class DeploymentPanel extends GenericPanel {
                 menuButton.showMenu();
             }
         } );
-        
+
         addListener(new PanelListenerAdapter() {
             public void onExpand(Panel panel) {
                 if (!deploymentPackagesLoaded) {
@@ -133,10 +134,26 @@ public class DeploymentPanel extends GenericPanel {
             }
 
             public void onClick(TreeNode node, EventObject e) {
+
                 if (node.getUserObject() instanceof Object[]) {
+//                	Node[] children = node.getParentNode().getChildNodes();
+//                	for(Node n : children) {
+//                		n.remove();
+//                	}
                     Object[] o = (Object[]) node.getUserObject();
-                    SnapshotInfo snap = (SnapshotInfo) o[0];
-                    centertabbedPanel.openSnapshot(snap);
+                    final String snapName = ((SnapshotInfo) o[0]).name;
+                    PackageConfigData conf = (PackageConfigData) o[1];
+                    RepositoryServiceFactory.getService().listSnapshots(conf.name, new GenericCallback<SnapshotInfo[]>() {
+                        public void onSuccess(SnapshotInfo[] a) {
+                            for(SnapshotInfo snap : a) {
+                            	if (snap.name.equals(snapName)) {
+                            		centertabbedPanel.openSnapshot(snap);
+                            		return;
+                            	}
+                            }
+                        }
+                    });
+
                 }
             }
         });

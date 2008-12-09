@@ -72,9 +72,9 @@ public class ExplorerViewCenterPanel {
         tp.addListener(new TabPanelListenerAdapter() {
         	@Override
         	public boolean doBeforeRemove(Container self, final Component component) {
-        		
+
         		if (openedAssetEditors.containsKey(component.getId())) {
-        			
+
         			RuleViewer rv = openedAssetEditors.get(component.getId());
         			if (rv.isDirty()) {
         				component.show();
@@ -251,12 +251,12 @@ public class ExplorerViewCenterPanel {
 
 
 	public void openSnapshot(final SnapshotInfo snap) {
+		//make this refresh the 'snap'
 
 		if (!showIfOpen(snap.name + snap.uuid)) {
 			LoadingPopup.showMessage("Loading snapshot...");
-			RepositoryServiceFactory.getService().loadPackageConfig(snap.uuid, new GenericCallback() {
-				public void onSuccess(Object data) {
-					PackageConfigData conf = (PackageConfigData) data;
+			RepositoryServiceFactory.getService().loadPackageConfig(snap.uuid, new GenericCallback<PackageConfigData>() {
+				public void onSuccess(PackageConfigData conf) {
 					addTab("Snapshot: " + snap.name, true, new SnapshotView(snap, conf, new Command() {
 						public void execute() {
 							close(snap.uuid);
