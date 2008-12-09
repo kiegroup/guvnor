@@ -2251,6 +2251,7 @@ public class ServiceImplementationTest extends TestCase {
 
 		MockIdentity mi = new MockIdentity();
 		mi.inject();
+		mi.create();
 		//mi.addRole(RoleTypes.ADMIN);
 		RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
 		resolver.setEnableRoleBasedAuthorization(false);

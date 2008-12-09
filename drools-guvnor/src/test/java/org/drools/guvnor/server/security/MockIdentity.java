@@ -48,10 +48,16 @@ public class MockIdentity extends Identity {
 		this.hasRole = hasRole;
 	}
 
+	public boolean isLoggedIn() {
+		return true;
+	}
+
 	public boolean isLoggedIn(boolean attemptLogin) {
 		return true;
 	}
 
+	
+	
 	public boolean hasPermission(Object target, String action) {
 	      for (PermissionResolver resolver : resolvers)
 	      {

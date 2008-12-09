@@ -20,7 +20,6 @@ import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleBasedPermissionManager;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
-import org.drools.guvnor.server.util.ClassicDRLImporter.Asset;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
@@ -61,12 +60,15 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
 	    	resolver.setEnableRoleBasedAuthorization(true);
 			midentity.addPermissionResolver(resolver);
-
+			midentity.create();
+			
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
 			Contexts.getSessionContext().set(
 					"org.drools.guvnor.client.rpc.RepositoryService", impl);
 
+
+			
 			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
 			pbps.add(new RoleBasedPermission("jervis", RoleTypes.ANALYST, null,
 					"testLoadRuleAssetWithRoleBasedAuthrozationCat1"));
@@ -81,6 +83,7 @@ public class ServiceImplSecurityTest extends TestCase {
 			//now lets see if we can access this asset with the permissions
 			RuleAsset asset = impl.loadRuleAsset(uuid1);
 			try {
+				
 				asset = impl.loadRuleAsset(uuid2);
 				fail("Did not catch expected exception");
 			} catch (AuthorizationException e) {
@@ -120,6 +123,7 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
 	    	resolver.setEnableRoleBasedAuthorization(true);
 			midentity.addPermissionResolver(resolver);
+			midentity.create();
 
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
@@ -179,6 +183,7 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
 	    	resolver.setEnableRoleBasedAuthorization(false);
 			midentity.addPermissionResolver(resolver);
+			midentity.create();
 
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
@@ -228,6 +233,7 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
 	    	resolver.setEnableRoleBasedAuthorization(true);
 			midentity.addPermissionResolver(resolver);
+			midentity.create();
 
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
@@ -279,6 +285,7 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
 	    	resolver.setEnableRoleBasedAuthorization(true);
 			midentity.addPermissionResolver(resolver);
+			midentity.create();
 
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
@@ -338,6 +345,7 @@ public class ServiceImplSecurityTest extends TestCase {
 			RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
 			resolver.setEnableRoleBasedAuthorization(true);
 			midentity.addPermissionResolver(resolver);
+			midentity.create();
 
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
@@ -401,6 +409,7 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
 	    	resolver.setEnableRoleBasedAuthorization(true);
 			midentity.addPermissionResolver(resolver);
+			midentity.create();
 
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
@@ -442,6 +451,7 @@ public class ServiceImplSecurityTest extends TestCase {
 		Lifecycle.beginCall();
 		MockIdentity mi = new MockIdentity();
 		mi.inject();
+		mi.create();
 
 		try {
 			impl.createNewRule("testCreateNewRuleName22",
@@ -500,6 +510,7 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
 	    	resolver.setEnableRoleBasedAuthorization(true);
 			midentity.addPermissionResolver(resolver);
+			midentity.create();
 
 			Contexts.getSessionContext().set(
 					"org.jboss.seam.security.identity", midentity);
@@ -620,6 +631,7 @@ public class ServiceImplSecurityTest extends TestCase {
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
 		midentity.addPermissionResolver(resolver);
+		midentity.create();
 
 		Contexts.getSessionContext().set(
 				"org.jboss.seam.security.identity", midentity);
@@ -672,6 +684,7 @@ public class ServiceImplSecurityTest extends TestCase {
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
 		midentity.addPermissionResolver(resolver);
+		midentity.create();
 
 		Contexts.getSessionContext().set(
 				"org.jboss.seam.security.identity", midentity);
@@ -726,6 +739,7 @@ public class ServiceImplSecurityTest extends TestCase {
  	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
  	    	resolver.setEnableRoleBasedAuthorization(true);
  			midentity.addPermissionResolver(resolver);
+			midentity.create();
 
  			Contexts.getSessionContext().set(
  					"org.jboss.seam.security.identity", midentity);
