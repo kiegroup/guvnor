@@ -16,6 +16,7 @@ import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -41,6 +42,8 @@ public class ActionSetColumn extends FormStylePopup {
 		editingCol.header = col.header;
 		editingCol.type = col.type;
 		editingCol.valueList = col.valueList;
+		editingCol.update = col.update;
+
 		super.setModal(false);
 		setTitle("Column configuration (set a field on a fact)");
 
@@ -90,6 +93,8 @@ public class ActionSetColumn extends FormStylePopup {
 			} });
 		addAttribute("Column header (description):", header);
 
+		addAttribute("Update engine with changes:", doUpdate());
+
 
 		Button apply = new Button("Apply changes");
 		apply.addClickListener(new ClickListener() {
@@ -103,6 +108,7 @@ public class ActionSetColumn extends FormStylePopup {
 					col.header = editingCol.header;
 					col.type = editingCol.type;
 					col.valueList = editingCol.valueList;
+					col.update = editingCol.update;
 				}
 				refreshGrid.execute();
 				hide();
@@ -112,6 +118,23 @@ public class ActionSetColumn extends FormStylePopup {
 		addAttribute("", apply);
 
 
+	}
+
+	private Widget doUpdate() {
+		HorizontalPanel hp = new HorizontalPanel();
+
+		final CheckBox cb = new CheckBox();
+		cb.setChecked(editingCol.update);
+		cb.setText("");
+		cb.addClickListener(new ClickListener() {
+			public void onClick(Widget arg0) {
+				editingCol.update = cb.isChecked();
+			}
+		});
+		hp.add(cb);
+		hp.add(new InfoPopup("Update fact", "Checking this will tell the engine that the value has changed." +
+				" This will cause the rules that depend on it to be re-evaulated. Use with care !"));
+		return hp;
 	}
 
 	private TextBox getFieldLabel() {
