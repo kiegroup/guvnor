@@ -276,6 +276,10 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 
 				nameBut.addClickListener(new ClickListener() {
 					public void onClick(Widget w) {
+                        if (!uniqueName(name.getText(), m.models)) {
+                            Window.alert("The name [" + name.getText() + "] is already taken - please choose another");
+                            return;
+                        }
 						if (Window.confirm("Are you sure you want to change the name? Its possible that rules will need to be changed to reflect the new name.")) {
 							mm.name = name.getText();
 							pop.hide();
