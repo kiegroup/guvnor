@@ -284,6 +284,9 @@ public class PackagesPanel extends GenericPanel {
         for (String fmt : fmts) {
             key = key + fmt;
         }
+        if (fmts.length == 0) {
+            key = key + "[0]";
+        }
         return key;
     }
 }
