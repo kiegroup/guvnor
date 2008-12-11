@@ -105,7 +105,7 @@ public class NewAssetWizard extends FormStylePopup {
                     "\nFor example:\n\n" +
                     "'Person.sex' : ['M', 'F']\n" +
                      "'Person.rating' : ['High', 'Low']\n\n" +
-                     "You can also ad display aliases (so the value used in the rule is separate to the one displayed:\n"  +
+                     "You can also add display aliases (so the value used in the rule is separate to the one displayed:\n"  +
                     "'Person.sex' : ['M=Male', 'F=Female']\n" +
                     "in the above case, the 'M=Male' means that 'Male' will be displayed as an item in a drop down box, but the value 'M' will be used in the rule. "
                     );
