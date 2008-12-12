@@ -2,6 +2,7 @@ package org.drools.repository;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 import java.util.Iterator;
 
@@ -144,6 +145,10 @@ public class AssetItem extends CategorisableItem {
                 Property data = ruleNode.getProperty( CONTENT_PROPERTY_BINARY_NAME );
                 return data.getStream();
             } else {
+                if ( ruleNode.hasProperty(CONTENT_PROPERTY_NAME)) {
+                    Property data = ruleNode.getProperty( CONTENT_PROPERTY_NAME );
+                    return data.getStream();
+                }
                 return null;
             }
         } catch ( Exception e ) {
@@ -164,32 +169,32 @@ public class AssetItem extends CategorisableItem {
     public byte[] getBinaryContentAsBytes() {
         try {
             Node ruleNode = getVersionContentNode();
-            if ( ruleNode.hasProperty( CONTENT_PROPERTY_BINARY_NAME ) ) {
-                Property data = ruleNode.getProperty( CONTENT_PROPERTY_BINARY_NAME );
-                InputStream in = data.getStream();
+            if (isBinary()) {
+                    Property data = ruleNode.getProperty( CONTENT_PROPERTY_BINARY_NAME );
+                    InputStream in = data.getStream();
 
-                // Create the byte array to hold the data
-                byte[] bytes = new byte[(int) data.getLength()];
+                    // Create the byte array to hold the data
+                    byte[] bytes = new byte[(int) data.getLength()];
 
-                // Read in the bytes
-                int offset = 0;
-                int numRead = 0;
-                while ( offset < bytes.length && (numRead = in.read( bytes,
-                                                                     offset,
-                                                                     bytes.length - offset )) >= 0 ) {
-                    offset += numRead;
-                }
+                    // Read in the bytes
+                    int offset = 0;
+                    int numRead = 0;
+                    while ( offset < bytes.length && (numRead = in.read( bytes,
+                                                                         offset,
+                                                                         bytes.length - offset )) >= 0 ) {
+                        offset += numRead;
+                    }
 
-                // Ensure all the bytes have been read in
-                if ( offset < bytes.length ) {
-                    throw new RulesRepositoryException( "Could not completely read asset " + getName() );
-                }
+                    // Ensure all the bytes have been read in
+                    if ( offset < bytes.length ) {
+                        throw new RulesRepositoryException( "Could not completely read asset " + getName() );
+                    }
 
-                // Close the input stream and return bytes
-                in.close();
-                return bytes;
+                    // Close the input stream and return bytes
+                    in.close();
+                    return bytes;
             } else {
-                return null;
+                return getContent().getBytes();
             }
         } catch ( Exception e ) {
             log.error( e );

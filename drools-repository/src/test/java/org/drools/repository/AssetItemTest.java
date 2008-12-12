@@ -161,12 +161,17 @@ public class AssetItemTest extends TestCase {
 
             AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetContent", "test content");
             ruleItem1.updateContent( "test content" );
+            ruleItem1.updateFormat("drl");
 
             assertNotNull(ruleItem1);
             assertNotNull(ruleItem1.getNode());
             assertEquals("test content", ruleItem1.getContent());
 
             assertFalse(ruleItem1.isBinary());
+
+            assertNotNull(ruleItem1.getBinaryContentAsBytes());
+            assertNotNull(ruleItem1.getBinaryContentAttachment());
+            String content = new String(ruleItem1.getBinaryContentAsBytes());
     }
 
 
