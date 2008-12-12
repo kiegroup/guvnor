@@ -18,6 +18,7 @@ package org.drools.guvnor.server.security;
 
 
 import java.util.List;
+import java.io.Serializable;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
@@ -36,7 +37,7 @@ import org.jboss.seam.security.Identity;
 @Scope(ScopeType.SESSION)
 @AutoCreate
 @Name("roleBasedPermissionManager")
-public class RoleBasedPermissionManager {
+public class RoleBasedPermissionManager implements Serializable {
     
 //    @In 
     List<RoleBasedPermission> permissions;
@@ -62,7 +63,7 @@ public class RoleBasedPermissionManager {
     
     @Destroy
     public void close() {
-        //TO-DO
+            
     }
     
 

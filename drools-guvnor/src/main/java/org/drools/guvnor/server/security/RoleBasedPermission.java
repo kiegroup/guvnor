@@ -1,6 +1,8 @@
 package org.drools.guvnor.server.security;
 
-public class RoleBasedPermission {
+import java.io.Serializable;
+
+public class RoleBasedPermission implements Serializable {
 	private String packageName;
 	private String categoryPath;
 	private String userName;
