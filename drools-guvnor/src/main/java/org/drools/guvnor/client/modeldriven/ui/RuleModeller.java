@@ -31,38 +31,14 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.ActionCallMethod;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
-import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
-import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
-import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
-import org.drools.guvnor.client.modeldriven.brl.IAction;
-import org.drools.guvnor.client.modeldriven.brl.IPattern;
-import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
-import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
+import org.drools.guvnor.client.modeldriven.brl.*;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.security.Capabilities;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 
 /**
  * This is the parent widget that contains the model based rule builder.
@@ -223,9 +199,6 @@ public class RuleModeller extends DirtyableComposite {
     /**
      * Do all the widgets for the RHS.
      */
-    /*
-     * TODO STILL NEED TO BE CHECKED
-     */
     private Widget renderRhs(final RuleModel model) {
         DirtyableVerticalPane vert = new DirtyableVerticalPane();
 
@@ -254,6 +227,12 @@ public class RuleModeller extends DirtyableComposite {
 					}
             	});
             	w = tb;
+            } else if (action instanceof ActionGlobalCollectionAdd) {
+                ActionGlobalCollectionAdd gca = (ActionGlobalCollectionAdd) action;
+                SimplePanel sp = new SimplePanel();
+                sp.setStyleName("model-builderInner-Background");
+                w = sp;
+                sp.add(new SmallLabel("&nbsp;Add <b>[" + gca.factName + "]</b> to the list <b>[" + gca.globalName + "]</b>"));
             }
 
             //w.setWidth( "100%" );
@@ -390,7 +369,7 @@ public class RuleModeller extends DirtyableComposite {
         //
         // First load up the stuff to do with bound variables or globals
         //
-        List vars = model.getBoundFacts();
+        List<String> vars = model.getBoundFacts();
         final ListBox varBox = new ListBox();
         final ListBox retractBox = new ListBox();
         final ListBox modifyBox = new ListBox();
@@ -508,6 +487,38 @@ public class RuleModeller extends DirtyableComposite {
         }
 
         popup.addRow(new HTML("Advanced options:"));
+
+        if (completions.globalCollections.length > 0) {
+            if (vars.size() > 0) {
+                final ListBox cols = new ListBox();
+                final ListBox facts = new ListBox();
+                for(int i = 0; i < completions.globalCollections.length; i++) {
+                    cols.addItem(completions.globalCollections[i]);
+                }
+
+                for (String bf : vars) {
+                    facts.addItem(bf);
+                }
+
+                HorizontalPanel h = new HorizontalPanel();
+                h.add(facts);
+                h.add(new SmallLabel("&nbsp;to&nbsp;"));
+                h.add(cols);
+                Button ok = new Button("Add");
+                ok.addClickListener(new ClickListener() {
+                    public void onClick(Widget sender) {
+                        ActionGlobalCollectionAdd gca = new ActionGlobalCollectionAdd();
+                        gca.globalName = cols.getItemText(cols.getSelectedIndex());
+                        gca.factName = facts.getItemText(facts.getSelectedIndex());
+                        model.addRhsItem(gca);
+                        refreshWidget();
+                        popup.hide();
+                    }
+                });
+                h.add(ok);
+                popup.addAttribute("Add an item to a collection:", h);
+            }
+        }
 
         factsToLogicallyAssert.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
