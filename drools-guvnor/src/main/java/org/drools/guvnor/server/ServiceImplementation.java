@@ -1777,20 +1777,39 @@ public class ServiceImplementation
     private RuleBase loadRuleBase(PackageItem item,
                                   ClassLoader cl) throws DetailedSerializableException {
         try {
-            RuleBase rb = RuleBaseFactory.newRuleBase( new RuleBaseConfiguration( cl ) );
-            Package bin = (Package) DroolsStreamUtils.streamIn( item.getCompiledPackageBytes(),
-                                                                cl );
-            rb.addPackage( bin );
-            return rb;
+            return deserKnowledgebase(item, cl);
         } catch ( ClassNotFoundException e ) {
             log.error( e );
             throw new DetailedSerializableException( "A required class was not found.",
                                                      e.getMessage() );
         } catch ( Exception e ) {
             log.error( e );
-            throw new DetailedSerializableException( "Unable to load a rulebase.",
-                                                     e.getMessage() );
+            log.info("...but trying to rebuild binaries...");
+            try {
+                BuilderResult[] res = this.buildPackage(
+                                                         "",
+                                                         true , item);
+                if (res != null && res.length > 0) {
+                    throw new DetailedSerializableException("There were errors when rebuilding the knowledgebase.", "");
+                }
+                try {
+                    return deserKnowledgebase(item, cl);
+                } catch (Exception e2) {
+                    throw new DetailedSerializableException("Unable to reload knowledgebase.", e.getMessage());
+                }
+            } catch (SerializableException e1) {
+                throw new DetailedSerializableException("Unable to rebuild the rulebase.", "");
+            }
+
         }
+    }
+
+    private RuleBase deserKnowledgebase(PackageItem item, ClassLoader cl) throws IOException, ClassNotFoundException {
+        RuleBase rb = RuleBaseFactory.newRuleBase( new RuleBaseConfiguration( cl ) );
+        Package bin = (Package) DroolsStreamUtils.streamIn( item.getCompiledPackageBytes(),
+                                                            cl );
+        rb.addPackage( bin );
+        return rb;
     }
 
     private SingleScenarioResult runScenario(Scenario scenario,
