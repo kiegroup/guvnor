@@ -20,11 +20,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.common.ClickableLabel;
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint;
@@ -397,19 +393,21 @@ public class FactPatternWidget extends DirtyableComposite {
                         //showBindFieldPopup(w, con);
                         SingleFieldConstraint constraint = con;
                         String[] fields = completions.getFieldCompletions( con.fieldType );
-                        if (fields != null) {
-                            popupCreator.showPatternPopup(w, con.fieldType, con);
-                        } else {
-                            popupCreator.showBindFieldPopup(w, con);
-                        }
+                        //if (fields != null) {
+                          //  popupCreator.showPatternPopup(w, con.fieldType, con);
+                            //popupCreator.showBindFieldPopup(w, con);
+                        //} else {
+                            popupCreator.showBindFieldPopup(w, con, fields, popupCreator);
+                        //}
                     }
                 };
 
                 Image bind = new ImageButton( "images/edit_tiny.gif", "Give this field a variable name that can be used elsewhere.");
-                DOM.setStyleAttribute(bind.getElement(), "marginLeft", "" + padding + "pt");
 
                 bind.addClickListener( click);
-                ab.add( new ClickableLabel(con.fieldName, click));
+                ClickableLabel cl = new ClickableLabel(con.fieldName, click);
+                DOM.setStyleAttribute(cl.getElement(), "marginLeft", "" + padding + "pt");
+                ab.add( cl );
                 ab.add( bind );
             } else {
                 ab.add(new SmallLabel(con.fieldName));

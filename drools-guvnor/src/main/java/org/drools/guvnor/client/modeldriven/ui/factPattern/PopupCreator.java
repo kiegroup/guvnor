@@ -86,10 +86,12 @@ public class PopupCreator {
     /**
      * Display a little editor for field bindings.
      */
-    public void showBindFieldPopup(final Widget w, final SingleFieldConstraint con) {
-        final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
-                                                         "Bind the field called [" + con.fieldName + "] to a variable." );
-        final AbsolutePanel vn = new AbsolutePanel();
+    public void showBindFieldPopup(final Widget w, final SingleFieldConstraint con, String[] fields, final PopupCreator popupCreator) {
+
+        
+        final FormStylePopup popup = new FormStylePopup();
+        popup.setWidth(500);
+        final HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new TextBox();
         final Button ok = new Button("Set");
         vn.add( varName );
@@ -107,7 +109,17 @@ public class PopupCreator {
                 popup.hide();
             }
         } );
-        popup.addAttribute( "Variable name", vn );
+        popup.addAttribute("Bind the field called [" + con.fieldName + "] to a variable:", vn );
+        if (fields != null) {
+            Button sub = new Button("Show sub fields...");
+            popup.addAttribute("Apply a constraint to a sub-field of [" + con.fieldName + "]:", sub);
+            sub.addClickListener(new ClickListener() {
+                public void onClick(Widget sender) {
+                    popup.hide();
+                    popupCreator.showPatternPopup(w, con.fieldType, con);
+                }
+            });
+        }
 
         popup.show();
     }
@@ -170,8 +182,10 @@ public class PopupCreator {
      * This shows a popup allowing you to add field constraints to a pattern (its a popup).
      */
     public void showPatternPopup(Widget w, final String factType, final FieldConstraint con) {
+
+        String title = (con == null) ? "Modify constraints for " + factType : "Add sub-field constraint";
         final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
-                                                         "Modify constraints for " + factType );
+                                                          title );
 
         final ListBox box = new ListBox();
         box.addItem( "..." );
@@ -215,27 +229,31 @@ public class PopupCreator {
                 "You can also have other multiple field constraints nested inside these restrictions.");
 
         HorizontalPanel horiz = new HorizontalPanel();
+
         horiz.add( composites );
         horiz.add( infoComp );
-        popup.addAttribute( "Multiple field constraint", horiz );
+        if (con == null) {
+            popup.addAttribute( "Multiple field constraint", horiz );
+        }
 
 
         //popup.addRow( new HTML("<hr/>") );
+        if (con == null) {
+            popup.addRow( new SmallLabel("<i>Advanced options:</i>") );
+            final Button predicate = new Button( "New formula" );
+            predicate.addClickListener( new ClickListener() {
+                public void onClick(Widget w) {
+                    SingleFieldConstraint con = new SingleFieldConstraint();
+                    con.constraintValueType = SingleFieldConstraint.TYPE_PREDICATE;
+                    pattern.addConstraint( con );
+                    modeller.refreshWidget();
+                    popup.hide();
+                }
+            } );
+            popup.addAttribute( "Add a new formula style expression", predicate );
 
-        popup.addRow( new SmallLabel("<i>Advanced options:</i>") );
-        final Button predicate = new Button( "New formula" );
-        predicate.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                SingleFieldConstraint con = new SingleFieldConstraint();
-                con.constraintValueType = SingleFieldConstraint.TYPE_PREDICATE;
-                pattern.addConstraint( con );
-                modeller.refreshWidget();
-                popup.hide();
-            }
-        } );
-        popup.addAttribute( "Add a new formula style expression", predicate );
-
-        doBindingEditor( popup );
+            doBindingEditor( popup );
+        }
 
         popup.show();
     }
