@@ -864,7 +864,7 @@ public class ServiceImplementation
         // assets using the
         // package snapshot UUID here
         // Identity.instance().checkPermission("ignoredanyway", "read", uuid);
-
+        log.debug("Loading asset list for [" + uuid + "]");
         if ( numRows == 0 ) {
             throw new DetailedSerializableException( "Unable to return zero results (bug)",
                                                      "probably have the parameters around the wrong way, sigh..." );
