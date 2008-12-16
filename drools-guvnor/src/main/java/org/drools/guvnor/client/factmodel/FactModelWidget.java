@@ -48,7 +48,7 @@ public class FactModelWidget extends Composite implements SaveEventListener {
         {
             put ("Integer", "Whole number (integer)");
             put ("Boolean", "True or False");
-            put ("java.lang.Date", "Date");
+            put ("java.util.Date", "Date");
             put ("java.math.BigDecimal", "Decimal number");
             put ("String", "Text");
 
