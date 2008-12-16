@@ -299,7 +299,7 @@ public class AssetItemGrid extends Composite {
         for ( int i = 0; i < conf.headers.length; i++ ) {
 
             if ( conf.headerTypes[i].equals( "class java.util.Calendar" ) ) {
-                fd[i + 2] = new DateFieldDef( conf.headers[i] );
+                fd[i + 2] = new DateFieldDef( conf.headers[i], "Y-m-d" );
             } else {
                 fd[i + 2] = new StringFieldDef( conf.headers[i] );
             }

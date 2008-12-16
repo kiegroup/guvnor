@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -16,6 +16,8 @@ import org.drools.repository.RulesRepositoryException;
 
 public class RowLoader {
 
+
+    private static SimpleDateFormat DF = new SimpleDateFormat("yyyy-MM-dd");
     private String[] headers;
     private String[] headerTypes;
     List             extractors;
@@ -45,7 +47,7 @@ public class RowLoader {
                     row[i] = s;
 
                 } else if ( val instanceof Calendar ) {
-                    row[i] = DateFormat.getDateInstance().format( ((Calendar) val).getTime() );
+                    row[i] = DF.format( ((Calendar) val).getTime() );
                 } else {
                     row[i] = val.toString();
                 }
