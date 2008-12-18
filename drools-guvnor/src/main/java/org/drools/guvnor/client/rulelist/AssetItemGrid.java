@@ -144,7 +144,14 @@ public class AssetItemGrid extends Composite {
                                      rowData[0] = row.id;
                                      rowData[1] = row.format;
                                      for ( int j = 2; j < numFlds; j++ ) {
-                                         rowData[j] = row.values[j - 2];
+                                         if (rd.getFields()[j] instanceof DateFieldDef) {
+                                            Date dt = new Date(Long.parseLong(row.values[j - 2]));
+                                            //DateTimeFormat format = DateTimeFormat.getFormat( "MMM d, yyyy");
+                                             DateTimeFormat format = DateTimeFormat.getFullDateFormat();
+                                            rowData[j] = format.format(dt);
+                                         } else {
+                                            rowData[j] = row.values[j - 2];
+                                         }
                                      }
                                      gridData[i] = rowData;
                                  }
@@ -299,7 +306,7 @@ public class AssetItemGrid extends Composite {
         for ( int i = 0; i < conf.headers.length; i++ ) {
 
             if ( conf.headerTypes[i].equals( "class java.util.Calendar" ) ) {
-                fd[i + 2] = new DateFieldDef( conf.headers[i], "Y-m-d" );
+                fd[i + 2] = new DateFieldDef( conf.headers[i] );
             } else {
                 fd[i + 2] = new StringFieldDef( conf.headers[i] );
             }
@@ -348,9 +355,7 @@ public class AssetItemGrid extends Composite {
                                                           new String[]{fmtIcon, (String) value, desc} );
                                 }
                             } );
-                        }
-                        
-                        if ( headerType.equals( "class java.util.Calendar" ) ) {
+                        } else if ( headerType.equals( "class java.util.Calendar" ) ) {
                             setRenderer( new Renderer() {
                                 public String render(Object value,
                                                      CellMetadata cellMetadata,
@@ -358,7 +363,7 @@ public class AssetItemGrid extends Composite {
                                                      int rowIndex,
                                                      int colNum,
                                                      Store store) {
-                                    DateTimeFormat format = DateTimeFormat.getFormat( "MMM d, yyyy");
+                                    DateTimeFormat format = DateTimeFormat.getMediumDateFormat();// DateTimeFormat.getFormat( "MMM d, yyyy");
                                     return format.format( (Date) value  );
                                 }
                             } );

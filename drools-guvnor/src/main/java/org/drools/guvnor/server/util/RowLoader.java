@@ -47,11 +47,11 @@ public class RowLoader {
                     row[i] = s;
 
                 } else if ( val instanceof Calendar ) {
-                    row[i] = DF.format( ((Calendar) val).getTime() );
+                    row[i] = Long.toString(((Calendar) val).getTime().getTime());//DF.format( ((Calendar) val).getTime() );
                 } else {
                     row[i] = val.toString();
                 }
-            } catch ( Exception e ) {
+            } catch ( Exception e ) {                    
                 if ( e instanceof RuntimeException ) throw (RuntimeException) e;
                 throw new RulesRepositoryException( e );
             }
