@@ -144,7 +144,7 @@ public class VersionBrowser extends Composite {
 
 
                                                                         final ListBox history = new ListBox(true);
-
+                                                                        
                                                                         for (int i = 0; i < rows.length; i++) {
 																			TableDataRow row = rows[i];
 																			String s = row.values[0]   + " modified on: " + row.values[2] + " (" + row.values[1] + ")" ;
@@ -166,7 +166,7 @@ public class VersionBrowser extends Composite {
 
                                                                         } );
 
-                                                                        layout.setWidget( 2, 1, open );
+                                                                        layout.setWidget( 2, 0, open );
                                                                         formatter.setColSpan( 2, 1, 3 );
                                                                         formatter.setHorizontalAlignment( 2,1,HasHorizontalAlignment.ALIGN_CENTER );
 
