@@ -17,11 +17,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 
 
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
@@ -115,16 +111,19 @@ public class ActionSetFieldWidget extends DirtyableComposite {
 
         Image edit = new ImageButton("images/edit_tiny.gif");
         edit.setTitle( "Add another field to this so you can set its value." );
-        edit.addClickListener( new ClickListener() {
+        ClickListener clk =       new ClickListener() {
             public void onClick(Widget w) {
                 showAddFieldPopup(w);
             }
-        } );
+        };
+        edit.addClickListener(clk);
         String modifyType = "set";
         if (this.model instanceof ActionUpdateField) {
             modifyType = "modify";
         }
-        horiz.add( new SmallLabel( HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>" )) ;
+
+        ClickableLabel lbl = new ClickableLabel(HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
+        horiz.add( lbl) ;
         horiz.add( edit );
 
         return horiz;

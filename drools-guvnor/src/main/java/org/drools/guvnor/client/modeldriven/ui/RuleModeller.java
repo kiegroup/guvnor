@@ -20,14 +20,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.common.DirtyableHorizontalPane;
-import org.drools.guvnor.client.common.DirtyableVerticalPane;
-import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
@@ -421,18 +414,45 @@ public class RuleModeller extends DirtyableComposite {
             }
         });
 
-        if (varBox.getItemCount() > 1) {
-            popup.addAttribute( "Set the values of a field on", varBox );
-        }
+
+
 
 
         if (modifyBox.getItemCount() > 1) {
-            HorizontalPanel horiz = new HorizontalPanel();
-            horiz.add( modifyBox );
-            Image img = new Image("images/information.gif");
-            img.setTitle( "Modify a field on a fact, and notify the engine to re-evaluate rules." );
+            final HorizontalPanel horiz = new HorizontalPanel();
+
+            final AbsolutePanel p = new AbsolutePanel();
+            p.add(varBox);
+
+
+            final CheckBox cb = new CheckBox("Notify engine of changes");
+            cb.setChecked(false);
+            cb.addClickListener(new ClickListener() {
+                public void onClick(Widget sender) {
+                     if (cb.isChecked()) {
+                         p.clear();
+                         p.add(modifyBox);
+                     } else {
+                         p.clear();
+                         p.add(varBox);
+                     }
+                }
+            });
+
+            horiz.add(p);
+            horiz.add(cb);
+
+
+            InfoPopup img = new InfoPopup("Notify engine of changes (update/modify)", "Modify a field on a fact, and notify the engine to re-evaluate rules." +
+                    "\nWARNING: this can cause infinite loops - use with care.");
             horiz.add( img );
-            popup.addAttribute( "Modify a fact", horiz );
+            HorizontalPanel variablePanel = new HorizontalPanel();
+            popup.addAttribute( "Set field values", horiz );
+
+        } else {
+            if (varBox.getItemCount() > 1) {
+                popup.addAttribute( "Set field values", varBox );
+            }
         }
 
         //popup.addRow( new HTML("<hr/>") );
