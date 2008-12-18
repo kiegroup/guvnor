@@ -1574,6 +1574,16 @@ public class ServiceImplementation
                                                      RoleTypes.PACKAGE_DEVELOPER );
             }
 
+            if (item.getPackage().isArchived()) {
+				throw new RulesRepositoryException(
+						"The package ["
+								+ item.getPackageName()
+								+ "] that asset ["
+								+ item.getName()
+								+ "] belongs to is archived. You need to unarchive it first.");
+			}
+            
+            
             item.archiveItem( value );
             PackageItem pkg = item.getPackage();
             pkg.updateBinaryUpToDate( false );

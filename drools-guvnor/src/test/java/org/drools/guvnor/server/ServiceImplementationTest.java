@@ -17,7 +17,6 @@ package org.drools.guvnor.server;
  */
 
 import java.io.ByteArrayInputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,7 +32,13 @@ import org.drools.RuleBase;
 import org.drools.StatelessSession;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.*;
+import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
+import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
+import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.guvnor.client.modeldriven.brl.PortableObject;
+import org.drools.guvnor.client.modeldriven.brl.RuleModel;
+import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
@@ -82,7 +87,6 @@ import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.permission.RoleBasedPermissionResolver;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.rpc.SerializableException;
 
 /**
@@ -1061,6 +1065,59 @@ public class ServiceImplementationTest extends TestCase {
 
 
 
+
+	}
+	
+	public void testArchiveAssetWhenParentPackageArchived() throws Exception {
+		ServiceImplementation impl = getService();
+		String packageName = "testArchiveAssetWhenParentPackageArchived";
+		String cat = packageName;
+		impl.createCategory("/", cat, "ya");
+		String pkgUUID = impl.createPackage(packageName, "");
+
+		String uuid = impl.createNewRule(packageName, "x", cat, packageName,
+				packageName);
+
+		String uuid2 = impl.createNewRule(
+				"testArchiveAssetWhenParentPackageArchived2", "x", cat,
+				packageName, packageName);
+
+		String uuid3 = impl.createNewRule(
+				"testArchiveAssetWhenParentPackageArchived3", "x", cat,
+				packageName, packageName);
+		String uuid4 = impl.createNewRule(
+				"testArchiveAssetWhenParentPackageArchived4", "x", cat,
+				packageName, packageName);
+
+		TableDataResult res = impl.listAssets(pkgUUID, arr(packageName), 0, -1,
+				AssetItemGrid.RULE_LIST_TABLE_ID);
+		assertEquals(4, res.data.length);
+		assertEquals(4, res.total);
+		assertFalse(res.hasNext);
+
+		TableDataResult td = impl.loadArchivedAssets(0, 1000);
+		assertEquals(-1, td.total);
+		impl.archiveAsset(uuid4, true);
+		PackageItem packageItem = impl.repository.loadPackage(packageName);
+		packageItem.archiveItem(true);
+
+		TableDataResult td2 = impl.loadArchivedAssets(0, 1000);
+		assertTrue(td2.data.length == td.data.length + 1);
+
+		res = impl.listAssets(pkgUUID, arr(packageName), 0, -1,
+				AssetItemGrid.RULE_LIST_TABLE_ID);
+		assertEquals(3, res.data.length);
+
+		try {
+			impl.archiveAsset(uuid4, false);
+			fail("Should throw an exception");
+		} catch (RulesRepositoryException e) {
+			// Works
+		}
+		
+		res = impl.listAssets(pkgUUID, arr(packageName), 0, -1,
+				AssetItemGrid.RULE_LIST_TABLE_ID);
+		assertEquals(3, res.data.length);
 
 	}
 
