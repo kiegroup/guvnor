@@ -694,7 +694,7 @@ public class ServiceImplementation
                 row.values[1] = archived.getPackageName();
                 row.values[2] = archived.getName();
                 row.values[3] = archived.getLastContributor();
-                row.values[4] = archived.getLastModified().getTime().toLocaleString();
+                row.values[4] = Long.toString(archived.getLastModified().getTime().getTime());
 
                 result.add( row );
                 count++;
