@@ -31,11 +31,15 @@ public class SelectorManager {
 			for (Iterator iter = props.keySet().iterator(); iter.hasNext();) {
 				String selectorName = (String) iter.next();
 				String val = props.getProperty(selectorName);
-				if (val.endsWith("drl")) {
-					selectors.put(selectorName ,loadRuleSelector( val) );
-				} else {
-					selectors.put(selectorName, loadSelectorImplementation( val ));
-				}
+                try {
+                    if (val.endsWith("drl")) {
+                        selectors.put(selectorName ,loadRuleSelector( val) );
+                    } else {
+                        selectors.put(selectorName, loadSelectorImplementation( val ));
+                    }
+                } catch (RuntimeException e) {
+                    log.error("Unable to load a selector [" + val + "]", e);
+                }
 			}
 		} catch (IOException e) {
 			log.error("Unable to load selectors.", e);

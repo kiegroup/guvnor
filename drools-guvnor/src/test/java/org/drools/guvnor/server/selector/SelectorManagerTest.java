@@ -47,4 +47,9 @@ public class SelectorManagerTest extends TestCase {
 
     }
 
+    public void testBadConfig() throws Exception {
+        SelectorManager sm = new SelectorManager("/badselectors.properties");
+
+    }
+
 }
