@@ -100,8 +100,19 @@ public class SecurityServiceImplTest extends TestCase {
 
     	Lifecycle.endApplication();
 
+    }
 
 
+    public void testPreferences() throws Exception {
+        SecurityServiceImpl impl = new SecurityServiceImpl();
+        assertNotNull(SecurityServiceImpl.PREFERENCES);
+        assertEquals(2, SecurityServiceImpl.PREFERENCES.size());
+        assertTrue(SecurityServiceImpl.PREFERENCES.containsKey("visual-ruleflow"));
+        assertTrue(SecurityServiceImpl.PREFERENCES.containsKey("verifier"));
+        assertEquals("true", SecurityServiceImpl.PREFERENCES.get("verifier"));
+
+        Capabilities caps = impl.getUserCapabilities();
+        assertSame(SecurityServiceImpl.PREFERENCES, caps.prefs);
 
     }
 

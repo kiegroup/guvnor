@@ -143,7 +143,7 @@ public class ExplorerNodeConfig {
 					public void onSuccess(Object data) {
 						final String value[] = (String[]) data;
 						if (value.length == 0) {
-							if (path.equals("/")) {
+							if (path.equals("/") && ExplorerLayoutManager.shouldShow(Capabilities.SHOW_ADMIN)) {
 								doNewRepoDialog();
 							}
 							infanticide(treeNode);
@@ -239,7 +239,9 @@ public class ExplorerNodeConfig {
 		analysis.setExpanded(false);
 		analysis.appendChild(new TreeNode("Please wait..."));
 
-		treeNode.appendChild(analysis);
+        if (Preferences.getBooleanPref("verifier")) {
+		    treeNode.appendChild(analysis);
+        }
 
 
 		scenarios.addListener(new TreeNodeListenerAdapter() {

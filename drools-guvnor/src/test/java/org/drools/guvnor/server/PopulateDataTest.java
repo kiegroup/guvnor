@@ -111,16 +111,16 @@ public class PopulateDataTest extends TestCase {
 
         assertEquals(2, eng.factTypes.length);
         String[] fields = (String[]) eng.fieldsForType.get( "Board" );
-        assertTrue(fields.length == 3);
+        assertTrue(fields.length >= 3);
 
         String[] globalVars = eng.getGlobalVariables();
         assertEquals(1, globalVars.length);
         assertEquals("prs", globalVars[0]);
-        assertEquals(2, eng.getFieldCompletionsForGlobalVariable( "prs" ).length);
+        assertTrue(eng.getFieldCompletionsForGlobalVariable( "prs" ).length >= 2);
 
         fields = (String[]) eng.fieldsForType.get( "Person" );
 
-        assertTrue(fields.length == 2);
+        assertTrue(fields.length >= 2);
 
 
 

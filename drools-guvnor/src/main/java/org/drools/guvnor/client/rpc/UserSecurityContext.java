@@ -1,6 +1,7 @@
 package org.drools.guvnor.client.rpc;
 
 import java.util.Set;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -16,12 +17,9 @@ public class UserSecurityContext implements IsSerializable {
 	public String userName;
 
 
-	public Set<String> disabledFeatures;
-
 	public UserSecurityContext() {}
-	public UserSecurityContext(String userName, Set<String> disableFeatures) {
+	public UserSecurityContext(String userName) {
 		this.userName = userName;
-		this.disabledFeatures = disableFeatures;
 	}
 
 }

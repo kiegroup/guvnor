@@ -30,6 +30,8 @@ public class ExplorerLayoutManager {
         Field.setMsgTarget("side");
         QuickTips.init();
 
+        Preferences.INSTANCE.loadPrefs(caps);
+
         centertabbedPanel = new ExplorerViewCenterPanel();
 
         //north

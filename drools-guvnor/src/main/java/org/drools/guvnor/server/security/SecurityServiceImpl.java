@@ -17,8 +17,8 @@ package org.drools.guvnor.server.security;
 
 
 
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
+import java.io.IOException;
 
 import javax.security.auth.login.LoginException;
 
@@ -40,6 +40,8 @@ public class SecurityServiceImpl
 
     public static final String GUEST_LOGIN = "guest";
     private static final Logger log = Logger.getLogger( SecurityServiceImpl.class );
+    static final Map<String, String> PREFERENCES = loadPrefs();
+
 
     public boolean login(String userName, String password) {
         log.info( "Logging in user [" + userName + "]" );
@@ -74,20 +76,19 @@ public class SecurityServiceImpl
 
     public UserSecurityContext getCurrentUser() {
         if (Contexts.isApplicationContextActive()) {
-        	HashSet<String> disabled = new HashSet<String>();
-        	//disabled.add("QA");
             if (!Identity.instance().isLoggedIn()) {
                 //check to see if we can autologin
-                return new UserSecurityContext(checkAutoLogin(), disabled);
+                return new UserSecurityContext(checkAutoLogin());
             }
-            return new UserSecurityContext(Identity.instance().getCredentials().getUsername(), disabled);
+            return new UserSecurityContext(Identity.instance().getCredentials().getUsername());
         } else {
         	HashSet<String> disabled = new HashSet<String>();
-        	//disabled.add("QA");
-            //return new UserSecurityContext(null, new HashSet());
-            return new UserSecurityContext("SINGLE USER MODE (DEBUG) USE ONLY", disabled);
+            //return new UserSecurityContext(null);
+            return new UserSecurityContext("SINGLE USER MODE (DEBUG) USE ONLY");
         }
     }
+
+
 
     /**
      * This will return a auto login user name if it has been configured.
@@ -112,18 +113,37 @@ public class SecurityServiceImpl
     }
 
 	public Capabilities getUserCapabilities() {
+
 		if (Contexts.isSessionContextActive()) {
 			if (Identity.instance().hasRole(RoleTypes.ADMIN)) {
-				return Capabilities.all();
+				return Capabilities.all(PREFERENCES);
 			}
 			CapabilityCalculator c = new CapabilityCalculator();
 			RoleBasedPermissionManager permManager = (RoleBasedPermissionManager)
 					Component.getInstance("roleBasedPermissionManager");
 			List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
-			return c.calcCapabilities(permissions);
+			return c.calcCapabilities(permissions, PREFERENCES);
 		} else {
-			return Capabilities.all();
+			return Capabilities.all(PREFERENCES);
 		}
 	}
+
+
+    private static Map<String, String> loadPrefs() {
+        Properties ps = new Properties();
+        try {
+            ps.load(SecurityServiceImpl.class.getResourceAsStream("/preferences.properties"));
+            Map<String, String> prefs = new HashMap<String, String>();
+            for (Object o : ps.keySet()) {
+                String feature = (String) o;
+                prefs.put(feature, ps.getProperty(feature));
+            }
+            return prefs;
+        } catch (IOException e) {
+            log.info("Couldn't find preferences.properties - using defaults");
+            return new HashMap<String, String>();
+        }
+    }
+
 
 }

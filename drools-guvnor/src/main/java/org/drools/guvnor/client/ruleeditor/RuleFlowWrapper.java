@@ -6,6 +6,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.client.rulefloweditor.RuleFlowViewer;
+import org.drools.guvnor.client.explorer.Preferences;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -49,25 +50,27 @@ public class RuleFlowWrapper extends Composite
         VerticalPanel panel = new VerticalPanel();
         panel.add( uploadWidget );
 
-        initRuleflowViewer();
+        if (Preferences.getBooleanPref("visual-ruleflow")) {
+            initRuleflowViewer();
 
-        if ( ruleFlowViewer != null && parameterPanel != null ) {
-            Toolbar tb = new Toolbar();
+            if ( ruleFlowViewer != null && parameterPanel != null ) {
+                Toolbar tb = new Toolbar();
 
-            ToolbarButton viewSource = new ToolbarButton();
-            viewSource.setText( "View diagram" );
-            viewSource.addListener( new ButtonListenerAdapter() {
-                public void onClick(com.gwtext.client.widgets.Button button,
-                                    EventObject e) {
-                    doViewDiagram();
+                ToolbarButton viewSource = new ToolbarButton();
+                viewSource.setText( "View diagram" );
+                viewSource.addListener( new ButtonListenerAdapter() {
+                    public void onClick(com.gwtext.client.widgets.Button button,
+                                        EventObject e) {
+                        doViewDiagram();
 
-                    ruleFlowViewer.update();
-                }
-            } );
+                        ruleFlowViewer.update();
+                    }
+                } );
 
-            tb.addButton( viewSource );
-            panel.add( tb );
+                tb.addButton( viewSource );
+                panel.add( tb );
 
+            }
         }
 
         initWidget( panel );

@@ -9,6 +9,7 @@ import static org.drools.guvnor.client.security.Capabilities.SHOW_QA;
 import static org.drools.guvnor.client.security.Capabilities.all;
 
 import java.util.List;
+import java.util.Map;
 
 import org.drools.guvnor.client.security.Capabilities;
 
@@ -18,15 +19,15 @@ import org.drools.guvnor.client.security.Capabilities;
  */
 public class CapabilityCalculator {
 
-	public Capabilities calcCapabilities(List<RoleBasedPermission> permissions) {
+	public Capabilities calcCapabilities(List<RoleBasedPermission> permissions, Map<String, String> features) {
 		if (permissions.size() == 0) {
-			return Capabilities.all();
+			return Capabilities.all(features);
 		} else {
 			Capabilities caps = new Capabilities();
 			for (RoleBasedPermission p : permissions) {
 				String r = p.getRole();
 				if (r.equals(RoleTypes.ADMIN)) {
-					return all();
+					return all(features);
 				} else if (r.equals(RoleTypes.PACKAGE_ADMIN)) {
 					addCap(caps, SHOW_PACKAGE_VIEW);
 					addCap(caps, SHOW_CREATE_NEW_ASSET);
@@ -42,6 +43,7 @@ public class CapabilityCalculator {
 					addCap(caps, SHOW_PACKAGE_VIEW);
 				}
 			}
+            caps.prefs = features;
 			return caps;
 		}
 	}
