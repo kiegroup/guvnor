@@ -1,4 +1,5 @@
 package org.drools.guvnor.client.common;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,43 +16,42 @@ package org.drools.guvnor.client.common;
  * limitations under the License.
  */
 
-
-
 import org.drools.guvnor.client.rpc.DetailedSerializableException;
 import org.drools.guvnor.client.rpc.SessionExpiredException;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 
 /**
  * This is a generic call back that handles errors (very simply).
- *
+ * 
  * @author Michael Neale
  */
-public abstract class GenericCallback<T>
-    implements
-    AsyncCallback<T> {
+public abstract class GenericCallback<T> implements AsyncCallback<T> {
 
-    public void onFailure(Throwable t) {
-    	LoadingPopup.close();
-        if (t instanceof SessionExpiredException) {
-            showSessionExpiry();
-        } else if (t instanceof DetailedSerializableException){
-            ErrorPopup.showMessage( (DetailedSerializableException) t );
-        } else {
-            ErrorPopup.showMessage( t.getMessage() );
-        }
-    }
+	public void onFailure(Throwable t) {
+		LoadingPopup.close();
+		if (t instanceof SessionExpiredException) {
+			showSessionExpiry();
+		} else if (t instanceof DetailedSerializableException) {
+			ErrorPopup.showMessage((DetailedSerializableException) t);
+		} else {
+			ErrorPopup.showMessage(t.getMessage());
+		}
+	}
 
+	public static void showSessionExpiry() {
+		String url = GWT.getModuleBaseURL();
+		url = url.substring(0, url.lastIndexOf('/'));
+		url = url.substring(0, url.lastIndexOf('/'));
 
+		FormStylePopup pop = new FormStylePopup();
+		pop.addRow(new HTML(
+				"<i><strong>Your session expired due to inactivity.</strong></i><p/>"
+						+ "Please <a href='" + url + "'>[Log in].</a>"));
+		pop.show();
+		LoadingPopup.close();
 
-    public static void showSessionExpiry() {
-    	FormStylePopup pop = new FormStylePopup();
-    	pop.addRow(new HTML("<i><strong>Your session expired due to inactivity.</strong></i><p/>" +
-        "Please <a href='/drools-guvnor/'>[Log in].</a>"));
-    	pop.show();
-        LoadingPopup.close();
-
-    }
-
+	}
 }
