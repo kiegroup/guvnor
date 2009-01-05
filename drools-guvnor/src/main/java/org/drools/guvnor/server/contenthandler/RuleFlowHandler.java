@@ -37,74 +37,74 @@ import org.drools.xml.XmlRuleFlowProcessDumper;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
-public class RuleFlowHandler extends ContentHandler
-    implements
-    IRuleAsset {
+public class RuleFlowHandler extends ContentHandler implements IRuleAsset {
 
-    public void retrieveAssetContent(RuleAsset asset,
-                                     PackageItem pkg,
-                                     AssetItem item) throws SerializableException {
+	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
+			AssetItem item) throws SerializableException {
 
-        RuleFlowProcess process = createModel( new ByteArrayInputStream( item.getContent().getBytes() ) );
+		RuleFlowProcess process = createModel(new ByteArrayInputStream(item
+				.getContent().getBytes()));
 
-        if ( process != null ) {
-            RuleFlowContentModel content = new RuleFlowContentModelBuilder().createModel( process );
-            content.setXml( item.getContent() );
-            asset.content = content;
-        }
+		if (process != null) {
+			RuleFlowContentModel content = new RuleFlowContentModelBuilder()
+					.createModel(process);
+			content.setXml(item.getContent());
+			asset.content = content;
+		} else if (process == null && !"".equals(item.getContent())) {
+			asset.content = new RuleFlowContentModel();
+		}
 
-    }
+	}
 
-    protected RuleFlowProcess createModel(InputStream is) {
+	protected RuleFlowProcess createModel(InputStream is) {
 
-        RuleFlowProcess process = null;
+		RuleFlowProcess process = null;
 
-        try {
-            InputStreamReader reader = new InputStreamReader( is );
-            PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
-            XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
+		try {
+			InputStreamReader reader = new InputStreamReader(is);
+			PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+			XmlProcessReader xmlReader = new XmlProcessReader(configuration
+					.getSemanticModules());
 
-            try {
-                process = (RuleFlowProcess) xmlReader.read( reader );
+			try {
+				process = (RuleFlowProcess) xmlReader.read(reader);
 
-            } catch ( Exception e ) {
-                reader.close();
-                throw new Exception( "Unable to read rule flow XML." );
-            }
-            reader.close();
-        } catch ( Exception e ) {
-            return null;
-        }
+			} catch (Exception e) {
+				reader.close();
+				throw new Exception("Unable to read rule flow XML.");
+			}
+			reader.close();
+		} catch (Exception e) {
+			return null;
+		}
 
-        return process;
-    }
+		return process;
+	}
 
-    public void storeAssetContent(RuleAsset asset,
-                                  AssetItem repoAsset) throws SerializableException {
+	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
+			throws SerializableException {
 
-        RuleFlowContentModel content = (RuleFlowContentModel) asset.content;
+		RuleFlowContentModel content = (RuleFlowContentModel) asset.content;
 
-        RuleFlowProcess process = createModel( new ByteArrayInputStream( content.getXml().getBytes() ) );
+		RuleFlowProcess process = createModel(new ByteArrayInputStream(content
+				.getXml().getBytes()));
 
-        RuleFlowProcessBuilder.updateProcess( process,
-                                              content.getNodes() );
+		RuleFlowProcessBuilder.updateProcess(process, content.getNodes());
 
-        XmlRuleFlowProcessDumper dumper = XmlRuleFlowProcessDumper.INSTANCE;
-        String out = dumper.dump( process );
+		XmlRuleFlowProcessDumper dumper = XmlRuleFlowProcessDumper.INSTANCE;
+		String out = dumper.dump(process);
 
-        repoAsset.updateContent( out );
-    }
+		repoAsset.updateContent(out);
+	}
 
-    public void assembleDRL(BRMSPackageBuilder builder,
-                            AssetItem asset,
-                            StringBuffer buf) {
-        //do nothing... as no change to source.
-    }
+	public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset,
+			StringBuffer buf) {
+		// do nothing... as no change to source.
+	}
 
-    public void compile(BRMSPackageBuilder builder,
-                        AssetItem asset,
-                        ErrorLogger logger) throws DroolsParserException,
-                                           IOException {
-        builder.addRuleFlow( new InputStreamReader( asset.getBinaryContentAttachment() ) );
-    }
+	public void compile(BRMSPackageBuilder builder, AssetItem asset,
+			ErrorLogger logger) throws DroolsParserException, IOException {
+		builder.addRuleFlow(new InputStreamReader(asset
+				.getBinaryContentAttachment()));
+	}
 }

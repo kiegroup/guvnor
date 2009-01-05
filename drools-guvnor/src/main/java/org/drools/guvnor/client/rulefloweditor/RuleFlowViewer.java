@@ -44,8 +44,6 @@ public class RuleFlowViewer extends AbsolutePanel {
 
             RuleFlowBaseNode node = RuleFlowNodeFactory.createNode( tn );
 
-            System.out.println( "tn " + tn );
-
             if ( node != null ) {
 
                 if ( node instanceof ElementContainerNode ) {
