@@ -391,8 +391,8 @@ public class DSLSentenceWidget extends Composite {
 		}
     }
 
-    class DSLCheckBox extends DirtyableComposite{
-    	CheckBox resultWidget = null;
+    class DSLCheckBox extends Composite {
+    	ListBox resultWidget = null;
     	//Format for the dropdown def is <varName>:<type>:<Fact.field>
     	private String varName ="";
 
@@ -403,45 +403,47 @@ public class DSLSentenceWidget extends Composite {
     		varName = variableDef.substring(0,firstIndex);
     		String checkedUnchecked = variableDef.substring(lastIndex+1, variableDef.length());
 
-    		resultWidget = new CheckBox();
+    		resultWidget = new ListBox();
+            resultWidget.addItem("true");
+            resultWidget.addItem("false");
+
 	    	if(checkedUnchecked.equalsIgnoreCase("checked")){
-	    		resultWidget.setChecked(true);
+                resultWidget.setSelectedIndex(0);
 	    	}else{
-	    		resultWidget.setChecked(false);
+                resultWidget.setSelectedIndex(1);
 	    	}
 
 	    	resultWidget.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                	CheckBox box = (CheckBox)w;
-                	resultWidget.setChecked(box.isChecked());
-
                     updateSentence();
-                    makeDirty();
                 }
             });
 
 	    	resultWidget.setVisible(true);
 	    	initWidget(resultWidget);
     	}
-		public CheckBox getListBox() {
+		public ListBox getListBox() {
 			return resultWidget;
 		}
-		public void setListBox(CheckBox resultWidget) {
+		public void setListBox(ListBox resultWidget) {
 			this.resultWidget = resultWidget;
 		}
 		public String getType() {
 			return BOOLEAN_TAG;
 		}
 
-		public boolean getCheckedValue() {
-			return resultWidget.isChecked();
-		}
+
 		public String getVarName() {
 			return varName;
 		}
 		public void setVarName(String varName) {
 			this.varName = varName;
 		}
+
+        public boolean getCheckedValue() {
+            return this.resultWidget.getSelectedIndex() == 0;
+
+        }
     }
 
     class DSLDateSelector extends DirtyableComposite{
