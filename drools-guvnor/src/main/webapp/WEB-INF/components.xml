@@ -9,11 +9,12 @@
                 "http://jboss.com/products/seam/core http://jboss.com/products/seam/core-2.0.xsd
                  http://jboss.com/products/seam/security http://jboss.com/products/seam/security-2.0.xsd
                  http://jboss.com/products/seam/components http://jboss.com/products/seam/components-2.0.xsd
-                 http://jboss.com/products/seam/web http://jboss.com/products/seam/web-2.0.xsd">
+                 http://jboss.com/products/seam/web http://jboss.com/products/seam/web-2.0.xsd
+                 http://jboss.com/products/seam/transaction http://jboss.com/products/seam/transaction-2.0.xsd">
 
 
 	<core:init transaction-management-enabled="false"/>
-	<transaction:no-transaction />
+	<transaction:no-transaction/>
 
     <component name="repositoryConfiguration">
 		<!--
