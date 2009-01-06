@@ -858,12 +858,6 @@ public class ServiceImplementation
                                       int skip,
                                       int numRows,
                                       String tableConfig) throws SerializableException {
-        // TODO: This does not work for package snapshot. package snspshot's
-        // UUID is different
-        // from its corresponding package. However we seem to expect to get same
-        // assets using the
-        // package snapshot UUID here
-        // Identity.instance().checkPermission("ignoredanyway", "read", uuid);
         log.debug("Loading asset list for [" + uuid + "]");
         if ( numRows == 0 ) {
             throw new DetailedSerializableException( "Unable to return zero results (bug)",
