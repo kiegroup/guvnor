@@ -44,6 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.DatePicker;
 import com.gwtext.client.widgets.event.DatePickerListener;
+import com.gwtext.client.widgets.event.DatePickerListenerAdapter;
 import com.gwtext.client.widgets.form.DateField;
 
 /**
@@ -252,7 +253,8 @@ public class DSLSentenceWidget extends Composite {
             }else if(wid instanceof DSLDateSelector){
             	DSLDateSelector dateSel = (DSLDateSelector)wid;
             	String dateString = dateSel.getDateString();
-            	newSentence = newSentence + "{"+dateString+":"+dateSel.getType()+":"+dateString+ "} ";
+            	String format = dateSel.getFormat();
+            	newSentence = newSentence + "{"+dateString+":"+dateSel.getType()+":"+format+ "} ";
             } else if (wid instanceof NewLine) {
             	newSentence = newSentence + "\\n";
             }
@@ -484,59 +486,7 @@ public class DSLSentenceWidget extends Composite {
     		if(origDate!=null)
     			resultWidget.setValue(origDate);
 
-	    	resultWidget.addListener( new DatePickerListener() {
-
-				public boolean doBeforeDestroy(Component component) {
-					return true;
-				}
-
-				public boolean doBeforeHide(Component component) {
-					return true;
-				}
-
-				public boolean doBeforeRender(Component component) {
-					return true;
-				}
-
-				public boolean doBeforeShow(Component component) {
-					return true;
-				}
-
-				public boolean doBeforeStateRestore(Component component,
-						JavaScriptObject state) {
-					return true;
-				}
-
-				public boolean doBeforeStateSave(Component component,
-						JavaScriptObject state) {
-					return true;
-				}
-
-				public void onDestroy(Component component) {
-				}
-
-				public void onDisable(Component component) {
-				}
-
-				public void onEnable(Component component) {
-				}
-
-				public void onHide(Component component) {
-				}
-
-				public void onRender(Component component) {
-				}
-
-				public void onShow(Component component) {
-				}
-
-				public void onStateRestore(Component component,
-						JavaScriptObject state) {
-				}
-
-				public void onStateSave(Component component,
-						JavaScriptObject state) {
-				}
+	    	resultWidget.addListener( new DatePickerListenerAdapter() {
 
 				public void onSelect(DatePicker dataPicker, Date date) {
 					resultWidget.setValue(date);
@@ -567,6 +517,9 @@ public class DSLSentenceWidget extends Composite {
 			String result ="";
 			if(value!=null)
 				result =formatter.format(value);
+			else
+				result = varName;
+			
 			return  result;
 		}
 		public String getVarName() {
