@@ -172,7 +172,7 @@ public class DSLSentenceWidget extends Composite {
 
     public Widget getEnumDropdown(String variableDef){
 
-    	Widget resultWidget = new DSLDropDown(variableDef);;
+    	Widget resultWidget = new DSLDropDown(variableDef);
     	return resultWidget;
     }
 
@@ -243,7 +243,7 @@ public class DSLSentenceWidget extends Composite {
             	String type = drop.getType();
             	String factAndField = drop.getFactAndField();
 
-            	newSentence = newSentence + "{"+box.getItemText(box.getSelectedIndex())+":"+type+":"+factAndField+ "} ";
+            	newSentence = newSentence + "{"+box.getValue(box.getSelectedIndex())+":"+type+":"+factAndField+ "} ";
             }else if(wid instanceof DSLCheckBox){
 
             	DSLCheckBox check = (DSLCheckBox)wid;
@@ -331,9 +331,6 @@ public class DSLSentenceWidget extends Composite {
     	private String factAndField = "";
 
     	public DSLDropDown(String variableDef){
-
-
-
     		int firstIndex = variableDef.indexOf(":");
         	int lastIndex  = variableDef.lastIndexOf(":");
     		varName = variableDef.substring(0,firstIndex);
@@ -350,15 +347,19 @@ public class DSLSentenceWidget extends Composite {
 	    	if(data!=null){
 		    	int selected = -1;
 			    	for(int i=0;i<data.length;i++){
-
-			    		if(varName.equals(data[i])){
-			    			selected=i;
-			    		}
-			    		list.addItem(data[i]);
+                        String realValue = data[i];
+                        String display = data[i];
+                        if (data[i].indexOf('=') > -1) {
+                            String[] vs = ConstraintValueEditorHelper.splitValue(data[i]);
+                            realValue = vs[0];
+                            display = vs[1];
+                        }
+                        if(varName.equals(realValue)){
+                            selected=i;
+                        }
+                        list.addItem(display, realValue);
 			    	}
-
-			    	if(selected>=0)
-			    		list.setSelectedIndex(selected);
+			    	if(selected>=0) list.setSelectedIndex(selected);
 	    	}
 	    	list.addChangeListener( new ChangeListener() {
                 public void onChange(Widget w) {
