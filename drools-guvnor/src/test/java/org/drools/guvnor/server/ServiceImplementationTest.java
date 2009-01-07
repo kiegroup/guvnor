@@ -118,6 +118,11 @@ public class ServiceImplementationTest extends TestCase {
 
 	}
 
+    public void testCleanHTML() {
+        ServiceImplementation impl = new ServiceImplementation();
+        assertEquals("&lt;script&gt;", impl.cleanHTML("<script>"));
+    }
+
 	public void testDeleteUnversionedRule() throws Exception {
 		ServiceImplementation impl = getService();
 

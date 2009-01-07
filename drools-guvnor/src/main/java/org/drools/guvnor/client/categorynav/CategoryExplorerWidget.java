@@ -129,7 +129,7 @@ public class CategoryExplorerWidget extends Composite
 		                                             }
 		                                             for ( int i = 0; i < categories.length; i++ ) {
 		                                                 TreeItem it = new TreeItem();
-		                                                 it.setHTML( "<img src=\"images/category_small.gif\"/>" + categories[i] );
+		                                                 it.setHTML( "<img src=\"images/category_small.gif\"/>" + h(categories[i]) );
 		                                                 it.setUserObject( categories[i] );
 		                                                 it.addItem( new PendingItem() );
 		                                                 root.addItem( it );
@@ -146,7 +146,9 @@ public class CategoryExplorerWidget extends Composite
 
     }
 
-
+    private String h(String cat) {
+        return cat.replace("<", "&lt;").replace(">", "&gt;");
+    }
 
 
     private void hideEmptyTree() {

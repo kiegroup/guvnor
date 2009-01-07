@@ -197,6 +197,7 @@ public class ServiceImplementation
         if ( path == null || "".equals( path ) ) {
             path = "/";
         }
+        path = cleanHTML(path);                        
 
         CategoryItem item = repository.loadCategory( path );
         item.addCategory( name,
@@ -1014,6 +1015,7 @@ public class ServiceImplementation
     public String createState(String name) throws SerializableException {
         log.info( "USER:" + repository.getSession().getUserID() + " CREATING state: [" + name + "]" );
         try {
+            name = cleanHTML(name);
             String uuid = repository.createState( name ).getNode().getUUID();
             repository.save();
             return uuid;
@@ -2248,4 +2250,7 @@ public class ServiceImplementation
 		this.rebuildSnapshots();
 	}
 
+    public String cleanHTML(String s) {
+        return s.replace("<", "&lt;").replace(">", "&gt;");
+    }                                                   
 }
