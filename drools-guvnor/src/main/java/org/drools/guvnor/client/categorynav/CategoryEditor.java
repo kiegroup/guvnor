@@ -49,7 +49,8 @@ public class CategoryEditor extends FormStylePopup {
 
     /** This is used when creating a new category */
     public CategoryEditor(String catPath) {
-    	super("images/edit_category.gif", getTitle(catPath));
+    	//super("images/edit_category.gif", getTitle(catPath));
+        super.setTitle(getTitle(catPath));
         path = catPath;
 
         addAttribute("Category name", name);

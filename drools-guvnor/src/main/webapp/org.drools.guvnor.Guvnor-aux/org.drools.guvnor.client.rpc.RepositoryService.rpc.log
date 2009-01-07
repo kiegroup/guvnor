@@ -1,4 +1,4 @@
-Reachable types computed on: Wed Jan 07 15:21:46 EST 2009
+Reachable types computed on: Thu Jan 08 10:11:39 EST 2009
 com.google.gwt.i18n.client.impl.ConstantMap
    Serialization status
       Not serializable
@@ -39,7 +39,11 @@ com.google.gwt.user.client.ui.MultiWordSuggestOracle.MultiWordSuggestion
    Serialization status
       Instantiable
    Path
-      'com.google.gwt.user.client.ui.MultiWordSuggestOracle.MultiWordSuggestion' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
+      'com.google.gwt.user.client.ui.MultiWordSuggestOracle.MultiWordSuggestion' is reachable as a subtype of type 'interface com.google.gwt.user.client.ui.SuggestOracle.Suggestion'
+      'com.google.gwt.user.client.ui.SuggestOracle.Suggestion' is reachable from type argument 0 of type 'java.util.LinkedHashSet<E>'
+      'java.util.LinkedHashSet<com.google.gwt.user.client.ui.SuggestOracle.Suggestion>' is reachable as a subtype of type 'interface java.util.Collection<? extends com.google.gwt.user.client.ui.SuggestOracle.Suggestion>'
+      'java.util.Collection<? extends com.google.gwt.user.client.ui.SuggestOracle.Suggestion>' is reachable from field 'suggestions' of type 'com.google.gwt.user.client.ui.SuggestOracle.Response'
+      'com.google.gwt.user.client.ui.SuggestOracle.Response' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'payload' of type 'org.drools.guvnor.client.rpc.ValidatedResponse'
       'org.drools.guvnor.client.rpc.ValidatedResponse' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.ValidatedResponse'
       Started from 'org.drools.guvnor.client.rpc.ValidatedResponse'
