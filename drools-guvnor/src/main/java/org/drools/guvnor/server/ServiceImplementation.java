@@ -1450,7 +1450,7 @@ public class ServiceImplementation
         StringBuffer buf = new StringBuffer();
         if ( handler.isRuleAsset() ) {
 
-            BRMSPackageBuilder builder = new BRMSPackageBuilder( new PackageBuilderConfiguration() );
+            BRMSPackageBuilder builder = new BRMSPackageBuilder(  );
             // now we load up the DSL files
             builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( item.getPackage(),
                                                                         new BRMSPackageBuilder.DSLErrorEvent() {

@@ -60,8 +60,10 @@ public class BRMSPackageBuilder extends PackageBuilder {
     /**
      * This will give you a fresh new PackageBuilder
      * using the given classpath.
+     * @param classpath The classpath from the package
+     * @param buildProps Properties to pass into the package builder configuration.
      */
-    public static BRMSPackageBuilder getInstance(List<JarInputStream> classpath) {
+    public static BRMSPackageBuilder getInstance(List<JarInputStream> classpath, Properties buildProps) {
         MapBackedClassLoader loader = createClassLoader(classpath);
 
 
@@ -76,6 +78,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
         Properties properties = new Properties();
         properties.setProperty( "drools.dialect.java.compiler",
                                 chainedProperties.getProperty( "drools.dialect.java.compiler", "ECLIPSE" ) );
+        properties.putAll(buildProps);
         PackageBuilderConfiguration pkgConf = new PackageBuilderConfiguration( properties );
         pkgConf.setAllowMultipleNamespaces(false);
         pkgConf.setClassLoader( loader );
@@ -145,9 +148,13 @@ public class BRMSPackageBuilder extends PackageBuilder {
      * In the BRMS you should not need to use this, use the getInstance factory method instead.
      * @param config
      */
-    public BRMSPackageBuilder(
+    private BRMSPackageBuilder(
                               PackageBuilderConfiguration config) {
         super( config );
+    }
+
+    public BRMSPackageBuilder() {
+        super(new PackageBuilderConfiguration());
     }
 
     /**

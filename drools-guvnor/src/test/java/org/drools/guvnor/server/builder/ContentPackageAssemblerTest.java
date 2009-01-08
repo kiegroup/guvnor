@@ -18,8 +18,10 @@ package org.drools.guvnor.server.builder;
 
 import java.io.InputStream;
 import java.io.StringReader;
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.jar.JarInputStream;
 
 import junit.framework.TestCase;
@@ -148,6 +150,45 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertNotEmpty( assembler.getErrors().get( 0 ).errorReport );
     }
 
+    public void testLoadConfProperties () throws Exception {
+        RulesRepository repo = getRepo();
+
+        PackageItem pkg = repo.createPackage( "testLoadConfProperties",
+                                              "" );
+        AssetItem model = pkg.addAsset( "model",
+                                        "qed" );
+        model.updateFormat( AssetFormats.MODEL );
+
+        model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        model.checkin( "" );
+
+        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
+                                                  pkg );
+
+        AssetItem rule1 = pkg.addAsset( "rule_1",
+                                        "" );
+        rule1.updateFormat( AssetFormats.DRL );
+        rule1.updateContent( "rule 'rule1' \n when Board() \n then customer.setAge(42); \n end" );
+        rule1.checkin( "" );
+
+        AssetItem props1 = pkg.addAsset("conf1", "");
+        props1.updateFormat("properties");
+        props1.updateContent("drools.accumulate.function.groupCount = wee");
+        props1.checkin("");
+
+
+        AssetItem props2 = pkg.addAsset("conf2", "");
+        props2.updateFormat("conf");
+        props2.updateBinaryContentAttachment(new ByteArrayInputStream("drools.accumulate.function.groupFun = wah".getBytes()));
+        props2.checkin("");
+
+        ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
+        assertEquals("wee", asm.builder.getPackageBuilderConfiguration().getAccumulateFunctionsMap().get("groupCount"));
+        assertEquals("wah", asm.builder.getPackageBuilderConfiguration().getAccumulateFunctionsMap().get("groupFun"));
+
+    }
+
+
     public void testPackageWithRuleflow() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -189,7 +230,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
         //now check we can do some MVEL stuff from the classloader...
         List<JarInputStream> jars = BRMSPackageBuilder.getJars( pkg );
-        PackageBuilder builder = BRMSPackageBuilder.getInstance( jars );
+        PackageBuilder builder = BRMSPackageBuilder.getInstance( jars, new Properties() );
         ClassLoader newCL = builder.getPackageBuilderConfiguration().getClassLoader();
         ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
 

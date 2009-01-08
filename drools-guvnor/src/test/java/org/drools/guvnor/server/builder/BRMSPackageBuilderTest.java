@@ -20,6 +20,7 @@ package org.drools.guvnor.server.builder;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.jar.JarInputStream;
 
 import junit.framework.TestCase;
@@ -50,7 +51,7 @@ public class BRMSPackageBuilderTest extends TestCase {
         JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         List<JarInputStream> l = new ArrayList<JarInputStream>();
         l.add( jis );
-        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l );
+        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l, new Properties() );
 
         PackageDescr pc = new PackageDescr("foo.bar");
         builder.addPackage( pc );
@@ -105,7 +106,7 @@ public class BRMSPackageBuilderTest extends TestCase {
             JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
             List<JarInputStream> l = new ArrayList<JarInputStream>();
             l.add( jis );
-            BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l );
+            BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l, new Properties() );
 
             PackageDescr pc = new PackageDescr("foo.bar");
             builder.addPackage( pc );
@@ -137,12 +138,12 @@ public class BRMSPackageBuilderTest extends TestCase {
     }
 
     public void testHasDSL() {
-        BRMSPackageBuilder builder = new BRMSPackageBuilder(null);
+        BRMSPackageBuilder builder = new BRMSPackageBuilder();
         assertFalse(builder.hasDSL());
     }
 
     public void testGetExpander() {
-        BRMSPackageBuilder builder = new BRMSPackageBuilder(null);
+        BRMSPackageBuilder builder = new BRMSPackageBuilder();
         List<DSLTokenizedMappingFile> files = new ArrayList<DSLTokenizedMappingFile>();
         files.add( new DSLTokenizedMappingFile() );
         builder.setDSLFiles( files );
@@ -150,22 +151,16 @@ public class BRMSPackageBuilderTest extends TestCase {
         assertNotNull(builder.getDSLExpander());
     }
 
-//    public void testDefaultCompiler() {
-//        assertEquals(JavaDialectConfiguration.JANINO, BRMSPackageBuilder.COMPILER);
-//        assertEquals(PackageBuilderConfiguration.JANINO, BRMSPackageBuilder.getPreferredBRMSCompiler());
-//        System.setProperty( "drools.compiler", "ECLIPSE" );
-//        assertEquals(PackageBuilderConfiguration.ECLIPSE, BRMSPackageBuilder.getPreferredBRMSCompiler());
-//        System.setProperty( "drools.compiler", "" );
-//        assertEquals(PackageBuilderConfiguration.JANINO, BRMSPackageBuilder.getPreferredBRMSCompiler());
-//    }
 
-    // @FIXME rule "abc" is null and the Packge has no namespace
     public void testDefaultCompiler() throws Exception {
 
         JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         List<JarInputStream> l = new ArrayList<JarInputStream>();
         l.add( jis );
-        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l );
+        Properties p = new Properties();
+        p.setProperty("drools.accumulate.function.groupCount", "wee");
+        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l, p );
+        assertEquals("wee", builder.getPackageBuilderConfiguration().getAccumulateFunctionsMap().get("groupCount"));
 
         PackageDescr pc = new PackageDescr("foo.bar");
         builder.addPackage( pc );
@@ -184,7 +179,7 @@ public class BRMSPackageBuilderTest extends TestCase {
         JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         List<JarInputStream> l = new ArrayList<JarInputStream>();
         l.add( jis );
-        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l );
+        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l, new Properties() );
 
         PackageDescr pc = new PackageDescr("foo.bar");
         builder.addPackage( pc );
@@ -203,7 +198,7 @@ public class BRMSPackageBuilderTest extends TestCase {
         JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         List<JarInputStream> l = new ArrayList<JarInputStream>();
         l.add( jis );
-        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l );
+        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l, new Properties() );
 
         assertFalse(builder.getPackageBuilderConfiguration().isAllowMultipleNamespaces());
     }

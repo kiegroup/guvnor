@@ -21,6 +21,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.jar.JarInputStream;
 
 import org.drools.compiler.DroolsError;
@@ -130,10 +131,33 @@ public class ContentPackageAssembler {
 
 	public void createBuilder() {
 		List<JarInputStream> jars = BRMSPackageBuilder.getJars(pkg);
-		builder = BRMSPackageBuilder.getInstance(jars);
+        Properties ps = new Properties();
+        try {
+            ps = loadConfProperties(pkg);
+        } catch (IOException e) {
+            throw new RulesRepositoryException("Unable to load configuration properties for package.", e);            
+        }
+        builder = BRMSPackageBuilder.getInstance(jars, ps);
 	}
 
-	/**
+
+    /**
+     * Load all the .properties and .conf files into one big happy Properties instance.
+     */
+    Properties loadConfProperties(PackageItem pkg) throws IOException {
+        Properties ps = new Properties();
+        AssetItemIterator iter = pkg.listAssetsByFormat(new String[] {"properties", "conf"});
+        while(iter.hasNext()) {
+            AssetItem conf = iter.next();
+            conf.getContent();
+            Properties p = new Properties();
+            p.load(conf.getBinaryContentAttachment());
+            ps.putAll(p);
+        }
+        return ps;
+    }
+
+    /**
 	 * This will build the package.
 	 */
 	private void buildPackage() {
