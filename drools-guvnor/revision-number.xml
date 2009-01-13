@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<project name="Drools" basedir="." default="find_revision">
+	 <property name="buildNumber" value="test"/>  
+	 <property name="timestamp" value="timestamp"/>  
+	
+	<target name="find_revision" description="Sets property 'revision.number' to the head svn revision">  
+
+		<property name="project.version" value="${project.version}"/>
+
+		<exec executable="svnversion" outputproperty="svnlog.out">  
+        </exec>  
+
+		<echo file="./src/main/java/org/drools/guvnor/public/version.txt">${project.version} ${svnlog.out}</echo>
+	</target>  
+</project>
