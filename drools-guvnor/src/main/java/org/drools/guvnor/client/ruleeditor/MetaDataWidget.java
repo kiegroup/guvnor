@@ -64,11 +64,30 @@ public class MetaDataWidget extends Composite {
 	private String currentSectionName;
 
     public MetaDataWidget(final MetaData d,
-                          boolean readOnly,
-                          String uuid,
-                          Command refreshView) {
+                          final boolean readOnly,
+                          final String uuid,
+                          final Command refreshView) {
 
         super();
+
+
+
+
+        Button show = new Button("[show more info...]");
+        show.addClickListener(new ClickListener() {
+            public void onClick(Widget sender) {
+                layout.clear();
+                render(d, readOnly, uuid, refreshView);
+            }
+        });
+
+        layout.add(new SmallLabel("Title: [<b>" + d.name + "</b>]"));
+        layout.add(show);
+        initWidget(layout);
+
+    }
+
+    private void render(MetaData d, boolean readOnly, String uuid, Command refreshView) {
         //        layout = new Form(new FormConfig() {
         //        	{
         //        		setWidth(250);
@@ -101,8 +120,6 @@ public class MetaDataWidget extends Composite {
         this.refreshView = refreshView;
         //setWidth("20%");
         loadData( d );
-        initWidget(layout);
-
     }
 
     private void addHeader(String img, String name, Image edit) {

@@ -158,7 +158,8 @@ public class ContentPackageAssembler {
     }
 
     /**
-	 * This will build the package.
+	 * This will build the package - preparePackage would have been called first.
+     * This will always prioritise DRL before other assets.
 	 */
 	private void buildPackage() {
 		AssetSelector selector = SelectorManager.getInstance().getSelector(
@@ -169,12 +170,18 @@ public class ContentPackageAssembler {
 							+ " is not available."));
 			return;
 		}
+        
+        Iterator<AssetItem> drls = pkg.listAssetsByFormat(new String[]{AssetFormats.DRL});
+        while (drls.hasNext()) {
+            AssetItem asset = (AssetItem) drls.next();
+            if (!asset.isArchived() && (selector.isAssetAllowed(asset))) {
+                buildAsset(asset);
+            }
+        }
 		Iterator<AssetItem> it = pkg.getAssets();
 		while (it.hasNext()) {
-
 			AssetItem asset = (AssetItem) it.next();
-
-			if (!asset.isArchived() && (selector.isAssetAllowed(asset))) {
+			if (!asset.getFormat().equals(AssetFormats.DRL) && !asset.isArchived() && (selector.isAssetAllowed(asset))) {
 				buildAsset(asset);
 			}
 		}

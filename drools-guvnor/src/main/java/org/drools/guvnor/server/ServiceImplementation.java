@@ -429,6 +429,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public RuleAsset loadRuleAsset(String uuid) throws SerializableException {
+        long time = System.currentTimeMillis();
         AssetItem item = repository.loadAssetByUUID( uuid );
         RuleAsset asset = new RuleAsset();
 
@@ -478,11 +479,14 @@ public class ServiceImplementation
         if ( pkgItem.isSnapshot() ) {
             asset.isreadonly = true;
         }
+
+        log.debug("Load time taken for asset: " + (System.currentTimeMillis() - time));
         return asset;
 
     }
 
     private RuleAsset loadAsset(AssetItem item) throws SerializableException {
+
         RuleAsset asset = new RuleAsset();
         asset.uuid = item.getUUID();
         // load standard meta data
@@ -494,6 +498,7 @@ public class ServiceImplementation
         handler.retrieveAssetContent( asset,
                                       pkgItem,
                                       item );
+        
         return asset;
     }
 

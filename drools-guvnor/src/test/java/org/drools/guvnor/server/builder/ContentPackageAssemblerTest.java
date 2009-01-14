@@ -853,6 +853,9 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
+
+
+
     private void assertContains(String sub,
                                 String text) {
         if ( text.indexOf( sub ) == -1 ) {

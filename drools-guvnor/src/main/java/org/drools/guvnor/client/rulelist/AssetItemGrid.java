@@ -207,14 +207,30 @@ public class AssetItemGrid extends Composite {
                                  };
 
                                  ToolbarButton refreshB = new ToolbarButton();
-                                 refreshB.setText( "(refresh list)" );
+                                 refreshB.setText( "[refresh list]" );
                                  refreshB.addListener( new ButtonListenerAdapter() {
                                      public void onClick(Button button,
                                                          EventObject e) {
                                          refresh.execute();
                                      }
                                  } );
+
                                  tb.addButton( refreshB );
+
+
+                                 ToolbarButton openSelected = new ToolbarButton();
+                                 openSelected.setText( "[open selected]" );
+                                 openSelected.addListener( new ButtonListenerAdapter() {
+                                     public void onClick(Button button,
+                                                         EventObject e) {
+                                                 String uuid = currentGrid.getSelectionModel().getSelected().getAsString( "uuid" );
+                                                 editEvent.open( uuid );
+                                     }
+                                 } );
+                                 tb.addButton( openSelected );
+
+
+
 
                                  currentGrid.addGridRowListener( new GridRowListenerAdapter() {
                                      public void onRowDblClick(GridPanel grid,
