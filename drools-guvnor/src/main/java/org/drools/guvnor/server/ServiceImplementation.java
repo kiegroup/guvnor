@@ -45,6 +45,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
+import org.drools.runtime.rule.ConsequenceException;
 import org.drools.base.ClassTypeResolver;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DroolsObjectOutputStream;
@@ -1862,7 +1863,11 @@ public class ServiceImplementation
             log.error( e );
             throw new DetailedSerializableException( "Unable to load a required class.",
                                                      e.getMessage() );
-        } finally {
+        } catch (ConsequenceException e) {
+           log.info( e );
+           throw new DetailedSerializableException( "There was an error executing the consequence of rule [" + e.getRule().getName() + "]", e.getMessage());
+        }  finally {
+
 
         }
     }
