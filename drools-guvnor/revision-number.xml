@@ -7,7 +7,7 @@
 
 		<property name="project.version" value="${project.version}"/>
 
-		<exec executable="svnversion" outputproperty="svnlog.out">  
+		<exec executable="svnversion" outputproperty="svnlog.out" failifexecutionfails="false" >  
         </exec>  
 
 		<echo file="./src/main/java/org/drools/guvnor/public/version.txt">${project.version} ${svnlog.out}</echo>
