@@ -31,8 +31,9 @@ public class MockIdentity extends Identity {
 	private boolean hasRole;
 	private Set<String> roles = new HashSet<String>();
 	private List<PermissionResolver> resolvers = new ArrayList<PermissionResolver>();
+    boolean loggoutCalled = false;
 
-	@Override
+    @Override
 	public boolean addRole(String r) {
 		roles.add(r);
 		return true;
@@ -56,9 +57,12 @@ public class MockIdentity extends Identity {
 		return true;
 	}
 
-	
-	
-	public boolean hasPermission(Object target, String action) {
+    @Override
+     public void logout() {
+        this.loggoutCalled = true;
+    }
+
+    public boolean hasPermission(Object target, String action) {
 	      for (PermissionResolver resolver : resolvers)
 	      {
 	         if (resolver.hasPermission(target, action))

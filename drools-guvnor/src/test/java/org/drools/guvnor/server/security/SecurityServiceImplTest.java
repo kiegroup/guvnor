@@ -28,6 +28,7 @@ import org.drools.guvnor.client.security.Capabilities;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.permission.RoleBasedPermissionResolver;
+import org.jboss.seam.security.AuthorizationException;
 
 public class SecurityServiceImplTest extends TestCase {
 
@@ -60,25 +61,38 @@ public class SecurityServiceImplTest extends TestCase {
 		resolver.setEnableRoleBasedAuthorization(true);
 		midentity.addPermissionResolver(resolver);
 
-		Contexts.getSessionContext().set("org.jboss.seam.security.identity",
-				midentity);
-		Contexts.getSessionContext().set(
-				"org.drools.guvnor.client.rpc.RepositoryService", impl);
+        Contexts.getSessionContext().set("org.jboss.seam.security.roleBasedPermissionResolver", resolver);
+		Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
+		Contexts.getSessionContext().set("org.drools.guvnor.client.rpc.RepositoryService", impl);
+
 
 		List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "packagename",
-				null));
+		pbps.add(new RoleBasedPermission("jervis", RoleTypes.PACKAGE_READONLY, "packagename",null));
     	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
     	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
 
 		// Put permission list in session.
 		RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
 		testManager.create();
-		Contexts.getSessionContext().set("roleBasedPermissionManager",
-				testManager);
+		Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);
 
 		Capabilities c = impl.getUserCapabilities();
 		assertTrue(c.list.size() == 1);
+
+        //now lets give them no permissions
+        pbps.clear();
+        try {
+            impl.getUserCapabilities();
+            fail("should not be allowed as there are no permissions");
+        } catch (AuthorizationException e) {
+            assertNotNull(e.getMessage());
+            assertTrue(midentity.loggoutCalled);
+        }
+
+        //now lets turn off the role based stuff
+        resolver.setEnableRoleBasedAuthorization(false);
+        impl.getUserCapabilities(); // should not blow up !
+
 
     	Lifecycle.endApplication();
     }

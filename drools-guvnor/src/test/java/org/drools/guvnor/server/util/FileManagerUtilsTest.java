@@ -38,14 +38,22 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 
-public class FileManagerUtilsTest extends TestCase {
+import javax.jcr.Session;
 
-	public void testAttachFile() throws Exception {
+public class FileManagerUtilsTest extends TestCase {
+    private Session session;
+
+
+    @Override
+    protected void setUp() throws Exception {
+        session = TestEnvironmentSessionHelper.getSession(true);
+    }
+
+    public void testAttachFile() throws Exception {
 
 		FileManagerUtils uploadHelper = new FileManagerUtils();
 
-		RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper
-				.getSession());
+		RulesRepository repo = new RulesRepository(session);
 		uploadHelper.repository = repo;
 		AssetItem item = repo.loadDefaultPackage().addAsset("testUploadFile",
 				"description");
@@ -66,8 +74,7 @@ public class FileManagerUtilsTest extends TestCase {
 	}
 
 	public void testAttachModel() throws Exception {
-		RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper
-				.getSession());
+		RulesRepository repo = new RulesRepository(session);
 		PackageItem pkg = repo.createPackage("testAttachModelImports", "heh");
 		AssetItem asset = pkg.addAsset("MyModel", "");
 		asset.updateFormat(AssetFormats.MODEL);
@@ -103,8 +110,7 @@ public class FileManagerUtilsTest extends TestCase {
 
 
 	public void testUploadXmlFile() throws Exception {
-		RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper
-				.getSession());
+		RulesRepository repo = new RulesRepository(session);
 
 		repo.createPackage("testUploadXmlFile", "comment");
 		repo.importRulesRepository(repo.dumpRepositoryXml());
@@ -113,8 +119,7 @@ public class FileManagerUtilsTest extends TestCase {
 
 	public void testGetFilebyUUID() throws Exception {
 		FileManagerUtils uploadHelper = new FileManagerUtils();
-		RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper
-				.getSession());
+		RulesRepository repo = new RulesRepository(session);
 		uploadHelper.repository = repo;
 		AssetItem item = repo.loadDefaultPackage().addAsset(
 				"testGetFilebyUUID", "description");
@@ -137,8 +142,7 @@ public class FileManagerUtilsTest extends TestCase {
 
 	public void testGetPackageBinaryAndSource() throws Exception {
 
-		RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper
-				.getSession());
+		RulesRepository repo = new RulesRepository(session);
 		ServiceImplementation impl = new ServiceImplementation();
 		impl.repository = repo;
 
@@ -208,7 +212,7 @@ public class FileManagerUtilsTest extends TestCase {
 	 */
 	public void testImportArchivedPackage() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
-        fm.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+        fm.repository = new RulesRepository( session );
 
         // Import package
         String drl = "package testClassicDRLImport\n import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
@@ -238,8 +242,7 @@ public class FileManagerUtilsTest extends TestCase {
 
 	public void testClassicDRLImport() throws Exception {
 		FileManagerUtils fm = new FileManagerUtils();
-		fm.repository = new RulesRepository(TestEnvironmentSessionHelper
-				.getSession());
+		fm.repository = new RulesRepository(session);
 		String drl = "package testClassicDRLImport\n import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
 		InputStream in = new ByteArrayInputStream(drl.getBytes());
 		fm.importClassicDRL(in);
@@ -305,8 +308,7 @@ public class FileManagerUtilsTest extends TestCase {
 
 	public void testClassicDRLImportWithDSL() throws Exception {
 		FileManagerUtils fm = new FileManagerUtils();
-		fm.repository = new RulesRepository(TestEnvironmentSessionHelper
-				.getSession());
+		fm.repository = new RulesRepository(session);
 		String drl = "package testClassicDRLImportDSL\n import blah \n expander goo \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
 		InputStream in = new ByteArrayInputStream(drl.getBytes());
 		fm.importClassicDRL(in);
@@ -339,8 +341,7 @@ public class FileManagerUtilsTest extends TestCase {
 	}
 
 	public void XXtestHeadOOME() throws Exception {
-		RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper
-				.getSession());
+		RulesRepository repo = new RulesRepository(session);
 		PackageItem pkg = repo.createPackage("testHeadOOME", "");
 		ServiceImplementation.updateDroolsHeader("import java.util.List", pkg);
 		pkg.updateCompiledPackage(new ByteArrayInputStream("foo".getBytes()));
@@ -369,7 +370,7 @@ public class FileManagerUtilsTest extends TestCase {
 
 	private void updatePackage(String nm) throws Exception {
 		System.err.println("---> Updating the package ");
-		RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+		RulesRepository repo = new RulesRepository(session);
 		PackageItem pkg = repo.loadPackage(nm);
 		pkg.updateDescription(System.currentTimeMillis() + "");
 		pkg.checkin("a change");

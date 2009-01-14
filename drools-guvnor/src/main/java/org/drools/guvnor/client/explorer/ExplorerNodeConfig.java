@@ -144,7 +144,14 @@ public class ExplorerNodeConfig {
 						final String value[] = (String[]) data;
 						if (value.length == 0) {
 							if (path.equals("/") && ExplorerLayoutManager.shouldShow(Capabilities.SHOW_ADMIN)) {
-								doNewRepoDialog();
+                                RepositoryServiceFactory.getService().listPackages(new GenericCallback<PackageConfigData[]>() {
+                                    public void onSuccess(PackageConfigData[] result) {
+                                        if (result.length == 1) {
+                                            doNewRepoDialog();
+                                        }
+                                    }
+                                });
+                                
 							}
 							infanticide(treeNode);
 						} else {

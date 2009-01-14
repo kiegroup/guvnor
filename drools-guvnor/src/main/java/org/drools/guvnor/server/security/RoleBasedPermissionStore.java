@@ -9,6 +9,7 @@ import org.drools.repository.security.PermissionManager;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.security.permission.RoleBasedPermissionResolver;
 
 @Name("org.drools.guvnor.server.security.RoleBasedPermissionStore")
 @AutoCreate
@@ -16,6 +17,7 @@ public class RoleBasedPermissionStore {
 
 	@In
 	public RulesRepository repository;
+
 
 	public RoleBasedPermissionStore() {
 	}

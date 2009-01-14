@@ -27,8 +27,11 @@ import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.security.Capabilities;
 import org.jboss.seam.Component;
+import org.jboss.seam.Seam;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.AuthorizationException;
+import org.jboss.seam.security.permission.RoleBasedPermissionResolver;
 
 /**
  * This implements security related services.
@@ -114,14 +117,23 @@ public class SecurityServiceImpl
 
 	public Capabilities getUserCapabilities() {
 
-		if (Contexts.isSessionContextActive()) {
+		if (Contexts.isApplicationContextActive()) {
 			if (Identity.instance().hasRole(RoleTypes.ADMIN)) {
 				return Capabilities.all(PREFERENCES);
 			}
 			CapabilityCalculator c = new CapabilityCalculator();
 			RoleBasedPermissionManager permManager = (RoleBasedPermissionManager)
 					Component.getInstance("roleBasedPermissionManager");
+
 			List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
+            if (permissions.size() == 0) {
+                RoleBasedPermissionResolver resolver = (RoleBasedPermissionResolver)
+                        Component.getInstance("org.jboss.seam.security.roleBasedPermissionResolver");
+                if (resolver.isEnableRoleBasedAuthorization()) {
+                     Identity.instance().logout();
+                     throw new AuthorizationException("This user has no permissions setup.");                   
+                }
+            }
 			return c.calcCapabilities(permissions, PREFERENCES);
 		} else {
 			return Capabilities.all(PREFERENCES);
