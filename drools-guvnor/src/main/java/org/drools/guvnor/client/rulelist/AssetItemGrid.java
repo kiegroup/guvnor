@@ -367,7 +367,7 @@ public class AssetItemGrid extends Composite {
                                     if ( desc == null ) {
                                         desc = "";
                                     }
-                                    return Format.format( "<img src='{0}'/><b>{1}</b><br/><small>{2}</small>",
+                                    return Format.format( "<img src='{0}'/>&nbsp;<b>{1}</b><br/><small>{2}</small>",
                                                           new String[]{fmtIcon, (String) value, desc} );
                                 }
                             } );

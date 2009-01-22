@@ -23,7 +23,7 @@ import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
 public class CategoriesPanel extends GenericPanel {
 
     public CategoriesPanel(ExplorerViewCenterPanel tabbedPanel) {
-        super("Assets view", tabbedPanel);
+        super("Assets", tabbedPanel);
         setIconCls("nav-categories");
 
         Toolbar rulesToolBar = new Toolbar();
@@ -81,7 +81,7 @@ public class CategoriesPanel extends GenericPanel {
                                     }
                                 });
 
-                        centertabbedPanel.addTab(((isState) ? "State: " : "Category: ") + self.getText(), true, list, key);
+                        centertabbedPanel.addTab(((isState) ? "Status: " : "Category: ") + self.getText(), true, list, key);
                     }
 
                 }

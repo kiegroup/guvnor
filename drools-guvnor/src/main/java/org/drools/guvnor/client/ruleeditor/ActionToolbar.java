@@ -87,7 +87,7 @@ public class ActionToolbar extends Composite {
      * Sets the visible status display.
      */
     private void setState(String status) {
-        state.setText("Status: [" + status + "]");
+        state.setText("<i>Status: [" + status + "]</i>");
     }
 
     private void controls() {
@@ -168,7 +168,7 @@ public class ActionToolbar extends Composite {
 
 
         ToolbarButton stateChange = new ToolbarButton();
-        stateChange.setText("Change state");
+        stateChange.setText("Change status");
 		stateChange.setTooltip(getTip("Change the status of this asset."));
 		stateChange.addListener(new ButtonListenerAdapter() {
 			public void onClick(

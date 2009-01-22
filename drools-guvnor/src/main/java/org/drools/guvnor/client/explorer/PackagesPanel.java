@@ -94,13 +94,13 @@ public class PackagesPanel extends GenericPanel {
             }
         }, "images/rule_asset.gif"));
 
-        m.addItem(new Item("Upload new Model jar (fact classes)", new BaseItemListenerAdapter() {
+        m.addItem(new Item("Upload POJO Model jar", new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
                 launchWizard(AssetFormats.MODEL, "New model archive (jar)", false, currentPackage);
             }
         }, "images/model_asset.gif"));
 
-        m.addItem(new Item("New Model (in rules)", new BaseItemListenerAdapter() {
+        m.addItem(new Item("New Declarative Model", new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
                 launchWizard(AssetFormats.DRL_MODEL, "New declarative model (using guided editor).", false, currentPackage);
             }

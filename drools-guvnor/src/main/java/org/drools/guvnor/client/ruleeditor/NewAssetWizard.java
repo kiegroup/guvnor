@@ -154,11 +154,11 @@ public class NewAssetWizard extends FormStylePopup {
 
         ListBox box = new ListBox();
 
-        box.addItem( "Business rule (using guided editor)", AssetFormats.BUSINESS_RULE );
-        box.addItem( "DRL rule (technical rule - text editor)", AssetFormats.DRL );
-        box.addItem( "Business rule using a DSL (text editor)", AssetFormats.DSL_TEMPLATE_RULE );
-        box.addItem( "Decision table (web - guided editor)", AssetFormats.DECISION_TABLE_GUIDED );
-        box.addItem( "Decision table (spreadsheet)", AssetFormats.DECISION_SPREADSHEET_XLS );
+        box.addItem( "Business Rule (Guided editor)", AssetFormats.BUSINESS_RULE );
+        box.addItem( "DSL Business Rule (Text editor)", AssetFormats.DSL_TEMPLATE_RULE );
+        box.addItem( "DRL Rule (Technical rule - text editor)", AssetFormats.DRL );
+        box.addItem( "Decision Table (Spreadsheet)", AssetFormats.DECISION_SPREADSHEET_XLS );
+        box.addItem( "Decision Table (Web - guided editor)", AssetFormats.DECISION_TABLE_GUIDED );
 
         box.setSelectedIndex( 0 );
 

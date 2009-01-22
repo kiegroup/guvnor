@@ -18,39 +18,39 @@ public class RulesNewMenu {
     public static Menu getMenu(final GenericPanel manager) {
         Menu m = new Menu();
 
-        m.addItem(new Item("New Business Rule (Guided editor)", new BaseItemListenerAdapter() {
+        m.addItem(new Item("Business Rule (Guided editor)", new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
                 manager.launchWizard(AssetFormats.BUSINESS_RULE, "New Business Rule (Guided editor)", true);
             }
         }, "images/business_rule.gif"));
 
 
-        m.addItem(new Item("New DSL Business Rule (text editor)", new BaseItemListenerAdapter() {
+        m.addItem(new Item("DSL Business Rule (Text editor)", new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
                 manager.launchWizard(AssetFormats.DSL_TEMPLATE_RULE, "New Rule using DSL", true);
             }
         }, "images/business_rule.gif"));
 
 
-        m.addItem(new Item("New DRL (Technical rule)", new BaseItemListenerAdapter() {
+        m.addItem(new Item("DRL Rule (Technical rule - text editor)", new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
                 manager.launchWizard(AssetFormats.DRL, "New DRL", true);
             }
         }, "images/rule_asset.gif"));
 
-        m.addItem(new Item("New Decision Table (Spreadsheet)", new BaseItemListenerAdapter() {
+        m.addItem(new Item("Decision Table (Spreadsheet)", new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
                 manager.launchWizard(AssetFormats.DECISION_SPREADSHEET_XLS, "New Decision Table (Spreadsheet)", true);
             }
         }, "images/spreadsheet_small.gif"));
 
-        m.addItem(new Item("New Decision Table (Web - guided editor)", new BaseItemListenerAdapter() {
+        m.addItem(new Item("Decision Table (Web - guided editor)", new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
                 manager.launchWizard(AssetFormats.DECISION_TABLE_GUIDED, "New Decision Table (Guided editor)", true);
             }
         }, "images/gdst.gif"));
 
-        m.addItem(new Item("New Test Scenario", new BaseItemListenerAdapter() {
+        m.addItem(new Item("Test Scenario", new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
                 manager.launchWizard(AssetFormats.TEST_SCENARIO,
                         "Create a test scenario.", false);

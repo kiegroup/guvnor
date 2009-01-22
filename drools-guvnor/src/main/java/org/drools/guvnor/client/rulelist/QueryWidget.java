@@ -84,6 +84,8 @@ public class QueryWidget extends Composite {
 		created.add(new SmallLabel("After:"));
 		final DateField createdAfter = new DateField("After:", DATE_PICKER_FORMAT);
 		created.add(createdAfter);
+		
+		created.add(new SmallLabel("&nbsp;"));
 
 		created.add(new SmallLabel("Before:"));
 		final DateField createdBefore = new DateField("Before", DATE_PICKER_FORMAT);
@@ -97,6 +99,8 @@ public class QueryWidget extends Composite {
 		lastMod.add(new SmallLabel("After:"));
 		final DateField lastModAfter = new DateField("After:", DATE_PICKER_FORMAT);
 		lastMod.add(lastModAfter);
+
+		lastMod.add(new SmallLabel("&nbsp;"));
 
 		lastMod.add(new SmallLabel("Before:"));
 		final DateField lastModBefore = new DateField("Before:", DATE_PICKER_FORMAT);
