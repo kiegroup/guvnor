@@ -39,7 +39,6 @@ public class LogViewer extends Composite {
 		layout.setHeight("100%");
 		layout.setWidth("100%");
 
-
 		refresh();
 		initWidget(layout);
 	}
@@ -71,20 +70,16 @@ public class LogViewer extends Composite {
 		}
 
 		MemoryProxy proxy = new MemoryProxy(data);
-		RecordDef recordDef = new RecordDef(
-				new FieldDef[]{
-						new IntegerFieldDef("severity"),
-						new DateFieldDef("timestamp"),
-						new StringFieldDef("message"),
-				}
-		);
+		RecordDef recordDef = new RecordDef(new FieldDef[] {
+				new IntegerFieldDef("severity"), new DateFieldDef("timestamp"),
+				new StringFieldDef("message"), });
 
 		ArrayReader reader = new ArrayReader(recordDef);
 		Store store = new Store(proxy, reader);
 		store.setDefaultSort("timestamp", SortDir.DESC);
 		store.load();
 
-		ColumnModel cm  = new ColumnModel(new ColumnConfig[] {
+		ColumnModel cm = new ColumnModel(new ColumnConfig[] {
 				new ColumnConfig() {
 					{
 						setDataIndex("severity");
@@ -105,24 +100,36 @@ public class LogViewer extends Composite {
 						});
 						setWidth(25);
 					}
-				},
-				new ColumnConfig() {
+				}, new ColumnConfig() {
 					{
 						setHeader("Timestamp");
 						setSortable(true);
 						setDataIndex("timestamp");
 						setWidth(180);
 					}
-				},
-				new ColumnConfig() {
+				}, new ColumnConfig() {
 					{
 						setHeader("Message");
 						setSortable(true);
 						setDataIndex("message");
 						setWidth(580);
+
+						setRenderer(new Renderer() {
+							public String render(Object value,
+									CellMetadata cellMetadata, Record record,
+									int rowIndex, int colNum, Store store) {
+
+								if (value != null) {
+									cellMetadata
+											.setHtmlAttribute("style=\"overflow:auto;\"");
+									return value.toString();
+								} else {
+									return "";
+								}
+							}
+						});
 					}
-				}
-			});
+				} });
 
 		final GridPanel g = new GridPanel();
 		g.setColumnModel(cm);
@@ -130,30 +137,24 @@ public class LogViewer extends Composite {
 		g.setWidth(800);
 		g.setHeight(600);
 
-
-
-
-
 		Toolbar tb = new Toolbar();
 		g.setTopToolbar(tb);
 
-		tb.addItem(new ToolbarTextItem("Showing recent INFO and ERROR messages from the log:"));
+		tb.addItem(new ToolbarTextItem(
+				"Showing recent INFO and ERROR messages from the log:"));
 		tb.addItem(new ToolbarSeparator());
 
 		layout.add(g);
 
 		ToolbarButton reload = new ToolbarButton("Reload");
 		reload.addListener(new ButtonListenerAdapter() {
-					public void onClick(Button button, EventObject e) {
-						layout.remove(g);
-						refresh();
-					}
-				});
+			public void onClick(Button button, EventObject e) {
+				layout.remove(g);
+				refresh();
+			}
+		});
 
 		tb.addButton(reload);
-
-
-
 
 	}
 
