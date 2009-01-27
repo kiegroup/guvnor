@@ -23,6 +23,7 @@ import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.guvnor.client.modeldriven.dt.MetadataCol;
 import org.drools.guvnor.client.modeldriven.ui.ActionValueEditor;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
+import org.drools.guvnor.client.modeldriven.ui.ConstraintValueEditorHelper;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
@@ -830,6 +831,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
 
 
+        //Add the cell listener for when the user wants to edit.
         grid.addGridCellListener(new GridCellListenerAdapter() {
         	public void onCellDblClick(GridPanel grid, int rowIndex,
         			int colIndex, EventObject e) {
@@ -844,10 +846,6 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
         		} else {
         			showDropDownEditor(e, dataIdx, r, val, vals);
         		}
-
-        		//box.setFocus(true);
-
-
         	}
 
 
@@ -930,16 +928,25 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 		final ListBox drop = new ListBox();
 		for (int i = 0; i < vals.length; i++) {
 			String v = vals[i].trim();
-			drop.addItem(v);
-			if (v.equals(val)) {
-				drop.setSelectedIndex(i);
-			}
+            if (v.indexOf('=') > 0) {
+                String[] splut = ConstraintValueEditorHelper.splitValue(v);
+                drop.addItem(splut[1], splut[0]);
+                if (splut[0].equals(val)) {
+				    drop.setSelectedIndex(i);
+			    }
+            } else {
+			    drop.addItem(v, v);
+                if (v.equals(val)) {
+				    drop.setSelectedIndex(i);
+			    }
+            }
+
 		}
 		drop.addKeyboardListener(new KeyboardListenerAdapter() {
 			public void onKeyUp(Widget sender, char keyCode,
 					int modifiers) {
 				if (keyCode == KeyboardListener.KEY_ENTER) {
-					r.set(dataIdx, drop.getItemText(drop.getSelectedIndex()));
+					r.set(dataIdx, drop.getValue(drop.getSelectedIndex()));
 					w.destroy();
 				}
 			}
@@ -956,7 +963,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 		Button ok = new Button("OK");
 		ok.addClickListener(new ClickListener() {
 			public void onClick(Widget wg) {
-				r.set(dataIdx, drop.getItemText(drop.getSelectedIndex()));
+				r.set(dataIdx, drop.getValue(drop.getSelectedIndex()));
 				w.destroy();
 			}
 		});

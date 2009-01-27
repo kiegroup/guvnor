@@ -230,7 +230,23 @@ public class MockHTTPRequest implements HttpServletRequest {
 		return null;
 	}
 
-	public String getRemoteAddr() {
+    public int getRemotePort() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String getLocalName() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String getLocalAddr() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public int getLocalPort() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String getRemoteAddr() {
 		// TODO Auto-generated method stub
 		return null;
 	}

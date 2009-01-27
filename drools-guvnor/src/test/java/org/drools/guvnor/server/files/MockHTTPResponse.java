@@ -127,7 +127,11 @@ public class MockHTTPResponse implements HttpServletResponse {
 		return null;
 	}
 
-	public Locale getLocale() {
+    public String getContentType() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Locale getLocale() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -142,7 +146,11 @@ public class MockHTTPResponse implements HttpServletResponse {
 		return writer ;
 	}
 
-	public boolean isCommitted() {
+    public void setCharacterEncoding(String s) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isCommitted() {
 		// TODO Auto-generated method stub
 		return false;
 	}
