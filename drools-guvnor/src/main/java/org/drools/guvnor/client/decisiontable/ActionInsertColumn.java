@@ -13,6 +13,7 @@ import org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -100,9 +101,23 @@ public class ActionInsertColumn extends FormStylePopup {
 		Button apply = new Button("Apply changes");
 		apply.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
+                if (null == editingCol.header || "".equals(editingCol.header)) {
+                    Window.alert("You must enter a column header value (description)");
+                    return;
+                }
 				if (isNew) {
+                    if (!unique(editingCol.header)) {
+                        Window.alert("That column name is already in use - please pick another");
+                        return;
+                    }
 					dt.actionCols.add(editingCol);
 				} else {
+                    if (!col.header.equals(editingCol.header)) {
+                        if (!unique(editingCol.header)) {
+                            Window.alert("That column name is already in use - please pick another");
+                            return;
+                        }
+                    }
 					col.boundName = editingCol.boundName;
 					col.type = editingCol.type;
 					col.factField = editingCol.factField;
@@ -118,7 +133,15 @@ public class ActionInsertColumn extends FormStylePopup {
 
 	}
 
-	private TextBox getFieldLabel() {
+        private boolean unique(String header) {
+            for (ActionCol o : dt.actionCols) {
+                if (o.header.equals(header)) return false;
+            }
+            return true;
+        }
+
+
+    private TextBox getFieldLabel() {
 		final TextBox box = new TextBox();
 		box.addChangeListener(new ChangeListener() {
 			public void onChange(Widget w) {

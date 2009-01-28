@@ -14,6 +14,7 @@ import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -164,13 +165,28 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		Button apply = new Button("Apply changes");
 		apply.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
+                if (null == editingCol.header || "".equals(editingCol.header)) {
+                    Window.alert("You must enter a column header value (description)");
+                    return;
+                }
 				if (isNew) {
+                    if (!unique(editingCol.header)) {
+                        Window.alert("That column name is already in use - please pick another");
+                        return;
+                    }
 					dt.conditionCols.add(editingCol);
 				} else {
+                    if (!col.header.equals(editingCol.header)) {
+                        if (!unique(editingCol.header)) {
+                            Window.alert("That column name is already in use - please pick another");
+                            return;
+                        }
+                    }
 					col.boundName = editingCol.boundName;
 					col.constraintValueType = editingCol.constraintValueType;
 					col.factField = editingCol.factField;
 					col.factType = editingCol.factType;
+
 					col.header = editingCol.header;
 					col.operator = editingCol.operator;
 					col.valueList = editingCol.valueList;
@@ -188,7 +204,14 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
 	}
 
-	private TextBox getFieldLabel() {
+    private boolean unique(String header) {
+        for (ConditionCol o : dt.conditionCols) {
+            if (o.header.equals(header)) return false;
+        }
+        return true;
+    }
+
+    private TextBox getFieldLabel() {
 		final TextBox box = new TextBox();
 		box.addChangeListener(new ChangeListener() {
 			public void onChange(Widget w) {

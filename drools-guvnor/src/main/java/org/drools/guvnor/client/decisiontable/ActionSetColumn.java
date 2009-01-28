@@ -12,8 +12,10 @@ import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.guvnor.client.modeldriven.dt.ActionCol;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -99,10 +101,25 @@ public class ActionSetColumn extends FormStylePopup {
 		Button apply = new Button("Apply changes");
 		apply.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
+                if (null == editingCol.header || "".equals(editingCol.header)) {
+                    Window.alert("You must enter a column header value (description)");
+                    return;
+                }
 				if (isNew) {
+                    if (!unique(editingCol.header)) {
+                        Window.alert("That column name is already in use - please pick another");
+                        return;
+                    }
 					dt.actionCols.add(editingCol);
 
 				} else {
+                    if (!col.header.equals(editingCol.header)) {
+                        if (!unique(editingCol.header)) {
+                            Window.alert("That column name is already in use - please pick another");
+                            return;
+                        }
+                    }
+                    
 					col.boundName = editingCol.boundName;
 					col.factField = editingCol.factField;
 					col.header = editingCol.header;
@@ -120,7 +137,14 @@ public class ActionSetColumn extends FormStylePopup {
 
 	}
 
-	private Widget doUpdate() {
+    private boolean unique(String header) {
+        for (ActionCol o : dt.actionCols) {
+            if (o.header.equals(header)) return false;
+        }
+        return true;
+    }
+
+    private Widget doUpdate() {
 		HorizontalPanel hp = new HorizontalPanel();
 
 		final CheckBox cb = new CheckBox();
