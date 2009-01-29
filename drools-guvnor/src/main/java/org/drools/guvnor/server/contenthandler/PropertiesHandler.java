@@ -1,4 +1,5 @@
 package org.drools.guvnor.server.contenthandler;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -16,6 +17,7 @@ package org.drools.guvnor.server.contenthandler;
  */
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
@@ -28,30 +30,41 @@ import org.drools.repository.PackageItem;
 import com.google.gwt.user.client.rpc.SerializableException;
 
 /**
- * Handle *.properties file as a content for rule asset instead of a binary attachment
- *
+ * Handle *.properties file as a content for rule asset instead of a binary
+ * attachment
+ * 
  * @author Anton Arhipov
  */
 public class PropertiesHandler extends ContentHandler {
-    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item)
-            throws SerializableException {
-        if (item.getContent() != null) {
-            asset.content = PropertiesPersistence.getInstance().unmarshal(item.getContent());
-        }
-    }
+	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
+			AssetItem item) throws SerializableException {
+		if (item.getContent() != null) {
+			asset.content = PropertiesPersistence.getInstance().unmarshal(
+					item.getContent());
+		}
+	}
 
-    public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
-            throws SerializableException {
-        PropertiesHolder holder = (PropertiesHolder) asset.content;
-        String toSave = PropertiesPersistence.getInstance().marshal(holder);
+	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
+			throws SerializableException {
+		PropertiesHolder holder = (PropertiesHolder) asset.content;
+		String toSave = PropertiesPersistence.getInstance().marshal(holder);
 
-        try {
-            InputStream input = new ByteArrayInputStream(toSave.getBytes("UTF-8"));
-            repoAsset.updateBinaryContentAttachment(input);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);     //TODO: ?
-        }
-
-    }
+		InputStream input = null;
+		try {
+			try {
+				input = new ByteArrayInputStream(toSave.getBytes("UTF-8"));
+				repoAsset.updateBinaryContentAttachment(input);
+			} finally {
+				if (input != null) {
+					input.close();
+				}
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e); // TODO: ?
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
 }
