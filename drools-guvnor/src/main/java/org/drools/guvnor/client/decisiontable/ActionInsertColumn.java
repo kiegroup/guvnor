@@ -60,6 +60,7 @@ public class ActionInsertColumn extends FormStylePopup {
 		pattern.add(patternLabel );
 		doPatternLabel();
 
+         //NON-NLS
 		Image changePattern = new ImageButton("images/edit.gif", constants.ChooseAPatternThatThisColumnAddsDataTo(), new ClickListener() {
 			public void onClick(Widget w) {
 				showChangePattern(w);
@@ -70,13 +71,13 @@ public class ActionInsertColumn extends FormStylePopup {
 
 		HorizontalPanel field = new HorizontalPanel();
 		field.add(fieldLabel);
-		Image editField = new ImageButton("images/edit.gif", "Edit the field that this column operates on", new ClickListener() {
+		Image editField = new ImageButton("images/edit.gif", constants.EditTheFieldThatThisColumnOperatesOn(), new ClickListener() {
 			public void onClick(Widget w) {
 				showFieldChange();
 			}
 		});
 		field.add(editField);
-		addAttribute("Field:", field);
+		addAttribute(constants.Field(), field);
 		doFieldLabel();
 
 
@@ -89,8 +90,8 @@ public class ActionInsertColumn extends FormStylePopup {
 		});
 		HorizontalPanel vl = new HorizontalPanel();
 		vl.add(valueList);
-		vl.add(new InfoPopup("Value list", "Value lists are an optional comma separated list of values to show as a drop down."));
-		addAttribute("(optional) value list:", vl);
+		vl.add(new InfoPopup(constants.ValueList(), constants.ValueListsExplanation()));
+		addAttribute(constants.optionalValueList(), vl);
 
 		final TextBox header = new TextBox();
 		header.setText(col.header);
@@ -98,26 +99,26 @@ public class ActionInsertColumn extends FormStylePopup {
 			public void onChange(Widget w) {
 				editingCol.header = header.getText();
 			} });
-		addAttribute("Column header (description):", header);
+		addAttribute(constants.ColumnHeaderDescription(), header);
 
 
-		Button apply = new Button("Apply changes");
+		Button apply = new Button(constants.ApplyChanges());
 		apply.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
                 if (null == editingCol.header || "".equals(editingCol.header)) {
-                    Window.alert("You must enter a column header value (description)");
+                    Window.alert(constants.YouMustEnterAColumnHeaderValueDescription());
                     return;
                 }
 				if (isNew) {
                     if (!unique(editingCol.header)) {
-                        Window.alert("That column name is already in use - please pick another");
+                        Window.alert(constants.ThatColumnNameIsAlreadyInUsePleasePickAnother());
                         return;
                     }
 					dt.actionCols.add(editingCol);
 				} else {
                     if (!col.header.equals(editingCol.header)) {
                         if (!unique(editingCol.header)) {
-                            Window.alert("That column name is already in use - please pick another");
+                            Window.alert(constants.ThatColumnNameIsAlreadyInUsePleasePickAnother());
                             return;
                         }
                     }
@@ -162,8 +163,8 @@ public class ActionInsertColumn extends FormStylePopup {
 		for (int i = 0; i < fields.length; i++) {
 			box.addItem(fields[i]);
 		}
-		pop.addAttribute("Field:", box);
-		Button b = new Button("OK");
+		pop.addAttribute(constants.Field(), box);
+		Button b = new Button(constants.OK());
 		pop.addAttribute("", b);
 		b.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
@@ -179,7 +180,7 @@ public class ActionInsertColumn extends FormStylePopup {
 
 	private void doFieldLabel() {
 		if (nil(this.editingCol.factField)) {
-			fieldLabel.setText("(please choose fact type)");
+			fieldLabel.setText(constants.pleaseChooseFactType());
 		} else {
 			fieldLabel.setText(editingCol.factField);
 		}
@@ -210,10 +211,10 @@ public class ActionInsertColumn extends FormStylePopup {
 		hp.add(ok);
 
 
-		pop.addAttribute("Choose existing pattern to add column to:", hp);
-		pop.addAttribute("", new HTML("<i><b>---OR---</i></b>"));
+		pop.addAttribute(constants.ChooseExistingPatternToAddColumnTo(), hp);
+		pop.addAttribute("", new HTML(constants.ORwithEmphasis()));
 
-		Button createPattern = new Button("Create new fact pattern");
+		Button createPattern = new Button(constants.CreateNewFactPattern());
 		createPattern.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				pop.hide();
@@ -240,14 +241,14 @@ public class ActionInsertColumn extends FormStylePopup {
 
 	protected void showNewPatternDialog() {
 		final FormStylePopup pop = new FormStylePopup();
-		pop.setTitle("New fact - select the type");
+		pop.setTitle(constants.NewFactSelectTheType());
 		final ListBox types = new ListBox();
 		for (int i = 0; i < sce.factTypes.length; i++) {
 			types.addItem(sce.factTypes[i]);
 		}
-		pop.addAttribute("Fact type:", types);
+		pop.addAttribute(constants.FactType(), types);
 		final TextBox binding = new TextBox();
-		pop.addAttribute("name:", binding);
+		pop.addAttribute(constants.name(), binding);
 
 		Button ok = new Button("OK");
 		ok.addClickListener(new ClickListener() {

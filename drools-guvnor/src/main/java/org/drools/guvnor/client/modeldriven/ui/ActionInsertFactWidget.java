@@ -28,6 +28,7 @@ import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
 import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -36,6 +37,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This is used when asserting a new fact into working memory.
@@ -51,6 +53,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
     private final String[] fieldCompletions;
     private final RuleModeller modeller;
     private final String factType;
+    private Messages constants = GWT.create(Messages.class);
 
     public ActionInsertFactWidget(RuleModeller mod, ActionInsertFact set, SuggestionCompletionEngine com) {
         this.model = set;
@@ -60,7 +63,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
         this.factType = set.factType;
         this.fieldCompletions = this.completions.getFieldCompletions( set.factType );
 
-        layout.setStyleName( "model-builderInner-Background" );
+        layout.setStyleName( "model-builderInner-Background" );  //NON-NLS
 
         doLayout();
 
@@ -82,7 +85,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
             Image remove = new ImageButton("images/delete_item_small.gif");
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                	if (Window.confirm("Remove this item?")) {
+                	if (Window.confirm(constants.RemoveThisItem())) {
                             model.removeField( idx );
                             modeller.refreshWidget();
                 	};
@@ -111,7 +114,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
 
 
         Image edit = new ImageButton("images/edit_tiny.gif");
-        edit.setTitle( "Add another field to this so you can set its value." );
+        edit.setTitle(constants.AddAnotherFieldToThisSoYouCanSetItsValue());
         edit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showAddFieldPopup(w);
@@ -119,9 +122,9 @@ public class ActionInsertFactWidget extends DirtyableComposite {
         } );
 
 
-        String assertType = "assert";
+        String assertType = "assert";  //NON-NLS
         if (this.model instanceof ActionInsertLogicalFact) {
-            assertType = "assertLogical";
+            assertType = "assertLogical";  //NON-NLS
         }
         horiz.add( new SmallLabel(HumanReadable.getActionDisplayName(assertType) + " <b>" + this.model.factType + "</b>") );
         horiz.add( edit );
@@ -130,7 +133,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
     }
 
     protected void showAddFieldPopup(Widget w) {
-        final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", "Add a field");
+        final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", constants.AddAField());
         final ListBox box = new ListBox();
         box.addItem( "..." );
 
@@ -140,7 +143,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
 
         box.setSelectedIndex( 0 );
 
-        popup.addAttribute( "Add field", box );
+        popup.addAttribute(constants.AddField(), box );
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 String fieldName = box.getItemText( box.getSelectedIndex() );

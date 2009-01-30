@@ -193,7 +193,7 @@ public class RuleModeller extends DirtyableComposite {
      * Do all the widgets for the RHS.
      */
     private Widget renderRhs(final RuleModel model) {
-        DirtyableVerticalPane vert = new DirtyableVerticalPane();
+        DirtyableVerticalPane widget = new DirtyableVerticalPane();
 
         for ( int i = 0; i < model.rhs.length; i++ ) {
             IAction action = model.rhs[i];
@@ -229,7 +229,7 @@ public class RuleModeller extends DirtyableComposite {
             }
 
             //w.setWidth( "100%" );
-            vert.add( spacerWidget() );
+            widget.add( spacerWidget() );
             //vert.setWidth( "100%" );
 
             DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
@@ -252,11 +252,11 @@ public class RuleModeller extends DirtyableComposite {
             }
 
             horiz.add( remove );
-            vert.add( horiz );
+            widget.add( horiz );
 
         }
 
-        return vert;
+        return widget;
     }
 
     /**

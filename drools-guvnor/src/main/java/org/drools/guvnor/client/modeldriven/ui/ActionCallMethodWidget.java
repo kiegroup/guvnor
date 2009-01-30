@@ -17,6 +17,7 @@ import org.drools.guvnor.client.modeldriven.brl.ActionCallMethod;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -27,6 +28,7 @@ import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This widget is for modifying facts bound to a variable.
@@ -44,6 +46,7 @@ public class ActionCallMethodWidget extends DirtyableComposite {
     final private String[] fieldCompletions;
     final private RuleModeller modeller;
     final private String variableClass;
+    private Messages constants = GWT.create(Messages.class);
 
 
     public ActionCallMethodWidget(RuleModeller mod,  ActionCallMethod set, SuggestionCompletionEngine com) {
@@ -52,7 +55,7 @@ public class ActionCallMethodWidget extends DirtyableComposite {
         this.layout = new DirtyableFlexTable();
         this.modeller = mod;
 
-        layout.setStyleName( "model-builderInner-Background" );
+        layout.setStyleName( "model-builderInner-Background" ); //NON-NLS
         if (completions.isGlobalVariable( set.variable )) {
             this.fieldCompletions = completions.getFieldCompletionsForGlobalVariable( set.variable );
             this.variableClass = (String) completions.globalTypes.get( set.variable );
@@ -76,16 +79,16 @@ public class ActionCallMethodWidget extends DirtyableComposite {
         DirtyableFlexTable inner = new DirtyableFlexTable();
 
         for ( int i = 0; i < model.fieldValues.length; i++ ) {
-            ActionFieldFunction val = model.getFieldValue(i);
+            ActionFieldFunction val = model.getFieldValue(i);   
 
             inner.setWidget( i, 0, fieldSelector(val) );
             //inner.setWidget( i, 1, actionSelector(val) );
             inner.setWidget( i, 1, valueEditor(val) );
             final int idx = i;
-            Image remove = new ImageButton("images/delete_item_small.gif");
+            Image remove = new ImageButton("images/delete_item_small.gif");   //NON-NLS
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                    if (Window.confirm("Remove this item?")) {
+                    if (Window.confirm(constants.RemoveThisItem())) {
                         model.removeField( idx );
                         modeller.refreshWidget();
                 };
@@ -102,22 +105,21 @@ public class ActionCallMethodWidget extends DirtyableComposite {
 
     private Widget getSetterLabel() {
         HorizontalPanel horiz = new HorizontalPanel();
-        Image edit = new ImageButton("images/add_field_to_fact.gif");
-        edit.setTitle( "Add another field to this so you can set its value." );
+        Image edit = new ImageButton("images/add_field_to_fact.gif");    //NON-NLS
+        edit.setTitle(constants.AddAnotherFieldToThisSoYouCanSetItsValue());
         edit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showAddFieldPopup(w);
             }
         } );
-        String modifyType = "call";
-        horiz.add( new SmallLabel(HumanReadable.getActionDisplayName(modifyType) + " [" + model.variable + "]") );
+        horiz.add( new SmallLabel(HumanReadable.getActionDisplayName("call") + " [" + model.variable + "]") );
         horiz.add( edit );
         return horiz;
     }
 
 
     protected void showAddFieldPopup(Widget w) {
-        final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", "Choose a method to invoke");
+        final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", constants.ChooseAMethodToInvoke());
         final ListBox box = new ListBox();
         box.addItem( "..." );
 
@@ -127,7 +129,7 @@ public class ActionCallMethodWidget extends DirtyableComposite {
 
         box.setSelectedIndex( 0 );
 
-        popup.addAttribute( "Add field", box );
+        popup.addAttribute(constants.AddField(), box );
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 String fieldName = box.getItemText( box.getSelectedIndex() );

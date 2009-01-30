@@ -20,4 +20,48 @@ public interface Messages extends Constants {
     String Status();
 
     String Category();
+
+    String AddAnotherFieldToThisSoYouCanSetItsValue();
+
+    String RemoveThisItem();
+
+    String ChooseAMethodToInvoke();
+
+    String AddField();
+
+    String EditTheFieldThatThisColumnOperatesOn();
+
+    String Field();
+
+    String ValueList();
+
+    String optionalValueList();
+
+    String ValueListsExplanation();
+
+    String ColumnHeaderDescription();
+
+    String ApplyChanges();
+
+    String YouMustEnterAColumnHeaderValueDescription();
+
+    String ThatColumnNameIsAlreadyInUsePleasePickAnother();
+
+    String OK();
+
+    String pleaseChooseFactType();
+
+    String ChooseExistingPatternToAddColumnTo();
+
+    String ORwithEmphasis();
+
+    String CreateNewFactPattern();
+
+    String NewFactSelectTheType();
+
+    String FactType();
+
+    String name();
+
+    String AddAField();
 }
