@@ -6,8 +6,10 @@ import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Toolbar;
@@ -21,14 +23,16 @@ import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
  * @author Anton Arhipov
  */
 public class CategoriesPanel extends GenericPanel {
+    private static Messages constants = GWT.create(Messages.class);
 
     public CategoriesPanel(ExplorerViewCenterPanel tabbedPanel) {
-        super("Assets", tabbedPanel);
-        setIconCls("nav-categories");
+        super(constants.Assets(), tabbedPanel);
+        setIconCls("nav-categories"); //NON-NLS
 
+        
         Toolbar rulesToolBar = new Toolbar();
 
-        final ToolbarMenuButton menuButton = new ToolbarMenuButton( "Create New",
+        final ToolbarMenuButton menuButton = new ToolbarMenuButton(constants.CreateNew(),
                                                             RulesNewMenu.getMenu( this ) );
         rulesToolBar.addButton( menuButton );
         menuButton.addListener( new SplitButtonListenerAdapter() {
@@ -81,7 +85,7 @@ public class CategoriesPanel extends GenericPanel {
                                     }
                                 });
 
-                        centertabbedPanel.addTab(((isState) ? "Status: " : "Category: ") + self.getText(), true, list, key);
+                        centertabbedPanel.addTab(((isState) ? constants.Status() : constants.Category()) + self.getText(), true, list, key);
                     }
 
                 }

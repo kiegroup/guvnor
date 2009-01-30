@@ -11,6 +11,7 @@ import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.dt.ActionCol;
 import org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -23,6 +24,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This is an editor for columns that are for inserting facts.
@@ -36,8 +38,9 @@ public class ActionInsertColumn extends FormStylePopup {
 	private ActionInsertFactCol editingCol;
 	private SmallLabel patternLabel = new SmallLabel();
 	private TextBox fieldLabel = getFieldLabel();
+    private Messages constants = GWT.create(Messages.class);
 
-	public ActionInsertColumn(SuggestionCompletionEngine sce, final GuidedDecisionTable dt, final Command refreshGrid, final ActionInsertFactCol col, final boolean isNew) {
+    public ActionInsertColumn(SuggestionCompletionEngine sce, final GuidedDecisionTable dt, final Command refreshGrid, final ActionInsertFactCol col, final boolean isNew) {
 		this.setModal(false);
 		this.dt = dt;
 		this.sce = sce;
@@ -49,7 +52,7 @@ public class ActionInsertColumn extends FormStylePopup {
 		editingCol.header = col.header;
 		editingCol.valueList = col.valueList;
 
-		setTitle("Action column configuration (inserting a new fact)");
+		setTitle(constants.ActionColumnConfigurationInsertingANewFact());
 
 
 
@@ -57,13 +60,13 @@ public class ActionInsertColumn extends FormStylePopup {
 		pattern.add(patternLabel );
 		doPatternLabel();
 
-		Image changePattern = new ImageButton("images/edit.gif", "Choose a pattern that this column adds data to", new ClickListener() {
+		Image changePattern = new ImageButton("images/edit.gif", constants.ChooseAPatternThatThisColumnAddsDataTo(), new ClickListener() {
 			public void onClick(Widget w) {
 				showChangePattern(w);
 			}
 		});
 		pattern.add(changePattern);
-		addAttribute("Pattern:", pattern);
+		addAttribute(constants.Pattern(), pattern);
 
 		HorizontalPanel field = new HorizontalPanel();
 		field.add(fieldLabel);
