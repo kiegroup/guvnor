@@ -9,6 +9,7 @@ import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -21,6 +22,7 @@ import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This provides for editing of fields in the RHS of a rule.
@@ -33,8 +35,9 @@ public class ActionValueEditor extends DirtyableComposite {
 	private ActionFieldValue value;
 	private DropDownData enums;
 	private SimplePanel root;
+    private Messages constants = GWT.create(Messages.class);
 
-	public ActionValueEditor(final ActionFieldValue val, final DropDownData enums) {
+    public ActionValueEditor(final ActionFieldValue val, final DropDownData enums) {
 		if (val.type.equals(SuggestionCompletionEngine.TYPE_BOOLEAN)) {
 			this.enums = DropDownData.create(new String[] {"true", "false" });
 		} else {
@@ -149,8 +152,8 @@ public class ActionValueEditor extends DirtyableComposite {
 
 
 	protected void showTypeChoice(Widget w) {
-        final FormStylePopup form = new FormStylePopup( "images/newex_wiz.gif", "Field value" );
-        Button lit = new Button( "Literal value" );
+        final FormStylePopup form = new FormStylePopup( "images/newex_wiz.gif", constants.FieldValue());
+        Button lit = new Button(constants.LiteralValue());
         lit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 value.value = " ";
@@ -160,12 +163,13 @@ public class ActionValueEditor extends DirtyableComposite {
             }
 
         } );
-        form.addAttribute( "Literal value:", widgets( lit, new InfoPopup( "Literal",
-                                                                          "A literal value means the " + "constraint is directly against the value that you type (ie. what you see on screen)." ) ) );
+        
+        form.addAttribute(constants.LiteralValue() + ":", widgets( lit, new InfoPopup(constants.Literal(),
+                constants.LiteralValTip()) ) );
         form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( "<i>Advanced</i>" ) );
+        form.addRow( new SmallLabel(constants.AdvancedSection()) );
 
-        Button formula = new Button("Formula");
+        Button formula = new Button(constants.Formula());
         formula.addClickListener(new ClickListener() {
 
 			public void onClick(Widget w) {
@@ -177,7 +181,7 @@ public class ActionValueEditor extends DirtyableComposite {
 
         });
 
-        form.addAttribute("Formula:", widgets(formula, new InfoPopup("Formula", "A formula is used when values are calculated, or a variable is used.")));
+        form.addAttribute(constants.Formula() + ":", widgets(formula, new InfoPopup(constants.Formula(), constants.FormulaTip())));
         form.show();
 	}
 

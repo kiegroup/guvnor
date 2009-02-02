@@ -8,6 +8,7 @@ import org.drools.guvnor.client.admin.PermissionViewer;
 import org.drools.guvnor.client.admin.StateManager;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Frame;
@@ -21,10 +22,11 @@ import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
  * @author Anton Arhipov
  */
 public class AdministrationPanel extends GenericPanel {
+    private static Messages constants = GWT.create(Messages.class);
 
-	public AdministrationPanel(ExplorerViewCenterPanel tabbedPanel) {
-		super("Administration", tabbedPanel);
-		setIconCls("nav-admin");
+    public AdministrationPanel(ExplorerViewCenterPanel tabbedPanel) {
+		super(constants.Administration(), tabbedPanel);
+		setIconCls("nav-admin"); //NON-NLS
 
 		TreePanel adminTree = basicTreeStructure(ExplorerNodeConfig
 				.getAdminStructure(), new TreePanelListenerAdapter() {
@@ -33,49 +35,49 @@ public class AdministrationPanel extends GenericPanel {
 				int id = Integer.parseInt(self.getAttribute("id"));
 				switch (id) {
 				case 0:
-					if (!centertabbedPanel.showIfOpen("catman"))
-						centertabbedPanel.addTab("Category Manager", true,
-								new CategoryManager(), "catman");
+					if (!centertabbedPanel.showIfOpen("catman")) //NON-NLS
+						centertabbedPanel.addTab(constants.CategoryManager(), true,
+								new CategoryManager(), "catman"); //NON-NLS
 					break;
 				case 1:
-					if (!centertabbedPanel.showIfOpen("archman"))
-						centertabbedPanel.addTab("Archived Manager", true,
+					if (!centertabbedPanel.showIfOpen("archman"))  //NON-NLS
+						centertabbedPanel.addTab(constants.ArchivedManager(), true,
 								new ArchivedAssetManager(centertabbedPanel),
-								"archman");
+								"archman");      //NON-NLS
 					break;
 
 				case 2:
-					if (!centertabbedPanel.showIfOpen("stateman"))
-						centertabbedPanel.addTab("State Manager", true,
+					if (!centertabbedPanel.showIfOpen("stateman")) //NON-NLS
+						centertabbedPanel.addTab(constants.StateManager(), true,
 								new StateManager(), "stateman");
 					break;
 				case 3:
 					if (!centertabbedPanel.showIfOpen("bakman"))
-						centertabbedPanel.addTab("Import Export", true,
+						centertabbedPanel.addTab(constants.ImportExport(), true,
 								new BackupManager(), "bakman");
 					break;
 
 				case 4:
 					if (!centertabbedPanel.showIfOpen("errorLog"))
-						centertabbedPanel.addTab("Event Log", true,
+						centertabbedPanel.addTab(constants.EventLog(), true,
 								new LogViewer(), "errorLog");
 					break;
 				case 5:
 					if (!centertabbedPanel.showIfOpen("securityPermissions"))
-						centertabbedPanel.addTab("User Permission mappings",
+						centertabbedPanel.addTab(constants.UserPermissionMappings(),
 								true, new PermissionViewer(),
 								"securityPermissions");
 					break;
 				case 6:
-					Frame aboutFrame = new Frame("version.txt");
+					Frame aboutFrame = new Frame("version.txt");  //NON-NLS
 
 					FormStylePopup aboutPop = new FormStylePopup();
                     aboutPop.setWidth(600);
-					aboutPop.setTitle("About");
+					aboutPop.setTitle(constants.About());
 					String hhurl = GWT.getModuleBaseURL() + "webdav";
-					aboutPop.addAttribute("WebDAV URL:", new SmallLabel("<b>"
+					aboutPop.addAttribute(constants.WebDAVURL(), new SmallLabel("<b>"
 							+ hhurl + "</b>"));
-					aboutPop.addAttribute("Version:", aboutFrame);
+					aboutPop.addAttribute(constants.Version() + ":", aboutFrame);
 					aboutPop.show();
 					break;
 

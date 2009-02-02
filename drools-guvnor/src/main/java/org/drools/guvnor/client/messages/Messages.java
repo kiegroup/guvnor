@@ -122,4 +122,98 @@ public interface Messages extends com.google.gwt.i18n.client.Messages {
     String CreatedANewItemSuccess(String name, String packageName);
 
     String CheckInChanges();
+
+    String Fact();
+
+    String FieldValue();
+
+    String LiteralValue();
+
+    String LiteralValTip();
+
+    String Literal();
+
+    String AdvancedSection();
+
+    String Formula();
+
+    String FormulaTip();
+
+    String Administration();
+
+    String CategoryManager();
+
+    String ArchivedManager();
+
+    String StateManager();
+
+    String ImportExport();
+
+    String EventLog();
+
+    String UserPermissionMappings();
+
+    String About();
+
+    String WebDAVURL();
+
+    String Version();
+
+    String Errors();
+
+    String Warnings();
+
+    String Notes();
+
+    String ShowFactUsages();
+
+    String FactUsages();
+
+    String FieldsUsed();
+
+    String ShowRulesAffected();
+
+    String RulesAffected();
+
+    String Reason();
+
+    String Cause();
+
+    String AnalysingPackage(String packageName);
+
+    String RunAnalysis();
+
+    String AnalysingPackageRunning();
+
+    String ArchivedItems();
+
+    String RestoreSelectedPackage();
+
+    String PermanentlyDeletePackage();
+
+    String AreYouSurePackageDelete();
+
+    String ArchivedPackagesList();
+
+    String RestoreSelectedAsset();
+
+    String PleaseSelectAnItemToRestore();
+
+    String ItemRestored();
+
+    String DeleteSelectedAsset();
+
+    String PleaseSelectAnItemToPermanentlyDelete();
+
+    String AreYouSureDeletingAsset();
+
+    String ItemDeleted();
+
+    String ArchivedAssets();
+
+    String PackageDeleted();
+
+    String PackageRestored();
+
+    String noArchivedPackages();
 }

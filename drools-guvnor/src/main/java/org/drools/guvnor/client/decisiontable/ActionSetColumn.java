@@ -64,7 +64,7 @@ public class ActionSetColumn extends FormStylePopup {
 			}
 		});
 		pattern.add(changePattern);
-		addAttribute("Fact:", pattern);
+		addAttribute(constants.Fact(), pattern);
 
 
 		HorizontalPanel field = new HorizontalPanel();
@@ -75,7 +75,7 @@ public class ActionSetColumn extends FormStylePopup {
 			}
 		});
 		field.add(editField);
-		addAttribute("Field:", field);
+		addAttribute(constants.Field(), field);
 		doFieldLabel();
 
 		final TextBox valueList = new TextBox();

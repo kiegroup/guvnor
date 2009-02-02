@@ -5,15 +5,18 @@ import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
@@ -28,6 +31,7 @@ public class ArchivedAssetManager extends Composite {
 
 	private AssetItemGrid grid;
 	private ListBox packages = new ListBox(true);
+    private Messages constants = GWT.create(Messages.class);
 
     public ArchivedAssetManager(final ExplorerViewCenterPanel tab) {
 
@@ -35,9 +39,9 @@ public class ArchivedAssetManager extends Composite {
         PrettyFormLayout pf = new PrettyFormLayout();
 
         VerticalPanel header = new VerticalPanel();
-        header.add(new HTML("<b>Archived items</b>"));
+        header.add(new HTML(constants.ArchivedItems()));
 
-        pf.addHeader("images/backup_large.png", header);
+        pf.addHeader("images/backup_large.png", header); //NON-NLS
 
 
 
@@ -66,19 +70,19 @@ public class ArchivedAssetManager extends Composite {
         			}
 
         		});
-        restorePackage.setText("Restore selected package");
+        restorePackage.setText(constants.RestoreSelectedPackage());
         tb.addButton(restorePackage);
 
 
 
 
         final ToolbarButton delPackage = new ToolbarButton();
-        delPackage.setText("Permanently delete package");
+        delPackage.setText(constants.PermanentlyDeletePackage());
         delPackage.addListener(new ButtonListenerAdapter() {
         			public void onClick(
         					com.gwtext.client.widgets.Button button,
         					EventObject e) {
-        				if (Window.confirm("Are you sure you want to permanently delete this package? This can not be undone.")) {
+        				if (Window.confirm(constants.AreYouSurePackageDelete())) {
         					deletePackage(packages.getValue(packages.getSelectedIndex()));
         				}
         			}
@@ -87,7 +91,7 @@ public class ArchivedAssetManager extends Composite {
 
 
 
-        pf.startSection("Archived packages");
+        pf.startSection(constants.ArchivedPackagesList());
 
         pf.addRow(tb);
         pf.addRow(packages);
@@ -97,17 +101,17 @@ public class ArchivedAssetManager extends Composite {
 
         tb = new Toolbar();
         final ToolbarButton restoreAsset = new ToolbarButton();
-        restoreAsset.setText("Restore selected asset");
+        restoreAsset.setText(constants.RestoreSelectedAsset());
         tb.addButton(restoreAsset);
         restoreAsset.addListener(new ButtonListenerAdapter() {
         			public void onClick(com.gwtext.client.widgets.Button button, EventObject e) {
                     	if (grid.getSelectedRowUUID() == null) {
-                    		Window.alert("Please select an item to restore.");
+                    		Window.alert(constants.PleaseSelectAnItemToRestore());
                     		return;
                     	}
                         RepositoryServiceFactory.getService().archiveAsset( grid.getSelectedRowUUID(), false, new GenericCallback() {
                             public void onSuccess(Object arg0) {
-                                Window.alert( "Item restored." );
+                                Window.alert(constants.ItemRestored());
                                 grid.refreshGrid();
                             }
                         });
@@ -116,7 +120,7 @@ public class ArchivedAssetManager extends Composite {
 
 
         final ToolbarButton deleteAsset = new ToolbarButton();
-        deleteAsset.setText("Delete selected asset");
+        deleteAsset.setText(constants.DeleteSelectedAsset());
         tb.addButton(deleteAsset);
 
         deleteAsset.addListener(
@@ -125,23 +129,23 @@ public class ArchivedAssetManager extends Composite {
         					com.gwtext.client.widgets.Button button,
         					EventObject e) {
                     	if (grid.getSelectedRowUUID() == null) {
-                    		Window.alert("Please select an item to permanently delete.");
+                    		Window.alert(constants.PleaseSelectAnItemToPermanentlyDelete());
                     		return;
                     	}
-                    	if (!Window.confirm("Are you sure you want to permanently delete this asset ? This can not be undone.")) {
+                    	if (!Window.confirm(constants.AreYouSureDeletingAsset())) {
                     		return;
                     	}
                         RepositoryServiceFactory.getService().removeAsset( grid.getSelectedRowUUID(), new GenericCallback() {
 
                             public void onSuccess(Object arg0) {
-                                Window.alert( "Item deleted." );
+                                Window.alert(constants.ItemDeleted());
                                 grid.refreshGrid();
                             }
                         });
         			}
         		});
 
-        pf.startSection("Archived assets");
+        pf.startSection(constants.ArchivedAssets());
         pf.addRow(tb);
 
         pf.addRow(grid);
@@ -156,7 +160,7 @@ public class ArchivedAssetManager extends Composite {
 	private void deletePackage(final String uuid) {
 		RepositoryServiceFactory.getService().removePackage(uuid, new GenericCallback( ) {
 			public void onSuccess(Object data) {
-				Window.alert("Package deleted");
+				Window.alert(constants.PackageDeleted());
 				packages.clear();
 				loadPackages();
 			}
@@ -165,13 +169,12 @@ public class ArchivedAssetManager extends Composite {
 
 
 	private void restorePackage(String uuid) {
-		RepositoryServiceFactory.getService().loadPackageConfig(uuid, new GenericCallback() {
-			public void onSuccess(Object data) {
-				PackageConfigData cf = (PackageConfigData) data;
+		RepositoryServiceFactory.getService().loadPackageConfig(uuid, new GenericCallback<PackageConfigData>() {
+			public void onSuccess(PackageConfigData cf) {
 				cf.archived = false;
-				RepositoryServiceFactory.getService().savePackage(cf, new GenericCallback() {
-					public void onSuccess(Object data) {
-						Window.alert("Package restored.");
+				RepositoryServiceFactory.getService().savePackage(cf, new GenericCallback<ValidatedResponse>() {
+					public void onSuccess(ValidatedResponse data) {
+						Window.alert(constants.PackageRestored());
 						packages.clear();
 						loadPackages();
 					}
@@ -184,14 +187,13 @@ public class ArchivedAssetManager extends Composite {
 
     private ListBox loadPackages() {
 
-    	RepositoryServiceFactory.getService().listArchivedPackages(new GenericCallback() {
-			public void onSuccess(Object data) {
-				PackageConfigData[] configs = (PackageConfigData[]) data;
+    	RepositoryServiceFactory.getService().listArchivedPackages(new GenericCallback<PackageConfigData[]>() {
+			public void onSuccess(PackageConfigData[] configs) {
 				for (int i = 0; i < configs.length; i++) {
 						packages.addItem(configs[i].name, configs[i].uuid);
 				}
 				if (configs.length == 0) {
-					packages.addItem("-- no archived packages --");
+					packages.addItem(constants.noArchivedPackages());
 				}
 			}
     	});

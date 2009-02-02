@@ -5,6 +5,7 @@ import org.drools.guvnor.client.rpc.AnalysisFactUsage;
 import org.drools.guvnor.client.rpc.AnalysisFieldUsage;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -12,21 +13,23 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeListener;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * Shows the results of an analysis run.
  * @author Michael Neale
  */
 public class AnalysisResultWidget extends Composite {
+    private Messages constants = GWT.create(Messages.class);
 
-	public AnalysisResultWidget(AnalysisReport report) {
+    public AnalysisResultWidget(AnalysisReport report) {
 		FormStyleLayout layout = new FormStyleLayout();
 
 		Tree t = new Tree();
 
-		t.addItem(renderItems(report.errors, "images/error.gif", "Errors"));
-		t.addItem(renderItems(report.warnings, "images/warning.gif", "Warnings"));
-		t.addItem(renderItems(report.notes, "images/note.gif", "Notes"));
+		t.addItem(renderItems(report.errors, "images/error.gif", constants.Errors()));
+		t.addItem(renderItems(report.warnings, "images/warning.gif", constants.Warnings()));
+		t.addItem(renderItems(report.notes, "images/note.gif", constants.Notes()));
 		t.addItem(renderFactUsage(report.factUsages));
 		t.addTreeListener(swapTitleWithUserObject());
 		layout.addRow(t);
@@ -53,25 +56,24 @@ public class AnalysisResultWidget extends Composite {
 
 	private TreeItem renderFactUsage(AnalysisFactUsage[] factUsages) {
 
-		TreeItem root = new TreeItem(new HTML("<img src='images/fact_template.gif'/><b>Show fact usages...</b>"));
-		root.setUserObject(new HTML("<img src='images/fact_template.gif'/><b>Fact usages:</b>"));
+		TreeItem root = new TreeItem(new HTML("<img src='images/fact_template.gif'/><b>" + constants.ShowFactUsages() + "</b>"));
+		root.setUserObject(new HTML("<img src='images/fact_template.gif'/><b>" + constants.FactUsages() + ":</b>"));
 		root.setStyleName("analysis-Report");
 
 
 		for (int i = 0; i < factUsages.length; i++) {
 
-			System.err.println("fact usage !");
 			AnalysisFactUsage fu = factUsages[i];
 			TreeItem fact = new TreeItem(new HTML("<img src='images/fact.gif'/>" + fu.name));
 
-			TreeItem fieldList = new TreeItem(new HTML("<i>Fields used:</i>"));
+			TreeItem fieldList = new TreeItem(new HTML(constants.FieldsUsed()));
 
 			for (int j = 0; j < fu.fields.length; j++) {
 				AnalysisFieldUsage fiu = fu.fields[j];
 				TreeItem field = new TreeItem(new HTML("<img src='images/field.gif'/>" + fiu.name));
 				fieldList.addItem(field);
-				TreeItem ruleList = new TreeItem(new HTML("<i>Show rules affected ...</i>"));
-				ruleList.setUserObject(new HTML("<i>Rules affected:</i>"));
+				TreeItem ruleList = new TreeItem(new HTML(constants.ShowRulesAffected()));
+				ruleList.setUserObject(new HTML(constants.RulesAffected()));
 				for (int k = 0; k < fiu.rules.length; k++) {
 					ruleList.addItem(new TreeItem(new HTML("<img src='images/rule_asset.gif'/>" + fiu.rules[k])));
 				}
@@ -105,8 +107,8 @@ public class AnalysisResultWidget extends Composite {
 		for (int i = 0; i < lines.length; i++) {
 			AnalysisReportLine r = lines[i];
 			TreeItem w = new TreeItem(new HTML(r.description));
-			w.addItem(new TreeItem(new HTML("<b>Reason:</b>&nbsp;" + r.reason)));
-			TreeItem causes = new TreeItem(new HTML("<b>Cause:</b>"));
+			w.addItem(new TreeItem(new HTML("<b>" + constants.Reason() + ":</b>&nbsp;" + r.reason)));
+			TreeItem causes = new TreeItem(new HTML("<b>" + constants.Cause() +":</b>"));
 
 			for (int j = 0; j < r.cause.length; j++) {
  				causes.addItem(new HTML(r.cause[j]));
