@@ -25,6 +25,7 @@ import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
 import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -33,6 +34,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This widget is for setting fields on a bound fact or global variable.
@@ -49,6 +51,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
     final private String[] fieldCompletions;
     final private RuleModeller modeller;
     final private String variableClass;
+    private Messages constants = GWT.create(Messages.class);
 
 
     public ActionSetFieldWidget(RuleModeller mod,  ActionSetField set, SuggestionCompletionEngine com) {
@@ -86,10 +89,10 @@ public class ActionSetFieldWidget extends DirtyableComposite {
             inner.setWidget( i, 0, fieldSelector(val) );
             inner.setWidget( i, 1, valueEditor(val) );
             final int idx = i;
-            Image remove = new ImageButton("images/delete_item_small.gif");
+            Image remove = new ImageButton("images/delete_item_small.gif"); //NON-NLS
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                	if (Window.confirm("Remove this item?")) {
+                	if (Window.confirm(constants.RemoveThisItem())) {
                             model.removeField( idx );
                             modeller.refreshWidget();
                 	}
@@ -110,7 +113,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
 
 
         Image edit = new ImageButton("images/edit_tiny.gif");
-        edit.setTitle( "Add another field to this so you can set its value." );
+        edit.setTitle(constants.AddAnotherFieldToThisSoYouCanSetItsValue());
         ClickListener clk =       new ClickListener() {
             public void onClick(Widget w) {
                 showAddFieldPopup(w);
@@ -122,7 +125,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
             modifyType = "modify";
         }
 
-        ClickableLabel lbl = new ClickableLabel(HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
+        ClickableLabel lbl = new ClickableLabel(constants.setterLabel(HumanReadable.getActionDisplayName(modifyType), model.variable), clk);//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
         horiz.add( lbl) ;
         horiz.add( edit );
 
@@ -131,7 +134,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
 
 
     protected void showAddFieldPopup(Widget w) {
-        final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", "Add a field");
+        final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", constants.AddAField());
 
         final ListBox box = new ListBox();
         box.addItem( "..." );
@@ -142,7 +145,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
 
         box.setSelectedIndex( 0 );
 
-        popup.addAttribute( "Add field", box );
+        popup.addAttribute(constants.AddField(), box );
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 String fieldName = box.getItemText( box.getSelectedIndex() );

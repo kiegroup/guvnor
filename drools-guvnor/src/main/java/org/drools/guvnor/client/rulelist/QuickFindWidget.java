@@ -27,6 +27,7 @@ import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -41,6 +42,8 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.SuggestOracle.Callback;
 import com.google.gwt.user.client.ui.SuggestOracle.Request;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This is for quickly finding an asset by name. Partial completion is allowed.
@@ -74,6 +77,7 @@ public class QuickFindWidget extends Composite {
         go.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                updateList();
+
             }
         } );
 

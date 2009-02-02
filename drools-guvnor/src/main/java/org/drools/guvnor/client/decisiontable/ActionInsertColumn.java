@@ -60,12 +60,11 @@ public class ActionInsertColumn extends FormStylePopup {
 		pattern.add(patternLabel );
 		doPatternLabel();
 
-         //NON-NLS
 		Image changePattern = new ImageButton("images/edit.gif", constants.ChooseAPatternThatThisColumnAddsDataTo(), new ClickListener() {
 			public void onClick(Widget w) {
 				showChangePattern(w);
 			}
-		});
+		});       //NON-NLS
 		pattern.add(changePattern);
 		addAttribute(constants.Pattern(), pattern);
 
@@ -75,7 +74,7 @@ public class ActionInsertColumn extends FormStylePopup {
 			public void onClick(Widget w) {
 				showFieldChange();
 			}
-		});
+		}); //NON-NLS
 		field.add(editField);
 		addAttribute(constants.Field(), field);
 		doFieldLabel();
@@ -228,7 +227,7 @@ public class ActionInsertColumn extends FormStylePopup {
 
 		ok.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
-				String[] val = pats.getValue(pats.getSelectedIndex()).split("\\s");
+				String[] val = pats.getValue(pats.getSelectedIndex()).split("\\s"); //NON-NLS
 				editingCol.factType = val[0];
 				editingCol.boundName = val[1];
 				doPatternLabel();
@@ -250,7 +249,7 @@ public class ActionInsertColumn extends FormStylePopup {
 		final TextBox binding = new TextBox();
 		pop.addAttribute(constants.name(), binding);
 
-		Button ok = new Button("OK");
+		Button ok = new Button(constants.OK());
 		ok.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				editingCol.boundName = binding.getText();

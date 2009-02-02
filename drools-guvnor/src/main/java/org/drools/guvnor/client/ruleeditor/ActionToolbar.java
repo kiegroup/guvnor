@@ -23,6 +23,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.StatusChangePopup;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -31,12 +32,15 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.QuickTipsConfig;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.ToolbarTextItem;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+
+import javax.net.ssl.SSLEngineResult;
 
 /**
  * This contains the widgets used to action a rule asset
@@ -52,6 +56,7 @@ public class ActionToolbar extends Composite {
     private ToolbarTextItem state;
 	final private RuleAsset asset;
 	private Command afterCheckinEvent;
+    private Messages constants = GWT.create(Messages.class);
 
     public ActionToolbar(final RuleAsset asset,
                          final CheckinAction checkin,
@@ -63,7 +68,7 @@ public class ActionToolbar extends Composite {
         this.deleteAction = delete;
         this.asset = asset;
 
-        this.state = new ToolbarTextItem("Status: ");
+        this.state = new ToolbarTextItem(constants.Status() + " ");
 ;
 
         toolbar = new Toolbar();
@@ -87,14 +92,14 @@ public class ActionToolbar extends Composite {
      * Sets the visible status display.
      */
     private void setState(String status) {
-        state.setText("<i>Status: [" + status + "]</i>");
+        state.setText(constants.statusIs(status));
     }
 
     private void controls() {
 
 	    	ToolbarButton save = new ToolbarButton();
-	    	save.setText("Save changes");
-			save.setTooltip(getTip("Commit any changes for this asset."));
+	    	save.setText(constants.SaveChanges());
+			save.setTooltip(getTip(constants.CommitAnyChangesForThisAsset()));
 			save.addListener(new ButtonListenerAdapter() {
 		        			public void onClick(
 		        					com.gwtext.client.widgets.Button button,
@@ -108,8 +113,8 @@ public class ActionToolbar extends Composite {
         toolbar.addSeparator();
 
 		ToolbarButton copy = new ToolbarButton();
-		copy.setText("Copy");
-		copy.setTooltip("Copy this asset.");
+		copy.setText(constants.Copy());
+		copy.setTooltip(constants.CopyThisAsset());
 		copy.addListener(new ButtonListenerAdapter() {
 			public void onClick(
 					com.gwtext.client.widgets.Button button,
@@ -121,14 +126,14 @@ public class ActionToolbar extends Composite {
 
 
 		ToolbarButton archive = new ToolbarButton();
-		archive.setText("Archive");
-		archive.setTooltip(getTip("Archive this asset. This will not permanently delete it."));
+		archive.setText(constants.Archive());
+		archive.setTooltip(getTip(constants.ArchiveThisAssetThisWillNotPermanentlyDeleteIt()));
 		archive.addListener(new ButtonListenerAdapter() {
 			public void onClick(
 					com.gwtext.client.widgets.Button button,
 					EventObject e) {
-                        if (Window.confirm( "Are you sure you want to archive this item?" )) {
-                            archiveAction.doCheckin("Archived Item on " + new java.util.Date().toString());
+                        if (Window.confirm(constants.AreYouSureYouWantToArchiveThisItem())) {
+                            archiveAction.doCheckin(constants.ArchivedItemOn() + new java.util.Date().toString());
                         }
 			}
 			});
@@ -140,13 +145,13 @@ public class ActionToolbar extends Composite {
         if (notCheckedInYet()) {
 
         	final ToolbarButton delete = new ToolbarButton();
-        	delete.setText("Delete");
-    		delete.setTooltip(getTip("Permanently delete this asset. This will only be shown before the asset is checked in."));
+        	delete.setText(constants.Delete());
+    		delete.setTooltip(getTip(constants.DeleteAssetTooltip()));
     		delete.addListener(new ButtonListenerAdapter() {
     			public void onClick(
     					com.gwtext.client.widgets.Button button,
     					EventObject e) {
-                            if (Window.confirm( "Are you sure you want to permanently delete this (unversioned) item?" ) ) {
+                            if (Window.confirm(constants.DeleteAreYouSure()) ) {
                                 deleteAction.execute();
                             }
 				}
@@ -168,8 +173,8 @@ public class ActionToolbar extends Composite {
 
 
         ToolbarButton stateChange = new ToolbarButton();
-        stateChange.setText("Change status");
-		stateChange.setTooltip(getTip("Change the status of this asset."));
+        stateChange.setText(constants.ChangeStatus());
+		stateChange.setTooltip(getTip(constants.ChangeStatusTip()));
 		stateChange.addListener(new ButtonListenerAdapter() {
 			public void onClick(
 					com.gwtext.client.widgets.Button button,
@@ -197,15 +202,15 @@ public class ActionToolbar extends Composite {
 
 
     protected void doCopyDialog(Widget w) {
-        final FormStylePopup form = new FormStylePopup("images/rule_asset.gif", "Copy this item");
+        final FormStylePopup form = new FormStylePopup("images/rule_asset.gif", constants.CopyThisItem());
         final TextBox newName = new TextBox();
-        form.addAttribute( "New name:", newName );
+        form.addAttribute(constants.NewName(), newName );
 
-        Button ok = new Button("Create copy");
+        Button ok = new Button(constants.CreateCopy());
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
             	if (newName.getText() == null || newName.getText().equals("")) {
-            		Window.alert("Asset name must not be empty.");
+            		Window.alert(constants.AssetNameMustNotBeEmpty());
             		return;
             	}
                 RepositoryServiceFactory.getService().copyAsset( asset.uuid, asset.metaData.packageName, newName.getText(),
@@ -227,7 +232,7 @@ public class ActionToolbar extends Composite {
     }
 
     private void completedCopying(String name, String pkg) {
-        Window.alert( "Created a new item called [" + name + "] in package: [" + pkg + "] successfully." );
+        Window.alert( constants.CreatedANewItemSuccess(name, pkg) );
 
     }
 
@@ -235,7 +240,7 @@ public class ActionToolbar extends Composite {
      * Called when user wants to checkin.
      */
     protected void doCheckinConfirm(Widget w) {
-        final CheckinPopup pop = new CheckinPopup(w.getAbsoluteLeft(), w.getAbsoluteTop(), "Check in changes.");
+        final CheckinPopup pop = new CheckinPopup(w.getAbsoluteLeft(), w.getAbsoluteTop(), constants.CheckInChanges());
         pop.setCommand( new Command() {
             public void execute() {
                 checkinAction.doCheckin(pop.getCheckinComment());

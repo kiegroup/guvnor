@@ -112,14 +112,14 @@ public class ActionCallMethodWidget extends DirtyableComposite {
                 showAddFieldPopup(w);
             }
         } );
-        horiz.add( new SmallLabel(HumanReadable.getActionDisplayName("call") + " [" + model.variable + "]") );
+        horiz.add( new SmallLabel(HumanReadable.getActionDisplayName("call") + " [" + model.variable + "]") ); //NON-NLS
         horiz.add( edit );
         return horiz;
     }
 
 
     protected void showAddFieldPopup(Widget w) {
-        final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", constants.ChooseAMethodToInvoke());
+        final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", constants.ChooseAMethodToInvoke());   //NON-NLS
         final ListBox box = new ListBox();
         box.addItem( "..." );
 
