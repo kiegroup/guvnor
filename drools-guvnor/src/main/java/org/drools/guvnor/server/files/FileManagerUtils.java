@@ -33,7 +33,6 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.guvnor.client.common.HTMLFileManagerFields;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
@@ -42,6 +41,7 @@ import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
+import org.drools.guvnor.server.repository.MigrateRepository;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.ClassicDRLImporter;
@@ -250,6 +250,24 @@ public class FileManagerUtils {
 					RoleTypes.ADMIN);
 		}
         repository.importRulesRepository( data );
+        
+        //
+        //Migrate v4 ruleflows to v5
+        //This section checks if the repository contains drools v4
+        //ruleflows that need to be migrated to drools v5
+        //
+        try
+        {
+        	if ( MigrateRepository.needsRuleflowMigration(repository) ) 
+        	{
+        		MigrateRepository.migrateRuleflows( repository );
+        	}
+        }
+        catch ( RepositoryException e ) 
+        {
+        	e.printStackTrace();
+        	throw new RulesRepositoryException(e);
+        }
     }
 
     @Restrict("#{identity.loggedIn}")
@@ -258,6 +276,24 @@ public class FileManagerUtils {
 
         repository.importPackageToRepository( data,
                                               importAsNew );
+        
+        //
+        //Migrate v4 ruleflows to v5
+        //This section checks if the repository contains drools v4
+        //ruleflows that need to be migrated to drools v5
+        //
+        try
+        {
+        	if ( MigrateRepository.needsRuleflowMigration(repository) ) 
+        	{
+        		MigrateRepository.migrateRuleflows( repository );
+        	}
+        }
+        catch ( RepositoryException e ) 
+        {
+        	e.printStackTrace();
+        	throw new RulesRepositoryException(e);
+        }
     }
 
     /**

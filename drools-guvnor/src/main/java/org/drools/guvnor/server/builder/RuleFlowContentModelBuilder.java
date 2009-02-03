@@ -97,8 +97,19 @@ public class RuleFlowContentModelBuilder {
 
             tn.setId( node.getId() );
 
-            tn.setX( (Integer) node.getMetaData( "x" ) );
-            tn.setY( (Integer) node.getMetaData( "y" ) );
+            //Guard needed to Migrate v4 ruleflows to v5
+            Integer x = (Integer) node.getMetaData( "x" );
+            if (x != null)
+            {
+            	tn.setX(x);
+            }
+            
+            // Guard needed to Migrate v4 ruleflows to v5
+            Integer y = (Integer) node.getMetaData( "y" );
+            if (y != null)
+            {
+            	tn.setY(y);
+            }
 
             Integer height = (Integer) node.getMetaData( "height" );
             if ( height != null ) {

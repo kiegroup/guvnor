@@ -25,6 +25,7 @@ import javax.jcr.SimpleCredentials;
 
 import org.drools.repository.JCRRepositoryConfigurator;
 import org.drools.repository.JackrabbitRepositoryConfigurator;
+import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryAdministrator;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.ScopeType;
@@ -58,10 +59,29 @@ public class BRMSRepositoryConfiguration {
 
 
     void create(Session sessionForSetup) {
-
-        RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(sessionForSetup);
+    	
+    	RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(sessionForSetup);
         if (!admin.isRepositoryInitialized()) {
             configurator.setupRulesRepository( sessionForSetup );
+        }
+        
+        //
+        //Migrate v4 ruleflows to v5
+        //This section checks if the repository contains drools v4
+        //ruleflows that need to be migrated to drools v5
+        //
+        RulesRepository repo = new RulesRepository(sessionForSetup);
+        try
+        {
+        	if ( MigrateRepository.needsRuleflowMigration(repo) ) 
+        	{
+        		MigrateRepository.migrateRuleflows( repo );
+        	}
+        }
+        catch ( RepositoryException e ) 
+        {
+        	e.printStackTrace();
+        	throw new RulesRepositoryException(e);
         }
         //sessionForSetup.logout();
     }

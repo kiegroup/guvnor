@@ -52,6 +52,14 @@ public class RuleFlowHandler extends ContentHandler implements IRuleAsset {
 			asset.content = content;
 		} else if (process == null && !"".equals(item.getContent())) {
 			asset.content = new RuleFlowContentModel();
+			//
+			// 
+			// Migrate v4 ruleflows to v5
+			// All we can do is put the old drools 4 rfm back as the xml so 
+			// that we can at least rebuild the package with it if the
+			// migrate ruleflow system property is set true.
+			//
+			((RuleFlowContentModel)asset.content).setXml(item.getContent());
 		}
 
 	}
@@ -82,19 +90,41 @@ public class RuleFlowHandler extends ContentHandler implements IRuleAsset {
 	}
 
 	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
-			throws SerializableException {
+	throws SerializableException {
 
 		RuleFlowContentModel content = (RuleFlowContentModel) asset.content;
 
-		RuleFlowProcess process = createModel(new ByteArrayInputStream(content
-				.getXml().getBytes()));
+		// 
+		// Migrate v4 ruleflows to v5
+		// Added guards to check for nulls in the case where the ruleflows
+		// have not been migrated from drools 4 to 5.
+		//
+		if (content != null)
+		{
+			if (content.getXml() != null)
+			{
+				RuleFlowProcess process = createModel(new ByteArrayInputStream(content
+						.getXml().getBytes()));
 
-		RuleFlowProcessBuilder.updateProcess(process, content.getNodes());
+				if (process != null)
+				{
+					RuleFlowProcessBuilder.updateProcess(process, content.getNodes());
 
-		XmlRuleFlowProcessDumper dumper = XmlRuleFlowProcessDumper.INSTANCE;
-		String out = dumper.dump(process);
+					XmlRuleFlowProcessDumper dumper = XmlRuleFlowProcessDumper.INSTANCE;
+					String out = dumper.dump(process);
 
-		repoAsset.updateContent(out);
+					repoAsset.updateContent(out);
+				}
+				else
+				{
+					//
+					// Migrate v4 ruleflows to v5
+					// Put the old contents back as there is no updating possible
+				    //
+					repoAsset.updateContent(content.getXml());
+				}
+			}
+		}
 	}
 
 	public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset,
