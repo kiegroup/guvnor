@@ -27,14 +27,14 @@ public class NewRepoDialog extends FormStylePopup {
 		setWidth(300);
 
 		addAttribute("", new HTML("<div class='highlight'><b>This looks like a brand new repository.<br/>" +
-				"Would you like to Install a sample repository?</b></div>"));
+				"Would you like to install a sample repository?</b></div>"));
 
 		HorizontalPanel hp = new HorizontalPanel();
 
-		Button ins = new Button("Yes, please install Samples !");
+		Button ins = new Button("Yes, please install samples");
 		hp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		hp.add(ins);
-		Button no = new Button("No thanks !");
+		Button no = new Button("No thanks");
 		hp.add(no);
 
 		addAttribute("", hp);
