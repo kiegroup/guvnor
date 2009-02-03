@@ -21,6 +21,7 @@ import org.drools.guvnor.client.common.HTMLFileManagerFields;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -52,6 +53,7 @@ public abstract class AssetAttachmentFileWidget extends Composite {
     private RuleViewer viewer;
     protected FormStyleLayout layout;
     protected RuleAsset asset;
+    private Messages constants = GWT.create(Messages.class);
 
 
     public AssetAttachmentFileWidget(final RuleAsset asset, final RuleViewer viewer) {
@@ -75,7 +77,7 @@ public abstract class AssetAttachmentFileWidget extends Composite {
         HorizontalPanel fields = new HorizontalPanel();
         fields.add( getHiddenField(HTMLFileManagerFields.FORM_FIELD_UUID, uuid) );
 
-        ok = new Button("Upload");
+        ok = new Button(constants.Upload());
 
         fields.add( up );
         //fields.add(new Label("upload:"));
@@ -87,16 +89,16 @@ public abstract class AssetAttachmentFileWidget extends Composite {
                                                      formName);
 
         if ( !this.asset.isreadonly )
-            layout.addAttribute( "Upload new version:", form );
+            layout.addAttribute(constants.UploadNewVersion(), form );
 
-        Button dl = new Button("Download");
+        Button dl = new Button(constants.Download());
         dl.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 Window.open( GWT.getModuleBaseURL() + "asset?" +  HTMLFileManagerFields.FORM_FIELD_UUID + "=" + uuid,
                              "downloading", "resizable=no,scrollbars=yes,status=no" );
             }
         });
-        layout.addAttribute( "Download current version:", dl );
+        layout.addAttribute(constants.DownloadCurrentVersion(), dl );
 
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -129,10 +131,10 @@ public abstract class AssetAttachmentFileWidget extends Composite {
             public void onSubmitComplete(FormSubmitCompleteEvent ev) {
             		LoadingPopup.close();
                     if (ev.getResults().indexOf( "OK" ) > -1) {
-                    	Window.alert("File was uploaded successfully.");
+                    	Window.alert(constants.FileWasUploadedSuccessfully());
                         viewer.refreshDataAndView();
                     } else {
-                        ErrorPopup.showMessage( "Unable to upload the file." );
+                        ErrorPopup.showMessage(constants.UnableToUploadTheFile());
                     }
             }
 
@@ -145,7 +147,7 @@ public abstract class AssetAttachmentFileWidget extends Composite {
     }
 
     protected void showUploadingBusy() {
-    	LoadingPopup.showMessage("Uploading...");
+    	LoadingPopup.showMessage(constants.Uploading());
     }
 
     private TextBox getHiddenField(String name, String value) {

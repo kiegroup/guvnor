@@ -7,6 +7,7 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -20,6 +21,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This presents the results of a bulk run.
@@ -32,9 +34,10 @@ public class BulkRunResultWidget extends Composite {
 	private PrettyFormLayout layout;
 	private SimplePanel parent;
 	private Command close;
+    private Messages constants = GWT.create(Messages.class);
 
 
-	public BulkRunResultWidget(BulkTestRunResult result, EditItemEvent editEvent, Command close) {
+    public BulkRunResultWidget(BulkTestRunResult result, EditItemEvent editEvent, Command close) {
 
 		this.close = close;
 		this.result = result;
@@ -70,13 +73,13 @@ public class BulkRunResultWidget extends Composite {
 			summaryTable.getFlexCellFormatter().setHorizontalAlignment(i, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 
 			if (s.failures > 0) {
-				summaryTable.setWidget(i, 1, ScenarioWidget.getBar("#CC0000", 150, s.total - s.failures, s.total));
+				summaryTable.setWidget(i, 1, ScenarioWidget.getBar("#CC0000", 150, s.total - s.failures, s.total)); //NON-NLS
 			} else {
-				summaryTable.setWidget(i, 1, ScenarioWidget.getBar("GREEN", 150, 100));
+				summaryTable.setWidget(i, 1, ScenarioWidget.getBar("GREEN", 150, 100));  //NON-NLS
 			}
 
-			summaryTable.setWidget(i, 2, new SmallLabel("[" + s.failures +" failures out of " + s.total + "]"));
-			Button open = new Button("Open");
+			summaryTable.setWidget(i, 2, new SmallLabel(constants.TestFailureBulkFailures(s.failures, s.total)));
+			Button open = new Button(constants.Open());
 			open.addClickListener(new ClickListener() {
 				public void onClick(Widget w) {
 					editEvent.open(s.uuid);
@@ -91,30 +94,31 @@ public class BulkRunResultWidget extends Composite {
 		HorizontalPanel resultsH = new HorizontalPanel();
 
 		if (totalFailures > 0) {
-			resultsH.add(ScenarioWidget.getBar("#CC0000", 300, totalFailures, grandTotal));
+			resultsH.add(ScenarioWidget.getBar("#CC0000", 300, totalFailures, grandTotal)); //NON-NLS
 		} else {
-			resultsH.add(ScenarioWidget.getBar("GREEN", 300, 100));
+			resultsH.add(ScenarioWidget.getBar("GREEN", 300, 100)); //NON-NLS
 		}
-		resultsH.add(new SmallLabel("&nbsp;" + totalFailures + " failures out of " + grandTotal + " expectations."));
+
+		resultsH.add(new SmallLabel("&nbsp;" + constants.failuresOutOFExpectations(totalFailures, grandTotal)));
 
 		layout.startSection();
 
-		layout.addAttribute("Overall result:", new HTML((totalFailures==0) ? "<b>SUCCESS</b>" : "<b>FAILURE</b>"));
+		layout.addAttribute(constants.OverallResult(), new HTML((totalFailures==0) ? constants.SuccessOverall() : constants.FailureOverall()));
 
 
 
-		layout.addAttribute("Results:", resultsH);
+		layout.addAttribute(constants.Results(), resultsH);
 
 		HorizontalPanel coveredH = new HorizontalPanel();
 		if (result.percentCovered < 100) {
-			coveredH.add(ScenarioWidget.getBar("YELLOW", 300, result.percentCovered));
+			coveredH.add(ScenarioWidget.getBar("YELLOW", 300, result.percentCovered));  //NON-NLS
 		} else {
-			coveredH.add(ScenarioWidget.getBar("GREEN", 300, 100));
+			coveredH.add(ScenarioWidget.getBar("GREEN", 300, 100)); //NON-NLS
 		}
 
-		coveredH.add(new SmallLabel("&nbsp;" + result.percentCovered + "% of the rules were tested."));
+		coveredH.add(new SmallLabel("&nbsp;" + constants.RuleCoveragePercent(result.percentCovered)));
 
-		layout.addAttribute("Rules covered:", coveredH);
+		layout.addAttribute(constants.RulesCovered(), coveredH);
 
 
 		if (result.percentCovered < 100) {
@@ -130,17 +134,17 @@ public class BulkRunResultWidget extends Composite {
 					uncoveredRules.setVisibleItemCount(result.rulesNotCovered.length);
 				}
 
-				layout.addAttribute("Uncovered rules:", uncoveredRules);
+				layout.addAttribute(constants.UncoveredRules(), uncoveredRules);
 		}
 
 
 		layout.endSection();
 
-		layout.startSection("Scenarios");
+		layout.startSection(constants.Scenarios());
 
 		layout.addAttribute("", summaryTable);
 
-		Button c = new Button("Close");
+		Button c = new Button(constants.Close());
 		c.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				close.execute();
@@ -167,7 +171,7 @@ public class BulkRunResultWidget extends Composite {
 		Panel err = new SimplePanel();
 
 		PackageBuilderWidget.showBuilderErrors(errors, err, editEvent);
-		layout.startSection("Build errors - unable to run scenarios");
+		layout.startSection(constants.BuildErrorsUnableToRunScenarios());
 
 		layout.addRow(err);
 

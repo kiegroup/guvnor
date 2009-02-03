@@ -34,9 +34,9 @@ public class BuilderResult
     public String message;
 
     public String toString() {
-        return "Asset: " + assetName + "." + assetFormat + "\n" +
-               "Message: " + message + "\n" +
-               "UUID: " + uuid;
+        return "Asset: " + assetName + "." + assetFormat + "\n" + //NON-NLS
+               "Message: " + message + "\n" +   //NON-NLS
+               "UUID: " + uuid; //NON-NLS
     }
 
 }

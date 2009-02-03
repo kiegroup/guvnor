@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.rpc.MetaData;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -32,6 +33,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This is a viewer/editor for categories.
@@ -49,6 +51,7 @@ public class AssetCategoryEditor extends DirtyableComposite {
     private DirtyableFlexTable layout = new DirtyableFlexTable();
     private FlexTable list;
 	private boolean readOnly;
+    private Messages constants = GWT.create(Messages.class);
 
 
     /**
@@ -75,7 +78,7 @@ public class AssetCategoryEditor extends DirtyableComposite {
     private void doActions() {
         VerticalPanel actions = new VerticalPanel();
         Image add = new ImageButton("images/new_item.gif");
-        add.setTitle( "Add a new category." );
+        add.setTitle(constants.AddANewCategory());
 
         add.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -111,7 +114,7 @@ public class AssetCategoryEditor extends DirtyableComposite {
             if (!readOnly) {
 
 	            Image del = new ImageButton("images/trash.gif");
-	            del.setTitle( "Remove this category" );
+	            del.setTitle(constants.RemoveThisCategory());
 	            del.addClickListener( new ClickListener() {
 	                public void onClick(Widget w) {
 	                    removeCategory(idx);
@@ -159,7 +162,7 @@ public class AssetCategoryEditor extends DirtyableComposite {
         public String selectedPath;
 
         public CategorySelector() {
-        	setTitle("Select category to add");
+        	setTitle(constants.SelectCategoryToAdd());
             VerticalPanel vert = new VerticalPanel();
 
             selector = new CategoryExplorerWidget(new CategorySelectHandler() {

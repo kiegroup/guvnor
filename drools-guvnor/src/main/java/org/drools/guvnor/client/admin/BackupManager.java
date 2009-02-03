@@ -22,6 +22,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.RulePackageSelector;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -45,18 +46,20 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class BackupManager extends Composite {
 
+    private Messages constants = GWT.create(Messages.class);
+
     public BackupManager() {
 
         PrettyFormLayout widtab = new PrettyFormLayout();
         widtab.addHeader( "images/backup_large.png",
-                          new HTML( "<b>Import/Export</b>" ) );
+                          new HTML(constants.ImportOrExport()) );
 
-        widtab.startSection( "Import from an xml file" );
+        widtab.startSection(constants.ImportFromAnXmlFile());
         widtab.addAttribute( "",
                              newImportWidget() );
         widtab.endSection();
 
-        widtab.startSection( "Export to a zip file" );
+        widtab.startSection(constants.ExportToAZipFile());
         widtab.addAttribute( "",
                              newExportWidget() );
 
@@ -91,7 +94,7 @@ public class BackupManager extends Composite {
     private Widget newExportWidget() {
         HorizontalPanel horiz = new HorizontalPanel();
 
-        Button create = new Button( "Export" );
+        Button create = new Button(constants.Export());
         create.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 exportRepository();
@@ -105,7 +108,7 @@ public class BackupManager extends Composite {
     private Widget newExportPackageWidget(final RulePackageSelector box) {
         final HorizontalPanel horiz = new HorizontalPanel();
 
-        final Button create = new Button( "Export" );
+        final Button create = new Button( constants.Export() );
         create.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 exportPackageFromRepository( box.getSelectedPackage() );
@@ -153,15 +156,15 @@ public class BackupManager extends Composite {
         panel.add( upload );
 
         //panel.add( new Label( "import:" ) );
-        Button ok = new Button( "Import" );
+        Button ok = new Button(constants.Import());
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget sender) {
                 doImportFile( uploadFormPanel );
             }
 
             private void doImportFile(final FormPanel uploadFormPanel) {
-                if ( Window.confirm( "Are you sure you want to import? This will erase any content in the " + "repository currently?" ) ) {
-                    LoadingPopup.showMessage( "Importing repository, please wait, as this could take some time..." );
+                if ( Window.confirm(constants.ImportConfirm()) ) {
+                    LoadingPopup.showMessage(constants.ImportingInProgress());
                     uploadFormPanel.submit();
                 }
             }
@@ -172,20 +175,20 @@ public class BackupManager extends Composite {
         uploadFormPanel.addFormHandler( new FormHandler() {
             public void onSubmitComplete(FormSubmitCompleteEvent event) {
                 if ( event.getResults().indexOf( "OK" ) > -1 ) {
-                    Window.alert( "Rules repository imported successfully. Browser will now refresh to show the new content. " );
+                    Window.alert(constants.ImportDone());
                     Window.Location.reload();
                 } else {
-                    ErrorPopup.showMessage( "Unable to import into the repository. Consult the server logs for error messages." );
+                    ErrorPopup.showMessage(constants.ImportFailed());
                 }
                 LoadingPopup.close();
             }
 
             public void onSubmit(FormSubmitEvent event) {
                 if ( upload.getFilename().length() == 0 ) {
-                    Window.alert( "You did not specify an exported repository filename !" );
+                    Window.alert(constants.NoExportFilename());
                     event.setCancelled( true );
                 } else if ( !upload.getFilename().endsWith( ".xml" ) ) {
-                    Window.alert( "Please specify a valid repository xml file." );
+                    Window.alert(constants.PleaseSpecifyAValidRepositoryXmlFile());
                     event.setCancelled( true );
                 }
 
@@ -218,8 +221,8 @@ public class BackupManager extends Composite {
             }
 
             private void doImportFile(final FormPanel uploadFormPanel) {
-                if ( (overWriteCheckBox.isChecked() && Window.confirm( "Are you sure you want to import? This will erase any content in the package currently?" )) || !overWriteCheckBox.isChecked() ) {
-                    LoadingPopup.showMessage( "Importing package to repository, please wait, as this could take some time..." );
+                if ( (overWriteCheckBox.isChecked() && Window.confirm(constants.ImportPackageConfirm())) || !overWriteCheckBox.isChecked() ) {
+                    LoadingPopup.showMessage(constants.ImportingPackage());
                     uploadFormPanel.submit();
                 }
             }
@@ -230,19 +233,19 @@ public class BackupManager extends Composite {
         uploadFormPanel.addFormHandler( new FormHandler() {
             public void onSubmitComplete(FormSubmitCompleteEvent event) {
                 if ( event.getResults().indexOf( "OK" ) > -1 ) {
-                    Window.alert( "Rules package imported successfully. Please refresh your browser (F5) to show the new content. " );
+                    Window.alert(constants.PackageImportDone());
                 } else {
-                    ErrorPopup.showMessage( "Unable to import into the repository. Consult the server logs for error messages." );
+                    ErrorPopup.showMessage(constants.PackageImportFailed());
                 }
                 LoadingPopup.close();
             }
 
             public void onSubmit(FormSubmitEvent event) {
                 if ( upload.getFilename().length() == 0 ) {
-                    Window.alert( "You did not specify an exported repository package filename !" );
+                    Window.alert(constants.PackageExportNoName());
                     event.setCancelled( true );
                 } else if ( !upload.getFilename().endsWith( ".xml" ) ) {
-                    Window.alert( "Please specify a valid repository package xml file." );
+                    Window.alert(constants.PackageExportName());
                     event.setCancelled( true );
                 }
 
@@ -254,8 +257,8 @@ public class BackupManager extends Composite {
 
     private void exportRepository() {
 
-        if ( Window.confirm( "Export the repository? This may take some time." ) ) {
-            LoadingPopup.showMessage( "Exporting repository, please wait, as this could take some time..." );
+        if ( Window.confirm(constants.ExportRepoWarning()) ) {
+            LoadingPopup.showMessage(constants.ExportRepoWait());
 
             Window.open( GWT.getModuleBaseURL() + "backup?" + HTMLFileManagerFields.FORM_FIELD_REPOSITORY + "=true",
                          "downloading",
@@ -267,8 +270,8 @@ public class BackupManager extends Composite {
 
     private void exportPackageFromRepository(String packageName) {
 
-        if ( Window.confirm( "Export the package?" ) ) {
-            LoadingPopup.showMessage( "Exporting package, please wait, as this could take some time..." );
+        if ( Window.confirm(constants.ExportThePackage()) ) {
+            LoadingPopup.showMessage(constants.PleaseWait());
 
             Window.open( GWT.getModuleBaseURL() + "backup?" + HTMLFileManagerFields.FORM_FIELD_REPOSITORY + "=true&packageName=" + packageName,
                          "downloading",

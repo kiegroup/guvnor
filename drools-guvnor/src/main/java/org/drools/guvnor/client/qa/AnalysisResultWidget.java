@@ -100,7 +100,9 @@ public class AnalysisResultWidget extends Composite {
 			nil.setStyleName("analysis-Report");
 			return nil;
 		}
-		TreeItem lineNode = new TreeItem(new HTML("<img src='" + icon + "' /> &nbsp;  <b>" + msg + "</b> ("+ lines.length + " items)."));
+        
+        String m = constants.analysisResultSummary(msg, lines.length);
+		TreeItem lineNode = new TreeItem(new HTML("<img src='" + icon + "' /> &nbsp;  " + m));
 
 		lineNode.setStyleName("analysis-Report");
 

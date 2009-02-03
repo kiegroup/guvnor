@@ -216,4 +216,110 @@ public interface Messages extends com.google.gwt.i18n.client.Messages {
     String PackageRestored();
 
     String noArchivedPackages();
+
+    String analysisResultSummary(String msg, int num);
+
+    String Upload();
+
+    String UploadNewVersion();
+
+    String Download();
+
+    String DownloadCurrentVersion();
+
+    String FileWasUploadedSuccessfully();
+
+    String UnableToUploadTheFile();
+
+    String Uploading();
+
+    String AddANewCategory();
+
+    String RemoveThisCategory();
+
+    String SelectCategoryToAdd();
+
+    String ShowingNofXItems();
+
+    String NItems();
+
+    String refreshList();
+
+    String openSelected();
+
+    String Opening();
+
+    String Next();
+
+    String Previous();
+
+    String goToFirst();
+
+    String ImportOrExport();
+
+    String ImportFromAnXmlFile();
+
+    String ExportToAZipFile();
+
+    String Export();
+
+    String Import();
+
+    String ImportConfirm();
+
+    String ImportingInProgress();
+
+    String ImportDone();
+
+    String ImportFailed();
+
+    String NoExportFilename();
+
+    String PleaseSpecifyAValidRepositoryXmlFile();
+
+    String ImportPackageConfirm();
+
+    String ImportingPackage();
+
+    String PackageImportDone();
+
+    String PackageImportFailed();
+
+    String PackageExportNoName();
+
+    String PackageExportName();
+
+    String ExportRepoWarning();
+
+    String ExportRepoWait();
+
+    String ExportThePackage();
+
+    String PleaseWait();
+
+    String TestFailureBulkFailures(int failures, int total);
+
+    String Open();
+
+    String failuresOutOFExpectations(int totalFailures, int grandTotal);
+
+    String OverallResult();
+
+    String SuccessOverall();
+
+    String FailureOverall();
+
+    String Results();
+
+    String RuleCoveragePercent(int percent);
+
+    String RulesCovered();
+
+    String UncoveredRules();
+
+    String Scenarios();
+
+    String Close();
+
+    String BuildErrorsUnableToRunScenarios();
 }

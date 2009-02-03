@@ -28,11 +28,13 @@ import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.ruleeditor.EditorLauncher;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.ArrayReader;
 import com.gwtext.client.data.DateFieldDef;
@@ -82,6 +84,7 @@ public class AssetItemGrid extends Composite {
 
     protected Store             store;
     private GridPanel           currentGrid;
+    private Messages constants = GWT.create(Messages.class);
 
     public AssetItemGrid(final EditItemEvent event,
                          final String tableConfig,
@@ -168,10 +171,10 @@ public class AssetItemGrid extends Composite {
                                  Toolbar tb = new Toolbar();
                                  currentGrid.setTopToolbar( tb );
                                  if ( result.total > -1 ) {
-                                     tb.addItem( new ToolbarTextItem( Format.format( "Showing #{0} of {1} items.",
+                                     tb.addItem( new ToolbarTextItem( Format.format(constants.ShowingNofXItems().replace("X", "{0}").replace("Y", "{1}"),
                                                                                      new String[]{"" + result.data.length, "" + result.total} ) ) );
                                  } else {
-                                     tb.addItem( new ToolbarTextItem( Format.format( "{0} items.",
+                                     tb.addItem( new ToolbarTextItem( Format.format(constants.NItems().replace("X", "{0}"),
                                                                                      new String[]{"" + result.data.length} ) ) );
 
                                  }
@@ -207,7 +210,7 @@ public class AssetItemGrid extends Composite {
                                  };
 
                                  ToolbarButton refreshB = new ToolbarButton();
-                                 refreshB.setText( "[refresh list]" );
+                                 refreshB.setText(constants.refreshList());
                                  refreshB.addListener( new ButtonListenerAdapter() {
                                      public void onClick(Button button,
                                                          EventObject e) {
@@ -219,7 +222,7 @@ public class AssetItemGrid extends Composite {
 
 
                                  ToolbarButton openSelected = new ToolbarButton();
-                                 openSelected.setText( "[open selected]" );
+                                 openSelected.setText(constants.openSelected());
                                  openSelected.addListener( new ButtonListenerAdapter() {
                                      public void onClick(Button button,
                                                          EventObject e) {
@@ -237,7 +240,6 @@ public class AssetItemGrid extends Composite {
                                                                int rowIndex,
                                                                EventObject e) {
                                          String uuid = grid.getSelectionModel().getSelected().getAsString( "uuid" );
-                                         System.err.println( "Opening: " + uuid );
                                          editEvent.open( uuid );
                                      }
                                  } );
@@ -270,7 +272,7 @@ public class AssetItemGrid extends Composite {
                            Toolbar tb) {
 
         ToolbarButton b = new ToolbarButton();
-        b.setText( (forward) ? "Next ->" : "<- Previous" );
+        b.setText( (forward) ? constants.Next() : constants.Previous());
 
         tb.addButton( b );
 
@@ -295,7 +297,7 @@ public class AssetItemGrid extends Composite {
         } );
 
         if ( !forward ) {
-            ToolbarButton first = new ToolbarButton( "(go to first)" );
+            ToolbarButton first = new ToolbarButton(constants.goToFirst());
             tb.addButton( first );
             first.addListener( new ButtonListenerAdapter() {
                 @Override
@@ -317,11 +319,11 @@ public class AssetItemGrid extends Composite {
 
     private RecordDef createRecordDef(TableConfig conf) {
         FieldDef[] fd = new FieldDef[conf.headers.length + 2]; //2 as we have format and UUID to tack on.
-        fd[0] = new StringFieldDef( "uuid" );
-        fd[1] = new StringFieldDef( "format" );
+        fd[0] = new StringFieldDef( "uuid" );                 //NON-NLS
+        fd[1] = new StringFieldDef( "format" );              //NON-NLS
         for ( int i = 0; i < conf.headers.length; i++ ) {
 
-            if ( conf.headerTypes[i].equals( "class java.util.Calendar" ) ) {
+            if ( conf.headerTypes[i].equals( "class java.util.Calendar" ) ) { //NON-NLS
                 fd[i + 2] = new DateFieldDef( conf.headers[i] );
             } else {
                 fd[i + 2] = new StringFieldDef( conf.headers[i] );
@@ -338,7 +340,7 @@ public class AssetItemGrid extends Composite {
         cfgs[0] = new ColumnConfig() {
             {
                 setHidden( true );
-                setDataIndex( "uuid" );
+                setDataIndex( "uuid" );   //NON-NLS
             }
         };
 
