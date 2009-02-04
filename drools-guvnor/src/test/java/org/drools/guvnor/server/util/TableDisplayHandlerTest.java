@@ -32,7 +32,7 @@ public class TableDisplayHandlerTest extends TestCase {
 
         assertEquals("Name", headers[0]);
         assertEquals("Description", headers[1]);
-        assertEquals("Last modified", headers[2]);
+        assertEquals("LastModified", headers[2]);
         assertEquals("Status", headers[3]);
 
         assertEquals(5, loader.extractors.size());
