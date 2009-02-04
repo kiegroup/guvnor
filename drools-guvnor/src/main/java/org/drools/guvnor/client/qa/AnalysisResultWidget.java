@@ -1,26 +1,21 @@
 package org.drools.guvnor.client.qa;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.*;
+import com.gwtext.client.util.Format;
 import org.drools.guvnor.client.common.FormStyleLayout;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.AnalysisFactUsage;
 import org.drools.guvnor.client.rpc.AnalysisFieldUsage;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
-import org.drools.guvnor.client.messages.Messages;
-
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.TreeListener;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
 
 /**
  * Shows the results of an analysis run.
  * @author Michael Neale
  */
 public class AnalysisResultWidget extends Composite {
-    private Messages constants = GWT.create(Messages.class);
+    private Constants constants = GWT.create(Constants.class);
 
     public AnalysisResultWidget(AnalysisReport report) {
 		FormStyleLayout layout = new FormStyleLayout();
@@ -101,7 +96,7 @@ public class AnalysisResultWidget extends Composite {
 			return nil;
 		}
         
-        String m = constants.analysisResultSummary(msg, lines.length);
+        String m = Format.format(constants.analysisResultSummary(), new String[] {msg, "" + lines.length});
 		TreeItem lineNode = new TreeItem(new HTML("<img src='" + icon + "' /> &nbsp;  " + m));
 
 		lineNode.setStyleName("analysis-Report");

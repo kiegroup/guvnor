@@ -6,7 +6,7 @@ import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.security.Capabilities;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.core.client.GWT;
@@ -23,7 +23,7 @@ import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
  * @author Anton Arhipov
  */
 public class CategoriesPanel extends GenericPanel {
-    private static Messages constants = GWT.create(Messages.class);
+    private static Constants constants = GWT.create(Constants.class);
 
     public CategoriesPanel(ExplorerViewCenterPanel tabbedPanel) {
         super(constants.Assets(), tabbedPanel);

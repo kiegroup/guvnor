@@ -28,7 +28,7 @@ import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
 import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -53,7 +53,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
     private final String[] fieldCompletions;
     private final RuleModeller modeller;
     private final String factType;
-    private Messages constants = GWT.create(Messages.class);
+    private Constants constants = GWT.create(Constants.class);
 
     public ActionInsertFactWidget(RuleModeller mod, ActionInsertFact set, SuggestionCompletionEngine com) {
         this.model = set;

@@ -7,7 +7,7 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
+import com.gwtext.client.util.Format;
 
 /**
  * This presents the results of a bulk run.
@@ -34,7 +35,7 @@ public class BulkRunResultWidget extends Composite {
 	private PrettyFormLayout layout;
 	private SimplePanel parent;
 	private Command close;
-    private Messages constants = GWT.create(Messages.class);
+    private Constants constants = GWT.create(Constants.class);
 
 
     public BulkRunResultWidget(BulkTestRunResult result, EditItemEvent editEvent, Command close) {
@@ -78,7 +79,8 @@ public class BulkRunResultWidget extends Composite {
 				summaryTable.setWidget(i, 1, ScenarioWidget.getBar("GREEN", 150, 100));  //NON-NLS
 			}
 
-			summaryTable.setWidget(i, 2, new SmallLabel(constants.TestFailureBulkFailures(s.failures, s.total)));
+            
+			summaryTable.setWidget(i, 2, new SmallLabel(Format.format(constants.TestFailureBulkFailures(), s.failures, s.total)));
 			Button open = new Button(constants.Open());
 			open.addClickListener(new ClickListener() {
 				public void onClick(Widget w) {
@@ -99,7 +101,7 @@ public class BulkRunResultWidget extends Composite {
 			resultsH.add(ScenarioWidget.getBar("GREEN", 300, 100)); //NON-NLS
 		}
 
-		resultsH.add(new SmallLabel("&nbsp;" + constants.failuresOutOFExpectations(totalFailures, grandTotal)));
+		resultsH.add(new SmallLabel("&nbsp;" + Format.format(constants.failuresOutOFExpectations(),totalFailures, grandTotal)));
 
 		layout.startSection();
 
@@ -116,7 +118,7 @@ public class BulkRunResultWidget extends Composite {
 			coveredH.add(ScenarioWidget.getBar("GREEN", 300, 100)); //NON-NLS
 		}
 
-		coveredH.add(new SmallLabel("&nbsp;" + constants.RuleCoveragePercent(result.percentCovered)));
+		coveredH.add(new SmallLabel("&nbsp;" + Format.format(constants.RuleCoveragePercent(), result.percentCovered)));
 
 		layout.addAttribute(constants.RulesCovered(), coveredH);
 

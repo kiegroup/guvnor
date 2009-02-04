@@ -21,7 +21,7 @@ import org.drools.guvnor.client.common.HTMLFileManagerFields;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -53,7 +53,7 @@ public abstract class AssetAttachmentFileWidget extends Composite {
     private RuleViewer viewer;
     protected FormStyleLayout layout;
     protected RuleAsset asset;
-    private Messages constants = GWT.create(Messages.class);
+    private Constants constants = GWT.create(Constants.class);
 
 
     public AssetAttachmentFileWidget(final RuleAsset asset, final RuleViewer viewer) {

@@ -9,7 +9,7 @@ import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -31,7 +31,7 @@ public class ArchivedAssetManager extends Composite {
 
 	private AssetItemGrid grid;
 	private ListBox packages = new ListBox(true);
-    private Messages constants = GWT.create(Messages.class);
+    private Constants constants = GWT.create(Constants.class);
 
     public ArchivedAssetManager(final ExplorerViewCenterPanel tab) {
 

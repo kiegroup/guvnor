@@ -11,7 +11,7 @@ import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.dt.ActionCol;
 import org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -38,7 +38,7 @@ public class ActionInsertColumn extends FormStylePopup {
 	private ActionInsertFactCol editingCol;
 	private SmallLabel patternLabel = new SmallLabel();
 	private TextBox fieldLabel = getFieldLabel();
-    private Messages constants = GWT.create(Messages.class);
+    private Constants constants = GWT.create(Constants.class);
 
     public ActionInsertColumn(SuggestionCompletionEngine sce, final GuidedDecisionTable dt, final Command refreshGrid, final ActionInsertFactCol col, final boolean isNew) {
 		this.setModal(false);

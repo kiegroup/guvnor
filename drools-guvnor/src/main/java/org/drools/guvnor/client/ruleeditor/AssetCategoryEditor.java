@@ -25,7 +25,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.rpc.MetaData;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -51,13 +51,12 @@ public class AssetCategoryEditor extends DirtyableComposite {
     private DirtyableFlexTable layout = new DirtyableFlexTable();
     private FlexTable list;
 	private boolean readOnly;
-    private Messages constants = GWT.create(Messages.class);
+    private Constants constants = GWT.create(Constants.class);
 
 
     /**
      * @param d The meta data.
      * @param readOnly If it is to be non editable.
-     * @param change This will be called when a change is made (data in MetaData will be changed).
      */
     public AssetCategoryEditor(MetaData d, boolean readOnly) {
         this.data = d;

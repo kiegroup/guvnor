@@ -25,7 +25,6 @@ import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.ruleeditor.EditorLauncher;
-import org.drools.guvnor.client.messages.Messages;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -82,8 +81,7 @@ public class AssetItemGrid extends Composite {
 
     protected Store             store;
     private GridPanel           currentGrid;
-    private Messages constants = GWT.create(Messages.class);
-    private Constants cs = GWT.create(Constants.class);
+    private Constants constants = GWT.create(Constants.class);
 
     public AssetItemGrid(final EditItemEvent event,
                          final String tableConfig,
@@ -398,7 +396,7 @@ public class AssetItemGrid extends Composite {
                  */
                 private void setupHeader() {
                     try {
-                        String headerDisplay = cs.getString(header);
+                        String headerDisplay = constants.getString(header);
                         setHeader( headerDisplay );
                     } catch (MissingResourceException me) {
                         setHeader( header );

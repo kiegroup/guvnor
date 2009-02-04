@@ -22,7 +22,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.RulePackageSelector;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class BackupManager extends Composite {
 
-    private Messages constants = GWT.create(Messages.class);
+    private Constants constants = GWT.create(Constants.class);
 
     public BackupManager() {
 

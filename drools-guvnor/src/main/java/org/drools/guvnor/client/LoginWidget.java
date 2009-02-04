@@ -21,7 +21,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.*;
@@ -34,7 +34,7 @@ import com.google.gwt.core.client.GWT;
  */
 public class LoginWidget {
 
-    Messages messages = GWT.create(Messages.class);
+    Constants messages = GWT.create(Constants.class);
 
 	private Command loggedInEvent;
 	private String userNameLoggedIn;

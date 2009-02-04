@@ -8,7 +8,7 @@ import org.drools.guvnor.client.admin.PermissionViewer;
 import org.drools.guvnor.client.admin.StateManager;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Frame;
@@ -22,7 +22,7 @@ import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
  * @author Anton Arhipov
  */
 public class AdministrationPanel extends GenericPanel {
-    private static Messages constants = GWT.create(Messages.class);
+    private static Constants constants = GWT.create(Constants.class);
 
     public AdministrationPanel(ExplorerViewCenterPanel tabbedPanel) {
 		super(constants.Administration(), tabbedPanel);

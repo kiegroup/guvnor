@@ -13,7 +13,7 @@ import org.drools.guvnor.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.guvnor.client.modeldriven.dt.ActionCol;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -35,7 +35,7 @@ public class ActionSetColumn extends FormStylePopup {
 	private TextBox fieldLabel = getFieldLabel();
 	private GuidedDecisionTable dt;
 	private SuggestionCompletionEngine sce;
-    private Messages constants = GWT.create(Messages.class);
+    private Constants constants = GWT.create(Constants.class);
 
     public ActionSetColumn(SuggestionCompletionEngine sce, final GuidedDecisionTable dt, final Command refreshGrid, final ActionSetFieldCol col, final boolean isNew) {
 		this.editingCol = new ActionSetFieldCol();

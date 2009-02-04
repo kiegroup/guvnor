@@ -9,7 +9,7 @@ import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -35,7 +35,7 @@ public class ActionValueEditor extends DirtyableComposite {
 	private ActionFieldValue value;
 	private DropDownData enums;
 	private SimplePanel root;
-    private Messages constants = GWT.create(Messages.class);
+    private Constants constants = GWT.create(Constants.class);
 
     public ActionValueEditor(final ActionFieldValue val, final DropDownData enums) {
 		if (val.type.equals(SuggestionCompletionEngine.TYPE_BOOLEAN)) {

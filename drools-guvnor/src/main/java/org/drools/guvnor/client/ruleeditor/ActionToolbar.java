@@ -23,7 +23,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.StatusChangePopup;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -39,8 +39,8 @@ import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.ToolbarTextItem;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.util.Format;
 
-import javax.net.ssl.SSLEngineResult;
 
 /**
  * This contains the widgets used to action a rule asset
@@ -56,7 +56,7 @@ public class ActionToolbar extends Composite {
     private ToolbarTextItem state;
 	final private RuleAsset asset;
 	private Command afterCheckinEvent;
-    private Messages constants = GWT.create(Messages.class);
+    private Constants constants = GWT.create(Constants.class);
 
     public ActionToolbar(final RuleAsset asset,
                          final CheckinAction checkin,
@@ -92,7 +92,7 @@ public class ActionToolbar extends Composite {
      * Sets the visible status display.
      */
     private void setState(String status) {
-        state.setText(constants.statusIs(status));
+        state.setText(Format.format(constants.statusIs(), status));
     }
 
     private void controls() {
@@ -232,7 +232,7 @@ public class ActionToolbar extends Composite {
     }
 
     private void completedCopying(String name, String pkg) {
-        Window.alert( constants.CreatedANewItemSuccess(name, pkg) );
+        Window.alert( Format.format(constants.CreatedANewItemSuccess(), name, pkg) );
 
     }
 

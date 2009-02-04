@@ -17,7 +17,7 @@ import org.drools.guvnor.client.modeldriven.brl.ActionCallMethod;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -46,7 +46,7 @@ public class ActionCallMethodWidget extends DirtyableComposite {
     final private String[] fieldCompletions;
     final private RuleModeller modeller;
     final private String variableClass;
-    private Messages constants = GWT.create(Messages.class);
+    private Constants constants = GWT.create(Constants.class);
 
 
     public ActionCallMethodWidget(RuleModeller mod,  ActionCallMethod set, SuggestionCompletionEngine com) {

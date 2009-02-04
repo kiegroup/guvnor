@@ -25,7 +25,7 @@ import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
 import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -35,6 +35,8 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
+import com.gwtext.client.util.Format;
+
 
 /**
  * This widget is for setting fields on a bound fact or global variable.
@@ -51,7 +53,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
     final private String[] fieldCompletions;
     final private RuleModeller modeller;
     final private String variableClass;
-    private Messages constants = GWT.create(Messages.class);
+    private Constants constants = GWT.create(Constants.class);
 
 
     public ActionSetFieldWidget(RuleModeller mod,  ActionSetField set, SuggestionCompletionEngine com) {
@@ -125,7 +127,8 @@ public class ActionSetFieldWidget extends DirtyableComposite {
             modifyType = "modify";
         }
 
-        ClickableLabel lbl = new ClickableLabel(constants.setterLabel(HumanReadable.getActionDisplayName(modifyType), model.variable), clk);//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
+        String sl = Format.format(constants.setterLabel(), new String[] {HumanReadable.getActionDisplayName(modifyType), model.variable});
+        ClickableLabel lbl = new ClickableLabel(sl, clk);//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
         horiz.add( lbl) ;
         horiz.add( edit );
 

@@ -5,7 +5,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.messages.Messages;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
+import com.gwtext.client.util.Format;
 
 /**
  * Viewer for, well, analysis !
@@ -25,7 +26,7 @@ public class AnalysisView extends Composite {
 
 	private VerticalPanel layout;
 	private String packageUUID;
-    private Messages constants = GWT.create(Messages.class);
+    private Constants constants = GWT.create(Constants.class);
 
     public AnalysisView(String packageUUID, String packageName) {
 		this.layout = new VerticalPanel();
@@ -34,7 +35,8 @@ public class AnalysisView extends Composite {
 		PrettyFormLayout pf = new PrettyFormLayout();
 
 		VerticalPanel vert = new VerticalPanel();
-		vert.add(new HTML(constants.AnalysingPackage(packageName)));
+        String m = Format.format(constants.AnalysingPackage(), new String[] {packageName});
+		vert.add(new HTML(m));
 		Button run = new Button(constants.RunAnalysis());
 		run.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
