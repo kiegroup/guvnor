@@ -26,6 +26,12 @@ public class ExplorerLayoutManager {
     private Panel northPanel;
     private Panel accordion;
 
+
+    native String getPageProperty(String name) /*-{
+        return $wnd.guvnor_logo;
+    }-*/;
+
+
     public ExplorerLayoutManager(LoggedInUserInfo uif, Capabilities caps) {
         Field.setMsgTarget("side");
         QuickTips.init();
@@ -115,7 +121,7 @@ public class ExplorerLayoutManager {
         //create the west panel and add it to the main panel applying the west region layout properties
         Panel westPanel = new Panel();
         westPanel.setId("side-nav");
-        westPanel.setTitle("Navigate Guvnor");
+        westPanel.setTitle("Navigate");
         westPanel.setLayout(new FitLayout());
         westPanel.setWidth(210);
         westPanel.setCollapsible(true);//MN createWestPanel();

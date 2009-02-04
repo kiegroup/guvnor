@@ -322,4 +322,14 @@ public interface Messages extends com.google.gwt.i18n.client.Messages {
     String Close();
 
     String BuildErrorsUnableToRunScenarios();
+
+    String UserName();
+
+    String Password();
+
+    String Authenticating();
+
+    String IncorrectUsernameOrPassword();
+
+    String Login();
 }

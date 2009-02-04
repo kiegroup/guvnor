@@ -21,9 +21,11 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.messages.Messages;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.core.client.GWT;
 
 /**
  * Used for logging in, obviously !
@@ -32,17 +34,19 @@ import com.google.gwt.user.client.ui.*;
  */
 public class LoginWidget {
 
+    Messages messages = GWT.create(Messages.class);
+
 	private Command loggedInEvent;
 	private String userNameLoggedIn;
 
 	public void show() {
-		final FormStylePopup pop = new FormStylePopup("images/login.gif", "Guvnor login");
+		final FormStylePopup pop = new FormStylePopup("images/login.gif", messages.Login());
 
 		final TextBox userName = new TextBox();
-		pop.addAttribute("User name:", userName);
+		pop.addAttribute(messages.UserName(), userName);
 
 		final PasswordTextBox password = new PasswordTextBox();
-		pop.addAttribute("Password: ", password);
+		pop.addAttribute(messages.Password(), password);
 
         KeyboardListener kl = new KeyboardListenerAdapter() {
             @Override
@@ -55,7 +59,7 @@ public class LoginWidget {
 
         userName.addKeyboardListener(kl);
         password.addKeyboardListener(kl);
-		Button b = new Button("OK");
+		Button b = new Button(messages.OK());
 		b.addClickListener(new ClickListener() {
 			public void onClick(Widget arg0) {
                 doLogin(userName, password, pop);
@@ -66,14 +70,14 @@ public class LoginWidget {
 	}
 
     private void doLogin(final TextBox userName, PasswordTextBox password, final FormStylePopup pop) {
-        LoadingPopup.showMessage("Authenticating...");
+        LoadingPopup.showMessage(messages.Authenticating());
         RepositoryServiceFactory.login( userName.getText(), password.getText(), new GenericCallback() {
             public void onSuccess(Object o) {
                 userNameLoggedIn = userName.getText();
                 LoadingPopup.close();
                 Boolean success = (Boolean) o;
                 if (!success.booleanValue()) {
-                    com.google.gwt.user.client.Window.alert( "Incorrect username or password." );
+                    com.google.gwt.user.client.Window.alert(messages.IncorrectUsernameOrPassword());
                 } else {
                     loggedInEvent.execute();
                     pop.hide();
