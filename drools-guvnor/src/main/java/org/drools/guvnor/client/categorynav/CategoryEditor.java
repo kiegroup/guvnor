@@ -21,6 +21,7 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -29,6 +30,8 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
+import com.gwtext.client.util.Format;
 
 /**
  * This provides a popup for editing a category (name etc).
@@ -40,6 +43,7 @@ public class CategoryEditor extends FormStylePopup {
     private TextBox name = new TextBox();
     private TextArea description = new TextArea();
 	private Command refresh;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
 
     public CategoryEditor(String catPath, Command refresh) {
@@ -53,9 +57,9 @@ public class CategoryEditor extends FormStylePopup {
         super.setTitle(getTitle(catPath));
         path = catPath;
 
-        addAttribute("Category name", name);
+        addAttribute(constants.CategoryName(), name);
 
-        Button ok = new Button("OK");
+        Button ok = new Button(constants.OK());
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget arg0) {
                 ok();
@@ -67,9 +71,9 @@ public class CategoryEditor extends FormStylePopup {
 
     private static String getTitle(String catPath) {
         if (catPath == null) {
-            return "Create a new top level category.";
+            return ((Constants) GWT.create(Constants.class)).CreateANewTopLevelCategory();
         } else {
-            return "Create new category under: [" + catPath + "]";
+            return Format.format(((Constants) GWT.create(Constants.class)).CreateNewCategoryUnder0(), catPath);
         }
     }
 
@@ -83,14 +87,14 @@ public class CategoryEditor extends FormStylePopup {
                 	}
                     hide();
                 } else {
-                    ErrorPopup.showMessage( "Category was not successfully created. ");
+                    ErrorPopup.showMessage(constants.CategoryWasNotSuccessfullyCreated());
 
                 }
             }
         };
 
         if ("".equals(this.name.getText())) {
-            ErrorPopup.showMessage( "Can't have an empty category name." );
+            ErrorPopup.showMessage(constants.CanNotHaveAnEmptyCategoryName());
         } else {
             RepositoryServiceFactory.getService().createCategory( path, name.getText(), description.getText(), cb );
 

@@ -20,6 +20,7 @@ package org.drools.guvnor.client.categorynav;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -34,6 +35,7 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeListener;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This is a rule/resource navigator that uses the server side categories to
@@ -50,6 +52,7 @@ public class CategoryExplorerWidget extends Composite
     private CategorySelectHandler  categorySelectHandler;
     private String                 selectedPath;
     private Panel                  emptyCategories;
+    private static Constants constants = ((Constants) GWT.create(Constants.class));
 
 
     public void setTreeSize(String width) {
@@ -87,15 +90,15 @@ public class CategoryExplorerWidget extends Composite
 
         if (this.emptyCategories == null) {
                 AbsolutePanel p = new AbsolutePanel();
-                 p.add( new HTML("No categories created yet. Add some categories from the administration screen.") );
-                 Button b = new Button("Refresh");
+                 p.add( new HTML(constants.NoCategoriesCreatedYetTip()) );
+                 Button b = new Button(constants.Refresh());
                  b.addClickListener( new ClickListener() {
                     public void onClick(Widget w) {
                         refresh();
                     }
                  });
                  p.add( b );
-                 p.setStyleName( "small-Text" );
+                 p.setStyleName( "small-Text" ); //NON-NLS
                  this.emptyCategories = p;
                  this.panel.add( this.emptyCategories );
         }
@@ -105,7 +108,7 @@ public class CategoryExplorerWidget extends Composite
 
     /** This will refresh the tree and restore it back to the original state */
     private void loadInitialTree() {
-        navTreeWidget.addItem( "Please wait..." );
+        navTreeWidget.addItem( constants.PleaseWait() );
         DeferredCommand.addCommand(new Command() {
 			public void execute() {
 		        service.loadChildCategories( "/",
@@ -215,7 +218,6 @@ public class CategoryExplorerWidget extends Composite
         TreeItem parent = item.getParentItem();
         while ( parent.getUserObject() != null ) {
             categoryPath = ((String)parent.getUserObject()) + "/" + categoryPath;
-            System.out.println("categoryPath: " + categoryPath);
             parent = parent.getParentItem();
         }
         return categoryPath;
@@ -223,7 +225,7 @@ public class CategoryExplorerWidget extends Composite
 
     private static class PendingItem extends TreeItem {
         public PendingItem() {
-            super( "Please wait..." );
+            super( constants.PleaseWait() );
 
         }
     }

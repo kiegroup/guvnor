@@ -5,8 +5,10 @@ import org.drools.guvnor.client.packages.SnapshotView;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
 import com.gwtext.client.data.NodeTraversalCallback;
@@ -30,14 +32,15 @@ import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
 public class DeploymentPanel extends GenericPanel {
 
     private boolean deploymentPackagesLoaded = false;
+    private static Constants constants = ((Constants) GWT.create(Constants.class));
 
     public DeploymentPanel(ExplorerViewCenterPanel tabbedPanel) {
-        super("Package snapshots", tabbedPanel);
-        setIconCls("nav-deployment");
+        super(constants.PackageSnapshots(), tabbedPanel);
+        setIconCls("nav-deployment"); //NON-NLS
 
         final VerticalPanel deploymentPanel = new VerticalPanel();
         Toolbar deployToolbar = new Toolbar();
-        final ToolbarMenuButton menuButton = new ToolbarMenuButton("Deploy...", deploymentMenu());
+        final ToolbarMenuButton menuButton = new ToolbarMenuButton(constants.Deploy(), deploymentMenu());
         deployToolbar.addButton( menuButton );
         deploymentPanel.add(deployToolbar);
         deploymentPanel.setWidth("100%");
@@ -65,20 +68,20 @@ public class DeploymentPanel extends GenericPanel {
     private Menu deploymentMenu() {
         Menu m = new Menu();
 
-        Item nds = new Item("New Deployment snapshot", new BaseItemListenerAdapter() {
+        Item nds = new Item(constants.NewDeploymentSnapshot(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
                 SnapshotView.showNewSnapshot();
             }
         });
-        nds.setIcon("images/snapshot_small.gif");
+        nds.setIcon("images/snapshot_small.gif"); //NON-NLS
         m.addItem(nds);
 
-        Item rebuild = new Item("Rebuild all snapshot binaries", new BaseItemListenerAdapter() {
+        Item rebuild = new Item(constants.RebuildAllSnapshotBinaries(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
                 SnapshotView.rebuildBinaries();
             }
         });
-        rebuild.setIcon("images/refresh.gif");
+        rebuild.setIcon("images/refresh.gif");             //NON-NLS
         m.addItem(rebuild);
 
         return m;
@@ -86,9 +89,9 @@ public class DeploymentPanel extends GenericPanel {
 
     private Panel deploymentExplorer() {
 
-        final TreeNode root = new TreeNode("Package snapshots");
-        root.setIcon("images/silk/chart_organisation.gif");
-        root.setId("snapshotRoot");
+        final TreeNode root = new TreeNode(constants.PackageSnapshots());
+        root.setIcon("images/silk/chart_organisation.gif"); //NON-NLS
+        root.setId("snapshotRoot");                         //NON-NLS
 
         final TreePanel panel = genericExplorerWidget(root);
 
@@ -107,12 +110,12 @@ public class DeploymentPanel extends GenericPanel {
                 if (node.getId().equals("snapshotRoot")) {
                     deploymentListPackages(root);
                 } else {
-                    node.appendChild(new TreeNode("Please wait..."));
+                    node.appendChild(new TreeNode(constants.PleaseWaitDotDotDot()));
                 }
             }
 
             public void onExpandNode(final TreeNode node) {
-                if (node.getId().equals("snapshotRoot")) {
+                if (node.getId().equals("snapshotRoot")) { //NON-NLS
                     return;
                 }
                 final PackageConfigData conf = (PackageConfigData) node.getUserObject();
@@ -185,12 +188,12 @@ public class DeploymentPanel extends GenericPanel {
             TreeNode pkg = new TreeNode(fldr.conf.name);
             pkg.setIcon("images/snapshot_small.gif");
             pkg.setUserObject(fldr.conf);
-            pkg.appendChild(new TreeNode("Please wait..."));
+            pkg.appendChild(new TreeNode(constants.PleaseWaitDotDotDot()));
             root.appendChild(pkg);
         } else {
             TreeNode tn = new TreeNode();
             tn.setText(fldr.name);
-            tn.setIcon("images/empty_package.gif");
+            tn.setIcon("images/empty_package.gif"); //NON-NLS
             root.appendChild(tn);
             for (PackageHierarchy.Folder c : fldr.children) {
                 buildDeploymentTree(tn, c);

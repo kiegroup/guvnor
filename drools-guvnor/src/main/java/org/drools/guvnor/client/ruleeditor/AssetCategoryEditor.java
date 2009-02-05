@@ -156,7 +156,7 @@ public class AssetCategoryEditor extends DirtyableComposite {
      */
     class CategorySelector extends FormStylePopup {
 
-        public Button ok = new Button("OK");
+        public Button ok = new Button(constants.OK());
         private CategoryExplorerWidget selector;
         public String selectedPath;
 

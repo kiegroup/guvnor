@@ -349,4 +349,114 @@ public interface Constants extends ConstantsWithLookup {
     String Created();
 
     String PackageName();
+
+    String UnableToRunTests();
+
+    String NoTestScenariosFound();
+
+    String CategoryName();
+
+    String CreateANewTopLevelCategory();
+
+    String CreateNewCategoryUnder0();
+
+    String CategoryWasNotSuccessfullyCreated();
+
+    String CanNotHaveAnEmptyCategoryName();
+
+    String NoCategoriesCreatedYetTip();
+
+    String Refresh();
+
+    String CategoriesPurposeTip();
+
+    String EditCategories();
+
+    String CurrentCategories();
+
+    String NewCategory();
+
+    String CreateANewCategory();
+
+    String RenameSelected();
+
+    String PleaseSelectACategoryToRename();
+
+    String DeleteSelected();
+
+    String PleaseSelectACategoryToDelete();
+
+    String DeleteSelectedCat();
+
+    String CategoryNewNamePleaseEnter();
+
+    String CategoryRenamed();
+
+    String AreYouSureYouWantToDeleteCategory();
+
+    String AddAnOptionalCheckInComment();
+
+    String CheckIn();
+
+    String enterTextToFilterList();
+
+    String AddFactToContraint();
+
+    String Choose();
+
+    String NewFactPattern();
+
+    String chooseFactType();
+
+    String pleaseChoose();
+
+    String FormulaEvaluateToAValue();
+
+    String LiteralValueTip();
+
+    String RefreshingList();
+
+    String UnableToLoadList();
+
+
+    String AdvancedOptions();
+
+    String BoundVariable();
+
+    String AVariable();
+
+    String ABoundVariable();
+
+    String BoundVariableTip();
+
+    String NewFormula();
+
+
+    String FormulaExpressionTip();
+
+    String DecisionTableWidgetDescription();
+
+    String UploadNewVersionDescription();
+
+
+    String Deploy();
+
+    String NewDeploymentSnapshot();
+
+    String RebuildAllSnapshotBinaries();
+
+    String PackageSnapshots();
+
+
+    String DSLPopupHint();
+
+    String AddANewCondition();
+
+    String AddAnAction();
+
+    String TheValue0IsNotValidForThisField();
+
+    String PleaseWaitDotDotDot();
+
+    String AFormula();
 }

@@ -23,6 +23,7 @@ import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -34,6 +35,7 @@ import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This is a textual rule editor, which provides DSL content assistance. This is
@@ -48,6 +50,7 @@ public class DSLRuleEditor extends DirtyableComposite {
     final private RuleContentText data;
     private DSLSentence[]         conditions;
     private DSLSentence[]         actions;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
     public DSLRuleEditor(RuleAsset asset, RuleViewer viewer) {
         this(asset);
@@ -63,13 +66,13 @@ public class DSLRuleEditor extends DirtyableComposite {
 //        text.setHeight( "100%" );
         text.setVisibleLines( 16 );
         text.setText( data.content );
-        text.setTitle( "Hint: press control+space for popup assistance, or use one of the icons to the right." );
+        text.setTitle(constants.DSLPopupHint());
 
         SuggestionCompletionEngine eng = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.metaData.packageName );
         this.actions = eng.actionDSLSentences;
         this.conditions = eng.conditionDSLSentences;
 
-        text.setStyleName( "dsl-text-Editor" );
+        text.setStyleName( "dsl-text-Editor" ); //NON-NLS
 
         FlexTable layout = new FlexTable();
         layout.setWidget( 0,
@@ -104,7 +107,7 @@ public class DSLRuleEditor extends DirtyableComposite {
         VerticalPanel vert = new VerticalPanel();
 
         Image lhsOptions = new ImageButton( "images/new_dsl_pattern.gif" );
-        final String msg = "Add a new condition";
+        final String msg = constants.AddANewCondition();
         lhsOptions.setTitle( msg );
         lhsOptions.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -113,7 +116,7 @@ public class DSLRuleEditor extends DirtyableComposite {
         } );
 
         Image rhsOptions = new ImageButton( "images/new_dsl_action.gif" );
-        final String msg2 = "Add an action";
+        final String msg2 = constants.AddAnAction();
         rhsOptions.setTitle( msg2 );
         rhsOptions.addClickListener( new ClickListener() {
             public void onClick(Widget w) {

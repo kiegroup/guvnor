@@ -54,11 +54,11 @@ public class CategoriesPanel extends GenericPanel {
             public void onClick(final TreeNode self, EventObject e) {
 
                 //this refreshes the list.
-                if (self.getAttribute("id").equals(ExplorerNodeConfig.CATEGORY_ID)) {
+                if (self.getAttribute("id").equals(ExplorerNodeConfig.CATEGORY_ID)) {  //NON-NLS
                     self.getParentNode().replaceChild(ExplorerNodeConfig.getCategoriesStructure(), self);
-                } else if (self.getAttribute("id").equals(ExplorerNodeConfig.STATES_ID)) {
+                } else if (self.getAttribute("id").equals(ExplorerNodeConfig.STATES_ID)) {   //NON-NLS
                     self.getParentNode().replaceChild(ExplorerNodeConfig.getStatesStructure(), self);
-                } else if (self.getAttribute("id").equals("FIND")) {
+                } else if (self.getAttribute("id").equals("FIND")) {     //NON-NLS
                     centertabbedPanel.openFind();
                 } else {
                     final String key = (String) self.getUserObject();

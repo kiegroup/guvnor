@@ -19,6 +19,7 @@ package org.drools.guvnor.client.ruleeditor;
 import java.util.List;
 
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -30,6 +31,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This is a popup list for "content assistance" - although on the web, 
@@ -41,6 +43,7 @@ public class ChoiceList extends PopupPanel {
     private final DSLSentence[] sentences;
     private HorizontalPanel     buttons;
     private TextBox             filter;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
     /**
     * Pass in a list of suggestions for the popup lists.
@@ -53,7 +56,7 @@ public class ChoiceList extends PopupPanel {
         this.sentences = sen;
         filter = new TextBox();
         filter.setWidth( "100%" );
-        final String defaultMessage = "<enter text to filter list>";
+        final String defaultMessage = constants.enterTextToFilterList();
         filter.setText( defaultMessage );
         filter.addFocusListener( new FocusListener() {
             public void onFocus(Widget w) {
@@ -102,7 +105,7 @@ public class ChoiceList extends PopupPanel {
 
         panel.add( list );
 
-        Button ok = new Button( "ok" );
+        Button ok = new Button( constants.OK() );
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget btn) {
                 applyChoice( self );
@@ -124,7 +127,7 @@ public class ChoiceList extends PopupPanel {
         panel.add( buttons );
 
         add( panel );
-        setStyleName( "ks-popups-Popup" );
+        setStyleName( "ks-popups-Popup" );  //NON-NLS
 
     }
 

@@ -27,6 +27,7 @@ import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -34,6 +35,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This represents a top level CE, like an OR, NOT, EXIST etc...
@@ -48,6 +50,7 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
     private CompositeFactPattern             pattern;
     private DirtyableFlexTable                             layout;
     private RuleModeller                     modeller;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
     public CompositeFactPatternWidget(RuleModeller modeller,
                                       CompositeFactPattern pattern,
@@ -92,12 +95,12 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
                 showFactTypeSelector( w );
             }
         };
-        edit.setTitle( "Add a fact to this constraint. If it is an 'or' type, it will need at least 2." );
+        edit.setTitle(constants.AddFactToContraint());
         edit.addClickListener(click);
 
         horiz.add( new ClickableLabel( HumanReadable.getCEDisplayName( pattern.type ), click ) );
         horiz.add( edit );
-        horiz.setStyleName( "modeller-composite-Label" );
+        horiz.setStyleName( "modeller-composite-Label" );     //NON-NLS
         return horiz;
     }
 
@@ -108,15 +111,15 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
         final ListBox box = new ListBox();
         String[] facts = completions.getFactTypes();
 
-        box.addItem( "Choose..." );
+        box.addItem(constants.Choose());
         for ( int i = 0; i < facts.length; i++ ) {
             box.addItem( facts[i] );
         }
         box.setSelectedIndex( 0 );
 
-        final FormStylePopup popup = new FormStylePopup( "images/new_fact.gif",
-                                                         "New fact pattern..." );
-        popup.addAttribute( "choose fact type",
+        final FormStylePopup popup = new FormStylePopup( "images/new_fact.gif", //NON-NLS
+                constants.NewFactPattern());
+        popup.addAttribute(constants.chooseFactType(),
                             box );
 
         box.addChangeListener( new ChangeListener() {

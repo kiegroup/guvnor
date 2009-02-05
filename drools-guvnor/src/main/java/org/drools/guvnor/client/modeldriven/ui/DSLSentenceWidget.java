@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
@@ -38,9 +39,11 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.widgets.DatePicker;
 import com.gwtext.client.widgets.event.DatePickerListenerAdapter;
 import com.gwtext.client.widgets.form.DateField;
+import com.gwtext.client.util.Format;
 
 /**
  * This displays a widget to edit a DSL sentence.
@@ -280,8 +283,9 @@ public class DSLSentenceWidget extends Composite {
 		private HorizontalPanel panel = new HorizontalPanel();
 		private String oldValue = "";
 		private String regex = "";
+        private Constants constants = ((Constants) GWT.create(Constants.class));
 
-		public FieldEditor() {
+        public FieldEditor() {
 			box = new TextBox();
 			// box.setStyleName( "dsl-field-TextBox" );
 
@@ -294,8 +298,7 @@ public class DSLSentenceWidget extends Composite {
 					TextBox otherBox = (TextBox) w;
 
 					if (!regex.equals("") && !otherBox.getText().matches(regex)) {
-						Window.alert("The value " + otherBox.getText()
-								+ " is not valid for this field");
+						Window.alert(Format.format(constants.TheValue0IsNotValidForThisField(), otherBox.getText()));
 						box.setText(oldValue);
 					} else {
 						oldValue = otherBox.getText();

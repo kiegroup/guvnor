@@ -9,17 +9,20 @@ import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.ui.ConstraintValueEditor;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 public class Connectives {
     private FactPattern                pattern;
     private SuggestionCompletionEngine completions;
     private RuleModeller               modeller;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
-    
+
     /**
      * Returns the pattern.
      */
@@ -86,7 +89,7 @@ public class Connectives {
     private Widget connectiveOperatorDropDown(final ConnectiveConstraint con, String fieldName) {
         String[] ops = completions.getConnectiveOperatorCompletions( pattern.factType, fieldName );
         final ListBox box = new ListBox();
-        box.addItem( "--- please choose ---" );
+        box.addItem(constants.pleaseChoose());
         for ( int i = 0; i < ops.length; i++ ) {
             String op = ops[i];
             box.addItem( HumanReadable.getOperatorDisplayName( op ), op );

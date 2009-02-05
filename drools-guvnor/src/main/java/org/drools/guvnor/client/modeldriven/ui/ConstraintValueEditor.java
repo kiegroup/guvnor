@@ -34,6 +34,7 @@ import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -49,6 +50,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This is an editor for constraint values.
@@ -65,6 +67,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private final RuleModel model;
     private final boolean numericValue;
     private DropDownData dropDownData;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
     //private String[] enumeratedValues;
 
     /**
@@ -79,7 +82,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
             this.numericValue = false;
         }
         if (SuggestionCompletionEngine.TYPE_BOOLEAN.equals(valueType)) {
-            this.dropDownData = DropDownData.create(new String[] {"true", "false" });
+            this.dropDownData = DropDownData.create(new String[] {"true", "false" }); //NON-NLS
         } else {
         	this.dropDownData = sce.getEnums(pattern, fieldName);
         }
@@ -98,7 +101,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         panel.clear();
 
         if ( constraint.constraintValueType == SingleFieldConstraint.TYPE_UNDEFINED ) {
-            Image clickme = new Image( "images/edit.gif" );
+            Image clickme = new Image( "images/edit.gif" );     //NON-NLS
             clickme.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     showTypeChoice( w, constraint );
@@ -128,7 +131,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         final ListBox box = new ListBox();
 
         if (this.constraint.value == null) {
-            box.addItem( "Choose ..." );
+            box.addItem( constants.Choose() );
         }
         for ( int i = 0; i < vars.size(); i++ ) {
             String var = (String) vars.get( i );
@@ -152,8 +155,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
      */
     private Widget returnValueEditor() {
         TextBox box = boundTextBox(constraint);
-        String msg = "This is a formula expression which will evaluate to a value.";
-        Image img = new Image("images/function_assets.gif");
+        String msg = constants.FormulaEvaluateToAValue();
+        Image img = new Image("images/function_assets.gif"); //NON-NLS
         img.setTitle( msg );
         box.setTitle( msg );
         Widget ed = widgets( img, box);
@@ -196,7 +199,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 } );
             }
 
-            box.setTitle( "This is a literal value. What is shown is what the field is checked against." );
+            box.setTitle(constants.LiteralValueTip());
             return box;
         }
     }
@@ -207,14 +210,13 @@ public class ConstraintValueEditor extends DirtyableComposite {
     public static Widget enumDropDown(final String currentValue, final ValueChanged valueChanged,
                                 final DropDownData dropData) {
         final ListBox box = new ListBox();
-
-
+        final Constants cs =  GWT.create(Constants.class);
 
         //if we have to do it lazy, we will hit up the server when the widget gets focus
         if (dropData.fixedList == null && dropData.queryExpression != null) {
 			DeferredCommand.addCommand(new Command() {
 				public void execute() {
-					LoadingPopup.showMessage("Refreshing list...");
+					LoadingPopup.showMessage(cs.RefreshingList());
 					RepositoryServiceFactory.getService().loadDropDownExpression(dropData.valuePairs, dropData.queryExpression, new GenericCallback() {
 						public void onSuccess(Object data) {
 							LoadingPopup.close();
@@ -225,7 +227,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
 						public void onFailure(Throwable t) {
 							LoadingPopup.close();
 							//just do an empty drop down...
-							doDropDown(currentValue, new String[] {"Unable to load list..."}, box);
+							doDropDown(currentValue, new String[] {cs.UnableToLoadList()}, box);
 						}
 					});
 				}
@@ -334,7 +336,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
     private TextBox boundTextBox(final ISingleFieldConstraint c) {
         final TextBox box = new TextBox();
-        box.setStyleName( "constraint-value-Editor" );
+        box.setStyleName( "constraint-value-Editor" );    //NON-NLS
         if (c.value == null) {
         	box.setText("");
         } else {
@@ -373,9 +375,9 @@ public class ConstraintValueEditor extends DirtyableComposite {
      */
     private void showTypeChoice(Widget w, final ISingleFieldConstraint con) {
         final FormStylePopup form = new FormStylePopup( "images/newex_wiz.gif",
-                                                        "Field value" );
+                constants.FieldValue());
 
-        Button lit = new Button( "Literal value" );
+        Button lit = new Button(constants.LiteralValue());
         lit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 con.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
@@ -383,28 +385,28 @@ public class ConstraintValueEditor extends DirtyableComposite {
             }
 
         } );
-        form.addAttribute( "Literal value:", widgets( lit, new InfoPopup( "Literal",
-                                                                          "A literal value means the " + "constraint is directly against the value that you type (ie. what you see on screen)." ) ) );
+        form.addAttribute( constants.LiteralValue() + ":", widgets( lit, new InfoPopup( constants.LiteralValue(),
+                constants.LiteralValTip()) ) );
 
 
 
 
         form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( "<i>Advanced options:</i>" ) );
+        form.addRow( new SmallLabel(constants.AdvancedOptions()) );
 
         //only want to show variables if we have some !
         if (this.model.getBoundVariablesInScope( this.constraint ).size() > 0) {
-            Button variable = new Button("Bound variable");
+            Button variable = new Button(constants.BoundVariable());
             variable.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     con.constraintValueType = SingleFieldConstraint.TYPE_VARIABLE;
                     doTypeChosen( form );
                 }
             });
-            form.addAttribute( "A variable:", widgets( variable, new InfoPopup("A bound variable", "Will apply a constraint that compares a field to a bound variable.")) );
+            form.addAttribute(constants.AVariable(), widgets( variable, new InfoPopup(constants.ABoundVariable(), constants.BoundVariableTip())) );
         }
 
-        Button formula = new Button( "New formula" );
+        Button formula = new Button(constants.NewFormula());
         formula.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 con.constraintValueType = SingleFieldConstraint.TYPE_RET_VALUE;
@@ -412,8 +414,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
             }
         } );
 
-        form.addAttribute( "A formula:", widgets( formula, new InfoPopup( "A formula",
-                                                                          "A formula is an expression that calculates and returns a value " + ". That value is used to enforce the constraint." ) ) );
+        form.addAttribute(constants.AFormula() + ":", widgets( formula, new InfoPopup(constants.AFormula(),
+                constants.FormulaExpressionTip()) ) );
 
         form.show();
     }

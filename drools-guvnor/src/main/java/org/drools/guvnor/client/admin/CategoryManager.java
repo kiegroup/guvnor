@@ -23,6 +23,7 @@ import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -34,6 +35,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This controls category administration.
@@ -44,12 +46,13 @@ public class CategoryManager extends Composite {
     public VerticalPanel layout = new VerticalPanel();
     //public String selectedPath;
     private CategoryExplorerWidget explorer;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
     public CategoryManager() {
 
         PrettyFormLayout form = new PrettyFormLayout();
-        form.addHeader("images/edit_category.gif", new HTML("<b>Edit categories</b>"));
-        form.startSection("Categories aid in managing large numbers of rules/assets. A shallow hierarchy is recommended.");
+        form.addHeader("images/edit_category.gif", new HTML(constants.EditCategories())); //NON-NLS
+        form.startSection(constants.CategoriesPurposeTip());
 
         explorer = new CategoryExplorerWidget(new CategorySelectHandler() {
             public void selected(String sel) {
@@ -59,15 +62,15 @@ public class CategoryManager extends Composite {
         SimplePanel editable = new SimplePanel();
         editable.add( explorer );
 
-        form.addAttribute( "Current categories:", editable );
+        form.addAttribute(constants.CurrentCategories(), editable );
 
         HorizontalPanel actions = new HorizontalPanel();
 
 
         form.addAttribute("", actions);
 
-        Button newCat = new Button( "New category" );
-        newCat.setTitle( "Create a new category" );
+        Button newCat = new Button(constants.NewCategory());
+        newCat.setTitle(constants.CreateANewCategory());
         newCat.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 CategoryEditor newCat = new CategoryEditor( explorer.getSelectedPath(), new Command() {
@@ -82,11 +85,11 @@ public class CategoryManager extends Composite {
 
         actions.add(newCat);
 
-        Button rename = new Button("Rename selected");
+        Button rename = new Button(constants.RenameSelected());
         rename.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				if (!explorer.isSelected()) {
-					Window.alert("Please select a category to rename");
+					Window.alert(constants.PleaseSelectACategoryToRename());
 					return;
 				}
 				renameSelected();
@@ -96,17 +99,17 @@ public class CategoryManager extends Composite {
         actions.add(rename);
 
 
-        Button delete = new Button("Delete selected");
+        Button delete = new Button(constants.DeleteSelected());
         delete.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
             	if (!explorer.isSelected())  {
-            		Window.alert("Please select a category to delete.");
+            		Window.alert(constants.PleaseSelectACategoryToDelete());
             		return;
             	}
                 deleteSelected();
             }
         } );
-        delete.setTitle( "Deletes the currently selected category. You won't be able to delete if the category is in use." );
+        delete.setTitle(constants.DeleteSelectedCat());
 
         actions.add(delete);
 
@@ -119,11 +122,11 @@ public class CategoryManager extends Composite {
 
     private void renameSelected() {
 
-    	String name = Window.prompt("Please enter the name you would like to change this category to", "");
+    	String name = Window.prompt(constants.CategoryNewNamePleaseEnter(), "");
     	if (name != null) {
 	    	RepositoryServiceFactory.getService().renameCategory(explorer.getSelectedPath(), name, new GenericCallback()  {
 				public void onSuccess(Object data) {
-					Window.alert("Category renamed");
+					Window.alert(constants.CategoryRenamed());
 					explorer.refresh();
 				}
 	    	});
@@ -132,7 +135,7 @@ public class CategoryManager extends Composite {
 
 
     private void deleteSelected() {
-        if (Window.confirm( "Are you sure you want to delete category: " + explorer.getSelectedPath() )) {
+        if (Window.confirm(constants.AreYouSureYouWantToDeleteCategory() + explorer.getSelectedPath() )) {
             RepositoryServiceFactory.getService().removeCategory( explorer.getSelectedPath(), new GenericCallback() {
 
                 public void onSuccess(Object data) {

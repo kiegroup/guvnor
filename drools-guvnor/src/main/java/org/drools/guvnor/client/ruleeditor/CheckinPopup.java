@@ -18,6 +18,7 @@ package org.drools.guvnor.client.ruleeditor;
 
 
 import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -26,6 +27,7 @@ import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  *
@@ -40,6 +42,7 @@ public class CheckinPopup {
     private TextArea comment;
     private Button save;
     private FormStylePopup pop;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
 
     public CheckinPopup(int left, int top, String message) {
@@ -47,9 +50,9 @@ public class CheckinPopup {
         pop.setTitle(message);
         comment = new TextArea();
         comment.setWidth( "100%" );
-        comment.setTitle("Add an optional check in comment");
+        comment.setTitle(constants.AddAnOptionalCheckInComment());
 
-        save = new Button("Check in");
+        save = new Button(constants.CheckIn());
         pop.addRow(comment);
         pop.addRow(save);
 
