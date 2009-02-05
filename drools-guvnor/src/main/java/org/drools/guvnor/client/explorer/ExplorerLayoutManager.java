@@ -1,10 +1,12 @@
 package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.LoggedInUserInfo;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.security.Capabilities;
 
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.Margins;
 import com.gwtext.client.core.RegionPosition;
 import com.gwtext.client.widgets.Panel;
@@ -121,7 +123,7 @@ public class ExplorerLayoutManager {
         //create the west panel and add it to the main panel applying the west region layout properties
         Panel westPanel = new Panel();
         westPanel.setId("side-nav");
-        westPanel.setTitle("Navigate");
+        westPanel.setTitle(((Constants) GWT.create(Constants.class)).Navigate());
         westPanel.setLayout(new FitLayout());
         westPanel.setWidth(210);
         westPanel.setCollapsible(true);//MN createWestPanel();

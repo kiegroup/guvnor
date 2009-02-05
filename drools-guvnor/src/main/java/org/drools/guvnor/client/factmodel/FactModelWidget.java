@@ -15,6 +15,7 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.ruleeditor.DefaultRuleContentWidget;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -32,7 +33,9 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.util.Format;
 
 /**
  * The editor for fact models (drl declared types).
@@ -44,13 +47,14 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 	private RuleAsset asset;
 	private VerticalPanel layout;
 	private int editingFact = -1;
+    private static Constants constants = ((Constants) GWT.create(Constants.class));
     private static Map<String, String> TYPE_DESCRIPTIONS = new HashMap<String, String>() {
         {
-            put ("Integer", "Whole number (integer)");
-            put ("Boolean", "True or False");
-            put ("java.util.Date", "Date");
-            put ("java.math.BigDecimal", "Decimal number");
-            put ("String", "Text");
+            put ("Integer", constants.WholeNumberInteger());
+            put ("Boolean", constants.TrueOrFalse());
+            put ("java.util.Date", constants.Date());
+            put ("java.math.BigDecimal", constants.DecimalNumber());
+            put ("String", constants.Text());
 
         }
     };
@@ -76,7 +80,7 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 
 		layout.setWidth("100%");
 		initWidget(layout);
-		setStyleName("model-builder-Background");
+		setStyleName("model-builder-Background");   //NON-NLS
 	}
 
 
@@ -84,7 +88,7 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 		layout.clear();
 		final FactModels m = (FactModels) asset.content;
 
-		String factHeaderStyle = "modeller-fact-TypeHeader";
+		String factHeaderStyle = "modeller-fact-TypeHeader"; //NON-NLS
 		for (int i = 0; i < m.models.size(); i++) {
 
 			final FactMetaModel mm = (FactMetaModel) m.models.get(i);
@@ -97,7 +101,7 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 
 			FlexTable tb = new FlexTable();
 			config.add(tb);
-			tb.setStyleName("modeller-fact-pattern-Widget");
+			tb.setStyleName("modeller-fact-pattern-Widget");    //NON-NLS
 			tb.setWidth("100%");
 			//layout.add(tb);
 			layout.add(config);
@@ -106,7 +110,7 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 			//headerPanel.add(new HTML("<b><small>" + mm.name + "</small></b>"));
 
 			//ImageButton addField = new ImageButton("images/add_field_to_fact.gif");
-			Button addField = new Button("Add field");
+			Button addField = new Button(constants.AddField());
 			addField.addClickListener(new ClickListener() {
 				public void onClick(Widget arg0) {
 					showFieldEditor(m, mm, null);
@@ -123,15 +127,16 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 
 			for (int j = 0; j < mm.fields.size(); j++) {
 				final FieldMetaModel fm = (FieldMetaModel) mm.fields.get(j);
-				tb.setWidget(j + 1, 0, new HTML("<b><small>" + fm.name + ":</small></b>"));
+                String ms = Format.format(constants.FieldName(), fm.name);
+				tb.setWidget(j + 1, 0, new HTML(ms));
 				formatter.setHorizontalAlignment(j + 1, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 
 				HorizontalPanel type = new HorizontalPanel();
 				type.add(new SmallLabel(getDesc(fm)));
-				ImageButton del = new ImageButton("images/delete_item_small.gif");
+				ImageButton del = new ImageButton("images/delete_item_small.gif"); //NON-NLS
 				del.addClickListener(new ClickListener() {
 					public void onClick(Widget w) {
-						if (Window.confirm("Are you sure you want to remove the field " + fm.name + " ?")) {
+                        if (Window.confirm(Format.format(constants.AreYouSureYouWantToRemoveTheField0(), fm.name))) {
 							mm.fields.remove(fm);
 							editingFact = m.models.indexOf(mm);
 							renderEditor();
@@ -139,7 +144,7 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 					}
 				});
 
-				ImageButton edit = new ImageButton("images/edit.gif");
+				ImageButton edit = new ImageButton("images/edit.gif"); //NON-NLS
 				edit.addClickListener(new ClickListener() {
 					public void onClick(Widget arg0) {
 						showFieldEditor(m, mm, fm);
@@ -158,17 +163,17 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 
 
 		}
-		final Button addNewFact = new Button("Add new fact type");
+		final Button addNewFact = new Button(constants.AddNewFactType());
 		addNewFact.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
-				String type = Window.prompt("New type", "Enter new type name");
+				String type = Window.prompt(constants.NewType(), constants.EnterNewTypeName());
 				if (type != null)  {
 					if (uniqueName(type, m.models)) {
 						m.models.add(new FactMetaModel(type, new ArrayList()));
 						editingFact = m.models.size() -1;
 						renderEditor();
 					} else {
-						Window.alert("The type name [" + type + "] already exists, please choose another name.");
+                        Window.alert(Format.format(constants.TypeNameExistsWarning(), type));
 						addNewFact.click();
 					}
 				}
@@ -212,7 +217,7 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 		HorizontalPanel typeP = new HorizontalPanel();
 		typeP.add(fieldType);
 		final ListBox typeChoice = new ListBox();
-		typeChoice.addItem("-- choose type --");
+		typeChoice.addItem(constants.chooseType());
 
         for (String k : TYPE_DESCRIPTIONS.keySet()) {
             typeChoice.addItem(TYPE_DESCRIPTIONS.get(k), k);
@@ -233,10 +238,10 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 
 		typeP.add(typeChoice);
 
-		pop.addAttribute("Field name", fieldName);
-		pop.addAttribute("Type", typeP);
+		pop.addAttribute(constants.FieldNameAttribute(), fieldName);
+		pop.addAttribute(constants.Type(), typeP);
 
-		Button ok = new Button("OK");
+		Button ok = new Button(constants.OK());
 		ok.addClickListener(new ClickListener() {
 			public void onClick(Widget arg0) {
 				FieldMetaModel fld = field;
@@ -261,7 +266,7 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 	 * @param m
 	 */
 	private Widget editFact(final FactMetaModel mm, final FactModels m) {
-		ImageButton edit = new ImageButton("images/edit.gif");
+		ImageButton edit = new ImageButton("images/edit.gif");  //NON-NLS
 		//Button edit = new Button("Edit/remove");
 		edit.addClickListener(new ClickListener() {
 			public void onClick(Widget arg0) {
@@ -270,17 +275,17 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 				final TextBox name = new TextBox();
 				name.setText(mm.name);
 				changeName.add(name);
-				Button nameBut = new Button("Change name");
+				Button nameBut = new Button(constants.ChangeName());
 
 				nameBut.addKeyboardListener(noSpaceListener());
 
 				nameBut.addClickListener(new ClickListener() {
 					public void onClick(Widget w) {
                         if (!uniqueName(name.getText(), m.models)) {
-                            Window.alert("The name [" + name.getText() + "] is already taken - please choose another");
+                            Window.alert(Format.format(constants.NameTakenForModel(), name.getText()));
                             return;
                         }
-						if (Window.confirm("Are you sure you want to change the name? Its possible that rules will need to be changed to reflect the new name.")) {
+						if (Window.confirm(constants.ModelNameChangeWarning())) {
 							mm.name = name.getText();
 							pop.hide();
 							renderEditor();
@@ -288,19 +293,19 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 					}
 				});
 				changeName.add(nameBut);
-				pop.addAttribute("Change fact name", changeName);
+				pop.addAttribute(constants.ChangeFactName(), changeName);
 
-				Button delFact = new Button("Delete");
+				Button delFact = new Button(constants.Delete());
 				delFact.addClickListener(new ClickListener() {
 					public void onClick(Widget w) {
-						if (Window.confirm("Are you sure you want to remove this fact?")) {
+						if (Window.confirm(constants.AreYouSureYouWantToRemoveThisFact())) {
 							m.models.remove(mm);
 							pop.hide();
 							renderEditor();
 						}
 					}
 				});
-				pop.addAttribute("Remove this fact type", delFact);
+				pop.addAttribute(constants.RemoveThisFactType(), delFact);
 
 				pop.show();
 			}
@@ -328,7 +333,7 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 	}
 
 	public void onAfterSave() {
-		LoadingPopup.showMessage("Refreshing model...");
+		LoadingPopup.showMessage(constants.RefreshingModel());
 		SuggestionCompletionCache.getInstance().loadPackage(this.asset.metaData.packageName, new Command() {
 			public void execute() {
 				LoadingPopup.close();

@@ -30,6 +30,7 @@ import org.drools.guvnor.client.modeldriven.brl.IPattern;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.ui.factPattern.Connectives;
 import org.drools.guvnor.client.modeldriven.ui.factPattern.PopupCreator;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -44,6 +45,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This is the new smart widget that works off the model.
@@ -59,6 +61,7 @@ public class FactPatternWidget extends DirtyableComposite {
     private Connectives                connectives;
     private PopupCreator               popupCreator;
     private boolean                    bindable;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
     public FactPatternWidget(RuleModeller mod, IPattern p,
             SuggestionCompletionEngine com, boolean canBind) {
@@ -134,11 +137,11 @@ public class FactPatternWidget extends DirtyableComposite {
 
             //now the clear icon
             final int currentRow = i;
-            Image clear = new ImageButton( "images/delete_item_small.gif" );
-            clear.setTitle( "Remove this whole restriction" );
+            Image clear = new ImageButton( "images/delete_item_small.gif" );//NON-NLS
+            clear.setTitle(constants.RemoveThisWholeRestriction());
             clear.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                    if (Window.confirm( "Remove this item?" )) {
+                    if (Window.confirm(constants.RemoveThisItem())) {
                         pattern.removeConstraint( currentRow );
                         modeller.refreshWidget();
                     }
@@ -211,7 +214,7 @@ public class FactPatternWidget extends DirtyableComposite {
         String desc = null;
 
         Image edit = new ImageButton( "images/edit_tiny.gif" );
-        edit.setTitle( "Add a field to this nested constraint." );
+        edit.setTitle(constants.AddAFieldToThisNestedConstraint());
 
         ClickListener click = new ClickListener() {
             public void onClick(Widget w) {
@@ -222,9 +225,9 @@ public class FactPatternWidget extends DirtyableComposite {
         edit.addClickListener( click );
 
         if (constraint.compositeJunctionType.equals(CompositeFieldConstraint.COMPOSITE_TYPE_AND)) {
-            desc = "All of:";
+            desc = constants.AllOf();
         } else {
-            desc = "Any of:";
+            desc = constants.AnyOf();
         }
 
         //HorizontalPanel ab = new HorizontalPanel();
@@ -237,18 +240,18 @@ public class FactPatternWidget extends DirtyableComposite {
 
         FieldConstraint[] nested = constraint.constraints;
         DirtyableFlexTable inner = new DirtyableFlexTable();
-        inner.setStyleName( "modeller-inner-nested-Constraints" );
+        inner.setStyleName( "modeller-inner-nested-Constraints" ); //NON-NLS
         if (nested != null) {
             for ( int i = 0; i < nested.length; i++ ) {
                 this.renderFieldConstraint( inner, i, nested[i], false, 0 );
                 //add in remove icon here...
                 final int currentRow = i;
-                Image clear = new ImageButton( "images/delete_item_small.gif" );
-                clear.setTitle( "Remove this (nested) restriction" );
+                Image clear = new ImageButton( "images/delete_item_small.gif" ); //NON-NLS
+                clear.setTitle(constants.RemoveThisNestedRestriction());
 
                 clear.addClickListener( new ClickListener() {
                     public void onClick(Widget w) {
-                        if (Window.confirm( "Remove this item from nested constraint?" )) {
+                        if (Window.confirm(constants.RemoveThisItemFromNestedConstraint())) {
                             constraint.removeConstraint( currentRow );
                             modeller.refreshWidget();
                         }
@@ -275,8 +278,8 @@ public class FactPatternWidget extends DirtyableComposite {
             inner.setWidget( row, 1, operatorDropDown( constraint ) );
             inner.setWidget( row, 2, valueEditor( constraint, constraint.fieldType ) );
             inner.setWidget( row, 3, connectives.connectives( constraint, constraint.fieldType ) );
-            Image addConnective = new ImageButton( "images/add_connective.gif" );
-            addConnective.setTitle( "Add more options to this fields values." );
+            Image addConnective = new ImageButton( "images/add_connective.gif" ); //NON-NLS
+            addConnective.setTitle(constants.AddMoreOptionsToThisFieldsValues());
             addConnective.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     constraint.addNewConnective();
@@ -298,8 +301,8 @@ public class FactPatternWidget extends DirtyableComposite {
 
         HorizontalPanel pred = new HorizontalPanel();
         pred.setWidth( "100%" );
-        Image img = new Image("images/function_assets.gif");
-        img.setTitle( "This is a formula expression that is evaluated to be true or false." );
+        Image img = new Image("images/function_assets.gif"); //NON-NLS
+        img.setTitle(constants.FormulaBooleanTip());
 
         pred.add( img );
         if (c.value == null) {
@@ -325,8 +328,8 @@ public class FactPatternWidget extends DirtyableComposite {
     private Widget getPatternLabel() {
         HorizontalPanel horiz = new HorizontalPanel();
 
-        Image edit = new ImageButton( "images/edit_tiny.gif" );
-        edit.setTitle( "Add a field to this condition, or bind a varible to this fact." );
+        Image edit = new ImageButton( "images/edit_tiny.gif" ); //NON-NLS
+        edit.setTitle(constants.AddOrBindToCondition());
 
         ClickListener click = new ClickListener() {
             public void onClick(Widget w) {
@@ -355,7 +358,7 @@ public class FactPatternWidget extends DirtyableComposite {
     private Widget operatorDropDown(final SingleFieldConstraint c) {
         String[] ops = completions.getOperatorCompletions( pattern.factType, c.fieldName );
         final ListBox box = new ListBox();
-        box.addItem( "--- please choose ---", "" );
+        box.addItem(constants.pleaseChoose(), "" );
         for ( int i = 0; i < ops.length; i++ ) {
             String op = ops[i];
             box.addItem( HumanReadable.getOperatorDisplayName( op ), op );
@@ -390,23 +393,16 @@ public class FactPatternWidget extends DirtyableComposite {
 
             	ClickListener click = new ClickListener() {
                     public void onClick(Widget w) {
-                        //showBindFieldPopup(w, con);
-                        SingleFieldConstraint constraint = con;
                         String[] fields = completions.getFieldCompletions( con.fieldType );
-                        //if (fields != null) {
-                          //  popupCreator.showPatternPopup(w, con.fieldType, con);
-                            //popupCreator.showBindFieldPopup(w, con);
-                        //} else {
-                            popupCreator.showBindFieldPopup(w, con, fields, popupCreator);
-                        //}
+                        popupCreator.showBindFieldPopup(w, con, fields, popupCreator);
                     }
                 };
 
-                Image bind = new ImageButton( "images/edit_tiny.gif", "Give this field a variable name that can be used elsewhere.");
+                Image bind = new ImageButton( "images/edit_tiny.gif", constants.GiveFieldVarName());
 
                 bind.addClickListener( click);
                 ClickableLabel cl = new ClickableLabel(con.fieldName, click);
-                DOM.setStyleAttribute(cl.getElement(), "marginLeft", "" + padding + "pt");
+                DOM.setStyleAttribute(cl.getElement(), "marginLeft", "" + padding + "pt"); //NON-NLS
                 ab.add( cl );
                 ab.add( bind );
             } else {

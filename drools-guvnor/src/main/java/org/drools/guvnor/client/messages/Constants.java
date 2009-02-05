@@ -408,7 +408,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String chooseFactType();
 
-    String pleaseChoose();
 
     String FormulaEvaluateToAValue();
 
@@ -456,7 +455,138 @@ public interface Constants extends ConstantsWithLookup {
 
     String TheValue0IsNotValidForThisField();
 
-    String PleaseWaitDotDotDot();
 
     String AFormula();
+
+    String Error();
+
+    String ShowDetail();
+
+    String Navigate();
+
+    String BusinessRuleAssets();
+
+    String TechnicalRuleAssets();
+
+    String Functions();
+
+    String DSLConfigurations();
+
+    String Model();
+
+    String RuleFlows();
+
+    String Enumerations();
+
+    String TestScenarios();
+
+    String XMLProperties();
+
+    String OtherAssetsDocumentation();
+
+    String Admin();
+
+    String UserPermission();
+
+    String AssetsTreeView();
+
+    String Find();
+
+    String ByCategory();
+
+    String ByStatus();
+
+    String QA();
+
+    String TestScenariosInPackages();
+
+    String PleaseWaitDotDotDot();
+
+    String Analysis();
+
+    String ScenariosForPackage();
+
+    String AnalysisForPackage();
+
+    String AreYouSureCloseWarningUnsaved();
+
+    String CloseAllItems();
+
+    String AreYouSureYouWantToCloseOpenItems();
+
+    String LoadingAsset();
+
+    String LoadingPackageInformation();
+
+    String LoadingSnapshot();
+
+    String SnapshotLabel();
+
+    String WholeNumberInteger();
+
+    String TrueOrFalse();
+
+    String Date();
+
+    String DecimalNumber();
+
+    String Text();
+
+
+    String FieldName();
+
+    String AreYouSureYouWantToRemoveTheField0();
+
+    String AddNewFactType();
+
+    String NewType();
+
+    String EnterNewTypeName();
+
+    String TypeNameExistsWarning();
+
+    String chooseType();
+
+    String FieldNameAttribute();
+
+    String Type();
+
+    String ChangeName();
+
+    String NameTakenForModel();
+
+    String ModelNameChangeWarning();
+
+    String ChangeFactName();
+
+    String AreYouSureYouWantToRemoveThisFact();
+
+    String RemoveThisFactType();
+
+    String RefreshingModel();
+
+    String RemoveThisWholeRestriction();
+
+
+    String AddAFieldToThisNestedConstraint();
+
+    String AllOf();
+
+    String AnyOf();
+
+    String RemoveThisNestedRestriction();
+
+    String RemoveThisItemFromNestedConstraint();
+
+    String AddMoreOptionsToThisFieldsValues();
+
+    String FormulaBooleanTip();
+
+    String AddOrBindToCondition();
+
+    String pleaseChoose();
+
+    String GiveFieldVarName();
+
+    String FactTypes();
 }

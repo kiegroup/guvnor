@@ -2,22 +2,25 @@ package org.drools.guvnor.client.ruleeditor;
 
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.TreeListener;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.core.client.GWT;
 
 public class FactTypeBrowser extends Composite {
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
 
-	public FactTypeBrowser(SuggestionCompletionEngine sce, final ClickEvent ev) {
+    public FactTypeBrowser(SuggestionCompletionEngine sce, final ClickEvent ev) {
 		Tree tree = new Tree();
 
 		VerticalPanel panel = new VerticalPanel();
 
-		panel.add(new SmallLabel("Fact types:"));
+		panel.add(new SmallLabel(constants.FactTypes()));
 
 		panel.add(tree);
 		if (sce.factTypes != null) {
@@ -39,7 +42,7 @@ public class FactTypeBrowser extends Composite {
 			}
 		}
 
-		tree.setStyleName( "category-explorer-Tree" );
+		tree.setStyleName( "category-explorer-Tree" ); //NON-NLS
 		tree.addTreeListener(new TreeListener() {
 			public void onTreeItemSelected(TreeItem t) {
 				Object o = t.getUserObject();

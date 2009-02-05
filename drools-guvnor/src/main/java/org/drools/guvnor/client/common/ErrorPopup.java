@@ -18,10 +18,12 @@ package org.drools.guvnor.client.common;
 
 
 import org.drools.guvnor.client.rpc.DetailedSerializableException;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Window;
@@ -35,13 +37,14 @@ import com.gwtext.client.widgets.layout.VerticalLayout;
 public class ErrorPopup  {
 
     public static ErrorPopup instance = null;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
     //new Image("images/error_dialog.png")
 
 
     private ErrorPopup(final String message, final String longMessage) {
 
     	Window w = new Window();
-    	w.setTitle("Error");
+    	w.setTitle(constants.Error());
     	w.setWidth(400);
     	w.setHeight((longMessage != null) ? 300 : 150);
     	w.setModal(true);
@@ -62,7 +65,7 @@ public class ErrorPopup  {
 
         final SimplePanel detailPanel = new SimplePanel();
         if (longMessage != null && !"".equals(longMessage)) {
-	        Button showD = new Button("Show detail");
+	        Button showD = new Button(constants.ShowDetail());
 	        showD.addListener(new ButtonListenerAdapter() {
 				public void onClick(Button button, EventObject e) {
 					detailPanel.clear();

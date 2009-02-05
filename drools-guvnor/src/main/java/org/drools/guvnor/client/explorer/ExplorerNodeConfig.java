@@ -8,22 +8,26 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.event.TreeNodeListenerAdapter;
+import com.gwtext.client.util.Format;
 
 /*
  * This class contains static node config for BRMS' explorer widgets
  */
 public class ExplorerNodeConfig {
 
-	public static String CATEGORY_ID = "category";
-	public static String STATES_ID = "states";
+	public static String CATEGORY_ID = "category";      //NON-NLS
+	public static String STATES_ID = "states";          //NON-NLS
+    private static Constants constants = ((Constants) GWT.create(Constants.class));
 
-	public static TreeNode getPackageItemStructure(String packageName, String uuid) {
+    public static TreeNode getPackageItemStructure(String packageName, String uuid) {
 
 		TreeNode pkg = new TreeNode(packageName);
 		pkg.setAttribute("uuid", uuid);
@@ -31,42 +35,42 @@ public class ExplorerNodeConfig {
 
 
 
-        pkg.appendChild( makeItem( "Business rule assets",
+        pkg.appendChild( makeItem(constants.BusinessRuleAssets(),
                 "images/rule_asset.gif", AssetFormats.BUSINESS_RULE_FORMATS ) );
-        pkg.appendChild( makeItem( "Technical rule assets",
+        pkg.appendChild( makeItem(constants.TechnicalRuleAssets(),
                 "images/technical_rule_assets.gif", new String[]{AssetFormats.DRL} )  );
-		pkg.appendChild( makeItem( "Functions",
+		pkg.appendChild( makeItem(constants.Functions(),
 		                "images/function_assets.gif", new String[]{AssetFormats.FUNCTION} ) );
-		pkg.appendChild( makeItem( "DSL configurations",
+		pkg.appendChild( makeItem(constants.DSLConfigurations(),
 		                "images/dsl.gif",
 
 		                               new String[]{AssetFormats.DSL} ) );
-		pkg.appendChild( makeItem( "Model",
+		pkg.appendChild( makeItem(constants.Model(),
 		                "images/model_asset.gif",
 
 		                               new String[]{AssetFormats.MODEL, AssetFormats.DRL_MODEL} ) ) ;
 
-		pkg.appendChild( makeItem( "Rule Flows",
+		pkg.appendChild( makeItem(constants.RuleFlows(),
 		 "images/ruleflow_small.gif",
 
 		                new String[]{AssetFormats.RULE_FLOW_RF} ) ) ;
 
-		pkg.appendChild( makeItem( "Enumerations",
+		pkg.appendChild( makeItem(constants.Enumerations(),
 		 "images/enumeration.gif",
 
 		                new String[]{AssetFormats.ENUMERATION} ) ) ;
 
 
-		pkg.appendChild(makeItem( "Test Scenarios",
+		pkg.appendChild(makeItem(constants.TestScenarios(),
 		                "images/test_manager.gif",
 
 		                               new String[]{AssetFormats.TEST_SCENARIO} ) ) ;
 
-        pkg.appendChild(makeItem( "XML, Properties",
+        pkg.appendChild(makeItem(constants.XMLProperties(),
                 "images/new_file.gif",
                                new String[]{AssetFormats.XML, AssetFormats.PROPERTIES} ) ) ;
 
-        pkg.appendChild(makeItem( "Other assets, documentation",
+        pkg.appendChild(makeItem(constants.OtherAssetsDocumentation(),
                 "images/new_file.gif",
                                new String[0] ) ) ;
 
@@ -85,23 +89,23 @@ public class ExplorerNodeConfig {
 
 	public static TreeNode getAdminStructure() {
 
-		TreeNode adminNode = new TreeNode("Admin");
+		TreeNode adminNode = new TreeNode(constants.Admin());
 		//adminNode.setAttribute("icon", "images/managment.gif");
 
 		String[][] adminStructure = new String[][] {
-				{ "Category", "images/category_small.gif", "0"}, // ID 0
-                { "Status", "images/tag.png", "2" }, // ID 2
-				{ "Archive", "images/backup_small.gif", "1" }, // ID 1
-                { "Event log", "images/error.gif", "4" }, // ID 4
-                { "User permission", "images/icoUsers.gif", "5" }, // ID 5
-				{ "Import/Export", "images/save_edit.gif", "3" }, //ID 3
-				{ "About", "images/information.gif", "6" }}; //ID 6
+				{ constants.Category(), "images/category_small.gif", "0"},
+                { constants.Status(), "images/tag.png", "2" },
+				{ constants.Archive(), "images/backup_small.gif", "1" }, 
+                { constants.EventLog(), "images/error.gif", "4" },
+                { constants.UserPermission(), "images/icoUsers.gif", "5" },
+				{ constants.ImportExport(), "images/save_edit.gif", "3" },
+				{ constants.About(), "images/information.gif", "6" }};
 
 		for (int i = 0; i < adminStructure.length; i++) {
 
 			String[] packageData = adminStructure[i];
 			TreeNode localChildNode = new TreeNode(packageData[0]);
-			localChildNode.setAttribute("icon", packageData[1]);
+			localChildNode.setAttribute("icon", packageData[1]);   //NON-NLS
 			localChildNode.setAttribute("id", packageData[2]);
 
 			adminNode.appendChild(localChildNode);
@@ -111,13 +115,13 @@ public class ExplorerNodeConfig {
 
 	public static TreeNode getRulesStructure () {
 		TreeNode tn = new TreeNode();
-		tn.setText("Assets");
+		tn.setText(constants.AssetsTreeView());
 		tn.setExpanded(true);
 
 		TreeNode tnc = new TreeNode();
-		tnc.setIcon("images/find.gif");
+		tnc.setIcon("images/find.gif"); //NON-NLS
 		tnc.setId("FIND");
-		tnc.setText("Find");
+		tnc.setText(constants.Find());
 
 		tn.appendChild(tnc);
 		if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
@@ -129,7 +133,7 @@ public class ExplorerNodeConfig {
 	}
 
 	public static TreeNode getCategoriesStructure () {
-		final TreeNode treeNode = new TreeNode("By Category");
+		final TreeNode treeNode = new TreeNode(constants.ByCategory());
 		treeNode.setAttribute("icon", "images/silk/chart_organisation.gif");
 		treeNode.setAttribute("id",CATEGORY_ID);
 		doCategoryNode(treeNode, "/");
@@ -164,7 +168,7 @@ public class ExplorerNodeConfig {
 								childNode.setText(current);
 
 								childNode.setUserObject((path.equals("/")) ? current : path + "/" + current);
-								childNode.appendChild(new TreeNode("Please wait..."));
+								childNode.appendChild(new TreeNode(constants.PleaseWaitDotDotDot()));
 								childNode.addListener(new TreeNodeListenerAdapter() {
 									boolean expanding = false;
 
@@ -203,8 +207,8 @@ public class ExplorerNodeConfig {
 
 	public static TreeNode getStatesStructure () {
 
-		final TreeNode treeNode = new TreeNode("By Status");
-		treeNode.setAttribute("icon", "images/status_small.gif");
+		final TreeNode treeNode = new TreeNode(constants.ByStatus());
+		treeNode.setAttribute("icon", "images/status_small.gif"); //NON-NLS
 		treeNode.setAttribute("id",STATES_ID);
 
 
@@ -212,7 +216,7 @@ public class ExplorerNodeConfig {
 			public void onSuccess(String[] value) {
 				for (int i = 0; i < value.length; i++) {
 					TreeNode childNode = new TreeNode(value[i]);
-					childNode.setAttribute("icon", "images/category_small.gif");
+					childNode.setAttribute("icon", "images/category_small.gif");  //NON-NLS
 					childNode.setUserObject("-" + value[i]);
 					treeNode.appendChild(childNode);
 				}
@@ -225,26 +229,26 @@ public class ExplorerNodeConfig {
 	public static TreeNode getQAStructure(final ExplorerViewCenterPanel centerPanel) {
 
 		final TreeNode treeNode = new TreeNode();
-		treeNode.setText("QA");
+		treeNode.setText(constants.QA());
 
 
 		final TreeNode scenarios = new TreeNode();
-		scenarios.setText("Test Scenarios in packages");
-		scenarios.setIcon("images/test_manager.gif");
+		scenarios.setText(constants.TestScenariosInPackages());
+		scenarios.setIcon("images/test_manager.gif"); //NON-NLS
 
 		final EditItemEvent edit = new EditItemEvent() {
 			public void open(String key) {centerPanel.openAsset(key);}
 		};
 
-		scenarios.appendChild(new TreeNode("Please wait..."));
+		scenarios.appendChild(new TreeNode(constants.PleaseWaitDotDotDot()));
 		treeNode.appendChild(scenarios);
 
 
 		final TreeNode analysis = new TreeNode();
-		analysis.setText("Analysis");
-		analysis.setIcon("images/analyze.gif");
+		analysis.setText(constants.Analysis());
+		analysis.setIcon("images/analyze.gif"); //NON-NLS
 		analysis.setExpanded(false);
-		analysis.appendChild(new TreeNode("Please wait..."));
+		analysis.appendChild(new TreeNode(constants.PleaseWaitDotDotDot()));
 
         if (Preferences.getBooleanPref("verifier")) {
 		    treeNode.appendChild(analysis);
@@ -253,24 +257,22 @@ public class ExplorerNodeConfig {
 
 		scenarios.addListener(new TreeNodeListenerAdapter() {
 			public void onExpand(Node node) {
-				System.err.println("-->Loading packages 1");
 
-				RepositoryServiceFactory.getService().listPackages(new GenericCallback() {
-					public void onSuccess(Object data) {
-						PackageConfigData[] conf = (PackageConfigData[]) data;
-
+				RepositoryServiceFactory.getService().listPackages(new GenericCallback<PackageConfigData[]>() {
+					public void onSuccess(PackageConfigData[] conf) {
 						for (int i = 0; i < conf.length; i++) {
 							final PackageConfigData c = conf[i];
 							TreeNode pkg = new TreeNode();
 							pkg.setText(c.name);
-							pkg.setIcon("images/package.gif");
+							pkg.setIcon("images/package.gif");  //NON-NLS
 
 							scenarios.appendChild(pkg);
 							pkg.addListener(new TreeNodeListenerAdapter() {
 								public void onClick(Node node, EventObject e) {
-									if (!centerPanel.showIfOpen("scenarios" + c.uuid)) {
-										centerPanel.addTab("Scenarios for " + c.name, true, new ScenarioPackageView(
-												c.uuid, c.name, edit, centerPanel ), "scenarios" + c.uuid);
+									if (!centerPanel.showIfOpen("scenarios" + c.uuid)) { //NON-NLS
+                                        String m = Format.format(constants.ScenariosForPackage(), c.name);
+										centerPanel.addTab(m, true, new ScenarioPackageView(
+												c.uuid, c.name, edit, centerPanel ), "scenarios" + c.uuid); //NON-NLS
 									}
 								}
 							});
@@ -287,7 +289,7 @@ public class ExplorerNodeConfig {
 				for (int i = 0; i < cs.length; i++) {
 					node.removeChild(cs[i]);
 				}
-				node.appendChild(new TreeNode("Please wait..."));
+				node.appendChild(new TreeNode(constants.PleaseWaitDotDotDot()));
 			}
 		});
 
@@ -296,23 +298,22 @@ public class ExplorerNodeConfig {
 
 
 			public void onExpand(Node node) {
-				System.err.println("-->Loading packages 2");
-				RepositoryServiceFactory.getService().listPackages(new GenericCallback() {
-					public void onSuccess(Object data) {
-						PackageConfigData[] conf = (PackageConfigData[]) data;
+				RepositoryServiceFactory.getService().listPackages(new GenericCallback<PackageConfigData[]>() {
+					public void onSuccess(PackageConfigData[] conf) {
 
 						for (int i = 0; i < conf.length; i++) {
 							final PackageConfigData c = conf[i];
 							TreeNode pkg = new TreeNode();
 							pkg.setText(c.name);
-							pkg.setIcon("images/package.gif");
+							pkg.setIcon("images/package.gif");    //NON-NLS
 
 
 							analysis.appendChild(pkg);
 							pkg.addListener(new TreeNodeListenerAdapter() {
 								public void onClick(Node node, EventObject e) {
-									if (!centerPanel.showIfOpen("analysis" + c.uuid)) {
-										centerPanel.addTab("Analysis for " + c.name, true, new AnalysisView(c.uuid, c.name), "analysis" + c.uuid);
+									if (!centerPanel.showIfOpen("analysis" + c.uuid)) { //NON-NLS
+                                        String m = Format.format(constants.AnalysisForPackage(), c.name);
+										centerPanel.addTab(m, true, new AnalysisView(c.uuid, c.name), "analysis" + c.uuid); //NON-NLS
 									}
 								}
 							});
@@ -328,7 +329,7 @@ public class ExplorerNodeConfig {
 				for (int i = 0; i < cs.length; i++) {
 					node.removeChild(cs[i]);
 				}
-				node.appendChild(new TreeNode("Please wait..."));
+				node.appendChild(new TreeNode(constants.PleaseWaitDotDotDot()));
 			}
 		});
 
