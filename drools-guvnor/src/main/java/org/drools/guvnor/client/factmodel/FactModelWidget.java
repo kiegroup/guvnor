@@ -212,7 +212,7 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 		fieldType.addKeyboardListener(noSpaceListener());
 		if (field != null) {
 			fieldName.setText(field.name);
-			fieldType.setText(getDesc(field));
+			fieldType.setText(field.type);
 		}
 		HorizontalPanel typeP = new HorizontalPanel();
 		typeP.add(fieldType);
