@@ -28,6 +28,7 @@ import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -43,6 +44,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.SortDir;
 import com.gwtext.client.data.ArrayReader;
@@ -73,6 +75,7 @@ import com.gwtext.client.widgets.menu.BaseItem;
 import com.gwtext.client.widgets.menu.Item;
 import com.gwtext.client.widgets.menu.Menu;
 import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
+import com.gwtext.client.util.Format;
 
 /**
  * This is the new guided decision table editor for the web.
@@ -91,6 +94,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	private Map colMap;
 	private SuggestionCompletionEngine sce;
 	private GroupingStore store;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
     public GuidedDecisionTableWidget(RuleAsset asset, RuleViewer viewer) {
         this(asset);
@@ -107,34 +111,26 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
         layout = new VerticalPanel();
 
         FormPanel config = new FormPanel();
-        config.setTitle("Decision table");
+        config.setTitle(constants.DecisionTable());
 
         config.setBodyBorder(false);
         config.setCollapsed(true);
         config.setCollapsible(true);
 
 
-//        FieldSet attributes = new FieldSet("Attribute columns");
-//        attributes.setCollapsible(true);
-//
-//        attributes.setFrame(true);
-//        attributes.add(getAttributes());
-//        attributes.setCollapsed(dt.attributeCols.size() == 0);
-//        config.add(attributes);
 
-
-        FieldSet conditions = new FieldSet("Condition columns");
+        FieldSet conditions = new FieldSet(constants.ConditionColumns());
         conditions.setCollapsible(true);
         conditions.add(getConditions());
         config.add(conditions);
 
 
-        FieldSet actions = new FieldSet("Action columns");
+        FieldSet actions = new FieldSet(constants.ActionColumns());
         actions.setCollapsible(true);
         actions.add(getActions());
         config.add(actions);
 
-        FieldSet grouping = new FieldSet("(options)");
+        FieldSet grouping = new FieldSet(constants.options());
         grouping.setCollapsible(true);
         grouping.setCollapsed(true);
         grouping.add(getGrouping());
@@ -153,7 +149,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	private Widget getGrouping() {
 		final ListBox list = new ListBox();
 
-		list.addItem("Description", "desc");
+		list.addItem(constants.Description(), "desc"); //NON-NLS
 		if(dt.getMetadataCols() == null){
 			dt.setMetadataCols(new ArrayList<MetadataCol>());
 		}
@@ -186,16 +182,16 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 			}
 		}
 
-		list.addItem("-- none --", "");
+		list.addItem(constants.none(), "");
 		if (dt.groupField == null) {
 			list.setSelectedIndex(list.getItemCount() - 1);
 		}
 
 		HorizontalPanel h = new HorizontalPanel();
-		h.add(new SmallLabel("Group by column: "));
+		h.add(new SmallLabel(constants.GroupByColumn()));
 		h.add(list);
 
-		Button ok = new Button("Apply");
+		Button ok = new Button(constants.Apply());
 		ok.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				dt.groupField = list.getValue(list.getSelectedIndex());
@@ -230,7 +226,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	}
 
 	private Widget editAction(final ActionCol c) {
-		return new ImageButton("images/edit.gif", "Edit this action column configuration", new ClickListener() {
+		return new ImageButton("images/edit.gif", constants.EditThisActionColumnConfiguration(), new ClickListener() { //NON-NLS
 			public void onClick(Widget w) {
 				if (c instanceof ActionSetFieldCol) {
 					ActionSetFieldCol asf = (ActionSetFieldCol) c;
@@ -262,14 +258,14 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	}
 
 	private Widget newAction() {
-		return new ImageButton( "images/new_item.gif", "Create a new action column", new ClickListener() {
+		return new ImageButton( "images/new_item.gif", constants.CreateANewActionColumn(), new ClickListener() { //NON-NLS
 			public void onClick(Widget w) {
 				final FormStylePopup pop = new FormStylePopup();
 				pop.setModal(false);
 
 				final ListBox choice = new ListBox();
-				choice.addItem("Set the value of a field", "set");
-				choice.addItem("Set the value of a field on a new fact", "insert");
+				choice.addItem(constants.SetTheValueOfAField(), "set");
+				choice.addItem(constants.SetTheValueOfAFieldOnANewFact(), "insert");
 				Button ok = new Button("OK");
 				ok.addClickListener(new ClickListener() {
 					public void onClick(Widget w) {
@@ -304,7 +300,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
 					}
 				});
-				pop.addAttribute("Type of action column:", choice);
+				pop.addAttribute(constants.TypeOfActionColumn(), choice);
 				pop.addAttribute("", ok);
 				pop.show();
 			}
@@ -315,9 +311,10 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	}
 
 	private Widget removeAction(final ActionCol c) {
-		Image del = new ImageButton("images/delete_item_small.gif", "Remove this action column", new ClickListener() {
+		Image del = new ImageButton("images/delete_item_small.gif", constants.RemoveThisActionColumn(), new ClickListener() { //NON-NLS
 			public void onClick(Widget w) {
-				if (com.google.gwt.user.client.Window.confirm("Are you sure you want to delete the column for " + c.header + " - all data in that column will be removed?")) {
+                String cm = Format.format(constants.DeleteActionColumnWarning(), c.header);
+				if (com.google.gwt.user.client.Window.confirm(cm)) {
 					dt.actionCols.remove(c);
 					removeField(c.header);
 					scrapeData(-1);
@@ -339,7 +336,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	private void refreshConditionsWidget() {
 		this.conditionsConfigWidget.clear();
 		for (int i = 0; i < dt.conditionCols.size(); i++) {
-			ConditionCol c = (ConditionCol) dt.conditionCols.get(i);
+			ConditionCol c = dt.conditionCols.get(i);
 			HorizontalPanel hp = new HorizontalPanel();
 			hp.add(removeCondition(c));
 			hp.add(editCondition(c));
@@ -355,7 +352,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	private Widget newCondition() {
 		final ConditionCol newCol = new ConditionCol();
 		newCol.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
-		return new ImageButton("images/new_item.gif", "Add a new condition column", new ClickListener() {
+		return new ImageButton("images/new_item.gif", constants.AddANewConditionColumn(), new ClickListener() { //NON-NLS
 			public void onClick(Widget w) {
 				GuidedDTColumnConfig dialog = new GuidedDTColumnConfig(getSCE(), dt, new Command() {
 					public void execute() {
@@ -371,7 +368,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	}
 
 	private Widget editCondition(final ConditionCol c) {
-		return new ImageButton("images/edit.gif", "Edit this columns configuration", new ClickListener() {
+		return new ImageButton("images/edit.gif", constants.EditThisColumnsConfiguration(), new ClickListener() { //NON-NLS
 			public void onClick(Widget w) {
 				GuidedDTColumnConfig dialog = new GuidedDTColumnConfig(getSCE(), dt, new Command() {
 					public void execute() {
@@ -393,9 +390,10 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	}
 
 	private Widget removeCondition(final ConditionCol c) {
-		Image del = new ImageButton("images/delete_item_small.gif", "Remove this condition column", new ClickListener() {
+		Image del = new ImageButton("images/delete_item_small.gif", constants.RemoveThisConditionColumn(), new ClickListener() { //NON-NLS
 			public void onClick(Widget w) {
-				if (com.google.gwt.user.client.Window.confirm("Are you sure you want to delete the column for " + c.header + " - all data in that column will be removed?")) {
+                String cm = Format.format(constants.DeleteConditionColumnWarning(), c.header);
+				if (com.google.gwt.user.client.Window.confirm(cm)) {
 					dt.conditionCols.remove(c);
 					removeField(c.header);
 					scrapeData(-1);
@@ -419,29 +417,29 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 		attributeConfigWidget.add(newAttr());
 		if(dt.getMetadataCols().size() > 0){
 			HorizontalPanel hp = new HorizontalPanel();
-			hp.add(new HTML("&nbsp;&nbsp;"));
-			hp.add(new SmallLabel("Metadata: "));
+			hp.add(new HTML("&nbsp;&nbsp;")); //NON-NLS
+			hp.add(new SmallLabel(constants.Metadata()));
 			attributeConfigWidget.add(hp);
 		}
 		for (int i = 0; i < dt.getMetadataCols().size(); i++) {
 			MetadataCol at = (MetadataCol) dt.getMetadataCols().get(i);
 			HorizontalPanel hp = new HorizontalPanel();
-			hp.add(new HTML("&nbsp;&nbsp;&nbsp;&nbsp;"));
+			hp.add(new HTML("&nbsp;&nbsp;&nbsp;&nbsp;")); //NON-NLS
 			hp.add(removeMeta(at));
 			hp.add(new SmallLabel(at.attr));
 			attributeConfigWidget.add(hp);
 		}
 		if(dt.attributeCols.size() > 0){
 			HorizontalPanel hp = new HorizontalPanel();
-			hp.add(new HTML("&nbsp;&nbsp;"));
-			hp.add(new SmallLabel("Attributes: "));
+			hp.add(new HTML("&nbsp;&nbsp;"));  //NON-NLS
+			hp.add(new SmallLabel(constants.Attributes()));
 			attributeConfigWidget.add(hp);
 		}
 		
 		for (int i = 0; i < dt.attributeCols.size(); i++) {
 			AttributeCol at = (AttributeCol) dt.attributeCols.get(i);
 			HorizontalPanel hp = new HorizontalPanel();
-			hp.add(new HTML("&nbsp;&nbsp;&nbsp;&nbsp;"));
+			hp.add(new HTML("&nbsp;&nbsp;&nbsp;&nbsp;")); //NON-NLS
 			hp.add(removeAttr(at));
 			hp.add(new SmallLabel(at.attr));
 			attributeConfigWidget.add(hp);
@@ -450,12 +448,12 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	}
 
 	private Widget newAttr() {
-		ImageButton but = new ImageButton("images/new_item.gif", "Add a new attribute/metadata.", new ClickListener() {
+		ImageButton but = new ImageButton("images/new_item.gif", constants.AddANewAttributeMetadata(), new ClickListener() { //NON-NLS
 			public void onClick(Widget w) {
 				//show choice of attributes
-				final FormStylePopup pop = new FormStylePopup("images/config.png", "Add an option to the rule");
+				final FormStylePopup pop = new FormStylePopup("images/config.png", constants.AddAnOptionToTheRule()); //NON-NLS
 		        final ListBox list = RuleAttributeWidget.getAttributeList();
-		        final Image addbutton = new ImageButton("images/new_item.gif");
+		        final Image addbutton = new ImageButton("images/new_item.gif"); //NON-NLS
 		        final TextBox box = new TextBox();
 		        box.setVisibleLength( 15 );
 		        
@@ -478,25 +476,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 		        
 		        
 
-//		        Button ok = new Button("Add");
-//		        ok.addClickListener(new ClickListener() {
-//					public void onClick(Widget w) {
-//
-//						AttributeCol attr = new AttributeCol();
-//						attr.attr = list.getItemText(list.getSelectedIndex());
-//						if (attr.attr.equals("Choose...")) {
-//							com.google.gwt.user.client.Window.alert("Please pick a valid attribute");
-//							return;
-//						}
-//						dt.attributeCols.add(attr);
-//						scrapeData(dt.attributeCols.size() + 1);
-//						refreshGrid();
-//						refreshAttributeWidget();
-//						pop.hide();
-//					}
-//		        });
-//		        
-		        addbutton.setTitle( "Add Metadata to the rule." );
+		        addbutton.setTitle(constants.AddMetadataToTheRule());
 
 		        addbutton.addClickListener( new ClickListener() {
 		            public void onClick(Widget w) {
@@ -517,8 +497,8 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
 
 		        
-		        pop.addAttribute( "Metadata: ", horiz );
-		        pop.addAttribute("Attribute:", list);
+		        pop.addAttribute(constants.Metadata1(), horiz );
+		        pop.addAttribute(constants.Attribute(), list);
 //		        pop.addAttribute("", ok);
 		        pop.show();
 			}
@@ -539,15 +519,16 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 			}
 		});
 		HorizontalPanel h = new HorizontalPanel();
-		h.add(new SmallLabel("Add Attribute/Metadata: "));
+		h.add(new SmallLabel(constants.AddAttributeMetadata()));
         h.add( but );
 		return h;
 	}
 
 	private Widget removeAttr(final AttributeCol at) {
-		Image del = new ImageButton("images/delete_item_small.gif", "Remove this attribute", new ClickListener() {
+		Image del = new ImageButton("images/delete_item_small.gif", constants.RemoveThisAttribute(), new ClickListener() {  //NON-NLS
 			public void onClick(Widget w) {
-				if (com.google.gwt.user.client.Window.confirm("Are you sure you want to delete the column for " + at.attr + " - all data in that column will be removed?")) {
+                String ms = Format.format(constants.DeleteActionColumnWarning(), at.attr);
+				if (com.google.gwt.user.client.Window.confirm(ms)) {
 					dt.attributeCols.remove(at);
 					removeField(at.attr);
 					scrapeData(-1);
@@ -561,9 +542,10 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	}
 
 	private Widget removeMeta(final MetadataCol md) {
-		Image del = new ImageButton("images/delete_item_small.gif", "Remove this metadata", new ClickListener() {
+		Image del = new ImageButton("images/delete_item_small.gif", constants.RemoveThisMetadata(), new ClickListener() { //NON-NLS
 			public void onClick(Widget w) {
-				if (com.google.gwt.user.client.Window.confirm("Are you sure you want to delete the column for " + md.attr + " - all data in that column will be removed?")) {
+                String ms = Format.format(constants.DeleteActionColumnWarning(), md.attr); 
+				if (com.google.gwt.user.client.Window.confirm(ms)) {
 					dt.getMetadataCols().remove(md);
 					removeField(md.attr);
 					scrapeData(-1);
@@ -637,8 +619,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 			vp.setWidth("100%");
 			PrettyFormLayout pfl = new PrettyFormLayout();
 			pfl.startSection();
-			pfl.addRow(new HTML("<img src='images/information.gif'/>&nbsp;Configure the columns first, then add rows (rules)." +
-					" A fact model (in the current package) will be needed to provide the facts and fields to configure this decision table."));
+			pfl.addRow(new HTML("<img src='images/information.gif'/>&nbsp;" + constants.ConfigureColumnsNote()));
 
 			pfl.endSection();
 			vp.add(pfl);
@@ -658,22 +639,22 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
 		colMap = new HashMap();
 
-		fds[0] = new StringFieldDef("num");
-		fds[1] = new StringFieldDef("desc");
+		fds[0] = new StringFieldDef("num"); //NON-NLS
+		fds[1] = new StringFieldDef("desc"); //NON-NLS
 
 		int colCount = 0;
 
 		BaseColumnConfig[] cols = new BaseColumnConfig[fds.length + 1]; //its +1 as we have the separator -> thing.
 		cols[0] = new ColumnConfig() {
 				{
-					setDataIndex("num");
+					setDataIndex("num");              //NON-NLS
 					setWidth(20);
 					setSortable(true);
 					setRenderer(new Renderer() {
 						public String render(Object value,
 								CellMetadata cellMetadata, Record record,
 								int rowIndex, int colNum, Store store) {
-							return "<span class='x-grid3-cell-inner x-grid3-td-numberer'>" + value + "</span>";
+							return "<span class='x-grid3-cell-inner x-grid3-td-numberer'>" + value + "</span>";    //NON-NLS
 						}
 					});
 				}
@@ -681,9 +662,9 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 		colCount++;
 		cols[1] = new ColumnConfig() {
 			{
-				setDataIndex("desc");
+				setDataIndex("desc");     //NON-NLS
 				setSortable(true);
-				setHeader("Description");
+				setHeader(constants.Description());
 				if (dt.descriptionWidth != -1) {
 					setWidth(dt.descriptionWidth);
 				}
@@ -693,7 +674,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 		
 		//now to metadata
 		for (int i = 0; i < dt.getMetadataCols().size(); i++) {
-			final MetadataCol attr = (MetadataCol) dt.getMetadataCols().get(i);
+			final MetadataCol attr = dt.getMetadataCols().get(i);
 			fds[colCount] = new StringFieldDef(attr.attr);
 			cols[colCount] = new ColumnConfig() {
 				{
@@ -712,7 +693,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
 		//now to attributes
 		for (int i = 0; i < dt.attributeCols.size(); i++) {
-			final AttributeCol attr = (AttributeCol) dt.attributeCols.get(i);
+			final AttributeCol attr = dt.attributeCols.get(i);
 			fds[colCount] = new StringFieldDef(attr.attr);
 			cols[colCount] = new ColumnConfig() {
 				{
@@ -733,7 +714,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 		//do all the condition cols
 		for (int i = 0; i < dt.conditionCols.size(); i++) {
 			//here we could also deal with numeric type?
-			final ConditionCol c = (ConditionCol) dt.conditionCols.get(i);
+			final ConditionCol c = dt.conditionCols.get(i);
 			fds[colCount] = new StringFieldDef(c.header);
 			cols[colCount] = new ColumnConfig() {
 				{
@@ -762,7 +743,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 					public String render(Object value,
 							CellMetadata cellMetadata, Record record,
 							int rowIndex, int colNum, Store store) {
-						return "<image src='images/production.gif'/>";
+						return "<image src='images/production.gif'/>"; //NON-NLS
 					}
     			});
     			setWidth(20);
@@ -772,7 +753,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
 		for (int i = 0; i < dt.actionCols.size(); i++) {
 			//here we could also deal with numeric type?
-			final ActionCol c = (ActionCol) dt.actionCols.get(i);
+			final ActionCol c = dt.actionCols.get(i);
 			fds[colCount-1] = new StringFieldDef(c.header);
 
 			cols[colCount]  = new ColumnConfig() {
@@ -799,7 +780,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
         store = new GroupingStore();
         store.setReader(reader);
         store.setDataProxy(proxy);
-        store.setSortInfo(new SortState("num", SortDir.ASC));
+        store.setSortInfo(new SortState("num", SortDir.ASC)); //NON-NLS
         if (this.dt.groupField != null) {
         	store.setGroupField(dt.groupField);
         }
@@ -814,7 +795,8 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
         //to stretch it out
         gv.setForceFit(true);
-        gv.setGroupTextTpl("{text} ({[values.rs.length]} {[values.rs.length > 1 ? \"Items\" : \"Item\"]})");
+        gv.setGroupTextTpl("{text} ({[values.rs.length]} {[values.rs.length > 1 ? \"" //NON-NLS
+                + constants.Items() +"\" : \"" + constants.Item() + "\"]})"); 
 
 
         grid.setView(gv);
@@ -855,7 +837,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
         grid.addGridColumnListener(new GridColumnListenerAdapter() {
         	public void onColumnResize(GridPanel grid, int colIndex, int newSize) {
         		final String dta = grid.getColumnModel().getDataIndex(colIndex);
-        		if (dta.equals("desc")) {
+        		if (dta.equals("desc")) {            //NON-NLS
         			dt.descriptionWidth = newSize;
         		} else {
         			if (colMap.containsKey(dta)) {
@@ -868,18 +850,18 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
         Toolbar tb = new Toolbar();
         Menu menu = new Menu();
-        menu.addItem(new Item("Add row...", new BaseItemListenerAdapter() {
+        menu.addItem(new Item(constants.AddRow(), new BaseItemListenerAdapter() {
         	public void onClick(BaseItem item, EventObject e) {
         		Record r = recordDef.createRecord(new Object[recordDef.getFields().length]);
-        		r.set("num", store.getRecords().length + 1);
+        		r.set("num", store.getRecords().length + 1); //NON-NLS
 
         		store.add(r);
         	}
         }));
-        menu.addItem(new Item("Remove selected row(s)...", new BaseItemListenerAdapter() {
+        menu.addItem(new Item(constants.RemoveSelectedRowS(), new BaseItemListenerAdapter() {
         	public void onClick(BaseItem item, EventObject e) {
         		Record[] selected = grid.getSelectionModel().getSelections();
-        		if (com.google.gwt.user.client.Window.confirm("Are you sure you want to delete the selected row(s)? ")) {
+        		if (com.google.gwt.user.client.Window.confirm(constants.AreYouSureYouWantToDeleteTheSelectedRowS())) {
         			for (int i = 0; i < selected.length; i++) {
         				store.remove(selected[i]);
 					}
@@ -887,7 +869,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
         		}
         	}
         }));
-        menu.addItem(new Item("Copy selected row(s)...", new BaseItemListenerAdapter() {
+        menu.addItem(new Item(constants.CopySelectedRowS(), new BaseItemListenerAdapter() {
         	public void onClick(BaseItem item, EventObject e) {
         		Record[] selected = grid.getSelectionModel().getSelections();
     			for (int i = 0; i < selected.length; i++) {
@@ -901,7 +883,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
     			renumber(store.getRecords());
         	}
         }));
-        ToolbarMenuButton tbb = new ToolbarMenuButton("Modify...", menu);
+        ToolbarMenuButton tbb = new ToolbarMenuButton(constants.Modify(), menu);
 
         tb.addButton(tbb);
         grid.add(tb);
@@ -960,7 +942,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 		w.add(p);
 		w.setBorder(false);
 
-		Button ok = new Button("OK");
+		Button ok = new Button(constants.OK());
 		ok.addClickListener(new ClickListener() {
 			public void onClick(Widget wg) {
 				r.set(dataIdx, drop.getValue(drop.getSelectedIndex()));
@@ -976,7 +958,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 
 	private void renumber(Record[] rs) {
 		for (int i = 0; i < rs.length; i++) {
-			rs[i].set("num", "" + (i + 1));
+			rs[i].set("num", "" + (i + 1)); //NON-NLS
 		}
 	}
 
@@ -1013,7 +995,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 		w.add(p);
 		w.setBorder(false);
 
-		Button ok = new Button("OK");
+		Button ok = new Button(constants.OK());
 		ok.addClickListener(new ClickListener() {
 			public void onClick(Widget wg) {
 				r.set(dta, box.getText());
@@ -1030,7 +1012,6 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 	 * Need to copy the data from the record store.
 	 */
 	public void onSave() {
-		System.err.println("saving event fired !");
 		this.scrapeData(-1);
 	}
 

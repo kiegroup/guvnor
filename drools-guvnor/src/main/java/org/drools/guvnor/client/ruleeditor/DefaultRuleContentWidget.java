@@ -59,9 +59,9 @@ public class DefaultRuleContentWidget extends DirtyableComposite {
         text.setVisibleLines((visibleLines == -1) ?  16 : visibleLines );
         text.setText( data.content );
 
-        text.getElement().setAttribute("spellcheck", "false");
+        text.getElement().setAttribute("spellcheck", "false");    //NON-NLS
 
-        text.setStyleName( "default-text-Area" );
+        text.setStyleName( "default-text-Area" ); //NON-NLS
 
         text.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {

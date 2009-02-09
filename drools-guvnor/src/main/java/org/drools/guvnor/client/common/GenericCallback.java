@@ -18,10 +18,12 @@ package org.drools.guvnor.client.common;
 
 import org.drools.guvnor.client.rpc.DetailedSerializableException;
 import org.drools.guvnor.client.rpc.SessionExpiredException;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import com.gwtext.client.util.Format;
 
 /**
  * This is a generic call back that handles errors (very simply).
@@ -47,9 +49,8 @@ public abstract class GenericCallback<T> implements AsyncCallback<T> {
 		url = url.substring(0, url.lastIndexOf('/'));
 
 		FormStylePopup pop = new FormStylePopup();
-		pop.addRow(new HTML(
-				"<i><strong>Your session expired due to inactivity.</strong></i><p/>"
-						+ "Please <a href='" + url + "'>[Log in].</a>"));
+        String m = Format.format(((Constants) GWT.create(Constants.class)).SessionExpiredMessage(), url);
+		pop.addRow(new HTML(m));
 		pop.show();
 		LoadingPopup.close();
 

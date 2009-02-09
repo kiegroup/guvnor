@@ -18,7 +18,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String ChooseAPatternThatThisColumnAddsDataTo();
 
-    String Pattern();
 
     String Assets();
 
@@ -34,39 +33,25 @@ public interface Constants extends ConstantsWithLookup {
 
     String AddField();
 
-    String EditTheFieldThatThisColumnOperatesOn();
 
-    String Field();
 
-    String ValueList();
 
-    String optionalValueList();
 
-    String ValueListsExplanation();
 
-    String ColumnHeaderDescription();
 
-    String ApplyChanges();
 
-    String YouMustEnterAColumnHeaderValueDescription();
 
-    String ThatColumnNameIsAlreadyInUsePleasePickAnother();
 
     String OK();
 
     String pleaseChooseFactType();
 
-    String ChooseExistingPatternToAddColumnTo();
 
-    String ORwithEmphasis();
 
-    String CreateNewFactPattern();
 
     String NewFactSelectTheType();
 
-    String FactType();
 
-    String name();
 
     String AddAField();
 
@@ -596,4 +581,150 @@ public interface Constants extends ConstantsWithLookup {
     String GiveFieldVarName();
 
     String FactTypes();
+
+    String Cancel();
+
+    String CreateANewFactTemplate();
+
+    String Name1();
+
+    String FactAttributes();
+
+    String SessionExpiredMessage();
+
+    String DecisionTable();
+
+    String ConditionColumns();
+
+    String ActionColumns();
+
+    String options();
+
+    String none();
+
+    String GroupByColumn();
+
+    String Apply();
+
+    String EditThisActionColumnConfiguration();
+
+    String CreateANewActionColumn();
+
+    String SetTheValueOfAField();
+
+    String SetTheValueOfAFieldOnANewFact();
+
+    String TypeOfActionColumn();
+
+    String RemoveThisActionColumn();
+
+    String AddANewConditionColumn();
+
+    String EditThisColumnsConfiguration();
+
+    String RemoveThisConditionColumn();
+
+    String DeleteConditionColumnWarning();
+
+
+    String Metadata();
+
+    String Attributes();
+
+    String AddANewAttributeMetadata();
+
+    String AddAnOptionToTheRule();
+
+    String AddMetadataToTheRule();
+
+    String Metadata1();
+
+    String Attribute();
+
+    String AddAttributeMetadata();
+
+    String RemoveThisAttribute();
+
+
+    String DeleteActionColumnWarning();
+
+    String RemoveThisMetadata();
+
+    String ConfigureColumnsNote();
+
+    String Items();
+
+    String Item();
+
+    String AddRow();
+
+    String RemoveSelectedRowS();
+
+    String AreYouSureYouWantToDeleteTheSelectedRowS();
+
+    String CopySelectedRowS();
+
+    String Modify();
+
+    String ConditionColumnConfiguration();
+
+    String ChooseAnExistingPatternThatThisColumnAddsTo();
+
+
+    String Predicate();
+
+    String Pattern();
+
+    String CalculationType();
+
+    String EditTheFieldThatThisColumnOperatesOn();
+
+
+    String EditTheOperatorThatIsUsedToCompareDataWithThisField();
+
+    String Operator();
+
+    String ValueList();
+
+    String ValueListsExplanation();
+
+    String optionalValueList();
+
+    String ColumnHeaderDescription();
+
+    String ApplyChanges();
+
+    String YouMustEnterAColumnHeaderValueDescription();
+
+
+    String ThatColumnNameIsAlreadyInUsePleasePickAnother();
+
+
+
+    String pleaseChooseAFieldFirst();
+
+
+    String SetTheOperator();
+
+    String noOperator();
+
+    String notNeededForPredicate();
+
+    String pleaseSelectAPatternFirst();
+
+    String pleaseSelectAField();
+
+    String Field();
+
+    String ChooseExistingPatternToAddColumnTo();
+
+    String ORwithEmphasis();
+
+    String CreateNewFactPattern();
+
+    String CreateANewFactPattern();
+
+    String FactType();
+
+    String name();
 }

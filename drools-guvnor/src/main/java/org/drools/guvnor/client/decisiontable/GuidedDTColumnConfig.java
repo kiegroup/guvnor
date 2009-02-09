@@ -12,6 +12,7 @@ import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -25,6 +26,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This is a configuration editor for a column in a the guided decision table.
@@ -39,8 +41,9 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 	private SmallLabel patternLabel = new SmallLabel();
 	private TextBox fieldLabel = getFieldLabel();
 	private SmallLabel operatorLabel = new SmallLabel();
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
-	/**
+    /**
 	 * Pass in a null col and it will create a new one.
 	 */
 	public GuidedDTColumnConfig(SuggestionCompletionEngine sce, final GuidedDecisionTable dt, final Command refreshGrid, final ConditionCol col, final boolean isNew) {
@@ -58,7 +61,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		editingCol.valueList = col.valueList;
 
 
-		setTitle("Condition column configuration");
+		setTitle(constants.ConditionColumnConfiguration());
 
 
 
@@ -66,7 +69,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		pattern.add(patternLabel);
 		doPatternLabel();
 
-		Image changePattern = new ImageButton("images/edit.gif", "Choose an existing pattern that this column adds to", new ClickListener() {
+		Image changePattern = new ImageButton("images/edit.gif", constants.ChooseAnExistingPatternThatThisColumnAddsTo(), new ClickListener() { //NON-NLS
 			public void onClick(Widget w) {
 				showChangePattern(w);
 			}
@@ -74,19 +77,19 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		pattern.add(changePattern);
 
 
-		addAttribute("Pattern:", pattern);
+		addAttribute(constants.Pattern(), pattern);
 
 		//now a radio button with the type
-		RadioButton literal = new RadioButton("constraintValueType", "Literal value");
-		RadioButton formula = new RadioButton("constraintValueType", "Formula");
-		RadioButton predicate = new RadioButton("constraintValueType", "Predicate");
+		RadioButton literal = new RadioButton("constraintValueType", constants.LiteralValue());//NON-NLS
+		RadioButton formula = new RadioButton("constraintValueType", constants.Formula());     //NON-NLS
+		RadioButton predicate = new RadioButton("constraintValueType", constants.Predicate()); //NON-NLS
 
 
 		HorizontalPanel valueTypes = new HorizontalPanel();
 		valueTypes.add(literal);
 		valueTypes.add(formula);
 		valueTypes.add(predicate);
-		addAttribute("Calculation type:", valueTypes);
+		addAttribute(constants.CalculationType(), valueTypes);
 
 		switch (editingCol.constraintValueType) {
 			case ISingleFieldConstraint.TYPE_LITERAL:
@@ -120,25 +123,25 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
 		HorizontalPanel field = new HorizontalPanel();
 		field.add(fieldLabel);
-		Image editField = new ImageButton("images/edit.gif", "Edit the field that this column operates on", new ClickListener() {
+		Image editField = new ImageButton("images/edit.gif", constants.EditTheFieldThatThisColumnOperatesOn(), new ClickListener() { //NON-NLS
 			public void onClick(Widget w) {
 				showFieldChange();
 			}
 		});
 		field.add(editField);
-		addAttribute("Field:", field);
+		addAttribute(constants.Field(), field);
 		doFieldLabel();
 
 
 		HorizontalPanel operator = new HorizontalPanel();
 		operator.add(operatorLabel);
-		Image editOp = new ImageButton("images/edit.gif", "Edit the operator that is used to compare data with this field", new ClickListener() {
+		Image editOp = new ImageButton("images/edit.gif", constants.EditTheOperatorThatIsUsedToCompareDataWithThisField(), new ClickListener() { //NON-NLS
 			public void onClick(Widget w) {
 				showOperatorChange();
 			}
 		});
 		operator.add(editOp);
-		addAttribute("Operator:", operator);
+		addAttribute(constants.Operator(), operator);
 		doOperatorLabel();
 
 		final TextBox valueList = new TextBox();
@@ -150,8 +153,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		});
 		HorizontalPanel vl = new HorizontalPanel();
 		vl.add(valueList);
-		vl.add(new InfoPopup("Value list", "Value lists are an optional comma separated list of values to show as a drop down."));
-		addAttribute("(optional) value list:", vl);
+		vl.add(new InfoPopup(constants.ValueList(), constants.ValueListsExplanation()));
+		addAttribute(constants.optionalValueList(), vl);
 
 		final TextBox header = new TextBox();
 		header.setText(col.header);
@@ -159,26 +162,26 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 			public void onChange(Widget w) {
 				editingCol.header = header.getText();
 			} });
-		addAttribute("Column header (description):", header);
+		addAttribute(constants.ColumnHeaderDescription(), header);
 
 
-		Button apply = new Button("Apply changes");
+		Button apply = new Button(constants.ApplyChanges());
 		apply.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
                 if (null == editingCol.header || "".equals(editingCol.header)) {
-                    Window.alert("You must enter a column header value (description)");
+                    Window.alert(constants.YouMustEnterAColumnHeaderValueDescription());
                     return;
                 }
 				if (isNew) {
                     if (!unique(editingCol.header)) {
-                        Window.alert("That column name is already in use - please pick another");
+                        Window.alert(constants.ThatColumnNameIsAlreadyInUsePleasePickAnother());
                         return;
                     }
 					dt.conditionCols.add(editingCol);
 				} else {
                     if (!col.header.equals(editingCol.header)) {
                         if (!unique(editingCol.header)) {
-                            Window.alert("That column name is already in use - please pick another");
+                            Window.alert(constants.ThatColumnNameIsAlreadyInUsePleasePickAnother());
                             return;
                         }
                     }
@@ -230,13 +233,13 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
 	private void doOperatorLabel() {
 		if (editingCol.constraintValueType == ISingleFieldConstraint.TYPE_PREDICATE) {
-			operatorLabel.setText("(not needed for predicate)");
+			operatorLabel.setText(constants.notNeededForPredicate());
 		} else if (nil(editingCol.factType)) {
-			operatorLabel.setText("(please select a pattern first)");
+			operatorLabel.setText(constants.pleaseSelectAPatternFirst());
 		} else if (nil(editingCol.factField)) {
-			operatorLabel.setText("(please choose a field first)");
+			operatorLabel.setText(constants.pleaseChooseAFieldFirst());
 		} else if (nil(editingCol.operator)) {
-			operatorLabel.setText("(please select a field)");
+			operatorLabel.setText(constants.pleaseSelectAField());
 		} else {
 			operatorLabel.setText(HumanReadable.getOperatorDisplayName(editingCol.operator));
 		}
@@ -244,16 +247,16 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
 	private void showOperatorChange() {
 		final FormStylePopup pop = new FormStylePopup();
-		pop.setTitle("Set the operator");
+		pop.setTitle(constants.SetTheOperator());
 		pop.setModal(false);
 		String[] ops = this.sce.getOperatorCompletions(editingCol.factType, editingCol.factField);
 		final ListBox box = new ListBox();
 		for (int i = 0; i < ops.length; i++) {
 			box.addItem(HumanReadable.getOperatorDisplayName(ops[i]), ops[i]);
 		}
-		box.addItem("(no operator)", "");
-		pop.addAttribute("Operator:", box);
-		Button b = new Button("OK");
+		box.addItem(constants.noOperator(), "");
+		pop.addAttribute(constants.Operator(), box);
+		Button b = new Button(constants.OK());
 		pop.addAttribute("", b);
 		b.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
@@ -268,12 +271,12 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
 	private void doFieldLabel() {
 		if (editingCol.constraintValueType == ISingleFieldConstraint.TYPE_PREDICATE) {
-			fieldLabel.setText("(not needed for predicate)");
+			fieldLabel.setText(constants.notNeededForPredicate());
 		} else if (nil(editingCol.factType)) {
-			fieldLabel.setText("(please select a pattern first)");
+			fieldLabel.setText(constants.pleaseSelectAPatternFirst());
 		}
 		else if (nil(editingCol.factField)) {
-			fieldLabel.setText("(please select a field)");
+			fieldLabel.setText(constants.pleaseSelectAField());
 		} else {
 			fieldLabel.setText(this.editingCol.factField);
 		}
@@ -291,8 +294,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		for (int i = 0; i < fields.length; i++) {
 			box.addItem(fields[i]);
 		}
-		pop.addAttribute("Field:", box);
-		Button b = new Button("OK");
+		pop.addAttribute(constants.Field(), box);
+		Button b = new Button(constants.OK());
 		pop.addAttribute("", b);
 		b.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
@@ -322,16 +325,16 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 			return;
 		}
 		final FormStylePopup pop = new FormStylePopup();
-		Button ok = new Button("OK");
+		Button ok = new Button(constants.OK());
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.add(pats);
 		hp.add(ok);
 
 
-		pop.addAttribute("Choose existing pattern to add column to:", hp);
-		pop.addAttribute("", new HTML("<i><b>---OR---</i></b>"));
+		pop.addAttribute(constants.ChooseExistingPatternToAddColumnTo(), hp);
+		pop.addAttribute("", new HTML(constants.ORwithEmphasis()));
 
-		Button createPattern = new Button("Create new fact pattern");
+		Button createPattern = new Button(constants.CreateNewFactPattern());
 		createPattern.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				pop.hide();
@@ -358,16 +361,16 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
 	protected void showNewPatternDialog() {
 		final FormStylePopup pop = new FormStylePopup();
-		pop.setTitle("Create a new fact pattern");
+		pop.setTitle(constants.CreateANewFactPattern());
 		final ListBox types = new ListBox();
 		for (int i = 0; i < sce.factTypes.length; i++) {
 			types.addItem(sce.factTypes[i]);
 		}
-		pop.addAttribute("Fact type:", types);
+		pop.addAttribute(constants.FactType(), types);
 		final TextBox binding = new TextBox();
-		pop.addAttribute("name:", binding);
+		pop.addAttribute(constants.name(), binding);
 
-		Button ok = new Button("OK");
+		Button ok = new Button(constants.OK());
 		ok.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				editingCol.boundName = binding.getText();
@@ -386,7 +389,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		Set vars = new HashSet();
 		ListBox patterns = new ListBox();
 		for (int i = 0; i < dt.conditionCols.size(); i++) {
-			ConditionCol c = (ConditionCol) dt.conditionCols.get(i);
+			ConditionCol c = dt.conditionCols.get(i);
 			if (!vars.contains(c.boundName)) {
 				patterns.addItem(c.factType + " [" + c.boundName + "]", c.factType + " " + c.boundName);
 				vars.add(c.boundName);

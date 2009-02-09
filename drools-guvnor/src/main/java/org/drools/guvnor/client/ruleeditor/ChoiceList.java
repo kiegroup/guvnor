@@ -112,7 +112,7 @@ public class ChoiceList extends PopupPanel {
             }
         } );
 
-        Button cancel = new Button( "cancel" );
+        Button cancel = new Button(constants.Cancel());
         cancel.addClickListener( new ClickListener() {
             public void onClick(Widget btn) {
                 hide();
