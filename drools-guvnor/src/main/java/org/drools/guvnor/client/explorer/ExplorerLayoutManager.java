@@ -6,6 +6,7 @@ import org.drools.guvnor.client.security.Capabilities;
 
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.History;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.Margins;
 import com.gwtext.client.core.RegionPosition;
@@ -19,19 +20,21 @@ import com.gwtext.client.widgets.layout.FitLayout;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
 
+/**
+ * This is the main part of the app that lays everything out. 
+ */
 public class ExplorerLayoutManager {
 
+    /**
+     * These are used to decide what to display or not.
+     */
     protected static Capabilities capabilities;
 
     private ExplorerViewCenterPanel centertabbedPanel;
 
     private Panel northPanel;
     private Panel accordion;
-
-
-    native String getPageProperty(String name) /*-{
-        return $wnd.guvnor_logo;
-    }-*/;
+    private Panel mainPanel;
 
 
     public ExplorerLayoutManager(LoggedInUserInfo uif, Capabilities caps) {
@@ -40,29 +43,48 @@ public class ExplorerLayoutManager {
 
         Preferences.INSTANCE.loadPrefs(caps);
 
+        String tok = History.getToken();
+
         centertabbedPanel = new ExplorerViewCenterPanel();
 
-        //north
-        northPanel = new Panel();
-        DockPanel dock = new DockPanel();
-        dock.setVerticalAlignment(DockPanel.ALIGN_MIDDLE);
-        dock.add(new HTML("<div class='header'><img src='header_logo.gif' /></div>"), DockPanel.WEST);
-        dock.add(uif, DockPanel.EAST);
-        dock.setStyleName("header");
-        dock.setWidth("100%");
+        /**
+         * we use this to decide what to display.
+         */
+        BookmarkInfo bi = handleHistoryToken(tok);
+
 
         ExplorerLayoutManager.capabilities = caps;
+        
+        if (bi.showChrome) {
+        //north
+            northPanel = new Panel();
+            DockPanel dock = new DockPanel();
+            dock.setVerticalAlignment(DockPanel.ALIGN_MIDDLE);
+            dock.add(new HTML("<div class='header'><img src='header_logo.gif' /></div>"), DockPanel.WEST);
+            dock.add(uif, DockPanel.EAST);
+            dock.setStyleName("header");
+            dock.setWidth("100%");
 
-        northPanel.add(dock);
-        northPanel.setHeight(50);
 
-        // add a navigation for the west area
-        accordion = new Panel();
-        accordion.setLayout(new AccordionLayout(true));
 
-        createNavigationPanels();
+            northPanel.add(dock);
+            northPanel.setHeight(50);
 
-        centertabbedPanel.openFind();
+            // add a navigation for the west area
+            accordion = new Panel();
+            accordion.setLayout(new AccordionLayout(true));
+
+            createNavigationPanels();
+
+            centertabbedPanel.openFind();
+
+        }
+
+        setUpMain(bi);
+
+        if (bi.loadAsset) {
+            centertabbedPanel.openAsset(bi.assetId);
+        }
 
     }
 
@@ -89,15 +111,12 @@ public class ExplorerLayoutManager {
             accordion.add(tpAdmin);
         }
 
-//        if (shouldShow(Capabilities.SHOW_ADMIN)) {
-//        	accordion.add(new RHQPanel("Operations Network", centertabbedPanel));
-//        }
-
 
     }
 
-    public Panel getBaseLayout() {
-        Panel mainPanel = new Panel();
+    private void setUpMain(BookmarkInfo bi) {
+
+        mainPanel = new Panel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setMargins(0, 0, 0, 0);
 
@@ -112,29 +131,37 @@ public class ExplorerLayoutManager {
         centerPanelWrappper.setBorder(false);
         centerPanelWrappper.setBodyBorder(false);
 
-        //setup the west regions layout properties
-        BorderLayoutData westLayoutData = new BorderLayoutData(RegionPosition.WEST);
-        westLayoutData.setMargins(new Margins(5, 5, 0, 5));
-        westLayoutData.setCMargins(new Margins(5, 5, 5, 5));
-        westLayoutData.setMinSize(155);
-        westLayoutData.setMaxSize(350);
-        westLayoutData.setSplit(true);
+        if (bi.showChrome) {
+            //setup the west regions layout properties
+            BorderLayoutData westLayoutData = new BorderLayoutData(RegionPosition.WEST);
+            westLayoutData.setMargins(new Margins(5, 5, 0, 5));
+            westLayoutData.setCMargins(new Margins(5, 5, 5, 5));
+            westLayoutData.setMinSize(155);
+            westLayoutData.setMaxSize(350);
+            westLayoutData.setSplit(true);
 
-        //create the west panel and add it to the main panel applying the west region layout properties
-        Panel westPanel = new Panel();
-        westPanel.setId("side-nav");
-        westPanel.setTitle(((Constants) GWT.create(Constants.class)).Navigate());
-        westPanel.setLayout(new FitLayout());
-        westPanel.setWidth(210);
-        westPanel.setCollapsible(true);//MN createWestPanel();
-        westPanel.add(accordion);
-        mainPanel.add(westPanel, westLayoutData);
+            //create the west panel and add it to the main panel applying the west region layout properties
+            Panel westPanel = new Panel();
+            westPanel.setId("side-nav");
+            westPanel.setTitle(((Constants) GWT.create(Constants.class)).Navigate());
+            westPanel.setLayout(new FitLayout());
+            westPanel.setWidth(210);
+            westPanel.setCollapsible(true);//MN createWestPanel();
+            westPanel.add(accordion);
+            mainPanel.add(westPanel, westLayoutData);
+        }
 
         centerPanelWrappper.add(centertabbedPanel.getPanel());
 
         mainPanel.add(centerPanelWrappper, centerLayoutData);
-        mainPanel.add(northPanel, northLayoutData);
+        if (bi.showChrome) {
+            mainPanel.add(northPanel, northLayoutData);
+        }
 
+    }
+
+
+    public Panel getBaseLayout() {
         return mainPanel;
     }
 
@@ -158,6 +185,33 @@ public class ExplorerLayoutManager {
         menuTree.setBorder(false);
         menuTree.setRootNode(childNode);
         return menuTree;
+    }
+
+
+    /**
+     * Parse the bookmark/history token (the bit after the "#" in the URL)
+     * to work out what we will display.
+     */
+    static BookmarkInfo handleHistoryToken(String tok) {
+        if (tok == null) return new BookmarkInfo();
+       BookmarkInfo bi = new BookmarkInfo();
+        if (tok.startsWith("asset=")) { //NON-NLS
+            String uuid = tok.substring(6).split("&nochrome")[0]; //NON-NLS
+            bi.loadAsset = true;
+            bi.assetId = uuid;
+        }
+
+        if (tok.contains("nochrome") || tok.contains("nochrome==true")) {
+            bi.showChrome = false;
+        }
+
+       return bi;
+    }
+
+    public static class BookmarkInfo {
+        String assetId;
+        boolean showChrome = true;
+        boolean loadAsset = false;
     }
 
 

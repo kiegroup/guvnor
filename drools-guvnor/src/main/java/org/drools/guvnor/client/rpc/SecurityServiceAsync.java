@@ -32,7 +32,7 @@ public interface SecurityServiceAsync extends RemoteService {
 
     public void login(String userName, String password, AsyncCallback cb);
 
-    public void getCurrentUser(AsyncCallback cb);
+    public void getCurrentUser(AsyncCallback<UserSecurityContext> cb);
 
     public void getUserCapabilities(AsyncCallback<Capabilities> caps);
 }

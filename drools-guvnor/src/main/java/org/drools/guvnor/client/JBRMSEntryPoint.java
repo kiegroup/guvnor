@@ -66,9 +66,8 @@ public class JBRMSEntryPoint
      * If it is, then we show the app, in all its glory !
      */
     private void checkLoggedIn() {
-        RepositoryServiceFactory.getSecurityService().getCurrentUser( new GenericCallback() {
-            public void onSuccess(Object data) {
-                UserSecurityContext ctx = (UserSecurityContext) data;
+        RepositoryServiceFactory.getSecurityService().getCurrentUser( new GenericCallback<UserSecurityContext>() {
+            public void onSuccess(UserSecurityContext ctx) {
                 if ( ctx.userName != null ) {
                 	showMain();
                     loggedInUserInfo.setUserName( ctx.userName );

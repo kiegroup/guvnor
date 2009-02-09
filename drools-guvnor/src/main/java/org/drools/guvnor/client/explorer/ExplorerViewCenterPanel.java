@@ -70,7 +70,7 @@ public class ExplorerViewCenterPanel {
         centerLayoutData = new BorderLayoutData(RegionPosition.CENTER);
         centerLayoutData.setMargins(new Margins(5, 0, 5, 5));
 
-        String tok = History.getToken();
+
 
         //listener to try and stop people from forgetting to save...
         tp.addListener(new TabPanelListenerAdapter() {
@@ -93,7 +93,7 @@ public class ExplorerViewCenterPanel {
 
         addCloseAllButton();
 
-        openAssetByToken(tok);
+        
 	}
 
 	private void addCloseAllButton() {
@@ -112,12 +112,6 @@ public class ExplorerViewCenterPanel {
         tp.addButton(closeAllButton);
 	}
 
-	private void openAssetByToken(String tok) {
-		if (tok != null && tok.startsWith("asset=")) { //NON-NLS
-			String uuid = tok.substring(6);
-			openAsset(uuid);
-		}
-	}
 
 	public TabPanel getPanel() {
 		return tp;
