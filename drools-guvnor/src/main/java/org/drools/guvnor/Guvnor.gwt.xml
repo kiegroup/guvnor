@@ -8,7 +8,16 @@
     <inherits name="com.gwtext.Pagebus"/>
 	<inherits name='pl.balon.gwt.diagrams.Diagrams'/>
 	<inherits name='org.cobogw.gwt.user.User'/>
-    
+
+
+    <!-- Here we put different locales (translations)
+     There are of the form values="xx_YY" - which match to Constants_xx_YY.properties which contain the content.
+     You then access then in the timetime app via &locale=xx_YY at the end of the URL. 
+
+    <extend-property name="locale" values="fr"/>
+
+    -->
+
     <!-- Specify the app entry point class.                   -->
 	<!-- <entry-point class='org.drools.guvnor.client.JBRMS'/> -->
 	<entry-point class='org.drools.guvnor.client.JBRMSEntryPoint'/>
