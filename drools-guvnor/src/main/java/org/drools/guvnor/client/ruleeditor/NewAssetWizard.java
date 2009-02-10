@@ -47,17 +47,18 @@ import com.gwtext.client.util.Format;
  */
 public class NewAssetWizard extends FormStylePopup {
 
+    private Constants constants = GWT.create(Constants.class);
+    
     private TextBox                name        = new TextBox();
     private TextArea               description = new TextArea();
     private String                 initialCategory;
-
+    
     private ListBox                 formatChooser = getFormatChooser();
 
     private RulePackageSelector packageSelector = new RulePackageSelector();
     private EditItemEvent afterCreate;
     private boolean showCats;
     private String format;
-    private Constants constants = GWT.create(Constants.class);
 
 
     /** This is used when creating a new rule. */
