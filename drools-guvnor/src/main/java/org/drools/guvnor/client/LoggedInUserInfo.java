@@ -21,11 +21,14 @@ package org.drools.guvnor.client;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.core.client.GWT;
+import com.gwtext.client.util.Format;
 
 /**
  * Simple widget to show who is logged in, and a link to logout.
@@ -33,6 +36,7 @@ import com.google.gwt.user.client.ui.HTML;
  */
 public class LoggedInUserInfo extends Composite{
     private HTML widgetcontent;
+    private Constants constants;
 
 
     public LoggedInUserInfo() {
@@ -42,23 +46,22 @@ public class LoggedInUserInfo extends Composite{
 
     public void setUserName(String userName) {
         StringBuffer content = new StringBuffer();
-        content.append( "<div class='headerUserInfo'>" );
-        content.append( "<small>Welcome: &nbsp;" + userName );
-        content.append( "&nbsp;&nbsp;&nbsp;<a href='logout.jsp'>[Sign Out]</a></small>" );
-        content.append( "</div>" );
+        content.append( "<div class='headerUserInfo'>" ); //NON-NLS
+        constants = ((Constants) GWT.create(Constants.class));
+        String m = Format.format(constants.WelcomeUser(), userName);
+        content.append( "<small>" + m );  //NON-NLS
+        content.append( "&nbsp;&nbsp;&nbsp;<a href='logout.jsp'>[" + constants.SignOut() + "]</a></small>" ); //NON-NLS
+        content.append( "</div>" );                //NON-NLS
         widgetcontent.setHTML( content.toString() );
 
         //we have the timer to keep the session alive.
         Timer timer = new Timer() {
 
             public void run() {
-                RepositoryServiceFactory.getSecurityService().getCurrentUser( new AsyncCallback() {
-
+                RepositoryServiceFactory.getSecurityService().getCurrentUser( new AsyncCallback<UserSecurityContext>() {
                     public void onFailure(Throwable t) {
                     }
-
-                    public void onSuccess(Object o) {
-                        	UserSecurityContext ctx = (UserSecurityContext) o;
+                    public void onSuccess(UserSecurityContext ctx) {
                         	if (ctx.userName == null) {
                                 GenericCallback.showSessionExpiry();
                         	}

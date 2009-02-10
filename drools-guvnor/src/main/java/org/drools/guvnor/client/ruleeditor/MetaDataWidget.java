@@ -29,6 +29,7 @@ import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -45,7 +46,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.util.Format;
 
 /**
  * This displays the metadata for a versionable asset.
@@ -62,6 +65,7 @@ public class MetaDataWidget extends Composite {
     AssetCategoryEditor ed;
 	private FormStyleLayout currentSection;
 	private String currentSectionName;
+    private Constants constants;
 
     public MetaDataWidget(final MetaData d,
                           final boolean readOnly,
@@ -71,9 +75,8 @@ public class MetaDataWidget extends Composite {
         super();
 
 
-
-
-        Button show = new Button("[show more info...]");
+        constants = ((Constants) GWT.create(Constants.class));
+        Button show = new Button(constants.showMoreInfo());
         show.addClickListener(new ClickListener() {
             public void onClick(Widget sender) {
                 layout.clear();
@@ -81,7 +84,7 @@ public class MetaDataWidget extends Composite {
             }
         });
 
-        layout.add(new SmallLabel("Title: [<b>" + d.name + "</b>]"));
+        layout.add(new SmallLabel(Format.format("Title: [<b>{0}</b>]", d.name)));
         layout.add(show);
         initWidget(layout);
 
@@ -98,18 +101,18 @@ public class MetaDataWidget extends Composite {
         //        });
 
         if ( !readOnly ) {
-            Image edit = new ImageButton( "images/edit.gif",
-                                          "Rename this asset" );
+            Image edit = new ImageButton( "images/edit.gif", //NON-NLS
+                    constants.RenameThisAsset());
             edit.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     showRenameAsset( w );
                 }
             } );
-            addHeader( "images/meta_data.png",
+            addHeader( "images/meta_data.png", //NON-NLS
                        d.name,
                        edit );
         } else {
-            addHeader( "images/asset_version.png",
+            addHeader( "images/asset_version.png",    //NON-NLS
                        d.name,
                        null );
         }
@@ -128,34 +131,34 @@ public class MetaDataWidget extends Composite {
     	HorizontalPanel hp = new HorizontalPanel();
     	hp.add(new SmallLabel("<b>" + name + "</b>"));
     	if (edit != null) hp.add(edit);
-    	currentSection.addAttribute("Title:", hp);
+    	currentSection.addAttribute(constants.Title(), hp);
 	}
 
 	private void loadData(MetaData d) {
         this.data = d;
-        addAttribute( "Categories:",
+        addAttribute(constants.CategoriesMetaData(),
                       categories() );
 
-        addAttribute( "Modified on:",
+        addAttribute(constants.ModifiedOnMetaData(),
                       readOnlyDate( data.lastModifiedDate ) );
-        addAttribute( "by:",
+        addAttribute(constants.ModifiedByMetaData(),
                       readOnlyText( data.lastContributor ) );
-        addAttribute( "Note:",
+        addAttribute(constants.NoteMetaData(),
                       readOnlyText( data.checkinComment ) );
 
         if ( !readOnly ) {
-            addAttribute( "Created on:",
+            addAttribute(constants.CreatedOnMetaData(),
                           readOnlyDate( data.createdDate ) );
         }
-        addAttribute( "Created by:",
+        addAttribute(constants.CreatedByMetaData(),
                       readOnlyText( data.creator ) );
-        addAttribute( "Format:",
+        addAttribute(constants.FormatMetaData(),
                       new SmallLabel( "<b>" + data.format + "</b>" ) );
 
-        addAttribute( "Package:",
+        addAttribute(constants.PackageMetaData(),
                 packageEditor( data.packageName ) );
 
-        addAttribute( "Is Disabled:",
+        addAttribute(constants.IsDisabledMetaData(),
                 editableBoolean( new FieldBooleanBinding() {
                                      public boolean getValue() {
                                          return data.disabled;
@@ -165,15 +168,15 @@ public class MetaDataWidget extends Composite {
                                          data.disabled = val;
                                      }
                                  },
-                                 "Disables this asset. It will not be included in any processing." ) );
+                        constants.DisableTip()) );
 
         endSection();
 
-        startSection("Other meta data ...");
+        startSection(constants.OtherMetaData());
 
 
 
-        addAttribute( "Subject:",
+        addAttribute(constants.SubjectMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
                                             return data.subject;
@@ -183,9 +186,9 @@ public class MetaDataWidget extends Composite {
                                             data.subject = val;
                                         }
                                     },
-                                    "A short description of the subject matter." ) );
+                              constants.AShortDescriptionOfTheSubjectMatter()) );
 
-        addAttribute( "Type:",
+        addAttribute(constants.TypeMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
                                             return data.type;
@@ -196,9 +199,9 @@ public class MetaDataWidget extends Composite {
                                         }
 
                                     },
-                                    "This is for classification purposes." ) );
+                              constants.TypeTip()) );
 
-        addAttribute( "External link:",
+        addAttribute(constants.ExternalLinkMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
                                             return data.externalRelation;
@@ -209,9 +212,9 @@ public class MetaDataWidget extends Composite {
                                         }
 
                                     },
-                                    "This is for relating the asset to an external system." ) );
+                              constants.ExternalLinkTip()) );
 
-        addAttribute( "Source:",
+        addAttribute(constants.SourceMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
                                             return data.externalSource;
@@ -222,11 +225,11 @@ public class MetaDataWidget extends Composite {
                                         }
 
                                     },
-                                    "A short description or code indicating the source of the rule." ) );
+                              constants.SourceMetaDataTip()) );
 
         endSection(true);
-        startSection("Version history ...");
-        addAttribute( "Current version number:",
+        startSection(constants.VersionHistory());
+        addAttribute(constants.CurrentVersionNumber(),
                 getVersionNumberLabel() );
 
         if ( !readOnly ) {
@@ -271,9 +274,9 @@ public class MetaDataWidget extends Composite {
             return readOnlyText( packageName );
         } else {
             HorizontalPanel horiz = new HorizontalPanel();
-            horiz.setStyleName( "metadata-Widget" );
+            horiz.setStyleName( "metadata-Widget" ); //NON-NLS
             horiz.add( readOnlyText( packageName ) );
-            Image editPackage = new ImageButton( "images/edit.gif" );
+            Image editPackage = new ImageButton( "images/edit.gif" ); //NON-NLS
             editPackage.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     showEditPackage( packageName,
@@ -286,12 +289,12 @@ public class MetaDataWidget extends Composite {
     }
 
     private void showRenameAsset(Widget source) {
-        final FormStylePopup pop = new FormStylePopup( "images/package_large.png",
-                                                       "Rename this item" );
+        final FormStylePopup pop = new FormStylePopup( "images/package_large.png", //NON-NLS
+                constants.RenameThisItem());
         final TextBox box = new TextBox();
-        pop.addAttribute( "New name",
+        pop.addAttribute(constants.NewNameAsset(),
                           box );
-        Button ok = new Button( "Rename item" );
+        Button ok = new Button(constants.RenameItem());
         pop.addAttribute( "",
                           ok );
         ok.addClickListener( new ClickListener() {
@@ -301,7 +304,7 @@ public class MetaDataWidget extends Composite {
                                                                    new GenericCallback() {
                                                                        public void onSuccess(Object data) {
                                                                            refreshView.execute();
-                                                                           Window.alert( "Item has been renamed" );
+                                                                           Window.alert(constants.ItemHasBeenRenamed());
                                                                            pop.hide();
                                                                        }
                                                                    } );
@@ -313,26 +316,26 @@ public class MetaDataWidget extends Composite {
 
     private void showEditPackage(final String pkg,
                                  Widget source) {
-        final FormStylePopup pop = new FormStylePopup( "images/package_large.png",
-                                                       "Move this item to another package" );
-        pop.addAttribute( "Current package:",
+        final FormStylePopup pop = new FormStylePopup( "images/package_large.png",         //NON-NLS
+                constants.MoveThisItemToAnotherPackage());
+        pop.addAttribute(constants.CurrentPackage(),
                           new Label( pkg ) );
         final RulePackageSelector sel = new RulePackageSelector();
-        pop.addAttribute( "New package:",
+        pop.addAttribute(constants.NewPackage(),
                           sel );
-        Button ok = new Button( "Change package" );
+        Button ok = new Button(constants.ChangePackage());
         pop.addAttribute( "",
                           ok );
         ok.addClickListener( new ClickListener() {
 
             public void onClick(Widget w) {
                 if ( sel.getSelectedPackage().equals( pkg ) ) {
-                    Window.alert( "You need to pick a different package to move this to." );
+                    Window.alert(constants.YouNeedToPickADifferentPackageToMoveThisTo());
                     return;
                 }
                 RepositoryServiceFactory.getService().changeAssetPackage( uuid,
                                                                           sel.getSelectedPackage(),
-                                                                          "Moved from : " + pkg,
+                                                                          Format.format(constants.MovedFromPackage(),pkg),
                                                                           new GenericCallback() {
                                                                               public void onSuccess(Object data) {
                                                                                   refreshView.execute();
@@ -350,7 +353,7 @@ public class MetaDataWidget extends Composite {
 
     private Widget getVersionNumberLabel() {
         if ( data.versionNumber == 0 ) {
-            return new SmallLabel( "<i>Not checked in yet</i>" );
+            return new SmallLabel(constants.NotCheckedInYet());
         } else {
             return readOnlyText( Long.toString( data.versionNumber ) );
         }

@@ -492,7 +492,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String TestScenariosInPackages();
 
-    String PleaseWaitDotDotDot();
 
     String Analysis();
 
@@ -727,4 +726,194 @@ public interface Constants extends ConstantsWithLookup {
     String FactType();
 
     String name();
+
+    String isEqualTo();
+
+    String isNotEqualTo();
+
+    String isLessThan();
+
+    String lessThanOrEqualTo();
+
+    String greaterThan();
+
+    String greaterThanOrEqualTo();
+
+    String orEqualTo();
+
+    String orNotEqualTo();
+
+    String andNotEqualTo();
+
+    String andGreaterThan();
+
+
+    String orGreaterThan();
+
+    String orLessThan();
+
+    String andLessThan();
+
+    String orGreaterThanOrEqualTo();
+
+    String orLessThanOrEqualTo();
+
+    String andGreaterThanOrEqualTo();
+
+    String andLessThanOrEqualTo();
+
+    String andContains();
+
+    String orContains();
+
+    String andMatches();
+
+    String orMatches();
+
+    String orExcludes();
+
+    String andExcludes();
+
+    String soundsLike();
+
+    String ThereIsNo();
+
+    String ThereExists();
+
+    String AnyOf1();
+
+    String Insert();
+
+    String LogicallyInsert();
+
+    String Retract();
+
+    String Set();
+
+    String CallMethod();
+
+    String LoadingUserPermissions();
+
+    String PleaseWaitDotDotDot();
+
+    String WelcomeUser();
+
+    String SignOut();
+
+    String LoadingLogMessages();
+
+    String Timestamp();
+
+    String Message();
+
+    String ShowRecentLogTip();
+
+    String Reload();
+
+    String showMoreInfo();
+
+    String RenameThisAsset();
+
+    String Title();
+
+    String CategoriesMetaData();
+
+    String ModifiedOnMetaData();
+
+    String ModifiedByMetaData();
+
+    String NoteMetaData();
+
+    String CreatedOnMetaData();
+
+    String CreatedByMetaData();
+
+    String FormatMetaData();
+
+    String PackageMetaData();
+
+    String IsDisabledMetaData();
+
+    String DisableTip();
+
+    String OtherMetaData();
+
+    String SubjectMetaData();
+
+    String AShortDescriptionOfTheSubjectMatter();
+
+    String TypeMetaData();
+
+    String TypeTip();
+
+    String ExternalLinkMetaData();
+
+    String ExternalLinkTip();
+
+    String SourceMetaData();
+
+    String SourceMetaDataTip();
+
+    String VersionHistory();
+
+    String CurrentVersionNumber();
+
+    String RenameThisItem();
+
+    String NewNameAsset();
+
+    String RenameItem();
+
+    String ItemHasBeenRenamed();
+
+    String MoveThisItemToAnotherPackage();
+
+    String CurrentPackage();
+
+    String NewPackage();
+
+    String ChangePackage();
+
+    String YouNeedToPickADifferentPackageToMoveThisTo();
+
+    String MovedFromPackage();
+
+    String NotCheckedInYet();
+
+
+    String InitialCategory();
+
+    String TypeFormatOfRule();
+
+    String FileExtensionTypeFormat();
+
+    String DSLMappingTip();
+
+    String NewEnumDoco();
+
+    String InitialDescription();
+
+    String BusinessRuleGuidedEditor();
+
+    String DSLBusinessRuleTextEditor();
+
+    String DRLRuleTechnicalRuleTextEditor();
+
+    String DecisionTableSpreadsheet();
+
+    String DecisionTableWebGuidedEditor();
+
+    String YouHaveToPickAnInitialCategory();
+
+    String PleaseEnterAFormatFileType();
+
+    String AssetNameAlreadyExistsPickAnother();
+
+    String emptyNameIsNotAllowed();
+
+    String NonValidJCRName();
+
+    String CreateANewPackage();
+
+    String CreateNewPackage();
 }

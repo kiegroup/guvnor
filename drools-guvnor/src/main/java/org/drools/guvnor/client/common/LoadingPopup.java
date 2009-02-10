@@ -19,6 +19,8 @@ package org.drools.guvnor.client.common;
 
 import com.gwtext.client.widgets.MessageBox;
 import com.gwtext.client.widgets.MessageBoxConfig;
+import com.google.gwt.core.client.GWT;
+import org.drools.guvnor.client.messages.Constants;
 
 
 /**
@@ -55,7 +57,7 @@ public class LoadingPopup  {
     public static void showMessage(final String message) {
     	MessageBox.show(new MessageBoxConfig() {
     		{
-    			setTitle("Please wait...");
+    			setTitle(((Constants) GWT.create(Constants.class)).PleaseWaitDotDotDot());
     			setWidth(200);
     			setMsg(message);
     			setClosable(true);

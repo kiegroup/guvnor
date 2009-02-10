@@ -21,8 +21,10 @@ import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.HistoryListener;
@@ -91,7 +93,7 @@ public class JBRMSEntryPoint
     }
 
 	private void showMain() {
-		Window.setStatus("Loading user permissions...");
+		Window.setStatus(((Constants) GWT.create(Constants.class)).LoadingUserPermissions());
 		RepositoryServiceFactory.getSecurityService().getUserCapabilities(new GenericCallback<Capabilities>() {
 			public void onSuccess(Capabilities cp) {
 				Window.setStatus(" ");

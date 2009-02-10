@@ -26,6 +26,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -37,6 +38,8 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
+import com.gwtext.client.util.Format;
 
 /**
  * This provides a popup for creating a new rule/asset from scratch.
@@ -54,19 +57,19 @@ public class NewAssetWizard extends FormStylePopup {
     private EditItemEvent afterCreate;
     private boolean showCats;
     private String format;
-
+    private Constants constants = GWT.create(Constants.class);
 
 
     /** This is used when creating a new rule. */
     public NewAssetWizard(EditItemEvent afterCreate, boolean showCats, String format, String title) {
-        super("images/new_wiz.gif", title);
+        super("images/new_wiz.gif", title); //NON-NLS
         this.showCats = showCats;
         this.format = format;
 
         this.afterCreate = afterCreate;
 
 
-        addAttribute( "Name:", name );
+        addAttribute( constants.Name(), name );
 
         this.setAfterShow(new Command() {
 			public void execute() {
@@ -75,14 +78,15 @@ public class NewAssetWizard extends FormStylePopup {
 
 
         if (showCats) {
-            addAttribute("Initial category:", getCatChooser());
+
+            addAttribute(constants.InitialCategory(), getCatChooser());
         }
 
         if (format == null) {
-            addAttribute( "Type (format) of rule:", this.formatChooser );
-        } else if (format == "*") {
+            addAttribute(constants.TypeFormatOfRule(), this.formatChooser );
+        } else if (format == "*") { //NON-NLS
         	final TextBox fmt = new TextBox();
-        	addAttribute("File extension (type/format):", fmt);
+        	addAttribute(constants.FileExtensionTypeFormat(), fmt);
         	fmt.addChangeListener(new ChangeListener() {
 				public void onChange(Widget w) {
 					NewAssetWizard.this.format = fmt.getText();
@@ -90,30 +94,20 @@ public class NewAssetWizard extends FormStylePopup {
         	});
         }
 
-        addAttribute("Package:", packageSelector);
+        addAttribute(constants.Package() + ":", packageSelector);
 
         description.setVisibleLines( 4 );
         description.setWidth( "100%" );
         //initial description
         if (format == AssetFormats.DSL_TEMPLATE_RULE) {
-        	description.setText("A dsl is a language mapping from a domain specific language to the rule language.");
+        	description.setText(constants.DSLMappingTip());
         } else if (format == AssetFormats.ENUMERATION) {
-        	description.setText( "An enumeration is a mapping from fields to a list of values." +
-                    "This will mean the rule editor will show a drop down for fields, instead of a text box." +
-                    "The format of this is: 'FactType.fieldName': ['Value1', 'Value2']\n" +
-                    "You can add more mappings by adding in more lines. " +
-                    "\nFor example:\n\n" +
-                    "'Person.sex' : ['M', 'F']\n" +
-                     "'Person.rating' : ['High', 'Low']\n\n" +
-                     "You can also add display aliases (so the value used in the rule is separate to the one displayed:\n"  +
-                    "'Person.sex' : ['M=Male', 'F=Female']\n" +
-                    "in the above case, the 'M=Male' means that 'Male' will be displayed as an item in a drop down box, but the value 'M' will be used in the rule. "
-                    );
+        	description.setText(constants.NewEnumDoco());
         }
 
-        addAttribute("Initial description:", description);
+        addAttribute(constants.InitialDescription(), description);
 
-        Button ok = new Button( "OK" );
+        Button ok = new Button( constants.OK() );
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget arg0) {
                 ok();
@@ -145,7 +139,7 @@ public class NewAssetWizard extends FormStylePopup {
         });
        ScrollPanel scroll = new ScrollPanel(w);
        scroll.setAlwaysShowScrollBars(true);
-       scroll.setSize("300px", "130px");
+       scroll.setSize("300px", "130px"); //NON-NLS
        return scroll;
 
     }
@@ -154,11 +148,11 @@ public class NewAssetWizard extends FormStylePopup {
 
         ListBox box = new ListBox();
 
-        box.addItem( "Business Rule (Guided editor)", AssetFormats.BUSINESS_RULE );
-        box.addItem( "DSL Business Rule (Text editor)", AssetFormats.DSL_TEMPLATE_RULE );
-        box.addItem( "DRL Rule (Technical rule - text editor)", AssetFormats.DRL );
-        box.addItem( "Decision Table (Spreadsheet)", AssetFormats.DECISION_SPREADSHEET_XLS );
-        box.addItem( "Decision Table (Web - guided editor)", AssetFormats.DECISION_TABLE_GUIDED );
+        box.addItem(constants.BusinessRuleGuidedEditor(), AssetFormats.BUSINESS_RULE );
+        box.addItem(constants.DSLBusinessRuleTextEditor(), AssetFormats.DSL_TEMPLATE_RULE );
+        box.addItem(constants.DRLRuleTechnicalRuleTextEditor(), AssetFormats.DRL );
+        box.addItem(constants.DecisionTableSpreadsheet(), AssetFormats.DECISION_SPREADSHEET_XLS );
+        box.addItem(constants.DecisionTableWebGuidedEditor(), AssetFormats.DECISION_TABLE_GUIDED );
 
         box.setSelectedIndex( 0 );
 
@@ -171,7 +165,7 @@ public class NewAssetWizard extends FormStylePopup {
     void ok() {
 
         if (this.showCats && this.initialCategory == null) {
-			Window.alert("You have to pick an initial category.");
+			Window.alert(constants.YouHaveToPickAnInitialCategory());
 			return;
 		} else {
 			if (!validatePathPerJSR170(this.name.getText())) return;
@@ -179,16 +173,16 @@ public class NewAssetWizard extends FormStylePopup {
 
         String fmt = getFormat();
         if (fmt == null || fmt.equals("*")) {
-        	Window.alert("Please enter a format/file type");
+        	Window.alert(constants.PleaseEnterAFormatFileType());
         	return;
         }
 
         GenericCallback cb = new GenericCallback() {
             public void onSuccess(Object result) {
             		String uuid = (String) result;
-            		if (uuid.startsWith("DUPLICATE")) {
+            		if (uuid.startsWith("DUPLICATE")) { //NON-NLS
             			LoadingPopup.close();
-            			Window.alert("An asset with that name already exists in the chosen package. Please use another name");
+            			Window.alert(constants.AssetNameAlreadyExistsPickAnother());
             		} else {
             			openEditor((String) result);
             			hide();
@@ -197,7 +191,7 @@ public class NewAssetWizard extends FormStylePopup {
         };
 
 
-        LoadingPopup.showMessage( "Please wait ..." );
+        LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
         RepositoryServiceFactory.getService().createNewRule( name.getText(),
                                                           description.getText(),
                                                           initialCategory,
@@ -231,7 +225,7 @@ public class NewAssetWizard extends FormStylePopup {
 		int len = jsrPath == null ? 0 : jsrPath.length();
 
 		if (len == 0) {
-			Window.alert("empty name is not allowed");
+			Window.alert(((Constants) GWT.create(Constants.class)).emptyNameIsNotAllowed());
 			return false;
 		}
 
@@ -249,9 +243,7 @@ public class NewAssetWizard extends FormStylePopup {
 			case '*':
 			case '\'':
 			case '\"':
-				Window.alert("'" + jsrPath
-						+ "' is not valid. '" + c
-						+ "' is not a valid name character");
+                Window.alert(Format.format(((Constants) GWT.create(Constants.class)).NonValidJCRName(), jsrPath, ""+ c));
 				return false;
 			default:
 			}

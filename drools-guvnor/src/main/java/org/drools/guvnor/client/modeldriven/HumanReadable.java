@@ -17,8 +17,12 @@ package org.drools.guvnor.client.modeldriven;
 
 
 
+import org.drools.guvnor.client.messages.Constants;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.gwt.core.client.GWT;
 
 /**
  * This contains some simple mappings between operators, conditional elements and the human readable
@@ -36,46 +40,49 @@ public class HumanReadable {
     public static Map actionDisplayMap = new HashMap();
     public static final String[] CONDITIONAL_ELEMENTS = new String[] {"not", "exists", "or"};
 
+    private static Constants constants;
+
     static {
-        operatorDisplayMap.put( "==", "is equal to" );
-        operatorDisplayMap.put( "!=", "is not equal to" );
-        operatorDisplayMap.put( "<", "is less than" );
-        operatorDisplayMap.put( "<=", "less than or equal to" );
-        operatorDisplayMap.put( ">", "greater than" );
-        operatorDisplayMap.put( ">=", "greater than or equal to" );
+        constants = ((Constants) GWT.create(Constants.class));
+        operatorDisplayMap.put( "==", constants.isEqualTo());
+        operatorDisplayMap.put( "!=", constants.isNotEqualTo());
+        operatorDisplayMap.put( "<", constants.isLessThan());
+        operatorDisplayMap.put( "<=", constants.lessThanOrEqualTo());
+        operatorDisplayMap.put( ">", constants.greaterThan());
+        operatorDisplayMap.put( ">=", constants.greaterThanOrEqualTo());
 
-        operatorDisplayMap.put( "|| ==", "or equal to" );
-        operatorDisplayMap.put( "|| !=", "or not equal to" );
-        operatorDisplayMap.put( "&& !=", "and not equal to" );
-        operatorDisplayMap.put( "&& >", "and greater than" );
-        operatorDisplayMap.put( "&& <", "and less than" );
-        operatorDisplayMap.put( "|| >", "or greater than" );
-        operatorDisplayMap.put( "|| <", "or less than" );
-        operatorDisplayMap.put( "&& <", "and less than" );
+        operatorDisplayMap.put( "|| ==", constants.orEqualTo());
+        operatorDisplayMap.put( "|| !=", constants.orNotEqualTo());
+        operatorDisplayMap.put( "&& !=", constants.andNotEqualTo());
+        operatorDisplayMap.put( "&& >", constants.andGreaterThan());
+        operatorDisplayMap.put( "&& <", constants.andLessThan());
+        operatorDisplayMap.put( "|| >", constants.orGreaterThan());
+        operatorDisplayMap.put( "|| <", constants.orLessThan());
+        operatorDisplayMap.put( "&& <", constants.andLessThan());
 
-        operatorDisplayMap.put( "|| >=", "or greater than (or equal to)" );
-        operatorDisplayMap.put( "|| <=", "or less than (or equal to)" );
-        operatorDisplayMap.put( "&& >=", "and greater than (or equal to)" );
-        operatorDisplayMap.put( "&& <=", "and less than (or equal to)" );
-        operatorDisplayMap.put( "&& contains", "and contains" );
-        operatorDisplayMap.put( "|| contains", "or contains" );
-        operatorDisplayMap.put( "&& matches", "and matches" );
-        operatorDisplayMap.put( "|| matches", "or matches" );
-        operatorDisplayMap.put( "|| excludes", "or excludes" );
-        operatorDisplayMap.put( "&& excludes", "and excludes" );
+        operatorDisplayMap.put( "|| >=", constants.orGreaterThanOrEqualTo());
+        operatorDisplayMap.put( "|| <=", constants.orLessThanOrEqualTo());
+        operatorDisplayMap.put( "&& >=", constants.andGreaterThanOrEqualTo());
+        operatorDisplayMap.put( "&& <=", constants.andLessThanOrEqualTo());
+        operatorDisplayMap.put( "&& contains", constants.andContains());
+        operatorDisplayMap.put( "|| contains", constants.orContains());
+        operatorDisplayMap.put( "&& matches", constants.andMatches());
+        operatorDisplayMap.put( "|| matches", constants.orMatches());
+        operatorDisplayMap.put( "|| excludes", constants.orExcludes());
+        operatorDisplayMap.put( "&& excludes", constants.andExcludes());
 
-        operatorDisplayMap.put( "soundslike", "sounds like" );
+        operatorDisplayMap.put( "soundslike", constants.soundsLike());
 
-        ceDisplayMap.put( "not", "There is no" );
-        ceDisplayMap.put( "exists", "There exists" );
-        ceDisplayMap.put( "or", "Any of" );
+        ceDisplayMap.put( "not", constants.ThereIsNo());
+        ceDisplayMap.put( "exists", constants.ThereExists());
+        ceDisplayMap.put( "or", constants.AnyOf1());
 
-        actionDisplayMap.put( "assert", "Insert" );
-        actionDisplayMap.put( "assertLogical", "Logically insert" );
-        actionDisplayMap.put( "retract", "Retract" );
-        actionDisplayMap.put( "set", "Set" );
-        actionDisplayMap.put( "modify", "Modify" );
-        actionDisplayMap.put( "call", "Call");
+        actionDisplayMap.put( "assert", constants.Insert());
+        actionDisplayMap.put( "assertLogical", constants.LogicallyInsert());
+        actionDisplayMap.put( "retract", constants.Retract());
+        actionDisplayMap.put( "set", constants.Set());
+        actionDisplayMap.put( "modify", constants.Modify() );
+        actionDisplayMap.put( "call", constants.CallMethod());
 
     }
 

@@ -21,8 +21,10 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This wraps a file uploader utility for model packages.
@@ -54,14 +56,13 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget impleme
 
 
 	public void onSave() {
-		System.out.println("save called...");
 	}
 
     /**
      * As we want to refresh the suggestion completion engine.
      */
 	public void onAfterSave() {
-		LoadingPopup.showMessage("Refreshing model...");
+		LoadingPopup.showMessage(((Constants) GWT.create(Constants.class)).RefreshingModel());
 		SuggestionCompletionCache.getInstance().loadPackage(packageName, new Command() {
 			public void execute() {
 				LoadingPopup.close();

@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.HTMLFileManagerFields;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
@@ -56,16 +57,16 @@ public class NewPackageWizard extends FormStylePopup {
     private TextArea descBox;
     private final FormStyleLayout importLayout = new FormStyleLayout();
     private final FormStyleLayout newPackageLayout = new FormStyleLayout();
+    private static Constants constants = ((Constants) GWT.create(Constants.class));
 
 
     public NewPackageWizard(final Command afterCreatedEvent) {
-        super( "images/new_wiz.gif", "Create a new package" );
+        super( "images/new_wiz.gif", constants.CreateANewPackage());  //NON-NLS
         nameBox = new TextBox();
         descBox = new TextArea();
 
-        newPackageLayout.addRow( new HTML("<i><small>Create a new package in the BRMS</small></i>") );
-        importLayout.addRow( new HTML("<i><small>Importing a package from an existing DRL will create the package in the BRMS if it " +
-                "does not already exist. If it does exist, any new rules found will be merged into the BRMS package.</small></i>") );
+        newPackageLayout.addRow( new HTML(constants.CreateNewPackage()) );
+        importLayout.addRow( new HTML("<i><small>Importing a package from an existing DRL will create the package in the BRMS if it does not already exist. If it does exist, any new rules found will be merged into the package.</small></i>") );
         importLayout.addRow( new HTML("<i><small>Any new rules created will not have any categories assigned initially, " +
                 "but rules and functions will be stored individually (ie normalised). Queries, imports etc will show up in the package configuration.</small></i>") );
         importLayout.addRow( new HTML("<i><small>Any DSLs or models required by the imported package will need to be uploaded seperately.</small></i>") );

@@ -4,9 +4,11 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.LogEntry;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.SortDir;
 import com.gwtext.client.data.ArrayReader;
@@ -33,8 +35,9 @@ import com.gwtext.client.widgets.grid.Renderer;
 public class LogViewer extends Composite {
 
 	private VerticalPanel layout;
+    private Constants constants;
 
-	public LogViewer() {
+    public LogViewer() {
 		layout = new VerticalPanel();
 		layout.setHeight("100%");
 		layout.setWidth("100%");
@@ -44,10 +47,10 @@ public class LogViewer extends Composite {
 	}
 
 	private void refresh() {
-		LoadingPopup.showMessage("Loading log messages...");
-		RepositoryServiceFactory.getService().showLog(new GenericCallback() {
-			public void onSuccess(Object data) {
-				LogEntry[] logs = (LogEntry[]) data;
+        constants = ((Constants) GWT.create(Constants.class));
+        LoadingPopup.showMessage(constants.LoadingLogMessages());
+		RepositoryServiceFactory.getService().showLog(new GenericCallback<LogEntry[]>() {
+			public void onSuccess(LogEntry[] logs) {
 				showLogs(logs);
 				LoadingPopup.close();
 			}
@@ -82,7 +85,7 @@ public class LogViewer extends Composite {
 		ColumnModel cm = new ColumnModel(new ColumnConfig[] {
 				new ColumnConfig() {
 					{
-						setDataIndex("severity");
+						setDataIndex("severity");  //NON-NLS
 						setSortable(true);
 						setRenderer(new Renderer() {
 							public String render(Object value,
@@ -102,16 +105,16 @@ public class LogViewer extends Composite {
 					}
 				}, new ColumnConfig() {
 					{
-						setHeader("Timestamp");
+						setHeader(constants.Timestamp());
 						setSortable(true);
 						setDataIndex("timestamp");
 						setWidth(180);
 					}
 				}, new ColumnConfig() {
 					{
-						setHeader("Message");
+						setHeader(constants.Message());
 						setSortable(true);
-						setDataIndex("message");
+						setDataIndex("message"); //NON-NLS
 						setWidth(580);
 
 						setRenderer(new Renderer() {
@@ -121,7 +124,7 @@ public class LogViewer extends Composite {
 
 								if (value != null) {
 									cellMetadata
-											.setHtmlAttribute("style=\"overflow:auto;\"");
+											.setHtmlAttribute("style=\"overflow:auto;\""); //NON-NLS
 									return value.toString();
 								} else {
 									return "";
@@ -141,12 +144,12 @@ public class LogViewer extends Composite {
 		g.setTopToolbar(tb);
 
 		tb.addItem(new ToolbarTextItem(
-				"Showing recent INFO and ERROR messages from the log:"));
+                constants.ShowRecentLogTip()));
 		tb.addItem(new ToolbarSeparator());
 
 		layout.add(g);
 
-		ToolbarButton reload = new ToolbarButton("Reload");
+		ToolbarButton reload = new ToolbarButton(constants.Reload());
 		reload.addListener(new ButtonListenerAdapter() {
 			public void onClick(Button button, EventObject e) {
 				layout.remove(g);
