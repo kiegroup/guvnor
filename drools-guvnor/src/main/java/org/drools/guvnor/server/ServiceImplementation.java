@@ -142,27 +142,27 @@ public class ServiceImplementation
     implements
     RepositoryService {
 
-	/**
-	 * Maximum number of rules to display in "list rules in package" method
-	 */
-	private static final int MAX_RULES_TO_SHOW_IN_PACKAGE_LIST = 5000;
+    /**
+     * Maximum number of rules to display in "list rules in package" method
+     */
+    private static final int        MAX_RULES_TO_SHOW_IN_PACKAGE_LIST = 5000;
 
     @In
     public RulesRepository          repository;
 
-    private static final long       serialVersionUID = 400L;
+    private static final long       serialVersionUID                  = 400L;
 
-    private static final DateFormat dateFormatter    = DateFormat.getInstance();
+    private static final DateFormat dateFormatter                     = DateFormat.getInstance();
 
-    private static final Logger     log              = LoggingHelper.getLogger();
+    private static final Logger     log                               = LoggingHelper.getLogger();
 
-    private MetaDataMapper          metaDataMapper   = new MetaDataMapper();
+    private MetaDataMapper          metaDataMapper                    = new MetaDataMapper();
 
     /**
      * Used for a simple cache of binary packages to avoid serialization from
      * the database - for test scenarios.
      */
-    static Map<String, RuleBase>    ruleBaseCache    = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
+    static Map<String, RuleBase>    ruleBaseCache                     = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
@@ -198,7 +198,7 @@ public class ServiceImplementation
         if ( path == null || "".equals( path ) ) {
             path = "/";
         }
-        path = cleanHTML(path);                        
+        path = cleanHTML( path );
 
         CategoryItem item = repository.loadCategory( path );
         item.addCategory( name,
@@ -373,7 +373,7 @@ public class ServiceImplementation
         }
 
         //use AssetItemFilter to enforce package-based permissions.
-//        RepositoryFilter filter = new AssetItemFilter();
+        //        RepositoryFilter filter = new AssetItemFilter();
         // Filter is null since the permission is checked on category level.
         RepositoryFilter filter = null;
         AssetPageList list = repository.findAssetsByCategory( categoryPath,
@@ -451,7 +451,7 @@ public class ServiceImplementation
                 RuntimeException exception = null;
 
                 for ( String cat : asset.metaData.categories ) {
-                	// Check if user has a permission to read this asset.
+                    // Check if user has a permission to read this asset.
                     try {
                         Identity.instance().checkPermission( new CategoryPathType( cat ),
                                                              RoleTypes.ANALYST_READ );
@@ -481,7 +481,7 @@ public class ServiceImplementation
             asset.isreadonly = true;
         }
 
-        log.debug("Load time taken for asset: " + (System.currentTimeMillis() - time));
+        log.debug( "Load time taken for asset: " + (System.currentTimeMillis() - time) );
         return asset;
 
     }
@@ -499,7 +499,7 @@ public class ServiceImplementation
         handler.retrieveAssetContent( asset,
                                       pkgItem,
                                       item );
-        
+
         return asset;
     }
 
@@ -701,7 +701,7 @@ public class ServiceImplementation
                 row.values[1] = archived.getPackageName();
                 row.values[2] = archived.getName();
                 row.values[3] = archived.getLastContributor();
-                row.values[4] = Long.toString(archived.getLastModified().getTime().getTime());
+                row.values[4] = Long.toString( archived.getLastModified().getTime().getTime() );
 
                 result.add( row );
                 count++;
@@ -840,6 +840,15 @@ public class ServiceImplementation
         this.ruleBaseCache.remove( data.uuid );
         item.checkin( data.description );
 
+        // If package is archived, archive all the assets under it
+        if ( data.archived ) {
+            for ( Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
+                AssetItem assetItem = iter.next();
+                assetItem.archiveItem( true );
+                assetItem.checkin( data.description );
+            }
+        }
+
         BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
         loader.getSuggestionEngine( item );
 
@@ -865,7 +874,7 @@ public class ServiceImplementation
                                       int skip,
                                       int numRows,
                                       String tableConfig) throws SerializableException {
-        log.debug("Loading asset list for [" + uuid + "]");
+        log.debug( "Loading asset list for [" + uuid + "]" );
         if ( numRows == 0 ) {
             throw new DetailedSerializableException( "Unable to return zero results (bug)",
                                                      "probably have the parameters around the wrong way, sigh..." );
@@ -1021,7 +1030,7 @@ public class ServiceImplementation
     public String createState(String name) throws SerializableException {
         log.info( "USER:" + repository.getSession().getUserID() + " CREATING state: [" + name + "]" );
         try {
-            name = cleanHTML(name);
+            name = cleanHTML( name );
             String uuid = repository.createState( name ).getNode().getUUID();
             repository.save();
             return uuid;
@@ -1082,40 +1091,38 @@ public class ServiceImplementation
                                                      RoleTypes.PACKAGE_DEVELOPER );
 
                 try {
-					RuleAsset ruleAsset = loadAsset(asset);
+                    RuleAsset ruleAsset = loadAsset( asset );
 
-					if (ruleAsset.metaData.categories.length == 0) {
-						Identity.instance().checkPermission(
-								new CategoryPathType(null),
-								RoleTypes.ANALYST_READ);
-					} else {
+                    if ( ruleAsset.metaData.categories.length == 0 ) {
+                        Identity.instance().checkPermission( new CategoryPathType( null ),
+                                                             RoleTypes.ANALYST_READ );
+                    } else {
 
-						// Check category permissions
-						boolean passed = false;
-						RuntimeException exception = null;
+                        // Check category permissions
+                        boolean passed = false;
+                        RuntimeException exception = null;
 
-						for (String cat : ruleAsset.metaData.categories) {
-							try {
-								Identity.instance().checkPermission(
-										new CategoryPathType(cat),
-										RoleTypes.ANALYST);
-								passed = true;
-							} catch (RuntimeException e) {
-								exception = e;
-							}
-						}
-						if (!passed) {
-							throw exception;
-						}
-					}
-				} catch (RulesRepositoryException e) {
-					// This was not a rule asset
-				} catch (SerializableException e) {
-					// This was not a rule asset
-				}
+                        for ( String cat : ruleAsset.metaData.categories ) {
+                            try {
+                                Identity.instance().checkPermission( new CategoryPathType( cat ),
+                                                                     RoleTypes.ANALYST );
+                                passed = true;
+                            } catch ( RuntimeException e ) {
+                                exception = e;
+                            }
+                        }
+                        if ( !passed ) {
+                            throw exception;
+                        }
+                    }
+                } catch ( RulesRepositoryException e ) {
+                    // This was not a rule asset
+                } catch ( SerializableException e ) {
+                    // This was not a rule asset
+                }
 
-				asset.updateState(newState);
-			}
+                asset.updateState( newState );
+            }
         } else {
             if ( Contexts.isSessionContextActive() ) {
                 Identity.instance().checkPermission( new PackageUUIDType( uuid ),
@@ -1244,7 +1251,8 @@ public class ServiceImplementation
                                           int max,
                                           boolean searchArchived) {
 
-        String search = searchText.replace('*', '%');
+        String search = searchText.replace( '*',
+                                            '%' );
 
         if ( !search.endsWith( "%" ) ) {
             search += "%";
@@ -1456,7 +1464,7 @@ public class ServiceImplementation
         StringBuffer buf = new StringBuffer();
         if ( handler.isRuleAsset() ) {
 
-            BRMSPackageBuilder builder = new BRMSPackageBuilder(  );
+            BRMSPackageBuilder builder = new BRMSPackageBuilder();
             // now we load up the DSL files
             builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( item.getPackage(),
                                                                         new BRMSPackageBuilder.DSLErrorEvent() {
@@ -1576,16 +1584,10 @@ public class ServiceImplementation
                                                      RoleTypes.PACKAGE_DEVELOPER );
             }
 
-            if (item.getPackage().isArchived()) {
-				throw new RulesRepositoryException(
-						"The package ["
-								+ item.getPackageName()
-								+ "] that asset ["
-								+ item.getName()
-								+ "] belongs to is archived. You need to unarchive it first.");
-			}
-            
-            
+            if ( item.getPackage().isArchived() ) {
+                throw new RulesRepositoryException( "The package [" + item.getPackageName() + "] that asset [" + item.getName() + "] belongs to is archived. You need to unarchive it first." );
+            }
+
             item.archiveItem( value );
             PackageItem pkg = item.getPackage();
             pkg.updateBinaryUpToDate( false );
@@ -1680,7 +1682,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public String[] listRulesInPackage(String packageName) throws SerializableException {
 
-    	// check security
+        // check security
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( packageName ),
                                                  RoleTypes.PACKAGE_READONLY );
@@ -1701,8 +1703,8 @@ public class ServiceImplementation
                     RuleDescr r = (RuleDescr) iterator.next();
                     result.add( r.getName() );
                     count++;
-					if (count == MAX_RULES_TO_SHOW_IN_PACKAGE_LIST) {
-						result.add("More then " + MAX_RULES_TO_SHOW_IN_PACKAGE_LIST + " rules.");
+                    if ( count == MAX_RULES_TO_SHOW_IN_PACKAGE_LIST ) {
+                        result.add( "More then " + MAX_RULES_TO_SHOW_IN_PACKAGE_LIST + " rules." );
                         break;
                     }
                 }
@@ -1789,34 +1791,41 @@ public class ServiceImplementation
     private RuleBase loadRuleBase(PackageItem item,
                                   ClassLoader cl) throws DetailedSerializableException {
         try {
-            return deserKnowledgebase(item, cl);
+            return deserKnowledgebase( item,
+                                       cl );
         } catch ( ClassNotFoundException e ) {
             log.error( e );
             throw new DetailedSerializableException( "A required class was not found.",
                                                      e.getMessage() );
         } catch ( Exception e ) {
             log.error( e );
-            log.info("...but trying to rebuild binaries...");
+            log.info( "...but trying to rebuild binaries..." );
             try {
-                BuilderResult[] res = this.buildPackage(
-                                                         "",
-                                                         true , item);
-                if (res != null && res.length > 0) {
-                    throw new DetailedSerializableException("There were errors when rebuilding the knowledgebase.", "");
+                BuilderResult[] res = this.buildPackage( "",
+                                                         true,
+                                                         item );
+                if ( res != null && res.length > 0 ) {
+                    throw new DetailedSerializableException( "There were errors when rebuilding the knowledgebase.",
+                                                             "" );
                 }
                 try {
-                    return deserKnowledgebase(item, cl);
-                } catch (Exception e2) {
-                    throw new DetailedSerializableException("Unable to reload knowledgebase.", e.getMessage());
+                    return deserKnowledgebase( item,
+                                               cl );
+                } catch ( Exception e2 ) {
+                    throw new DetailedSerializableException( "Unable to reload knowledgebase.",
+                                                             e.getMessage() );
                 }
-            } catch (SerializableException e1) {
-                throw new DetailedSerializableException("Unable to rebuild the rulebase.", "");
+            } catch ( SerializableException e1 ) {
+                throw new DetailedSerializableException( "Unable to rebuild the rulebase.",
+                                                         "" );
             }
 
         }
     }
 
-    private RuleBase deserKnowledgebase(PackageItem item, ClassLoader cl) throws IOException, ClassNotFoundException {
+    private RuleBase deserKnowledgebase(PackageItem item,
+                                        ClassLoader cl) throws IOException,
+                                                       ClassNotFoundException {
         RuleBase rb = RuleBaseFactory.newRuleBase( new RuleBaseConfiguration( cl ) );
         Package bin = (Package) DroolsStreamUtils.streamIn( item.getCompiledPackageBytes(),
                                                             cl );
@@ -1863,11 +1872,11 @@ public class ServiceImplementation
             log.error( e );
             throw new DetailedSerializableException( "Unable to load a required class.",
                                                      e.getMessage() );
-        } catch (ConsequenceException e) {
-           log.info( e );
-           throw new DetailedSerializableException( "There was an error executing the consequence of rule [" + e.getRule().getName() + "]", e.getMessage());
-        }  finally {
-
+        } catch ( ConsequenceException e ) {
+            log.info( e );
+            throw new DetailedSerializableException( "There was an error executing the consequence of rule [" + e.getRule().getName() + "]",
+                                                     e.getMessage() );
+        } finally {
 
         }
     }
@@ -1880,12 +1889,12 @@ public class ServiceImplementation
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
         PackageItem item = repository.loadPackageByUUID( packageUUID );
-        return runScenariosInPackage(item);
+        return runScenariosInPackage( item );
     }
 
-	public BulkTestRunResult runScenariosInPackage(PackageItem item)
-			throws DetailedSerializableException, SerializableException {
-		ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
+    public BulkTestRunResult runScenariosInPackage(PackageItem item) throws DetailedSerializableException,
+                                                                    SerializableException {
+        ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
         ClassLoader cl = null;
 
         try {
@@ -1956,7 +1965,7 @@ public class ServiceImplementation
         } finally {
             Thread.currentThread().setContextClassLoader( originalCL );
         }
-	}
+    }
 
     private HashSet<String> expectedRules(Package bin) {
         HashSet<String> h = new HashSet<String>();
@@ -2251,16 +2260,19 @@ public class ServiceImplementation
     }
 
     @Restrict("#{identity.loggedIn}")
-	public void installSampleRepository() throws SerializableException {
-		if ( Contexts.isApplicationContextActive() ) {
-			Identity.instance().checkPermission(new AdminType(), RoleTypes.ADMIN);
-		}
-		repository.importRepository(this.getClass().getResourceAsStream("/mortgage-sample-repository.xml"));
-		this.rebuildPackages();
-		this.rebuildSnapshots();
-	}
+    public void installSampleRepository() throws SerializableException {
+        if ( Contexts.isApplicationContextActive() ) {
+            Identity.instance().checkPermission( new AdminType(),
+                                                 RoleTypes.ADMIN );
+        }
+        repository.importRepository( this.getClass().getResourceAsStream( "/mortgage-sample-repository.xml" ) );
+        this.rebuildPackages();
+        this.rebuildSnapshots();
+    }
 
     public String cleanHTML(String s) {
-        return s.replace("<", "&lt;").replace(">", "&gt;");
-    }                                                   
+        return s.replace( "<",
+                          "&lt;" ).replace( ">",
+                                            "&gt;" );
+    }
 }
