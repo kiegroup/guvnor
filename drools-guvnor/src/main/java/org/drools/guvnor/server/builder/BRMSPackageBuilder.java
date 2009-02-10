@@ -131,18 +131,6 @@ public class BRMSPackageBuilder extends PackageBuilder {
 		return loader;
 	}
 
-    /**
-     * This will return the preferred compiler, according to the System property
-     * drools.compiler (JANINO|ECLIPSE) - default is JANINO due to classpath issues
-     * mainly in tomcat, grrr...
-     */
-    static int getPreferredBRMSCompiler() {
-        if (System.getProperty( "drools.dialect.java.compiler", "JANINO" ).equals( "ECLIPSE" )) {
-            return JavaDialectConfiguration.ECLIPSE;
-        } else {
-            return JavaDialectConfiguration.JANINO;
-        }
-    }
 
     /**
      * In the BRMS you should not need to use this, use the getInstance factory method instead.
