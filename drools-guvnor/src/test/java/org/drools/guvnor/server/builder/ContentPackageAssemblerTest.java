@@ -452,8 +452,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/eventing-example.jar" ) );
         model.checkin( "" );
 
-        //OK I have no idea why I need to put in the .Status import - apparently outside of guvnor you do not. 
-        ServiceImplementation.updateDroolsHeader( "import org.drools.examples.eventing.EventRequest\nimport org.drools.examples.eventing.EventRequest.Status",
+        ServiceImplementation.updateDroolsHeader( "import org.drools.examples.eventing.EventRequest\n",
                                                   pkg );
         AssetItem asset = pkg.addAsset("whee", "");
         asset.updateFormat(AssetFormats.DRL);
