@@ -45,6 +45,7 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.util.Format;
 
 /**
  * This is the wizard used when creating new packages or importing them.
@@ -66,18 +67,17 @@ public class NewPackageWizard extends FormStylePopup {
         descBox = new TextArea();
 
         newPackageLayout.addRow( new HTML(constants.CreateNewPackage()) );
-        importLayout.addRow( new HTML("<i><small>Importing a package from an existing DRL will create the package in the BRMS if it does not already exist. If it does exist, any new rules found will be merged into the package.</small></i>") );
-        importLayout.addRow( new HTML("<i><small>Any new rules created will not have any categories assigned initially, " +
-                "but rules and functions will be stored individually (ie normalised). Queries, imports etc will show up in the package configuration.</small></i>") );
-        importLayout.addRow( new HTML("<i><small>Any DSLs or models required by the imported package will need to be uploaded seperately.</small></i>") );
+        importLayout.addRow( new HTML(constants.ImportDRLDesc1()) );
+        importLayout.addRow( new HTML(constants.ImportDRLDesc2()) );
+        importLayout.addRow( new HTML(constants.ImportDRLDesc3()) );
 
-        newPackageLayout.addAttribute( "Name:", nameBox );
-        newPackageLayout.addAttribute( "Description:", descBox );
+        newPackageLayout.addAttribute(constants.NameColon(), nameBox );
+        newPackageLayout.addAttribute(constants.DescriptionColon(), descBox );
 
-        nameBox.setTitle( "The name of the package. Avoid spaces, use underscore instead." );
+        nameBox.setTitle(constants.PackageNameTip());
 
-        RadioButton newPackage = new RadioButton("action", "Create new package");
-        RadioButton importPackage = new RadioButton("action", "Import from drl file");
+        RadioButton newPackage = new RadioButton("action", constants.CreateNewPackageRadio());     //NON-NLS
+        RadioButton importPackage = new RadioButton("action", constants.ImportFromDrlRadio());     //NON-NLS
         newPackage.setChecked( true );
         newPackageLayout.setVisible( true );
 
@@ -104,10 +104,10 @@ public class NewPackageWizard extends FormStylePopup {
         addRow(newPackageLayout);
         addRow(importLayout);
 
-        importLayout.addAttribute( "DRL file to import:", newImportWidget(afterCreatedEvent, this) );
+        importLayout.addAttribute(constants.DRLFileToImport(), newImportWidget(afterCreatedEvent, this) );
 
 
-        Button create = new Button("Create package");
+        Button create = new Button(constants.CreatePackage());
         create.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
             	if ( PackageNameValidator.validatePackageName(nameBox.getText()) ) {
@@ -115,7 +115,7 @@ public class NewPackageWizard extends FormStylePopup {
             		hide();
             	} else {
             		nameBox.setText("");
-            		Window.alert("Invalid package name. Please use a name that is of the style [abc] or perhaps [abc.def].");
+            		Window.alert(constants.PackageNameCorrectHint());
             	}
             }
         });
@@ -130,7 +130,7 @@ public class NewPackageWizard extends FormStylePopup {
 
 
     private void createPackageAction(final String name, final String descr, final Command refresh) {
-        LoadingPopup.showMessage( "Creating package - please wait..." );
+        LoadingPopup.showMessage(constants.CreatingPackagePleaseWait());
         RepositoryServiceFactory.getService().createPackage( name, descr, new GenericCallback() {
             public void onSuccess(Object data) {
                 LoadingPopup.close();
@@ -154,12 +154,12 @@ public class NewPackageWizard extends FormStylePopup {
         panel.add( upload );
 
 
-        panel.add(new Label("upload:"));
-        ImageButton ok = new ImageButton("images/upload.gif", "Import");
+        panel.add(new Label(constants.upload()));
+        ImageButton ok = new ImageButton("images/upload.gif", constants.Import()); //NON-NLS
         ok.addClickListener(new ClickListener() {
             public void onClick(Widget sender) {
-                if (Window.confirm( "Are you sure you want to import this package? If the package already exists in the BRMS it will be merged." )) {
-                    LoadingPopup.showMessage( "Importing drl package, please wait, as this could take some time..." );
+                if (Window.confirm(constants.ImportMergeWarning())) {
+                    LoadingPopup.showMessage(constants.ImportingDRLPleaseWait());
                     uploadFormPanel.submit();
                 }
             }
@@ -170,22 +170,22 @@ public class NewPackageWizard extends FormStylePopup {
 
         uploadFormPanel.addFormHandler( new FormHandler() {
             public void onSubmitComplete(FormSubmitCompleteEvent event) {
-                if (event.getResults().indexOf( "OK" ) > -1) {
-                    Window.alert( "Package was imported successfully. ");
+                if (event.getResults().indexOf( "OK" ) > -1) {  //NON-NLS
+                    Window.alert(constants.PackageWasImportedSuccessfully());
                     afterCreatedEvent.execute();
                     parent.hide();
                 } else {
-                    ErrorPopup.showMessage( "Unable to import into the package. [" + event.getResults() + "]"  );
+                    ErrorPopup.showMessage(Format.format(constants.UnableToImportIntoThePackage0(), event.getResults()));
                 }
                 LoadingPopup.close();
             }
 
             public void onSubmit(FormSubmitEvent event) {
                 if ( upload.getFilename().length() == 0 ) {
-                    Window.alert( "You did not choose a drl file to import !" );
+                    Window.alert(constants.YouDidNotChooseADrlFileToImport());
                     event.setCancelled( true );
-                } else if ( !upload.getFilename().endsWith( ".drl" ) ) {
-                    Window.alert( "You can only import '.drl' files." );
+                } else if ( !upload.getFilename().endsWith( ".drl" ) ) { //NON-NLS
+                    Window.alert(constants.YouCanOnlyImportDrlFiles());
                     event.setCancelled( true );
                 }
 

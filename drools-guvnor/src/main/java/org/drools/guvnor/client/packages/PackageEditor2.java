@@ -37,6 +37,7 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
@@ -53,6 +54,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.util.Format;
 
 /**
  * This is the package editor and viewer for package configuration.
@@ -70,6 +72,7 @@ public class PackageEditor2 extends PrettyFormLayout {
 	private Command close;
 	private Command refreshPackageList;
 	private EditItemEvent editEvent;
+    private Constants constants;
 
     public PackageEditor2(PackageConfigData data, Command close, Command refreshPackageList, EditItemEvent editEvent) {
         this.conf = data;
@@ -86,7 +89,8 @@ public class PackageEditor2 extends PrettyFormLayout {
         clear();
 
 FlexTable headerWidgets = new FlexTable();
-        headerWidgets.setWidget(0, 0, new HTML("<b>Package name:</b>"));
+        constants = ((Constants) GWT.create(Constants.class));
+        headerWidgets.setWidget(0, 0, new HTML("<b>" + constants.PackageName() + ":</b>")); //NON-NLS
         headerWidgets.setWidget(0, 1, new Label(this.conf.name));
         if (!conf.isSnapshot) {
 
@@ -95,17 +99,17 @@ FlexTable headerWidgets = new FlexTable();
         	headerWidgets.getFlexCellFormatter().setColSpan(1, 0, 2);
         }
 
-        addHeader("images/package_large.png", headerWidgets);
+        addHeader("images/package_large.png", headerWidgets); //NON-NLS
 
 
         //addHeader( "images/package_large.png", headerWidgets );
 
-        startSection("Configuration");
+        startSection(constants.ConfigurationSection());
 
         addRow( warnings() );
-        addAttribute( "Configuration:", header() );
-        addAttribute( "Description:", description() );
-        addAttribute( "Category Rules:", getAddCatRules() );
+        addAttribute(constants.Configuration(), header() );
+        addAttribute(constants.DescriptionColon(), description() );
+        addAttribute(constants.CategoryRules(), getAddCatRules() );
         addAttribute( "", getShowCatRules() );
 
 
@@ -114,7 +118,7 @@ FlexTable headerWidgets = new FlexTable();
 
 
         if (!conf.isSnapshot) {
-            Button save = new Button("Save and validate configuration");
+            Button save = new Button(constants.SaveAndValidateConfiguration());
             save.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     doSaveAction(null);
@@ -126,45 +130,45 @@ FlexTable headerWidgets = new FlexTable();
         endSection();
 
         if (!conf.isSnapshot) {
-	        startSection("Build and validate");
+	        startSection(constants.BuildAndValidate());
 	        addRow(new PackageBuilderWidget(this.conf, editEvent));
 	        endSection();
         }
 
-        startSection("Information and important URLs");
+        startSection(constants.InformationAndImportantURLs());
         if (!conf.isSnapshot) {
-        	addAttribute( "Last modified:", new Label(getDateString(conf.lastModified))  );
+        	addAttribute( constants.LastModified() + ":", new Label(getDateString(conf.lastModified))  );
         }
 
-        addAttribute( "Last contributor:", new Label(this.conf.lasContributor));
+        addAttribute( constants.LastContributor() + ":", new Label(this.conf.lasContributor));
 
-        addAttribute( "Date created:", new Label(getDateString(this.conf.dateCreated)));
-		Button buildSource = new Button("Show package source");
+        addAttribute(constants.DateCreated(), new Label(getDateString(this.conf.dateCreated)));
+		Button buildSource = new Button(constants.ShowPackageSource());
 		buildSource.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				PackageBuilderWidget.doBuildSource(conf.uuid, conf.name);
 			}
 		});
 
-		addAttribute("Show package source:", buildSource);
+		addAttribute(constants.ShowPackageSource() + ":", buildSource);
 		HTML html = new HTML("<a href='" + getSourceDownload(this.conf)
 				+ "' target='_blank'>" + getSourceDownload(this.conf) + "</a>");
-		addAttribute("URL for package source:", h(html, "Use this URL to download the source, or in the 'runtime agent' to access the rules in source form"));
+		addAttribute(constants.URLForPackageSource(), h(html, constants.URLSourceDescription()));
 
 		HTML html2 = new HTML("<a href='" + getBinaryDownload(this.conf)
 				+ "' target='_blank'>" + getBinaryDownload(this.conf) + "</a>");
-		addAttribute("URL for package binary:", h(html2, "Use this url in the 'runtime agent' to fetch a pre compiled binary."));
+		addAttribute(constants.URLForPackageBinary(), h(html2, constants.UseThisUrlInTheRuntimeAgentToFetchAPreCompiledBinary()));
 
 		HTML html3 = new HTML("<a href='" + getScenarios(this.conf)
 				+ "' target='_blank'>" + getScenarios(this.conf) + "</a>");
-		addAttribute("URL for running tests:", h(html3, "Use this url to run the scenarios remotely and collect results."));
+		addAttribute(constants.URLForRunningTests(), h(html3, constants.URLRunTestsRemote()));
 
 
 
         status = new HTML();
         HorizontalPanel statusBar = new HorizontalPanel();
-        Image editState = new ImageButton("images/edit.gif");
-        editState.setTitle( "Change status." );
+        Image editState = new ImageButton("images/edit.gif"); //NON-NLS
+        editState.setTitle(constants.ChangeStatusDot());
         editState.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showStatusChanger(w);
@@ -178,7 +182,7 @@ FlexTable headerWidgets = new FlexTable();
         }
 
         setState(conf.state);
-        addAttribute("Status:", statusBar);
+        addAttribute(constants.Status() + ":", statusBar);
 
 
 
@@ -188,7 +192,7 @@ FlexTable headerWidgets = new FlexTable();
     private Widget h(Widget w, String string) {
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.add(w);
-		hp.add(new InfoPopup("Tip...",string));
+		hp.add(new InfoPopup(constants.Tip(),string));
 		return hp;
 	}
 
@@ -200,26 +204,22 @@ FlexTable headerWidgets = new FlexTable();
     		for (Iterator i = conf.catRules.entrySet().iterator(); i.hasNext();) {
 		        Map.Entry entry = (Map.Entry) i.next();
 		        HorizontalPanel hp = new HorizontalPanel();
-
-    			hp.add(new SmallLabel("All rules for Category:&nbsp;\"<u>"));
-    			hp.add(new SmallLabel((String)entry.getValue()));
-    			hp.add(new SmallLabel("\"</u>&nbsp; will now extend Rule:&nbsp;\"<u>"));
-    			hp.add(new SmallLabel((String)entry.getKey()));
-    			hp.add(new SmallLabel("</u>\""));
+                String m = Format.format(constants.AllRulesForCategory0WillNowExtendTheRule1(), (String)entry.getValue(), (String)entry.getKey());
+    			hp.add(new SmallLabel(m));
     			hp.add(getRemoveCatRulesIcon((String)entry.getKey()));
     			vp.add(hp);
 		     }
     		return(vp);
     	}
-    	return new HTML("&nbsp;&nbsp;");
+    	return new HTML("&nbsp;&nbsp;");     //NON-NLS
 
 
     }
     private Image getRemoveCatRulesIcon(final String rule) {
-        Image remove = new Image( "images/delete_item_small.gif" );
+        Image remove = new Image( "images/delete_item_small.gif" ); //NON-NLS
         remove.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-            	if (Window.confirm("Remove this Category Rule?")) {
+            	if (Window.confirm(constants.RemoveThisCategoryRule())) {
                         conf.catRules.remove(rule);
                         refreshWidgets();
                 }
@@ -229,7 +229,7 @@ FlexTable headerWidgets = new FlexTable();
     }
     private Widget getAddCatRules() {
         Image add = new ImageButton("images/new_item.gif");
-        add.setTitle( "Add a Category Rule to the Package, to automatically add rule LHS to all rules in this category." );
+        add.setTitle(constants.AddCatRuleToThePackage());
 
         add.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -239,8 +239,7 @@ FlexTable headerWidgets = new FlexTable();
 
         HorizontalPanel hp = new HorizontalPanel();
         hp.add(add);
-        hp.add(new InfoPopup("Category parent rules", "This allows you to set 'parent rules' for a category." +
-        		" Any rules appearing in the given category will 'extend' the rule specified - ie inherit the conditions/LHS. "));
+        hp.add(new InfoPopup(constants.CategoryParentRules(), constants.CatRulesInfo()));
         return hp;
     }
     private void addToCatRules(String category, String rule){
@@ -253,8 +252,8 @@ FlexTable headerWidgets = new FlexTable();
 
     }
     protected void showCatRuleSelector(Widget w) {
-        final FormStylePopup pop = new FormStylePopup("images/config.png", "Add a Category Rule to the Package");
-        final Button addbutton = new Button("OK");
+        final FormStylePopup pop = new FormStylePopup("images/config.png", constants.AddACategoryRuleToThePackage()); //NON-NLS
+        final Button addbutton = new Button(constants.OK());
         final TextBox ruleName = new TextBox();
 
 
@@ -267,7 +266,7 @@ FlexTable headerWidgets = new FlexTable();
 
         ruleName.setVisibleLength( 15 );
 
-        addbutton.setTitle( "Create Category Rule." );
+        addbutton.setTitle(constants.CreateCategoryRule());
 
         addbutton.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -279,8 +278,8 @@ FlexTable headerWidgets = new FlexTable();
             }
         });
 
-        pop.addAttribute( "All the rules in category: ", exw );
-        pop.addAttribute( "Will extend the rule called: ", ruleName );
+        pop.addAttribute(constants.AllTheRulesInFollowingCategory(), exw );
+        pop.addAttribute(constants.WillExtendTheFollowingRuleCalled(), ruleName );
         pop.addAttribute("", addbutton);
 
         pop.show();
@@ -303,12 +302,12 @@ FlexTable headerWidgets = new FlexTable();
 
     private Widget warnings() {
         if (this.previousResponse != null && this.previousResponse.hasErrors) {
-            Image img = new Image("images/warning.gif");
+            Image img = new Image("images/warning.gif");   //NON-NLS
             HorizontalPanel h = new HorizontalPanel();
             h.add( img );
-            HTML msg = new HTML("<b>There were errors validating this package configuration.");
+            HTML msg = new HTML("<b>" + constants.ThereWereErrorsValidatingThisPackageConfiguration() + "</b>"); //NON-NLS
             h.add( msg );
-            Button show = new Button("View errors");
+            Button show = new Button(constants.ViewErrors());
             show.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     ValidationMessageWidget wid = new ValidationMessageWidget(previousResponse.errorHeader, previousResponse.errorMessage);
@@ -324,7 +323,7 @@ FlexTable headerWidgets = new FlexTable();
 
 
     static String getSourceDownload(PackageConfigData conf) {
-    	return makeLink (conf) + ".drl";
+    	return makeLink (conf) + ".drl";  //NON-NLS
     }
 
     static String getBinaryDownload(PackageConfigData conf) {
@@ -332,7 +331,7 @@ FlexTable headerWidgets = new FlexTable();
     }
 
     static String getScenarios(PackageConfigData conf) {
-    	return makeLink (conf) + "/SCENARIOS";
+    	return makeLink (conf) + "/SCENARIOS"; //NON-NLS
     }
 
 
@@ -375,7 +374,7 @@ FlexTable headerWidgets = new FlexTable();
 
         HorizontalPanel horiz = new HorizontalPanel();
 
-        Button copy = new Button("Copy");
+        Button copy = new Button(constants.Copy());
         copy.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showCopyDialog();
@@ -383,7 +382,7 @@ FlexTable headerWidgets = new FlexTable();
         } );
         horiz.add( copy );
 
-        Button rename = new Button("Rename");
+        Button rename = new Button(constants.Rename());
         rename.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showRenameDialog();
@@ -392,10 +391,10 @@ FlexTable headerWidgets = new FlexTable();
         horiz.add( rename );
 
 
-        Button archive = new Button("Archive");
+        Button archive = new Button(constants.Archive());
         archive.addClickListener(new ClickListener() {
             public void onClick(Widget w) {
-                if ( Window.confirm( "Are you sure you want to archive (remove) this package?" ) ) {
+                if ( Window.confirm(constants.AreYouSureYouWantToArchiveRemoveThisPackage()) ) {
                     conf.archived = true;
                     Command ref = new Command() {
 						public void execute() {
@@ -415,11 +414,11 @@ FlexTable headerWidgets = new FlexTable();
 
 
     private void showRenameDialog() {
-        final FormStylePopup pop = new FormStylePopup("images/new_wiz.gif", "Rename the package");
-        pop.addRow( new HTML("<i>Rename the package. A new unique name is required.</i>") );
+        final FormStylePopup pop = new FormStylePopup("images/new_wiz.gif", constants.RenameThePackage());
+        pop.addRow( new HTML(constants.RenamePackageTip()) );
         final TextBox name = new TextBox();
-        pop.addAttribute( "New package name:", name );
-        Button ok = new Button("OK");
+        pop.addAttribute(constants.NewPackageNameIs(), name );
+        Button ok = new Button(constants.OK());
         pop.addAttribute( "", ok );
 
         ok.addClickListener( new ClickListener() {
@@ -429,7 +428,7 @@ FlexTable headerWidgets = new FlexTable();
                         refreshPackageList.execute();
                         conf.name = name.getText();
                         refreshWidgets();
-                        Window.alert( "Package renamed successfully." );
+                        Window.alert(constants.PackageRenamedSuccessfully());
                         pop.hide();
                     }
                 });
@@ -445,23 +444,23 @@ FlexTable headerWidgets = new FlexTable();
      * Will show a copy dialog for copying the whole package.
      */
     private void showCopyDialog() {
-        final FormStylePopup pop = new FormStylePopup("images/new_wiz.gif", "Copy the package");
-        pop.addRow( new HTML("<i>Copy the package and all its assets. A new unique name is required.</i>") );
+        final FormStylePopup pop = new FormStylePopup("images/new_wiz.gif", constants.CopyThePackage()); //NON-NLS
+        pop.addRow( new HTML(constants.CopyThePackageTip()) );
         final TextBox name = new TextBox();
-        pop.addAttribute( "New package name:", name );
-        Button ok = new Button("OK");
+        pop.addAttribute(constants.NewPackageNameIs(), name );
+        Button ok = new Button(constants.OK());
         pop.addAttribute( "", ok );
 
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 if (!PackageNameValidator.validatePackageName(name.getText())) {
-                    Window.alert("Not a valid package name.");
+                    Window.alert(constants.NotAValidPackageName());
                     return;
                 }
                 RepositoryServiceFactory.getService().copyPackage( conf.name, name.getText(), new GenericCallback() {
                     public void onSuccess(Object data) {
                         refreshPackageList.execute();
-                        Window.alert( "Package copied successfully." );
+                        Window.alert(constants.PackageCopiedSuccessfully());
                         pop.hide();
                     }
                 });
@@ -477,7 +476,7 @@ FlexTable headerWidgets = new FlexTable();
     }
 
     private void doSaveAction(final Command refresh) {
-        LoadingPopup.showMessage( "Saving package configuration. Please wait ..." );
+        LoadingPopup.showMessage(constants.SavingPackageConfigurationPleaseWait());
 
         RepositoryServiceFactory.getService().savePackage( this.conf, new GenericCallback() {
             public void onSuccess(Object data) {
@@ -485,7 +484,7 @@ FlexTable headerWidgets = new FlexTable();
                 previousResponse = (ValidatedResponse) data;
 
                 reload();
-                LoadingPopup.showMessage( "Package configuration updated successfully, refreshing content cache..." );
+                LoadingPopup.showMessage(constants.PackageConfigurationUpdatedSuccessfullyRefreshingContentCache());
 
                 SuggestionCompletionCache.getInstance().refreshPackage( conf.name, new Command() {
                     public void execute() {
@@ -510,11 +509,11 @@ FlexTable headerWidgets = new FlexTable();
      * Will refresh all the data.
      */
     private void reload() {
-        LoadingPopup.showMessage( "Refreshing package data..." );
-        RepositoryServiceFactory.getService().loadPackageConfig( this.conf.uuid, new GenericCallback() {
-            public void onSuccess(Object data) {
+        LoadingPopup.showMessage(constants.RefreshingPackageData());
+        RepositoryServiceFactory.getService().loadPackageConfig( this.conf.uuid, new GenericCallback<PackageConfigData>() {
+            public void onSuccess(PackageConfigData data) {
                 LoadingPopup.close();
-                conf = (PackageConfigData) data;
+                conf = data;
                 refreshWidgets();
             }
         });

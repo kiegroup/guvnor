@@ -30,6 +30,7 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
@@ -64,6 +65,7 @@ import com.gwtext.client.widgets.grid.ColumnModel;
 import com.gwtext.client.widgets.grid.GridPanel;
 import com.gwtext.client.widgets.grid.Renderer;
 import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
+import com.gwtext.client.util.Format;
 
 /**
  * This is the widget for building packages, validating etc. Visually decorates
@@ -76,8 +78,9 @@ public class PackageBuilderWidget extends Composite {
 	public FormStyleLayout layout;
 	private PackageConfigData conf;
 	private EditItemEvent editEvent;
+    private static Constants constants;
 
-	public PackageBuilderWidget(final PackageConfigData conf,
+    public PackageBuilderWidget(final PackageConfigData conf,
 			EditItemEvent editEvent) {
 		layout = new FormStyleLayout();
 		this.conf = conf;
@@ -87,8 +90,9 @@ public class PackageBuilderWidget extends Composite {
 
 
         final TextBox selector = new TextBox();
-		final Button b = new Button("Build package");
-		b.setTitle("This will validate and compile all the assets in a package.");
+        constants = ((Constants) GWT.create(Constants.class));
+        final Button b = new Button(constants.BuildPackage());
+		b.setTitle(constants.ThisWillValidateAndCompileAllTheAssetsInAPackage());
 		b.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				doBuild(buildResults, selector.getText());
@@ -98,24 +102,22 @@ public class PackageBuilderWidget extends Composite {
 
         HorizontalPanel buildStuff = new HorizontalPanel();
         buildStuff.add( b );
-        buildStuff.add( new HTML("&nbsp;&nbsp;<i>(Optional) selector name: </i>") );
+        buildStuff.add( new HTML("&nbsp;&nbsp;<i>" + constants.OptionalSelectorName() + ": </i>") ); //NON-NLS
         buildStuff.add( selector );
-        buildStuff.add( new InfoPopup("Custom selector", "A selector is configured by administrators to choose what assets form part of a package build. " +
-                "This is configured on the server side. See the WEB-INF/classes/selectors.properties for details.") );
+        buildStuff.add( new InfoPopup(constants.CustomSelector(), constants.SelectorTip()) );
 
-		layout.addAttribute("Build binary package:", buildStuff);
+		layout.addAttribute(constants.BuildBinaryPackage(), buildStuff);
 		layout
-				.addRow(new HTML(
-						"<i><small>Building a package will collect all the assets, validate and compile into a deployable package.</small></i>"));
+				.addRow(new HTML("<i><small>" + constants.BuildingPackageNote() + "</small></i>"));//NON-NLS
 		layout.addRow(buildResults);
 
-		Button snap = new Button("Create snapshot for deployment");
+		Button snap = new Button(constants.CreateSnapshotForDeployment());
 		snap.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				showSnapshotDialog(conf.name);
 			}
 		});
-		layout.addAttribute("Take snapshot:", snap);
+		layout.addAttribute(constants.TakeSnapshot(), snap);
 
 
 		//layout.setStyleName("package-Editor");
@@ -129,7 +131,7 @@ public class PackageBuilderWidget extends Composite {
 	 * Actually build the source, and display it.
 	 */
 	public static void doBuildSource(final String uuid, final String name) {
-		LoadingPopup.showMessage("Assembling package source...");
+		LoadingPopup.showMessage(((Constants) GWT.create(Constants.class)).AssemblingPackageSource());
 		DeferredCommand.addCommand(new Command() {
 			public void execute() {
 				RepositoryServiceFactory.getService().buildPackageSource(uuid,
@@ -147,8 +149,9 @@ public class PackageBuilderWidget extends Composite {
 	 * Popup the view source dialog, showing the given content.
 	 */
 	public static void showSource(final String content, String name) {
-		final FormStylePopup pop = new FormStylePopup("images/view_source.gif",
-				"Viewing source for: " + name, new Integer(600), Boolean.FALSE);
+        Constants constants = GWT.create(Constants.class);
+        final FormStylePopup pop = new FormStylePopup("images/view_source.gif", //NON-NLS
+                Format.format(constants.ViewingSourceFor0(), name), new Integer(600), Boolean.FALSE);
 		final TextArea area = new TextArea();
 		area.setVisibleLines(30);
 		area.setWidth("100%");
@@ -156,7 +159,7 @@ public class PackageBuilderWidget extends Composite {
 		pop.addRow(area);
 		area.setText(content);
 		area.setEnabled(true);
-		area.setTitle("THIS IS READ ONLY - you may copy and paste, but not edit.");
+		area.setTitle(constants.ReadOnlySourceNote());
 
 		area.addKeyboardListener(new KeyboardListener() {
 
@@ -193,23 +196,22 @@ public class PackageBuilderWidget extends Composite {
 		buildResults.clear();
 
 		final HorizontalPanel busy = new HorizontalPanel();
-		busy.add(new Label("Validating and building package, please wait..."));
-		busy.add(new Image("images/red_anime.gif"));
+		busy.add(new Label(constants.ValidatingAndBuildingPackagePleaseWait()));
+		busy.add(new Image("images/red_anime.gif")); //NON-NLS
 
-        LoadingPopup.showMessage( "Please wait..." );
+        LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
 		buildResults.add(busy);
 
 		DeferredCommand.addCommand(new Command() {
 			public void execute() {
 				RepositoryServiceFactory.getService().buildPackage(conf.uuid, selectorName, true,
-						new GenericCallback() {
-							public void onSuccess(Object data) {
+						new GenericCallback<BuilderResult[]>() {
+							public void onSuccess(BuilderResult[] result) {
                                 LoadingPopup.close();
-								if (data == null) {
+								if (result == null) {
 									showSuccessfulBuild(buildResults);
 								} else {
-									BuilderResult[] results = (BuilderResult[]) data;
-									showBuilderErrors(results, buildResults, editEvent);
+									showBuilderErrors(result, buildResults, editEvent);
 								}
 							}
 
@@ -233,24 +235,12 @@ public class PackageBuilderWidget extends Composite {
 		VerticalPanel vert = new VerticalPanel();
 
 		vert.add(new HTML(
-						"<img src='images/tick_green.gif'/><i>Package built successfully.</i>"));
+						"<img src='images/tick_green.gif'/><i>" + constants.PackageBuiltSuccessfully() + "</i>"));
 		final String hyp = getDownloadLink(this.conf);
 
 		HTML html = new HTML("<a href='" + hyp
-				+ "' target='_blank'>Download binary package</a>");
+				+ "' target='_blank'>" + constants.DownloadBinaryPackage() + "</a>");
 
-		// Button download = new Button("Download binary package");
-		// download.setTitle( "You can download the package here for deployment,
-		// or you can use the snapshot deployment feature to have a more
-		// permanent downloadable package." );
-		// download.addClickListener( new ClickListener() {
-		// public void onClick(Widget arg0) {
-		// Window.open( hyp, "downloading...",
-		// "resizable=no,scrollbars=yes,status=no" );
-		// }
-		// });
-
-		// vert.add( download );
 		vert.add(html);
 
 		buildResults.add(vert);
@@ -260,7 +250,7 @@ public class PackageBuilderWidget extends Composite {
 	 * Get a download link for the binary package.
 	 */
 	public static String getDownloadLink(PackageConfigData conf) {
-		String hurl = GWT.getModuleBaseURL() + "package/" + conf.name;
+		String hurl = GWT.getModuleBaseURL() + "package/" + conf.name;    //NON-NLS
 		if (!conf.isSnapshot) {
 			hurl = hurl + "/" + SnapshotView.LATEST_SNAPSHOT;
 		} else {
@@ -291,10 +281,10 @@ public class PackageBuilderWidget extends Composite {
 		MemoryProxy proxy = new MemoryProxy(data);
 		RecordDef recordDef = new RecordDef(
 				new FieldDef[]{
-						new StringFieldDef("uuid"),
-						new StringFieldDef("assetName"),
-						new StringFieldDef("assetFormat"),
-						new StringFieldDef("message")
+						new StringFieldDef("uuid"),             //NON-NLS
+						new StringFieldDef("assetName"),        //NON-NLS
+						new StringFieldDef("assetFormat"),      //NON-NLS
+						new StringFieldDef("message")           //NON-NLS
 				}
 		);
 
@@ -307,19 +297,19 @@ public class PackageBuilderWidget extends Composite {
 			new ColumnConfig() {
 				{
 					setHidden(true);
-					setDataIndex("uuid");
+					setDataIndex("uuid"); //NON-NLS
 				}
 			},
 			new ColumnConfig() {
 				{
-					setHeader("Name");
+					setHeader(constants.Name());
 					setSortable(true);
-					setDataIndex("assetName");
+					setDataIndex("assetName"); //NON-NLS
 					setRenderer(new Renderer() {
 						public String render(Object value,
 								CellMetadata cellMetadata, Record record,
 								int rowIndex, int colNum, Store store) {
-							return "<img src='images/error.gif'/>" + value;
+							return "<img src='images/error.gif'/>" + value; //NON-NLS
 						}
 
 					});
@@ -327,16 +317,16 @@ public class PackageBuilderWidget extends Composite {
 			},
 			new ColumnConfig() {
 				{
-					setHeader("Format");
+					setHeader(constants.Format());
 					setSortable(true);
-					setDataIndex("assetFormat");
+					setDataIndex("assetFormat"); //NON-NLS
 				}
 			},
 			new ColumnConfig() {
 				{
-					setHeader("Message");
+					setHeader(constants.Message1());
 					setSortable(true);
-					setDataIndex("message");
+					setDataIndex("message");              //NON-NLS
 					setWidth(300);
 
 				}
@@ -352,8 +342,8 @@ public class PackageBuilderWidget extends Composite {
 
         g.addGridRowListener(new GridRowListenerAdapter() {
             public void onRowDblClick(GridPanel grid, int rowIndex, EventObject e) {
-            	if (!grid.getSelectionModel().getSelected().getAsString("assetFormat").equals("Package")) {
-                    String uuid = grid.getSelectionModel().getSelected().getAsString("uuid");
+            	if (!grid.getSelectionModel().getSelected().getAsString("assetFormat").equals("Package")) { //NON-NLS
+                    String uuid = grid.getSelectionModel().getSelected().getAsString("uuid");               //NON-NLS
                     editEvent.open(uuid);
             	}
             }
@@ -361,37 +351,7 @@ public class PackageBuilderWidget extends Composite {
 
 		buildResults.add(g);
 
-//		FlexTable errTable = new FlexTable();
-//		errTable.setStyleName("build-Results");
-//		errTable.setText(0, 1, "Format");
-//		errTable.setText(0, 2, "Name");
-//		errTable.setText(0, 3, "Message");
-//
-//		for (int i = 0; i < results.length; i++) {
-//			int row = i + 1;
-//			final BuilderResult res = results[i];
-//			errTable.setWidget(row, 0, new Image("images/error.gif"));
-//			errTable.setText(row, 1, res.assetFormat);
-//			errTable.setText(row, 2, res.assetName);
-//			errTable.setText(row, 3, res.message);
-//
-//			if (!"package".equals(res.assetFormat)) {
-//				Button show = new Button("Show");
-//				show.addClickListener(new ClickListener() {
-//					public void onClick(Widget w) {
-//						editEvent.open(res.uuid);
-//					}
-//				});
-//				errTable.setWidget(row, 4, show);
-//			}
-//		}
-//
-//		errTable.setWidth("100%");
-//		ScrollPanel scroll = new ScrollPanel(errTable);
-//		scroll.setAlwaysShowScrollBars(true);
-//		scroll.setSize("100%", "25em");
-//
-//		buildResults.add(scroll);
+
 
 	}
 
@@ -399,35 +359,32 @@ public class PackageBuilderWidget extends Composite {
 	 * This will display a dialog for creating a snapshot.
 	 */
 	public static void showSnapshotDialog(final String packageName) {
-		LoadingPopup.showMessage("Loading existing snapshots...");
-		final FormStylePopup form = new FormStylePopup("images/snapshot.png",
-				"Create a snapshot for deployment.");
+		LoadingPopup.showMessage(constants.LoadingExistingSnapshots());
+		final FormStylePopup form = new FormStylePopup("images/snapshot.png", //NON-NLS
+                constants.CreateASnapshotForDeployment());
 		form
 				.addRow(new HTML(
-						"<i>A package snapshot is a "
-								+ "read only 'locked in' and labelled view of a package at a point in time, which can be used for deployment.</i>" +
-										"<b>You should build the package before taking a snapshot, generally.</b>"));
+                        constants.SnapshotDescription()));
 
 		final VerticalPanel vert = new VerticalPanel();
-		form.addAttribute("Choose or create snapshot name:", vert);
+		form.addAttribute(constants.ChooseOrCreateSnapshotName(), vert);
 		final List radioList = new ArrayList();
 		final TextBox newName = new TextBox();
-		final String newSnapshotText = "NEW: ";
+		final String newSnapshotText = constants.NEW() + ": ";
 
 		RepositoryServiceFactory.getService().listSnapshots(packageName,
-				new GenericCallback() {
-					public void onSuccess(Object data) {
-						SnapshotInfo[] result = (SnapshotInfo[]) data;
+				new GenericCallback<SnapshotInfo[]>() {
+					public void onSuccess(SnapshotInfo[] result) {
 						for (int i = 0; i < result.length; i++) {
 							RadioButton existing = new RadioButton(
-									"snapshotNameGroup", result[i].name);
+									"snapshotNameGroup", result[i].name); //NON-NLS
 							radioList.add(existing);
 							vert.add(existing);
 						}
 						HorizontalPanel newSnap = new HorizontalPanel();
 
 						final RadioButton newSnapRadio = new RadioButton(
-								"snapshotNameGroup", newSnapshotText);
+								"snapshotNameGroup", newSnapshotText); //NON-NLS
 						newSnap.add(newSnapRadio);
 						newName.setEnabled(false);
 						newSnapRadio.addClickListener(new ClickListener() {
@@ -447,9 +404,9 @@ public class PackageBuilderWidget extends Composite {
 				});
 
 		final TextBox comment = new TextBox();
-		form.addAttribute("Comment:", comment);
+		form.addAttribute(constants.Comment(), comment);
 
-		Button create = new Button("Create new snapshot");
+		Button create = new Button(constants.CreateNewSnapshot());
 		form.addAttribute("", create);
 
 		create.addClickListener(new ClickListener() {
@@ -473,7 +430,7 @@ public class PackageBuilderWidget extends Composite {
 
 				if (name.equals("")) {
 					Window
-							.alert("You have to enter or chose a label (name) for the snapshot.");
+							.alert(constants.YouHaveToEnterOrChoseALabelNameForTheSnapshot());
 					return;
 				}
 
@@ -481,18 +438,13 @@ public class PackageBuilderWidget extends Composite {
 						packageName, name, replace, comment.getText(),
 						new GenericCallback() {
 							public void onSuccess(Object data) {
-								Window.alert("The snapshot called: " + name
-										+ " was successfully created.");
+                                Window.alert(Format.format(constants.TheSnapshotCalled0WasSuccessfullyCreated(), name));
 								form.hide();
 							}
 						});
 			}
 		});
 		form.show();
-
-		// form.setPopupPosition( Window.getClientWidth() / 3,
-		// Window.getClientHeight() / 3 );
-		// form.show();
 
 	}
 

@@ -340,7 +340,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String Created();
 
-    String PackageName();
 
     String UnableToRunTests();
 
@@ -794,7 +793,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String LoadingUserPermissions();
 
-    String PleaseWaitDotDotDot();
 
     String WelcomeUser();
 
@@ -916,4 +914,194 @@ public interface Constants extends ConstantsWithLookup {
     String CreateANewPackage();
 
     String CreateNewPackage();
+
+    String ImportDRLDesc1();
+
+    String ImportDRLDesc2();
+
+    String ImportDRLDesc3();
+
+    String NameColon();
+
+
+    String PackageNameTip();
+
+    String CreateNewPackageRadio();
+
+    String ImportFromDrlRadio();
+
+    String DRLFileToImport();
+
+    String CreatePackage();
+
+    String PackageNameCorrectHint();
+
+    String CreatingPackagePleaseWait();
+
+    String upload();
+
+    String ImportMergeWarning();
+
+    String ImportingDRLPleaseWait();
+
+    String PackageWasImportedSuccessfully();
+
+    String UnableToImportIntoThePackage0();
+
+    String YouDidNotChooseADrlFileToImport();
+
+    String YouCanOnlyImportDrlFiles();
+
+    String WelcomeToGuvnor();
+
+    String BrandNewRepositoryNote();
+
+    String YesPleaseInstallSamples();
+
+    String NoThanks();
+
+    String AboutToInstallSampleRepositoryAreYouSure();
+
+    String ImportingAndProcessing();
+
+    String RepositoryInstalledSuccessfully();
+
+    String BuildPackage();
+
+    String ThisWillValidateAndCompileAllTheAssetsInAPackage();
+
+    String OptionalSelectorName();
+
+    String CustomSelector();
+
+    String SelectorTip();
+
+    String BuildBinaryPackage();
+
+    String BuildingPackageNote();
+
+    String CreateSnapshotForDeployment();
+
+    String TakeSnapshot();
+
+    String AssemblingPackageSource();
+
+    String ViewingSourceFor0();
+
+    String ReadOnlySourceNote();
+
+    String ValidatingAndBuildingPackagePleaseWait();
+
+    String PleaseWaitDotDotDot();
+
+    String PackageBuiltSuccessfully();
+
+    String DownloadBinaryPackage();
+
+    String Format();
+
+    String Message1();
+
+    String LoadingExistingSnapshots();
+
+    String CreateASnapshotForDeployment();
+
+    String SnapshotDescription();
+
+    String ChooseOrCreateSnapshotName();
+
+    String NEW();
+
+    String Comment();
+
+    String CreateNewSnapshot();
+
+    String YouHaveToEnterOrChoseALabelNameForTheSnapshot();
+
+    String TheSnapshotCalled0WasSuccessfullyCreated();
+
+    String PackageName();
+
+    String ConfigurationSection();
+
+    String Configuration();
+
+    String DescriptionColon();
+
+    String CategoryRules();
+
+    String SaveAndValidateConfiguration();
+
+    String BuildAndValidate();
+
+    String InformationAndImportantURLs();
+
+    String DateCreated();
+
+    String ShowPackageSource();
+
+    String URLForPackageSource();
+
+    String URLSourceDescription();
+
+    String URLForPackageBinary();
+
+    String UseThisUrlInTheRuntimeAgentToFetchAPreCompiledBinary();
+
+    String URLForRunningTests();
+
+    String URLRunTestsRemote();
+
+    String ChangeStatusDot();
+
+    String Tip();
+
+    String AllRulesForCategory0WillNowExtendTheRule1();
+
+    String RemoveThisCategoryRule();
+
+    String AddCatRuleToThePackage();
+
+    String CategoryParentRules();
+
+    String CatRulesInfo();
+
+    String AddACategoryRuleToThePackage();
+
+    String CreateCategoryRule();
+
+    String AllTheRulesInFollowingCategory();
+
+    String WillExtendTheFollowingRuleCalled();
+
+    String ThereWereErrorsValidatingThisPackageConfiguration();
+
+    String ViewErrors();
+
+    String Rename();
+
+    String AreYouSureYouWantToArchiveRemoveThisPackage();
+
+    String RenameThePackage();
+
+    String RenamePackageTip();
+
+
+    String PackageRenamedSuccessfully();
+
+    String CopyThePackage();
+
+    String CopyThePackageTip();
+
+    String NewPackageNameIs();
+
+    String NotAValidPackageName();
+
+    String PackageCopiedSuccessfully();
+
+    String SavingPackageConfigurationPleaseWait();
+
+    String PackageConfigurationUpdatedSuccessfullyRefreshingContentCache();
+
+    String RefreshingPackageData();
 }
