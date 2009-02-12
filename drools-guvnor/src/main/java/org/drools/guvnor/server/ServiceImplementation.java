@@ -1856,7 +1856,7 @@ public class ServiceImplementation
                                                        cl );
         SessionConfiguration sessionConfiguration = new SessionConfiguration();
         sessionConfiguration.setKeepReference( false );
-        InternalWorkingMemory workingMemory = (InternalWorkingMemory) rb.newStatefulSession( sessionConfiguration );
+        InternalWorkingMemory workingMemory = (InternalWorkingMemory) rb.newStatefulSession( sessionConfiguration, null );
         if ( coverage != null ) workingMemory.addEventListener( coverage );
         try {
             AuditLogReporter logger = new AuditLogReporter( workingMemory );
