@@ -22,15 +22,15 @@ import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.security.Capabilities;
-import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -38,17 +38,14 @@ import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
-import com.gwtext.client.widgets.form.FormPanel;
 import com.gwtext.client.util.Format;
+import com.gwtext.client.widgets.form.FormPanel;
 
 /**
  * This displays the metadata for a versionable asset.
@@ -57,40 +54,49 @@ import com.gwtext.client.util.Format;
  */
 public class MetaDataWidget extends Composite {
 
-    private MetaData    data;
-    private boolean     readOnly;
-    private String      uuid;
-    private Command     refreshView;
-    private VerticalPanel layout = new VerticalPanel();
-    AssetCategoryEditor ed;
-	private FormStyleLayout currentSection;
-	private String currentSectionName;
-    private Constants constants;
+    private MetaData        data;
+    private boolean         readOnly;
+    private String          uuid;
+    private Command         metaDataRefreshView;
+    private Command         fullRefreshView;
+    private VerticalPanel   layout = new VerticalPanel();
+    AssetCategoryEditor     ed;
+    private FormStyleLayout currentSection;
+    private String          currentSectionName;
+    private Constants       constants;
 
     public MetaDataWidget(final MetaData d,
                           final boolean readOnly,
                           final String uuid,
-                          final Command refreshView) {
+                          final Command metaDataRefreshView,
+                          final Command fullRefreshView) {
 
         super();
 
+        this.metaDataRefreshView = metaDataRefreshView;
+        this.fullRefreshView = fullRefreshView;
 
-        constants = ((Constants) GWT.create(Constants.class));
-        Button show = new Button(constants.showMoreInfo());
-        show.addClickListener(new ClickListener() {
+        constants = ((Constants) GWT.create( Constants.class ));
+        Button show = new Button( constants.showMoreInfo() );
+        show.addClickListener( new ClickListener() {
             public void onClick(Widget sender) {
                 layout.clear();
-                render(d, readOnly, uuid, refreshView);
+                render( d,
+                        readOnly,
+                        uuid );
             }
-        });
+        } );
 
-        layout.add(new SmallLabel(Format.format("Title: [<b>{0}</b>]", d.name)));
-        layout.add(show);
-        initWidget(layout);
+        layout.add( new SmallLabel( Format.format( "Title: [<b>{0}</b>]",
+                                                   d.name ) ) );
+        layout.add( show );
+        initWidget( layout );
 
     }
 
-    private void render(MetaData d, boolean readOnly, String uuid, Command refreshView) {
+    private void render(MetaData d,
+                        boolean readOnly,
+                        String uuid) {
         //        layout = new Form(new FormConfig() {
         //        	{
         //        		setWidth(250);
@@ -102,7 +108,7 @@ public class MetaDataWidget extends Composite {
 
         if ( !readOnly ) {
             Image edit = new ImageButton( "images/edit.gif", //NON-NLS
-                    constants.RenameThisAsset());
+                                          constants.RenameThisAsset() );
             edit.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     showRenameAsset( w );
@@ -112,7 +118,7 @@ public class MetaDataWidget extends Composite {
                        d.name,
                        edit );
         } else {
-            addHeader( "images/asset_version.png",    //NON-NLS
+            addHeader( "images/asset_version.png", //NON-NLS
                        d.name,
                        null );
         }
@@ -120,63 +126,63 @@ public class MetaDataWidget extends Composite {
         this.uuid = uuid;
         this.data = d;
         this.readOnly = readOnly;
-        this.refreshView = refreshView;
         //setWidth("20%");
         loadData( d );
     }
 
-    private void addHeader(String img, String name, Image edit) {
-    	startSection(name);
+    private void addHeader(String img,
+                           String name,
+                           Image edit) {
+        startSection( name );
 
-    	HorizontalPanel hp = new HorizontalPanel();
-    	hp.add(new SmallLabel("<b>" + name + "</b>"));
-    	if (edit != null) hp.add(edit);
-    	currentSection.addAttribute(constants.Title(), hp);
-	}
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.add( new SmallLabel( "<b>" + name + "</b>" ) );
+        if ( edit != null ) hp.add( edit );
+        currentSection.addAttribute( constants.Title(),
+                                     hp );
+    }
 
-	private void loadData(MetaData d) {
+    private void loadData(MetaData d) {
         this.data = d;
-        addAttribute(constants.CategoriesMetaData(),
+        addAttribute( constants.CategoriesMetaData(),
                       categories() );
 
-        addAttribute(constants.ModifiedOnMetaData(),
+        addAttribute( constants.ModifiedOnMetaData(),
                       readOnlyDate( data.lastModifiedDate ) );
-        addAttribute(constants.ModifiedByMetaData(),
+        addAttribute( constants.ModifiedByMetaData(),
                       readOnlyText( data.lastContributor ) );
-        addAttribute(constants.NoteMetaData(),
+        addAttribute( constants.NoteMetaData(),
                       readOnlyText( data.checkinComment ) );
 
         if ( !readOnly ) {
-            addAttribute(constants.CreatedOnMetaData(),
+            addAttribute( constants.CreatedOnMetaData(),
                           readOnlyDate( data.createdDate ) );
         }
-        addAttribute(constants.CreatedByMetaData(),
+        addAttribute( constants.CreatedByMetaData(),
                       readOnlyText( data.creator ) );
-        addAttribute(constants.FormatMetaData(),
+        addAttribute( constants.FormatMetaData(),
                       new SmallLabel( "<b>" + data.format + "</b>" ) );
 
-        addAttribute(constants.PackageMetaData(),
-                packageEditor( data.packageName ) );
+        addAttribute( constants.PackageMetaData(),
+                      packageEditor( data.packageName ) );
 
-        addAttribute(constants.IsDisabledMetaData(),
-                editableBoolean( new FieldBooleanBinding() {
-                                     public boolean getValue() {
-                                         return data.disabled;
-                                     }
+        addAttribute( constants.IsDisabledMetaData(),
+                      editableBoolean( new FieldBooleanBinding() {
+                                           public boolean getValue() {
+                                               return data.disabled;
+                                           }
 
-                                     public void setValue(boolean val) {
-                                         data.disabled = val;
-                                     }
-                                 },
-                        constants.DisableTip()) );
+                                           public void setValue(boolean val) {
+                                               data.disabled = val;
+                                           }
+                                       },
+                                       constants.DisableTip() ) );
 
         endSection();
 
-        startSection(constants.OtherMetaData());
+        startSection( constants.OtherMetaData() );
 
-
-
-        addAttribute(constants.SubjectMetaData(),
+        addAttribute( constants.SubjectMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
                                             return data.subject;
@@ -186,9 +192,9 @@ public class MetaDataWidget extends Composite {
                                             data.subject = val;
                                         }
                                     },
-                              constants.AShortDescriptionOfTheSubjectMatter()) );
+                                    constants.AShortDescriptionOfTheSubjectMatter() ) );
 
-        addAttribute(constants.TypeMetaData(),
+        addAttribute( constants.TypeMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
                                             return data.type;
@@ -199,9 +205,9 @@ public class MetaDataWidget extends Composite {
                                         }
 
                                     },
-                              constants.TypeTip()) );
+                                    constants.TypeTip() ) );
 
-        addAttribute(constants.ExternalLinkMetaData(),
+        addAttribute( constants.ExternalLinkMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
                                             return data.externalRelation;
@@ -212,9 +218,9 @@ public class MetaDataWidget extends Composite {
                                         }
 
                                     },
-                              constants.ExternalLinkTip()) );
+                                    constants.ExternalLinkTip() ) );
 
-        addAttribute(constants.SourceMetaData(),
+        addAttribute( constants.SourceMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
                                             return data.externalSource;
@@ -225,51 +231,51 @@ public class MetaDataWidget extends Composite {
                                         }
 
                                     },
-                              constants.SourceMetaDataTip()) );
+                                    constants.SourceMetaDataTip() ) );
 
-        endSection(true);
-        startSection(constants.VersionHistory());
-        addAttribute(constants.CurrentVersionNumber(),
-                getVersionNumberLabel() );
+        endSection( true );
+        startSection( constants.VersionHistory() );
+        addAttribute( constants.CurrentVersionNumber(),
+                      getVersionNumberLabel() );
 
         if ( !readOnly ) {
             addRow( new VersionBrowser( this.uuid,
                                         this.data,
-                                        refreshView ) );
+                                        fullRefreshView ) );
         }
 
-        endSection(true);
+        endSection( true );
     }
 
     private void addRow(VersionBrowser versionBrowser) {
-    	this.currentSection.addRow(versionBrowser);
-	}
+        this.currentSection.addRow( versionBrowser );
+    }
 
-	private void addAttribute(String string, Widget editable) {
-		this.currentSection.addAttribute(string, editable);
-	}
+    private void addAttribute(String string,
+                              Widget editable) {
+        this.currentSection.addAttribute( string,
+                                          editable );
+    }
 
-	private void endSection() {
-		endSection(false);
-	}
+    private void endSection() {
+        endSection( false );
+    }
 
-	private void endSection(boolean collapsed) {
+    private void endSection(boolean collapsed) {
         FormPanel config = new FormPanel();
-        config.setTitle(currentSectionName);
-        config.setCollapsible(true);
-        config.setCollapsed(collapsed);
-        config.add(this.currentSection);
-        layout.add(config);
-	}
+        config.setTitle( currentSectionName );
+        config.setCollapsible( true );
+        config.setCollapsed( collapsed );
+        config.add( this.currentSection );
+        layout.add( config );
+    }
 
-	private void startSection(String name) {
-    	currentSection = new FormStyleLayout();
-    	currentSectionName = name;
-	}
+    private void startSection(String name) {
+        currentSection = new FormStyleLayout();
+        currentSectionName = name;
+    }
 
-
-
-	private Widget packageEditor(final String packageName) {
+    private Widget packageEditor(final String packageName) {
         if ( this.readOnly || !ExplorerLayoutManager.shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
             return readOnlyText( packageName );
         } else {
@@ -290,11 +296,11 @@ public class MetaDataWidget extends Composite {
 
     private void showRenameAsset(Widget source) {
         final FormStylePopup pop = new FormStylePopup( "images/package_large.png", //NON-NLS
-                constants.RenameThisItem());
+                                                       constants.RenameThisItem() );
         final TextBox box = new TextBox();
-        pop.addAttribute(constants.NewNameAsset(),
+        pop.addAttribute( constants.NewNameAsset(),
                           box );
-        Button ok = new Button(constants.RenameItem());
+        Button ok = new Button( constants.RenameItem() );
         pop.addAttribute( "",
                           ok );
         ok.addClickListener( new ClickListener() {
@@ -303,8 +309,8 @@ public class MetaDataWidget extends Composite {
                                                                    box.getText(),
                                                                    new GenericCallback() {
                                                                        public void onSuccess(Object data) {
-                                                                           refreshView.execute();
-                                                                           Window.alert(constants.ItemHasBeenRenamed());
+                                                                           metaDataRefreshView.execute();
+                                                                           Window.alert( constants.ItemHasBeenRenamed() );
                                                                            pop.hide();
                                                                        }
                                                                    } );
@@ -316,29 +322,30 @@ public class MetaDataWidget extends Composite {
 
     private void showEditPackage(final String pkg,
                                  Widget source) {
-        final FormStylePopup pop = new FormStylePopup( "images/package_large.png",         //NON-NLS
-                constants.MoveThisItemToAnotherPackage());
-        pop.addAttribute(constants.CurrentPackage(),
+        final FormStylePopup pop = new FormStylePopup( "images/package_large.png", //NON-NLS
+                                                       constants.MoveThisItemToAnotherPackage() );
+        pop.addAttribute( constants.CurrentPackage(),
                           new Label( pkg ) );
         final RulePackageSelector sel = new RulePackageSelector();
-        pop.addAttribute(constants.NewPackage(),
+        pop.addAttribute( constants.NewPackage(),
                           sel );
-        Button ok = new Button(constants.ChangePackage());
+        Button ok = new Button( constants.ChangePackage() );
         pop.addAttribute( "",
                           ok );
         ok.addClickListener( new ClickListener() {
 
             public void onClick(Widget w) {
                 if ( sel.getSelectedPackage().equals( pkg ) ) {
-                    Window.alert(constants.YouNeedToPickADifferentPackageToMoveThisTo());
+                    Window.alert( constants.YouNeedToPickADifferentPackageToMoveThisTo() );
                     return;
                 }
                 RepositoryServiceFactory.getService().changeAssetPackage( uuid,
                                                                           sel.getSelectedPackage(),
-                                                                          Format.format(constants.MovedFromPackage(),pkg),
+                                                                          Format.format( constants.MovedFromPackage(),
+                                                                                         pkg ),
                                                                           new GenericCallback() {
                                                                               public void onSuccess(Object data) {
-                                                                                  refreshView.execute();
+                                                                                  metaDataRefreshView.execute();
                                                                                   pop.hide();
                                                                               }
 
@@ -353,7 +360,7 @@ public class MetaDataWidget extends Composite {
 
     private Widget getVersionNumberLabel() {
         if ( data.versionNumber == 0 ) {
-            return new SmallLabel(constants.NotCheckedInYet());
+            return new SmallLabel( constants.NotCheckedInYet() );
         } else {
             return readOnlyText( Long.toString( data.versionNumber ) );
         }
