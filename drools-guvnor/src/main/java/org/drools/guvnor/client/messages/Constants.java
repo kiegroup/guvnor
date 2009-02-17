@@ -51,7 +51,6 @@ public interface Constants extends ConstantsWithLookup {
 
 
 
-    String AddAField();
 
     String ColumnConfigurationSetAFieldOnAFact();
 
@@ -297,7 +296,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String FailureOverall();
 
-    String Results();
 
     String RuleCoveragePercent();
 
@@ -1407,7 +1405,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String ConditionTypeButton();
 
-    String ChooseDotDotDot();
 
 
     String NoModelTip();
@@ -1569,4 +1566,107 @@ public interface Constants extends ConstantsWithLookup {
 
 
     String ValueFor0();
+
+    String globalForScenario();
+
+    String modifyForScenario();
+
+    String insertForScenario();
+
+
+    String ChooseAFieldToAdd();
+
+    String RemoveThisRow();
+
+    String AreYouSureYouWantToRemoveThisRow();
+
+    String RemoveTheColumnForScenario();
+
+    String CanTRemoveThisColumnAsTheName0IsBeingUsed();
+
+    String AreYouSureYouWantToRemoveThisColumn();
+
+    String AddAField();
+
+    String AddANewRule();
+
+    String RemoveSelectedRule();
+
+    String PleaseChooseARuleToRemove();
+
+    String AllowTheseRulesToFire();
+
+    String PreventTheseRulesFromFiring();
+
+    String AllRulesMayFire();
+
+    String SelectRule();
+
+    String UseRealDateAndTime();
+
+    String UseASimulatedDateAndTime();
+
+    String property0RulesFiredIn1Ms();
+
+    String ShowRulesFired();
+
+    String RulesFired();
+
+    String currentDateAndTime();
+
+    String BadDateFormatPleaseTryAgainTryTheFormatOf0();
+
+    String scenarioFactTypeHasValues();
+
+    String AFactOfType0HasValues();
+
+    String AddAFieldToThisExpectation();
+
+
+    String equalsScenario();
+
+    String doesNotEqualScenario();
+
+    String RemoveThisFieldExpectation();
+
+    String AreYouSureYouWantToRemoveThisFieldExpectation();
+
+
+    String ExpectRules();
+
+    String ActualResult();
+
+    String firedAtLeastOnce();
+
+    String didNotFire();
+
+    String firedThisManyTimes();
+
+    String ChooseDotDotDot();
+
+    String RemoveThisRuleExpectation();
+
+    String AreYouSureYouWantToRemoveThisRuleExpectation();
+
+    String RetractFacts();
+
+    String RemoveThisRetractStatement();
+
+    String RunScenario();
+
+    String RunScenarioTip();
+
+    String BuildingAndRunningScenario();
+
+    String packageConfigurationProblem1();
+
+    String MaxRuleFiringsReachedWarning();
+
+    String Results();
+
+    String SummaryColon();
+
+    String AuditLogColon();
+
+    String ShowEventsButton();
 }
