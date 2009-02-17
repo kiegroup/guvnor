@@ -48,12 +48,9 @@ public class RulePackageSelector extends Composite {
     }
 
 	private void loadPackageList() {
-		System.err.println("-->Loading packages");
-		RepositoryServiceFactory.getService().listPackages( new GenericCallback() {
+		RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
 
-            public void onSuccess(Object o) {
-                PackageConfigData[] list = (PackageConfigData[]) o;
-
+            public void onSuccess(PackageConfigData[] list) {
                 for ( int i = 0; i < list.length; i++ ) {
                     packageList.addItem( list[i].name );
                     if (currentlySelectedPackage != null &&

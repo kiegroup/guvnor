@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -35,6 +36,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * The main layout parent/controller the rule viewer.
@@ -57,6 +59,7 @@ public class RuleViewer extends Composite {
     private HorizontalPanel    hsp;
 
     private long               lastSaved = System.currentTimeMillis();
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
     public RuleViewer(RuleAsset asset) {
         this( asset,
@@ -64,9 +67,6 @@ public class RuleViewer extends Composite {
     }
 
     /**
-     * @param UUID The resource to open.
-     * @param format The type of resource (may determine what editor is used).
-     * @param name The name to be displayed.
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
     public RuleViewer(RuleAsset asset,
@@ -214,19 +214,17 @@ public class RuleViewer extends Composite {
     private void performCheckIn(String comment) {
         //layout.clear();
         this.asset.metaData.checkinComment = comment;
-        LoadingPopup.showMessage( "Saving, please wait..." );
+        LoadingPopup.showMessage(constants.SavingPleaseWait());
         RepositoryServiceFactory.getService().checkinVersion( this.asset,
-                                                              new GenericCallback() {
+                                                              new GenericCallback<String>() {
 
-                                                                  public void onSuccess(Object o) {
-
-                                                                      String uuid = (String) o;
+                                                                  public void onSuccess(String uuid) {
                                                                       if ( uuid == null ) {
-                                                                          ErrorPopup.showMessage( "Failed to check in the item. Please contact your system administrator." );
+                                                                          ErrorPopup.showMessage(constants.FailedToCheckInTheItemPleaseContactYourSystemAdministrator());
                                                                           return;
                                                                       }
 
-                                                                      if ( uuid.startsWith( "ERR" ) ) {
+                                                                      if ( uuid.startsWith( "ERR" ) ) { //NON-NLS
                                                                           ErrorPopup.showMessage( uuid.substring( 5 ) );
                                                                           return;
                                                                       }
@@ -251,7 +249,7 @@ public class RuleViewer extends Composite {
      */
     public void flushSuggestionCompletionCache() {
         if ( AssetFormats.isPackageDependency( this.asset.metaData.format ) ) {
-            LoadingPopup.showMessage( "Refreshing content assistance..." );
+            LoadingPopup.showMessage(constants.RefreshingContentAssistance());
             SuggestionCompletionCache.getInstance().refreshPackage( this.asset.metaData.packageName,
                                                                     new Command() {
                                                                         public void execute() {
@@ -265,11 +263,10 @@ public class RuleViewer extends Composite {
      * This will reload the contents from the database, and refresh the widgets.
      */
     public void refreshDataAndView() {
-        LoadingPopup.showMessage( "Refreshing item..." );
+        LoadingPopup.showMessage(constants.RefreshingItem());
         RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid,
-                                                             new GenericCallback() {
-                                                                 public void onSuccess(Object a) {
-                                                                     asset = (RuleAsset) a;
+                                                             new GenericCallback<RuleAsset>() {
+                                                                 public void onSuccess(RuleAsset asset) {
                                                                      doWidgets();
                                                                      LoadingPopup.close();
                                                                  }
@@ -280,11 +277,10 @@ public class RuleViewer extends Composite {
      * This will only
      */
     public void refreshMetaWidgetOnly() {
-        LoadingPopup.showMessage( "Refreshing item..." );
+        LoadingPopup.showMessage(constants.RefreshingItem());
         RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid,
-                                                             new GenericCallback() {
-                                                                 public void onSuccess(Object a) {
-                                                                     RuleAsset asset_ = (RuleAsset) a;
+                                                             new GenericCallback<RuleAsset>() {
+                                                                 public void onSuccess(RuleAsset asset_) {
                                                                      asset.metaData = asset_.metaData;
                                                                      hsp.remove( metaWidget );
                                                                      doMetaWidget();
@@ -308,16 +304,16 @@ public class RuleViewer extends Composite {
      * Called when user wants to close, but there is "dirtyness".
      */
     protected void doCloseUnsavedWarning() {
-        final FormStylePopup pop = new FormStylePopup( "images/warning-large.png",
-                                                       "WARNING: Un-committed changes." );
-        Button dis = new Button( "Discard" );
-        Button can = new Button( "Cancel" );
+        final FormStylePopup pop = new FormStylePopup( "images/warning-large.png", //NON-NLS
+                constants.WARNINGUnCommittedChanges());
+        Button dis = new Button(constants.Discard());
+        Button can = new Button(constants.Cancel());
         HorizontalPanel hor = new HorizontalPanel();
 
         hor.add( dis );
         hor.add( can );
 
-        pop.addRow( new HTML( "Are you sure you want to discard changes?" ) );
+        pop.addRow( new HTML(constants.AreYouSureYouWantToDiscardChanges()) );
         pop.addRow( hor );
 
         dis.addClickListener( new ClickListener() {

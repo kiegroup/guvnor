@@ -26,6 +26,9 @@ import org.drools.guvnor.client.packages.PackageBuilderWidget;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
+import org.drools.guvnor.client.security.Capabilities;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -36,6 +39,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
@@ -50,6 +54,8 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
     private RuleAsset asset;
     private VerticalPanel layout = new VerticalPanel();
 	private Widget editor;
+    
+    private static Constants constants = ((Constants) GWT.create(Constants.class));
 
     public RuleValidatorWrapper(Widget editor, RuleAsset asset) {
         this.asset = asset;
@@ -73,7 +79,7 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
         layout.add(tb);
 
         ToolbarButton viewSource = new ToolbarButton();
-        viewSource.setText("View source");
+        viewSource.setText(constants.ViewSource());
         viewSource.addListener(new ButtonListenerAdapter()  {
 			public void onClick(
 					com.gwtext.client.widgets.Button button,
@@ -81,12 +87,15 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
                 doViewsource();
 			}
 		});
-        tb.addButton(viewSource);
 
-        tb.addSeparator();
+        //only show this for advanced users
+        if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
+            tb.addButton(viewSource);
+            tb.addSeparator();
+        }
 
         ToolbarButton validate = new ToolbarButton();
-        validate.setText("Validate");
+        validate.setText(constants.Validate());
         validate.addListener(new ButtonListenerAdapter()  {
         			public void onClick(
         					com.gwtext.client.widgets.Button button,
@@ -101,24 +110,18 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
 
     private void doValidate() {
     	onSave();
-        LoadingPopup.showMessage( "Validating item, please wait..." );
-        RepositoryServiceFactory.getService().buildAsset( asset, new GenericCallback() {
-            public void onSuccess(Object data) {
-                BuilderResult[] results = (BuilderResult[]) data;
-                showBuilderErrors(results);
-            }
+        LoadingPopup.showMessage(constants.ValidatingItemPleaseWait());
+        RepositoryServiceFactory.getService().buildAsset( asset, new GenericCallback<BuilderResult[]>() {
+            public void onSuccess(BuilderResult[] results) {showBuilderErrors(results);}
         });
 
     }
 
     private void doViewsource() {
     	onSave();
-        LoadingPopup.showMessage( "Calculating source..." );
-        RepositoryServiceFactory.getService().buildAssetSource( this.asset, new GenericCallback() {
-            public void onSuccess(Object data) {
-                String src = (String) data;
-                showSource(src);
-            }
+        LoadingPopup.showMessage(constants.CalculatingSource());
+        RepositoryServiceFactory.getService().buildAssetSource( this.asset, new GenericCallback<String>() {
+            public void onSuccess(String src) { showSource(src);}
         });
 
     }
@@ -136,37 +139,31 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
         if (results == null || results.length == 0) {
         	FormStylePopup pop = new FormStylePopup();
         	pop.setWidth(200);
-        	pop.setTitle("Validation results...");
+        	pop.setTitle(constants.ValidationResultsDotDot());
         	HorizontalPanel h = new HorizontalPanel();
-        	h.add(new SmallLabel("<img src='images/tick_green.gif'/><i>Item validated successfully.</i>"));
+        	h.add(new SmallLabel("<img src='images/tick_green.gif'/><i>" + constants.ItemValidatedSuccessfully() + "</i>")); //NON-NLS
 
 
             pop.addRow( h );
             pop.show();
         } else {
-        	FormStylePopup pop = new FormStylePopup("images/package_builder.png", "Validation results");
+        	FormStylePopup pop = new FormStylePopup("images/package_builder.png", constants.ValidationResults()); //NON-NLS
             FlexTable errTable = new FlexTable();
-            errTable.setStyleName( "build-Results" );
+            errTable.setStyleName( "build-Results" ); //NON-NLS
             for ( int i = 0; i < results.length; i++ ) {
                 int row = i;
                 final BuilderResult res = results[i];
-                errTable.setWidget( row, 0, new Image("images/error.gif"));
+                errTable.setWidget( row, 0, new Image("images/error.gif")); //NON-NLS
                 if( res.assetFormat.equals( "package" )) {
-                    errTable.setText( row, 1, "[package configuration problem] " + res.message );
+                    errTable.setText( row, 1, constants.packageConfigurationProblem() + res.message );
                 } else {
                     errTable.setText( row, 1, "[" + res.assetName + "] " + res.message );
                 }
 
             }
             ScrollPanel scroll = new ScrollPanel(errTable);
-            //scroll.setAlwaysShowScrollBars(true);
-            //scroll.setSize("100%","25em");
             scroll.setWidth( "100%" );
-            //scroll.setScrollPosition( 100 );
-            //errTable.setWidth( "60%" );
             pop.addRow( scroll );
-//            pop.setWidth( "70%" );
-//            pop.setHeight( "50%" );
             pop.show();
         }
 

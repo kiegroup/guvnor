@@ -1450,4 +1450,123 @@ public interface Constants extends ConstantsWithLookup {
     String RemoveThisEntireConditionQ();
 
     String CanTRemoveThatItemAsItIsUsedInTheActionPartOfTheRule();
+
+
+    String NewBusinessRuleGuidedEditor();
+
+
+    String NewRuleUsingDSL();
+
+
+    String NewDRL();
+
+
+    String NewDecisionTableSpreadsheet();
+
+
+    String NewDecisionTableGuidedEditor();
+
+    String TestScenario();
+
+
+    String ViewSource();
+
+    String Validate();
+
+    String ValidatingItemPleaseWait();
+
+
+    String ValidationResultsDotDot();
+
+    String ItemValidatedSuccessfully();
+
+    String ValidationResults();
+
+    String packageConfigurationProblem();
+
+    String SavingPleaseWait();
+
+    String FailedToCheckInTheItemPleaseContactYourSystemAdministrator();
+
+    String RefreshingContentAssistance();
+
+
+    String RefreshingItem();
+
+    String WARNINGUnCommittedChanges();
+
+    String Discard();
+
+    String AreYouSureYouWantToDiscardChanges();
+
+    String ScenariosForPackage1();
+
+    String RunAllScenarios();
+
+    String BuildingAndRunningScenarios();
+
+    String EXPECT();
+
+    String DeleteItem();
+
+    String AreYouSureYouWantToRemoveThisItem();
+
+    String GIVEN();
+
+    String AddInputDataAndExpectationsHere();
+
+    String MoreDotDot();
+
+    String AddAnotherSectionOfDataAndExpectations();
+
+    String configuration();
+
+    String globals();
+
+    String AddANewGlobalToThisScenario();
+
+    String NewGlobal();
+
+    String TheName0IsAlreadyInUsePleaseChooseAnotherName();
+
+    String GlobalColon();
+
+    String AddANewDataInputToThisScenario();
+
+    String NewInput();
+
+    String YouMustEnterAValidFactName();
+
+    String TheFactName0IsAlreadyInUsePleaseChooseAnotherName();
+
+    String FactName();
+
+    String InsertANewFact1();
+
+    String ModifyAnExistingFactScenario();
+
+    String RetractAnExistingFactScenario();
+
+    String AddANewExpectation();
+
+    String NewExpectation();
+
+    String Rule();
+
+    String FactValue();
+
+    String AnyFactThatMatches();
+
+    String DeleteTheExpectationForThisFact();
+
+    String AreYouSureYouWantToRemoveThisExpectation();
+
+    String EnterRuleNameScenario();
+
+    String showListButton();
+
+    String loadingList1();
+
+
+    String ValueFor0();
 }

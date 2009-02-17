@@ -10,6 +10,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -18,6 +19,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This shows a list of scenarios in a package.
@@ -32,8 +34,9 @@ public class ScenarioPackageView extends Composite {
 	private VerticalPanel layout;
 
 	private AssetItemGrid grid;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
-	public ScenarioPackageView(final String packageUUID, String packageName, EditItemEvent editEvent, ExplorerViewCenterPanel centerPanel) {
+    public ScenarioPackageView(final String packageUUID, String packageName, EditItemEvent editEvent, ExplorerViewCenterPanel centerPanel) {
 		this.editEvent = editEvent;
 
 		grid = new AssetItemGrid(editEvent, AssetItemGrid.RULE_LIST_TABLE_ID, new AssetItemGridDataLoader() {
@@ -49,8 +52,8 @@ public class ScenarioPackageView extends Composite {
 		PrettyFormLayout pf = new PrettyFormLayout();
 
 		VerticalPanel vert = new VerticalPanel();
-		vert.add(new HTML("<b>Scenarios for package: </b>" + packageName));
-		Button run = new Button("Run all scenarios");
+		vert.add(new HTML("<b>" + constants.ScenariosForPackage1() + "</b>" + packageName));
+		Button run = new Button(constants.RunAllScenarios());
 		run.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				runAllScenarios(packageUUID);
@@ -60,7 +63,7 @@ public class ScenarioPackageView extends Composite {
 		vert.add(run);
 
 
-		pf.addHeader("images/scenario_large.png", vert);
+		pf.addHeader("images/scenario_large.png", vert); //NON-NLS
 
 		layout.add(pf);
 		layout.add(grid);
@@ -82,10 +85,9 @@ public class ScenarioPackageView extends Composite {
 	 * Run all the scenarios, obviously !
 	 */
 	private void runAllScenarios(String uuid) {
-		LoadingPopup.showMessage("Building and running scenarios... ");
-		RepositoryServiceFactory.getService().runScenariosInPackage(uuid, new GenericCallback() {
-			public void onSuccess(Object data) {
-				BulkTestRunResult d = (BulkTestRunResult) data;
+		LoadingPopup.showMessage(constants.BuildingAndRunningScenarios());
+		RepositoryServiceFactory.getService().runScenariosInPackage(uuid, new GenericCallback<BulkTestRunResult>() {
+			public void onSuccess(BulkTestRunResult d) {
 				BulkRunResultWidget w = new BulkRunResultWidget(d, editEvent, new Command() {
 					public void execute() {
 						refreshShowGrid();
