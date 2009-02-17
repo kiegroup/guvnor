@@ -352,6 +352,7 @@ public class FileManagerUtils {
 
                 asset.updateContent( as.content );
                 asset.updateExternalSource( "Imported from external DRL" );
+                asset.checkin( "Imported change form external DRL" );
             }
         }
 
