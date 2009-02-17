@@ -42,6 +42,7 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.SuggestOracle.Callback;
 import com.google.gwt.user.client.ui.SuggestOracle.Request;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This is for quickly finding an asset by name. Partial completion is allowed.
@@ -55,11 +56,11 @@ public class QuickFindWidget extends Composite {
     private SuggestBox searchBox;
     private CheckBox archiveBox;
     private EditItemEvent editEvent;
-
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
 
     public QuickFindWidget(EditItemEvent editEvent) {
-        layout = new FormStyleLayout("images/system_search.png", "");
+        layout = new FormStyleLayout("images/system_search.png", ""); //NON-NLS
 
         searchBox = new SuggestBox(new SuggestOracle() {
 			public void requestSuggestions(Request r, Callback cb) {
@@ -71,7 +72,7 @@ public class QuickFindWidget extends Composite {
 
         this.editEvent = editEvent;
         HorizontalPanel srch = new HorizontalPanel();
-        Button go = new Button("Search");
+        Button go = new Button(constants.Search());
         go.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                updateList();
@@ -85,13 +86,13 @@ public class QuickFindWidget extends Composite {
 
         archiveBox.setChecked(false);
 
-        layout.addAttribute( "Find items with a name matching:", srch );
-        layout.addAttribute("Include archived assets in results:", archiveBox);
+        layout.addAttribute(constants.FindItemsWithANameMatching(), srch );
+        layout.addAttribute(constants.IncludeArchivedAssetsInResults(), archiveBox);
         layout.addAttribute("", go );
 
 
         listPanel = new FlexTable();
-        listPanel.setWidget( 0, 0, new HTML("<img src='images/information.gif'/>&nbsp;Enter the name or part of a name. Alternatively, use the categories to browse.") );
+        listPanel.setWidget( 0, 0, new HTML("<img src='images/information.gif'/>&nbsp;" + constants.EnterSearchString()) ); //NON-NLS
 
         PrettyFormLayout pfl = new PrettyFormLayout();
         pfl.startSection();
@@ -111,14 +112,13 @@ public class QuickFindWidget extends Composite {
      * This will load a list of items as they are typing.
      */
     protected void loadShortList(String match, final Request r, final Callback cb) {
-        RepositoryServiceFactory.getService().quickFindAsset( match, 5, archiveBox.isChecked() ,new GenericCallback() {
+        RepositoryServiceFactory.getService().quickFindAsset( match, 5, archiveBox.isChecked() ,new GenericCallback<TableDataResult>() {
 
 
-            public void onSuccess(Object data) {
-                final TableDataResult result = (TableDataResult) data;
+            public void onSuccess(TableDataResult result) {
                 List items = new ArrayList();
                 for ( int i = 0; i < result.data.length; i++ ) {
-                    if (!result.data[i].id.equals( "MORE" )) {
+                    if (!result.data[i].id.equals( "MORE" )) {         //NON-NLS
                     	final String str = result.data[i].values[0];
                     	items.add( new SuggestOracle.Suggestion() {
 
@@ -143,10 +143,9 @@ public class QuickFindWidget extends Composite {
 
     protected void updateList() {
 
-        LoadingPopup.showMessage( "Searching..." );
-        RepositoryServiceFactory.getService().quickFindAsset( searchBox.getText(), 15, archiveBox.isChecked() , new GenericCallback() {
-            public void onSuccess(Object data) {
-                TableDataResult result = (TableDataResult) data;
+        LoadingPopup.showMessage(constants.SearchingDotDotDot());
+        RepositoryServiceFactory.getService().quickFindAsset( searchBox.getText(), 15, archiveBox.isChecked() , new GenericCallback<TableDataResult>() {
+            public void onSuccess(TableDataResult result) {
                 populateList(result);
 
             }
@@ -167,13 +166,13 @@ public class QuickFindWidget extends Composite {
         for ( int i = 0; i < result.data.length; i++ ) {
 
             final TableDataRow row = result.data[i];
-            if (row.id.equals( "MORE" )) {
-                data.setWidget( i, 0, new HTML("<i>There are more items... try narrowing the search terms..</i>") );
+            if (row.id.equals( "MORE" )) {  //NON-NLS
+                data.setWidget( i, 0, new HTML("<i>" + constants.ThereAreMoreItemsTryNarrowingTheSearchTerms() + "</i>") );
                 data.getFlexCellFormatter().setColSpan( i, 0, 3 );
             } else {
                 data.setWidget( i, 0, new Label(row.values[0]) );
                 data.setWidget( i, 1, new Label(row.values[1]) );
-                Button open = new Button("Open");
+                Button open = new Button(constants.Open());
                 open.addClickListener( new ClickListener() {
                     public void onClick(Widget w) {
                         editEvent.open( row.id );

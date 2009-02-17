@@ -7,10 +7,12 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.client.rulefloweditor.RuleFlowViewer;
 import org.drools.guvnor.client.explorer.Preferences;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Toolbar;
@@ -30,8 +32,9 @@ public class RuleFlowWrapper extends Composite implements SaveEventListener {
 
 	private RuleFlowViewer ruleFlowViewer;
 	private Panel parameterPanel;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
-	public RuleFlowWrapper(final RuleAsset asset, final RuleViewer viewer) {
+    public RuleFlowWrapper(final RuleAsset asset, final RuleViewer viewer) {
 		this.viewer = viewer;
 		this.asset = asset;
 		initWidgets(asset.uuid, asset.metaData.name);
@@ -75,9 +78,9 @@ public class RuleFlowWrapper extends Composite implements SaveEventListener {
 	}
 
 	private void doViewDiagram() {
-		LoadingPopup.showMessage("Calculating source...");
-		FormStylePopup pop = new FormStylePopup("images/view_source.gif",
-				"Viewing diagram", new Integer(600), Boolean.FALSE);
+		LoadingPopup.showMessage(constants.CalculatingSource());
+		FormStylePopup pop = new FormStylePopup("images/view_source.gif",    //NON-NLS
+                constants.ViewingDiagram(), new Integer(600), Boolean.FALSE);
 		pop.addRow(ruleFlowViewer);
 		pop.addRow(parameterPanel);
 
@@ -94,10 +97,10 @@ public class RuleFlowWrapper extends Composite implements SaveEventListener {
 
 				parameterPanel = new Panel();
 				parameterPanel.setCollapsible(true);
-				parameterPanel.setTitle("Parameters");
+				parameterPanel.setTitle(constants.Parameters());
 
 				FormStyleLayout parametersForm = new FormStyleLayout();
-				parametersForm.setHeight("120px");
+				parametersForm.setHeight("120px"); //NON-NLS
 				parameterPanel.add(parametersForm);
 
 				ruleFlowViewer = new RuleFlowViewer(rfcm, parametersForm);
@@ -109,21 +112,20 @@ public class RuleFlowWrapper extends Composite implements SaveEventListener {
 
 			// If the XML is not set there was some problem when the diagram was
 			// created.
-			Window.alert("Could not create the ruleflow diagram. It is possible that the ruleflow file is invalid.");
+			Window.alert(constants.CouldNotCreateTheRuleflowDiagramItIsPossibleThatTheRuleflowFileIsInvalid());
 
 		}
 	}
 
 	public String getIcon() {
-		return "images/ruleflow_large.png";
+		return "images/ruleflow_large.png"; //NON-NLS
 	}
 
 	public String getOverallStyleName() {
-		return "decision-Table-upload";
+		return "decision-Table-upload"; //NON-NLS
 	}
 
 	public void onAfterSave() {
-		// TODO Auto-generated method stub
 
 	}
 

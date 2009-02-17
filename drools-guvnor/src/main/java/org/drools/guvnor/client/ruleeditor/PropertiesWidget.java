@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.ArrayReader;
@@ -39,6 +40,7 @@ import com.gwtext.client.widgets.grid.ColumnConfig;
 import com.gwtext.client.widgets.grid.ColumnModel;
 import com.gwtext.client.widgets.grid.EditorGridPanel;
 import com.gwtext.client.widgets.grid.GridEditor;
+import com.google.gwt.core.client.GWT;
 
 /**
  * Properties (key/value pairs) editor with a file attachment.
@@ -49,6 +51,7 @@ public class PropertiesWidget extends AssetAttachmentFileWidget implements SaveE
 
     PropertiesHolder properties;
     Store store;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
     public PropertiesWidget(final RuleAsset asset, final RuleViewer viewer) {
         super(asset, viewer);
@@ -64,7 +67,7 @@ public class PropertiesWidget extends AssetAttachmentFileWidget implements SaveE
         panel.setPaddings(15);
 
         final RecordDef recordDef = new RecordDef(
-                new FieldDef[]{new StringFieldDef("key"), new StringFieldDef("value")}
+                new FieldDef[]{new StringFieldDef("key"), new StringFieldDef("value")}   //NON-NLS
         );
 
         String[][] data = new String[properties.list.size()][];
@@ -77,11 +80,11 @@ public class PropertiesWidget extends AssetAttachmentFileWidget implements SaveE
         store = new Store(proxy, new ArrayReader(recordDef));
         store.load();
 
-        ColumnConfig keyCol = new ColumnConfig("Key?", "key", 100, true, null, "key");
+        ColumnConfig keyCol = new ColumnConfig("Key?", "key", 100, true, null, "key");    //NON-NLS
         keyCol.setEditor(new GridEditor(new TextField()));
         keyCol.setFixed(false);
 
-        ColumnConfig valueCol = new ColumnConfig("Value?", "value", 100, true, null, "value");
+        ColumnConfig valueCol = new ColumnConfig("Value?", "value", 100, true, null, "value"); //NON-NLS
         valueCol.setEditor(new GridEditor(new TextField()));
         valueCol.setFixed(false);
 
@@ -93,7 +96,7 @@ public class PropertiesWidget extends AssetAttachmentFileWidget implements SaveE
         final EditorGridPanel grid = new EditorGridPanel();
 
         Toolbar toolbar = new Toolbar();
-        ToolbarButton add = new ToolbarButton("Add", new ButtonListenerAdapter() {
+        ToolbarButton add = new ToolbarButton(constants.Add(), new ButtonListenerAdapter() {
             public void onClick(Button button, EventObject e) {
                 addNewField(recordDef, grid);
             }
@@ -112,7 +115,7 @@ public class PropertiesWidget extends AssetAttachmentFileWidget implements SaveE
 
         toolbar.addButton(delete);*/
 
-        ToolbarButton clear = new ToolbarButton("Clear", new ButtonListenerAdapter() {
+        ToolbarButton clear = new ToolbarButton(constants.Clear(), new ButtonListenerAdapter() {
             public void onClick(Button button, EventObject e) {
                 store.removeAll();
                 addNewField(recordDef, grid);
@@ -125,7 +128,7 @@ public class PropertiesWidget extends AssetAttachmentFileWidget implements SaveE
         grid.setColumnModel(columnModel);
         grid.setWidth(215);
         grid.setHeight(300);
-        grid.setTitle("Properties");
+        grid.setTitle(constants.Properties());
         grid.setFrame(true);
         grid.setClicksToEdit(2);
         grid.setTopToolbar(toolbar);
@@ -156,7 +159,7 @@ public class PropertiesWidget extends AssetAttachmentFileWidget implements SaveE
 
         Record[] records = store.getRecords();
         for (Record record : records) {
-            String key = record.getAsString("key");
+            String key = record.getAsString("key"); //NON-NLS
             if (key != null && !"".equals(key)) {
                 result.add(new PropertyHolder(key, record.getAsString("value")));
             }

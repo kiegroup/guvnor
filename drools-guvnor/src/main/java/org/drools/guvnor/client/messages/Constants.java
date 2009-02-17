@@ -26,7 +26,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String AddAnotherFieldToThisSoYouCanSetItsValue();
 
-    String RemoveThisItem();
 
     String ChooseAMethodToInvoke();
 
@@ -392,7 +391,7 @@ public interface Constants extends ConstantsWithLookup {
 
     String AddFactToContraint();
 
-    String Choose();
+
 
     String NewFactPattern();
 
@@ -1256,4 +1255,199 @@ public interface Constants extends ConstantsWithLookup {
     String PermissionDetails();
 
     String PermissionDetailsTip();
+
+    String TheVariableName0IsAlreadyTaken();
+
+    String BindTheFieldCalled0ToAVariable();
+
+    String ShowSubFields();
+
+    String ApplyAConstraintToASubFieldOf0();
+
+    String AddFieldsToThisConstraint();
+
+
+    String AllOfAnd();
+
+    String MultipleConstraintsTip();
+
+    String MultipleFieldConstraint();
+
+    String ModifyConstraintsFor0();
+
+    String AddSubFieldConstraint();
+
+    String AddARestrictionOnAField();
+
+
+    String AnyOfOr();
+
+    String MultipleFieldConstraints();
+
+    String MultipleConstraintsTip1();
+
+
+
+
+    String AddANewFormulaStyleExpression();
+
+
+    String VariableName();
+
+    String Add();
+
+    String Clear();
+
+    String Properties();
+
+    String QA1();
+
+    String AttributeSearch();
+
+    String CreatedBy();
+
+    String Format1();
+
+    String Subject();
+
+    String Type1();
+
+    String ExternalLink();
+
+    String Source();
+
+    String Description1();
+
+    String LastModifiedBy();
+
+    String CheckinComment();
+
+    String WildCardsSearchTip();
+
+    String AfterColon();
+
+
+    String Before();
+
+    String DateCreated1();
+
+    String BeforeColon();
+
+    String LastModified1();
+
+    String Search();
+
+    String NameSearch();
+
+    String TextSearch();
+
+    String SearchFor();
+
+    String Search1();
+
+    String PleaseEnterSomeSearchText();
+
+    String FindItemsWithANameMatching();
+
+    String IncludeArchivedAssetsInResults();
+
+    String EnterSearchString();
+
+    String SearchingDotDotDot();
+
+    String ThereAreMoreItemsTryNarrowingTheSearchTerms();
+
+    String Metadata2();
+
+    String Attributes1();
+
+    String Choose();
+
+    String RemoveThisRuleOption();
+
+    String RuleDocHint();
+
+    String documentationDefault();
+
+    String RuleFlowUploadTip();
+
+    String CalculatingSource();
+
+    String ViewingDiagram();
+
+    String Parameters();
+
+    String CouldNotCreateTheRuleflowDiagramItIsPossibleThatTheRuleflowFileIsInvalid();
+
+    String AddAConditionToThisRule();
+
+    String AddAnOptionToTheRuleToModifyItsBehaviorWhenEvaluatedOrExecuted();
+
+
+
+    String Metadata3();
+
+    String Attribute1();
+
+    String AddXToListY();
+
+    String RemoveThisAction();
+
+    String RemoveThisItem();
+
+    String AddAConditionToTheRule();
+
+    String ChooseFactType();
+
+    String Fact1();
+
+    String ChooseOtherConditionType();
+
+    String FreeFormDrl();
+
+    String ConditionTypeButton();
+
+    String ChooseDotDotDot();
+
+
+    String NoModelTip();
+
+    String AddANewAction();
+
+    String NotifyEngineOfChanges();
+
+    String NotifyEngineOfChangesUpdateModify();
+
+    String ModifyEngineTip();
+
+
+    String SetFieldValues();
+
+    String RetractTheFact();
+
+    String DSLSentence();
+
+    String AdvancedOptionsColon();
+
+    String AddAnItemToACollection();
+
+    String InsertANewFact();
+
+    String LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved();
+
+    String LogicallyInsertANewFact();
+
+    String CallAMethodOnFollowing();
+
+    String AddFreeFormDrl();
+
+    String FreeFormAction();
+
+    String ThisIsADrlExpressionFreeForm();
+
+    String RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt();
+
+    String RemoveThisEntireConditionQ();
+
+    String CanTRemoveThatItemAsItIsUsedInTheActionPartOfTheRule();
 }

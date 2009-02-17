@@ -19,10 +19,12 @@ package org.drools.guvnor.client.ruleeditor;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.rpc.MetaData;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This holds the editor and viewer for rule documentation.
@@ -33,8 +35,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class RuleDocumentWidget extends DirtyableComposite {
 
 	private TextArea text;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
-	public RuleDocumentWidget(MetaData data) {
+    public RuleDocumentWidget(MetaData data) {
 //
 //        HorizontalPanel horiz = new HorizontalPanel();
 //
@@ -43,8 +46,8 @@ public class RuleDocumentWidget extends DirtyableComposite {
 
         text.setWidth( "100%" );
         text.setVisibleLines( 5 );
-        text.setStyleName( "rule-viewer-Documentation" );
-        text.setTitle( "This is rule documentation. Human friendly descriptions of the business logic.");
+        text.setStyleName( "rule-viewer-Documentation" ); //NON-NLS
+        text.setTitle(constants.RuleDocHint());
 		initWidget(text);
         loadData(data);
 	}
@@ -60,7 +63,7 @@ public class RuleDocumentWidget extends DirtyableComposite {
             }
         });
         if (data.description == null || "".equals(data.description )) {
-            text.setText( "<documentation>" );
+            text.setText(constants.documentationDefault());
         }
     }
 

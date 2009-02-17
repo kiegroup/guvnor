@@ -24,6 +24,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
 import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -36,6 +37,7 @@ import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * Displays a list of rule options (attributes).
@@ -49,6 +51,7 @@ public class RuleAttributeWidget extends Composite {
     private FormStyleLayout layout;
     private RuleModel model;
     private RuleModeller parent;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
 
     public RuleAttributeWidget(RuleModeller parent, RuleModel model) {
@@ -60,7 +63,7 @@ public class RuleAttributeWidget extends Composite {
         if(meta.length > 0){
 			HorizontalPanel hp = new HorizontalPanel();
 			//hp.add(new HTML("&nbsp;&nbsp;"));
-			hp.add(new SmallLabel("Metadata: "));
+			hp.add(new SmallLabel(constants.Metadata2()));
 			//attributeConfigWidget.add(hp);
 			layout.addRow(hp);
 		}
@@ -72,7 +75,7 @@ public class RuleAttributeWidget extends Composite {
         if(attrs.length > 0){
 			HorizontalPanel hp = new HorizontalPanel();
 			//hp.add(new HTML("&nbsp;&nbsp;"));
-			hp.add(new SmallLabel("Attributes: "));
+			hp.add(new SmallLabel(constants.Attributes1()));
 			//attributeConfigWidget.add(hp);
 			layout.addRow(hp);
 		}
@@ -90,8 +93,9 @@ public class RuleAttributeWidget extends Composite {
      * @return
      */
     public static ListBox getAttributeList() {
+        Constants cons = ((Constants) GWT.create(Constants.class));
         ListBox list = new ListBox();
-        list.addItem( "Choose..." );
+        list.addItem(cons.Choose());
 
         list.addItem( "salience" );
         list.addItem( "enabled" );
@@ -153,7 +157,7 @@ public class RuleAttributeWidget extends Composite {
             box.setChecked( true );
             at.value = "true";
         } else {
-            box.setChecked( ( at.value.equals( "true" ) ? true : false) );
+            box.setChecked( ( at.value.equals( "true" ) ? true : false) );  //NON-NLS
         }
 
 
@@ -243,10 +247,10 @@ public class RuleAttributeWidget extends Composite {
         return box;
     }
     private Image getRemoveIcon(final int idx) {
-        Image remove = new Image( "images/delete_item_small.gif" );
+        Image remove = new Image( "images/delete_item_small.gif" );  //NON-NLS
         remove.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-            	if (Window.confirm("Remove this rule option?")) {
+            	if (Window.confirm(constants.RemoveThisRuleOption())) {
                         model.removeAttribute( idx);
                         parent.refreshWidget();
                 }
@@ -256,10 +260,10 @@ public class RuleAttributeWidget extends Composite {
     }
 
     private Image getRemoveMetaIcon(final int idx) {
-        Image remove = new Image( "images/delete_item_small.gif" );
+        Image remove = new Image( "images/delete_item_small.gif" ); //NON-NLS
         remove.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-            	if (Window.confirm("Remove this rule option?")) {
+            	if (Window.confirm(constants.RemoveThisRuleOption())) {
                         model.removeMetadata(idx);
                         parent.refreshWidget();
                 }

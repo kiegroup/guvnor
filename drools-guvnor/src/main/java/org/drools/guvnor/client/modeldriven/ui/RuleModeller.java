@@ -29,9 +29,12 @@ import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.core.client.GWT;
+import com.gwtext.client.util.Format;
 
 /**
  * This is the parent widget that contains the model based rule builder.
@@ -44,6 +47,7 @@ public class RuleModeller extends DirtyableComposite {
     private DirtyableFlexTable layout;
     private SuggestionCompletionEngine completions;
     private RuleModel model;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
     public RuleModeller(RuleAsset asset, RuleViewer viewer) {
         this(asset);
@@ -71,7 +75,7 @@ public class RuleModeller extends DirtyableComposite {
         layout.clear();
 
         Image addPattern = new ImageButton( "images/new_item.gif" );
-        addPattern.setTitle( "Add a condition to this rule." );
+        addPattern.setTitle(constants.AddAConditionToThisRule());
         addPattern.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showConditionSelector(w);
@@ -119,8 +123,8 @@ public class RuleModeller extends DirtyableComposite {
     }
 
     private Widget getAddAttribute() {
-        Image add = new ImageButton("images/new_item.gif");
-        add.setTitle( "Add an option to the rule, to modify its behavior when evaluated or executed." );
+        Image add = new ImageButton("images/new_item.gif"); //NON-NLS
+        add.setTitle(constants.AddAnOptionToTheRuleToModifyItsBehaviorWhenEvaluatedOrExecuted());
 
         add.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -132,9 +136,9 @@ public class RuleModeller extends DirtyableComposite {
 
 
     protected void showAttributeSelector(Widget w) {
-        final FormStylePopup pop = new FormStylePopup("images/config.png", "Add an option to the rule");
+        final FormStylePopup pop = new FormStylePopup("images/config.png", constants.AddAnOptionToTheRule()); //NON-NLS
         final ListBox list = RuleAttributeWidget.getAttributeList();
-        final Image addbutton = new ImageButton("images/new_item.gif");
+        final Image addbutton = new ImageButton("images/new_item.gif");                                                //NON-NLS
         final TextBox box = new TextBox();
 
 
@@ -149,7 +153,7 @@ public class RuleModeller extends DirtyableComposite {
         });
         box.setVisibleLength( 15 );
 
-        addbutton.setTitle( "Add Metadata to the rule." );
+        addbutton.setTitle(constants.AddMetadataToTheRule());
 
         addbutton.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -167,8 +171,8 @@ public class RuleModeller extends DirtyableComposite {
 
 
 
-        pop.addAttribute( "Metadata: ", horiz );
-        pop.addAttribute( "Attribute: ", list );
+        pop.addAttribute(constants.Metadata3(), horiz );
+        pop.addAttribute(constants.Attribute1(), list );
 
         //add text field
         //add button
@@ -209,7 +213,7 @@ public class RuleModeller extends DirtyableComposite {
                 w = new ActionRetractFactWidget(this.completions, (ActionRetractFact) action );
             } else if (action instanceof DSLSentence) {
                 w = new DSLSentenceWidget((DSLSentence) action,this.completions);
-                w.setStyleName( "model-builderInner-Background" );
+                w.setStyleName( "model-builderInner-Background" ); //NON-NLS
             } else if (action instanceof FreeFormLine) {
             	final TextBox tb = new TextBox();
             	final FreeFormLine ffl = (FreeFormLine) action;
@@ -223,9 +227,9 @@ public class RuleModeller extends DirtyableComposite {
             } else if (action instanceof ActionGlobalCollectionAdd) {
                 ActionGlobalCollectionAdd gca = (ActionGlobalCollectionAdd) action;
                 SimplePanel sp = new SimplePanel();
-                sp.setStyleName("model-builderInner-Background");
+                sp.setStyleName("model-builderInner-Background"); //NON-NLS
                 w = sp;
-                sp.add(new SmallLabel("&nbsp;Add <b>[" + gca.factName + "]</b> to the list <b>[" + gca.globalName + "]</b>"));
+                sp.add(new SmallLabel("&nbsp;" + Format.format(constants.AddXToListY(), gca.factName, gca.globalName)));
             }
 
             //w.setWidth( "100%" );
@@ -234,12 +238,12 @@ public class RuleModeller extends DirtyableComposite {
 
             DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-            Image remove = new ImageButton("images/delete_item_small.gif");
-            remove.setTitle( "Remove this action." );
+            Image remove = new ImageButton("images/delete_item_small.gif"); //NON-NLS
+            remove.setTitle(constants.RemoveThisAction());
             final int idx = i;
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
-                	if (Window.confirm("Remove this item?")) {
+                	if (Window.confirm(constants.RemoveThisItem())) {
                             model.removeRhsItem(idx);
                             refreshWidget();
                     }
@@ -247,7 +251,7 @@ public class RuleModeller extends DirtyableComposite {
             } );
             horiz.add( w );
             if (!(w instanceof ActionRetractFactWidget)) {
-                w.setWidth( "100%" );
+                w.setWidth( "100%" );               //NON-NLS
                 horiz.setWidth( "100%" );
             }
 
@@ -264,7 +268,7 @@ public class RuleModeller extends DirtyableComposite {
      */
     protected void showConditionSelector(final Widget w) {
         final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle("Add a condition to the rule...");
+        popup.setTitle(constants.AddAConditionToTheRule());
 
 
         //
@@ -272,16 +276,16 @@ public class RuleModeller extends DirtyableComposite {
         //
         String[] facts = completions.getFactTypes();
         final ListBox factTypeBox = new ListBox();
-        factTypeBox.addItem( "Choose fact type...", "IGNORE" );
+        factTypeBox.addItem(constants.ChooseFactType(), "IGNORE" );
         for ( int i = 0; i < facts.length; i++ ) {
             factTypeBox.addItem( facts[i] );
         }
         factTypeBox.setSelectedIndex( 0 );
-        if (facts.length > 0) popup.addAttribute( "Fact", factTypeBox );
+        if (facts.length > 0) popup.addAttribute(constants.Fact1(), factTypeBox );
         factTypeBox.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 String s = factTypeBox.getItemText( factTypeBox.getSelectedIndex() );
-                if (!s.equals( "IGNORE" )) {
+                if (!s.equals( "IGNORE" )) {         //NON-NLS
                     addNewFact(s);
                     popup.hide();
                 }
@@ -293,22 +297,22 @@ public class RuleModeller extends DirtyableComposite {
         //
         String ces[]  = HumanReadable.CONDITIONAL_ELEMENTS;
         final ListBox ceBox = new ListBox();
-        ceBox.addItem( "Choose other condition type...", "IGNORE" );
+        ceBox.addItem(constants.ChooseOtherConditionType(), "IGNORE" ); //NON-NLS
         for ( int i = 0; i < ces.length; i++ ) {
             String ce = ces[i];
             ceBox.addItem( HumanReadable.getCEDisplayName( ce ), ce );
         }
         if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
-        	ceBox.addItem("Free form drl", "FF");
+        	ceBox.addItem(constants.FreeFormDrl(), "FF"); //NON-NLS
         }
         ceBox.setSelectedIndex( 0 );
 
-        if (facts.length > 0) popup.addAttribute( "Condition type", ceBox );
+        if (facts.length > 0) popup.addAttribute(constants.ConditionTypeButton(), ceBox );
         ceBox.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 String s = ceBox.getValue( ceBox.getSelectedIndex() );
-                if (!s.equals( "IGNORE" )) {
-                	if (s.equals("FF")) {
+                if (!s.equals( "IGNORE" )) {                //NON-NLS
+                	if (s.equals("FF")) {                   //NON-NLS
                 		model.addLhsItem(new FreeFormLine());
                 		refreshWidget();
                 	} else {
@@ -325,7 +329,7 @@ public class RuleModeller extends DirtyableComposite {
         //
         if (completions.getDSLConditions().length > 0) {
             final ListBox dsls = new ListBox();
-            dsls.addItem( "Choose..." );
+            dsls.addItem(constants.ChooseDotDotDot());
             for(int i = 0; i < completions.getDSLConditions().length; i++ ) {
                 DSLSentence sen = completions.getDSLConditions()[i];
                 dsls.addItem( sen.toString(), Integer.toString( i ) );
@@ -338,11 +342,11 @@ public class RuleModeller extends DirtyableComposite {
                     popup.hide();
                 }
             });
-            popup.addAttribute( "DSL sentence", dsls );
+            popup.addAttribute(constants.DSLSentence(), dsls );
         }
 
         if (completions.getDSLConditions().length == 0 && facts.length == 0) {
-        	popup.addRow(new HTML("<div class='highlight'>Note: No model has been defined.<br/>Tip: You will want to import or define a model for this user interface to work !</div>"));
+        	popup.addRow(new HTML("<div class='highlight'>" + constants.NoModelTip() + "</div>")); //NON-NLS
         }
         popup.show();
 
@@ -356,7 +360,7 @@ public class RuleModeller extends DirtyableComposite {
 
     protected void showActionSelector(Widget w) {
         final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle("Add a new action...");
+        popup.setTitle(constants.AddANewAction());
 
 
         //
@@ -368,10 +372,10 @@ public class RuleModeller extends DirtyableComposite {
         final ListBox modifyBox = new ListBox();
         final ListBox callMethodBox = new ListBox();
 
-        varBox.addItem( "Choose ..." );
-        retractBox.addItem( "Choose ..." );
-        modifyBox.addItem( "Choose ..." );
-        callMethodBox.addItem( "Choose ..." );
+        varBox.addItem( constants.ChooseDotDotDot() );
+        retractBox.addItem( constants.ChooseDotDotDot() );
+        modifyBox.addItem( constants.ChooseDotDotDot() );
+        callMethodBox.addItem( constants.ChooseDotDotDot() );
         for ( Iterator iter = vars.iterator(); iter.hasNext(); ) {
             String v = (String) iter.next();
             varBox.addItem( v );
@@ -425,7 +429,7 @@ public class RuleModeller extends DirtyableComposite {
             p.add(varBox);
 
 
-            final CheckBox cb = new CheckBox("Notify engine of changes");
+            final CheckBox cb = new CheckBox(constants.NotifyEngineOfChanges());
             cb.setChecked(false);
             cb.addClickListener(new ClickListener() {
                 public void onClick(Widget sender) {
@@ -443,22 +447,21 @@ public class RuleModeller extends DirtyableComposite {
             horiz.add(cb);
 
 
-            InfoPopup img = new InfoPopup("Notify engine of changes (update/modify)", "Modify a field on a fact, and notify the engine to re-evaluate rules." +
-                    "\nWARNING: this can cause infinite loops - use with care.");
+            InfoPopup img = new InfoPopup(constants.NotifyEngineOfChangesUpdateModify(), constants.ModifyEngineTip());
             horiz.add( img );
             HorizontalPanel variablePanel = new HorizontalPanel();
-            popup.addAttribute( "Set field values", horiz );
+            popup.addAttribute(constants.SetFieldValues(), horiz );
 
         } else {
             if (varBox.getItemCount() > 1) {
-                popup.addAttribute( "Set field values", varBox );
+                popup.addAttribute(constants.SetFieldValues(), varBox );
             }
         }
 
         //popup.addRow( new HTML("<hr/>") );
 
         if (retractBox.getItemCount() > 1) {
-            popup.addAttribute( "Retract the fact", retractBox );
+            popup.addAttribute(constants.RetractTheFact(), retractBox );
         }
 
         //popup.addRow( new HTML("<hr/>") );
@@ -466,8 +469,8 @@ public class RuleModeller extends DirtyableComposite {
 
         final ListBox factsToAssert = new ListBox();
         final ListBox factsToLogicallyAssert = new ListBox();
-        factsToAssert.addItem( "Choose ..." );
-        factsToLogicallyAssert.addItem( "Choose ..." );
+        factsToAssert.addItem( constants.ChooseDotDotDot() );
+        factsToLogicallyAssert.addItem( constants.ChooseDotDotDot() );
         for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
             String item = completions.getFactTypes()[i];
             factsToAssert.addItem( item );
@@ -489,9 +492,9 @@ public class RuleModeller extends DirtyableComposite {
         //
         if (completions.getDSLActions().length > 0) {
             final ListBox dsls = new ListBox();
-            dsls.addItem( "Choose..." );
+            dsls.addItem( constants.ChooseDotDotDot());
             for(int i = 0; i < completions.getDSLActions().length; i++ ) {
-                DSLSentence sen = (DSLSentence) completions.getDSLActions()[ i ];
+                DSLSentence sen = completions.getDSLActions()[ i ];
                 if(sen!=null)
                 	dsls.addItem( sen.toString(), Integer.toString( i ) );
             }
@@ -503,10 +506,10 @@ public class RuleModeller extends DirtyableComposite {
                     popup.hide();
                 }
             });
-            popup.addAttribute( "DSL sentence", dsls );
+            popup.addAttribute(constants.DSLSentence(), dsls );
         }
 
-        popup.addRow(new HTML("Advanced options:"));
+        popup.addRow(new HTML(constants.AdvancedOptionsColon()));
 
         if (completions.globalCollections.length > 0) {
             if (vars.size() > 0) {
@@ -524,7 +527,7 @@ public class RuleModeller extends DirtyableComposite {
                 h.add(facts);
                 h.add(new SmallLabel("&nbsp;to&nbsp;"));
                 h.add(cols);
-                Button ok = new Button("Add");
+                Button ok = new Button(constants.Add());
                 ok.addClickListener(new ClickListener() {
                     public void onClick(Widget sender) {
                         ActionGlobalCollectionAdd gca = new ActionGlobalCollectionAdd();
@@ -536,7 +539,7 @@ public class RuleModeller extends DirtyableComposite {
                     }
                 });
                 h.add(ok);
-                popup.addAttribute("Add an item to a collection:", h);
+                popup.addAttribute(constants.AddAnItemToACollection(), h);
             }
         }
 
@@ -552,24 +555,24 @@ public class RuleModeller extends DirtyableComposite {
 
 
         if (factsToAssert.getItemCount() > 1) {
-            popup.addAttribute( "Insert a new fact", factsToAssert );
+            popup.addAttribute(constants.InsertANewFact(), factsToAssert );
             HorizontalPanel horiz = new HorizontalPanel();
             horiz.add( factsToLogicallyAssert );
-            Image img = new Image("images/information.gif");
-            img.setTitle( "Logically assert a fact - the fact will be retracted when the supporting evidence is removed." );
+            Image img = new Image("images/information.gif"); //NON-NLS
+            img.setTitle(constants.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved());
             horiz.add( img );
-            popup.addAttribute( "Logically insert a new fact", horiz );
+            popup.addAttribute(constants.LogicallyInsertANewFact(), horiz );
         }
 
 
         if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
 
 	        if (callMethodBox.getItemCount() > 1) {
-	            popup.addAttribute( "Call a method on ", callMethodBox );
+	            popup.addAttribute(constants.CallAMethodOnFollowing(), callMethodBox );
 	        }
 
-	        Button ff = new Button("Add free form drl");
-	        popup.addAttribute("Free form action ", ff);
+	        Button ff = new Button(constants.AddFreeFormDrl());
+	        popup.addAttribute(constants.FreeFormAction(), ff);
 	        ff.addClickListener(new ClickListener() {
 				public void onClick(Widget arg0) {
 					model.addRhsItem(new FreeFormLine());
@@ -648,7 +651,7 @@ public class RuleModeller extends DirtyableComposite {
             	final FreeFormLine ffl = (FreeFormLine) pattern;
             	final TextBox tb = new TextBox();
             	tb.setText(ffl.text);
-            	tb.setTitle("This is a drl expression (free form)");
+            	tb.setTitle(constants.ThisIsADrlExpressionFreeForm());
             	tb.addChangeListener(new ChangeListener() {
             		public void onChange(Widget arg0) {
             			ffl.text = tb.getText();
@@ -672,7 +675,7 @@ public class RuleModeller extends DirtyableComposite {
                 w = new DSLSentenceWidget((DSLSentence) pattern,completions);
 
                 dsls.add( wrapLHSWidget( model, i, w ) );
-                dsls.setStyleName( "model-builderInner-Background" );
+                dsls.setStyleName( "model-builderInner-Background" ); //NON-NLS
             }
         }
         vert.add( dsls );
@@ -681,8 +684,8 @@ public class RuleModeller extends DirtyableComposite {
     }
 
     private HTML spacerWidget() {
-        HTML h = new HTML("&nbsp;");
-        h.setHeight( "2px" );
+        HTML h = new HTML("&nbsp;");       //NON-NLS
+        h.setHeight( "2px" );              //NON-NLS
         return h;
     }
 
@@ -694,16 +697,16 @@ public class RuleModeller extends DirtyableComposite {
                               Widget w) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        Image remove = new ImageButton("images/delete_item_small.gif");
-        remove.setTitle( "Remove this ENTIRE condition, and all the field constraints that belong to it." );
+        Image remove = new ImageButton("images/delete_item_small.gif"); //NON-NLS
+        remove.setTitle(constants.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt());
         final int idx = i;
         remove.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-            	if (Window.confirm("Remove this entire condition?")) {
+            	if (Window.confirm(constants.RemoveThisEntireConditionQ())) {
                         if (model.removeLhsItem(idx)) {
                             refreshWidget();
                         } else {
-                            ErrorPopup.showMessage( "Can't remove that item as it is used in the action part of the rule." );
+                            ErrorPopup.showMessage(constants.CanTRemoveThatItemAsItIsUsedInTheActionPartOfTheRule());
                         }
                 }
             }

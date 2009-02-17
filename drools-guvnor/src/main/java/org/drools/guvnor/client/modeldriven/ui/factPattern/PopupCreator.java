@@ -9,6 +9,7 @@ import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.modeldriven.brl.FieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -19,6 +20,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
+import com.gwtext.client.util.Format;
 
 public class PopupCreator {
     
@@ -26,6 +29,7 @@ public class PopupCreator {
     private SuggestionCompletionEngine completions;
     private RuleModeller               modeller;
     private boolean                    bindable;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
     /**
      * Returns the pattern.
@@ -93,7 +97,7 @@ public class PopupCreator {
         popup.setWidth(500);
         final HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new TextBox();
-        final Button ok = new Button("Set");
+        final Button ok = new Button(constants.Set());
         vn.add( varName );
         vn.add( ok );
 
@@ -101,7 +105,7 @@ public class PopupCreator {
             public void onClick(Widget w) {
                 String var = varName.getText();
                 if (modeller.isVariableNameUsed( var )) {
-                    Window.alert( "The variable name [" + var + "] is already taken.");
+                    Window.alert(Format.format(constants.TheVariableName0IsAlreadyTaken(), var));
                     return;
                 }
                 con.fieldBinding = var;
@@ -109,10 +113,10 @@ public class PopupCreator {
                 popup.hide();
             }
         } );
-        popup.addAttribute("Bind the field called [" + con.fieldName + "] to a variable:", vn );
+        popup.addAttribute(Format.format(constants.BindTheFieldCalled0ToAVariable(), con.fieldName), vn );
         if (fields != null) {
-            Button sub = new Button("Show sub fields...");
-            popup.addAttribute("Apply a constraint to a sub-field of [" + con.fieldName + "]:", sub);
+            Button sub = new Button(constants.ShowSubFields());
+            popup.addAttribute(Format.format(constants.ApplyAConstraintToASubFieldOf0(), con.fieldName), sub);
             sub.addClickListener(new ClickListener() {
                 public void onClick(Widget sender) {
                     popup.hide();
@@ -128,8 +132,8 @@ public class PopupCreator {
      * This shows a popup for adding fields to a composite
      */
     public void showPatternPopupForComposite(Widget w, final CompositeFieldConstraint composite) {
-        final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
-                                                         "Add fields to this constraint" );
+        final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif", //NON-NLS
+                constants.AddFieldsToThisConstraint());
 
         final ListBox box = new ListBox();
         box.addItem( "..." );
@@ -147,13 +151,13 @@ public class PopupCreator {
                 popup.hide();
             }
         } );
-        popup.addAttribute( "Add a restriction on a field", box );
+        popup.addAttribute(constants.AddARestrictionOnAField(), box );
 
 
         final ListBox composites = new ListBox();
-        composites.addItem("...");
-        composites.addItem( "All of (And)", CompositeFieldConstraint.COMPOSITE_TYPE_AND );
-        composites.addItem( "Any of (Or)", CompositeFieldConstraint.COMPOSITE_TYPE_OR );
+        composites.addItem("..."); //NON-NLS
+        composites.addItem(constants.AllOfAnd(), CompositeFieldConstraint.COMPOSITE_TYPE_AND );
+        composites.addItem(constants.AnyOfOr(), CompositeFieldConstraint.COMPOSITE_TYPE_OR );
         composites.setSelectedIndex( 0 );
 
         composites.addChangeListener( new ChangeListener() {
@@ -166,13 +170,12 @@ public class PopupCreator {
             }
         });
 
-        InfoPopup infoComp = new InfoPopup("Multiple field constraints", "You can specify constraints that span multiple fields (and more). The results of all these constraints can be combined with a 'and' or an 'or' logically." +
-                "You can also have other multiple field constraints nested inside these restrictions.");
+        InfoPopup infoComp = new InfoPopup(constants.MultipleFieldConstraints(), constants.MultipleConstraintsTip());
 
         HorizontalPanel horiz = new HorizontalPanel();
         horiz.add( composites );
         horiz.add( infoComp );
-        popup.addAttribute( "Multiple field constraint", horiz );
+        popup.addAttribute(constants.MultipleFieldConstraint(), horiz );
 
         popup.show();
 
@@ -183,8 +186,8 @@ public class PopupCreator {
      */
     public void showPatternPopup(Widget w, final String factType, final FieldConstraint con) {
 
-        String title = (con == null) ? "Modify constraints for " + factType : "Add sub-field constraint";
-        final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
+        String title = (con == null) ? Format.format(constants.ModifyConstraintsFor0(), factType) : constants.AddSubFieldConstraint();
+        final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",                                           //NON-NLS
                                                           title );
 
         final ListBox box = new ListBox();
@@ -206,13 +209,13 @@ public class PopupCreator {
                 popup.hide();
             }
         } );
-        popup.addAttribute( "Add a restriction on a field", box );
+        popup.addAttribute(constants.AddARestrictionOnAField(), box );
 
 
         final ListBox composites = new ListBox();
         composites.addItem("...");
-        composites.addItem( "All of (And)", CompositeFieldConstraint.COMPOSITE_TYPE_AND );
-        composites.addItem( "Any of (Or)", CompositeFieldConstraint.COMPOSITE_TYPE_OR );
+        composites.addItem(constants.AllOfAnd(), CompositeFieldConstraint.COMPOSITE_TYPE_AND );
+        composites.addItem(constants.AnyOfOr(), CompositeFieldConstraint.COMPOSITE_TYPE_OR );
         composites.setSelectedIndex( 0 );
 
         composites.addChangeListener( new ChangeListener() {
@@ -225,22 +228,21 @@ public class PopupCreator {
             }
         });
 
-        InfoPopup infoComp = new InfoPopup("Multiple field constraints", "You can specify constraints that span multiple fields (and more). The results of all these constraints can be combined with a 'and' or an 'or' logically." +
-                "You can also have other multiple field constraints nested inside these restrictions.");
+        InfoPopup infoComp = new InfoPopup(constants.MultipleFieldConstraints(), constants.MultipleConstraintsTip1());
 
         HorizontalPanel horiz = new HorizontalPanel();
 
         horiz.add( composites );
         horiz.add( infoComp );
         if (con == null) {
-            popup.addAttribute( "Multiple field constraint", horiz );
+            popup.addAttribute(constants.MultipleFieldConstraint(), horiz );
         }
 
 
         //popup.addRow( new HTML("<hr/>") );
         if (con == null) {
-            popup.addRow( new SmallLabel("<i>Advanced options:</i>") );
-            final Button predicate = new Button( "New formula" );
+            popup.addRow( new SmallLabel("<i>" + constants.AdvancedOptionsColon() + "</i>") ); //NON-NLS
+            final Button predicate = new Button(constants.NewFormula());
             predicate.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     SingleFieldConstraint con = new SingleFieldConstraint();
@@ -250,7 +252,7 @@ public class PopupCreator {
                     popup.hide();
                 }
             } );
-            popup.addAttribute( "Add a new formula style expression", predicate );
+            popup.addAttribute(constants.AddANewFormulaStyleExpression(), predicate );
 
             doBindingEditor( popup );
         }
@@ -277,12 +279,12 @@ public class PopupCreator {
             varTxt.setVisibleLength( 6 );
             varName.add( varTxt );
 
-            Button bindVar = new Button( "Set" );
+            Button bindVar = new Button( constants.Set() );
             bindVar.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                     String var = varTxt.getText();
                     if (modeller.isVariableNameUsed( var )) {
-                        Window.alert( "The variable name [" + var + "] is already taken." );
+                        Window.alert(Format.format(constants.TheVariableName0IsAlreadyTaken(), var));
                         return;
                     }
                     pattern.boundName = varTxt.getText();
@@ -292,7 +294,7 @@ public class PopupCreator {
             } );
 
             varName.add( bindVar );
-            popup.addAttribute( "Variable name", varName );
+            popup.addAttribute(constants.VariableName(), varName );
 
         }
     }
