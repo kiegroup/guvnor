@@ -21,7 +21,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String Assets();
 
-    String CreateNew();
 
     String Category();
 
@@ -1104,4 +1103,157 @@ public interface Constants extends ConstantsWithLookup {
     String PackageConfigurationUpdatedSuccessfullyRefreshingContentCache();
 
     String RefreshingPackageData();
+
+    String ImportedTypes();
+
+    String FactTypesJarTip();
+
+    String AreYouSureYouWantToRemoveThisFactType();
+
+    String Globals();
+
+    String GlobalTypesAreClassesFromJarFilesThatHaveBeenUploadedToTheCurrentPackage();
+
+    String AreYouSureYouWantToRemoveThisGlobal();
+
+    String AdvancedView();
+
+    String SwitchToTextModeEditing();
+
+    String SwitchToAdvancedTextModeForPackageEditing();
+
+    String ChooseAFactType();
+
+    String loadingList();
+
+    String TypesInThePackage();
+
+    String IfNoTypesTip();
+
+    String ChooseClassType();
+
+    String GlobalName();
+
+    String EnteringATypeClassName();
+
+    String EnterTypeNameTip();
+
+    String advancedClassName();
+
+    String YouMustEnterAGlobalVariableName();
+
+    String Packages();
+
+    String CreateNew();
+
+    String NewPackage1();
+
+
+    String NewRule();
+
+    String UploadPOJOModelJar();
+
+    String NewModelArchiveJar();
+
+    String NewDeclarativeModel();
+
+    String NewDeclarativeModelUsingGuidedEditor();
+
+    String NewFunction();
+
+    String CreateANewFunction();
+
+    String NewDSL();
+
+    String CreateANewDSLConfiguration();
+
+    String NewRuleFlow();
+
+    String CreateANewRuleFlow();
+
+    String NewEnumeration();
+
+    String CreateANewEnumerationDropDownMapping();
+
+    String NewTestScenario();
+
+    String CreateATestScenario();
+
+    String NewFile();
+
+    String CreateAFile();
+
+    String RebuildAllPackageBinariesQ();
+
+    String RebuildConfirmWarning();
+
+    String RebuildingPackageBinaries();
+
+    String TipAuthEnable();
+
+    String EnablingAuthorization();
+
+    String EnablingAuthPopupTip();
+
+
+    String UserName1();
+
+    String Administrator();
+
+    String HasPackagePermissions();
+
+    String HasCategoryPermissions();
+
+    String Reload1();
+
+    String CurrentlyConfiguredUsers();
+
+    String CreateNewUserMapping();
+
+    String EnterNewUserName();
+
+    String NewUserName();
+
+    String DeleteSelectedUser();
+
+    String AreYouSureYouWantToDeleteUser0();
+
+    String LoadingUsersPermissions();
+
+    String EditUser0();
+
+    String UserAuthenticationTip();
+
+
+    String Updating();
+
+    String ThisUserIsAnAdministrator();
+
+    String RemoveAdminRights();
+
+    String AreYouSureYouWantToRemoveAdministratorPermissions();
+
+    String RemovePermission();
+
+    String AreYouSureYouWantToRemovePermission0();
+
+    String AddANewPermission();
+
+    String Loading();
+
+    String PermissionType();
+
+    String pleaseChoose1();
+
+    String MakeThisUserAdmin();
+
+    String SelectCategoryToProvidePermissionFor();
+
+    String SelectPackageToApplyPermissionTo();
+
+    String Yes();
+
+    String PermissionDetails();
+
+    String PermissionDetailsTip();
 }

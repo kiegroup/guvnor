@@ -9,12 +9,14 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
 import com.gwtext.client.widgets.Button;
@@ -40,13 +42,14 @@ public class PackagesPanel extends GenericPanel {
     private VerticalPanel packagesPanel;
     protected String currentPackage;
     private boolean packagesLoaded = false;
+    private static Constants constants = ((Constants) GWT.create(Constants.class));
 
     public PackagesPanel(ExplorerViewCenterPanel tabbedPanel) {
-        super("Packages", tabbedPanel);
-        setIconCls("nav-packages");
+        super(constants.Packages(), tabbedPanel);
+        setIconCls("nav-packages"); //NON-NLS
 
         Toolbar pkgToolbar = new Toolbar();
-        final ToolbarMenuButton menuButton = new ToolbarMenuButton("Create New", packageNewMenu());
+        final ToolbarMenuButton menuButton = new ToolbarMenuButton(constants.CreateNew(), packageNewMenu());
         pkgToolbar.addButton( menuButton );
 
         menuButton.addListener( new SplitButtonListenerAdapter() {
@@ -77,7 +80,7 @@ public class PackagesPanel extends GenericPanel {
     //TODO: move it to separate class
     private Menu packageNewMenu() {
         Menu m = new Menu();
-        m.addItem(new Item("New Package", new BaseItemListenerAdapter() {
+        m.addItem(new Item(constants.NewPackage1(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
                 NewPackageWizard wiz = new NewPackageWizard(new Command() {
                     public void execute() {
@@ -86,71 +89,69 @@ public class PackagesPanel extends GenericPanel {
                 });
                 wiz.show();
             }
-        }, "images/new_package.gif"));
+        }, "images/new_package.gif")); //NON-NLS
 
-        m.addItem(new Item("New Rule", new BaseItemListenerAdapter() {
+        m.addItem(new Item(constants.NewRule(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(null, "New Rule", true, currentPackage);
+                launchWizard(null, constants.NewRule(), true, currentPackage);
             }
-        }, "images/rule_asset.gif"));
+        }, "images/rule_asset.gif"));          //NON-NLS
 
-        m.addItem(new Item("Upload POJO Model jar", new BaseItemListenerAdapter() {
+        m.addItem(new Item(constants.UploadPOJOModelJar(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(AssetFormats.MODEL, "New model archive (jar)", false, currentPackage);
+                launchWizard(AssetFormats.MODEL, constants.NewModelArchiveJar(), false, currentPackage);
             }
-        }, "images/model_asset.gif"));
+        }, "images/model_asset.gif"));              //NON-NLS
 
-        m.addItem(new Item("New Declarative Model", new BaseItemListenerAdapter() {
+        m.addItem(new Item(constants.NewDeclarativeModel(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(AssetFormats.DRL_MODEL, "New declarative model (using guided editor).", false, currentPackage);
+                launchWizard(AssetFormats.DRL_MODEL, constants.NewDeclarativeModelUsingGuidedEditor(), false, currentPackage);
             }
-        }, "images/model_asset.gif"));
+        }, "images/model_asset.gif")); //NON-NLS
 
-        m.addItem(new Item("New Function", new BaseItemListenerAdapter() {
+        m.addItem(new Item(constants.NewFunction(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(AssetFormats.FUNCTION, "Create a new function", false, currentPackage);
+                launchWizard(AssetFormats.FUNCTION, constants.CreateANewFunction(), false, currentPackage);
             }
-        }, "images/function_assets.gif"));
+        }, "images/function_assets.gif")); //NON-NLS
 
 
-        m.addItem(new Item("New DSL", new BaseItemListenerAdapter() {
+        m.addItem(new Item(constants.NewDSL(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(AssetFormats.DSL, "Create a new DSL configuration", false, currentPackage);
+                launchWizard(AssetFormats.DSL, constants.CreateANewDSLConfiguration(), false, currentPackage);
             }
-        }, "images/dsl.gif"));
+        }, "images/dsl.gif"));   //NON-NLS
 
 
-        m.addItem(new Item("New RuleFlow", new BaseItemListenerAdapter() {
+        m.addItem(new Item(constants.NewRuleFlow(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(AssetFormats.RULE_FLOW_RF, "Create a new RuleFlow", false, currentPackage);
+                launchWizard(AssetFormats.RULE_FLOW_RF, constants.CreateANewRuleFlow(), false, currentPackage);
             }
-        }, "images/ruleflow_small.gif"));
+        }, "images/ruleflow_small.gif")); //NON-NLS
 
-        m.addItem(new Item("New Enumeration", new BaseItemListenerAdapter() {
+        m.addItem(new Item(constants.NewEnumeration(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(AssetFormats.ENUMERATION, "Create a new enumeration (drop down mapping).", false, currentPackage);
+                launchWizard(AssetFormats.ENUMERATION, constants.CreateANewEnumerationDropDownMapping(), false, currentPackage);
             }
-        }, "images/new_enumeration.gif"));
+        }, "images/new_enumeration.gif")); //NON-NLS
 
-        m.addItem(new Item("New Test Scenario", new BaseItemListenerAdapter() {
+        m.addItem(new Item(constants.NewTestScenario(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(AssetFormats.TEST_SCENARIO, "Create a test scenario.", false, currentPackage);
+                launchWizard(AssetFormats.TEST_SCENARIO, constants.CreateATestScenario(), false, currentPackage);
             }
-        }, "images/test_manager.gif"));
+        }, "images/test_manager.gif")); //NON-NLS
 
-        m.addItem(new Item("New File", new BaseItemListenerAdapter() {
+        m.addItem(new Item(constants.NewFile(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard("*", "Create a file.", false, currentPackage);
+                launchWizard("*", constants.CreateAFile(), false, currentPackage);
             }
-        }, "images/new_file.gif"));
+        }, "images/new_file.gif")); //NON-NLS
 
 
-        m.addItem(new Item("Rebuild all package binaries", new BaseItemListenerAdapter() {
+        m.addItem(new Item(constants.RebuildAllPackageBinariesQ(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                if (Window.confirm("You should only run this if Drools has been upgraded recently " +
-                        "(and you have been experiencing errors)." +
-                        "This may take some time - are you sure you want to do this? ")) {
-                    LoadingPopup.showMessage("Rebuilding package binaries...");
+                if (Window.confirm(constants.RebuildConfirmWarning())) {
+                    LoadingPopup.showMessage(constants.RebuildingPackageBinaries());
                     RepositoryServiceFactory.getService().rebuildPackages(new GenericCallback() {
                         public void onSuccess(Object data) {
                             LoadingPopup.close();
@@ -159,7 +160,7 @@ public class PackagesPanel extends GenericPanel {
                 }
 
             }
-        }, "images/refresh.gif"));
+        }, "images/refresh.gif")); //NON-NLS
 
         return m;
     }
@@ -170,8 +171,8 @@ public class PackagesPanel extends GenericPanel {
     }
 
     private Widget packageExplorer(final ExplorerViewCenterPanel tabPanel) {
-        TreeNode root = new TreeNode("Packages");
-        root.setAttribute("icon", "images/silk/chart_organisation.gif");
+        TreeNode root = new TreeNode(constants.Packages());
+        root.setAttribute("icon", "images/silk/chart_organisation.gif"); //NON-NLS
 
         final TreePanel panel = genericExplorerWidget(root);
 
@@ -218,7 +219,7 @@ public class PackagesPanel extends GenericPanel {
 
             @Override
             public void onCollapseNode(final TreeNode node) {
-                if (node.getText().equals("Packages")) {
+                if (node.getText().equals(constants.Packages())) {
                     Node[] children = node.getChildNodes();
                     for (Node child : children) {
                         node.removeChild(child);
@@ -233,7 +234,7 @@ public class PackagesPanel extends GenericPanel {
         panel.addListener(treePanelListener);
 
         ScrollPanel scp = new ScrollPanel(panel);
-        scp.setHeight("500px");
+        scp.setHeight("500px"); //NON-NLS
 
 
         return scp;
@@ -241,9 +242,8 @@ public class PackagesPanel extends GenericPanel {
 
     private void loadPackages(final TreeNode root) {
         RepositoryServiceFactory.getService().listPackages(
-                new GenericCallback() {
-                    public void onSuccess(Object data) {
-                        PackageConfigData[] value = (PackageConfigData[]) data;
+                new GenericCallback<PackageConfigData[]>() {
+                    public void onSuccess(PackageConfigData[] value) {
                         PackageHierarchy ph = new PackageHierarchy();
 
                         for (PackageConfigData val : value) {
@@ -265,7 +265,7 @@ public class PackagesPanel extends GenericPanel {
         } else {
             TreeNode tn = new TreeNode();
             tn.setText(fldr.name);
-            tn.setIcon("images/empty_package.gif");
+            tn.setIcon("images/empty_package.gif"); //NON-NLS
             root.appendChild(tn);
             for (PackageHierarchy.Folder c : fldr.children) {
                 buildPkgTree(tn, c);

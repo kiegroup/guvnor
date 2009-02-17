@@ -10,6 +10,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -25,6 +26,7 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This is for managing imports etc.
@@ -37,9 +39,10 @@ public class PackageHeaderWidget extends Composite {
 	private SimplePanel layout;
 	private ListBox importList;
 	private ListBox globalList;
+    private Constants constants;
 
 
-	public PackageHeaderWidget(PackageConfigData conf) {
+    public PackageHeaderWidget(PackageConfigData conf) {
 		this.conf = conf;
 		layout = new SimplePanel();
 		render();
@@ -59,27 +62,28 @@ public class PackageHeaderWidget extends Composite {
 			HorizontalPanel main = new HorizontalPanel();
 
 			VerticalPanel imports = new VerticalPanel();
-			imports.add(new Label("Imported types"));
+            constants = ((Constants) GWT.create(Constants.class));
+            imports.add(new Label(constants.ImportedTypes()));
 			importList = new ListBox(true);
 
 			doImports(t);
 			HorizontalPanel importCols = new HorizontalPanel();
 			importCols.add(importList);
 			VerticalPanel importActions = new VerticalPanel();
-			importActions.add(new ImageButton("images/new_item.gif") {
+			importActions.add(new ImageButton("images/new_item.gif") { //NON-NLS
 				{
 					addClickListener(new ClickListener() {
 						public void onClick(Widget w) {
-							showTypeQuestion(w, t, false, "Fact types are classes from 'jar' files that have been uploaded to the current package.");
+							showTypeQuestion(w, t, false, constants.FactTypesJarTip());
 						}
 					});
 				}
 			});
-			importActions.add(new ImageButton("images/trash.gif") {
+			importActions.add(new ImageButton("images/trash.gif") {             //NON-NLS
 				{
 					addClickListener(new ClickListener() {
 						public void onClick(Widget w) {
-							if (Window.confirm("Are you sure you want to remove this fact type?")) {
+							if (Window.confirm(constants.AreYouSureYouWantToRemoveThisFactType())) {
 								int i = importList.getSelectedIndex();
 								importList.removeItem(i);
 								t.imports.remove(i);
@@ -95,26 +99,26 @@ public class PackageHeaderWidget extends Composite {
 
 
 			VerticalPanel globals = new VerticalPanel();
-			globals.add(new Label("Globals"));
+			globals.add(new Label(constants.Globals()));
 			globalList = new ListBox(true);
 			doGlobals(t);
 			HorizontalPanel globalCols = new HorizontalPanel();
 			globalCols.add(globalList);
 			VerticalPanel globalActions = new VerticalPanel();
-			globalActions.add(new ImageButton("images/new_item.gif") {
+			globalActions.add(new ImageButton("images/new_item.gif") { //NON-NLS
 				{
 					addClickListener(new ClickListener() {
 						public void onClick(Widget w) {
-							showTypeQuestion(w, t, true, "Global types are classes from 'jar' files that have been uploaded to the current package.");
+							showTypeQuestion(w, t, true, constants.GlobalTypesAreClassesFromJarFilesThatHaveBeenUploadedToTheCurrentPackage());
 						}
 					});
 				}
 			});
-			globalActions.add(new ImageButton("images/trash.gif") {
+			globalActions.add(new ImageButton("images/trash.gif") {             //NON-NLS
 				{
 					addClickListener(new ClickListener() {
 						public void onClick(Widget w) {
-							if (Window.confirm("Are you sure you want to remove this global?")) {
+							if (Window.confirm(constants.AreYouSureYouWantToRemoveThisGlobal())) {
 								int i = globalList.getSelectedIndex();
 								globalList.removeItem(i);
 								t.globals.remove(i);
@@ -128,16 +132,16 @@ public class PackageHeaderWidget extends Composite {
 			globals.add(globalCols);
 
 			main.add(imports);
-			main.add(new HTML("&nbsp;"));
+			main.add(new HTML("&nbsp;")); //NON-NLS
 			main.add(globals);
 
 			Button advanced = new Button() {
 				{
-					setText("Advanced view");
-					setTitle("Switch to text mode editing.");
+					setText(constants.AdvancedView());
+					setTitle(constants.SwitchToTextModeEditing());
 					addClickListener(new ClickListener() {
 						public void onClick(Widget w) {
-							if (Window.confirm("Switch to advanced text mode for package editing?")) {
+							if (Window.confirm(constants.SwitchToAdvancedTextModeForPackageEditing())) {
 								textEditorVersion();
 							}
 						}
@@ -172,16 +176,14 @@ public class PackageHeaderWidget extends Composite {
 
 	private void showTypeQuestion(Widget w, final Types t, final boolean global, String headerMessage) {
 
-		final FormStylePopup pop = new FormStylePopup("images/home_icon.gif", "Choose a fact type");
-		pop.addRow(new HTML("<small><i>" + headerMessage +
-				" </i></small>"));
+		final FormStylePopup pop = new FormStylePopup("images/home_icon.gif", constants.ChooseAFactType()); //NON-NLS
+		pop.addRow(new HTML("<small><i>" + headerMessage + " </i></small>")); //NON-NLS
 		final ListBox factList = new ListBox();
-		factList.addItem("loading list ....");
+		factList.addItem(constants.loadingList());
 
-		RepositoryServiceFactory.getService().listTypesInPackage(this.conf.uuid, new GenericCallback() {
-			public void onSuccess(Object data) {
+		RepositoryServiceFactory.getService().listTypesInPackage(this.conf.uuid, new GenericCallback<String[]>() {
+			public void onSuccess(String[] list) {
 				factList.clear();
-				String[] list = (String[]) data;
 				for (int i = 0; i < list.length; i++) {
 					if (global) {
 						factList.addItem(list[i]);
@@ -194,24 +196,23 @@ public class PackageHeaderWidget extends Composite {
 			}
 		});
 
-		InfoPopup info = new InfoPopup("Types in the package", "If no types appear in the list, create a model asset, and upload a jar file to it for this package. " +
-				"The jar file should contain the .class files for the types needed by the rules only.");
+		InfoPopup info = new InfoPopup(constants.TypesInThePackage(), constants.IfNoTypesTip());
 		HorizontalPanel h = new HorizontalPanel();
 		h.add(factList);
 		h.add(info);
-		pop.addAttribute("Choose class type:", h);
+		pop.addAttribute(constants.ChooseClassType(), h);
 		final TextBox globalName = new TextBox();
 		if (global) {
-			pop.addAttribute("Global name:", globalName);
+			pop.addAttribute(constants.GlobalName(), globalName);
 		}
 		final TextBox className = new TextBox();
-		InfoPopup infoClass = new InfoPopup("Entering a type class name", "You should only need to do this if a fact class is on the BRMS classpath itself. Otherwise it should be in the list above.");
+		InfoPopup infoClass = new InfoPopup(constants.EnteringATypeClassName(), constants.EnterTypeNameTip());
 		h = new HorizontalPanel();
 		h.add(className);
 		h.add(infoClass);
-		pop.addAttribute("(advanced) class name:", h);
+		pop.addAttribute(constants.advancedClassName(), h);
 
-		Button ok = new Button("OK") {
+		Button ok = new Button(constants.OK()) {
 			{
 				addClickListener(new ClickListener() {
 					public void onClick(Widget w) {
@@ -221,7 +222,7 @@ public class PackageHeaderWidget extends Composite {
 							doImports(t);
 						} else {
 							if ("".equals(globalName.getText())) {
-								Window.alert("You must enter a global variable name.");
+								Window.alert(constants.YouMustEnterAGlobalVariableName());
 								return;
 							}
 							t.globals.add(new Global(type, globalName.getText()));

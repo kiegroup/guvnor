@@ -796,7 +796,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
         //to stretch it out
         gv.setForceFit(true);
         gv.setGroupTextTpl("{text} ({[values.rs.length]} {[values.rs.length > 1 ? \"" //NON-NLS
-                + constants.Items() +"\" : \"" + constants.Item() + "\"]})"); 
+                + constants.Items() +"\" : \"" + constants.Item() + "\"]})");
 
 
         grid.setView(gv);
