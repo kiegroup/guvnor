@@ -21,6 +21,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -31,16 +32,18 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 public class StateManager extends Composite {
 
     private ListBox currentStatuses;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
     public StateManager() {
         PrettyFormLayout form = new PrettyFormLayout();
         form.addHeader( "images/status_large.png",
-                        new HTML( "<b>Manage statuses</b>" ) );
-        form.startSection( "Status tags are for the lifecycle of an asset." );
+                        new HTML( "<b>" + constants.ManageStatuses() + "</b>" ) );
+        form.startSection(constants.StatusTagsAreForTheLifecycleOfAnAsset());
 
         currentStatuses = new ListBox();
         currentStatuses.setVisibleItemCount( 7 );
@@ -48,12 +51,12 @@ public class StateManager extends Composite {
 
         refreshList();
 
-        form.addAttribute( "Current statuses:",
+        form.addAttribute(constants.CurrentStatuses(),
                            currentStatuses );
 
         HorizontalPanel hPanel = new HorizontalPanel();
-        Button create = new Button( "New status" );
-        create.setTitle( "Create a new category" );
+        Button create = new Button(constants.NewStatus());
+        create.setTitle(constants.CreateANewCategory());
         create.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 StatusEditor newCat = new StatusEditor( new Command() {
@@ -66,12 +69,12 @@ public class StateManager extends Composite {
             }
         } );
 
-        Button edit = new Button( "Rename selected" );
+        Button edit = new Button(constants.RenameSelected());
         edit.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
 
                 if ( !currentStatuses.isItemSelected( currentStatuses.getSelectedIndex() ) ) {
-                    Window.alert( "Please select a status to rename." );
+                    Window.alert(constants.PleaseSelectAStatusToRename());
                     return;
                 }
                 renameSelected();
@@ -79,12 +82,12 @@ public class StateManager extends Composite {
             }
         } );
 
-        Button remove = new Button( "Delete selected" );
+        Button remove = new Button(constants.DeleteSelected());
         remove.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
 
                 if ( !currentStatuses.isItemSelected( currentStatuses.getSelectedIndex() ) ) {
-                    Window.alert( "Please select a status to remove." );
+                    Window.alert(constants.PleaseSelectAStatusToRemove());
                     return;
                 }
 
@@ -97,7 +100,7 @@ public class StateManager extends Composite {
         hPanel.add( edit );
         hPanel.add( remove );
 
-        form.addAttribute( "Add new status:",
+        form.addAttribute(constants.AddNewStatus(),
                            hPanel );
 
         form.endSection();
@@ -110,7 +113,7 @@ public class StateManager extends Composite {
         RepositoryServiceFactory.getService().removeState( name,
                                                            new GenericCallback() {
                                                                public void onSuccess(Object data) {
-                                                                   Window.alert( "Status removed." );
+                                                                   Window.alert(constants.StatusRemoved());
                                                                    refreshList();
                                                                }
                                                            } );
@@ -118,7 +121,7 @@ public class StateManager extends Composite {
 
     private void renameSelected() {
 
-        String newName = Window.prompt( "Please enter the name you would like to change this status to",
+        String newName = Window.prompt(constants.PleaseEnterTheNameYouWouldLikeToChangeThisStatusTo(),
                                         "" );
 
         String oldName = currentStatuses.getItemText( currentStatuses.getSelectedIndex() );
@@ -131,7 +134,7 @@ public class StateManager extends Composite {
                                                                newName,
                                                                new GenericCallback<Object>() {
                                                                    public void onSuccess(Object data) {
-                                                                       Window.alert( "Status renamed." );
+                                                                       Window.alert(constants.StatusRenamed());
                                                                        refreshList();
                                                                    }
                                                                } );
@@ -139,11 +142,10 @@ public class StateManager extends Composite {
     }
 
     private void refreshList() {
-        LoadingPopup.showMessage( "Loading statuses..." );
-        RepositoryServiceFactory.getService().listStates( new GenericCallback() {
-            public void onSuccess(Object data) {
+        LoadingPopup.showMessage(constants.LoadingStatuses());
+        RepositoryServiceFactory.getService().listStates( new GenericCallback<String[]>() {
+            public void onSuccess(String[] statii) {
                 currentStatuses.clear();
-                String[] statii = (String[]) data;
                 for ( int i = 0; i < statii.length; i++ ) {
                     currentStatuses.addItem( statii[i] );
                 }

@@ -20,8 +20,13 @@ package org.drools.guvnor.client.packages;
 import junit.framework.TestCase;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 public class SuggestionCompletionCacheTest extends TestCase {
 
@@ -34,11 +39,13 @@ public class SuggestionCompletionCacheTest extends TestCase {
         loaded = false;
     }
 
-    public void testCache() {
-        SuggestionCompletionCache cache1 = SuggestionCompletionCache.getInstance();
-        assertSame(cache1, SuggestionCompletionCache.getInstance());
+    public void testCache() throws Exception {
 
-        final SuggestionCompletionCache cache = new SuggestionCompletionCache() {
+
+        //need to proxy out the constants.
+        Constants cs = (Constants) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] {Constants.class}, new ConstantsProxy());
+
+        final SuggestionCompletionCache cache = new SuggestionCompletionCache(cs) {
 
             public void loadPackage(String packageName,
                              Command command) {
@@ -52,6 +59,7 @@ public class SuggestionCompletionCacheTest extends TestCase {
             }
         });
         assertTrue (loaded);
+
         SuggestionCompletionEngine eng = new SuggestionCompletionEngine();
         cache.cache.put( "foo",  eng);
 
@@ -78,6 +86,13 @@ public class SuggestionCompletionCacheTest extends TestCase {
 
 
 
+    }
+
+    class ConstantsProxy implements InvocationHandler {
+
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            return "testing";
+        }
     }
 
 }

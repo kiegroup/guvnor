@@ -22,13 +22,14 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This provides a popup for editing a status (name etc).
@@ -38,16 +39,17 @@ public class StatusEditor extends FormStylePopup {
 
     private TextBox name = new TextBox();
     private Command refresh;
+    private static Constants constants = ((Constants) GWT.create(Constants.class));
 
     public StatusEditor(Command refresh) {
         super( "images/edit_category.gif",
-               "Create new status" );
+                constants.CreateNewStatus());
         this.refresh = refresh;
 
-        addAttribute( "Status name",
+        addAttribute(constants.StatusName(),
                       name );
 
-        Button ok = new Button( "OK" );
+        Button ok = new Button( constants.OK() );
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget arg0) {
                 ok();
@@ -61,7 +63,7 @@ public class StatusEditor extends FormStylePopup {
     void ok() {
 
         if ( "".equals( this.name.getText() ) ) {
-            ErrorPopup.showMessage( "Can't have an empty status name." );
+            ErrorPopup.showMessage(constants.CanTHaveAnEmptyStatusName());
         } else {
     		if (!NewAssetWizard.validatePathPerJSR170(this.name.getText())) return;
     		createStatus( name );
@@ -69,7 +71,7 @@ public class StatusEditor extends FormStylePopup {
     }
 
     private void createStatus(final TextBox box) {
-        LoadingPopup.showMessage( "Creating status" );
+        LoadingPopup.showMessage(constants.CreatingStatus());
         RepositoryServiceFactory.getService().createState( box.getText(),
                                                            new GenericCallback<String>() {
                                                                public void onSuccess(String data) {
@@ -82,7 +84,7 @@ public class StatusEditor extends FormStylePopup {
                                                                        }
                                                                    } else {
 
-                                                                       ErrorPopup.showMessage( "Status was not successfully created. " );
+                                                                       ErrorPopup.showMessage(constants.StatusWasNotSuccessfullyCreated());
 
                                                                    }
                                                                }

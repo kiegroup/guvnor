@@ -94,7 +94,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String DeleteAreYouSure();
 
-    String ChangeStatus();
 
     String ChangeStatusTip();
 
@@ -988,7 +987,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String ValidatingAndBuildingPackagePleaseWait();
 
-    String PleaseWaitDotDotDot();
 
     String PackageBuiltSuccessfully();
 
@@ -1669,4 +1667,116 @@ public interface Constants extends ConstantsWithLookup {
     String AuditLogColon();
 
     String ShowEventsButton();
+
+    String ViewingSnapshot();
+
+    String ForPackage();
+
+    String clickHereToDownloadBinaryOrCopyURLForDeploymentAgent();
+
+    String DeploymentURL();
+
+    String SnapshotCreatedOn();
+
+    String CommentColon();
+
+    String SnapshotDeleteConfirm();
+
+    String SnapshotWasDeleted();
+
+    String CopySnapshotText();
+
+    String ExistingSnapshots();
+
+    String NewSnapshotNameIs();
+
+    String CreatedSnapshot0ForPackage1();
+
+    String Snapshot0ForPackage1WasCopiedFrom2();
+
+    String PleaseEnterANonExistingSnapshotName();
+
+    String SnapshotListingFor();
+
+    String SnapshotItems();
+
+    String NewSnapshot();
+
+
+    String SnapshotRebuildWarning();
+
+    String RebuildingSnapshotsPleaseWaitThisMayTakeSomeTime();
+
+    String SnapshotsWereRebuiltSuccessfully();
+
+    String Type2();
+
+    String Priority();
+
+    String ValueRuleFlow();
+
+    String ManageStatuses();
+
+    String StatusTagsAreForTheLifecycleOfAnAsset();
+
+    String CurrentStatuses();
+
+    String NewStatus();
+
+
+
+    String PleaseSelectAStatusToRename();
+
+
+    String PleaseSelectAStatusToRemove();
+
+    String AddNewStatus();
+
+    String StatusRemoved();
+
+    String PleaseEnterTheNameYouWouldLikeToChangeThisStatusTo();
+
+    String StatusRenamed();
+
+    String LoadingStatuses();
+
+
+    String PleaseWaitDotDotDot();
+
+    String ChooseOne();
+
+    String ChangeStatus();
+
+    String UpdatingStatus();
+
+    String CreateNewStatus();
+
+    String StatusName();
+
+    String CanTHaveAnEmptyStatusName();
+
+    String CreatingStatus();
+
+    String StatusWasNotSuccessfullyCreated();
+
+    String UnableToGetContentAssistanceForThisRule();
+
+    String UnableToValidatePackageForSCE();
+
+    String Detail();
+
+    String VersionHistory1();
+
+    String NoHistory();
+
+    String View();
+
+    String LoadingVersionFromHistory();
+
+    String VersionNumber0Of1();
+
+    String RestoreThisVersion();
+
+
+    String RestoreThisVersionQ();
 }

@@ -30,6 +30,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.table.DataModel;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -44,6 +45,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.google.gwt.core.client.GWT;
+import com.gwtext.client.util.Format;
 
 /**
  * This widget shows a list of versions.
@@ -57,6 +60,7 @@ public class VersionBrowser extends Composite {
     private String    uuid;
     private MetaData  metaData;
     private Command   refreshCommand;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
     public VersionBrowser(String uuid,
                           MetaData data,
@@ -75,15 +79,15 @@ public class VersionBrowser extends Composite {
             }
         } ;
         layout = new FlexTable();
-        ClickableLabel vh = new ClickableLabel( "Version history", cl );
+        ClickableLabel vh = new ClickableLabel(constants.VersionHistory1(), cl );
         layout.setWidget( 0, 0, vh );
-        layout.getCellFormatter().setStyleName( 0, 0, "metadata-Widget" );
+        layout.getCellFormatter().setStyleName( 0, 0, "metadata-Widget" ); //NON-NLS
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         formatter.setHorizontalAlignment( 0,
                                           0,
                                           HasHorizontalAlignment.ALIGN_LEFT );
 
-        refresh = new ImageButton( "images/refresh.gif" );
+        refresh = new ImageButton( "images/refresh.gif" );  //NON-NLS
 
 
         refresh.addClickListener( cl );
@@ -129,7 +133,7 @@ public class VersionBrowser extends Composite {
 
                                                                     public void onSuccess(TableDataResult table) {
                                                                         if ( table == null ) {
-                                                                            layout.setWidget( 1, 0, new Label( "No history." ) );
+                                                                            layout.setWidget( 1, 0, new Label(constants.NoHistory()) );
                                                                             showStaticIcon();
                                                                             return;
                                                                         }
@@ -147,7 +151,7 @@ public class VersionBrowser extends Composite {
                                                                         
                                                                         for (int i = 0; i < rows.length; i++) {
 																			TableDataRow row = rows[i];
-																			String s = row.values[0]   + " modified on: " + row.values[2] + " (" + row.values[1] + ")" ;
+                                                                            String s = Format.format("{0} modified on: {1} ({2})", row.values[0], row.values[2], row.values[1] ) ;
 																			history.addItem(s, row.id);
 																		}
 
@@ -157,7 +161,7 @@ public class VersionBrowser extends Composite {
 
                                                                         formatter.setColSpan( 1,0,2 );
 
-                                                                        Button open = new Button( "View" );
+                                                                        Button open = new Button(constants.View());
 
                                                                         open.addClickListener( new ClickListener() {
                                                                             public void onClick(Widget w) {
@@ -184,20 +188,17 @@ public class VersionBrowser extends Composite {
     private void showVersion(final String versionUUID) {
 //        VersionViewer viewer = new VersionViewer( this.metaData, versionUUID, uuid, refreshCommand );
 
-        LoadingPopup.showMessage( "Loading version" );
+        LoadingPopup.showMessage(constants.LoadingVersionFromHistory());
 
-        RepositoryServiceFactory.getService().loadRuleAsset( versionUUID, new GenericCallback() {
+        RepositoryServiceFactory.getService().loadRuleAsset( versionUUID, new GenericCallback<RuleAsset>() {
 
-            public void onSuccess(Object data) {
-
-                RuleAsset asset = (RuleAsset) data;
+            public void onSuccess(RuleAsset asset) {
                 asset.isreadonly = true;
                 asset.metaData.name = metaData.name;
-
-                final FormStylePopup pop = new FormStylePopup("images/snapshot.png", "Version number [" + asset.metaData.versionNumber + "] of [" + asset.metaData.name + "]",
+                final FormStylePopup pop = new FormStylePopup("images/snapshot.png", Format.format(constants.VersionNumber0Of1(), "" + asset.metaData.versionNumber, asset.metaData.name),
                 		new Integer(800), new Boolean(false));
 
-                Button restore = new Button("Restore this version");
+                Button restore = new Button(constants.RestoreThisVersion());
                 restore.addClickListener( new ClickListener() {
                     public void onClick(Widget w) {
                         restore(w, versionUUID, new Command() {
@@ -224,7 +225,7 @@ public class VersionBrowser extends Composite {
 
         final CheckinPopup pop = new CheckinPopup(w.getAbsoluteLeft() + 10,
                                                   w.getAbsoluteTop() + 10,
-                                                  "Restore this version?");
+                constants.RestoreThisVersionQ());
         pop.setCommand( new Command() {
             public void execute() {
                 RepositoryServiceFactory.getService().restoreVersion( versionUUID, uuid, pop.getCheckinComment(), new GenericCallback() {
@@ -242,7 +243,7 @@ public class VersionBrowser extends Composite {
 
         final CheckinPopup pop = new CheckinPopup(w.getAbsoluteLeft() + 10,
                                                   w.getAbsoluteTop() + 10,
-                                                  "Restore this version?");
+                constants.RestoreThisVersionQ());
         pop.setCommand( new Command() {
             public void execute() {
                 RepositoryServiceFactory.getService().restoreVersion( versionUUID, headUUID, pop.getCheckinComment(), new GenericCallback() {

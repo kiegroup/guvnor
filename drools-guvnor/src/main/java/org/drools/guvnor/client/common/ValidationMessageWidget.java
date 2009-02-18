@@ -19,6 +19,8 @@ package org.drools.guvnor.client.common;
 
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
+import org.drools.guvnor.client.messages.Constants;
 
 /**
  * This presents validation error messages to the user, from the server side.
@@ -27,27 +29,19 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Neale
  */
 public class ValidationMessageWidget extends FormStylePopup {
-    
+    private Constants constants = ((Constants) GWT.create(Constants.class));
+
     /**
      * The heading is the short description in bold at the top.
      */
     public ValidationMessageWidget(String heading, String body) {
 
-        super("images/attention_needed.png", heading);
-        addAttribute( "Detail:", details(body) );
+        super("images/attention_needed.png", heading); //NON-NLS
+        addAttribute(constants.Detail(), details(body) );
         //addRow( close() );
         
     }
 
-//    private Widget close() {
-//        Image img = new Image("images/close.gif");
-//        img.addClickListener( new ClickListener() {
-//            public void onClick(Widget w) {
-//                hide();
-//            }
-//        } );
-//        return img;
-//    }
 
     private Widget details(String body) {
         TextArea area = new TextArea();

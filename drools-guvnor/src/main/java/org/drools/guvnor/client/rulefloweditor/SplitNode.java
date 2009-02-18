@@ -25,12 +25,15 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
+import org.drools.guvnor.client.messages.Constants;
 
 public class SplitNode extends RuleFlowBaseNode {
 
     SplitTransferNode.Type                type;
 
     public Map<ConnectionRef, Constraint> constraints;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
     @Override
     public Corners getCorners() {
@@ -57,7 +60,7 @@ public class SplitNode extends RuleFlowBaseNode {
             parametersForm.clear();
 
             // Add Type:
-            parametersForm.addAttribute( "Type",
+            parametersForm.addAttribute(constants.Type2(),
                                          new Label( type.toString() ) );
 
             for ( final ConnectionRef connectionRef : constraints.keySet() ) {
@@ -101,9 +104,9 @@ public class SplitNode extends RuleFlowBaseNode {
                 } );
 
                 Panel panel = new HorizontalPanel();
-                panel.add( new Label( " Priority: " ) );
+                panel.add( new Label(constants.Priority()) );
                 panel.add( priorityTextBox );
-                panel.add( new Label( " Value: " ) );
+                panel.add( new Label(constants.ValueRuleFlow()) );
                 panel.add( constraintTextBox );
 
                 parametersForm.addAttribute( constraint.getName(),

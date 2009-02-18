@@ -18,6 +18,7 @@ import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -33,10 +34,12 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
 import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
+import com.gwtext.client.util.Format;
 
 /**
  * This is the new snapshot view.
@@ -54,6 +57,7 @@ public class SnapshotView extends Composite {
     private Command close;
 
     private ExplorerViewCenterPanel centerPanel;
+    private static Constants constants = ((Constants) GWT.create(Constants.class));
 
     public SnapshotView(SnapshotInfo snapInfo, PackageConfigData parentPackage, Command closeSnap, ExplorerViewCenterPanel center) {
 
@@ -86,25 +90,25 @@ public class SnapshotView extends Composite {
 
 
 
-        ft.setWidget(0, 0, new Label("Viewing snapshot:"));
+        ft.setWidget(0, 0, new Label(constants.ViewingSnapshot()));
         ft.setWidget(0, 1, new HTML("<b>" + this.snapInfo.name + "</b>"));
         ft.getFlexCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 
-        ft.setWidget(1, 0, new Label("For package:"));
+        ft.setWidget(1, 0, new Label(constants.ForPackage()));
         ft.setWidget(1, 1, new Label(this.parentConf.name));
         ft.getFlexCellFormatter().setHorizontalAlignment(1, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 
         HTML dLink = new HTML("<a href='" + PackageBuilderWidget.getDownloadLink(this.parentConf)
-                + "' target='_blank'>click here to download binary (or copy URL for Rule Agent)</a>");
-        ft.setWidget(2, 0, new Label("Deployment URL:"));
+                + "' target='_blank'>" + constants.clickHereToDownloadBinaryOrCopyURLForDeploymentAgent() + "</a>");
+        ft.setWidget(2, 0, new Label(constants.DeploymentURL()));
         ft.setWidget(2, 1, dLink);
         ft.getFlexCellFormatter().setHorizontalAlignment(2, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 
-        ft.setWidget(3, 0, new Label("Snapshot created on:"));
+        ft.setWidget(3, 0, new Label(constants.SnapshotCreatedOn()));
         ft.setWidget(3, 1, new Label( parentConf.lastModified.toLocaleString() ));
         ft.getFlexCellFormatter().setHorizontalAlignment(4, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 
-        ft.setWidget(4,0, new Label("Comment:"));
+        ft.setWidget(4,0, new Label(constants.CommentColon()));
         ft.setWidget(4,1, new Label( parentConf.checkinComment ));
         ft.getFlexCellFormatter().setHorizontalAlignment(4, 0, HasHorizontalAlignment.ALIGN_RIGHT);
 
@@ -123,15 +127,14 @@ public class SnapshotView extends Composite {
     }
 
     private Button getDeleteButton(final String snapshotName, final String pkgName) {
-        Button btn = new Button("Delete");
+        Button btn = new Button(constants.Delete());
         btn.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                if (Window.confirm( "Are you sure you want to delete the snapshot labelled [" + snapshotName +
-                        "] from the package [" + pkgName + "] ?")) {
+                if (Window.confirm(Format.format(constants.SnapshotDeleteConfirm(), snapshotName, pkgName))) {
                     RepositoryServiceFactory.getService().copyOrRemoveSnapshot( pkgName, snapshotName, true, null, new GenericCallback() {
                         public void onSuccess(Object data) {
                             close.execute();
-                            Window.alert("Snapshot was deleted.");
+                            Window.alert(constants.SnapshotWasDeleted());
 
                         }
                     });
@@ -144,27 +147,27 @@ public class SnapshotView extends Composite {
 
     private Button getCopyButton(final String snapshotName, final String packageName) {
         final RepositoryServiceAsync serv = RepositoryServiceFactory.getService();
-        Button btn = new Button("Copy");
+        Button btn = new Button(constants.Copy());
         btn.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 serv.listSnapshots(packageName, new GenericCallback<SnapshotInfo[]>() {
                     public void onSuccess(final SnapshotInfo[] snaps) {
-                        final FormStylePopup copy = new FormStylePopup("images/snapshot.png", "Copy snapshot " + snapshotName);
+                        final FormStylePopup copy = new FormStylePopup("images/snapshot.png", Format.format(constants.CopySnapshotText(), snapshotName));
                         final TextBox box = new TextBox();
                         final List<RadioButton> options = new ArrayList<RadioButton>();
                         VerticalPanel vert = new VerticalPanel();
 						for (int i = 0; i < snaps.length; i++) {
 							RadioButton existing = new RadioButton(
-									"snapshotNameGroup", snaps[i].name);
+									"snapshotNameGroup", snaps[i].name);   //NON-NLS
 							options.add(existing);
 							vert.add(existing);
 						}
-						final RadioButton newBut = new RadioButton("snapshotNameGroup", "NEW NAME");
+						final RadioButton newBut = new RadioButton("snapshotNameGroup", "NEW NAME");   //NON-NLS
 						vert.add(newBut);
 
-						copy.addAttribute("Existing Snapshots:", vert);
-						copy.addAttribute( "New Snapshot name:", box );
-                        Button ok = new Button("OK");
+						copy.addAttribute(constants.ExistingSnapshots(), vert);
+						copy.addAttribute(constants.NewSnapshotNameIs(), box );
+                        Button ok = new Button(constants.OK());
                         copy.addAttribute( "", ok );
                         ok.addClickListener( new ClickListener() {
                             public void onClick(Widget w) {
@@ -173,7 +176,7 @@ public class SnapshotView extends Composite {
 		                                serv.copyOrRemoveSnapshot( packageName, snapshotName, false, box.getText(), new GenericCallback() {
 		                                    public void onSuccess(Object data) {
 		                                        copy.hide();
-		                                        Window.alert("Created snapshot [" + box.getText() + "] for package [" + packageName + "]");
+                                                Window.alert(Format.format(constants.CreatedSnapshot0ForPackage1(), box.getText(), packageName));
 		                                    }
 		                                });
                             		}
@@ -184,7 +187,7 @@ public class SnapshotView extends Composite {
     		                                serv.copyOrRemoveSnapshot( packageName, snapshotName, false, newName, new GenericCallback() {
     		                                    public void onSuccess(Object data) {
     		                                        copy.hide();
-    		                                        Window.alert("Snapshot [" + newName + "] for package [" + packageName + "] was copied from [" + snapshotName + "]");
+                                                    Window.alert(Format.format(constants.Snapshot0ForPackage1WasCopiedFrom2(), newName, packageName, snapshotName));
     		                                    }
     		                                });
                             			}
@@ -196,7 +199,7 @@ public class SnapshotView extends Composite {
 									String name) {
 								for(SnapshotInfo sn : snaps) {
 									if (sn.name.equals(name)) {
-										Window.alert("Please enter a non existing Snapshot name");
+										Window.alert(constants.PleaseEnterANonExistingSnapshotName());
 										return false;
 									}
 								}
@@ -266,9 +269,9 @@ public class SnapshotView extends Composite {
             });
 
             VerticalPanel vp = new VerticalPanel();
-            vp.add(new HTML("<i><small>Snapshot listing for: " + this.snapInfo.name + "</small></i>"));
+            vp.add(new HTML("<i><small>" + constants.SnapshotListingFor() + this.snapInfo.name + "</small></i>"));
             vp.add(grid);
-            centerPanel.addTab("Snapshot items", true, vp, key);
+            centerPanel.addTab(constants.SnapshotItems(), true, vp, key);
         }
 
 
@@ -276,11 +279,11 @@ public class SnapshotView extends Composite {
     }
 
     public static void showNewSnapshot() {
-        final FormStylePopup pop = new FormStylePopup("images/snapshot.png", "New snapshot");
+        final FormStylePopup pop = new FormStylePopup("images/snapshot.png", ((Constants) GWT.create(Constants.class)).NewSnapshot());
         final RulePackageSelector sel = new RulePackageSelector();
 
-        pop.addAttribute("For package:", sel);
-        Button ok = new Button("OK");
+        pop.addAttribute(constants.ForPackage(), sel);
+        Button ok = new Button(constants.OK());
         pop.addAttribute("", ok);
         pop.show();
 
@@ -296,14 +299,12 @@ public class SnapshotView extends Composite {
     }
 
     public static void rebuildBinaries() {
-        if (Window.confirm( "Rebuilding the snapshot binaries will take some time, and only needs to be done if" +
-                " the BRMS itself has been updated recently. This will also cause the rule agents to load the rules anew." +
-                " Are you sure you want to do this?" )) {
-            LoadingPopup.showMessage( "Rebuilding snapshots. Please wait, this may take some time..." );
+        if (Window.confirm(constants.SnapshotRebuildWarning())) {
+            LoadingPopup.showMessage(constants.RebuildingSnapshotsPleaseWaitThisMayTakeSomeTime());
             RepositoryServiceFactory.getService().rebuildSnapshots( new GenericCallback() {
                 public void onSuccess(Object data) {
                     LoadingPopup.close();
-                    Window.alert( "Snapshots were rebuilt successfully." );
+                    Window.alert(constants.SnapshotsWereRebuiltSuccessfully());
                 }
             });
         }

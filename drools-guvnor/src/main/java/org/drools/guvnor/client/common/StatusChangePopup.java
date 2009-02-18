@@ -18,6 +18,7 @@ package org.drools.guvnor.client.common;
 
 
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
@@ -27,6 +28,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.GWT;
 
 /**
  * Well this one should be pretty obvious what it does.
@@ -42,22 +44,22 @@ public class StatusChangePopup extends FormStylePopup {
     private String uuid;
     private String newStatus;
     private Command changedStatus;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
     public StatusChangePopup(String uuid, boolean isPackage) {
 
         this.uuid = uuid;
         this.isPackage = isPackage;
 
-        super.addRow(new HTML( "<img src='images/status_small.gif'/><b>Change status</b>" ));
+        super.addRow(new HTML( "<img src='images/status_small.gif'/><b>" + constants.ChangeStatus() + "</b>" ));
 
         HorizontalPanel horiz = new HorizontalPanel();
         final ListBox box = new ListBox();
 
-        LoadingPopup.showMessage( "Please wait..." );
-        RepositoryServiceFactory.getService().listStates( new GenericCallback() {
-            public void onSuccess(Object data) {
-                String[] list = (String[]) data;
-                box.addItem( "-- Choose one --" );
+        LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
+        RepositoryServiceFactory.getService().listStates( new GenericCallback<String[]>() {
+            public void onSuccess(String[] list) {
+                box.addItem(constants.ChooseOne());
                 for ( int i = 0; i < list.length; i++ ) {
                     box.addItem( list[i] );
                 }
@@ -72,7 +74,7 @@ public class StatusChangePopup extends FormStylePopup {
         });
 
         horiz.add(box);
-        Button ok = new Button("Change status");
+        Button ok = new Button(constants.ChangeStatus());
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 String newState = box.getItemText( box.getSelectedIndex() );
@@ -83,7 +85,7 @@ public class StatusChangePopup extends FormStylePopup {
         horiz.add( ok );
 
 
-        Button close = new Button("Cancel");
+        Button close = new Button(constants.Cancel());
         close.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 hide();
@@ -100,7 +102,7 @@ public class StatusChangePopup extends FormStylePopup {
 
     /** Apply the state change */
     private void changeState(String newState) {
-        LoadingPopup.showMessage( "Updating status..." );
+        LoadingPopup.showMessage(constants.UpdatingStatus());
         RepositoryServiceFactory.getService().changeState( uuid, newStatus, isPackage, new GenericCallback() {
             public void onSuccess(Object data) {
                 changedStatus.execute();

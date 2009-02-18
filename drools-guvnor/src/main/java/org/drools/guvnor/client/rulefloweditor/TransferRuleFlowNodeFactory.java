@@ -102,7 +102,7 @@ public class TransferRuleFlowNodeFactory {
 
         } else {
 
-            throw new IllegalArgumentException( "Unkown node type " + node );
+            throw new IllegalArgumentException( "Unkown node type " + node );   //NON-NLS
 
         }
 

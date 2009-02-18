@@ -25,8 +25,11 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.core.client.GWT;
+import com.gwtext.client.util.Format;
 
 /**
  * This utility cache will maintain a cache of suggestion completion engines,
@@ -39,14 +42,29 @@ import com.google.gwt.user.client.Command;
  */
 public class SuggestionCompletionCache {
 
-    private static SuggestionCompletionCache INSTANCE = new SuggestionCompletionCache();
+    private static SuggestionCompletionCache INSTANCE = null;
+
+    
 
     Map cache = new HashMap();
-
+    private final Constants constants;
 
 
     public static SuggestionCompletionCache getInstance() {
+        if (INSTANCE == null) INSTANCE = new SuggestionCompletionCache();
         return INSTANCE;
+    }
+
+
+    private SuggestionCompletionCache() {
+        constants = GWT.create(Constants.class);
+    }
+
+    /**
+     * This should only be used for tests !
+     */
+    SuggestionCompletionCache(Constants cs) {
+        constants = cs;
     }
 
 
@@ -68,7 +86,7 @@ public class SuggestionCompletionCache {
     public SuggestionCompletionEngine getEngineFromCache(String packageName) {
         SuggestionCompletionEngine eng = (SuggestionCompletionEngine) cache.get( packageName );
         if (eng == null) {
-            ErrorPopup.showMessage( "Unable to get content assistance for this rule." );
+            ErrorPopup.showMessage(constants.UnableToGetContentAssistanceForThisRule());
             return null;
         }
         return eng;
@@ -76,18 +94,16 @@ public class SuggestionCompletionCache {
 
 
     public void loadPackage(final String packageName, final Command command) {
-        System.out.println("Loading package Suggestions...");
-        RepositoryServiceFactory.getService().loadSuggestionCompletionEngine( packageName, new GenericCallback() {
-            public void onSuccess(Object data) {
-                SuggestionCompletionEngine engine = (SuggestionCompletionEngine) data;
+        System.out.println("Loading package Suggestions..."); //NON-NLS
+        RepositoryServiceFactory.getService().loadSuggestionCompletionEngine( packageName, new GenericCallback<SuggestionCompletionEngine>() {
+            public void onSuccess(SuggestionCompletionEngine engine) {
                 cache.put( packageName, engine );
                 command.execute();
             }
 
             public void onFailure(Throwable t) {
             	LoadingPopup.close();
-            	ErrorPopup.showMessage("Unable to validate package configuration (eg, DSLs, models) for [" + packageName + "]. " +
-    			"Suggestion completions may not operate correctly for graphical editors for this package.");
+                ErrorPopup.showMessage(Format.format(constants.UnableToValidatePackageForSCE(), packageName));
             	command.execute();
             }
         });
