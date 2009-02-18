@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class Preferences {
 
-    static final Preferences INSTANCE = new Preferences();
+    static final Preferences    INSTANCE = new Preferences();
     private Map<String, String> prefs;
 
     private Preferences() {
@@ -23,14 +23,15 @@ public class Preferences {
     }
 
     public static boolean getBooleanPref(String name) {
-        if (INSTANCE.prefs.containsKey(name)) {
-            return Boolean.parseBoolean(INSTANCE.prefs.get(name));
+        if ( INSTANCE.prefs.containsKey( name ) ) {
+            return Boolean.parseBoolean( INSTANCE.prefs.get( name ) );
         } else {
             return false;
         }
     }
 
-    
-
+    public static String getStringPref(String name) {
+        return INSTANCE.prefs.get( name );
+    }
 
 }

@@ -1,4 +1,5 @@
 package org.drools.guvnor.server.security;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,10 +16,12 @@ package org.drools.guvnor.server.security;
  * limitations under the License.
  */
 
-
-
-import java.util.*;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.security.auth.login.LoginException;
 
@@ -26,11 +29,11 @@ import org.apache.log4j.Logger;
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.security.Capabilities;
+import org.drools.util.DateUtils;
 import org.jboss.seam.Component;
-import org.jboss.seam.Seam;
 import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.AuthorizationException;
+import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.permission.RoleBasedPermissionResolver;
 
 /**
@@ -41,29 +44,29 @@ public class SecurityServiceImpl
     implements
     SecurityService {
 
-    public static final String GUEST_LOGIN = "guest";
-    private static final Logger log = Logger.getLogger( SecurityServiceImpl.class );
+    public static final String       GUEST_LOGIN = "guest";
+    private static final Logger      log         = Logger.getLogger( SecurityServiceImpl.class );
     static final Map<String, String> PREFERENCES = loadPrefs();
 
-
-    public boolean login(String userName, String password) {
+    public boolean login(String userName,
+                         String password) {
         log.info( "Logging in user [" + userName + "]" );
-        if (Contexts.isApplicationContextActive()) {
+        if ( Contexts.isApplicationContextActive() ) {
 
-        	// Check for banned characters in user name
-        	// These will cause the session to jam if you let them go further
-			char[] bannedChars = { '\'', '*', '[', ']' };
-			for (int i = 0; i < bannedChars.length; i++) {
-				char c = bannedChars[i];
-				if (userName.indexOf(c) >= 0) {
-					log.error("Not a valid name character " + c);
-					return false;
-				}
-			}
-        	
-            Identity.instance().getCredentials().setUsername(userName);
-            Identity.instance().getCredentials().setPassword(password); 
-        	            
+            // Check for banned characters in user name
+            // These will cause the session to jam if you let them go further
+            char[] bannedChars = {'\'', '*', '[', ']'};
+            for ( int i = 0; i < bannedChars.length; i++ ) {
+                char c = bannedChars[i];
+                if ( userName.indexOf( c ) >= 0 ) {
+                    log.error( "Not a valid name character " + c );
+                    return false;
+                }
+            }
+
+            Identity.instance().getCredentials().setUsername( userName );
+            Identity.instance().getCredentials().setPassword( password );
+
             try {
                 Identity.instance().authenticate();
             } catch ( LoginException e ) {
@@ -78,20 +81,18 @@ public class SecurityServiceImpl
     }
 
     public UserSecurityContext getCurrentUser() {
-        if (Contexts.isApplicationContextActive()) {
-            if (!Identity.instance().isLoggedIn()) {
+        if ( Contexts.isApplicationContextActive() ) {
+            if ( !Identity.instance().isLoggedIn() ) {
                 //check to see if we can autologin
-                return new UserSecurityContext(checkAutoLogin());
+                return new UserSecurityContext( checkAutoLogin() );
             }
-            return new UserSecurityContext(Identity.instance().getCredentials().getUsername());
+            return new UserSecurityContext( Identity.instance().getCredentials().getUsername() );
         } else {
-        	HashSet<String> disabled = new HashSet<String>();
+            HashSet<String> disabled = new HashSet<String>();
             //return new UserSecurityContext(null);
-            return new UserSecurityContext("SINGLE USER MODE (DEBUG) USE ONLY");
+            return new UserSecurityContext( "SINGLE USER MODE (DEBUG) USE ONLY" );
         }
     }
-
-
 
     /**
      * This will return a auto login user name if it has been configured.
@@ -107,7 +108,7 @@ public class SecurityServiceImpl
         } catch ( LoginException e ) {
             return null;
         }
-        if (id.isLoggedIn()) {
+        if ( id.isLoggedIn() ) {
             return id.getCredentials().getUsername();
         } else {
             return null;
@@ -115,47 +116,87 @@ public class SecurityServiceImpl
 
     }
 
-	public Capabilities getUserCapabilities() {
+    public Capabilities getUserCapabilities() {
 
-		if (Contexts.isApplicationContextActive()) {
-			if (Identity.instance().hasRole(RoleTypes.ADMIN)) {
-				return Capabilities.all(PREFERENCES);
-			}
-			CapabilityCalculator c = new CapabilityCalculator();
-			RoleBasedPermissionManager permManager = (RoleBasedPermissionManager)
-					Component.getInstance("roleBasedPermissionManager");
+        if ( Contexts.isApplicationContextActive() ) {
+            if ( Identity.instance().hasRole( RoleTypes.ADMIN ) ) {
+                return Capabilities.all( PREFERENCES );
+            }
+            CapabilityCalculator c = new CapabilityCalculator();
+            RoleBasedPermissionManager permManager = (RoleBasedPermissionManager) Component.getInstance( "roleBasedPermissionManager" );
 
-			List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
-            if (permissions.size() == 0) {
-                RoleBasedPermissionResolver resolver = (RoleBasedPermissionResolver)
-                        Component.getInstance("org.jboss.seam.security.roleBasedPermissionResolver");
-                if (resolver.isEnableRoleBasedAuthorization()) {
-                     Identity.instance().logout();
-                     throw new AuthorizationException("This user has no permissions setup.");                   
+            List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
+            if ( permissions.size() == 0 ) {
+                RoleBasedPermissionResolver resolver = (RoleBasedPermissionResolver) Component.getInstance( "org.jboss.seam.security.roleBasedPermissionResolver" );
+                if ( resolver.isEnableRoleBasedAuthorization() ) {
+                    Identity.instance().logout();
+                    throw new AuthorizationException( "This user has no permissions setup." );
                 }
             }
-			return c.calcCapabilities(permissions, PREFERENCES);
-		} else {
-			return Capabilities.all(PREFERENCES);
-		}
-	}
-
+            return c.calcCapabilities( permissions,
+                                       PREFERENCES );
+        } else {
+            return Capabilities.all( PREFERENCES );
+        }
+    }
 
     private static Map<String, String> loadPrefs() {
         Properties ps = new Properties();
         try {
-            ps.load(SecurityServiceImpl.class.getResourceAsStream("/preferences.properties"));
+            ps.load( SecurityServiceImpl.class.getResourceAsStream( "/preferences.properties" ) );
             Map<String, String> prefs = new HashMap<String, String>();
-            for (Object o : ps.keySet()) {
+            for ( Object o : ps.keySet() ) {
                 String feature = (String) o;
-                prefs.put(feature, ps.getProperty(feature));
+
+                prefs.put( feature,
+                           ps.getProperty( feature ) );
             }
+
+            setSystemProperties( prefs );
+
             return prefs;
-        } catch (IOException e) {
-            log.info("Couldn't find preferences.properties - using defaults");
+        } catch ( IOException e ) {
+            log.info( "Couldn't find preferences.properties - using defaults" );
             return new HashMap<String, String>();
         }
     }
 
+    /**
+     * Set system properties.
+     * If the system properties were not set, set them to Preferences so we can access them in client side.
+     * @param prefs
+     */
+    private static void setSystemProperties(Map<String, String> prefs) {
+        final String dateFormat = "drools.dateformat";
+        final String defaultLanguage = "drools.defaultlanguage";
+        final String defaultCountry = "drools.defaultcountry";
 
+        // Set properties that were specified in the properties file
+        if ( prefs.containsKey( dateFormat ) ) {
+            System.setProperty( dateFormat,
+                                prefs.get( dateFormat ) );
+        }
+        if ( prefs.containsKey( defaultLanguage ) ) {
+            System.setProperty( defaultLanguage,
+                                prefs.get( defaultLanguage ) );
+        }
+        if ( prefs.containsKey( defaultCountry ) ) {
+            System.setProperty( defaultCountry,
+                                prefs.get( defaultCountry ) );
+        }
+
+        // If properties were not set in the file, use the defaults
+        if ( !prefs.containsKey( dateFormat ) ) {
+            prefs.put( dateFormat,
+                       DateUtils.getDateFormatMask() );
+        }
+        if ( !prefs.containsKey( defaultLanguage ) ) {
+            prefs.put( defaultLanguage,
+                       System.getProperty( defaultLanguage ) );
+        }
+        if ( !prefs.containsKey( defaultCountry ) ) {
+            prefs.put( defaultCountry,
+                       System.getProperty( defaultCountry ) );
+        }
+    }
 }
