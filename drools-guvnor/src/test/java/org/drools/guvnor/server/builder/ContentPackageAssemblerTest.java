@@ -173,18 +173,18 @@ public class ContentPackageAssemblerTest extends TestCase {
 
         AssetItem props1 = pkg.addAsset("conf1", "");
         props1.updateFormat("properties");
-        props1.updateContent("drools.accumulate.function.groupCount = wee");
+        props1.updateContent("drools.accumulate.function.groupCount = org.drools.base.accumulators.MaxAccumulateFunction");
         props1.checkin("");
 
 
         AssetItem props2 = pkg.addAsset("conf2", "");
         props2.updateFormat("conf");
-        props2.updateBinaryContentAttachment(new ByteArrayInputStream("drools.accumulate.function.groupFun = wah".getBytes()));
+        props2.updateBinaryContentAttachment(new ByteArrayInputStream("drools.accumulate.function.groupFun = org.drools.base.accumulators.MinAccumulateFunction".getBytes()));
         props2.checkin("");
 
         ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
-        assertEquals("wee", asm.builder.getPackageBuilderConfiguration().getAccumulateFunctionsMap().get("groupCount"));
-        assertEquals("wah", asm.builder.getPackageBuilderConfiguration().getAccumulateFunctionsMap().get("groupFun"));
+        assertEquals("org.drools.base.accumulators.MaxAccumulateFunction", asm.builder.getPackageBuilderConfiguration().getAccumulateFunction( "groupCount" ).getClass().getName());
+        assertEquals("org.drools.base.accumulators.MinAccumulateFunction", asm.builder.getPackageBuilderConfiguration().getAccumulateFunction("groupFun").getClass().getName());
 
     }
 
