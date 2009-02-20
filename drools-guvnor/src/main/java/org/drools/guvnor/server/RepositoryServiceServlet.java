@@ -27,7 +27,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 public class RepositoryServiceServlet extends RemoteServiceServlet implements RepositoryService {
 
-    private static final Logger     log              = LoggingHelper.getLogger();
+    private static final Logger     log              = LoggingHelper.getLogger(RepositoryServiceServlet.class);
 	/**
 	 * This is used by the pass through methods below.
 	 * Michael got tired of trying to read other peoples overly abstracted code, so its just generated dumb code to
@@ -71,7 +71,11 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 			          ex);
 		   }
 		} else {
-			log.error(e.getCause());
+            if (e.getCause() != null) {
+			    log.error(e.getCause());
+            } else {
+                log.error(e);
+            }
 			super.doUnexpectedFailure(e);
 		}
 	}

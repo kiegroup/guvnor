@@ -19,16 +19,16 @@ import org.drools.guvnor.server.ServiceImplementation;
  */
 public class LoggingHelper {
 
-	static MessageList messages = new MessageList();
+	static final MessageList messages = new MessageList();
 
 	public static LogEntry[] getMessages() {
 		return messages.getMessages();
 	}
 
 
-	public static Logger getLogger() {
+	public static Logger getLogger(Class cls) {
 
-		Logger l = Logger.getLogger( ServiceImplementation.class );
+		Logger l = Logger.getLogger( cls );
 
 		l.addAppender(new Appender() {
 
@@ -92,7 +92,7 @@ public class LoggingHelper {
 
 class MessageList {
 	static int MAX = 250;
-	LogEntry[] messages = new LogEntry[MAX];
+	final LogEntry[] messages = new LogEntry[MAX];
 	int current = 0;
 	public MessageList() {
 

@@ -22,7 +22,7 @@ import java.io.IOException;
 public class SecurityServiceServlet extends RemoteServiceServlet implements
 		SecurityService {
 
-    private static final Logger log              = LoggingHelper.getLogger();
+    private static final Logger log              = LoggingHelper.getLogger(SecurityServiceServlet.class);
 	SecurityService service = new SecurityServiceImpl();
 
     @Override

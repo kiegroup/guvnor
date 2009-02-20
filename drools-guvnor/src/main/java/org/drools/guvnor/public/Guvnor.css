@@ -432,7 +432,7 @@ textarea:focus,textarea:active {
 a,a:visited {
 	color:#00008B;
 }
-.gwt-CheckBox,.gwt-RadioButton,.gwt-Tree .gwt-TreeItem,.small-Text,.global-Font {
+.gwt-CheckBox,.gwt-Tree .gwt-TreeItem,.small-Text,.global-Font {
 	#font-size:smaller;
 }
 select:focus,input:focus,input:active,.constraint-value-Editor:focus,.constraint-value-Editor:active {

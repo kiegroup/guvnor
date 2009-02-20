@@ -8,7 +8,13 @@ import org.drools.guvnor.client.rpc.LogEntry;
 public class LoggingHelperTest extends TestCase {
 
 	public void testAppender() {
-		Logger l = LoggingHelper.getLogger();
+		Logger l = LoggingHelper.getLogger(LoggingHelperTest.class);
+        Logger l_= LoggingHelper.getLogger(LoggingHelperTest.class);
+        assertSame(l, l_);
+        l_ = LoggingHelper.getLogger(TestCase.class);
+        
+        assertNotSame(l, l_);
+
 		assertNotNull(l.getAppender("guilogger"));
 	}
 

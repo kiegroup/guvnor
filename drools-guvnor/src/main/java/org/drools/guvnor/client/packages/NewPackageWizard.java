@@ -30,21 +30,7 @@ import org.drools.guvnor.client.messages.Constants;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FormHandler;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormSubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormSubmitEvent;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.gwtext.client.util.Format;
 
 /**
@@ -67,12 +53,12 @@ public class NewPackageWizard extends FormStylePopup {
         descBox = new TextArea();
 
         newPackageLayout.addRow( new HTML(constants.CreateNewPackage()) );
-        importLayout.addRow( new HTML(constants.ImportDRLDesc1()) );
-        importLayout.addRow( new HTML(constants.ImportDRLDesc2()) );
-        importLayout.addRow( new HTML(constants.ImportDRLDesc3()) );
+
 
         newPackageLayout.addAttribute(constants.NameColon(), nameBox );
         newPackageLayout.addAttribute(constants.DescriptionColon(), descBox );
+
+
 
         nameBox.setTitle(constants.PackageNameTip());
 
@@ -81,7 +67,7 @@ public class NewPackageWizard extends FormStylePopup {
         newPackage.setChecked( true );
         newPackageLayout.setVisible( true );
 
-        newPackage.addClickListener( new ClickListener() {
+        newPackage.addClickListener( new ClickListener() {        
             public void onClick(Widget w) {
                 newPackageLayout.setVisible( true );
                 importLayout.setVisible( false );
@@ -96,7 +82,7 @@ public class NewPackageWizard extends FormStylePopup {
                 importLayout.setVisible( true );
             }
         });
-        AbsolutePanel ab = new AbsolutePanel();
+        VerticalPanel ab = new VerticalPanel();
         ab.add( newPackage );
         ab.add( importPackage );
         addRow( ab );
@@ -105,6 +91,11 @@ public class NewPackageWizard extends FormStylePopup {
         addRow(importLayout);
 
         importLayout.addAttribute(constants.DRLFileToImport(), newImportWidget(afterCreatedEvent, this) );
+
+        importLayout.addRow(new HTML("<br/><b>" + constants.NoteNewPackageDrlImportWarning() + "</b>"));
+        importLayout.addRow( new HTML(constants.ImportDRLDesc1()) );
+        importLayout.addRow( new HTML(constants.ImportDRLDesc2()) );
+        importLayout.addRow( new HTML(constants.ImportDRLDesc3()) );
 
 
         Button create = new Button(constants.CreatePackage());

@@ -154,7 +154,7 @@ public class ServiceImplementation
 
     private static final DateFormat dateFormatter                     = DateFormat.getInstance();
 
-    private static final Logger     log                               = LoggingHelper.getLogger();
+    private static final Logger     log                               = LoggingHelper.getLogger(ServiceImplementation.class);
 
     private MetaDataMapper          metaDataMapper                    = new MetaDataMapper();
 
