@@ -434,12 +434,14 @@ public class PackageBuilderWidget extends Composite {
 					return;
 				}
 
+                LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());                
 				RepositoryServiceFactory.getService().createPackageSnapshot(
 						packageName, name, replace, comment.getText(),
 						new GenericCallback() {
 							public void onSuccess(Object data) {
                                 Window.alert(Format.format(constants.TheSnapshotCalled0WasSuccessfullyCreated(), name));
 								form.hide();
+                                LoadingPopup.close();
 							}
 						});
 			}

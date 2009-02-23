@@ -72,7 +72,7 @@ public class PackageEditor2 extends PrettyFormLayout {
 	private Command close;
 	private Command refreshPackageList;
 	private EditItemEvent editEvent;
-    private Constants constants;
+    private Constants constants =  GWT.create(Constants.class);
 
     public PackageEditor2(PackageConfigData data, Command close, Command refreshPackageList, EditItemEvent editEvent) {
         this.conf = data;
@@ -89,7 +89,6 @@ public class PackageEditor2 extends PrettyFormLayout {
         clear();
 
 FlexTable headerWidgets = new FlexTable();
-        constants = ((Constants) GWT.create(Constants.class));
         headerWidgets.setWidget(0, 0, new HTML("<b>" + constants.PackageName() + ":</b>")); //NON-NLS
         headerWidgets.setWidget(0, 1, new Label(this.conf.name));
         if (!conf.isSnapshot) {
@@ -457,11 +456,13 @@ FlexTable headerWidgets = new FlexTable();
                     Window.alert(constants.NotAValidPackageName());
                     return;
                 }
+                LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
                 RepositoryServiceFactory.getService().copyPackage( conf.name, name.getText(), new GenericCallback() {
                     public void onSuccess(Object data) {
                         refreshPackageList.execute();
                         Window.alert(constants.PackageCopiedSuccessfully());
                         pop.hide();
+                        LoadingPopup.close();
                     }
                 });
             }
