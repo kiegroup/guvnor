@@ -478,8 +478,10 @@ public class RulesRepository {
 
             String source = rulePackageNode.getPath();
 
+            long start = System.currentTimeMillis();
             this.session.getWorkspace().copy( source,
                                               newName );
+            System.err.println("Time taken for snap: " + (System.currentTimeMillis() - start));
 
         } catch ( RepositoryException e ) {
             log.error( "Unable to create snapshot",

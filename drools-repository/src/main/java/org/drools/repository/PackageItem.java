@@ -10,13 +10,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import javax.jcr.ItemExistsException;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import javax.jcr.query.RowIterator;
 
 import org.apache.log4j.Logger;
 
@@ -426,19 +423,34 @@ public class PackageItem extends VersionableItem {
     public AssetItemIterator queryAssets(String fieldPredicates, boolean seekArchived) {
         try {
 
+
             String sql = "SELECT * FROM " + AssetItem.RULE_NODE_TYPE_NAME;
+
+
+
             sql += " WHERE jcr:path LIKE '" + getVersionContentNode().getPath() + "/" + ASSET_FOLDER_NAME + "[%]/%'";
             if ( fieldPredicates.length() > 0 ) {
                 sql += " and " + fieldPredicates;
+
             }
 
             if ( seekArchived == false ) {
                 sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
             }
 
+
+            //sql = "SELECT * FROM drools:assetNodeType ORDER BY drools:title";
+            sql += " ORDER BY " + AssetItem.TITLE_PROPERTY_NAME;
+            log.debug("SQL is " + sql);
             Query q = node.getSession().getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
+
+
+            long time = System.currentTimeMillis();
             QueryResult res = q.execute();
-            return new AssetItemIterator(res.getNodes(), this.rulesRepository);
+            log.debug("QueryExec time is: " + (System.currentTimeMillis() - time));
+            NodeIterator it = res.getNodes();
+            log.debug(it.getClass().getName());
+            return new AssetItemIterator(it, this.rulesRepository);
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException(e);
         }
@@ -457,6 +469,7 @@ public class PackageItem extends VersionableItem {
      * This will load an iterator for assets of the given format type.
      */
     public AssetItemIterator listAssetsByFormat(String[] formats) {
+
         if (formats.length == 1) {
             return queryAssets( "drools:format='" + formats[0] + "'" );
         } else {
