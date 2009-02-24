@@ -102,12 +102,19 @@ public class RepositoryBackupServlet extends RepositoryServlet {
 
 	private void processExportRepositoryDownload(HttpServletResponse res)
 			throws PathNotFoundException, IOException, RepositoryException {
+        System.err.println("Exporting...");
 		res.setContentType("application/zip");
 		res.setHeader("Content-Disposition",
 				"inline; filename=repository_export.zip;");
 
-		res.getOutputStream().write(getFileManager().exportRulesRepository());
+        System.err.println("Starting to process export");
+        byte[] data = getFileManager().exportRulesRepository();
+        System.err.println(data.length);
+        res.setContentLength(data.length);
+		res.getOutputStream().write(data);
 		res.getOutputStream().flush();
+        System.err.println("Done writing!");
+        System.err.println("Done exporting!");
 	}
 
 	private void processExportPackageFromRepositoryDownload(
