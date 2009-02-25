@@ -253,7 +253,10 @@ public class ContentPackageAssembler {
 		while (it.hasNext()) {
 			AssetItem as = it.next();
 			try {
-				builder.addPackageFromDrl(new StringReader(as.getContent()));
+                String content = as.getContent();
+                if (nonEmpty(content)) {
+				    builder.addPackageFromDrl(new StringReader(as.getContent()));
+                }
 			} catch (DroolsParserException e) {
 				this.errors.add(new ContentAssemblyError(as,
 						"Parser exception: " + e.getMessage()));
@@ -265,7 +268,11 @@ public class ContentPackageAssembler {
 
 	}
 
-	private void loadDSLFiles() {
+    private boolean nonEmpty(String content) {
+        return content != null && content.trim().length() > 0;
+    }
+
+    private void loadDSLFiles() {
 		// now we load up the DSL files
 		builder.setDSLFiles(BRMSPackageBuilder.getDSLMappingFiles(pkg,
 				new BRMSPackageBuilder.DSLErrorEvent() {

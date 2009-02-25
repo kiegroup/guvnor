@@ -251,6 +251,22 @@ public class ContentPackageAssemblerTest extends TestCase {
                       ((Class) o2).getName() );
     }
 
+    public void testWithNoDeclaredTypes() throws Exception {
+        RulesRepository repo = getRepo();
+
+        PackageItem pkg = repo.createPackage( "testSimplePackageWithDeclaredTypes",
+                                              "" );
+        AssetItem rule1 = pkg.addAsset( "rule_1",
+                                        "" );
+        rule1.updateFormat( AssetFormats.DRL_MODEL );
+        rule1.checkin( "" );
+
+        ContentPackageAssembler asm = new ContentPackageAssembler( pkg );
+        assertFalse(asm.getErrors().toString(),  asm.hasErrors() );
+        
+
+    }
+
     public void testSimplePackageWithDeclaredTypes() throws Exception {
         RulesRepository repo = getRepo();
 

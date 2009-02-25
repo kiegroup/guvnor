@@ -41,7 +41,7 @@ import com.gwtext.client.util.Format;
 public class NewPackageWizard extends FormStylePopup {
 
     private TextBox nameBox;
-    private TextArea descBox;
+    private TextBox descBox;
     private final FormStyleLayout importLayout = new FormStyleLayout();
     private final FormStyleLayout newPackageLayout = new FormStyleLayout();
     private static Constants constants = ((Constants) GWT.create(Constants.class));
@@ -50,9 +50,9 @@ public class NewPackageWizard extends FormStylePopup {
     public NewPackageWizard(final Command afterCreatedEvent) {
         super( "images/new_wiz.gif", constants.CreateANewPackage());  //NON-NLS
         nameBox = new TextBox();
-        descBox = new TextArea();
+        descBox = new TextBox();
 
-        newPackageLayout.addRow( new HTML(constants.CreateNewPackage()) );
+        //newPackageLayout.addRow( new HTML(constants.CreateNewPackage()) );
 
 
         newPackageLayout.addAttribute(constants.NameColon(), nameBox );
@@ -74,6 +74,12 @@ public class NewPackageWizard extends FormStylePopup {
             }
         });
 
+        this.setAfterShow(new Command() {
+           public void execute() {
+            nameBox.setFocus(true);
+            }
+        } );
+
         importLayout.setVisible( false );
 
         importPackage.addClickListener( new ClickListener() {
@@ -85,7 +91,7 @@ public class NewPackageWizard extends FormStylePopup {
         VerticalPanel ab = new VerticalPanel();
         ab.add( newPackage );
         ab.add( importPackage );
-        addRow( ab );
+        addAttribute("",  ab );
 
         addRow(newPackageLayout);
         addRow(importLayout);
@@ -117,6 +123,8 @@ public class NewPackageWizard extends FormStylePopup {
 
 
     }
+
+
 
 
 

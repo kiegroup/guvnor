@@ -908,7 +908,7 @@ public interface Constants extends ConstantsWithLookup {
 
     String CreateANewPackage();
 
-    String CreateNewPackage();
+    
 
     String ImportDRLDesc1();
 
