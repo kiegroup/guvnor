@@ -374,9 +374,9 @@ public class ContentPackageAssembler {
 		AssetItemIterator it = this.pkg.listAssetsByFormat(new String[] {
 				AssetFormats.FUNCTION, AssetFormats.DRL_MODEL });
 		while (it.hasNext()) {
-			AssetItem func = (AssetItem) it.next();
-			if (!func.isArchived()) {
-				src.append(func.getContent() + "\n\n");
+			AssetItem func = it.next();
+			if (!func.isArchived() && !func.getDisabled()) {
+                src.append(func.getContent()).append("\n\n");
 			}
 		}
 

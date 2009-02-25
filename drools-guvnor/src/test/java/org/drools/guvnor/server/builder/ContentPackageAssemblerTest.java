@@ -588,6 +588,15 @@ public class ContentPackageAssemblerTest extends TestCase {
         rule2.updateContent( "when \n foo \n then \n call a func" );
         rule2.checkin( "" );
 
+        AssetItem rule3 = pkg.addAsset( "model1",
+                                        "" );
+        rule3.updateFormat( AssetFormats.DRL_MODEL );
+        rule3.updateContent( "garbage" );
+        rule3.updateDisabled(true);
+        rule3.checkin( "" );
+
+
+
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg,
                                                                    false,
                                                                    null );
@@ -607,6 +616,8 @@ public class ContentPackageAssemblerTest extends TestCase {
                         drl );
         assertContains( "rule 'foo' when Goo() then end",
                         drl );
+
+        assertEquals(-1, drl.indexOf("garbage"));
 
     }
 
