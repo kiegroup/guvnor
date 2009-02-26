@@ -107,7 +107,7 @@ public class RepositoryBackupServlet extends RepositoryServlet {
         System.err.println("Exporting...");
 		res.setContentType("application/zip");
 		res.setHeader("Content-Disposition",
-				"inline; filename=repository_export.zip;");
+				"attachment; filename=repository_export.zip;");
 
         System.err.println("Starting to process export");
         ZipOutputStream zout = new ZipOutputStream(res.getOutputStream());
