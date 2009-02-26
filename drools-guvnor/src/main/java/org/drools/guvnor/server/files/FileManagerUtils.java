@@ -330,13 +330,15 @@ public class FileManagerUtils {
                                                       pkg );
         }
 
+        boolean newVer = Boolean.parseBoolean(System.getProperty("drools.createNewVersionOnImport", "true"));
+
         for ( Asset as : imp.getAssets() ) {
 
             if ( existing && pkg.containsAsset( as.name ) ) {
                 AssetItem asset = pkg.loadAsset( as.name );
                 if ( asset.getFormat().equals( as.format ) ) {
                     asset.updateContent( as.content );
-                    asset.checkin( "Imported change form external DRL" );
+                    if (newVer) asset.checkin( "Imported change form external DRL" );
                 } //skip it if not the right format
 
             } else {
@@ -347,11 +349,14 @@ public class FileManagerUtils {
 
                 asset.updateContent( as.content );
                 asset.updateExternalSource( "Imported from external DRL" );
-                asset.checkin( "Imported change form external DRL" );
+                if (newVer) asset.checkin( "Imported change form external DRL" );
+
             }
         }
 
         repository.save();
+
+
     }
 
     /**
