@@ -12,15 +12,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.form.DateField;
@@ -168,8 +160,9 @@ public class QueryWidget extends Composite {
 		ts.setWidth("100%");
 		p.add(ts);
 
+
 		final SimplePanel resultsP = new SimplePanel();
-		go.addClickListener(new ClickListener() {
+        final ClickListener cl = new ClickListener() {
 			public void onClick(Widget w) {
 				if (tx.getText().equals("")) {
 					Window.alert(constants.PleaseEnterSomeSearchText());
@@ -184,7 +177,17 @@ public class QueryWidget extends Composite {
 				});
 				resultsP.add(grid);
 			}
-		});
+		};
+
+		go.addClickListener(cl);
+        tx.addKeyboardListener(new KeyboardListenerAdapter() {
+            @Override
+            public void onKeyUp(Widget sender, char keyCode, int modifiers) {
+                if (keyCode == KeyboardListener.KEY_ENTER) {
+                    cl.onClick(sender);
+                }
+            }
+        });
 		ts.addRow(resultsP);
 		layout.add(p);
 	}

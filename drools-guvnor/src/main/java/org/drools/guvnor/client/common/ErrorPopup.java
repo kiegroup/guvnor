@@ -23,6 +23,7 @@ import org.drools.guvnor.client.messages.Constants;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.Button;
@@ -69,15 +70,17 @@ public class ErrorPopup  {
 	        showD.addListener(new ButtonListenerAdapter() {
 				public void onClick(Button button, EventObject e) {
 					detailPanel.clear();
-					detailPanel.add(new HTML("<small>" + longMessage + "</small>"));
+					detailPanel.add(new SmallLabel(longMessage));
 
 				}
 	        });
 	        detailPanel.add(showD);
         }
         vp.setWidth("100%");
+        detailPanel.setWidth("100%");
         vp.add(detailPanel);
         w.add(vp);
+
 
         w.show();
 

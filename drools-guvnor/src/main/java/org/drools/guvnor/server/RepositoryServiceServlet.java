@@ -60,28 +60,32 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 		    }
 		} else if (e.getCause() instanceof RulesRepositoryException) {
 			log.error(e.getCause());
- 			HttpServletResponse response = getThreadLocalResponse();
- 		   response.setContentType("text/plain");
-		   response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		   try {
-			   response.getWriter().write(e.getCause().getMessage());
-		   } catch (IOException ex) {
-		      getServletContext().log(
-			          "respondWithUnexpectedFailure failed while sending the previous failure to the client",
-			          ex);
-		   }
+            sendErrorMessage(e.getCause().getMessage());
 		} else {
             if (e.getCause() != null) {
 			    log.error(e.getCause());
             } else {
                 log.error(e);
             }
-			super.doUnexpectedFailure(e);
+			sendErrorMessage("Sorry, a technical error occurred. Please contact a system administrator.");
 		}
 	}
 
+    private void sendErrorMessage(String msg) {
+        HttpServletResponse response = getThreadLocalResponse();
+        response.setContentType("text/plain");
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        try {
+            response.getWriter().write(msg);
+        } catch (IOException ex) {
+           getServletContext().log(
+                   "respondWithUnexpectedFailure failed while sending the previous failure to the client",
+                   ex);
+        }
+    }
 
-	/**
+
+    /**
 	 * START GENERATED CODE SECTION. DO NOT MODIFY WHAT IS BELOW
 	 */
 

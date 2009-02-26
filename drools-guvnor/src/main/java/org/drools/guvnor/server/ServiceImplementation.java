@@ -1876,8 +1876,9 @@ public class ServiceImplementation
             log.info( e );
             throw new DetailedSerializableException( "There was an error executing the consequence of rule [" + e.getRule().getName() + "]",
                                                      e.getMessage() );
-        } finally {
-
+        } catch (Exception e) {
+            log.error(e);            
+            throw new DetailedSerializableException("Unable to run the scenario.", e.getMessage());
         }
     }
 
