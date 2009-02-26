@@ -109,13 +109,6 @@ public class FileManagerUtilsTest extends TestCase {
 	}
 
 
-	public void testUploadXmlFile() throws Exception {
-		RulesRepository repo = new RulesRepository(session);
-
-		repo.createPackage("testUploadXmlFile", "comment");
-		repo.importRulesRepository(repo.dumpRepositoryXml());
-		assertTrue(repo.containsPackage("testUploadXmlFile"));
-	}
 
 	public void testGetFilebyUUID() throws Exception {
 		FileManagerUtils uploadHelper = new FileManagerUtils();

@@ -19,6 +19,8 @@ package org.drools.guvnor.server.files;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.zip.ZipOutputStream;
+import java.util.zip.ZipEntry;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -108,12 +110,12 @@ public class RepositoryBackupServlet extends RepositoryServlet {
 				"inline; filename=repository_export.zip;");
 
         System.err.println("Starting to process export");
-        byte[] data = getFileManager().exportRulesRepository();
-        System.err.println(data.length);
-        res.setContentLength(data.length);
-		res.getOutputStream().write(data);
+        ZipOutputStream zout = new ZipOutputStream(res.getOutputStream());
+        zout.putNextEntry(new ZipEntry("repository_export.xml"));
+        getFileManager().exportRulesRepository(zout);
+        zout.closeEntry();
+        zout.finish();
 		res.getOutputStream().flush();
-        System.err.println("Done writing!");
         System.err.println("Done exporting!");
 	}
 
@@ -130,9 +132,7 @@ public class RepositoryBackupServlet extends RepositoryServlet {
 	}
 
 	private String processImportRepository(InputStream file) throws IOException {
-		byte[] byteArray = new byte[file.available()];
-		file.read(byteArray);
-		getFileManager().importRulesRepository(byteArray);
+		getFileManager().importRulesRepository(file);
 		return "OK";
 	}
 

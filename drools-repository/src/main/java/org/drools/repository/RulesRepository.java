@@ -1,9 +1,6 @@
 package org.drools.repository;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -911,19 +908,21 @@ public class RulesRepository {
                                           numRowsToReturn );
     }
 
-    public byte[] exportRulesRepository() throws IOException,
-                                         PathNotFoundException,
-                                         RepositoryException {
+    public void exportRulesRepositoryToStream(OutputStream output) {
+        try {
+            session.refresh( false );
+            session.exportSystemView( "/" + RULES_REPOSITORY_NAME,
+                                      output,
+                                      false,
+                                      false );
+        } catch (Exception e) {
+            log.error(e);
+            e.printStackTrace();
+        }
 
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        ZipOutputStream zout = new ZipOutputStream( bout );
-
-        zout.putNextEntry( new ZipEntry( "repository_export.xml" ) );
-        zout.write( dumpRepositoryXml() );
-        zout.closeEntry();
-        zout.finish();
-        return bout.toByteArray();
     }
+
+
 
     public byte[] exportPackageFromRepository(String packageName) throws IOException,
                                                                  PathNotFoundException,
@@ -939,17 +938,7 @@ public class RulesRepository {
         return bout.toByteArray();
     }
 
-    public byte[] dumpRepositoryXml() throws PathNotFoundException,
-                                     IOException,
-                                     RepositoryException {
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        session.refresh( false );
-        session.exportSystemView( "/" + RULES_REPOSITORY_NAME,
-                                  byteOut,
-                                  false,
-                                  false );
-        return byteOut.toByteArray();
-    }
+
 
     public byte[] dumpPackageFromRepositoryXml(String packageName) throws PathNotFoundException,
                                                                   IOException,
@@ -979,15 +968,16 @@ public class RulesRepository {
 		}
     }
 
+    
     /**
      * Clean and import the rules repository.
      * Will run any needed migrations as well.
      */
-    public void importRulesRepository(byte[] byteArray) {
+    public void importRulesRepositoryFromStream(InputStream instream) {
         try {
             new RulesRepositoryAdministrator( this.session ).clearRulesRepository();
             this.session.getWorkspace().importXML( "/",
-                                                   new ByteArrayInputStream( byteArray ),
+                                                   instream,
                                                    ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW );
             session.save();
             MigrateDroolsPackage mig = new MigrateDroolsPackage();
@@ -1001,6 +991,8 @@ public class RulesRepository {
             e.printStackTrace();
         }
     }
+
+
 
     public void importPackageToRepository(byte[] byteArray,
                                           boolean importAsNew) {

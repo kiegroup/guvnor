@@ -2,6 +2,7 @@ package org.drools.repository;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -1045,15 +1046,23 @@ public class RulesRepositoryTest extends TestCase {
 
         try {
 
-            repository_backup = repo.dumpRepositoryXml();
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            repo.exportRulesRepositoryToStream(bout);
+            repository_backup = bout.toByteArray();
             assertNotNull( repository_backup );
 
             repo.createPackage( "testImportExport",
                                 "nodescription" );
-            repository_unitest = repo.dumpRepositoryXml();
-            repo.importRulesRepository( repository_backup );
+            bout = new ByteArrayOutputStream();
+            repo.exportRulesRepositoryToStream(bout);
+
+            repository_unitest = bout.toByteArray();
+            
+            repo.importRulesRepositoryFromStream(new ByteArrayInputStream(repository_backup));
             assertFalse( repo.containsPackage( "testImportExport" ) );
-            repo.importRulesRepository( repository_unitest );
+
+            repo.importRulesRepositoryFromStream(new ByteArrayInputStream(repository_unitest));
+
             assertTrue( repo.containsPackage( "testImportExport" ) );
 
             repo.importRepository(new ByteArrayInputStream(repository_unitest));
@@ -1065,23 +1074,7 @@ public class RulesRepositoryTest extends TestCase {
         }
     }
 
-    public void testExportZippedRepository() throws PathNotFoundException,
-                                            IOException,
-                                            RepositoryException {
 
-        RulesRepository repo = RepositorySessionUtil.getRepository();
-        byte[] repository_unitest;
-
-        repository_unitest = repo.exportRulesRepository();
-
-        ByteArrayInputStream bin = new ByteArrayInputStream( repository_unitest );
-        ZipInputStream zis = new ZipInputStream( bin );
-
-        ZipEntry entry = zis.getNextEntry();
-        assertEquals( entry.getName(),
-                      "repository_export.xml" );
-        assertFalse( entry.isDirectory() );
-    }
 
     public static <T> List<T> iteratorToList(Iterator<T> it) {
         List<T> list = new ArrayList<T>();

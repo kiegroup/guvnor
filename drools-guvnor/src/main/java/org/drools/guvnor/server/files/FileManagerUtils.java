@@ -222,15 +222,6 @@ public class FileManagerUtils {
 
     }
 
-    public byte[] exportRulesRepository() {
-        try {
-            return this.repository.exportRulesRepository();
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
-        } catch ( IOException e ) {
-            throw new RulesRepositoryException( e );
-        }
-    }
 
     public byte[] exportPackageFromRepository(String packageName) {
         try {
@@ -242,14 +233,18 @@ public class FileManagerUtils {
         }
     }
 
+    public void exportRulesRepository(OutputStream out) {
+        this.repository.exportRulesRepositoryToStream(out);
+    }
+
     @Restrict("#{identity.loggedIn}")
-    public void importRulesRepository(byte[] data) {
+    public void importRulesRepository(InputStream in) {
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(
 					new AdminType(),
 					RoleTypes.ADMIN);
 		}
-        repository.importRulesRepository( data );
+        repository.importRulesRepositoryFromStream( in );
         
         //
         //Migrate v4 ruleflows to v5
