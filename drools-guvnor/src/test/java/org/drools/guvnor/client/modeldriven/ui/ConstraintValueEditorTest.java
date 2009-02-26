@@ -1,5 +1,7 @@
 package org.drools.guvnor.client.modeldriven.ui;
 
+import org.drools.guided.ConstraintValueEditorHelper;
+
 import junit.framework.TestCase;
 
 public class ConstraintValueEditorTest extends TestCase {
