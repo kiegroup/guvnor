@@ -254,7 +254,7 @@ public class ContentPackageAssemblerTest extends TestCase {
     public void testWithNoDeclaredTypes() throws Exception {
         RulesRepository repo = getRepo();
 
-        PackageItem pkg = repo.createPackage( "testSimplePackageWithDeclaredTypes",
+        PackageItem pkg = repo.createPackage( "testSimplePackageWithDeclaredTypes1",
                                               "" );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -270,7 +270,7 @@ public class ContentPackageAssemblerTest extends TestCase {
     public void testSimplePackageWithDeclaredTypes() throws Exception {
         RulesRepository repo = getRepo();
 
-        PackageItem pkg = repo.createPackage( "testSimplePackageWithDeclaredTypes",
+        PackageItem pkg = repo.createPackage( "testSimplePackageWithDeclaredTypes2",
                                               "" );
 
         ServiceImplementation.updateDroolsHeader("import java.util.HashMap", pkg);
