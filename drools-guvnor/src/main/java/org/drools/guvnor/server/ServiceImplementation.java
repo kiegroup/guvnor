@@ -1273,11 +1273,6 @@ public class ServiceImplementation
                 break;
             }
             AssetItem item = (AssetItem) it.next();
-            try {
-                System.err.println( "jcr:path=" + item.getNode().getPath() );
-            } catch ( RepositoryException e ) {
-                e.printStackTrace();
-            }
             if ( filter.accept( item,
                                 RoleTypes.PACKAGE_READONLY ) ) {
                 TableDataRow row = new TableDataRow();

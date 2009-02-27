@@ -29,17 +29,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.messages.Constants;
 
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SuggestBox;
-import com.google.gwt.user.client.ui.SuggestOracle;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.SuggestOracle.Callback;
 import com.google.gwt.user.client.ui.SuggestOracle.Request;
 import com.google.gwt.core.client.GWT;
@@ -70,6 +60,8 @@ public class QuickFindWidget extends Composite {
         });
 
 
+
+
         this.editEvent = editEvent;
         HorizontalPanel srch = new HorizontalPanel();
         Button go = new Button(constants.Search());
@@ -80,6 +72,15 @@ public class QuickFindWidget extends Composite {
             }
         } );
 
+
+        searchBox.addKeyboardListener(new KeyboardListenerAdapter() {
+            @Override
+            public void onKeyUp(Widget sender, char keyCode, int modifiers) {
+                if (keyCode == KeyboardListener.KEY_ENTER) {
+                    updateList();
+                }
+            }
+        });
         srch.add( searchBox );
 
         archiveBox = new CheckBox();
@@ -142,14 +143,14 @@ public class QuickFindWidget extends Composite {
     }
 
     protected void updateList() {
-
+       
         LoadingPopup.showMessage(constants.SearchingDotDotDot());
         RepositoryServiceFactory.getService().quickFindAsset( searchBox.getText(), 15, archiveBox.isChecked() , new GenericCallback<TableDataResult>() {
             public void onSuccess(TableDataResult result) {
                 populateList(result);
-
             }
         });
+
 
     }
 
@@ -185,7 +186,7 @@ public class QuickFindWidget extends Composite {
 
         }
 
-        data.setWidth( "100%" );
+        //data.setWidth( "100%" );
         listPanel.setWidget( 0, 0, data);
 
         LoadingPopup.close();
