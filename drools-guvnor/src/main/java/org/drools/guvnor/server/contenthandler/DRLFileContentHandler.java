@@ -1,4 +1,5 @@
 package org.drools.guvnor.server.contenthandler;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,8 +16,6 @@ package org.drools.guvnor.server.contenthandler;
  * limitations under the License.
  */
 
-
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.StringTokenizer;
@@ -26,53 +25,71 @@ import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.repository.AssetItem;
 
-public class DRLFileContentHandler extends PlainTextContentHandler implements IRuleAsset {
+public class DRLFileContentHandler extends PlainTextContentHandler
+    implements
+    IRuleAsset {
 
-    public void compile(BRMSPackageBuilder builder, AssetItem asset, ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException, IOException {
-        builder.addPackageFromDrl( new StringReader(getContent( asset )) );
+    public void compile(BRMSPackageBuilder builder,
+                        AssetItem asset,
+                        ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
+                                                                   IOException {
+        builder.addPackageFromDrl( new StringReader( getContent( asset ) ) );
     }
 
     private String getContent(AssetItem asset) {
         String content = asset.getContent();
-        if (isStandAloneRule( content )) {
-            content = wrapRuleDeclaration( asset.getName(), content );
+        if ( isStandAloneRule( content ) ) {
+
+            String parentName = this.parentNameFromCategory( asset,
+                                                             "" );
+            content = wrapRuleDeclaration( asset.getName(),
+                                           parentName,
+                                           content );
         }
         return content;
     }
 
-    String wrapRuleDeclaration(String name, String content) {
-        return "rule '" + name + "'\n"  + getContent(content) + "\nend";
+    String wrapRuleDeclaration(String name,
+                               String parentName,
+                               String content) {
+        if ( parentName == null || "".equals( parentName ) ) {
+            return "rule '" + name + "'\n" + getContent( content ) + "\nend";
+        } else {
+            return "rule '" + name + "' extends " + parentName + "\n" + getContent( content ) + "\nend";
+        }
     }
 
     String getContent(String content) {
-		if (content != null && content.indexOf("dialect") == -1) {
-			return "dialect 'mvel'\n" + content;
-		}
-		return content;
-	}
+        if ( content != null && content.indexOf( "dialect" ) == -1 ) {
+            return "dialect 'mvel'\n" + content;
+        }
+        return content;
+    }
 
-	/**
+    /**
      * This will try and sniff ouf if its a stand alone rule which
      * will use the asset name as the rule name, or if it should be treated as a package
      * (in the latter case, the content is passed as it to the compiler).
      */
     public static boolean isStandAloneRule(String content) {
-        if (content == null || "".equals( content.trim() )) {
+        if ( content == null || "".equals( content.trim() ) ) {
             return false;
         }
-        StringTokenizer st = new StringTokenizer(content, "\n\r");
-        while (st.hasMoreTokens()) {
+        StringTokenizer st = new StringTokenizer( content,
+                                                  "\n\r" );
+        while ( st.hasMoreTokens() ) {
             String tok = st.nextToken().trim();
-            if (tok.startsWith("when")) {
-            	//well obviously it is stand alone...
-            	return true;
+            if ( tok.startsWith( "when" ) ) {
+                //well obviously it is stand alone...
+                return true;
             }
             //otherwise sniff for a suitable keyword at the start of a line
-            if (startsWithWord( "package", tok ) ||
-                    startsWithWord( "rule", tok ) ||
-                    startsWithWord( "end", tok ) ||
-                    startsWithWord( "function", tok ) ||
-                    startsWithWord( "query", tok )) {
+            if ( startsWithWord( "package",
+                                 tok ) || startsWithWord( "rule",
+                                                          tok ) || startsWithWord( "end",
+                                                                                   tok ) || startsWithWord( "function",
+                                                                                                            tok ) || startsWithWord( "query",
+                                                                                                                                     tok ) ) {
                 return false;
             }
         }
@@ -80,20 +97,27 @@ public class DRLFileContentHandler extends PlainTextContentHandler implements IR
 
     }
 
-    static boolean startsWithWord(String word, String sentence) {
-    	String[] words = sentence.trim().split("\\s");
-    	if (words.length > 0) {
-    		return words[0].equals(word);
-    	} else {
-    		return false;
-    	}
+    static boolean startsWithWord(String word,
+                                  String sentence) {
+        String[] words = sentence.trim().split( "\\s" );
+        if ( words.length > 0 ) {
+            return words[0].equals( word );
+        } else {
+            return false;
+        }
     }
 
-    public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset, StringBuffer buf) {
+    public void assembleDRL(BRMSPackageBuilder builder,
+                            AssetItem asset,
+                            StringBuffer buf) {
         String content = asset.getContent();
         boolean standAlone = isStandAloneRule( content );
-        if (standAlone) {
-            buf.append( wrapRuleDeclaration( asset.getName(), content ) );
+        if ( standAlone ) {
+            String parentName = this.parentNameFromCategory( asset,
+                                                             "" );
+            buf.append( wrapRuleDeclaration( asset.getName(),
+                                             parentName,
+                                             content ) );
         } else {
             buf.append( content );
         }
