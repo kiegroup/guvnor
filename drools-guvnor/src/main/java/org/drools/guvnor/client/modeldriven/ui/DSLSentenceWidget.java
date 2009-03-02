@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.guided.ConstraintValueEditorHelper;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.Preferences;

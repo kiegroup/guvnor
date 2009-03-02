@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.guided.ConstraintValueEditorHelper;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
@@ -23,6 +22,7 @@ import org.drools.guvnor.client.modeldriven.dt.DTColumnConfig;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.guvnor.client.modeldriven.dt.MetadataCol;
 import org.drools.guvnor.client.modeldriven.ui.ActionValueEditor;
+import org.drools.guvnor.client.modeldriven.ui.ConstraintValueEditorHelper;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;

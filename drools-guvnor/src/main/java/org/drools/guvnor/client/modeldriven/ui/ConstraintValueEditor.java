@@ -19,7 +19,6 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 import java.util.List;
 
-import org.drools.guided.ConstraintValueEditorHelper;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FieldEditListener;
 import org.drools.guvnor.client.common.FormStylePopup;

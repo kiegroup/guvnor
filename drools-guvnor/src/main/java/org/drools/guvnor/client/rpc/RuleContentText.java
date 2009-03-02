@@ -19,8 +19,6 @@ package org.drools.guvnor.client.rpc;
 
 import org.drools.guvnor.client.modeldriven.brl.PortableObject;
 
-import java.io.Serializable;
-
 /**
  * This is the guts of a plain text (advanced) rule.
  * @author Michael Neale

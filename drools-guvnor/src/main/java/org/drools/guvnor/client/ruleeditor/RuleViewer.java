@@ -59,7 +59,7 @@ public class RuleViewer extends Composite {
     private HorizontalPanel    hsp;
 
     private long               lastSaved = System.currentTimeMillis();
-    private Constants constants = ((Constants) GWT.create(Constants.class));
+    private Constants          constants = ((Constants) GWT.create( Constants.class ));
 
     public RuleViewer(RuleAsset asset) {
         this( asset,
@@ -214,13 +214,13 @@ public class RuleViewer extends Composite {
     private void performCheckIn(String comment) {
         //layout.clear();
         this.asset.metaData.checkinComment = comment;
-        LoadingPopup.showMessage(constants.SavingPleaseWait());
+        LoadingPopup.showMessage( constants.SavingPleaseWait() );
         RepositoryServiceFactory.getService().checkinVersion( this.asset,
                                                               new GenericCallback<String>() {
 
                                                                   public void onSuccess(String uuid) {
                                                                       if ( uuid == null ) {
-                                                                          ErrorPopup.showMessage(constants.FailedToCheckInTheItemPleaseContactYourSystemAdministrator());
+                                                                          ErrorPopup.showMessage( constants.FailedToCheckInTheItemPleaseContactYourSystemAdministrator() );
                                                                           return;
                                                                       }
 
@@ -249,7 +249,7 @@ public class RuleViewer extends Composite {
      */
     public void flushSuggestionCompletionCache() {
         if ( AssetFormats.isPackageDependency( this.asset.metaData.format ) ) {
-            LoadingPopup.showMessage(constants.RefreshingContentAssistance());
+            LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
             SuggestionCompletionCache.getInstance().refreshPackage( this.asset.metaData.packageName,
                                                                     new Command() {
                                                                         public void execute() {
@@ -263,10 +263,11 @@ public class RuleViewer extends Composite {
      * This will reload the contents from the database, and refresh the widgets.
      */
     public void refreshDataAndView() {
-        LoadingPopup.showMessage(constants.RefreshingItem());
+        LoadingPopup.showMessage( constants.RefreshingItem() );
         RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid,
                                                              new GenericCallback<RuleAsset>() {
-                                                                 public void onSuccess(RuleAsset asset) {
+                                                                 public void onSuccess(RuleAsset asset_) {
+                                                                     asset = asset_;
                                                                      doWidgets();
                                                                      LoadingPopup.close();
                                                                  }
@@ -277,7 +278,7 @@ public class RuleViewer extends Composite {
      * This will only
      */
     public void refreshMetaWidgetOnly() {
-        LoadingPopup.showMessage(constants.RefreshingItem());
+        LoadingPopup.showMessage( constants.RefreshingItem() );
         RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid,
                                                              new GenericCallback<RuleAsset>() {
                                                                  public void onSuccess(RuleAsset asset_) {
@@ -305,15 +306,15 @@ public class RuleViewer extends Composite {
      */
     protected void doCloseUnsavedWarning() {
         final FormStylePopup pop = new FormStylePopup( "images/warning-large.png", //NON-NLS
-                constants.WARNINGUnCommittedChanges());
-        Button dis = new Button(constants.Discard());
-        Button can = new Button(constants.Cancel());
+                                                       constants.WARNINGUnCommittedChanges() );
+        Button dis = new Button( constants.Discard() );
+        Button can = new Button( constants.Cancel() );
         HorizontalPanel hor = new HorizontalPanel();
 
         hor.add( dis );
         hor.add( can );
 
-        pop.addRow( new HTML(constants.AreYouSureYouWantToDiscardChanges()) );
+        pop.addRow( new HTML( constants.AreYouSureYouWantToDiscardChanges() ) );
         pop.addRow( hor );
 
         dis.addClickListener( new ClickListener() {
