@@ -167,22 +167,24 @@ public class BRMSPackageBuilder extends PackageBuilder {
         List<DSLTokenizedMappingFile> result = new ArrayList<DSLTokenizedMappingFile>();
         AssetItemIterator it = pkg.listAssetsByFormat( new String[]{AssetFormats.DSL} );
         while ( it.hasNext() ) {
-            AssetItem item = (AssetItem) it.next();
-            String dslData = item.getContent();
-            DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
-            try {
-                if ( file.parseAndLoad( new StringReader( dslData ) ) ) {
-                    result.add( file );
-                } else {
-                    List errs = file.getErrors();
-                    for ( Iterator iter = errs.iterator(); iter.hasNext(); ) {
-                        DSLMappingParseException e = (DSLMappingParseException) iter.next();
-                        err.recordError( item, "Line " + e.getLine() + " : " + e.getMessage() );
+            AssetItem item = it.next();
+            if (!item.getDisabled()) {
+                String dslData = item.getContent();
+                DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
+                try {
+                    if ( file.parseAndLoad( new StringReader( dslData ) ) ) {
+                        result.add( file );
+                    } else {
+                        List errs = file.getErrors();
+                        for ( Iterator iter = errs.iterator(); iter.hasNext(); ) {
+                            DSLMappingParseException e = (DSLMappingParseException) iter.next();
+                            err.recordError( item, "Line " + e.getLine() + " : " + e.getMessage() );
+                        }
                     }
-                }
 
-            } catch ( IOException e ) {
-                throw new RulesRepositoryException(e);
+                } catch ( IOException e ) {
+                    throw new RulesRepositoryException(e);
+                }
             }
 
         }

@@ -621,6 +621,39 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
+
+    public void testSkipDisabledPackageStuff() throws Exception {
+        RulesRepository repo = getRepo();
+
+        //first, setup the package correctly:
+        PackageItem pkg = repo.createPackage( "testSkipDisabledPackageStuff",
+                                              "" );
+        repo.save();
+
+        AssetItem assertRule1 = pkg.addAsset( "model1",
+                                              "" );
+        assertRule1.updateFormat( AssetFormats.DRL_MODEL );
+        assertRule1.updateContent( "garbage" );
+        assertRule1.updateDisabled( true );
+        assertRule1.checkin( "" );
+
+
+        assertRule1 = pkg.addAsset( "function1",
+                                              "" );
+        assertRule1.updateFormat( AssetFormats.FUNCTION );
+        assertRule1.updateContent( "garbage" );
+        assertRule1.updateDisabled( true );
+        assertRule1.checkin( "" );
+
+        ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
+        assertFalse(asm.hasErrors());
+
+
+
+
+
+    }
+
     public void testSkipDisabledAssets() throws Exception {
         RulesRepository repo = getRepo();
 

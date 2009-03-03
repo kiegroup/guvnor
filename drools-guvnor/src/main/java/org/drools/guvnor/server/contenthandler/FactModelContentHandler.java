@@ -66,6 +66,9 @@ public class FactModelContentHandler extends ContentHandler {
 	}
 
 	List<FactMetaModel> toModel(String drl) throws DroolsParserException {
+        if (drl != null && drl.startsWith("#advanced")) {
+            throw new DroolsParserException("Using advanced editor");
+        }
     	DrlParser parser = new DrlParser();
     	PackageDescr pkg = parser.parse(drl);
     	if (parser.hasErrors()) {

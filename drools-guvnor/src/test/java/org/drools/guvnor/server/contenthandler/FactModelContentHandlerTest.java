@@ -81,6 +81,18 @@ public class FactModelContentHandlerTest extends TestCase {
 
     }
 
+    public void testAdvanced() throws Exception {
+
+    	String drl = "#advanced editor \ndeclare FooBar\n\t name: String  \nend";
+    	try {
+            FactModelContentHandler ch = new FactModelContentHandler();
+    		ch.toModel(drl);
+    		fail("should not parse this");
+    	} catch (DroolsParserException e) {
+    		assertNotNull(e.getMessage());
+    	}
+    }
+
 
     public void testFromEmptyDrl() throws Exception {
     	String drl = "";
