@@ -373,8 +373,17 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		Button ok = new Button(constants.OK());
 		ok.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
-				editingCol.boundName = binding.getText();
-				editingCol.factType = types.getItemText(types.getSelectedIndex());
+                String ft = types.getItemText(types.getSelectedIndex());
+                String fn = binding.getText();
+                if (fn.equals("")) {
+                    Window.alert(constants.PleaseEnterANameForFact());
+                    return;
+                } else if (fn.equals(ft)) {
+                    Window.alert(constants.PleaseEnterANameThatIsNotTheSameAsTheFactType());
+                    return;
+                }
+				editingCol.boundName = fn;
+				editingCol.factType = ft;
 				doPatternLabel();
 				pop.hide();
 			}

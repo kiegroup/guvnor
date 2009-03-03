@@ -1781,4 +1781,10 @@ public interface Constants extends ConstantsWithLookup {
     String RestoreThisVersionQ();
 
     String NoteNewPackageDrlImportWarning();
+
+    String PleaseEnterANameForFact();
+
+    String PleaseEnterANameThatIsNotTheSameAsTheFactType();
+
+    String ThatNameIsInUsePleaseTryAnother();
 }

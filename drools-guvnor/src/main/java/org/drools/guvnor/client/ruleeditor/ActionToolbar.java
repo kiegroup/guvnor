@@ -214,14 +214,21 @@ public class ActionToolbar extends Composite {
             		return;
             	}
                 RepositoryServiceFactory.getService().copyAsset( asset.uuid, asset.metaData.packageName, newName.getText(),
-                                                                 new GenericCallback() {
-                                                                    public void onSuccess(Object data) {
+                                                                 new GenericCallback<String>() {
+                                                                    public void onSuccess(String data) {
                                                                         completedCopying(newName.getText(), asset.metaData.packageName);
                                                                         form.hide();
                                                                     }
 
-
-                });
+                                                                     @Override
+                                                                     public void onFailure(Throwable t) {
+                                                                         if (t.getMessage().indexOf("ItemExistsException") > -1) { //NON-NLS
+                                                                             Window.alert(constants.ThatNameIsInUsePleaseTryAnother());
+                                                                         } else {
+                                                                             super.onFailure(t);
+                                                                         }
+                                                                     }
+                                                                 });
             }
         } );
         form.addAttribute( "", ok );
