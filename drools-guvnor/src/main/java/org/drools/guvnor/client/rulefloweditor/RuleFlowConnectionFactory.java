@@ -25,13 +25,17 @@ import pl.balon.gwt.diagrams.client.connector.UIObjectConnector;
 public class RuleFlowConnectionFactory {
 
     public static Connection createConnection(TransferConnection c,
-                                              Map<Long, RuleFlowBaseNode> nodes) {
+                                              Map<Long, RuleFlowBaseNode> nodes) throws RuntimeException {
 
         long fromId = c.getFromId();
         long toId = c.getToId();
 
         RuleFlowBaseNode from = nodes.get( fromId );
         RuleFlowBaseNode to = nodes.get( toId );
+
+        if ( from == null || to == null ) {
+            throw new RuntimeException( "Connection needs existing from and to nodes." );
+        }
 
         RectilinearTwoEndedConnection connection = new RectilinearTwoEndedConnection( UIObjectConnector.wrap( from ),
                                                                                       UIObjectConnector.wrap( to ) );

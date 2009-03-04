@@ -33,7 +33,7 @@ public class RuleFlowNodeFactory {
     public static RuleFlowBaseNode createNode(TransferNode tn) {
 
         RuleFlowBaseNode n;
-        
+
         if ( tn.getType() == Type.START ) {
 
             n = new StartNode();
@@ -104,6 +104,7 @@ public class RuleFlowNodeFactory {
 
         fillRuleFlowBaseNode( n,
                               tn );
+
         return n;
     }
 
@@ -118,8 +119,12 @@ public class RuleFlowNodeFactory {
         }
 
         for ( TransferConnection c : tn.getContentModel().getConnections() ) {
-            node.getConnections().add( RuleFlowConnectionFactory.createConnection( c,
-                                                                                   node.getNodes() ) );
+            try {
+                node.getConnections().add( RuleFlowConnectionFactory.createConnection( c,
+                                                                                       node.getNodes() ) );
+            } catch ( RuntimeException e ) {
+                // TODO: handle exception
+            }
         }
 
         return node;
@@ -136,6 +141,11 @@ public class RuleFlowNodeFactory {
         } else if ( node.getWorkName().equals( WorkItemNode.LOG ) ) {
 
             workItemNode = new LogNode();
+
+        } else {
+
+            workItemNode = new DefaultWorkItemNode();
+
         }
 
         workItemNode.setAttributes( node.getParameters() );

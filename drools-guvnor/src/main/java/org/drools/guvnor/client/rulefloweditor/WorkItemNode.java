@@ -28,6 +28,7 @@ public abstract class WorkItemNode extends RuleFlowBaseNode
 
     public static final String LOG   = "Log";
     public static final String EMAIL = "Email";
+    public static final String DEFAULT = "Default";
 
     Map<String, String>        attributes;
 

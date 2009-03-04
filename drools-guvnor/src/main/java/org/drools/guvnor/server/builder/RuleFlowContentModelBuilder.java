@@ -35,7 +35,7 @@ import org.drools.workflow.core.node.WorkItemNode;
 
 public class RuleFlowContentModelBuilder {
 
-    public RuleFlowContentModel createModel(RuleFlowProcess process) {
+    public static RuleFlowContentModel createModel(RuleFlowProcess process) {
 
         RuleFlowContentModel model = new RuleFlowContentModel();
 
@@ -53,8 +53,8 @@ public class RuleFlowContentModelBuilder {
      * @param nodes from the rule flow XML.
      * @param model RuleFlowContentModel that contains the transfer nodes for client side.
      */
-    private List<TransferNode> createNodesAndConnections(Node[] nodes,
-                                                         RuleFlowContentModel model) {
+    private static List<TransferNode> createNodesAndConnections(Node[] nodes,
+                                                                RuleFlowContentModel model) {
 
         List<TransferNode> transferNodes = new ArrayList<TransferNode>();
 
@@ -99,16 +99,14 @@ public class RuleFlowContentModelBuilder {
 
             //Guard needed to Migrate v4 ruleflows to v5
             Integer x = (Integer) node.getMetaData( "x" );
-            if (x != null)
-            {
-            	tn.setX(x);
+            if ( x != null ) {
+                tn.setX( x );
             }
-            
+
             // Guard needed to Migrate v4 ruleflows to v5
             Integer y = (Integer) node.getMetaData( "y" );
-            if (y != null)
-            {
-            	tn.setY(y);
+            if ( y != null ) {
+                tn.setY( y );
             }
 
             Integer height = (Integer) node.getMetaData( "height" );
@@ -130,7 +128,7 @@ public class RuleFlowContentModelBuilder {
         return transferNodes;
     }
 
-    private ElementContainerTransferNode createRuleFlowContentModelTransferNode(Node[] nodes) {
+    private static ElementContainerTransferNode createRuleFlowContentModelTransferNode(Node[] nodes) {
 
         ElementContainerTransferNode fetn = new ElementContainerTransferNode();
         RuleFlowContentModel model = new RuleFlowContentModel();
@@ -150,20 +148,24 @@ public class RuleFlowContentModelBuilder {
      * @param model
      * @param node
      */
-    private void createConnections(RuleFlowContentModel model,
-                                   Node node) {
+    private static void createConnections(RuleFlowContentModel model,
+                                          Node node) {
 
         for ( List<Connection> inConnections : node.getIncomingConnections().values() ) {
             for ( Connection connection : inConnections ) {
+                //                if ( !"DROOLS_DEFAULT".equals( connection.getFromType() ) && !"DROOLS_DEFAULT".equals( connection.getToType() ) ) {
                 createConnection( model,
                                   connection );
+                //                }
             }
         }
 
         for ( List<Connection> outConnections : node.getOutgoingConnections().values() ) {
             for ( Connection connection : outConnections ) {
+                //                if ( !"DROOLS_DEFAULT".equals( connection.getFromType() ) && !"DROOLS_DEFAULT".equals( connection.getToType() ) ) {
                 createConnection( model,
                                   connection );
+                //                }
             }
         }
     }
@@ -174,8 +176,8 @@ public class RuleFlowContentModelBuilder {
      * @param model
      * @param connection
      */
-    private void createConnection(RuleFlowContentModel model,
-                                  Connection connection) {
+    private static void createConnection(RuleFlowContentModel model,
+                                         Connection connection) {
         TransferConnection tc = new TransferConnection();
 
         tc.setFromId( connection.getFrom().getId() );
@@ -184,7 +186,7 @@ public class RuleFlowContentModelBuilder {
         model.getConnections().add( tc );
     }
 
-    private TransferNode createHumanTaskTransferNode(HumanTaskNode node) {
+    private static TransferNode createHumanTaskTransferNode(HumanTaskNode node) {
         HumanTaskTransferNode httn = new HumanTaskTransferNode();
 
         Work work = node.getWork();
@@ -209,7 +211,7 @@ public class RuleFlowContentModelBuilder {
         return httn;
     }
 
-    private SplitTransferNode createSplitNode(Split s) {
+    private static SplitTransferNode createSplitNode(Split s) {
         SplitTransferNode sn = new SplitTransferNode();
 
         sn.setSplitType( SplitTransferNode.Type.getType( s.getType() ) );
@@ -229,7 +231,7 @@ public class RuleFlowContentModelBuilder {
         return sn;
     }
 
-    private WorkItemTransferNode createWorkItemTransfernode(WorkItemNode node) {
+    private static WorkItemTransferNode createWorkItemTransfernode(WorkItemNode node) {
         WorkItemTransferNode tn = new WorkItemTransferNode();
 
         Work work = node.getWork();
@@ -256,7 +258,7 @@ public class RuleFlowContentModelBuilder {
         return tn;
     }
 
-    private org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint getConstraint(Constraint constraint) {
+    private static org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint getConstraint(Constraint constraint) {
 
         SplitNode.Constraint c = new SplitNode.Constraint();
 
@@ -273,7 +275,7 @@ public class RuleFlowContentModelBuilder {
         return c;
     }
 
-    private TransferNode.Type getType(Node node) {
+    private static TransferNode.Type getType(Node node) {
         if ( node instanceof StartNode ) {
             return TransferNode.Type.START;
         } else if ( node instanceof EndNode ) {

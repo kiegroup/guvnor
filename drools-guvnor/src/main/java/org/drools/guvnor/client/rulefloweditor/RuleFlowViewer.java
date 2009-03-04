@@ -36,8 +36,8 @@ public class RuleFlowViewer extends AbsolutePanel {
     public RuleFlowViewer(RuleFlowContentModel rfcm,
                           FormStyleLayout parametersForm) {
 
-        this.setHeight( "600px" );
-        this.setHeight( "600px" );
+        int width = 600;
+        int height = 600;
 
         // Handle nodes
         for ( TransferNode tn : rfcm.getNodes() ) {
@@ -53,6 +53,13 @@ public class RuleFlowViewer extends AbsolutePanel {
 
                 node.addParametersForm( parametersForm );
 
+                if ( (tn.getX() + tn.width) > width ) {
+                    width = (tn.getX() + tn.width) + 20;
+                }
+                if ( (tn.getY() + tn.height) > height ) {
+                    height = (tn.getY() + tn.height) + 20;
+                }
+
                 add( node,
                      node.getX(),
                      node.getY() );
@@ -63,15 +70,23 @@ public class RuleFlowViewer extends AbsolutePanel {
         }
 
         for ( TransferConnection c : rfcm.getConnections() ) {
+            try {
+                Connection connection = RuleFlowConnectionFactory.createConnection( c,
+                                                                                    nodes );
 
-            Connection connection = RuleFlowConnectionFactory.createConnection( c,
-                                                                                nodes );
+                connections.add( connection );
 
-            connections.add( connection );
+                connection.appendTo( this );
 
-            connection.appendTo( this );
-
+            } catch ( Exception e ) {
+                // TODO: handle exception
+            }
         }
+
+        // Set the size by the most bottom and right nodes.
+        this.setHeight( height + "px" );
+        this.setWidth( width + "px" );
+
     }
 
     private void addElementContainerNodeSubNodes(ElementContainerNode fen,

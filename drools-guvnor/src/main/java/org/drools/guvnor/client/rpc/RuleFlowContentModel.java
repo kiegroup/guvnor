@@ -27,9 +27,9 @@ import org.drools.guvnor.client.modeldriven.brl.PortableObject;
 
 public class RuleFlowContentModel
     implements
-        PortableObject {
+    PortableObject {
 
-    private List<TransferNode>       nodes       = new ArrayList<TransferNode>();
+    private List<TransferNode>             nodes       = new ArrayList<TransferNode>();
     private Collection<TransferConnection> connections = new ArrayList<TransferConnection>();
     private String                         xml;
 
