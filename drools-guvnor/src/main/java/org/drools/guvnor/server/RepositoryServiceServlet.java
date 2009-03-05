@@ -64,8 +64,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 		} else {
             if (e.getCause() != null) {
 			    log.error(e.getCause());
+                e.printStackTrace();
             } else {
                 log.error(e);
+                e.printStackTrace();
             }
 			sendErrorMessage("Sorry, a technical error occurred. Please contact a system administrator.");
 		}
