@@ -21,10 +21,18 @@ public class MockHTTPRequest implements HttpServletRequest {
 	private Map<String, String> headers;
 	ServletInputStream stream;
 	String queryString;
+    Map<String, String> parameters;
+
 
 	public MockHTTPRequest(String uri, Map<String, String> headers) {
 		this.uri = uri;
 		this.headers = headers;
+	}
+
+    public MockHTTPRequest(String uri, Map<String, String> headers, Map<String, String> parameters) {
+		this.uri = uri;
+		this.headers = headers;
+        this.parameters = parameters;
 	}
 
 	public MockHTTPRequest(String uri, Map<String, String> headers, InputStream in) {
@@ -196,8 +204,8 @@ public class MockHTTPRequest implements HttpServletRequest {
 	}
 
 	public String getParameter(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return parameters.get(arg0);
 	}
 
 	public Map getParameterMap() {

@@ -36,6 +36,7 @@
     <servlet path="/package" class="org.drools.guvnor.server.files.PackageDeploymentServlet"/>
     <servlet path="/webdav" class="org.drools.guvnor.server.files.WebdavServlet"/>
     <servlet path="/api" class="org.drools.guvnor.server.files.RestAPIServlet"/>
+    <servlet path="/feed" class="org.drools.guvnor.server.files.FeedServlet"/>
 
 
 	<set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true" />

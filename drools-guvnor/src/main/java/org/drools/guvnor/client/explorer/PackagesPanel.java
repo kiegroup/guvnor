@@ -209,7 +209,7 @@ public class PackagesPanel extends GenericPanel {
                                         RepositoryServiceFactory.getService().listAssets(pc.uuid, fmts, skip, numRows, AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID, cb);
                                     }
                                 }
-                        );
+                        , GWT.getModuleBaseURL() + "feed/package?name=" + pc.name + "&viewUrl=" + Window.Location.getHref() + "&status=*");
 
                         tabPanel.addTab(uo[1] + " [" + pc.name + "]", true, list, key);
                     }

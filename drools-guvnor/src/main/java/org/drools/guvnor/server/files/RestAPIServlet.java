@@ -44,7 +44,7 @@ import org.jboss.seam.security.Identity;
  *
  * @author Michael Neale
  */
-public class RestAPIServlet extends HttpServlet {
+public class RestAPIServlet extends RepositoryServlet {
 
     private static final long serialVersionUID = 500L;
     public static final Logger log              = Logger.getLogger( RestAPIServlet.class );
@@ -135,24 +135,6 @@ public class RestAPIServlet extends HttpServlet {
 
 
 
-    /**
-     * Here we perform the action in the appropriate security context.
-     */
-	private void doAuthorizedAction(HttpServletRequest req, HttpServletResponse res, A action) throws IOException {
-        String auth = req.getHeader("Authorization");
-        if (!allowUser(auth)) {
-          res.setHeader("WWW-Authenticate", "BASIC realm=\"users\"");
-          res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-        }
-        else {
-        	try {
-        		action.a();
-        	} catch (Exception e) {
-        		log.error(e);
-        		throw new RuntimeException(e);
-        	}
-        }
-	}
 
 
 
@@ -181,60 +163,15 @@ public class RestAPIServlet extends HttpServlet {
 		return new RestAPI(getRepository());
 	}
 
-	/**
-	 * Check the users credentials.
-	 * This takes the Authorization string from the HTTP request header (the whole lot).
-	 * uses Seam Identity component to set the user up.
-	 */
-    public static boolean allowUser(String auth) {
-		if (auth == null) return false;  // no auth
-        if (!auth.toUpperCase().startsWith("BASIC "))
-          return false;  // we only do BASIC
-
-        String[] a = unpack(auth);
-        String usr = a[0];
-        String pwd = a[1];
-        if ( Contexts.isApplicationContextActive() ) {
-           // return (FileManagerUtils) Component.getInstance( "fileManager" );
-        	Identity ids = Identity.instance();
-        	ids.setUsername(usr);
-        	ids.setPassword(pwd);
-        	try {
-				ids.authenticate();
-				return true;
-			} catch (LoginException e) {
-				log.warn("Unable to authenticate for rest api: " + usr);
-				return false;
-			}
-        } else {
-            //MN: NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
-        	return usr.equals("test") && pwd.equals("password");
-        }
-
-	}
-
-
-
-	static String[] unpack(String auth) {
-
-        // Get encoded user and password, comes after "BASIC "
-        String userpassEncoded = auth.substring(6);
-        String userpassDecoded = new String(Base64.decode(userpassEncoded.getBytes()));
-
-        String[] a = userpassDecoded.split(":");
-        a[0] = a[0].trim();
-        a[1] = a[1].trim();
-		return a;
-	}
 
 
 
 
 
 
-    /**
-     * For closures. Damn you java when will you catch up with the 70s.
-     */
-    static interface A { public void a() throws Exception; }
+
+
+
+
 
 }

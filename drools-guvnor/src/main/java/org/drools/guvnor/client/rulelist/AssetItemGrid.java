@@ -28,9 +28,10 @@ import org.drools.guvnor.client.ruleeditor.EditorLauncher;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.ArrayReader;
@@ -42,10 +43,7 @@ import com.gwtext.client.data.RecordDef;
 import com.gwtext.client.data.Store;
 import com.gwtext.client.data.StringFieldDef;
 import com.gwtext.client.util.Format;
-import com.gwtext.client.widgets.Button;
-import com.gwtext.client.widgets.Toolbar;
-import com.gwtext.client.widgets.ToolbarButton;
-import com.gwtext.client.widgets.ToolbarTextItem;
+import com.gwtext.client.widgets.*;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.grid.CellMetadata;
 import com.gwtext.client.widgets.grid.ColumnConfig;
@@ -82,6 +80,8 @@ public class AssetItemGrid extends Composite {
     protected Store             store;
     private GridPanel           currentGrid;
     private Constants constants = GWT.create(Constants.class);
+    private String feedURL
+            ;
 
     public AssetItemGrid(final EditItemEvent event,
                          final String tableConfig,
@@ -117,6 +117,14 @@ public class AssetItemGrid extends Composite {
 
         initWidget( layout );
     }
+
+        public AssetItemGrid(final EditItemEvent event,
+                         final String tableConfig,
+                         final AssetItemGridDataLoader source,
+                         String feedURL) {
+            this(event, tableConfig, source);
+            this.feedURL = feedURL;
+        }
 
     private Stack<Integer> getPositionStack() {
         Stack<Integer> cursorPositions = new Stack<Integer>();
@@ -230,6 +238,14 @@ public class AssetItemGrid extends Composite {
                                  tb.addButton( openSelected );
 
 
+                                 if (feedURL != null) {
+                                     tb.addFill();
+                                     //System.err.println("Base: " + GWT.getModuleBaseURL());
+                                     //System.err.println("URL: " + com.google.gwt.user.client.Window.Location.getHref());
+                                     
+                                     ToolbarItem item = new ToolbarItem(new HTML("<a href='" + feedURL + "' target='_blank'><img src='images/feed.png'/></a>").getElement());
+                                     tb.addItem(item);
+                                 }
 
 
                                  currentGrid.addGridRowListener( new GridRowListenerAdapter() {

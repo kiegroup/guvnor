@@ -9,6 +9,7 @@ import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.Button;
@@ -65,6 +66,7 @@ public class CategoriesPanel extends GenericPanel {
                     final boolean isState = key.startsWith("-");
 
                     if (!centertabbedPanel.showIfOpen(key)) {
+
                         AssetItemGrid list = new AssetItemGrid(new EditItemEvent() {
                             public void open(String uuid) {
                                 centertabbedPanel.openAsset(uuid);
@@ -83,7 +85,8 @@ public class CategoriesPanel extends GenericPanel {
                                                             AssetItemGrid.RULE_LIST_TABLE_ID, cb);
                                         }
                                     }
-                                });
+                                },
+                                (isState) ? null : GWT.getModuleBaseURL() + "feed/category?name=" + key + "&viewUrl=" + Window.Location.getHref());
 
                         centertabbedPanel.addTab(((isState) ? constants.Status() : constants.Category()) + self.getText(), true, list, key);
                     }

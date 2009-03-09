@@ -46,6 +46,10 @@
 		<servlet-name>RestAPIServlet</servlet-name>
 		<servlet-class>	org.drools.guvnor.server.files.RestAPIServlet</servlet-class>
 	</servlet>
+    <servlet>
+		<servlet-name>FeedServlet</servlet-name>
+		<servlet-class>	org.drools.guvnor.server.files.FeedServlet</servlet-class>
+	</servlet>
 
 
 	<servlet-mapping>
@@ -76,6 +80,11 @@
 		<servlet-name>RestAPIServlet</servlet-name>
 		<url-pattern>/org.drools.guvnor.Guvnor/api/*</url-pattern>
 	</servlet-mapping>
+    	<servlet-mapping>
+		<servlet-name>FeedServlet</servlet-name>
+		<url-pattern>/org.drools.guvnor.Guvnor/feed/*</url-pattern>
+	</servlet-mapping>
+
 
     <session-config>
         <session-timeout>180</session-timeout>
