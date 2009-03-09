@@ -213,7 +213,9 @@ public class ActionToolbar extends Composite {
             		Window.alert(constants.AssetNameMustNotBeEmpty());
             		return;
             	}
-                RepositoryServiceFactory.getService().copyAsset( asset.uuid, asset.metaData.packageName, newName.getText(),
+                String name = newName.getText().trim();
+                if (!NewAssetWizard.validatePathPerJSR170(name)) return;
+                RepositoryServiceFactory.getService().copyAsset( asset.uuid, asset.metaData.packageName, name,
                                                                  new GenericCallback<String>() {
                                                                     public void onSuccess(String data) {
                                                                         completedCopying(newName.getText(), asset.metaData.packageName);
