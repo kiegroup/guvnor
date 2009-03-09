@@ -1,25 +1,23 @@
 package org.drools.guvnor.server.files;
 
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.AssetPageList;
-import org.drools.repository.RulesRepository;
+import org.drools.util.StringUtils;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
+import org.apache.jackrabbit.util.ISO8601;
+import org.mvel2.templates.TemplateRuntime;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.io.InputStreamReader;
+import java.util.*;
 
 /**
  * @author Michael Neale
@@ -98,5 +96,135 @@ public class FeedServlet extends RepositoryServlet {
             Identity.instance().checkPermission(  new PackageNameType( packageName ),
                                                  RoleTypes.PACKAGE_READONLY);
         }
+    }
+
+    /**
+ * @author Michael Neale
+     */
+    public static class AtomFeed {
+
+        private static String TEMPLATE = StringUtils.readFileAsString(new InputStreamReader(AtomFeed.class.getResourceAsStream("/atom-feed-template.xml")));
+
+
+        private String feedTitle;
+        private String feedUpdated;
+        private String feedId;
+        private String feedAlternate;
+        private String feedSelf;
+        private String subtitle;
+        private Collection<AtomEntry> entries;
+
+        public AtomFeed(String title, Calendar whenUpdate, String feedId, String feedAlternate, String feedSelf, Collection<AtomEntry> entries, String subtitle) {
+            this.feedTitle = title;
+            this.feedUpdated = ISO8601.format(whenUpdate);
+            this.feedId = feedId;
+            this.feedAlternate = feedAlternate;
+            this.feedSelf = feedSelf;
+            this.entries = entries;
+            this.subtitle = subtitle;
+        }
+
+        public String getAtom() {
+            Map m = new HashMap();
+            m.put("feed", this);
+            return (String) TemplateRuntime.eval(TEMPLATE, m);
+        }
+
+        public String getSubtitle() {
+            return subtitle;
+        }
+
+
+        public Collection getEntries() { return entries; }
+
+        public String getFeedTitle() { return feedTitle; }
+
+        public String getFeedUpdated() {
+            return feedUpdated;
+        }
+
+        public String getFeedId() {
+            return feedId;
+        }
+
+        public String getFeedAlternate() {
+            return feedAlternate;
+        }
+
+        public String getFeedSelf() {
+            return feedSelf;
+        }
+
+
+        public static class AtomEntry {
+            private String name;
+            private String webURL;
+            private String id;
+            private String updated;
+            private String published;
+            private String author;
+            private String contributor;
+            private String description;
+            private String checkinComment;
+            private String format;
+
+            public AtomEntry(HttpServletRequest req, AssetItem asset) {
+                this.name = asset.getName();
+                this.format = asset.getFormat();
+                this.webURL = req.getParameter("viewUrl") + "#asset=" + asset.getUUID() + "&nochrome";
+                this.id = asset.getUUID() + "&version=" + asset.getVersionNumber();
+                this.updated = ISO8601.format(asset.getLastModified());
+                this.published = ISO8601.format(asset.getCreatedDate());
+                this.author = asset.getCreator();
+                this.contributor = asset.getLastContributor();
+                this.description = asset.getDescription();
+                this.checkinComment = asset.getCheckinComment();
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            public String getFormat() {
+                return format;
+            }
+
+            public String getWebURL() {
+                return webURL;
+            }
+
+
+            public String getId() {
+                return id;
+            }
+
+            public String getUpdated() {
+                return updated;
+            }
+
+            public String getPublished() {
+                return published;
+            }
+
+            public String getAuthor() {
+                return author;
+            }
+
+            public String getContributor() {
+                return contributor;
+            }
+
+            public String getDescription() {
+                return description;
+            }
+
+            public String getCheckinComment() {
+                return checkinComment;
+            }
+
+        }
+
+
+
     }
 }

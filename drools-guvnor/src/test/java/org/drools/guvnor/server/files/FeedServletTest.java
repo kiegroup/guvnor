@@ -59,7 +59,7 @@ public class FeedServletTest extends TestCase {
         String r = new String(out.toByteArray());
         assertNotNull(r);
 
-        assertTrue(r.indexOf("asset1.drl") > -1);
+        assertTrue(r.indexOf("asset1") > -1);
 
 
         req = new MockHTTPRequest("/org.foo/feed/package", headers, new HashMap<String, String>() {
@@ -93,7 +93,7 @@ public class FeedServletTest extends TestCase {
 
         r = new String(out.toByteArray());
         assertNotNull(r);
-        assertTrue(r.indexOf("asset1.drl") > -1);        
+        assertTrue(r.indexOf("asset1") > -1);
 
     }
 
@@ -127,7 +127,7 @@ public class FeedServletTest extends TestCase {
         String r = new String(out.toByteArray());
         assertNotNull(r);
 
-        assertTrue(r.indexOf("asset1.drl") > -1);
+        assertTrue(r.indexOf("asset1") > -1);
         assertTrue(r.indexOf("http://foo.bar") > -1);
 
 
@@ -146,7 +146,7 @@ public class FeedServletTest extends TestCase {
         r = new String(out.toByteArray());
         assertNotNull(r);
 
-        assertTrue(r.indexOf("asset1.drl") > -1);
+        assertTrue(r.indexOf("asset1") > -1);
         assertTrue(r.indexOf("http://foo.bar") > -1);
         
 

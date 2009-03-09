@@ -23,6 +23,7 @@
          <contributor>
            <name>@{entry.contributor}</name>
          </contributor>
+         <category term="@{entry.format}" />
          <content type="xhtml" xml:lang="en"
           xml:base="http://diveintomark.org/">
            <div xmlns="http://www.w3.org/1999/xhtml">
