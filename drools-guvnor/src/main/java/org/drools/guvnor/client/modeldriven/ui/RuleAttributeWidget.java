@@ -16,16 +16,7 @@ package org.drools.guvnor.client.modeldriven.ui;
  */
 
 
-
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.DirtyableHorizontalPane;
-import org.drools.guvnor.client.common.FormStyleLayout;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
-import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.client.messages.Constants;
-
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -37,22 +28,50 @@ import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
+import org.drools.guvnor.client.common.DirtyableHorizontalPane;
+import org.drools.guvnor.client.common.FormStyleLayout;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
+import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
+import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 
 /**
  * Displays a list of rule options (attributes).
  *
  * @author Michael Neale
- *
- * Added support for metadata - Michael Rhoden 10/17/08
+ *         <p/>
+ *         Added support for metadata - Michael Rhoden 10/17/08
  */
 public class RuleAttributeWidget extends Composite {
+
+    /**
+     * These are the names of all of the rule attributes for this widget
+     */
+    private static final String SALIENCE_ATTR = "salience";
+    private static final String ENABLED_ATTR = "enabled";
+    private static final String DATE_EFFECTIVE_ATTR = "date-effective";
+    private static final String DATE_EXPIRES_ATTR = "date-expires";
+    private static final String NO_LOOP_ATTR = "no-loop";
+    private static final String AGENDA_GROUP_ATTR = "agenda-group";
+    private static final String ACTIVATION_GROUP_ATTR = "activation-group";
+    private static final String DURATION_ATTR = "duration";
+    private static final String AUTO_FOCUS_ATTR = "auto-focus";
+    private static final String LOCK_ON_ACTIVE_ATTR = "lock-on-active";
+    private static final String RULEFLOW_GROUP_ATTR = "ruleflow-group";
+    private static final String DIALECT_ATTR = "dialect";
+
+    /**
+     * If the rule attribute is represented visually by a checkbox, these are the values that will
+     * be stored in the model when checked/unchecked
+     */
+    private static final String TRUE_VALUE = "true";
+    private static final String FALSE_VALUE = "false";
 
     private FormStyleLayout layout;
     private RuleModel model;
     private RuleModeller parent;
     private Constants constants = ((Constants) GWT.create(Constants.class));
-
 
     public RuleAttributeWidget(RuleModeller parent, RuleModel model) {
         this.parent = parent;
@@ -60,36 +79,36 @@ public class RuleAttributeWidget extends Composite {
         layout = new FormStyleLayout();
         //Adding metadata here, seems redundant to add a new widget for metadata. Model does handle meta data separate.
         RuleMetadata[] meta = model.metadataList;
-        if(meta.length > 0){
-			HorizontalPanel hp = new HorizontalPanel();
-			//hp.add(new HTML("&nbsp;&nbsp;"));
-			hp.add(new SmallLabel(constants.Metadata2()));
-			//attributeConfigWidget.add(hp);
-			layout.addRow(hp);
-		}
-        for ( int i = 0; i < meta.length; i++ ) {
+        if (meta.length > 0) {
+            HorizontalPanel hp = new HorizontalPanel();
+            //hp.add(new HTML("&nbsp;&nbsp;"));
+            hp.add(new SmallLabel(constants.Metadata2()));
+            //attributeConfigWidget.add(hp);
+            layout.addRow(hp);
+        }
+        for (int i = 0; i < meta.length; i++) {
             RuleMetadata rmd = meta[i];
-            layout.addAttribute( rmd.attributeName, getEditorWidget(rmd, i));
+            layout.addAttribute(rmd.attributeName, getEditorWidget(rmd, i));
         }
         RuleAttribute[] attrs = model.attributes;
-        if(attrs.length > 0){
-			HorizontalPanel hp = new HorizontalPanel();
-			//hp.add(new HTML("&nbsp;&nbsp;"));
-			hp.add(new SmallLabel(constants.Attributes1()));
-			//attributeConfigWidget.add(hp);
-			layout.addRow(hp);
-		}
-        for ( int i = 0; i < attrs.length; i++ ) {
+        if (attrs.length > 0) {
+            HorizontalPanel hp = new HorizontalPanel();
+            //hp.add(new HTML("&nbsp;&nbsp;"));
+            hp.add(new SmallLabel(constants.Attributes1()));
+            //attributeConfigWidget.add(hp);
+            layout.addRow(hp);
+        }
+        for (int i = 0; i < attrs.length; i++) {
             RuleAttribute at = attrs[i];
-            layout.addAttribute( at.attributeName, getEditorWidget(at, i));
+            layout.addAttribute(at.attributeName, getEditorWidget(at, i));
         }
 
-
-        initWidget( layout );
+        initWidget(layout);
     }
 
     /**
      * Return a listbox of choices for rule attributes.
+     *
      * @return
      */
     public static ListBox getAttributeList() {
@@ -97,73 +116,65 @@ public class RuleAttributeWidget extends Composite {
         ListBox list = new ListBox();
         list.addItem(cons.Choose());
 
-        list.addItem( "salience" );
-        list.addItem( "enabled" );
-        list.addItem( "date-effective" );
-        list.addItem( "date-expires" );
-        list.addItem( "no-loop" );
-        list.addItem( "agenda-group" );
-        list.addItem( "activation-group" );
-        list.addItem( "duration" );
-        list.addItem( "auto-focus" );
-        list.addItem( "lock-on-active" );
-        list.addItem( "ruleflow-group" );
-        list.addItem( "dialect" );
+        list.addItem(SALIENCE_ATTR);
+        list.addItem(ENABLED_ATTR);
+        list.addItem(DATE_EFFECTIVE_ATTR);
+        list.addItem(DATE_EXPIRES_ATTR);
+        list.addItem(NO_LOOP_ATTR);
+        list.addItem(AGENDA_GROUP_ATTR);
+        list.addItem(ACTIVATION_GROUP_ATTR);
+        list.addItem(DURATION_ATTR);
+        list.addItem(AUTO_FOCUS_ATTR);
+        list.addItem(LOCK_ON_ACTIVE_ATTR);
+        list.addItem(RULEFLOW_GROUP_ATTR);
+        list.addItem(DIALECT_ATTR);
 
         return list;
     }
 
     private Widget getEditorWidget(final RuleAttribute at, final int idx) {
-        if (at.attributeName.equals( "no-loop" )) {
-            return getRemoveIcon( idx );
-        }
+        Widget editor;
 
-        Widget editor = null;
-
-        if (at.attributeName.equals( "enabled" )
-                || at.attributeName.equals( "auto-focus" )
-                || at.attributeName.equals( "lock-on-active" )) {
-            editor = checkBoxEditor( at );
+        if (at.attributeName.equals(ENABLED_ATTR)
+                || at.attributeName.equals(AUTO_FOCUS_ATTR)
+                || at.attributeName.equals(LOCK_ON_ACTIVE_ATTR)
+                || at.attributeName.equals(NO_LOOP_ATTR)) {
+            editor = checkBoxEditor(at);
         } else {
-            editor = textBoxEditor( at );
+            editor = textBoxEditor(at);
         }
-
 
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
-        horiz.add( editor );
-        horiz.add( getRemoveIcon( idx ) );
+        horiz.add(editor);
+        horiz.add(getRemoveIcon(idx));
 
         return horiz;
-
     }
 
     private Widget getEditorWidget(final RuleMetadata rm, final int idx) {
-        Widget editor = null;
+        Widget editor;
 
-        editor = textBoxEditor( rm );
+        editor = textBoxEditor(rm);
 
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
-        horiz.add( editor );
-        horiz.add( getRemoveMetaIcon( idx ) );
+        horiz.add(editor);
+        horiz.add(getRemoveMetaIcon(idx));
 
         return horiz;
-
     }
-
 
     private Widget checkBoxEditor(final RuleAttribute at) {
         final CheckBox box = new CheckBox();
         if (at.value == null) {
-            box.setChecked( true );
-            at.value = "true";
+            box.setChecked(true);
+            at.value = TRUE_VALUE;
         } else {
-            box.setChecked( ( at.value.equals( "true" ) ? true : false) );  //NON-NLS
+            box.setChecked((at.value.equals(TRUE_VALUE)));  //NON-NLS
         }
 
-
-        box.addClickListener( new ClickListener() {
+        box.addClickListener(new ClickListener() {
             public void onClick(Widget w) {
-                at.value = (box.isChecked()) ? "true" : "false";
+                at.value = (box.isChecked()) ? TRUE_VALUE : FALSE_VALUE;
             }
         });
         return box;
@@ -171,106 +182,78 @@ public class RuleAttributeWidget extends Composite {
 
     private TextBox textBoxEditor(final RuleAttribute at) {
         final TextBox box = new TextBox();
-        box.setVisibleLength( (at.value.length() < 3) ? 3 : at.value.length() );
-        box.setText( at.value );
-        box.addChangeListener( new ChangeListener() {
+        box.setVisibleLength((at.value.length() < 3) ? 3 : at.value.length());
+        box.setText(at.value);
+        box.addChangeListener(new ChangeListener() {
             public void onChange(Widget w) {
                 at.value = box.getText();
             }
         });
 
-        if (at.attributeName.equals( "date-effective" ) || at.attributeName.equals( "date-expires" )) {
-            if (at.value == null || "".equals( at.value )) box.setText( "" );
+        if (at.attributeName.equals(DATE_EFFECTIVE_ATTR) || at.attributeName.equals(DATE_EXPIRES_ATTR)) {
+            if (at.value == null || "".equals(at.value)) box.setText("");
 
-            box.setVisibleLength( 10 );
+            box.setVisibleLength(10);
         }
 
+        box.addKeyboardListener(new KeyboardListener() {
 
+            public void onKeyDown(Widget arg0,  char arg1, int arg2) {}
 
-        box.addKeyboardListener( new KeyboardListener() {
+            public void onKeyPress(Widget arg0, char arg1, int arg2) {}
 
-            public void onKeyDown(Widget arg0,
-                                  char arg1,
-                                  int arg2) {
-
-
+            public void onKeyUp(Widget arg0, char arg1, int arg2) {
+                box.setVisibleLength(box.getText().length());
             }
-
-            public void onKeyPress(Widget arg0,
-                                   char arg1,
-                                   int arg2) {
-
-            }
-
-            public void onKeyUp(Widget arg0,
-                                char arg1,
-                                int arg2) {
-                box.setVisibleLength( box.getText().length() );
-            }
-
         });
         return box;
     }
+
     private TextBox textBoxEditor(final RuleMetadata rm) {
         final TextBox box = new TextBox();
-        box.setVisibleLength( (rm.value.length() < 3) ? 3 : rm.value.length() );
-        box.setText( rm.value );
-        box.addChangeListener( new ChangeListener() {
+        box.setVisibleLength((rm.value.length() < 3) ? 3 : rm.value.length());
+        box.setText(rm.value);
+        box.addChangeListener(new ChangeListener() {
             public void onChange(Widget w) {
                 rm.value = box.getText();
             }
         });
 
+        box.addKeyboardListener(new KeyboardListener() {
+            public void onKeyDown(Widget arg0, char arg1, int arg2) {}
 
-        box.addKeyboardListener( new KeyboardListener() {
+            public void onKeyPress(Widget arg0, char arg1, int arg2) {}
 
-            public void onKeyDown(Widget arg0,
-                                  char arg1,
-                                  int arg2) {
-
-
+            public void onKeyUp(Widget arg0, char arg1, int arg2) {
+                box.setVisibleLength(box.getText().length());
             }
-
-            public void onKeyPress(Widget arg0,
-                                   char arg1,
-                                   int arg2) {
-
-            }
-
-            public void onKeyUp(Widget arg0,
-                                char arg1,
-                                int arg2) {
-                box.setVisibleLength( box.getText().length() );
-            }
-
         });
         return box;
     }
+
     private Image getRemoveIcon(final int idx) {
-        Image remove = new Image( "images/delete_item_small.gif" );  //NON-NLS
-        remove.addClickListener( new ClickListener() {
+        Image remove = new Image("images/delete_item_small.gif");  //NON-NLS
+        remove.addClickListener(new ClickListener() {
             public void onClick(Widget w) {
-            	if (Window.confirm(constants.RemoveThisRuleOption())) {
-                        model.removeAttribute( idx);
-                        parent.refreshWidget();
+                if (Window.confirm(constants.RemoveThisRuleOption())) {
+                    model.removeAttribute(idx);
+                    parent.refreshWidget();
                 }
             }
-        } );
+        });
         return remove;
     }
 
     private Image getRemoveMetaIcon(final int idx) {
-        Image remove = new Image( "images/delete_item_small.gif" ); //NON-NLS
-        remove.addClickListener( new ClickListener() {
+        Image remove = new Image("images/delete_item_small.gif"); //NON-NLS
+        remove.addClickListener(new ClickListener() {
             public void onClick(Widget w) {
-            	if (Window.confirm(constants.RemoveThisRuleOption())) {
-                        model.removeMetadata(idx);
-                        parent.refreshWidget();
+                if (Window.confirm(constants.RemoveThisRuleOption())) {
+                    model.removeMetadata(idx);
+                    parent.refreshWidget();
                 }
             }
-        } );
+        });
         return remove;
     }
-
-
 }
