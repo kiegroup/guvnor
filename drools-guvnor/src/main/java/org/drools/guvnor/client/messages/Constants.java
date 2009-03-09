@@ -23,6 +23,8 @@ public interface Constants extends ConstantsWithLookup {
 
 
     String Category();
+    
+    String CategoryColon();
 
     String AddAnotherFieldToThisSoYouCanSetItsValue();
 

@@ -70,7 +70,7 @@ public class NewAssetWizard extends FormStylePopup {
         this.afterCreate = afterCreate;
 
 
-        addAttribute( constants.Name(), name );
+        addAttribute( constants.NameColon(), name );
 
         this.setAfterShow(new Command() {
 			public void execute() {

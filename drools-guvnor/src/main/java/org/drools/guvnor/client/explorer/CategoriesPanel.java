@@ -88,7 +88,7 @@ public class CategoriesPanel extends GenericPanel {
                                 },
                                 (isState) ? null : GWT.getModuleBaseURL() + "feed/category?name=" + key + "&viewUrl=" + Window.Location.getHref());
 
-                        centertabbedPanel.addTab(((isState) ? constants.Status() : constants.Category()) + self.getText(), true, list, key);
+                        centertabbedPanel.addTab(((isState) ? constants.Status() : constants.CategoryColon()) + self.getText(), true, list, key);
                     }
 
                 }

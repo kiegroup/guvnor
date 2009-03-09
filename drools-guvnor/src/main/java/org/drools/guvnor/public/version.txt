@@ -1,1 +1,1 @@
-5.0.0.SNAPSHOT 25496:25498M
+5.0.0.SNAPSHOT svn: This client is too old to work with working copy 'src/test/java/org/drools/guvnor/server/files'; please get a newer Subversion client
