@@ -114,6 +114,10 @@ public class FileManagerUtils {
 
     }
 
+    public RulesRepository getRepository() {
+        return this.repository;
+    }
+
     /**
      * The get returns files based on UUID of an asset.
      */

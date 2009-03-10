@@ -48,7 +48,7 @@ public class FeedServlet extends RepositoryServlet {
         String cat = request.getParameter("name");
         String status = request.getParameter("status");
         checkCategoryPermission(cat);
-        AssetPageList pg = getFileManager().repository.findAssetsByCategory(cat, false, 0, -1);
+        AssetPageList pg = getFileManager().getRepository().findAssetsByCategory(cat, false, 0, -1);
         Iterator<AssetItem> it = pg.assets.iterator();
         List<AtomFeed.AtomEntry> entries = new ArrayList<AtomFeed.AtomEntry>();
         buildEntries(request, entries, it, status);
@@ -68,7 +68,8 @@ public class FeedServlet extends RepositoryServlet {
         String packageName = request.getParameter("name");
         checkPackageReadPermission(packageName);
 
-        PackageItem pkg = getFileManager().repository.loadPackage(packageName);
+        System.err.println("Package name for feed: " + packageName);
+        PackageItem pkg = getFileManager().getRepository().loadPackage(packageName);
 
         List<AtomFeed.AtomEntry> entries = new ArrayList<AtomFeed.AtomEntry>();
         Iterator<AssetItem> it = pkg.getAssets();
