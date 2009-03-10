@@ -9,6 +9,7 @@ import org.drools.repository.AssetPageList;
 import org.drools.util.StringUtils;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.AuthorizationException;
 import org.apache.jackrabbit.util.ISO8601;
 import org.mvel2.templates.TemplateRuntime;
 
@@ -26,20 +27,26 @@ public class FeedServlet extends RepositoryServlet {
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        String url = request.getRequestURI();
-        if (url.indexOf("feed/package") > -1) {
-            doAuthorizedAction(request, response, new A() {
-                public void a() throws Exception {
-                    doPackageFeed(request, response);
-                }
-            });
-        } else if (url.indexOf("feed/category") > -1) {
-            doAuthorizedAction(request, response, new A() {
-                public void a() throws Exception {
-                    doCategoryFeed(request, response);
-                }
-            });
-        } 
+        try {
+            String url = request.getRequestURI();
+            if (url.indexOf("feed/package") > -1) {
+                doAuthorizedAction(request, response, new A() {
+                    public void a() throws Exception {
+                        doPackageFeed(request, response);
+                    }
+                });
+            } else if (url.indexOf("feed/category") > -1) {
+                doAuthorizedAction(request, response, new A() {
+                    public void a() throws Exception {
+                        doCategoryFeed(request, response);
+                    }
+                });
+            }
+        } catch (AuthorizationException e) {
+            response.setHeader("WWW-Authenticate", "BASIC realm=\"users\"");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        }
+
     }
 
 
@@ -57,7 +64,7 @@ public class FeedServlet extends RepositoryServlet {
         response.getOutputStream().print(feed.getAtom());
     }
 
-    private void checkCategoryPermission(String cat) {
+    void checkCategoryPermission(String cat) {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission(  new CategoryPathType( cat ),
                                                  RoleTypes.ANALYST_READ );
@@ -92,7 +99,7 @@ public class FeedServlet extends RepositoryServlet {
     }
 
 
-    private void checkPackageReadPermission(String packageName) {
+    void checkPackageReadPermission(String packageName) {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission(  new PackageNameType( packageName ),
                                                  RoleTypes.PACKAGE_READONLY);

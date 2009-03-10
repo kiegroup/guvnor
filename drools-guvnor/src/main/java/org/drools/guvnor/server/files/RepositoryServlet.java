@@ -91,10 +91,13 @@ public class RepositoryServlet extends HttpServlet {
         else {
         	try {
         		action.a();
-        	} catch (Exception e) {
+        	} catch (RuntimeException e) {
         		log.error(e);
-        		throw new RuntimeException(e);
-        	}
+        		throw e;
+        	} catch (Exception e) {
+                log.error(e);
+                throw new RuntimeException(e);
+            }
         }
 	}
 
@@ -115,8 +118,8 @@ public class RepositoryServlet extends HttpServlet {
         if ( Contexts.isApplicationContextActive() ) {
            // return (FileManagerUtils) Component.getInstance( "fileManager" );
             Identity ids = Identity.instance();
-            ids.setUsername(usr);
-            ids.setPassword(pwd);
+            ids.getCredentials().setUsername(usr);
+            ids.getCredentials().setPassword(pwd);
             try {
                 ids.authenticate();
                 return true;

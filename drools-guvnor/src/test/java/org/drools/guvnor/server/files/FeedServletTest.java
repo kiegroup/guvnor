@@ -7,6 +7,7 @@ import org.drools.repository.AssetItem;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.apache.util.Base64;
+import org.jboss.seam.security.AuthorizationException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
@@ -119,7 +120,7 @@ public class FeedServletTest extends TestCase {
                 put("viewUrl", "http://foo.bar");
             }
         });
-        FeedServlet fs = new FeedServlet();
+        MockFeedServlet fs = new MockFeedServlet();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         MockHTTPResponse res = new MockHTTPResponse(out);
         fs.doGet(req, res);
@@ -138,7 +139,7 @@ public class FeedServletTest extends TestCase {
                 put("status", "*");
             }
         });
-        fs = new FeedServlet();
+        fs = new MockFeedServlet();
         out = new ByteArrayOutputStream();
         res = new MockHTTPResponse(out);
         fs.doGet(req, res);
@@ -148,8 +149,32 @@ public class FeedServletTest extends TestCase {
 
         assertTrue(r.indexOf("asset1") > -1);
         assertTrue(r.indexOf("http://foo.bar") > -1);
-        
 
+
+        fs = new MockFeedServlet();
+        fs.throwAuthException = true;
+        out = new ByteArrayOutputStream();
+        res = new MockHTTPResponse(out);
+        fs.doGet(req, res);
+
+        assertEquals(HttpServletResponse.SC_UNAUTHORIZED, res.errorCode);
+
+
+    }
+
+    class MockFeedServlet extends FeedServlet {
+        boolean throwAuthException = false;
+        @Override
+        void checkCategoryPermission(String cat) {
+            if (throwAuthException) throw new AuthorizationException("NO");
+            super.checkCategoryPermission(cat);    //To change body of overridden methods use File | Settings | File Templates.
+        }
+
+        @Override
+        void checkPackageReadPermission(String packageName) {
+            if (throwAuthException) throw new AuthorizationException("NO");
+            super.checkPackageReadPermission(packageName);    //To change body of overridden methods use File | Settings | File Templates.
+        }
     }
     
 }
