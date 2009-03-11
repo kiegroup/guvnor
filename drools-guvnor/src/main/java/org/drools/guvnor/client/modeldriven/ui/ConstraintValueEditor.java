@@ -344,10 +344,11 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
 
-        if (c.value == null || c.value.length() < 5 ) {
-            box.setVisibleLength( 6 );
+        String v = c.value;
+        if (c.value == null || v.length() < 7 ) {
+            box.setVisibleLength( 8 );
         } else {
-            box.setVisibleLength( c.value.length() - 1 );
+            box.setVisibleLength( v.length() + 1 );
         }
 
 
