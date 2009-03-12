@@ -201,6 +201,7 @@ public class ActionValueEditor extends DirtyableComposite {
 			}
 
 		});
+
 		/*
 		 * If there is a bound variable that is the same type of the current
 		 * variable type, then propose a list
@@ -210,14 +211,20 @@ public class ActionValueEditor extends DirtyableComposite {
 		for (String v : vars) {
 			FactPattern factPattern = model.getModel().getBoundFact(v);
 			if (factPattern.factType.equals(this.variableType)) {
+				// First selection is empty
+				if (listVariable.getItemCount() == 0) {
+					listVariable.addItem("...");
+				}
+
 				listVariable.addItem(v);
 			}
 		}
 		if (listVariable.getItemCount() > 0) {
-			form.addAttribute(constants.BoundVariable(), listVariable);
-			listVariable.addClickListener(new ClickListener() {
 
-				public void onClick(Widget arg0) {
+			form.addAttribute(constants.BoundVariable(), listVariable);
+			listVariable.addChangeListener(new ChangeListener() {
+
+				public void onChange(Widget arg0) {
 					ListBox w = (ListBox) arg0;
 					value.value = "=" + w.getValue(w.getSelectedIndex());
 					makeDirty();
