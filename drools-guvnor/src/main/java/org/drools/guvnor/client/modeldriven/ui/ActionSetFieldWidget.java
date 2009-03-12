@@ -176,7 +176,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
     	}
 
     	DropDownData enums = this.completions.getEnums(type, this.model.fieldValues, val.field);
-    	return new ActionValueEditor(val, enums);
+    	return new ActionValueEditor(val, enums,modeller,variableClass);
     }
 
 

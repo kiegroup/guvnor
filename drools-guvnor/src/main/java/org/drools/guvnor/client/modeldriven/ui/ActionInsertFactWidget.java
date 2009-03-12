@@ -102,7 +102,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
 
     private Widget valueEditor(final ActionFieldValue val) {
     	DropDownData enums = this.completions.getEnums(this.factType, this.model.fieldValues, val.field);
-    	return new ActionValueEditor(val, enums);
+    	return new ActionValueEditor(val, enums,modeller,val.type);
     }
 
     private Widget fieldSelector(final ActionFieldValue val) {
