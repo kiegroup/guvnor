@@ -1789,4 +1789,8 @@ public interface Constants extends ConstantsWithLookup {
     String PleaseEnterANameThatIsNotTheSameAsTheFactType();
 
     String ThatNameIsInUsePleaseTryAnother();
+
+    String Browse();
+
+    String KnowledgeBases();
 }

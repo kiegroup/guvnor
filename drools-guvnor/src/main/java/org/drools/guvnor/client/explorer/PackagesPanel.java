@@ -45,7 +45,7 @@ public class PackagesPanel extends GenericPanel {
     private static Constants constants = ((Constants) GWT.create(Constants.class));
 
     public PackagesPanel(ExplorerViewCenterPanel tabbedPanel) {
-        super(constants.Packages(), tabbedPanel);
+        super(constants.KnowledgeBases(), tabbedPanel);
         setIconCls("nav-packages"); //NON-NLS
 
         Toolbar pkgToolbar = new Toolbar();
@@ -67,14 +67,18 @@ public class PackagesPanel extends GenericPanel {
         //these panels are lazy loaded to easy startup wait time.
         addListener(new PanelListenerAdapter() {
         	public void onExpand(Panel panel) {
-        		if (!packagesLoaded) {
-        			packagesPanel.add(packageExplorer(centertabbedPanel));
-        			packagesLoaded = true;
-        		}
-        	}
+                loadPackageList();
+            }
         });
 
         add(packagesPanel);
+    }
+
+    public void loadPackageList() {
+        if (!packagesLoaded) {
+            packagesPanel.add(packageExplorer(centertabbedPanel));
+            packagesLoaded = true;
+        }
     }
 
     //TODO: move it to separate class

@@ -27,7 +27,7 @@ public class CategoriesPanel extends GenericPanel {
     private static Constants constants = GWT.create(Constants.class);
 
     public CategoriesPanel(ExplorerViewCenterPanel tabbedPanel) {
-        super(constants.Assets(), tabbedPanel);
+        super(constants.Browse(), tabbedPanel);
         setIconCls("nav-categories"); //NON-NLS
 
         

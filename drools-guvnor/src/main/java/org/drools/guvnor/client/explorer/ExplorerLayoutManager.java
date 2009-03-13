@@ -7,6 +7,8 @@ import org.drools.guvnor.client.security.Capabilities;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.Margins;
 import com.gwtext.client.core.RegionPosition;
@@ -78,6 +80,7 @@ public class ExplorerLayoutManager {
 
             centertabbedPanel.openFind();
 
+
         }
 
         setUpMain(bi);
@@ -89,28 +92,37 @@ public class ExplorerLayoutManager {
     }
 
     private void createNavigationPanels() {
+
+
         accordion.add(new CategoriesPanel(centertabbedPanel));
 
-        Panel tpPackageExplorer = new PackagesPanel(centertabbedPanel);
+
+
         if (shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
-            accordion.add(tpPackageExplorer);
+            final PackagesPanel pp = new PackagesPanel(centertabbedPanel);
+            accordion.add(pp);
+            /*
+            DeferredCommand.addCommand(new Command() {
+                public void execute() {
+                    pp.loadPackageList();
+                }
+            });
+            */
+
         }
 
-        Panel tpQA = new QAPanel(centertabbedPanel);
+
         if (shouldShow(Capabilities.SHOW_QA)) {
-            accordion.add(tpQA);
+            accordion.add(new QAPanel(centertabbedPanel));
         }
 
-        Panel tpDeployment = new DeploymentPanel(centertabbedPanel);
         if (shouldShow(Capabilities.SHOW_DEPLOYMENT, Capabilities.SHOW_DEPLOYMENT_NEW)) {
-            accordion.add(tpDeployment);
+            accordion.add(new DeploymentPanel(centertabbedPanel));
         }
 
-        Panel tpAdmin = new AdministrationPanel(centertabbedPanel);
         if (shouldShow(Capabilities.SHOW_ADMIN)) {
-            accordion.add(tpAdmin);
+            accordion.add(new AdministrationPanel(centertabbedPanel));
         }
-
 
     }
 
