@@ -2186,7 +2186,7 @@ public class ServiceImplementation
         }
 
         PermissionManager pm = new PermissionManager( repository );
-        System.err.println( perms );
+
         log.info( "Updating user permissions for userName [" + userName + "] to [" + perms + "]" );
         pm.updateUserPermissions( userName,
                                   perms );
