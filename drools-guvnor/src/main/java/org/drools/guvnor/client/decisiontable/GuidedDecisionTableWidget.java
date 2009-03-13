@@ -763,7 +763,7 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 					//and here we do the appropriate editor
 					setSortable(true);
 					if (c.width != -1) {
-						setWidth(-1);
+						setWidth(c.width);
 					}
 				}
 			};
