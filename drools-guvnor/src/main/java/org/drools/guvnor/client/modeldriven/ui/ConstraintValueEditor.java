@@ -75,6 +75,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
      */
     public ConstraintValueEditor(FactPattern pattern, String fieldName, ISingleFieldConstraint con, RuleModeller modeller, String valueType /* eg is numeric */) {
         this.constraint = con;
+        valueType = modeller.getSuggestionCompletions().getFieldType(pattern.factType, fieldName);
         SuggestionCompletionEngine sce = modeller.getSuggestionCompletions();
         if ( SuggestionCompletionEngine.TYPE_NUMERIC.equals(valueType)) {
             this.numericValue = true;
