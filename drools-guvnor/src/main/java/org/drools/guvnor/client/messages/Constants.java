@@ -1797,4 +1797,8 @@ public interface Constants extends ConstantsWithLookup {
     String DefaultValue();
 
     String HideThisColumn();
+
+    String PleaseSelectOrEnterField();
+
+    String PleaseSelectAnOperator();
 }

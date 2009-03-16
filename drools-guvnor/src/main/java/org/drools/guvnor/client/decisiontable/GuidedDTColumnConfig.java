@@ -169,6 +169,18 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                     Window.alert(constants.YouMustEnterAColumnHeaderValueDescription());
                     return;
                 }
+                if (editingCol.constraintValueType != ISingleFieldConstraint.TYPE_PREDICATE) {
+                    if (null == editingCol.factField || "".equals(editingCol.factField)) {
+                        Window.alert(constants.PleaseSelectOrEnterField());
+                        return;
+                    }
+                    if (null == editingCol.operator || "".equals(editingCol.operator)) {
+                        Window.alert(constants.PleaseSelectAnOperator());
+                        return;
+                    }
+
+
+                }
 				if (isNew) {
                     if (!unique(editingCol.header)) {
                         Window.alert(constants.ThatColumnNameIsAlreadyInUsePleasePickAnother());
