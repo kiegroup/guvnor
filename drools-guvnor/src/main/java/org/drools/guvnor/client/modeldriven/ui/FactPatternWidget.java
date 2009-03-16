@@ -20,7 +20,12 @@ package org.drools.guvnor.client.modeldriven.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.common.ClickableLabel;
+import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.common.DirtyableFlexTable;
+import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint;
@@ -30,10 +35,9 @@ import org.drools.guvnor.client.modeldriven.brl.IPattern;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.ui.factPattern.Connectives;
 import org.drools.guvnor.client.modeldriven.ui.factPattern.PopupCreator;
-import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -45,7 +49,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
-import com.google.gwt.core.client.GWT;
 
 /**
  * This is the new smart widget that works off the model.
@@ -273,6 +276,7 @@ public class FactPatternWidget extends DirtyableComposite {
     private void renderSingleFieldConstraint(final RuleModeller modeller,
             final DirtyableFlexTable inner, int row, final SingleFieldConstraint constraint,
             boolean showBinding, int tabs) {
+    	//DOCNHERON
         if ( constraint.constraintValueType != SingleFieldConstraint.TYPE_PREDICATE ) {
             inner.setWidget( row, 0, fieldLabel(constraint, showBinding, tabs * 20));
             inner.setWidget( row, 1, operatorDropDown( constraint ) );

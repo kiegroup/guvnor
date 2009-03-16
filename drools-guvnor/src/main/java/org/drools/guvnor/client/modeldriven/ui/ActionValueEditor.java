@@ -84,16 +84,68 @@ public class ActionValueEditor extends DirtyableComposite {
 						}
 					}, enums));
 		} else {
-			if (value.value == null || "".equals(value.value)) {
+			// FIX nheron il faut ajouter les autres choix pour appeller les
+			// bons editeurs suivant le type
+			// si la valeur vaut 0 il faut mettre un stylo (
+
+			if (value.nature == ActionFieldValue.TYPE_UNDEFINED) {
 				// we have a blank slate..
 				// have to give them a choice
 				root.add(choice());
 			} else {
-				TextBox box = boundTextBox(this.value);
-				root.add(box);
+				if (value.nature == ActionFieldValue.TYPE_VARIABLE) {
+					ListBox list = boundVariable(value);
+					root.add(list);
+				} else {
+					TextBox box = boundTextBox(this.value);
+					root.add(box);
+				}
+
 			}
 
 		}
+	}
+
+	private ListBox boundVariable(final ActionFieldValue c) {
+		/*
+		 * If there is a bound variable that is the same type of the current
+		 * variable type, then propose a list
+		 */
+		ListBox listVariable = new ListBox();
+		List<String> vars = model.getModel().getBoundFacts();
+		for (String v : vars) {
+			FactPattern factPattern = model.getModel().getBoundFact(v);
+			if (factPattern.factType.equals(this.variableType)) {
+				// First selection is empty
+				if (listVariable.getItemCount() == 0) {
+					listVariable.addItem("...");
+				}
+
+				listVariable.addItem(v);
+			}
+		}
+		if (value.value.equals("=")) {
+			listVariable.setSelectedIndex(0);
+		} else {
+			for (int i = 0; i < listVariable.getItemCount(); i++) {
+				if (listVariable.getItemText(i).equals(value.value.substring(1))) {
+					listVariable.setSelectedIndex(i);
+				}
+			}
+		}
+		if (listVariable.getItemCount() > 0) {
+
+			listVariable.addChangeListener(new ChangeListener() {
+				public void onChange(Widget arg0) {
+					ListBox w = (ListBox) arg0;
+					value.value = "=" + w.getValue(w.getSelectedIndex());
+					makeDirty();
+					refresh();
+				}
+
+			});
+		}
+		return listVariable;
 	}
 
 	private TextBox boundTextBox(final ActionFieldValue c) {
@@ -177,6 +229,7 @@ public class ActionValueEditor extends DirtyableComposite {
 		Button lit = new Button(constants.LiteralValue());
 		lit.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
+				value.nature = ActionFieldValue.TYPE_LITERAL;
 				value.value = " ";
 				makeDirty();
 				refresh();
@@ -194,6 +247,7 @@ public class ActionValueEditor extends DirtyableComposite {
 		formula.addClickListener(new ClickListener() {
 
 			public void onClick(Widget w) {
+				value.nature = ActionFieldValue.TYPE_FORMULA;
 				value.value = "=";
 				makeDirty();
 				refresh();
@@ -204,36 +258,29 @@ public class ActionValueEditor extends DirtyableComposite {
 
 		/*
 		 * If there is a bound variable that is the same type of the current
-		 * variable type, then propose a list
+		 * variable type, then show abutton
 		 */
-		ListBox listVariable = new ListBox();
 		List<String> vars = model.getModel().getBoundFacts();
 		for (String v : vars) {
 			FactPattern factPattern = model.getModel().getBoundFact(v);
 			if (factPattern.factType.equals(this.variableType)) {
-				// First selection is empty
-				if (listVariable.getItemCount() == 0) {
-					listVariable.addItem("...");
-				}
+				Button variable = new Button(constants.BoundVariable());
+				form.addAttribute(constants.BoundVariable()+":", variable);
+				variable.addClickListener(new ClickListener() {
 
-				listVariable.addItem(v);
+					public void onClick(Widget w) {
+						value.nature = ActionFieldValue.TYPE_VARIABLE;
+						value.value = "=";
+						makeDirty();
+						refresh();
+						form.hide();
+					}
+
+				});
 			}
+			break;
 		}
-		if (listVariable.getItemCount() > 0) {
 
-			form.addAttribute(constants.BoundVariable(), listVariable);
-			listVariable.addChangeListener(new ChangeListener() {
-
-				public void onChange(Widget arg0) {
-					ListBox w = (ListBox) arg0;
-					value.value = "=" + w.getValue(w.getSelectedIndex());
-					makeDirty();
-					refresh();
-					form.hide();
-				}
-
-			});
-		}
 		form.addAttribute(constants.Formula() + ":", widgets(formula,
 				new InfoPopup(constants.Formula(), constants.FormulaTip())));
 
