@@ -6,11 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.guvnor.client.common.DirtyableHorizontalPane;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.PrettyFormLayout;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.dt.ActionCol;
@@ -31,19 +27,7 @@ import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.KeyboardListener;
-import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.SortDir;
@@ -435,13 +419,41 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 			hp.add(new SmallLabel(constants.Attributes()));
 			attributeConfigWidget.add(hp);
 		}
-		
+
+        
 		for (int i = 0; i < dt.attributeCols.size(); i++) {
-			AttributeCol at = (AttributeCol) dt.attributeCols.get(i);
+
+
+
+			final AttributeCol at = dt.attributeCols.get(i);
 			HorizontalPanel hp = new HorizontalPanel();
-			hp.add(new HTML("&nbsp;&nbsp;&nbsp;&nbsp;")); //NON-NLS
+
+
+            hp.add(new SmallLabel(at.attr));
+
 			hp.add(removeAttr(at));
-			hp.add(new SmallLabel(at.attr));
+            final TextBox defaultValue = new TextBox();
+            defaultValue.setText(at.defaultValue);
+            defaultValue.addChangeListener(new ChangeListener() {
+                public void onChange(Widget sender) {
+                    at.defaultValue = defaultValue.getText();
+                }
+            });
+            hp.add(new HTML("&nbsp;&nbsp;&nbsp;&nbsp;")); //NON-NLS
+            hp.add(new SmallLabel(constants.DefaultValue()));
+            hp.add(defaultValue);
+
+            final CheckBox hide = new CheckBox();
+            hide.setChecked(at.hideColumn);
+            hide.addClickListener(new ClickListener() {
+                public void onClick(Widget sender) {
+                    at.hideColumn = hide.isChecked();
+                }
+            });
+            hp.add(hide);
+            hp.add(new SmallLabel(constants.HideThisColumn()));
+
+
 			attributeConfigWidget.add(hp);
 		}
 		
@@ -684,6 +696,10 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 					if (attr.width != -1) {
 						setWidth(attr.width);
 					}
+                    if (attr.hideColumn) {
+                        setHidden(true);
+                    }
+
 
 				}
 			};
@@ -703,6 +719,10 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 					if (attr.width != -1) {
 						setWidth(attr.width);
 					}
+
+                    if (attr.hideColumn) {
+                        setHidden(true);
+                    }
 
 				}
 			};
@@ -724,6 +744,10 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 					if (c.width != -1) {
 						setWidth(c.width);
 					}
+
+                    if (c.hideColumn) {
+                        setHidden(true);
+                    }
 				}
 			};
 			colMap.put(c.header, c);
@@ -765,6 +789,10 @@ public class GuidedDecisionTableWidget extends Composite implements SaveEventLis
 					if (c.width != -1) {
 						setWidth(c.width);
 					}
+
+                    if (c.hideColumn) {
+                        setHidden(true);
+                    }
 				}
 			};
 			colMap.put(c.header, c);

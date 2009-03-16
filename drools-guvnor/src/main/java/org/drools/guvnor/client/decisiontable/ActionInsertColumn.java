@@ -51,6 +51,8 @@ public class ActionInsertColumn extends FormStylePopup {
 		editingCol.factType = col.factType;
 		editingCol.header = col.header;
 		editingCol.valueList = col.valueList;
+        editingCol.defaultValue = col.defaultValue;
+        editingCol.hideColumn = col.hideColumn;
 
 		setTitle(constants.ActionColumnConfigurationInsertingANewFact());
 
@@ -99,7 +101,8 @@ public class ActionInsertColumn extends FormStylePopup {
 				editingCol.header = header.getText();
 			} });
 		addAttribute(constants.ColumnHeaderDescription(), header);
-
+        
+        addAttribute(constants.DefaultValue(), GuidedDTColumnConfig.getDefaultEditor(editingCol));
 
 		Button apply = new Button(constants.ApplyChanges());
 		apply.addClickListener(new ClickListener() {
@@ -127,6 +130,8 @@ public class ActionInsertColumn extends FormStylePopup {
 					col.factType = editingCol.factType;
 					col.header = editingCol.header;
 					col.valueList = editingCol.valueList;
+                    col.defaultValue = editingCol.defaultValue;
+                    col.hideColumn = editingCol.hideColumn;
 				}
 				refreshGrid.execute();
 				hide();

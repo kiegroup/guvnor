@@ -12,20 +12,12 @@ import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
 import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.guvnor.client.modeldriven.dt.DTColumnConfig;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
 
 /**
@@ -59,6 +51,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		editingCol.header = col.header;
 		editingCol.operator = col.operator;
 		editingCol.valueList = col.valueList;
+        editingCol.defaultValue = col.defaultValue;
+        editingCol.hideColumn = col.hideColumn;
 
 
 		setTitle(constants.ConditionColumnConfiguration());
@@ -165,6 +159,9 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		addAttribute(constants.ColumnHeaderDescription(), header);
 
 
+        addAttribute(constants.DefaultValue(), getDefaultEditor(editingCol));
+
+
 		Button apply = new Button(constants.ApplyChanges());
 		apply.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
@@ -193,6 +190,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 					col.header = editingCol.header;
 					col.operator = editingCol.operator;
 					col.valueList = editingCol.valueList;
+                    col.defaultValue = editingCol.defaultValue;
+                    col.hideColumn = editingCol.hideColumn;
 				}
 				refreshGrid.execute();
 				hide();
@@ -206,6 +205,30 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
 
 	}
+
+    /**
+     * An editor for setting the default value.
+     */
+    public static HorizontalPanel getDefaultEditor(final DTColumnConfig editingCol) {
+        final TextBox defaultValue = new TextBox();
+        defaultValue.setText(editingCol.defaultValue);
+        final CheckBox hide = new CheckBox(((Constants) GWT.create(Constants.class)).HideThisColumn());
+        hide.setChecked(editingCol.hideColumn);
+        hide.addClickListener(new ClickListener() {
+            public void onClick(Widget sender) {
+                editingCol.hideColumn = hide.isChecked();
+            }
+        });
+        defaultValue.addChangeListener(new ChangeListener() {
+            public void onChange(Widget sender) {
+                editingCol.defaultValue = defaultValue.getText();
+            }
+        });
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.add(defaultValue);
+        hp.add(hide);
+        return hp;
+    }
 
     private boolean unique(String header) {
         for (ConditionCol o : dt.conditionCols) {

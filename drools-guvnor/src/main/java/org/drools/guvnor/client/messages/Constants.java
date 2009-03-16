@@ -1793,4 +1793,8 @@ public interface Constants extends ConstantsWithLookup {
     String Browse();
 
     String KnowledgeBases();
+
+    String DefaultValue();
+
+    String HideThisColumn();
 }

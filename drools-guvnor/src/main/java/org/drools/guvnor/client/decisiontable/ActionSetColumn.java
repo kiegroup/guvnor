@@ -48,6 +48,9 @@ public class ActionSetColumn extends FormStylePopup {
 		editingCol.type = col.type;
 		editingCol.valueList = col.valueList;
 		editingCol.update = col.update;
+        editingCol.defaultValue = col.defaultValue;
+        editingCol.hideColumn = col.hideColumn;
+
 
 		super.setModal(false);
 		setTitle(constants.ColumnConfigurationSetAFieldOnAFact());
@@ -100,6 +103,7 @@ public class ActionSetColumn extends FormStylePopup {
 
 		addAttribute(constants.UpdateEngineWithChanges(), doUpdate());
 
+        addAttribute(constants.DefaultValue(), GuidedDTColumnConfig.getDefaultEditor(editingCol));
 
 		Button apply = new Button(constants.ApplyChanges());
 		apply.addClickListener(new ClickListener() {
@@ -129,6 +133,8 @@ public class ActionSetColumn extends FormStylePopup {
 					col.type = editingCol.type;
 					col.valueList = editingCol.valueList;
 					col.update = editingCol.update;
+                    col.defaultValue = editingCol.defaultValue;
+                    col.hideColumn = editingCol.hideColumn;
 				}
 				refreshGrid.execute();
 				hide();
