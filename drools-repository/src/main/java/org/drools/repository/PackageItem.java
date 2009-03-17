@@ -225,18 +225,7 @@ public class PackageItem extends VersionableItem {
 
     }
 
-    /**
-     * Remove an asset by name
-     * After doing this, you will need to check in the package
-     * as removing an item effects the parent package.
-     */
-    public void removeAsset(String name) {
-        try {
-            this.node.getNode( ASSET_FOLDER_NAME + "/" + name ).remove();
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
-        }
-    }
+
 
     /**
      * This will permanently delete this package.

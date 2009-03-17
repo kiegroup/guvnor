@@ -1,8 +1,6 @@
 package org.drools.repository;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.*;
 import java.util.Calendar;
 import java.util.Iterator;
 
@@ -12,6 +10,8 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.apache.log4j.Logger;
+import org.drools.repository.events.StorageEventManager;
+import org.drools.repository.utils.IOUtils;
 
 /**
  * The RuleItem class is used to abstract away the details of the underlying JCR repository.
@@ -74,12 +74,20 @@ public class AssetItem extends CategorisableItem {
                null );
     }
 
+
+
+
     /**
      * returns the string contents of the rule node.
      * If this is a binary asset, this will return null (use getBinaryContent instead).
      */
     public String getContent() throws RulesRepositoryException {
         try {
+
+            if (StorageEventManager.hasLoadEvent()) {
+                return IOUtils.toString(StorageEventManager.getLoadEvent().loadContent(this));
+            }
+
             if ( isBinary() ) {
                 return new String( this.getBinaryContentAsBytes() );
             }
@@ -140,6 +148,9 @@ public class AssetItem extends CategorisableItem {
      */
     public InputStream getBinaryContentAttachment() {
         try {
+            if (StorageEventManager.hasLoadEvent()) {
+                return StorageEventManager.getLoadEvent().loadContent(this);
+            }
             Node ruleNode = getVersionContentNode();
             if ( ruleNode.hasProperty( CONTENT_PROPERTY_BINARY_NAME ) ) {
                 Property data = ruleNode.getProperty( CONTENT_PROPERTY_BINARY_NAME );
@@ -169,6 +180,9 @@ public class AssetItem extends CategorisableItem {
     public byte[] getBinaryContentAsBytes() {
         try {
             Node ruleNode = getVersionContentNode();
+            if (StorageEventManager.hasLoadEvent()) {
+                return IOUtils.toByteArray(StorageEventManager.getLoadEvent().loadContent(this));
+            }
             if (isBinary()) {
                     Property data = ruleNode.getProperty( CONTENT_PROPERTY_BINARY_NAME );
                     InputStream in = data.getStream();
@@ -477,6 +491,11 @@ public class AssetItem extends CategorisableItem {
      * to make it easy to roll back.
      */
     public void remove() {
+
+        if (StorageEventManager.hasSaveEvent()) {
+            StorageEventManager.getSaveEvent().onAssetDelete(this);
+        }
+
         checkIsUpdateable();
         if ( this.getDateExpired() != null ) {
             if ( Calendar.getInstance().before( this.getDateExpired() ) ) {

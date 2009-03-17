@@ -25,6 +25,7 @@ import javax.jcr.version.Version;
 
 import org.apache.log4j.Logger;
 import org.drools.repository.migration.MigrateDroolsPackage;
+import org.drools.repository.events.StorageEventManager;
 
 /**
  * RulesRepository is the class that defines the bahavior for the JBoss Rules
@@ -684,6 +685,10 @@ public class RulesRepository {
             PackageItem item = new PackageItem( this,
                                                 rulePackageNode );
             item.checkin( "Initial" );
+
+            if (StorageEventManager.hasSaveEvent()) {
+                StorageEventManager.getSaveEvent().onPackageCreate(item);
+            }
 
             return item;
         } catch ( ItemExistsException e ) {

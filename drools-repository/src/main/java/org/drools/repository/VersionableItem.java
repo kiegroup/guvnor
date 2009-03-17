@@ -1,5 +1,7 @@
 package org.drools.repository;
 
+import org.drools.repository.events.StorageEventManager;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -524,6 +526,13 @@ public abstract class VersionableItem extends Item {
             this.node.setProperty( VERSION_NUMBER_PROPERTY_NAME,  nextVersion );
             this.node.getSession().save();
             this.node.checkin();
+
+            if (StorageEventManager.hasSaveEvent()) {
+                if (this instanceof AssetItem) {
+                    StorageEventManager.getSaveEvent().onAssetCheckin((AssetItem) this);
+                }
+            }
+
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( "Unable to checkin.",
                                                 e );

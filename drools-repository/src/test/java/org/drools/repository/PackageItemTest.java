@@ -550,14 +550,14 @@ public class PackageItemTest extends TestCase {
             AssetItem ruleItem2 = rulePackageItem1.addAsset("testRemoveRule2", "test lhs content");
 
             //remove the rule, make sure the other rule in the pacakge stays around
-            rulePackageItem1.removeAsset(ruleItem1.getName());
+            rulePackageItem1.loadAsset(ruleItem1.getName()).remove();
             rulePackageItem1.rulesRepository.save();
             rules = iteratorToList(rulePackageItem1.getAssets());
             assertEquals(1, rules.size());
             assertEquals("testRemoveRule2", ((AssetItem)rules.get(0)).getName());
 
             //remove the rule that is following the head revision, make sure the pacakge is now empty
-            rulePackageItem1.removeAsset(ruleItem2.getName());
+            rulePackageItem1.loadAsset(ruleItem2.getName()).remove();
             rules = iteratorToList(rulePackageItem1.getAssets());
             assertNotNull(rules);
             assertEquals(0, rules.size());
