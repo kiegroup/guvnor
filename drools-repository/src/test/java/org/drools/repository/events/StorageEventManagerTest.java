@@ -1,6 +1,12 @@
 package org.drools.repository.events;
 
 import junit.framework.TestCase;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.PackageItem;
+import org.drools.repository.AssetItem;
+import org.drools.repository.RepositorySessionUtil;
+
+import java.io.ByteArrayInputStream;
 
 /**
  * @author Michael Neale
@@ -52,6 +58,39 @@ public class StorageEventManagerTest extends TestCase {
         assertFalse(StorageEventManager.hasSaveEvent());
 
 
+    }
+
+
+    public void testAssetContentCallbacks() {
+
+        StorageEventManager.le = null;
+        StorageEventManager.se = null;
+
+        RulesRepository repo = getRepo();
+        PackageItem pkg = repo.loadDefaultPackage();
+        AssetItem asset = pkg.addAsset("testAssetContentCallbacks", "");
+        assertEquals(0, asset.getContentLength());
+        asset.updateContent("boo");
+        asset.checkin("");
+
+        asset.updateContent("whee");
+        StorageEventManager.le = new MockLoadEvent();
+        StorageEventManager.se = new MockSaveEvent();
+
+        asset.checkin("");
+        assertTrue(((MockSaveEvent)StorageEventManager.se).checkinCalled);
+
+
+        
+        asset.getContent();
+        assertTrue(((MockLoadEvent) StorageEventManager.le).loadCalled);
+        
+
+    }
+
+
+    private RulesRepository getRepo() {
+        return RepositorySessionUtil.getRepository();
     }
 
 }

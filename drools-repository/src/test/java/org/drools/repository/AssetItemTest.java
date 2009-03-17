@@ -10,6 +10,7 @@ import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
 
 import junit.framework.TestCase;
+import org.drools.repository.events.StorageEventManager;
 
 public class AssetItemTest extends TestCase {
 
@@ -172,6 +173,8 @@ public class AssetItemTest extends TestCase {
             assertNotNull(ruleItem1.getBinaryContentAsBytes());
             assertNotNull(ruleItem1.getBinaryContentAttachment());
             String content = new String(ruleItem1.getBinaryContentAsBytes());
+
+            assertNotNull(content);        
     }
 
 

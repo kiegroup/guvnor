@@ -9,8 +9,10 @@ import java.io.ByteArrayInputStream;
  * @author Michael Neale
  */
 public class MockLoadEvent implements LoadEvent {
+    boolean loadCalled;
 
-            public InputStream loadContent(AssetItem item) {
+    public InputStream loadContent(AssetItem item) {
+                this.loadCalled = true;
                 return new ByteArrayInputStream("hey".getBytes());
             }
 }
