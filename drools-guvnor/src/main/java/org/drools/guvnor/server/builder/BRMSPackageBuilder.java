@@ -44,6 +44,7 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.util.ChainedProperties;
+import org.drools.builder.conf.DefaultPackageNameOption;
 
 /**
  * This decorates the drools-compiler PackageBuilder
@@ -80,6 +81,8 @@ public class BRMSPackageBuilder extends PackageBuilder {
                                 chainedProperties.getProperty( "drools.dialect.java.compiler", "ECLIPSE" ) );
         properties.putAll(buildProps);
         PackageBuilderConfiguration pkgConf = new PackageBuilderConfiguration( properties );
+
+        pkgConf.setOption( DefaultPackageNameOption.get( "org.package.name" ) );
         pkgConf.setAllowMultipleNamespaces(false);
         pkgConf.setClassLoader( loader );
 
