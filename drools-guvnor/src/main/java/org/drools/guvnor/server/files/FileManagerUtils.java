@@ -53,6 +53,7 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -226,7 +227,6 @@ public class FileManagerUtils {
 
     }
 
-
     public byte[] exportPackageFromRepository(String packageName) {
         try {
             return this.repository.exportPackageFromRepository( packageName );
@@ -238,34 +238,29 @@ public class FileManagerUtils {
     }
 
     public void exportRulesRepository(OutputStream out) {
-        this.repository.exportRulesRepositoryToStream(out);
+        this.repository.exportRulesRepositoryToStream( out );
     }
 
     @Restrict("#{identity.loggedIn}")
     public void importRulesRepository(InputStream in) {
-		if (Contexts.isSessionContextActive()) {
-			Identity.instance().checkPermission(
-					new AdminType(),
-					RoleTypes.ADMIN);
-		}
+        if ( Contexts.isSessionContextActive() ) {
+            Identity.instance().checkPermission( new AdminType(),
+                                                 RoleTypes.ADMIN );
+        }
         repository.importRulesRepositoryFromStream( in );
-        
+
         //
         //Migrate v4 ruleflows to v5
         //This section checks if the repository contains drools v4
         //ruleflows that need to be migrated to drools v5
         //
-        try
-        {
-        	if ( MigrateRepository.needsRuleflowMigration(repository) ) 
-        	{
-        		MigrateRepository.migrateRuleflows( repository );
-        	}
-        }
-        catch ( RepositoryException e ) 
-        {
-        	e.printStackTrace();
-        	throw new RulesRepositoryException(e);
+        try {
+            if ( MigrateRepository.needsRuleflowMigration( repository ) ) {
+                MigrateRepository.migrateRuleflows( repository );
+            }
+        } catch ( RepositoryException e ) {
+            e.printStackTrace();
+            throw new RulesRepositoryException( e );
         }
     }
 
@@ -275,23 +270,19 @@ public class FileManagerUtils {
 
         repository.importPackageToRepository( data,
                                               importAsNew );
-        
+
         //
         //Migrate v4 ruleflows to v5
         //This section checks if the repository contains drools v4
         //ruleflows that need to be migrated to drools v5
         //
-        try
-        {
-        	if ( MigrateRepository.needsRuleflowMigration(repository) ) 
-        	{
-        		MigrateRepository.migrateRuleflows( repository );
-        	}
-        }
-        catch ( RepositoryException e ) 
-        {
-        	e.printStackTrace();
-        	throw new RulesRepositoryException(e);
+        try {
+            if ( MigrateRepository.needsRuleflowMigration( repository ) ) {
+                MigrateRepository.migrateRuleflows( repository );
+            }
+        } catch ( RepositoryException e ) {
+            e.printStackTrace();
+            throw new RulesRepositoryException( e );
         }
     }
 
@@ -308,8 +299,7 @@ public class FileManagerUtils {
 
         ClassicDRLImporter imp = new ClassicDRLImporter( drlStream );
         PackageItem pkg = null;
-        
-        
+
         String packageName = imp.getPackageName();
         boolean existing = repository.containsPackage( packageName );
 
@@ -320,7 +310,7 @@ public class FileManagerUtils {
             item.remove();
             existing = false;
         }
-        
+
         if ( existing ) {
             pkg = repository.loadPackage( packageName );
             ServiceImplementation.updateDroolsHeader( ClassicDRLImporter.mergeLines( ServiceImplementation.getDroolsHeader( pkg ),
@@ -334,7 +324,8 @@ public class FileManagerUtils {
                                                       pkg );
         }
 
-        boolean newVer = Boolean.parseBoolean(System.getProperty("drools.createNewVersionOnImport", "true"));
+        boolean newVer = Boolean.parseBoolean( System.getProperty( "drools.createNewVersionOnImport",
+                                                                   "true" ) );
 
         for ( Asset as : imp.getAssets() ) {
 
@@ -342,7 +333,7 @@ public class FileManagerUtils {
                 AssetItem asset = pkg.loadAsset( as.name );
                 if ( asset.getFormat().equals( as.format ) ) {
                     asset.updateContent( as.content );
-                    if (newVer) asset.checkin( "Imported change form external DRL" );
+                    if ( newVer ) asset.checkin( "Imported change form external DRL" );
                 } //skip it if not the right format
 
             } else {
@@ -353,13 +344,12 @@ public class FileManagerUtils {
 
                 asset.updateContent( as.content );
                 asset.updateExternalSource( "Imported from external DRL" );
-                if (newVer) asset.checkin( "Imported change form external DRL" );
+                if ( newVer ) asset.checkin( "Imported change form external DRL" );
 
             }
         }
 
         repository.save();
-
 
     }
 
@@ -396,7 +386,7 @@ public class FileManagerUtils {
         StringBuffer buf = new StringBuffer();
         if ( handler.isRuleAsset() ) {
 
-            BRMSPackageBuilder builder = new BRMSPackageBuilder( );
+            BRMSPackageBuilder builder = new BRMSPackageBuilder();
             //now we load up the DSL files
             builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( item.getPackage(),
                                                                         new BRMSPackageBuilder.DSLErrorEvent() {
@@ -417,4 +407,8 @@ public class FileManagerUtils {
 
     }
 
+    @Destroy
+    public void close() {
+        repository.logout();
+    }
 }
