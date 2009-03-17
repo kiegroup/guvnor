@@ -278,7 +278,6 @@ public class ActionValueEditor extends DirtyableComposite {
 
 				});
 			}
-			break;
 		}
 
 		form.addAttribute(constants.Formula() + ":", widgets(formula,
