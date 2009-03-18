@@ -26,6 +26,7 @@ import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -176,6 +177,7 @@ public class BackupManager extends Composite {
             public void onSubmitComplete(FormSubmitCompleteEvent event) {
                 if ( event.getResults().indexOf( "OK" ) > -1 ) {
                     Window.alert(constants.ImportDone());
+                    History.newItem(" ");
                     Window.Location.reload();
                 } else {
                     ErrorPopup.showMessage(constants.ImportFailed());

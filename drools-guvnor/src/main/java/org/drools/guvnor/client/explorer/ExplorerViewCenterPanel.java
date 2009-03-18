@@ -186,6 +186,7 @@ public class ExplorerViewCenterPanel {
 	public void openAsset(
 			final String uuid) {
 		History.newItem("asset=" + uuid); //NON-NLS
+        
 		LoadingPopup.showMessage(constants.LoadingAsset());
 		if (!showIfOpen(uuid)) {
 			RepositoryServiceFactory.getService().loadRuleAsset(uuid, new GenericCallback<RuleAsset>() {
