@@ -10,15 +10,7 @@ import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.jcr.ImportUUIDBehavior;
-import javax.jcr.ItemExistsException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
+import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
@@ -638,7 +630,11 @@ public class RulesRepository {
             Node rulePackageNode = this.session.getNodeByUUID( uuid );
             return new AssetItem( this,
                                   rulePackageNode );
+        } catch (ItemNotFoundException e) {
+          log.warn(e);
+          throw new RulesRepositoryException("That item does not exist.");
         } catch ( RepositoryException e ) {
+
             log.error( "Unable to load a rule asset by UUID.",
                        e );
             throw new RulesRepositoryException( e );
