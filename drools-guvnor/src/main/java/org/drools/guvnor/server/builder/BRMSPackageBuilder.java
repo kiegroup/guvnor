@@ -82,7 +82,6 @@ public class BRMSPackageBuilder extends PackageBuilder {
         properties.putAll(buildProps);
         PackageBuilderConfiguration pkgConf = new PackageBuilderConfiguration( properties );
 
-        pkgConf.setOption( DefaultPackageNameOption.get( "org.package.name" ) );
         pkgConf.setAllowMultipleNamespaces(false);
         pkgConf.setClassLoader( loader );
 

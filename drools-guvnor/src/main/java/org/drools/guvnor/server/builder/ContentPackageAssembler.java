@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.jar.JarInputStream;
 
+import org.drools.builder.conf.DefaultPackageNameOption;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -137,6 +138,7 @@ public class ContentPackageAssembler {
         } catch (IOException e) {
             throw new RulesRepositoryException("Unable to load configuration properties for package.", e);            
         }
+        ps.setProperty( DefaultPackageNameOption.PROPERTY_NAME, this.pkg.getName() );
         builder = BRMSPackageBuilder.getInstance(jars, ps);
 	}
 
