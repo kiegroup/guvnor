@@ -161,7 +161,12 @@ public class ActionSetColumn extends FormStylePopup {
 		cb.setText("");
 		cb.addClickListener(new ClickListener() {
 			public void onClick(Widget arg0) {
-				editingCol.update = cb.isChecked();
+                if (sce.isGlobalVariable(editingCol.boundName)) {
+                    cb.setChecked(false);
+                    editingCol.update = false;
+                }   else {
+				    editingCol.update = cb.isChecked();
+                }
 			}
 		});
 		hp.add(cb);
@@ -182,7 +187,8 @@ public class ActionSetColumn extends FormStylePopup {
 	private void showFieldChange() {
 		final FormStylePopup pop = new FormStylePopup();
 		pop.setModal(false);
-		final String factType = getFactType(this.editingCol.boundName);
+
+		final String factType = getFactType();
 		String[] fields = this.sce.getFieldCompletions(factType);
 		final ListBox box = new ListBox();
 		for (int i = 0; i < fields.length; i++) {
@@ -203,7 +209,14 @@ public class ActionSetColumn extends FormStylePopup {
 
 	}
 
-	private void doFieldLabel() {
+    private String getFactType() {
+        if (sce.globalTypes.containsKey(editingCol.boundName)) {
+            return sce.globalTypes.get(editingCol.boundName);
+        }
+        return getFactType(this.editingCol.boundName);
+    }
+
+    private void doFieldLabel() {
 		if (this.editingCol.factField != null) {
 			this.fieldLabel.setText(this.editingCol.factField);
 		} else {
