@@ -29,6 +29,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.builder.conf.DefaultPackageNameOption;
 
 public class BRMSPackageBuilderTest extends TestCase {
 
@@ -51,10 +52,13 @@ public class BRMSPackageBuilderTest extends TestCase {
         JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         List<JarInputStream> l = new ArrayList<JarInputStream>();
         l.add( jis );
-        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l, new Properties() );
 
-        PackageDescr pc = new PackageDescr("foo.bar");
-        builder.addPackage( pc );
+        Properties ps = new Properties();
+        ps.setProperty( DefaultPackageNameOption.PROPERTY_NAME, "foo.bar" );
+        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l, ps );
+
+        //PackageDescr pc = new PackageDescr("foo.bar");
+        //builder.addPackage( pc );
 
         String header = "import com.billasurf.Person\n import com.billasurf.Board";
         builder.addPackageFromDrl( new StringReader(header) );
