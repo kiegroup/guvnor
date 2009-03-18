@@ -471,7 +471,7 @@ public class RulesRepository {
             long start = System.currentTimeMillis();
             this.session.getWorkspace().copy( source,
                                               newName );
-            System.err.println("Time taken for snap: " + (System.currentTimeMillis() - start));
+            log.debug("Time taken for snap: " + (System.currentTimeMillis() - start));
 
         } catch ( RepositoryException e ) {
             log.error( "Unable to create snapshot",
@@ -918,7 +918,7 @@ public class RulesRepository {
                                       false );
         } catch (Exception e) {
             log.error(e);
-            e.printStackTrace();
+            throw new RulesRepositoryException(e);
         }
 
     }
@@ -986,10 +986,12 @@ public class RulesRepository {
                 mig.migrate( this );
             }
         } catch ( RepositoryException e ) {
-            e.printStackTrace();
-            throw new RulesRepositoryException();
+            log.error(e);
+            throw new RulesRepositoryException("Repository error when importing from stream.", e);
         } catch ( IOException e ) {
-            e.printStackTrace();
+            log.error(e);
+            throw new RulesRepositoryException(e);
+
         }
     }
 
@@ -1015,10 +1017,11 @@ public class RulesRepository {
                 mig.migrate( this );
             }
         } catch ( RepositoryException e ) {
-            e.printStackTrace();
-            throw new RulesRepositoryException();
+            log.error(e);
+            throw new RulesRepositoryException(e);
         } catch ( IOException e ) {
-            e.printStackTrace();
+            log.error(e);
+            throw new RulesRepositoryException(e);
         }
     }
 
@@ -1248,7 +1251,6 @@ public class RulesRepository {
             return new AssetItemIterator( res.getNodes(),
                                           this );
         } catch ( RepositoryException e ) {
-            System.out.println( e.getMessage() );
             throw new RulesRepositoryException( e );
         }
     }
@@ -1276,7 +1278,6 @@ public class RulesRepository {
             return new AssetItemIterator( res.getNodes(),
                                           this );
         } catch ( RepositoryException e ) {
-            System.out.println( e.getMessage() );
             throw new RulesRepositoryException( e );
         }
     }
@@ -1300,7 +1301,6 @@ public class RulesRepository {
             return new AssetItemIterator( res.getNodes(),
                                           this );
         } catch ( RepositoryException e ) {
-            System.out.println( e.getMessage() );
             throw new RulesRepositoryException( e );
         }
     }
@@ -1356,7 +1356,6 @@ public class RulesRepository {
                 }
             }
 
-            System.out.println( sql );
 
             Query q = this.session.getWorkspace().getQueryManager().createQuery( sql,
                                                                                  Query.SQL );
@@ -1366,7 +1365,6 @@ public class RulesRepository {
             return new AssetItemIterator( res.getNodes(),
                                           this );
         } catch ( RepositoryException e ) {
-            System.out.println( e.getMessage() );
             throw new RulesRepositoryException( e );
         }
     }
@@ -1455,7 +1453,7 @@ public class RulesRepository {
         try {
             this.logout();
         } catch ( Exception e ) {
-            System.err.println( "Finalizer error: " + e.getMessage() );
+            log.error( "Finalizer error: " + e.getMessage() );
         }
     }
 }
