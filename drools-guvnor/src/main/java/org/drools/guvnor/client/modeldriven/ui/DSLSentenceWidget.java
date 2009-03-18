@@ -279,7 +279,7 @@ public class DSLSentenceWidget extends Composite {
             } else if ( wid instanceof DSLDateSelector ) {
                 DSLDateSelector dateSel = (DSLDateSelector) wid;
                 String dateString = dateSel.getDateString();
-                String format = dateSel.getFormat();
+                String format = dateSel.getVisualFormat();
                 newSentence = newSentence + "{" + dateString + ":" + dateSel.getType() + ":" + format + "} ";
             } else if ( wid instanceof NewLine ) {
                 newSentence = newSentence + "\\n";
@@ -500,8 +500,12 @@ public class DSLSentenceWidget extends Composite {
         private Label          labelWidget     = new Label();
         // Format for the dropdown def is <varName>:<type>:<Fact.field>
         private String         varName         = "";
-        private final String   javaFormat      = Preferences.getStringPref( "drools.dateformat" );
-        private DateTimeFormat formatter       = DateTimeFormat.getFormat( javaFormat );
+
+        // Format that the text box uses.
+        private String         visualFormat    = "";
+        // Format that the system uses.
+        private final String   defaultFormat   = Preferences.getStringPref( "drools.dateformat" );
+        private DateTimeFormat formatter       = null;
 
         class DatePicker extends PopupPanel {
             private Constants constants = ((Constants) GWT.create( Constants.class ));
@@ -651,8 +655,19 @@ public class DSLSentenceWidget extends Composite {
         public DSLDateSelector(String variableDef) {
 
             int firstIndex = variableDef.indexOf( ":" );
+            int lastIndex = variableDef.lastIndexOf( ":" );
+
             varName = variableDef.substring( 0,
                                              firstIndex );
+            visualFormat = variableDef.substring( lastIndex + 1,
+                                                  variableDef.length() );
+
+            try {
+                formatter = DateTimeFormat.getFormat( visualFormat );
+            } catch ( Exception e ) {
+                visualFormat = defaultFormat;
+                formatter = DateTimeFormat.getFormat( visualFormat );
+            }
 
             labelWidget.setStyleName( "x-form-field" );
 
@@ -704,12 +719,14 @@ public class DSLSentenceWidget extends Composite {
             return DATE_TAG;
         }
 
-        public String getFormat() {
-            return this.javaFormat;
+        public String getVisualFormat() {
+            return this.visualFormat;
         }
 
         public String getDateString() {
-            return textWidget.getText();
+            DateTimeFormat formatter = DateTimeFormat.getFormat( defaultFormat );
+            Date date = this.formatter.parse( textWidget.getText() );
+            return formatter.format( date );
         }
 
         public String getVarName() {
