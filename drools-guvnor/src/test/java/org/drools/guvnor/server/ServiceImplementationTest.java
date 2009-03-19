@@ -1138,6 +1138,9 @@ public class ServiceImplementationTest extends TestCase {
 
 	}
 
+
+
+
 	/**
 	 * This will test creating a package, check it compiles, and can exectute
 	 * rules, then take a snapshot, and check that it reports errors.
@@ -1148,7 +1151,7 @@ public class ServiceImplementationTest extends TestCase {
 
 		// create our package
 		PackageItem pkg = repo.createPackage("testBinaryPackageCompile", "");
-		ServiceImplementation.updateDroolsHeader("import org.drools.Person", pkg);
+		ServiceImplementation.updateDroolsHeader("global java.util.List ls \n import org.drools.Person", pkg);
 		AssetItem rule1 = pkg.addAsset("rule_1", "");
 		rule1.updateFormat(AssetFormats.DRL);
 		rule1
@@ -1176,7 +1179,9 @@ public class ServiceImplementationTest extends TestCase {
 		RuleBase rb = loader.getRuleBase();
 
 		StatelessSession sess = rb.newStatelessSession();
+        sess.setGlobal("ls", new ArrayList());
 		sess.execute(p);
+
 		assertEquals(42, p.getAge());
 
 		impl.createPackageSnapshot("testBinaryPackageCompile", "SNAP1", false,
