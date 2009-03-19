@@ -2,6 +2,7 @@ package org.drools.guvnor.client.decisiontable;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
@@ -416,6 +417,9 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                 } else if (fn.equals(ft)) {
                     Window.alert(constants.PleaseEnterANameThatIsNotTheSameAsTheFactType());
                     return;
+                } else if ( !checkUnique(fn, dt.conditionCols) ) {
+                    Window.alert("Please enter a name that is not already used by another pattern.");
+                    return;
                 }
 				editingCol.boundName = fn;
 				editingCol.factType = ft;
@@ -429,7 +433,14 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
 	}
 
-	private ListBox loadPatterns() {
+    private boolean checkUnique(String fn, List<ConditionCol> conditionCols) {
+        for (ConditionCol c : conditionCols) {
+            if (c.boundName.equals(fn)) return false;
+        }
+        return true;
+    }
+
+    private ListBox loadPatterns() {
 		Set vars = new HashSet();
 		ListBox patterns = new ListBox();
 		for (int i = 0; i < dt.conditionCols.size(); i++) {
