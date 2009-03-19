@@ -1825,4 +1825,8 @@ public interface Constants extends ConstantsWithLookup {
     String November();
 
     String December();
+
+    String YouMightNeedToBeABitMoreImaginative();
+
+    String SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother();
 }

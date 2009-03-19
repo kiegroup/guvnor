@@ -42,7 +42,7 @@ public class ErrorPopup  {
     //new Image("images/error_dialog.png")
 
 
-    private ErrorPopup(final String message, final String longMessage) {
+    private ErrorPopup(String message, String longMessage) {
 
     	Window w = new Window();
     	w.setTitle(constants.Error());
@@ -55,8 +55,13 @@ public class ErrorPopup  {
 
     	w.setLayout(new VerticalLayout());
 
+        if (message.contains("ItemExistsException")) {    //NON-NLS
+            longMessage = constants.YouMightNeedToBeABitMoreImaginative() + "\n" + message;
+            message = constants.SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother();
 
+        }
 
+        final String longDescription = longMessage;
         VerticalPanel vp = new VerticalPanel();
         if (longMessage == null) {
         	vp.add(new HTML("<image src='images/error_dialog.png'/>&nbsp;<strong><b>" + message +"</b></strong>"));
@@ -70,7 +75,7 @@ public class ErrorPopup  {
 	        showD.addListener(new ButtonListenerAdapter() {
 				public void onClick(Button button, EventObject e) {
 					detailPanel.clear();
-					detailPanel.add(new SmallLabel(longMessage));
+					detailPanel.add(new SmallLabel(longDescription));
 
 				}
 	        });
