@@ -662,12 +662,11 @@ public class DSLSentenceWidget extends Composite {
             visualFormat = variableDef.substring( lastIndex + 1,
                                                   variableDef.length() );
 
-            try {
-                formatter = DateTimeFormat.getFormat( visualFormat );
-            } catch ( Exception e ) {
+            if ( visualFormat == null || visualFormat.equals( "default" ) || visualFormat.equals( "" ) ) {
                 visualFormat = defaultFormat;
-                formatter = DateTimeFormat.getFormat( visualFormat );
             }
+
+            formatter = DateTimeFormat.getFormat( visualFormat );
 
             labelWidget.setStyleName( "x-form-field" );
 
