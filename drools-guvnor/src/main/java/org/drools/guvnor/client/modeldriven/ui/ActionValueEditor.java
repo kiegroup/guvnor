@@ -239,7 +239,7 @@ public class ActionValueEditor extends DirtyableComposite {
 		});
 
 		form.addAttribute(constants.LiteralValue() + ":", widgets(lit,
-				new InfoPopup(constants.Literal(), constants.LiteralValTip())));
+				new InfoPopup(constants.Literal(), constants.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation())));
 		form.addRow(new HTML("<hr/>"));
 		form.addRow(new SmallLabel(constants.AdvancedSection()));
 

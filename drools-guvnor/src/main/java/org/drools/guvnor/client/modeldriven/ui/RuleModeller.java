@@ -509,6 +509,16 @@ public class RuleModeller extends DirtyableComposite {
             popup.addAttribute(constants.DSLSentence(), dsls );
         }
 
+        if (factsToAssert.getItemCount() > 1) {
+            popup.addAttribute(constants.InsertANewFact(), factsToAssert );
+            HorizontalPanel horiz = new HorizontalPanel();
+            horiz.add( factsToLogicallyAssert );
+            Image img = new Image("images/information.gif"); //NON-NLS
+            img.setTitle(constants.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved());
+            horiz.add( img );
+            popup.addAttribute(constants.LogicallyInsertANewFact(), horiz );
+        }
+
         popup.addRow(new HTML(constants.AdvancedOptionsColon()));
 
         if (completions.globalCollections.length > 0) {
@@ -554,15 +564,7 @@ public class RuleModeller extends DirtyableComposite {
         });
 
 
-        if (factsToAssert.getItemCount() > 1) {
-            popup.addAttribute(constants.InsertANewFact(), factsToAssert );
-            HorizontalPanel horiz = new HorizontalPanel();
-            horiz.add( factsToLogicallyAssert );
-            Image img = new Image("images/information.gif"); //NON-NLS
-            img.setTitle(constants.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved());
-            horiz.add( img );
-            popup.addAttribute(constants.LogicallyInsertANewFact(), horiz );
-        }
+
 
 
         if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {

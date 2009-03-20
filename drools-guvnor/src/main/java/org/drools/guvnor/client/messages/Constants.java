@@ -1829,4 +1829,6 @@ public interface Constants extends ConstantsWithLookup {
     String YouMightNeedToBeABitMoreImaginative();
 
     String SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother();
+
+    String ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation();
 }
