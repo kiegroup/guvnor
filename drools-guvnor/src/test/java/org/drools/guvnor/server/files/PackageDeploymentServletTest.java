@@ -1,6 +1,8 @@
 package org.drools.guvnor.server.files;
 
 import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ByteArrayInputStream;
 
 import junit.framework.TestCase;
 
@@ -11,6 +13,7 @@ import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.drools.util.DroolsStreamUtils;
 
 public class PackageDeploymentServletTest extends TestCase {
 
@@ -24,7 +27,7 @@ public class PackageDeploymentServletTest extends TestCase {
 		PackageItem pkg = repo.createPackage("testPDSGetPackage", "");
 		AssetItem header  = pkg.addAsset("drools", "");
 		header.updateFormat("package");
-		header.updateContent("import org.drools.SampleFact");
+		header.updateContent("import org.drools.SampleFact\n global org.drools.SampleFact sf");
 		header.checkin("");
 
 
@@ -59,6 +62,13 @@ public class PackageDeploymentServletTest extends TestCase {
 		assertNotNull(out.toByteArray());
 		byte[] bin = out.toByteArray();
 		byte[] bin_ = pkg.getCompiledPackageBytes();
+
+
+        org.drools.rule.Package o = (org.drools.rule.Package) DroolsStreamUtils.streamIn( new ByteArrayInputStream(bin) );
+        assertNotNull(o);
+        assertEquals(1, o.getRules().length);
+        assertEquals(1, o.getGlobals().size());
+
 		assertEquals(bin_.length, bin.length);
 
 		assertSameArray(bin_, bin);
