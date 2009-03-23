@@ -101,7 +101,11 @@ public class FormStylePopup {
 		dialog.setConstrainHeader(true);
 		dialog.setBodyBorder(false);
 		dialog.setBorder(false);
-		dialog.setWidth((width == null)? 430 : width.intValue());
+        if (width == null) {
+            dialog.setWidth(430);
+        } else if (width != -1) {
+            dialog.setWidth(width);            
+        }
 		dialog.setShadow((shadow == null)? true : shadow.booleanValue());
 		dialog.setResizable(true);
 		dialog.setClosable(true);

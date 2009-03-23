@@ -88,20 +88,18 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
 
     private Widget getCompositeLabel() {
 
-        HorizontalPanel horiz = new HorizontalPanel();
-        Image edit = new ImageButton( "images/edit_tiny.gif" );
         ClickListener click =  new ClickListener() {
             public void onClick(Widget w) {
                 showFactTypeSelector( w );
             }
         };
-        edit.setTitle(constants.AddFactToContraint());
-        edit.addClickListener(click);
+        String lbl = HumanReadable.getCEDisplayName( pattern.type );
 
-        horiz.add( new ClickableLabel( HumanReadable.getCEDisplayName( pattern.type ), click ) );
-        horiz.add( edit );
-        horiz.setStyleName( "modeller-composite-Label" );     //NON-NLS
-        return horiz;
+        if (pattern.patterns == null || pattern.patterns.length ==0) {
+            lbl += " <font color='red'>" + constants.clickToAddPatterns() + "</font>";
+        }
+
+        return new ClickableLabel( lbl, click ) ;
     }
 
     /**
@@ -117,8 +115,8 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
         }
         box.setSelectedIndex( 0 );
 
-        final FormStylePopup popup = new FormStylePopup( "images/new_fact.gif", //NON-NLS
-                constants.NewFactPattern());
+        final FormStylePopup popup = new FormStylePopup();
+        popup.setTitle(constants.NewFactPattern());
         popup.addAttribute(constants.chooseFactType(),
                             box );
 

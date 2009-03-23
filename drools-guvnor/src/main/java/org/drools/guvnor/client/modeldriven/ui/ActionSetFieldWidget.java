@@ -130,7 +130,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
         String sl = Format.format(constants.setterLabel(), new String[] {HumanReadable.getActionDisplayName(modifyType), model.variable});
         ClickableLabel lbl = new ClickableLabel(sl, clk);//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
         horiz.add( lbl) ;
-        horiz.add( edit );
+        //horiz.add( edit );
 
         return horiz;
     }

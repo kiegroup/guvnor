@@ -348,7 +348,7 @@ public class FactPatternWidget extends DirtyableComposite {
         } else {
             horiz.add( new ClickableLabel( pattern.factType, click ) );
         }
-        horiz.add( edit );
+        //horiz.add( edit );
 
         return horiz;
 
@@ -408,7 +408,7 @@ public class FactPatternWidget extends DirtyableComposite {
                 ClickableLabel cl = new ClickableLabel(con.fieldName, click);
                 DOM.setStyleAttribute(cl.getElement(), "marginLeft", "" + padding + "pt"); //NON-NLS
                 ab.add( cl );
-                ab.add( bind );
+                //ab.add( bind );
             } else {
                 ab.add(new SmallLabel(con.fieldName));
             }

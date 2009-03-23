@@ -17,11 +17,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 
 
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
@@ -115,19 +111,20 @@ public class ActionInsertFactWidget extends DirtyableComposite {
 
         Image edit = new ImageButton("images/edit_tiny.gif");
         edit.setTitle(constants.AddAnotherFieldToThisSoYouCanSetItsValue());
-        edit.addClickListener( new ClickListener() {
+        ClickListener cl =  new ClickListener() {
             public void onClick(Widget w) {
                 showAddFieldPopup(w);
             }
-        } );
+        };
+        edit.addClickListener( cl );
 
 
         String assertType = "assert";  //NON-NLS
         if (this.model instanceof ActionInsertLogicalFact) {
             assertType = "assertLogical";  //NON-NLS
         }
-        horiz.add( new SmallLabel(HumanReadable.getActionDisplayName(assertType) + " <b>" + this.model.factType + "</b>") );
-        horiz.add( edit );
+        horiz.add( new ClickableLabel(HumanReadable.getActionDisplayName(assertType) + " <b>" + this.model.factType + "</b>", cl) );
+//        horiz.add( edit );
         return horiz;
 
     }

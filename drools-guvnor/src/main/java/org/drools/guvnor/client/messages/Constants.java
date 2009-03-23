@@ -1831,4 +1831,28 @@ public interface Constants extends ConstantsWithLookup {
     String SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother();
 
     String ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation();
+
+    String WHEN();
+
+    String THEN();
+
+    String AddAnActionToThisRule();
+
+    String optionsRuleModeller();
+
+    String clickToAddPatterns();
+
+    String ChangeFieldValuesOf0();
+
+    String Retract0();
+
+    String Modify0();
+
+    String InsertFact0();
+
+    String LogicallyInsertFact0();
+
+    String Append0ToList1();
+
+    String CallMethodOn0();
 }

@@ -19,6 +19,8 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
@@ -32,6 +34,7 @@ import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.util.Format;
@@ -88,7 +91,7 @@ public class RuleModeller extends DirtyableComposite {
 
 
 
-        layout.setWidget( 0, 0, new SmallLabel("WHEN") );
+        layout.setWidget( 0, 0, new SmallLabel(constants.WHEN()) );
         layout.setWidget( 0, 2, addPattern );
 
 
@@ -96,10 +99,10 @@ public class RuleModeller extends DirtyableComposite {
         layout.setWidget( 1, 1, renderLhs(this.model) );
         layout.getFlexCellFormatter().setHorizontalAlignment(1, 1, HasHorizontalAlignment.ALIGN_LEFT);
         layout.getFlexCellFormatter().setVerticalAlignment(1, 1, HasVerticalAlignment.ALIGN_TOP);
-        layout.setWidget( 2, 0, new SmallLabel("THEN") );
+        layout.setWidget( 2, 0, new SmallLabel(constants.THEN()) );
 
-        Image addAction = new ImageButton("images/new_item.gif");
-        addAction.setTitle( "Add an action to this rule." );
+        Image addAction = new ImageButton("images/new_item.gif"); //NON-NLS
+        addAction.setTitle(constants.AddAnActionToThisRule());
         addAction.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showActionSelector(w);
@@ -111,7 +114,7 @@ public class RuleModeller extends DirtyableComposite {
         layout.getFlexCellFormatter().setHorizontalAlignment(3, 1, HasHorizontalAlignment.ALIGN_LEFT);
         layout.getFlexCellFormatter().setVerticalAlignment(3, 1, HasVerticalAlignment.ALIGN_TOP);
 
-        layout.setWidget( 4, 0, new SmallLabel("(options)") );
+        layout.setWidget( 4, 0, new SmallLabel(constants.optionsRuleModeller()) );
         layout.setWidget( 4, 2, getAddAttribute() );
         layout.setWidget( 5, 1, new RuleAttributeWidget(this, this.model) );
 
@@ -263,94 +266,151 @@ public class RuleModeller extends DirtyableComposite {
         return widget;
     }
 
+
+
     /**
      * Pops up the fact selector.
      */
     protected void showConditionSelector(final Widget w) {
+
         final FormStylePopup popup = new FormStylePopup();
+        popup.setWidth(-1);
         popup.setTitle(constants.AddAConditionToTheRule());
 
+        final Map<String, Command> cmds = new HashMap<String, Command>();
 
-        //
-        // The list of facts
-        //
-        String[] facts = completions.getFactTypes();
-        final ListBox factTypeBox = new ListBox();
-        factTypeBox.addItem(constants.ChooseFactType(), "IGNORE" );
-        for ( int i = 0; i < facts.length; i++ ) {
-            factTypeBox.addItem( facts[i] );
-        }
-        factTypeBox.setSelectedIndex( 0 );
-        if (facts.length > 0) popup.addAttribute(constants.Fact1(), factTypeBox );
-        factTypeBox.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                String s = factTypeBox.getItemText( factTypeBox.getSelectedIndex() );
-                if (!s.equals( "IGNORE" )) {         //NON-NLS
-                    addNewFact(s);
-                    popup.hide();
-                }
-            }
-        });
+        final ListBox choices = new ListBox(true);
 
-        //
-        // The list of top level CEs
-        //
-        String ces[]  = HumanReadable.CONDITIONAL_ELEMENTS;
-        final ListBox ceBox = new ListBox();
-        ceBox.addItem(constants.ChooseOtherConditionType(), "IGNORE" ); //NON-NLS
-        for ( int i = 0; i < ces.length; i++ ) {
-            String ce = ces[i];
-            ceBox.addItem( HumanReadable.getCEDisplayName( ce ), ce );
-        }
-        if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
-        	ceBox.addItem(constants.FreeFormDrl(), "FF"); //NON-NLS
-        }
-        ceBox.setSelectedIndex( 0 );
-
-        if (facts.length > 0) popup.addAttribute(constants.ConditionTypeButton(), ceBox );
-        ceBox.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                String s = ceBox.getValue( ceBox.getSelectedIndex() );
-                if (!s.equals( "IGNORE" )) {                //NON-NLS
-                	if (s.equals("FF")) {                   //NON-NLS
-                		model.addLhsItem(new FreeFormLine());
-                		refreshWidget();
-                	} else {
-	                    addNewCE(s);
-                	}
-                    popup.hide();
-                }
-            }
-        });
-
+        
 
         //
         // The list of DSL sentences
         //
         if (completions.getDSLConditions().length > 0) {
-            final ListBox dsls = new ListBox();
-            dsls.addItem(constants.ChooseDotDotDot());
+
+
+
             for(int i = 0; i < completions.getDSLConditions().length; i++ ) {
-                DSLSentence sen = completions.getDSLConditions()[i];
-                dsls.addItem( sen.toString(), Integer.toString( i ) );
+                final DSLSentence sen = completions.getDSLConditions()[i];
+                String key = "DSL" + i;
+                choices.addItem(sen.toString(), key);
+                cmds.put(key, new Command() {
+                    public void execute() {
+                       addNewDSLLhs(sen);
+                       popup.hide();
+                    }
+                });
             }
 
-            dsls.addChangeListener( new ChangeListener() {
-                public void onChange(Widget w) {
-                    int idx = Integer.parseInt( dsls.getValue( dsls.getSelectedIndex() ) );
-                    addNewDSLLhs( (DSLSentence) completions.getDSLConditions()[ idx ] );
+        }
+
+        //
+        // The list of facts
+        //
+        final String[] facts = completions.getFactTypes();
+        if (facts != null && facts.length > 0) {
+            choices.addItem("..................");
+            
+            for ( int i = 0; i < facts.length; i++ ) {
+                final String f = facts[i];
+                String key = "NF" + f;
+
+                choices.addItem(f + " ...",  key);
+                cmds.put(key, new Command() {
+                    public void execute() {
+                        addNewFact(f);
+                        popup.hide();
+                    }
+                });
+            }
+        }
+
+
+        //
+        // The list of top level CEs
+        //
+        String ces[]  = HumanReadable.CONDITIONAL_ELEMENTS;
+
+        choices.addItem("..................");
+        for ( int i = 0; i < ces.length; i++ ) {
+            final String ce = ces[i];
+            String key = "CE" + ce;
+            choices.addItem( HumanReadable.getCEDisplayName( ce ) + " ...", key );
+            cmds.put(key, new Command() {
+                public void execute() {
+                    addNewCE(ce);
                     popup.hide();
                 }
             });
-            popup.addAttribute(constants.DSLSentence(), dsls );
+
+
         }
+
+
+
+
+
+
+        if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
+            choices.addItem("..................");
+            choices.addItem(constants.FreeFormDrl(), "FF");
+            cmds.put("FF", new Command() {
+                public void execute() {
+                    model.addLhsItem(new FreeFormLine());
+                    refreshWidget();
+                    popup.hide();
+                }
+            });
+        }
+
 
         if (completions.getDSLConditions().length == 0 && facts.length == 0) {
         	popup.addRow(new HTML("<div class='highlight'>" + constants.NoModelTip() + "</div>")); //NON-NLS
         }
+
+        final ChangeListener cl = new ChangeListener() {
+            public void onChange(Widget sender) {
+                int sel = choices.getSelectedIndex();
+                if (sel != -1) {
+                    Command cmd = cmds.get(choices.getValue(choices.getSelectedIndex()));
+                    if (cmd != null) cmd.execute();
+                }
+            }
+        };
+        //choices.addChangeListener(cl);
+
+        choices.addKeyboardListener(new KeyboardListenerAdapter() {
+            @Override
+            public void onKeyUp(final Widget sender, char keyCode, int modifiers) {
+                if (keyCode == KeyboardListener.KEY_ENTER) {
+                    cl.onChange(sender);
+                }
+            }
+        });
+
+
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.add(choices);
+        Button b = new Button(constants.OK());
+        hp.add(b);
+        b.addClickListener(new ClickListener() {
+            public void onClick(final Widget sender) {
+                cl.onChange(sender);
+            }
+        });
+        popup.addRow(hp);
+
         popup.show();
+        choices.setFocus(true);
+
+        popup.setAfterShow(new Command() {
+            public void execute() {
+                choices.setFocus(true);
+            }
+        });
 
     }
+
 
     protected void addNewDSLLhs(DSLSentence sentence) {
         model.addLhsItem( sentence.copy() );
@@ -358,234 +418,222 @@ public class RuleModeller extends DirtyableComposite {
 
     }
 
+
     protected void showActionSelector(Widget w) {
         final FormStylePopup popup = new FormStylePopup();
+        popup.setWidth(-1);
         popup.setTitle(constants.AddANewAction());
 
+        final ListBox choices = new ListBox(true);
+        final Map<String, Command> cmds = new HashMap<String, Command>();
 
         //
         // First load up the stuff to do with bound variables or globals
         //
         List<String> vars = model.getBoundFacts();
-        final ListBox varBox = new ListBox();
-        final ListBox retractBox = new ListBox();
-        final ListBox modifyBox = new ListBox();
-        final ListBox callMethodBox = new ListBox();
-
-        varBox.addItem( constants.ChooseDotDotDot() );
-        retractBox.addItem( constants.ChooseDotDotDot() );
-        modifyBox.addItem( constants.ChooseDotDotDot() );
-        callMethodBox.addItem( constants.ChooseDotDotDot() );
-        for ( Iterator iter = vars.iterator(); iter.hasNext(); ) {
-            String v = (String) iter.next();
-            varBox.addItem( v );
-            retractBox.addItem( v );
-            modifyBox.addItem( v );
-            callMethodBox.addItem( v );
-        }
         String[] globals = this.completions.getGlobalVariables();
-        for ( int i = 0; i < globals.length; i++ ) {
-            varBox.addItem( globals[i] );
-            callMethodBox.addItem( globals[i] );
-        }
 
-        varBox.setSelectedIndex( 0 );
-        varBox.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                addActionSetField(varBox.getItemText( varBox.getSelectedIndex() ));
-                popup.hide();
-            }
-        });
-
-        retractBox.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                addRetract(retractBox.getItemText( retractBox.getSelectedIndex() ));
-                popup.hide();
-            }
-        });
-
-        modifyBox.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                addModify(modifyBox.getItemText( modifyBox.getSelectedIndex() ));
-                popup.hide();
-            }
-        });
-
-        callMethodBox.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                addModifyField(callMethodBox.getItemText( callMethodBox.getSelectedIndex() ));
-                popup.hide();
-            }
-        });
-
-
-
-
-
-        if (modifyBox.getItemCount() > 1) {
-            final HorizontalPanel horiz = new HorizontalPanel();
-
-            final AbsolutePanel p = new AbsolutePanel();
-            p.add(varBox);
-
-
-            final CheckBox cb = new CheckBox(constants.NotifyEngineOfChanges());
-            cb.setChecked(false);
-            cb.addClickListener(new ClickListener() {
-                public void onClick(Widget sender) {
-                     if (cb.isChecked()) {
-                         p.clear();
-                         p.add(modifyBox);
-                     } else {
-                         p.clear();
-                         p.add(varBox);
-                     }
-                }
-            });
-
-            horiz.add(p);
-            horiz.add(cb);
-
-
-            InfoPopup img = new InfoPopup(constants.NotifyEngineOfChangesUpdateModify(), constants.ModifyEngineTip());
-            horiz.add( img );
-            HorizontalPanel variablePanel = new HorizontalPanel();
-            popup.addAttribute(constants.SetFieldValues(), horiz );
-
-        } else {
-            if (varBox.getItemCount() > 1) {
-                popup.addAttribute(constants.SetFieldValues(), varBox );
-            }
-        }
-
-        //popup.addRow( new HTML("<hr/>") );
-
-        if (retractBox.getItemCount() > 1) {
-            popup.addAttribute(constants.RetractTheFact(), retractBox );
-        }
-
-        //popup.addRow( new HTML("<hr/>") );
-
-
-        final ListBox factsToAssert = new ListBox();
-        final ListBox factsToLogicallyAssert = new ListBox();
-        factsToAssert.addItem( constants.ChooseDotDotDot() );
-        factsToLogicallyAssert.addItem( constants.ChooseDotDotDot() );
-        for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
-            String item = completions.getFactTypes()[i];
-            factsToAssert.addItem( item );
-            factsToLogicallyAssert.addItem( item );
-        }
-
-        factsToAssert.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-               String fact = factsToAssert.getItemText( factsToAssert.getSelectedIndex() );
-               model.addRhsItem( new ActionInsertFact(fact) );
-               refreshWidget();
-               popup.hide();
-
-            }
-        });
 
         //
         // The list of DSL sentences
         //
         if (completions.getDSLActions().length > 0) {
-            final ListBox dsls = new ListBox();
-            dsls.addItem( constants.ChooseDotDotDot());
+
             for(int i = 0; i < completions.getDSLActions().length; i++ ) {
-                DSLSentence sen = completions.getDSLActions()[ i ];
-                if(sen!=null)
-                	dsls.addItem( sen.toString(), Integer.toString( i ) );
+                final DSLSentence sen = completions.getDSLActions()[ i ];
+                if(sen!=null) {
+                    String sentence = sen.toString();
+                    choices.addItem(sentence, "DSL" + sentence);  //NON-NLS
+                    cmds.put("DSL" + sentence, new Command() {    //NON-NLS
+                        public void execute() {
+                          addNewDSLRhs(sen);
+                          popup.hide();
+                        }
+                    });
+                }
             }
 
-            dsls.addChangeListener( new ChangeListener() {
-                public void onChange(Widget w) {
-                    int idx = Integer.parseInt( dsls.getValue( dsls.getSelectedIndex() ) );
-                    addNewDSLRhs( (DSLSentence) completions.getDSLActions()[ idx ] );
+            choices.addItem("................");
+
+        }
+
+
+        //Do Set field (NOT modify)
+        for ( Iterator iter = vars.iterator(); iter.hasNext(); ) {
+            final String v = (String) iter.next();
+
+            //varBox.addItem( v );
+            choices.addItem(Format.format(constants.ChangeFieldValuesOf0(), v), "VAR" + v); //NON-NLS
+            cmds.put("VAR" + v, new Command() {        //NON-NLS
+                public void execute() {
+                    addActionSetField(v);
                     popup.hide();
                 }
             });
-            popup.addAttribute(constants.DSLSentence(), dsls );
+
+
+        }
+        for ( int i = 0; i < globals.length; i++ ) {     //we also do globals here...
+            final String v = globals[i];
+            choices.addItem(Format.format(constants.ChangeFieldValuesOf0(), v), "GLOBVAR" + v);   //NON-NLS
+            cmds.put("GLOBVAR" + v, new Command() {        //NON-NLS
+                public void execute() {
+                    addActionSetField(v);
+                    popup.hide();
+                }
+            });
         }
 
-        if (factsToAssert.getItemCount() > 1) {
-            popup.addAttribute(constants.InsertANewFact(), factsToAssert );
-            HorizontalPanel horiz = new HorizontalPanel();
-            horiz.add( factsToLogicallyAssert );
-            Image img = new Image("images/information.gif"); //NON-NLS
-            img.setTitle(constants.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved());
-            horiz.add( img );
-            popup.addAttribute(constants.LogicallyInsertANewFact(), horiz );
+
+        //RETRACT
+        for ( Iterator iter = vars.iterator(); iter.hasNext(); ) {
+            final String v = (String) iter.next();
+            //retractBox.addItem( v );
+            choices.addItem(Format.format(constants.Retract0(), v), "RET" + v); //NON-NLS
+            cmds.put("RET" + v, new Command() {                                          //NON-NLS
+                public void execute() {
+                     addRetract(v);
+                     popup.hide();
+                }
+            });
         }
 
-        popup.addRow(new HTML(constants.AdvancedOptionsColon()));
+        //MODIFY
+        for ( Iterator iter = vars.iterator(); iter.hasNext(); ) {
+            final String v = (String) iter.next();
+            // modifyBox.addItem( v );
 
-        if (completions.globalCollections.length > 0) {
-            if (vars.size() > 0) {
-                final ListBox cols = new ListBox();
-                final ListBox facts = new ListBox();
+            choices.addItem(Format.format(constants.Modify0(), v), "MOD" + v);    //NON-NLS
+            cmds.put("MOD" + v, new Command() {                                            //NON-NLS
+                public void execute() {
+                    addModify(v);
+                    popup.hide();
+                }
+            });
+        }
+
+        choices.addItem("................");
+
+
+        //Now inserts:
+        for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
+            final String item = completions.getFactTypes()[i];
+            choices.addItem(Format.format(constants.InsertFact0(), item), "INS" + item); //NON-NLS
+            cmds.put("INS" + item, new Command() {                                                //NON-NLS
+                public void execute() {
+                    model.addRhsItem( new ActionInsertFact(item) );
+                    refreshWidget();
+                    popup.hide();
+                }
+            });
+        }
+
+        for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
+            final String item = completions.getFactTypes()[i];
+            choices.addItem(Format.format(constants.LogicallyInsertFact0(), item), "LINS" + item); //NON-NLS
+            cmds.put("LINS" + item, new Command() {                                                         //NON-NLS
+                public void execute() {
+                       model.addRhsItem( new ActionInsertLogicalFact(item) );
+                       refreshWidget();
+                       popup.hide();
+                }
+            });
+        }
+
+
+
+
+        choices.addItem("................");
+
+
+        //now global collections
+        if (completions.globalCollections.length > 0 && vars.size() > 0) {
+            for (String bf : vars) {
                 for(int i = 0; i < completions.globalCollections.length; i++) {
-                    cols.addItem(completions.globalCollections[i]);
+                    final String glob = completions.globalCollections[i];
+                    final String var = bf;
+                    choices.addItem(Format.format(constants.Append0ToList1(), var, glob), "GLOBCOL" + glob + var); //NON-NLS
+                    cmds.put("GLOBCOL" + glob + var, new Command() {                                                        //NON-NLS
+                        public void execute() {
+                            ActionGlobalCollectionAdd gca = new ActionGlobalCollectionAdd();
+                            gca.globalName = glob;
+                            gca.factName = var;
+                            model.addRhsItem(gca);
+                            refreshWidget();
+                            popup.hide();
+                        }
+                    });
                 }
-
-                for (String bf : vars) {
-                    facts.addItem(bf);
-                }
-
-                HorizontalPanel h = new HorizontalPanel();
-                h.add(facts);
-                h.add(new SmallLabel("&nbsp;to&nbsp;"));
-                h.add(cols);
-                Button ok = new Button(constants.Add());
-                ok.addClickListener(new ClickListener() {
-                    public void onClick(Widget sender) {
-                        ActionGlobalCollectionAdd gca = new ActionGlobalCollectionAdd();
-                        gca.globalName = cols.getItemText(cols.getSelectedIndex());
-                        gca.factName = facts.getItemText(facts.getSelectedIndex());
-                        model.addRhsItem(gca);
-                        refreshWidget();
-                        popup.hide();
-                    }
-                });
-                h.add(ok);
-                popup.addAttribute(constants.AddAnItemToACollection(), h);
             }
         }
-
-        factsToLogicallyAssert.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-               String fact = factsToLogicallyAssert.getItemText( factsToLogicallyAssert.getSelectedIndex() );
-               model.addRhsItem( new ActionInsertLogicalFact(fact) );
-               refreshWidget();
-               popup.hide();
-
-            }
-        });
-
-
-
 
 
         if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
+            choices.addItem(constants.AddFreeFormDrl(), "FF");  //NON-NLS
+            cmds.put("FF", new Command() {                     //NON-NLS
+                public void execute() {
+                    model.addRhsItem(new FreeFormLine());
+                    refreshWidget();
+                    popup.hide();
+                }
+            });
+            for ( int i = 0; i < globals.length; i++ ) {     //we also do globals here...
+                final String v = globals[i];
+                choices.addItem(Format.format(constants.CallMethodOn0(), v ), "GLOBCALL" + v); //NON-NLS
+                cmds.put("GLOBCALL" + v, new Command() {      //NON-NLS
+                    public void execute() {
+                        addCallMethod(v);
+                        popup.hide();
+                    }
+                });
 
-	        if (callMethodBox.getItemCount() > 1) {
-	            popup.addAttribute(constants.CallAMethodOnFollowing(), callMethodBox );
-	        }
+            }
 
-	        Button ff = new Button(constants.AddFreeFormDrl());
-	        popup.addAttribute(constants.FreeFormAction(), ff);
-	        ff.addClickListener(new ClickListener() {
-				public void onClick(Widget arg0) {
-					model.addRhsItem(new FreeFormLine());
-					refreshWidget();
-					popup.hide();
-				}
-	        });
+                    //CALL methods
+            for ( Iterator iter = vars.iterator(); iter.hasNext(); ) {
+                final String v = (String) iter.next();
+
+                choices.addItem(Format.format(constants.CallMethodOn0(), v ), "CALL" + v); //NON-NLS
+                cmds.put("CALL" + v, new Command() { //NON-NLS
+                    public void execute() {
+                        addCallMethod(v);
+                        popup.hide();
+                    }
+                });
+            }
+            
+
         }
 
+        HorizontalPanel hp = new HorizontalPanel();
+        final ClickListener cl = new ClickListener() {
+            public void onClick(Widget sender) {
+                int sel = choices.getSelectedIndex();
+                if (sel != -1) {
+                    cmds.get(choices.getValue(sel)).execute();
+                }
+            }
+        };
+
+        choices.addKeyboardListener(new KeyboardListenerAdapter() {
+            @Override
+            public void onKeyUp(Widget sender, char keyCode, int modifiers) {
+                if (keyCode == KeyboardListener.KEY_ENTER) {
+                    cl.onClick(sender);
+                }
+            }
+        });
+
+        Button ok = new Button(constants.OK());
+        ok.addClickListener(cl);
+        hp.add(choices);
+        hp.add(ok);
+        popup.addRow(hp);
+
         popup.show();
+        choices.setFocus(true);
     }
+
 
 
 
@@ -610,7 +658,7 @@ public class RuleModeller extends DirtyableComposite {
         refreshWidget();
     }
 
-    protected void addModifyField(String itemText) {
+    protected void addCallMethod(String itemText) {
         this.model.addRhsItem(new ActionCallMethod(itemText));
         refreshWidget();
     }
@@ -618,6 +666,7 @@ public class RuleModeller extends DirtyableComposite {
     protected void addNewCE(String s) {
         this.model.addLhsItem( new CompositeFactPattern(s) );
         refreshWidget();
+        
     }
 
     /**
