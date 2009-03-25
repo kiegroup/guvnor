@@ -1,6 +1,5 @@
 package org.drools.guvnor.client.modeldriven.ui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
@@ -12,6 +11,7 @@ import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 
@@ -35,40 +35,27 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Neale
  * 
  */
-public class ActionValueEditor extends DirtyableComposite {
+public class MethodParameterValueEditor extends DirtyableComposite {
 
-	private ActionFieldValue value;
+	private ActionFieldFunction methodParameter;
 	private DropDownData enums;
 	private SimplePanel root;
 	private Constants constants = GWT.create(Constants.class);
 	private RuleModeller model = null;
-	private String variableType = null;
+	private String parameterType = null;
 
-	public ActionValueEditor(final ActionFieldValue val,
-			final DropDownData enums) {
+
+	public MethodParameterValueEditor(final ActionFieldFunction val,
+			final DropDownData enums, RuleModeller model, String parameterType) {
 		if (val.type.equals(SuggestionCompletionEngine.TYPE_BOOLEAN)) {
 			this.enums = DropDownData.create(new String[] { "true", "false" });
 		} else {
 			this.enums = enums;
 		}
 		this.root = new SimplePanel();
-		this.value = val;
-
-		refresh();
-		initWidget(root);
-	}
-
-	public ActionValueEditor(final ActionFieldValue val,
-			final DropDownData enums, RuleModeller model, String variableType) {
-		if (val.type.equals(SuggestionCompletionEngine.TYPE_BOOLEAN)) {
-			this.enums = DropDownData.create(new String[] { "true", "false" });
-		} else {
-			this.enums = enums;
-		}
-		this.root = new SimplePanel();
-		this.value = val;
+		this.methodParameter = val;
 		this.model = model;
-		this.variableType = variableType;
+		this.parameterType = parameterType;
 		refresh();
 		initWidget(root);
 	}
@@ -77,10 +64,10 @@ public class ActionValueEditor extends DirtyableComposite {
 		root.clear();
 		if (enums != null
 				&& (enums.fixedList != null || enums.queryExpression != null)) {
-			root.add(ConstraintValueEditor.enumDropDown(value.value,
+			root.add(ConstraintValueEditor.enumDropDown(methodParameter.value,
 					new ValueChanged() {
 						public void valueChanged(String newValue) {
-							value.value = newValue;
+							methodParameter.value = newValue;
 							makeDirty();
 						}
 					}, enums));
@@ -89,16 +76,16 @@ public class ActionValueEditor extends DirtyableComposite {
 			// bons editeurs suivant le type
 			// si la valeur vaut 0 il faut mettre un stylo (
 
-			if (value.nature == ActionFieldValue.TYPE_UNDEFINED) {
+			if (methodParameter.nature == ActionFieldValue.TYPE_UNDEFINED) {
 				// we have a blank slate..
 				// have to give them a choice
 				root.add(choice());
 			} else {
-				if (value.nature == ActionFieldValue.TYPE_VARIABLE) {
-					ListBox list = boundVariable(value);
+				if (methodParameter.nature == ActionFieldValue.TYPE_VARIABLE) {
+					ListBox list = boundVariable(methodParameter);
 					root.add(list);
 				} else {
-					TextBox box = boundTextBox(this.value);
+					TextBox box = boundTextBox(this.methodParameter);
 					root.add(box);
 				}
 
@@ -116,7 +103,8 @@ public class ActionValueEditor extends DirtyableComposite {
 		List<String> vars = model.getModel().getBoundFacts();
 		for (String v : vars) {
 			FactPattern factPattern = model.getModel().getBoundFact(v);
-			if (factPattern.factType.equals(this.variableType)) {
+			//if (factPattern.factType.equals(this.parameterType)) {
+			if (factPattern.factType.equals(this.methodParameter.type)) {
 				// First selection is empty
 				if (listVariable.getItemCount() == 0) {
 					listVariable.addItem("...");
@@ -125,11 +113,11 @@ public class ActionValueEditor extends DirtyableComposite {
 				listVariable.addItem(v);
 			}
 		}
-		if (value.value.equals("=")) {
+		if (methodParameter.value.equals("=")) {
 			listVariable.setSelectedIndex(0);
 		} else {
 			for (int i = 0; i < listVariable.getItemCount(); i++) {
-				if (listVariable.getItemText(i).equals(value.value.substring(1))) {
+				if (listVariable.getItemText(i).equals(methodParameter.value)) {
 					listVariable.setSelectedIndex(i);
 				}
 			}
@@ -139,7 +127,7 @@ public class ActionValueEditor extends DirtyableComposite {
 			listVariable.addChangeListener(new ChangeListener() {
 				public void onChange(Widget arg0) {
 					ListBox w = (ListBox) arg0;
-					value.value = "=" + w.getValue(w.getSelectedIndex());
+					methodParameter.value = w.getValue(w.getSelectedIndex());
 					makeDirty();
 					refresh();
 				}
@@ -181,7 +169,7 @@ public class ActionValueEditor extends DirtyableComposite {
 			}
 		}));
 
-		if (value.type.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
+		if (methodParameter.type.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
 			box.addKeyboardListener(getNumericFilter(box));
 		}
 
@@ -230,8 +218,8 @@ public class ActionValueEditor extends DirtyableComposite {
 		Button lit = new Button(constants.LiteralValue());
 		lit.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
-				value.nature = ActionFieldValue.TYPE_LITERAL;
-				value.value = " ";
+				methodParameter.nature = ActionFieldValue.TYPE_LITERAL;
+				methodParameter.value = " ";
 				makeDirty();
 				refresh();
 				form.hide();
@@ -240,22 +228,24 @@ public class ActionValueEditor extends DirtyableComposite {
 		});
 
 		form.addAttribute(constants.LiteralValue() + ":", widgets(lit,
-				new InfoPopup(constants.Literal(), constants.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation())));
+				new InfoPopup(constants.Literal(), constants.LiteralValTip())));
 		form.addRow(new HTML("<hr/>"));
 		form.addRow(new SmallLabel(constants.AdvancedSection()));
-
-		Button formula = new Button(constants.Formula());
-		formula.addClickListener(new ClickListener() {
-
-			public void onClick(Widget w) {
-				value.nature = ActionFieldValue.TYPE_FORMULA;
-				value.value = "=";
-				makeDirty();
-				refresh();
-				form.hide();
-			}
-
-		});
+		/*
+		 * no formula possible for a function
+		 */
+//		Button formula = new Button(constants.Formula());
+//		formula.addClickListener(new ClickListener() {
+//
+//			public void onClick(Widget w) {
+//				methodParameter.nature = ActionFieldValue.TYPE_FORMULA;
+//				methodParameter.value = "=";
+//				makeDirty();
+//				refresh();
+//				form.hide();
+//			}
+//
+//		});
 
 		/*
 		 * If there is a bound variable that is the same type of the current
@@ -264,14 +254,14 @@ public class ActionValueEditor extends DirtyableComposite {
 		List<String> vars = model.getModel().getBoundFacts();
 		for (String v : vars) {
 			FactPattern factPattern = model.getModel().getBoundFact(v);
-			if (factPattern.factType.equals(this.variableType)) {
+			if (factPattern.factType.equals(this.parameterType)) {
 				Button variable = new Button(constants.BoundVariable());
 				form.addAttribute(constants.BoundVariable()+":", variable);
 				variable.addClickListener(new ClickListener() {
 
 					public void onClick(Widget w) {
-						value.nature = ActionFieldValue.TYPE_VARIABLE;
-						value.value = "=";
+						methodParameter.nature = ActionFieldValue.TYPE_VARIABLE;
+						methodParameter.value = "=";
 						makeDirty();
 						refresh();
 						form.hide();
@@ -282,8 +272,8 @@ public class ActionValueEditor extends DirtyableComposite {
 			}
 		}
 
-		form.addAttribute(constants.Formula() + ":", widgets(formula,
-				new InfoPopup(constants.Formula(), constants.FormulaTip())));
+//		form.addAttribute(constants.Formula() + ":", widgets(formula,
+//				new InfoPopup(constants.Formula(), constants.FormulaTip())));
 
 		// if (model != null){
 		// for (int i=0;i< model.lhs.length;i++){
