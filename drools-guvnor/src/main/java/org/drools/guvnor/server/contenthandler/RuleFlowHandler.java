@@ -132,6 +132,9 @@ public class RuleFlowHandler extends ContentHandler
                         AssetItem asset,
                         ErrorLogger logger) throws DroolsParserException,
                                            IOException {
-        builder.addRuleFlow( new InputStreamReader( asset.getBinaryContentAttachment() ) );
+        InputStream ins = asset.getBinaryContentAttachment();
+        if (ins != null) {
+            builder.addRuleFlow( new InputStreamReader( asset.getBinaryContentAttachment() ) );
+        }
     }
 }
