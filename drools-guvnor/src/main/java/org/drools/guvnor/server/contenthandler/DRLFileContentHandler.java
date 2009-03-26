@@ -33,7 +33,10 @@ public class DRLFileContentHandler extends PlainTextContentHandler
                         AssetItem asset,
                         ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
                                                                    IOException {
-        builder.addPackageFromDrl( new StringReader( getContent( asset ) ) );
+        String content = getContent(asset);
+        if (content != null && !content.trim().equals("")) {
+            builder.addPackageFromDrl( new StringReader( content ) );
+        }
     }
 
     private String getContent(AssetItem asset) {
