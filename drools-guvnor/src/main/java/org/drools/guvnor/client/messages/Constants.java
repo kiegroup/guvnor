@@ -1855,4 +1855,6 @@ public interface Constants extends ConstantsWithLookup {
     String Append0ToList1();
 
     String CallMethodOn0();
+
+    String hide();
 }

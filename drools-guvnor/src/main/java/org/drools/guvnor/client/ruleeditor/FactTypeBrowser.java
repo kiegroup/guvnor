@@ -1,14 +1,11 @@
 package org.drools.guvnor.client.ruleeditor;
 
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.messages.Constants;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.TreeListener;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
 
 public class FactTypeBrowser extends Composite {
@@ -18,9 +15,17 @@ public class FactTypeBrowser extends Composite {
     public FactTypeBrowser(SuggestionCompletionEngine sce, final ClickEvent ev) {
 		Tree tree = new Tree();
 
-		VerticalPanel panel = new VerticalPanel();
+		final VerticalPanel panel = new VerticalPanel();
+    
+        HorizontalPanel hp = new HorizontalPanel();
 
-		panel.add(new SmallLabel(constants.FactTypes()));
+        hp.add(new SmallLabel(constants.FactTypes()));
+        hp.add(new ClickableLabel(constants.hide(), new ClickListener() {
+            public void onClick(Widget sender) {
+              panel.setVisible(false);
+            }
+        }));
+		panel.add(hp);
 
 		panel.add(tree);
 		if (sce.factTypes != null) {

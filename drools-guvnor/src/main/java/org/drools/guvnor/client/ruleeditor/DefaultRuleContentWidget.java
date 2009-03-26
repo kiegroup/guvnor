@@ -74,7 +74,7 @@ public class DefaultRuleContentWidget extends DirtyableComposite {
             public void onKeyDown(Widget arg0,
                                   char arg1,
                                   int arg2) {
-
+                System.err.println(arg1);
                 if ( arg1 == KEY_TAB ) {
                 	int pos = text.getCursorPos();
                     insertText( "\t" );
