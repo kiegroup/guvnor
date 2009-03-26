@@ -18,12 +18,7 @@ package org.drools.guvnor.client.ruleeditor;
 
 import java.util.Date;
 
-import org.drools.guvnor.client.common.FormStyleLayout;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.RulePackageSelector;
-import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.MetaData;
@@ -46,6 +41,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.util.Format;
 import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.event.FormPanelListener;
+import com.gwtext.client.widgets.form.event.FormPanelListenerAdapter;
 
 /**
  * This displays the metadata for a versionable asset.
@@ -63,7 +60,7 @@ public class MetaDataWidget extends Composite {
     AssetCategoryEditor     ed;
     private FormStyleLayout currentSection;
     private String          currentSectionName;
-    private Constants       constants;
+    private Constants       constants = ((Constants) GWT.create( Constants.class ));
 
     public MetaDataWidget(final MetaData d,
                           final boolean readOnly,
@@ -76,20 +73,29 @@ public class MetaDataWidget extends Composite {
         this.metaDataRefreshView = metaDataRefreshView;
         this.fullRefreshView = fullRefreshView;
 
-        constants = ((Constants) GWT.create( Constants.class ));
-        Button show = new Button( constants.showMoreInfo() );
-        show.addClickListener( new ClickListener() {
-            public void onClick(Widget sender) {
-                layout.clear();
-                render( d,
-                        readOnly,
-                        uuid );
-            }
-        } );
+        if (d.format.equals(AssetFormats.DRL) || d.format.equals(AssetFormats.FUNCTION) || d.format.equals(AssetFormats.ENUMERATION)) {
+            render( d,
+                    readOnly,
+                    uuid );
+            
+        } else {
+            Button show = new Button( constants.showMoreInfo() );
+            show.addClickListener( new ClickListener() {
+                public void onClick(Widget sender) {
+                    layout.clear();
+                    render( d,
+                            readOnly,
+                            uuid );
+                }
+            } );
 
-        layout.add( new SmallLabel( Format.format( "Title: [<b>{0}</b>]",
-                                                   d.name ) ) );
-        layout.add( show );
+            layout.add( new SmallLabel( Format.format( "Title: [<b>{0}</b>]",
+                                                       d.name ) ) );
+            
+            layout.add( show );
+
+        }
+
         initWidget( layout );
 
     }
