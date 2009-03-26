@@ -177,6 +177,7 @@ public class PackageHeaderWidget extends Composite {
 	private void showTypeQuestion(Widget w, final Types t, final boolean global, String headerMessage) {
 
 		final FormStylePopup pop = new FormStylePopup("images/home_icon.gif", constants.ChooseAFactType()); //NON-NLS
+        pop.setWidth(-1);
 		pop.addRow(new HTML("<small><i>" + headerMessage + " </i></small>")); //NON-NLS
 		final ListBox factList = new ListBox();
 		factList.addItem(constants.loadingList());
