@@ -22,9 +22,10 @@ public class MockHTTPRequest implements HttpServletRequest {
 	ServletInputStream stream;
 	String queryString;
     Map<String, String> parameters;
+    public String method;
 
 
-	public MockHTTPRequest(String uri, Map<String, String> headers) {
+    public MockHTTPRequest(String uri, Map<String, String> headers) {
 		this.uri = uri;
 		this.headers = headers;
 	}
@@ -81,8 +82,8 @@ public class MockHTTPRequest implements HttpServletRequest {
 	}
 
 	public String getMethod() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return method;
 	}
 
 	public String getPathInfo() {

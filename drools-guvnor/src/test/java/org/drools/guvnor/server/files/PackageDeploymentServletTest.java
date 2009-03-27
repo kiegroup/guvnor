@@ -63,7 +63,6 @@ public class PackageDeploymentServletTest extends TestCase {
 		byte[] bin = out.toByteArray();
 		byte[] bin_ = pkg.getCompiledPackageBytes();
 
-
         org.drools.rule.Package o = (org.drools.rule.Package) DroolsStreamUtils.streamIn( new ByteArrayInputStream(bin) );
         assertNotNull(o);
         assertEquals(1, o.getRules().length);
@@ -111,6 +110,29 @@ public class PackageDeploymentServletTest extends TestCase {
 		System.err.println(drl);
 		assertTrue(drl.indexOf("rule") > -1);
 		assertEquals(-1, drl.indexOf("package"));
+
+
+        //now test HEAD
+        serv = new PackageDeploymentServlet();
+        req = new MockHTTPRequest("/package/testPDSGetPackage/LATEST", null);
+        req.method = "HEAD";
+        out = new ByteArrayOutputStream();
+        res = new MockHTTPResponse(out);
+        serv.doHead(req, res);
+        assertTrue(res.headers.size() > 0);
+        String lm = res.headers.get("Last-Modified");
+        assertNotNull(lm);
+
+        serv = new PackageDeploymentServlet();
+        req = new MockHTTPRequest("/package/testPDSGetPackage/LATEST", null);
+        req.method = "HEAD";
+        out = new ByteArrayOutputStream();
+        res = new MockHTTPResponse(out);
+        serv.doHead(req, res);
+        assertTrue(res.headers.size() > 0);
+
+        assertEquals(lm, res.headers.get("Last-Modified"));
+
 
 	}
 

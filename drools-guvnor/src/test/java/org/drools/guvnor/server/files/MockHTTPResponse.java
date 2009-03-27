@@ -38,7 +38,7 @@ public class MockHTTPResponse implements HttpServletResponse {
 	}
 
 	public void addHeader(String arg0, String arg1) {
-		// TODO Auto-generated method stub
+		headers.put(arg0, arg1);
 
 	}
 
