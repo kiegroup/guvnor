@@ -1857,4 +1857,8 @@ public interface Constants extends ConstantsWithLookup {
     String CallMethodOn0();
 
     String hide();
+
+    String RemoveThisBlockOfData();
+
+    String AreYouSureYouWantToRemoveThisBlockOfData();
 }

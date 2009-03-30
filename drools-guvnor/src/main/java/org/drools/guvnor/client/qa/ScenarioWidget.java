@@ -1,22 +1,8 @@
 package org.drools.guvnor.client.qa;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.common.ValueChanged;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
@@ -174,9 +160,10 @@ public class ScenarioWidget extends Composite {
 		            if (e.getKey().equals(ScenarioHelper.RETRACT_KEY)) {
 		            	vert.add(new RetractWidget(factList, scenario));
 		            } else {
-		            	vert.add(new DataInputWidget((String)e.getKey(), factList, false, scenario, sce, this));
+                        vert.add(new DataInputWidget((String)e.getKey(), factList, false, scenario, sce, this));
 		            }
 		        }
+
 
 		        if (facts.size() > 0) {
 		        	editorLayout.setWidget(layoutRow, 1, vert);
@@ -625,7 +612,7 @@ class DataInputWidget extends DirtyableComposite {
     private Constants constants = ((Constants) GWT.create(Constants.class));
 
 
-    public DataInputWidget(String factType, List defList, boolean isGlobal, Scenario sc, SuggestionCompletionEngine sce, ScenarioWidget parent) {
+    public DataInputWidget(String factType, List<FactData> defList, boolean isGlobal, Scenario sc, SuggestionCompletionEngine sce, ScenarioWidget parent) {
 
         outer = new Grid(2, 1);
         scenario = sc;
@@ -639,39 +626,50 @@ class DataInputWidget extends DirtyableComposite {
 
 
         if (isGlobal) {
-            outer.setWidget(0, 0, getLabel(Format.format(constants.globalForScenario(), factType), defList));
+            outer.setWidget(0, 0, getLabel(Format.format(constants.globalForScenario(), factType), defList, parent, sc));
         } else {
             FactData first = (FactData) defList.get(0);
             if (first.isModify) {
-                outer.setWidget(0, 0,  getLabel(Format.format(constants.modifyForScenario(), factType), defList));
+                outer.setWidget(0, 0,  getLabel(Format.format(constants.modifyForScenario(), factType), defList, parent, sc));
             } else {
-                outer.setWidget(0, 0, getLabel(Format.format(constants.insertForScenario(), factType), defList));
+                outer.setWidget(0, 0, getLabel(Format.format(constants.insertForScenario(), factType), defList, parent, sc));
             }
         }
 
-        FlexTable t = render(defList);
+        FlexTable t = render(defList, parent, sc);
+
+
+
+        //parent.renderEditor();
+
+
+
+        //outer.setWidget(1, 1, new Button("Remove"));
+
 
         outer.setWidget(1, 0, t);
         initWidget(outer);
     }
 
-	private Widget getLabel(String text, final List defList) {
+	private Widget getLabel(String text, final List defList, ScenarioWidget parent, Scenario sc) {
         //now we put in button to add new fields
         //Image newField = new ImageButton("images/add_field_to_fact.gif", "Add a field.");
-        Image newField = getNewFieldButton(defList);
-
-        HorizontalPanel h = new HorizontalPanel();
-        h.add(new SmallLabel(text)); h.add(newField);
-        return h;
+        //Image newField = getNewFieldButton(defList);
+        ClickableLabel clbl = new ClickableLabel(text, addFieldCL(defList, parent, sc));
+        //HorizontalPanel h = new HorizontalPanel();
+        //h.add(new SmallLabel(text)); h.add(newField);
+        return clbl;
 	}
 
-	private Image getNewFieldButton(final List defList) {
-		Image newField = new ImageButton("images/add_field_to_fact.gif", constants.AddAField()); //NON-NLS
+    /*
+	private ImageButton getNewFieldButton(final List defList) {
+		ImageButton newField = new ImageButton("images/add_field_to_fact.gif", constants.AddAField()); //NON-NLS
         newField.addClickListener(addFieldCL(defList));
 		return newField;
 	}
+	*/
 
-	private ClickListener addFieldCL(final List defList) {
+	private ClickListener addFieldCL(final List<FactData> defList, final ScenarioWidget parent, final Scenario sc) {
 		return new ClickListener() {
 			public void onClick(Widget w) {
 
@@ -686,13 +684,14 @@ class DataInputWidget extends DirtyableComposite {
 
 				}
 				String[] fields = (String[]) sce.fieldsForType.get(type);
-				final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", constants.ChooseAFieldToAdd()); //NON-NLS
+				final FormStylePopup pop = new FormStylePopup(); //NON-NLS
+                pop.setTitle(constants.ChooseDotDotDot());
 				final ListBox b = new ListBox();
 				for (int i = 0; i < fields.length; i++) {
 					String fld = fields[i];
 					if (!existingFields.contains(fld)) b.addItem(fld);
 				}
-				pop.addRow(b);
+
 				Button ok = new Button(constants.OK());
 				ok.addClickListener(new ClickListener() {
 									public void onClick(Widget w) {
@@ -701,18 +700,35 @@ class DataInputWidget extends DirtyableComposite {
 											FactData fd = (FactData) iterator.next();
 											fd.fieldData.add(new FieldData(f, ""));
 										}
-								        outer.setWidget(1, 0, render(defList));
+								        outer.setWidget(1, 0, render(defList, parent, sc));
 								        pop.hide();
 									}
 								});
-				pop.addRow(ok);
+                HorizontalPanel h = new HorizontalPanel();
+                h.add(b);
+                h.add(ok);
+                pop.addAttribute(constants.ChooseAFieldToAdd(), h);
+
+
+                Button remove = new Button(constants.RemoveThisBlockOfData());
+                remove.addClickListener(new ClickListener() {
+                    public void onClick(Widget sender) {
+                        if (Window.confirm(constants.AreYouSureYouWantToRemoveThisBlockOfData())) {
+                            scenario.fixtures.removeAll(defList);
+                            parent.renderEditor();
+                            pop.hide();
+                        }
+                    }
+                });
+                pop.addAttribute("", remove);
+                
 
 				pop.show();
 			}
 		};
 	}
 
-	private FlexTable render(final List defList) {
+	private FlexTable render(final List defList, final ScenarioWidget parent, final Scenario sc) {
 		DirtyableFlexTable t = new DirtyableFlexTable();
 		if (defList.size() == 0) {
 			parent.renderEditor();
@@ -736,7 +752,7 @@ class DataInputWidget extends DirtyableComposite {
         				public void onClick(Widget w) {
         					if (Window.confirm(constants.AreYouSureYouWantToRemoveThisRow())) {
         						ScenarioHelper.removeFields(defList, fd.name);
-        						outer.setWidget(1, 0, render(defList));
+        						outer.setWidget(1, 0, render(defList, parent, sc));
 
         					}
         				}
@@ -764,7 +780,7 @@ class DataInputWidget extends DirtyableComposite {
 					} else if (Window.confirm(constants.AreYouSureYouWantToRemoveThisColumn())) {
 						scenario.removeFixture(d);
 						defList.remove(d);
-						outer.setWidget(1, 0, render(defList));
+						outer.setWidget(1, 0, render(defList, parent, sc));
 					}
 				}
 			});
@@ -789,7 +805,7 @@ class DataInputWidget extends DirtyableComposite {
         if (fields.size() == 0) {
         	//HorizontalPanel h = new HorizontalPanel();
         	Button b = new Button(constants.AddAField());
-        	b.addClickListener(addFieldCL(defList));
+        	b.addClickListener(addFieldCL(defList, parent, sc));
 
         	//h.add(new HTML("<i><small>Add fields:</small></i>"));
         	//h.add(getNewFieldButton(defList));
