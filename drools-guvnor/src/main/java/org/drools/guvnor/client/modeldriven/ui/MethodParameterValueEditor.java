@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This provides for editing of fields in the RHS of a rule.
  * 
- * @author Michael Neale
+ * @author Nicolas Heron
  * 
  */
 public class MethodParameterValueEditor extends DirtyableComposite {
