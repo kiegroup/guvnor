@@ -13,6 +13,7 @@ import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
+import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 
 import com.google.gwt.core.client.GWT;
@@ -103,13 +104,26 @@ public class MethodParameterValueEditor extends DirtyableComposite {
 		List<String> vars = model.getModel().getBoundFacts();
 		for (String v : vars) {
 			FactPattern factPattern = model.getModel().getBoundFact(v);
-			//if (factPattern.factType.equals(this.parameterType)) {
 			if (factPattern.factType.equals(this.methodParameter.type)) {
 				// First selection is empty
 				if (listVariable.getItemCount() == 0) {
 					listVariable.addItem("...");
 				}
 
+				listVariable.addItem(v);
+			}
+		}
+		/*
+		 * add the bound variable of the rhs
+		 */
+		List<String> vars2 = model.getModel().getRhsBoundFacts();
+		for (String v : vars2) {
+			ActionInsertFact factPattern = model.getModel().getRhsBoundFact(v);
+			if (factPattern.factType.equals(this.methodParameter.type)) {
+				// First selection is empty
+				if (listVariable.getItemCount() == 0) {
+					listVariable.addItem("...");
+				}
 				listVariable.addItem(v);
 			}
 		}
@@ -252,13 +266,27 @@ public class MethodParameterValueEditor extends DirtyableComposite {
 		 * variable type, then show abutton
 		 */
 		List<String> vars = model.getModel().getBoundFacts();
+		List<String> vars2 = model.getModel().getRhsBoundFacts();
+		for (String i : vars2){
+			vars.add(i);
+		}
 		for (String v : vars) {
-			FactPattern factPattern = model.getModel().getBoundFact(v);
-			if (factPattern.factType.equals(this.parameterType)) {
-				Button variable = new Button(constants.BoundVariable());
+			boolean createButton = false;
+			Button variable = new Button(constants.BoundVariable());
+			if (vars2.contains(v)==false){
+				FactPattern factPattern = model.getModel().getBoundFact(v);
+				if (factPattern.factType.equals(this.parameterType)) {
+					createButton=true;
+				}
+			}else {
+				ActionInsertFact factPattern = model.getModel().getRhsBoundFact(v);
+				if (factPattern.factType.equals(this.parameterType)) {
+					createButton=true;
+				}
+			}
+			if (createButton==true){ 
 				form.addAttribute(constants.BoundVariable()+":", variable);
 				variable.addClickListener(new ClickListener() {
-
 					public void onClick(Widget w) {
 						methodParameter.nature = ActionFieldValue.TYPE_VARIABLE;
 						methodParameter.value = "=";
@@ -270,7 +298,29 @@ public class MethodParameterValueEditor extends DirtyableComposite {
 				});
 				break;
 			}
+			
 		}
+			
+			
+			
+//			FactPattern factPattern = model.getModel().getBoundFact(v);
+//			if (factPattern.factType.equals(this.parameterType)) {
+//				Button variable = new Button(constants.BoundVariable());
+//				form.addAttribute(constants.BoundVariable()+":", variable);
+//				variable.addClickListener(new ClickListener() {
+//
+//					public void onClick(Widget w) {
+//						methodParameter.nature = ActionFieldValue.TYPE_VARIABLE;
+//						methodParameter.value = "=";
+//						makeDirty();
+//						refresh();
+//						form.hide();
+//					}
+//
+//				});
+//				break;
+//			}
+//		}
 
 //		form.addAttribute(constants.Formula() + ":", widgets(formula,
 //				new InfoPopup(constants.Formula(), constants.FormulaTip())));

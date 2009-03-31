@@ -22,6 +22,7 @@ import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
+import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
 import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
 import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
@@ -50,9 +51,9 @@ public class ActionSetFieldWidget extends DirtyableComposite {
     final private DirtyableFlexTable layout;
     private boolean isBoundFact = false;
 
-    final private String[] fieldCompletions;
+    private String[] fieldCompletions;
     final private RuleModeller modeller;
-    final private String variableClass;
+    private String variableClass;
     private Constants constants = GWT.create(Constants.class);
 
 
@@ -68,9 +69,18 @@ public class ActionSetFieldWidget extends DirtyableComposite {
             this.variableClass = (String) completions.globalTypes.get( set.variable );
         } else {
             FactPattern pattern = mod.getModel().getBoundFact( set.variable );
-            this.fieldCompletions = completions.getFieldCompletions( pattern.factType );
-            this.variableClass = pattern.factType;
-            this.isBoundFact = true;
+            if (pattern !=null){
+            	this.fieldCompletions = completions.getFieldCompletions( pattern.factType );
+            	this.variableClass = pattern.factType;
+            	this.isBoundFact = true;
+            }else{
+            	ActionInsertFact patternRhs = mod.getModel().getRhsBoundFact(set.variable);
+            	if (patternRhs!=null){
+                	this.fieldCompletions = completions.getFieldCompletions( patternRhs.factType );
+                	this.variableClass = patternRhs.factType;
+                	this.isBoundFact = true;
+            	}
+            }
         }
 
         doLayout();

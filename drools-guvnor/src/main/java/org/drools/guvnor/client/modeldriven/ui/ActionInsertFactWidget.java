@@ -1,4 +1,5 @@
 package org.drools.guvnor.client.modeldriven.ui;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -27,13 +28,16 @@ import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
+import com.gwtext.client.util.Format;
 
 /**
  * This is used when asserting a new fact into working memory.
@@ -123,14 +127,21 @@ public class ActionInsertFactWidget extends DirtyableComposite {
         if (this.model instanceof ActionInsertLogicalFact) {
             assertType = "assertLogical";  //NON-NLS
         }
-        horiz.add( new ClickableLabel(HumanReadable.getActionDisplayName(assertType) + " <b>" + this.model.factType + "</b>", cl) );
-//        horiz.add( edit );
+        if ( model.isBound() == false ) {
+            horiz.add( new ClickableLabel( HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.factType + "</b>",
+                                           cl ) );
+        } else {
+            horiz.add( new ClickableLabel( HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.factType + "</b>" + " <b>[" + model.getBoundName() + "]</b>",
+                                           cl ) );
+        }
+        horiz.add( edit );
         return horiz;
 
     }
 
     protected void showAddFieldPopup(Widget w) {
-        final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", constants.AddAField());
+        final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
+                                                         constants.AddAField() );
         final ListBox box = new ListBox();
         box.addItem( "..." );
 
@@ -140,17 +151,48 @@ public class ActionInsertFactWidget extends DirtyableComposite {
 
         box.setSelectedIndex( 0 );
 
-        popup.addAttribute(constants.AddField(), box );
+        popup.addAttribute( constants.AddField(),
+                            box );
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 String fieldName = box.getItemText( box.getSelectedIndex() );
-                String fieldType = completions.getFieldType( model.factType, fieldName );
-                model.addFieldValue( new ActionFieldValue( fieldName, "", fieldType ) );
+                String fieldType = completions.getFieldType( model.factType,
+                                                             fieldName );
+                model.addFieldValue( new ActionFieldValue( fieldName,
+                                                           "",
+                                                           fieldType ) );
                 modeller.refreshWidget();
                 popup.hide();
             }
-        });
+        } );
+        /*
+         * Propose a textBox to the user
+         * to make him set a variable name 
+         */
+        final HorizontalPanel vn = new HorizontalPanel();
+        final TextBox varName = new TextBox();
+        if ( this.model.getBoundName() != null ) {
+            varName.setText( this.model.getBoundName() );
+        }
+        final Button ok = new Button( constants.Set() );
+        vn.add( varName );
+        vn.add( ok );
 
+        ok.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                String var = varName.getText();
+                if ( modeller.isVariableNameUsed( var ) && ((model.getBoundName() != null && model.getBoundName().equals( var ) == false) || model.getBoundName() == null) ) {
+                    Window.alert( Format.format( constants.TheVariableName0IsAlreadyTaken(),
+                                                 var ) );
+                    return;
+                }
+                model.setBoundName( var );
+                modeller.refreshWidget();
+                popup.hide();
+            }
+        } );
+        popup.addAttribute( constants.BoundVariable(),
+                            vn );
         popup.show();
 
     }
