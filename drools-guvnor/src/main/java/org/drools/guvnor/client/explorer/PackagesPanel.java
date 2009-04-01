@@ -13,6 +13,7 @@ import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.WindowResizeListener;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -72,6 +73,7 @@ public class PackagesPanel extends GenericPanel {
         });
 
         add(packagesPanel);
+
     }
 
     public void loadPackageList() {
@@ -237,10 +239,22 @@ public class PackagesPanel extends GenericPanel {
         // register listener
         panel.addListener(treePanelListener);
 
-        ScrollPanel scp = new ScrollPanel(panel);
-        scp.setHeight("500px"); //NON-NLS
+        final ScrollPanel scp = wrapScroll(panel);
 
 
+        return scp;
+    }
+
+    public static ScrollPanel wrapScroll(TreePanel panel) {
+        final ScrollPanel scp = new ScrollPanel(panel);
+
+
+        Window.addWindowResizeListener(new WindowResizeListener() {
+            public void onWindowResized(int width, int height) {
+                scp.setHeight((int) (Window.getClientHeight() / 1.8) + "px"); //NON-NLS
+            }
+        });
+        scp.setHeight((int) (Window.getClientHeight() / 1.8) + "px"); //NON-NLS
         return scp;
     }
 

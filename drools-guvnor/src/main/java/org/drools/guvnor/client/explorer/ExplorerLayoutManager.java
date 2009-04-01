@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.WindowCloseListener;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.Margins;
 import com.gwtext.client.core.RegionPosition;
@@ -21,6 +22,7 @@ import com.gwtext.client.widgets.layout.BorderLayoutData;
 import com.gwtext.client.widgets.layout.FitLayout;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
+
 
 /**
  * This is the main part of the app that lays everything out. 
@@ -58,6 +60,7 @@ public class ExplorerLayoutManager {
         ExplorerLayoutManager.capabilities = caps;
         
         if (bi.showChrome) {
+ 
         //north
             northPanel = new Panel();
             DockPanel dock = new DockPanel();

@@ -8,6 +8,7 @@ import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
@@ -87,7 +88,7 @@ public class DeploymentPanel extends GenericPanel {
         return m;
     }
 
-    private Panel deploymentExplorer() {
+    private Widget deploymentExplorer() {
 
         final TreeNode root = new TreeNode(constants.PackageSnapshots());
         root.setIcon("images/silk/chart_organisation.gif"); //NON-NLS
@@ -161,7 +162,7 @@ public class DeploymentPanel extends GenericPanel {
             }
         });
 
-        return panel;
+        return PackagesPanel.wrapScroll(panel);
     }
 
     private void deploymentListPackages(final TreeNode root) {
