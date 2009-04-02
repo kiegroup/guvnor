@@ -56,7 +56,7 @@ public class ErrorPopup  {
     	w.setLayout(new VerticalLayout());
 
         if (message.contains("ItemExistsException")) {    //NON-NLS
-            longMessage = constants.YouMightNeedToBeABitMoreImaginative() + "\n" + message;
+            longMessage = message;
             message = constants.SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother();
 
         }
