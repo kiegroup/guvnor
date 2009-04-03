@@ -1860,4 +1860,6 @@ public interface Constants extends ConstantsWithLookup {
     String RemoveThisBlockOfData();
 
     String AreYouSureYouWantToRemoveThisBlockOfData();
+
+    String PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern();
 }

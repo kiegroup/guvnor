@@ -404,11 +404,17 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		}
 		pop.addAttribute(constants.FactType(), types);
 		final TextBox binding = new TextBox();
+        binding.addChangeListener(new ChangeListener() {
+            public void onChange(Widget sender) {
+                binding.setText(binding.getText().replace(" ", "" ));
+            }
+        });
 		pop.addAttribute(constants.name(), binding);
 
 		Button ok = new Button(constants.OK());
 		ok.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
+
                 String ft = types.getItemText(types.getSelectedIndex());
                 String fn = binding.getText();
                 if (fn.equals("")) {
@@ -418,7 +424,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                     Window.alert(constants.PleaseEnterANameThatIsNotTheSameAsTheFactType());
                     return;
                 } else if ( !checkUnique(fn, dt.conditionCols) ) {
-                    Window.alert("Please enter a name that is not already used by another pattern.");
+                    Window.alert(constants.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern());
                     return;
                 }
 				editingCol.boundName = fn;
