@@ -140,7 +140,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
         String sl = Format.format(constants.setterLabel(), new String[] {HumanReadable.getActionDisplayName(modifyType), model.variable});
         ClickableLabel lbl = new ClickableLabel(sl, clk);//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
         horiz.add( lbl) ;
-        //horiz.add( edit );
+        horiz.add( edit );
 
         return horiz;
     }
@@ -183,6 +183,12 @@ public class ActionSetFieldWidget extends DirtyableComposite {
     		type = (String) this.completions.globalTypes.get(this.model.variable);
     	} else {
     		type = this.modeller.getModel().getBoundFact(this.model.variable).factType;
+    		/*
+    		 * to take in account if the using a rhs bound variable
+    		 */
+    		if (type==null){
+        		type = this.modeller.getModel().getRhsBoundFact(this.model.variable).factType;
+    		}
     	}
 
     	DropDownData enums = this.completions.getEnums(type, this.model.fieldValues, val.field);

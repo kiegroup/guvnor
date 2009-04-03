@@ -431,6 +431,7 @@ public class RuleModeller extends DirtyableComposite {
         // First load up the stuff to do with bound variables or globals
         //
         List<String> vars = model.getBoundFacts();
+        List<String> vars2 = model.getRhsBoundFacts();
         String[] globals = this.completions.getGlobalVariables();
 
 
@@ -473,6 +474,7 @@ public class RuleModeller extends DirtyableComposite {
 
 
         }
+
         for ( int i = 0; i < globals.length; i++ ) {     //we also do globals here...
             final String v = globals[i];
             choices.addItem(Format.format(constants.ChangeFieldValuesOf0(), v), "GLOBVAR" + v);   //NON-NLS
@@ -601,7 +603,20 @@ public class RuleModeller extends DirtyableComposite {
                     }
                 });
             }
-            
+            //Do Set field (NOT modify)
+            for ( Iterator iter = vars2.iterator(); iter.hasNext(); ) {
+                final String v = (String) iter.next();
+
+                choices.addItem(Format.format(constants.CallMethodOn0(), v), "CALL" + v); //NON-NLS
+                cmds.put("CALL" + v, new Command() {        //NON-NLS
+                    public void execute() {
+                        addCallMethod(v);
+                        popup.hide();
+                    }
+                });
+
+
+            }
 
         }
 

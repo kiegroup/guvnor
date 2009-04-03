@@ -68,6 +68,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private final boolean numericValue;
     private DropDownData dropDownData;
     private Constants constants = ((Constants) GWT.create(Constants.class));
+    private String fieldType;
     //private String[] enumeratedValues;
 
     /**
@@ -76,6 +77,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
     public ConstraintValueEditor(FactPattern pattern, String fieldName, ISingleFieldConstraint con, RuleModeller modeller, String valueType /* eg is numeric */) {
         this.constraint = con;
         valueType = modeller.getSuggestionCompletions().getFieldType(pattern.factType, fieldName);
+        this.fieldType = valueType;
         SuggestionCompletionEngine sce = modeller.getSuggestionCompletions();
         if ( SuggestionCompletionEngine.TYPE_NUMERIC.equals(valueType)) {
             this.numericValue = true;
@@ -136,10 +138,14 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
         for ( int i = 0; i < vars.size(); i++ ) {
             String var = (String) vars.get( i );
-            box.addItem( var );
-            if (this.constraint.value != null && this.constraint.value.equals( var )) {
-                box.setSelectedIndex( i );
-            }
+            FactPattern f= model.getBoundFact(var);
+            if (f.factType.equals(this.fieldType)) {
+				box.addItem(var);
+				if (this.constraint.value != null
+						&& this.constraint.value.equals(var)) {
+					box.setSelectedIndex(i);
+				}
+			}
         }
 
         box.addChangeListener( new ChangeListener() {
