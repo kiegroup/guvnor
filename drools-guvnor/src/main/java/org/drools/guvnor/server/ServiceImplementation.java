@@ -37,6 +37,7 @@ import java.util.jar.JarInputStream;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.RepositoryException;
+import javax.servlet.jsp.tagext.TryCatchFinally;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.util.ISO8601;
@@ -45,7 +46,6 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
-import org.drools.runtime.rule.ConsequenceException;
 import org.drools.base.ClassTypeResolver;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DroolsObjectOutputStream;
@@ -53,7 +53,6 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.testing.Scenario;
@@ -115,6 +114,7 @@ import org.drools.repository.VersionableItem;
 import org.drools.repository.RulesRepository.DateQuery;
 import org.drools.repository.security.PermissionManager;
 import org.drools.rule.Package;
+import org.drools.runtime.rule.ConsequenceException;
 import org.drools.testframework.RuleCoverageListener;
 import org.drools.testframework.ScenarioRunner;
 import org.drools.util.DroolsStreamUtils;
@@ -1336,16 +1336,30 @@ public class ServiceImplementation
             Identity.instance().checkPermission( new PackageNameType( packageName ),
                                                  RoleTypes.PACKAGE_READONLY );
         }
+        //FIXME nheron
+        SuggestionCompletionEngine result = null;
+        ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
         try {
-
             PackageItem pkg = repository.loadPackage( packageName );
-            BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
-            return loader.getSuggestionEngine( pkg );
+            final RuleBase rb=loadCacheRuleBase(pkg);
+            BRMSSuggestionCompletionLoader loader = null;
+			if (this.ruleBaseCache.get(pkg.getUUID()) != null) {
+				ClassLoader cl = ((InternalRuleBase) rb).getRootClassLoader();
+				Thread.currentThread().setContextClassLoader(cl);
+				loader = new BRMSSuggestionCompletionLoader(cl);
+			} else {
+				loader = new BRMSSuggestionCompletionLoader();
+			}
+
+			result = loader.getSuggestionEngine(pkg);
+			
         } catch ( RulesRepositoryException e ) {
             log.error( e );
             throw new SerializableException( e.getMessage() );
+        } finally {
+        	Thread.currentThread().setContextClassLoader( originalCL );
         }
-
+        return result;
     }
 
     @WebRemote
@@ -1488,10 +1502,17 @@ public class ServiceImplementation
             Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
+        BuilderResult[] result = null;
+        
+        //FIXME nheron
+        ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
 
         try {
 
             AssetItem item = repository.loadAssetByUUID( asset.uuid );
+            final RuleBase rb=loadCacheRuleBase(item.getPackage());
+			ClassLoader cl = ((InternalRuleBase) rb).getRootClassLoader();
+			Thread.currentThread().setContextClassLoader(cl);
 
             ContentHandler handler = ContentManager.getHandler( item.getFormat() );// new
             // AssetContentFormatHandler();
@@ -1506,12 +1527,12 @@ public class ServiceImplementation
                 if ( !asm.hasErrors() ) {
                     return null;
                 } else {
-                    return generateBuilderResults( asm );
+                    result =  generateBuilderResults( asm );
                 }
             }
         } catch ( Exception e ) {
             log.error( e );
-            BuilderResult[] result = new BuilderResult[1];
+           result = new BuilderResult[1];
 
             BuilderResult res = new BuilderResult();
             res.assetName = asset.metaData.name;
@@ -1519,10 +1540,12 @@ public class ServiceImplementation
             res.message = "Unable to validate this asset. (Check log for detailed messages).";
             res.uuid = asset.uuid;
             result[0] = res;
-
             return result;
+            
+        }         finally {
+        	Thread.currentThread().setContextClassLoader( originalCL );
         }
-
+        return result;
     }
 
     @WebRemote
@@ -1733,59 +1756,98 @@ public class ServiceImplementation
                                              Scenario scenario,
                                              RuleCoverageListener coverage) throws SerializableException {
         PackageItem item = this.repository.loadPackage( packageName );
-
+        SingleScenarioResult result = null;
         // nasty classloader needed to make sure we use the same tree the whole
         // time.
         ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
-
-        final RuleBase rb;
-
         try {
-            if ( item.isBinaryUpToDate() && this.ruleBaseCache.containsKey( item.getUUID() ) ) {
-                rb = this.ruleBaseCache.get( item.getUUID() );
-            } else {
-                // load up the classloader we are going to use
-                List<JarInputStream> jars = BRMSPackageBuilder.getJars( item );
-                ClassLoader buildCl = BRMSPackageBuilder.createClassLoader( jars );
-
-                // we have to build the package, and try again.
-                if ( item.isBinaryUpToDate() ) {
-                    rb = loadRuleBase( item,
-                                       buildCl );
-                    this.ruleBaseCache.put( item.getUUID(),
-                                            rb );
-                } else {
-                    BuilderResult[] errs = this.buildPackage( null,
-                                                              false,
-                                                              item );
-                    if ( errs == null || errs.length == 0 ) {
-                        rb = loadRuleBase( item,
-                                           buildCl );
-                        this.ruleBaseCache.put( item.getUUID(),
-                                                rb );
-                    } else {
-                        SingleScenarioResult r = new SingleScenarioResult();
-                        r.result = new ScenarioRunResult( errs,
-                                                          null );
-                        return r;
-                    }
-                }
-            }
+        	final RuleBase rb=loadCacheRuleBase(item);
+//            if ( item.isBinaryUpToDate() && this.ruleBaseCache.containsKey( item.getUUID() ) ) {
+//                rb = this.ruleBaseCache.get( item.getUUID() );
+//            } else {
+//                // load up the classloader we are going to use
+//                List<JarInputStream> jars = BRMSPackageBuilder.getJars( item );
+//                ClassLoader buildCl = BRMSPackageBuilder.createClassLoader( jars );
+//
+//                // we have to build the package, and try again.
+//                if ( item.isBinaryUpToDate() ) {
+//                    rb = loadRuleBase( item,
+//                                       buildCl );
+//                    this.ruleBaseCache.put( item.getUUID(),
+//                                            rb );
+//                } else {
+//                    BuilderResult[] errs = this.buildPackage( null,
+//                                                              false,
+//                                                              item );
+//                    if ( errs == null || errs.length == 0 ) {
+//                        rb = loadRuleBase( item,
+//                                           buildCl );
+//                        this.ruleBaseCache.put( item.getUUID(),
+//                                                rb );
+//                    } else {
+//                        SingleScenarioResult r = new SingleScenarioResult();
+//                        r.result = new ScenarioRunResult( errs,
+//                                                          null );
+//                        return r;
+//                    }
+//                }
+//            }
 
             ClassLoader cl = ((InternalRuleBase) this.ruleBaseCache.get( item.getUUID() )).getRootClassLoader();
             Thread.currentThread().setContextClassLoader( cl );
-            return runScenario( scenario,
+            result= runScenario( scenario,
                                 item,
                                 cl,
                                 rb,
                                 coverage );
-
-        } finally {
-            Thread.currentThread().setContextClassLoader( originalCL );
-        }
-
+        } catch (Exception e) {
+        	if (e instanceof DetailedSerializableException){
+        		DetailedSerializableException err = (DetailedSerializableException)e;
+        		result = new SingleScenarioResult();
+        		result.result = new ScenarioRunResult( err.getErrs(),
+                                                null );
+        	}
+		} finally {
+			Thread.currentThread().setContextClassLoader(originalCL);
+		}
+		return result;
     }
 
+    /*
+     * Set the Rule base in a cache
+     */
+    private RuleBase loadCacheRuleBase(PackageItem item) throws DetailedSerializableException{
+    	RuleBase rb=null;
+        if ( item.isBinaryUpToDate() && this.ruleBaseCache.containsKey( item.getUUID() ) ) {
+            rb = this.ruleBaseCache.get( item.getUUID() );
+        } else {
+            // load up the classloader we are going to use
+            List<JarInputStream> jars = BRMSPackageBuilder.getJars( item );
+            ClassLoader buildCl = BRMSPackageBuilder.createClassLoader( jars );
+
+            // we have to build the package, and try again.
+            if ( item.isBinaryUpToDate() ) {
+                rb = loadRuleBase( item,
+                                   buildCl );
+                this.ruleBaseCache.put( item.getUUID(),
+                                        rb );
+            } else {
+                BuilderResult[] errs = this.buildPackage( null,
+                                                          false,
+                                                          item );
+                if ( errs == null || errs.length == 0 ) {
+                    rb = loadRuleBase( item,
+                                       buildCl );
+                    this.ruleBaseCache.put( item.getUUID(),
+                                            rb );
+                }
+                else
+                	throw new DetailedSerializableException("Build error",errs);
+            }
+            
+        }
+        return rb;
+    }
     private RuleBase loadRuleBase(PackageItem item,
                                   ClassLoader cl) throws DetailedSerializableException {
         try {

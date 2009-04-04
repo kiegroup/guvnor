@@ -56,7 +56,19 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
     }
 
 
-    private List<String> getDataEnums(PackageItem pkg) {
+    public BRMSSuggestionCompletionLoader() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public BRMSSuggestionCompletionLoader(ClassLoader classLoader) {
+		super(classLoader);
+		// TODO Auto-generated constructor stub
+	}
+
+
+	private List<String> getDataEnums(PackageItem pkg) {
         Iterator it = pkg.listAssetsByFormat( new String[] {AssetFormats.ENUMERATION} );
         List<String> list = new ArrayList<String>();
         while(it.hasNext()) {
