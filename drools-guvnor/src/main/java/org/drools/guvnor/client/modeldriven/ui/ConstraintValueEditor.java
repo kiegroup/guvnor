@@ -404,14 +404,28 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         //only want to show variables if we have some !
         if (this.model.getBoundVariablesInScope( this.constraint ).size() > 0) {
-            Button variable = new Button(constants.BoundVariable());
-            variable.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
-                    con.constraintValueType = SingleFieldConstraint.TYPE_VARIABLE;
-                    doTypeChosen( form );
-                }
-            });
-            form.addAttribute(constants.AVariable(), widgets( variable, new InfoPopup(constants.ABoundVariable(), constants.BoundVariableTip())) );
+        	List vars = this.model.getBoundFacts();
+        	boolean foundABouncVariableThatMatches= false;
+            for ( int i = 0; i < vars.size(); i++ ) {
+                String var = (String) vars.get( i );
+                FactPattern f= model.getBoundFact(var);
+                if (f.factType.equals(this.fieldType)) {
+                	foundABouncVariableThatMatches = true;
+                	break;
+    			}
+            }
+            if (foundABouncVariableThatMatches == true) {
+				Button variable = new Button(constants.BoundVariable());
+				variable.addClickListener(new ClickListener() {
+					public void onClick(Widget w) {
+						con.constraintValueType = SingleFieldConstraint.TYPE_VARIABLE;
+						doTypeChosen(form);
+					}
+				});
+				form.addAttribute(constants.AVariable(), widgets(variable,
+						new InfoPopup(constants.ABoundVariable(), constants
+								.BoundVariableTip())));
+			}
         }
 
         Button formula = new Button(constants.NewFormula());
