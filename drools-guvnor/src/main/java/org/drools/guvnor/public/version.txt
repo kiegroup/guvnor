@@ -1,1 +1,1 @@
-5.0.0.SNAPSHOT svn: This client is too old to work with working copy '.'; please get a newer Subversion client
+5.0.0.SNAPSHOT 26017M

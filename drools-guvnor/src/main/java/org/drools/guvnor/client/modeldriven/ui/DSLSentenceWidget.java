@@ -225,7 +225,7 @@ public class DSLSentenceWidget extends Composite {
 
     public Widget getLabel(String labelDef) {
         Label label = new SmallLabel();
-        label.setText( labelDef + " " );
+        label.setText( labelDef );
 
         return label;
     }
@@ -260,7 +260,7 @@ public class DSLSentenceWidget extends Composite {
                     varString = varString + ":" + restriction;
                 }
 
-                newSentence = newSentence + " {" + varString + "} ";
+                newSentence = newSentence + "{" + varString + "}";
             } else if ( wid instanceof DSLDropDown ) {
 
                 // Add the meta-data back to the field so that is shows up as a
