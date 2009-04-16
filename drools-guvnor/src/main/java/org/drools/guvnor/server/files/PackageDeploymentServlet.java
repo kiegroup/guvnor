@@ -141,9 +141,9 @@ public class PackageDeploymentServlet extends RepositoryServlet {
 		ServiceImplementation serv = RepositoryServiceServlet.getService();
 		PackageItem pkg;
 		if (helper.isLatest()) {
-			pkg = serv.repository.loadPackage(helper.getPackageName());
+			pkg = serv.getRulesRepository().loadPackage(helper.getPackageName());
 		} else {
-			pkg = serv.repository.loadPackageSnapshot(helper.getPackageName(), helper.getVersion());
+			pkg = serv.getRulesRepository().loadPackageSnapshot(helper.getPackageName(), helper.getVersion());
 		}
 		try {
 			BulkTestRunResult result = serv.runScenariosInPackage(pkg);

@@ -1,4 +1,4 @@
-Reachable types computed on: Fri Apr 17 00:00:09 EEST 2009
+Reachable types computed on: Fri Apr 17 02:30:50 EEST 2009
 com.google.gwt.i18n.client.impl.ConstantMap
    Serialization status
       Not serializable
@@ -107,8 +107,7 @@ java.util.HashMap<java.lang.String, java.lang.String>
    Serialization status
       Instantiable
    Path
-      'java.util.HashMap<java.lang.String, java.lang.String>' is reachable as a supertype of type 'class com.google.gwt.i18n.client.impl.ConstantMap'
-      'com.google.gwt.i18n.client.impl.ConstantMap' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.lang.String>'
+      'java.util.HashMap<java.lang.String, java.lang.String>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.lang.String>'
       'java.util.Map<java.lang.String, java.lang.String>' is reachable from field 'prefs' of type 'org.drools.guvnor.client.security.Capabilities'
       'org.drools.guvnor.client.security.Capabilities' is reachable as a subtype of type 'class org.drools.guvnor.client.security.Capabilities'
       Started from 'org.drools.guvnor.client.security.Capabilities'

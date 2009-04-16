@@ -164,6 +164,10 @@ public class ServiceImplementation
      */
     static Map<String, RuleBase>    ruleBaseCache                     = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
 
+    public RulesRepository getRulesRepository() {
+        return this.repository;
+    }
+    
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] loadChildCategories(String categoryPath) {
