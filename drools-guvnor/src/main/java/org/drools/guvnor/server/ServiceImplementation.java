@@ -1317,7 +1317,7 @@ public class ServiceImplementation
             repository.loadCategory( categoryPath ).remove();
             repository.save();
         } catch ( RulesRepositoryException e ) {
-            throw new DetailedSerializableException( "Unable to remove category. It is probably still used (even by archived items).",
+            throw new DetailedSerializableException( "Unable to remove category. It is probably still used.",
                                                      e.getMessage() );
         }
     }
