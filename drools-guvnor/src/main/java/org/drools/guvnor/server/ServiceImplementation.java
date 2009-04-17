@@ -1383,6 +1383,9 @@ public class ServiceImplementation
         } catch ( NoClassDefFoundError e ) {
             throw new DetailedSerializableException( "Unable to find a class that was needed when building the package  [" + e.getMessage() + "]",
                                                      "Perhaps you are missing them from the model jars, or from the BRMS itself (lib directory)." );
+        } catch ( UnsupportedClassVersionError e ) {
+            throw new DetailedSerializableException( "Can not build the package. One or more of the classes that are needed were compiled with an unsupported Java version.",
+                                                     "For example the pojo classes were compiled with Java 1.6 and Guvnor is running on Java 1.5. [" + e.getMessage() + "]" );
         }
     }
 
