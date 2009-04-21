@@ -602,24 +602,15 @@ public class RulesRepository {
     public void restoreHistoricalAsset(AssetItem versionToRestore,
                                        AssetItem headVersion,
                                        String comment) {
+        headVersion.checkout();
 
-        long oldVersionNumber = headVersion.getVersionNumber();
-
-        Object vToRestore = versionToRestore.getNode();
-        Version v = (Version) vToRestore;
-        try {
-            headVersion.getNode().restore( v,
-                                           true );
-            AssetItem newHead = loadAssetByUUID( headVersion.getUUID() );
-            newHead.checkout();
-            newHead.getNode().setProperty( VersionableItem.VERSION_NUMBER_PROPERTY_NAME,
-                                           oldVersionNumber );
-            newHead.checkin( comment );
-        } catch ( RepositoryException e ) {
-            log.error( "Unable to restore version of asset.",
-                       e );
-            throw new RulesRepositoryException( e );
+        if ( versionToRestore.isBinary() ) {
+            headVersion.updateBinaryContentAttachment( versionToRestore.getBinaryContentAttachment() );
+        } else {
+            headVersion.updateContent( versionToRestore.getContent() );
         }
+
+        headVersion.checkin( comment );
     }
 
     /**
