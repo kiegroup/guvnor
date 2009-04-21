@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -96,6 +97,7 @@ public class PrettyFormLayout extends Composite {
 		currentTable.setWidget(i, 0, new Label(lbl));
 		currentTable.setWidget(i, 1, categories);
 		currentTable.getFlexCellFormatter().setHorizontalAlignment(i, 0, HasHorizontalAlignment.ALIGN_RIGHT);
+		currentTable.getFlexCellFormatter().setVerticalAlignment( i, 0, HasVerticalAlignment.ALIGN_TOP );
 	}
 
 
