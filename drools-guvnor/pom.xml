@@ -29,10 +29,11 @@
     <finalName>drools-guvnor</finalName>
 
 	<plugins>
-	      <plugin>
+	      <plugin>     
 	        <artifactId>maven-antrun-plugin</artifactId>
 	        <executions>
 	          <execution>
+                    <id>generate-sources</id>
 	            <phase>generate-sources</phase>
 	            <configuration>
 	              <tasks>
@@ -63,10 +64,91 @@
 			      <version>1.4</version>
 			</dependency>
 		</dependencies>
-	      </plugin>
+	      </plugin>                 
 	</plugins>
 
   </build>
+
+
+    <profiles>
+        <profile>
+            <id>soa</id>
+            <activation>
+                <property>
+                    <name>soa</name>
+                </property>
+            </activation>
+            <build>
+              <finalName>drools-guvnor</finalName>    
+        	<plugins>
+	          <plugin>
+     
+	        <artifactId>maven-antrun-plugin</artifactId>
+	        <executions>
+	          <execution>
+                    <id>generate-sources</id>
+	            <phase>generate-sources</phase>
+	            <configuration>
+	              <tasks>
+			<ant antfile="${basedir}/revision-number.xml" target="find_revision">
+				<property name="project.version" value="${project.version}"/>
+  			</ant>         	
+		      </tasks>
+	            </configuration>
+        	    <goals>
+	              <goal>run</goal>
+        	    </goals>
+	          </execution>
+	          <execution>
+                    <id>soa_overlay</id>
+	            <phase>package</phase>
+	            <configuration>
+	              <tasks>
+			<ant antfile="${basedir}/soa-specific.xml" target="soa_overlay">
+  			</ant>         	
+		      </tasks>
+	            </configuration>
+        	    <goals>
+	              <goal>run</goal>
+        	    </goals>
+	          </execution>
+	        </executions>
+		<dependencies>    
+			<dependency>
+			      <groupId>ant</groupId>
+			      <artifactId>ant-nodeps</artifactId>
+			      <version>1.6.5</version>
+			</dependency>
+			<dependency>
+			      <groupId>ant</groupId>
+			      <artifactId>ant-apache-regexp</artifactId>
+			      <version>1.6.5</version>
+			</dependency>
+			<dependency>
+			      <artifactId>jakarta-regexp</artifactId>
+			      <groupId>jakarta-regexp</groupId>
+			      <version>1.4</version>
+			</dependency>
+		</dependencies>
+	      </plugin>
+              <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-war-plugin</artifactId>
+               <executions>
+                   <execution>
+                       <id>war-it</id>
+                       <phase>pre-integration-test</phase>
+                       <goals>
+                           <goal>war</goal>
+                       </goals>
+                   </execution> 
+               </executions> 
+	      </plugin>                 
+	    </plugins>
+          </build>
+
+        </profile>          
+     </profiles>
 
   <dependencies>
     <!-- Internal dependencies -->

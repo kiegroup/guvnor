@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project name="Drools" basedir="." default="soa_overlay">
+
+  <target name="soa_overlay" description="SOA specific build">  
+  <echo>Executing soa_overlay ...</echo>
+      <replace file="target/drools-guvnor/org.drools.guvnor.Guvnor/Guvnor.html" token="JBoss Guvnor" value="JBoss BRMS" /> 
+      <replace file="target/drools-guvnor/org.drools.guvnor.Guvnor/org.drools.guvnor.Guvnor/Guvnor.html" token="JBoss Guvnor" value="JBoss BRMS" /> 
+      <copy file="target/drools-guvnor/org.drools.guvnor.Guvnor/hdrlogo_brms.gif" tofile="target/drools-guvnor/org.drools.guvnor.Guvnor/header_logo.gif"/>
+  </target>  
+</project>
