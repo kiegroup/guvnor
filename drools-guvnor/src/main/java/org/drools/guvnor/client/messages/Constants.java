@@ -1118,7 +1118,13 @@ public interface Constants extends ConstantsWithLookup {
     String SwitchToTextModeEditing();
 
     String SwitchToAdvancedTextModeForPackageEditing();
-
+    
+    String BasicView();
+    
+    String SwitchToGuidedModeEditing();
+    
+    String SwitchToGuidedModeForPackageEditing();
+        
     String ChooseAFactType();
 
     String loadingList();

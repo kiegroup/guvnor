@@ -159,6 +159,9 @@ public class PackageHeaderWidget extends Composite {
 
 	private void textEditorVersion() {
 		layout.clear();
+		
+        VerticalPanel main = new VerticalPanel();
+        
 		final TextArea area = new TextArea();
 		area.setWidth( "100%" );
 		area.setVisibleLines( 8 );
@@ -171,7 +174,27 @@ public class PackageHeaderWidget extends Composite {
 		         conf.header = area.getText();
 		    }
 		});
-		layout.add(area);
+
+        main.add( area );
+        
+        Button basicMode = new Button() {
+            {
+                setText(constants.BasicView());
+                setTitle(constants.SwitchToGuidedModeEditing());
+                addClickListener(new ClickListener() {
+                    public void onClick(Widget w) {
+                        if (Window.confirm(constants.SwitchToGuidedModeForPackageEditing())) {
+                            conf.header=area.getText();
+                            render();
+                        }
+                    }
+                });
+            }
+        };
+        main.add( basicMode );
+
+		
+		layout.add(main);
 	}
 
 	private void showTypeQuestion(Widget w, final Types t, final boolean global, String headerMessage) {
