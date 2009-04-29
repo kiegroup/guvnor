@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.explorer.Preferences;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
@@ -493,248 +494,23 @@ public class DSLSentenceWidget extends Composite {
         }
     }
 
-    class DSLDateSelector extends DirtyableComposite {
-        private DatePicker     datePickerPopUp = new DatePicker();
-        private Panel          panel           = new SimplePanel();
-        private TextBox        textWidget      = new TextBox();
-        private Label          labelWidget     = new Label();
-        // Format for the dropdown def is <varName>:<type>:<Fact.field>
-        private String         varName         = "";
-
-        // Format that the text box uses.
-        private String         visualFormat    = "";
-        // Format that the system uses.
-        private final String   defaultFormat   = Preferences.getStringPref( "drools.dateformat" );
-        private DateTimeFormat formatter       = null;
-
-        class DatePicker extends PopupPanel {
-            private Constants constants = ((Constants) GWT.create( Constants.class ));
-
-            private ListBox   years     = new ListBox();
-            private ListBox   months    = new ListBox();
-            private ListBox   dates     = new ListBox();
-
-            //            private ListBox   hours     = new ListBox();
-            //            private ListBox   minutes   = new ListBox();
-
-            public DatePicker() {
-                HorizontalPanel horizontalPanel = new HorizontalPanel();
-
-                // Add years
-                // Take the current year and add 50 to each sides
-                Date now = new Date();
-                int year = now.getYear() + 1900 - 50;
-                for ( int i = year; i < (year + 100); i++ ) {
-                    years.addItem( Integer.toString( i ) );
-                }
-                years.setSelectedIndex( 50 );
-                horizontalPanel.add( years );
-
-                // Add months
-                months.addItem( constants.January() );
-                months.addItem( constants.February() );
-                months.addItem( constants.March() );
-                months.addItem( constants.April() );
-                months.addItem( constants.May() );
-                months.addItem( constants.June() );
-                months.addItem( constants.July() );
-                months.addItem( constants.August() );
-                months.addItem( constants.September() );
-                months.addItem( constants.October() );
-                months.addItem( constants.November() );
-                months.addItem( constants.December() );
-
-                months.addChangeListener( new ChangeListener() {
-                    public void onChange(Widget arg0) {
-                        fillDates();
-                    }
-                } );
-
-                horizontalPanel.add( months );
-
-                // Add dates
-                fillDates();
-                horizontalPanel.add( dates );
-
-                //                // Hours
-                //                for ( int i = 0; i < 24; i++ ) {
-                //                    hours.addItem( Integer.toString( i ) );
-                //                }
-                //                horizontalPanel.add( new Label( " - " ) );
-                //                horizontalPanel.add( hours );
-                //
-                //                // Minutes 
-                //                for ( int i = 0; i < 60; i++ ) {
-                //                    minutes.addItem( Integer.toString( i ) );
-                //                }
-                //                horizontalPanel.add( new Label( ":" ) );
-                //                horizontalPanel.add( minutes );
-
-                Button okButton = new Button( constants.OK() );
-                okButton.addClickListener( new ClickListener() {
-                    public void onClick(Widget arg0) {
-                        // Set the date from the dropdowns
-                        Date date = formatter.parse( textWidget.getText() );
-
-                        // years
-                        date.setYear( Integer.parseInt( years.getItemText( years.getSelectedIndex() ) ) - 1900 );
-                        // months
-                        date.setMonth( months.getSelectedIndex() );
-                        // days
-                        date.setDate( dates.getSelectedIndex() + 1 );
-
-                        textWidget.setText( formatter.format( date ) );
-                        labelWidget.setText( textWidget.getText() );
-
-                        updateSentence();
-                        makeDirty();
-                        panel.clear();
-                        panel.add( labelWidget );
-                        datePickerPopUp.hide();
-                    }
-                } );
-                horizontalPanel.add( okButton );
-
-                add( horizontalPanel );
-            }
-
-            /**
-            * Sets the current year, month ect to dropdowns.
-            */
-            public void setDropdowns() {
-                Date date = formatter.parse( textWidget.getText() );
-
-                // Set year
-                for ( int i = 0; i < years.getItemCount(); i++ ) {
-                    if ( years.getValue( i ).equals( (date.getYear() + 1900) + "" ) ) {
-                        years.setSelectedIndex( i );
-                        break;
-                    }
-                }
-                // month
-                months.setSelectedIndex( date.getMonth() );
-                // day
-                dates.setSelectedIndex( date.getDate() - 1 );
-                //                // hours
-                //                hours.setSelectedIndex( date.getHours() );
-                //                // minutes
-                //                minutes.setSelectedIndex( date.getMinutes() );
-            }
-
-            private void fillDates() {
-                setVisible( false );
-
-                dates.clear();
-
-                // Check month 
-                int days = daysInMonth( months.getSelectedIndex() + 1 );
-
-                for ( int i = 1; i <= days; i++ ) {
-                    dates.addItem( Integer.toString( i ) );
-                }
-
-                setVisible( true );
-            }
-
-            private int daysInMonth(int month) {
-                switch ( month ) {
-                    case 2 :
-                        // Can be 28 or 29, returns 29 just in case
-                        return 29;
-                    case 4 :
-                    case 6 :
-                    case 9 :
-                    case 11 :
-                        return 30;
-                    default :
-                        return 31;
-                }
-            }
-        }
+    class DSLDateSelector extends DatePicker {
 
         public DSLDateSelector(String variableDef) {
+            super( variableDef.substring( 0,
+                                          variableDef.indexOf( ":" ) ),
+                   variableDef.substring( variableDef.lastIndexOf( ":" ) + 1,
+                                          variableDef.length() ) );
 
-            int firstIndex = variableDef.indexOf( ":" );
-            int lastIndex = variableDef.lastIndexOf( ":" );
-
-            varName = variableDef.substring( 0,
-                                             firstIndex );
-            visualFormat = variableDef.substring( lastIndex + 1,
-                                                  variableDef.length() );
-
-            if ( visualFormat == null || visualFormat.equals( "default" ) || visualFormat.equals( "" ) ) {
-                visualFormat = defaultFormat;
-            }
-
-            formatter = DateTimeFormat.getFormat( visualFormat );
-
-            labelWidget.setStyleName( "x-form-field" );
-
-            labelWidget.addClickListener( new ClickListener() {
-                public void onClick(Widget arg0) {
-                    panel.clear();
-                    panel.add( textWidget );
-                    datePickerPopUp.setPopupPosition( textWidget.getAbsoluteLeft(),
-                                                      textWidget.getAbsoluteTop() + 20 );
-
-                    datePickerPopUp.setDropdowns();
-                    datePickerPopUp.show();
-                }
-            } );
-
-            // Check if there is a valid date set. If not, set this date.
-            try {
-                formatter.parse( varName );
-            } catch ( Exception e ) {
-                varName = formatter.format( new Date() );
-            }
-
-            if ( varName != null && !varName.equals( "" ) ) {
-                textWidget.setText( varName );
-                labelWidget.setText( varName );
-            }
-
-            textWidget.addFocusListener( new FocusListener() {
-                public void onFocus(Widget arg0) {
-                }
-
-                public void onLostFocus(Widget arg0) {
-                    TextBox box = (TextBox) arg0;
-                    textWidget.setText( box.getText() );
-                    labelWidget.setText( box.getText() );
+            addValueChanged( new ValueChanged() {
+                public void valueChanged(String newValue) {
                     updateSentence();
-                    makeDirty();
-                    panel.clear();
-                    panel.add( labelWidget );
-                    datePickerPopUp.hide();
                 }
             } );
-
-            panel.add( labelWidget );
-            initWidget( panel );
         }
 
         public String getType() {
             return DATE_TAG;
         }
-
-        public String getVisualFormat() {
-            return this.visualFormat;
-        }
-
-        public String getDateString() {
-            DateTimeFormat formatter = DateTimeFormat.getFormat( defaultFormat );
-            Date date = this.formatter.parse( textWidget.getText() );
-            return formatter.format( date );
-        }
-
-        public String getVarName() {
-            return varName;
-        }
-
-        public void setVarName(String varName) {
-            this.varName = varName;
-        }
-
     }
 }

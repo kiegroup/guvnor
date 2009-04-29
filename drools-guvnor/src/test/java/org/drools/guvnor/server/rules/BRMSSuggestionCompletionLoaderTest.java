@@ -90,7 +90,7 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
         String fieldType = engine.getFieldType( "Person", "name" );
         assertEquals( SuggestionCompletionEngine.TYPE_STRING, fieldType );
         fieldType = engine.getFieldType( "Person", "birthDate" );
-        assertEquals( SuggestionCompletionEngine.TYPE_COMPARABLE, fieldType );
+        assertEquals( SuggestionCompletionEngine.TYPE_DATE, fieldType );
     }
 
     public void testDeclaredTypes() throws Exception {
