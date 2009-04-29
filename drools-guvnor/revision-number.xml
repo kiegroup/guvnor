@@ -8,8 +8,25 @@
 		<property name="project.version" value="${project.version}"/>
 
 		<exec executable="svnversion" outputproperty="svnlog.out" failifexecutionfails="false" >  
-        </exec>  
+        	</exec>  
 
+		<condition property="svnversionDoesNotWork">
+  			<contains string="${svnlog.out}" substring="This client is too old" casesensitive="false" />
+		</condition>
+
+		<antcall target="write-version-and-build-number"/>
+		<antcall target="write-version"/>
+
+	</target>
+
+	<!-- If svnversion works add the version and the build number -->
+	<target name="write-version-and-build-number" unless="svnversionDoesNotWork">
 		<echo file="./src/main/java/org/drools/guvnor/public/version.txt">${project.version} ${svnlog.out}</echo>
-	</target>  
+	</target>
+
+	<!-- If svnversion does not work just add the version -->
+	<target name="write-version" if="svnversionDoesNotWork">
+		<echo file="./src/main/java/org/drools/guvnor/public/version.txt">${project.version}</echo>
+	</target>
+  
 </project>
