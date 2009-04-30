@@ -185,7 +185,11 @@ public class ExplorerViewCenterPanel {
      */
 	public void openAsset(
 			final String uuid) {
+        if (uuid.contains("<")) {
+            return;
+        }
 		History.newItem("asset=" + uuid); //NON-NLS
+
         
 		LoadingPopup.showMessage(constants.LoadingAsset());
 		if (!showIfOpen(uuid)) {
