@@ -1,5 +1,8 @@
 package org.drools.guvnor.client.admin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.LogEntry;
@@ -58,18 +61,22 @@ public class LogViewer extends Composite {
 	}
 
 	private void showLogs(LogEntry[] logs) {
-		Object[][] data = new Object[logs.length][3];
+		List<LogEntry> entries = new ArrayList<LogEntry>();
+		
+		// Drop the null rows
 		for (int i = 0; i < logs.length; i++) {
-			LogEntry e = logs[i];
-			if (e != null) {
+		    LogEntry e = logs[i];
+		    if (e != null) {
+		        entries.add( e );
+		    }
+		}
+
+        Object[][] data = new Object[entries.size()][3];
+		for (int i = 0; i < entries.size(); i++) {
+			LogEntry e = entries.get(i);
 				data[i][0] = new Integer(e.severity);
 				data[i][1] = e.timestamp;
 				data[i][2] = e.message;
-			} else {
-				data[i][0] = new Integer(2);
-				data[i][1] = "";
-				data[i][2] = "";
-			}
 		}
 
 		MemoryProxy proxy = new MemoryProxy(data);
@@ -85,7 +92,7 @@ public class LogViewer extends Composite {
 		ColumnModel cm = new ColumnModel(new ColumnConfig[] {
 				new ColumnConfig() {
 					{
-						setDataIndex("severity");  //NON-NLS
+					    setDataIndex("severity");  //NON-NLS
 						setSortable(true);
 						setRenderer(new Renderer() {
 							public String render(Object value,
@@ -134,9 +141,7 @@ public class LogViewer extends Composite {
 					}
 				} });
 
-		final GridPanel g = new GridPanel();
-		g.setColumnModel(cm);
-		g.setStore(store);
+		final GridPanel g = new GridPanel(store,cm);
 		g.setWidth(800);
 		g.setHeight(600);
 
