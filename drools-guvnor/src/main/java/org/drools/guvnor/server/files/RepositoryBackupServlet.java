@@ -31,8 +31,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.FormData;
+import org.drools.guvnor.server.util.LoggingHelper;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
+import org.apache.log4j.Logger;
 
 /**
  * 
@@ -43,6 +45,7 @@ import org.jboss.seam.security.Identity;
  */
 public class RepositoryBackupServlet extends RepositoryServlet {
 
+    private static final Logger log                               = LoggingHelper.getLogger(RepositoryBackupServlet.class);
 	private static final long serialVersionUID = 400L;
 
 	// final FileManagerUtils uploadHelper = new FileManagerUtils();
@@ -104,19 +107,19 @@ public class RepositoryBackupServlet extends RepositoryServlet {
 
 	private void processExportRepositoryDownload(HttpServletResponse res)
 			throws PathNotFoundException, IOException, RepositoryException {
-        System.err.println("Exporting...");
+        log.debug("Exporting...");
 		res.setContentType("application/zip");
 		res.setHeader("Content-Disposition",
 				"attachment; filename=repository_export.zip;");
 
-        System.err.println("Starting to process export");
+        log.debug("Starting to process export");
         ZipOutputStream zout = new ZipOutputStream(res.getOutputStream());
         zout.putNextEntry(new ZipEntry("repository_export.xml"));
         getFileManager().exportRulesRepository(zout);
         zout.closeEntry();
         zout.finish();
 		res.getOutputStream().flush();
-        System.err.println("Done exporting!");
+        log.debug("Done exporting!");
 	}
 
 	private void processExportPackageFromRepositoryDownload(
