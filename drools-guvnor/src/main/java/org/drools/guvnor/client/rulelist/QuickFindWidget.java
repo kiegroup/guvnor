@@ -23,10 +23,12 @@ import java.util.List;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
+import org.drools.guvnor.client.rpc.DetailedSerializableException;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.*;
@@ -106,6 +108,7 @@ public class QuickFindWidget extends Composite {
         layout.addRow(pfl);
 
 
+        
         initWidget( layout );
     }
 

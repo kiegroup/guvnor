@@ -20,10 +20,7 @@ package org.drools.guvnor.client.common;
 import org.drools.guvnor.client.rpc.DetailedSerializableException;
 import org.drools.guvnor.client.messages.Constants;
 
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.Button;
@@ -93,11 +90,13 @@ public class ErrorPopup  {
 
         final String longDescription = longMessage;
 
-        if (longMessage == null) {
-        	body.add(new HTML("<image src='images/validation_error.gif'/>&nbsp;<strong><b>" + message +"</b></strong>"));
-        } else {
-        	body.add(new HTML("<image src='images/validation_error.gif'/>&nbsp;<strong><b>" + message +"</b></strong>"));
-        }
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.add(new Image("images/validation_error.gif"));
+        Label msg = new Label(message);
+        msg.setStyleName("error-title");
+        hp.add(msg);
+        body.add(hp);
+
 
         final SimplePanel detailPanel = new SimplePanel();
         if (longMessage != null && !"".equals(longMessage)) {
@@ -105,8 +104,13 @@ public class ErrorPopup  {
 	        showD.addListener(new ButtonListenerAdapter() {
 				public void onClick(Button button, EventObject e) {
 					detailPanel.clear();
-					detailPanel.add(new SmallLabel(longDescription));
+                    VerticalPanel vp = new VerticalPanel();
+                    vp.add(new HTML("<hr/>"));
 
+                    Label lng = new Label(longDescription);
+                    lng.setStyleName("error-long-message");
+                    vp.add(lng);
+                    detailPanel.add(vp);
 				}
 	        });
 	        detailPanel.add(showD);

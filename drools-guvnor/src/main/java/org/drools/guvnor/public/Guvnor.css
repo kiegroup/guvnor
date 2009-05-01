@@ -63,6 +63,16 @@ font-size: small;
 font-style: italics;
 }
 
+
+.error-title {
+    font-size: small;
+    
+}
+
+.error-long-message {
+    font-size: small;
+}
+
 .successBar {border: 1px; solid #aa9; }
 
 .gwt-DialogBox {
