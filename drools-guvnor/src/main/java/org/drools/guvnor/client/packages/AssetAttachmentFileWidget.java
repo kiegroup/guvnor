@@ -130,6 +130,11 @@ public abstract class AssetAttachmentFileWidget extends Composite {
 
             public void onSubmitComplete(FormSubmitCompleteEvent ev) {
             		LoadingPopup.close();
+            		
+                    if ( viewer.checkedInCommand != null ) {
+                        viewer.checkedInCommand.execute();
+                    }
+            		
                     if (ev.getResults().indexOf( "OK" ) > -1) {
                     	Window.alert(constants.FileWasUploadedSuccessfully());
                         viewer.refreshDataAndView();
@@ -143,10 +148,6 @@ public abstract class AssetAttachmentFileWidget extends Composite {
 
     protected void submitUpload() {
         form.submit();
-
-        if ( viewer.checkedInCommand != null ) {
-            viewer.checkedInCommand.execute();
-        }
     }
 
     protected void showUploadingBusy() {
