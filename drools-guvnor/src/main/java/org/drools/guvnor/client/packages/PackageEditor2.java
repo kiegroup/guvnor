@@ -510,7 +510,7 @@ FlexTable headerWidgets = new FlexTable();
     /**
      * Will refresh all the data.
      */
-    private void reload() {
+    public void reload() {
         LoadingPopup.showMessage(constants.RefreshingPackageData());
         RepositoryServiceFactory.getService().loadPackageConfig( this.conf.uuid, new GenericCallback<PackageConfigData>() {
             public void onSuccess(PackageConfigData data) {

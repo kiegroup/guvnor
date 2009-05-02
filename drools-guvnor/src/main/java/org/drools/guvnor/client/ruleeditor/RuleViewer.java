@@ -46,6 +46,7 @@ import com.google.gwt.core.client.GWT;
 public class RuleViewer extends Composite {
 
     private Command            closeCommand;
+    public Command            checkedInCommand;
     protected RuleAsset        asset;
 
     private boolean            readOnly;
@@ -112,6 +113,9 @@ public class RuleViewer extends Composite {
                                              performCheckIn( comment );
                                              if ( editor instanceof SaveEventListener ) {
                                                  ((SaveEventListener) editor).onAfterSave();
+                                             }
+                                             if ( checkedInCommand != null ) {
+                                                 checkedInCommand.execute();
                                              }
                                              lastSaved = System.currentTimeMillis();
                                          }
@@ -299,6 +303,14 @@ public class RuleViewer extends Composite {
      */
     public void setCloseCommand(Command c) {
         this.closeCommand = c;
+    }
+
+    /**
+     * This is called when this viewer saves something.
+     * @param c
+     */
+    public void setCheckedInCommand(Command c) {
+        this.checkedInCommand = c;
     }
 
     /**

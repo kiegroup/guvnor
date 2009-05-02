@@ -3,6 +3,7 @@ package org.drools.guvnor.client.explorer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.packages.PackageEditor2;
@@ -51,9 +52,11 @@ public class ExplorerViewCenterPanel {
 
 	/** to keep track of what is dirty, filthy */
 	private Map<String, RuleViewer> openedAssetEditors = new HashMap<String, RuleViewer>();
+	private Map<String, PackageEditor2> openedPackageEditors = new HashMap<String, PackageEditor2>();
 
 	private Button closeAllButton;
     private Constants constants = ((Constants) GWT.create(Constants.class));
+
 
     public ExplorerViewCenterPanel() {
 		tp = new TabPanel();
@@ -104,6 +107,7 @@ public class ExplorerViewCenterPanel {
         		if (Window.confirm(constants.AreYouSureYouWantToCloseOpenItems())) {
         			tp.clear();
         			openedAssetEditors.clear();
+        			openedPackageEditors.clear();
         			openedTabs.clear();
         			openFind();
         		}
@@ -125,7 +129,7 @@ public class ExplorerViewCenterPanel {
 	 * @param widget The contents.
 	 * @param key A key which is unique.
 	 */
-	public void addTab (String tabname, boolean closeable, Widget widget, final String key) {
+	public void addTab (final String tabname, boolean closeable, Widget widget, final String key) {
 
 		final String panelId = key + id;
 		Panel localTP = new Panel();
@@ -141,12 +145,17 @@ public class ExplorerViewCenterPanel {
 			public void onDestroy(Component component) {
 				openedTabs.remove(key).destroy();
 				openedAssetEditors.remove(panelId);
+				openedPackageEditors.remove( tabname );
 			}
 		});
 
-		if (widget instanceof RuleViewer) {
-			this.openedAssetEditors.put(panelId, (RuleViewer) widget);
-		}
+		if ( widget instanceof RuleViewer ) {
+            this.openedAssetEditors.put( panelId,
+                                         (RuleViewer) widget );
+        } else if ( widget instanceof PackageEditor2 ) {
+            this.openedPackageEditors.put( tabname,
+                                           (PackageEditor2) widget );
+        }
 
 		tp.activate(localTP.getId());
 
@@ -204,6 +213,19 @@ public class ExplorerViewCenterPanel {
 									close(uuid);
 								}
 							});
+							
+							// When model is saved update the package view it is opened.
+							if(a.metaData.format.equals( AssetFormats.MODEL )){
+							    rv.setCheckedInCommand( new Command(){
+							       public void execute() {
+							           PackageEditor2 packageEditor = openedPackageEditors.get( a.metaData.packageName );
+							           if( packageEditor != null ){
+							               packageEditor.reload();
+							           }
+							       } 
+							    });
+							}
+							
 							LoadingPopup.close();
 						}
 					});

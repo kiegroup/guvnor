@@ -19,9 +19,9 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.HTMLFileManagerFields;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
-import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -142,8 +142,11 @@ public abstract class AssetAttachmentFileWidget extends Composite {
     }
 
     protected void submitUpload() {
-                form.submit();
+        form.submit();
 
+        if ( viewer.checkedInCommand != null ) {
+            viewer.checkedInCommand.execute();
+        }
     }
 
     protected void showUploadingBusy() {
