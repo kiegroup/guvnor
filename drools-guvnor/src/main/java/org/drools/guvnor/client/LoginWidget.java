@@ -67,6 +67,12 @@ public class LoginWidget {
 		});
 		pop.addAttribute("", b);
 		pop.show();
+
+        pop.setAfterShow(new Command() {
+            public void execute() {
+                userName.setFocus(true);
+            }
+        });
 	}
 
     private void doLogin(final TextBox userName, PasswordTextBox password, final FormStylePopup pop) {
