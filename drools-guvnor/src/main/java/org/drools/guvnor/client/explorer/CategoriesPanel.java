@@ -67,6 +67,8 @@ public class CategoriesPanel extends GenericPanel {
 
                     if (!centertabbedPanel.showIfOpen(key)) {
 
+
+
                         AssetItemGrid list = new AssetItemGrid(new EditItemEvent() {
                             public void open(String uuid) {
                                 centertabbedPanel.openAsset(uuid);
@@ -86,7 +88,7 @@ public class CategoriesPanel extends GenericPanel {
                                         }
                                     }
                                 },
-                                (isState) ? null : GWT.getModuleBaseURL() + "feed/category?name=" + key + "&viewUrl=" + Window.Location.getHref());
+                                (isState) ? null : GWT.getModuleBaseURL() + "feed/category?name=" + key + "&viewUrl=" + getSelfURL());
 
                         centertabbedPanel.addTab(((isState) ? constants.Status() : constants.CategoryColon()) + self.getText(), true, list, key);
                     }
@@ -100,6 +102,18 @@ public class CategoriesPanel extends GenericPanel {
         rulesPanel.add(categoryTree);
         rulesPanel.setWidth("100%");
         add(rulesPanel);
+    }
+
+
+    /**
+     * The URL that will be used to open up assets in a feed.
+     */
+    static String getSelfURL() {
+        String selfURL = Window.Location.getHref();
+        if (selfURL.contains("#")) {
+            selfURL = selfURL.substring(0, selfURL.indexOf("#"));
+        }
+        return selfURL;
     }
 
 }

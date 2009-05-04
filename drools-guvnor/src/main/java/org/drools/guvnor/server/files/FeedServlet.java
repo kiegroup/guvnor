@@ -75,7 +75,6 @@ public class FeedServlet extends RepositoryServlet {
         String packageName = request.getParameter("name");
         checkPackageReadPermission(packageName);
 
-        System.err.println("Package name for feed: " + packageName);
         PackageItem pkg = getFileManager().getRepository().loadPackage(packageName);
 
         List<AtomFeed.AtomEntry> entries = new ArrayList<AtomFeed.AtomEntry>();

@@ -204,6 +204,7 @@ public class PackagesPanel extends GenericPanel {
                     currentPackage = pc.name;
                     String key = key(fmts, pc);
                     if (!centertabbedPanel.showIfOpen(key)) {
+
                         AssetItemGrid list = new AssetItemGrid(new EditItemEvent() {
                             public void open(String uuid) {
                                 centertabbedPanel.openAsset(uuid);
@@ -215,7 +216,7 @@ public class PackagesPanel extends GenericPanel {
                                         RepositoryServiceFactory.getService().listAssets(pc.uuid, fmts, skip, numRows, AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID, cb);
                                     }
                                 }
-                        , GWT.getModuleBaseURL() + "feed/package?name=" + pc.name + "&viewUrl=" + Window.Location.getHref() + "&status=*");
+                        , GWT.getModuleBaseURL() + "feed/package?name=" + pc.name + "&viewUrl=" + CategoriesPanel.getSelfURL() + "&status=*");
 
                         tabPanel.addTab(uo[1] + " [" + pc.name + "]", true, list, key);
                     }
