@@ -19,6 +19,7 @@ package org.drools.guvnor.server.files;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -50,6 +51,18 @@ public class PackageDeploymentServlet extends RepositoryServlet {
 
     public static SimpleDateFormat RFC822DATEFORMAT  = new SimpleDateFormat("EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z", Locale.US);
 
+
+    @Override
+    protected long getLastModified(HttpServletRequest request) {
+        PackageDeploymentURIHelper helper = null;
+        try {
+            helper = new PackageDeploymentURIHelper(request.getRequestURI());
+            FileManagerUtils fm = getFileManager();
+            return fm.getLastModified( helper.getPackageName(), helper.getVersion() );
+        } catch (UnsupportedEncodingException e) {
+            return super.getLastModified(request);
+        }
+    }
 
     @Override
     protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException,

@@ -377,6 +377,15 @@
         	<artifactId>svnkit</artifactId>
         	<scope>provided</scope>
 	</dependency>
+
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty-embedded</artifactId>
+			<version>6.1.15</version>
+			<scope>test</scope>
+		</dependency>
+
+
   </dependencies>
 
 </project>
