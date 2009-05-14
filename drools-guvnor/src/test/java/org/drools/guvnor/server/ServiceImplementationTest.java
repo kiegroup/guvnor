@@ -1127,14 +1127,45 @@ public class ServiceImplementationTest extends TestCase {
 	}
 
 	public void testLoadSuggestionCompletionEngine() throws Exception {
-		RepositoryService impl = getService();
-		String uuid = impl.createPackage("testSuggestionComp", "x");
-		PackageConfigData conf = impl.loadPackageConfig(uuid);
-		conf.header = "import java.util.List";
+        ServiceImplementation impl = getService();
+        RulesRepository repo = impl.repository;
 
-		SuggestionCompletionEngine eng = impl
-				.loadSuggestionCompletionEngine("testSuggestionComp");
-		assertNotNull(eng);
+        // create our package
+        PackageItem pkg = repo.createPackage("testSILoadSCE", "");
+
+        AssetItem model = pkg.addAsset("MyModel", "");
+        model.updateFormat(AssetFormats.MODEL);
+        model.updateBinaryContentAttachment(this.getClass()
+                .getResourceAsStream("/billasurf.jar"));
+        model.checkin("");
+        ServiceImplementation.updateDroolsHeader("import com.billasurf.Board", pkg);
+
+        AssetItem m2 = pkg.addAsset("MyModel2", "");
+        m2.updateFormat(AssetFormats.DRL_MODEL);
+        m2.updateContent("declare Whee\n name: String\nend");
+        m2.checkin("");
+
+
+        AssetItem r1 = pkg.addAsset("garbage", "");
+        r1.updateFormat(AssetFormats.DRL);
+        r1.updateContent("this will not compile");
+        r1.checkin("");
+
+
+
+        SuggestionCompletionEngine eng = impl
+                .loadSuggestionCompletionEngine(pkg.getName());
+        assertNotNull(eng);
+        assertEquals(2, eng.factTypes.length);
+
+        for (String ft : eng.factTypes) {
+            if (!(ft.equals("Board") || ft.equals("Whee"))) {
+                fail("Should be one of the above...");
+            }
+        }
+
+
+
 
 	}
 
@@ -1334,6 +1365,23 @@ public class ServiceImplementationTest extends TestCase {
 		sess.execute(p);
 		assertEquals(42, p.getAge());
 	}
+
+    public void testSuggestionCompletionLoading() throws Exception {
+            ServiceImplementation impl = getService();
+            RulesRepository repo = impl.repository;
+
+            // create our package
+            PackageItem pkg = repo.createPackage("testSISuggestionCompletionLoading", "");
+            ServiceImplementation.updateDroolsHeader("import org.drools.Person", pkg);
+            AssetItem rule1 = pkg.addAsset("model_1", "");
+            rule1.updateFormat(AssetFormats.DRL_MODEL);
+            rule1.updateContent("declare Whee\n name: String \nend");
+            rule1.checkin("");
+            repo.save();
+
+
+
+    }
 
 	public void testPackageSource() throws Exception {
 		ServiceImplementation impl = getService();
