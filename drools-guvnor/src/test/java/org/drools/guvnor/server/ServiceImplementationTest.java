@@ -1445,6 +1445,38 @@ public class ServiceImplementationTest extends TestCase {
 
 	}
 
+
+    	public void testBuildAssetWithError() throws Exception {
+		ServiceImplementation impl = getService();
+		RulesRepository repo = impl.repository;
+
+		// create our package
+		PackageItem pkg = repo.createPackage("testBuildAssetWithError", "");
+		AssetItem model = pkg.addAsset("MyModel", "");
+		model.updateFormat(AssetFormats.MODEL);
+		model.updateBinaryContentAttachment(this.getClass()
+				.getResourceAsStream("/billasurf.jar"));
+		model.checkin("");
+
+		ServiceImplementation.updateDroolsHeader("import com.billasurf.Person", pkg);
+
+		AssetItem asset = pkg.addAsset("testRule", "");
+		asset.updateFormat(AssetFormats.DRL);
+		asset.updateContent("rule 'MyGoodRule' \n when Personx() then System.err.println(42); \n end");
+		asset.checkin("");
+		repo.save();
+
+		RuleAsset rule = impl.loadRuleAsset(asset.getUUID());
+
+
+		BuilderResult[] result = impl.buildAsset(rule);
+		assertNotNull(result);
+        assertEquals(-1, result[0].message.indexOf("Check log for"));
+        assertTrue(result[0].message.indexOf("Unable to resolve") > -1);
+
+
+	}
+
 	public void testBuildAsset() throws Exception {
 		ServiceImplementation impl = getService();
 		RulesRepository repo = impl.repository;
@@ -1471,6 +1503,8 @@ public class ServiceImplementationTest extends TestCase {
 		// check its all OK
 		BuilderResult[] result = impl.buildAsset(rule);
 		assertNull(result);
+
+        ServiceImplementation.ruleBaseCache.clear();
 
 		// try it with a bad rule
 		RuleContentText text = new RuleContentText();

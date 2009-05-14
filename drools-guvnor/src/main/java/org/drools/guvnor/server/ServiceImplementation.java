@@ -1513,16 +1513,10 @@ public class ServiceImplementation
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
         BuilderResult[] result = null;
-        
-        //FIXME nheron
-        ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
 
         try {
 
             AssetItem item = repository.loadAssetByUUID( asset.uuid );
-            final RuleBase rb=loadCacheRuleBase(item.getPackage());
-			ClassLoader cl = ((InternalRuleBase) rb).getRootClassLoader();
-			Thread.currentThread().setContextClassLoader(cl);
 
             ContentHandler handler = ContentManager.getHandler( item.getFormat() );// new
             // AssetContentFormatHandler();
@@ -1552,9 +1546,7 @@ public class ServiceImplementation
             result[0] = res;
             return result;
             
-        }         finally {
-        	Thread.currentThread().setContextClassLoader( originalCL );
-        }
+        } 
         return result;
     }
 
