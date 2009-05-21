@@ -3,8 +3,14 @@
 
   <target name="soa_overlay" description="SOA specific build">  
   <echo>Executing soa_overlay ...</echo>
-      <replace file="target/drools-guvnor/org.drools.guvnor.Guvnor/Guvnor.html" token="JBoss Guvnor" value="JBoss BRMS" /> 
-      <replace file="target/drools-guvnor/org.drools.guvnor.Guvnor/org.drools.guvnor.Guvnor/Guvnor.html" token="JBoss Guvnor" value="JBoss BRMS" /> 
+      <replace dir="target/drools-guvnor/org.drools.guvnor.Guvnor" >
+        <include name="*.html" />
+        <replacefilter token="JBoss Guvnor" value="JBoss BRMS" />
+        <replacefilter token="Welcome to Guvnor" value="Welcome to BRMS" />
+        <replacefilter token="Guvnor specific permissions as needed." value="BRMS specific permissions as needed." />
+        <replacefilter token="Bienvenidos a Guvnor" value="Bienvenidos a BRMS" />
+        <replacefilter token="Guvnor segun sus necesidades." value="BRMS segun sus necesidades." />
+      </replace>      
       <copy file="target/drools-guvnor/org.drools.guvnor.Guvnor/hdrlogo_brms.gif" tofile="target/drools-guvnor/org.drools.guvnor.Guvnor/header_logo.gif"/>
   </target>  
 </project>
