@@ -19,6 +19,8 @@
     -->
 
     <extend-property name="locale" values="es_ES"/>
+    <extend-property name="locale" values="zh_CN"/>
+
 
     <!-- Specify the app entry point class.                   -->
 	<!-- <entry-point class='org.drools.guvnor.client.JBRMS'/> -->
