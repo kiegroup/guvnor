@@ -52,7 +52,7 @@ import com.gwtext.client.util.Format;
 
 public class ScenarioWidget extends Composite {
 
-	private ListBox availableRules;
+	private String[] availableRules;
 	private SuggestionCompletionEngine sce;
 	private ChangeListener ruleSelectionCL;
 	RuleAsset asset;
@@ -455,76 +455,82 @@ public class ScenarioWidget extends Composite {
 
 	}
 
-
 	public Widget getRuleSelectionWidget(final String packageName, final RuleSelectionEvent selected) {
-		final HorizontalPanel h = new HorizontalPanel();
-		final TextBox t = new TextBox();
-		t.setTitle(constants.EnterRuleNameScenario());
-		h.add(t);
-		if (!(availableRules == null)) {
-			availableRules.setSelectedIndex(0);
-			availableRules.removeChangeListener(ruleSelectionCL);
-			ruleSelectionCL  = new ChangeListener() {
-				public void onChange(Widget w) {
-					t.setText(availableRules.getItemText(availableRules.getSelectedIndex()));
-				}
-			};
+	       final HorizontalPanel h = new HorizontalPanel();
+	       final TextBox t = new TextBox();
+	       t.setTitle(constants.EnterRuleNameScenario());
+	       h.add(t);
+	       if (!(availableRules == null)) {
+	           final ListBox availableRulesBox = new ListBox();
 
-			availableRules.addChangeListener(ruleSelectionCL);
-			h.add(availableRules);
+	           availableRulesBox.addItem(constants.pleaseChoose1());
+	           for (int i = 0; i < availableRules.length; i++) {
+	               availableRulesBox.addItem(availableRules[i]);
+	           }
+	                      availableRulesBox.setSelectedIndex(0);
+	           availableRulesBox.removeChangeListener(ruleSelectionCL);
+	           ruleSelectionCL  = new ChangeListener() {
+	               public void onChange(Widget w) {
+	                  t.setText(availableRulesBox.getItemText(availableRulesBox.getSelectedIndex()));
+	               }
+	           };
 
-		} else {
+	           availableRulesBox.addChangeListener(ruleSelectionCL);
+	           h.add(availableRulesBox);
 
-			final Button showList = new Button(constants.showListButton());
-			h.add(showList);
-			showList.addClickListener(new ClickListener() {
-				public void onClick(Widget w) {
-					h.remove(showList);
-					final Image busy = new Image("images/searching.gif"); //NON-NLS
-					final Label loading = new SmallLabel(constants.loadingList1());
-					h.add(busy);
-					h.add(loading);
+	       } else {
 
-
-					DeferredCommand.addCommand(new Command() {
-						public void execute() {
-							RepositoryServiceFactory.getService().listRulesInPackage(packageName, new GenericCallback<String[]>() {
-								public void onSuccess(String[] list) {
-									availableRules = new ListBox();
-									availableRules.addItem(constants.pleaseChoose1());
-									for (int i = 0; i < list.length; i++) {
-										availableRules.addItem(list[i]);
-									}
-									ruleSelectionCL  = new ChangeListener() {
-										public void onChange(Widget w) {
-											t.setText(availableRules.getItemText(availableRules.getSelectedIndex()));
-										}
-									};
-									availableRules.addChangeListener(ruleSelectionCL);
-									availableRules.setSelectedIndex(0);
-									h.add(availableRules);
-									h.remove(busy);
-									h.remove(loading);
-								}
-							});
-						}
-					});
+	           final Button showList = new Button(constants.showListButton());
+	           h.add(showList);
+	           showList.addClickListener(new ClickListener() {
+	               public void onClick(Widget w) {
+	                   h.remove(showList);
+	                   final Image busy = new Image("images/searching.gif"); //NON-NLS
+	                   final Label loading = new SmallLabel(constants.loadingList1());
+	                   h.add(busy);
+	                   h.add(loading);
 
 
-				}
-			});
+	                   DeferredCommand.addCommand(new Command() {
+	                       public void execute() {
+	                          RepositoryServiceFactory.getService().listRulesInPackage(packageName, new GenericCallback<String[]>() {
+	                               public void onSuccess(String[] list) {
+	                                   availableRules = (list);
+	                                   final ListBox availableRulesBox = new ListBox();
+	                                                                     availableRulesBox.addItem(constants.pleaseChoose1());
+	                                   for (int i = 0; i < list.length; i++) {
+	                                       availableRulesBox.addItem(list[i]);
+	                                   }
+	                                   ruleSelectionCL  = new ChangeListener() {
+	                                       public void onChange(Widget w) {
+	                                          t.setText(availableRulesBox.getItemText(availableRulesBox.getSelectedIndex()));
+	                                       }
+	                                   };
+	                                   availableRulesBox.addChangeListener(ruleSelectionCL);
+	                                   availableRulesBox.setSelectedIndex(0);
+	                                   h.add(availableRulesBox);
+	                                   h.remove(busy);
+	                                   h.remove(loading);
+	                               }
+	                           });
+	                       }
+	                   });
 
-		}
 
-		Button ok = new Button(constants.OK());
-		ok.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
-				selected.ruleSelected(t.getText());
-			}
-		});
-		h.add(ok);
-		return h;
-	}
+	               }
+	           });
+
+	       }
+
+	       Button ok = new Button(constants.OK());
+	       ok.addClickListener(new ClickListener() {
+	           public void onClick(Widget w) {
+	               selected.ruleSelected(t.getText());
+	           }
+	       });
+	       h.add(ok);
+	       return h;
+	   } 
 
 	public static Widget editableCell(final ValueChanged changeEvent, String factType, String fieldName, String initialValue, SuggestionCompletionEngine sce) {
 		String key  = factType + "." + fieldName;

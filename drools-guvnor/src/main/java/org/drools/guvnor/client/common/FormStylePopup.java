@@ -80,6 +80,7 @@ public class FormStylePopup {
     }
 
     public void hide() {
+        this.dialog.hide();
     	this.dialog.destroy();
     }
 
