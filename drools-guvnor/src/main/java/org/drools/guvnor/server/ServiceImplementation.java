@@ -1806,8 +1806,12 @@ public class ServiceImplementation
         	if (e instanceof DetailedSerializableException){
         		DetailedSerializableException err = (DetailedSerializableException)e;
         		result = new SingleScenarioResult();
-        		result.result = new ScenarioRunResult( err.getErrs(),
-                                                null );
+                if (err.getErrs() != null) {
+                    result.result = new ScenarioRunResult( err.getErrs(),
+                                                    null );
+                } else {
+                    throw err;
+                }
         	}
 		} finally {
 			Thread.currentThread().setContextClassLoader(originalCL);
