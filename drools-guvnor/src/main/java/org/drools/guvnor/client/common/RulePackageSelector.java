@@ -24,6 +24,8 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A rule package selector widget.
@@ -31,8 +33,12 @@ import com.google.gwt.user.client.ui.ListBox;
  */
 public class RulePackageSelector extends Composite {
 
+    /** Used to remember what the "current package" we are working in is...
+     * Should be the one the user has most recently dealt with... */
+    public static String currentlySelectedPackage;
+
     private ListBox packageList;
-    private String currentlySelectedPackage;
+
 
     public RulePackageSelector() {
         packageList = new ListBox();
@@ -58,6 +64,11 @@ public class RulePackageSelector extends Composite {
                         packageList.setSelectedIndex( i );
                     }
                 }
+                packageList.addChangeListener(new ChangeListener() {
+                    public void onChange(Widget sender) {
+                         currentlySelectedPackage = getSelectedPackage();                       
+                    }
+                });
 
             }
 
@@ -71,8 +82,5 @@ public class RulePackageSelector extends Composite {
         return packageList.getItemText( packageList.getSelectedIndex() );
     }
 
-    public void selectPackage(String currentlySelectedPackage) {
-        this.currentlySelectedPackage = currentlySelectedPackage;
-    }
 
 }

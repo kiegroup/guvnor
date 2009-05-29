@@ -3,6 +3,7 @@ package org.drools.guvnor.client.explorer;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.packages.NewPackageWizard;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -41,7 +42,6 @@ import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
 public class PackagesPanel extends GenericPanel {
 
     private VerticalPanel packagesPanel;
-    protected String currentPackage;
     private boolean packagesLoaded = false;
     private static Constants constants = ((Constants) GWT.create(Constants.class));
 
@@ -99,57 +99,57 @@ public class PackagesPanel extends GenericPanel {
 
         m.addItem(new Item(constants.NewRule(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(null, constants.NewRule(), true, currentPackage);
+                launchWizard(null, constants.NewRule(), true);
             }
         }, "images/rule_asset.gif"));          //NON-NLS
 
         m.addItem(new Item(constants.UploadPOJOModelJar(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(AssetFormats.MODEL, constants.NewModelArchiveJar(), false, currentPackage);
+                launchWizard(AssetFormats.MODEL, constants.NewModelArchiveJar(), false);
             }
         }, "images/model_asset.gif"));              //NON-NLS
 
         m.addItem(new Item(constants.NewDeclarativeModel(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(AssetFormats.DRL_MODEL, constants.NewDeclarativeModelUsingGuidedEditor(), false, currentPackage);
+                launchWizard(AssetFormats.DRL_MODEL, constants.NewDeclarativeModelUsingGuidedEditor(), false);
             }
         }, "images/model_asset.gif")); //NON-NLS
 
         m.addItem(new Item(constants.NewFunction(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(AssetFormats.FUNCTION, constants.CreateANewFunction(), false, currentPackage);
+                launchWizard(AssetFormats.FUNCTION, constants.CreateANewFunction(), false);
             }
         }, "images/function_assets.gif")); //NON-NLS
 
 
         m.addItem(new Item(constants.NewDSL(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(AssetFormats.DSL, constants.CreateANewDSLConfiguration(), false, currentPackage);
+                launchWizard(AssetFormats.DSL, constants.CreateANewDSLConfiguration(), false);
             }
         }, "images/dsl.gif"));   //NON-NLS
 
 
         m.addItem(new Item(constants.NewRuleFlow(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(AssetFormats.RULE_FLOW_RF, constants.CreateANewRuleFlow(), false, currentPackage);
+                launchWizard(AssetFormats.RULE_FLOW_RF, constants.CreateANewRuleFlow(), false);
             }
         }, "images/ruleflow_small.gif")); //NON-NLS
 
         m.addItem(new Item(constants.NewEnumeration(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(AssetFormats.ENUMERATION, constants.CreateANewEnumerationDropDownMapping(), false, currentPackage);
+                launchWizard(AssetFormats.ENUMERATION, constants.CreateANewEnumerationDropDownMapping(), false);
             }
         }, "images/new_enumeration.gif")); //NON-NLS
 
         m.addItem(new Item(constants.NewTestScenario(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard(AssetFormats.TEST_SCENARIO, constants.CreateATestScenario(), false, currentPackage);
+                launchWizard(AssetFormats.TEST_SCENARIO, constants.CreateATestScenario(), false);
             }
         }, "images/test_manager.gif")); //NON-NLS
 
         m.addItem(new Item(constants.NewFile(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                launchWizard("*", constants.CreateAFile(), false, currentPackage);
+                launchWizard("*", constants.CreateAFile(), false);
             }
         }, "images/new_file.gif")); //NON-NLS
 
@@ -189,7 +189,8 @@ public class PackagesPanel extends GenericPanel {
             public void onClick(TreeNode node, EventObject e) {
                 if (node.getUserObject() instanceof PackageConfigData) {
                     PackageConfigData pc = (PackageConfigData) node.getUserObject();
-                    currentPackage = pc.name;
+                    RulePackageSelector.currentlySelectedPackage = pc.name;
+
                     String uuid = pc.uuid;
                     centertabbedPanel.openPackageEditor(uuid, new Command() {
                         public void execute() {
@@ -201,7 +202,7 @@ public class PackagesPanel extends GenericPanel {
                     Object[] uo = (Object[]) node.getUserObject();
                     final String[] fmts = (String[]) uo[0];
                     final PackageConfigData pc = (PackageConfigData) node.getParentNode().getUserObject();
-                    currentPackage = pc.name;
+                    RulePackageSelector.currentlySelectedPackage = pc.name;
                     String key = key(fmts, pc);
                     if (!centertabbedPanel.showIfOpen(key)) {
 

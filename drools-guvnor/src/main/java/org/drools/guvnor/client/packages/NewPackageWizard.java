@@ -17,13 +17,7 @@ package org.drools.guvnor.client.packages;
 
 
 
-import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.common.FormStyleLayout;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.HTMLFileManagerFields;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.messages.Constants;
 
@@ -132,6 +126,7 @@ public class NewPackageWizard extends FormStylePopup {
         LoadingPopup.showMessage(constants.CreatingPackagePleaseWait());
         RepositoryServiceFactory.getService().createPackage( name, descr, new GenericCallback() {
             public void onSuccess(Object data) {
+                RulePackageSelector.currentlySelectedPackage = name;
                 LoadingPopup.close();
                 refresh.execute();
             }

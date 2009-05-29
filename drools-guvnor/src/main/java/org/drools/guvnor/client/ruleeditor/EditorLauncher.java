@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.DefaultContentUploadEditor;
+import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.decisiontable.DecisionTableXLSWidget;
 import org.drools.guvnor.client.decisiontable.GuidedDecisionTableWidget;
 import org.drools.guvnor.client.factmodel.FactModelWidget;
@@ -52,6 +53,7 @@ public class EditorLauncher {
      */
     public static Widget getEditorViewer(RuleAsset asset,
                                          RuleViewer viewer) {
+        RulePackageSelector.currentlySelectedPackage = asset.metaData.packageName;
         //depending on the format, load the appropriate editor
         if ( asset.metaData.format.equals( AssetFormats.BUSINESS_RULE ) ) {
             return new RuleValidatorWrapper( new RuleModeller( asset ),
