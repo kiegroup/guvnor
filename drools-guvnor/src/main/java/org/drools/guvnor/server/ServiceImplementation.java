@@ -162,7 +162,7 @@ public class ServiceImplementation
      * Used for a simple cache of binary packages to avoid serialization from
      * the database - for test scenarios.
      */
-    static Map<String, RuleBase>    ruleBaseCache                     = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
+    public static Map<String, RuleBase>    ruleBaseCache                     = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
 
     public RulesRepository getRulesRepository() {
         return this.repository;

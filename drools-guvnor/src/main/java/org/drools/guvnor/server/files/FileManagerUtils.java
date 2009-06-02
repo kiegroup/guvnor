@@ -262,6 +262,7 @@ public class FileManagerUtils {
             if ( MigrateRepository.needsRuleflowMigration( repository ) ) {
                 MigrateRepository.migrateRuleflows( repository );
             }
+            ServiceImplementation.ruleBaseCache.clear();    
         } catch ( RepositoryException e ) {
             e.printStackTrace();
             throw new RulesRepositoryException( e );
