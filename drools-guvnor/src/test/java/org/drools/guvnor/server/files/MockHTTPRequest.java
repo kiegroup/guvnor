@@ -110,8 +110,8 @@ public class MockHTTPRequest implements HttpServletRequest {
 	}
 
 	public StringBuffer getRequestURL() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return new StringBuffer("http://foo.com");
 	}
 
 	public String getRequestedSessionId() {

@@ -24,8 +24,7 @@
            <name>@{entry.contributor}</name>
          </contributor>
          <category term="@{entry.format}" />
-         <content type="xhtml" xml:lang="en"
-          xml:base="http://diveintomark.org/">
+         <content type="xhtml" xml:lang="en">
            <div xmlns="http://www.w3.org/1999/xhtml">
                  <p>[Description: @{entry.description}]</p>
                  <p><i>[Note: @{entry.checkinComment}]</i></p>
