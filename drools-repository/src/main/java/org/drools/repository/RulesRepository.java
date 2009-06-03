@@ -1061,6 +1061,10 @@ public class RulesRepository {
     public void save() {
         try {
             this.session.save();
+        } catch ( InvalidItemStateException e ) {
+        	String message = "Your operation was failed because it conflicts with a change made through another user. Please try again.";
+            log.error( "Caught Exception", e );
+            throw new RulesRepositoryException( message, e );
         } catch ( Exception e ) {
             if ( e instanceof RuntimeException ) {
                 throw (RuntimeException) e;

@@ -272,7 +272,7 @@ public class FileManagerUtils {
     @Restrict("#{identity.loggedIn}")
     public void importPackageToRepository(byte[] data,
                                           boolean importAsNew) {
-
+        try {
         repository.importPackageToRepository( data,
                                               importAsNew );
 
@@ -281,7 +281,7 @@ public class FileManagerUtils {
         //This section checks if the repository contains drools v4
         //ruleflows that need to be migrated to drools v5
         //
-        try {
+
             if ( MigrateRepository.needsRuleflowMigration( repository ) ) {
                 MigrateRepository.migrateRuleflows( repository );
             }

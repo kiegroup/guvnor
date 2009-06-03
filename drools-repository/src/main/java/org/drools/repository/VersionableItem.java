@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.jcr.InvalidItemStateException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
@@ -504,6 +505,10 @@ public abstract class VersionableItem extends Item {
             }
             throw new RulesRepositoryException( message,
                                                 e );
+        } catch ( InvalidItemStateException e ) {
+        	String message = "Your operation was failed because it conflicts with a change made through another user. Please try again.";
+            log.error( "Caught Exception", e );
+            throw new RulesRepositoryException( message, e );
         } catch ( Exception e ) {
             log.error( "Caught Exception",
                        e );
