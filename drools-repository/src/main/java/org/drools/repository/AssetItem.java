@@ -82,9 +82,18 @@ public class AssetItem extends CategorisableItem {
      * If this is a binary asset, this will return null (use getBinaryContent instead).
      */
     public String getContent() throws RulesRepositoryException {
+    	return getContent(false);
+    }
+    /**
+     * Only for use in the StorageEventManager, for passing the fromRepo parameter
+     * 
+     * returns the string contents of the rule node.
+     * If this is a binary asset, this will return null (use getBinaryContent instead).
+     */
+    public String getContent(Boolean fromRepo) throws RulesRepositoryException {
         try {
 
-            if (StorageEventManager.hasLoadEvent()) {
+            if (StorageEventManager.hasLoadEvent() && !fromRepo) {
                 return IOUtils.toString(StorageEventManager.getLoadEvent().loadContent(this));
             }
 
