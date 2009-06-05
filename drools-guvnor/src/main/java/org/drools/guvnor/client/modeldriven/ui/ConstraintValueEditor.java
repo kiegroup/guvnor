@@ -193,7 +193,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         } else if ( SuggestionCompletionEngine.TYPE_DATE.equals( this.fieldType ) ) {
 
-            DatePicker datePicker = new DatePicker( constraint.value );
+            DatePickerLabel datePicker = new DatePickerLabel( constraint.value );
             
             // Set the default time
             constraint.value = datePicker.getDateString();

@@ -494,7 +494,7 @@ public class DSLSentenceWidget extends Composite {
         }
     }
 
-    class DSLDateSelector extends DatePicker {
+    class DSLDateSelector extends DatePickerLabel {
 
         public DSLDateSelector(String variableDef) {
             super( variableDef.substring( 0,

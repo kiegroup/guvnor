@@ -10,6 +10,8 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.ui.DatePickerLabel;
+import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
@@ -19,7 +21,6 @@ import com.gwtext.client.widgets.form.DateField;
 
 public class QueryWidget extends Composite {
 
-	private static final String DATE_PICKER_FORMAT = "d-M-Y H:m:s"; //NON-NLS
 	private VerticalPanel layout;
 	private EditItemEvent openItem;
     private Constants constants = ((Constants) GWT.create(Constants.class));
@@ -77,13 +78,13 @@ public class QueryWidget extends Composite {
 
 		HorizontalPanel created = new HorizontalPanel();
 		created.add(new SmallLabel(constants.AfterColon()));
-		final DateField createdAfter = new DateField(constants.AfterColon(), DATE_PICKER_FORMAT);
+		final DatePickerTextBox createdAfter = new DatePickerTextBox( "" );
 		created.add(createdAfter);
 		
 		created.add(new SmallLabel("&nbsp;"));      //NON-NLS
 
 		created.add(new SmallLabel(constants.BeforeColon()));
-		final DateField createdBefore = new DateField(constants.Before(), DATE_PICKER_FORMAT);
+		final DatePickerTextBox createdBefore = new DatePickerTextBox( "" );
 		created.add(createdBefore);
 
 		fm.addAttribute(constants.DateCreated1(), created);
@@ -92,13 +93,13 @@ public class QueryWidget extends Composite {
 
 		HorizontalPanel lastMod = new HorizontalPanel();
 		lastMod.add(new SmallLabel(constants.AfterColon()));
-		final DateField lastModAfter = new DateField(constants.AfterColon(), DATE_PICKER_FORMAT);
+		final DatePickerTextBox lastModAfter = new DatePickerTextBox( "" );
 		lastMod.add(lastModAfter);
 
 		lastMod.add(new SmallLabel("&nbsp;"));   //NON-NLS
 
 		lastMod.add(new SmallLabel(constants.BeforeColon()));
-		final DateField lastModBefore = new DateField(constants.BeforeColon(), DATE_PICKER_FORMAT);
+		final DatePickerTextBox lastModBefore = new DatePickerTextBox( "" );
 		lastMod.add(lastModBefore);
 
 		fm.addAttribute(constants.LastModified1(), lastMod);
@@ -120,8 +121,8 @@ public class QueryWidget extends Composite {
 							mdq[i] = (MetaDataQuery) atts.get(name);
 							i++;
 						}
-						RepositoryServiceFactory.getService().queryMetaData(mdq, createdAfter.getValue(), createdBefore.getValue(),
-								lastModAfter.getValue(), lastModBefore.getValue(), false, startRow, numberOfRows, cb);
+						RepositoryServiceFactory.getService().queryMetaData(mdq, createdAfter.getDate(), createdBefore.getDate(),
+								lastModAfter.getDate(), lastModBefore.getDate(), false, startRow, numberOfRows, cb);
 					}
 				});
 				resultsP.add(grid);
