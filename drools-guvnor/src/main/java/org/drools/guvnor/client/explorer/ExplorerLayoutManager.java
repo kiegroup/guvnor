@@ -127,6 +127,8 @@ public class ExplorerLayoutManager {
             accordion.add(new AdministrationPanel(centertabbedPanel));
         }
 
+        //accordion.add(new ProcessServerPanel("Process Server", centertabbedPanel));
+
     }
 
     private void setUpMain(BookmarkInfo bi) {
