@@ -23,8 +23,15 @@ public class ProcessServerPanel extends GenericPanel {
 
 
         Map<String, String> pages = new HashMap<String, String>();
-        pages.put("Something", "http://www.smh.com.au");
-        pages.put("Another", "http://www.smh.com.au");
+        pages.put("Processes", 
+    		"http://localhost:8080/gwt-console/org.jboss.bpm.console.Application/" +
+    		"Application.html#showEditor=org.jboss.bpm.console.client.process.ProcessEditor");
+        pages.put("Tasks", 
+    		"http://localhost:8080/gwt-console/org.jboss.bpm.console.Application/" +
+    		"Application.html#showEditor=org.jboss.bpm.console.client.task.TaskEditor");
+        pages.put("Reports", 
+    		"http://localhost:8080/gwt-console/org.jboss.bpm.console.Application/" +
+    		"Application.html#showEditor=org.jboss.bpm.console.client.report.ReportEditor");
         for (Map.Entry<String, String> e : pages.entrySet()) {
             final TreeNode tn = new TreeNode(e.getKey());
             tn.setId(e.getKey());
