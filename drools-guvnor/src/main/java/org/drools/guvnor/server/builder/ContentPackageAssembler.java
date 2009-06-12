@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.jar.JarInputStream;
 
 import org.drools.builder.conf.DefaultPackageNameOption;
 import org.drools.compiler.DroolsError;
@@ -301,7 +300,7 @@ public class ContentPackageAssembler {
 	}
 
 	private void addDrl(String drl) {
-		if ("".equals(drl)) {
+		if ( "".equals( drl.trim() ) ) {
 			return;
 		}
 		try {

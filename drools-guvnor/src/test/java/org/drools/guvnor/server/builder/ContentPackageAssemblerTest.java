@@ -620,6 +620,32 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertEquals(-1, drl.indexOf("garbage"));
 
     }
+    
+    public void testBuildPackageWithEmptyHeader() throws Exception {
+        RulesRepository repo = getRepo();
+
+        //first, setup the package correctly:
+        PackageItem pkg = repo.createPackage( "testBuildPackageWithEmptyHeader",
+                                              "" );
+
+        ServiceImplementation.updateDroolsHeader( "\n",
+                                                  pkg );
+        repo.save();
+
+        ContentPackageAssembler asm = null;
+        try {
+            asm = new ContentPackageAssembler( pkg );
+        } catch ( NullPointerException e ) {
+            // Possible cause: Header has only white spaces "\n\t".
+            fail( e.toString() );
+        }
+        String drl = asm.getDRL();
+
+        assertNotNull( drl );
+        assertEquals( "package testBuildPackageWithEmptyHeader",
+                      drl.trim() );
+
+    }
 
 
     public void testSkipDisabledPackageStuff() throws Exception {
