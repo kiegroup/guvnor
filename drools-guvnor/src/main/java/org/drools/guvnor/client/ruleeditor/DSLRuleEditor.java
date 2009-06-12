@@ -66,7 +66,6 @@ public class DSLRuleEditor extends DirtyableComposite {
 //        text.setHeight( "100%" );
         text.setVisibleLines( 16 );
         text.setText( data.content );
-        text.setTitle(constants.DSLPopupHint());
 
         SuggestionCompletionEngine eng = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.metaData.packageName );
         this.actions = eng.actionDSLSentences;

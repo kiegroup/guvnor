@@ -435,8 +435,6 @@ public interface Constants extends ConstantsWithLookup {
     String PackageSnapshots();
 
 
-    String DSLPopupHint();
-
     String AddANewCondition();
 
     String AddAnAction();
