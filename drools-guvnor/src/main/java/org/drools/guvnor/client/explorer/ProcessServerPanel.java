@@ -1,17 +1,15 @@
 package org.drools.guvnor.client.explorer;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.data.Node;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
 import com.gwtext.client.widgets.tree.event.TreeNodeListenerAdapter;
-import com.gwtext.client.data.Node;
-import com.gwtext.client.core.EventObject;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.Frame;
-
-import java.util.Map;
-import java.util.HashMap;
-
-import org.drools.lang.DRLParser;
 
 /**
  * @author Michael Neale

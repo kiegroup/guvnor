@@ -10,7 +10,7 @@ import org.drools.guvnor.server.util.BRXMLPersistence;
 /**
  * @author Michael Neale
  */
-public class SampleSaveEvent implements SaveEvent {
+public class SampleSaveEventMock implements SaveEvent {
     public void onAssetCheckin(AssetItem item) {
         if (item.getFormat().equals(AssetFormats.BUSINESS_RULE)) {
             RuleModel m = BRXMLPersistence.getInstance().unmarshal(item.getContent());

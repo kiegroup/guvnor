@@ -26,6 +26,7 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
@@ -33,8 +34,8 @@ import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.Button;
@@ -44,13 +45,11 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.KeyboardListener;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
 
 /**
  * This is an editor for constraint values.
@@ -142,14 +141,17 @@ public class ConstraintValueEditor extends DirtyableComposite {
         if ( this.constraint.value == null ) {
             box.addItem( constants.Choose() );
         }
+        
+        int j = 0;
         for ( int i = 0; i < vars.size(); i++ ) {
             String var = (String) vars.get( i );
             FactPattern f = model.getBoundFact( var );
             if ( f.factType.equals( this.fieldType ) ) {
                 box.addItem( var );
                 if ( this.constraint.value != null && this.constraint.value.equals( var ) ) {
-                    box.setSelectedIndex( i );
+                    box.setSelectedIndex( j );
                 }
+                j++;
             }
         }
 
