@@ -1797,11 +1797,11 @@ public class ServiceImplementation
 
             ClassLoader cl = ((InternalRuleBase) this.ruleBaseCache.get( item.getUUID() )).getRootClassLoader();
             Thread.currentThread().setContextClassLoader( cl );
-            result= runScenario( scenario,
-                                item,
-                                cl,
-                                rb,
-                                coverage );
+            result = runScenario( scenario,
+                                  item,
+                                  cl,
+                                  rb,
+                                  coverage );
         } catch (Exception e) {
         	if (e instanceof DetailedSerializableException){
         		DetailedSerializableException err = (DetailedSerializableException)e;

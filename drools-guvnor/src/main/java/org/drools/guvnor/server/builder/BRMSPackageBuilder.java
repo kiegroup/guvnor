@@ -116,7 +116,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
                 byte[] buf = new byte[1024];
                 int len = 0;
                 while ( (entry = jis.getNextJarEntry()) != null ) {
-                    if ( !entry.isDirectory() ) {
+                    if ( !entry.isDirectory() && !entry.getName().endsWith( ".java" ) ) {
                         ByteArrayOutputStream out = new ByteArrayOutputStream();
                         while ( (len = jis.read( buf )) >= 0 ) {
                             out.write( buf, 0, len );

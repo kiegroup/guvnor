@@ -2105,6 +2105,67 @@ public class ServiceImplementationTest extends TestCase {
 
 
 	}
+	
+	public void testRunScenarioWithJarThatHasSourceFiles() throws Exception {
+	    ServiceImplementation impl = getService();
+	    RulesRepository repo = impl.repository;
+	    
+	    // create our package
+	    PackageItem pkg = repo.createPackage("testRunScenarioWithJarThatHasSourceFiles", "");
+	    AssetItem model = pkg.addAsset("MyModel", "");
+	    model.updateFormat(AssetFormats.MODEL);
+	    model.updateBinaryContentAttachment(this.getClass()
+	                                        .getResourceAsStream("/jarWithSourceFiles.jar"));
+	    model.checkin("");
+	    
+	    ServiceImplementation.updateDroolsHeader("import org.test.Person; \n import org.test.Banana; \n ", pkg);
+	    
+	    AssetItem asset = pkg.addAsset("testRule", "");
+	    asset.updateFormat(AssetFormats.DRL);
+	    asset.updateContent("rule 'MyGoodRule' \n dialect 'mvel' \n when \n Person() \n then \n insert( new Banana() ); \n end");
+	    asset.checkin("");
+	    repo.save();
+	    
+	    Scenario sc = new Scenario();
+	    FactData person = new FactData();
+	    person.name = "p";
+	    person.type = "Person";
+	    
+	    
+	    sc.fixtures.add(person);
+	    sc.fixtures.add(new ExecutionTrace());
+	    VerifyRuleFired vr = new VerifyRuleFired("MyGoodRule", 1, null);
+	    sc.fixtures.add(vr);
+	   
+	    
+	    ScenarioRunResult res = null;
+	    try {
+	        res = impl.runScenario( pkg.getName(),
+                                                      sc ).result;
+        } catch ( ClassFormatError e ) {
+            fail( "Probably failed when loading a source file instead of class file. " + e );
+        }
+	    assertEquals(null, res.errors);
+	    assertNotNull(res.scenario);
+	    assertTrue(vr.wasSuccessful());
+	    
+	    
+	    res = impl.runScenario(pkg.getName(), sc).result;
+	    assertEquals(null, res.errors);
+	    assertNotNull(res.scenario);
+	    assertTrue(vr.wasSuccessful());
+	    
+	    impl.ruleBaseCache.clear();
+	    
+	    res = impl.runScenario(pkg.getName(), sc).result;
+	    assertEquals(null, res.errors);
+	    assertNotNull(res.scenario);
+	    assertTrue(vr.wasSuccessful());
+	    
+	    
+	    
+	    
+	}
 
 	public void testRunPackageScenarios() throws Exception {
 		ServiceImplementation impl = getService();
