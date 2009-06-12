@@ -1,4 +1,5 @@
 package org.drools.guvnor.server.files;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,8 +16,6 @@ package org.drools.guvnor.server.files;
  * limitations under the License.
  */
 
-
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -25,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.client.common.HTMLFileManagerFields;
+import org.drools.guvnor.client.rpc.DetailedSerializableException;
 import org.drools.guvnor.server.util.FormData;
 
 /**
@@ -36,7 +36,6 @@ import org.drools.guvnor.server.util.FormData;
 public class AssetFileServlet extends RepositoryServlet {
 
     private static final long serialVersionUID = 400L;
-
 
     /**
      * Posting accepts content of various types -
@@ -51,7 +50,7 @@ public class AssetFileServlet extends RepositoryServlet {
 
         if ( uploadItem.getFile() != null && uploadItem.getUuid() != null ) {
             //attaching to an asset.
-            response.getWriter().write( processAttachFileToAsset(uploadItem) );
+            response.getWriter().write( processAttachFileToAsset( uploadItem ) );
 
             return;
         }
@@ -69,35 +68,40 @@ public class AssetFileServlet extends RepositoryServlet {
         String uuid = req.getParameter( HTMLFileManagerFields.FORM_FIELD_UUID );
 
         if ( uuid != null ) {
-            processAttachmentDownload( uuid, res );
+            processAttachmentDownload( uuid,
+                                       res );
         } else {
             res.sendError( HttpServletResponse.SC_BAD_REQUEST );
         }
     }
 
-
-    private void processAttachmentDownload(String uuid, HttpServletResponse response) throws IOException {
+    private void processAttachmentDownload(String uuid,
+                                           HttpServletResponse response) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        String filename = getFileManager().loadFileAttachmentByUUID( uuid, output );
-
+        String filename = getFileManager().loadFileAttachmentByUUID( uuid,
+                                                                     output );
 
         response.setContentType( "application/x-download" );
         response.setHeader( "Content-Disposition",
-                       "attachment; filename=" + filename + ";");
+                            "attachment; filename=" + filename + ";" );
         response.setContentLength( output.size() );
         response.getOutputStream().write( output.toByteArray() );
         response.getOutputStream().flush();
     }
 
-
     private String processAttachFileToAsset(FormData uploadItem) throws IOException {
 
         FileManagerUtils manager = getFileManager();
+
+        // If the file it doesn't exist.
+        if ( "".equals( uploadItem.getFile().getName() ) ) {
+            throw new IOException( "No file selected.");
+        }
+
         manager.attachFile( uploadItem );
         uploadItem.getFile().getInputStream().close();
 
         return "OK";
     }
-
 
 }
