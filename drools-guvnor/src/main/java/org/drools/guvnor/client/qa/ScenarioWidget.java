@@ -535,11 +535,11 @@ public class ScenarioWidget extends Composite {
 	public static Widget editableCell(final ValueChanged changeEvent, String factType, String fieldName, String initialValue, SuggestionCompletionEngine sce) {
 		String key  = factType + "." + fieldName;
 		String flType = sce.fieldTypes.get(key);
-		if (flType.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
+		if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
 			final TextBox box = editableTextBox(changeEvent, fieldName, initialValue);
 			box.addKeyboardListener(ActionValueEditor.getNumericFilter(box));
 	        return box;
-		} else if (flType.equals(SuggestionCompletionEngine.TYPE_BOOLEAN )) {
+		} else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
 			String[] c = new String[] {"true", "false"};
 			return ConstraintValueEditor.enumDropDown(initialValue, changeEvent, DropDownData.create(c));
 		} else {
