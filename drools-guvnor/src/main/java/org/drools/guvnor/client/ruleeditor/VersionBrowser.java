@@ -142,7 +142,11 @@ public class VersionBrowser extends Composite {
 																			public int compare(
 																					TableDataRow r1,
 																					TableDataRow r2) {
-																				return r2.values[0].compareTo(r1.values[0]);
+																			    
+																			    Integer v2 = Integer.valueOf( r2.values[0] );
+                                                                                Integer v1 = Integer.valueOf( r1.values[0] );
+																			    
+																				return v2.compareTo( v1 );
 																			}
                                                                         });
 
