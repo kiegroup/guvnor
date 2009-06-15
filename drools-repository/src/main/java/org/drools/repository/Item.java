@@ -1,6 +1,7 @@
 package org.drools.repository;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.apache.log4j.Logger;
 
@@ -73,7 +74,11 @@ public abstract class Item {
         }
         else {
             Item rhs = (Item)obj;
-            return this.node.equals(rhs.getNode());
+            try {
+				return this.node.isSame(rhs.getNode());
+			} catch (RepositoryException e) {
+			}
+			return false;
         }
     }
 

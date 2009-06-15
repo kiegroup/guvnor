@@ -11,6 +11,10 @@ import javax.jcr.Session;
 import org.apache.jackrabbit.core.ItemId;
 import org.apache.jackrabbit.core.security.AMContext;
 import org.apache.jackrabbit.core.security.AccessManager;
+import org.apache.jackrabbit.core.security.authorization.AccessControlProvider;
+import org.apache.jackrabbit.core.security.authorization.WorkspaceAccessManager;
+import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.spi.Path;
 import org.apache.log4j.Logger;
 import org.jboss.security.authorization.AuthorizationException;
 import org.jboss.security.identity.Identity;
@@ -138,4 +142,27 @@ public class DroolsRepositoryAccessManager
     public void setDefaultpermission(final String defaultpermission) {
         this.defaultpermission = defaultpermission;
     }
+
+	public boolean canRead(Path arg0) throws RepositoryException {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	public void init(AMContext arg0, AccessControlProvider arg1,
+			WorkspaceAccessManager arg2) throws AccessDeniedException,
+			Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean isGranted(Path arg0, int arg1) throws RepositoryException {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	public boolean isGranted(Path arg0, Name arg1, int arg2)
+			throws RepositoryException {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }
