@@ -1,6 +1,7 @@
 package org.drools.repository;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -12,20 +13,24 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
+import org.apache.jackrabbit.core.TransientRepository;
 import org.drools.repository.RulesRepository.DateQuery;
 import org.drools.repository.migration.MigrateDroolsPackage;
 
 import junit.framework.TestCase;
 
 public class RulesRepositoryTest extends TestCase {
-
+	int running = 0;
+	
     public void testDefaultPackage() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
 
@@ -1074,6 +1079,111 @@ public class RulesRepositoryTest extends TestCase {
         }
     }
 
+	//In this test case we expect an ItemExistException from the second thread,  
+    //other than ending up with two packages with same name. 
+	public void testConcurrentCopyPackage() throws Exception {
+		//We have to handle how to get an instance of RulesRepository, 
+		//by ourself, as different threads need to use different sessions. 
+		final Repository repository;
+
+		File dir = new File("repository");
+		System.out.println("DELETING test repo: " + dir.getAbsolutePath());
+		deleteDir(dir);
+		System.out.println("TEST repo was deleted.");
+
+		JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
+
+		repository = new TransientRepository("/repository.xml", "tmpdir");
+		//repository = config.getJCRRepository("tmpdir");
+		Session session = repository.login(new SimpleCredentials("alan_parsons",
+				"password".toCharArray()));
+		RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(
+				session);
+
+		// clear out and setup
+		if (admin.isRepositoryInitialized()) {
+			admin.clearRulesRepository();
+		}
+		config.setupRulesRepository(session);
+		RulesRepository repo = new RulesRepository(session);
+
+		// set up testing data
+		PackageItem source = repo.createPackage("testConcurrentCopyPackage",
+				"asset");
+		AssetItem item = source.addAsset("testCopyPackage", "desc");
+		item.updateContent("la");
+		item.checkin("");
+		repo.save();
+
+		Thread[] t = new Thread[2];
+
+		for (int i = 0; i < t.length; i++) {
+			t[i] = new Thread(new Runnable() {
+				public void run() {
+					running++;
+					try {
+						Session localSession = repository
+								.login(new SimpleCredentials("admin", "admin"
+										.toCharArray()));
+						RulesRepository repo1 = new RulesRepository(
+								localSession);
+
+						repo1.copyPackage("testConcurrentCopyPackage",
+								"testConcurrentCopyPackage2");
+						PackageItem dest = repo1
+								.loadPackage("testConcurrentCopyPackage2");
+						assertNotNull(dest);
+						Thread.yield();
+					} catch (LoginException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						fail();
+					} catch (RepositoryException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						fail();
+					} finally {
+						running--;
+					}
+				}
+			});
+		}
+
+		for (int i = 0; i < t.length; i++) {
+			t[i].start();
+			Thread.yield();
+		}
+
+		while (running > 0) {
+			Thread.yield();
+		}
+
+		Node folderNode = repo.getAreaNode(RulesRepository.RULE_PACKAGE_AREA);
+		NodeIterator results = folderNode.getNodes("testConcurrentCopyPackage2");
+		while (results.hasNext()) {
+			Node node = results.nextNode();
+			System.out.println("---" + node.getName());
+		}
+
+		//TO-BE-FIXED: https://jira.jboss.org/jira/browse/GUVNOR-346
+		//assertEquals(1, results.getSize());
+	} 
+
+    private static boolean deleteDir(File dir) {
+
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i=0; i<children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+
+        // The directory is now empty so delete it
+        return dir.delete();
+    }
 
 
     public static <T> List<T> iteratorToList(Iterator<T> it) {
