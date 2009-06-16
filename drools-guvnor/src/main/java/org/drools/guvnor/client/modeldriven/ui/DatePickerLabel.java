@@ -1,48 +1,17 @@
 package org.drools.guvnor.client.modeldriven.ui;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.ValueChanged;
-import org.drools.guvnor.client.explorer.Preferences;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FocusListener;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class DatePickerLabel extends DatePicker {
 
-    DatePickerPopUp               datePickerPopUp = new DatePickerPopUp( new ClickListener() {
-                                                      public void onClick(Widget arg0) {
-                                                          // Set the date from the dropdowns
-                                                          Date date = formatter.parse( textWidget.getText() );
-
-                                                          // years
-                                                          date.setYear( Integer.parseInt( datePickerPopUp.years.getItemText( datePickerPopUp.years.getSelectedIndex() ) ) - 1900 );
-                                                          // months
-                                                          date.setMonth( datePickerPopUp.months.getSelectedIndex() );
-                                                          // days
-                                                          date.setDate( datePickerPopUp.dates.getSelectedIndex() + 1 );
-
-                                                          textWidget.setText( formatter.format( date ) );
-                                                          labelWidget.setText( textWidget.getText() );
-
-                                                          valueChanged();
-                                                          makeDirty();
-                                                          panel.clear();
-                                                          panel.add( labelWidget );
-                                                          datePickerPopUp.hide();
-                                                      }
-                                                  } );
-    
-    protected Label               labelWidget   = new Label();
+    protected Label labelWidget = new Label();
 
     public DatePickerLabel(String selectedDate) {
         this( selectedDate,
@@ -50,14 +19,26 @@ public class DatePickerLabel extends DatePicker {
     }
 
     public DatePickerLabel(String selectedDate,
-                      String visualFormat) {
-        this.visualFormat = visualFormat;
+                           String visualFormat) {
+        solveVisualFormat( visualFormat );
 
-        if ( visualFormat == null || visualFormat.equals( "default" ) || visualFormat.equals( "" ) ) {
-            visualFormat = defaultFormat;
-        }
+        visualFormatFormatter = DateTimeFormat.getFormat( visualFormat );
 
-        formatter = DateTimeFormat.getFormat( visualFormat );
+        datePickerPopUp = new DatePickerPopUp( new ClickListener() {
+                                                   public void onClick(Widget arg0) {
+                                                       Date date = fillDate();
+
+                                                       textWidget.setText( visualFormatFormatter.format( date ) );
+                                                       labelWidget.setText( textWidget.getText() );
+
+                                                       valueChanged();
+                                                       makeDirty();
+                                                       panel.clear();
+                                                       panel.add( labelWidget );
+                                                       datePickerPopUp.hide();
+                                                   }
+                                               },
+                                               visualFormatFormatter );
 
         labelWidget.setStyleName( "x-form-field" );
 
@@ -68,16 +49,19 @@ public class DatePickerLabel extends DatePicker {
                 datePickerPopUp.setPopupPosition( textWidget.getAbsoluteLeft(),
                                                   textWidget.getAbsoluteTop() + 20 );
 
-                datePickerPopUp.setDropdowns( formatter.parse( textWidget.getText() ) );
+                datePickerPopUp.setDropdowns( visualFormatFormatter,
+                                              textWidget.getText() );
                 datePickerPopUp.show();
             }
         } );
 
         // Check if there is a valid date set. If not, set this date.
         try {
-            formatter.parse( selectedDate );
+            DateTimeFormat formatter = DateTimeFormat.getFormat( defaultFormat );
+            Date date = formatter.parse( selectedDate );
+            selectedDate = visualFormatFormatter.format( date );
         } catch ( Exception e ) {
-            selectedDate = formatter.format( new Date() );
+            selectedDate = visualFormatFormatter.format( new Date() );
         }
 
         if ( selectedDate != null && !selectedDate.equals( "" ) ) {

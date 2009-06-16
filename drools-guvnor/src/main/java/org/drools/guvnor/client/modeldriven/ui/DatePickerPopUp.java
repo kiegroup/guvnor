@@ -5,10 +5,12 @@ import java.util.Date;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -19,16 +21,30 @@ import com.google.gwt.user.client.ui.Widget;
  *
  */
 public class DatePickerPopUp extends PopupPanel {
-    private Constants constants = ((Constants) GWT.create( Constants.class ));
+    private Label     timeColonLabel  = new Label( ":" );
 
-    protected ListBox   years     = new ListBox();
-    protected ListBox   months    = new ListBox();
-    protected ListBox   dates     = new ListBox();
+    private Label     timeHyphenLabel = new Label( " - " );
 
-    //            private ListBox   hours     = new ListBox();
-    //            private ListBox   minutes   = new ListBox();
+    private Constants constants       = ((Constants) GWT.create( Constants.class ));
 
-    public DatePickerPopUp(ClickListener okClickListener) {
+    // It is show time! (When to show time next to date selectors)
+    protected boolean showTime        = false;
+
+    protected ListBox years           = new ListBox();
+    protected ListBox months          = new ListBox();
+    protected ListBox dates           = new ListBox();
+
+    protected ListBox hours           = new ListBox();
+    protected ListBox minutes         = new ListBox();
+
+    /**
+     * 
+     * @param okClickListener What to do when ok, is pressed
+     * @param showTime Can you select time too.
+     */
+    public DatePickerPopUp(ClickListener okClickListener,
+                           DateTimeFormat formatter) {
+
         HorizontalPanel horizontalPanel = new HorizontalPanel();
 
         // Add years
@@ -67,19 +83,22 @@ public class DatePickerPopUp extends PopupPanel {
         fillDates();
         horizontalPanel.add( dates );
 
-        //                // Hours
-        //                for ( int i = 0; i < 24; i++ ) {
-        //                    hours.addItem( Integer.toString( i ) );
-        //                }
-        //                horizontalPanel.add( new Label( " - " ) );
-        //                horizontalPanel.add( hours );
-        //
-        //                // Minutes 
-        //                for ( int i = 0; i < 60; i++ ) {
-        //                    minutes.addItem( Integer.toString( i ) );
-        //                }
-        //                horizontalPanel.add( new Label( ":" ) );
-        //                horizontalPanel.add( minutes );
+        showTime = hasTime( formatter );
+        if ( showTime ) {
+            // Hours
+            for ( int i = 0; i < 24; i++ ) {
+                hours.addItem( Integer.toString( i ) );
+            }
+            horizontalPanel.add( timeHyphenLabel );
+            horizontalPanel.add( hours );
+
+            // Minutes 
+            for ( int i = 0; i < 60; i++ ) {
+                minutes.addItem( Integer.toString( i ) );
+            }
+            horizontalPanel.add( timeColonLabel );
+            horizontalPanel.add( minutes );
+        }
 
         Button okButton = new Button( constants.OK() );
         okButton.addClickListener( okClickListener );
@@ -89,9 +108,34 @@ public class DatePickerPopUp extends PopupPanel {
     }
 
     /**
+     * Simple check, if time format has hours it has time.
+     * 
+     * @param formatter
+     * @return
+     */
+    private boolean hasTime(DateTimeFormat formatter) {
+        return formatter.getPattern().contains( "h" ) || formatter.getPattern().contains( "H" ) || formatter.getPattern().contains( "k" ) || formatter.getPattern().contains( "K" );
+    }
+
+    private void setTimeVisible(boolean visible) {
+        hours.setVisible( visible );
+        minutes.setVisible( visible );
+        timeHyphenLabel.setVisible( visible );
+        timeColonLabel.setVisible( visible );
+    }
+
+    /**
     * Sets the current year, month ect to dropdowns.
     */
-    public void setDropdowns(Date date) {
+    public void setDropdowns(DateTimeFormat formatter,
+                             String text) {
+        Date date;
+        try {
+            date = formatter.parse( text );
+        } catch ( Exception e ) {
+            date = new Date();
+        }
+
         // Set year
         years.clear();
         int year = date.getYear() + 1900 - 50;
@@ -102,15 +146,21 @@ public class DatePickerPopUp extends PopupPanel {
             }
             year++;
         }
-        
+
         // month
         months.setSelectedIndex( date.getMonth() );
         // day
         dates.setSelectedIndex( date.getDate() - 1 );
-        //                // hours
-        //                hours.setSelectedIndex( date.getHours() );
-        //                // minutes
-        //                minutes.setSelectedIndex( date.getMinutes() );
+
+        setTimeVisible( showTime );
+
+        if ( showTime ) {
+            // hours
+            hours.setSelectedIndex( date.getHours() );
+
+            // minutes
+            minutes.setSelectedIndex( date.getMinutes() );
+        }
     }
 
     private void fillDates() {

@@ -162,26 +162,15 @@ public class DSLSentenceWidget extends Composite {
         // <varName>:DATE:<dateFormat>
         // <varName>:BOOLEAN:[checked | unchecked] <-initial value
 
-        int colonIndex = currVariable.indexOf( ":" );
-        if ( colonIndex > 0 ) {
-
-            String definition = currVariable.substring( colonIndex + 1,
-                                                        currVariable.length() );
-
-            int secondColonIndex = definition.indexOf( ":" );
-            if ( secondColonIndex > 0 ) {
-
-                String type = currVariable.substring( colonIndex + 1,
-                                                      colonIndex + secondColonIndex + 1 );
-                if ( type.equalsIgnoreCase( ENUM_TAG ) ) {
-                    result = getEnumDropdown( currVariable );
-                } else if ( type.equalsIgnoreCase( DATE_TAG ) ) {
-                    result = getDateSelector( currVariable );
-                } else if ( type.equalsIgnoreCase( BOOLEAN_TAG ) ) {
-                    result = getCheckbox( currVariable );
-                }
+        if ( currVariable.contains( ":" ) ) {
+            if ( currVariable.contains( ":" + ENUM_TAG + ":" ) ) {
+                result = getEnumDropdown( currVariable );
+            } else if ( currVariable.contains( ":" + DATE_TAG + ":" ) ) {
+                result = getDateSelector( currVariable );
+            } else if ( currVariable.contains( ":" + BOOLEAN_TAG + ":" ) ) {
+                result = getCheckbox( currVariable );
             } else {
-                String regex = currVariable.substring( colonIndex + 1,
+                String regex = currVariable.substring( currVariable.indexOf( ":" ),
                                                        currVariable.length() );
                 result = getBox( currVariable,
                                  regex );
@@ -221,7 +210,10 @@ public class DSLSentenceWidget extends Composite {
     }
 
     public Widget getDateSelector(String variableDef) {
-        return new DSLDateSelector( variableDef );
+        String[] parts = variableDef.split( ":" + DATE_TAG + ":" );
+
+        return new DSLDateSelector( parts[0],
+                                    parts[1] );
     }
 
     public Widget getLabel(String labelDef) {
@@ -496,11 +488,10 @@ public class DSLSentenceWidget extends Composite {
 
     class DSLDateSelector extends DatePickerLabel {
 
-        public DSLDateSelector(String variableDef) {
-            super( variableDef.substring( 0,
-                                          variableDef.indexOf( ":" ) ),
-                   variableDef.substring( variableDef.lastIndexOf( ":" ) + 1,
-                                          variableDef.length() ) );
+        public DSLDateSelector(String selectedDate,
+                               String dateFormat) {
+            super( selectedDate,
+                   dateFormat );
 
             addValueChanged( new ValueChanged() {
                 public void valueChanged(String newValue) {

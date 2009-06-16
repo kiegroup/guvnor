@@ -3,10 +3,8 @@ package org.drools.guvnor.client.modeldriven.ui;
 import java.util.Date;
 
 import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.ValueChanged;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FocusListener;
 import com.google.gwt.user.client.ui.TextBox;
@@ -14,26 +12,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class DatePickerTextBox extends DatePicker {
 
-    DatePickerPopUp               datePickerPopUp = new DatePickerPopUp( new ClickListener() {
-                                                      public void onClick(Widget arg0) {
-                                                          // Set the date from the dropdowns
-                                                          Date date = formatter.parse( textWidget.getText() );
-
-                                                          // years
-                                                          date.setYear( Integer.parseInt( datePickerPopUp.years.getItemText( datePickerPopUp.years.getSelectedIndex() ) ) - 1900 );
-                                                          // months
-                                                          date.setMonth( datePickerPopUp.months.getSelectedIndex() );
-                                                          // days
-                                                          date.setDate( datePickerPopUp.dates.getSelectedIndex() + 1 );
-
-                                                          textWidget.setText( formatter.format( date ) );
-
-                                                          valueChanged();
-                                                          makeDirty();
-                                                          datePickerPopUp.hide();
-                                                      }
-                                                  } );
-    ImageButton                        select          = new ImageButton("images/edit_tiny.gif");
+    private ImageButton select = new ImageButton( "images/edit_tiny.gif" );
 
     public DatePickerTextBox(String selectedDate) {
         this( selectedDate,
@@ -42,13 +21,22 @@ public class DatePickerTextBox extends DatePicker {
 
     public DatePickerTextBox(String selectedDate,
                              String visualFormat) {
-        this.visualFormat = visualFormat;
+        solveVisualFormat( visualFormat );
 
-        if ( visualFormat == null || visualFormat.equals( "default" ) || visualFormat.equals( "" ) ) {
-            visualFormat = defaultFormat;
-        }
+        visualFormatFormatter = DateTimeFormat.getFormat( visualFormat );
 
-        formatter = DateTimeFormat.getFormat( visualFormat );
+        datePickerPopUp = new DatePickerPopUp( new ClickListener() {
+                                                   public void onClick(Widget arg0) {
+                                                       Date date = fillDate();
+
+                                                       textWidget.setText( visualFormatFormatter.format( date ) );
+
+                                                       valueChanged();
+                                                       makeDirty();
+                                                       datePickerPopUp.hide();
+                                                   }
+                                               },
+                                               visualFormatFormatter );
 
         select.addClickListener( new ClickListener() {
             public void onClick(Widget arg0) {
@@ -56,21 +44,21 @@ public class DatePickerTextBox extends DatePicker {
                                                   textWidget.getAbsoluteTop() + 20 );
 
                 if ( textWidget.getText() != null && "".equals( textWidget.getText() ) ) {
-                    textWidget.setText( formatter.format( new Date() ) );
+                    textWidget.setText( visualFormatFormatter.format( new Date() ) );
                 }
-                
-                datePickerPopUp.setDropdowns( formatter.parse( textWidget.getText() ) );
+
+                datePickerPopUp.setDropdowns( visualFormatFormatter,
+                                              textWidget.getText() );
                 datePickerPopUp.show();
             }
         } );
 
-
         if ( selectedDate != null && !selectedDate.equals( "" ) ) {
             textWidget.setText( selectedDate );
-            
+
             // Check if there is a valid date set. If not, set this date.
             try {
-                formatter.parse( selectedDate );
+                visualFormatFormatter.parse( selectedDate );
             } catch ( Exception e ) {
                 selectedDate = null;
             }
@@ -94,5 +82,7 @@ public class DatePickerTextBox extends DatePicker {
         initWidget( panel );
     }
 
-
+    public void clear() {
+        textWidget.setText( "" );
+    }
 }
