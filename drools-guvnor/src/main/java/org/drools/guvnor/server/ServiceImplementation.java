@@ -833,7 +833,14 @@ public class ServiceImplementation
         log.info( "USER:" + repository.getSession().getUserID() + " SAVING package [" + data.name + "]" );
 
         PackageItem item = repository.loadPackage( data.name );
+        
+        // If package is being unarchived.
+        boolean unarchived = (data.archived == false  && item.isArchived() == true);
+        Calendar packageLastModified = item.getLastModified();
+        
 
+        updateDroolsHeader( data.header,
+                            item );
         item.updateCategoryRules( convertMapToString( data.catRules,
                                                       true ),
                                   convertMapToString( data.catRules,
@@ -844,8 +851,6 @@ public class ServiceImplementation
         item.archiveItem( data.archived );
         item.updateBinaryUpToDate( false );
         this.ruleBaseCache.remove( data.uuid );
-        updateDroolsHeader( data.header,
-                            item );
         item.checkin( data.description );
 
         // If package is archived, archive all the assets under it
@@ -854,6 +859,16 @@ public class ServiceImplementation
                 AssetItem assetItem = iter.next();
                 assetItem.archiveItem( true );
                 assetItem.checkin( data.description );
+            }
+        } else if ( unarchived ) {
+            for ( Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
+                AssetItem assetItem = iter.next();
+                // Unarchive the assets archived after the package 
+                // ( == at the same time that the package was archived)
+                if ( assetItem.getLastModified().compareTo( packageLastModified ) >= 0 ) {
+                    assetItem.archiveItem( false );
+                    assetItem.checkin( data.description );
+                }
             }
         }
 
@@ -2152,13 +2167,6 @@ public class ServiceImplementation
         if ( pkg.containsAsset( "drools" ) ) {
             conf = pkg.loadAsset( "drools" );
             conf.updateContent( string );
-            
-            // If package is unarchived and header is not, unarchive it.
-            boolean a = conf.isArchived();
-            boolean b = pkg.isArchived();
-            if ( conf.isArchived() == true && pkg.isArchived() == false ) {
-                conf.archiveItem( false );
-            }
             
             conf.checkin( "" );
         } else {
