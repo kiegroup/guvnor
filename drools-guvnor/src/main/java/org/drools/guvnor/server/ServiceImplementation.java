@@ -774,6 +774,7 @@ public class ServiceImplementation
         data.catRules = item.getCategoryRules();
         //System.out.println("Cat Rules: " + data.catRules.toString());
         data.description = item.getDescription();
+        data.archived = item.isArchived();
         data.name = item.getName();
         data.lastModified = item.getLastModified().getTime();
         data.dateCreated = item.getCreatedDate().getTime();
@@ -833,8 +834,6 @@ public class ServiceImplementation
 
         PackageItem item = repository.loadPackage( data.name );
 
-        updateDroolsHeader( data.header,
-                            item );
         item.updateCategoryRules( convertMapToString( data.catRules,
                                                       true ),
                                   convertMapToString( data.catRules,
@@ -845,6 +844,8 @@ public class ServiceImplementation
         item.archiveItem( data.archived );
         item.updateBinaryUpToDate( false );
         this.ruleBaseCache.remove( data.uuid );
+        updateDroolsHeader( data.header,
+                            item );
         item.checkin( data.description );
 
         // If package is archived, archive all the assets under it
@@ -2151,12 +2152,21 @@ public class ServiceImplementation
         if ( pkg.containsAsset( "drools" ) ) {
             conf = pkg.loadAsset( "drools" );
             conf.updateContent( string );
+            
+            // If package is unarchived and header is not, unarchive it.
+            boolean a = conf.isArchived();
+            boolean b = pkg.isArchived();
+            if ( conf.isArchived() == true && pkg.isArchived() == false ) {
+                conf.archiveItem( false );
+            }
+            
             conf.checkin( "" );
         } else {
             conf = pkg.addAsset( "drools",
                                  "" );
             conf.updateFormat( "package" );
             conf.updateContent( string );
+            
             conf.checkin( "" );
         }
 

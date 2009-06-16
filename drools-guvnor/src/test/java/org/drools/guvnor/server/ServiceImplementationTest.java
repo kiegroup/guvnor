@@ -575,6 +575,38 @@ public class ServiceImplementationTest extends TestCase {
 		assertFalse(original.equals(data.lastModified));
 		assertEquals("ya", data.checkinComment);
 	}
+	
+	public void testArchiveAndUnarchivePackageAndHeader() throws Exception {
+        ServiceImplementation impl = getService();
+        String uuid = impl.createPackage( "testArchiveAndUnarchivePackageAndHeader",
+                                          "a desc" );
+        PackageConfigData data = impl.loadPackageConfig( uuid );
+        PackageItem it = impl.repository.loadPackageByUUID( uuid );
+        data.archived = true;
+
+        impl.savePackage( data );
+        data = impl.loadPackageConfig( uuid );
+        it = impl.repository.loadPackage( data.name );
+        assertTrue( data.archived );
+        assertTrue( it.loadAsset( "drools" ).isArchived() );
+
+        data.archived = false;
+
+        impl.savePackage( data );
+        data = impl.loadPackageConfig( uuid );
+        it = impl.repository.loadPackage( data.name );
+        assertFalse( data.archived );
+        assertFalse( it.loadAsset( "drools" ).isArchived() );
+
+        data.archived = true;
+
+        impl.savePackage( data );
+        data = impl.loadPackageConfig( uuid );
+        it = impl.repository.loadPackage( data.name );
+        assertTrue( data.archived );
+        assertTrue( it.loadAsset( "drools" ).isArchived() );
+
+    }
 
 	public void testPackageConfSave() throws Exception {
 		RepositoryService impl = getService();
