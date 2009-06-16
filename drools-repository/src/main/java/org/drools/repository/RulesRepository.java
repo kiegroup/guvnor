@@ -976,6 +976,11 @@ public class RulesRepository {
             if ( mig.needsMigration( this ) ) {
                 mig.migrate( this );
             }
+        } catch ( ItemExistsException e ) {
+            String message = "Item already exists. At least two items with the path: " + e.getLocalizedMessage();
+            log.error( message,
+                       e );
+            throw new RulesRepositoryException( message );
         } catch ( RepositoryException e ) {
             log.error(e);
             throw new RulesRepositoryException("Repository error when importing from stream.", e);
