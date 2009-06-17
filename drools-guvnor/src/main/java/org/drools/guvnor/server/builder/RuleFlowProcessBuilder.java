@@ -29,12 +29,12 @@ import org.drools.guvnor.client.rulefloweditor.TransferNode.Type;
 import org.drools.process.core.Work;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.impl.ConnectionRef;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.ForEachNode;
 import org.drools.workflow.core.node.HumanTaskNode;
 import org.drools.workflow.core.node.Split;
 import org.drools.workflow.core.node.WorkItemNode;
-import org.drools.workflow.core.node.Split.ConnectionRef;
 
 public class RuleFlowProcessBuilder {
 
@@ -127,7 +127,7 @@ public class RuleFlowProcessBuilder {
 
     private static void updateSplitNode(SplitTransferNode stn,
                                         Split splitNode) {
-        for ( Split.ConnectionRef connection : splitNode.getConstraints().keySet() ) {
+        for ( ConnectionRef connection : splitNode.getConstraints().keySet() ) {
 
             final ConnectionRef ref1 = new ConnectionRef( connection.getNodeId(),
                                                           connection.getToType() );

@@ -17,6 +17,7 @@ import org.drools.definition.process.Node;
 import org.drools.process.core.Work;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.impl.ConnectionRef;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.core.node.CompositeNode;
 import org.drools.workflow.core.node.EndNode;
@@ -216,7 +217,7 @@ public class RuleFlowContentModelBuilder {
 
         sn.setSplitType( SplitTransferNode.Type.getType( s.getType() ) );
 
-        for ( Split.ConnectionRef connection : s.getConstraints().keySet() ) {
+        for ( ConnectionRef connection : s.getConstraints().keySet() ) {
 
             SplitNode.ConnectionRef ref = new SplitNode.ConnectionRef();
             ref.setNodeId( connection.getNodeId() );
