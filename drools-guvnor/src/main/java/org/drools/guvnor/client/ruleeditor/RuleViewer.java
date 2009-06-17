@@ -241,7 +241,12 @@ public class RuleViewer extends Composite {
 
                                                                       doco.resetDirty();
 
-                                                                      refreshMetaWidgetOnly();
+                                                                      // No need to refresh if we are archiving
+                                                                      if (asset.archived) {
+                                                                          LoadingPopup.close();
+                                                                      } else {
+                                                                          refreshMetaWidgetOnly();
+                                                                      } 
 
                                                                   }
                                                               } );
