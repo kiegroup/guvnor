@@ -583,12 +583,21 @@ public class ServiceImplementationTest extends TestCase {
         PackageConfigData data = impl.loadPackageConfig( uuid );
         PackageItem it = impl.repository.loadPackageByUUID( uuid );
         data.archived = true;
-
+        
+        AssetItem rule1 = it.addAsset("rule_1", "");
+        rule1.updateFormat(AssetFormats.DRL);
+        rule1
+                .updateContent("rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end");
+        rule1.archiveItem( true );
+        rule1.checkin("");
+        impl.repository.save();
+        
         impl.savePackage( data );
         data = impl.loadPackageConfig( uuid );
         it = impl.repository.loadPackage( data.name );
         assertTrue( data.archived );
         assertTrue( it.loadAsset( "drools" ).isArchived() );
+        assertTrue( it.loadAsset( "rule_1" ).isArchived() );
 
         data.archived = false;
 
@@ -597,6 +606,7 @@ public class ServiceImplementationTest extends TestCase {
         it = impl.repository.loadPackage( data.name );
         assertFalse( data.archived );
         assertFalse( it.loadAsset( "drools" ).isArchived() );
+        assertTrue( it.loadAsset( "rule_1" ).isArchived() );
 
         data.archived = true;
 
@@ -605,6 +615,7 @@ public class ServiceImplementationTest extends TestCase {
         it = impl.repository.loadPackage( data.name );
         assertTrue( data.archived );
         assertTrue( it.loadAsset( "drools" ).isArchived() );
+        assertTrue( it.loadAsset( "rule_1" ).isArchived() );
 
     }
 

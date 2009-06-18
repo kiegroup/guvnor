@@ -857,8 +857,10 @@ public class ServiceImplementation
         if ( data.archived ) {
             for ( Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
                 AssetItem assetItem = iter.next();
-                assetItem.archiveItem( true );
-                assetItem.checkin( data.description );
+                if ( !assetItem.isArchived() ) {
+                    assetItem.archiveItem( true );
+                    assetItem.checkin( data.description );
+                }
             }
         } else if ( unarchived ) {
             for ( Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
