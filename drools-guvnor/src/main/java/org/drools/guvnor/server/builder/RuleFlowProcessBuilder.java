@@ -18,13 +18,13 @@ package org.drools.guvnor.server.builder;
 
 import java.util.Collection;
 
+import org.drools.definition.process.Node;
 import org.drools.guvnor.client.rulefloweditor.ElementContainerTransferNode;
 import org.drools.guvnor.client.rulefloweditor.HumanTaskTransferNode;
 import org.drools.guvnor.client.rulefloweditor.SplitNode;
 import org.drools.guvnor.client.rulefloweditor.SplitTransferNode;
 import org.drools.guvnor.client.rulefloweditor.TransferNode;
 import org.drools.guvnor.client.rulefloweditor.WorkItemTransferNode;
-import org.drools.definition.process.Node;
 import org.drools.guvnor.client.rulefloweditor.TransferNode.Type;
 import org.drools.process.core.Work;
 import org.drools.ruleflow.core.RuleFlowProcess;
