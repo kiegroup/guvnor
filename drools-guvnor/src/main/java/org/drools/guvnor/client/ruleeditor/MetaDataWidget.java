@@ -304,6 +304,7 @@ public class MetaDataWidget extends Composite {
         final FormStylePopup pop = new FormStylePopup( "images/package_large.png", //NON-NLS
                                                        constants.RenameThisItem() );
         final TextBox box = new TextBox();
+        box.setText( data.name );
         pop.addAttribute( constants.NewNameAsset(),
                           box );
         Button ok = new Button( constants.RenameItem() );
