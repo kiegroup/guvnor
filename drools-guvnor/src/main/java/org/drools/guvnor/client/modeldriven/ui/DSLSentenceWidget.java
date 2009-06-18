@@ -435,7 +435,7 @@ public class DSLSentenceWidget extends Composite {
             resultWidget.addItem( "true" );
             resultWidget.addItem( "false" );
 
-            if ( checkedUnchecked.equalsIgnoreCase( "checked" ) ) {
+            if ( checkedUnchecked.equalsIgnoreCase( "true" ) ) {
                 resultWidget.setSelectedIndex( 0 );
             } else {
                 resultWidget.setSelectedIndex( 1 );
@@ -472,7 +472,7 @@ public class DSLSentenceWidget extends Composite {
         }
 
         public String getCheckedValue() {
-            return this.resultWidget.getSelectedIndex() == 0 ? "checked" : "unchecked";
+            return this.resultWidget.getSelectedIndex() == 0 ? "true" : "false";
 
         }
     }
