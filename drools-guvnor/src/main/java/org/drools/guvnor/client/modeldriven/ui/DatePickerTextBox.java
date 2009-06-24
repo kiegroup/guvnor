@@ -23,7 +23,7 @@ public class DatePickerTextBox extends DatePicker {
                              String visualFormat) {
         solveVisualFormat( visualFormat );
 
-        visualFormatFormatter = DateTimeFormat.getFormat( visualFormat );
+        visualFormatFormatter = DateTimeFormat.getFormat( this.visualFormat );
 
         datePickerPopUp = new DatePickerPopUp( new ClickListener() {
                                                    public void onClick(Widget arg0) {
