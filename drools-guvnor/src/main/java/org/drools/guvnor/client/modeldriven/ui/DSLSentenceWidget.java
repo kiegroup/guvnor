@@ -161,7 +161,7 @@ public class DSLSentenceWidget extends Composite {
             } else if ( currVariable.contains( ":" + BOOLEAN_TAG + ":" ) ) {
                 result = getCheckbox( currVariable );
             } else {
-                String regex = currVariable.substring( currVariable.indexOf( ":" ),
+                String regex = currVariable.substring( currVariable.indexOf( ":" ) + 1,
                                                        currVariable.length() );
                 result = getBox( currVariable,
                                  regex );
