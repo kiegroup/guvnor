@@ -262,7 +262,7 @@ public class FileManagerUtils {
             if ( MigrateRepository.needsRuleflowMigration( repository ) ) {
                 MigrateRepository.migrateRuleflows( repository );
             }
-            ServiceImplementation.ruleBaseCache.clear();    
+            ServiceImplementation.ruleBaseCache.clear();
         } catch ( RepositoryException e ) {
             e.printStackTrace();
             throw new RulesRepositoryException( e );
@@ -273,14 +273,14 @@ public class FileManagerUtils {
     public void importPackageToRepository(byte[] data,
                                           boolean importAsNew) {
         try {
-        repository.importPackageToRepository( data,
-                                              importAsNew );
+            repository.importPackageToRepository( data,
+                                                  importAsNew );
 
-        //
-        //Migrate v4 ruleflows to v5
-        //This section checks if the repository contains drools v4
-        //ruleflows that need to be migrated to drools v5
-        //
+            //
+            //Migrate v4 ruleflows to v5
+            //This section checks if the repository contains drools v4
+            //ruleflows that need to be migrated to drools v5
+            //
 
             if ( MigrateRepository.needsRuleflowMigration( repository ) ) {
                 MigrateRepository.migrateRuleflows( repository );
@@ -297,15 +297,25 @@ public class FileManagerUtils {
      * If it does, it will be "merged" in the sense that any new rules in the drl
      * will be created as new assets in the repo, everything else will stay as it was
      * in the repo.
+     * 
+     * @param packageName Name for this package. Overrides the one in the DRL.
      */
     @Restrict("#{identity.loggedIn}")
-    public void importClassicDRL(InputStream drlStream) throws IOException,
-                                                       DroolsParserException {
+    public void importClassicDRL(InputStream drlStream,
+                                 String packageName) throws IOException,
+                                                    DroolsParserException {
 
         ClassicDRLImporter imp = new ClassicDRLImporter( drlStream );
         PackageItem pkg = null;
 
-        String packageName = imp.getPackageName();
+        if ( packageName == null ) {
+            packageName = imp.getPackageName();
+        }
+
+        if ( packageName == null || "".equals( packageName ) ) {
+            throw new IllegalArgumentException( "Missing package name." );
+        }
+
         boolean existing = repository.containsPackage( packageName );
 
         // Check if the package is archived

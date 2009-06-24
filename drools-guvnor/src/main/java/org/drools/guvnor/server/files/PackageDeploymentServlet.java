@@ -20,9 +20,9 @@ package org.drools.guvnor.server.files;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Locale;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializableException;
-import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.FormData;
@@ -86,12 +85,15 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                           HttpServletResponse response) throws ServletException,
                                                        IOException {
     	response.setContentType( "text/html" );
+    	String packageName = request.getParameter( "packageName" );
         FormData data = FileManagerUtils.getFormData( request );
         //System.err.println("Filename: " + data.getFile().getName());
 
         try {
-            getFileManager().importClassicDRL( data.getFile().getInputStream() );
+            getFileManager().importClassicDRL( data.getFile().getInputStream(), packageName );
             response.getWriter().write( "OK" );
+        } catch ( IllegalArgumentException e ) {
+            response.getWriter().write( e.getMessage() );
         } catch ( DroolsParserException e ) {
             response.getWriter().write( "Unable to process import: " + e.getMessage() );
         } catch ( RulesRepositoryException e) {
