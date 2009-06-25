@@ -91,15 +91,17 @@ public class ActionSetFieldWidget extends DirtyableComposite {
 
     private void doLayout() {
         layout.clear();
-        layout.setWidget( 0, 0, getSetterLabel() );
 
-        DirtyableFlexTable inner = new DirtyableFlexTable();
+        //layout.setWidget( 0, 0, getSetterLabel() );
+
+        //DirtyableFlexTable inner = new DirtyableFlexTable();
 
         for ( int i = 0; i < model.fieldValues.length; i++ ) {
             ActionFieldValue val = model.fieldValues[i];
 
-            inner.setWidget( i, 0, fieldSelector(val) );
-            inner.setWidget( i, 1, valueEditor(val) );
+            layout.setWidget(i, 0, getSetterLabel());
+            layout.setWidget( i, 1, fieldSelector(val) );
+            layout.setWidget( i, 2, valueEditor(val) );
             final int idx = i;
             Image remove = new ImageButton("images/delete_item_small.gif"); //NON-NLS
             remove.addClickListener( new ClickListener() {
@@ -110,10 +112,21 @@ public class ActionSetFieldWidget extends DirtyableComposite {
                 	}
                 }
             });
-            inner.setWidget( i, 2, remove );
+            layout.setWidget( i, 3, remove );
         }
 
-        layout.setWidget( 0, 1, inner );
+        if (model.fieldValues.length == 0) {
+            HorizontalPanel h = new HorizontalPanel();
+            h.add(getSetterLabel());
+            h.add(new ImageButton("images/new_item.gif", constants.AddFirstNewField(), new ClickListener() {
+                public void onClick(Widget sender) {
+                    showAddFieldPopup(sender);
+                }
+            }));
+            layout.setWidget(0, 0, h);
+        }
+
+        //layout.setWidget( 0, 1, inner );
 
 
     }
@@ -121,28 +134,26 @@ public class ActionSetFieldWidget extends DirtyableComposite {
 
     private Widget getSetterLabel() {
 
-        HorizontalPanel horiz = new HorizontalPanel();
 
 
-        Image edit = new ImageButton("images/edit_tiny.gif");
-        edit.setTitle(constants.AddAnotherFieldToThisSoYouCanSetItsValue());
-        ClickListener clk =       new ClickListener() {
+        ClickListener clk =  new ClickListener() {
             public void onClick(Widget w) {
                 showAddFieldPopup(w);
             }
         };
-        edit.addClickListener(clk);
         String modifyType = "set";
         if (this.model instanceof ActionUpdateField) {
             modifyType = "modify";
         }
 
-        String sl = Format.format(constants.setterLabel(), new String[] {HumanReadable.getActionDisplayName(modifyType), model.variable});
-        ClickableLabel lbl = new ClickableLabel(sl, clk);//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
-        horiz.add( lbl) ;
-        horiz.add( edit );
 
-        return horiz;
+
+        FactPattern fp = this.modeller.getModel().getBoundFact(model.variable);
+
+        String descFact = (fp != null)? this.modeller.getModel().getBoundFact(model.variable).factType + " <b>[" + model.variable + "]</b>" : model.variable;
+
+        String sl = Format.format(constants.setterLabel(), new String[] {HumanReadable.getActionDisplayName(modifyType), descFact});
+        return new ClickableLabel(sl, clk);//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
     }
 
 

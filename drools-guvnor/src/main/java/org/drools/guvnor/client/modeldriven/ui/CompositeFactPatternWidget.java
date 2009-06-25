@@ -29,12 +29,7 @@ import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.messages.Constants;
 
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
 
 /**
@@ -70,6 +65,11 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
         this.layout.setWidget( 0,
                                0,
                                getCompositeLabel() );
+        this.layout.getFlexCellFormatter().setColSpan(0, 0, 2);
+        
+        //this.layout.getFlexCellFormatter().setWidth(0, 0, "15%");
+        this.layout.setWidget(1, 0, new HTML("&nbsp;&nbsp;&nbsp;&nbsp;"));
+
 
         if ( pattern.patterns != null ) {
             DirtyableVerticalPane vert = new DirtyableVerticalPane();
@@ -80,7 +80,7 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
                                                  this.completions,
                                                  false ) );
             }
-            this.layout.setWidget( 0,
+            this.layout.setWidget( 1,
                                    1,
                                    vert );
         }
@@ -99,7 +99,7 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
             lbl += " <font color='red'>" + constants.clickToAddPatterns() + "</font>";
         }
 
-        return new ClickableLabel( lbl, click ) ;
+        return new ClickableLabel( lbl + ":", click ) ;
     }
 
     /**

@@ -446,7 +446,7 @@ select:focus,input:focus,input:active,.constraint-value-Editor:focus,.constraint
 	border-color:#000!important;
 }
 .gwt-MenuBar .gwt-MenuItem-selected,.modeller-fact-TypeHeader {
-	background:#f6f6f6;
+	/* background:#f6f6f6; */
 }
 input,.constraint-value-Editor {
 	border:1px solid #aa9;

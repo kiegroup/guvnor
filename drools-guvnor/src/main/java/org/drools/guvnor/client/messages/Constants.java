@@ -1866,6 +1866,12 @@ public interface Constants extends ConstantsWithLookup {
     String AreYouSureYouWantToRemoveThisBlockOfData();
 
     String PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern();
-    
+
+    String ThereIsAAn0With();
+
+    String ThereIsAAn0();
+
+    String AddFirstNewField();
+
     String ImportedDRLContainsNoNameForThePackage();
 }

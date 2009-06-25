@@ -17,10 +17,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
@@ -213,7 +210,7 @@ public class RuleModeller extends DirtyableComposite {
             } else if (action instanceof ActionInsertFact) {
                 w = new ActionInsertFactWidget(this, (ActionInsertFact) action, completions );
             } else if (action instanceof ActionRetractFact) {
-                w = new ActionRetractFactWidget(this.completions, (ActionRetractFact) action );
+                w = new ActionRetractFactWidget(this.completions, (ActionRetractFact) action , this.getModel());
             } else if (action instanceof DSLSentence) {
                 w = new DSLSentenceWidget((DSLSentence) action,this.completions);
                 w.setStyleName( "model-builderInner-Background" ); //NON-NLS

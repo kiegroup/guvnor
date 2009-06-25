@@ -39,16 +39,9 @@ import org.drools.guvnor.client.modeldriven.ui.factPattern.PopupCreator;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.gwtext.client.util.Format;
 
 /**
  * This is the new smart widget that works off the model.
@@ -86,12 +79,13 @@ public class FactPatternWidget extends DirtyableComposite {
 
         layout.setWidget( 0, 0, getPatternLabel() );
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
-        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE );
+        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_BOTTOM );
         formatter.setStyleName( 0, 0, "modeller-fact-TypeHeader" );
 
         ArrayList sortedConst = sortConstraints(pattern.getFieldConstraints());
         pattern.setFieldConstraints(sortedConst);
         drawConstraints(sortedConst);
+
 
         if ( bindable ) layout.setStyleName( "modeller-fact-pattern-Widget" );
         initWidget( layout );
@@ -204,8 +198,9 @@ public class FactPatternWidget extends DirtyableComposite {
         if (constraint instanceof SingleFieldConstraint) {
             renderSingleFieldConstraint( modeller, inner, row, (SingleFieldConstraint) constraint, showBinding, tabs );
         } else if (constraint instanceof CompositeFieldConstraint) {
-            inner.setWidget( row, 0, compositeFieldConstraintEditor((CompositeFieldConstraint) constraint) );
-            inner.getFlexCellFormatter().setColSpan( row, 0, 5 );
+            inner.setWidget( row, 1, compositeFieldConstraintEditor((CompositeFieldConstraint) constraint) );
+            inner.getFlexCellFormatter().setColSpan( row, 1, 5 );
+            inner.setWidget(row, 0, new HTML("&nbsp;&nbsp;&nbsp;&nbsp;")); //NON-NLS
         }
     }
 
@@ -213,11 +208,9 @@ public class FactPatternWidget extends DirtyableComposite {
      * This will show the constraint editor - allowing field constraints to be nested etc.
      */
     private Widget compositeFieldConstraintEditor(final CompositeFieldConstraint constraint) {
-        HorizontalPanel horiz = new HorizontalPanel();
+        FlexTable t = new FlexTable();
         String desc = null;
 
-        Image edit = new ImageButton( "images/edit_tiny.gif" );
-        edit.setTitle(constants.AddAFieldToThisNestedConstraint());
 
         ClickListener click = new ClickListener() {
             public void onClick(Widget w) {
@@ -225,21 +218,16 @@ public class FactPatternWidget extends DirtyableComposite {
             }
 
         };
-        edit.addClickListener( click );
 
         if (constraint.compositeJunctionType.equals(CompositeFieldConstraint.COMPOSITE_TYPE_AND)) {
-            desc = constants.AllOf();
+            desc = constants.AllOf() + ":";
         } else {
-            desc = constants.AnyOf();
+            desc = constants.AnyOf() + ":";
         }
 
-        //HorizontalPanel ab = new HorizontalPanel();
-        //ab.setStyleName( "composite-fact-pattern" );
-        horiz.add( edit );
-        horiz.add( new ClickableLabel(desc, click) );
-
-        //horiz.add( ab );
-
+        t.setWidget(0, 0, new ClickableLabel(desc, click));
+        t.getFlexCellFormatter().setColSpan(0, 0, 2);
+        //t.getFlexCellFormatter().setWidth(0, 0, "15%");
 
         FieldConstraint[] nested = constraint.constraints;
         DirtyableFlexTable inner = new DirtyableFlexTable();
@@ -264,8 +252,9 @@ public class FactPatternWidget extends DirtyableComposite {
             }
         }
 
-        horiz.add( inner );
-        return horiz;
+        t.setWidget(1, 1, inner);
+        t.setWidget(1, 0, new HTML("&nbsp;&nbsp;&nbsp;&nbsp;"));
+        return t;
     }
 
 
@@ -276,12 +265,19 @@ public class FactPatternWidget extends DirtyableComposite {
     private void renderSingleFieldConstraint(final RuleModeller modeller,
             final DirtyableFlexTable inner, int row, final SingleFieldConstraint constraint,
             boolean showBinding, int tabs) {
-    	//DOCNHERON
+
+        int col = 1; //for offsetting, just a slight indent
+
+
+        inner.setWidget(row, 0, new HTML("&nbsp;&nbsp;&nbsp;&nbsp;"));
+        //inner.getFlexCellFormatter().setWidth(row, 0, "15%");
+        //DOCNHERON
         if ( constraint.constraintValueType != SingleFieldConstraint.TYPE_PREDICATE ) {
-            inner.setWidget( row, 0, fieldLabel(constraint, showBinding, tabs * 20));
-            inner.setWidget( row, 1, operatorDropDown( constraint ) );
-            inner.setWidget( row, 2, valueEditor( constraint, constraint.fieldType ) );
-            inner.setWidget( row, 3, connectives.connectives( constraint, constraint.fieldType ) );
+
+            inner.setWidget( row, 0 + col, fieldLabel(constraint, showBinding, tabs * 20));
+            inner.setWidget( row, 1+ col, operatorDropDown( constraint ) );
+            inner.setWidget( row, 2+ col, valueEditor( constraint, constraint.fieldType ) );
+            inner.setWidget( row, 3+ col, connectives.connectives( constraint, constraint.fieldType ) );
             Image addConnective = new ImageButton( "images/add_connective.gif" ); //NON-NLS
             addConnective.setTitle(constants.AddMoreOptionsToThisFieldsValues());
             addConnective.addClickListener( new ClickListener() {
@@ -291,9 +287,9 @@ public class FactPatternWidget extends DirtyableComposite {
                 }
             } );
 
-            inner.setWidget( row, 4, addConnective );
+            inner.setWidget( row, 4+ col, addConnective );
         } else if (constraint.constraintValueType == SingleFieldConstraint.TYPE_PREDICATE) {
-            inner.setWidget( row, 0, predicateEditor(constraint) );
+            inner.setWidget( row, 0+ col, predicateEditor(constraint) );
             inner.getFlexCellFormatter().setColSpan( row, 0, 5 );
         }
     }
@@ -330,28 +326,35 @@ public class FactPatternWidget extends DirtyableComposite {
      * This returns the pattern label.
      */
     private Widget getPatternLabel() {
-        HorizontalPanel horiz = new HorizontalPanel();
-
-        Image edit = new ImageButton( "images/edit_tiny.gif" ); //NON-NLS
-        edit.setTitle(constants.AddOrBindToCondition());
-
         ClickListener click = new ClickListener() {
             public void onClick(Widget w) {
                 popupCreator.showPatternPopup( w, pattern.factType, null );
             }
         };
 
-        edit.addClickListener( click );
+        String patternName = (pattern.boundName != null) ? pattern.factType  + " <b>[" + pattern.boundName + "]</b>" : pattern.factType;
 
-        if ( pattern.boundName != null ) {
-            horiz.add( new ClickableLabel( pattern.factType  + " <b>[" + pattern.boundName + "]</b>", click) );
+        if (pattern.constraintList != null && pattern.constraintList.constraints.length > 0) {
+            String desc = Format.format(constants.ThereIsAAn0With(), patternName);
+            return  new ClickableLabel( anA(desc, patternName) , click) ;
         } else {
-            horiz.add( new ClickableLabel( pattern.factType, click ) );
+            String desc = Format.format(constants.ThereIsAAn0(), patternName);
+            return new ClickableLabel( anA(desc, patternName) , click );
         }
-        //horiz.add( edit );
+    }
 
-        return horiz;
-
+    /** Change to an/a depending on context - only for english */
+    private String anA(String desc, String patternName) {
+        if (desc.startsWith("There is a/an")) { //NON-NLS
+            String vowel = patternName.substring(0, 1);
+            if (vowel.equalsIgnoreCase("A") || vowel.equalsIgnoreCase("E") || vowel.equalsIgnoreCase("I") || vowel.equalsIgnoreCase("O") || vowel.equalsIgnoreCase("U")) { //NON-NLS
+                return desc.replace("There is a/an", "There is an"); //NON-NLS
+            } else {
+                return desc.replace("There is a/an", "There is a");  //NON-NLS
+            }
+        } else {
+            return desc;
+        }
     }
 
     private Widget valueEditor(final SingleFieldConstraint c, String factType) {
@@ -402,7 +405,7 @@ public class FactPatternWidget extends DirtyableComposite {
                     }
                 };
 
-                Image bind = new ImageButton( "images/edit_tiny.gif", constants.GiveFieldVarName());
+                Image bind = new ImageButton( "images/edit_tiny.gif", constants.GiveFieldVarName()); //NON-NLS
 
                 bind.addClickListener( click);
                 ClickableLabel cl = new ClickableLabel(con.fieldName, click);
@@ -415,7 +418,7 @@ public class FactPatternWidget extends DirtyableComposite {
             
         } else {
         	ab.add(new SmallLabel(con.fieldName));
-            ab.add( new SmallLabel(" <b>[" + con.fieldBinding + "]</b>") );
+            ab.add( new SmallLabel(" <b>[" + con.fieldBinding + "]</b>") );       //NON-NLS
         }
 
 

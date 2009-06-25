@@ -28,14 +28,7 @@ import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.util.Format;
 
@@ -73,14 +66,17 @@ public class ActionInsertFactWidget extends DirtyableComposite {
     private void doLayout() {
         layout.clear();
         layout.setWidget( 0, 0, getAssertLabel() );
+        layout.setWidget( 1, 0, new HTML("&nbsp;&nbsp;&nbsp;&nbsp;"));
+        layout.getFlexCellFormatter().setColSpan(0, 0, 2);
 
         DirtyableFlexTable inner = new DirtyableFlexTable();
+        int col = 0;
 
         for ( int i = 0; i < model.fieldValues.length; i++ ) {
             ActionFieldValue val = model.fieldValues[i];
 
-            inner.setWidget( i, 0, fieldSelector(val) );
-            inner.setWidget( i, 1, valueEditor(val) );
+            inner.setWidget( i, 0 + col, fieldSelector(val) );
+            inner.setWidget( i, 1 + col, valueEditor(val) );
             final int idx = i;
             Image remove = new ImageButton("images/delete_item_small.gif");
             remove.addClickListener( new ClickListener() {
@@ -91,11 +87,11 @@ public class ActionInsertFactWidget extends DirtyableComposite {
                 	};
                 }
             });
-            inner.setWidget( i, 2, remove );
+            inner.setWidget( i, 2 + col, remove );
 
         }
 
-        layout.setWidget( 0, 1, inner );
+        layout.setWidget( 1, 1, inner );
 
 
     }
@@ -110,32 +106,25 @@ public class ActionInsertFactWidget extends DirtyableComposite {
     }
 
     private Widget getAssertLabel() {
-        HorizontalPanel horiz = new HorizontalPanel();
 
 
-        Image edit = new ImageButton("images/edit_tiny.gif");
-        edit.setTitle(constants.AddAnotherFieldToThisSoYouCanSetItsValue());
         ClickListener cl =  new ClickListener() {
             public void onClick(Widget w) {
                 showAddFieldPopup(w);
             }
         };
-        edit.addClickListener( cl );
 
 
         String assertType = "assert";  //NON-NLS
         if (this.model instanceof ActionInsertLogicalFact) {
             assertType = "assertLogical";  //NON-NLS
         }
-        if ( model.isBound() == false ) {
-            horiz.add( new ClickableLabel( HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.factType + "</b>",
-                                           cl ) );
-        } else {
-            horiz.add( new ClickableLabel( HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.factType + "</b>" + " <b>[" + model.getBoundName() + "]</b>",
-                                           cl ) );
+
+        String lbl = (model.isBound() == false) ? HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.factType + "</b>" : HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.factType + "</b>" + " <b>[" + model.getBoundName() + "]</b>";
+        if (this.model.fieldValues != null && model.fieldValues.length > 0 ) {
+            lbl = lbl + ":";
         }
-        horiz.add( edit );
-        return horiz;
+        return new ClickableLabel( lbl, cl );
 
     }
 

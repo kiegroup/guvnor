@@ -21,6 +21,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
+import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -35,17 +36,18 @@ public class ActionRetractFactWidget extends Composite {
     private FlexTable layout;
 
 
-    public ActionRetractFactWidget(SuggestionCompletionEngine com, ActionRetractFact model) {
+    public ActionRetractFactWidget(SuggestionCompletionEngine com, ActionRetractFact model, RuleModel ruleModel) {
         layout = new FlexTable();
 
         layout.setStyleName( "model-builderInner-Background" );
 
         layout.setWidget( 0, 0, new SmallLabel(HumanReadable.getActionDisplayName( "retract" ))  );
-        layout.setWidget( 0, 1, new SmallLabel("<b>"  + model.variableName  + "</b>") );
+
+        String desc = ruleModel.getBoundFact(model.variableName).factType + " [" + model.variableName + "]";
+        layout.setWidget( 0, 1, new SmallLabel("<b>"  + desc  + "</b>") );
 
         initWidget( layout );
     }
-
 
 
 }
