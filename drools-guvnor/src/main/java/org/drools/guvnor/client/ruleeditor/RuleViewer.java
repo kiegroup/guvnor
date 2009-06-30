@@ -16,18 +16,14 @@ package org.drools.guvnor.client.ruleeditor;
  * limitations under the License.
  */
 
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -99,6 +95,7 @@ public class RuleViewer extends Composite {
      */
     private void doWidgets() {
         layout.clear();
+
 
         editor = EditorLauncher.getEditorViewer( asset,
                                                  this );
@@ -218,7 +215,16 @@ public class RuleViewer extends Composite {
     private void performCheckIn(String comment) {
         //layout.clear();
         this.asset.metaData.checkinComment = comment;
-        LoadingPopup.showMessage( constants.SavingPleaseWait() );
+        final boolean[] saved = {false};
+        Timer t = new Timer() {
+            public void run() {
+                if (!saved[0]) LoadingPopup.showMessage( constants.SavingPleaseWait() );
+            }
+        };
+        t.schedule(500);
+
+
+
         RepositoryServiceFactory.getService().checkinVersion( this.asset,
                                                               new GenericCallback<String>() {
 
@@ -245,9 +251,13 @@ public class RuleViewer extends Composite {
                                                                       if (asset.archived) {
                                                                           LoadingPopup.close();
                                                                       } else {
-                                                                          refreshMetaWidgetOnly();
-                                                                      } 
+                                                                          refreshMetaWidgetOnly(false);
+                                                                      }
+                                                                      LoadingPopup.close();
+                                                                      saved[0] = true;
 
+
+                                                                      toolbar.showSavedConfirmation();
                                                                   }
                                                               } );
     }
@@ -283,11 +293,17 @@ public class RuleViewer extends Composite {
                                                              } );
     }
 
+
+
     /**
-     * This will only
+     * This will only refresh the meta data widget if necessary.
      */
     public void refreshMetaWidgetOnly() {
-        LoadingPopup.showMessage( constants.RefreshingItem() );
+        refreshMetaWidgetOnly(true);
+    }
+
+    private void refreshMetaWidgetOnly(final boolean showBusy) {
+        if (showBusy) LoadingPopup.showMessage( constants.RefreshingItem() );
         RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid,
                                                              new GenericCallback<RuleAsset>() {
                                                                  public void onSuccess(RuleAsset asset_) {
@@ -297,7 +313,7 @@ public class RuleViewer extends Composite {
                                                                      hsp.add( metaWidget );
                                                                      hsp.setCellWidth( metaWidget,
                                                                                        "25%" );
-                                                                     LoadingPopup.close();
+                                                                     if (showBusy) LoadingPopup.close();
                                                                  }
                                                              } );
     }

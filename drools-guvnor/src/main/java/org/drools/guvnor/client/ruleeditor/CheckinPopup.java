@@ -77,8 +77,14 @@ public class CheckinPopup {
     }
 
     public void show() {
+        pop.setAfterShow(new Command() {
+            public void execute() {
+                comment.setFocus(true);
+            }
+        });
 		pop.show();
-		comment.setFocus(true);
+        comment.setFocus(true);
+
     }
 
     public String getCheckinComment() {

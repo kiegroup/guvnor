@@ -199,7 +199,7 @@ public class PackageBuilderWidget extends Composite {
 		busy.add(new Label(constants.ValidatingAndBuildingPackagePleaseWait()));
 		busy.add(new Image("images/red_anime.gif")); //NON-NLS
 
-        LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
+        //LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
 		buildResults.add(busy);
 
 		DeferredCommand.addCommand(new Command() {

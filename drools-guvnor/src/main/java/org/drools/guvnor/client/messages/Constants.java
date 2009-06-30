@@ -1874,4 +1874,8 @@ public interface Constants extends ConstantsWithLookup {
     String AddFirstNewField();
 
     String ImportedDRLContainsNoNameForThePackage();
+
+    String InitialisingInfoFor0PleaseWait();
+
+    String SavedOK();
 }

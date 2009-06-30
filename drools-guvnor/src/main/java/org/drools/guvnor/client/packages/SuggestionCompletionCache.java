@@ -94,7 +94,7 @@ public class SuggestionCompletionCache {
 
 
     public void loadPackage(final String packageName, final Command command) {
-        System.out.println("Loading package Suggestions..."); //NON-NLS
+        LoadingPopup.showMessage(Format.format(constants.InitialisingInfoFor0PleaseWait(), packageName));
         RepositoryServiceFactory.getService().loadSuggestionCompletionEngine( packageName, new GenericCallback<SuggestionCompletionEngine>() {
             public void onSuccess(SuggestionCompletionEngine engine) {
                 cache.put( packageName, engine );

@@ -21,6 +21,7 @@ import org.drools.guvnor.client.messages.Constants;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
@@ -199,13 +200,25 @@ public class ExplorerViewCenterPanel {
         }
 		History.newItem("asset=" + uuid); //NON-NLS
 
-        
-		LoadingPopup.showMessage(constants.LoadingAsset());
+
+
 		if (!showIfOpen(uuid)) {
+
+
+            final boolean[] loading = {true};
+
+            Timer t = new Timer() {
+                public void run() {
+                    if (loading[0]) LoadingPopup.showMessage(constants.LoadingAsset());
+                }
+            };
+            t.schedule(200);
+            
 			RepositoryServiceFactory.getService().loadRuleAsset(uuid, new GenericCallback<RuleAsset>() {
 				public void onSuccess(final RuleAsset a) {
 					SuggestionCompletionCache.getInstance().doAction(a.metaData.packageName, new Command() {
 						public void execute() {
+                            loading[0] = false;
 							RuleViewer rv = new RuleViewer(a);
 							addTab(a.metaData.name, true, rv, uuid);
 							rv.setCloseCommand(new Command() {
@@ -225,7 +238,8 @@ public class ExplorerViewCenterPanel {
 							       } 
 							    });
 							}
-							
+
+
 							LoadingPopup.close();
 						}
 					});

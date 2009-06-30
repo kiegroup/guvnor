@@ -16,30 +16,25 @@ package org.drools.guvnor.client.ruleeditor;
  */
 
 
-
-
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.StatusChangePopup;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.messages.Constants;
-
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.*;
 import com.gwtext.client.core.EventObject;
+import com.gwtext.client.util.Format;
 import com.gwtext.client.widgets.QuickTipsConfig;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.ToolbarTextItem;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
-import com.gwtext.client.util.Format;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.StatusChangePopup;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.RuleAsset;
 
 
 /**
@@ -57,6 +52,7 @@ public class ActionToolbar extends Composite {
 	final private RuleAsset asset;
 	private Command afterCheckinEvent;
     private Constants constants = GWT.create(Constants.class);
+    private SmallLabel savedOK;
 
     public ActionToolbar(final RuleAsset asset,
                          final CheckinAction checkin,
@@ -69,7 +65,6 @@ public class ActionToolbar extends Composite {
         this.asset = asset;
 
         this.state = new ToolbarTextItem(constants.Status() + " ");
-;
 
         toolbar = new Toolbar();
 
@@ -87,6 +82,19 @@ public class ActionToolbar extends Composite {
         initWidget( toolbar );
     }
 
+
+    /**
+     * Show the saved OK message for a little while *.
+     */
+    public void showSavedConfirmation() {
+        savedOK.setVisible(true);
+        Timer t = new Timer() {
+            public void run() {
+                savedOK.setVisible(false);
+            }
+        };
+        t.schedule(1500);
+    }
 
     /**
      * Sets the visible status display.
@@ -108,6 +116,11 @@ public class ActionToolbar extends Composite {
 	        				}
 		        			});
 			toolbar.addButton(save);
+
+
+        savedOK = new SmallLabel("<font color='green'>" + constants.SavedOK() + "</font>");
+        savedOK.setVisible(false);
+        toolbar.addElement(savedOK.getElement());
 
         toolbar.addFill();
         toolbar.addSeparator();
@@ -257,6 +270,7 @@ public class ActionToolbar extends Composite {
             }
         });
         pop.show();
+
     }
 
 
@@ -274,6 +288,7 @@ public class ActionToolbar extends Composite {
 
         pop.show();
     }
+
 
 
     public static interface CheckinAction {

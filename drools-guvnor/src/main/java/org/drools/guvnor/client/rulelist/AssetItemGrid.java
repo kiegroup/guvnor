@@ -29,6 +29,7 @@ import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.*;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -140,7 +141,17 @@ public class AssetItemGrid extends Composite {
                         final RecordDef rd,
                         final int pageSize) {
         final int numFlds = rd.getFields().length;
-        LoadingPopup.showMessage( "Loading data..." );
+
+        final boolean[] loaded = {false};
+        Timer t = new Timer() {
+            public void run() {
+                if (!loaded[0]) LoadingPopup.showMessage( constants.PleaseWait() );
+            }
+        };
+
+        t.schedule(90);
+
+
         source.loadData( cursorPositions.peek(),
                          pageSize,
                          new GenericCallback<TableDataResult>() {
@@ -260,6 +271,7 @@ public class AssetItemGrid extends Composite {
                                  layout.add( currentGrid );
                                  //store the end position
                                  currentCursorPosition = (int) result.currentPosition;
+                                 loaded[0] = true;
                                  LoadingPopup.close();
                              }
 
