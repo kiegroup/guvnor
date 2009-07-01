@@ -27,6 +27,8 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusListener;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -39,10 +41,10 @@ import com.google.gwt.core.client.GWT;
  *
  * @author Michael Neale
  */
-public class RuleViewer extends Composite {
+public class RuleViewer extends DirtyableComposite {
 
     private Command            closeCommand;
-    public Command            checkedInCommand;
+    public Command             checkedInCommand;
     protected RuleAsset        asset;
 
     private boolean            readOnly;
@@ -76,7 +78,17 @@ public class RuleViewer extends Composite {
         layout.setWidth( "100%" );
         layout.setHeight( "100%" );
 
-        initWidget( layout );
+        FocusPanel focusPanel = new FocusPanel(layout);
+        focusPanel.addFocusListener( new FocusListener() {
+            public void onFocus(Widget arg0) {
+                makeDirty();
+            }
+
+            public void onLostFocus(Widget arg0) {
+            }
+        } );
+        
+        initWidget( focusPanel );
 
         doWidgets(null);
 
@@ -85,9 +97,19 @@ public class RuleViewer extends Composite {
 
     public boolean isDirty() {
         if ( readOnly ) return false;
-        return (System.currentTimeMillis() - lastSaved) > 3600000;
+        
+        if(isInternetExplorer()){
+            return (System.currentTimeMillis() - lastSaved) > 3600000;   
+        } else {
+            return super.isDirty();
+        }
     }
+    
+    private static native boolean isInternetExplorer() /*-{
+        return (navigator.appName == 'Microsoft Internet Explorer');
+    }-*/;
 
+    
     /**
      * This will actually load up the data (this is called by the callback)
      * when we get the data back from the server,
@@ -114,6 +136,7 @@ public class RuleViewer extends Composite {
                                                  checkedInCommand.execute();
                                              }
                                              lastSaved = System.currentTimeMillis();
+                                             resetDirty();
                                          }
                                      },
                                      new ActionToolbar.CheckinAction() {
