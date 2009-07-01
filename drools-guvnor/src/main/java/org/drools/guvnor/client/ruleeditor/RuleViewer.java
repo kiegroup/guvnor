@@ -78,7 +78,7 @@ public class RuleViewer extends Composite {
 
         initWidget( layout );
 
-        doWidgets();
+        doWidgets(null);
 
         LoadingPopup.close();
     }
@@ -93,10 +93,9 @@ public class RuleViewer extends Composite {
      * when we get the data back from the server,
      * also determines what widgets to load up).
      */
-    private void doWidgets() {
+    private void doWidgets(Widget messageWidget) {
         layout.clear();
-
-
+        
         editor = EditorLauncher.getEditorViewer( asset,
                                                  this );
 
@@ -140,6 +139,10 @@ public class RuleViewer extends Composite {
         layout.setCellWidth( toolbar,
                              "100%" );
 
+        if ( messageWidget != null ) {
+            layout.add( messageWidget );
+        }
+        
         doMetaWidget();
 
         hsp = new HorizontalPanel();
@@ -282,12 +285,16 @@ public class RuleViewer extends Composite {
      * This will reload the contents from the database, and refresh the widgets.
      */
     public void refreshDataAndView() {
+        refreshDataAndView( null );
+    }
+    
+    public void refreshDataAndView(final Widget messageWidget) {
         LoadingPopup.showMessage( constants.RefreshingItem() );
         RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid,
                                                              new GenericCallback<RuleAsset>() {
                                                                  public void onSuccess(RuleAsset asset_) {
                                                                      asset = asset_;
-                                                                     doWidgets();
+                                                                     doWidgets(messageWidget);
                                                                      LoadingPopup.close();
                                                                  }
                                                              } );

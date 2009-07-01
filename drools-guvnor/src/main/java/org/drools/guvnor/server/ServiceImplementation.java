@@ -488,7 +488,7 @@ public class ServiceImplementation
             asset.isreadonly = true;
         }
 
-        log.debug( "Load time taken for asset: " + (System.currentTimeMillis() - time) );
+        log.debug( "Package: " + pkgItem.getName() + ", asset: "+item.getName()+ ". Load time taken for asset: " + (System.currentTimeMillis() - time) );
         return asset;
 
     }

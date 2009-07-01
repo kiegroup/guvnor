@@ -89,7 +89,7 @@ public class PackageEditor2 extends PrettyFormLayout {
     private void refreshWidgets() {
         clear();
 
-FlexTable headerWidgets = new FlexTable();
+        FlexTable headerWidgets = new FlexTable();
         headerWidgets.setWidget(0, 0, new HTML("<b>" + constants.PackageName() + ":</b>")); //NON-NLS
         headerWidgets.setWidget(0, 1, new Label(this.conf.name));
         if (!conf.isSnapshot) {

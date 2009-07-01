@@ -1,4 +1,5 @@
 package org.drools.guvnor.client.packages;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -19,6 +20,7 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.HTMLFileManagerFields;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
@@ -47,26 +49,27 @@ import com.google.gwt.user.client.ui.Widget;
 
 public abstract class AssetAttachmentFileWidget extends Composite {
 
-
-    private FormPanel form;
-    private Button ok;
-    private RuleViewer viewer;
+    private FormPanel         form;
+    private Button            ok;
+    private RuleViewer        viewer;
     protected FormStyleLayout layout;
-    protected RuleAsset asset;
-    private Constants constants = GWT.create(Constants.class);
+    protected RuleAsset       asset;
+    private Constants         constants        = GWT.create( Constants.class );
 
-
-    public AssetAttachmentFileWidget(final RuleAsset asset, final RuleViewer viewer) {
+    public AssetAttachmentFileWidget(final RuleAsset asset,
+                                     final RuleViewer viewer) {
         this.viewer = viewer;
         this.asset = asset;
-        initWidgets(asset.uuid, asset.metaData.name);
+        initWidgets( asset.uuid,
+                     asset.metaData.name );
         initAssetHandlers();
     }
 
     public AssetAttachmentFileWidget() {
     }
 
-    protected void initWidgets(final String uuid, String formName) {
+    protected void initWidgets(final String uuid,
+                               String formName) {
         form = new FormPanel();
         form.setAction( GWT.getModuleBaseURL() + "asset" );
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
@@ -75,9 +78,10 @@ public abstract class AssetAttachmentFileWidget extends Composite {
         FileUpload up = new FileUpload();
         up.setName( HTMLFileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
         HorizontalPanel fields = new HorizontalPanel();
-        fields.add( getHiddenField(HTMLFileManagerFields.FORM_FIELD_UUID, uuid) );
+        fields.add( getHiddenField( HTMLFileManagerFields.FORM_FIELD_UUID,
+                                    uuid ) );
 
-        ok = new Button(constants.Upload());
+        ok = new Button( constants.Upload() );
 
         fields.add( up );
         //fields.add(new Label("upload:"));
@@ -85,27 +89,29 @@ public abstract class AssetAttachmentFileWidget extends Composite {
 
         form.add( fields );
 
-        layout = new FormStyleLayout(getIcon(),
-                                                     formName);
+        layout = new FormStyleLayout( getIcon(),
+                                      formName );
 
-        if ( !this.asset.isreadonly )
-            layout.addAttribute(constants.UploadNewVersion(), form );
+        if ( !this.asset.isreadonly ) layout.addAttribute( constants.UploadNewVersion(),
+                                                           form );
 
-        Button dl = new Button(constants.Download());
+        Button dl = new Button( constants.Download() );
         dl.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                Window.open( GWT.getModuleBaseURL() + "asset?" +  HTMLFileManagerFields.FORM_FIELD_UUID + "=" + uuid,
-                             "downloading", "resizable=no,scrollbars=yes,status=no" );
+                Window.open( GWT.getModuleBaseURL() + "asset?" + HTMLFileManagerFields.FORM_FIELD_UUID + "=" + uuid,
+                             "downloading",
+                             "resizable=no,scrollbars=yes,status=no" );
             }
-        });
-        layout.addAttribute(constants.DownloadCurrentVersion(), dl );
+        } );
+        layout.addAttribute( constants.DownloadCurrentVersion(),
+                             dl );
 
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 showUploadingBusy();
                 submitUpload();
             }
-        });
+        } );
 
         initWidget( layout );
         layout.setWidth( "100%" );
@@ -122,28 +128,27 @@ public abstract class AssetAttachmentFileWidget extends Composite {
      */
     public abstract String getOverallStyleName();
 
-    void initAssetHandlers( ) {
+    void initAssetHandlers() {
         form.addFormHandler( new FormHandler() {
 
             public void onSubmit(FormSubmitEvent ev) {
             }
 
             public void onSubmitComplete(FormSubmitCompleteEvent ev) {
-            		LoadingPopup.close();
-            		
-                    if ( viewer.checkedInCommand != null ) {
-                        viewer.checkedInCommand.execute();
-                    }
-            		
-                    if (ev.getResults().indexOf( "OK" ) > -1) {
-                    	Window.alert(constants.FileWasUploadedSuccessfully());
-                        viewer.refreshDataAndView();
-                    } else {
-                        ErrorPopup.showMessage(constants.UnableToUploadTheFile());
-                    }
+                LoadingPopup.close();
+
+                if ( viewer.checkedInCommand != null ) {
+                    viewer.checkedInCommand.execute();
+                }
+
+                if ( ev.getResults().indexOf( "OK" ) > -1 ) {
+                    viewer.refreshDataAndView( new SmallLabel( "<div style=\"background-color: yellow;\" ><img src='images/tick_green.gif'/><i>" + constants.FileWasUploadedSuccessfully() + "</i></div>" ) );
+                } else {
+                    ErrorPopup.showMessage( constants.UnableToUploadTheFile() );
+                }
             }
 
-        });
+        } );
     }
 
     protected void submitUpload() {
@@ -151,10 +156,11 @@ public abstract class AssetAttachmentFileWidget extends Composite {
     }
 
     protected void showUploadingBusy() {
-    	LoadingPopup.showMessage(constants.Uploading());
+        LoadingPopup.showMessage( constants.Uploading() );
     }
 
-    private TextBox getHiddenField(String name, String value) {
+    private TextBox getHiddenField(String name,
+                                   String value) {
         TextBox t = new TextBox();
         t.setName( name );
         t.setText( value );
