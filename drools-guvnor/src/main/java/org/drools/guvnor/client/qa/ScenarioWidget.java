@@ -720,7 +720,7 @@ class DataInputWidget extends DirtyableComposite {
                 remove.addClickListener(new ClickListener() {
                     public void onClick(Widget sender) {
                         if (Window.confirm(constants.AreYouSureYouWantToRemoveThisBlockOfData())) {
-                            scenario.fixtures.removeAll(defList);
+                            scenario.globals.removeAll( defList );
                             parent.renderEditor();
                             pop.hide();
                         }
