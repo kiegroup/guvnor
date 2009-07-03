@@ -205,7 +205,9 @@ public class NewPackageWizard extends FormStylePopup {
                     Window.alert( constants.PackageWasImportedSuccessfully() );
                     afterCreatedEvent.execute();
                     parent.hide();
-                    packageNamePopup.hide();
+                    if ( packageNamePopup != null ) {
+                        packageNamePopup.hide();
+                    }
                 } else if ( event.getResults().indexOf( "Missing package name." ) > -1 ) {
                     LoadingPopup.close();
                     packageNamePopup.show();

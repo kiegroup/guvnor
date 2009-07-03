@@ -79,8 +79,10 @@ public class FormStylePopup {
     }
 
     public void hide() {
-        this.dialog.hide();
-    	this.dialog.destroy();
+        if ( dialog != null ) {
+            this.dialog.hide();
+            this.dialog.destroy();
+        }
     }
 
     public void setPopupPosition(int left, int top) {
@@ -136,6 +138,10 @@ public class FormStylePopup {
 
 	}
 
+	public boolean isVisible(){
+	    if ( dialog == null ) return false;
+        else return dialog.isVisible();
+	}
 
 	public void setModal(boolean m) {
 		this.modal = m;
