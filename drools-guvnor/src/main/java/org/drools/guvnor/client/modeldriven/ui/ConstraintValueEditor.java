@@ -146,7 +146,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         for ( int i = 0; i < vars.size(); i++ ) {
             String var = (String) vars.get( i );
             FactPattern f = model.getBoundFact( var );
-            if ( f.factType.equals( this.fieldType ) ) {
+            if ( f != null && f.factType.equals( this.fieldType ) ) {
                 box.addItem( var );
                 if ( this.constraint.value != null && this.constraint.value.equals( var ) ) {
                     box.setSelectedIndex( j );
