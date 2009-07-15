@@ -89,6 +89,39 @@ public class AssetItemTest extends TestCase {
 
     }
 
+
+    public void testUpdateStringProperty() throws Exception {
+        RulesRepository repo = getRepo();
+        PackageItem def = repo.loadDefaultPackage();
+        AssetItem asset = repo.loadDefaultPackage().addAsset("testUpdateStringProperty", "test content");
+        asset.updateContent("new content");
+        asset.checkin("");
+        Calendar lm = asset.getLastModified();
+
+        Thread.sleep(100);
+        asset.updateStringProperty("Anything", "AField");
+
+        assertEquals("Anything", asset.getStringProperty("AField"));
+        Calendar lm_ = asset.getLastModified();
+
+        assertTrue(lm_.getTimeInMillis() > lm.getTimeInMillis());
+
+        Thread.sleep(100);
+
+        asset.updateStringProperty("More", "AField", false);
+
+        assertEquals(lm_.getTimeInMillis(), asset.getLastModified().getTimeInMillis());
+
+        asset.updateContent("more content");
+        asset.checkin("");
+
+        asset = repo.loadAssetByUUID(asset.getUUID());
+        assertEquals("More", asset.getStringProperty("AField"));
+
+        
+    }
+
+
     public void testGetPackageItemHistorical() throws Exception {
         RulesRepository repo = getRepo();
         PackageItem pkg = repo.createPackage("testGetPackageItemHistorical", "");

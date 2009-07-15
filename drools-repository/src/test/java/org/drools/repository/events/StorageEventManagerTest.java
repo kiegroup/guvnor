@@ -19,6 +19,7 @@ public class StorageEventManagerTest extends TestCase {
         StorageEventManager.se = null;
     }
 
+
     public void testLoadEvent() {
         System.setProperty("guvnor.loadEventListener", "org.drools.repository.events.MockLoadEvent");
         LoadEvent le = StorageEventManager.loadEvent();

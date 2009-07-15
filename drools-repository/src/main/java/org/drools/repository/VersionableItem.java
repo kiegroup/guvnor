@@ -286,6 +286,8 @@ public abstract class VersionableItem extends Item {
                               PUBLISHER_PROPERTY_NAME );
     }
 
+
+
     /**
      * update a text field. This is a convenience method that just
      * uses the JCR node to set a property.
@@ -293,6 +295,14 @@ public abstract class VersionableItem extends Item {
      */
     public void updateStringProperty(String value,
                                       String prop) {
+        updateStringProperty(value, prop, true);
+    }
+
+    /**
+     * optionally update last updated... 
+     */
+    public void updateStringProperty(String value,
+                                      String prop, boolean setLastUpdated) {
         try {
             checkIsUpdateable();
 
@@ -303,9 +313,11 @@ public abstract class VersionableItem extends Item {
             node.checkout();
             node.setProperty( prop,
                               value );
-            Calendar lastModified = Calendar.getInstance();
-            this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME,
-                                   lastModified );
+            if (setLastUpdated) {
+                Calendar lastModified = Calendar.getInstance();
+                this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME,
+                                       lastModified );
+            }
 
         } catch ( Exception e ) {
             if ( e instanceof RuntimeException ) {
