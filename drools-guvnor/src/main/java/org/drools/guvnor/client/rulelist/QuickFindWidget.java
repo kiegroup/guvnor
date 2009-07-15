@@ -23,17 +23,16 @@ import java.util.List;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.rpc.TableDataRow;
-import org.drools.guvnor.client.rpc.DetailedSerializableException;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.ruleeditor.EditorLauncher;
+import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.SuggestOracle.Callback;
 import com.google.gwt.user.client.ui.SuggestOracle.Request;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.core.client.GWT;
 
 /**
@@ -102,15 +101,86 @@ public class QuickFindWidget extends Composite {
         pfl.addRow(listPanel);
 
 
-
-
         pfl.endSection();
         layout.addRow(pfl);
 
 
+
+        /*
+
+        Button b = new Button("Do a request");
+        b.addClickListener(new ClickListener() {
+            public void onClick(Widget sender) {
+                RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, GWT.getModuleBaseURL() + "");
+            }
+        });
+
+        */
+
         
+
+
+
         initWidget( layout );
     }
+
+    void scrollyRuleLoaderExample() {
+        final VerticalPanel vp = new VerticalPanel();
+        final ScrollPanel panel = new ScrollPanel(vp);
+        panel.setHeight("10em");
+
+        String cat = "Home Mortgage/Eligibility rules";
+
+        RepositoryServiceFactory.getService().loadRuleListForCategories(cat, 0, 10, AssetItemGrid.RULE_LIST_TABLE_ID, new GenericCallback<TableDataResult>() {
+            public void onSuccess(TableDataResult result) {
+                final List<String> ids = new ArrayList<String>();
+                for (TableDataRow aData : result.data) {
+                    ids.add(aData.id);
+                }
+
+
+
+                RepositoryServiceFactory.getService().loadRuleAsset(ids.get(0), new GenericCallback<RuleAsset>() {
+                    public void onSuccess(final RuleAsset result) {
+                        SuggestionCompletionCache.getInstance().doAction(result.metaData.packageName, new Command() {
+                            public void execute() {
+                                final Widget last = EditorLauncher.getEditorViewer(result, null);
+                                vp.add(last);
+                                panel.addScrollListener(new ScrollListener() {
+                                    int i = 0;
+                                    Widget end = last;
+                                    public void onScroll(Widget widget, int scrollLeft, int scrollTop) {
+                                        //System.err.println("final pos: " + (f.getAbsoluteTop() + f.getOffsetHeight() + " Panel pos: " + (panel.getAbsoluteTop() + panel.getOffsetHeight()))) ;
+                                        int finalPos = end.getAbsoluteTop() + end.getOffsetHeight();
+                                        int panelPos = panel.getAbsoluteTop() + panel.getOffsetHeight();
+                                        System.err.println(panelPos + " " + finalPos);
+                                        if (finalPos == panelPos) {
+                                            i++;
+                                            if (i < ids.size() -1) {
+                                                RepositoryServiceFactory.getService().loadRuleAsset(ids.get(i), new GenericCallback<RuleAsset>() {
+                                                    public void onSuccess(RuleAsset result) {
+                                                        end = EditorLauncher.getEditorViewer(result, null);
+                                                        vp.add(end);
+                                                    }
+                                                });
+                                            }
+                                        }
+
+
+                                    }
+                                });
+                            }
+                        });
+
+                    }
+                });
+
+
+
+            }
+        });
+    }
+
 
     /**
      * This will load a list of items as they are typing.
