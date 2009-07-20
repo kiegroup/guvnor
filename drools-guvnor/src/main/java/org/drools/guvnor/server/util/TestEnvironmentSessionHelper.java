@@ -38,8 +38,13 @@ import org.apache.jackrabbit.core.TransientRepository;
 public class TestEnvironmentSessionHelper {
 
     public static Repository repository;
+
+    /** we keep the last session, and close it when creating a new one */
     public static Session lastSession;
 
+    /**
+     * Return a session, blow away and create a new empty repo if this is the first time this is called.
+     */
     public static Session getSession() throws Exception {
         return getSession(true);
     }
