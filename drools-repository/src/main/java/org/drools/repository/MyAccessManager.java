@@ -10,10 +10,10 @@ import org.apache.jackrabbit.core.ItemId;
 import org.apache.jackrabbit.core.NodeId;
 import org.apache.jackrabbit.core.security.AMContext;
 import org.apache.jackrabbit.core.security.AccessManager;
-import org.apache.jackrabbit.core.security.authorization.AccessControlProvider;
-import org.apache.jackrabbit.core.security.authorization.WorkspaceAccessManager;
-import org.apache.jackrabbit.spi.Name;
-import org.apache.jackrabbit.spi.Path;
+//import org.apache.jackrabbit.core.security.authorization.AccessControlProvider;
+//import org.apache.jackrabbit.core.security.authorization.WorkspaceAccessManager;
+//import org.apache.jackrabbit.spi.Name;
+//import org.apache.jackrabbit.spi.Path;
 
 /**
  * This is just an experimental access manager for proof of concept. Don't
@@ -68,7 +68,7 @@ public class MyAccessManager
         //System.out.println("is granted: " + arg0);
         return true;
     }
-
+/*
 	public boolean canRead(Path arg0) throws RepositoryException {
 		// TODO Auto-generated method stub
 		return false;
@@ -91,5 +91,6 @@ public class MyAccessManager
 		// TODO Auto-generated method stub
 		return false;
 	}
+*/
 
 }
