@@ -27,6 +27,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.methods.HeadMethod;
 
+import javax.jcr.Session;
+
 public class PackageDeploymentServletTest extends TestCase {
 
 
@@ -34,7 +36,7 @@ public class PackageDeploymentServletTest extends TestCase {
 
 
 	public void testLoadingRules() throws Exception {
-		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
+		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSessionKeepOpen() );
 
 		ServiceImplementation impl = new ServiceImplementation();
 		impl.repository = repo;
@@ -249,6 +251,8 @@ public class PackageDeploymentServletTest extends TestCase {
 
         server.stop();
 
+
+        repo.logout();
 
 
 

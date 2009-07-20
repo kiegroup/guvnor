@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.jcr.Session;
 
 import junit.framework.TestCase;
 
@@ -115,7 +116,7 @@ public class RestAPIServletTest extends TestCase {
 	}
 
 	public void testPost() throws Exception {
-		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
+		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSessionKeepOpen() );
 		PackageItem pkg = repo.createPackage("testPostRestServlet", "");
 
 		HashMap<String, String> headers = new HashMap<String, String>() {
@@ -155,10 +156,13 @@ public class RestAPIServletTest extends TestCase {
 		String out = new String(ass2.getBinaryContentAsBytes());
 		assertEquals("more content", out);
 
+        repo.logout();
+
 	}
 
 	public void testPut() throws Exception {
-		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
+
+		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSessionKeepOpen() );
 		PackageItem pkg = repo.createPackage("testPutRestServlet", "");
 		AssetItem ass = pkg.addAsset("asset1", "abc");
 		ass.updateFormat("drl");
@@ -186,11 +190,13 @@ public class RestAPIServletTest extends TestCase {
 		assertEquals("some new content", ass.getContent());
 		assertEquals(ver + 1, ass.getVersionNumber());
 		assertEquals("hey ho", ass.getCheckinComment());
+
+        repo.logout();
 	}
 
 
 	public void testDelete() throws Exception {
-		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
+		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSessionKeepOpen() );
 		PackageItem pkg = repo.createPackage("testDeleteRestServlet", "");
 		AssetItem ass = pkg.addAsset("asset1", "abc");
 		ass.updateFormat("drl");
@@ -216,6 +222,7 @@ public class RestAPIServletTest extends TestCase {
 		pkg = repo.loadPackage("testDeleteRestServlet");
 		assertFalse(pkg.listAssetsByFormat(new String[] {"drl"}).hasNext());
 
+        repo.logout();
 
 	}
 }
