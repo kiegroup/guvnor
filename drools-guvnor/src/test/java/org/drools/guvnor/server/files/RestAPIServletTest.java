@@ -116,7 +116,7 @@ public class RestAPIServletTest extends TestCase {
 	}
 
 	public void testPost() throws Exception {
-		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSessionKeepOpen() );
+		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
 		PackageItem pkg = repo.createPackage("testPostRestServlet", "");
 
 		HashMap<String, String> headers = new HashMap<String, String>() {
@@ -162,7 +162,7 @@ public class RestAPIServletTest extends TestCase {
 
 	public void testPut() throws Exception {
 
-		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSessionKeepOpen() );
+		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
 		PackageItem pkg = repo.createPackage("testPutRestServlet", "");
 		AssetItem ass = pkg.addAsset("asset1", "abc");
 		ass.updateFormat("drl");
@@ -196,7 +196,7 @@ public class RestAPIServletTest extends TestCase {
 
 
 	public void testDelete() throws Exception {
-		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSessionKeepOpen() );
+		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
 		PackageItem pkg = repo.createPackage("testDeleteRestServlet", "");
 		AssetItem ass = pkg.addAsset("asset1", "abc");
 		ass.updateFormat("drl");

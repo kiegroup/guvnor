@@ -28,7 +28,6 @@ import org.drools.repository.JCRRepositoryConfigurator;
 import org.drools.repository.JackrabbitRepositoryConfigurator;
 import org.drools.repository.RepositorySessionUtil;
 import org.drools.repository.RulesRepositoryAdministrator;
-import org.apache.jackrabbit.core.TransientRepository;
 
 /**
  * This is only to be used for testing, eg in hosted mode, or unit tests.
@@ -37,67 +36,47 @@ import org.apache.jackrabbit.core.TransientRepository;
  */
 public class TestEnvironmentSessionHelper {
 
+
     public static Repository repository;
 
-    /** we keep the last session, and close it when creating a new one */
-    public static Session lastSession;
 
-    /**
-     * Return a session, blow away and create a new empty repo if this is the first time this is called.
-     */
     public static Session getSession() throws Exception {
         return getSession(true);
     }
 
-    /** Don't use this one unless you plan to close the session yourself in tests... */
-    public static Session getSessionKeepOpen() {
-        return getRepo(true);
-    }
-
-
     public static synchronized Session getSession(boolean erase) {
-        if (lastSession != null) {
-            lastSession.logout();
-        }
-        lastSession = getRepo(erase);
-        return lastSession;
-    }
+    	try {
+	        if (repository == null) {
 
+	            if (erase) {
+	                File repoDir = new File("repository");
+	                System.out.println("DELETE test repo dir: " + repoDir.getAbsolutePath());
+	                RepositorySessionUtil.deleteDir( repoDir );
+	                System.out.println("TEST repo dir deleted.");
+	            }
 
-
-
-    private static Session getRepo(boolean erase) {
-        try {
-
-            if (repository == null) {
-                if (erase) {
-                    File repoDir = new File("repository");
-                    System.out.println("DELETE test repo dir: " + repoDir.getAbsolutePath());
-                    RepositorySessionUtil.deleteDir( repoDir );
-                    System.out.println("TEST repo dir deleted.");
-                }
-
-                JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
+	            JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
                 String home = System.getProperty("guvnor.repository.dir");
-                repository = config.getJCRRepository(home);
+	            repository = config.getJCRRepository(home);
 
-                Session testSession = repository.login(
-                                                                         new SimpleCredentials("alan_parsons", "password".toCharArray()));
+	            Session testSession = repository.login(
+	                                                                     new SimpleCredentials("alan_parsons", "password".toCharArray()));
 
-                RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(testSession);
-                if (erase && admin.isRepositoryInitialized()) {
+	            RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(testSession);
+	            if (erase && admin.isRepositoryInitialized()) {
 
-                    admin.clearRulesRepository( );
-                }
-                config.setupRulesRepository( testSession );
+	                admin.clearRulesRepository( );
+	            }
+	            config.setupRulesRepository( testSession );
+	            return testSession;
+	        } else {
+	            return repository.login(
+	                             new SimpleCredentials("alan_parsons", "password".toCharArray()));
+	        }
+    	} catch (RepositoryException e) {
+    		throw new IllegalStateException(e);
+    	}
 
-                return testSession;
-            } else {
-                return repository.login(new SimpleCredentials("alan_parsons", "password".toCharArray()));
-            }
-        } catch (RepositoryException e) {
-            throw new IllegalStateException(e);
-        }
     }
 
 

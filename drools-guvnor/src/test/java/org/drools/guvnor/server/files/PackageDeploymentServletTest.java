@@ -36,7 +36,7 @@ public class PackageDeploymentServletTest extends TestCase {
 
 
 	public void testLoadingRules() throws Exception {
-		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSessionKeepOpen() );
+		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
 
 		ServiceImplementation impl = new ServiceImplementation();
 		impl.repository = repo;
