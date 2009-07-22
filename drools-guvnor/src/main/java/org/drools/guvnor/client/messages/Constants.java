@@ -1878,4 +1878,6 @@ public interface Constants extends ConstantsWithLookup {
     String InitialisingInfoFor0PleaseWait();
 
     String SavedOK();
+
+    String Actions();
 }

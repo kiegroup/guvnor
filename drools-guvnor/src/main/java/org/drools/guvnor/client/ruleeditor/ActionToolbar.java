@@ -21,20 +21,24 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.util.Format;
-import com.gwtext.client.widgets.QuickTipsConfig;
-import com.gwtext.client.widgets.Toolbar;
-import com.gwtext.client.widgets.ToolbarButton;
-import com.gwtext.client.widgets.ToolbarTextItem;
+import com.gwtext.client.widgets.*;
+import com.gwtext.client.widgets.menu.Menu;
+import com.gwtext.client.widgets.menu.Item;
+import com.gwtext.client.widgets.menu.BaseItem;
+import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.common.StatusChangePopup;
+import org.drools.guvnor.client.common.*;
+import static org.drools.guvnor.client.common.AssetFormats.*;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
+import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.packages.PackageBuilderWidget;
 
 
 /**
@@ -43,6 +47,8 @@ import org.drools.guvnor.client.rpc.RuleAsset;
  * @author Michael Neale
  */
 public class ActionToolbar extends Composite {
+
+    static String[] VALIDATING_FORMATS =  new String [] {BUSINESS_RULE, DSL_TEMPLATE_RULE, DECISION_SPREADSHEET_XLS,  DRL,ENUMERATION, DECISION_TABLE_GUIDED, DRL_MODEL, DSL, FUNCTION};
 
 	private Toolbar		toolbar;
     private CheckinAction checkinAction;
@@ -53,16 +59,18 @@ public class ActionToolbar extends Composite {
 	private Command afterCheckinEvent;
     private Constants constants = GWT.create(Constants.class);
     private SmallLabel savedOK;
+    private Widget editor;
 
     public ActionToolbar(final RuleAsset asset,
                          final CheckinAction checkin,
                          final CheckinAction archiv,
-                         final Command delete, boolean readOnly) {
+                         final Command delete, boolean readOnly, Widget editor) {
 
         this.checkinAction = checkin;
         this.archiveAction = archiv;
         this.deleteAction = delete;
         this.asset = asset;
+        this.editor = editor;
 
         this.state = new ToolbarTextItem(constants.Status() + " ");
 
@@ -125,34 +133,61 @@ public class ActionToolbar extends Composite {
         toolbar.addFill();
         toolbar.addSeparator();
 
-		ToolbarButton copy = new ToolbarButton();
-		copy.setText(constants.Copy());
-		copy.setTooltip(constants.CopyThisAsset());
-		copy.addListener(new ButtonListenerAdapter() {
-			public void onClick(
-					com.gwtext.client.widgets.Button button,
-					EventObject e) {
-                	doCopyDialog(button);
-			}
-			});
-		toolbar.addButton(copy);
+
+        Menu moreMenu = new Menu();
+        moreMenu.addItem(new Item(constants.Copy(), new BaseItemListenerAdapter() {
+            @Override
+            public void onClick(BaseItem baseItem, EventObject eventObject) {
+                doCopyDialog();
+            }
+        }));
+        moreMenu.addItem(new Item(constants.Archive(), new BaseItemListenerAdapter() {
+            @Override
+            public void onClick(BaseItem baseItem, EventObject eventObject) {
+                if (Window.confirm(constants.AreYouSureYouWantToArchiveThisItem() + "\n" + constants.ArchiveThisAssetThisWillNotPermanentlyDeleteIt())) {
+                    archiveAction.doCheckin(constants.ArchivedItemOn() + new java.util.Date().toString());
+                }
+            }
+        }));
+        moreMenu.addItem(new Item(constants.ChangeStatus(), new BaseItemListenerAdapter() {
+            @Override
+            public void onClick(BaseItem baseItem, EventObject eventObject) {
+                showStatusChanger();            }
+        }));
 
 
-		ToolbarButton archive = new ToolbarButton();
-		archive.setText(constants.Archive());
-		archive.setTooltip(getTip(constants.ArchiveThisAssetThisWillNotPermanentlyDeleteIt()));
-		archive.addListener(new ButtonListenerAdapter() {
-			public void onClick(
-					com.gwtext.client.widgets.Button button,
-					EventObject e) {
-                        if (Window.confirm(constants.AreYouSureYouWantToArchiveThisItem())) {
-                            archiveAction.doCheckin(constants.ArchivedItemOn() + new java.util.Date().toString());
+
+        
+
+        ToolbarMenuButton more = new ToolbarMenuButton(constants.Actions(), moreMenu);
+
+
+
+        if (isValidatorTypeAsset()) {
+            ToolbarButton validate = new ToolbarButton();
+            validate.setText(constants.Validate());
+            validate.addListener(new ButtonListenerAdapter()  {
+                        public void onClick(
+                                com.gwtext.client.widgets.Button button,
+                                EventObject e) {
+                            doValidate();
                         }
-			}
-			});
-		toolbar.addButton(archive);
+                    });
+            toolbar.addButton(validate);
 
-
+            if (shouldShowViewSource()) {
+                ToolbarButton viewSource = new ToolbarButton();
+                viewSource.setText(constants.ViewSource());
+                viewSource.addListener(new ButtonListenerAdapter()  {
+                    public void onClick(
+                            com.gwtext.client.widgets.Button button,
+                            EventObject e) {
+                        doViewsource();
+                    }
+                });
+                toolbar.addButton(viewSource);
+            }
+        }
 
 
         if (notCheckedInYet()) {
@@ -181,25 +216,63 @@ public class ActionToolbar extends Composite {
 
         }
 
+        toolbar.addButton(more);
 
 
 
 
-        ToolbarButton stateChange = new ToolbarButton();
-        stateChange.setText(constants.ChangeStatus());
-		stateChange.setTooltip(getTip(constants.ChangeStatusTip()));
-		stateChange.addListener(new ButtonListenerAdapter() {
-			public void onClick(
-					com.gwtext.client.widgets.Button button,
-					EventObject e) {
-				showStatusChanger(button);
-			}
-			});
 
-		toolbar.addButton(stateChange);
+
     }
 
-	private boolean notCheckedInYet() {
+    private boolean shouldShowViewSource() {
+        return ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW);
+    }
+
+    private void doViewsource() {
+    	onSave();
+        LoadingPopup.showMessage(constants.CalculatingSource());
+        RepositoryServiceFactory.getService().buildAssetSource( this.asset, new GenericCallback<String>() {
+            public void onSuccess(String src) { showSource(src);}
+        });
+
+    }
+
+    private void showSource(String src) {
+        PackageBuilderWidget.showSource( src, this.asset.metaData.name );
+        LoadingPopup.close();
+    }
+
+
+
+    private void doValidate() {
+    	onSave();
+        LoadingPopup.showMessage(constants.ValidatingItemPleaseWait());
+        RepositoryServiceFactory.getService().buildAsset( asset, new GenericCallback<BuilderResult[]>() {
+            public void onSuccess(BuilderResult[] results) {RuleValidatorWrapper.showBuilderErrors(results);}
+        });
+
+    }
+
+    public void onSave() {
+        if (editor instanceof SaveEventListener) {
+            SaveEventListener el = (SaveEventListener) editor;
+            el.onSave();
+        }
+    }
+
+
+
+    private boolean isValidatorTypeAsset() {
+       String format = asset.metaData.format;
+       for(String fmt : VALIDATING_FORMATS) {
+           if (fmt.equals(format)) return true;
+       }
+       return false;
+    }
+
+
+    private boolean notCheckedInYet() {
 		return asset.metaData.versionNumber == 0;
 	}
 
@@ -214,7 +287,7 @@ public class ActionToolbar extends Composite {
 
 
 
-    protected void doCopyDialog(Widget w) {
+    protected void doCopyDialog() {
         final FormStylePopup form = new FormStylePopup("images/rule_asset.gif", constants.CopyThisItem());
         final TextBox newName = new TextBox();
         form.addAttribute(constants.NewName(), newName );
@@ -278,7 +351,7 @@ public class ActionToolbar extends Composite {
 	/**
      * Show the stats change popup.
      */
-    private void showStatusChanger(Widget w) {
+    private void showStatusChanger() {
         final StatusChangePopup pop = new StatusChangePopup(asset.uuid, false);
         pop.setChangeStatusEvent(new Command() {
             public void execute() {
@@ -294,6 +367,9 @@ public class ActionToolbar extends Composite {
     public static interface CheckinAction {
     	void doCheckin(String comment);
     }
+
+
+
 
 
 }

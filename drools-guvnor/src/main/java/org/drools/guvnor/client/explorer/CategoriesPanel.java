@@ -33,8 +33,7 @@ public class CategoriesPanel extends GenericPanel {
         
         Toolbar rulesToolBar = new Toolbar();
 
-        final ToolbarMenuButton menuButton = new ToolbarMenuButton(constants.CreateNew(),
-                                                            RulesNewMenu.getMenu( this ) );
+        final ToolbarMenuButton menuButton = new ToolbarMenuButton(constants.CreateNew(), RulesNewMenu.getMenu( this ) );
         rulesToolBar.addButton( menuButton );
         menuButton.addListener( new SplitButtonListenerAdapter() {
 

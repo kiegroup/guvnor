@@ -16,15 +16,14 @@ package org.drools.guvnor.client.ruleeditor;
  */
 
 
-
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.rpc.MetaData;
-import org.drools.guvnor.client.messages.Constants;
-
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.*;
+import com.gwtext.client.widgets.Toolbar;
+import com.gwtext.client.widgets.ToolbarTextItem;
+import com.gwtext.client.widgets.Panel;
+import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.MetaData;
 
 /**
  * This holds the editor and viewer for rule documentation.
@@ -38,18 +37,46 @@ public class RuleDocumentWidget extends DirtyableComposite {
     private Constants constants = ((Constants) GWT.create(Constants.class));
 
     public RuleDocumentWidget(MetaData data) {
-//
-//        HorizontalPanel horiz = new HorizontalPanel();
-//
-
 		text = new TextArea();
-
         text.setWidth( "100%" );
         text.setVisibleLines( 5 );
         text.setStyleName( "rule-viewer-Documentation" ); //NON-NLS
         text.setTitle(constants.RuleDocHint());
-		initWidget(text);
+
+
+        Panel p = new Panel();
+        p.setCollapsible( true );
+        p.setTitle( constants.Description() + ":" );
+        p.setBodyBorder(false);
+
+
+        if (data.description == null || data.description.equals("") || data.description.equals("<documentation>")) {
+            p.setCollapsed(true);
+        }
+        p.add(text);
+        
+
+
+
+        Label lbl = new Label("This is a comment");
+        lbl.setStyleName("x-form-field");
+
+
+
+
+
+
+
+
+        VerticalPanel vp = new VerticalPanel();
+        vp.add(p);
+
+
+        vp.setWidth("100%");
+
         loadData(data);
+
+        initWidget(vp);
 	}
 
 

@@ -24,16 +24,7 @@ import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusListener;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
 
 /**
@@ -91,6 +82,8 @@ public class RuleViewer extends DirtyableComposite {
         initWidget( focusPanel );
 
         doWidgets(null);
+
+
 
         LoadingPopup.close();
     }
@@ -151,7 +144,7 @@ public class RuleViewer extends DirtyableComposite {
                                              doDelete();
                                          }
                                      },
-                                     readOnly );
+                                     readOnly, editor );
 
         //layout.add(toolbar, DockPanel.NORTH);
         layout.add( toolbar );
@@ -178,7 +171,7 @@ public class RuleViewer extends DirtyableComposite {
         VerticalPanel vert = new VerticalPanel();
         vert.add( editor );
         editor.setHeight( "100%" );
-        vert.add( doco );
+        //vert.add( doco );
 
         vert.setWidth( "100%" );
         vert.setHeight( "100%" );
@@ -194,6 +187,8 @@ public class RuleViewer extends DirtyableComposite {
 
         //hsp.setSplitPosition("80%");
         hsp.setHeight( "100%" );
+
+        layout.add(doco);
 
     }
 

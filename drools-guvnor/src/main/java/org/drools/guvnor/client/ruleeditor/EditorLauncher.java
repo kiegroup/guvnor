@@ -56,52 +56,41 @@ public class EditorLauncher {
         RulePackageSelector.currentlySelectedPackage = asset.metaData.packageName;
         //depending on the format, load the appropriate editor
         if ( asset.metaData.format.equals( AssetFormats.BUSINESS_RULE ) ) {
-            return new RuleValidatorWrapper( new RuleModeller( asset ),
-                                             asset );
+
+            return new RuleModeller( asset );
             //return new RuleModeller( asset  );
         } else if ( asset.metaData.format.equals( AssetFormats.DSL_TEMPLATE_RULE ) ) {
-            return new RuleValidatorWrapper( new DSLRuleEditor( asset ),
-                                             asset );
+            return  new DSLRuleEditor( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.MODEL ) ) {
             return new ModelAttachmentFileWidget( asset,
                                                   viewer );
         } else if ( asset.metaData.format.equals( AssetFormats.DECISION_SPREADSHEET_XLS ) ) {
-            return new RuleValidatorWrapper( new DecisionTableXLSWidget( asset,
-                                                                         viewer ),
-                                             asset );
+            return new DecisionTableXLSWidget( asset, viewer );
+
         } else if ( asset.metaData.format.equals( AssetFormats.RULE_FLOW_RF ) ) {
             //            return new RuleFlowUploadWidget(asset, viewer);
             return new RuleFlowWrapper( asset,
                                         viewer );
         } else if ( asset.metaData.format.equals( AssetFormats.DRL ) ) {
-            return new RuleValidatorWrapper( new DrlEditor( asset ),
-                                             asset );
+            return new DrlEditor( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.ENUMERATION ) ) {
-            return new RuleValidatorWrapper( new DefaultRuleContentWidget( asset ),
-                                             asset );
+            return new DefaultRuleContentWidget( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.TEST_SCENARIO ) ) {
             return new ScenarioWidget( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.DECISION_TABLE_GUIDED ) ) {
-            return new RuleValidatorWrapper( new GuidedDecisionTableWidget( asset ),
-                                             asset );
+            return new GuidedDecisionTableWidget( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.DRL_MODEL ) ) {
-            return new RuleValidatorWrapper( new FactModelWidget( asset ),
-                                             asset );
+            return new FactModelWidget( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.DSL ) ) {
-            return new RuleValidatorWrapper( new DefaultRuleContentWidget( asset ),
-                                             asset );
+            return new DefaultRuleContentWidget( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.PROPERTIES ) ) {
-            return new PropertiesWidget( asset,
-                                         viewer );
+            return new PropertiesWidget( asset, viewer );
         } else if ( asset.metaData.format.equals( AssetFormats.XML ) ) {
-            return new XmlFileWidget( asset,
-                                      viewer );
+            return new XmlFileWidget( asset, viewer );
         } else if ( asset.metaData.format.equals( AssetFormats.FUNCTION ) ) {
-            return new RuleValidatorWrapper( new FunctionEditor( asset ),
-                                             asset );
+            return new FunctionEditor( asset );
         } else {
-            return new DefaultContentUploadEditor( asset,
-                                                   viewer );
+            return new DefaultContentUploadEditor( asset, viewer );
         }
 
     }
