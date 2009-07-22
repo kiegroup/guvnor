@@ -245,20 +245,12 @@ public class PackageDeploymentServletTest extends TestCase {
 
         assertEquals(2, kp.getRules().size());
 
-
-
-
-
         server.stop();
-
-
         repo.logout();
-
-
 
 	}
 
-	public void testScenarios() throws Exception {
+	public void testScenariosAndChangeSet() throws Exception {
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
 
 		ServiceImplementation impl = new ServiceImplementation();
@@ -287,6 +279,19 @@ public class PackageDeploymentServletTest extends TestCase {
 		testResult = new String(out.toByteArray());
 		assertNotNull(testResult);
 		assertEquals("No test scenarios found.", testResult);
+
+
+        serv = new PackageDeploymentServlet();
+        req = new MockHTTPRequest("/package/testScenariosURL/SNAP1/ChangeSet.xml", null);
+        req.url = new StringBuffer("http://foo/ChangeSet.xml");
+        out = new ByteArrayOutputStream();
+        res = new MockHTTPResponse(out);
+
+        serv.doGet(req, res);
+        testResult = new String(out.toByteArray());
+        assertNotNull(testResult);
+        assertTrue(testResult.indexOf("<resource source='http://foo' type='PKG' />") > 0);
+
 
 	}
 

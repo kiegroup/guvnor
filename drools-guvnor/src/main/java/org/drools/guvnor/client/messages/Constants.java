@@ -1880,4 +1880,8 @@ public interface Constants extends ConstantsWithLookup {
     String SavedOK();
 
     String Actions();
+
+    String ChangeSet();
+
+    String URLToChangeSetForDeploymentAgents();
 }

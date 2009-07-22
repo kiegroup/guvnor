@@ -163,6 +163,12 @@ public class PackageEditor2 extends PrettyFormLayout {
 				+ "' target='_blank'>" + getScenarios(this.conf) + "</a>");
 		addAttribute(constants.URLForRunningTests(), h(html3, constants.URLRunTestsRemote()));
 
+        HTML html4 = new HTML("<a href='" + getChangeset(this.conf)
+                + "' target='_blank'>" + getChangeset(this.conf) + "</a>");
+        
+        addAttribute(constants.ChangeSet(), h(html4, constants.URLToChangeSetForDeploymentAgents()));
+
+
 
 
         status = new HTML();
@@ -332,6 +338,10 @@ public class PackageEditor2 extends PrettyFormLayout {
 
     static String getScenarios(PackageConfigData conf) {
     	return makeLink (conf) + "/SCENARIOS"; //NON-NLS
+    }
+
+    static String getChangeset(PackageConfigData conf) {
+    	return makeLink (conf) + "/ChangeSet.xml"; //NON-NLS
     }
 
 
