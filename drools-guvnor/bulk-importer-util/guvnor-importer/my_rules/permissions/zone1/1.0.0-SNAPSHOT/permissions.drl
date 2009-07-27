@@ -1,0 +1,14 @@
+package permissions.zone1
+
+import org.jboss.drools.guvnor.importgenerator.example.domain.RuleResultVO;
+import org.jboss.drools.guvnor.importgenerator.example.domain.PermissionVO;
+import org.jboss.drools.guvnor.importgenerator.example.domain.UserVO;
+
+rule "does the user have permission to access zone 1"
+when
+	not RuleResultVO()
+    $user: UserVO($permissions : permissions)
+    eval($permissions.contains(new PermissionVO("ZONE_1")))
+then
+	insert(new RuleResultVO("success"));
+end

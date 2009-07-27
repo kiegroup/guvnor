@@ -1,0 +1,91 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jboss.drools.guvnor.tools.example</groupId>
+  <artifactId>example-domain</artifactId>
+  <packaging>jar</packaging>
+  <name>guvnor-importer-example-domain</name>
+  <version>1.0.0-SNAPSHOT</version>
+  <description></description>
+  
+  <properties>
+  	<drools.version>5.0.1</drools.version>
+  </properties>
+  
+  <build>
+  	<pluginManagement>
+  		<plugins>
+  			<plugin>
+  				<groupId>org.apache.maven.plugins</groupId>
+  				<artifactId>maven-compiler-plugin</artifactId>
+  				<configuration>
+  					<source>1.5</source>
+  					<target>1.5</target>
+  				</configuration>
+  			</plugin>
+  		</plugins>
+  	</pluginManagement>
+  </build>
+  
+  
+  <repositories>
+	<repository>
+		<id>jboss-std</id>
+		<url>http://repository.jboss.com/maven2</url>
+	</repository>
+	<!--repository>
+		<id>gwt-ext</id>
+		<url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo/</url>
+	</repository-->
+  </repositories>
+  
+  <dependencies>
+  	<dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.1</version>
+  	</dependency>
+  	<dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4</version>
+  	</dependency>
+    
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-repository</artifactId>
+      <version>${drools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <version>${drools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <version>${drools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisiontables</artifactId>
+      <version>${drools.version}</version>
+    </dependency>
+	<!-- end RuleAgent testing dependencies -->
+	
+	<!--dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-guvnor</artifactId>
+	  <version>${drools.version}</version>
+      <type>war</type>
+	</dependency-->
+	
+	<dependency>
+		<groupId>commons-beanutils</groupId>
+		<artifactId>commons-beanutils</artifactId>
+		<version>1.7.0</version>
+	</dependency>
+
+  </dependencies>
+</project>

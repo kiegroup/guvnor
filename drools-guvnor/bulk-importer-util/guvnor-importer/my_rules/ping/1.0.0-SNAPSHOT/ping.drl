@@ -1,0 +1,9 @@
+package ping.test
+
+rule "ping test rule"
+when
+	s: String(toString == "ping")
+then
+	insert("pong");
+	retract(s);
+end

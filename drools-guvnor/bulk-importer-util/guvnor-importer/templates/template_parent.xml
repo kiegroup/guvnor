@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED_GUVNOR_IMPORT -->
+<sv:node xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+	xmlns:rep="internal" xmlns:fn_old="http://www.w3.org/2004/10/xpath-functions"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:drools="http://www.jboss.org/drools-repository/1.0"
+	xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
+	xmlns:fn="http://www.w3.org/2005/xpath-functions" sv:name="drools:repository">
+	<sv:property sv:name="jcr:primaryType" sv:type="Name"><sv:value>nt:folder</sv:value></sv:property>
+	<sv:property sv:name="jcr:created" sv:type="Date"><sv:value>{3}</sv:value></sv:property>
+	<sv:node sv:name="drools:package_area">
+		<sv:property sv:name="jcr:primaryType" sv:type="Name"><sv:value>nt:folder</sv:value></sv:property>
+		<sv:property sv:name="jcr:created" sv:type="Date"><sv:value>{3}</sv:value></sv:property>
+<!-- GENERATED PACKAGE_AREA -->
+{0}
+	</sv:node>
+	<sv:node sv:name="drools:packagesnapshot_area">
+		<sv:property sv:name="jcr:primaryType" sv:type="Name"><sv:value>nt:folder</sv:value></sv:property>
+		<sv:property sv:name="jcr:created" sv:type="Date"><sv:value>{3}</sv:value></sv:property>
+<!-- GENERATED SNAPSHOT_AREA -->
+{4}
+	</sv:node>
+	<sv:node sv:name="drools:tag_area">
+		<sv:property sv:name="jcr:primaryType" sv:type="Name"><sv:value>nt:folder</sv:value></sv:property>
+		<sv:property sv:name="jcr:created" sv:type="Date"><sv:value>{3}</sv:value></sv:property>
+		<sv:node sv:name="importedCategory">
+			<sv:property sv:name="jcr:primaryType" sv:type="Name"><sv:value>drools:categoryNodeType</sv:value></sv:property>
+			<sv:property sv:name="jcr:uuid" sv:type="String"><sv:value><!--GEN_UUID-->{1}</sv:value></sv:property>
+			<sv:property sv:name="jcr:created" sv:type="Date"><sv:value>{3}</sv:value></sv:property>
+		</sv:node>
+	</sv:node>
+	<sv:node sv:name="drools:state_area">
+		<sv:property sv:name="jcr:primaryType" sv:type="Name"><sv:value>nt:folder</sv:value></sv:property>
+		<sv:property sv:name="jcr:created" sv:type="Date"><sv:value>{3}</sv:value></sv:property>
+		<sv:node sv:name="Draft">
+			<sv:property sv:name="jcr:primaryType" sv:type="Name"><sv:value>drools:stateNodeType</sv:value></sv:property>
+			<sv:property sv:name="jcr:uuid" sv:type="String"><sv:value><!--GEN_UUID-->{2}</sv:value></sv:property>
+			<sv:property sv:name="jcr:created" sv:type="Date"><sv:value>{3}</sv:value></sv:property>
+		</sv:node>
+	</sv:node>
+	<sv:node sv:name="drools.package.migrated">
+		<sv:property sv:name="jcr:primaryType" sv:type="Name"><sv:value>nt:folder</sv:value></sv:property>
+		<sv:property sv:name="jcr:created" sv:type="Date"><sv:value>{3}</sv:value></sv:property>
+	</sv:node>
+</sv:node>
