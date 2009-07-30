@@ -48,6 +48,7 @@ public class RuleModeller extends DirtyableComposite {
     private SuggestionCompletionEngine completions;
     private RuleModel model;
     private Constants constants = ((Constants) GWT.create(Constants.class));
+    private boolean showingOptions = false;
 
     public RuleModeller(RuleAsset asset, RuleViewer viewer) {
         this(asset);
@@ -67,6 +68,34 @@ public class RuleModeller extends DirtyableComposite {
         setWidth( "100%" );
         setHeight( "100%" );
     }
+
+
+    private boolean isLock(String attr) {
+
+        //UNCOMMENT THIS WHEN READY !
+        //if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_CREATE_NEW_PACKAGE)) return true;
+
+
+        if (this.model.metadataList.length == 0) {
+            return false;
+        } else {
+            for(RuleMetadata at : this.model.metadataList) {
+                if (at.attributeName.equals(attr)) return true;
+            }
+            return false;
+        }
+    }
+
+    /** return true if we should not allow unfrozen editing of the RHS */
+    public boolean lockRHS() {
+        return isLock(RuleAttributeWidget.LOCK_RHS); //NON-NLS
+    }
+
+    /** return true if we should not allow unfrozen editing of the LHS */
+    public boolean lockLHS() {
+        return isLock(RuleAttributeWidget.LOCK_LHS); //NON-NLS
+    }
+
 
     /**
      * This updates the widget to reflect the state of the model.
@@ -89,7 +118,10 @@ public class RuleModeller extends DirtyableComposite {
 
 
         layout.setWidget( 0, 0, new SmallLabel(constants.WHEN()) );
-        layout.setWidget( 0, 2, addPattern );
+
+        if (!lockLHS()) {
+            layout.setWidget( 0, 2, addPattern );
+        }
 
 
 
@@ -105,16 +137,43 @@ public class RuleModeller extends DirtyableComposite {
                 showActionSelector(w);
             }
         });
-        layout.setWidget( 2, 2, addAction );
+        if (!lockRHS()) {
+            layout.setWidget( 2, 2, addAction );
+        }
 
         layout.setWidget( 3, 1, renderRhs(this.model) );
         layout.getFlexCellFormatter().setHorizontalAlignment(3, 1, HasHorizontalAlignment.ALIGN_LEFT);
         layout.getFlexCellFormatter().setVerticalAlignment(3, 1, HasVerticalAlignment.ALIGN_TOP);
 
-        layout.setWidget( 4, 0, new SmallLabel(constants.optionsRuleModeller()) );
-        layout.setWidget( 4, 2, getAddAttribute() );
-        layout.setWidget( 5, 1, new RuleAttributeWidget(this, this.model) );
 
+        if (showAttributes()) {
+
+            final RuleModeller self = this;
+            if (!this.showingOptions) {
+                ClickableLabel showMoreOptions = new ClickableLabel("(show options...)", new ClickListener() {
+                    public void onClick(Widget sender) {
+                        showingOptions = true;
+                        layout.setWidget( 4, 0, new SmallLabel(constants.optionsRuleModeller()) );
+                        layout.setWidget( 4, 2, getAddAttribute() );
+                        layout.setWidget( 5, 1, new RuleAttributeWidget(self, self.model) );
+                    }
+                });
+                layout.setWidget( 4, 0, showMoreOptions );
+            } else {
+                layout.setWidget( 4, 0, new SmallLabel(constants.optionsRuleModeller()) );
+                layout.setWidget( 4, 2, getAddAttribute() );
+                layout.setWidget( 5, 1, new RuleAttributeWidget(self, self.model) );
+                
+            }
+
+
+        }
+
+    }
+
+    private boolean showAttributes() {
+        //return false;
+        return ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW);
     }
 
     public void refreshWidget() {
@@ -138,6 +197,7 @@ public class RuleModeller extends DirtyableComposite {
     protected void showAttributeSelector(Widget w) {
         final FormStylePopup pop = new FormStylePopup("images/config.png", constants.AddAnOptionToTheRule()); //NON-NLS
         final ListBox list = RuleAttributeWidget.getAttributeList();
+
         final Image addbutton = new ImageButton("images/new_item.gif");                                                //NON-NLS
         final TextBox box = new TextBox();
 
@@ -146,7 +206,12 @@ public class RuleModeller extends DirtyableComposite {
 
         list.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-              model.addAttribute( new RuleAttribute(list.getItemText( list.getSelectedIndex() ), "") );
+              String attr = list.getItemText( list.getSelectedIndex() );
+              if (attr.equals(RuleAttributeWidget.LOCK_LHS) ||attr.equals(RuleAttributeWidget.LOCK_RHS)) {
+                model.addMetadata(new RuleMetadata(attr, "true") );
+              } else {
+                model.addAttribute( new RuleAttribute(attr, "") );
+              }
               refreshWidget();
               pop.hide();
             }
@@ -174,20 +239,36 @@ public class RuleModeller extends DirtyableComposite {
         pop.addAttribute(constants.Metadata3(), horiz );
         pop.addAttribute(constants.Attribute1(), list );
 
-        //add text field
-        //add button
-        //add listener that adds the rule Attribute
-//        pop.addAttribute( "Metadata:",
-//                editableText( new FieldBinding() {
-//                                  public String getValue() {
-//                                      return data.subject;
-//                                  }
-//
-//                                  public void setValue(String val) {
-//                                      data.subject = val;
-//                                  }
-//                              },
-//                              "A short description of the subject matter." ) );
+        Button freezeConditions = new Button(constants.Conditions());
+        freezeConditions.addClickListener(new ClickListener() {
+            public void onClick(Widget sender) {
+                model.addMetadata(new RuleMetadata(RuleAttributeWidget.LOCK_LHS, "true") );
+                refreshWidget();
+                pop.hide();
+            }
+        });
+        Button freezeActions = new Button(constants.Actions());
+        freezeActions.addClickListener(new ClickListener() {
+            public void onClick(Widget sender) {
+                model.addMetadata(new RuleMetadata(RuleAttributeWidget.LOCK_RHS, "true") );
+                refreshWidget();
+                pop.hide();
+            }
+        });
+        HorizontalPanel hz = new HorizontalPanel();
+        if (!lockLHS()) {
+            hz.add(freezeConditions);
+        }
+        if (!lockRHS()) {
+            hz.add(freezeActions);
+        }
+        hz.add(new InfoPopup(constants.FrozenAreas(), constants.FrozenExplanation()));
+
+        if (hz.getWidgetCount() > 1) {
+                pop.addAttribute(constants.FreezeAreasForEditing(), hz);
+        }
+
+
 
 
         pop.show();
@@ -255,7 +336,9 @@ public class RuleModeller extends DirtyableComposite {
                 horiz.setWidth( "100%" );
             }
 
-            horiz.add( remove );
+            if (!lockRHS()) {
+                horiz.add( remove );
+            }
             widget.add( horiz );
 
         }
@@ -780,7 +863,7 @@ public class RuleModeller extends DirtyableComposite {
         w.setWidth( "100%" );
 
         horiz.add( w );
-        horiz.add( remove );
+        if (!lockLHS()) horiz.add( remove );
 
         return horiz;
     }

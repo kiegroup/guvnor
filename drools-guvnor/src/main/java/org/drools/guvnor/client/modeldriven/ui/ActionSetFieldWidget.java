@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.MouseListenerAdapter;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.util.Format;
 
@@ -104,6 +105,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
             layout.setWidget( i, 2, valueEditor(val) );
             final int idx = i;
             Image remove = new ImageButton("images/delete_item_small.gif"); //NON-NLS
+            //Image remove = new ImageButton("images/delete_item_fade.gif"); //NON-NLS
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                 	if (Window.confirm(constants.RemoveThisItem())) {
@@ -112,7 +114,18 @@ public class ActionSetFieldWidget extends DirtyableComposite {
                 	}
                 }
             });
-            layout.setWidget( i, 3, remove );
+            if (!modeller.lockRHS()) layout.setWidget( i, 3, remove );
+            remove.addMouseListener(new MouseListenerAdapter() {
+                @Override
+                public void onMouseEnter(Widget sender) {
+                    super.onMouseEnter(sender);    //To change body of overridden methods use File | Settings | File Templates.
+                }
+
+                @Override
+                public void onMouseLeave(Widget sender) {
+                    super.onMouseLeave(sender);    //To change body of overridden methods use File | Settings | File Templates.
+                }
+            });
         }
 
         if (model.fieldValues.length == 0) {
@@ -153,7 +166,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
         String descFact = (fp != null)? this.modeller.getModel().getBoundFact(model.variable).factType + " <b>[" + model.variable + "]</b>" : model.variable;
 
         String sl = Format.format(constants.setterLabel(), new String[] {HumanReadable.getActionDisplayName(modifyType), descFact});
-        return new ClickableLabel(sl, clk);//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
+        return new ClickableLabel(sl, clk, !modeller.lockRHS());//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
     }
 
 

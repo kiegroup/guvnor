@@ -145,7 +145,9 @@ public class FactPatternWidget extends DirtyableComposite {
                 }
             } );
 
-            table.setWidget( currentRow, 5, clear );
+            if (!this.modeller.lockLHS()) {
+                table.setWidget( currentRow, 5, clear );
+            }
 
         }
     }
@@ -225,7 +227,7 @@ public class FactPatternWidget extends DirtyableComposite {
             desc = constants.AnyOf() + ":";
         }
 
-        t.setWidget(0, 0, new ClickableLabel(desc, click));
+        t.setWidget(0, 0, new ClickableLabel(desc, click, !modeller.lockLHS()));
         t.getFlexCellFormatter().setColSpan(0, 0, 2);
         //t.getFlexCellFormatter().setWidth(0, 0, "15%");
 
@@ -248,7 +250,7 @@ public class FactPatternWidget extends DirtyableComposite {
                         }
                     }
                 } );
-                inner.setWidget( i, 5, clear );
+                if (!modeller.lockLHS()) inner.setWidget( i, 5, clear );
             }
         }
 
@@ -287,7 +289,7 @@ public class FactPatternWidget extends DirtyableComposite {
                 }
             } );
 
-            inner.setWidget( row, 4+ col, addConnective );
+            if (!modeller.lockLHS()) inner.setWidget( row, 4+ col, addConnective );
         } else if (constraint.constraintValueType == SingleFieldConstraint.TYPE_PREDICATE) {
             inner.setWidget( row, 0+ col, predicateEditor(constraint) );
             inner.getFlexCellFormatter().setColSpan( row, 0, 5 );
@@ -336,10 +338,10 @@ public class FactPatternWidget extends DirtyableComposite {
 
         if (pattern.constraintList != null && pattern.constraintList.constraints.length > 0) {
             String desc = Format.format(constants.ThereIsAAn0With(), patternName);
-            return  new ClickableLabel( anA(desc, patternName) , click) ;
+            return  new ClickableLabel( anA(desc, patternName) , click, !modeller.lockLHS()) ;
         } else {
             String desc = Format.format(constants.ThereIsAAn0(), patternName);
-            return new ClickableLabel( anA(desc, patternName) , click );
+            return new ClickableLabel( anA(desc, patternName) , click, !modeller.lockLHS() );
         }
     }
 
@@ -408,7 +410,7 @@ public class FactPatternWidget extends DirtyableComposite {
                 Image bind = new ImageButton( "images/edit_tiny.gif", constants.GiveFieldVarName()); //NON-NLS
 
                 bind.addClickListener( click);
-                ClickableLabel cl = new ClickableLabel(con.fieldName, click);
+                ClickableLabel cl = new ClickableLabel(con.fieldName, click, !modeller.lockLHS());
                 DOM.setStyleAttribute(cl.getElement(), "marginLeft", "" + padding + "pt"); //NON-NLS
                 ab.add( cl );
                 //ab.add( bind );

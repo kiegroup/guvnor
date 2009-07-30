@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
 import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
@@ -60,6 +61,8 @@ public class RuleAttributeWidget extends Composite {
     private static final String LOCK_ON_ACTIVE_ATTR = "lock-on-active";
     private static final String RULEFLOW_GROUP_ATTR = "ruleflow-group";
     private static final String DIALECT_ATTR = "dialect";
+    public static final String LOCK_LHS = "freeze_conditions";
+    public static final String LOCK_RHS = "freeze_actions";
 
     /**
      * If the rule attribute is represented visually by a checkbox, these are the values that will
@@ -68,7 +71,6 @@ public class RuleAttributeWidget extends Composite {
     private static final String TRUE_VALUE = "true";
     private static final String FALSE_VALUE = "false";
 
-    private FormStyleLayout layout;
     private RuleModel model;
     private RuleModeller parent;
     private Constants constants = ((Constants) GWT.create(Constants.class));
@@ -76,7 +78,7 @@ public class RuleAttributeWidget extends Composite {
     public RuleAttributeWidget(RuleModeller parent, RuleModel model) {
         this.parent = parent;
         this.model = model;
-        layout = new FormStyleLayout();
+        FormStyleLayout layout = new FormStyleLayout();
         //Adding metadata here, seems redundant to add a new widget for metadata. Model does handle meta data separate.
         RuleMetadata[] meta = model.metadataList;
         if (meta.length > 0) {
@@ -129,6 +131,7 @@ public class RuleAttributeWidget extends Composite {
         list.addItem(RULEFLOW_GROUP_ATTR);
         list.addItem(DIALECT_ATTR);
 
+
         return list;
     }
 
@@ -138,7 +141,8 @@ public class RuleAttributeWidget extends Composite {
         if (at.attributeName.equals(ENABLED_ATTR)
                 || at.attributeName.equals(AUTO_FOCUS_ATTR)
                 || at.attributeName.equals(LOCK_ON_ACTIVE_ATTR)
-                || at.attributeName.equals(NO_LOOP_ATTR)) {
+                || at.attributeName.equals(NO_LOOP_ATTR)
+                ) {
             editor = checkBoxEditor(at);
         } else {
             editor = textBoxEditor(at);
@@ -154,7 +158,12 @@ public class RuleAttributeWidget extends Composite {
     private Widget getEditorWidget(final RuleMetadata rm, final int idx) {
         Widget editor;
 
-        editor = textBoxEditor(rm);
+        if (rm.attributeName.equals(LOCK_LHS)
+                || rm.attributeName.equals(LOCK_RHS)) {
+            editor = new InfoPopup(constants.FrozenAreas(), constants.FrozenExplanation());
+        } else {
+            editor = textBoxEditor(rm);
+        }
 
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
         horiz.add(editor);

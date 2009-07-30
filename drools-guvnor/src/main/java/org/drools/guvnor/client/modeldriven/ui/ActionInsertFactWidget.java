@@ -87,7 +87,9 @@ public class ActionInsertFactWidget extends DirtyableComposite {
                 	};
                 }
             });
-            inner.setWidget( i, 2 + col, remove );
+            if (!this.modeller.lockRHS()) {
+                inner.setWidget( i, 2 + col, remove );
+            }
 
         }
 
@@ -124,7 +126,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
         if (this.model.fieldValues != null && model.fieldValues.length > 0 ) {
             lbl = lbl + ":";
         }
-        return new ClickableLabel( lbl, cl );
+        return new ClickableLabel( lbl, cl, !this.modeller.lockRHS() );
 
     }
 

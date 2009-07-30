@@ -99,7 +99,7 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
             lbl += " <font color='red'>" + constants.clickToAddPatterns() + "</font>";
         }
 
-        return new ClickableLabel( lbl + ":", click ) ;
+        return new ClickableLabel( lbl + ":", click, !this.modeller.lockLHS() ) ;
     }
 
     /**
