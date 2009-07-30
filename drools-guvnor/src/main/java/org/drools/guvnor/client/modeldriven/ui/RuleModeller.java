@@ -319,7 +319,7 @@ public class RuleModeller extends DirtyableComposite {
 
             DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-            Image remove = new ImageButton("images/delete_item_small.gif"); //NON-NLS
+            Image remove = new ImageButton("images/delete_faded.gif"); //NON-NLS
             remove.setTitle(constants.RemoveThisAction());
             final int idx = i;
             remove.addClickListener( new ClickListener() {
@@ -843,7 +843,7 @@ public class RuleModeller extends DirtyableComposite {
                               Widget w) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        Image remove = new ImageButton("images/delete_item_small.gif"); //NON-NLS
+        final Image remove = new ImageButton("images/delete_faded.gif"); //NON-NLS
         remove.setTitle(constants.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt());
         final int idx = i;
         remove.addClickListener( new ClickListener() {

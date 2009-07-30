@@ -134,7 +134,7 @@ public class FactPatternWidget extends DirtyableComposite {
 
             //now the clear icon
             final int currentRow = i;
-            Image clear = new ImageButton( "images/delete_item_small.gif" );//NON-NLS
+            Image clear = new ImageButton( "images/delete_faded.gif" );//NON-NLS
             clear.setTitle(constants.RemoveThisWholeRestriction());
             clear.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
@@ -239,7 +239,7 @@ public class FactPatternWidget extends DirtyableComposite {
                 this.renderFieldConstraint( inner, i, nested[i], false, 0 );
                 //add in remove icon here...
                 final int currentRow = i;
-                Image clear = new ImageButton( "images/delete_item_small.gif" ); //NON-NLS
+                Image clear = new ImageButton( "images/delete_faded.gif" ); //NON-NLS
                 clear.setTitle(constants.RemoveThisNestedRestriction());
 
                 clear.addClickListener( new ClickListener() {

@@ -78,7 +78,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
             inner.setWidget( i, 0 + col, fieldSelector(val) );
             inner.setWidget( i, 1 + col, valueEditor(val) );
             final int idx = i;
-            Image remove = new ImageButton("images/delete_item_small.gif");
+            Image remove = new ImageButton("images/delete_faded.gif");
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
                 	if (Window.confirm(constants.RemoveThisItem())) {

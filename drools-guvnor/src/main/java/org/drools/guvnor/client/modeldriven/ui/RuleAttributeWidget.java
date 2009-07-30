@@ -241,7 +241,7 @@ public class RuleAttributeWidget extends Composite {
     }
 
     private Image getRemoveIcon(final int idx) {
-        Image remove = new Image("images/delete_item_small.gif");  //NON-NLS
+        Image remove = new Image("images/delete_faded.gif");  //NON-NLS
         remove.addClickListener(new ClickListener() {
             public void onClick(Widget w) {
                 if (Window.confirm(constants.RemoveThisRuleOption())) {
@@ -254,7 +254,7 @@ public class RuleAttributeWidget extends Composite {
     }
 
     private Image getRemoveMetaIcon(final int idx) {
-        Image remove = new Image("images/delete_item_small.gif"); //NON-NLS
+        Image remove = new Image("images/delete_faded.gif"); //NON-NLS
         remove.addClickListener(new ClickListener() {
             public void onClick(Widget w) {
                 if (Window.confirm(constants.RemoveThisRuleOption())) {

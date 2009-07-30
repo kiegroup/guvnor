@@ -104,7 +104,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
             layout.setWidget( i, 1, fieldSelector(val) );
             layout.setWidget( i, 2, valueEditor(val) );
             final int idx = i;
-            Image remove = new ImageButton("images/delete_item_small.gif"); //NON-NLS
+            Image remove = new ImageButton("images/delete_faded.gif"); //NON-NLS
             //Image remove = new ImageButton("images/delete_item_fade.gif"); //NON-NLS
             remove.addClickListener( new ClickListener() {
                 public void onClick(Widget w) {
