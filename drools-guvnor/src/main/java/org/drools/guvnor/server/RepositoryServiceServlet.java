@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.drools.guvnor.client.rpc.DetailedSerializableException;
 import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
@@ -21,7 +22,8 @@ import com.google.gwt.user.client.rpc.SerializableException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
- * GWT RPC service endpoint for Repository service. A place to hang some exception handling, but mostly just passing on through.
+ * GWT RPC service endpoint for Repository service. A place to hang some exception handling mainly.
+ * This passes on all requests unmolested to the underlying ServiceImplemention class. 
  *
  * @author Michael Neale
  */
@@ -301,6 +303,18 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 
     public void installSampleRepository() throws SerializableException {
         getService().installSampleRepository();
+    }
+
+    public List<DiscussionRecord> loadDiscussionForAsset(String assetId) {
+        return getService().loadDiscussionForAsset(assetId);
+    }
+
+    public List<DiscussionRecord> addToDiscussionForAsset(String assetId, String comment) {
+        return getService().addToDiscussionForAsset(assetId, comment);
+    }
+
+    public void clearAllDiscussionsForAsset(String assetId) {
+        getService().clearAllDiscussionsForAsset(assetId);
     }
 
 

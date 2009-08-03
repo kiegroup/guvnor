@@ -479,6 +479,11 @@ input,.constraint-value-Editor {
 .rule-ListEvenRow,.DatePicker .weekheader {
 	background:#FFFFF0;
 }
+
+.discussion-header {
+    background: #FFFFF0;    
+}
+
 .DatePicker,.DatePicker .cell .gwt-HTML,.DatePicker .day .gwt-HTML {
 	border: 1px solid #aa9;
 }

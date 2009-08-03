@@ -1892,4 +1892,14 @@ public interface Constants extends ConstantsWithLookup {
     String FreezeAreasForEditing();
 
     String Conditions();
+
+    String smallCommentBy0On1Small();
+
+    String AddADiscussionComment();
+
+    String EraseAllComments();
+
+    String EraseAllCommentsWarning();
+
+    String Discussion();
 }

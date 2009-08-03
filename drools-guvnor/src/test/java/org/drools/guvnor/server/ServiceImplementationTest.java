@@ -66,6 +66,7 @@ import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.util.BRXMLPersistence;
@@ -1212,6 +1213,67 @@ public class ServiceImplementationTest extends TestCase {
 
 	}
 
+
+    public void testDiscussion() throws Exception {
+        ServiceImplementation impl = getService();
+        RulesRepository repo = impl.repository;
+
+        PackageItem pkg = repo.createPackage("testDiscussionFeature", "");
+        AssetItem rule1 = pkg.addAsset("rule_1", "");
+        rule1.updateFormat(AssetFormats.DRL);
+        rule1.updateContent("rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end");
+        rule1.checkin("");
+        repo.save();
+
+        List<DiscussionRecord> dr = impl.loadDiscussionForAsset(rule1.getUUID());
+        assertEquals(0, dr.size());
+
+        List<DiscussionRecord> dr_ = impl.addToDiscussionForAsset(rule1.getUUID(), "This is a note");
+        assertEquals(1, dr_.size()) ;
+        assertNotNull(dr_.get(0).author);
+        assertEquals("This is a note", dr_.get(0).note);
+        Thread.sleep(100);
+        impl.addToDiscussionForAsset(rule1.getUUID(), "This is a note2");
+
+
+        List<DiscussionRecord> d_ = impl.loadDiscussionForAsset(rule1.getUUID());
+        assertEquals(2, d_.size());
+
+        assertEquals("This is a note", d_.get(0).note);
+        assertEquals("This is a note2", d_.get(1).note);
+        assertTrue(d_.get(1).timestamp > d_.get(0).timestamp);
+
+
+
+        rule1.updateContent("some more content");
+        rule1.checkin("");
+
+
+        impl.addToDiscussionForAsset(rule1.getUUID(), "This is a note2");
+        d_ = impl.loadDiscussionForAsset(rule1.getUUID());
+        assertEquals(3, d_.size());
+
+        assertEquals("This is a note", d_.get(0).note);
+        assertEquals("This is a note2", d_.get(1).note);
+
+        impl.clearAllDiscussionsForAsset(rule1.getUUID());
+        d_ = impl.loadDiscussionForAsset(rule1.getUUID());
+        assertEquals(0, d_.size());
+
+        impl.addToDiscussionForAsset(rule1.getUUID(), "This is a note2");
+        d_ = impl.loadDiscussionForAsset(rule1.getUUID());
+        assertEquals(1, d_.size());
+
+
+
+
+
+
+
+
+
+
+    }
 
 
 

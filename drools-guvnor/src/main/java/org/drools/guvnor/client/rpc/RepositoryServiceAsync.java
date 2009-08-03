@@ -20,6 +20,8 @@ package org.drools.guvnor.client.rpc;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 
+import java.util.List;
+
 /**
 
  * This is what the remote service will implement, as a servlet.
@@ -98,6 +100,9 @@ public interface RepositoryServiceAsync
 	public void lockAsset(java.lang.String p0, AsyncCallback cb);
 	public void unLockAsset(java.lang.String p0, AsyncCallback cb);
 	public void installSampleRepository(AsyncCallback cb);
+    public void loadDiscussionForAsset(String assetId, AsyncCallback<List<DiscussionRecord>> dr);
+    public void addToDiscussionForAsset(String assetId, String comment,  AsyncCallback<List<DiscussionRecord>> response);
+    public void clearAllDiscussionsForAsset(String assetId, AsyncCallback cb);
 
 
 }

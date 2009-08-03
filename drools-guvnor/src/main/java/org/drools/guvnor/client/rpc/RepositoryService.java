@@ -490,4 +490,21 @@ public interface RepositoryService extends RemoteService {
      */
     public void installSampleRepository() throws SerializableException;
 
+
+    /**
+     * Return a list of discussion items for a given asset...
+     */
+    public List<DiscussionRecord> loadDiscussionForAsset(String assetId);
+
+
+    /**
+     * Append a discussion item for the current user.
+     */
+    public List<DiscussionRecord> addToDiscussionForAsset(String assetId, String comment);
+
+
+    /** Only for admins, they can nuke it from orbit to clear it out */
+    public void clearAllDiscussionsForAsset(String assetId);
+
+
 }

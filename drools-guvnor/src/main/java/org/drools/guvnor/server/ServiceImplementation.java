@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Arrays;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -74,6 +75,7 @@ import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentAssemblyError;
@@ -95,6 +97,7 @@ import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.guvnor.server.util.VerifierRunner;
+import org.drools.guvnor.server.util.Discussion;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
@@ -2348,13 +2351,42 @@ public class ServiceImplementation
 
     @Restrict("#{identity.loggedIn}")
     public void installSampleRepository() throws SerializableException {
-        if ( Contexts.isApplicationContextActive() ) {
-            Identity.instance().checkPermission( new AdminType(),
-                                                 RoleTypes.ADMIN );
-        }
+        checkIfADMIN();
         repository.importRepository( this.getClass().getResourceAsStream( "/mortgage-sample-repository.xml" ) );
         this.rebuildPackages();
         this.rebuildSnapshots();
+    }
+
+    @Restrict("#{identity.loggedIn}")
+    public List<DiscussionRecord> loadDiscussionForAsset(String assetId) {
+        return new Discussion().fromString(getRulesRepository().loadAssetByUUID(assetId).getStringProperty("discussion"));
+    }
+
+    @Restrict("#{identity.loggedIn}")
+    public List<DiscussionRecord> addToDiscussionForAsset(String assetId, String comment) {
+        RulesRepository repo = getRulesRepository();
+        AssetItem asset = repo.loadAssetByUUID(assetId);
+        Discussion dp = new Discussion();
+        List<DiscussionRecord> discussion = dp.fromString(asset.getStringProperty("discussion"));
+        discussion.add(new DiscussionRecord(repo.getSession().getUserID(), comment));
+        asset.updateStringProperty(dp.toString(discussion), "discussion");
+        repo.save();        
+        return discussion;
+    }
+
+    @Restrict("#{identity.loggedIn}")
+    public void clearAllDiscussionsForAsset(String assetId) {
+        checkIfADMIN();
+        RulesRepository repo = getRulesRepository();
+        AssetItem asset = repo.loadAssetByUUID(assetId);
+        asset.updateStringProperty("", "discussion");
+        repo.save();
+    }
+
+    private void checkIfADMIN() {
+        if ( Contexts.isApplicationContextActive() ) {
+            Identity.instance().checkPermission( new AdminType(), RoleTypes.ADMIN );
+        }
     }
 
     public String cleanHTML(String s) {

@@ -166,7 +166,7 @@ public class RuleViewer extends DirtyableComposite {
         layout.add( hsp );
 
         //the document widget
-        doco = new RuleDocumentWidget( asset.metaData );
+        doco = new RuleDocumentWidget( asset );
 
         VerticalPanel vert = new VerticalPanel();
         vert.add( editor );
