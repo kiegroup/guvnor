@@ -141,12 +141,13 @@ public class ConstraintValueEditor extends DirtyableComposite {
         if ( this.constraint.value == null ) {
             box.addItem( constants.Choose() );
         }
-        
+
         int j = 0;
         for ( int i = 0; i < vars.size(); i++ ) {
             String var = (String) vars.get( i );
             FactPattern f = model.getBoundFact( var );
-            if ( f != null && f.factType.equals( this.fieldType ) ) {
+            String fv = model.getFieldConstraint( var );
+            if ( (f != null && f.factType.equals( this.fieldType )) || (fv != null && fv.equals( this.fieldType )) ) {
                 box.addItem( var );
                 if ( this.constraint.value != null && this.constraint.value.equals( var ) ) {
                     box.setSelectedIndex( j );
@@ -196,10 +197,10 @@ public class ConstraintValueEditor extends DirtyableComposite {
         } else if ( SuggestionCompletionEngine.TYPE_DATE.equals( this.fieldType ) ) {
 
             DatePickerLabel datePicker = new DatePickerLabel( constraint.value );
-            
+
             // Set the default time
             constraint.value = datePicker.getDateString();
-            
+
             datePicker.addValueChanged( new ValueChanged() {
                 public void valueChanged(String newValue) {
                     constraint.value = newValue;

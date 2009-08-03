@@ -117,7 +117,9 @@ public class ActionValueEditor extends DirtyableComposite {
 		List<String> vars = model.getModel().getBoundFacts();
 		for (String v : vars) {
 			FactPattern factPattern = model.getModel().getBoundFact(v);
-			if (factPattern.factType.equals(this.variableType)) {
+			String fv = model.getModel().getFieldConstraint( v );
+			
+			if ( (factPattern != null && factPattern.factType.equals( this.variableType )) || (fv != null) ) {
 				// First selection is empty
 				if (listVariable.getItemCount() == 0) {
 					listVariable.addItem("...");
