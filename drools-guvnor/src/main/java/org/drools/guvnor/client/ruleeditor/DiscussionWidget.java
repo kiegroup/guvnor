@@ -21,6 +21,8 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
+import org.drools.guvnor.client.security.Capabilities;
 
 import java.util.Date;
 import java.util.List;
@@ -104,8 +106,23 @@ public class DiscussionWidget extends Composite {
         Button createNewComment = new Button(constants.AddADiscussionComment());
         hp.add(createNewComment);
 
-        Button adminClearAll = new Button(constants.EraseAllComments());
-        hp.add(adminClearAll);
+
+        if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_ADMIN)) {
+            Button adminClearAll = new Button(constants.EraseAllComments());
+            hp.add(adminClearAll);
+            adminClearAll.addClickListener(new ClickListener() {
+                public void onClick(Widget sender) {
+                    if (Window.confirm(constants.EraseAllCommentsWarning())) {
+                        RepositoryServiceFactory.getService().clearAllDiscussionsForAsset(asset.uuid, new GenericCallback() {
+                            public void onSuccess(Object result) {
+                                updateCommentList(new ArrayList<DiscussionRecord>());
+                            }
+                        });
+                    }
+                }
+            });
+            
+        }
 
         newCommentLayout.add(hp);
         
@@ -113,17 +130,6 @@ public class DiscussionWidget extends Composite {
         createNewComment.addClickListener(new ClickListener() {
             public void onClick(Widget sender) {
                 showAddNewComment();
-            }
-        });
-        adminClearAll.addClickListener(new ClickListener() {
-            public void onClick(Widget sender) {
-                if (Window.confirm(constants.EraseAllCommentsWarning())) {
-                    RepositoryServiceFactory.getService().clearAllDiscussionsForAsset(asset.uuid, new GenericCallback() {
-                        public void onSuccess(Object result) {
-                            updateCommentList(new ArrayList<DiscussionRecord>());
-                        }
-                    });
-                }
             }
         });
     }
