@@ -3,6 +3,8 @@ package org.drools.guvnor.server.files;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.security.CategoryPathType;
+import org.drools.guvnor.server.util.Discussion;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.AssetPageList;
@@ -43,6 +45,12 @@ public class FeedServlet extends RepositoryServlet {
                         doCategoryFeed(request, response);
                     }
                 });
+            } else if (url.indexOf("feed/discussion")  > -1) {
+                doAuthorizedAction(request, response, new A() {
+                    public void a() throws Exception {
+                        doDiscussionFeed(request, response);
+                    }
+                });
             }
         } catch (AuthorizationException e) {
             response.setHeader("WWW-Authenticate", "BASIC realm=\"users\"");
@@ -51,6 +59,26 @@ public class FeedServlet extends RepositoryServlet {
 
     }
 
+    private void doDiscussionFeed(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String assetName = request.getParameter("assetName");
+        String packageName = request.getParameter("package");
+        AssetItem asset = getFileManager().getRepository().loadPackage(packageName).loadAsset(assetName);
+        checkPackageReadPermission(asset.getPackageName());
+
+        List<AtomFeed.AtomEntry> entries = new ArrayList<AtomFeed.AtomEntry>();
+        entries.add(new AtomFeed.AtomEntry(request,  asset));
+        List<DiscussionRecord> drs = new Discussion().fromString(asset.getStringProperty(Discussion.DISCUSSION_PROPERTY_KEY));
+        for (DiscussionRecord dr : drs) {
+            entries.add(new AtomFeed.AtomEntry(request, asset, dr));
+        }
+        AtomFeed feed = new AtomFeed("Discussion of: " + packageName + "/" + assetName,
+                Calendar.getInstance(),
+                request.getServerName() + "/" + packageName + "/" + assetName,
+                request.getParameter(VIEW_URL),
+                request.getRequestURL().toString(), entries, "A list of updated discussion content.");
+        response.setContentType("application/atom+xml");
+        response.getOutputStream().print(feed.getAtom());
+    }
 
 
     private void doCategoryFeed(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -178,6 +206,9 @@ public class FeedServlet extends RepositoryServlet {
             private String format;
 
 
+            /**
+             * We are creating an entry for each asset.
+             */
             public AtomEntry(HttpServletRequest req, AssetItem asset) {
                 this.name = asset.getName();
                 this.format = asset.getFormat();
@@ -189,6 +220,23 @@ public class FeedServlet extends RepositoryServlet {
                 this.contributor = asset.getLastContributor();
                 this.description = asset.getDescription();
                 this.checkinComment = asset.getCheckinComment();
+            }
+
+            /** We are creating entries for each discussion record */
+            public AtomEntry(HttpServletRequest req, AssetItem asset, DiscussionRecord discussionRec) {
+                this.name = asset.getName();
+                this.format = asset.getFormat();
+                this.webURL = req.getParameter(VIEW_URL) + "#asset=" + asset.getUUID() + "&nochrome";
+                this.id = asset.getUUID() + "&discussion=" + discussionRec.timestamp + "&author=" + discussionRec.author;
+                Calendar c = Calendar.getInstance();
+                c.setTime(new Date(discussionRec.timestamp));
+                this.updated = ISO8601.format(c);
+                this.published = ISO8601.format(c);
+                this.author = discussionRec.author;
+                this.contributor = asset.getLastContributor();
+                this.description = "Discussion comment was added by: " + discussionRec.author;
+                this.checkinComment = discussionRec.note;
+
             }
 
             public String getName() {

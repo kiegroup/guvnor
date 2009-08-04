@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.http.client.URL;
 import com.gwtext.client.util.Format;
 import com.gwtext.client.widgets.Panel;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -22,6 +23,7 @@ import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
+import org.drools.guvnor.client.explorer.CategoriesPanel;
 import org.drools.guvnor.client.security.Capabilities;
 
 import java.util.Date;
@@ -39,7 +41,6 @@ public class DiscussionWidget extends Composite {
     private static Constants constants = ((Constants) GWT.create(Constants.class));
 
     private VerticalPanel commentList = new VerticalPanel();
-    private VerticalPanel discussionLayout = new VerticalPanel();
     private VerticalPanel newCommentLayout = new VerticalPanel();
     private RuleAsset asset;
 
@@ -52,6 +53,7 @@ public class DiscussionWidget extends Composite {
         discussionPanel.setBodyBorder(false);
 
         commentList.setWidth("100%");
+        VerticalPanel discussionLayout = new VerticalPanel();
         discussionLayout.setWidth("100%");
 
         discussionPanel.add(discussionLayout);
@@ -61,10 +63,8 @@ public class DiscussionWidget extends Composite {
         refreshDiscussion();
 
 
-        if (!asset.isreadonly) {
-            discussionLayout.add(newCommentLayout);
-            showNewCommentButton();
-        }
+        discussionLayout.add(newCommentLayout);
+        showNewCommentButton();
 
         initWidget(discussionPanel);
     }
@@ -107,6 +107,7 @@ public class DiscussionWidget extends Composite {
         hp.add(createNewComment);
 
 
+
         if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_ADMIN)) {
             Button adminClearAll = new Button(constants.EraseAllComments());
             hp.add(adminClearAll);
@@ -123,6 +124,11 @@ public class DiscussionWidget extends Composite {
             });
             
         }
+
+
+        String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + asset.metaData.packageName+
+                "&assetName=" + URL.encode(asset.metaData.name) + "&viewUrl=" + CategoriesPanel.getSelfURL();
+        hp.add(new HTML("<a href='" + feedURL + "' target='_blank'><img src='images/feed.png'/></a>"));
 
         newCommentLayout.add(hp);
         

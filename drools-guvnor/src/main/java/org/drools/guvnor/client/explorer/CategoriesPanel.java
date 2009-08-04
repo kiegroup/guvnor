@@ -106,8 +106,9 @@ public class CategoriesPanel extends GenericPanel {
 
     /**
      * The URL that will be used to open up assets in a feed.
+     * (by tacking asset id on the end, of course !). 
      */
-    static String getSelfURL() {
+    public static String getSelfURL() {
         String selfURL = Window.Location.getHref();
         if (selfURL.contains("#")) {
             selfURL = selfURL.substring(0, selfURL.indexOf("#"));

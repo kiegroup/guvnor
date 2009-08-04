@@ -162,6 +162,62 @@ public class FeedServletTest extends TestCase {
 
     }
 
+
+
+    public void testDiscussionFeed() throws Exception {
+        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
+        PackageItem pkg = repo.createPackage("testDiscussionFeed", "");
+        AssetItem asset = pkg.addAsset("asset1", "desc");
+        asset.updateFormat("drl");
+        asset.checkin("");
+
+        ServiceImplementation impl = new ServiceImplementation();
+        impl.repository = repo;
+        impl.addToDiscussionForAsset(asset.getUUID(), "This is a comment");
+        impl.addToDiscussionForAsset(asset.getUUID(), "This is another comment");
+
+        Map<String, String> headers = new HashMap<String, String>() {
+            {
+                put("Irrelevant", "garbage");
+            }
+        };
+
+        MockHTTPRequest req = new MockHTTPRequest("/org.foo/feed/discussion?package=...", headers);
+        FeedServlet fs = new FeedServlet();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        MockHTTPResponse res = new MockHTTPResponse(out);
+        fs.doGet(req, res);
+        assertEquals(HttpServletResponse.SC_UNAUTHORIZED, res.errorCode);
+
+        headers = new HashMap<String, String>() {
+            {
+                put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
+            }
+        };
+
+
+        req = new MockHTTPRequest("/org.foo/feed/discussion", headers, new HashMap<String, String>() {
+            {
+                put("package", "testDiscussionFeed");
+                put("assetName", "asset1");
+            }
+        });
+        fs = new FeedServlet();
+        out = new ByteArrayOutputStream();
+        res = new MockHTTPResponse(out);
+        fs.doGet(req, res);
+
+        String r = new String(out.toByteArray());
+        assertNotNull(r);
+        assertTrue(r.indexOf("This is a comment") > -1);
+        assertTrue(r.indexOf("This is another comment") > r.indexOf("This is a comment"));
+        System.err.println(r);
+
+
+
+    }
+
+
     class MockFeedServlet extends FeedServlet {
         boolean throwAuthException = false;
         @Override

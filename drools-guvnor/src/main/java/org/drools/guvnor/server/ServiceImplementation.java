@@ -136,6 +136,7 @@ import com.google.gwt.user.client.rpc.SerializableException;
 /**
  * This is the implementation of the repository service to drive the GWT based
  * front end.
+ * Generally requests for this are passed through from RepositoryServiceServlet - and Seam manages instances of this. 
  *
  * @author Michael Neale
  */
@@ -2359,7 +2360,7 @@ public class ServiceImplementation
 
     @Restrict("#{identity.loggedIn}")
     public List<DiscussionRecord> loadDiscussionForAsset(String assetId) {
-        return new Discussion().fromString(getRulesRepository().loadAssetByUUID(assetId).getStringProperty("discussion"));
+        return new Discussion().fromString(getRulesRepository().loadAssetByUUID(assetId).getStringProperty(Discussion.DISCUSSION_PROPERTY_KEY));
     }
 
     @Restrict("#{identity.loggedIn}")
@@ -2367,9 +2368,9 @@ public class ServiceImplementation
         RulesRepository repo = getRulesRepository();
         AssetItem asset = repo.loadAssetByUUID(assetId);
         Discussion dp = new Discussion();
-        List<DiscussionRecord> discussion = dp.fromString(asset.getStringProperty("discussion"));
+        List<DiscussionRecord> discussion = dp.fromString(asset.getStringProperty(Discussion.DISCUSSION_PROPERTY_KEY));
         discussion.add(new DiscussionRecord(repo.getSession().getUserID(), comment));
-        asset.updateStringProperty(dp.toString(discussion), "discussion");
+        asset.updateStringProperty(dp.toString(discussion), Discussion.DISCUSSION_PROPERTY_KEY);
         repo.save();        
         return discussion;
     }

@@ -92,8 +92,8 @@ public class AssetItemGrid extends Composite {
         this.layout = new SimplePanel();
         if ( !columnConfigs.containsKey( tableConfig ) ) {
             RepositoryServiceFactory.getService().loadTableConfig( tableConfig,
-                                                                   new GenericCallback() {
-                                                                       public void onSuccess(Object data) {
+                                                                   new GenericCallback<TableConfig>() {
+                                                                       public void onSuccess(TableConfig data) {
                                                                            TableConfig conf = (TableConfig) data;
                                                                            ColumnModel cm = createColumnModel( conf );
                                                                            columnConfigs.put( tableConfig,
