@@ -45,7 +45,7 @@ public class NewRepoDialog extends FormStylePopup {
 			public void onClick(Widget w) {
 				if (!Window.confirm(constants.AboutToInstallSampleRepositoryAreYouSure())) return;
 				LoadingPopup.showMessage(constants.ImportingAndProcessing());
-				RepositoryServiceFactory.getService().installSampleRepository(new GenericCallback<Object>() {
+				RepositoryServiceFactory.getService().installSampleRepository(new GenericCallback() {
 					public void onSuccess(Object a) {
 						Window.alert(constants.RepositoryInstalledSuccessfully());
 						hide();

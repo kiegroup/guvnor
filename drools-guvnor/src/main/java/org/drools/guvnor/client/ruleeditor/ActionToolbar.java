@@ -60,17 +60,19 @@ public class ActionToolbar extends Composite {
     private Constants constants = GWT.create(Constants.class);
     private SmallLabel savedOK;
     private Widget editor;
+    private Command closeCommand;
 
     public ActionToolbar(final RuleAsset asset,
                          final CheckinAction checkin,
                          final CheckinAction archiv,
-                         final Command delete, boolean readOnly, Widget editor) {
+                         final Command delete, boolean readOnly, Widget editor, Command closeCommand) {
 
         this.checkinAction = checkin;
         this.archiveAction = archiv;
         this.deleteAction = delete;
         this.asset = asset;
         this.editor = editor;
+        this.closeCommand = closeCommand;
 
         this.state = new ToolbarTextItem(constants.Status() + " ");
 
@@ -120,10 +122,22 @@ public class ActionToolbar extends Composite {
 		        			public void onClick(
 		        					com.gwtext.client.widgets.Button button,
 		        					EventObject e) {
-		                        	doCheckinConfirm(button);
+		                        	doCheckinConfirm(button, false);
 	        				}
 		        			});
 			toolbar.addButton(save);
+
+        	    	ToolbarButton saveAndClose = new ToolbarButton();
+	    	saveAndClose.setText(constants.SaveAndClose());
+			saveAndClose.setTooltip(getTip(constants.CommitAnyChangesForThisAsset()));
+			saveAndClose.addListener(new ButtonListenerAdapter() {
+		        			public void onClick(
+		        					com.gwtext.client.widgets.Button button,
+		        					EventObject e) {
+		                        	doCheckinConfirm(button, true);
+	        				}
+		        			});
+			toolbar.addButton(saveAndClose);
 
 
         savedOK = new SmallLabel("<font color='green'>" + constants.SavedOK() + "</font>");
@@ -333,13 +347,15 @@ public class ActionToolbar extends Composite {
 
     /**
      * Called when user wants to checkin.
+     * set closeAfter to true if it should close this whole thing after saving it.
      */
-    protected void doCheckinConfirm(Widget w) {
+    protected void doCheckinConfirm(Widget w, final boolean closeAfter) {
         final CheckinPopup pop = new CheckinPopup(w.getAbsoluteLeft(), w.getAbsoluteTop(), constants.CheckInChanges());
         pop.setCommand( new Command() {
             public void execute() {
                 checkinAction.doCheckin(pop.getCheckinComment());
                 if (afterCheckinEvent != null) afterCheckinEvent.execute();
+                if (closeAfter) closeCommand.execute();
             }
         });
         pop.show();

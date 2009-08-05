@@ -144,7 +144,11 @@ public class RuleViewer extends DirtyableComposite {
                                              doDelete();
                                          }
                                      },
-                                     readOnly, editor );
+                                     readOnly, editor, new Command() {
+                                        public void execute() {
+                                            close();
+                                        }
+                                    });
 
         //layout.add(toolbar, DockPanel.NORTH);
         layout.add( toolbar );
@@ -213,12 +217,18 @@ public class RuleViewer extends DirtyableComposite {
         return false;
     }
 
+    /** closes itself */
+    private void close() {
+        closeCommand.execute();
+    }
+
+
     void doDelete() {
         RepositoryServiceFactory.getService().deleteUncheckedRule( this.asset.uuid,
                                                                    this.asset.metaData.packageName,
                                                                    new GenericCallback() {
                                                                        public void onSuccess(Object o) {
-                                                                           closeCommand.execute();
+                                                                           close();
                                                                        }
                                                                    } );
     }

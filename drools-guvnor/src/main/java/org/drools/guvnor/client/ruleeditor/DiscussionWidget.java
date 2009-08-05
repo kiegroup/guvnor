@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.http.client.URL;
 import com.gwtext.client.util.Format;
@@ -57,6 +58,7 @@ public class DiscussionWidget extends Composite {
         discussionLayout.setWidth("100%");
 
         discussionPanel.add(discussionLayout);
+
         discussionLayout.add(commentList);
         newCommentLayout.setWidth("100%");
 
@@ -87,7 +89,7 @@ public class DiscussionWidget extends Composite {
         }
     }
 
-    private void appendComment(DiscussionRecord r) {
+    private Widget appendComment(DiscussionRecord r) {
         SmallLabel hrd = new SmallLabel(Format.format(constants.smallCommentBy0On1Small(), r.author, new Date(r.timestamp).toString()));
         hrd.addStyleName("discussion-header");
         commentList.add(hrd);
@@ -95,6 +97,7 @@ public class DiscussionWidget extends Composite {
         lbl.setStyleName("x-form-field");
         commentList.add(lbl);
         commentList.add(new HTML("<br/>"));
+        return hrd;
     }
 
 

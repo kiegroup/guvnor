@@ -1902,4 +1902,6 @@ public interface Constants extends ConstantsWithLookup {
     String EraseAllCommentsWarning();
 
     String Discussion();
+
+    String SaveAndClose();
 }
