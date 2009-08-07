@@ -224,6 +224,7 @@ public class RuleViewer extends DirtyableComposite {
 
 
     void doDelete() {
+        readOnly = true; //set to not cause the extra confirm popup
         RepositoryServiceFactory.getService().deleteUncheckedRule( this.asset.uuid,
                                                                    this.asset.metaData.packageName,
                                                                    new GenericCallback() {
@@ -238,6 +239,7 @@ public class RuleViewer extends DirtyableComposite {
      */
 
     private void doArchive(String comment) {
+        this.readOnly = true; //set to read only to not bother with the close warning
         this.asset.archived = true;
         this.performCheckIn( comment );
         this.closeCommand.execute();

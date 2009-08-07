@@ -12,7 +12,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.http.client.URL;
 import com.gwtext.client.util.Format;
@@ -23,6 +22,9 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.PushClient;
+import org.drools.guvnor.client.rpc.ServerPushNotification;
+import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.explorer.CategoriesPanel;
 import org.drools.guvnor.client.security.Capabilities;
@@ -44,9 +46,16 @@ public class DiscussionWidget extends Composite {
     private VerticalPanel commentList = new VerticalPanel();
     private VerticalPanel newCommentLayout = new VerticalPanel();
     private RuleAsset asset;
+    private ServerPushNotification pushNotify;
+    private int lastCount = 0;
 
+    @Override
+    protected void onUnload() {
+        super.onUnload();    //To change body of overridden methods use File | Settings | File Templates.
+        PushClient.instance().unsubscribe(pushNotify);
+    }
 
-    public DiscussionWidget(RuleAsset asset) {
+    public DiscussionWidget(final RuleAsset asset) {
         this.asset = asset;
         final Panel discussionPanel = new Panel();
         discussionPanel.setCollapsible( true );
@@ -68,6 +77,18 @@ public class DiscussionWidget extends Composite {
         discussionLayout.add(newCommentLayout);
         showNewCommentButton();
 
+        pushNotify = new ServerPushNotification() {
+            public void messageReceived(PushResponse response) {
+                if ("discussion".equals(response.messageType) &&
+                        asset.uuid.equals(response.message)) {
+                    System.err.println("Refreshing discussion...");
+                    refreshDiscussion();
+                }
+            }
+        };
+
+        PushClient.instance().subscribe(pushNotify);
+
         initWidget(discussionPanel);
     }
 
@@ -77,16 +98,19 @@ public class DiscussionWidget extends Composite {
     public void refreshDiscussion() {
         RepositoryServiceFactory.getService().loadDiscussionForAsset(asset.uuid, new GenericCallback<List<DiscussionRecord>>() {
             public void onSuccess(List<DiscussionRecord> result) {
+
                 updateCommentList(result);
             }
         });
     }
 
     private void updateCommentList(List<DiscussionRecord> ls) {
+        if (ls.size() == lastCount) return; //don't want to over do it boys...
         commentList.clear();
         for(DiscussionRecord dr: ls) {
             appendComment(dr);
         }
+        lastCount = ls.size();
     }
 
     private Widget appendComment(DiscussionRecord r) {

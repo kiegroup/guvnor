@@ -103,6 +103,7 @@ public interface RepositoryServiceAsync
     public void loadDiscussionForAsset(String assetId, AsyncCallback<List<DiscussionRecord>> dr);
     public void addToDiscussionForAsset(String assetId, String comment,  AsyncCallback<List<DiscussionRecord>> response);
     public void clearAllDiscussionsForAsset(String assetId, AsyncCallback cb);
+    public void subscribe(AsyncCallback<List<PushResponse>> cb);
 
 
 }

@@ -81,8 +81,8 @@ public class AssetItemGrid extends Composite {
     protected Store             store;
     private GridPanel           currentGrid;
     private Constants constants = GWT.create(Constants.class);
-    private String feedURL
-            ;
+    private String feedURL;
+    private Command unloadHook;
 
     public AssetItemGrid(final EditItemEvent event,
                          final String tableConfig,
@@ -440,4 +440,17 @@ public class AssetItemGrid extends Composite {
         this.refresh.execute();
     }
 
+    /**
+     * To be used when unloading.
+     * @param command
+     */
+    public void addUnloadListener(Command command) {
+        this.unloadHook = command;
+    }
+
+    @Override
+    protected void onUnload() {
+        super.onUnload();
+        if (unloadHook != null) unloadHook.execute();
+    }
 }

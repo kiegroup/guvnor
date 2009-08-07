@@ -225,6 +225,7 @@ public class ExplorerLayoutManager {
        return bi;
     }
 
+
     public static class BookmarkInfo {
         String assetId;
         boolean showChrome = true;

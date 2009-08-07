@@ -7,6 +7,9 @@ import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.packages.NewPackageWizard;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.PushClient;
+import org.drools.guvnor.client.rpc.ServerPushNotification;
+import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
@@ -206,7 +209,7 @@ public class PackagesPanel extends GenericPanel {
                     String key = key(fmts, pc);
                     if (!centertabbedPanel.showIfOpen(key)) {
 
-                        AssetItemGrid list = new AssetItemGrid(new EditItemEvent() {
+                        final AssetItemGrid list = new AssetItemGrid(new EditItemEvent() {
                             public void open(String uuid) {
                                 centertabbedPanel.openAsset(uuid);
                             }
@@ -218,8 +221,21 @@ public class PackagesPanel extends GenericPanel {
                                     }
                                 }
                         , GWT.getModuleBaseURL() + "feed/package?name=" + pc.name + "&viewUrl=" + CategoriesPanel.getSelfURL() + "&status=*");
-
                         tabPanel.addTab(uo[1] + " [" + pc.name + "]", true, list, key);
+                        
+                        final ServerPushNotification sub = new ServerPushNotification() {
+                            public void messageReceived(PushResponse response) {
+                                if (response.messageType.equals("packageChange") && response.message.equals(pc.name)) {
+                                    list.refreshGrid();
+                                }
+                            }
+                        };
+                        PushClient.instance().subscribe(sub);
+                        list.addUnloadListener(new Command() {
+                            public void execute() {
+                                PushClient.instance().unsubscribe(sub);
+                            }
+                        });
                     }
                 }
             }

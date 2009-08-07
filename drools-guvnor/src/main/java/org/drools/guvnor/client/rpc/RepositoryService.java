@@ -26,6 +26,7 @@ import org.drools.guvnor.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This is what the remote service will implement, as a servlet.
@@ -505,6 +506,11 @@ public interface RepositoryService extends RemoteService {
 
     /** Only for admins, they can nuke it from orbit to clear it out */
     public void clearAllDiscussionsForAsset(String assetId);
+
+    /**
+     * Subscribe for a "callback" for a given request.
+     */
+    public List<PushResponse> subscribe();
 
 
 }

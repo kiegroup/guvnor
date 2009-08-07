@@ -2,6 +2,9 @@ package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.ServerPushNotification;
+import org.drools.guvnor.client.rpc.PushResponse;
+import org.drools.guvnor.client.rpc.PushClient;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
@@ -10,6 +13,7 @@ import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.Button;
@@ -68,7 +72,7 @@ public class CategoriesPanel extends GenericPanel {
 
 
 
-                        AssetItemGrid list = new AssetItemGrid(new EditItemEvent() {
+                        final AssetItemGrid list = new AssetItemGrid(new EditItemEvent() {
                             public void open(String uuid) {
                                 centertabbedPanel.openAsset(uuid);
                             }
@@ -88,6 +92,25 @@ public class CategoriesPanel extends GenericPanel {
                                     }
                                 },
                                 (isState) ? null : GWT.getModuleBaseURL() + "feed/category?name=" + key + "&viewUrl=" + getSelfURL());
+                       final  ServerPushNotification push = new ServerPushNotification() {
+                            public void messageReceived(PushResponse response) {
+                                if (!isState) {
+                                    if (response.messageType.equals("categoryChange") && response.message.equals(key)) {
+                                        list.refreshGrid();
+                                    }
+                                } else {
+                                    if (response.messageType.equals("statusChange") && ("-" + response.message).equals(key)) {
+                                        list.refreshGrid();
+                                    }
+                                }
+                            }
+                        };
+                        PushClient.instance().subscribe(push);
+                        list.addUnloadListener(new Command() {
+                            public void execute() {
+                                PushClient.instance().unsubscribe(push);
+                            }
+                        });
 
                         centertabbedPanel.addTab(((isState) ? constants.Status() : constants.CategoryColon()) + self.getText(), true, list, key);
                     }

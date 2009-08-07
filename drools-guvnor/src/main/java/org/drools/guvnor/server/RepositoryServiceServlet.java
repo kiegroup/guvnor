@@ -1,15 +1,12 @@
 package org.drools.guvnor.server;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.log4j.Logger;
 import org.drools.guvnor.client.rpc.DetailedSerializableException;
-import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.drools.guvnor.client.rpc.PushResponse;
+import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
@@ -18,8 +15,10 @@ import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.AuthorizationException;
 
-import com.google.gwt.user.client.rpc.SerializableException;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * GWT RPC service endpoint for Repository service. A place to hang some exception handling mainly.
@@ -315,6 +314,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 
     public void clearAllDiscussionsForAsset(String assetId) {
         getService().clearAllDiscussionsForAsset(assetId);
+    }
+
+    public List<PushResponse> subscribe() {
+        return getService().subscribe();
     }
 
 

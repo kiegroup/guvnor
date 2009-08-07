@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -57,25 +59,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.testing.Scenario;
-import org.drools.guvnor.client.rpc.AnalysisReport;
-import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.BulkTestRunResult;
-import org.drools.guvnor.client.rpc.DetailedSerializableException;
-import org.drools.guvnor.client.rpc.LogEntry;
-import org.drools.guvnor.client.rpc.MetaData;
-import org.drools.guvnor.client.rpc.MetaDataQuery;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.RepositoryService;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.ScenarioResultSummary;
-import org.drools.guvnor.client.rpc.ScenarioRunResult;
-import org.drools.guvnor.client.rpc.SingleScenarioResult;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
-import org.drools.guvnor.client.rpc.TableConfig;
-import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.rpc.TableDataRow;
-import org.drools.guvnor.client.rpc.ValidatedResponse;
-import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentAssemblyError;
@@ -132,6 +116,7 @@ import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
 import com.google.gwt.user.client.rpc.SerializableException;
+import EDU.oswego.cs.dl.util.concurrent.CondVar;
 
 /**
  * This is the implementation of the repository service to drive the GWT based
@@ -168,6 +153,11 @@ public class ServiceImplementation
      */
     public static Map<String, RuleBase>    ruleBaseCache                     = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
 
+    /**
+     * This is used for pushing messages back to the client.
+     */
+    private static Backchannel backchannel = new Backchannel();
+
     public RulesRepository getRulesRepository() {
         return this.repository;
     }
@@ -201,7 +191,7 @@ public class ServiceImplementation
                                                  RoleTypes.ADMIN );
         }
 
-        log.info( "USER:" + repository.getSession().getUserID() + " CREATING cateogory: [" + name + "] in path [" + path + "]" );
+        log.info( "USER:" + getCurrentUserName() + " CREATING cateogory: [" + name + "] in path [" + path + "]" );
 
         if ( path == null || "".equals( path ) ) {
             path = "/";
@@ -231,7 +221,9 @@ public class ServiceImplementation
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
 
-        log.info( "USER:" + repository.getSession().getUserID() + " CREATING new asset name [" + ruleName + "] in package [" + initialPackage + "]" );
+
+
+        log.info( "USER:" + getCurrentUserName() + " CREATING new asset name [" + ruleName + "] in package [" + initialPackage + "]" );
 
         try {
 
@@ -245,6 +237,9 @@ public class ServiceImplementation
                                     format,
                                     asset );
             repository.save();
+
+            push("categoryChange", initialCategory);
+            push("packageChange", pkg.getName());
 
             return asset.getUUID();
         } catch ( RulesRepositoryException e ) {
@@ -268,8 +263,14 @@ public class ServiceImplementation
         }
 
         AssetItem asset = repository.loadAssetByUUID( uuid );
+
+        String pkgName = asset.getPackageName();
+
+
         asset.remove();
+
         repository.save();
+        push("packageChange", pkgName);
     }
 
     /**
@@ -601,7 +602,7 @@ public class ServiceImplementation
             }
         }
 
-        log.info( "USER:" + repository.getSession().getUserID() + " CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "]  ARCHIVED [" + asset.archived + "]" );
+        log.info( "USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "]  ARCHIVED [" + asset.archived + "]" );
 
         AssetItem repoAsset = repository.loadAssetByUUID( asset.uuid );
         if ( asset.metaData.lastModifiedDate.before( repoAsset.getLastModified().getTime() ) ) {
@@ -736,7 +737,7 @@ public class ServiceImplementation
         AssetItem old = repository.loadAssetByUUID( versionUUID );
         AssetItem head = repository.loadAssetByUUID( assetUUID );
 
-        log.info( "USER:" + repository.getSession().getUserID() + " RESTORE of asset: [" + head.getName() + "] UUID: [" + head.getUUID() + "] with historical version number: [" + old.getVersionNumber() );
+        log.info( "USER:" + getCurrentUserName() + " RESTORE of asset: [" + head.getName() + "] UUID: [" + head.getUUID() + "] with historical version number: [" + old.getVersionNumber() );
 
         repository.restoreHistoricalAsset( old,
                                            head,
@@ -752,7 +753,7 @@ public class ServiceImplementation
                                                  RoleTypes.ADMIN );
         }
 
-        log.info( "USER:" + repository.getSession().getUserID() + " CREATING package [" + name + "]" );
+        log.info( "USER:" + getCurrentUserName() + " CREATING package [" + name + "]" );
         PackageItem item = repository.createPackage( name,
                                                      description );
 
@@ -834,7 +835,7 @@ public class ServiceImplementation
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
 
-        log.info( "USER:" + repository.getSession().getUserID() + " SAVING package [" + data.name + "]" );
+        log.info( "USER:" + getCurrentUserName() + " SAVING package [" + data.name + "]" );
 
         PackageItem item = repository.loadPackage( data.name );
         
@@ -1057,7 +1058,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String createState(String name) throws SerializableException {
-        log.info( "USER:" + repository.getSession().getUserID() + " CREATING state: [" + name + "]" );
+        log.info( "USER:" + getCurrentUserName() + " CREATING state: [" + name + "]" );
         try {
             name = cleanHTML( name );
             String uuid = repository.createState( name ).getNode().getUUID();
@@ -1071,7 +1072,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void removeState(String name) throws SerializableException {
-        log.info( "USER:" + repository.getSession().getUserID() + " REMOVING state: [" + name + "]" );
+        log.info( "USER:" + getCurrentUserName() + " REMOVING state: [" + name + "]" );
 
         try {
             repository.loadState( name ).remove();
@@ -1087,7 +1088,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public void renameState(String oldName,
                             String newName) throws SerializableException {
-        log.info( "USER:" + repository.getSession().getUserID() + " RENAMING state: [" + oldName + "] to [" + newName + "]" );
+        log.info( "USER:" + getCurrentUserName() + " RENAMING state: [" + oldName + "] to [" + newName + "]" );
         repository.renameState( oldName,
                                 newName );
 
@@ -1113,7 +1114,7 @@ public class ServiceImplementation
         if ( !wholePackage ) {
 
             AssetItem asset = repository.loadAssetByUUID( uuid );
-            log.info( "USER:" + repository.getSession().getUserID() + " CHANGING ASSET STATUS. Asset name, uuid: " + "[" + asset.getName() + ", " + asset.getUUID() + "]" + " to [" + newState + "]" );
+            log.info( "USER:" + getCurrentUserName() + " CHANGING ASSET STATUS. Asset name, uuid: " + "[" + asset.getName() + ", " + asset.getUUID() + "]" + " to [" + newState + "]" );
 
             if ( Contexts.isSessionContextActive() ) {
                 Identity.instance().checkPermission( new PackageUUIDType( asset.getPackage().getUUID() ),
@@ -1150,7 +1151,12 @@ public class ServiceImplementation
                     // This was not a rule asset
                 }
 
+                String oldState = asset.getStateDescription();
                 asset.updateState( newState );
+
+                push("statusChange", oldState);
+                push("statusChange", newState);
+                
             }
         } else {
             if ( Contexts.isSessionContextActive() ) {
@@ -1159,7 +1165,7 @@ public class ServiceImplementation
             }
 
             PackageItem pkg = repository.loadPackageByUUID( uuid );
-            log.info( "USER:" + repository.getSession().getUserID() + " CHANGING Package STATUS. Asset name, uuid: " + "[" + pkg.getName() + ", " + pkg.getUUID() + "]" + " to [" + newState + "]" );
+            log.info( "USER:" + getCurrentUserName() + " CHANGING Package STATUS. Asset name, uuid: " + "[" + pkg.getName() + ", " + pkg.getUUID() + "]" + " to [" + newState + "]" );
             pkg.changeStatus( newState );
         }
         repository.save();
@@ -1175,7 +1181,7 @@ public class ServiceImplementation
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
 
-        log.info( "USER:" + repository.getSession().getUserID() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]" );
+        log.info( "USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]" );
         repository.moveRuleItemPackage( newPackage,
                                         uuid,
                                         comment );
@@ -1230,7 +1236,7 @@ public class ServiceImplementation
                                                  RoleTypes.PACKAGE_ADMIN );
         }
 
-        log.info( "USER:" + repository.getSession().getUserID() + " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
+        log.info( "USER:" + getCurrentUserName() + " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
 
         if ( replaceExisting ) {
             repository.removePackageSnapshot( packageName,
@@ -1258,14 +1264,14 @@ public class ServiceImplementation
         }
 
         if ( delete ) {
-            log.info( "USER:" + repository.getSession().getUserID() + " REMOVING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "]" );
+            log.info( "USER:" + getCurrentUserName() + " REMOVING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "]" );
             repository.removePackageSnapshot( packageName,
                                               snapshotName );
         } else {
             if ( newSnapshotName.equals( "" ) ) {
                 throw new SerializableException( "Need to have a new snapshot name." );
             }
-            log.info( "USER:" + repository.getSession().getUserID() + " COPYING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
+            log.info( "USER:" + getCurrentUserName() + " COPYING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
 
             repository.copyPackageSnapshot( packageName,
                                             snapshotName,
@@ -1333,7 +1339,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void removeCategory(String categoryPath) throws SerializableException {
-        log.info( "USER:" + repository.getSession().getUserID() + " REMOVING CATEGORY path: [" + categoryPath + "]" );
+        log.info( "USER:" + getCurrentUserName() + " REMOVING CATEGORY path: [" + categoryPath + "]" );
 
         try {
             repository.loadCategory( categoryPath ).remove();
@@ -1638,6 +1644,8 @@ public class ServiceImplementation
             pkg.updateBinaryUpToDate( false );
             this.ruleBaseCache.remove( pkg.getUUID() );
             item.checkin( "unarchived" );
+
+            push("packageChange", pkg.getName());
 
         } catch ( RulesRepositoryException e ) {
             log.error( e );
@@ -2371,17 +2379,42 @@ public class ServiceImplementation
         List<DiscussionRecord> discussion = dp.fromString(asset.getStringProperty(Discussion.DISCUSSION_PROPERTY_KEY));
         discussion.add(new DiscussionRecord(repo.getSession().getUserID(), comment));
         asset.updateStringProperty(dp.toString(discussion), Discussion.DISCUSSION_PROPERTY_KEY);
-        repo.save();        
+        repo.save();
+
+        push("discussion", assetId);
+        
         return discussion;
     }
 
     @Restrict("#{identity.loggedIn}")
-    public void clearAllDiscussionsForAsset(String assetId) {
+    public void clearAllDiscussionsForAsset(final String assetId) {
         checkIfADMIN();
         RulesRepository repo = getRulesRepository();
         AssetItem asset = repo.loadAssetByUUID(assetId);
         asset.updateStringProperty("", "discussion");
         repo.save();
+
+        push("discussion", assetId);
+        
+    }
+
+    /**
+     * Pushes a message back to the client.
+     */
+    private void push(String messageType, String message) {
+        backchannel.push(getCurrentUserName(), new PushResponse(messageType, message));
+    }
+
+    public List<PushResponse> subscribe() {
+        try {
+            return backchannel.await(getCurrentUserName());
+        } catch (InterruptedException e) {
+            return new ArrayList();
+        }
+    }
+
+    private String getCurrentUserName() {
+        return repository.getSession().getUserID();
     }
 
     private void checkIfADMIN() {
