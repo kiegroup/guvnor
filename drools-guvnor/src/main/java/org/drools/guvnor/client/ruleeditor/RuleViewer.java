@@ -68,18 +68,8 @@ public class RuleViewer extends DirtyableComposite {
 
         layout.setWidth( "100%" );
         layout.setHeight( "100%" );
-
-        FocusPanel focusPanel = new FocusPanel(layout);
-        focusPanel.addFocusListener( new FocusListener() {
-            public void onFocus(Widget arg0) {
-                makeDirty();
-            }
-
-            public void onLostFocus(Widget arg0) {
-            }
-        } );
         
-        initWidget( focusPanel );
+        initWidget( layout );
 
         doWidgets(null);
 
@@ -89,19 +79,9 @@ public class RuleViewer extends DirtyableComposite {
     }
 
     public boolean isDirty() {
-        if ( readOnly ) return false;
-        
-        if(isInternetExplorer()){
-            return (System.currentTimeMillis() - lastSaved) > 3600000;   
-        } else {
-            return super.isDirty();
-        }
+        return (System.currentTimeMillis() - lastSaved) > 3600000;   
     }
     
-    private static native boolean isInternetExplorer() /*-{
-        return (navigator.appName == 'Microsoft Internet Explorer');
-    }-*/;
-
     
     /**
      * This will actually load up the data (this is called by the callback)
