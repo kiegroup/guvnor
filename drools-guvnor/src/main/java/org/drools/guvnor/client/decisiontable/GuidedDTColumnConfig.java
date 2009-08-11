@@ -1,25 +1,34 @@
 package org.drools.guvnor.client.decisiontable;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.List;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
-import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.guvnor.client.modeldriven.dt.DTColumnConfig;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
-import com.google.gwt.core.client.GWT;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This is a configuration editor for a column in a the guided decision table.
@@ -35,6 +44,11 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 	private TextBox fieldLabel = getFieldLabel();
 	private SmallLabel operatorLabel = new SmallLabel();
     private Constants constants = ((Constants) GWT.create(Constants.class));
+    private InfoPopup fieldLabelInterpolationInfo = getPredicateHint();
+
+    private InfoPopup getPredicateHint() {
+        return new InfoPopup(constants.Predicates(), constants.PredicatesInfo());
+    }
 
     /**
 	 * Pass in a null col and it will create a new one.
@@ -118,6 +132,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
 		HorizontalPanel field = new HorizontalPanel();
 		field.add(fieldLabel);
+        field.add(fieldLabelInterpolationInfo);
 		Image editField = new ImageButton("images/edit.gif", constants.EditTheFieldThatThisColumnOperatesOn(), new ClickListener() { //NON-NLS
 			public void onClick(Widget w) {
 				showFieldChange();
@@ -308,11 +323,14 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 	private void doFieldLabel() {
 		if (editingCol.constraintValueType == ISingleFieldConstraint.TYPE_PREDICATE) {
 			fieldLabel.setText(constants.notNeededForPredicate());
+            fieldLabelInterpolationInfo.setVisible(true);
 		} else if (nil(editingCol.factType)) {
 			fieldLabel.setText(constants.pleaseSelectAPatternFirst());
+            fieldLabelInterpolationInfo.setVisible(false);
 		}
 		else if (nil(editingCol.factField)) {
 			fieldLabel.setText(constants.pleaseSelectAField());
+            fieldLabelInterpolationInfo.setVisible(false);
 		} else {
 			fieldLabel.setText(this.editingCol.factField);
 		}

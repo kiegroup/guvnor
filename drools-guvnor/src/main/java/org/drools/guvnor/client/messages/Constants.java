@@ -1904,4 +1904,8 @@ public interface Constants extends ConstantsWithLookup {
     String Discussion();
 
     String SaveAndClose();
+
+    String Predicates();
+
+    String PredicatesInfo();
 }
