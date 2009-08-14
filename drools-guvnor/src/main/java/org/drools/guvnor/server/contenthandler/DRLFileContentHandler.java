@@ -113,6 +113,9 @@ public class DRLFileContentHandler extends PlainTextContentHandler
     public void assembleDRL(BRMSPackageBuilder builder,
                             AssetItem asset,
                             StringBuffer buf) {
+        String content = getContent(asset);
+        buf.append(content);
+        /*
         String content = asset.getContent();
         boolean standAlone = isStandAloneRule( content );
         if ( standAlone ) {
@@ -124,5 +127,6 @@ public class DRLFileContentHandler extends PlainTextContentHandler
         } else {
             buf.append( content );
         }
+        */
     }
 }

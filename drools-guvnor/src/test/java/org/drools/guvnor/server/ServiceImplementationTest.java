@@ -1829,15 +1829,14 @@ public class ServiceImplementationTest extends TestCase {
 		ServiceImplementation.updateDroolsHeader("import org.goo.Ber", pkg);
 		AssetItem rule1 = pkg.addAsset("rule_1", "");
 		rule1.updateFormat(AssetFormats.DRL);
-		rule1
-				.updateContent("rule 'rule1' \n when p:Person() \n then p.setAge(42); \n end");
+		rule1.updateContent("package wee.wee \nrule 'rule1' \n  when p:Person() \n then p.setAge(42); \n end");
 		rule1.checkin("");
 		repo.save();
 
 		AssetItem rule2 = pkg.addAsset("rule_2", "");
 		rule2.updateFormat(AssetFormats.DRL);
 		rule2
-				.updateContent("rule 'rule2' \n when p:Person() \n then p.setAge(42); \n end");
+				.updateContent("rule 'rule2' \n ruleflow-group 'whee' \nwhen p:Person() \n then p.setAge(42); \n end");
 		rule2.checkin("");
 		repo.save();
 
@@ -1851,7 +1850,7 @@ public class ServiceImplementationTest extends TestCase {
 		rule2.checkin("");
 
 		list = impl.listRulesInPackage(pkg.getName());
-		assertEquals(0, list.length);
+		assertEquals(2, list.length);
 
 
 	}

@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.StringTokenizer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -82,6 +83,8 @@ import org.drools.guvnor.server.util.MetaDataMapper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.guvnor.server.util.VerifierRunner;
 import org.drools.guvnor.server.util.Discussion;
+import org.drools.guvnor.server.util.ClassicDRLImporter;
+import static org.drools.guvnor.server.util.ClassicDRLImporter.*;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
@@ -1744,24 +1747,33 @@ public class ServiceImplementation
         // load package
         PackageItem item = repository.loadPackage( packageName );
 
-        ContentPackageAssembler asm = new ContentPackageAssembler( item,
-                                                                   false );
+
+        ContentPackageAssembler asm = new ContentPackageAssembler( item, false );
+
         List<String> result = new ArrayList<String>();
-        DrlParser p = new DrlParser();
         try {
-            PackageDescr pkg = p.parse( asm.getDRL() );
-            int count = 0;
-            if ( pkg != null ) {
-                for ( Iterator iterator = pkg.getRules().iterator(); iterator.hasNext(); ) {
-                    RuleDescr r = (RuleDescr) iterator.next();
-                    result.add( r.getName() );
-                    count++;
-                    if ( count == MAX_RULES_TO_SHOW_IN_PACKAGE_LIST ) {
-                        result.add( "More then " + MAX_RULES_TO_SHOW_IN_PACKAGE_LIST + " rules." );
-                        break;
+
+            String drl = asm.getDRL();
+            if (drl == null || "".equals(drl)) {
+                return new String[0];
+            } else {
+                int count = 0;
+
+                StringTokenizer st = new StringTokenizer( asm.getDRL(),"\n\r" );
+                while (st.hasMoreTokens()) {
+                    String line = st.nextToken().trim();
+                    if (line.startsWith("rule ")) {
+                        String name = getRuleName(line);
+                        result.add( name );
+                        count++;
+                        if ( count == MAX_RULES_TO_SHOW_IN_PACKAGE_LIST ) {
+                            result.add( "More then " + MAX_RULES_TO_SHOW_IN_PACKAGE_LIST + " rules." );
+                            break;
+                        }
                     }
                 }
             }
+
             return result.toArray( new String[result.size()] );
         } catch ( DroolsParserException e ) {
             log.error( e );
