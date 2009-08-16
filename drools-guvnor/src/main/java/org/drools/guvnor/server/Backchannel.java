@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -16,9 +18,25 @@ import java.util.concurrent.CountDownLatch;
  * @author Michael Neale
  */
 public class Backchannel {
-
     final List<CountDownLatch> waiting = Collections.synchronizedList(new ArrayList<CountDownLatch>());
     final Map<String, List<PushResponse>> mailbox = Collections.synchronizedMap(new HashMap<String, List<PushResponse>>());
+    
+    private Timer timer;
+
+
+    public Backchannel() {
+
+        //using a timer to make sure awaiting subs are flushed every now and then, otherwise web threads could be consumed.
+        timer = new Timer(true);
+        timer.schedule(new TimerTask() {
+            public void run() {
+               unlatchAllWaiting();
+            }
+        }, 20000, 30000);
+    }
+
+
+
 
     public List<PushResponse> await(String userName) throws InterruptedException {
         List<PushResponse> messages = mailbox.remove(userName);
@@ -51,6 +69,11 @@ public class Backchannel {
             resp.add(message);            
         }
 
+        unlatchAllWaiting();
+
+    }
+
+    private void unlatchAllWaiting() {
         synchronized (waiting) {
             Iterator<CountDownLatch> it = waiting.iterator();
             while (it.hasNext()) {
@@ -59,10 +82,7 @@ public class Backchannel {
                 it.remove();
             }
         }
-
     }
-
-
 
 
 }
