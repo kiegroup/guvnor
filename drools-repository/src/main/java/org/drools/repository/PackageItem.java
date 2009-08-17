@@ -430,15 +430,20 @@ public class PackageItem extends VersionableItem {
 
             //sql = "SELECT * FROM drools:assetNodeType ORDER BY drools:title";
             sql += " ORDER BY " + AssetItem.TITLE_PROPERTY_NAME;
-            log.debug("SQL is " + sql);
+
             Query q = node.getSession().getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
 
 
             long time = System.currentTimeMillis();
             QueryResult res = q.execute();
-            log.debug("QueryExec time is: " + (System.currentTimeMillis() - time));
+
             NodeIterator it = res.getNodes();
-            log.debug(it.getClass().getName());
+            long taken = System.currentTimeMillis() - time;
+            if (taken > 2000) {
+                log.debug("QueryExec time is: " + (System.currentTimeMillis() - time));
+                log.debug("SQL is " + sql);
+                log.debug(it.getClass().getName());
+            }
             return new AssetItemIterator(it, this.rulesRepository);
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException(e);
