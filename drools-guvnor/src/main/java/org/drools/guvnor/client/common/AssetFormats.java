@@ -32,6 +32,9 @@ public class AssetFormats {
     /** For functions */
     public static final String FUNCTION = "function";
 
+    /** For BPEL */
+    public static final String BPEL_PACKAGE= "bpel.jar";
+
     /** For "model" assets */
     public static final String MODEL = "jar";
 

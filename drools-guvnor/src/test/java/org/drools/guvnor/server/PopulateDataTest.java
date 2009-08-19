@@ -92,7 +92,7 @@ public class PopulateDataTest extends TestCase {
         assertNotNull(file);
 
         FileManagerUtils fm = new FileManagerUtils();
-        fm.repository = repo;
+        fm.setRepository(repo);
 
         fm.attachFileToAsset( uuid, file, "billasurf.jar" );
 

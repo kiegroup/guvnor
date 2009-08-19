@@ -24,6 +24,7 @@ import org.drools.guvnor.client.common.DefaultContentUploadEditor;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.decisiontable.DecisionTableXLSWidget;
 import org.drools.guvnor.client.decisiontable.GuidedDecisionTableWidget;
+import org.drools.guvnor.client.explorer.Preferences;
 import org.drools.guvnor.client.factmodel.FactModelWidget;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.packages.ModelAttachmentFileWidget;
@@ -60,7 +61,11 @@ public class EditorLauncher {
             return new RuleModeller( asset );
             //return new RuleModeller( asset  );
         } else if ( asset.metaData.format.equals( AssetFormats.DSL_TEMPLATE_RULE ) ) {
-            return  new DSLRuleEditor( asset );
+            return new RuleValidatorWrapper( new DSLRuleEditor( asset ),
+                                             asset );
+        } else if (asset.metaData.format.equals(AssetFormats.BPEL_PACKAGE)
+				&& Preferences.getBooleanPref("flex-bpel-editor")) {
+			return new BPELWrapper(asset, viewer);
         } else if ( asset.metaData.format.equals( AssetFormats.MODEL ) ) {
             return new ModelAttachmentFileWidget( asset,
                                                   viewer );

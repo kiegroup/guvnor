@@ -72,7 +72,7 @@ import org.jboss.seam.security.Identity;
 public class FileManagerUtils {
 
     @In
-    public RulesRepository repository;
+    private RulesRepository repository;
 
     /**
      * This attach a file to an asset.
@@ -121,6 +121,10 @@ public class FileManagerUtils {
 
     public RulesRepository getRepository() {
         return this.repository;
+    }
+
+    public void setRepository(RulesRepository repository) {
+    	this.repository = repository;
     }
 
     /**

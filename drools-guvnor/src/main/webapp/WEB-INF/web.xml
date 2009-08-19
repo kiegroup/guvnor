@@ -50,6 +50,14 @@
 		<servlet-name>FeedServlet</servlet-name>
 		<servlet-class>	org.drools.guvnor.server.files.FeedServlet</servlet-class>
 	</servlet>
+    <servlet>
+		<servlet-name>WorkflowManagerServlet</servlet-name>
+		<servlet-class>	org.gridcc.mce.mceworkflow.servlets.WorkflowManagerServlet</servlet-class>
+	</servlet>
+    <servlet>
+		<servlet-name>WSDLParserServlet</servlet-name>
+		<servlet-class>	org.gridcc.mce.mceworkflow.servlets.WSDLParserServlet</servlet-class>
+	</servlet>
 
 
 	<servlet-mapping>
@@ -80,9 +88,17 @@
 		<servlet-name>RestAPIServlet</servlet-name>
 		<url-pattern>/org.drools.guvnor.Guvnor/api/*</url-pattern>
 	</servlet-mapping>
-    	<servlet-mapping>
+   	<servlet-mapping>
 		<servlet-name>FeedServlet</servlet-name>
 		<url-pattern>/org.drools.guvnor.Guvnor/feed/*</url-pattern>
+	</servlet-mapping>
+  	<servlet-mapping>
+		<servlet-name>WorkflowManagerServlet</servlet-name>
+		<url-pattern>/org.drools.guvnor.Guvnor/workflowmanager/*</url-pattern>
+	</servlet-mapping>
+   	<servlet-mapping>
+		<servlet-name>WSDLParserServlet</servlet-name>
+		<url-pattern>/org.drools.guvnor.Guvnor/wsdlparser/*</url-pattern>
 	</servlet-mapping>
 
 

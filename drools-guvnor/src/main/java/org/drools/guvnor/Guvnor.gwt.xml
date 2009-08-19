@@ -40,6 +40,8 @@
     <servlet path="/webdav" class="org.drools.guvnor.server.files.WebdavServlet"/>
     <servlet path="/api" class="org.drools.guvnor.server.files.RestAPIServlet"/>
     <servlet path="/feed" class="org.drools.guvnor.server.files.FeedServlet"/>
+    <servlet path="/workflowmanager" class="org.gridcc.mce.mceworkflow.servlets.WorkflowManagerServlet"/>
+    <servlet path="/wsdlparser" class="org.gridcc.mce.mceworkflow.servlets.WSDLParserServlet"/>
 
 
 	<set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true" />

@@ -1908,4 +1908,12 @@ public interface Constants extends ConstantsWithLookup {
     String Predicates();
 
     String PredicatesInfo();
+    
+	String NewBPELPackage();
+
+	String CreateANewBPELPackage();
+
+	String OpenEditorInNewWindow();
+
+	String BPELPackages();
 }

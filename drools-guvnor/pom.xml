@@ -174,7 +174,13 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-verifier</artifactId>
     </dependency>
-
+    
+    <dependency>
+    	<groupId>wsdl4j</groupId>
+    	<artifactId>wsdl4j</artifactId>
+    	<version>1.6.2</version>
+	</dependency> 
+    
     <!-- jackrabbit (this really should come from repository, not sure why not)
     <dependency>
       <groupId>org.apache.jackrabbit</groupId>
@@ -193,7 +199,7 @@
 
       <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
+        <artifactId>slf4j-log4j</artifactId>
       </dependency>
 	-->
 

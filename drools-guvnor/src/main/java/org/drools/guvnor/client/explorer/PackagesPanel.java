@@ -118,6 +118,16 @@ public class PackagesPanel extends GenericPanel {
             }
         }, "images/model_asset.gif")); //NON-NLS
 
+        if (Preferences.getBooleanPref("flex-bpel-editor")) {
+			m.addItem(new Item(constants.NewBPELPackage(),
+					new BaseItemListenerAdapter() {
+						public void onClick(BaseItem item, EventObject e) {
+							launchWizard(AssetFormats.BPEL_PACKAGE, constants
+									.CreateANewBPELPackage(), false);
+						}
+					}, "images/model_asset.gif")); // NON-NLS
+		}
+
         m.addItem(new Item(constants.NewFunction(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
                 launchWizard(AssetFormats.FUNCTION, constants.CreateANewFunction(), false);
@@ -137,7 +147,7 @@ public class PackagesPanel extends GenericPanel {
                 launchWizard(AssetFormats.RULE_FLOW_RF, constants.CreateANewRuleFlow(), false);
             }
         }, "images/ruleflow_small.gif")); //NON-NLS
-
+        
         m.addItem(new Item(constants.NewEnumeration(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
                 launchWizard(AssetFormats.ENUMERATION, constants.CreateANewEnumerationDropDownMapping(), false);

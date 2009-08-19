@@ -50,6 +50,13 @@ public class ExplorerNodeConfig {
 
 		                               new String[]{AssetFormats.MODEL, AssetFormats.DRL_MODEL} ) ) ;
 
+		if (Preferences.getBooleanPref("flex-bpel-editor")) {
+			pkg.appendChild(makeItem(constants.BPELPackages(),
+					"images/model_asset.gif",
+
+					new String[] { AssetFormats.BPEL_PACKAGE }));
+		}
+		
 		pkg.appendChild( makeItem(constants.RuleFlows(),
 		 "images/ruleflow_small.gif",
 

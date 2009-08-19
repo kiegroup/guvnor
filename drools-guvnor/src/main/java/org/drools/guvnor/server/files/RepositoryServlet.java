@@ -69,7 +69,7 @@ public class RepositoryServlet extends HttpServlet {
             log.debug( "WARNING: RUNNING IN NON SEAM MODE SINGLE USER MODE - ONLY FOR TESTING AND DEBUGGING !!!!!" );
             FileManagerUtils manager = new FileManagerUtils();
             try {
-                manager.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) );
+                manager.setRepository(new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ));
                 return manager;
             } catch ( Exception e ) {
                 throw new IllegalStateException();

@@ -75,7 +75,7 @@ public class AssetFileServlet extends RepositoryServlet {
         }
     }
 
-    private void processAttachmentDownload(String uuid,
+    protected void processAttachmentDownload(String uuid,
                                            HttpServletResponse response) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         String filename = getFileManager().loadFileAttachmentByUUID( uuid,
