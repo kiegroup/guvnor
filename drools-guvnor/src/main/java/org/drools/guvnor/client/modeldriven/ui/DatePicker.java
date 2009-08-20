@@ -7,13 +7,17 @@ import java.util.List;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.explorer.Preferences;
-import org.drools.guvnor.client.rpc.DetailedSerializableException;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 
+/**
+ * 
+ * @author Toni Rikkola
+ *
+ */
 abstract class DatePicker extends DirtyableComposite {
 
     protected DatePickerPopUp     datePickerPopUp;

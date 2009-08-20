@@ -45,6 +45,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.KeyboardListener;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -119,7 +120,10 @@ public class ConstraintValueEditor extends DirtyableComposite {
         } else {
             switch ( constraint.constraintValueType ) {
                 case SingleFieldConstraint.TYPE_LITERAL :
-                    panel.add( literalEditor() );
+                    panel.add( new LiteralEditor( constraint,
+                                                  this.dropDownData,
+                                                  this.fieldType,
+                                                  this.numericValue ) );
                     break;
                 case SingleFieldConstraint.TYPE_RET_VALUE :
                     panel.add( returnValueEditor() );
@@ -180,74 +184,11 @@ public class ConstraintValueEditor extends DirtyableComposite {
     }
 
     /**
-     * An editor for literal values.
-     */
-    private Widget literalEditor() {
-
-        //use a drop down if we have a fixed list
-        if ( this.dropDownData != null ) {
-            return enumDropDown( constraint.value,
-                                 new ValueChanged() {
-                                     public void valueChanged(String newValue) {
-                                         constraint.value = newValue;
-                                     }
-                                 },
-                                 this.dropDownData );
-
-        } else if ( SuggestionCompletionEngine.TYPE_DATE.equals( this.fieldType ) ) {
-
-            DatePickerLabel datePicker = new DatePickerLabel( constraint.value );
-
-            // Set the default time
-            constraint.value = datePicker.getDateString();
-
-            datePicker.addValueChanged( new ValueChanged() {
-                public void valueChanged(String newValue) {
-                    constraint.value = newValue;
-                }
-            } );
-
-            return datePicker;
-        } else {
-
-            final TextBox box = boundTextBox( constraint );
-
-            if ( this.numericValue ) {
-                box.addKeyboardListener( new KeyboardListener() {
-
-                    public void onKeyDown(Widget arg0,
-                                          char arg1,
-                                          int arg2) {
-
-                    }
-
-                    public void onKeyPress(Widget w,
-                                           char c,
-                                           int i) {
-                        if ( Character.isLetter( c ) ) {
-                            ((TextBox) w).cancelKey();
-                        }
-                    }
-
-                    public void onKeyUp(Widget arg0,
-                                        char arg1,
-                                        int arg2) {
-                    }
-
-                } );
-            }
-
-            box.setTitle( constants.LiteralValueTip() );
-            return box;
-        }
-    }
-
-    /**
      * This will do a drop down for enumerated values..
      */
-    public static Widget enumDropDown(final String currentValue,
-                                      final ValueChanged valueChanged,
-                                      final DropDownData dropData) {
+    public static ListBox enumDropDown(final String currentValue,
+                                       final ValueChanged valueChanged,
+                                       final DropDownData dropData) {
         final ListBox box = new ListBox();
         final Constants cs = GWT.create( Constants.class );
 
@@ -278,25 +219,6 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 }
             } );
 
-            //	        box.addFocusListener(new FocusListener() {
-            //
-            //
-            //				public void onFocus(Widget w) {
-            //					DeferredCommand.addCommand(new Command() {
-            //						public void execute() {
-            //							LoadingPopup.showMessage("Refreshing list...");
-            //							RepositoryServiceFactory.getService().loadDropDownExpression(dropData.valuePairs, dropData.queryExpression, new GenericCallback() {
-            //								public void onSuccess(Object data) {
-            //									LoadingPopup.close();
-            //									String[] list = (String[]) data;
-            //									doDropDown(currentValue, list, box);
-            //								}
-            //							});
-            //						}
-            //					});
-            //				}
-            //				public void onLostFocus(Widget w) {}
-            //	        });
         } else {
             //otherwise its just a normal one...
             doDropDown( currentValue,
@@ -321,29 +243,6 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         return box;
     }
-
-    //    /**
-    //     * This will do a drop down for enumerated values..
-    //     */
-    //    public static Widget enumDropDown(//final ISingleFieldConstraint constraint,
-    //                                       final String currentValue, final ValueChanged valueChanged,
-    //                                final String[] enumeratedValues) {
-    //        final ListBox box = new ListBox();
-    //
-    //        if (currentValue == null || "".equals( currentValue )) {
-    //            box.addItem( "Choose ..." );
-    //        }
-    //
-    //        doDropDown(currentValue, enumeratedValues, box);
-    //
-    //        box.addChangeListener( new ChangeListener() {
-    //            public void onChange(Widget w) {
-    //                valueChanged.valueChanged( box.getValue( box.getSelectedIndex() ) );
-    //                //constraint.value = box.getValue( box.getSelectedIndex() );
-    //            }
-    //        });
-    //        return box;
-    //    }
 
     private static void doDropDown(final String currentValue,
                                    final String[] enumeratedValues,
@@ -382,7 +281,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
     }
 
-    private TextBox boundTextBox(final ISingleFieldConstraint c) {
+    public static TextBox boundTextBox(final ISingleFieldConstraint c) {
         final TextBox box = new TextBox();
         box.setStyleName( "constraint-value-Editor" ); //NON-NLS
         if ( c.value == null ) {
@@ -401,7 +300,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 c.value = box.getText();
-                makeDirty();
+                //                makeDirty();
             }
 
         } );
@@ -447,8 +346,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 String var = (String) vars.get( i );
                 FactPattern f = model.getBoundFact( var );
                 String fieldConstraint = model.getFieldConstraint( var );
-                
-                if ( (f != null && f.factType.equals( this.fieldType )) ||  this.fieldType.equals( fieldConstraint )) {
+
+                if ( (f != null && f.factType.equals( this.fieldType )) || this.fieldType.equals( fieldConstraint ) ) {
                     foundABouncVariableThatMatches = true;
                     break;
                 }

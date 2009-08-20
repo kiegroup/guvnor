@@ -125,10 +125,11 @@ public class SecurityServiceImplTest extends TestCase {
     public void testPreferences() throws Exception {
         SecurityServiceImpl impl = new SecurityServiceImpl();
         assertNotNull( SecurityServiceImpl.PREFERENCES );
-        assertEquals( 5,
+        assertEquals( 6,
                       SecurityServiceImpl.PREFERENCES.size() );
         assertTrue( SecurityServiceImpl.PREFERENCES.containsKey( "visual-ruleflow" ) );
         assertTrue( SecurityServiceImpl.PREFERENCES.containsKey( "verifier" ) );
+        assertTrue( SecurityServiceImpl.PREFERENCES.containsKey( "flex-bpel-editor" ) );
         assertEquals( "true",
                       SecurityServiceImpl.PREFERENCES.get( "verifier" ) );
 

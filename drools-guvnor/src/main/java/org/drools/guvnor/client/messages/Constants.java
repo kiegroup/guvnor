@@ -1916,4 +1916,8 @@ public interface Constants extends ConstantsWithLookup {
 	String OpenEditorInNewWindow();
 
 	String BPELPackages();
+
+	String ValueCanNotBeEmpty();
+
+	String Value();
 }
