@@ -1920,4 +1920,6 @@ public interface Constants extends ConstantsWithLookup {
 	String ValueCanNotBeEmpty();
 
 	String Value();
+
+    String property0ModifiedOn12();
 }

@@ -155,7 +155,7 @@ public class VersionBrowser extends Composite {
                                                                         
                                                                         for (int i = 0; i < rows.length; i++) {
 																			TableDataRow row = rows[i];
-                                                                            String s = Format.format("{0} modified on: {1} ({2})", row.values[0], row.values[2], row.values[1] ) ;
+                                                                            String s = Format.format(constants.property0ModifiedOn12(), row.values[0], row.values[2], row.values[1] ) ;
 																			history.addItem(s, row.id);
 																		}
 
