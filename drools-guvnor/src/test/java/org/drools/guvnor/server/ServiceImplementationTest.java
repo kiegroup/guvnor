@@ -2524,6 +2524,16 @@ public class ServiceImplementationTest extends TestCase {
 
 	}
 
+	public void testLoadDropDownNoValuePairs() throws Exception {
+	    ServiceImplementation serv = new ServiceImplementation();
+	    String[] pairs = new String[]{null};
+	    String expression = "['@{f1}', '@{f2}']";
+	    String[] r = serv.loadDropDownExpression(pairs, expression);
+	    
+	    assertEquals(0, r.length);
+	    
+	}
+
 	public void testListUserPermisisons() throws Exception {
 		ServiceImplementation serv = getService();
 		Map<String, List<String>> r = serv.listUserPermissions();

@@ -1,4 +1,4 @@
-Reachable types computed on: Fri Aug 21 11:21:44 EEST 2009
+Reachable types computed on: Fri Aug 21 17:37:53 EEST 2009
 com.google.gwt.i18n.client.impl.ConstantMap
    Serialization status
       Not serializable
@@ -91,8 +91,8 @@ java.lang.Boolean
       Instantiable
    Path
       'java.lang.Boolean' is reachable as a subtype of type 'class java.lang.Boolean'
-      'java.lang.Boolean' is reachable from field 'expectedFire' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired'
-      'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'java.lang.Boolean' is reachable from field 'successResult' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyField'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyField' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -112,7 +112,12 @@ java.lang.Integer
    Path
       'java.lang.Integer' is reachable as a subtype of type 'class java.lang.Integer'
       'java.lang.Integer' is reachable from field 'expectedCount' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired'
-      'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.testing.Fixture'
+      Type 'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from array type 'org.drools.guvnor.client.modeldriven.testing.Fixture[]'
+      'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
+      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -135,7 +140,12 @@ java.lang.Long
    Path
       'java.lang.Long' is reachable as a subtype of type 'class java.lang.Long'
       'java.lang.Long' is reachable from field 'executionTimeResult' of type 'org.drools.guvnor.client.modeldriven.testing.ExecutionTrace'
-      'org.drools.guvnor.client.modeldriven.testing.ExecutionTrace' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.testing.ExecutionTrace' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.testing.Fixture'
+      Type 'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from array type 'org.drools.guvnor.client.modeldriven.testing.Fixture[]'
+      'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
+      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -144,10 +154,15 @@ java.lang.Number
    Serialization status
       Field serializable
    Path
-      'java.lang.Number' is reachable as a supertype of type 'class java.lang.Integer'
-      'java.lang.Integer' is reachable as a subtype of type 'class java.lang.Integer'
-      'java.lang.Integer' is reachable from field 'expectedCount' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired'
-      'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'java.lang.Number' is reachable as a supertype of type 'class java.lang.Long'
+      'java.lang.Long' is reachable as a subtype of type 'class java.lang.Long'
+      'java.lang.Long' is reachable from field 'executionTimeResult' of type 'org.drools.guvnor.client.modeldriven.testing.ExecutionTrace'
+      'org.drools.guvnor.client.modeldriven.testing.ExecutionTrace' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.testing.Fixture'
+      Type 'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from array type 'org.drools.guvnor.client.modeldriven.testing.Fixture[]'
+      'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
+      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -269,28 +284,6 @@ java.util.ArrayList<java.lang.String[]>
       'org.drools.guvnor.client.rpc.SingleScenarioResult' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.SingleScenarioResult'
       Started from 'org.drools.guvnor.client.rpc.SingleScenarioResult'
 
-java.util.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferConnection>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a subtype of type 'interface java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
-      'java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable from field 'connections' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
-      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
-      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
-      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
 java.util.ArrayList<org.drools.guvnor.client.modeldriven.dt.ActionCol>
    Serialization status
       Instantiable
@@ -324,25 +317,6 @@ java.util.ArrayList<org.drools.guvnor.client.modeldriven.dt.AttributeCol>
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.ArrayList<org.drools.guvnor.client.rpc.DiscussionRecord>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.ArrayList<org.drools.guvnor.client.rpc.DiscussionRecord>' is reachable as a supertype of type 'class org.cobogw.gwt.user.client.rpc.AsyncCallbackCollection'
-      'org.cobogw.gwt.user.client.rpc.AsyncCallbackCollection' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
-      Started from 'java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
-
-java.util.ArrayList<java.lang.String>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.ArrayList<java.lang.String>' is reachable as a subtype of type 'interface java.util.List<java.lang.String>'
-      'java.util.List<java.lang.String>' is reachable from field 'params' of type 'org.drools.guvnor.client.modeldriven.MethodInfo'
-      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
 java.util.ArrayList<org.drools.guvnor.client.modeldriven.dt.MetadataCol>
    Serialization status
       Instantiable
@@ -354,24 +328,13 @@ java.util.ArrayList<org.drools.guvnor.client.modeldriven.dt.MetadataCol>
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.ArrayList<org.drools.guvnor.client.factmodel.FieldMetaModel>
+java.util.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferConnection>
    Serialization status
       Instantiable
    Path
-      'java.util.ArrayList<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.ArrayList<org.drools.guvnor.client.factmodel.FactMetaModel>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.ArrayList<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable from field 'models' of type 'org.drools.guvnor.client.factmodel.FactModels'
-      'org.drools.guvnor.client.factmodel.FactModels' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'java.util.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a subtype of type 'interface java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
+      'java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable from field 'connections' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
+      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -381,21 +344,28 @@ java.util.ArrayList<org.drools.guvnor.client.modeldriven.MethodInfo>
       Instantiable
    Path
       'java.util.ArrayList<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.HashMap<K, V>'
-      'java.util.HashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.LinkedHashMap<K, V>'
+      'java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
       'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
       'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.ArrayList<org.drools.guvnor.client.modeldriven.testing.VerifyField>
+java.util.ArrayList<java.lang.String>
    Serialization status
       Instantiable
    Path
-      'java.util.ArrayList<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyFact'
-      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'java.util.ArrayList<java.lang.String>' is reachable as a subtype of type 'interface java.util.List<java.lang.String>'
+      'java.util.List<java.lang.String>' is reachable from field 'params' of type 'org.drools.guvnor.client.modeldriven.MethodInfo'
+      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.MethodInfo'
+      Type 'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable from array type 'org.drools.guvnor.client.modeldriven.MethodInfo[]'
+      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.LinkedHashMap<K, V>'
+      'java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
+      'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -422,6 +392,46 @@ java.util.ArrayList<org.drools.guvnor.client.ruleeditor.PropertyHolder>
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
+java.util.ArrayList<org.drools.guvnor.client.factmodel.FactMetaModel>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.ArrayList<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>'
+      'java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable from field 'models' of type 'org.drools.guvnor.client.factmodel.FactModels'
+      'org.drools.guvnor.client.factmodel.FactModels' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.ArrayList<org.drools.guvnor.client.rpc.DiscussionRecord>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.ArrayList<org.drools.guvnor.client.rpc.DiscussionRecord>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
+      Started from 'java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
+
+java.util.ArrayList<org.drools.guvnor.client.factmodel.FieldMetaModel>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.ArrayList<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
+      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
+      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.ArrayList<org.drools.guvnor.client.modeldriven.testing.VerifyField>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.ArrayList<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyFact'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
 java.util.ArrayList<org.drools.guvnor.client.modeldriven.testing.FactData>
    Serialization status
       Instantiable
@@ -440,6 +450,17 @@ java.util.ArrayList<org.drools.guvnor.client.modeldriven.testing.Fixture>
       'java.util.ArrayList<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>'
       'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
       'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
+      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -481,39 +502,6 @@ java.util.Arrays.ArrayList<java.lang.String[]>
       'java.util.List<java.lang.String[]>' is reachable from field 'auditLog' of type 'org.drools.guvnor.client.rpc.SingleScenarioResult'
       'org.drools.guvnor.client.rpc.SingleScenarioResult' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.SingleScenarioResult'
       Started from 'org.drools.guvnor.client.rpc.SingleScenarioResult'
-
-java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferConnection>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a subtype of type 'interface java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
-      'java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable from field 'connections' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
-      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
-      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
-      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.Fixture>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
-      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
 java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.dt.ActionCol>
    Serialization status
@@ -559,12 +547,16 @@ java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.dt.MetadataCol>
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.Arrays.ArrayList<org.drools.guvnor.client.rpc.DiscussionRecord>
+java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferConnection>
    Serialization status
       Instantiable
    Path
-      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rpc.DiscussionRecord>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
-      Started from 'java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a subtype of type 'interface java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
+      'java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable from field 'connections' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
+      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
 java.util.Arrays.ArrayList<java.lang.String>
    Serialization status
@@ -572,29 +564,14 @@ java.util.Arrays.ArrayList<java.lang.String>
    Path
       'java.util.Arrays.ArrayList<java.lang.String>' is reachable as a subtype of type 'interface java.util.List<java.lang.String>'
       'java.util.List<java.lang.String>' is reachable from field 'params' of type 'org.drools.guvnor.client.modeldriven.MethodInfo'
-      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.Arrays.ArrayList<org.drools.guvnor.client.factmodel.FieldMetaModel>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Arrays.ArrayList<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.Arrays.ArrayList<org.drools.guvnor.client.factmodel.FactMetaModel>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Arrays.ArrayList<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable from field 'models' of type 'org.drools.guvnor.client.factmodel.FactModels'
-      'org.drools.guvnor.client.factmodel.FactModels' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.MethodInfo'
+      Type 'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable from array type 'org.drools.guvnor.client.modeldriven.MethodInfo[]'
+      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.LinkedHashMap<K, V>'
+      'java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
+      'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -604,21 +581,10 @@ java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.MethodInfo>
       Instantiable
    Path
       'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.HashMap<K, V>'
-      'java.util.HashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.LinkedHashMap<K, V>'
+      'java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
       'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
       'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.VerifyField>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyFact'
-      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -645,6 +611,46 @@ java.util.Arrays.ArrayList<org.drools.guvnor.client.ruleeditor.PropertyHolder>
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
+java.util.Arrays.ArrayList<org.drools.guvnor.client.rpc.DiscussionRecord>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rpc.DiscussionRecord>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
+      Started from 'java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
+
+java.util.Arrays.ArrayList<org.drools.guvnor.client.factmodel.FieldMetaModel>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
+      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
+      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.Arrays.ArrayList<org.drools.guvnor.client.factmodel.FactMetaModel>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>'
+      'java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable from field 'models' of type 'org.drools.guvnor.client.factmodel.FactModels'
+      'org.drools.guvnor.client.factmodel.FactModels' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.VerifyField>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyFact'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
 java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.FactData>
    Serialization status
       Instantiable
@@ -652,6 +658,28 @@ java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.FactData
       'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>'
       'java.util.List<org.drools.guvnor.client.modeldriven.testing.FactData>' is reachable from field 'globals' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
       'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.Fixture>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
+      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
+      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -671,30 +699,17 @@ java.util.HashMap<java.lang.String, java.util.List<java.lang.String>>
    Serialization status
       Instantiable
    Path
-      'java.util.HashMap<java.lang.String, java.util.List<java.lang.String>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<java.lang.String>>'
+      'java.util.HashMap<java.lang.String, java.util.List<java.lang.String>>' is reachable as a supertype of type 'class java.util.LinkedHashMap<java.lang.String, java.util.List<java.lang.String>>'
+      'java.util.LinkedHashMap<java.lang.String, java.util.List<java.lang.String>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<java.lang.String>>'
       Started from 'java.util.Map<java.lang.String, java.util.List<java.lang.String>>'
 
-java.util.HashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>
+java.util.HashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>
    Serialization status
       Instantiable
    Path
-      'java.util.HashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable as a subtype of type 'interface java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>'
-      'java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable from field 'constraints' of type 'org.drools.guvnor.client.rulefloweditor.SplitTransferNode'
-      'org.drools.guvnor.client.rulefloweditor.SplitTransferNode' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode'
-      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
-      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
-      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.HashMap<java.lang.String, java.lang.String[]>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.HashMap<java.lang.String, java.lang.String[]>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.lang.String[]>'
-      'java.util.Map<java.lang.String, java.lang.String[]>' is reachable from field 'fieldsForType' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
+      'java.util.HashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a supertype of type 'class java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
       'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
@@ -704,21 +719,39 @@ java.util.HashMap<java.lang.String, java.lang.String>
    Serialization status
       Instantiable
    Path
-      'java.util.HashMap<java.lang.String, java.lang.String>' is reachable as a supertype of type 'class com.google.gwt.i18n.client.impl.ConstantMap'
-      'com.google.gwt.i18n.client.impl.ConstantMap' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.lang.String>'
+      'java.util.HashMap<java.lang.String, java.lang.String>' is reachable as a supertype of type 'class java.util.LinkedHashMap<java.lang.String, java.lang.String>'
+      'java.util.LinkedHashMap<java.lang.String, java.lang.String>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.lang.String>'
       'java.util.Map<java.lang.String, java.lang.String>' is reachable from field 'fieldTypes' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
       'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.HashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>
+java.util.HashMap<java.lang.String, java.lang.String[]>
    Serialization status
       Instantiable
    Path
-      'java.util.HashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
-      'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
+      'java.util.HashMap<java.lang.String, java.lang.String[]>' is reachable as a supertype of type 'class java.util.LinkedHashMap<java.lang.String, java.lang.String[]>'
+      'java.util.LinkedHashMap<java.lang.String, java.lang.String[]>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.lang.String[]>'
+      'java.util.Map<java.lang.String, java.lang.String[]>' is reachable from field 'fieldsForType' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
       'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.HashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.HashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable as a supertype of type 'class java.util.LinkedHashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>'
+      'java.util.LinkedHashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable as a subtype of type 'interface java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>'
+      'java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable from field 'constraints' of type 'org.drools.guvnor.client.rulefloweditor.SplitTransferNode'
+      'org.drools.guvnor.client.rulefloweditor.SplitTransferNode' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode'
+      Type 'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from array type 'org.drools.guvnor.client.rulefloweditor.TransferNode[]'
+      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
+      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -727,8 +760,7 @@ java.util.HashSet<com.google.gwt.user.client.ui.SuggestOracle.Suggestion>
    Serialization status
       Instantiable
    Path
-      'java.util.HashSet<com.google.gwt.user.client.ui.SuggestOracle.Suggestion>' is reachable as a supertype of type 'class java.util.LinkedHashSet<com.google.gwt.user.client.ui.SuggestOracle.Suggestion>'
-      'java.util.LinkedHashSet<com.google.gwt.user.client.ui.SuggestOracle.Suggestion>' is reachable as a subtype of type 'interface java.util.Collection<? extends com.google.gwt.user.client.ui.SuggestOracle.Suggestion>'
+      'java.util.HashSet<com.google.gwt.user.client.ui.SuggestOracle.Suggestion>' is reachable as a subtype of type 'interface java.util.Collection<? extends com.google.gwt.user.client.ui.SuggestOracle.Suggestion>'
       'java.util.Collection<? extends com.google.gwt.user.client.ui.SuggestOracle.Suggestion>' is reachable from field 'suggestions' of type 'com.google.gwt.user.client.ui.SuggestOracle.Response'
       'com.google.gwt.user.client.ui.SuggestOracle.Response' is reachable as a subtype of type 'interface com.google.gwt.user.client.rpc.IsSerializable'
       'com.google.gwt.user.client.rpc.IsSerializable' is reachable from field 'payload' of type 'org.drools.guvnor.client.rpc.ValidatedResponse'
@@ -739,8 +771,7 @@ java.util.HashSet<org.drools.guvnor.client.rulefloweditor.TransferConnection>
    Serialization status
       Instantiable
    Path
-      'java.util.HashSet<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a supertype of type 'class java.util.LinkedHashSet<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
-      'java.util.LinkedHashSet<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a subtype of type 'interface java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
+      'java.util.HashSet<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a subtype of type 'interface java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
       'java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable from field 'connections' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
       'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -754,27 +785,12 @@ java.util.IdentityHashMap<java.lang.String, java.util.List<java.lang.String>>
       'java.util.IdentityHashMap<java.lang.String, java.util.List<java.lang.String>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<java.lang.String>>'
       Started from 'java.util.Map<java.lang.String, java.util.List<java.lang.String>>'
 
-java.util.IdentityHashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>
+java.util.IdentityHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>
    Serialization status
       Instantiable
    Path
-      'java.util.IdentityHashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable as a subtype of type 'interface java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>'
-      'java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable from field 'constraints' of type 'org.drools.guvnor.client.rulefloweditor.SplitTransferNode'
-      'org.drools.guvnor.client.rulefloweditor.SplitTransferNode' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode'
-      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
-      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
-      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.IdentityHashMap<java.lang.String, java.lang.String[]>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.IdentityHashMap<java.lang.String, java.lang.String[]>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.lang.String[]>'
-      'java.util.Map<java.lang.String, java.lang.String[]>' is reachable from field 'fieldsForType' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
+      'java.util.IdentityHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
       'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
@@ -791,13 +807,29 @@ java.util.IdentityHashMap<java.lang.String, java.lang.String>
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.IdentityHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>
+java.util.IdentityHashMap<java.lang.String, java.lang.String[]>
    Serialization status
       Instantiable
    Path
-      'java.util.IdentityHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
-      'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
+      'java.util.IdentityHashMap<java.lang.String, java.lang.String[]>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.lang.String[]>'
+      'java.util.Map<java.lang.String, java.lang.String[]>' is reachable from field 'fieldsForType' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
       'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.IdentityHashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.IdentityHashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable as a subtype of type 'interface java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>'
+      'java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable from field 'constraints' of type 'org.drools.guvnor.client.rulefloweditor.SplitTransferNode'
+      'org.drools.guvnor.client.rulefloweditor.SplitTransferNode' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode'
+      Type 'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from array type 'org.drools.guvnor.client.rulefloweditor.TransferNode[]'
+      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
+      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -809,27 +841,12 @@ java.util.LinkedHashMap<java.lang.String, java.util.List<java.lang.String>>
       'java.util.LinkedHashMap<java.lang.String, java.util.List<java.lang.String>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<java.lang.String>>'
       Started from 'java.util.Map<java.lang.String, java.util.List<java.lang.String>>'
 
-java.util.LinkedHashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>
+java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>
    Serialization status
       Instantiable
    Path
-      'java.util.LinkedHashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable as a subtype of type 'interface java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>'
-      'java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable from field 'constraints' of type 'org.drools.guvnor.client.rulefloweditor.SplitTransferNode'
-      'org.drools.guvnor.client.rulefloweditor.SplitTransferNode' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode'
-      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
-      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
-      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.LinkedHashMap<java.lang.String, java.lang.String[]>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.LinkedHashMap<java.lang.String, java.lang.String[]>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.lang.String[]>'
-      'java.util.Map<java.lang.String, java.lang.String[]>' is reachable from field 'fieldsForType' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
+      'java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
       'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
@@ -846,13 +863,29 @@ java.util.LinkedHashMap<java.lang.String, java.lang.String>
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>
+java.util.LinkedHashMap<java.lang.String, java.lang.String[]>
    Serialization status
       Instantiable
    Path
-      'java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
-      'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
+      'java.util.LinkedHashMap<java.lang.String, java.lang.String[]>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.lang.String[]>'
+      'java.util.Map<java.lang.String, java.lang.String[]>' is reachable from field 'fieldsForType' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
       'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.LinkedHashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.LinkedHashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable as a subtype of type 'interface java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>'
+      'java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable from field 'constraints' of type 'org.drools.guvnor.client.rulefloweditor.SplitTransferNode'
+      'org.drools.guvnor.client.rulefloweditor.SplitTransferNode' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode'
+      Type 'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from array type 'org.drools.guvnor.client.rulefloweditor.TransferNode[]'
+      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
+      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -917,28 +950,6 @@ java.util.LinkedList<java.lang.String[]>
       'org.drools.guvnor.client.rpc.SingleScenarioResult' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.SingleScenarioResult'
       Started from 'org.drools.guvnor.client.rpc.SingleScenarioResult'
 
-java.util.LinkedList<org.drools.guvnor.client.rulefloweditor.TransferConnection>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.LinkedList<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a subtype of type 'interface java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
-      'java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable from field 'connections' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
-      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.LinkedList<org.drools.guvnor.client.rulefloweditor.TransferNode>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.LinkedList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
-      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
-      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
 java.util.LinkedList<org.drools.guvnor.client.modeldriven.dt.ActionCol>
    Serialization status
       Instantiable
@@ -972,24 +983,6 @@ java.util.LinkedList<org.drools.guvnor.client.modeldriven.dt.AttributeCol>
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.LinkedList<org.drools.guvnor.client.rpc.DiscussionRecord>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.LinkedList<org.drools.guvnor.client.rpc.DiscussionRecord>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
-      Started from 'java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
-
-java.util.LinkedList<java.lang.String>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.LinkedList<java.lang.String>' is reachable as a subtype of type 'interface java.util.List<java.lang.String>'
-      'java.util.List<java.lang.String>' is reachable from field 'params' of type 'org.drools.guvnor.client.modeldriven.MethodInfo'
-      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
 java.util.LinkedList<org.drools.guvnor.client.modeldriven.dt.MetadataCol>
    Serialization status
       Instantiable
@@ -1001,24 +994,13 @@ java.util.LinkedList<org.drools.guvnor.client.modeldriven.dt.MetadataCol>
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.LinkedList<org.drools.guvnor.client.factmodel.FieldMetaModel>
+java.util.LinkedList<org.drools.guvnor.client.rulefloweditor.TransferConnection>
    Serialization status
       Instantiable
    Path
-      'java.util.LinkedList<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.LinkedList<org.drools.guvnor.client.factmodel.FactMetaModel>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.LinkedList<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable from field 'models' of type 'org.drools.guvnor.client.factmodel.FactModels'
-      'org.drools.guvnor.client.factmodel.FactModels' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'java.util.LinkedList<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a subtype of type 'interface java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
+      'java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable from field 'connections' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
+      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1028,21 +1010,28 @@ java.util.LinkedList<org.drools.guvnor.client.modeldriven.MethodInfo>
       Instantiable
    Path
       'java.util.LinkedList<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.HashMap<K, V>'
-      'java.util.HashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.LinkedHashMap<K, V>'
+      'java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
       'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
       'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.LinkedList<org.drools.guvnor.client.modeldriven.testing.VerifyField>
+java.util.LinkedList<java.lang.String>
    Serialization status
       Instantiable
    Path
-      'java.util.LinkedList<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyFact'
-      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'java.util.LinkedList<java.lang.String>' is reachable as a subtype of type 'interface java.util.List<java.lang.String>'
+      'java.util.List<java.lang.String>' is reachable from field 'params' of type 'org.drools.guvnor.client.modeldriven.MethodInfo'
+      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.MethodInfo'
+      Type 'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable from array type 'org.drools.guvnor.client.modeldriven.MethodInfo[]'
+      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.LinkedHashMap<K, V>'
+      'java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
+      'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1069,6 +1058,46 @@ java.util.LinkedList<org.drools.guvnor.client.ruleeditor.PropertyHolder>
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
+java.util.LinkedList<org.drools.guvnor.client.factmodel.FactMetaModel>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.LinkedList<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>'
+      'java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable from field 'models' of type 'org.drools.guvnor.client.factmodel.FactModels'
+      'org.drools.guvnor.client.factmodel.FactModels' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.LinkedList<org.drools.guvnor.client.rpc.DiscussionRecord>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.LinkedList<org.drools.guvnor.client.rpc.DiscussionRecord>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
+      Started from 'java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
+
+java.util.LinkedList<org.drools.guvnor.client.factmodel.FieldMetaModel>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.LinkedList<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
+      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
+      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.LinkedList<org.drools.guvnor.client.modeldriven.testing.VerifyField>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.LinkedList<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyFact'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
 java.util.LinkedList<org.drools.guvnor.client.modeldriven.testing.FactData>
    Serialization status
       Instantiable
@@ -1087,6 +1116,17 @@ java.util.LinkedList<org.drools.guvnor.client.modeldriven.testing.Fixture>
       'java.util.LinkedList<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>'
       'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
       'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.LinkedList<org.drools.guvnor.client.rulefloweditor.TransferNode>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.LinkedList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
+      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1128,28 +1168,6 @@ java.util.Stack<java.lang.String[]>
       'java.util.List<java.lang.String[]>' is reachable from field 'auditLog' of type 'org.drools.guvnor.client.rpc.SingleScenarioResult'
       'org.drools.guvnor.client.rpc.SingleScenarioResult' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.SingleScenarioResult'
       Started from 'org.drools.guvnor.client.rpc.SingleScenarioResult'
-
-java.util.Stack<org.drools.guvnor.client.rulefloweditor.TransferConnection>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Stack<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a subtype of type 'interface java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
-      'java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable from field 'connections' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
-      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.Stack<org.drools.guvnor.client.rulefloweditor.TransferNode>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Stack<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
-      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
-      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
 java.util.Stack<org.drools.guvnor.client.modeldriven.dt.ActionCol>
    Serialization status
@@ -1195,42 +1213,13 @@ java.util.Stack<org.drools.guvnor.client.modeldriven.dt.MetadataCol>
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.Stack<org.drools.guvnor.client.rpc.DiscussionRecord>
+java.util.Stack<org.drools.guvnor.client.rulefloweditor.TransferConnection>
    Serialization status
       Instantiable
    Path
-      'java.util.Stack<org.drools.guvnor.client.rpc.DiscussionRecord>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
-      Started from 'java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
-
-java.util.Stack<java.lang.String>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Stack<java.lang.String>' is reachable as a subtype of type 'interface java.util.List<java.lang.String>'
-      'java.util.List<java.lang.String>' is reachable from field 'params' of type 'org.drools.guvnor.client.modeldriven.MethodInfo'
-      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.Stack<org.drools.guvnor.client.factmodel.FieldMetaModel>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Stack<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.Stack<org.drools.guvnor.client.factmodel.FactMetaModel>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Stack<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable from field 'models' of type 'org.drools.guvnor.client.factmodel.FactModels'
-      'org.drools.guvnor.client.factmodel.FactModels' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'java.util.Stack<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a subtype of type 'interface java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
+      'java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable from field 'connections' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
+      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1240,21 +1229,28 @@ java.util.Stack<org.drools.guvnor.client.modeldriven.MethodInfo>
       Instantiable
    Path
       'java.util.Stack<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.HashMap<K, V>'
-      'java.util.HashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.LinkedHashMap<K, V>'
+      'java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
       'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
       'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.Stack<org.drools.guvnor.client.modeldriven.testing.VerifyField>
+java.util.Stack<java.lang.String>
    Serialization status
       Instantiable
    Path
-      'java.util.Stack<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyFact'
-      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'java.util.Stack<java.lang.String>' is reachable as a subtype of type 'interface java.util.List<java.lang.String>'
+      'java.util.List<java.lang.String>' is reachable from field 'params' of type 'org.drools.guvnor.client.modeldriven.MethodInfo'
+      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.MethodInfo'
+      Type 'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable from array type 'org.drools.guvnor.client.modeldriven.MethodInfo[]'
+      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.LinkedHashMap<K, V>'
+      'java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
+      'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1281,6 +1277,46 @@ java.util.Stack<org.drools.guvnor.client.ruleeditor.PropertyHolder>
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
+java.util.Stack<org.drools.guvnor.client.factmodel.FactMetaModel>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Stack<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>'
+      'java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable from field 'models' of type 'org.drools.guvnor.client.factmodel.FactModels'
+      'org.drools.guvnor.client.factmodel.FactModels' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.Stack<org.drools.guvnor.client.rpc.DiscussionRecord>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Stack<org.drools.guvnor.client.rpc.DiscussionRecord>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
+      Started from 'java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
+
+java.util.Stack<org.drools.guvnor.client.factmodel.FieldMetaModel>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Stack<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
+      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
+      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.Stack<org.drools.guvnor.client.modeldriven.testing.VerifyField>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Stack<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyFact'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
 java.util.Stack<org.drools.guvnor.client.modeldriven.testing.FactData>
    Serialization status
       Instantiable
@@ -1299,6 +1335,17 @@ java.util.Stack<org.drools.guvnor.client.modeldriven.testing.Fixture>
       'java.util.Stack<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>'
       'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
       'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.Stack<org.drools.guvnor.client.rulefloweditor.TransferNode>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Stack<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
+      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1342,40 +1389,6 @@ java.util.Vector<java.lang.String[]>
       'org.drools.guvnor.client.rpc.SingleScenarioResult' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.SingleScenarioResult'
       Started from 'org.drools.guvnor.client.rpc.SingleScenarioResult'
 
-java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferConnection>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a supertype of type 'class java.util.Stack<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
-      'java.util.Stack<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a subtype of type 'interface java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
-      'java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable from field 'connections' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
-      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
-      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
-      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
-java.util.Vector<org.drools.guvnor.client.factmodel.FieldMetaModel>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Vector<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
-      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
 java.util.Vector<org.drools.guvnor.client.modeldriven.dt.ActionCol>
    Serialization status
       Instantiable
@@ -1409,24 +1422,6 @@ java.util.Vector<org.drools.guvnor.client.modeldriven.dt.AttributeCol>
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.Vector<org.drools.guvnor.client.rpc.DiscussionRecord>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Vector<org.drools.guvnor.client.rpc.DiscussionRecord>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
-      Started from 'java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
-
-java.util.Vector<java.lang.String>
-   Serialization status
-      Instantiable
-   Path
-      'java.util.Vector<java.lang.String>' is reachable as a subtype of type 'interface java.util.List<java.lang.String>'
-      'java.util.List<java.lang.String>' is reachable from field 'params' of type 'org.drools.guvnor.client.modeldriven.MethodInfo'
-      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
-      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
-      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
-      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
-
 java.util.Vector<org.drools.guvnor.client.modeldriven.dt.MetadataCol>
    Serialization status
       Instantiable
@@ -1438,13 +1433,14 @@ java.util.Vector<org.drools.guvnor.client.modeldriven.dt.MetadataCol>
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.Vector<org.drools.guvnor.client.factmodel.FactMetaModel>
+java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferConnection>
    Serialization status
       Instantiable
    Path
-      'java.util.Vector<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>'
-      'java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable from field 'models' of type 'org.drools.guvnor.client.factmodel.FactModels'
-      'org.drools.guvnor.client.factmodel.FactModels' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a supertype of type 'class java.util.Stack<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
+      'java.util.Stack<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a subtype of type 'interface java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
+      'java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable from field 'connections' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
+      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1454,21 +1450,28 @@ java.util.Vector<org.drools.guvnor.client.modeldriven.MethodInfo>
       Instantiable
    Path
       'java.util.Vector<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.HashMap<K, V>'
-      'java.util.HashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.LinkedHashMap<K, V>'
+      'java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
       'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
       'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
-java.util.Vector<org.drools.guvnor.client.modeldriven.testing.VerifyField>
+java.util.Vector<java.lang.String>
    Serialization status
       Instantiable
    Path
-      'java.util.Vector<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyFact'
-      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'java.util.Vector<java.lang.String>' is reachable as a subtype of type 'interface java.util.List<java.lang.String>'
+      'java.util.List<java.lang.String>' is reachable from field 'params' of type 'org.drools.guvnor.client.modeldriven.MethodInfo'
+      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.MethodInfo'
+      Type 'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable from array type 'org.drools.guvnor.client.modeldriven.MethodInfo[]'
+      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.LinkedHashMap<K, V>'
+      'java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
+      'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1495,6 +1498,46 @@ java.util.Vector<org.drools.guvnor.client.ruleeditor.PropertyHolder>
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
 
+java.util.Vector<org.drools.guvnor.client.factmodel.FactMetaModel>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Vector<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>'
+      'java.util.List<org.drools.guvnor.client.factmodel.FactMetaModel>' is reachable from field 'models' of type 'org.drools.guvnor.client.factmodel.FactModels'
+      'org.drools.guvnor.client.factmodel.FactModels' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.Vector<org.drools.guvnor.client.rpc.DiscussionRecord>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Vector<org.drools.guvnor.client.rpc.DiscussionRecord>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
+      Started from 'java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
+
+java.util.Vector<org.drools.guvnor.client.factmodel.FieldMetaModel>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Vector<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
+      'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
+      'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.Vector<org.drools.guvnor.client.modeldriven.testing.VerifyField>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Vector<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.VerifyField>' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.testing.VerifyFact'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
 java.util.Vector<org.drools.guvnor.client.modeldriven.testing.FactData>
    Serialization status
       Instantiable
@@ -1513,6 +1556,17 @@ java.util.Vector<org.drools.guvnor.client.modeldriven.testing.Fixture>
       'java.util.Vector<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>'
       'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
       'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
+      'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
+      Started from 'org.drools.guvnor.client.rpc.RuleAsset'
+
+java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>
+   Serialization status
+      Instantiable
+   Path
+      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
+      'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1559,8 +1613,9 @@ org.drools.guvnor.client.factmodel.FieldMetaModel
       Instantiable
    Path
       'org.drools.guvnor.client.factmodel.FieldMetaModel' is reachable as a subtype of type 'class org.drools.guvnor.client.factmodel.FieldMetaModel'
-      'org.drools.guvnor.client.factmodel.FieldMetaModel' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
+      Type 'org.drools.guvnor.client.factmodel.FieldMetaModel' is reachable from array type 'org.drools.guvnor.client.factmodel.FieldMetaModel[]'
+      'org.drools.guvnor.client.factmodel.FieldMetaModel' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>'
       'java.util.List<org.drools.guvnor.client.factmodel.FieldMetaModel>' is reachable from field 'fields' of type 'org.drools.guvnor.client.factmodel.FactMetaModel'
       'org.drools.guvnor.client.factmodel.FactMetaModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1583,7 +1638,14 @@ org.drools.guvnor.client.modeldriven.MethodInfo
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.MethodInfo'
+      Type 'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable from array type 'org.drools.guvnor.client.modeldriven.MethodInfo[]'
+      'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.LinkedHashMap<K, V>'
+      'java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
+      'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1594,8 +1656,8 @@ org.drools.guvnor.client.modeldriven.MethodInfo[]
    Path
       'org.drools.guvnor.client.modeldriven.MethodInfo' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
       'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.HashMap<K, V>'
-      'java.util.HashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>' is reachable from type argument 1 of type 'java.util.LinkedHashMap<K, V>'
+      'java.util.LinkedHashMap<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable as a subtype of type 'interface java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>'
       'java.util.Map<java.lang.String, java.util.List<org.drools.guvnor.client.modeldriven.MethodInfo>>' is reachable from field 'methodInfos' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
       'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1615,7 +1677,10 @@ org.drools.guvnor.client.modeldriven.brl.ActionCallMethod
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.brl.ActionCallMethod' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.ActionCallMethod' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.IAction'
+      Type 'org.drools.guvnor.client.modeldriven.brl.IAction' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.IAction[]'
+      'org.drools.guvnor.client.modeldriven.brl.IAction[]' is reachable from field 'rhs' of type 'org.drools.guvnor.client.modeldriven.brl.RuleModel'
+      'org.drools.guvnor.client.modeldriven.brl.RuleModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1637,9 +1702,9 @@ org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction
       'org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionFieldValue'
       Type 'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue[]'
       'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue[]' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.brl.ActionFieldList'
-      'org.drools.guvnor.client.modeldriven.brl.ActionFieldList' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionInsertFact'
-      'org.drools.guvnor.client.modeldriven.brl.ActionInsertFact' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact'
-      'org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.ActionFieldList' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionSetField'
+      'org.drools.guvnor.client.modeldriven.brl.ActionSetField' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionUpdateField'
+      'org.drools.guvnor.client.modeldriven.brl.ActionUpdateField' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1649,9 +1714,9 @@ org.drools.guvnor.client.modeldriven.brl.ActionFieldFunction[]
       Instantiable
    Path
       'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue[]' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.brl.ActionFieldList'
-      'org.drools.guvnor.client.modeldriven.brl.ActionFieldList' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionInsertFact'
-      'org.drools.guvnor.client.modeldriven.brl.ActionInsertFact' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact'
-      'org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.ActionFieldList' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionSetField'
+      'org.drools.guvnor.client.modeldriven.brl.ActionSetField' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionUpdateField'
+      'org.drools.guvnor.client.modeldriven.brl.ActionUpdateField' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1660,9 +1725,9 @@ org.drools.guvnor.client.modeldriven.brl.ActionFieldList
    Serialization status
       Field serializable
    Path
-      'org.drools.guvnor.client.modeldriven.brl.ActionFieldList' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionInsertFact'
-      'org.drools.guvnor.client.modeldriven.brl.ActionInsertFact' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact'
-      'org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.ActionFieldList' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionSetField'
+      'org.drools.guvnor.client.modeldriven.brl.ActionSetField' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionUpdateField'
+      'org.drools.guvnor.client.modeldriven.brl.ActionUpdateField' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1681,7 +1746,12 @@ org.drools.guvnor.client.modeldriven.brl.ActionFieldValue
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionFieldValue'
+      Type 'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue[]'
+      'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue[]' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.brl.ActionFieldList'
+      'org.drools.guvnor.client.modeldriven.brl.ActionFieldList' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionSetField'
+      'org.drools.guvnor.client.modeldriven.brl.ActionSetField' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionUpdateField'
+      'org.drools.guvnor.client.modeldriven.brl.ActionUpdateField' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1691,9 +1761,9 @@ org.drools.guvnor.client.modeldriven.brl.ActionFieldValue[]
       Instantiable
    Path
       'org.drools.guvnor.client.modeldriven.brl.ActionFieldValue[]' is reachable from field 'fieldValues' of type 'org.drools.guvnor.client.modeldriven.brl.ActionFieldList'
-      'org.drools.guvnor.client.modeldriven.brl.ActionFieldList' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionInsertFact'
-      'org.drools.guvnor.client.modeldriven.brl.ActionInsertFact' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact'
-      'org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.ActionFieldList' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionSetField'
+      'org.drools.guvnor.client.modeldriven.brl.ActionSetField' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionUpdateField'
+      'org.drools.guvnor.client.modeldriven.brl.ActionUpdateField' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1721,8 +1791,7 @@ org.drools.guvnor.client.modeldriven.brl.ActionInsertFact
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.brl.ActionInsertFact' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact'
-      'org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.ActionInsertFact' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1779,8 +1848,8 @@ org.drools.guvnor.client.modeldriven.brl.ActionSetField
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.brl.ActionSetField' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionCallMethod'
-      'org.drools.guvnor.client.modeldriven.brl.ActionCallMethod' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.ActionSetField' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ActionUpdateField'
+      'org.drools.guvnor.client.modeldriven.brl.ActionUpdateField' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1866,7 +1935,18 @@ org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint'
+      Type 'org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint[]'
+      'org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint[]' is reachable from field 'connectives' of type 'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint'
+      'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.FieldConstraint'
+      Type 'org.drools.guvnor.client.modeldriven.brl.FieldConstraint' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]'
+      'org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]' is reachable from field 'constraints' of type 'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint'
+      'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint'
+      'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint' is reachable from field 'constraintList' of type 'org.drools.guvnor.client.modeldriven.brl.FactPattern'
+      'org.drools.guvnor.client.modeldriven.brl.FactPattern' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.brl.FactPattern'
+      Type 'org.drools.guvnor.client.modeldriven.brl.FactPattern' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.FactPattern[]'
+      'org.drools.guvnor.client.modeldriven.brl.FactPattern[]' is reachable from field 'patterns' of type 'org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern'
+      'org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1893,7 +1973,10 @@ org.drools.guvnor.client.modeldriven.brl.DSLSentence
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.brl.DSLSentence' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.DSLSentence' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.brl.DSLSentence'
+      Type 'org.drools.guvnor.client.modeldriven.brl.DSLSentence' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.DSLSentence[]'
+      'org.drools.guvnor.client.modeldriven.brl.DSLSentence[]' is reachable from field 'conditionDSLSentences' of type 'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine'
+      'org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1988,8 +2071,16 @@ org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint'
-      'org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint'
+      'org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.FieldConstraint'
+      Type 'org.drools.guvnor.client.modeldriven.brl.FieldConstraint' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]'
+      'org.drools.guvnor.client.modeldriven.brl.FieldConstraint[]' is reachable from field 'constraints' of type 'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint'
+      'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint'
+      'org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint' is reachable from field 'constraintList' of type 'org.drools.guvnor.client.modeldriven.brl.FactPattern'
+      'org.drools.guvnor.client.modeldriven.brl.FactPattern' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.brl.FactPattern'
+      Type 'org.drools.guvnor.client.modeldriven.brl.FactPattern' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.FactPattern[]'
+      'org.drools.guvnor.client.modeldriven.brl.FactPattern[]' is reachable from field 'patterns' of type 'org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern'
+      'org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -1998,10 +2089,7 @@ org.drools.guvnor.client.modeldriven.brl.RuleAttribute
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.brl.RuleAttribute' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.brl.RuleAttribute'
-      Type 'org.drools.guvnor.client.modeldriven.brl.RuleAttribute' is reachable from array type 'org.drools.guvnor.client.modeldriven.brl.RuleAttribute[]'
-      'org.drools.guvnor.client.modeldriven.brl.RuleAttribute[]' is reachable from field 'attributes' of type 'org.drools.guvnor.client.modeldriven.brl.RuleModel'
-      'org.drools.guvnor.client.modeldriven.brl.RuleModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.brl.RuleAttribute' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2080,11 +2168,8 @@ org.drools.guvnor.client.modeldriven.dt.ActionCol
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.dt.ActionCol' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.dt.ActionCol'
-      'org.drools.guvnor.client.modeldriven.dt.ActionCol' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.modeldriven.dt.ActionCol>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.dt.ActionCol>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.dt.ActionCol>' is reachable from field 'actionCols' of type 'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable'
-      'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.dt.ActionCol' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol'
+      'org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2105,11 +2190,7 @@ org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.dt.ActionCol'
-      'org.drools.guvnor.client.modeldriven.dt.ActionCol' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.modeldriven.dt.ActionCol>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.dt.ActionCol>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.dt.ActionCol>' is reachable from field 'actionCols' of type 'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable'
-      'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2130,11 +2211,7 @@ org.drools.guvnor.client.modeldriven.dt.ActionRetractFactCol
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.dt.ActionRetractFactCol' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.dt.ActionCol'
-      'org.drools.guvnor.client.modeldriven.dt.ActionCol' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.modeldriven.dt.ActionCol>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.dt.ActionCol>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.dt.ActionCol>' is reachable from field 'actionCols' of type 'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable'
-      'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.dt.ActionRetractFactCol' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2156,8 +2233,9 @@ org.drools.guvnor.client.modeldriven.dt.ActionSetFieldCol
       Instantiable
    Path
       'org.drools.guvnor.client.modeldriven.dt.ActionSetFieldCol' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.dt.ActionCol'
-      'org.drools.guvnor.client.modeldriven.dt.ActionCol' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.modeldriven.dt.ActionCol>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.dt.ActionCol>'
+      Type 'org.drools.guvnor.client.modeldriven.dt.ActionCol' is reachable from array type 'org.drools.guvnor.client.modeldriven.dt.ActionCol[]'
+      'org.drools.guvnor.client.modeldriven.dt.ActionCol' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.dt.ActionCol>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.dt.ActionCol>'
       'java.util.List<org.drools.guvnor.client.modeldriven.dt.ActionCol>' is reachable from field 'actionCols' of type 'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable'
       'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2180,11 +2258,7 @@ org.drools.guvnor.client.modeldriven.dt.AttributeCol
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.dt.AttributeCol' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.dt.AttributeCol'
-      'org.drools.guvnor.client.modeldriven.dt.AttributeCol' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.modeldriven.dt.AttributeCol>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.dt.AttributeCol>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.dt.AttributeCol>' is reachable from field 'attributeCols' of type 'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable'
-      'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.dt.AttributeCol' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2205,11 +2279,7 @@ org.drools.guvnor.client.modeldriven.dt.ConditionCol
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.dt.ConditionCol' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.dt.ConditionCol'
-      'org.drools.guvnor.client.modeldriven.dt.ConditionCol' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.modeldriven.dt.ConditionCol>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.dt.ConditionCol>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.dt.ConditionCol>' is reachable from field 'conditionCols' of type 'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable'
-      'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.dt.ConditionCol' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2230,12 +2300,8 @@ org.drools.guvnor.client.modeldriven.dt.DTColumnConfig
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.dt.DTColumnConfig' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.dt.MetadataCol'
-      'org.drools.guvnor.client.modeldriven.dt.MetadataCol' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.dt.MetadataCol'
-      'org.drools.guvnor.client.modeldriven.dt.MetadataCol' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.modeldriven.dt.MetadataCol>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.dt.MetadataCol>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.dt.MetadataCol>' is reachable from field 'metadataCols' of type 'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable'
-      'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.dt.DTColumnConfig' is reachable as a supertype of type 'class org.drools.guvnor.client.modeldriven.dt.ConditionCol'
+      'org.drools.guvnor.client.modeldriven.dt.ConditionCol' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2253,11 +2319,7 @@ org.drools.guvnor.client.modeldriven.dt.MetadataCol
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.dt.MetadataCol' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.dt.MetadataCol'
-      'org.drools.guvnor.client.modeldriven.dt.MetadataCol' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.modeldriven.dt.MetadataCol>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.dt.MetadataCol>'
-      'java.util.List<org.drools.guvnor.client.modeldriven.dt.MetadataCol>' is reachable from field 'metadataCols' of type 'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable'
-      'org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.dt.MetadataCol' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2278,7 +2340,12 @@ org.drools.guvnor.client.modeldriven.testing.ExecutionTrace
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.testing.ExecutionTrace' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.testing.ExecutionTrace' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.testing.Fixture'
+      Type 'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from array type 'org.drools.guvnor.client.modeldriven.testing.Fixture[]'
+      'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
+      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2332,7 +2399,12 @@ org.drools.guvnor.client.modeldriven.testing.FieldData
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.testing.FieldData' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.testing.FieldData' is reachable as a subtype of type 'class org.drools.guvnor.client.modeldriven.testing.FieldData'
+      Type 'org.drools.guvnor.client.modeldriven.testing.FieldData' is reachable from array type 'org.drools.guvnor.client.modeldriven.testing.FieldData[]'
+      'org.drools.guvnor.client.modeldriven.testing.FieldData' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.FieldData>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.FieldData>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.FieldData>' is reachable from field 'fieldData' of type 'org.drools.guvnor.client.modeldriven.testing.FactData'
+      'org.drools.guvnor.client.modeldriven.testing.FactData' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2437,7 +2509,12 @@ org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.testing.Fixture'
+      Type 'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from array type 'org.drools.guvnor.client.modeldriven.testing.Fixture[]'
+      'org.drools.guvnor.client.modeldriven.testing.Fixture' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>'
+      'java.util.List<org.drools.guvnor.client.modeldriven.testing.Fixture>' is reachable from field 'fixtures' of type 'org.drools.guvnor.client.modeldriven.testing.Scenario'
+      'org.drools.guvnor.client.modeldriven.testing.Scenario' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2558,9 +2635,9 @@ org.drools.guvnor.client.rpc.DiscussionRecord
       Instantiable
    Path
       'org.drools.guvnor.client.rpc.DiscussionRecord' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.DiscussionRecord'
-      'org.drools.guvnor.client.rpc.DiscussionRecord' is reachable from type argument 0 of type 'java.util.ArrayList<E>'
-      'java.util.ArrayList<org.drools.guvnor.client.rpc.DiscussionRecord>' is reachable as a supertype of type 'class org.cobogw.gwt.user.client.rpc.AsyncCallbackCollection'
-      'org.cobogw.gwt.user.client.rpc.AsyncCallbackCollection' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
+      Type 'org.drools.guvnor.client.rpc.DiscussionRecord' is reachable from array type 'org.drools.guvnor.client.rpc.DiscussionRecord[]'
+      'org.drools.guvnor.client.rpc.DiscussionRecord' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rpc.DiscussionRecord>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
       Started from 'java.util.List<org.drools.guvnor.client.rpc.DiscussionRecord>'
 
 org.drools.guvnor.client.rpc.DiscussionRecord[]
@@ -2781,7 +2858,12 @@ org.drools.guvnor.client.ruleeditor.PropertyHolder
    Serialization status
       Instantiable
    Path
-      'org.drools.guvnor.client.ruleeditor.PropertyHolder' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
+      'org.drools.guvnor.client.ruleeditor.PropertyHolder' is reachable as a subtype of type 'class org.drools.guvnor.client.ruleeditor.PropertyHolder'
+      Type 'org.drools.guvnor.client.ruleeditor.PropertyHolder' is reachable from array type 'org.drools.guvnor.client.ruleeditor.PropertyHolder[]'
+      'org.drools.guvnor.client.ruleeditor.PropertyHolder' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.ruleeditor.PropertyHolder>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.ruleeditor.PropertyHolder>'
+      'java.util.List<org.drools.guvnor.client.ruleeditor.PropertyHolder>' is reachable from field 'list' of type 'org.drools.guvnor.client.ruleeditor.PropertiesHolder'
+      'org.drools.guvnor.client.ruleeditor.PropertiesHolder' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
       'org.drools.guvnor.client.rpc.RuleAsset' is reachable as a subtype of type 'class org.drools.guvnor.client.rpc.RuleAsset'
       Started from 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2803,8 +2885,9 @@ org.drools.guvnor.client.rulefloweditor.ElementContainerTransferNode
       Instantiable
    Path
       'org.drools.guvnor.client.rulefloweditor.ElementContainerTransferNode' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode'
-      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      Type 'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from array type 'org.drools.guvnor.client.rulefloweditor.TransferNode[]'
+      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
       'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
       'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2828,8 +2911,9 @@ org.drools.guvnor.client.rulefloweditor.HumanTaskTransferNode
       Instantiable
    Path
       'org.drools.guvnor.client.rulefloweditor.HumanTaskTransferNode' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode'
-      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      Type 'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from array type 'org.drools.guvnor.client.rulefloweditor.TransferNode[]'
+      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
       'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
       'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2853,12 +2937,13 @@ org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef
       Instantiable
    Path
       'org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef'
-      'org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef' is reachable from type argument 0 of type 'java.util.IdentityHashMap<K, V>'
-      'java.util.IdentityHashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable as a subtype of type 'interface java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>'
+      'org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef' is reachable from type argument 0 of type 'java.util.LinkedHashMap<K, V>'
+      'java.util.LinkedHashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable as a subtype of type 'interface java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>'
       'java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable from field 'constraints' of type 'org.drools.guvnor.client.rulefloweditor.SplitTransferNode'
       'org.drools.guvnor.client.rulefloweditor.SplitTransferNode' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode'
-      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      Type 'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from array type 'org.drools.guvnor.client.rulefloweditor.TransferNode[]'
+      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
       'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
       'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2870,12 +2955,13 @@ org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint
       Instantiable
    Path
       'org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint'
-      'org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint' is reachable from type argument 1 of type 'java.util.HashMap<K, V>'
-      'java.util.HashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable as a subtype of type 'interface java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>'
+      'org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint' is reachable from type argument 1 of type 'java.util.LinkedHashMap<K, V>'
+      'java.util.LinkedHashMap<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable as a subtype of type 'interface java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>'
       'java.util.Map<org.drools.guvnor.client.rulefloweditor.SplitNode.ConnectionRef, org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint>' is reachable from field 'constraints' of type 'org.drools.guvnor.client.rulefloweditor.SplitTransferNode'
       'org.drools.guvnor.client.rulefloweditor.SplitTransferNode' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode'
-      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      Type 'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from array type 'org.drools.guvnor.client.rulefloweditor.TransferNode[]'
+      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
       'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
       'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2887,8 +2973,9 @@ org.drools.guvnor.client.rulefloweditor.SplitTransferNode
       Instantiable
    Path
       'org.drools.guvnor.client.rulefloweditor.SplitTransferNode' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode'
-      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      Type 'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from array type 'org.drools.guvnor.client.rulefloweditor.TransferNode[]'
+      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
       'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
       'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2902,8 +2989,9 @@ org.drools.guvnor.client.rulefloweditor.SplitTransferNode.Type
       'org.drools.guvnor.client.rulefloweditor.SplitTransferNode.Type' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.SplitTransferNode.Type'
       'org.drools.guvnor.client.rulefloweditor.SplitTransferNode.Type' is reachable from field 'splitType' of type 'org.drools.guvnor.client.rulefloweditor.SplitTransferNode'
       'org.drools.guvnor.client.rulefloweditor.SplitTransferNode' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode'
-      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      Type 'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from array type 'org.drools.guvnor.client.rulefloweditor.TransferNode[]'
+      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
       'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
       'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2927,8 +3015,8 @@ org.drools.guvnor.client.rulefloweditor.TransferConnection
       Instantiable
    Path
       'org.drools.guvnor.client.rulefloweditor.TransferConnection' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferConnection'
-      'org.drools.guvnor.client.rulefloweditor.TransferConnection' is reachable from type argument 0 of type 'java.util.LinkedHashSet<E>'
-      'java.util.LinkedHashSet<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a subtype of type 'interface java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
+      'org.drools.guvnor.client.rulefloweditor.TransferConnection' is reachable from type argument 0 of type 'java.util.HashSet<E>'
+      'java.util.HashSet<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable as a subtype of type 'interface java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>'
       'java.util.Collection<org.drools.guvnor.client.rulefloweditor.TransferConnection>' is reachable from field 'connections' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
       'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2952,8 +3040,9 @@ org.drools.guvnor.client.rulefloweditor.TransferNode
       Instantiable
    Path
       'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode'
-      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      Type 'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from array type 'org.drools.guvnor.client.rulefloweditor.TransferNode[]'
+      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
       'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
       'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2967,8 +3056,9 @@ org.drools.guvnor.client.rulefloweditor.TransferNode.Type
       'org.drools.guvnor.client.rulefloweditor.TransferNode.Type' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode.Type'
       'org.drools.guvnor.client.rulefloweditor.TransferNode.Type' is reachable from field 'type' of type 'org.drools.guvnor.client.rulefloweditor.TransferNode'
       'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode'
-      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      Type 'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from array type 'org.drools.guvnor.client.rulefloweditor.TransferNode[]'
+      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
       'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
       'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'
@@ -2992,8 +3082,9 @@ org.drools.guvnor.client.rulefloweditor.WorkItemTransferNode
       Instantiable
    Path
       'org.drools.guvnor.client.rulefloweditor.WorkItemTransferNode' is reachable as a subtype of type 'class org.drools.guvnor.client.rulefloweditor.TransferNode'
-      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Vector<E>'
-      'java.util.Vector<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
+      Type 'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from array type 'org.drools.guvnor.client.rulefloweditor.TransferNode[]'
+      'org.drools.guvnor.client.rulefloweditor.TransferNode' is reachable from type argument 0 of type 'java.util.Arrays.ArrayList<E>'
+      'java.util.Arrays.ArrayList<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable as a subtype of type 'interface java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>'
       'java.util.List<org.drools.guvnor.client.rulefloweditor.TransferNode>' is reachable from field 'nodes' of type 'org.drools.guvnor.client.rpc.RuleFlowContentModel'
       'org.drools.guvnor.client.rpc.RuleFlowContentModel' is reachable as a subtype of type 'interface org.drools.guvnor.client.modeldriven.brl.PortableObject'
       'org.drools.guvnor.client.modeldriven.brl.PortableObject' is reachable from field 'content' of type 'org.drools.guvnor.client.rpc.RuleAsset'

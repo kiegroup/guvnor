@@ -198,7 +198,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         //if we have to do it lazy, we will hit up the server when the widget gets focus
         if ( dropData.fixedList == null && dropData.queryExpression != null ) {
-            DeferredCommand.addCommand( new Command() {
+              DeferredCommand.addCommand( new Command() {
                 public void execute() {
                     LoadingPopup.showMessage( cs.RefreshingList() );
                     RepositoryServiceFactory.getService().loadDropDownExpression( dropData.valuePairs,
@@ -207,6 +207,11 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                                                                       public void onSuccess(Object data) {
                                                                                           LoadingPopup.close();
                                                                                           String[] list = (String[]) data;
+
+                                                                                          if ( list.length == 0 ) {
+                                                                                              list = new String[]{cs.UnableToLoadList()};
+                                                                                          }
+
                                                                                           doDropDown( currentValue,
                                                                                                       list,
                                                                                                       box );
