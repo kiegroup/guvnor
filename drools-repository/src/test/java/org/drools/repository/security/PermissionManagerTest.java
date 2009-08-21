@@ -92,7 +92,7 @@ public class PermissionManagerTest extends TestCase {
 
 	public void testListingUsers() throws Exception {
 		PermissionManager pm = new PermissionManager(RepositorySessionUtil.getRepository());
-		pm.deleteAllPermissions();
+		pm.deleteAllUsers();
 
 		Map<String, List<String>> perms = new HashMap<String, List<String>>() {{
 			put("package.admin", new ArrayList<String>() {{add("1234567890");}});

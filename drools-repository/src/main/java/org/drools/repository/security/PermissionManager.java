@@ -61,12 +61,33 @@ public class PermissionManager {
     	}
     }
 
+
+
+
 	private Node getUserPermissionNode(String userName)
 			throws RepositoryException {
-		Node root = this.repository.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
-    	Node permsNode = getNode(getNode(getNode(root, "user_info", "nt:folder"), userName, "nt:folder"), "permissions", "nt:file");
+    	Node permsNode = getNode(getUserInfoNode(userName, repository), "permissions", "nt:file");
 		return permsNode;
 	}
+
+    /** get the specified user info node (it is an nt:folder type) */
+    public static Node getUserInfoNode(String userName, RulesRepository repo) throws RepositoryException {
+        Node root = getRootNode(repo);
+        return getNode(getUsersRootNode(root), userName, "nt:folder");
+    }
+
+    /** The root node of the repository */
+    public static Node getRootNode(RulesRepository repo) throws RepositoryException {
+        return repo.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
+    }
+
+    /**
+     * Get the top node for "user_info"
+     * @throws RepositoryException
+     */
+    public static Node getUsersRootNode(Node root) throws RepositoryException {
+        return getNode(root, "user_info", "nt:folder");
+    }
 
 
     /**
@@ -115,7 +136,7 @@ public class PermissionManager {
     /**
      * Gets or creates a node.
      */
-	private Node getNode(Node node, String name, String nodeType) throws RepositoryException {
+	public static Node getNode(Node node, String name, String nodeType) throws RepositoryException {
 		Node permsNode;
 		if (!node.hasNode(name)) {
     		permsNode = node.addNode(name, nodeType);
@@ -136,8 +157,8 @@ public class PermissionManager {
 	public Map<String, List<String>> listUsers() {
 		try {
 			Map<String, List<String>> listing = new HashMap<String, List<String>>();
-			Node root = this.repository.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
-	    	Node usersNode = getNode(root, "user_info", "nt:folder");
+			Node root = getRootNode(this.repository);
+	    	Node usersNode = getUsersRootNode(root);
 	    	NodeIterator users = usersNode.getNodes();
 	    	while (users.hasNext()) {
 				Node userNode = (Node) users.next();
@@ -165,9 +186,9 @@ public class PermissionManager {
 		return permTypes;
 	}
 
-	void deleteAllPermissions() throws RepositoryException {
-		Node root = this.repository.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
-		getNode(root, "user_info", "nt:folder").remove();
+	void deleteAllUsers() throws RepositoryException {
+		Node root = getRootNode(this.repository);
+		getUsersRootNode(root).remove();
 	}
 
 	public void removeUserPermissions(String userName) {
