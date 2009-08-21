@@ -44,8 +44,6 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.KeyboardListener;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -62,15 +60,16 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ConstraintValueEditor extends DirtyableComposite {
 
-    private final ISingleFieldConstraint constraint;
-    private final Panel                  panel;
-    private final RuleModel              model;
-    private final boolean                numericValue;
-    private DropDownData                 dropDownData;
-    private Constants                    constants = ((Constants) GWT.create( Constants.class ));
-    private String                       fieldType;
-
-    //private String[] enumeratedValues;
+    private final FactPattern                pattern;
+    private final String                     fieldName;
+    private final SuggestionCompletionEngine sce;
+    private final ISingleFieldConstraint     constraint;
+    private final Panel                      panel;
+    private final RuleModel                  model;
+    private final boolean                    numericValue;
+    private DropDownData                     dropDownData;
+    private Constants                        constants = ((Constants) GWT.create( Constants.class ));
+    private String                           fieldType;
 
     /**
      * @param con The constraint being edited.
@@ -80,11 +79,13 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                  ISingleFieldConstraint con,
                                  RuleModeller modeller,
                                  String valueType /* eg is numeric */) {
+        this.pattern = pattern;
+        this.fieldName = fieldName;
         this.constraint = con;
-        valueType = modeller.getSuggestionCompletions().getFieldType( pattern.factType,
-                                                                      fieldName );
+        this.sce = modeller.getSuggestionCompletions();
+        valueType = sce.getFieldType( pattern.factType,
+                                      fieldName );
         this.fieldType = valueType;
-        SuggestionCompletionEngine sce = modeller.getSuggestionCompletions();
         if ( SuggestionCompletionEngine.TYPE_NUMERIC.equals( valueType ) ) {
             this.numericValue = true;
         } else {
@@ -120,7 +121,10 @@ public class ConstraintValueEditor extends DirtyableComposite {
         } else {
             switch ( constraint.constraintValueType ) {
                 case SingleFieldConstraint.TYPE_LITERAL :
-                    panel.add( new LiteralEditor( constraint,
+                    panel.add( new LiteralEditor( this.pattern,
+                                                  this.fieldName,
+                                                  this.sce,
+                                                  this.constraint,
                                                   this.dropDownData,
                                                   this.fieldType,
                                                   this.numericValue ) );

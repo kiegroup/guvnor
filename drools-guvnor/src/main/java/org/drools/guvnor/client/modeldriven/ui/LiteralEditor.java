@@ -5,6 +5,7 @@ import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 
 import com.google.gwt.core.client.GWT;
@@ -31,26 +32,35 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class LiteralEditor extends Composite {
 
-    private Constants              constants    = ((Constants) GWT.create( Constants.class ));
-    protected Panel                panel        = new HorizontalPanel();
-    protected Label                labelWidget  = new Label();
-    private ISingleFieldConstraint constraint;
-    private DropDownData           dropDownData;
-    private String                 fieldType;
-    private final boolean          numericValue;
+    private final FactPattern                pattern;
+    private final String                     fieldName;
+    private final SuggestionCompletionEngine sce;
+    private Constants                        constants    = ((Constants) GWT.create( Constants.class ));
+    protected Panel                          panel        = new HorizontalPanel();
+    protected Label                          labelWidget  = new Label();
+    private ISingleFieldConstraint           constraint;
+    private DropDownData                     dropDownData;
+    private String                           fieldType;
+    private final boolean                    numericValue;
 
-    private final Button           okButton     = new Button( constants.OK() );
-    private final ValueChanged     valueChanged = new ValueChanged() {
-                                                    public void valueChanged(String newValue) {
-                                                        constraint.value = newValue;
-                                                        okButton.click();
-                                                    }
-                                                };
+    private final Button                     okButton     = new Button( constants.OK() );
+    private final ValueChanged               valueChanged = new ValueChanged() {
+                                                              public void valueChanged(String newValue) {
+                                                                  constraint.value = newValue;
+                                                                  okButton.click();
+                                                              }
+                                                          };
 
-    public LiteralEditor(ISingleFieldConstraint constraint,
+    public LiteralEditor(FactPattern pattern,
+                         String fieldName,
+                         SuggestionCompletionEngine sce,
+                         ISingleFieldConstraint constraint,
                          DropDownData dropDownData,
                          String fieldType,
                          boolean numericValue) {
+        this.pattern = pattern;
+        this.fieldName = fieldName;
+        this.sce = sce;
         this.constraint = constraint;
         this.dropDownData = dropDownData;
         this.fieldType = fieldType;
@@ -80,8 +90,6 @@ public class LiteralEditor extends Composite {
 
             labelWidget.addClickListener( new ClickListener() {
                 public void onClick(Widget arg0) {
-                    //                panel.clear();
-                    //                panel.add( getWidget() );
                     showPopup();
                 }
             } );
@@ -126,6 +134,10 @@ public class LiteralEditor extends Composite {
 
         //use a drop down if we have a fixed list
         if ( this.dropDownData != null ) {
+
+            this.dropDownData = sce.getEnums( pattern,
+                                              fieldName );
+
             ListBox box = ConstraintValueEditor.enumDropDown( constraint.value,
                                                               valueChanged,
                                                               this.dropDownData );
