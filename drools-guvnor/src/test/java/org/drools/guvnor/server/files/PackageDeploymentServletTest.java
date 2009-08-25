@@ -31,10 +31,6 @@ import javax.jcr.Session;
 
 public class PackageDeploymentServletTest extends TestCase {
 
-
-
-
-
 	public void testLoadingRules() throws Exception {
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
 
