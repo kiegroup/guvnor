@@ -2053,18 +2053,21 @@ public class ServiceImplementation
             RuleCoverageListener coverage = new RuleCoverageListener( expectedRules( bin ) );
 
             while ( it.hasNext() ) {
-                RuleAsset asset = loadAsset( (AssetItem) it.next() );
-                Scenario sc = (Scenario) asset.content;
-                runScenario( item.getName(),
-                             sc,
-                             coverage );//runScenario(sc, res, workingMemory).scenario;
+                AssetItem as= it.next();
+                if (!as.getDisabled()) {
+                    RuleAsset asset = loadAsset( as );
+                    Scenario sc = (Scenario) asset.content;
+                    runScenario( item.getName(),
+                                 sc,
+                                 coverage );//runScenario(sc, res, workingMemory).scenario;
 
-                int[] totals = sc.countFailuresTotal();
-                resultSummaries.add( new ScenarioResultSummary( totals[0],
-                                                                totals[1],
-                                                                asset.metaData.name,
-                                                                asset.metaData.description,
-                                                                asset.uuid ) );
+                    int[] totals = sc.countFailuresTotal();
+                    resultSummaries.add( new ScenarioResultSummary( totals[0],
+                                                                    totals[1],
+                                                                    asset.metaData.name,
+                                                                    asset.metaData.description,
+                                                                    asset.uuid ) );
+                }
             }
 
             ScenarioResultSummary[] summaries = resultSummaries.toArray( new ScenarioResultSummary[resultSummaries.size()] );

@@ -2335,6 +2335,13 @@ public class ServiceImplementationTest extends TestCase {
 		scenario2.updateContent(ScenarioXMLPersistence.getInstance().marshal(sc));
 		scenario2.checkin("");
 
+        AssetItem scenario3 = pkg.addAsset("scenBOGUS", "");
+        scenario3.updateFormat(AssetFormats.TEST_SCENARIO);
+        scenario3.updateContent("SOME RUBBISH");
+        scenario3.updateDisabled(true);
+        scenario3.checkin("");
+
+
 
 		//love you
 		long time = System.currentTimeMillis();
