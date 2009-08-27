@@ -3,6 +3,11 @@
 
   <target name="soa_overlay" description="SOA specific build">  
   <echo>Executing soa_overlay ...</echo>
+      <replace file="target/drools-guvnor/WEB-INF/components.xml" >
+		<replacetoken>security:identity authenticate-method="#{defaultAuthenticator.authenticate}"</replacetoken>
+		<replacevalue>security:identity authenticate-method="#{authenticator.authenticate}" jaas-config-name="jmx-console"</replacevalue>
+	</replace>   
+
       <replace dir="target/drools-guvnor/org.drools.guvnor.Guvnor" >
         <include name="*.html" />
         <replacefilter token="JBoss Guvnor" value="JBoss BRMS" />
@@ -11,6 +16,6 @@
         <replacefilter token="Bienvenidos a Guvnor" value="Bienvenidos a BRMS" />
         <replacefilter token="Guvnor segun sus necesidades." value="BRMS segun sus necesidades." />
       </replace>      
-      <copy file="target/drools-guvnor/org.drools.guvnor.Guvnor/hdrlogo_brms.gif" tofile="target/drools-guvnor/org.drools.guvnor.Guvnor/header_logo.gif"/>
+      <copy file="target/drools-guvnor/org.drools.guvnor.Guvnor/hdrlogo_brms.gif" tofile="target/drools-guvnor/org.drools.guvnor.Guvnor/header_logo.gif" overwrite="true"/>
   </target>  
 </project>
