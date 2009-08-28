@@ -182,6 +182,10 @@ public class AssetItemTest extends TestCase {
     	assertEquals("application-model-1.0.0", asset[0]);
     	assertEquals("jar", asset[1]);
 
+    	asset = AssetItem.getAssetNameFromFileName("something-1.0.0.drl");
+    	assertEquals("something-1.0.0", asset[0]);
+    	assertEquals("drl", asset[1]);
+
         asset = AssetItem.getAssetNameFromFileName("foo.bpel.jar");
         assertEquals("foo", asset[0]);
         assertEquals("bpel.jar", asset[1]);

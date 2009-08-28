@@ -546,28 +546,25 @@ public class AssetItem extends CategorisableItem {
      *
      * File name is foo.drl -> ["foo", "drl"]
      *
-     * File name is foo.bar.xls -> ["foo", "bar.xls"]
      * @param fileName
      * @return
      */
     public static String[] getAssetNameFromFileName(String fileName) {
 
         String[] r = new String[]{"", ""};
-        char[] cs = fileName.toCharArray();
-        boolean name = true;
-        for ( int i = 0; i < cs.length; i++ ) {
-            if ( name && cs[i] == '.' ) {
-                String rhs = fileName.substring( i + 1 );
-                if ( !rhs.equals( "bpel.jar" ) && (rhs.contains( "_" ) || rhs.contains( " " ) || rhs.contains( ".jar" )) ) {
-                    r[0] = r[0] + '.'; //its part of the name
-                } else {
-                    name = false;
-                }
-            } else if ( name ) {
-                r[0] = r[0] + cs[i];
-            } else {
-                r[1] = r[1] + cs[i];
-            }
+        if ( fileName.endsWith( ".bpel.jar" ) ) {
+            r[0] = fileName.substring( 0,
+                                       fileName.lastIndexOf( ".bpel.jar" ) );
+            r[1] = "bpel.jar";
+        } else if ( fileName.endsWith( ".model.drl" ) ) {
+            r[0] = fileName.substring( 0,
+                                       fileName.lastIndexOf( ".model.drl" ) );
+            r[1] = "model.drl";
+        } else {
+            r[0] = fileName.substring( 0,
+                                       fileName.lastIndexOf( "." ) );
+            r[1] = fileName.substring( fileName.lastIndexOf( "." ) + 1 );
+
         }
         return r;
 
