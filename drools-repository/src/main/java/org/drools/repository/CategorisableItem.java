@@ -47,35 +47,32 @@ public abstract class CategorisableItem extends VersionableItem {
             checkIsUpdateable();
 
             CategoryItem tagItem = this.rulesRepository.loadCategory( tag );
+            String tagItemUUID = this.node.getSession().getValueFactory().createValue( tagItem.getNode() ).getString();          
 
             //now set the tag property of the rule
-            Property tagReferenceProperty;
-            int i = 0;
-            Value[] newTagValues = null;
             try {
-                tagReferenceProperty = this.node.getProperty( CATEGORY_PROPERTY_NAME );
+            	Property tagReferenceProperty = this.node.getProperty( CATEGORY_PROPERTY_NAME );
                 Value[] oldTagValues = tagReferenceProperty.getValues();
 
-                //first, make sure this tag wasn't already there. while we're at it, lets copy the array
-                newTagValues = new Value[oldTagValues.length + 1];
-                for ( i = 0; i < oldTagValues.length; i++ ) {
-                    if ( oldTagValues[i].getString().equals( tag ) ) {
+                for ( int j = 0; j < oldTagValues.length; j++ ) {
+                    if ( oldTagValues[j].getString().equals( tagItemUUID ) ) {
                         log.info( "tag '" + tag + "' already existed for rule node: " + this.node.getName() );
                         return;
                     }
+                }
+                
+                Value[] newTagValues = new Value[oldTagValues.length + 1];
+                for ( int i = 0; i < oldTagValues.length; i++ ) {
                     newTagValues[i] = oldTagValues[i];
                 }
+                newTagValues[oldTagValues.length] = this.node.getSession().getValueFactory().createValue( tagItem.getNode() );
+                updateCategories( newTagValues );
             } catch ( PathNotFoundException e ) {
-                //the property doesn't exist yet, so create it in the finally block
-                newTagValues = new Value[1];
-            } finally {
-                if ( newTagValues != null ) {
-                    newTagValues[i] = this.node.getSession().getValueFactory().createValue( tagItem.getNode() );
-                    updateCategories( newTagValues );
-                } else {
-                    log.error( "reached expected path of execution when adding tag '" + tag + "' to ruleNode: " + this.node.getName() );
-                }
-            }
+                //the property doesn't exist yet
+            	Value[] newTagValues = new Value[1];
+                newTagValues[0] = this.node.getSession().getValueFactory().createValue( tagItem.getNode() );
+                updateCategories( newTagValues );
+            } 
         } catch ( Exception e ) {
             log.error( "Caught exception",
                        e );

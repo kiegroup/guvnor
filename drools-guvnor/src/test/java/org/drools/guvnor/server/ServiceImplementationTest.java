@@ -2567,7 +2567,33 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(null, res.errors);
 	}
 
+	public void testAddCategories() throws Exception {
+		ServiceImplementation impl = getService();
+		impl.repository.createPackage("testAddCategoriesPackage", "desc");
+		impl.createCategory("", "testAddCategoriesCat1", "this is a cat");
+		impl.createCategory("", "testAddCategoriesCat2", "this is a cat");
 
+		String uuid = impl.createNewRule("testCreateNewRuleName",
+				"an initial desc", "testAddCategoriesCat1", "testAddCategoriesPackage",
+				AssetFormats.DSL_TEMPLATE_RULE);
+
+		AssetItem dtItem = impl.repository.loadAssetByUUID(uuid);
+		dtItem.addCategory("testAddCategoriesCat1");
+		impl.repository.save();
+        
+		AssetItem dtItem1 = impl.repository.loadAssetByUUID(uuid);
+		assertEquals(1, dtItem1.getCategories().size());
+		assertTrue(dtItem1.getCategorySummary().contains("testAddCategoriesCat1"));		
+
+		AssetItem dtItem2 = impl.repository.loadAssetByUUID(uuid);
+		dtItem2.addCategory("testAddCategoriesCat2");
+		impl.repository.save();
+        
+		AssetItem dtItem3 = impl.repository.loadAssetByUUID(uuid);
+		assertEquals(2, dtItem3.getCategories().size());
+		assertTrue(dtItem3.getCategorySummary().contains("testAddCategoriesCat2"));		
+	}
+	
 	/**
 	 * Set up enough of the Seam environment to test it.
 	 */
