@@ -74,16 +74,14 @@ public class AssetItem extends CategorisableItem {
                null );
     }
 
-
-
-
     /**
      * returns the string contents of the rule node.
      * If this is a binary asset, this will return null (use getBinaryContent instead).
      */
     public String getContent() throws RulesRepositoryException {
-    	return getContent(false);
+        return getContent( false );
     }
+
     /**
      * Only for use in the StorageEventManager, for passing the fromRepo parameter
      * 
@@ -93,8 +91,8 @@ public class AssetItem extends CategorisableItem {
     public String getContent(Boolean fromRepo) throws RulesRepositoryException {
         try {
 
-            if (StorageEventManager.hasLoadEvent() && !fromRepo) {
-                return IOUtils.toString(StorageEventManager.getLoadEvent().loadContent(this));
+            if ( StorageEventManager.hasLoadEvent() && !fromRepo ) {
+                return IOUtils.toString( StorageEventManager.getLoadEvent().loadContent( this ) );
             }
 
             if ( isBinary() ) {
@@ -157,15 +155,15 @@ public class AssetItem extends CategorisableItem {
      */
     public InputStream getBinaryContentAttachment() {
         try {
-            if (StorageEventManager.hasLoadEvent()) {
-                return StorageEventManager.getLoadEvent().loadContent(this);
+            if ( StorageEventManager.hasLoadEvent() ) {
+                return StorageEventManager.getLoadEvent().loadContent( this );
             }
             Node ruleNode = getVersionContentNode();
             if ( ruleNode.hasProperty( CONTENT_PROPERTY_BINARY_NAME ) ) {
                 Property data = ruleNode.getProperty( CONTENT_PROPERTY_BINARY_NAME );
                 return data.getStream();
             } else {
-                if ( ruleNode.hasProperty(CONTENT_PROPERTY_NAME)) {
+                if ( ruleNode.hasProperty( CONTENT_PROPERTY_NAME ) ) {
                     Property data = ruleNode.getProperty( CONTENT_PROPERTY_NAME );
                     return data.getStream();
                 }
@@ -189,33 +187,33 @@ public class AssetItem extends CategorisableItem {
     public byte[] getBinaryContentAsBytes() {
         try {
             Node ruleNode = getVersionContentNode();
-            if (StorageEventManager.hasLoadEvent()) {
-                return IOUtils.toByteArray(StorageEventManager.getLoadEvent().loadContent(this));
+            if ( StorageEventManager.hasLoadEvent() ) {
+                return IOUtils.toByteArray( StorageEventManager.getLoadEvent().loadContent( this ) );
             }
-            if (isBinary()) {
-                    Property data = ruleNode.getProperty( CONTENT_PROPERTY_BINARY_NAME );
-                    InputStream in = data.getStream();
+            if ( isBinary() ) {
+                Property data = ruleNode.getProperty( CONTENT_PROPERTY_BINARY_NAME );
+                InputStream in = data.getStream();
 
-                    // Create the byte array to hold the data
-                    byte[] bytes = new byte[(int) data.getLength()];
+                // Create the byte array to hold the data
+                byte[] bytes = new byte[(int) data.getLength()];
 
-                    // Read in the bytes
-                    int offset = 0;
-                    int numRead = 0;
-                    while ( offset < bytes.length && (numRead = in.read( bytes,
-                                                                         offset,
-                                                                         bytes.length - offset )) >= 0 ) {
-                        offset += numRead;
-                    }
+                // Read in the bytes
+                int offset = 0;
+                int numRead = 0;
+                while ( offset < bytes.length && (numRead = in.read( bytes,
+                                                                     offset,
+                                                                     bytes.length - offset )) >= 0 ) {
+                    offset += numRead;
+                }
 
-                    // Ensure all the bytes have been read in
-                    if ( offset < bytes.length ) {
-                        throw new RulesRepositoryException( "Could not completely read asset " + getName() );
-                    }
+                // Ensure all the bytes have been read in
+                if ( offset < bytes.length ) {
+                    throw new RulesRepositoryException( "Could not completely read asset " + getName() );
+                }
 
-                    // Close the input stream and return bytes
-                    in.close();
-                    return bytes;
+                // Close the input stream and return bytes
+                in.close();
+                return bytes;
             } else {
                 return getContent().getBytes();
             }
@@ -501,8 +499,8 @@ public class AssetItem extends CategorisableItem {
      */
     public void remove() {
 
-        if (StorageEventManager.hasSaveEvent()) {
-            StorageEventManager.getSaveEvent().onAssetDelete(this);
+        if ( StorageEventManager.hasSaveEvent() ) {
+            StorageEventManager.getSaveEvent().onAssetDelete( this );
         }
 
         checkIsUpdateable();
@@ -534,7 +532,7 @@ public class AssetItem extends CategorisableItem {
 
         try {
             if ( this.isHistoricalVersion() ) {
-            	return this.rulesRepository.loadPackage(this.getPackageName());
+                return this.rulesRepository.loadPackage( this.getPackageName() );
             }
             return new PackageItem( this.rulesRepository,
                                     this.node.getParent().getParent() );
@@ -560,7 +558,7 @@ public class AssetItem extends CategorisableItem {
         for ( int i = 0; i < cs.length; i++ ) {
             if ( name && cs[i] == '.' ) {
                 String rhs = fileName.substring( i + 1 );
-                if ( rhs.contains( "_" ) || rhs.contains( " " ) || rhs.contains( ".jar" ) ) {
+                if ( !rhs.equals( "bpel.jar" ) && (rhs.contains( "_" ) || rhs.contains( " " ) || rhs.contains( ".jar" )) ) {
                     r[0] = r[0] + '.'; //its part of the name
                 } else {
                     name = false;
