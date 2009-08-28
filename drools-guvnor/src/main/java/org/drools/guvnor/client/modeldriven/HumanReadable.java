@@ -73,6 +73,8 @@ public class HumanReadable {
 
         operatorDisplayMap.put( "soundslike", constants.soundsLike());
 
+        operatorDisplayMap.put("in", constants.isContainedInTheFollowingList());
+
         ceDisplayMap.put( "not", constants.ThereIsNo());
         ceDisplayMap.put( "exists", constants.ThereExists());
         ceDisplayMap.put( "or", constants.AnyOf1());
