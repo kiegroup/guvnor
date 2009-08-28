@@ -18,10 +18,15 @@ import net.sf.webdav.IWebdavStore;
 import net.sf.webdav.StoredObject;
 
 import org.apache.commons.io.IOUtils;
+import org.drools.guvnor.server.security.AdminType;
+import org.drools.guvnor.server.security.RoleTypes;
+import org.drools.guvnor.server.security.WebDavPackageNameType;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.VersionableItem;
+import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.Identity;
 
 public class WebDAVImpl
     implements
@@ -72,7 +77,7 @@ public class WebDAVImpl
                              String uri) {
         //System.out.println("creating folder:" + uri);
         String[] path = getPath( uri );
-        if ( path[0].equals( "packages" ) ) {
+        if ( path[0].equals( "packages" ) && isAdmin() ) {
             if ( path.length > 2 ) {
                 throw new UnsupportedOperationException( "Can't nest packages." );
             }
@@ -96,7 +101,8 @@ public class WebDAVImpl
         //for mac OSX, ignore these annoying things
         if ( uri.endsWith( ".DS_Store" ) ) return;
         String[] path = getPath( uri );
-        if ( path[0].equals( "packages" ) ) {
+        if ( path[0].equals( "packages" ) && checkPackagePermission( path[1],
+                                                                     RoleTypes.PACKAGE_ADMIN ) ) {
             if ( path.length > 3 ) {
                 throw new UnsupportedOperationException( "Can't do nested packages." );
             }
@@ -145,7 +151,8 @@ public class WebDAVImpl
             if ( path.length == 1 ) {
                 listPackages( repository,
                               result );
-            } else {
+            } else if ( checkPackagePermission( path[1],
+                                                RoleTypes.PACKAGE_READONLY ) ) {
                 PackageItem pkg = repository.loadPackage( path[1] );
                 Iterator<AssetItem> it = pkg.getAssets();
                 while ( it.hasNext() ) {
@@ -154,6 +161,7 @@ public class WebDAVImpl
                         result.add( asset.getName() + "." + asset.getFormat() );
                     }
                 }
+
             }
 
         } else if ( path[0].equals( "snapshots" ) ) {
@@ -163,10 +171,12 @@ public class WebDAVImpl
             if ( path.length == 1 ) {
                 listPackages( repository,
                               result );
-            } else if ( path.length == 2 ) {
+            } else if ( path.length == 2 && checkPackagePermission( path[1],
+                                                                    RoleTypes.PACKAGE_READONLY ) ) {
                 String[] snaps = repository.listPackageSnapshots( path[1] );
                 return snaps;
-            } else if ( path.length == 3 ) {
+            } else if ( path.length == 3 && checkPackagePermission( path[1],
+                                                                    RoleTypes.PACKAGE_READONLY ) ) {
                 Iterator<AssetItem> it = repository.loadPackageSnapshot( path[1],
                                                                          path[2] ).getAssets();
                 while ( it.hasNext() ) {
@@ -190,8 +200,10 @@ public class WebDAVImpl
         Iterator<PackageItem> it = repository.listPackages();
         while ( it.hasNext() ) {
             PackageItem pkg = it.next();
-            if ( !pkg.isArchived() ) {
-                result.add( pkg.getName() );
+            String packageName = pkg.getName();
+            if ( !pkg.isArchived() && checkPackagePermission( packageName,
+                                                              RoleTypes.PACKAGE_READONLY ) ) {
+                result.add( packageName );
             }
         }
     }
@@ -202,7 +214,8 @@ public class WebDAVImpl
         RulesRepository repository = getRepo();
         String[] path = getPath( uri );
         if ( path.length < 2 ) return new Date();
-        if ( path[0].equals( "packages" ) ) {
+        if ( path[0].equals( "packages" ) && checkPackagePermission( path[1],
+                                                                     RoleTypes.PACKAGE_READONLY ) ) {
             PackageItem pkg = repository.loadPackage( path[1] );
             if ( path.length == 2 ) {
                 //dealing with package
@@ -213,7 +226,8 @@ public class WebDAVImpl
                 AssetItem asset = pkg.loadAsset( assetName );
                 return asset.getCreatedDate().getTime();
             }
-        } else if ( path[0].equals( "snapshots" ) ) {
+        } else if ( path[0].equals( "snapshots" ) && checkPackagePermission( path[1],
+                                                                             RoleTypes.PACKAGE_READONLY ) ) {
             if ( path.length == 2 ) {
                 return new Date();
             } else if ( path.length == 3 ) {
@@ -238,7 +252,8 @@ public class WebDAVImpl
         RulesRepository repository = getRepo();
         String[] path = getPath( uri );
         if ( path.length < 2 ) return new Date();
-        if ( path[0].equals( "packages" ) ) {
+        if ( path[0].equals( "packages" ) && checkPackagePermission( path[1],
+                                                                     RoleTypes.PACKAGE_READONLY ) ) {
             PackageItem pkg = repository.loadPackage( path[1] );
             if ( path.length == 2 ) {
                 //dealing with package
@@ -249,7 +264,8 @@ public class WebDAVImpl
                 AssetItem asset = pkg.loadAsset( assetName );
                 return asset.getLastModified().getTime();
             }
-        } else if ( path[0].equals( "snapshots" ) ) {
+        } else if ( path[0].equals( "snapshots" ) && checkPackagePermission( path[1],
+                                                                             RoleTypes.PACKAGE_READONLY ) ) {
             if ( path.length == 2 ) {
                 return new Date();
             } else if ( path.length == 3 ) {
@@ -288,7 +304,8 @@ public class WebDAVImpl
 
             return so;
         }
-        if ( path[0].equals( "packages" ) ) {
+        if ( path[0].equals( "packages" ) && checkPackagePermission( path[1],
+                                                                     RoleTypes.PACKAGE_READONLY ) ) {
             PackageItem pkg = repository.loadPackage( path[1] );
             if ( path.length == 2 ) {
                 //dealing with package
@@ -298,23 +315,39 @@ public class WebDAVImpl
             } else {
                 String fileName = path[2];
                 String assetName = AssetItem.getAssetNameFromFileName( fileName )[0];
-                AssetItem asset = pkg.loadAsset( assetName );
+                AssetItem asset;
+                try {
+                    asset = pkg.loadAsset( assetName );
+                } catch ( Exception e ) {
+                    return null;
+                }
                 return createStoredObject( uri,
                                            asset,
                                            asset.getContentLength() );
             }
-        } else if ( path[0].equals( "snapshots" ) ) {
+        } else if ( path[0].equals( "snapshots" ) && checkPackagePermission( path[1],
+                                                                             RoleTypes.PACKAGE_READONLY ) ) {
             if ( path.length == 3 ) {
                 PackageItem snapshot = repository.loadPackageSnapshot( path[1],
                                                                        path[2] );
-                AssetItem asset = snapshot.loadAsset( AssetItem.getAssetNameFromFileName( path[2] )[0] );
+                AssetItem asset;
+                try {
+                    asset = snapshot.loadAsset( AssetItem.getAssetNameFromFileName( path[2] )[0] );
+                } catch ( Exception e ) {
+                    return null;
+                }
                 return createStoredObject( uri,
                                            snapshot,
                                            asset.getContentLength() );
             } else if ( path.length == 4 ) {
                 PackageItem pkg = repository.loadPackageSnapshot( path[1],
                                                                   path[2] );
-                AssetItem asset = pkg.loadAsset( AssetItem.getAssetNameFromFileName( path[3] )[0] );
+                AssetItem asset;
+                try {
+                    asset = pkg.loadAsset( AssetItem.getAssetNameFromFileName( path[3] )[0] );
+                } catch ( Exception e ) {
+                    return null;
+                }
                 return createStoredObject( uri,
                                            asset,
                                            asset.getContentLength() );
@@ -341,12 +374,14 @@ public class WebDAVImpl
     private InputStream getContent(String uri) {
         RulesRepository repository = getRepo();
         String[] path = getPath( uri );
-        if ( path[0].equals( "packages" ) ) {
+        if ( path[0].equals( "packages" ) && checkPackagePermission( path[1],
+                                                                     RoleTypes.PACKAGE_READONLY ) ) {
             String pkg = path[1];
             String asset = AssetItem.getAssetNameFromFileName( path[2] )[0];
             AssetItem assetItem = repository.loadPackage( pkg ).loadAsset( asset );
             return getAssetData( assetItem );
-        } else if ( path[0].equals( "snapshots" ) ) {
+        } else if ( path[0].equals( "snapshots" ) && checkPackagePermission( path[1],
+                                                                             RoleTypes.PACKAGE_READONLY ) ) {
             String pkg = path[1];
             String snap = path[2];
             String asset = AssetItem.getAssetNameFromFileName( path[3] )[0];
@@ -373,11 +408,13 @@ public class WebDAVImpl
         String[] path = getPath( uri );
         try {
             RulesRepository repo = getRepo();
-            if ( path.length == 3 && path[0].equals( "packages" ) ) {
+            if ( path.length == 3 && path[0].equals( "packages" ) && checkPackagePermission( path[1],
+                                                                                             RoleTypes.PACKAGE_READONLY ) ) {
                 PackageItem pkg = repo.loadPackage( path[1] );
                 AssetItem asset = pkg.loadAsset( AssetItem.getAssetNameFromFileName( path[2] )[0] );
                 return asset.getContentLength();
-            } else if ( path.length == 4 && path[0].equals( "snapshots" ) ) {
+            } else if ( path.length == 4 && path[0].equals( "snapshots" ) && checkPackagePermission( path[1],
+                                                                                                     RoleTypes.PACKAGE_READONLY ) ) {
                 PackageItem pkg = repo.loadPackageSnapshot( path[1],
                                                             path[2] );
                 AssetItem asset = pkg.loadAsset( AssetItem.getAssetNameFromFileName( path[3] )[0] );
@@ -392,7 +429,7 @@ public class WebDAVImpl
 
     }
 
-    public boolean isFolder(String uri) {
+    boolean isFolder(String uri) {
         //System.out.println("is folder :" + uri);
         RulesRepository repository = getRepo();
         String[] path = getPath( uri );
@@ -409,7 +446,7 @@ public class WebDAVImpl
         }
     }
 
-    public boolean isResource(String uri) {
+    boolean isResource(String uri) {
         RulesRepository repository = getRepo();
         //System.out.println("is resource :" + uri);
         String[] path = getPath( uri );
@@ -436,7 +473,7 @@ public class WebDAVImpl
         }
     }
 
-    public boolean objectExists(String uri) {
+    boolean objectExists(String uri) {
         if ( uri.indexOf( " copy " ) > 0 ) {
             throw new IllegalArgumentException( "OSX is not capable of copy and pasting without breaking the file extension." );
         }
@@ -498,7 +535,8 @@ public class WebDAVImpl
         if ( path.length == 0 || path.length == 1 ) {
             throw new IllegalArgumentException();
         }
-        if ( path[0].equals( "packages" ) ) {
+        if ( path[0].equals( "packages" ) && checkPackagePermission( path[1],
+                                                                     RoleTypes.PACKAGE_DEVELOPER ) ) {
             String packName = path[1];
             PackageItem pkg = repository.loadPackage( packName );
             if ( path.length == 3 ) {
@@ -538,7 +576,8 @@ public class WebDAVImpl
         //System.out.println("set resource content:" + uri);
         if ( uri.endsWith( ".DS_Store" ) ) return 0;
         String[] path = getPath( uri );
-        if ( path[0].equals( "packages" ) ) {
+        if ( path[0].equals( "packages" ) && checkPackagePermission( path[1],
+                                                                     RoleTypes.PACKAGE_DEVELOPER ) ) {
             if ( path.length != 3 ) {
                 throw new IllegalArgumentException( "Not a valid resource path " + uri );
             }
@@ -582,6 +621,35 @@ public class WebDAVImpl
             return uri.split( "webdav/" )[1].split( "/" );
         } else {
             return uri.substring( 1 ).split( "/" );
+        }
+    }
+
+    private boolean isAdmin() {
+        if ( Contexts.isSessionContextActive() ) {
+            try {
+                Identity.instance().checkPermission( new AdminType(),
+                                                     RoleTypes.ADMIN );
+                return true;
+            } catch ( Exception e ) {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
+    private boolean checkPackagePermission(String packageName,
+                                           String type) {
+        if ( Contexts.isSessionContextActive() ) {
+            try {
+                Identity.instance().checkPermission( new WebDavPackageNameType( packageName ),
+                                                     type );
+                return true;
+            } catch ( Exception e ) {
+                return false;
+            }
+        } else {
+            return true;
         }
     }
 

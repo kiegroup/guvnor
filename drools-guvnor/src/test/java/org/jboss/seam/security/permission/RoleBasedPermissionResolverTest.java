@@ -32,6 +32,7 @@ import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleBasedPermissionManager;
 import org.drools.guvnor.server.security.RoleTypes;
+import org.drools.guvnor.server.security.WebDavPackageNameType;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 
@@ -269,7 +270,7 @@ public class RoleBasedPermissionResolverTest extends TestCase {
 
     	Lifecycle.endApplication();
     }
-
+    
     //Package.admin: everything for that package, including creating snapshots for that package.
     public void testPackageBasedPermissionPackageAdmin() throws Exception {
     	//Mock up SEAM contexts
@@ -301,6 +302,37 @@ public class RoleBasedPermissionResolverTest extends TestCase {
         assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", RoleTypes.PACKAGE_READONLY));
 
     	Lifecycle.endApplication();
+    }
+    
+    //Package.admin: everything for that package, including creating snapshots for that package.
+    public void testPackageBasedWebDavPermissionPackageAdmin() throws Exception {
+        //Mock up SEAM contexts
+        Map application = new HashMap<String, Object>();
+        Lifecycle.beginApplication(application);
+        Lifecycle.beginCall();
+        MockIdentity midentity = new MockIdentity();
+        Contexts.getSessionContext().set("org.jboss.seam.security.identity", midentity);
+        
+        String packageName = "testPackageBasedWebDavPermissionPackageAdmin";
+        
+        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+        pbps.add(new RoleBasedPermission("analyst", RoleTypes.ANALYST, packageName, null));
+        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
+        Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
+        
+        // Put permission list in session.
+        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+        testManager.create();
+        Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);
+        
+        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+        resolver.setEnableRoleBasedAuthorization(true);
+        assertFalse(resolver.hasPermission(new WebDavPackageNameType(packageName), RoleTypes.ANALYST));
+        assertFalse(resolver.hasPermission(new WebDavPackageNameType(packageName), RoleTypes.ANALYST_READ));
+        
+        assertFalse(resolver.hasPermission("47982482-7912-4881-97ec-e852494383d7", RoleTypes.PACKAGE_READONLY));
+        
+        Lifecycle.endApplication();
     }
 
     //Package.developer:  everything for that package, NOT snapshots (can view snapshots of that package only)

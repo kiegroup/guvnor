@@ -14,6 +14,7 @@ import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleBasedPermissionManager;
 import org.drools.guvnor.server.security.RoleTypes;
+import org.drools.guvnor.server.security.WebDavPackageNameType;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.Create;
@@ -55,16 +56,18 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 @BypassInterceptors
 @Install(precedence = org.jboss.seam.annotations.Install.APPLICATION)
 @Startup
-public class RoleBasedPermissionResolver implements PermissionResolver,
-		Serializable {
+public class RoleBasedPermissionResolver
+    implements
+    PermissionResolver,
+    Serializable {
 
-	private boolean enableRoleBasedAuthorization = false;
+    private boolean enableRoleBasedAuthorization = false;
 
-	@Create
-	public void create() {
-	}
+    @Create
+    public void create() {
+    }
 
-	/**
+    /**
      * check permission
      *
      * @param requestedObject
@@ -79,166 +82,163 @@ public class RoleBasedPermissionResolver implements PermissionResolver,
      * requested role; return false otherwise.
      *
      */
-	public boolean hasPermission(Object requestedObject, String requestedPermission) {
-		if (!((requestedObject instanceof CategoryPathType)
-				|| (requestedObject instanceof PackageNameType)
-				|| (requestedObject instanceof AdminType)
-				|| (requestedObject instanceof PackageUUIDType))) {
-			return false;
-		}
+    public boolean hasPermission(Object requestedObject,
+                                 String requestedPermission) {
+        if ( !((requestedObject instanceof CategoryPathType) || (requestedObject instanceof PackageNameType) || (requestedObject instanceof WebDavPackageNameType) || (requestedObject instanceof AdminType) || (requestedObject instanceof PackageUUIDType)) ) {
+            return false;
+        }
 
-		if (!enableRoleBasedAuthorization) {
-			return true;
-		}
+        if ( !enableRoleBasedAuthorization ) {
+            return true;
+        }
 
-		RoleBasedPermissionManager permManager = (RoleBasedPermissionManager)
-				Component.getInstance("roleBasedPermissionManager");
-		List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
+        RoleBasedPermissionManager permManager = (RoleBasedPermissionManager) Component.getInstance( "roleBasedPermissionManager" );
+        List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
 
-		if(RoleTypes.ADMIN.equals(requestedPermission)) {
-			return hasAdminPermission(permissions);
-		} else if (hasAdminPermission(permissions)) {
-			//admin can do everything,no need for further checks.
-			return true;
-		}
+        if ( RoleTypes.ADMIN.equals( requestedPermission ) ) {
+            return hasAdminPermission( permissions );
+        } else if ( hasAdminPermission( permissions ) ) {
+            //admin can do everything,no need for further checks.
+            return true;
+        }
 
-		if (requestedObject instanceof CategoryPathType) {
-			String requestedPath = ((CategoryPathType) requestedObject)
-					.getCategoryPath();
-			String requestedPermType = (requestedPermission == null) ? RoleTypes.ANALYST : requestedPermission;
-			if (requestedPermType.equals("navigate")) {
-				for (RoleBasedPermission p : permissions) {
-					if (p.getCategoryPath() != null) {
-						if (p.getCategoryPath().equals(requestedPath)) return true;
-						if (isSubPath(requestedPath, p.getCategoryPath())) {
-							return true;
-						} else if (isSubPath(p.getCategoryPath(), requestedPath)) {
-							return true;
-						}
-					}
-				}
-				return false;
-			} else {
-				//category path based permission check only applies to analyst and analyst.readonly role. If there is no Analyst or Analyst.readonly
-				//role (e.g, only other roles like admin|package.admin|package.dev|package.readonly) we always grant permission.
-				boolean isPermitted = true;
-				//return true when there is no analyst role, or one of the analyst role has permission to access this category
-				
-				for (RoleBasedPermission pbp : permissions) {
+        if ( requestedObject instanceof CategoryPathType ) {
+            String requestedPath = ((CategoryPathType) requestedObject).getCategoryPath();
+            String requestedPermType = (requestedPermission == null) ? RoleTypes.ANALYST : requestedPermission;
+            if ( requestedPermType.equals( "navigate" ) ) {
+                for ( RoleBasedPermission p : permissions ) {
+                    if ( p.getCategoryPath() != null ) {
+                        if ( p.getCategoryPath().equals( requestedPath ) ) return true;
+                        if ( isSubPath( requestedPath,
+                                        p.getCategoryPath() ) ) {
+                            return true;
+                        } else if ( isSubPath( p.getCategoryPath(),
+                                               requestedPath ) ) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            } else {
+                //category path based permission check only applies to analyst and analyst.readonly role. If there is no Analyst or Analyst.readonly
+                //role (e.g, only other roles like admin|package.admin|package.dev|package.readonly) we always grant permission.
+                boolean isPermitted = true;
+                //return true when there is no analyst role, or one of the analyst role has permission to access this category
 
-					// Check if there is a analyst or analyst.readonly role
-					if (pbp.getRole().equals(RoleTypes.ANALYST)
-							|| pbp.getRole().equals(RoleTypes.ANALYST_READ)) {
-						isPermitted = false;
+                for ( RoleBasedPermission pbp : permissions ) {
 
-						// Check if user has permissions for the current category
-						if (requestedPermType.equals(pbp.getRole())
-								|| (requestedPermType
-										.equals(RoleTypes.ANALYST_READ) && pbp
-										.getRole().equals(RoleTypes.ANALYST))) {
-							if (isPermittedCategoryPath(requestedPath, pbp
-									.getCategoryPath())) {
-								return true;
-							}
-						}
-					}
-				}
+                    // Check if there is a analyst or analyst.readonly role
+                    if ( pbp.getRole().equals( RoleTypes.ANALYST ) || pbp.getRole().equals( RoleTypes.ANALYST_READ ) ) {
+                        isPermitted = false;
 
-				return isPermitted;
-			}
-		} else {
-			String targetName = "";
+                        // Check if user has permissions for the current category
+                        if ( requestedPermType.equals( pbp.getRole() ) || (requestedPermType.equals( RoleTypes.ANALYST_READ ) && pbp.getRole().equals( RoleTypes.ANALYST )) ) {
+                            if ( isPermittedCategoryPath( requestedPath,
+                                                          pbp.getCategoryPath() ) ) {
+                                return true;
+                            }
+                        }
+                    }
+                }
 
-			if (requestedObject instanceof PackageUUIDType) {
-				String targetUUID = ((PackageUUIDType) requestedObject).getUUID();
-				try {
-					ServiceImplementation si = (ServiceImplementation) Component
-							.getInstance("org.drools.guvnor.client.rpc.RepositoryService");
-					targetName = si.repository.loadPackageByUUID(targetUUID).getName();
-				} catch (RulesRepositoryException e) {
-					return false;
-				}
-			} else if (requestedObject instanceof PackageNameType) {
-				targetName = ((PackageNameType) requestedObject).getPackageName();
-			}
+                return isPermitted;
+            }
+        } else {
+            String targetName = "";
 
-			//package based permission check only applies to admin|package.admin|package.dev|package.readonly role.
-			//For Analyst we always grant permission.
-			for (RoleBasedPermission pbp : permissions) {
-				if (RoleTypes.ANALYST.equals(pbp.getRole()) || RoleTypes.ANALYST_READ.equals(pbp.getRole())) {
-					return true;
-				} else if (targetName.equalsIgnoreCase(pbp.getPackageName())
-						&& isPermittedPackage(requestedPermission, pbp.getRole())) {
-					return true;
-				}
-			}
+            if ( requestedObject instanceof PackageUUIDType ) {
+                String targetUUID = ((PackageUUIDType) requestedObject).getUUID();
+                try {
+                    ServiceImplementation si = (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
+                    targetName = si.repository.loadPackageByUUID( targetUUID ).getName();
+                } catch ( RulesRepositoryException e ) {
+                    return false;
+                }
+            } else if ( requestedObject instanceof PackageNameType ) {
+                targetName = ((PackageNameType) requestedObject).getPackageName();
+            }
 
-			return false;
-		}
-	}
+            //package based permission check only applies to admin|package.admin|package.dev|package.readonly role.
+            //For Analyst we always grant permission, unless we are connected through webdav.
+            for ( RoleBasedPermission pbp : permissions ) {
+                if ( !(requestedObject instanceof WebDavPackageNameType) && (RoleTypes.ANALYST.equals( pbp.getRole() ) || RoleTypes.ANALYST_READ.equals( pbp.getRole() )) ) {
+                    return true;
+                } else if ( targetName.equalsIgnoreCase( pbp.getPackageName() ) && isPermittedPackage( requestedPermission,
+                                                                                                       pbp.getRole() ) ) {
+                    return true;
+                }
+            }
 
-	private boolean hasAdminPermission(List<RoleBasedPermission> permissions) {
-		for (RoleBasedPermission p : permissions) {
-			if (RoleTypes.ADMIN.equalsIgnoreCase(p.getRole())) {
-				return true;
-			}
-		}
-		return false;
-	}
+            return false;
+        }
+    }
 
-	private boolean isPermittedCategoryPath(String requestedPath, String allowedPath) {
-		if(requestedPath == null || allowedPath == null) {
-			return false;
-		}
-		return requestedPath.equals(allowedPath) || isSubPath(allowedPath, requestedPath);
-	}
+    private boolean hasAdminPermission(List<RoleBasedPermission> permissions) {
+        for ( RoleBasedPermission p : permissions ) {
+            if ( RoleTypes.ADMIN.equalsIgnoreCase( p.getRole() ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    private boolean isPermittedCategoryPath(String requestedPath,
+                                            String allowedPath) {
+        if ( requestedPath == null || allowedPath == null ) {
+            return false;
+        }
+        return requestedPath.equals( allowedPath ) || isSubPath( allowedPath,
+                                                                 requestedPath );
+    }
 
-	private boolean isPermittedPackage(String requestedAction, String role) {
-		if (RoleTypes.PACKAGE_ADMIN.equalsIgnoreCase(role)) {
-			return true;
-		} else if (RoleTypes.PACKAGE_DEVELOPER.equalsIgnoreCase(role)) {
-			if (RoleTypes.PACKAGE_ADMIN.equalsIgnoreCase(requestedAction)) {
-				return false;
-			} else if (RoleTypes.PACKAGE_DEVELOPER.equalsIgnoreCase(requestedAction)) {
-				return true;
-			} else if (RoleTypes.PACKAGE_READONLY.equalsIgnoreCase(requestedAction)) {
-				return true;
-			}
-		} else if (RoleTypes.PACKAGE_READONLY.equalsIgnoreCase(role)) {
-			if (RoleTypes.PACKAGE_ADMIN.equalsIgnoreCase(requestedAction)) {
-				return false;
-			} else if (RoleTypes.PACKAGE_DEVELOPER.equalsIgnoreCase(requestedAction)) {
-				return false;
-			} else if (RoleTypes.PACKAGE_READONLY.equalsIgnoreCase(requestedAction)) {
-				return true;
-			}
-		}
+    private boolean isPermittedPackage(String requestedAction,
+                                       String role) {
+        if ( RoleTypes.PACKAGE_ADMIN.equalsIgnoreCase( role ) ) {
+            return true;
+        } else if ( RoleTypes.PACKAGE_DEVELOPER.equalsIgnoreCase( role ) ) {
+            if ( RoleTypes.PACKAGE_ADMIN.equalsIgnoreCase( requestedAction ) ) {
+                return false;
+            } else if ( RoleTypes.PACKAGE_DEVELOPER.equalsIgnoreCase( requestedAction ) ) {
+                return true;
+            } else if ( RoleTypes.PACKAGE_READONLY.equalsIgnoreCase( requestedAction ) ) {
+                return true;
+            }
+        } else if ( RoleTypes.PACKAGE_READONLY.equalsIgnoreCase( role ) ) {
+            if ( RoleTypes.PACKAGE_ADMIN.equalsIgnoreCase( requestedAction ) ) {
+                return false;
+            } else if ( RoleTypes.PACKAGE_DEVELOPER.equalsIgnoreCase( requestedAction ) ) {
+                return false;
+            } else if ( RoleTypes.PACKAGE_READONLY.equalsIgnoreCase( requestedAction ) ) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	boolean isSubPath(String parentPath, String subPath) {
-		parentPath = (parentPath.startsWith("/")) ? parentPath.substring(1) : parentPath;
-		subPath = (subPath.startsWith("/")) ? subPath.substring(1) : subPath;
-		String[] parentTags = parentPath.split("/");
-		String[] subTags = subPath.split("/");
-		if (parentTags.length > subTags.length) return false;
-		for (int i = 0; i < parentTags.length; i++) {
-			if (!parentTags[i].equals(subTags[i])) return false;
-		}
+    boolean isSubPath(String parentPath,
+                      String subPath) {
+        parentPath = (parentPath.startsWith( "/" )) ? parentPath.substring( 1 ) : parentPath;
+        subPath = (subPath.startsWith( "/" )) ? subPath.substring( 1 ) : subPath;
+        String[] parentTags = parentPath.split( "/" );
+        String[] subTags = subPath.split( "/" );
+        if ( parentTags.length > subTags.length ) return false;
+        for ( int i = 0; i < parentTags.length; i++ ) {
+            if ( !parentTags[i].equals( subTags[i] ) ) return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public void filterSetByAction(Set<Object> targets, String action) {
-	}
+    public void filterSetByAction(Set<Object> targets,
+                                  String action) {
+    }
 
-	public boolean isEnableRoleBasedAuthorization() {
-		return enableRoleBasedAuthorization;
-	}
+    public boolean isEnableRoleBasedAuthorization() {
+        return enableRoleBasedAuthorization;
+    }
 
-	public void setEnableRoleBasedAuthorization(boolean enableRoleBasedAuthorization) {
-		this.enableRoleBasedAuthorization = enableRoleBasedAuthorization;
-	}
+    public void setEnableRoleBasedAuthorization(boolean enableRoleBasedAuthorization) {
+        this.enableRoleBasedAuthorization = enableRoleBasedAuthorization;
+    }
 }
