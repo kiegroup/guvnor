@@ -559,8 +559,8 @@ public class AssetItem extends CategorisableItem {
         boolean name = true;
         for ( int i = 0; i < cs.length; i++ ) {
             if ( name && cs[i] == '.' ) {
-                String rhs = fileName.substring( i );
-                if ( rhs.contains( "_" ) || rhs.contains( " " ) ) {
+                String rhs = fileName.substring( i + 1 );
+                if ( rhs.contains( "_" ) || rhs.contains( " " ) || rhs.contains( ".jar" ) ) {
                     r[0] = r[0] + '.'; //its part of the name
                 } else {
                     name = false;

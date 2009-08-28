@@ -182,6 +182,18 @@ public class AssetItemTest extends TestCase {
     	assertEquals("Rule_261.3_Something_foo", asset[0]);
     	assertEquals("model.drl", asset[1]);
 
+    	asset = AssetItem.getAssetNameFromFileName("application-model-1.0.0.jar");
+    	assertEquals("application-model-1.0.0", asset[0]);
+    	assertEquals("jar", asset[1]);
+
+    	asset = AssetItem.getAssetNameFromFileName("SubmitApplication.rf");
+    	assertEquals("SubmitApplication", asset[0]);
+    	assertEquals("rf", asset[1]);
+
+    	asset = AssetItem.getAssetNameFromFileName("Submit.rf");
+    	assertEquals("Submit", asset[0]);
+    	assertEquals("rf", asset[1]);
+
 
 //    	System.err.println(asset[0]);
 //    	System.err.println(asset[1]);
