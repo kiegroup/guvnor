@@ -1922,4 +1922,6 @@ public interface Constants extends ConstantsWithLookup {
 	String Value();
 
     String property0ModifiedOn12();
+
+    String isContainedInTheFollowingList();
 }

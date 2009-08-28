@@ -305,6 +305,11 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 		for (int i = 0; i < ops.length; i++) {
 			box.addItem(HumanReadable.getOperatorDisplayName(ops[i]), ops[i]);
 		}
+
+        if (ISingleFieldConstraint.TYPE_LITERAL == this.editingCol.constraintValueType) {
+            box.addItem(HumanReadable.getOperatorDisplayName("in"), "in");     
+        }
+
 		box.addItem(constants.noOperator(), "");
 		pop.addAttribute(constants.Operator(), box);
 		Button b = new Button(constants.OK());
