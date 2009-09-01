@@ -58,7 +58,6 @@ public class StorageEventManagerTest extends TestCase {
         StorageEventManager.se = null;
         assertFalse(StorageEventManager.hasSaveEvent());
 
-
     }
 
 
@@ -81,11 +80,33 @@ public class StorageEventManagerTest extends TestCase {
         asset.checkin("");
         assertTrue(((MockSaveEvent)StorageEventManager.se).checkinCalled);
 
-
-        
         asset.getContent();
         assertTrue(((MockLoadEvent) StorageEventManager.le).loadCalled);
-        
+
+    }
+
+    public void testCheckinListener() throws Exception {
+        StorageEventManager.le = null;
+        StorageEventManager.se = null;
+
+        final AssetItem[] x = new AssetItem[1];
+
+        CheckinEvent e = new CheckinEvent() {
+            public void afterCheckin(AssetItem item) {
+                x[0] = item;
+            }
+        };
+        StorageEventManager.registerCheckinEvent(e);
+        RulesRepository repo = getRepo();
+        PackageItem pkg = repo.loadDefaultPackage();
+        AssetItem asset = pkg.addAsset("testCheckinListener", "");
+        assertEquals(0, asset.getContentLength());
+        asset.updateContent("boo");
+        asset.checkin("");
+
+        assertSame(asset, x[0]);
+
+
 
     }
 

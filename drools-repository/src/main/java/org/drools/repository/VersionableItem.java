@@ -549,6 +549,7 @@ public abstract class VersionableItem extends Item {
                     StorageEventManager.getSaveEvent().onAssetCheckin((AssetItem) this);
                 }
             }
+            StorageEventManager.doCheckinEvents(this);
 
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( "Unable to checkin.",
