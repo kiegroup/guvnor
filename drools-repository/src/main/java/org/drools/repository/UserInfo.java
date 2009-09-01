@@ -47,7 +47,7 @@ public class UserInfo {
 
 
     public static class Val {
-        String value;
+        public String value;
         public Val(String s) {
             this.value = s;
         }
