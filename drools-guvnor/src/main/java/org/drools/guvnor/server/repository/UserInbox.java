@@ -2,10 +2,14 @@ package org.drools.guvnor.server.repository;
 
 import org.drools.repository.RulesRepository;
 import org.drools.repository.UserInfo;
+import org.drools.repository.AssetItem;
+import org.drools.guvnor.server.util.LoggingHelper;
+import org.apache.log4j.Logger;
 
 import javax.jcr.RepositoryException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -15,7 +19,8 @@ import com.thoughtworks.xstream.XStream;
  */
 public class UserInbox {
 
-    static final int MAX_RECENT_EDITED = 100;
+    private static final Logger log                               = LoggingHelper.getLogger( UserInbox.class );
+    static final int MAX_RECENT_EDITED = 200;
 
     private static final String INBOX = "inbox";
     private static final String RECENT_EDITED = "recentEdited";
@@ -44,7 +49,9 @@ public class UserInbox {
 
     private void addToInbox(String boxName, String assetId, String note) throws RepositoryException {
         assert boxName.equals(RECENT_EDITED) || boxName.equals(RECENT_VIEWED);
-        List<InboxEntry> entries =  readEntries(userInfo.getProperty(INBOX, boxName));
+        List<InboxEntry> entries =  removeAnyExisting(assetId, readEntries(userInfo.getProperty(INBOX, boxName)));
+        
+
         if (entries.size() >= MAX_RECENT_EDITED) {
             entries.remove(0);
             entries.add(new InboxEntry(assetId, note));
@@ -53,6 +60,19 @@ public class UserInbox {
         }
         userInfo.setProperty(INBOX, boxName, new UserInfo.Val(writeEntries(entries)));
 
+
+    }
+
+    private List<InboxEntry> removeAnyExisting(String assetId, List<InboxEntry> inboxEntries) {
+        Iterator<InboxEntry> it = inboxEntries.iterator();
+        while (it.hasNext()) {
+            InboxEntry e = it.next();
+            if (e.assetUUID.equals(assetId)) {
+                it.remove();
+                return inboxEntries;
+            }
+        }
+        return inboxEntries;
     }
 
     private String writeEntries(List<InboxEntry> entries) {
@@ -85,11 +105,13 @@ public class UserInbox {
         return readEntries(userInfo.getProperty(INBOX, RECENT_VIEWED));
     }
 
-    public void clearAll() throws RepositoryException {
+    /**
+     * Wipe them out, all of them.
+     */
+    void clearAll() throws RepositoryException {
         userInfo.setProperty(INBOX, RECENT_EDITED, new UserInfo.Val(""));
         userInfo.setProperty(INBOX, RECENT_VIEWED, new UserInfo.Val(""));
     }
-
 
 
     /**
@@ -105,6 +127,34 @@ public class UserInbox {
         public String assetUUID;
         public String note;
         public long timestamp;
+    }
+
+
+    /** Helper method to log the opening */
+    public static void recordOpeningEvent(AssetItem item) {
+        try {
+            UserInbox ib = new UserInbox(item.getRulesRepository());
+            ib.addToRecentOpened(item.getUUID(), item.getName());
+            ib.save();
+        } catch (RepositoryException e) {
+            log.error(e);
+        }
+    }
+
+    public static void recordUserEditEvent(AssetItem item) {
+        try {
+            UserInbox ib = new UserInbox(item.getRulesRepository());
+            ib.addToRecentEdited(item.getUUID(), item.getName());
+            ib.save();
+        } catch (RepositoryException e) {
+            log.error(e);
+        }
+
+    }
+
+
+    private void save() throws RepositoryException {
+        userInfo.save();
     }
 
 

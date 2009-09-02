@@ -32,16 +32,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.StringTokenizer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.RepositoryException;
-import javax.servlet.jsp.tagext.TryCatchFinally;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.util.ISO8601;
@@ -83,10 +79,9 @@ import org.drools.guvnor.server.util.MetaDataMapper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.guvnor.server.util.VerifierRunner;
 import org.drools.guvnor.server.util.Discussion;
-import org.drools.guvnor.server.util.ClassicDRLImporter;
 import static org.drools.guvnor.server.util.ClassicDRLImporter.*;
+import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
@@ -119,7 +114,6 @@ import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
 import com.google.gwt.user.client.rpc.SerializableException;
-import EDU.oswego.cs.dl.util.concurrent.CondVar;
 
 /**
  * This is the implementation of the repository service to drive the GWT based
@@ -496,9 +490,11 @@ public class ServiceImplementation
         }
 
         log.debug( "Package: " + pkgItem.getName() + ", asset: " + item.getName() + ". Load time taken for asset: " + (System.currentTimeMillis() - time) );
+        UserInbox.recordOpeningEvent(item);
         return asset;
 
     }
+
 
     private RuleAsset loadAsset(AssetItem item) throws SerializableException {
 
@@ -513,6 +509,7 @@ public class ServiceImplementation
         handler.retrieveAssetContent( asset,
                                       pkgItem,
                                       item );
+
 
         return asset;
     }
@@ -631,9 +628,8 @@ public class ServiceImplementation
             this.ruleBaseCache.remove( pkg.getUUID() );
 
         }
-
         repoAsset.checkin( meta.checkinComment );
-
+        
         return repoAsset.getUUID();
     }
 

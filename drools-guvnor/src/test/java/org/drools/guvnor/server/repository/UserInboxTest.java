@@ -1,9 +1,13 @@
 package org.drools.guvnor.server.repository;
 
 import org.drools.repository.RulesRepository;
+import org.drools.repository.AssetItem;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 import junit.framework.TestCase;
 
@@ -33,6 +37,7 @@ public class UserInboxTest extends TestCase {
         assertTrue(e2.timestamp > e1.timestamp);
 
         inb.clearAll();
+
 
         for (int i = 0; i < UserInbox.MAX_RECENT_EDITED; i++) {
             inb.addToRecentEdited("X" + i, "NOTE" + i);
@@ -72,5 +77,56 @@ public class UserInboxTest extends TestCase {
 
 
     }
+
+    public void testDupes() throws Exception {
+        RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+        UserInbox inb = new UserInbox(repo);
+        inb.clearAll();
+
+        for (int i =0; i < 120; i++) {
+            inb.addToRecentOpened("A" + i, "NOTE");
+        }
+
+        List<UserInbox.InboxEntry> res = inb.loadRecentOpened();
+        assertEquals(120, res.size());
+        inb.addToRecentOpened("XX", "hey");
+
+        assertEquals(res.size() + 1, inb.loadRecentOpened().size());
+        UserInbox.InboxEntry firstOld = inb.loadRecentOpened().get(0);
+        assertEquals("A0", firstOld.assetUUID);
+
+
+        Thread.sleep(30);
+        //shouldn't add another one... 
+        inb.addToRecentOpened("A0", "hey22");
+
+        List<UserInbox.InboxEntry> finalList = inb.loadRecentOpened();
+        assertEquals(res.size() + 1, finalList.size());
+        assertEquals("A1", finalList.get(0).assetUUID);
+
+        UserInbox.InboxEntry lastEntry = finalList.get(finalList.size() - 1);
+        assertEquals("A0", lastEntry.assetUUID);
+
+        assertTrue(lastEntry.timestamp > firstOld.timestamp);
+        
+
+    }
+
+    public void testHelper() throws Exception {
+        RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+        UserInbox ib = new UserInbox(repo);
+        ib.clearAll();
+        AssetItem asset = repo.loadDefaultPackage().addAsset("InBoxTestHelper", "hey");
+        UserInbox.recordOpeningEvent(asset);
+
+        List<UserInbox.InboxEntry> es = ib.loadRecentOpened();
+        assertEquals(1, es.size());
+        assertEquals(asset.getUUID(), es.get(0).assetUUID);
+        assertEquals("InBoxTestHelper", es.get(0).note);
+    }
+
+
+
+
 
 }
