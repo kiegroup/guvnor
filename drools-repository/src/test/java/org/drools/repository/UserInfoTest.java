@@ -29,6 +29,9 @@ public class UserInfoTest extends TestCase {
 
         UserInfo info = new UserInfo(repo);
         info.setProperty("inbox", "something", new UserInfo.Val("boo"));
+        info.save();
+        info.setProperty("inbox", "something", new UserInfo.Val("boo"));
+        info.save();
 
         assertEquals("boo", info.getProperty("inbox", "something").value);
         info.setProperty("inbox", "something", new UserInfo.Val("boo2"));
@@ -73,6 +76,22 @@ public class UserInfoTest extends TestCase {
         info = new UserInfo(repo);
         assertEquals("boo", info.getProperty("inbox", "another").value);
 
+
+        info = new UserInfo();
+
+        //check we can deal with 2 different users ! (SANITY CHECK !)
+        info.init(repo, "MrX");
+        info.setProperty("inbox", "hi", new UserInfo.Val("42"));
+        assertEquals("42", info.getProperty("inbox", "hi").value);
+
+        info.init(repo, "MrsX");
+        info.setProperty("inbox", "hi", new UserInfo.Val("43"));
+        assertEquals("43", info.getProperty("inbox", "hi").value);
+
+
+        info.init(repo, "MrX");
+        info.setProperty("inbox", "hi", new UserInfo.Val("42"));
+        assertEquals("42", info.getProperty("inbox", "hi").value);
 
 
 

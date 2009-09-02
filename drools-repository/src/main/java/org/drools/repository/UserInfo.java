@@ -8,6 +8,13 @@ import javax.jcr.Value;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.NodeIterator;
+import javax.jcr.InvalidItemStateException;
+import javax.jcr.AccessDeniedException;
+import javax.jcr.ItemExistsException;
+import javax.jcr.version.VersionException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.lock.LockException;
 
 /**
  * Manage access to misc. user info that we might want to store. 
@@ -15,12 +22,12 @@ import javax.jcr.NodeIterator;
  */
 public class UserInfo {
     Node userInfoNode;
-    //private RulesRepository repository;
-    //String userName;
-
+    
     public UserInfo(RulesRepository repo) throws RepositoryException {
         init(repo, repo.getSession().getUserID());
     }
+
+    UserInfo() {}
 
     void init(RulesRepository repo, String userName) throws RepositoryException {
         this.userInfoNode = getUserInfoNode(userName, repo);
@@ -68,5 +75,13 @@ public class UserInfo {
     public static interface Command {
         public void process(Node userNode) throws RepositoryException;
     }
+
+
+    /**
+     * Persists the change (if not in a transaction of course, if in a transaction, it will wait until the boundary is hit,
+     * as per JCR standard.
+     * @throws RepositoryException
+     */
+    public void save() throws RepositoryException { userInfoNode.getParent().save(); }
 
 }
