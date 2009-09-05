@@ -29,10 +29,7 @@ import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.guvnor.client.modeldriven.brl.*;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -161,6 +158,18 @@ public class ConstraintValueEditor extends DirtyableComposite {
                     box.setSelectedIndex( j );
                 }
                 j++;
+            }  else {
+                    // for collection, present the list of possible bound variable
+                    String factCollectionType = sce.getParametricFieldType(pattern.factType,this.fieldName);
+                    if ((f != null && factCollectionType != null &&  f.factType.equals(factCollectionType))
+                        ||  (factCollectionType != null && factCollectionType.equals( fv ) )   )
+                    {
+                        box.addItem( var );
+                        if ( this.constraint.value != null && this.constraint.value.equals( var ) ) {
+                            box.setSelectedIndex( j );
+                        }
+                        j++;
+                    }
             }
         }
 
@@ -348,7 +357,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
         form.addRow( new SmallLabel( constants.AdvancedOptions() ) );
 
         //only want to show variables if we have some !
-        if ( this.model.getBoundVariablesInScope( this.constraint ).size() > 0 ) {
+        if ( this.model.getBoundVariablesInScope( this.constraint ).size() > 0
+                || SuggestionCompletionEngine.TYPE_COLLECTION.equals( this.fieldType )) {
             List vars = this.model.getBoundFacts();
             boolean foundABouncVariableThatMatches = false;
             for ( int i = 0; i < vars.size(); i++ ) {
@@ -359,6 +369,15 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 if ( (f != null && f.factType.equals( this.fieldType )) || this.fieldType.equals( fieldConstraint ) ) {
                     foundABouncVariableThatMatches = true;
                     break;
+                } else {
+                     // for collection, present the list of possible bound variable
+                    String factCollectionType = sce.getParametricFieldType(pattern.factType,this.fieldName);
+                    if ((f != null && factCollectionType != null &&  f.factType.equals(factCollectionType))
+                        ||  (factCollectionType != null && factCollectionType.equals( fieldConstraint ) )   )
+                    {
+                           foundABouncVariableThatMatches = true;
+                           break;
+                    }
                 }
             }
             if ( foundABouncVariableThatMatches == true ) {
