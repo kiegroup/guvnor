@@ -25,10 +25,21 @@ public class UserInbox {
     private static final String INBOX = "inbox";
     private static final String RECENT_EDITED = "recentEdited";
     private static final String RECENT_VIEWED = "recentViewed";
+    private static final String INCOMING = "incoming";
     
     private UserInfo userInfo;
 
 
+    /**
+     * Create an inbox for the given user name (id)
+     */
+    UserInbox(RulesRepository repo, String userName) throws RepositoryException {
+        this.userInfo = new UserInfo(repo, userName);
+    }
+
+    /**
+     * Create an inbox for the current sessions user id.
+     */
     public UserInbox(RulesRepository repo) throws RepositoryException {
         this.userInfo = new UserInfo(repo);
     }
@@ -46,13 +57,17 @@ public class UserInbox {
         addToInbox(RECENT_VIEWED, assetId, note);
     }
 
+    public void addToIncoming(String assetId, String note) throws RepositoryException {
+        addToInbox(INCOMING, assetId, note);
+    }
+
 
     private void addToInbox(String boxName, String assetId, String note) throws RepositoryException {
-        assert boxName.equals(RECENT_EDITED) || boxName.equals(RECENT_VIEWED);
+        assert boxName.equals(RECENT_EDITED) || boxName.equals(RECENT_VIEWED) || boxName.equals(INCOMING);
         List<InboxEntry> entries =  removeAnyExisting(assetId, readEntries(userInfo.getProperty(INBOX, boxName)));
         
 
-        if (entries.size() >= MAX_RECENT_EDITED) {
+        if (!boxName.equals(INCOMING) && entries.size() >= MAX_RECENT_EDITED) {
             entries.remove(0);
             entries.add(new InboxEntry(assetId, note));
         } else {
@@ -105,12 +120,21 @@ public class UserInbox {
         return readEntries(userInfo.getProperty(INBOX, RECENT_VIEWED));
     }
 
+    public List<InboxEntry> loadIncoming() throws RepositoryException {
+        return readEntries(userInfo.getProperty(INBOX, INCOMING));
+    }
+
     /**
      * Wipe them out, all of them.
      */
     void clearAll() throws RepositoryException {
         userInfo.setProperty(INBOX, RECENT_EDITED, new UserInfo.Val(""));
         userInfo.setProperty(INBOX, RECENT_VIEWED, new UserInfo.Val(""));
+        userInfo.setProperty(INBOX, INCOMING, new UserInfo.Val(""));
+    }
+
+    public void clearIncoming() throws RepositoryException {
+        userInfo.setProperty(INBOX, INCOMING, new UserInfo.Val(""));
     }
 
 
@@ -153,7 +177,7 @@ public class UserInbox {
     }
 
 
-    private void save() throws RepositoryException {
+    void save() throws RepositoryException {
         userInfo.save();
     }
 

@@ -126,6 +126,24 @@ public class UserInboxTest extends TestCase {
     }
 
 
+    public void testIncoming() throws Exception {
+        RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+        UserInbox ib = new UserInbox(repo);
+        ib.clearAll();
+        ib.addToIncoming("XXX", "hey");
+        ib.addToIncoming("YYY", "hey2");
+
+        List<UserInbox.InboxEntry> es = ib.loadIncoming();
+        assertEquals(2, es.size());
+        assertEquals("XXX", es.get(0).assetUUID);
+        assertEquals("YYY", es.get(1).assetUUID);
+
+    }
+
+
+
+
+
 
 
 
