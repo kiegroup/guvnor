@@ -22,12 +22,23 @@ import javax.jcr.lock.LockException;
  */
 public class UserInfo {
     Node userInfoNode;
-    
+
+    /**
+     * Use the current sessions userName to get to the info node.
+     */
     public UserInfo(RulesRepository repo) throws RepositoryException {
         init(repo, repo.getSession().getUserID());
     }
 
+
     UserInfo() {}
+
+    /**
+     * Use the given userName to select the node.
+     */
+    public UserInfo(RulesRepository repo, String userName) throws RepositoryException {
+        init(repo, userName);
+    }
 
     void init(RulesRepository repo, String userName) throws RepositoryException {
         this.userInfoNode = getUserInfoNode(userName, repo);
@@ -45,7 +56,11 @@ public class UserInfo {
     public Val getProperty(String fileName, String propertyName) throws RepositoryException {
         Node inboxNode = getNode(userInfoNode, fileName, "nt:file");
         if (inboxNode.hasNode("jcr:content")) {
-            return new Val(inboxNode.getNode("jcr:content").getProperty(propertyName).getString());
+            if (inboxNode.getNode("jcr:content").hasProperty(propertyName)) {
+                return new Val(inboxNode.getNode("jcr:content").getProperty(propertyName).getString());
+            } else {
+                return new Val("");
+            }
         } else {
             return new Val("");
         }
@@ -64,7 +79,7 @@ public class UserInfo {
      * Do something for each user.
      * @param c
      */
-    public void eachUser(RulesRepository repository, Command c) throws RepositoryException {
+    public static void eachUser(RulesRepository repository, Command c) throws RepositoryException {
         NodeIterator nit = PermissionManager.getUsersRootNode(PermissionManager.getRootNode(repository)).getNodes();
         while (nit.hasNext()) {
             c.process(nit.nextNode());
@@ -82,6 +97,8 @@ public class UserInfo {
      * as per JCR standard.
      * @throws RepositoryException
      */
-    public void save() throws RepositoryException { userInfoNode.getParent().save(); }
+    public void save() throws RepositoryException {
+            userInfoNode.getParent().save();
+    }
 
 }

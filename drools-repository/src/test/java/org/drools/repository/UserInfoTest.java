@@ -94,13 +94,15 @@ public class UserInfoTest extends TestCase {
         assertEquals("42", info.getProperty("inbox", "hi").value);
 
 
+        assertEquals("", info.getProperty("inbox", "qanno").value);
+
+
+
 
     }
 
     public void testIterateOverUsers() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
-
-
 
         final List<String> names = new ArrayList<String>();
 
