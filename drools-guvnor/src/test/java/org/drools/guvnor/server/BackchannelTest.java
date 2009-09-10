@@ -47,9 +47,11 @@ public class BackchannelTest extends TestCase {
         t2.start();
 
 
+        Thread.sleep(200);
+
         bc.publish(new PushResponse("hey", "ho"));
 
-        Thread.sleep(100);
+        Thread.sleep(500);
         assertNotNull(resp[0]);
         assertNotNull(resp[1]);
         assertEquals("hey", resp[0].messageType);
@@ -92,7 +94,7 @@ public class BackchannelTest extends TestCase {
         t.start();
 
 
-        Thread.sleep(100);
+        Thread.sleep(400);
 
         assertFalse(check[0]);
         bc.push("dave", new PushResponse("x", "y"));
