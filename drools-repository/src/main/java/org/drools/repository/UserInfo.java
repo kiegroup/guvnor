@@ -55,6 +55,7 @@ public class UserInfo {
 
     public Val getProperty(String fileName, String propertyName) throws RepositoryException {
         Node inboxNode = getNode(userInfoNode, fileName, "nt:file");
+
         if (inboxNode.hasNode("jcr:content")) {
             if (inboxNode.getNode("jcr:content").hasProperty(propertyName)) {
                 return new Val(inboxNode.getNode("jcr:content").getProperty(propertyName).getString());
@@ -62,6 +63,7 @@ public class UserInfo {
                 return new Val("");
             }
         } else {
+            inboxNode.addNode("jcr:content", "nt:unstructured"); //needed to make it consistent on save
             return new Val("");
         }
 
@@ -98,7 +100,8 @@ public class UserInfo {
      * @throws RepositoryException
      */
     public void save() throws RepositoryException {
-            userInfoNode.getParent().save();
+         userInfoNode.getParent().getParent().save();
+         //userInfoNode.getParent().save();
     }
 
 }
