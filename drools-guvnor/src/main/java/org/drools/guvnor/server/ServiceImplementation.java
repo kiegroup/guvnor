@@ -81,6 +81,7 @@ import org.drools.guvnor.server.util.VerifierRunner;
 import org.drools.guvnor.server.util.Discussion;
 import static org.drools.guvnor.server.util.ClassicDRLImporter.*;
 import org.drools.guvnor.server.repository.UserInbox;
+import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.repository.AssetHistoryIterator;
@@ -205,6 +206,7 @@ public class ServiceImplementation
     /**
      * This will create a new asset. It will be saved, but not checked in. The
      * initial state will be the draft state.
+     * Returns the UUID of the asset.
      */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
@@ -1155,6 +1157,8 @@ public class ServiceImplementation
                       oldState );
                 push( "statusChange",
                       newState );
+
+                addToDiscussionForAsset(asset.getUUID(), oldState + " -> " + newState);
 
             }
         } else {
@@ -2399,11 +2403,14 @@ public class ServiceImplementation
         discussion.add( new DiscussionRecord( repo.getSession().getUserID(),
                                               comment ) );
         asset.updateStringProperty( dp.toString( discussion ),
-                                    Discussion.DISCUSSION_PROPERTY_KEY );
+                                    Discussion.DISCUSSION_PROPERTY_KEY, false);
         repo.save();
 
         push( "discussion",
               assetId );
+
+        MailboxService.getInstance().recordItemUpdated(asset);
+
 
         return discussion;
     }
@@ -2423,12 +2430,11 @@ public class ServiceImplementation
     }
 
     /**
-     * Pushes a message back to the client.
+     * Pushes a message back to (all) clients.
      */
     private void push(String messageType,
                       String message) {
-        backchannel.push( getCurrentUserName(),
-                          new PushResponse( messageType,
+        backchannel.publish( new PushResponse( messageType,
                                             message ) );
     }
 

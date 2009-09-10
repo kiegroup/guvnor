@@ -23,17 +23,16 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
-import org.drools.repository.JCRRepositoryConfigurator;
-import org.drools.repository.JackrabbitRepositoryConfigurator;
-import org.drools.repository.RulesRepository;
-import org.drools.repository.RulesRepositoryAdministrator;
-import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.*;
+import org.drools.repository.events.StorageEventManager;
+import org.drools.repository.events.CheckinEvent;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
+import org.apache.derby.iapi.services.i18n.MessageService;
 
 /**
  * This startup class manages the JCR repository, sets it up if necessary.
@@ -42,20 +41,40 @@ import org.jboss.seam.annotations.Startup;
 @Scope(ScopeType.APPLICATION)
 @Startup
 @Name("repositoryConfiguration")
-public class BRMSRepositoryConfiguration {
+public class RepositoryStartupService {
 
     JCRRepositoryConfigurator configurator = new JackrabbitRepositoryConfigurator();
     String repositoryHomeDirectory = null;
 
     Repository repository;
 	private Session sessionForSetup;
+    private RulesRepository mailmanSession;
 
     @Create
     public void create() {
         repository = configurator.getJCRRepository( repositoryHomeDirectory );
         sessionForSetup = newSession("admin");
         create( sessionForSetup );
+        startMailboxService();
+        registerCheckinListener();
     }
+
+    public static void registerCheckinListener() {
+        StorageEventManager.registerCheckinEvent(new CheckinEvent() {
+            public void afterCheckin(AssetItem item) {
+                UserInbox.recordUserEditEvent(item);
+                MailboxService.getInstance().wakeUp();
+            }
+        });
+    }
+
+    private void startMailboxService() {
+        mailmanSession = new RulesRepository(newSession("mailman"));
+        MailboxService.getInstance().init(mailmanSession);
+        MailboxService.getInstance().wakeUp();
+    }
+
+
 
 
     void create(Session sessionForSetup) {
@@ -83,12 +102,12 @@ public class BRMSRepositoryConfiguration {
         	e.printStackTrace();
         	throw new RulesRepositoryException(e);
         }
-        //sessionForSetup.logout();
     }
 
     @Destroy
     public void close() {
         sessionForSetup.logout();
+        mailmanSession.logout();
     }
 
 

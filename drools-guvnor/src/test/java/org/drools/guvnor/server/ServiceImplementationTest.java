@@ -74,6 +74,9 @@ import org.drools.guvnor.server.util.IO;
 import org.drools.guvnor.server.util.ScenarioXMLPersistence;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import org.drools.guvnor.server.repository.MailboxService;
+import org.drools.guvnor.server.repository.RepositoryStartupService;
+import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
@@ -95,6 +98,17 @@ import com.google.gwt.user.client.rpc.SerializableException;
  * @author Michael Neale
  */
 public class ServiceImplementationTest extends TestCase {
+
+    static {
+
+        try {
+            MailboxService.getInstance().init(new RulesRepository(TestEnvironmentSessionHelper
+            .getSession()));
+            RepositoryStartupService.registerCheckinListener();
+        } catch (Exception e) {
+            fail("unable to init");
+        }
+    }
 
 	public void testCategory() throws Exception {
 
@@ -362,6 +376,38 @@ public class ServiceImplementationTest extends TestCase {
 
 	}
 
+    public void testTrackRecentOpenedChanged() throws Exception {
+        ServiceImplementation impl = getService();
+        UserInbox ib = new UserInbox(impl.repository);
+        ib.clearAll();
+        impl.repository.createPackage("testTrackRecentOpenedChanged", "desc");
+        impl.createCategory("", "testTrackRecentOpenedChanged", "this is a cat");
+
+        String id = impl.createNewRule("myrule", "desc", "testTrackRecentOpenedChanged", "testTrackRecentOpenedChanged", "drl");
+        RuleAsset ass = impl.loadRuleAsset(id);
+
+        impl.checkinVersion(ass);
+
+        List<UserInbox.InboxEntry> es = ib.loadRecentEdited();
+        assertEquals(1, es.size());
+        assertEquals(ass.uuid, es.get(0).assetUUID);
+        assertEquals(ass.metaData.name, es.get(0).note);
+
+        ib.clearAll();
+
+        impl.loadRuleAsset(ass.uuid);
+        es = ib.loadRecentEdited();
+        assertEquals(0, es.size());
+
+        //now check they have it in their opened list...
+        es = ib.loadRecentOpened();
+        assertEquals(1, es.size());
+        assertEquals(ass.uuid, es.get(0).assetUUID);
+        assertEquals(ass.metaData.name, es.get(0).note);
+        
+        assertEquals(0, ib.loadRecentEdited().size());
+    }
+
 	public void testLoadAssetHistoryAndRestore() throws Exception {
 		ServiceImplementation impl = getService();
 		impl.repository.createPackage("testLoadAssetHistory", "desc");
@@ -402,7 +448,10 @@ public class ServiceImplementationTest extends TestCase {
 	}
 
 	public void testCheckin() throws Exception {
-		RepositoryService serv = getService();
+		ServiceImplementation serv = getService();
+
+        UserInbox ib = new UserInbox(serv.repository);
+        List<UserInbox.InboxEntry> inbox = ib.loadRecentEdited();
 
 		serv.listPackages();
 
@@ -430,6 +479,11 @@ public class ServiceImplementationTest extends TestCase {
 
 		String uuid2 = serv.checkinVersion(asset);
 		assertEquals(uuid, uuid2);
+
+
+        
+        assertTrue(ib.loadRecentEdited().size() > inbox.size());
+
 
 		RuleAsset asset2 = serv.loadRuleAsset(uuid);
 		assertNotNull(asset2.metaData.lastModifiedDate);
@@ -1207,10 +1261,6 @@ public class ServiceImplementationTest extends TestCase {
                 fail("Should be one of the above...");
             }
         }
-
-
-
-
 	}
 
 
@@ -1260,19 +1310,11 @@ public class ServiceImplementationTest extends TestCase {
         d_ = impl.loadDiscussionForAsset(rule1.getUUID());
         assertEquals(0, d_.size());
 
+
+
         impl.addToDiscussionForAsset(rule1.getUUID(), "This is a note2");
         d_ = impl.loadDiscussionForAsset(rule1.getUUID());
         assertEquals(1, d_.size());
-
-
-
-
-
-
-
-
-
-
     }
 
 
@@ -2628,9 +2670,10 @@ public class ServiceImplementationTest extends TestCase {
 
 	private ServiceImplementation getService() throws Exception {
 		ServiceImplementation impl = new ServiceImplementation();
-
 		impl.repository = new RulesRepository(TestEnvironmentSessionHelper
 				.getSession());
+
+
 		return impl;
 	}
 

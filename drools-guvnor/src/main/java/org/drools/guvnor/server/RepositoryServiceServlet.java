@@ -9,6 +9,8 @@ import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import org.drools.guvnor.server.repository.MailboxService;
+import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.Component;
@@ -29,6 +31,7 @@ import java.util.Map;
 public class RepositoryServiceServlet extends RemoteServiceServlet implements RepositoryService {
 
     private static final Logger     log              = LoggingHelper.getLogger(RepositoryServiceServlet.class);
+    private static boolean testListenerInit = false;
 	/**
 	 * This is used by the pass through methods below.
 	 * Michael got tired of trying to read other peoples overly abstracted code, so its just generated dumb code to
@@ -41,6 +44,15 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 			//this is only for out of container hosted mode in GWT
 			ServiceImplementation impl = new ServiceImplementation();
 			impl.repository = new RulesRepository(TestEnvironmentSessionHelper.getSession(false));
+
+            synchronized(RepositoryServiceServlet.class) {
+                if (!testListenerInit) {
+                    MailboxService.getInstance().init(new RulesRepository(TestEnvironmentSessionHelper.getSession(false)));
+                    RepositoryStartupService.registerCheckinListener();
+                    testListenerInit = true;
+                }
+            }
+
 			return impl;
 		}
 	}

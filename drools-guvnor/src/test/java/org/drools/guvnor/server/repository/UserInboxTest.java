@@ -123,20 +123,32 @@ public class UserInboxTest extends TestCase {
         assertEquals(1, es.size());
         assertEquals(asset.getUUID(), es.get(0).assetUUID);
         assertEquals("InBoxTestHelper", es.get(0).note);
+
+        UserInbox.recordUserEditEvent(asset);
+        es = ib.loadRecentEdited();
+        assertEquals(1, es.size());
+        assertEquals(asset.getUUID(), es.get(0).assetUUID);
     }
 
 
     public void testIncoming() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+        AssetItem asset = repo.loadDefaultPackage().addAsset("testIncomingMarkedRead", "");
         UserInbox ib = new UserInbox(repo);
         ib.clearAll();
-        ib.addToIncoming("XXX", "hey");
-        ib.addToIncoming("YYY", "hey2");
+        ib.addToIncoming(asset.getUUID(), "hey", "mic");
+        ib.addToIncoming("YYY", "hey2", "mic");
 
         List<UserInbox.InboxEntry> es = ib.loadIncoming();
         assertEquals(2, es.size());
-        assertEquals("XXX", es.get(0).assetUUID);
+        assertEquals(asset.getUUID(), es.get(0).assetUUID);
         assertEquals("YYY", es.get(1).assetUUID);
+        UserInbox.recordOpeningEvent(asset);
+
+        es = ib.loadIncoming();
+        assertEquals(1, es.size());
+        assertEquals("YYY", es.get(0).assetUUID);
+
 
     }
 

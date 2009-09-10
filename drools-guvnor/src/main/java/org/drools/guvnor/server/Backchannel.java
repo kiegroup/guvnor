@@ -39,7 +39,7 @@ public class Backchannel {
 
 
     public List<PushResponse> await(String userName) throws InterruptedException {
-        List<PushResponse> messages = mailbox.remove(userName);
+        List<PushResponse> messages = fetchMessageForUser(userName);
         if (messages != null && messages.size() > 0) {
             return messages;
         } else {
@@ -53,11 +53,21 @@ public class Backchannel {
 
 
             /** In the meantime... response has been set, and then it will be unlatched, and message sent back... */
-            return mailbox.remove(userName);
+            return fetchMessageForUser(userName);
         }
     }
 
+    /**
+     * Fetch the list of messages waiting, if there are some, replace it with an empty list.
+     */
+    private List<PushResponse> fetchMessageForUser(String userName) {
+        List<PushResponse> msgs = mailbox.get(userName);
+        mailbox.put(userName, new ArrayList<PushResponse>());
+        return msgs;
+    }
 
+
+    /** Push out a message to the specific client */
     public synchronized void push(String userName, PushResponse message) {
         //need to queue this up in the users mailbox, and then wake it all up
         List<PushResponse> resp = mailbox.get(userName);
@@ -71,6 +81,17 @@ public class Backchannel {
 
         unlatchAllWaiting();
 
+    }
+
+    /**
+     * Push out a message to all currently connected clients
+     */
+    public synchronized void publish(PushResponse message) {
+        for(Map.Entry<String, List<PushResponse>> e : mailbox.entrySet()) {
+            if (e.getValue() == null) e.setValue(new ArrayList<PushResponse>());
+            e.getValue().add(message);
+        }
+        unlatchAllWaiting();
     }
 
     private void unlatchAllWaiting() {

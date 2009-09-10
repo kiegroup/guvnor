@@ -40,8 +40,8 @@ public class RulesRepositoryManager {
 
     private static String READ_ONLY_USER = "anonymous";
     
-    @In 
-    BRMSRepositoryConfiguration repositoryConfiguration;
+    @In
+    RepositoryStartupService repositoryConfiguration;
     
     private RulesRepository repository;
     

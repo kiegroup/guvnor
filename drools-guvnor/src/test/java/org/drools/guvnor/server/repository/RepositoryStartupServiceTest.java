@@ -22,11 +22,11 @@ package org.drools.guvnor.server.repository;
 
 import junit.framework.TestCase;
 
-public class BRMSRepositoryConfigurationTest extends TestCase {
+public class RepositoryStartupServiceTest extends TestCase {
 
     public void testConfiguration() throws Exception {
         
-        BRMSRepositoryConfiguration config = new BRMSRepositoryConfiguration();
+        RepositoryStartupService config = new RepositoryStartupService();
         config.setHomeDirectory( "qed" );
         assertEquals("qed", config.repositoryHomeDirectory);
         config.setRepositoryConfigurator( MockRepositoryConfigurator.class.getName() );
@@ -36,6 +36,8 @@ public class BRMSRepositoryConfigurationTest extends TestCase {
 
         assertNotNull(config.newSession("foo"));
         assertNotSame(config.newSession("foo"), config.newSession("foo"));
+
+        
         
     }
 

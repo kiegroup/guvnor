@@ -15,6 +15,49 @@ public class BackchannelTest extends TestCase {
 
     final Backchannel bc = new Backchannel();
 
+
+
+    public void testPushAll() throws Exception {
+
+        final PushResponse[] resp = new PushResponse[2];
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    List<PushResponse> r = bc.await("mic");
+                    assertEquals(1, r.size());
+                    resp[0] = r.get(0);
+                } catch (InterruptedException e) {
+                    fail("should not interrupt");
+                }
+            }
+        });
+        t.start();
+        Thread t2 = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    List<PushResponse> r = bc.await("jazz");
+                    assertEquals(1, r.size());
+                    resp[1] = r.get(0);
+
+                } catch (InterruptedException e) {
+                    fail("should not interrupt");
+                }
+            }
+        });
+        t2.start();
+
+
+        bc.publish(new PushResponse("hey", "ho"));
+
+        Thread.sleep(100);
+        assertNotNull(resp[0]);
+        assertNotNull(resp[1]);
+        assertEquals("hey", resp[0].messageType);
+        assertEquals("hey", resp[1].messageType);
+
+
+    }
+
     public void testSimple() throws Exception {
 
         bc.push("mic", new PushResponse("m", "b"));
@@ -106,7 +149,8 @@ public class BackchannelTest extends TestCase {
         assertEquals(2, res.size());
 
         res = bc.await("mic");
-        assertNull(res); //as other concurrent things will be unlatching...
+        assertEquals(0, res.size());
+        //assertNull(res); //as other concurrent things will be unlatching...
 
         Thread.sleep(20);
 

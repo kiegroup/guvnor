@@ -24,10 +24,9 @@ public class RulesRepositoryManagerTest extends TestCase {
 		// added this so we don't get a failer for now tests
 	}
 
-	// FIXME
-    public void FIXME_testDecorator() {
+    public void IGNORE_testDecorator() {
         RulesRepositoryManager dec = new RulesRepositoryManager();
-        BRMSRepositoryConfiguration config = new BRMSRepositoryConfiguration();
+        RepositoryStartupService config = new RepositoryStartupService();
         MockRepo repo = new MockRepo();
         config.repository = repo;
         dec.repositoryConfiguration = config;

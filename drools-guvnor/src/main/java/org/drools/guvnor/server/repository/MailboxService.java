@@ -32,7 +32,7 @@ import java.util.*;
 public class MailboxService {
 
     private static final Logger log = LoggingHelper.getLogger( MailboxService.class );
-    private static final String MAILMAN = "mailman";
+    public static final String MAILMAN = "mailman";
     private static ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private static MailboxService INSTANCE = new MailboxService();
@@ -53,14 +53,15 @@ public class MailboxService {
         init(systemRepo);
     }
 
-    void init(RulesRepository systemRepo) {
-        this.repository = systemRepo;
+    public void init(RulesRepository systemRepo) {
         log.info("Starting mailbox service");
+        this.repository = systemRepo;
     }
 
 
 
-    void wakeUp() {
+    public void wakeUp() {
+        log.info("Waking up");
         executor.execute(new Runnable() {
             public void run() {
                 processOutgoing();
@@ -72,22 +73,26 @@ public class MailboxService {
     void processOutgoing()  {
         try {
             log.info("Processing outgoing messages");
-            UserInbox mailman = new UserInbox(repository, MAILMAN);
-            final List<UserInbox.InboxEntry> es  = mailman.loadIncoming();
-            //wipe out inbox for mailman here...
-            UserInfo.eachUser(this.repository, new UserInfo.Command() {
-                public void process(Node userNode) throws RepositoryException {
-                    UserInbox inbox = new UserInbox(repository, userNode.getName());
-                    Set<String> recentEdited = makeSetOf(inbox.loadRecentEdited());
-                    for (UserInbox.InboxEntry e : es) {
-                        if (recentEdited.contains(e.assetUUID)) {
-                            inbox.addToIncoming(e.assetUUID, e.note);
+            if (repository != null) {
+                UserInbox mailman = new UserInbox(repository, MAILMAN);
+                final List<UserInbox.InboxEntry> es  = mailman.loadIncoming();
+                //wipe out inbox for mailman here...
+                UserInfo.eachUser(this.repository, new UserInfo.Command() {
+                    public void process(final Node userNode) throws RepositoryException {
+                        String toUser = userNode.getName();
+                        if (toUser.equals(MAILMAN)) return;
+                        UserInbox inbox = new UserInbox(repository, userNode.getName());
+                        Set<String> recentEdited = makeSetOf(inbox.loadRecentEdited());
+                        for (UserInbox.InboxEntry e : es) {
+                            if (!e.from.equals(toUser) && recentEdited.contains(e.assetUUID)) {
+                                inbox.addToIncoming(e.assetUUID, e.note, e.from);
+                            }
                         }
                     }
-                }
-            });
-            mailman.clearIncoming();
-            repository.save();
+                });
+                mailman.clearIncoming();
+                repository.save();
+            }
         } catch (RepositoryException e) {
             log.error(e);
         }
@@ -102,15 +107,20 @@ public class MailboxService {
         return entries;
     }
 
+    /**
+     * Call this to note that there has been a change - will then publish to any interested parties.
+     * @param item
+     */
     public void recordItemUpdated(AssetItem item) {
         final String id = item.getUUID();
         final String name = item.getName();
+        final String from = item.getRulesRepository().getSession().getUserID();
         executor.execute(new Runnable() {
             public void run() {
                 try {
                     //write the message to the admins outbox
                     UserInbox inbox = new UserInbox(repository, MAILMAN);
-                    inbox.addToIncoming(id, name);
+                    inbox.addToIncoming(id, name, from);
                     processOutgoing();
                 } catch (RepositoryException e) {
                     log.error(e);

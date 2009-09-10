@@ -33,7 +33,7 @@ public class UserInbox {
     /**
      * Create an inbox for the given user name (id)
      */
-    UserInbox(RulesRepository repo, String userName) throws RepositoryException {
+    public UserInbox(RulesRepository repo, String userName) throws RepositoryException {
         this.userInfo = new UserInfo(repo, userName);
     }
 
@@ -49,29 +49,29 @@ public class UserInbox {
      * Simply adds to the list...
      */
     public void addToRecentEdited(String assetId, String note) throws RepositoryException {
-        addToInbox(RECENT_EDITED, assetId, note);
+        addToInbox(RECENT_EDITED, assetId, note, "self");
     }
 
 
     public void addToRecentOpened(String assetId, String note) throws RepositoryException {
-        addToInbox(RECENT_VIEWED, assetId, note);
+        addToInbox(RECENT_VIEWED, assetId, note, "self");
     }
 
-    public void addToIncoming(String assetId, String note) throws RepositoryException {
-        addToInbox(INCOMING, assetId, note);
+    public void addToIncoming(String assetId, String note, String userFrom) throws RepositoryException {
+        addToInbox(INCOMING, assetId, note, userFrom);
     }
 
 
-    private void addToInbox(String boxName, String assetId, String note) throws RepositoryException {
+    private void addToInbox(String boxName, String assetId, String note, String userFrom) throws RepositoryException {
         assert boxName.equals(RECENT_EDITED) || boxName.equals(RECENT_VIEWED) || boxName.equals(INCOMING);
         List<InboxEntry> entries =  removeAnyExisting(assetId, readEntries(userInfo.getProperty(INBOX, boxName)));
         
 
-        if (!boxName.equals(INCOMING) && entries.size() >= MAX_RECENT_EDITED) {
+        if (entries.size() >= MAX_RECENT_EDITED) {
             entries.remove(0);
-            entries.add(new InboxEntry(assetId, note));
+            entries.add(new InboxEntry(assetId, note, userFrom));
         } else {
-            entries.add(new InboxEntry(assetId, note));
+            entries.add(new InboxEntry(assetId, note, userFrom));
         }
         userInfo.setProperty(INBOX, boxName, new UserInfo.Val(writeEntries(entries)));
 
@@ -127,7 +127,7 @@ public class UserInbox {
     /**
      * Wipe them out, all of them.
      */
-    void clearAll() throws RepositoryException {
+    public void clearAll() throws RepositoryException {
         userInfo.setProperty(INBOX, RECENT_EDITED, new UserInfo.Val(""));
         userInfo.setProperty(INBOX, RECENT_VIEWED, new UserInfo.Val(""));
         userInfo.setProperty(INBOX, INCOMING, new UserInfo.Val(""));
@@ -142,11 +142,14 @@ public class UserInbox {
      * And entry in an inbox.
      */
     public static class InboxEntry {
+        public String from;
+
         public InboxEntry() {}
-        public InboxEntry(String assetId, String note) {
+        public InboxEntry(String assetId, String note, String userFrom) {
             this.assetUUID = assetId;
             this.note = note;
             this.timestamp = System.currentTimeMillis();
+            this.from = userFrom;
         }
         public String assetUUID;
         public String note;
@@ -154,17 +157,23 @@ public class UserInbox {
     }
 
 
-    /** Helper method to log the opening */
+    /**
+     * Helper method to log the opening. Will remove any inbox items that have the same id.
+     */
     public static void recordOpeningEvent(AssetItem item) {
         try {
             UserInbox ib = new UserInbox(item.getRulesRepository());
             ib.addToRecentOpened(item.getUUID(), item.getName());
+            List<InboxEntry> unreadIncoming = ib.removeAnyExisting(item.getUUID(), ib.loadIncoming());
+            ib.userInfo.setProperty(INBOX, INCOMING, new UserInfo.Val(ib.writeEntries(unreadIncoming)));
+
             ib.save();
         } catch (RepositoryException e) {
             log.error(e);
         }
     }
 
+    /** Helper method to note the event */
     public static void recordUserEditEvent(AssetItem item) {
         try {
             UserInbox ib = new UserInbox(item.getRulesRepository());

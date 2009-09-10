@@ -52,7 +52,7 @@ public class MailboxServiceTest extends TestCase {
 
 
         ib2.addToRecentEdited(ass2.getUUID(), "hey");
-        mailman.addToIncoming(ass2.getUUID(), "whee");
+        mailman.addToIncoming(ass2.getUUID(), "whee", "mic");
         assertEquals(1, mailman.loadIncoming().size());
         assertEquals(1, ib2.loadIncoming().size());
         service.wakeUp();
@@ -73,6 +73,39 @@ public class MailboxServiceTest extends TestCase {
 
         assertSame(serv, MailboxService.getInstance());
         
+
+    }
+
+    public void testOneToMany() throws Exception {
+        RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+
+        MailboxService service = new MailboxService(repo);
+
+        String sender = repo.getSession().getUserID();
+        AssetItem asset = repo.loadDefaultPackage().addAsset("testMailboxOneToMany", "");
+        UserInbox ib1 = new UserInbox(repo, sender);
+        UserInbox ib2 = new UserInbox(repo, "dave");
+        UserInbox ib3 = new UserInbox(repo, "phil");
+
+        ib1.clearAll();
+        ib2.clearAll();
+        ib3.clearAll();
+
+        ib1.addToRecentEdited(asset.getUUID(), "hey");
+        ib2.addToRecentEdited(asset.getUUID(), "hey");
+        ib3.addToRecentEdited(asset.getUUID(), "hey");
+
+        assertEquals(0, ib1.loadIncoming().size());
+        assertEquals(0, ib2.loadIncoming().size());
+        assertEquals(0, ib3.loadIncoming().size());
+
+        service.recordItemUpdated(asset);
+
+        Thread.sleep(250);
+
+        assertEquals(0, ib1.loadIncoming().size());
+        assertEquals(1, ib2.loadIncoming().size());
+        assertEquals(1, ib3.loadIncoming().size());
 
     }
 
