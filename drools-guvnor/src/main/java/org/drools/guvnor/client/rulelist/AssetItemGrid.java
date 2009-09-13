@@ -165,8 +165,11 @@ public class AssetItemGrid extends Composite {
                                      for ( int j = 2; j < numFlds; j++ ) {
                                          if (rd.getFields()[j] instanceof DateFieldDef) {
                                             Date dt = new Date(Long.parseLong(row.values[j - 2]));
-                                            //DateTimeFormat format = DateTimeFormat.getFormat( "MMM d, yyyy");
-                                             DateTimeFormat format = DateTimeFormat.getFullDateFormat();
+                                            //NOTE, GWTEXT only understands certain date formats, for example "yyyy/MM/dd"
+                                            //works but other formats such as "yyyy/MM/dd" or localized formats  is not recognizable 
+                                            //by GWTEXT. See http://code.google.com/p/gwt-ext/issues/detail?id=459&start=100.
+                                            DateTimeFormat format = DateTimeFormat.getFormat( "yyyy/MM/dd");
+                                             //DateTimeFormat format = DateTimeFormat.getFullDateFormat();
                                             rowData[j] = format.format(dt);
                                          } else {
                                             rowData[j] = row.values[j - 2];
@@ -408,6 +411,7 @@ public class AssetItemGrid extends Composite {
                                                      int colNum,
                                                      Store store) {
                                     DateTimeFormat format = DateTimeFormat.getMediumDateFormat();// DateTimeFormat.getFormat( "MMM d, yyyy");
+                                    //System.out.println("----format.format( (Date) value  )" + format.format( (Date) value  ));
                                     return format.format( (Date) value  );
                                 }
                             } );
