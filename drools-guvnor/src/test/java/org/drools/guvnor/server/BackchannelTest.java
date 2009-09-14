@@ -31,7 +31,7 @@ public class BackchannelTest extends TestCase {
                 }
             }
         });
-        t.start();
+
         Thread t2 = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -44,14 +44,18 @@ public class BackchannelTest extends TestCase {
                 }
             }
         });
+        t.start();
         t2.start();
 
 
-        Thread.sleep(200);
+        //Thread.sleep(200);
 
         bc.publish(new PushResponse("hey", "ho"));
 
-        Thread.sleep(500);
+        t.join();
+        t2.join();
+
+//        Thread.sleep(500);
         assertNotNull(resp[0]);
         assertNotNull(resp[1]);
         assertEquals("hey", resp[0].messageType);
