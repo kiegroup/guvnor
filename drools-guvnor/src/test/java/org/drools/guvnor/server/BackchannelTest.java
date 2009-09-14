@@ -13,11 +13,9 @@ import junit.framework.TestCase;
 public class BackchannelTest extends TestCase {
 
 
-    final Backchannel bc = new Backchannel();
-
-
-
     public void testPushAll() throws Exception {
+
+        final Backchannel bc = new Backchannel();
 
         final PushResponse[] resp = new PushResponse[2];
         Thread t = new Thread(new Runnable() {
@@ -48,14 +46,14 @@ public class BackchannelTest extends TestCase {
         t2.start();
 
 
-        //Thread.sleep(200);
+        Thread.sleep(200);
 
         bc.publish(new PushResponse("hey", "ho"));
 
-        t.join();
-        t2.join();
+        //t.join();
+        //t2.join();
 
-//        Thread.sleep(500);
+        Thread.sleep(500);
         assertNotNull(resp[0]);
         assertNotNull(resp[1]);
         assertEquals("hey", resp[0].messageType);
@@ -65,6 +63,8 @@ public class BackchannelTest extends TestCase {
     }
 
     public void testSimple() throws Exception {
+
+            final Backchannel bc = new Backchannel();
 
         bc.push("mic", new PushResponse("m", "b"));
         bc.push("dave", new PushResponse("d", "b"));
