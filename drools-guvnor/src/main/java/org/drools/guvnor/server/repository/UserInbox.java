@@ -5,6 +5,10 @@ import org.drools.repository.UserInfo;
 import org.drools.repository.AssetItem;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.apache.log4j.Logger;
+import static org.drools.guvnor.client.common.Inbox.*;
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.rpc.TableDataResult;
+import org.drools.guvnor.client.rpc.TableDataRow;
 
 import javax.jcr.RepositoryException;
 import java.util.List;
@@ -23,9 +27,7 @@ public class UserInbox {
     static final int MAX_RECENT_EDITED = 200;
 
     private static final String INBOX = "inbox";
-    private static final String RECENT_EDITED = "recentEdited";
-    private static final String RECENT_VIEWED = "recentViewed";
-    private static final String INCOMING = "incoming";
+
     
     private UserInfo userInfo;
 
@@ -154,6 +156,33 @@ public class UserInbox {
         public String assetUUID;
         public String note;
         public long timestamp;
+    }
+
+
+    public static TableDataResult toTable(List<InboxEntry> entries, boolean showFrom) {
+        TableDataResult res = new TableDataResult();
+        res.currentPosition = 0;
+        res.total = entries.size();
+        res.hasNext = false;
+        res.data = new TableDataRow[entries.size()];
+        for (int i = 0; i < entries.size(); i++) {
+            TableDataRow tdr = new TableDataRow();
+            InboxEntry e =entries.get(i);
+            tdr.id = e.assetUUID;
+            if (!showFrom) {
+                tdr.values = new String[2];
+                tdr.values[0] = e.note;
+                tdr.values[1] = Long.toString(e.timestamp);
+            } else {
+                tdr.values = new String[3];
+                tdr.values[0] = e.note;
+                tdr.values[1] = Long.toString(e.timestamp);
+                tdr.values[2] = e.from;
+            }
+            tdr.format = AssetFormats.BUSINESS_RULE;
+            res.data[i] = tdr;
+        }
+        return res;
     }
 
 

@@ -2,6 +2,7 @@ package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.Inbox;
 import org.drools.guvnor.client.qa.AnalysisView;
 import org.drools.guvnor.client.qa.ScenarioPackageView;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -11,6 +12,7 @@ import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
@@ -130,16 +132,63 @@ public class ExplorerNodeConfig {
 		tnc.setId("FIND");
 		tnc.setText(constants.Find());
 
+        final TreeNode inbox = getInboxStructure();
 		tn.appendChild(tnc);
+        
+        tn.appendChild(inbox);
 		if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
 			tn.appendChild(getStatesStructure());
 		}
 		tn.appendChild(getCategoriesStructure());
+
+        //seem to have to open it on a timer...
+        Timer t = new Timer() {
+            public void run() {
+                inbox.expand();
+            }
+        };
+        t.schedule(100);
+
+
 		return tn;
 
 	}
 
-	public static TreeNode getCategoriesStructure () {
+    private static TreeNode getInboxStructure() {
+        final TreeNode treeNode = new TreeNode("Inbox");
+        treeNode.setAttribute("icon", "images/inbox.gif"); //NON-NLS
+        treeNode.setAttribute("id", "inboxes");
+
+
+        TreeNode incoming = new TreeNode(constants.IncomingChanges());
+        incoming.setId("inbox3");
+        incoming.setAttribute("icon", "images/category_small.gif");  //NON-NLS
+        incoming.setUserObject(Inbox.INCOMING);
+        treeNode.appendChild(incoming);
+        
+
+        TreeNode recentOpened = new TreeNode(constants.RecentlyOpened());
+        recentOpened.setId("inbox1");
+        recentOpened.setAttribute("icon", "images/category_small.gif");  //NON-NLS
+        recentOpened.setUserObject(Inbox.RECENT_VIEWED);
+        treeNode.appendChild(recentOpened);
+
+        TreeNode recentEdited = new TreeNode(constants.RecentlyEdited());
+        recentEdited.setId("inbox2");
+        recentEdited.setAttribute("icon", "images/category_small.gif");  //NON-NLS
+        recentEdited.setUserObject(Inbox.RECENT_EDITED);
+        treeNode.appendChild(recentEdited);
+
+
+
+        treeNode.expand();
+
+        return treeNode;
+
+
+    }
+
+    public static TreeNode getCategoriesStructure () {
 		final TreeNode treeNode = new TreeNode(constants.ByCategory());
 		treeNode.setAttribute("icon", "images/silk/chart_organisation.gif");
 		treeNode.setAttribute("id",CATEGORY_ID);

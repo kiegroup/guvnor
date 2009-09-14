@@ -54,6 +54,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.common.Inbox;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.testing.Scenario;
 import org.drools.guvnor.client.rpc.*;
@@ -2427,6 +2428,24 @@ public class ServiceImplementation
         push( "discussion",
               assetId );
 
+    }
+
+
+    @Restrict("#{identity.loggedIn}")
+    public TableDataResult loadInbox(String inboxName) throws DetailedSerializableException {
+        try {
+            UserInbox ib = new UserInbox(repository);
+            if (inboxName.equals(Inbox.RECENT_VIEWED)) {
+                return UserInbox.toTable(ib.loadRecentOpened(), false);
+            } else if (inboxName.equals(Inbox.RECENT_EDITED)) {
+                return UserInbox.toTable(ib.loadRecentEdited(), false);
+            } else {
+                return UserInbox.toTable(ib.loadIncoming(), true);
+            }
+        } catch (Exception e) {
+            log.error(e);
+            throw new DetailedSerializableException("Unable to load Inbox", e.getMessage());
+        }
     }
 
     /**

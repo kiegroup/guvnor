@@ -3,10 +3,7 @@ package org.drools.guvnor.server;
 import com.google.gwt.user.client.rpc.SerializableException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.log4j.Logger;
-import org.drools.guvnor.client.rpc.DetailedSerializableException;
-import org.drools.guvnor.client.rpc.DiscussionRecord;
-import org.drools.guvnor.client.rpc.PushResponse;
-import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.guvnor.server.repository.MailboxService;
@@ -330,6 +327,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 
     public List<PushResponse> subscribe() {
         return getService().subscribe();
+    }
+
+    public TableDataResult loadInbox(String inboxName) throws DetailedSerializableException {
+        return getService().loadInbox(inboxName);
     }
 
 

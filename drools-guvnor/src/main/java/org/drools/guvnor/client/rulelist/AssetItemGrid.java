@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.JsObject;
 import com.gwtext.client.data.ArrayReader;
 import com.gwtext.client.data.DateFieldDef;
 import com.gwtext.client.data.FieldDef;
@@ -63,9 +64,9 @@ public class AssetItemGrid extends Composite {
     public static final String  RULE_LIST_TABLE_ID          = "rulelist";
     public static final String  PACKAGEVIEW_LIST_TABLE_ID   = "packageviewlist";
     public static final String  ARCHIVED_RULE_LIST_TABLE_ID = "archivedrulelist";
-    private static final Map    columnConfigs               = new HashMap();
-    private static final Map    recordDefs                  = new HashMap();
-    private static final Map    rowsPerPage                 = new HashMap();
+    private static final Map<String, ColumnModel>    columnConfigs               = new HashMap();
+    private static final Map<String, RecordDef>    recordDefs                  = new HashMap();
+    private static final Map<String, Integer>    rowsPerPage                 = new HashMap();
 
     private final EditItemEvent editEvent;
     private SimplePanel         layout;
@@ -80,10 +81,29 @@ public class AssetItemGrid extends Composite {
 
     protected Store             store;
     private GridPanel           currentGrid;
-    private Constants constants = GWT.create(Constants.class);
+    private static Constants constants = GWT.create(Constants.class);
     private String feedURL;
     private Command unloadHook;
 
+
+    /**
+     * Call this to set up a table config instead of loading it from the server. You then pass in the config name for later use.
+     * Can save a round trip.
+     */
+    public static void registerTableConf(TableConfig conf, String tableConfig) {
+       if (columnConfigs.containsKey(tableConfig)) return;
+       ColumnModel cm = createColumnModel( conf );
+       columnConfigs.put( tableConfig, cm );
+       RecordDef rd = createRecordDef( conf );
+       recordDefs.put( tableConfig, rd );
+       rowsPerPage.put( tableConfig, new Integer( conf.rowsPerPage ) );
+    }
+
+
+    /**
+     * Create a grid using the given config - config will be loaded from the server if it is not already cached.
+     * You can use registerTableConf to register it to avoid a server hit.
+     */
     public AssetItemGrid(final EditItemEvent event,
                          final String tableConfig,
                          final AssetItemGridDataLoader source) {
@@ -93,19 +113,11 @@ public class AssetItemGrid extends Composite {
         if ( !columnConfigs.containsKey( tableConfig ) ) {
             RepositoryServiceFactory.getService().loadTableConfig( tableConfig,
                                                                    new GenericCallback<TableConfig>() {
-                                                                       public void onSuccess(TableConfig data) {
-                                                                           TableConfig conf = (TableConfig) data;
-                                                                           ColumnModel cm = createColumnModel( conf );
-                                                                           columnConfigs.put( tableConfig,
-                                                                                              cm );
-                                                                           RecordDef rd = createRecordDef( conf );
-                                                                           recordDefs.put( tableConfig,
-                                                                                           rd );
-                                                                           rowsPerPage.put( tableConfig,
-                                                                                            new Integer( conf.rowsPerPage ) );
+                                                                       public void onSuccess(TableConfig conf) {
+                                                                           registerTableConf(conf, tableConfig);
                                                                            doGrid( source,
-                                                                                   cm,
-                                                                                   rd,
+                                                                                   columnConfigs.get(tableConfig),
+                                                                                   recordDefs.get(tableConfig),
                                                                                    conf.rowsPerPage );
                                                                        }
                                                                    } );
@@ -119,13 +131,18 @@ public class AssetItemGrid extends Composite {
         initWidget( layout );
     }
 
-        public AssetItemGrid(final EditItemEvent event,
-                         final String tableConfig,
-                         final AssetItemGridDataLoader source,
-                         String feedURL) {
-            this(event, tableConfig, source);
-            this.feedURL = feedURL;
-        }
+
+    /**
+     * Similar to the other constructor, but takes an optional feelURL to show with an atom icon in the top right.
+     */
+    public AssetItemGrid(final EditItemEvent event,
+                     final String tableConfig,
+                     final AssetItemGridDataLoader source,
+                     String feedURL) {
+        this(event, tableConfig, source);
+        this.feedURL = feedURL;
+    }
+    
 
     private Stack<Integer> getPositionStack() {
         Stack<Integer> cursorPositions = new Stack<Integer>();
@@ -345,7 +362,7 @@ public class AssetItemGrid extends Composite {
         }
     }
 
-    private RecordDef createRecordDef(TableConfig conf) {
+    private static RecordDef createRecordDef(TableConfig conf) {
         FieldDef[] fd = new FieldDef[conf.headers.length + 2]; //2 as we have format and UUID to tack on.
         fd[0] = new StringFieldDef( "uuid" );                 //NON-NLS
         fd[1] = new StringFieldDef( "format" );              //NON-NLS
@@ -361,7 +378,7 @@ public class AssetItemGrid extends Composite {
         return new RecordDef( fd );
     }
 
-    private ColumnModel createColumnModel(TableConfig conf) {
+    private static ColumnModel createColumnModel(TableConfig conf) {
         ColumnConfig[] cfgs = new ColumnConfig[conf.headers.length + 1];
 
         //first the UUID

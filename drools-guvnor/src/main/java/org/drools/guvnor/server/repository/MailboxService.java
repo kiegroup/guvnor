@@ -76,10 +76,13 @@ public class MailboxService {
             if (repository != null) {
                 UserInbox mailman = new UserInbox(repository, MAILMAN);
                 final List<UserInbox.InboxEntry> es  = mailman.loadIncoming();
+                log.debug("Outgoing messages size " + es.size());
                 //wipe out inbox for mailman here...
                 UserInfo.eachUser(this.repository, new UserInfo.Command() {
                     public void process(final Node userNode) throws RepositoryException {
+
                         String toUser = userNode.getName();
+                        log.debug("Processing any inbound messages for " + toUser);
                         if (toUser.equals(MAILMAN)) return;
                         UserInbox inbox = new UserInbox(repository, userNode.getName());
                         Set<String> recentEdited = makeSetOf(inbox.loadRecentEdited());

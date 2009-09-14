@@ -31,6 +31,7 @@ import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.StatelessSession;
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.common.Inbox;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
@@ -108,6 +109,85 @@ public class ServiceImplementationTest extends TestCase {
         } catch (Exception e) {
             fail("unable to init");
         }
+    }
+
+
+    public void testInboxEvents() throws Exception {
+        ServiceImplementation impl = getService();
+        assertNotNull(impl.loadInbox(Inbox.RECENT_EDITED));
+
+        //this should trigger the fact that the original user edited something
+        RulesRepository repo1 = impl.repository;
+        AssetItem as = impl.repository.loadDefaultPackage().addAsset("testLoadInbox", "");
+        as.checkin("");
+        TableDataResult res = impl.loadInbox(Inbox.RECENT_EDITED);
+        boolean found = false;
+        for (TableDataRow row: res.data) { if (row.id.equals(as.getUUID())) found = true;}
+        assertTrue(found);
+
+
+        //but should not be in "incoming" yet
+        found = false;
+        res = impl.loadInbox(Inbox.INCOMING);
+        for (TableDataRow row: res.data) { if (row.id.equals(as.getUUID())) found = true;}
+        assertFalse(found);
+
+
+
+        //Now, another user comes along, makes a change...
+        RulesRepository repo2 = new RulesRepository(TestEnvironmentSessionHelper.getSessionFor("thirdpartyuser"));
+        AssetItem as2 = repo2.loadDefaultPackage().loadAsset("testLoadInbox");
+        as2.updateContent("hey");
+        as2.checkin("here we go again !");
+
+        Thread.sleep(200);
+
+        //now check that it is in the first users inbox
+        TableDataRow rowMatch = null;
+        res = impl.loadInbox(Inbox.INCOMING);
+        for (TableDataRow row: res.data) {
+           if (row.id.equals(as.getUUID())) {
+                rowMatch = row;
+            }
+        }
+        assertNotNull(rowMatch);
+        assertEquals(as.getName(), rowMatch.values[0]);
+        assertEquals("thirdpartyuser", rowMatch.values[2]); //should be "from" that user name...
+
+
+        //shouldn't be in thirdpartyusers inbox
+        UserInbox ib = new UserInbox(repo2);
+        ib.loadIncoming();
+        assertEquals(0, ib.loadIncoming().size());
+        assertEquals(1, ib.loadRecentEdited().size());
+
+
+        //ok lets create another user...
+        RulesRepository repo3 = new RulesRepository(TestEnvironmentSessionHelper.getSessionFor("fourthuser"));
+        AssetItem as3 = repo3.loadDefaultPackage().loadAsset("testLoadInbox");
+        as3.updateContent("hey22");
+        as3.checkin("here we go again 22!");
+
+        Thread.sleep(250);
+
+        //so should be in thirdpartyuser inbox
+        assertEquals(1, ib.loadIncoming().size());
+
+
+        //and also still in the original user...
+        found = false;
+        res = impl.loadInbox(Inbox.INCOMING);
+        for (TableDataRow row: res.data) { if (row.id.equals(as.getUUID())) found = true;}
+        assertTrue(found);
+        
+        //now lets open it with first user, and check that it disappears from the incoming...
+        impl.loadRuleAsset(as.getUUID());
+        found = false;
+        res = impl.loadInbox(Inbox.INCOMING);
+        for (TableDataRow row: res.data) { if (row.id.equals(as.getUUID())) found = true;}
+        assertFalse(found);
+
+
     }
 
 	public void testCategory() throws Exception {

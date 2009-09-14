@@ -513,4 +513,10 @@ public interface RepositoryService extends RemoteService {
     public List<PushResponse> subscribe();
 
 
+    /**
+     * Load the data for a given inbox for the currently logged in user.
+     */
+    public TableDataResult loadInbox(String inboxName) throws DetailedSerializableException;
+
+
 }

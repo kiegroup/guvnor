@@ -104,6 +104,7 @@ public interface RepositoryServiceAsync
     public void addToDiscussionForAsset(String assetId, String comment,  AsyncCallback<List<DiscussionRecord>> response);
     public void clearAllDiscussionsForAsset(String assetId, AsyncCallback cb);
     public void subscribe(AsyncCallback<List<PushResponse>> cb);
+    public void loadInbox(String inboxName, AsyncCallback<TableDataResult> cb);
 
 
 }

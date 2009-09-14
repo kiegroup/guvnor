@@ -36,7 +36,6 @@ public class TableDataRow
     
     /**
      * The type of resource (eg DRL rule, business rule etc).
-     * This will determine what sort of editor opens it.
      */
     public String format;    
     

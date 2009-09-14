@@ -59,6 +59,7 @@ public class RowLoader {
         return row;
     }
 
+
     public RowLoader(String resourcename) {
 
         InputStream in = RowLoader.class.getResourceAsStream( "/" + resourcename + ".properties" );

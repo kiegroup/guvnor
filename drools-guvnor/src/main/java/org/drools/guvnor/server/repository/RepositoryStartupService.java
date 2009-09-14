@@ -59,17 +59,21 @@ public class RepositoryStartupService {
         registerCheckinListener();
     }
 
+
+    /** Listen for changes to the repository - for inbox purposes */
     public static void registerCheckinListener() {
         StorageEventManager.registerCheckinEvent(new CheckinEvent() {
             public void afterCheckin(AssetItem item) {
-                UserInbox.recordUserEditEvent(item);
+                UserInbox.recordUserEditEvent(item);  //to register that she edited...
+                MailboxService.getInstance().recordItemUpdated(item);   //for outgoing...
                 MailboxService.getInstance().wakeUp();
             }
         });
     }
 
+    /** Start up the mailbox, flush out any messages that were left */
     private void startMailboxService() {
-        mailmanSession = new RulesRepository(newSession("mailman"));
+        mailmanSession = new RulesRepository(newSession(MailboxService.MAILMAN));
         MailboxService.getInstance().init(mailmanSession);
         MailboxService.getInstance().wakeUp();
     }
