@@ -14,7 +14,8 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * This is the backchannel to send "push" messages to the browser.
- * Here be dragons. Would like to convert this to using actors one day. 
+ * Here be dragons. Would like to convert this to using actors one day.
+ * TODO: convert to executor architecture. Only one instance needed.
  * @author Michael Neale
  */
 public class Backchannel {
