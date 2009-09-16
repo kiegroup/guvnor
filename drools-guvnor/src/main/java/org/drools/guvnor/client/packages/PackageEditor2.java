@@ -151,6 +151,11 @@ public class PackageEditor2 extends PrettyFormLayout {
 		});
 
 		addAttribute(constants.ShowPackageSource() + ":", buildSource);
+		
+		HTML html0 = new HTML("<a href='" + getDocumentationDownload(this.conf)
+		                     + "' target='_blank'>" + getDocumentationDownload(this.conf) + "</a>");
+		addAttribute(constants.URLForDocumention(), h(html0, constants.URLDocumentionDescription()));
+
 		HTML html = new HTML("<a href='" + getSourceDownload(this.conf)
 				+ "' target='_blank'>" + getSourceDownload(this.conf) + "</a>");
 		addAttribute(constants.URLForPackageSource(), h(html, constants.URLSourceDescription()));
@@ -327,6 +332,10 @@ public class PackageEditor2 extends PrettyFormLayout {
         }
     }
 
+
+    static String getDocumentationDownload(PackageConfigData conf) {
+        return makeLink (conf) + "/documentation.pdf";  //NON-NLS
+    }
 
     static String getSourceDownload(PackageConfigData conf) {
     	return makeLink (conf) + ".drl";  //NON-NLS

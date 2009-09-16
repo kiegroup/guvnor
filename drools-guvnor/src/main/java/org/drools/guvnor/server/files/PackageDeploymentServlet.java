@@ -1,4 +1,5 @@
 package org.drools.guvnor.server.files;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -14,8 +15,6 @@ package org.drools.guvnor.server.files;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,35 +45,41 @@ import com.google.gwt.user.client.rpc.SerializableException;
  */
 public class PackageDeploymentServlet extends RepositoryServlet {
 
-    private static final long serialVersionUID = 400L;
+    private static final long      serialVersionUID = 400L;
 
-    public static SimpleDateFormat RFC822DATEFORMAT  = new SimpleDateFormat("EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z", Locale.US);
-
+    public static SimpleDateFormat RFC822DATEFORMAT = new SimpleDateFormat( "EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z",
+                                                                            Locale.US );
 
     @Override
     protected long getLastModified(HttpServletRequest request) {
         PackageDeploymentURIHelper helper = null;
         try {
-            helper = new PackageDeploymentURIHelper(request.getRequestURI());
+            helper = new PackageDeploymentURIHelper( request.getRequestURI() );
             FileManagerUtils fm = getFileManager();
-            return fm.getLastModified( helper.getPackageName(), helper.getVersion() );
-        } catch (UnsupportedEncodingException e) {
-            return super.getLastModified(request);
+            return fm.getLastModified( helper.getPackageName(),
+                                       helper.getVersion() );
+        } catch ( UnsupportedEncodingException e ) {
+            return super.getLastModified( request );
         }
     }
 
     @Override
-    protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-                                                                            IOException {
-        if (request.getMethod().equals( "HEAD" )) {
-            PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(request.getRequestURI());
+    protected void doHead(HttpServletRequest request,
+                          HttpServletResponse response) throws ServletException,
+                                                       IOException {
+        if ( request.getMethod().equals( "HEAD" ) ) {
+            PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper( request.getRequestURI() );
             FileManagerUtils fm = getFileManager();
-            long mod = fm.getLastModified( helper.getPackageName(), helper.getVersion() );
-            response.addHeader( "lastModified", "" + mod);
-            response.addHeader("Last-Modified", RFC822DATEFORMAT.format(new Date(mod)));
+            long mod = fm.getLastModified( helper.getPackageName(),
+                                           helper.getVersion() );
+            response.addHeader( "lastModified",
+                                "" + mod );
+            response.addHeader( "Last-Modified",
+                                RFC822DATEFORMAT.format( new Date( mod ) ) );
 
         } else {
-            super.doHead(request, response);
+            super.doHead( request,
+                          response );
         }
     }
 
@@ -84,22 +89,22 @@ public class PackageDeploymentServlet extends RepositoryServlet {
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException,
                                                        IOException {
-    	response.setContentType( "text/html" );
-    	String packageName = request.getParameter( "packageName" );
+        response.setContentType( "text/html" );
+        String packageName = request.getParameter( "packageName" );
         FormData data = FileManagerUtils.getFormData( request );
         //System.err.println("Filename: " + data.getFile().getName());
 
         try {
-            getFileManager().importClassicDRL( data.getFile().getInputStream(), packageName );
+            getFileManager().importClassicDRL( data.getFile().getInputStream(),
+                                               packageName );
             response.getWriter().write( "OK" );
         } catch ( IllegalArgumentException e ) {
             response.getWriter().write( e.getMessage() );
         } catch ( DroolsParserException e ) {
             response.getWriter().write( "Unable to process import: " + e.getMessage() );
-        } catch ( RulesRepositoryException e) {
+        } catch ( RulesRepositoryException e ) {
             response.getWriter().write( "Unable to process import: " + e.getMessage() );
         }
-
 
     }
 
@@ -117,8 +122,8 @@ public class PackageDeploymentServlet extends RepositoryServlet {
      */
     protected void doGet(HttpServletRequest req,
                          HttpServletResponse response) throws ServletException,
-                                                 IOException {
-        PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(req.getRequestURI());
+                                                      IOException {
+        PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper( req.getRequestURI() );
 
         System.out.println( "PackageName: " + helper.getPackageName() );
         System.out.println( "PackageVersion: " + helper.getVersion() );
@@ -128,63 +133,90 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         FileManagerUtils fm = getFileManager();
         String fileName = null;
-        if (helper.isSource()) {
-        	if (helper.isAsset()) {
-        		fileName = fm.loadSourceAsset(helper.getPackageName(), helper.getVersion(), helper.isLatest(), helper.getAssetName(), out);
-        	} else {
-        		fileName = fm.loadSourcePackage(helper.getPackageName(), helper.getVersion(), helper.isLatest(), out );
-        	}
+        if ( helper.isSource() ) {
+            if ( helper.isAsset() ) {
+                fileName = fm.loadSourceAsset( helper.getPackageName(),
+                                               helper.getVersion(),
+                                               helper.isLatest(),
+                                               helper.getAssetName(),
+                                               out );
+            } else {
+                fileName = fm.loadSourcePackage( helper.getPackageName(),
+                                                 helper.getVersion(),
+                                                 helper.isLatest(),
+                                                 out );
+            }
+        } else if ( helper.isDocumentation() ) {
+
+            PackageItem pkg = fm.getRepository().loadPackage( helper.getPackageName() );
+
+            GuvnorDroolsDocsBuilder builder;
+            try {
+                builder = GuvnorDroolsDocsBuilder.getInstance( pkg );
+            } catch ( DroolsParserException e ) {
+                throw new ServletException( "Could not parse the rule package." );
+
+            }
+
+            fileName = "documentation.pdf";
+
+            builder.writePDF( out );
+
         } else {
-        	if (req.getRequestURI().endsWith("SCENARIOS")) {
-        		doRunScenarios(helper, out);
-        	} else if (req.getRequestURI().endsWith("ChangeSet.xml")) {
+            if ( req.getRequestURI().endsWith( "SCENARIOS" ) ) {
+                doRunScenarios( helper,
+                                out );
+            } else if ( req.getRequestURI().endsWith( "ChangeSet.xml" ) ) {
                 //here be dragons !
-                String url = req.getRequestURL().toString().replace("/ChangeSet.xml", "");
+                String url = req.getRequestURL().toString().replace( "/ChangeSet.xml",
+                                                                     "" );
                 fileName = "ChangeSet.xml";
                 String xml = "";
                 xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'\n";
                 xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'\n";
                 xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >\n";
                 xml += "    <add>\n ";
-                xml += "        <resource source='" + url +"' type='PKG' />\n";
+                xml += "        <resource source='" + url + "' type='PKG' />\n";
                 xml += "    </add>\n";
                 xml += "</change-set>";
-                out.write(xml.getBytes());
-            }  else {
-        		fileName = fm.loadBinaryPackage( helper.getPackageName(), helper.getVersion(), helper.isLatest(), out );
-        	}
+                out.write( xml.getBytes() );
+            } else {
+                fileName = fm.loadBinaryPackage( helper.getPackageName(),
+                                                 helper.getVersion(),
+                                                 helper.isLatest(),
+                                                 out );
+            }
         }
 
         response.setContentType( "application/x-download" );
         response.setHeader( "Content-Disposition",
-                       "attachment; filename=" + fileName + ";");
+                            "attachment; filename=" + fileName + ";" );
         response.setContentLength( out.size() );
         response.getOutputStream().write( out.toByteArray() );
         response.getOutputStream().flush();
 
     }
 
-	private void doRunScenarios(PackageDeploymentURIHelper helper,
-			ByteArrayOutputStream out) throws IOException {
-		ServiceImplementation serv = RepositoryServiceServlet.getService();
-		PackageItem pkg;
-		if (helper.isLatest()) {
-			pkg = serv.getRulesRepository().loadPackage(helper.getPackageName());
-		} else {
-			pkg = serv.getRulesRepository().loadPackageSnapshot(helper.getPackageName(), helper.getVersion());
-		}
-		try {
-			BulkTestRunResult result = serv.runScenariosInPackage(pkg);
-			out.write(result.toString().getBytes());
-		} catch (DetailedSerializableException e) {
-			log.error(e);
-			out.write(e.getMessage().getBytes());
-		} catch (SerializableException e) {
-			log.error(e);
-			out.write(e.getMessage().getBytes());
-		}
-	}
-
-
+    private void doRunScenarios(PackageDeploymentURIHelper helper,
+                                ByteArrayOutputStream out) throws IOException {
+        ServiceImplementation serv = RepositoryServiceServlet.getService();
+        PackageItem pkg;
+        if ( helper.isLatest() ) {
+            pkg = serv.getRulesRepository().loadPackage( helper.getPackageName() );
+        } else {
+            pkg = serv.getRulesRepository().loadPackageSnapshot( helper.getPackageName(),
+                                                                 helper.getVersion() );
+        }
+        try {
+            BulkTestRunResult result = serv.runScenariosInPackage( pkg );
+            out.write( result.toString().getBytes() );
+        } catch ( DetailedSerializableException e ) {
+            log.error( e );
+            out.write( e.getMessage().getBytes() );
+        } catch ( SerializableException e ) {
+            log.error( e );
+            out.write( e.getMessage().getBytes() );
+        }
+    }
 
 }

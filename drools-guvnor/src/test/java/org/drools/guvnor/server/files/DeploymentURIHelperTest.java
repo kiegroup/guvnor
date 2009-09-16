@@ -41,6 +41,7 @@ public class DeploymentURIHelperTest extends TestCase {
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
 
         assertTrue(helper.isSource());
+        assertFalse(helper.isDocumentation());
         assertEquals( "ya man", helper.getVersion() );
         assertEquals( "boo", helper.getPackageName() );
         assertFalse(helper.isLatest());
@@ -52,12 +53,25 @@ public class DeploymentURIHelperTest extends TestCase {
     	String uri = "/org.drools.guvnor.Guvnor/package/packName/LATEST/assetName.drl";
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
         assertTrue(helper.isSource());
+        assertFalse(helper.isDocumentation());
         assertEquals("LATEST", helper.getVersion());
         assertEquals("packName", helper.getPackageName());
         assertEquals("assetName", helper.getAssetName());
         assertTrue(helper.isAsset());
 
 
+    }
+
+    public void testGetDocumentation() throws Exception {
+        String uri = "/org.drools.guvnor.Guvnor/package/packName/LATEST/documentation.pdf";
+        PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
+        assertFalse(helper.isSource());
+        assertTrue(helper.isDocumentation());
+        assertEquals("LATEST", helper.getVersion());
+        assertEquals("packName", helper.getPackageName());
+        assertEquals("documentation", helper.getAssetName());
+        assertTrue(helper.isAsset());
+        
     }
 
 }

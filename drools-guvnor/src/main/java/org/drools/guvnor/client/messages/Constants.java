@@ -1932,4 +1932,9 @@ public interface Constants extends ConstantsWithLookup {
     String IncomingChanges();
 
     String From();
+    
+    String URLDocumentionDescription();
+
+    String URLForDocumention();
+    
 }

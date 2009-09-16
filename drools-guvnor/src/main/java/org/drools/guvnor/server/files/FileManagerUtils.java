@@ -124,7 +124,7 @@ public class FileManagerUtils {
     }
 
     public void setRepository(RulesRepository repository) {
-    	this.repository = repository;
+        this.repository = repository;
     }
 
     /**
