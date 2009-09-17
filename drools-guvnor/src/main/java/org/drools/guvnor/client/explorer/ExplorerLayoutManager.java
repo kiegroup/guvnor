@@ -213,7 +213,13 @@ public class ExplorerLayoutManager {
         if (tok == null) return new BookmarkInfo();
        BookmarkInfo bi = new BookmarkInfo();
         if (tok.startsWith("asset=")) { //NON-NLS
-            String uuid = tok.substring(6).split("&nochrome")[0]; //NON-NLS
+        	String uuid = null;
+        	//URLDecoder is not supported in GWT. We decode  ampersand (&) here by ourself. 
+        	if(tok.indexOf("%26nochrome") >= 0) {
+        		uuid = tok.substring(6).split("%26nochrome")[0]; //NON-NLS
+        	} else {
+                uuid = tok.substring(6).split("&nochrome")[0]; //NON-NLS
+        	}
             bi.loadAsset = true;
             bi.assetId = uuid;
         }

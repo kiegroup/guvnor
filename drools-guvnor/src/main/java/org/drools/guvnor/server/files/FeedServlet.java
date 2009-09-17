@@ -212,8 +212,12 @@ public class FeedServlet extends RepositoryServlet {
             public AtomEntry(HttpServletRequest req, AssetItem asset) {
                 this.name = asset.getName();
                 this.format = asset.getFormat();
-                this.webURL = req.getParameter(VIEW_URL) + "#asset=" + asset.getUUID() + "&nochrome";
-                this.id = asset.getUUID() + "&version=" + asset.getVersionNumber();
+                //Escape & with %26 to make generated XML safe. 
+                this.webURL = req.getParameter(VIEW_URL) + "#asset=" + asset.getUUID() + "%26nochrome";
+                //Each history version of asset has its unique UUID. &version is not needed here. Plus &version
+                //is not being parsed on the server side 
+                //this.id = asset.getUUID() + "&version=" + asset.getVersionNumber();
+                this.id = asset.getUUID();
                 this.updated = ISO8601.format(asset.getLastModified());
                 this.published = ISO8601.format(asset.getCreatedDate());
                 this.author = asset.getCreator();
@@ -226,7 +230,7 @@ public class FeedServlet extends RepositoryServlet {
             public AtomEntry(HttpServletRequest req, AssetItem asset, DiscussionRecord discussionRec) {
                 this.name = asset.getName();
                 this.format = asset.getFormat();
-                this.webURL = req.getParameter(VIEW_URL) + "#asset=" + asset.getUUID() + "&nochrome";
+                this.webURL = req.getParameter(VIEW_URL) + "#asset=" + asset.getUUID() + "%26nochrome";
                 this.id = asset.getUUID() + "&discussion=" + discussionRec.timestamp + "&author=" + discussionRec.author;
                 Calendar c = Calendar.getInstance();
                 c.setTime(new Date(discussionRec.timestamp));
