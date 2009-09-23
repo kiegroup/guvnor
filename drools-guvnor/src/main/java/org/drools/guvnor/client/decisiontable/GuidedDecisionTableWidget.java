@@ -1000,6 +1000,41 @@ public class GuidedDecisionTableWidget extends Composite
                                         store.add( r );
                                     }
                                 } ) );
+
+        menu.addItem( new Item( constants.AddRowBeforeSelectedRow(),
+                                new BaseItemListenerAdapter() {
+                                    public void onClick(BaseItem item,
+                                                        EventObject e) {
+
+                                        Record[] selectedRows = grid.getSelectionModel().getSelections();
+                                        if ( selectedRows.length == 1 ) {
+                                            int selected = selectedRows[0].getAsInteger( "num" );
+
+                                            Record newRecord = recordDef.createRecord( new Object[recordDef.getFields().length] );
+
+                                            Record[] records = store.getRecords();
+
+                                            for ( int i = 0; i < records.length; i++ ) {
+                                                Record temp = records[i];
+                                                int num = temp.getAsInteger( "num" );
+                                                if ( num == selected ) {
+                                                    newRecord.set( "num",
+                                                                   num ); //NON-NLS
+                                                    temp.set( "num",
+                                                              num + 1 ); //NON-NLS
+
+                                                    store.addSorted( newRecord );
+
+                                                } else if ( num > selected ) {
+                                                    temp.set( "num",
+                                                              num + 1 ); //NON-NLS
+                                                }
+                                            }
+                                        } else {
+                                            ErrorPopup.showMessage( constants.PleaseSelectARow() );
+                                        }
+                                    }
+                                } ) );
         menu.addItem( new Item( constants.RemoveSelectedRowS(),
                                 new BaseItemListenerAdapter() {
                                     public void onClick(BaseItem item,

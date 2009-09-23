@@ -1938,5 +1938,9 @@ public interface Constants extends ConstantsWithLookup {
     String URLForDocumention();
 
     String CanNotMoveColumnsFromOneTypeGroupToAnother();
+
+    String PleaseSelectARow();
+
+    String AddRowBeforeSelectedRow();
     
 }
