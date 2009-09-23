@@ -1,4 +1,5 @@
 package org.drools.guvnor.client.decisiontable;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.guvnor.client.decisiontable;
  * limitations under the License.
  */
 
-
-
 import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
@@ -32,21 +31,19 @@ import com.google.gwt.core.client.GWT;
  */
 public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
 
-    public DecisionTableXLSWidget(
-                                  RuleAsset asset, RuleViewer viewer) {
+    public DecisionTableXLSWidget(RuleAsset asset,
+                                  RuleViewer viewer) {
         super( asset,
                viewer );
-        super.addDescription(new HTML(((Constants) GWT.create(Constants.class)).DecisionTableWidgetDescription()));
+        super.addDescription( new HTML( ((Constants) GWT.create( Constants.class )).DecisionTableWidgetDescription() ) );
     }
 
     public String getIcon() {
-        return "images/decision_table.png";  //NON-NLS
+        return "images/decision_table.png"; //NON-NLS
     }
 
     public String getOverallStyleName() {
         return "decision-Table-upload"; //NON-NLS
     }
-
-
 
 }
