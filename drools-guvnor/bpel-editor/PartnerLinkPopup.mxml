@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="doInit();" width="386" height="220" title="Add New PartnerLink in the BPEL Process">
+    <mx:Script>
+        <![CDATA[
+        	import bpel.editor.gridcc.controller.WorkflowManager;  
+        	import bpel.editor.gridcc.constant.WorkflowActivities;
+        	import bpel.editor.gridcc.data.PartnerLinkDO;      
+        	import bpel.editor.gridcc.data.PartnerLinkTypeWrapperDO;	
+            import mx.managers.PopUpManager;
+            import flash.events.*;            
+            import mx.controls.Alert;            
+            
+            //[Bindable]             
+            public var partnerLinkDO:PartnerLinkDO;
+            
+            [Bindable]
+            private var partnerLinkTypeArray:Array;
+            
+            [Bindable]
+            private var namePartnerLink:String = ""; 
+            
+            [Bindable]
+            private var namePartnerRole:String = ""; 
+            
+            [Bindable]
+            private var nameMyRole:String = ""; 
+            
+            [Bindable]
+            public var modifyable:Boolean = false; 
+            
+            public function setPartnerLinkDO(partnerLinkDOValue:PartnerLinkDO):void {
+            	partnerLinkDO = partnerLinkDOValue;
+            	namePartnerLink = partnerLinkDO.getName();
+            	namePartnerRole = partnerLinkDO.partnerRole;
+                //trace("partnerLinkDO.partnerRole: " + partnerLinkDO.partnerRole);
+            	nameMyRole = partnerLinkDO.myRole;
+            	//trace("partnerLinkDO.myRole: " + partnerLinkDO.myRole);
+            	
+            }  
+                       
+            private function doInit():void {
+                // Center the TitleWindow container 
+                // over the control that created it.
+                PopUpManager.centerPopUp(this);
+                partnerLinkName.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
+                myRole.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
+                partnerLinkTypeArray = PartnerLinkTypeWrapperDO.getInstance().partnerLinkTypeNamesArray();        
+                
+                if(modifyable)
+                	partnerLinkName.enabled = false;
+            }
+            
+            private function createPartnerLink():void {
+            	/*
+            	var tempArray:Array = new Array();
+            	tempArray.push(["name",partnerLinkName.text]);
+            	tempArray.push(["partnerLinkType",partnerLinkType.text]);
+            	tempArray.push(["myRole",myRole.text]);
+            	tempArray.push(["partnerRole",partnerRole.text]);
+            	//partnerLinkDO.attributesArray = tempArray;
+            	*/
+            	
+            	partnerLinkDO.updateAttributesArray("name",partnerLinkName.text);
+            	partnerLinkDO.updateAttributesArray("partnerLinkType",partnerLinkType.text);
+            	partnerLinkDO.updateAttributesArray("myRole",myRole.text);
+            	partnerLinkDO.updateAttributesArray("partnerRole",partnerRole.text);
+            	
+            	
+            	//partnerLinkDO.printArray();
+                
+                var workflowManager:WorkflowManager = WorkflowManager.getInstance();
+                PopUpManager.removePopUp(this);
+                
+                workflowManager.popUPOKHandler(this, WorkflowActivities.PARTNERLINK);
+            }
+            
+            // Never USED ...May Need it Later
+            private function textInputHandler(e:TextEvent):void {            	
+	            //trace(">> e.text: " + e.);
+	            // Picks the character typed for workflow name 
+	            // Concanate it with Target Namespace
+	            //targetNamespace.text = targetNamespace.text + e.text
+        	}
+        	
+        	private function keyHandler(event:KeyboardEvent):void {
+            	//trace("keyUpHandler: " + event.keyCode);
+            	//event.currentTarget
+            	var textField:TextInput = TextInput(event.currentTarget);
+            	// Key Code 65 - 90 for a - z
+            	// Key Code 48 - 57 for 0 - 9
+            	if(!(event.keyCode > 64 && event.keyCode < 91) && !(event.keyCode > 47 && event.keyCode < 58)){
+            		// Key Code 16 for shift and // Key Code 17 for ctrl
+            		if(event.keyCode != 16 && event.keyCode != 17){
+            			// Key Code 37 - 40 for directional arrows
+            			if(!(event.keyCode > 36 && event.keyCode < 41)){
+            				textField.text = textField.text.substr(0,textField.length -1);
+            			}
+            		}            		
+            	}           	
+        	}
+
+        ]]>
+    </mx:Script>
+    
+    <mx:Form width="352" height="140">
+        <mx:FormItem label="PartnerLink Name" width="315" >
+            <mx:TextInput id="partnerLinkName" width="179" text="{namePartnerLink}" textInput="textInputHandler(event)"/>
+        </mx:FormItem> 
+        
+        <mx:FormItem label="PartnerLink Type " width="315" >           
+            <mx:ComboBox id="partnerLinkType" dataProvider="{partnerLinkTypeArray}" 
+            	width="179" ></mx:ComboBox>
+        </mx:FormItem>        
+        
+        
+        <mx:FormItem label="My Role" width="315">
+            <mx:TextInput id="myRole" width="179" text="{nameMyRole}"/>
+        </mx:FormItem> 
+                
+        <mx:FormItem label="Partner Role" width="315" >            
+            <mx:TextInput id="partnerRole" width="179" text="{namePartnerRole}"/>
+        </mx:FormItem>        
+    </mx:Form>
+    <mx:HBox> 
+        <mx:Button click="createPartnerLink();" label="OK"/> 
+        <mx:Button click="PopUpManager.removePopUp(this);" label="Cancel"/> 
+    </mx:HBox> 
+</mx:TitleWindow>
+
+

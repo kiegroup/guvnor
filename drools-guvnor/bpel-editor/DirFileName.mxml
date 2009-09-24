@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" title="Create New BPEL Process" creationComplete="doInit();" height="194">
+    <mx:Script>
+        <![CDATA[
+        	import bpel.editor.gridcc.controller.WorkflowManager;        	
+            import mx.managers.PopUpManager;
+            import mx.core.IFlexDisplayObject;
+            import flash.events.*;               
+            
+            public var loadOrSave:String;
+            [Bindable]
+            public var myFile:String;
+            [Bindable]
+            public var myDir:String;
+            [Bindable]
+            public var myServlet:String;
+            
+            public var popupWindow:IFlexDisplayObject;
+            
+            private function doInit():void {
+                // Center the TitleWindow container 
+                // over the control that created it.
+                
+                PopUpManager.centerPopUp(this);
+                dir.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
+            }     
+           
+            
+            // Never USED ...May Need it Later
+            private function textInputHandler(e:TextEvent):void {            	
+	            //trace(">> e.text: " + e.);
+	            // Picks the character typed for workflow name 
+	            // Concanate it with Target Namespace
+	            //targetNamespace.text = targetNamespace.text + e.text
+        	}
+        	
+        	private function keyHandler(event:KeyboardEvent):void {
+            	//trace("keyUpHandler: " + event.keyCode);
+            	//trace(event.currentTarget.);
+            	// Key Code 65 - 90 for a - z
+            	// Key Code 48 - 57 for 0 - 9
+            	var textField:TextInput = TextInput(event.currentTarget);
+            	if(!(event.keyCode > 64 && event.keyCode < 91) && !(event.keyCode > 47 && event.keyCode < 58)){
+            		// Key Code 16 for shift and // Key Code 17 for ctrl
+            		if(event.keyCode != 16 && event.keyCode != 17){
+            			// Key Code 37 - 40 for directional arrows
+            			if(!(event.keyCode > 36 && event.keyCode < 41)){
+            				textField.text = textField.text.substr(0,textField.length -1);
+            			}
+            		}            		
+            	}             	
+        	}
+        	
+        	private function populateDirAndFileName():void{
+        		/*
+        		 var workflowManager:WorkflowManager = WorkflowManager.getInstance();
+        		 workflowManager.setDirAndFileName(this);
+        		 PopUpManager.removePopUp(this);
+        		 */
+        		 PopUpManager.removePopUp(this);
+        		 popupWindow.visible = true;
+        	}
+
+        ]]>
+    </mx:Script>
+    
+    <mx:Form>
+        <mx:FormItem label="Directory Path" width="310" >
+            <mx:TextInput id="dir" width="214" textInput="textInputHandler(event)" text="{myDir}" editable="false"/>
+        </mx:FormItem> 
+        
+        <mx:FormItem label="File Name" width="310">
+            <mx:TextInput id="fileName" width="214" text="{myFile}" editable="false"/>
+        </mx:FormItem>  
+        
+        <mx:FormItem label="Servlet URL" width="310">
+            <mx:TextInput id="servletURL" width="215" text="{myServlet}" editable="false"/>
+        </mx:FormItem>       
+    </mx:Form>
+    <mx:HBox> 
+        <mx:Button click="populateDirAndFileName();" label="OK"/> 
+        <mx:Button click="PopUpManager.removePopUp(this);" label="Cancel"/> 
+    </mx:HBox> 
+</mx:TitleWindow>
+
+

@@ -1,0 +1,227 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	creationComplete="doInit();" width="456" height="300" 
+	title="Add New Reply Activity in the BPEL Process">
+    <mx:Script>
+        <![CDATA[
+        	import bpel.editor.gridcc.controller.WorkflowManager;  
+        	import bpel.editor.gridcc.controller.PLPortMapping;
+        	import bpel.editor.gridcc.constant.WorkflowActivities;
+        	
+        	import bpel.editor.gridcc.data.ReplyDO;
+        	 
+        	import bpel.editor.gridcc.utility.ActivityDOSearch;     	
+            import mx.managers.PopUpManager;
+            import mx.controls.Alert;
+            import flash.events.*;            
+            
+            //[Bindable]             
+            public var replyDO:ReplyDO;
+            
+            [Bindable]
+            private var nameReply:String; 
+            
+            [Bindable]
+            private var variableArray:Array;
+            
+            [Bindable]
+            private var partnerLinkArray:Array;
+            
+            [Bindable]
+            private var operationsArray:Array;
+            
+            [Bindable]
+            private var variableNameIndex:Number = 0;
+            
+            [Bindable]
+            private var faultVariableNameIndex:Number = 0;
+            
+            [Bindable]
+            private var partnerLinkNameIndex:Number = 0;
+            
+            [Bindable]
+            public var modifyable:Boolean = false; 
+            
+            public function setReplyDO(replyDOValue:ReplyDO):void {
+            	replyDO = replyDOValue;
+            	nameReply = replyDO.getName();
+            }  
+                       
+            private function doInit():void {
+                // Center the TitleWindow container 
+                // over the control that created it.
+                PopUpManager.centerPopUp(this);
+                replyName.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
+                variableArray = ActivityDOSearch.getVariableAsArray();
+                partnerLinkArray = ActivityDOSearch.getPartnerLinkAsArray();
+                
+                operationsArray = new Array();
+                operationsArray.push([" - - - - - - - - - - -"]);
+                //myRole.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
+                
+                variableNameIndex = ActivityDOSearch.variableIndex(replyDO.variable);
+            	faultVariableNameIndex = ActivityDOSearch.variableIndex(replyDO.faultName);
+            	partnerLinkNameIndex = ActivityDOSearch.partnerLinkIndex(replyDO.partnerLink);
+            	if(replyDO.operation){
+            		operationsArray.push(replyDO.operation);
+            		operation.selectedIndex = 1;
+            	}
+            	if(replyDO.portType){
+            		portType.text = replyDO.portType;
+            	}
+            	
+            	if(modifyable){
+                	replyName.enabled = false;
+                	monitorCheckbox.enabled = true;      
+                	qosCheckbox.enabled = true;
+             	}
+             	
+             	if(monitoringEnabled()){
+             		monitorCheckbox.selected = true;
+             	}
+            }
+            
+            private function partnerLinkSelectionHandler(e:Event):void{
+        		trace("partnerLinkSelectionHandler: " + partnerLinkName.selectedItem);
+        		var tempPLPortMapping:PLPortMapping = PLPortMapping.getInstance();
+        		portType.text = tempPLPortMapping.getPort(String(partnerLinkName.selectedItem));
+        		
+        		operationsArray = tempPLPortMapping.getOperations(String(partnerLinkName.selectedItem), portType.text);
+        	}
+        	
+        	private function operationSelectionHandler(e:Event):void{
+        		trace("operationSelectionHandler: " + operation.selectedItem);
+        		//var tempPLPortMapping:PLPortMapping = PLPortMapping.getInstance();
+        		//portType.text = tempPLPortMapping.getPort(String(partnerLinkName.selectedItem));
+        	}
+            
+            private function createReplyDO():void {          	
+            	
+            	replyDO.updateAttributesArray("name",replyName.text);
+            	replyDO.updateAttributesArray("partnerLink",partnerLinkName.text);
+            	replyDO.updateAttributesArray("portType",portType.text);
+            	replyDO.updateAttributesArray("operation",operation.text);
+            	replyDO.updateAttributesArray("variable",variable.text);
+            	replyDO.updateAttributesArray("faultName", faultName.text);
+                
+                var workflowManager:WorkflowManager = WorkflowManager.getInstance();
+                PopUpManager.removePopUp(this);
+                workflowManager.popUPOKHandler(this, WorkflowActivities.REPLY);
+            }
+            
+            private function monitoringEvent():void{
+        		//trace("monitoringEvent: " + monitorCheckbox.selected);
+        		var tempOldName:String = replyName.text;
+        		var workflowManager:WorkflowManager = WorkflowManager.getInstance();
+        		
+        		if(monitorCheckbox.selected){
+        			if(workflowManager.updateNameForMonitoring(WorkflowActivities.REPLY, tempOldName, replyName.text + "_monitor"))
+        				replyName.text = replyName.text + "_monitor";
+        			else 
+        				Alert.show("Error in updating activity name for Monitoring", 'Message');
+        		} else {        			
+        			var index:Number = tempOldName.indexOf("_monitor");
+        			var tempString:String = tempOldName.substr(0, index);
+        			if(workflowManager.updateNameForMonitoring(WorkflowActivities.REPLY, tempOldName, tempString))
+        				replyName.text = tempString;
+        			else 
+        				Alert.show("Error in updating activity name to disable Monitoring", 'Message');
+        			
+        		}        		         		
+        	}
+        	
+        	private function monitoringEnabled():Boolean {
+        		var tempActivityName:String = replyName.text;
+        		if(tempActivityName.search("_monitor") != -1)
+        			return true;
+        		else return false;        		
+        	}
+        	
+        	private function qosEvent():void{
+        		var qosDeciderPopup:QoSDecider = new QoSDecider();
+        		qosDeciderPopup.popupWindow = this;
+        		qosDeciderPopup.partnerLinkReference = replyDO.partnerLink;
+        		qosDeciderPopup.methodName = replyDO.operation;
+				//dirFileNamePopup.setReplyDO(replyDO);
+				//replyPopup.modifyable = true;
+				// bpel.editor.gridcc.controller.WorkflowManager.getInstance().getBPELEditor()
+				PopUpManager.addPopUp(qosDeciderPopup, this, true);
+				this.visible = false;		         		
+        	}
+            
+            // Never USED ...May Need it Later
+            private function textInputHandler(e:TextEvent):void {            	
+	            //trace(">> e.text: " + e.);
+	            // Picks the character typed for workflow name 
+	            // Concanate it with Target Namespace
+	            //targetNamespace.text = targetNamespace.text + e.text
+        	}
+        	
+        	private function keyHandler(event:KeyboardEvent):void {
+            	//trace("keyUpHandler: " + event.keyCode);
+            	//event.currentTarget
+            	var textField:TextInput = TextInput(event.currentTarget);
+            	// Key Code 65 - 90 for a - z
+            	// Key Code 48 - 57 for 0 - 9
+            	if(!(event.keyCode > 64 && event.keyCode < 91) && !(event.keyCode > 47 && event.keyCode < 58)){
+            		// Key Code 16 for shift and // Key Code 17 for ctrl
+            		if(event.keyCode != 16 && event.keyCode != 17){
+            			// Key Code 37 - 40 for directional arrows
+            			if(!(event.keyCode > 36 && event.keyCode < 41)){
+            				textField.text = textField.text.substr(0,textField.length -1);
+            			}
+            		}            		
+            	}           	
+        	}
+
+        ]]>
+    </mx:Script>
+    
+    <mx:Form width="420" height="217" horizontalScrollPolicy="off" verticalScrollPolicy="off" borderStyle="solid">
+        <mx:FormItem label="Reply Name" width="390" >
+            <mx:TextInput id="replyName" width="304" text="{nameReply}" 
+            	textInput="textInputHandler(event)"/>
+        </mx:FormItem> 
+        
+        <mx:FormItem label="PartnerLink" width="390" >            
+            <mx:ComboBox id="partnerLinkName" dataProvider="{partnerLinkArray}" 
+            	width="304" change="partnerLinkSelectionHandler(event)"
+            	selectedIndex="{partnerLinkNameIndex}"></mx:ComboBox>
+        </mx:FormItem>
+        
+        <mx:FormItem label="PortType" width="390">
+            <mx:TextInput id="portType" width="304" text=" - - - - - - - - - - - - "
+            	enabled="false" fontSize="13"/>
+        </mx:FormItem> 
+                
+        <mx:FormItem label="Operation" width="390" >            
+            <mx:ComboBox id="operation" dataProvider="{operationsArray}" 
+            	width="304" change="operationSelectionHandler(event)"></mx:ComboBox>
+        </mx:FormItem>
+        
+        <mx:FormItem label="Variable" width="390">
+            <mx:ComboBox id="variable" dataProvider="{variableArray}" 
+            	width="304" selectedIndex="{variableNameIndex}"></mx:ComboBox>
+        </mx:FormItem>     
+        
+        <mx:FormItem label="Fault Name" width="390">
+            <mx:ComboBox id="faultName" dataProvider="{variableArray}" 
+            	width="304" selectedIndex="{faultVariableNameIndex}"></mx:ComboBox>
+        </mx:FormItem>  
+        <mx:HBox>         
+	        <mx:FormItem label="Monitoring Enabled            ">       
+	            <mx:CheckBox id="monitorCheckbox" label="" enabled="false" click="monitoringEvent()"/>	                   
+	        </mx:FormItem>
+	        <mx:FormItem label="QoS Enabled                 ">            
+	            <mx:CheckBox id="qosCheckbox" label="" enabled="false" click="qosEvent()"/>           
+	        </mx:FormItem>
+        </mx:HBox>
+              
+    </mx:Form>
+    <mx:HBox> 
+        <mx:Button click="createReplyDO();" label="OK"/> 
+        <mx:Button click="PopUpManager.removePopUp(this);" label="Cancel"/> 
+    </mx:HBox> 
+</mx:TitleWindow>
+
+

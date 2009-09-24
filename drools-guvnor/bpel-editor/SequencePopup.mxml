@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="doInit();" width="386" height="142" title="Add New Sequence in the BPEL Process">
+    <mx:Script>
+        <![CDATA[
+        	import bpel.editor.gridcc.controller.WorkflowManager;  
+        	import bpel.editor.gridcc.constant.WorkflowActivities;
+        	import bpel.editor.gridcc.data.SequenceDO;      	
+            import mx.managers.PopUpManager;
+            import flash.events.*;            
+            
+            //[Bindable]             
+            public var sequenceDO:SequenceDO;
+            
+            [Bindable]
+            private var nameSequence:String; 
+            
+            public function setSequenceDO(sequenceDOValue:SequenceDO):void {
+            	sequenceDO = sequenceDOValue;
+            	nameSequence = sequenceDO.getName();
+            }  
+                       
+            private function doInit():void {
+                // Center the TitleWindow container 
+                // over the control that created it.
+                PopUpManager.centerPopUp(this);
+                sequenceName.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
+                //myRole.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
+            }
+            
+            private function createSequence():void {
+            	var tempArray:Array = new Array();
+            	tempArray.push(["name",sequenceName.text]);            	
+            	
+            	sequenceDO.attributesArray = tempArray;
+                
+                var workflowManager:WorkflowManager = WorkflowManager.getInstance();
+                PopUpManager.removePopUp(this);
+                workflowManager.popUPOKHandler(this, WorkflowActivities.SEQUENCE);
+            }
+            
+            // Never USED ...May Need it Later
+            private function textInputHandler(e:TextEvent):void {            	
+	            //trace(">> e.text: " + e.);
+	            // Picks the character typed for workflow name 
+	            // Concanate it with Target Namespace
+	            //targetNamespace.text = targetNamespace.text + e.text
+        	}
+        	
+        	private function keyHandler(event:KeyboardEvent):void {
+            	//trace("keyUpHandler: " + event.keyCode);
+            	//event.currentTarget
+            	var textField:TextInput = TextInput(event.currentTarget);
+            	// Key Code 65 - 90 for a - z
+            	// Key Code 48 - 57 for 0 - 9
+            	if(!(event.keyCode > 64 && event.keyCode < 91) && !(event.keyCode > 47 && event.keyCode < 58)){
+            		// Key Code 16 for shift and // Key Code 17 for ctrl
+            		if(event.keyCode != 16 && event.keyCode != 17){
+            			// Key Code 37 - 40 for directional arrows
+            			if(!(event.keyCode > 36 && event.keyCode < 41)){
+            				textField.text = textField.text.substr(0,textField.length -1);
+            			}
+            		}            		
+            	}           	
+        	}
+
+        ]]>
+    </mx:Script>
+    
+    <mx:Form width="352" height="58">
+        <mx:FormItem label="Sequence Name" width="315" >
+            <mx:TextInput id="sequenceName" width="179" text="{nameSequence}" textInput="textInputHandler(event)"/>
+        </mx:FormItem> 
+        <!--
+        <mx:FormItem label="PartnerLink Type " width="315" >            
+            <mx:TextInput id="partnerLinkType" width="179" text=""/>
+        </mx:FormItem>
+        
+        <mx:FormItem label="My Role" width="315">
+            <mx:TextInput id="myRole" width="179" text=""/>
+        </mx:FormItem> 
+                
+        <mx:FormItem label="Partner Role" width="315" >            
+            <mx:TextInput id="partnerRole" width="179" text=""/>
+        </mx:FormItem>  
+        -->      
+    </mx:Form>
+    <mx:HBox> 
+        <mx:Button click="createSequence();" label="OK"/> 
+        <mx:Button click="PopUpManager.removePopUp(this);" label="Cancel"/> 
+    </mx:HBox> 
+</mx:TitleWindow>
+
+
+

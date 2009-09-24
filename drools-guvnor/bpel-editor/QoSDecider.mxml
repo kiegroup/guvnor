@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	title="QoS attributes for ...." creationComplete="doInit();" height="198">
+    <mx:Script>
+        <![CDATA[
+        	import mx.managers.PopUpManager;
+            import mx.core.IFlexDisplayObject;
+            import mx.controls.Alert;
+            import flash.events.*; 
+            import flash.events.*;
+            import  mx.events.ItemClickEvent; 
+            
+            public var popupWindow:IFlexDisplayObject;
+            public var partnerLinkReference:String = null;
+            public var methodName:String = null;
+            
+            private var qosSelection:String = "ie";
+            
+            private function doInit():void {
+                // Center the TitleWindow container 
+                // over the control that created it.
+                
+                PopUpManager.centerPopUp(this);                
+            }
+            
+            private function unavailable():void{
+            	Alert.show("Sorry, Reservation for Storage and Computing Elements is " +
+            	"not available due to 'NO' Data in the Performance Repository from Brunel");            	
+            }          
+        	
+        	private function forwardQoS():void{  
+        		
+        		if(qosSelection == "ie"){
+        			
+        		 	var qosIEPopup:QoS_IE_Popup = new QoS_IE_Popup();
+        			qosIEPopup.popupWindow = this;
+        			qosIEPopup.partnerLinkReference = partnerLinkReference;
+        			qosIEPopup.methodName = methodName;					
+					PopUpManager.addPopUp(qosIEPopup, this, true);
+					this.visible = false;					
+					
+        		} else if(qosSelection == "ier"){
+					var qosIERPopup:QoS_IE_Popup = new QoS_IE_Popup();
+        			qosIERPopup.popupWindow = this;
+        			qosIERPopup.partnerLinkReference = partnerLinkReference;
+        			qosIERPopup.methodName = methodName;
+        			qosIERPopup.withoutReservation = false;
+					
+					PopUpManager.addPopUp(qosIERPopup, this, true);
+					this.visible = false;					
+        		} else if(qosSelection == "ce"){
+        			unavailable();					
+        		} else if(qosSelection == "se"){        			
+        		 	unavailable();					
+        		}        		 
+        	}
+        	
+        	private function cancelQoS():void{        		
+        		 PopUpManager.removePopUp(this);
+        		 popupWindow.visible = true;        		 
+        	}
+        	
+        	private function handleType(event:ItemClickEvent):void {
+        		trace(event.currentTarget.selectedValue);	    
+        		qosSelection =  event.currentTarget.selectedValue; 		      	
+	        } 
+
+        ]]>
+    </mx:Script>
+    
+    <mx:Form>
+       <mx:VBox>
+      	<mx:RadioButtonGroup id="qosTypeGroup" itemClick="handleType(event);" enabled="false"/>
+		<mx:RadioButton label="Instrument Element" groupName="qosTypeGroup" value="ie" selected="true"/>
+		<mx:RadioButton label="Instrument Element with Reservation" groupName="qosTypeGroup" value="ier"/> 
+		<mx:RadioButton label="Computing Element" groupName="qosTypeGroup" 
+			value="ce" enabled="false" click="unavailable()"/>
+		<mx:RadioButton label="Storage Element" groupName="qosTypeGroup" 
+			value="se" enabled="false" click="unavailable()"/>      	
+      </mx:VBox>      
+    </mx:Form>
+    
+    <mx:HBox> 
+        <mx:Button click="forwardQoS();" label="OK"/> 
+        <mx:Button click="cancelQoS();" label="Cancel"/> 
+    </mx:HBox> 
+</mx:TitleWindow>
+
+

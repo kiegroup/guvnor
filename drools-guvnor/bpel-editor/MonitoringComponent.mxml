@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" label="Worflow Monitoring" 
+	show="IMShowing();" hide="IMHiding();" height="100%" width="638">
+	
+	<mx:Script>
+        <![CDATA[
+        import flash.events.Event;       
+        import mx.controls.Button;    
+        import mx.controls.Label;
+           
+        import mx.styles.*;
+        import flash.utils.Timer;
+        import flash.events.TimerEvent;
+        import mx.skins.halo.ButtonSkin;
+        
+        import bpel.editor.gridcc.controller.WorkflowManager;
+        import bpel.editor.gridcc.controller.MonitoringWorkflow;
+        import bpel.editor.gridcc.events.MonitoringArrayUpdate;
+        
+        [Embed (source="images/DownArrow.gif")]
+        [Bindable]
+        public var arrowImage:Class;
+            
+        private var updateTimer:Timer = null;
+        public function IMShowing():void{
+        	//trace("Now I am Showing");
+        	statusTableFunction();
+        	WorkflowManager.getInstance().getMonitoringBPELArray();
+        	MonitoringWorkflow.getInstance(null).addEventListener(
+        		MonitoringArrayUpdate.MONITORING_ARRAY_UPDATE_EVENT, arrayUpdatedEventHandler);
+        	//this.addEventListener(MonitoringArrayUpdate.MONITORING_ARRAY_UPDATE_EVENT, arrayUpdatedEventHandler);
+        	updateMonitoring(MonitoringWorkflow.getInstance(null).getMonitoringArray());
+        	updateTimer= new Timer(2000, 0);
+        	updateTimer.addEventListener(TimerEvent.TIMER, updateAray);
+			updateTimer.start();
+			
+        }
+        
+        private function statusTableFunction():void{
+        	
+        	this.statusTable.removeAllChildren();
+        	
+        	var tempButton:Button = null;
+        	var tempLabel:Label = null;
+        	
+        	tempLabel = new Label();
+        	tempLabel.height = 10;
+        	this.statusTable.addChild(tempLabel);
+        	
+        	tempButton = new Button();
+        	tempButton.height = 50;
+        	tempButton.width = 105;
+        	tempButton.setStyle("fillColors",[0xccff00, 0xccff00]); 
+        	tempButton.setStyle("fontSize","14");
+        	tempButton.setStyle("fontStyle","italic");
+        	tempButton.label = "Inactive";
+        	this.statusTable.addChild(tempButton);
+        	
+        	tempLabel = new Label();
+        	tempLabel.height = 20;
+        	this.statusTable.addChild(tempLabel);
+        	
+        	tempButton = new Button();
+        	tempButton.height = 50;
+        	tempButton.width = 105;
+        	tempButton.setStyle("fillColors",[0x33CC00, 0x33CC00]); 
+        	tempButton.setStyle("fontSize","14");
+        	tempButton.setStyle("fontStyle","italic");
+        	tempButton.label = "Executing";
+        	this.statusTable.addChild(tempButton);
+        	
+        	tempLabel = new Label();
+        	tempLabel.height = 20;
+        	this.statusTable.addChild(tempLabel);
+        	
+        	tempButton = new Button();
+        	tempButton.height = 50;
+        	tempButton.width = 105;
+        	tempButton.setStyle("fillColors",[0x002EB8, 0x002EB8]); 
+        	tempButton.setStyle("fontSize","14");
+        	tempButton.setStyle("fontStyle","italic");
+        	tempButton.label = "Finished";
+        	this.statusTable.addChild(tempButton);
+        	
+        	tempLabel = new Label();
+        	tempLabel.height = 20;
+        	this.statusTable.addChild(tempLabel);
+        	
+        	tempButton = new Button();
+        	tempButton.height = 50;
+        	tempButton.width = 105;
+        	tempButton.setStyle("fillColors",[0xffcc66, 0xffcc66]); 
+        	tempButton.setStyle("fontSize","14");
+        	tempButton.setStyle("fontStyle","italic");
+        	tempButton.label = "Suspended";
+        	this.statusTable.addChild(tempButton);
+        	
+        	tempLabel = new Label();
+        	tempLabel.height = 20;
+        	this.statusTable.addChild(tempLabel);
+        	
+        	tempButton = new Button();
+        	tempButton.height = 50;
+        	tempButton.width = 105;
+        	tempButton.setStyle("fillColors",[0x663300, 0x663300]); 
+        	tempButton.setStyle("fontSize","14");
+        	tempButton.setStyle("fontStyle","italic");
+        	tempButton.label = "Terminated";
+        	this.statusTable.addChild(tempButton);        	
+        	
+        	tempLabel = new Label();
+        	tempLabel.height = 20;
+        	this.statusTable.addChild(tempLabel);
+        	
+        	tempButton = new Button();
+        	tempButton.height = 50;
+        	tempButton.width = 105;
+        	tempButton.setStyle("fillColors",[0xff0000, 0xff0000]); 
+        	tempButton.setStyle("fontSize","14");
+        	tempButton.setStyle("fontStyle","italic");
+        	tempButton.label = "Faulted";
+        	this.statusTable.addChild(tempButton);
+        	
+        	tempLabel = new Label();
+        	tempLabel.height = 10;
+        	this.statusTable.addChild(tempLabel);
+        }
+        
+        private function updateAray(evt:TimerEvent):void {
+            WorkflowManager.getInstance().getMonitoringBPELArray();
+        }
+                
+        public function arrayUpdatedEventHandler(event:Event):void {
+        	//trace("arrayUpdatedEventHandler");
+        	updateMonitoring(MonitoringWorkflow.getInstance(null).getMonitoringArray());
+        }
+        public function IMHiding():void{
+        	//trace("Now I am Hiding");
+        	//this.removeEventListener(MonitoringArrayUpdate.MONITORING_ARRAY_UPDATE_EVENT, arrayUpdatedEventHandler);
+        	updateTimer.stop();
+        }
+        
+        private function updateMonitoring(monitoringArray:Array):void {
+        	this.monitoringBox.removeAllChildren();
+        	var tempButton:Button = null;
+        	var arrowButton:Button = null;        	
+        	//var tempLabel:Label = null;
+        	//var style:CSSStyleDeclaration = new CSSStyleDeclaration ("Button");
+
+        	if(monitoringArray){
+        		for(var i:int = 0; i < monitoringArray.length; i++){
+        			tempButton = new Button();
+        			//tempLabel = new Label();
+        			tempButton.label = monitoringArray[i][1];
+        			//tempLabel.text = monitoringArray[i][1];
+        			tempButton.height = 50;
+        			tempButton.setStyle("fillColors",[0xccccff, 0xccccff]); 
+        			//tempLabel.height = 50;
+        			//trace("monitoringArray[i][2]: " + monitoringArray[i][2])
+        			
+        			arrowButton = new Button();
+        			arrowButton.setStyle("icon",arrowImage);
+        			arrowButton.enabled = false;
+        			arrowButton.setStyle("borderColor", "FFFFFF");
+    				
+    				if(monitoringArray[i][2] == "Finished"){
+    					//trace("My status is finished");  BLUE  
+    					tempButton.setStyle("fillColors",[0x002EB8, 0x002EB8]);   
+    					tempButton.toolTip = monitoringArray[i][1] + " has Finished";				
+    				} 
+    				else if(monitoringArray[i][2] == "Executing"){
+    					//trace("My status is started"); GREEN
+    					tempButton.setStyle("fillColors",[0x33CC00, 0x33CC00]); 
+    					tempButton.toolTip = monitoringArray[i][1] + " is Executing";
+    				}
+    				else if(monitoringArray[i][2] == "Faulted"){
+    					//trace("My status is error"); RED
+    					tempButton.setStyle("fillColors",[0xff0000, 0xff0000]);  
+    					tempButton.toolTip = monitoringArray[i][1] + " is Faulted";
+    				}
+    				else if(monitoringArray[i][2] == "Inactive"){
+    					//trace("My status is unknown"); LIGHT BLUE
+    					tempButton.setStyle("fillColors",[0xccff00, 0xccff00]); 
+    					tempButton.toolTip = monitoringArray[i][1] + " is Inactive"; 
+    				}
+    				else if(monitoringArray[i][2] == "Terminated"){
+    					//trace("My status is unknown");
+    					tempButton.setStyle("fillColors",[0x663300, 0x663300]);  
+    				}
+    				else if(monitoringArray[i][2] == "Suspended"){
+    					//trace("My status is unknown"); ORANGE
+    					tempButton.setStyle("fillColors",[0xFF6633, 0xFF6633]); 
+    					tempButton.toolTip = monitoringArray[i][1] + " is Suspended"; 
+    				}
+    				else if(monitoringArray[i][2] == "Ready to Execute"){
+    					//trace("My status is unknown"); YELLOW
+    					tempButton.setStyle("fillColors",[0xFFC20A, 0xFFC20A]);  
+    					tempButton.toolTip = monitoringArray[i][1] + " is Qued for Executing";
+    				}
+    				else if(monitoringArray[i][2] == "Dead Path"){
+    					//trace("My status is unknown"); BUEGENDY
+    					tempButton.setStyle("fillColors",[0x663300, 0x663300]);  
+    					tempButton.toolTip = monitoringArray[i][1] + " is Dead Path";
+    				}
+    				else{    					 
+    					tempButton.toolTip = monitoringArray[i][1] + " has Unknown Status";
+    				} 
+    				    				      					       					
+    				tempButton.setStyle("fontWeight","bold");
+        			this.monitoringBox.addChild(tempButton);
+        			if((i+1) != monitoringArray.length){
+        				this.monitoringBox.addChild(arrowButton);
+        			}
+        			//trace(monitoringBPELArray[i][0] + "  " + monitoringBPELArray[i][1] + "  " + monitoringBPELArray[i][2]);
+        		}
+        	}
+        }
+        ]]>
+    </mx:Script>
+    
+    <mx:Metadata>
+		[Event(name="monitoringArrayUpdateEvent", type="bpel.editor.gridcc.events.MonitoringArrayUpdate")]
+	</mx:Metadata>
+	
+	<mx:HBox>
+		<mx:VBox id="statusTable" height="95%" width="225" borderStyle="solid" borderColor="#8a7ec2"
+			horizontalAlign="center">
+			
+			
+		</mx:VBox>
+		<mx:VBox id="dummyBox" height="95%" width="225" horizontalAlign="center">
+			
+			
+		</mx:VBox>
+		<mx:VBox id="monitoringBox" height="95%" width="325" borderStyle="solid" borderColor="#8a7ec2" 
+			horizontalAlign="center" horizontalCenter="0" y="10">
+	    </mx:VBox>
+    </mx:HBox>
+</mx:Canvas>

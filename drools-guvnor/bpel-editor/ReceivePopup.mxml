@@ -1,0 +1,217 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="doInit();" 
+	width="452" height="272" title="Add New Receive Activity in the BPEL Process">
+    <mx:Script>
+        <![CDATA[
+        	import bpel.editor.gridcc.controller.WorkflowManager;  
+        	import bpel.editor.gridcc.controller.PLPortMapping;
+        	import bpel.editor.gridcc.constant.WorkflowActivities;
+        	import bpel.editor.gridcc.data.ReceiveDO;
+        	 
+        	import bpel.editor.gridcc.utility.ActivityDOSearch;     	
+            import mx.managers.PopUpManager;
+            import mx.controls.Alert;
+            import flash.events.*;            
+            
+            //[Bindable]             
+            public var receiveDO:ReceiveDO;
+            
+            [Bindable]
+            private var nameReceive:String; 
+            
+            [Bindable]
+            private var variableArray:Array;
+            
+            [Bindable]
+            private var partnerLinkArray:Array;
+            
+            [Bindable]
+            private var operationsArray:Array;
+            
+            [Bindable]
+            private var variableNameIndex:Number = 0;
+            
+            [Bindable]
+            private var partnerLinkNameIndex:Number = 0;
+            
+            [Bindable]
+            public var modifyable:Boolean = false; 
+            
+            public function setReceiveDO(receiveDOValue:ReceiveDO):void {
+            	receiveDO = receiveDOValue;
+            	nameReceive = receiveDO.getName();
+            }  
+                       
+            private function doInit():void {
+                // Center the TitleWindow container 
+                // over the control that created it.
+                PopUpManager.centerPopUp(this);
+                receiveName.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
+                variableArray = ActivityDOSearch.getVariableAsArray();
+                partnerLinkArray = ActivityDOSearch.getPartnerLinkAsArray();
+                
+                operationsArray = new Array();
+                operationsArray.push([" - - - - - - - - - - -"]);
+                //myRole.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
+                
+                variableNameIndex = ActivityDOSearch.variableIndex(receiveDO.variable);
+            	partnerLinkNameIndex = ActivityDOSearch.partnerLinkIndex(receiveDO.partnerLink);
+            	if(receiveDO.operation){
+            		operationsArray.push(receiveDO.operation);
+            		operation.selectedIndex = 1;
+            	}
+            	if(receiveDO.portType){
+            		portType.text = receiveDO.portType;
+            	}
+            	
+            	if(modifyable){
+                	receiveName.enabled = false;
+                	monitorCheckbox.enabled = true;      
+                	qosCheckbox.enabled = true;
+             	}
+             	
+             	if(monitoringEnabled()){
+             		monitorCheckbox.selected = true;
+             	}
+            }
+            
+            private function createReceiveDO():void {            	
+            	
+            	receiveDO.updateAttributesArray("name",receiveName.text);
+            	receiveDO.updateAttributesArray("partnerLink",partnerLinkName.text);
+            	receiveDO.updateAttributesArray("portType",portType.text);
+            	receiveDO.updateAttributesArray("operation",operation.text);
+            	receiveDO.updateAttributesArray("variable",variable.text);
+            	
+                
+                var workflowManager:WorkflowManager = WorkflowManager.getInstance();
+                PopUpManager.removePopUp(this);
+                workflowManager.popUPOKHandler(this, WorkflowActivities.RECEIVE);
+            }
+            
+            // Never USED ...May Need it Later
+            private function textInputHandler(e:TextEvent):void {            	
+	            //trace(">> e.text: " + e.);
+	            // Picks the character typed for workflow name 
+	            // Concanate it with Target Namespace
+	            //targetNamespace.text = targetNamespace.text + e.text
+        	}
+        	
+        	private function partnerLinkSelectionHandler(e:Event):void{
+        		trace("partnerLinkSelectionHandler: " + partnerLinkName.selectedItem);
+        		var tempPLPortMapping:PLPortMapping = PLPortMapping.getInstance();
+        		portType.text = tempPLPortMapping.getPort(String(partnerLinkName.selectedItem));
+        		
+        		operationsArray = tempPLPortMapping.getOperations(String(partnerLinkName.selectedItem), portType.text);
+        	}
+        	
+        	private function monitoringEvent():void{
+        		//trace("monitoringEvent: " + monitorCheckbox.selected);
+        		var tempOldName:String = receiveName.text;
+        		var workflowManager:WorkflowManager = WorkflowManager.getInstance();
+        		
+        		if(monitorCheckbox.selected){
+        			if(workflowManager.updateNameForMonitoring(WorkflowActivities.RECEIVE, tempOldName, receiveName.text + "_monitor"))
+        				receiveName.text = receiveName.text + "_monitor";
+        			else 
+        				Alert.show("Error in updating activity name for Monitoring", 'Message');
+        		} else {        			
+        			var index:Number = tempOldName.indexOf("_monitor");
+        			var tempString:String = tempOldName.substr(0, index);
+        			if(workflowManager.updateNameForMonitoring(WorkflowActivities.RECEIVE, tempOldName, tempString))
+        				receiveName.text = tempString;
+        			else 
+        				Alert.show("Error in updating activity name to disable Monitoring", 'Message');
+        			
+        		}        		         		
+        	}
+        	
+        	private function monitoringEnabled():Boolean {
+        		var tempActivityName:String = receiveName.text;
+        		if(tempActivityName.search("_monitor") != -1)
+        			return true;
+        		else return false;        		
+        	}
+        	
+        	private function qosEvent():void{
+        		var qosDeciderPopup:QoSDecider = new QoSDecider();
+        		qosDeciderPopup.popupWindow = this;
+        		qosDeciderPopup.partnerLinkReference = receiveDO.partnerLink;
+        		qosDeciderPopup.methodName = receiveDO.operation;
+				//dirFileNamePopup.setReplyDO(replyDO);
+				//replyPopup.modifyable = true;
+				// bpel.editor.gridcc.controller.WorkflowManager.getInstance().getBPELEditor()
+				PopUpManager.addPopUp(qosDeciderPopup, this, true);
+				this.visible = false;		         		
+        	}
+        	
+        	private function operationSelectionHandler(e:Event):void{
+        		trace("operationSelectionHandler: " + operation.selectedItem);
+        		//var tempPLPortMapping:PLPortMapping = PLPortMapping.getInstance();
+        		//portType.text = tempPLPortMapping.getPort(String(partnerLinkName.selectedItem));
+        	}
+        	
+        	private function keyHandler(event:KeyboardEvent):void {
+            	//trace("keyUpHandler: " + event.keyCode);
+            	//event.currentTarget
+            	var textField:TextInput = TextInput(event.currentTarget);
+            	// Key Code 65 - 90 for a - z
+            	// Key Code 48 - 57 for 0 - 9
+            	if(!(event.keyCode > 64 && event.keyCode < 91) && !(event.keyCode > 47 && event.keyCode < 58)){
+            		// Key Code 16 for shift and // Key Code 17 for ctrl
+            		if(event.keyCode != 16 && event.keyCode != 17){
+            			// Key Code 37 - 40 for directional arrows
+            			if(!(event.keyCode > 36 && event.keyCode < 41)){
+            				textField.text = textField.text.substr(0,textField.length -1);
+            			}
+            		}            		
+            	}           	
+        	}
+
+        ]]>
+    </mx:Script>
+    
+    <mx:Form width="420" height="190" verticalScrollPolicy="off" horizontalScrollPolicy="off" borderStyle="solid">
+        <mx:FormItem label="Receive Name" width="390" >
+            <mx:TextInput id="receiveName" width="292" text="{nameReceive}" 
+            	textInput="textInputHandler(event)"/>
+        </mx:FormItem> 
+        
+        <mx:FormItem label="PartnerLink" width="390" >            
+            <mx:ComboBox id="partnerLinkName" dataProvider="{partnerLinkArray}" 
+            	width="292" change="partnerLinkSelectionHandler(event)"
+            	selectedIndex="{partnerLinkNameIndex}"></mx:ComboBox>
+        </mx:FormItem>
+        
+        <mx:FormItem label="PortType" width="390">
+            <mx:TextInput id="portType" width="292" text=" - - - - - - - - - - - - " 
+            	enabled="false" fontSize="13"/>
+        </mx:FormItem> 
+                
+        <mx:FormItem label="Operation" width="390" >    
+        	 <mx:ComboBox id="operation" dataProvider="{operationsArray}" 
+            	width="292" change="operationSelectionHandler(event)"></mx:ComboBox>           
+        </mx:FormItem>
+        
+        <mx:FormItem label="Variable" width="390">
+            <mx:ComboBox id="variable" dataProvider="{variableArray}" 
+            	width="292" selectedIndex="{variableNameIndex}"></mx:ComboBox>
+        </mx:FormItem>     
+        
+        <mx:HBox>         
+	        <mx:FormItem label="Monitoring Enabled             ">       
+	            <mx:CheckBox id="monitorCheckbox" label="" enabled="false" click="monitoringEvent()"/>	                   
+	        </mx:FormItem>
+	        <mx:FormItem label="QoS Enabled                ">            
+	            <mx:CheckBox id="qosCheckbox" label="" enabled="false" click="qosEvent()"/>           
+	        </mx:FormItem>
+        </mx:HBox>  
+              
+    </mx:Form>
+    <mx:HBox> 
+        <mx:Button click="createReceiveDO();" label="OK"/> 
+        <mx:Button click="PopUpManager.removePopUp(this);" label="Cancel"/> 
+    </mx:HBox> 
+</mx:TitleWindow>
+
+

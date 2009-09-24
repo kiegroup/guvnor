@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="doInit();" 
+	title="Add Assign Activity in the BPEL Process" width="432" height="442" 
+	xmlns:customComponent="*"  horizontalScrollPolicy="off" verticalScrollPolicy="off">
+    <mx:Script>
+        <![CDATA[
+        	import bpel.editor.gridcc.controller.WorkflowManager;  
+        	import bpel.editor.gridcc.constant.WorkflowActivities;
+        	
+        	import bpel.editor.gridcc.utility.ActivityDOSearch;
+        	import bpel.editor.gridcc.data.FromDO; 
+        	import bpel.editor.gridcc.data.ToDO;
+        	import bpel.editor.gridcc.data.AssignDO;     	
+            import mx.managers.PopUpManager;
+            import flash.events.*;
+            import  mx.events.ItemClickEvent;
+            
+            [Bindable]
+            public var fromDO:FromDO;  
+            
+            [Bindable]
+            public var toDO:ToDO;    
+            
+            [Bindable]
+            public var assignDO:AssignDO;  
+            
+            [Bindable]
+            private var assignName:String ="";
+            
+            [Bindable]
+            public var modifyable:Boolean = false; 
+            
+            public function setAssignDO(assignDOValue:AssignDO):void {
+            	assignDO = assignDOValue;  
+            	assignName =   assignDO.getName();       	
+            }
+            
+            public function setFromDO(fromDOValue:FromDO):void {
+            	fromDO = fromDOValue;            	
+            }  
+            
+            public function setToDO(toDOValue:ToDO):void {
+            	toDO = toDOValue;
+            }
+                       
+            private function doInit():void {            	
+                // Center the TitleWindow container 
+                // over the control that created it.
+                PopUpManager.centerPopUp(this);  
+                nameAssign.addEventListener(KeyboardEvent.KEY_UP, keyHandler);   
+                
+                if(modifyable)
+                	nameAssign.enabled = false;           
+            }
+            
+            private function keyHandler(event:KeyboardEvent):void {
+            	//trace("keyUpHandler: " + event.keyCode);
+            	//event.currentTarget
+            	var textField:TextInput = TextInput(event.currentTarget);
+            	// Key Code 65 - 90 for a - z
+            	// Key Code 48 - 57 for 0 - 9
+            	if(!(event.keyCode > 64 && event.keyCode < 91) && !(event.keyCode > 47 && event.keyCode < 58)){
+            		// Key Code 16 for shift and // Key Code 17 for ctrl
+            		if(event.keyCode != 16 && event.keyCode != 17){
+            			// Key Code 37 - 40 for directional arrows
+            			if(!(event.keyCode > 36 && event.keyCode < 41)){
+            				textField.text = textField.text.substr(0,textField.length -1);
+            			}
+            		}            		
+            	}           	
+        	}
+           
+            private function createAssign():void {
+            	assignDO.updateAttributesArray("name",nameAssign.text);
+            	
+            	copyFromForm.createFrom();
+            	copyToForm.createTo();
+            	
+            	var workflowManager:WorkflowManager = WorkflowManager.getInstance();
+                PopUpManager.removePopUp(this);
+                workflowManager.popUPOKHandler(this, WorkflowActivities.ASSIGN);
+            }            
+                      
+
+        ]]>
+    </mx:Script>
+    
+    <mx:FormItem label="Name Assign Activity" width="402" borderStyle="solid" 
+    	horizontalScrollPolicy="off" verticalScrollPolicy="off" height="28">            
+            <mx:TextInput id="nameAssign" width="251" text="{assignName}"/>
+    </mx:FormItem>
+    
+    <customComponent:CopyForm fromDO="{fromDO}" height="159" horizontalScrollPolicy="off" 
+    	verticalScrollPolicy="off" width="405" id="copyFromForm">    	
+    </customComponent:CopyForm>
+    
+    <customComponent:CopyTo toDO="{toDO}" height="160" horizontalScrollPolicy="off" 
+    	verticalScrollPolicy="off" id="copyToForm">    	
+    </customComponent:CopyTo>
+    
+    <mx:HBox> 
+        <mx:Button click="createAssign();" label="OK"/> 
+        <mx:Button click="PopUpManager.removePopUp(this);" label="Cancel"/> 
+    </mx:HBox> 
+    
+    
+</mx:TitleWindow>

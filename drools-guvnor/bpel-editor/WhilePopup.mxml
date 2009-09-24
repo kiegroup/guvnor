@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="doInit();" width="386" height="170" title="Add New While in the BPEL Process">
+    <mx:Script>
+        <![CDATA[
+        	import bpel.editor.gridcc.controller.WorkflowManager;  
+        	import bpel.editor.gridcc.constant.WorkflowActivities;
+        	import bpel.editor.gridcc.data.WhileDO;      	
+            import mx.managers.PopUpManager;
+            import flash.events.*;             
+            
+            //[Bindable]             
+            public var whileDO:WhileDO;
+            
+            [Bindable]
+            private var nameWhile:String;
+            
+            [Bindable]
+            private var conditionWhile:String; 
+            
+            [Bindable]
+            public var modifyable:Boolean = false; 
+            
+            public function setWhileDO(whileDOValue:WhileDO):void {
+            	whileDO = whileDOValue;
+            	nameWhile = whileDO.getName();
+            	conditionWhile = whileDO.getCondtion();
+            }  
+                       
+            private function doInit():void {
+                // Center the TitleWindow container 
+                // over the control that created it.
+                PopUpManager.centerPopUp(this);
+                whileName.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
+                if(modifyable)
+                	whileName.enabled = false;                
+            }
+            
+            private function createWhile():void {
+            	var tempArray:Array = new Array();
+            	tempArray.push(["name",whileName.text]);
+            	tempArray.push(["condition",whileCondition.text]);            	
+            	
+            	whileDO.attributesArray = tempArray;   
+                
+                var workflowManager:WorkflowManager = WorkflowManager.getInstance();
+                PopUpManager.removePopUp(this);
+                workflowManager.popUPOKHandler(this, WorkflowActivities.WHILE);
+            }
+            
+        	private function keyHandler(event:KeyboardEvent):void {
+            	//trace("keyUpHandler: " + event.keyCode);
+            	//event.currentTarget
+            	var textField:TextInput = TextInput(event.currentTarget);
+            	// Key Code 65 - 90 for a - z
+            	// Key Code 48 - 57 for 0 - 9
+            	if(!(event.keyCode > 64 && event.keyCode < 91) && !(event.keyCode > 47 && event.keyCode < 58)){
+            		// Key Code 16 for shift and // Key Code 17 for ctrl
+            		if(event.keyCode != 16 && event.keyCode != 17){
+            			// Key Code 37 - 40 for directional arrows
+            			if(!(event.keyCode > 36 && event.keyCode < 41)){
+            				textField.text = textField.text.substr(0,textField.length -1);
+            			}
+            		}            		
+            	}           	
+        	}
+
+        ]]>
+    </mx:Script>
+    
+    <mx:Form width="352" height="82">
+        <mx:FormItem label="While Name" width="315" >
+            <mx:TextInput id="whileName" width="229" text="{nameWhile}"/>
+        </mx:FormItem> 
+       
+        <mx:FormItem label="Condition " width="315" >            
+            <mx:TextInput id="whileCondition" width="229" text="{conditionWhile}"/>
+        </mx:FormItem>
+         <!--
+        <mx:FormItem label="My Role" width="315">
+            <mx:TextInput id="myRole" width="179" text=""/>
+        </mx:FormItem> 
+                
+        <mx:FormItem label="Partner Role" width="315" >            
+            <mx:TextInput id="partnerRole" width="179" text=""/>
+        </mx:FormItem>  
+        -->      
+    </mx:Form>
+    <mx:HBox> 
+        <mx:Button click="createWhile();" label="OK"/> 
+        <mx:Button click="PopUpManager.removePopUp(this);" label="Cancel"/> 
+    </mx:HBox> 
+</mx:TitleWindow>
+
+
+
+

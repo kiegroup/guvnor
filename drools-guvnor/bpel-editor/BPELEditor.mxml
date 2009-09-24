@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" name="BPELEditor" layout="absolute" creationComplete="init()"
+	xmlns:ns1="gridcc.ic.ac.uk.*" 
+	xmlns:customComponent="*" 
+	backgroundGradientColors="[#eeeff7, #cfd8fa]" 
+	backgroundGradientAlphas="[0.72, 0.0]">
+
+	<mx:Script>
+        <![CDATA[
+        	import bpel.editor.gridcc.controller.WebServiceRegistry;
+        	
+        	import mx.core.Container;
+        	import mx.controls.Button;
+        	import mx.controls.Alert;
+
+        	import mx.core.UIComponent;
+        	import mx.controls.Label;
+        	import mx.containers.*;
+            import mx.events.DragEvent;
+            import mx.containers.Box;
+            import mx.managers.DragManager;
+            import mx.core.DragSource;
+            import flash.display.*;
+            import flash.net.URLRequest;
+            
+            import bpel.editor.gridcc.controller.WorkflowManager;
+            import bpel.editor.gridcc.controller.ProcessCreator;    
+            import bpel.editor.gridcc.utility.QueryString;                 
+            
+            import flash.events.TimerEvent;
+    		import flash.utils.Timer;		 
+			
+            private var x1:Number;
+            private var y1:Number;            
+            
+            private var tempContainer:Canvas;
+            
+            public var minuteTimer:Timer; 
+            public var processDropped:Boolean = false;
+            
+            [Embed (source="images/WSDL.jpg")]
+            [Bindable]
+            public var wsdlImage:Class;
+            
+            [Embed (source="images/QoSLarge.jpg")]
+            [Bindable]
+            public var qosLargeImage:Class;
+            
+            // BPEL Activities Panel
+            [Bindable]
+            private var component1X:Number;
+            [Bindable]
+            private var component1Y:Number;
+            [Bindable]
+            private var component1Width:Number;
+            [Bindable]
+            private var component1Height:Number;
+			
+			// Workflow Editor Panel
+			[Bindable]
+			private var component2X:Number;
+			[Bindable]
+            private var component2Y:Number;
+            [Bindable]
+            private var component2Width:Number;
+            [Bindable]
+            private var component2Height:Number;
+			
+			// Web Services Registry
+			[Bindable]
+			private var component3X:Number;
+			[Bindable]
+            private var component3Y:Number;
+            [Bindable]
+            private var component3Width:Number;
+            [Bindable]
+            private var component3Height:Number;
+            
+            // QoS Elements Panel
+			[Bindable]
+			private var component4X:Number;
+			[Bindable]
+            private var component4Y:Number;
+            [Bindable]
+            private var component4Width:Number;
+            [Bindable]
+            private var component4Height:Number;
+			
+			// Properties Panel
+			[Bindable]
+			private var component5X:Number;
+			[Bindable]
+            private var component5Y:Number;
+            [Bindable]
+            private var component5Width:Number;
+            [Bindable]
+            private var component5Height:Number;
+			
+			// XML Schema Registry
+			[Bindable]
+			private var component6X:Number;
+			[Bindable]
+            private var component6Y:Number;
+            [Bindable]
+            private var component6Width:Number;
+            [Bindable]
+            private var component6Height:Number;
+            
+            private var workflowManager:WorkflowManager = null;
+            
+            private var processCreator:ProcessCreator = null;
+            
+            //private var wsRegistry:WebServiceRegistry = null;
+            
+            // For Testing
+            private var queryString:QueryString = null;
+                       
+            public function init():void{            	
+            	
+            	workflowManager = WorkflowManager.getInstance();            	
+            	workflowManager.setBPELEditor(this);
+            	workflowManager.setbpelActivityPanel(BPELActivitiesPanel);
+            	
+            	processCreator = ProcessCreator.getInstance();            	
+            	minuteTimer = new Timer(200, 1);
+            	            	
+				minuteTimer.addEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
+				
+				this.addEventListener(Event.RESIZE, resizeHandler);
+				
+				//wsRegistry = WebServiceRegistry.getInstance();
+				// For Testing
+				/*
+				queryString = new QueryString();
+				try {
+				    var keyStr:String;
+				    var valueStr:String;
+				    //Alert.show("URL: "+ queryString.url, 'Message');
+				    //Alert.show("Name: "+ queryString.parameters.myName, 'Message');
+				    trace(queryString.url);
+				    var paramObj:Object = LoaderInfo(this.root.loaderInfo).parameters;
+				    for (keyStr in paramObj) {
+				        valueStr = String(paramObj[keyStr]);
+				        trace("\t" + keyStr + ":\t" + valueStr + "\n");
+				    }				    
+				    //Alert.show("this.parameters.one: "+ this.parameters.one, 'Message');
+				     //Alert.show("this.url: "+ this.url, 'Message');
+				     //this.p
+				} catch (error:Error) {
+				   trace(error);
+				   //Alert.show("Error: "+ error, 'Message');
+				   //trace(this.parameters.myWorkflowNameIs);	
+				   //trace(this.parameters.myServletNameIs);
+				   //trace(this.parameters.myDirNameIs);			   				   
+				}
+
+				*/
+            }
+            
+            private function resizeHandler (event:Event):void {			  
+			  componentsSizeAndLocation();			 		  
+			} 
+			
+            private function dragIt(event:MouseEvent, value:String):void {            		
+				//trace("dragIt " + event.localX + " " + event.localY);
+				//workflowManager.dragStart(event, value);				
+            }
+            
+            private function treeItemChange(event:Event, value:String):void {            		
+				//trace("Tree drag It " + event.type);
+				//workflowManager.dragStart(event, value);			
+				
+				var selectedNode:XML;
+				var selectedType:String = "";
+				
+				//Tree(event.target).selectedItem;
+				//trace("Selected Index: " + Tree(event.target).selectedIndex)
+				selectedNode = Tree(event.target).selectedItem as XML;
+				
+				if(selectedNode.@type == "operation")
+					selectedType = "operation";
+				else if (selectedNode.@type == "portType"){
+					var tempPortName:String = selectedNode.@label;
+					var colinIndex:Number = tempPortName.indexOf(":");
+					var dashIndex:Number = tempPortName.indexOf("-");
+					//trace("colinIndex: " + colinIndex + " dashIndex: " + dashIndex);
+					
+					var prefix:String = tempPortName.substr(0, colinIndex);
+					var onlyPortName:String = tempPortName.substr(colinIndex +1, ((dashIndex -1) - colinIndex));
+					
+					selectedType = "Port Type: " + onlyPortName + " will be added as Partner Link";
+					var operationNameArray:Array = new Array();
+					for each(var item:XML in selectedNode.elements()){
+						var tempOperationName:String = item.@label;
+						var colinIndexOp:Number = tempOperationName.indexOf(":");
+						var dashIndexOp:Number = tempOperationName.indexOf("-");
+						
+					
+						//var prefix:String = tempPortName.substr(0, colinIndex);
+						var onlyOperationName:String = tempOperationName.substr(colinIndexOp +1, ((dashIndexOp -1) - colinIndexOp));
+						operationNameArray.push(onlyOperationName);
+						//trace(item.@label +"  " +onlyOperationName);
+					}
+					workflowManager.addNewPartner(prefix, onlyPortName, selectedNode.@namespace, operationNameArray)
+				}
+					
+				//Alert.show(selectedType);
+				//trace("Tree Selected Node: " + selectedNode.toXMLString());
+	
+            }
+             private function componentsSizeAndLocation():void      {            	
+            	//trace("Height " + this.height + " Width " + this.width);            	
+            	            	
+            	var tempWidth:Number = tabNavigator.width;
+            	var tempHeight:Number = tabNavigator.height;
+            	
+            	//trace("Height " + tabNavigator.height + " Width " + tabNavigator.width); 
+            	
+            	var horizontalGap:Number = Math.abs((tempWidth * 0.02)/4);
+            	var verticalGap:Number = Math.abs((tempHeight * 0.015)/3);
+            	
+            	// BPEL Activities Elements Panel
+            	component1X = horizontalGap;
+            	component1Y = verticalGap;
+            	component1Width = Math.abs(tempWidth * .087);
+            	component1Height = Math.abs(tempHeight * 0.60);          	 
+            	            	
+            	component2X = horizontalGap + component1Width + horizontalGap;
+             	component2Y = verticalGap;
+            	component2Width = Math.abs(tempWidth * .83);
+            	component2Height = Math.abs(tempHeight * 0.92);            	
+            	
+            	component3X = horizontalGap + component1Width + horizontalGap + component2Width + horizontalGap;
+            	component3Y = verticalGap;
+            	component3Width = Math.abs(tempWidth * .08);
+            	component3Height = Math.abs(tempHeight * 0.6);            	
+            	
+            	// QoS Elements Panel
+            	component4X = horizontalGap;
+            	component4Y = verticalGap + component1Height + verticalGap;
+            	component4Width = Math.abs(tempWidth * .087);
+            	component4Height = Math.abs(tempHeight * 0.30);            	
+            	
+            	component5X = horizontalGap + component4Width + horizontalGap;
+            	component5Y = verticalGap + component2Height + verticalGap;
+            	component5Width = Math.abs(tempWidth * .81);
+            	component5Height = Math.abs(tempHeight * 0.19);            	
+            	
+            	component6X = horizontalGap + component4Width + horizontalGap +  component5Width + horizontalGap;
+            	component6Y = verticalGap + component3Height + verticalGap;
+            	component6Width = Math.abs(tempWidth * .08);
+            	component6Height = Math.abs(tempHeight * 0.38);            	
+            } 
+            
+            
+            public function dragEnterHandler(event:DragEvent):void 
+            {
+				//trace("dragEnterHandler");
+                // Get the drop target component from the event object.
+                var dropTarget:Canvas = event.currentTarget as Canvas;
+    
+                // Accept the drag only if the user is dragging data 
+                // identified by the &apos;value&apos; format value.
+                if (event.dragSource.hasFormat("activity")) 
+                {
+                    // Make the border of the Box thicker to 
+                    // visually signal to the user that they can 
+                    // drop the coin there.
+                    dropTarget.setStyle("borderThickness", 5);
+                    
+                    // Accept the drop.
+                    DragManager.acceptDragDrop(dropTarget);
+                }
+            }
+            
+            // Called if the user drags the drag proxy away from the drop target.
+            private function dragExitHandler(event:DragEvent):void
+            {
+            	//trace("dragExitHandler");            
+            }                    
+            
+            // Called if the target accepts the dragged object and the user 
+            // releases the mouse button while over the drop target. 
+            public function dragDropHandler(event:DragEvent):void 
+            {
+            	var activityType:String = event.dragSource.dataForFormat("activity") as String;
+            	workflowManager.dragDropped("mainCanvas", activityType, event);            	        
+            }
+            
+            public function onTimerComplete(evt:Event):void
+        	{
+            	//trace("Time's Up!");            
+				/*
+            	var partnerLinks:PartnerLinks = new PartnerLinks(tempContainer);
+                //var bpel:BPELCreator = new BPELCreator();
+                //trace (partnerLinks.name + " AAAA  " + partnerLinks.type);
+                tempContainer.addChild(partnerLinks);
+                bpel.createPartnerLinks();
+                
+                                
+                var variables:Variables = new Variables(tempContainer);
+                tempContainer.addChild(variables);  
+                bpel.createVariables();
+                //workflowManager.XMLCreator(tempContainer.parent.name, variables.name);  
+                */
+        	}
+			
+			private function retrieveWSDL(event:Event):void{
+				workflowManager.displayWSDLPopUp();
+			}
+			
+			private function getBPEL(event:Event):void{
+				//trace("getBPEL");
+				if(workflowManager.retrieveBPEL()){
+					bpelTextArea.text = workflowManager.retrieveBPEL();
+				} else {
+					bpelTextArea.text = "Error in Loading BPEL Process";
+				}				
+			}
+			
+			private function getWSDL(event:Event):void{
+				//trace("getBPEL");
+				if(workflowManager.retrieveWSDL()){
+					wsdlTextArea.text = workflowManager.retrieveWSDL();
+				} else {
+					wsdlTextArea.text = "Error in Loading WSDL";
+				}
+			}
+			
+			private function getPDD(event:Event):void{
+				//trace("getBPEL");
+				if(workflowManager.retrievePDD()){
+					pddArea.text = workflowManager.retrievePDD();
+				} else {
+					pddArea.text = "Error in Loading Process Deployment Descriptor";
+				}
+			}
+			
+			private function getWSDLCatalog(event:Event):void{
+				//trace("getBPEL");
+				if(workflowManager.retrieveWSDLCatalog()){
+					catalogArea.text = workflowManager.retrieveWSDLCatalog().toXMLString();
+				} else {
+					catalogArea.text = "Error in Loading WSDL Catalog";
+				}
+			}
+			
+			private function getSubDoc(event:Event):void{
+				//trace("getBPEL");
+				if(workflowManager.retrieveSubDoc()){
+					submDocArea.text = workflowManager.retrieveSubDoc();
+				} else {
+					submDocArea.text = "Error in Loading Submission Document";
+				}
+			}
+			
+			private function getQoSDoc(event:Event):void{
+				//trace("getBPEL");
+				if(workflowManager.retrieveQoSDoc()){
+					var updatedSubDOc:XML = workflowManager.retrieveSubDoc();
+					updatedSubDOc.appendChild(workflowManager.retrieveQoSDoc());
+					QoSArea.text = updatedSubDOc;
+				} else {
+					QoSArea.text = "Error in Loading QoS Document";
+				}
+			}
+			
+			public function updateWSRegistryTree(wsRegistryXML:XML):void{
+				this.wsRegistryTree.dataProvider = wsRegistryXML;
+				wsRegistryTree.labelField = "@label";
+			}
+        ]]>
+    </mx:Script>
+    
+    <mx:TabNavigator id="tabNavigator"  width="100%" height="100%">
+    	<mx:Canvas label="BPEL Designer" id="BPELDesigner" borderColor="#8080ff" borderStyle="outset">
+    		<!-- Original fillColors="[#ebd9ec, #f062f0]" --> 
+    		<mx:ApplicationControlBar label="BPEL Activities" id="BPELActivity" x="{component1X}" 
+    			y="{component1Y}"
+				width="{component1Width}" height="{component1Height}" fillColors="[#ebd9ec, #a4a4ff]" 
+				fillAlphas="[0.7, 0.28]">
+				<customComponent:ActivityPanel label="BPEL Activities" x="{BPELActivity.height + 10}" 
+					id="BPELActivitiesPanel"
+					tempHeight="{component1Height - 5}" 
+					tempWidth="{component1Width - 5}">			
+				</customComponent:ActivityPanel>
+			</mx:ApplicationControlBar>			
+			
+			<mx:ApplicationControlBar label="QoS Activities" id="QoSActivity" x="{component4X}" 
+				width="{component4Width}" height="{component4Height}" fillColors="[#ebd9ec, #a4a4ff]" 
+				fillAlphas="[0.7, 0.28]" bottom="5">
+				<customComponent:QoSPanel label="QoS Activities" x="{component4X - 5}" 
+					id="QoSActivitiesPanel"
+					tempWidth="{component4Width - 5}"
+					tempHeight="{component4Height - 5}" >			
+				</customComponent:QoSPanel>
+			</mx:ApplicationControlBar>			 
+			 
+			<mx:Canvas id="mainCanvas"
+				width="69%" height="100%"		
+				dragEnter="dragEnterHandler(event);"
+        		dragExit="dragExitHandler(event);"
+        		dragDrop="dragDropHandler(event);" backgroundColor="#e0e0e0" x="{BPELActivity.width + 11}">        		
+			</mx:Canvas>
+	
+			<mx:ApplicationControlBar id="WSRegistry" width="20.5%" height="99%"    
+				fillColors="[#ebd9ec, #a4a4ff]" fillAlphas="[0.7, 0.28]" dock="false" right="5">
+				
+				<mx:VBox label="Workflow Registry" width="100%">
+				
+					<mx:Button label="Add New Web Service" width="100%" height="40" top="10" 
+							y= "10" labelPlacement="top" click="retrieveWSDL(event);"/>
+					<mx:Tree id="wsRegistryTree" labelField="Web Service Registry" height="{WSRegistry.height - 60}" 
+						backgroundColor="#dfdfff" width="100%" horizontalScrollPolicy="auto"
+						backgroundAlpha="0.78" enabled="true" change="treeItemChange(event,'');">
+					</mx:Tree>				
+				</mx:VBox>					
+			</mx:ApplicationControlBar>			    
+        </mx:Canvas>
+        
+        <mx:Canvas label="WSDL" show="getWSDL(event)" height="100%" width="100%">       
+	        <mx:VBox height="100%" width="100%">
+	        	<mx:TextArea id="wsdlTextArea" editable="false" height="100%" width="100%" 
+	        		x="10" y="15" enabled="true" borderThickness="3" borderColor="#8080ff" 
+	        		borderStyle="solid" cornerRadius="4"  fontSize="14" backgroundColor="#e0e0e0">        		
+	        	</mx:TextArea>        	
+	        </mx:VBox>      
+        </mx:Canvas>
+        
+        <mx:Canvas label="BPEL" show="getBPEL(event)" height="100%" width="100%">       
+	        <mx:VBox height="100%" width="100%">        
+	        	<mx:TextArea id="bpelTextArea" editable="false" height="100%" width="100%" 
+	        		x="10" y="15" enabled="true" borderThickness="3" borderColor="#8080ff" 
+	        		borderStyle="solid" cornerRadius="4" fontSize="14" backgroundColor="#e0e0e0">        		
+	        	</mx:TextArea>
+	        </mx:VBox>   
+         </mx:Canvas>
+         
+         <!-- Original borderColor="#f062f0"  -->
+         <mx:Canvas label="Submission Document" show="getSubDoc(event)" height="100%" width="100%">       
+	        <mx:VBox height="100%" width="100%"> 	        
+	        	<mx:TextArea id="submDocArea" editable="false" height="85%" width="100%" 
+	        		x="10" y="15" enabled="true" borderThickness="3" borderColor="#8080ff" 
+	        		borderStyle="solid" cornerRadius="4" fontSize="14" backgroundColor="#e0e0e0">        		
+	        	</mx:TextArea>
+	        	<customComponent:ParameterInput width="100%" />
+	        </mx:VBox>
+	    </mx:Canvas>
+	    
+	    <mx:Canvas label="Deployment Descriptor" show="getPDD(event)" height="100%" width="100%">       
+	        <mx:VBox height="100%" width="100%">	        
+	        	<mx:TextArea id="pddArea" editable="false" height="98%" width="100%" 
+	        		x="10" y="15" enabled="true" borderThickness="3" borderColor="#8080ff" 
+	        		borderStyle="solid" cornerRadius="4" fontSize="14" backgroundColor="#e0e0e0">        		
+	        	</mx:TextArea>        	
+	        </mx:VBox>
+	    </mx:Canvas>   
+
+	    <mx:Canvas label="WSDL Catalog" show="getWSDLCatalog(event)" height="100%" width="100%">       
+	        <mx:VBox height="100%" width="100%">	        
+	        	<mx:TextArea id="catalogArea" editable="false" height="98%" width="100%" 
+	        		x="10" y="15" enabled="true" borderThickness="3" borderColor="#8080ff" 
+	        		borderStyle="solid" cornerRadius="4" fontSize="14" backgroundColor="#e0e0e0">        		
+	        	</mx:TextArea>
+	        </mx:VBox>
+	    </mx:Canvas>
+	        
+	 	<mx:Canvas label="QoS" height="100%" show="getQoSDoc(event)" width="100%">       
+	        <mx:VBox height="100%" width="100%">	        
+	        	<mx:TextArea id="QoSArea" editable="false" height="98%" width="100%" 
+	        		x="10" y="15" enabled="true" borderThickness="3" borderColor="#8080ff" 
+	        		borderStyle="solid" cornerRadius="4" fontSize="14" backgroundColor="#e0e0e0">        		
+	        	</mx:TextArea>
+	        </mx:VBox>          
+    	</mx:Canvas>
+    	
+    	<customComponent:MonitoringComponent id="BPELMonitor" borderStyle="outset" 
+    		height="100%" width="100%" backgroundColor="#e0e0e0">    		
+    	</customComponent:MonitoringComponent>
+        
+    </mx:TabNavigator>    
+	
+	
+</mx:Application>

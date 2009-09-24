@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" title="Create New BPEL Process" creationComplete="doInit();">
+    <mx:Script>
+        <![CDATA[
+        	import bpel.editor.gridcc.controller.WorkflowManager;     
+			import bpel.editor.gridcc.utility.QueryString;   	
+            import mx.managers.PopUpManager;
+            import flash.events.*;            
+            
+            [Bindable]
+            private var workflowTypeArray:Array = ["synchronous","asynchronous","empty"];     
+                       
+            private function doInit():void {
+                // Center the TitleWindow container 
+                // over the control that created it.
+                PopUpManager.centerPopUp(this);
+                workflowName.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
+                
+				var queryString:QueryString = new QueryString();
+                workflowName.text = queryString.parameters.fileName;
+            }
+            
+            private function createProcess():void {
+                // Check credentials (not shown) then remove pop up.
+                var workflowManager:WorkflowManager = WorkflowManager.getInstance();
+                PopUpManager.removePopUp(this);
+                workflowManager.popUPOKHandler(this, "process");
+            }
+            
+            // Never USED ...May Need it Later
+            private function textInputHandler(e:TextEvent):void {            	
+	            //trace(">> e.text: " + e.);
+	            // Picks the character typed for workflow name 
+	            // Concanate it with Target Namespace
+	            //targetNamespace.text = targetNamespace.text + e.text
+        	}
+        	
+        	private function keyHandler(event:KeyboardEvent):void {
+            	//trace("keyUpHandler: " + event.keyCode);
+            	//trace(event.currentTarget.);
+            	// Key Code 65 - 90 for a - z
+            	// Key Code 48 - 57 for 0 - 9
+            	if(!(event.keyCode > 64 && event.keyCode < 91) && !(event.keyCode > 47 && event.keyCode < 58)){
+            		// Key Code 16 for shift and // Key Code 17 for ctrl
+            		if(event.keyCode != 16 && event.keyCode != 17){
+            			// Key Code 37 - 40 for directional arrows
+            			if(!(event.keyCode > 36 && event.keyCode < 41)){
+            				workflowName.text = workflowName.text.substr(0,workflowName.length -1);
+            			}
+            		}            		
+            	} 
+            	// Key Code 8 is for back space (Not Used)
+            	//if(event.keyCode == 8){
+            		//if(targetNamespace.length > 20){
+	            		//var tempNamespace:String = targetNamespace.text;
+	            		//var tempNamespace1:String = tempNamespace.substr(0,tempNamespace.length -1);
+	            		
+	            		targetNamespace.text = "http://gridcc.org/" + workflowName.text		            				
+            		//}
+            	//}
+        	}
+
+        ]]>
+    </mx:Script>
+    
+    <mx:Form>
+        <mx:FormItem label="Workflow Name" width="310" >
+            <mx:TextInput id="workflowName" width="187" textInput="textInputHandler(event)" editable="false"/>
+        </mx:FormItem> 
+        
+        <mx:FormItem label="Target Namespace" width="310">
+            <mx:TextInput id="targetNamespace" width="187" text="http://gridcc.org/"/>
+        </mx:FormItem> 
+        
+        <mx:FormItem label="Workflow Type" width="310" >
+            <mx:ComboBox id="workflowType" dataProvider="{workflowTypeArray}" width="187"></mx:ComboBox>
+        </mx:FormItem>
+    </mx:Form>
+    <mx:HBox> 
+        <mx:Button click="createProcess();" label="OK"/> 
+        <mx:Button click="PopUpManager.removePopUp(this);" label="Cancel"/> 
+    </mx:HBox> 
+</mx:TitleWindow>
+

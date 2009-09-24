@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="doInit();" title="Add New Variable in the BPEL Process" height="198">
+    <mx:Script>
+        <![CDATA[
+        	import bpel.editor.gridcc.controller.WorkflowManager;  
+        	import bpel.editor.gridcc.constant.WorkflowActivities;
+        	import bpel.editor.gridcc.data.VariableDO;      	
+            import mx.managers.PopUpManager;
+            import flash.events.*;            
+            
+            [Bindable]
+            private var variableTypeArray:Array = ["messageType","type","element"];  
+            public var variableDO:VariableDO;
+            
+            [Bindable]
+            private var nameVariable:String;
+            
+            private var typeVariable:String = "";
+            
+            [Bindable]
+            private var typeVariableIndex:int = 0; 
+             
+            [Bindable]
+            private var nameTypeVariable:String; 
+            
+            [Bindable]
+            public var modifyable:Boolean = false;  
+            
+            [Bindable]
+            private var variableNameIndex:Number = 0;
+            
+            public function setVariableDO(variableDOValue:VariableDO):void {
+            	variableDO = variableDOValue;
+            	nameVariable = variableDO.getName();
+            	typeVariable = variableDO.getVariableType();
+            	//trace("variableDO.getVariableType(): " + variableDO.getVariableType());
+            	selectIndex(typeVariable);
+            	//trace("variableDO.getVariableTypeValue(): " + variableDO.getVariableTypeValue());
+            	nameTypeVariable = variableDO.getVariableTypeValue();
+            }  
+                       
+            private function doInit():void {
+                // Center the TitleWindow container 
+                // over the control that created it.
+                PopUpManager.centerPopUp(this);
+                variableName.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
+                variableTypeName.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
+                if(modifyable)
+                	variableName.enabled = false;
+            }
+            
+            private function selectIndex(typeVariable:String):void{
+            	if (typeVariable == "messageType"){           			
+            		typeVariableIndex = 0;
+            	} else if (typeVariable == "type"){           			
+            		typeVariableIndex = 1;
+            	} else if (typeVariable == "element"){           			
+            		typeVariableIndex = 2
+            	}
+            }
+            
+            private function createVariable():void {
+            	
+            	variableDO.updateAttributesArray("name",variableName.text);
+            	variableDO.updateAttributesArray(variableType.text,variableTypeName.text);
+                
+                var workflowManager:WorkflowManager = WorkflowManager.getInstance();
+                PopUpManager.removePopUp(this);
+                workflowManager.popUPOKHandler(this, WorkflowActivities.VARIABLE);
+            }
+            
+            // Never USED ...May Need it Later
+            private function textInputHandler(e:TextEvent):void {            	
+	            //trace(">> e.text: " + e.);
+	            // Picks the character typed for workflow name 
+	            // Concanate it with Target Namespace
+	            //targetNamespace.text = targetNamespace.text + e.text
+        	}
+        	
+        	private function keyHandler(event:KeyboardEvent):void {
+            	//trace("keyUpHandler: " + event.keyCode);
+            	//event.currentTarget
+            	var textField:TextInput = TextInput(event.currentTarget);
+            	// Key Code 65 - 90 for a - z
+            	// Key Code 48 - 57 for 0 - 9
+            	if(!(event.keyCode > 64 && event.keyCode < 91) && !(event.keyCode > 47 && event.keyCode < 58)){
+            		// Key Code 16 for shift and // Key Code 17 for ctrl
+            		if(event.keyCode != 16 && event.keyCode != 17){
+            			// Key Code 37 - 40 for directional arrows
+            			if(!(event.keyCode > 36 && event.keyCode < 41)){
+            				textField.text = textField.text.substr(0,textField.length -1);
+            			}
+            		}            		
+            	}           	
+        	}
+
+        ]]>
+    </mx:Script>
+    
+    <mx:Form width="369" height="110">
+        <mx:FormItem label="Variable Name" width="336" >
+            <mx:TextInput id="variableName" width="205" text="{nameVariable}" 
+            	textInput="textInputHandler(event)"/>
+        </mx:FormItem> 
+        
+        <mx:FormItem label="Variable Type" width="336">
+            <mx:ComboBox id="variableType" dataProvider="{variableTypeArray}" 
+            	width="205" selectedIndex="{typeVariableIndex}"></mx:ComboBox>
+        </mx:FormItem> 
+        
+        <mx:FormItem label="Variable Type Name" width="336" >            
+            <mx:TextInput id="variableTypeName" width="205" text="{nameTypeVariable}"
+            	textInput="textInputHandler(event)"/>
+        </mx:FormItem>
+    </mx:Form>
+    
+    <mx:HBox> 
+        <mx:Button click="createVariable();" label="OK"/> 
+        <mx:Button click="PopUpManager.removePopUp(this);" label="Cancel"/> 
+    </mx:HBox> 
+</mx:TitleWindow>
+

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" fontSize="10" fontWeight="bold">
+	<mx:Script>
+        <![CDATA[
+        	
+        	import mx.events.DragEvent;
+            import mx.containers.Box;
+            import mx.managers.DragManager;
+            import mx.core.DragSource;
+            
+            import bpel.editor.gridcc.controller.WorkflowManager;
+            import bpel.editor.gridcc.constant.*;
+            
+            [Embed (source="images/process.jpg")]
+            [Bindable]
+            public var processImage:Class;
+           
+            private var _tempWidth:Number;
+            private var _tempHeight:Number;           
+           	
+           	[Bindable]
+           	private var _isEditable:Boolean = false;
+            
+            private function dragIt(event:MouseEvent, value:String):void {			
+				//workflowManager.dragStart(event, value);				
+            }
+            
+            private function workflowUploadDownload(event:MouseEvent, value:String):void {			
+				//workflowManager.workflowUploadDownload(event, value);				
+            }
+            
+            [Bindable]
+            public function set tempWidth(value:Number):void {
+            	_tempWidth = value;
+            }     
+                       
+            public function get tempWidth():Number {
+            	return _tempWidth;
+            }
+            
+            [Bindable]
+            public function set tempHeight(value:Number):void {
+            	_tempHeight = value;
+            }
+            
+            public function get tempHeight():Number {
+            	return _tempHeight;
+            }
+            
+             [Bindable]
+            public function set isEditable(value:Boolean):void {
+            	_isEditable = value;
+            }
+            
+             public function get isEditable():Boolean {
+            	return _isEditable;
+            }
+        ]]>
+   </mx:Script>
+   
+	<mx:Button label="XpathRef" width="{tempWidth * .90}" 
+		height="{tempHeight * .12}" enabled="{isEditable}"
+		toolTip="XPath Reference to an Activity"
+		mouseMove="dragIt(event, WorkflowActivities.PROCESS);" labelPlacement="left" />
+	<mx:Button label="CPUSpeed" width="{tempWidth * .90}" 
+		height="{tempHeight * .12}" enabled="{isEditable}"
+		mouseMove="dragIt(event, WorkflowActivities.PARTNERLINK);" labelPlacement="left"/>
+	<mx:Button label="Reliability" width="{tempWidth * .90}" 
+		height="{tempHeight * .12}" enabled="{isEditable}"
+		mouseMove="dragIt(event, WorkflowActivities.VARIABLE);" labelPlacement="left"/>
+	<mx:Button label="MaxDuration" width="{tempWidth * .90}" 
+		height="{tempHeight * .12}" enabled="{isEditable}" 
+		mouseMove="dragIt(event, WorkflowActivities.SEQUENCE);" labelPlacement="left"/>
+		
+	<mx:Button label="StorageSpace" width="{tempWidth * .90}" 
+		height="{tempHeight * .12}" enabled="{isEditable}" 
+		mouseMove="dragIt(event, WorkflowActivities.INVOKE);" labelPlacement="left"/>
+</mx:VBox>

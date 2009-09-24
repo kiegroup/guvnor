@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Form xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="doInit();"
+	width="440" height="192"  horizontalScrollPolicy="off" verticalScrollPolicy="off">
+	<mx:Script>
+        <![CDATA[
+        	import bpel.editor.gridcc.controller.WorkflowManager;       	
+        	    	
+            import mx.managers.PopUpManager;
+            import mx.core.IFlexDisplayObject;
+            import flash.events.*;             
+           
+            private var parameters:Array;
+            
+            [Bindable]
+            public var withoutReservation:Boolean = true;
+            
+            [Bindable]
+            public var methodName:String = "  ";
+            
+            private function doInit():void {
+            	//popupWindow.visible = false;
+            	//PopUpManager.centerPopUp(this);
+            	
+            	parameters = new Array();
+            }
+            
+            public function populateSubform1(formElements:Array):void{
+            	if(!parameters){
+            		parameters = new Array();
+            	}
+            	for(var i:int = 0; i < formElements.length; i++ ){
+            		parameters.push([formElements[i][0], formElements[i][1]]);            		
+            	}
+            }
+            
+            private function textInputHandler(event:Event):void {
+        			        	
+	        } 
+	        private function cancelQoS():void{        		
+        		 //PopUpManager.removePopUp(this);
+        		 //popupWindow.visible = true;        		 
+        	}
+        	
+        	private function OK_QoS():void{
+        		    			      	
+	        }          
+
+        ]]>
+    </mx:Script>
+    <!--
+    <mx:Form width="428" height="56" borderStyle="solid" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+    -->    
+    	<mx:FormItem label="Method" width="410" >
+            <mx:TextInput id="method" width="326" text="{methodName}" editable="false" 
+            	textInput="textInputHandler(event)"/>
+        </mx:FormItem>
+        
+        <mx:FormItem label="Input Size" width="410" >
+            <mx:TextInput id="inputSize" width="326" text="" 
+            	textInput="textInputHandler(event)"/>
+        </mx:FormItem>   
+        
+        <mx:FormItem label="Output Size" width="410" >
+            <mx:TextInput id="outputSize" width="326" text="" 
+            	textInput="textInputHandler(event)"/>
+        </mx:FormItem> 
+        
+        <mx:FormItem label="IE Endpoint" width="410" >
+            <mx:TextInput id="ieEndpoint" width="326" text="" 
+            	textInput="textInputHandler(event)" editable="{withoutReservation}"/>
+        </mx:FormItem> 
+        
+        <mx:FormItem label="Manager ID" width="410" >
+            <mx:TextInput id="managerID" width="326" text="" 
+            	textInput="textInputHandler(event)" editable="{withoutReservation}"/>
+        </mx:FormItem>     
+        
+        <mx:FormItem label="Token" width="410" >
+            <mx:TextInput id="token" width="326" text="" 
+            	textInput="textInputHandler(event)" editable="{withoutReservation}"/>
+        </mx:FormItem> 
+     <!--
+    <mx:HBox> 
+        <mx:Button click="OK_QoS();" label="OK"/> 
+        <mx:Button click="cancelQoS();" label="Cancel"/> 
+    </mx:HBox> 
+    -->
+</mx:Form>

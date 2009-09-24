@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Form xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="404" height="164"  horizontalScrollPolicy="off" verticalScrollPolicy="off">
+	<mx:Script>
+        <![CDATA[
+        	import bpel.editor.gridcc.controller.WorkflowManager;  
+        	import bpel.editor.gridcc.constant.WorkflowActivities;
+        	
+        	import bpel.editor.gridcc.utility.ActivityDOSearch;
+        	import bpel.editor.gridcc.data.ToDO;      	
+            import mx.managers.PopUpManager;
+            import flash.events.*;
+            import  mx.events.ItemClickEvent;            
+            
+            [Bindable]
+            private var _toDO:ToDO;          
+            
+            [Bindable]
+            private var variableArrayName:Array = ActivityDOSearch.getVariableAsArray();            
+            
+            [Bindable]
+            private var nameVariable:String = "";
+            
+            [Bindable]
+            private var expressionType:String = "empty";
+            
+            [Bindable]
+            private var expressionValue:String = "";  
+             
+            [Bindable]
+            private var variableNameIndex:Number = 0;
+            
+            [Bindable]
+            private var querySelection:Boolean = false; 
+            
+            [Bindable]
+            private var partSelection:Boolean = false; 
+            
+            [Bindable]
+            private var literalSelection:Boolean = false; 
+            
+            [Bindable]
+            public var modifyable:Boolean = false; 
+        
+            
+            public function set toDO(toDOValue:ToDO):void {
+            	_toDO = toDOValue;
+            	nameVariable = _toDO.variableValue;
+            	expressionType = _toDO.queryType;
+            	expressionValue = _toDO.toValue
+            	
+            	selectIndex(expressionType);
+            	selectVariableIndex();
+            }           
+            
+            private function selectIndex(expressionType:String):void{
+            	if (expressionType == "query"){   
+            		querySelection = true;         		
+            	} else if (expressionType == "part"){
+            		partSelection = true;
+            	} else if (expressionType == "empty"){           			
+            		literalSelection = true;
+            	}            	
+            }
+            
+            private function selectVariableIndex():void {
+            	if(nameVariable.length > 0){
+            		variableNameIndex = ActivityDOSearch.variableIndex(nameVariable);
+            	}
+            }
+            
+            public function createTo():void {
+            	/*
+            	var tempArray:Array = new Array();
+            	tempArray.push(["variable",variableName.text]);
+            	tempArray.push([paramTypeGroup.selectedValue, expressionValueInput.text]);
+            	
+            	_toDO.attributesArray = tempArray;       
+            	*/            	
+            	
+            	_toDO.updateAttributesArray("variable", variableName.text);
+            	_toDO.updateAttributesArray(expressionType, expressionValueInput.text)      
+            	  
+            }
+            
+            private function handleType(event:ItemClickEvent):void {
+        		expressionType = event.currentTarget.selectedValue;	        		      	
+	        }           
+
+        ]]>
+    </mx:Script>
+    
+    <mx:Form width="370" height="132" borderStyle="solid" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+    
+    	<mx:FormItem label="Copy To        " width="336" horizontalAlign="left" fontSize="12" fontWeight="bold"/>
+    	
+        <mx:FormItem label="Variable Name" width="336">
+            <mx:ComboBox id="variableName" dataProvider="{variableArrayName}" 
+            	width="232" selectedIndex="{variableNameIndex}"></mx:ComboBox>
+        </mx:FormItem>  
+      
+      <mx:HBox>
+      	<mx:RadioButtonGroup id="paramTypeGroup" itemClick="handleType(event);" enabled="false"/>
+		<mx:RadioButton label="Literal Value " groupName="paramTypeGroup" value="empty" selected="{literalSelection}"/>
+		<mx:RadioButton label="XPath query  " groupName="paramTypeGroup" value="query" selected="{querySelection}"/> 
+		<mx:RadioButton label="Variable part" groupName="paramTypeGroup" value="part" selected="{partSelection}"/>      	
+      </mx:HBox>        
+        
+        <mx:FormItem label="Expression    " width="336" >            
+            <mx:TextInput id="expressionValueInput" width="232" text="{expressionValue}"/>
+        </mx:FormItem>
+    </mx:Form>
+</mx:Form>

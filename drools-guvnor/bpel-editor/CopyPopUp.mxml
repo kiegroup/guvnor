@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="doInit();" 
+	title="Add Copy Activity in the BPEL Process" width="436" height="416" xmlns:customComponent="*"  horizontalScrollPolicy="off" verticalScrollPolicy="off">
+    <mx:Script>
+        <![CDATA[
+        	import bpel.editor.gridcc.controller.WorkflowManager;  
+        	import bpel.editor.gridcc.constant.WorkflowActivities;
+        	
+        	import bpel.editor.gridcc.utility.ActivityDOSearch;
+        	import bpel.editor.gridcc.data.FromDO; 
+        	import bpel.editor.gridcc.data.ToDO;     	
+            import mx.managers.PopUpManager;
+            import flash.events.*;
+            import  mx.events.ItemClickEvent;            
+            
+            [Bindable]
+            public var fromDO:FromDO;  
+            
+            [Bindable]
+            public var toDO:ToDO;    
+            
+            [Bindable]
+            public var modifyable:Boolean = false; 
+            
+            public function setFromDO(fromDOValue:FromDO):void {
+            	fromDO = fromDOValue;
+            	//nameVariable = fromDO.variableValue;
+            	//expressionType = fromDO.queryType;
+            	//expressionValue = fromDO.fromValue
+            	
+            	//selectIndex(expressionType);
+            }  
+            
+            public function setToDO(toDOValue:ToDO):void {
+            	toDO = toDOValue;
+            }
+                       
+            private function doInit():void {            	
+                // Center the TitleWindow container 
+                // over the control that created it.
+                PopUpManager.centerPopUp(this);                
+            }
+           
+            private function createCopy():void {
+            	PopUpManager.removePopUp(this);
+            }
+            
+                      
+
+        ]]>
+    </mx:Script>
+    
+    <customComponent:CopyForm fromDO="{fromDO}" height="161" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+    	
+    </customComponent:CopyForm>
+    
+    <customComponent:CopyTo toDO="{toDO}" height="164" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+    	
+    </customComponent:CopyTo>
+    
+    <mx:HBox> 
+        <mx:Button click="createCopy();" label="OK"/> 
+        <mx:Button click="PopUpManager.removePopUp(this);" label="Cancel"/> 
+    </mx:HBox> 
+    
+    
+</mx:TitleWindow>
+

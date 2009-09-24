@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Form xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="420" height="556"  horizontalScrollPolicy="off" verticalScrollPolicy="off" xmlns:customComponent="*" horizontalGap="0">
+	<mx:Script>
+        <![CDATA[
+        	import bpel.editor.gridcc.controller.WorkflowManager;  
+        	import bpel.editor.gridcc.constant.WorkflowActivities;        	
+        	    	
+            import mx.managers.PopUpManager;
+            import flash.events.*; 
+            
+            private function textInputHandler(event:Event):void {
+        			        	
+	        }           
+
+        ]]>
+    </mx:Script>
+    <!--
+    <mx:Form width="419" height="277" borderStyle="solid" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+    -->
+    
+    <mx:Box borderStyle="solid">
+    	<mx:FormItem label="Availability Criteria" width="390"  fontWeight="bold" fontSize="11">
+            <mx:TextInput id="availabilityCriteria" width="245" text="" 
+            	textInput="textInputHandler(event)"/>            
+        </mx:FormItem>        
+        <mx:HBox>
+	    	<mx:FormItem label="Operation" width="201" >
+	            <mx:TextInput id="operation1" width="127" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>
+	        
+	        <mx:FormItem label="Confidence" width="181" >
+	            <mx:TextInput id="confidence1" width="100" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>       
+	    </mx:HBox>
+      </mx:Box>
+      
+      <mx:Box borderStyle="solid">
+        <mx:FormItem label="Accessibility Criteria" width="390" fontWeight="bold" fontSize="11">
+            <mx:TextInput id="accessibilityCriteria" width="236" text="" 
+            	textInput="textInputHandler(event)"/>
+        </mx:FormItem>
+        <mx:HBox>
+	    	<mx:FormItem label="Operation" width="201" >
+	            <mx:TextInput id="operation2" width="127" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>
+	        
+	        <mx:FormItem label="Confidence" width="181" >
+	            <mx:TextInput id="confidence2" width="100" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>       
+	    </mx:HBox>
+	    </mx:Box>
+	    
+	    <mx:Box borderStyle="solid">
+        <mx:FormItem label="Reservability Criteria" width="390" fontWeight="bold" fontSize="11">
+            <mx:TextInput id="reservabilityCriteria" width="233" text="" 
+            	textInput="textInputHandler(event)"/>
+        </mx:FormItem>
+        <mx:HBox>
+	    	<mx:FormItem label="Operation" width="201" >
+	            <mx:TextInput id="operation3" width="127" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>
+	        
+	        <mx:FormItem label="Confidence" width="181" >
+	            <mx:TextInput id="confidence3" width="100" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>       
+	    </mx:HBox>
+	    </mx:Box>
+	    
+	    <mx:Box borderStyle="solid">
+        <mx:FormItem label="Reliability Criteria" width="390" fontWeight="bold" fontSize="11">
+            <mx:TextInput id="reliabilityCriteria" width="254" text="" 
+            	textInput="textInputHandler(event)"/>
+        </mx:FormItem>
+        <mx:HBox>
+	    	<mx:FormItem label="Operation" width="201" >
+	            <mx:TextInput id="operation4" width="127" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>
+	        
+	        <mx:FormItem label="Confidence" width="181" >
+	            <mx:TextInput id="confidence4" width="100" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>       
+	    </mx:HBox>
+        </mx:Box>
+        
+        <mx:Box borderStyle="solid">
+        <mx:FormItem label="Response Time Criteria" width="390" fontWeight="bold" fontSize="11">
+            <mx:TextInput id="responseTimeCriteria" width="220" text="" 
+            	textInput="textInputHandler(event)"/>
+        </mx:FormItem>        
+        <mx:HBox>
+	    	<mx:FormItem label="Operation" width="201" >
+	            <mx:TextInput id="operation5" width="127" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>
+	        
+	        <mx:FormItem label="Confidence" width="181" >
+	            <mx:TextInput id="confidence5" width="100" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>       
+	    </mx:HBox>
+	    </mx:Box>
+	    
+	    <mx:Box borderStyle="solid">
+        <mx:FormItem label="Worst Response Time" width="390" fontWeight="bold" fontSize="11">
+            <mx:TextInput id="worstResponseTimeCriteria" width="231" text="" 
+            	textInput="textInputHandler(event)"/>
+        </mx:FormItem>        
+        <mx:HBox>
+	    	<mx:FormItem label="Operation" width="201" >
+	            <mx:TextInput id="operation6" width="127" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>
+	        
+	        <mx:FormItem label="Confidence" width="181" >
+	            <mx:TextInput id="confidence6" width="100" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>       
+	    </mx:HBox>
+	    </mx:Box>
+	    
+	    <mx:Box borderStyle="solid">
+        <mx:FormItem label="Best Response Time" width="390" fontWeight="bold" fontSize="11">
+            <mx:TextInput id="bestResponseTimeCriteria" width="191" text="" 
+            	textInput="textInputHandler(event)"/>
+        </mx:FormItem>
+        <mx:HBox>
+	    	<mx:FormItem label="Operation" width="201" >
+	            <mx:TextInput id="operation7" width="127" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>
+	        
+	        <mx:FormItem label="Confidence" width="181" >
+	            <mx:TextInput id="confidence7" width="100" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>       
+	    </mx:HBox>
+        </mx:Box>
+        
+        <mx:Box borderStyle="solid">
+        <mx:FormItem label="Average Response Time" width="390" fontWeight="bold" fontSize="11">
+            <mx:TextInput id="avgResponseTimeCriteria" width="215" text="" 
+            	textInput="textInputHandler(event)"/>
+        </mx:FormItem>
+        <mx:HBox>
+	    	<mx:FormItem label="Operation" width="201" >
+	            <mx:TextInput id="operation8" width="127" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>
+	        
+	        <mx:FormItem label="Confidence" width="181" >
+	            <mx:TextInput id="confidence8" width="100" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>       
+	    </mx:HBox>
+	    </mx:Box>
+	    
+	    <mx:Box borderStyle="solid">
+        <mx:FormItem label="Dev ResponseTime Criteria" width="390" fontWeight="bold" fontSize="11">
+            <mx:TextInput id="stDevResponseTimeCriteria" width="196" text="" 
+            	textInput="textInputHandler(event)"/>
+        </mx:FormItem>
+    	<mx:HBox>
+	    	<mx:FormItem label="Operation" width="201" >
+	            <mx:TextInput id="operation9" width="127" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>
+	        
+	        <mx:FormItem label="Confidence" width="181" >
+	            <mx:TextInput id="confidence9" width="100" text="" 
+	            	textInput="textInputHandler(event)"/>
+	        </mx:FormItem>       
+	    </mx:HBox>
+	    </mx:Box>
+</mx:Form>

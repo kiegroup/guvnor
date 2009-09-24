@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	title="QoS attributes for Computing Element" creationComplete="doInit();" height="198">
+    <mx:Script>
+        <![CDATA[
+        	import mx.managers.PopUpManager;
+            import mx.core.IFlexDisplayObject;
+            import flash.events.*; 
+            import flash.events.*;
+            import  mx.events.ItemClickEvent; 
+            
+            public var popupWindow:IFlexDisplayObject;            
+            
+            private function doInit():void {
+                // Center the TitleWindow container 
+                // over the control that created it.
+                
+                PopUpManager.centerPopUp(this);                
+            }          
+        	
+        	private function forwardQoS():void{          		
+        		
+        		PopUpManager.removePopUp(QoSDecider(popupWindow).popupWindow);
+        		
+        		 PopUpManager.removePopUp(popupWindow); 
+        		        		
+        		 PopUpManager.removePopUp(this);
+        		 //popupWindow.visible = true;
+        	}
+        	
+        	private function cancelQoS():void{        		
+        		 PopUpManager.removePopUp(this);
+        		 popupWindow.visible = true;        		 
+        	}
+        	
+        	private function handleType(event:ItemClickEvent):void {
+        		trace(event.currentTarget.selectedValue);       			      	
+	        } 
+
+        ]]>
+    </mx:Script>
+    
+    <mx:Form>
+           
+    </mx:Form>
+    
+    <mx:HBox> 
+        <mx:Button click="forwardQoS();" label="OK"/> 
+        <mx:Button click="cancelQoS();" label="Cancel"/> 
+    </mx:HBox> 
+</mx:TitleWindow>
+
+

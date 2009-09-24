@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Form xmlns:mx="http://www.adobe.com/2006/mxml">
+<mx:Script>
+
+        <![CDATA[
+        import  mx.events.ItemClickEvent;
+        import bpel.editor.gridcc.controller.WorkflowManager;
+        import bpel.editor.gridcc.controller.WSDLCreator;
+        import bpel.editor.gridcc.controller.SubmissionDocumentCreator;
+		
+		private var paramNameString:String;
+		private var paramTypeString:String = "xs:string";
+		private var paramValueString:String = "xs:string";		
+        
+        private function updateSubmissionDocument():void {
+        	paramNameString = paramNameText.text;
+        	paramValueString = paramValueText.text;        	
+        	
+        	SubmissionDocumentCreator.getInstance().createParameter("trigger", paramTypeString, paramValueString, null);
+        	
+        	var wsdlCreator:WSDLCreator = WSDLCreator.getInstance();			
+			wsdlCreator.addNewRequestMessagePart(paramNameString , paramTypeString);
+			
+        	//trace(this.parent.name);
+        	//trace(this.parent.parent.name);
+        	//trace(this.parent.parent.parent.name);
+        	//trace(this.parent.parent.parent.parent.name);        	
+        	
+        	// Not Sure why it is casted into BPEl Editor
+        	BPELEditor(this.parent.parent.parent.parent).submDocArea.text = 
+        		WorkflowManager.getInstance().retrieveSubDoc();       	
+        	paramNameText.text = ""
+        	paramValueText.text = "";
+        }
+        
+        
+        private function handleType(event:ItemClickEvent):void {
+        	
+        	if (event.currentTarget.selectedValue == "String") {
+        		trace("Parameter Input: " + event.currentTarget.selectedValue)
+                    paramTypeString = "xs:string";
+            } 
+            else {                
+                    paramTypeString = "xs:integer";                
+            }
+        }        
+        ]]>
+    </mx:Script>
+    
+ 	<mx:HBox width="98%"> 
+		<mx:FormItem label="Parameter Name " id="paramName" width="70%">
+			<mx:TextInput id="paramNameText" enabled="true" editable="true" width="100%"/>
+		</mx:FormItem>
+
+		<mx:RadioButtonGroup id="paramTypeGroup" itemClick="handleType(event);" />
+		<mx:RadioButton label="Parameter Type 'String'" groupName="paramTypeGroup" value="String" selected="true"/>
+		<mx:RadioButton label="Parameter Type 'Long'" groupName="paramTypeGroup" value="Integer"/>		
+
+	</mx:HBox>   
+	
+	<mx:FormItem label="Parameter Value " id="paramValue" width="98%">
+		<mx:TextInput id="paramValueText" editable="true" width="100%"/>
+	</mx:FormItem>
+
+	<mx:Button click="updateSubmissionDocument();" label="Add New Parameter"/>
+</mx:Form>

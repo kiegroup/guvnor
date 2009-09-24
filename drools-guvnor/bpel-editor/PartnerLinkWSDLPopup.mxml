@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="doInit();" width="464" height="230" title="Add New PartnerLink in the BPEL Process">
+    <mx:Script>
+        <![CDATA[
+        	import bpel.editor.gridcc.controller.WorkflowManager;  
+        	import bpel.editor.gridcc.constant.WorkflowActivities;
+        	import bpel.editor.gridcc.data.PartnerLinkDO;      
+        	import bpel.editor.gridcc.data.PartnerLinkTypeWrapperDO;	
+            import mx.managers.PopUpManager;
+            import flash.events.*;            
+            
+            //[Bindable]             
+            public var partnerLinkDO:PartnerLinkDO;
+                        
+            [Bindable]
+            private var namePartnerLink:String; 
+            
+            [Bindable]
+            private var namePartnerLinkType:String; 
+            
+            [Bindable]
+            private var namePartnerRole:String; 
+            
+            public function setPartnerLinkDO(partnerLinkDOValue:PartnerLinkDO):void {
+            	partnerLinkDO = partnerLinkDOValue;
+            	namePartnerLink = partnerLinkDO.getName();
+            	namePartnerLinkType = partnerLinkDO.getPartnerLinkType();
+            	namePartnerRole = partnerLinkDO.getPartnerRole();
+            }  
+                       
+            private function doInit():void {
+                // Center the TitleWindow container 
+                // over the control that created it.
+                PopUpManager.centerPopUp(this);    
+            }
+            
+            private function createPartnerLink():void { 
+                var workflowManager:WorkflowManager = WorkflowManager.getInstance();
+                PopUpManager.removePopUp(this);
+                workflowManager.popUPOKHandler(this, WorkflowActivities.PARTNERLINK);
+            }
+        ]]>
+    </mx:Script>
+    
+    <mx:Form width="429" height="143">
+        <mx:FormItem label="PartnerLink Name" width="396"  horizontalAlign="center">
+            <mx:TextInput id="partnerLinkName" width="279" text="{namePartnerLink}" 
+            	enabled="false" fontSize="10" fontWeight="bold"/>
+        </mx:FormItem> 
+        
+        <mx:FormItem label="PartnerLink Type " width="396"  horizontalAlign="center">           
+            <mx:TextInput id="partnerLinkType" text="{namePartnerLinkType}" 
+            	width="279" enabled="false" fontSize="10" fontWeight="bold"></mx:TextInput>
+        </mx:FormItem>        
+        
+        
+        <mx:FormItem label="My Role" width="396" horizontalAlign="center">
+            <mx:TextInput id="myRole" width="279" text=""/>
+        </mx:FormItem> 
+                
+        <mx:FormItem label="Partner Role" width="396"  horizontalAlign="center">            
+            <mx:TextInput id="partnerRole" width="279" text="{namePartnerRole}"
+            	enabled="false" fontSize="10" fontWeight="bold"/>
+        </mx:FormItem>        
+    </mx:Form>
+    <mx:HBox> 
+        <mx:Button click="createPartnerLink();" label="OK"/> 
+        <mx:Button click="PopUpManager.removePopUp(this);" label="Cancel"/> 
+    </mx:HBox> 
+</mx:TitleWindow>
+
+

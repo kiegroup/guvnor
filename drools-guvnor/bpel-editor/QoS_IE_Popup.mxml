@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:customComponent="*"
+	title="QoS attributes for Instrument Element" creationComplete="doInit();" height="266">
+    <mx:Script>
+        <![CDATA[
+        	import mx.managers.PopUpManager;
+            import mx.core.IFlexDisplayObject;
+            import flash.events.*; 
+            import flash.events.*;
+            import  mx.events.ItemClickEvent; 
+            
+            import bpel.editor.gridcc.controller.WorkflowManager;
+            
+            public var popupWindow:IFlexDisplayObject;            
+            private var parameters:Array;
+            private var attributes:Array;               
+            
+            [Bindable]
+            public var withoutReservation:Boolean = true;
+            
+            public var partnerLink:String = null;
+            private var formStage:String = "stage1";
+            public var partnerLinkReference:String = null;
+            
+            [Bindable]
+            public var methodName:String = "";            
+            
+            private function doInit():void {
+                // Center the TitleWindow container 
+                // over the control that created it.                
+                PopUpManager.centerPopUp(this);
+                
+                parameters = new Array();    
+                attributes =  new Array();     
+            }                
+        	
+        	private function addQoS():void{  
+        		
+        		// Have to call WorkflowManager to update QoS attributes
+        		if(withoutReservation){
+        			WorkflowManager.getInstance().createQoSDocument(parameters, attributes, "IE");
+        		} else {
+        			WorkflowManager.getInstance().createQoSDocument(parameters, attributes, "IER");
+        		}
+        		
+        		 PopUpManager.removePopUp(QoSDecider(popupWindow).popupWindow);
+        		 PopUpManager.removePopUp(popupWindow); 
+        		      		
+        		 PopUpManager.removePopUp(this);
+        		 //popupWindow.visible = true;
+        	}
+        	
+        	private function cancelQoS():void{        		
+        		 PopUpManager.removePopUp(this);
+        		 popupWindow.visible = true;        		 
+        	}
+        	
+        	private function OK_QoS():void{          		
+        		
+        		if(formStage == "stage1"){
+        			updateStage1();
+        			
+        			formStage = "stage2"
+        		} else{
+        			updateStage2();
+        			//printArray();
+        			
+        			// Have to call WorkflowManager to update QoS attributes
+        			addQoS();
+        		}				        		 
+        	} 
+        	
+        	private function updateStage1():void{
+        		parameters.push(["PartnerLinkReference", partnerLinkReference]);
+        		trace("PartnerLinkReference: " + parameters.length);
+        		
+        		attributes.push(["methodName", methodName]);
+        		trace("PartnerLinkReference: " + parameters.length);
+        		
+        		parameters.push(["inputSize", subForm1.inputSize.text]);
+        		trace("PartnerLinkReference: " + parameters.length);
+        		
+				parameters.push(["methodName", subForm1.method.text]);
+				trace("PartnerLinkReference: " + parameters.length);
+				
+				parameters.push(["outputSize", subForm1.outputSize.text]);
+				trace("PartnerLinkReference: " + parameters.length);
+				
+				parameters.push(["token", subForm1.token.text]);
+				trace("PartnerLinkReference: " + parameters.length);
+				
+				if(withoutReservation){
+					attributes.push(["ieEndpoint", subForm1.ieEndpoint.text]);
+					attributes.push(["IM_ID", subForm1.managerID.text]);					
+				}
+								
+				this.removeChild(subForm1);			
+				this.height = 638;				
+				
+				this.addChildAt(new QoSForm(), 0);
+				
+				trace(parameters.length);
+        	}
+        	
+        	private function updateStage2():void{
+        		//this.c
+        		//this.e
+        		if(this.getChildAt(0) is QoSForm){
+	        		var qosForm:QoSForm = QoSForm(this.getChildAt(0));
+	        		parameters.push(["availabilityCriterion", qosForm.availabilityCriteria.text]);
+	        			        		
+	        		parameters.push(["accessibilityCriterion", qosForm.accessibilityCriteria.text]);
+	        		parameters.push(["reservabilityCriterion", qosForm.reservabilityCriteria.text]);
+	        			        		
+	        		parameters.push(["reliabilityCriterion", qosForm.reliabilityCriteria.text]);
+	        		parameters.push(["responseTimeCriterion", qosForm.responseTimeCriteria.text]);
+	        		
+	        		
+	        		parameters.push(["worstResponseTimeCriterion", qosForm.worstResponseTimeCriteria.text]);
+	        		parameters.push(["bestResponseTimeCriterion", qosForm.bestResponseTimeCriteria.text]);
+	        		
+	        		
+	        		parameters.push(["avgResponseTimeCriterion", qosForm.avgResponseTimeCriteria.text]);
+	        		parameters.push(["stDevResponseTimeCriterion", qosForm.stDevResponseTimeCriteria.text]);
+	        		
+	        		
+	        		attributes.push(["operation_availabilityCriterion", qosForm.operation1.text]);
+	        		attributes.push(["confidence_availabilityCriterion", qosForm.confidence1.text]);
+	        		
+	        		
+	        		attributes.push(["operation_accessibilityCriterion", qosForm.operation2.text]);
+	        		attributes.push(["confidence_accessibilityCriterion", qosForm.confidence2.text]);
+	        		
+	        		
+	        		attributes.push(["operation_reservabilityCriterion", qosForm.operation3.text]);
+	        		
+	        		attributes.push(["confidence_reservabilityCriterion", qosForm.confidence3.text]);
+	        		
+	        		
+	        		attributes.push(["operation_reliabilityCriterion", qosForm.operation4.text]);	        		
+	        		attributes.push(["confidence_reliabilityCriterion", qosForm.confidence4.text]);
+	        		
+	        		
+	        		attributes.push(["operation_responseTimeCriterion", qosForm.operation5.text]);	        		
+	        		attributes.push(["confidence_responseTimeCriterion", qosForm.confidence5.text]);
+	        		
+	        		
+	        		attributes.push(["operation_worstResponseTimeCriterion", qosForm.operation6.text]);	        		
+	        		attributes.push(["confidence_worstResponseTimeCriterion", qosForm.confidence6.text]);
+	        		
+	        		
+	        		attributes.push(["operation_bestResponseTimeCriterion", qosForm.operation7.text]);	        		
+	        		attributes.push(["confidence_bestResponseTimeCriterion", qosForm.confidence7.text]);
+	        		
+	        		
+	        		attributes.push(["operation_avgResponseTimeCriterion", qosForm.operation8.text]);	        		
+	        		attributes.push(["confidence_avgResponseTimeCriterion", qosForm.confidence8.text]);
+	        		
+	        		
+	        		attributes.push(["operation_stDevResponseTimeCriterion", qosForm.operation9.text]);	        		
+	        		attributes.push(["confidence_stDevResponseTimeCriterion", qosForm.confidence9.text]);    
+	        		   		
+        		}
+        	}       
+        	
+        	private function printArray():void {
+        		for(var i:int = 0; i < parameters.length; i++) {
+        			trace(parameters[i][0] + "  " +  parameters[i][1]);
+        		}
+        	}
+        ]]>
+    </mx:Script>
+    <customComponent:QoSSubForm id="subForm1" height="188" methodName="{methodName}" 
+    	withoutReservation="{withoutReservation}"/>
+    
+    <!--
+    <mx:Form>
+    
+    	<customComponent:QoSSubForm/>    
+     	<customComponent:QoSForm width="421" height="544"/>
+    
+    
+    </mx:Form>
+    -->
+     
+    <mx:HBox> 
+        <mx:Button click="OK_QoS();" label="OK"/> 
+        <mx:Button click="cancelQoS();" label="Cancel"/> 
+    </mx:HBox> 
+    <!-- -->
+</mx:TitleWindow>
+
+
