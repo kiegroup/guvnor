@@ -183,7 +183,10 @@ public class MetaDataWidget extends Composite {
                                            }
                                        },
                                        constants.DisableTip() ) );
-
+        
+        addAttribute( "UUID:",
+        		readOnlyText(uuid) );
+        
         endSection();
 
         startSection( constants.OtherMetaData() );

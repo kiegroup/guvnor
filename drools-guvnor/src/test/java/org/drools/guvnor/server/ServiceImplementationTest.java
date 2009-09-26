@@ -79,8 +79,10 @@ import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
+import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
@@ -329,8 +331,191 @@ public class ServiceImplementationTest extends TestCase {
 
 		AssetItem dtItem = impl.repository.loadAssetByUUID(uuid);
 		assertEquals(dtItem.getDescription(), "an initial desc");
+	}	
 
+	public void testCreateLinkedAssetItem() throws Exception {
+		ServiceImplementation impl = getService();
+		PackageItem testCreateNewRuleAsLinkPackage1 = impl.repository.createPackage("testCreateNewRuleAsLinkPackage1", "desc");
+		impl.createCategory("", "testCreateNewRuleAsLinkCat1", "this is a cat");
+		impl.repository.createPackage("testCreateNewRuleAsLinkPackage2", "desc");
+		impl.createCategory("", "testCreateNewRuleAsLinkCat2", "this is a cat");
 
+		//Create the original asset.
+		String uuid = impl.createNewRule("testCreateLinkedAssetItemRule",
+				"an initial desc", "testCreateNewRuleAsLinkCat1", "testCreateNewRuleAsLinkPackage1",
+				AssetFormats.DSL_TEMPLATE_RULE);
+		assertNotNull(uuid);
+		assertFalse("".equals(uuid));
+
+		AssetItem dtItem = impl.repository.loadAssetByUUID(uuid);
+		assertEquals(dtItem.getDescription(), "an initial desc");
+		
+		//create an asset which is linked to an existing asset. Different package, same category.
+		String uuidLink = impl.createNewLinkedRule("testCreateLinkedAssetItemRuleLinked",
+				uuid, "testCreateNewRuleAsLinkCat1", "testCreateNewRuleAsLinkPackage2");
+		assertNotNull(uuidLink);
+		assertFalse("".equals(uuidLink));
+		assertFalse(uuidLink.equals(uuid));
+
+		//now verify the linked asset.
+		AssetItem itemLink = impl.repository.loadAssetByUUID(uuidLink);
+		assertEquals(itemLink.getName(), "testCreateLinkedAssetItemRuleLinked");
+		assertEquals(itemLink.getDescription(), "an initial desc");
+		assertEquals(itemLink.getFormat(), AssetFormats.DSL_TEMPLATE_RULE);
+		assertEquals(itemLink.getPackage().getName(), "testCreateNewRuleAsLinkPackage2");
+
+		assertEquals(itemLink.getPackageName(), "testCreateNewRuleAsLinkPackage2");
+		
+		assertTrue(itemLink.getCategories().size() == 1);
+		assertTrue(itemLink.getCategorySummary().contains("testCreateNewRuleAsLinkCat1"));
+		
+		//now verify the original asset.
+		AssetItem referredItem = impl.repository.loadAssetByUUID(uuid);
+		assertEquals(referredItem.getName(), "testCreateLinkedAssetItemRule");
+		assertEquals(referredItem.getDescription(), "an initial desc");
+		assertEquals(referredItem.getFormat(), AssetFormats.DSL_TEMPLATE_RULE);
+		assertEquals(referredItem.getPackage().getName(), "testCreateNewRuleAsLinkPackage1");
+
+		assertTrue(referredItem.getCategories().size() == 1);
+		assertTrue(referredItem.getCategorySummary().contains("testCreateNewRuleAsLinkCat1"));		
+
+		
+		//create an asset which refers to an existing asset. same package, different category.
+		String uuidLink1 = impl.createNewLinkedRule("testCreateLinkedAssetItemRuleLinked1",
+				uuid, "testCreateNewRuleAsLinkCat2", "testCreateNewRuleAsLinkPackage1");
+		assertNotNull(uuidLink1);
+		assertFalse("".equals(uuidLink1));
+		assertFalse(uuidLink1.equals(uuid));
+
+		
+		//now verify the linked asset.
+		AssetItem itemLink1 = impl.repository.loadAssetByUUID(uuidLink1);
+		assertEquals(itemLink1.getDescription(), "an initial desc");
+		assertEquals(itemLink1.getFormat(), AssetFormats.DSL_TEMPLATE_RULE);
+		assertEquals(itemLink1.getPackage().getName(), "testCreateNewRuleAsLinkPackage1");
+		assertEquals(itemLink1.getPackageName(), "testCreateNewRuleAsLinkPackage1");
+		
+		assertTrue(itemLink1.getCategories().size() == 2);
+		assertTrue(itemLink1.getCategorySummary().contains("testCreateNewRuleAsLinkCat1"));
+		assertTrue(itemLink1.getCategorySummary().contains("testCreateNewRuleAsLinkCat2"));
+		
+		//now verify the linked asset by calling PackageItem.loadAsset()
+		AssetItem itemLinkFromPackage1 = testCreateNewRuleAsLinkPackage1.loadAsset("testCreateLinkedAssetItemRuleLinked1");
+		assertEquals(itemLinkFromPackage1.getDescription(), "an initial desc");
+		assertEquals(itemLinkFromPackage1.getFormat(), AssetFormats.DSL_TEMPLATE_RULE);
+		assertEquals(itemLinkFromPackage1.getPackage().getName(), "testCreateNewRuleAsLinkPackage1");
+		assertEquals(itemLinkFromPackage1.getPackageName(), "testCreateNewRuleAsLinkPackage1");
+		
+		assertTrue(itemLinkFromPackage1.getCategories().size() == 2);
+		assertTrue(itemLinkFromPackage1.getCategorySummary().contains("testCreateNewRuleAsLinkCat1"));
+		assertTrue(itemLinkFromPackage1.getCategorySummary().contains("testCreateNewRuleAsLinkCat2"));
+		
+		//now verify the original asset.
+		AssetItem referredItem1 = impl.repository.loadAssetByUUID(uuid);
+		assertEquals(referredItem1.getDescription(), "an initial desc");
+		assertEquals(referredItem1.getFormat(), AssetFormats.DSL_TEMPLATE_RULE);
+		assertEquals(referredItem1.getPackage().getName(), "testCreateNewRuleAsLinkPackage1");
+		
+		assertTrue(referredItem1.getCategories().size() == 2);
+		assertTrue(referredItem1.getCategorySummary().contains("testCreateNewRuleAsLinkCat1"));		
+		assertTrue(referredItem1.getCategorySummary().contains("testCreateNewRuleAsLinkCat2"));
+		
+		//now verify AssetItemIterator works by calling search
+        AssetItemIterator it = impl.repository.findAssetsByName("testCreateLinkedAssetItemRule%",
+                true); 
+		assertEquals(3, it.getSize());
+		while(it.hasNext()) {
+			AssetItem ai = it.next();
+			if(ai.getUUID().equals(uuid)) {
+				assertEquals(ai.getPackage().getName(), "testCreateNewRuleAsLinkPackage1");
+				assertEquals(ai.getDescription(), "an initial desc");
+			} else if (ai.getUUID().equals(uuidLink)) {
+				assertEquals(ai.getPackage().getName(), "testCreateNewRuleAsLinkPackage2");
+				assertEquals(ai.getDescription(), "an initial desc");
+			} else if (ai.getUUID().equals(uuidLink1)) {
+				assertEquals(ai.getPackage().getName(), "testCreateNewRuleAsLinkPackage1");
+				assertEquals(ai.getDescription(), "an initial desc");
+			} else {
+				fail("unexptected asset found: " + ai.getPackage().getName());
+			}
+		}
+	}
+	
+	public void testLinkedAssetItemHistoryRelated() throws Exception {
+		ServiceImplementation impl = getService();
+		PackageItem testCreateNewRuleAsLinkPackage1 = impl.repository.createPackage("testLinkedAssetItemHistoryRelatedPack", "desc");
+		impl.createCategory("", "testLinkedAssetItemHistoryRelatedCat", "this is a cat");
+
+		//Create the original asset.
+		String uuid = impl.createNewRule("testLinkedAssetItemHistoryRelatedRule",
+				"an initial desc", "testLinkedAssetItemHistoryRelatedCat", "testLinkedAssetItemHistoryRelatedPack",
+				AssetFormats.DSL_TEMPLATE_RULE);
+		
+		//create an asset which refers to an existing asset.
+		String uuidLink = impl.createNewLinkedRule("testLinkedAssetItemHistoryRelatedRuleLinked",
+				uuid, "testLinkedAssetItemHistoryRelatedCat", "testLinkedAssetItemHistoryRelatedPack");
+		assertFalse(uuidLink.equals(uuid));
+
+		//create version 1.
+		RuleAsset assetWrapper = impl.loadRuleAsset(uuidLink);
+		assertEquals(assetWrapper.metaData.description, "an initial desc");
+		assetWrapper.metaData.description = "version 1";
+		String uuidLink1 = impl.checkinVersion(assetWrapper);
+		
+		//create version 2
+		RuleAsset assetWrapper2 = impl.loadRuleAsset(uuidLink);
+		assetWrapper2.metaData.description = "version 2";
+		String uuidLink2 = impl.checkinVersion(assetWrapper2);
+		
+		//create version head
+		RuleAsset assetWrapper3 = impl.loadRuleAsset(uuidLink);
+		assetWrapper3.metaData.description = "version head";
+		String uuidLink3 = impl.checkinVersion(assetWrapper3);
+
+		assertEquals(uuidLink, uuidLink1);
+		assertEquals(uuidLink, uuidLink2);
+
+		//verify the history info of LinkedAssetItem
+		TableDataResult result = impl.loadAssetHistory(uuidLink);
+		assertNotNull(result);
+		TableDataRow[] rows = result.data;
+		assertEquals(2, rows.length);
+		assertFalse(rows[0].id.equals(uuidLink));
+		assertFalse(rows[1].id.equals(uuidLink));
+
+		RuleAsset version1 = impl.loadRuleAsset(rows[0].id);
+		RuleAsset version2 = impl.loadRuleAsset(rows[1].id);
+		RuleAsset versionHead = impl.loadRuleAsset(uuidLink);
+		assertFalse(version1.metaData.versionNumber == version2.metaData.versionNumber);
+		assertFalse(version1.metaData.versionNumber == versionHead.metaData.versionNumber);
+		assertTrue(version1.metaData.description.equals("version 1"));
+		assertTrue(version2.metaData.description.equals("version 2"));
+		assertTrue(versionHead.metaData.description.equals("version head"));
+
+		//verify the history info of the original AssetItem
+		result = impl.loadAssetHistory(uuid);
+		assertNotNull(result);
+		rows = result.data;
+		assertEquals(2, rows.length);
+		assertFalse(rows[0].id.equals(uuid));
+		assertFalse(rows[1].id.equals(uuid));
+
+		version1 = impl.loadRuleAsset(rows[0].id);
+		version2 = impl.loadRuleAsset(rows[1].id);
+		versionHead = impl.loadRuleAsset(uuid);
+		assertFalse(version1.metaData.versionNumber == version2.metaData.versionNumber);
+		assertFalse(version1.metaData.versionNumber == versionHead.metaData.versionNumber);
+		assertTrue(version1.metaData.description.equals("version 1"));
+		assertTrue(version2.metaData.description.equals("version 2"));
+		assertTrue(versionHead.metaData.description.equals("version head"));
+
+		//test restore
+		impl.restoreVersion(version1.uuid, versionHead.uuid, "this was cause of a mistake");
+
+		RuleAsset newHead = impl.loadRuleAsset(uuid);
+
+		assertEquals("this was cause of a mistake",
+				newHead.metaData.checkinComment);
 	}
 
 	public void testCreateNewRuleContainsApostrophe() throws Exception {
@@ -450,10 +635,6 @@ public class ServiceImplementationTest extends TestCase {
 				AssetFormats.DSL_TEMPLATE_RULE);
 		asset = impl.loadRuleAsset(uuid);
 		assertTrue(asset.content instanceof RuleContentText);
-
-
-		//asset
-
 	}
 
     public void testTrackRecentOpenedChanged() throws Exception {

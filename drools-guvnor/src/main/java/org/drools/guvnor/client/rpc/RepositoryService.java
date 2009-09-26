@@ -72,6 +72,13 @@ public interface RepositoryService extends RemoteService {
     public String createNewRule(String ruleName, String description, String initialCategory, String initialPackage, String format) throws SerializableException;
 
     /**
+     * Creates a new rule which refers to an existing rule.
+     * Return the UUID of the item created.
+     * This will not check in the rule, but just leave it as saved in the repo.
+     */
+    public String createNewLinkedRule(String ruleName, String linkedRuleUUID, String initialCategory, String initialPackage) throws SerializableException;
+
+    /**
      * Delete un checked in Asset
      */
     public void deleteUncheckedRule(String ruleName, String initialPackage);

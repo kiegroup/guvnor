@@ -619,7 +619,7 @@ public class RulesRepository {
     public AssetItem loadAssetByUUID(String uuid) {
         try {
             Node rulePackageNode = this.session.getNodeByUUID( uuid );
-            return new AssetItem( this,
+            return new LinkedAssetItem( this,
                                   rulePackageNode );
         } catch (ItemNotFoundException e) {
           log.warn(e);
@@ -642,7 +642,7 @@ public class RulesRepository {
      *            what description to use for the node
      * @return a PackageItem, encapsulating the created node
      * @throws RulesRepositoryException
-     */
+     */	
     public PackageItem createPackage(String name,
                                      String description) throws RulesRepositoryException {
         Node folderNode = this.getAreaNode( RULE_PACKAGE_AREA );

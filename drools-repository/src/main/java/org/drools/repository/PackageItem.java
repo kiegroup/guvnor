@@ -225,7 +225,80 @@ public class PackageItem extends VersionableItem {
 
     }
 
+    /**
+     * This adds a rule which is linked to an existing rule. 
+     *
+     * This will NOT check the asset in, just create the basic record.
+     * @param assetName The name of the asset (the file name minus the extension)
+     * @param linkedAssetUUID the UUID of the existing rule that this asset is linked to.
+     */
+    public AssetItem addLinkedAsset(String assetName, String linkedAssetUUID) {
+    	return addLinkedAsset(assetName, linkedAssetUUID, null);    	
+    }
+    /**
+     * This adds a rule which is linked to an existing rule. 
+     *
+     * This will NOT check the asset in, just create the basic record.
+     * @param assetName The name of the asset (the file name minus the extension)
+     * @param linkedAssetUUID the UUID of the existing rule that this asset is linked to.
+     * @param initialCategory The initial category the asset is placed in (can belong to multiple ones later).
+     */
+    public AssetItem addLinkedAsset(String assetName, String linkedAssetUUID,
+                            String initialCategory) {
+        Node wrapperNode;
+        try {
+        	assetName = assetName.trim();
+            Node rulesFolder = this.node.getNode( ASSET_FOLDER_NAME );
+            wrapperNode = rulesFolder.addNode( assetName,
+                                            AssetItem.RULE_NODE_TYPE_NAME );
+            wrapperNode.setProperty( AssetItem.TITLE_PROPERTY_NAME,
+                                  assetName );
 
+            wrapperNode.setProperty( AssetItem.DESCRIPTION_PROPERTY_NAME,
+                                  "description_IGNORED" );
+            /*
+            if (format != null) {
+                ruleNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME,
+                                      format );
+            } else {
+                ruleNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME,
+                                      AssetItem.DEFAULT_CONTENT_FORMAT );
+            }
+
+
+            ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT,
+                                  "Initial" );
+*/
+            Calendar lastModified = Calendar.getInstance();
+            wrapperNode.setProperty( AssetItem.LAST_MODIFIED_PROPERTY_NAME, lastModified );
+            wrapperNode.setProperty( AssetItem.PACKAGE_NAME_PROPERTY, this.getName() );
+            wrapperNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME,
+                    AssetItem.DEFAULT_CONTENT_FORMAT );
+
+            //ruleNode.setProperty( CREATOR_PROPERTY_NAME, this.node.getSession().getUserID() );
+
+            wrapperNode.setProperty( LinkedAssetItem.LINKED_NODE_UUID, linkedAssetUUID );
+
+            AssetItem rule = new LinkedAssetItem( this.rulesRepository, wrapperNode );
+
+            //rule.updateState( StateItem.DRAFT_STATE_NAME );
+
+            if (initialCategory != null) {
+                rule.addCategory( initialCategory );
+            }
+
+            return rule;
+
+        } catch ( RepositoryException e ) {
+            if ( e instanceof ItemExistsException ) {
+                throw new RulesRepositoryException( "A rule of that name already exists in that package.",
+                                                    e );
+            } else {
+                throw new RulesRepositoryException( e );
+            }
+        }
+
+    }
 
     /**
      * This will permanently delete this package.
@@ -499,7 +572,7 @@ public class PackageItem extends VersionableItem {
 
         try {
             Node content = getVersionContentNode();
-            return new AssetItem(
+            return new LinkedAssetItem(
                         this.rulesRepository,
                         content.getNode( ASSET_FOLDER_NAME ).getNode( name ));
         } catch ( RepositoryException e ) {

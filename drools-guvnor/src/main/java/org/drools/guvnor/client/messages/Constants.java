@@ -1943,4 +1943,18 @@ public interface Constants extends ConstantsWithLookup {
 
     String AddRowBeforeSelectedRow();
     
+    String CreateNewAsset();
+    
+    String CreateLinkedAsset();
+    
+    String CreateLinkedAssetFromUUID();
+   
+    String NoteNewLinkedAsset();
+
+    String NewLinkedAssetDesc1();
+    
+    String NewLinkedAssetDesc2();
+    
+    String NewLinkedAssetDesc3();
+    
 }

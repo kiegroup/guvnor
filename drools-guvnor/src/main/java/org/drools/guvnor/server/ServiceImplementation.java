@@ -253,6 +253,40 @@ public class ServiceImplementation
 
     }
 
+    /**
+     * This will create a new asset which refers to an existing asset
+     */
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public String createNewLinkedRule(String name,
+                                String linkedRuleUUID,
+                                String initialCategory,
+                                String initialPackage) throws SerializableException {
+        if ( Contexts.isSessionContextActive() ) {
+            Identity.instance().checkPermission( new PackageNameType( initialPackage ),
+                                                 RoleTypes.PACKAGE_DEVELOPER );
+        }
+
+        log.info( "USER:" + repository.getSession().getUserID() + " REFER to an existing asset name [" + linkedRuleUUID + "] in package [" + initialPackage + "]" );
+
+        try {
+
+            PackageItem pkg = repository.loadPackage( initialPackage );
+            AssetItem asset = pkg.addLinkedAsset( name, linkedRuleUUID, initialCategory);
+            repository.save();
+
+            return asset.getUUID();
+        } catch ( RulesRepositoryException e ) {
+            if ( e.getCause() instanceof ItemExistsException ) {
+                return "DUPLICATE";
+            } else {
+                log.error( e );
+                throw new SerializableException( e.getMessage() );
+            }
+        }
+
+    }
+    
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void deleteUncheckedRule(String uuid,

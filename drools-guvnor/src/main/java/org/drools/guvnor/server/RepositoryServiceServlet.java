@@ -121,6 +121,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 	public java.lang.String createNewRule(java.lang.String p0, java.lang.String p1, java.lang.String p2, java.lang.String p3, java.lang.String p4) throws com.google.gwt.user.client.rpc.SerializableException {
 		 return getService().createNewRule( p0,  p1,  p2,  p3,  p4);
 	}
+	public java.lang.String createNewLinkedRule(java.lang.String p0, java.lang.String p1, java.lang.String p2, java.lang.String p3) throws com.google.gwt.user.client.rpc.SerializableException {
+		 return getService().createNewLinkedRule( p0,  p1,  p2,  p3);
+	}	
 	public void deleteUncheckedRule(java.lang.String p0, java.lang.String p1)  {
 		getService().deleteUncheckedRule( p0,  p1);
 	}
