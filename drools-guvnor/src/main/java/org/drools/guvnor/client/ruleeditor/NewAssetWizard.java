@@ -56,6 +56,7 @@ public class NewAssetWizard extends FormStylePopup {
     private Constants constants = GWT.create(Constants.class);
     
     private TextBox                name        = new TextBox();
+    private TextBox                linkedName        = new TextBox();
     private TextBox                linkedFromUUID        = new TextBox();
     private TextArea               description = new TextArea();
     private String                 initialCategory;
@@ -63,6 +64,7 @@ public class NewAssetWizard extends FormStylePopup {
     private ListBox                 formatChooser = getFormatChooser();
 
     private RulePackageSelector packageSelector = new RulePackageSelector();
+    private RulePackageSelector linkedPackageSelector = new RulePackageSelector();
     private EditItemEvent afterCreate;
     private boolean showCats;
     private String format;
@@ -156,7 +158,7 @@ public class NewAssetWizard extends FormStylePopup {
         newAssetLayout.addAttribute( "", ok );
         
         //layout for create linked asset.
-        linkedAssetLayout.addAttribute( constants.NameColon(), name );        	
+        linkedAssetLayout.addAttribute( constants.NameColon(), linkedName );        	
 
         this.setAfterShow(new Command() {
 			public void execute() {
@@ -165,7 +167,7 @@ public class NewAssetWizard extends FormStylePopup {
         if (showCats) {
         	linkedAssetLayout.addAttribute(constants.InitialCategory(), getCatChooser());
         }
-        linkedAssetLayout.addAttribute(constants.Package() + ":", packageSelector);
+        linkedAssetLayout.addAttribute(constants.Package() + ":", linkedPackageSelector);
 
         linkedAssetLayout.addAttribute(constants.CreateLinkedAssetFromUUID(), linkedFromUUID );  
         Button linkedAssetOKButton = new Button( constants.OK() );
@@ -285,10 +287,10 @@ public class NewAssetWizard extends FormStylePopup {
 
 
         LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-        RepositoryServiceFactory.getService().createNewLinkedRule( name.getText(),
+        RepositoryServiceFactory.getService().createNewLinkedRule( linkedName.getText(),
         		                                                   linkedFromUUID.getText(),
                                                           initialCategory,
-                                                          packageSelector.getSelectedPackage(),
+                                                          linkedPackageSelector.getSelectedPackage(),
                                                           cb );
 
     }
