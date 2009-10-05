@@ -58,6 +58,7 @@ public class ModelContentHandler extends ContentHandler {
 
         if ( header != null ) {
             buf.append( header );
+            buf.append( '\n' );
         }
 
         JarInputStream jis = new JarInputStream( in );

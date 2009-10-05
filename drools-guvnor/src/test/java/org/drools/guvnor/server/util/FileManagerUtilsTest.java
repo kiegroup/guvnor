@@ -111,7 +111,7 @@ public class FileManagerUtilsTest extends TestCase {
                               this.getClass().getResourceAsStream( "/billasurf.jar" ),
                               "billasurf.jar" );
         pkg = repo.loadPackage( "testAttachModelImports" );
-        assertEquals( "goo wee",
+        assertEquals( "goo wee\nimport com.billasurf.Person\nimport com.billasurf.Board\n",
                       ServiceImplementation.getDroolsHeader( pkg ) );
 
     }
