@@ -34,51 +34,56 @@ import com.google.gwt.user.client.rpc.SerializableException;
  */
 public class ModelContentHandler extends ContentHandler {
 
-	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
-			AssetItem item) throws SerializableException {
-		// do nothing, as we have an attachment
-	}
+    public void retrieveAssetContent(RuleAsset asset,
+                                     PackageItem pkg,
+                                     AssetItem item) throws SerializableException {
+        // do nothing, as we have an attachment
+    }
 
-	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
-			throws SerializableException {
-		// do nothing, as we have an attachment
-	}
+    public void storeAssetContent(RuleAsset asset,
+                                  AssetItem repoAsset) throws SerializableException {
+        // do nothing, as we have an attachment
+    }
 
-	/**
-	 * This is called when a model jar is attached, it will peer into it, and then automatically add imports
-	 * if there aren't any already in the package header configuration.
-	 */
-	public void modelAttached(AssetItem asset) throws IOException {
-		InputStream in = asset.getBinaryContentAttachment();
+    /**
+     * This is called when a model jar is attached, it will peer into it, and then automatically add imports
+     * if there aren't any already in the package header configuration.
+     */
+    public void modelAttached(AssetItem asset) throws IOException {
+        InputStream in = asset.getBinaryContentAttachment();
 
-		PackageItem pkg = asset.getPackage();
-		String header = ServiceImplementation.getDroolsHeader(pkg);
-		if ( header == null || "".equals(header.trim())) {
-			StringBuilder buf = new StringBuilder();
+        PackageItem pkg = asset.getPackage();
+        String header = ServiceImplementation.getDroolsHeader( pkg );
+        StringBuilder buf = new StringBuilder();
 
-			JarInputStream jis = new JarInputStream(in);
-			JarEntry entry = null;
-			while ((entry = jis.getNextJarEntry()) != null) {
-				if (!entry.isDirectory()) {
-					if (entry.getName().endsWith(".class") && entry.getName().indexOf('$') == -1) {
-						 buf.append("import " + convertPathToName(entry.getName()));
-						 buf.append("\n");
-					}
-				}
-			}
+        if ( header != null ) {
+            buf.append( header );
+        }
 
-			ServiceImplementation.updateDroolsHeader(buf.toString(), pkg);
+        JarInputStream jis = new JarInputStream( in );
+        JarEntry entry = null;
+        while ( (entry = jis.getNextJarEntry()) != null ) {
+            if ( !entry.isDirectory() ) {
+                if ( entry.getName().endsWith( ".class" ) && entry.getName().indexOf( '$' ) == -1 ) {
+                    buf.append( "import " + convertPathToName( entry.getName() ) );
+                    buf.append( "\n" );
+                }
+            }
+        }
 
-			//pkg.updateHeader(buf.toString());
+        ServiceImplementation.updateDroolsHeader( buf.toString(),
+                                                  pkg );
 
-			pkg.checkin("Imports setup automatically on model import.");
+        //pkg.updateHeader(buf.toString());
 
-		}
-	}
+        pkg.checkin( "Imports setup automatically on model import." );
 
+    }
 
-	public static String convertPathToName(String name) {
-		return name.replace(".class", "").replace("/", ".");
-	}
+    public static String convertPathToName(String name) {
+        return name.replace( ".class",
+                             "" ).replace( "/",
+                                           "." );
+    }
 
 }
