@@ -39,7 +39,7 @@ public class PackageHeaderWidget extends Composite {
 	private SimplePanel layout;
 	private ListBox importList;
 	private ListBox globalList;
-    private Constants constants;
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
 
     public PackageHeaderWidget(PackageConfigData conf) {
@@ -62,7 +62,6 @@ public class PackageHeaderWidget extends Composite {
 			HorizontalPanel main = new HorizontalPanel();
 
 			VerticalPanel imports = new VerticalPanel();
-            constants = ((Constants) GWT.create(Constants.class));
             imports.add(new Label(constants.ImportedTypes()));
 			importList = new ListBox(true);
 
