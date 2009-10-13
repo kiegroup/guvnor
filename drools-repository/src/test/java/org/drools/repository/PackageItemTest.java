@@ -609,6 +609,40 @@ public class PackageItemTest extends TestCase {
         assertTrue(list2.get( 2 ) instanceof AssetItem);
     }
 
+    public void testSearchLinkedAssetByFormat() throws Exception {
+        PackageItem pkg1 = getRepo().createPackage( "testSearchLinkedAssetByFormat1", "" );
+        PackageItem pkg2 = getRepo().createPackage( "testSearchLinkedAssetByFormat2", "" );
+        getRepo().save();
+
+        AssetItem item = pkg1.addAsset( "testSearchLinkedAssetByFormatAsset1", "" );
+        item.updateFormat( "xyz" );
+        item.checkin( "la" );
+        
+        AssetItem linkedItem = pkg2.addLinkedAsset( "testSearchLinkedAssetByFormatAsset2", item.getUUID(), null);
+        linkedItem.updateFormat( "xyz" );
+        linkedItem.checkin( "la" );
+
+        Thread.sleep( 150 );
+
+        AssetItemIterator it = pkg1.queryAssets( "drools:format='xyz'" );
+        List list = iteratorToList( it );
+        assertEquals(1, list.size());
+        assertTrue(list.get( 0 ) instanceof AssetItem);
+ 
+        linkedItem = pkg2.loadAsset("testSearchLinkedAssetByFormatAsset2");
+        assertNotNull(linkedItem);
+        assertTrue(linkedItem instanceof LinkedAssetItem);
+        assertTrue(((LinkedAssetItem)linkedItem).isLinkedAssetItem());
+        assertEquals("testSearchLinkedAssetByFormat2", linkedItem.getPackageName());
+       	
+        it = pkg2.queryAssets( "drools:format='xyz'" );
+        list = iteratorToList( it );
+        
+        //REVISIT: Not working yet.
+        //assertEquals(1, list.size());
+        //assertTrue(list.get( 0 ) instanceof AssetItem);
+    }
+    
     public void testListArchivedAssets() throws Exception {
         PackageItem pkg = getRepo().createPackage( "org.drools.archivedtest", "" );
         getRepo().save();

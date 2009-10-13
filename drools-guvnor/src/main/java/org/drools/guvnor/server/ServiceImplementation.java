@@ -72,6 +72,7 @@ import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
+import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.util.AssetFormatHelper;
 import org.drools.guvnor.server.util.AssetLockManager;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
@@ -1434,39 +1435,55 @@ public class ServiceImplementation
         }
         return result;
     }
-
+    
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public BuilderResult[] buildPackage(String packageUUID,
-                                        String selectorConfigName,
-                                        boolean force) throws SerializableException {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( packageUUID ),
-                                                 RoleTypes.PACKAGE_DEVELOPER );
-        }
-        PackageItem item = repository.loadPackageByUUID( packageUUID );
-        try {
-            return buildPackage( selectorConfigName,
-                                 force,
-                                 item );
-        } catch ( NoClassDefFoundError e ) {
-            throw new DetailedSerializableException( "Unable to find a class that was needed when building the package  [" + e.getMessage() + "]",
-                                                     "Perhaps you are missing them from the model jars, or from the BRMS itself (lib directory)." );
-        } catch ( UnsupportedClassVersionError e ) {
-            throw new DetailedSerializableException( "Can not build the package. One or more of the classes that are needed were compiled with an unsupported Java version.",
-                                                     "For example the pojo classes were compiled with Java 1.6 and Guvnor is running on Java 1.5. [" + e.getMessage() + "]" );
-        }
-    }
-
-    private BuilderResult[] buildPackage(String selectorConfigName,
-                                         boolean force,
-                                         PackageItem item) throws DetailedSerializableException {
+    public BuilderResult[] buildPackage(String packageUUID, boolean force)
+			throws SerializableException {
+		return buildPackage(packageUUID, force, null, null, null, null);
+	}
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public BuilderResult[] buildPackage(String packageUUID, boolean force, String buildMode, String operator, String statusDescriptionValue, 
+			String customSelectorName)
+			throws SerializableException {
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(
+					new PackageUUIDType(packageUUID),
+					RoleTypes.PACKAGE_DEVELOPER);
+		}
+		PackageItem item = repository.loadPackageByUUID(packageUUID);
+		try {
+			return buildPackage(item, force, buildMode, operator, statusDescriptionValue, customSelectorName);
+		} catch (NoClassDefFoundError e) {
+			throw new DetailedSerializableException(
+					"Unable to find a class that was needed when building the package  ["
+							+ e.getMessage() + "]",
+					"Perhaps you are missing them from the model jars, or from the BRMS itself (lib directory).");
+		} catch (UnsupportedClassVersionError e) {
+			throw new DetailedSerializableException(
+					"Can not build the package. One or more of the classes that are needed were compiled with an unsupported Java version.",
+					"For example the pojo classes were compiled with Java 1.6 and Guvnor is running on Java 1.5. ["
+							+ e.getMessage() + "]");
+		}
+	}
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public String[] getCustomSelectors()
+			throws SerializableException {
+		return SelectorManager.getInstance().getCustomSelectors();
+	}
+    
+    private BuilderResult[] buildPackage(PackageItem item, boolean force, String buildMode,
+			String operator, String statusDescriptionValue,
+			String selectorConfigName) throws DetailedSerializableException {
         if ( !force && item.isBinaryUpToDate() ) {
             // we can just return all OK if its up to date.
             return null;
         }
-        ContentPackageAssembler asm = new ContentPackageAssembler( item,
-                                                                   selectorConfigName );
+        ContentPackageAssembler asm = new ContentPackageAssembler( item, true, buildMode, operator, statusDescriptionValue, selectorConfigName );
         if ( asm.hasErrors() ) {
             BuilderResult[] result = generateBuilderResults( asm );
             return result;
@@ -1755,8 +1772,7 @@ public class ServiceImplementation
                 PackageItem snap = repository.loadPackageSnapshot( pkg.getName(),
                                                                    snapName );
                 BuilderResult[] res = this.buildPackage( snap.getUUID(),
-                                                         "",
-                                                         true );
+                                                         true, null, null, null, null );
                 if ( res != null ) {
                     StringBuffer buf = new StringBuffer();
                     for ( int i = 0; i < res.length; i++ ) {
@@ -1917,9 +1933,7 @@ public class ServiceImplementation
                 this.ruleBaseCache.put( item.getUUID(),
                                         rb );
             } else {
-                BuilderResult[] errs = this.buildPackage( null,
-                                                          false,
-                                                          item );
+                BuilderResult[] errs = this.buildPackage(item, false, null, null, null, null);
                 if ( errs == null || errs.length == 0 ) {
                     rb = loadRuleBase( item,
                                        buildCl );
@@ -1946,9 +1960,7 @@ public class ServiceImplementation
             log.error( e );
             log.info( "...but trying to rebuild binaries..." );
             try {
-                BuilderResult[] res = this.buildPackage( "",
-                                                         true,
-                                                         item );
+                BuilderResult[] res = this.buildPackage(item, true, null, null, null, null);
                 if ( res != null && res.length > 0 ) {
                     throw new DetailedSerializableException( "There were errors when rebuilding the knowledgebase.",
                                                              "" );
@@ -2064,9 +2076,7 @@ public class ServiceImplementation
                                             loadRuleBase( item,
                                                           cl ) );
                 } else {
-                    BuilderResult[] errs = this.buildPackage( null,
-                                                              false,
-                                                              item );
+                    BuilderResult[] errs = this.buildPackage(item, false, null, null, null, null);
                     if ( errs == null || errs.length == 0 ) {
                         this.ruleBaseCache.put( item.getUUID(),
                                                 loadRuleBase( item,
@@ -2291,8 +2301,7 @@ public class ServiceImplementation
             PackageItem pkg = (PackageItem) pkit.next();
             try {
                 BuilderResult[] res = this.buildPackage( pkg.getUUID(),
-                                                         "",
-                                                         true );
+                                                         true, null, null, null, null );
                 if ( res != null ) {
                     errs.append( "Unable to build package name [" + pkg.getName() + "]\n" );
                     StringBuffer buf = new StringBuffer();

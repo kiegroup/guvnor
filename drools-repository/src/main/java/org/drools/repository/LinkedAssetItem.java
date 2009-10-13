@@ -75,6 +75,13 @@ public class LinkedAssetItem extends AssetItem {
                null );
     }
     
+    public boolean isLinkedAssetItem() {
+		if (wrapperNode == null) {
+			return false;
+		} 
+		return true;    	
+    }
+    
     /**
      * @return A unique identifier for this items content node.
      * return the UUID of the wrapper node. 

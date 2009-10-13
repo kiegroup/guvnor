@@ -42,11 +42,24 @@ public class SelectorManagerTest extends TestCase {
 
 
         assertSame( SelectorManager.getInstance(), SelectorManager.getInstance());
-
-
-
     }
 
+    public void testGetBuiltInSelector() {
+        SelectorManager sm = SelectorManager.getInstance();
+        assertNotNull(sm);
+        assertNotNull(sm.selectors);
+
+        assertTrue(sm.getSelector( "BuiltInSelector" ) instanceof BuiltInSelector);
+    }
+    
+    public void testGetCustomSelectors() {
+        SelectorManager sm = SelectorManager.getInstance();
+        assertNotNull(sm);
+        assertNotNull(sm.selectors);
+
+        assertEquals(2, sm.getCustomSelectors().length);
+    }
+    
     public void testBadConfig() throws Exception {
         SelectorManager sm = new SelectorManager("/badselectors.properties");
 

@@ -599,7 +599,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg,
                                                                    false,
-                                                                   null );
+                                                                   null, null, null, null );
         String drl = asm.getDRL();
 
         assertNotNull( drl );
@@ -710,7 +710,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg,
                                                                    true,
-                                                                   null );
+                                                                   null, null, null, null );
         assertFalse( asm.hasErrors() );
         Package p = asm.builder.getPackage();
 
@@ -938,8 +938,8 @@ public class ContentPackageAssemblerTest extends TestCase {
                               }
                           } );
 
-        ContentPackageAssembler asm = new ContentPackageAssembler( pkg,
-                                                                   "testSelect" );
+        ContentPackageAssembler asm = new ContentPackageAssembler( pkg, true, 
+                                                                   "customSelector", null, null, "testSelect");
 
         Package pk = asm.getBinaryPackage();
         assertEquals( 1,
@@ -948,12 +948,12 @@ public class ContentPackageAssemblerTest extends TestCase {
                       pk.getRules()[0].getName() );
 
         asm = new ContentPackageAssembler( pkg,
-                                           null );
+                                           true );
         pk = asm.getBinaryPackage();
         assertEquals( 2,
                       pk.getRules().length );
 
-        asm = new ContentPackageAssembler( pkg,
+        asm = new ContentPackageAssembler( pkg, true, "customSelector", null, null,
                                            "nothing valid" );
         assertTrue( asm.hasErrors() );
         assertEquals( 1,
@@ -961,7 +961,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertEquals( pkg,
                       asm.getErrors().get( 0 ).itemInError );
 
-        asm = new ContentPackageAssembler( pkg,
+        asm = new ContentPackageAssembler( pkg, true, "customSelector", null, null,
                                            "" );
         pk = asm.getBinaryPackage();
         assertEquals( 2,
@@ -969,15 +969,11 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
-
-
-
     private void assertContains(String sub,
                                 String text) {
         if ( text.indexOf( sub ) == -1 ) {
             fail( "the text: '" + sub + "' was not found." );
         }
-
     }
 
     private void assertDoesNotContain(String sub,

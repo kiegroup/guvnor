@@ -291,7 +291,13 @@ public interface RepositoryService extends RemoteService {
      * in the systems selectors.properties file. This will then apply the filter to the
      * package being built.
      */
-    public BuilderResult[] buildPackage(String packageUUID, String selectorName, boolean force) throws SerializableException;
+    public BuilderResult[] buildPackage(String packageUUID,  boolean force, String buildMode, String operator, String statusDescriptionValue, 
+			String customSelectorName) throws SerializableException;
+
+    /**
+     * return custom selector names
+     */
+    public String[] getCustomSelectors() throws SerializableException;
 
     /**
      * This will return the effective DRL for a package.

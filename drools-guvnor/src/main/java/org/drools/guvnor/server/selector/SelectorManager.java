@@ -1,10 +1,13 @@
 package org.drools.guvnor.server.selector;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.drools.repository.AssetItem;
@@ -21,13 +24,12 @@ public class SelectorManager {
      */
 	public final Map<String, AssetSelector> selectors = new HashMap<String, AssetSelector>();
 
-
-
 	SelectorManager(String configPath) {
 		log.debug("Loading selectors");
 		Properties props = new Properties();
 		try {
 			props.load(this.getClass().getResourceAsStream(configPath));
+		    props.put("BuiltInSelector", "org.drools.guvnor.server.selector.BuiltInSelector");
 			for (Iterator iter = props.keySet().iterator(); iter.hasNext();) {
 				String selectorName = (String) iter.next();
 				String val = props.getProperty(selectorName);
@@ -37,7 +39,7 @@ public class SelectorManager {
                     } else {
                         selectors.put(selectorName, loadSelectorImplementation( val ));
                     }
-                } catch (RuntimeException e) {
+                } catch (Exception e) {
                     log.error("Unable to load a selector [" + val + "]", e);
                 }
 			}
@@ -48,14 +50,13 @@ public class SelectorManager {
 
     /**
      * Return a selector. If the name is null or empty it will return a nil/default selector
-     * (one that lets everything through). If the selector iis not found, it will return null;
+     * (one that lets everything through). If the selector is not found, it will return null;
      */
     public AssetSelector getSelector(String name) {
         if (name == null || "".equals(name.trim())) {
             return nilSelector();
         } else {
             if (this.selectors.containsKey( name )) {
-
                 return this.selectors.get( name );
             } else {
                 log.debug( "No selector found by the name of " + name );
@@ -63,8 +64,15 @@ public class SelectorManager {
             }
         }
     }
-
-
+    
+    public String[] getCustomSelectors() {
+    	 Set<String> s = selectors.keySet();    	 
+    	 List<String> selectorList = new ArrayList<String>();
+    	 selectorList.addAll(s);    	 
+    	 selectorList.remove("BuiltInSelector");
+    	 String[] result = new String[selectorList.size()];
+    	 return selectorList.toArray(result);
+    }
 
 	private AssetSelector nilSelector() {
         return new AssetSelector() {
@@ -74,37 +82,16 @@ public class SelectorManager {
         };
     }
 
-    private AssetSelector loadSelectorImplementation(String val) throws IOException {
-
-		try {
-            return (AssetSelector) Thread.currentThread().getContextClassLoader().loadClass( val ).newInstance();
-
-        } catch ( InstantiationException e ) {
-            log.error( e );
-            return null;
-        } catch ( IllegalAccessException e ) {
-            log.error( e );
-            return null;
-        } catch ( ClassNotFoundException e ) {
-            log.error( e );
-            return null;
-        }
-
-	}
-
-
-
+    private AssetSelector loadSelectorImplementation(String val) throws Exception {
+        return (AssetSelector) Thread.currentThread().getContextClassLoader().loadClass( val ).newInstance();
+ 	}
 
 	private AssetSelector loadRuleSelector(String val) {
 
 		return new RuleBasedSelector(val);
 	}
 
-
-
-
 	public static SelectorManager getInstance() {
 		return INSTANCE;
 	}
-
 }

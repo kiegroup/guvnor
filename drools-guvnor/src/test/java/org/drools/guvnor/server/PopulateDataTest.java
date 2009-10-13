@@ -67,7 +67,7 @@ public class PopulateDataTest extends TestCase {
 
         PackageItem pkg = serv.repository.loadPackage("com.billasurf.manufacturing.plant");
 
-        serv.buildPackage(pkg.getUUID(), null, true);
+        serv.buildPackage(pkg.getUUID(), true);
 
     }
 

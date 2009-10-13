@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
 import org.drools.builder.conf.DefaultPackageNameOption;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -33,6 +34,8 @@ import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.selector.AssetSelector;
 import org.drools.guvnor.server.selector.SelectorManager;
+import org.drools.guvnor.server.selector.BuiltInSelector;
+import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -49,6 +52,7 @@ import org.drools.rule.Package;
  * @author Michael Neale
  */
 public class ContentPackageAssembler {
+	private static final Logger log  = LoggingHelper.getLogger( ContentPackageAssembler.class );
 
 	private PackageItem pkg;
 
@@ -61,7 +65,10 @@ public class ContentPackageAssembler {
 
 	BRMSPackageBuilder builder;
 
-	private String selectorConfigName;
+	private String customSelectorName;
+	private String buildMode;
+	private String operator;
+	private String statusDescriptionValue;
 
 	/**
 	 * Use this if you want to build the whole package.
@@ -70,7 +77,7 @@ public class ContentPackageAssembler {
 	 *            The package.
 	 */
 	public ContentPackageAssembler(PackageItem pkg) {
-		this(pkg, null);
+		this(pkg, true);
 	}
 
 	/**
@@ -81,7 +88,7 @@ public class ContentPackageAssembler {
 	 *            source.
 	 */
 	public ContentPackageAssembler(PackageItem pkg, boolean compile) {
-		this(pkg, compile, null);
+		this(pkg, compile, null, null, null, null);
 	}
 
 	/**
@@ -92,29 +99,20 @@ public class ContentPackageAssembler {
 	 *            source.
 	 * @param selectorConfigName
 	 */
-	public ContentPackageAssembler(PackageItem assetPackage, boolean compile,
-			String selectorConfigName) {
+	public ContentPackageAssembler(PackageItem assetPackage, boolean compile, String buildMode,
+			String operator, String statusDescriptionValue, String selectorConfigName) {
 
 		this.pkg = assetPackage;
-		this.selectorConfigName = selectorConfigName;
+		this.customSelectorName = selectorConfigName;
+		this.buildMode = buildMode;
+		this.operator = operator;
+		this.statusDescriptionValue = statusDescriptionValue;
 
 		createBuilder();
 
 		if (compile && preparePackage()) {
 			buildPackage();
 		}
-	}
-
-	/**
-	 * Use this if you want to build the whole package.
-	 * 
-	 * @param assetPackage
-	 *            The package to build
-	 * 
-	 */
-	public ContentPackageAssembler(PackageItem assetPackage,
-			String selectorConfigName) {
-		this(assetPackage, true, selectorConfigName);
 	}
 
 	/**
@@ -161,20 +159,33 @@ public class ContentPackageAssembler {
      * This will always prioritise DRL before other assets.
 	 */
 	private void buildPackage() {
-		AssetSelector selector = SelectorManager.getInstance().getSelector(
-				selectorConfigName);
+		AssetSelector selector = null;
+		if("customSelector".equals(buildMode)) {
+			selector = SelectorManager.getInstance().getSelector(customSelectorName);			
+		} else if ("builtInSelector".equals(buildMode)) {
+			selector = (BuiltInSelector)SelectorManager.getInstance().getSelector(
+			"BuiltInSelector");
+	        ((BuiltInSelector)selector).setOperator(operator);
+	        ((BuiltInSelector)selector).setStatus(statusDescriptionValue);			
+		} else {
+			//return the NilSelector, i.e., allows everything
+			selector = SelectorManager.getInstance().getSelector(null);				
+		}
+		
 		if (selector == null) {
 			this.errors.add(new ContentAssemblyError(this.pkg,
-					"The selector named " + selectorConfigName
+					"The selector named " + customSelectorName
 							+ " is not available."));
 			return;
 		}
         
+		StringBuffer includedAssets = new StringBuffer("Following assets have been included in package build: ");
         Iterator<AssetItem> drls = pkg.listAssetsByFormat(new String[]{AssetFormats.DRL});
         while (drls.hasNext()) {
             AssetItem asset = (AssetItem) drls.next();
             if (!asset.isArchived() && (selector.isAssetAllowed(asset))) {
                 buildAsset(asset);
+                includedAssets.append(asset.getName() + ", ");
             }
         }
 		Iterator<AssetItem> it = pkg.getAssets();
@@ -182,8 +193,10 @@ public class ContentPackageAssembler {
 			AssetItem asset = (AssetItem) it.next();
 			if (!asset.getFormat().equals(AssetFormats.DRL) && !asset.isArchived() && (selector.isAssetAllowed(asset))) {
 				buildAsset(asset);
+	            includedAssets.append(asset.getName() + ", ");
 			}
 		}
+		log.info(includedAssets.toString());
 	}
 
 	/**

@@ -1957,4 +1957,11 @@ public interface Constants extends ConstantsWithLookup {
     
     String NewLinkedAssetDesc3();
     
+    String BuildWholePackageTip();
+    
+    String BuiltInSelectorTip();
+
+    String BuildWholePackage();
+    
+    String BuiltInSelector();    
 }

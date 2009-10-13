@@ -1267,7 +1267,7 @@ public class ServiceImplementationTest extends TestCase {
 				.updateContent(" rule abc \n when \n then \n System.out.println(42); \n end");
 		item.checkin("");
 
-		BuilderResult[] res = impl.buildPackage(pkg.getUUID(), "", true);
+		BuilderResult[] res = impl.buildPackage(pkg.getUUID(), true, null, null, null, "");
 		assertNull(res);
 
 		impl.createPackageSnapshot("testSnapshotRebuild", "SNAP", false, "");
@@ -1598,7 +1598,7 @@ public class ServiceImplementationTest extends TestCase {
 		rule1.checkin("");
 		repo.save();
 
-		BuilderResult[] results = impl.buildPackage(pkg.getUUID(), null, true);
+		BuilderResult[] results = impl.buildPackage(pkg.getUUID(),true);
 		assertNull(results);
 
 		pkg = repo.loadPackage("testBinaryPackageCompile");
@@ -1630,7 +1630,7 @@ public class ServiceImplementationTest extends TestCase {
 				.updateContent("rule 'rule1' \n when p:PersonX() \n then System.err.println(42); \n end");
 		rule1.checkin("");
 
-		results = impl.buildPackage(pkg.getUUID(), null, true);
+		results = impl.buildPackage(pkg.getUUID(), true);
 		assertNotNull(results);
 		assertEquals(1, results.length);
 		assertEquals(rule1.getName(), results[0].assetName);
@@ -1639,7 +1639,7 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(rule1.getUUID(), results[0].uuid);
 
 		pkg = repo.loadPackageSnapshot("testBinaryPackageCompile", "SNAP1");
-		results = impl.buildPackage(pkg.getUUID(), null, true);
+		results = impl.buildPackage(pkg.getUUID(),true);
 		assertNull(results);
 
 	}
@@ -1681,7 +1681,7 @@ public class ServiceImplementationTest extends TestCase {
 		rule2.checkin("");
 		repo.save();
 
-		BuilderResult[] results = impl.buildPackage(pkg.getUUID(), null, true);
+		BuilderResult[] results = impl.buildPackage(pkg.getUUID(), true);
 		if (results != null) {
 			for (int i = 0; i < results.length; i++) {
 				System.err.println(results[i].message);
@@ -1725,7 +1725,7 @@ public class ServiceImplementationTest extends TestCase {
 		rule2.updateContent(BRXMLPersistence.getInstance().marshal(model));
 		rule2.checkin("");
 
-		results = impl.buildPackage(pkg.getUUID(), null, true);
+		results = impl.buildPackage(pkg.getUUID(), true);
 		assertNotNull(results);
 		assertTrue(results.length > 0);
 		// assertEquals(2, results.length);
@@ -1735,7 +1735,7 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(rule2.getUUID(), results[0].uuid);
 
 		pkg = repo.loadPackageSnapshot("testBinaryPackageCompileBRL", "SNAP1");
-		results = impl.buildPackage(pkg.getUUID(), null, true);
+		results = impl.buildPackage(pkg.getUUID(), true);
 		assertNull(results);
 
 		// check that the rule name in the model is being set
@@ -2180,7 +2180,7 @@ public class ServiceImplementationTest extends TestCase {
 		assertFalse(impl.ruleBaseCache.containsKey(pkg.getUUID()));
 		impl.ruleBaseCache.remove("XXX");
 
-		BuilderResult[] results = impl.buildPackage(pkg.getUUID(), null, true);
+		BuilderResult[] results = impl.buildPackage(pkg.getUUID(), true);
 		assertNull(results);
 
 		pkg = repo.loadPackage("testBinaryPackageUpToDate");
@@ -2200,7 +2200,7 @@ public class ServiceImplementationTest extends TestCase {
 				.getBoolean());
 		assertFalse(impl.ruleBaseCache.containsKey(pkg.getUUID()));
 
-		impl.buildPackage(pkg.getUUID(), null, false);
+		impl.buildPackage(pkg.getUUID(), false);
 
 		assertTrue(pkg.getNode().getProperty("drools:binaryUpToDate")
 				.getBoolean());
@@ -2212,7 +2212,7 @@ public class ServiceImplementationTest extends TestCase {
 		assertFalse(pkg.getNode().getProperty("drools:binaryUpToDate")
 				.getBoolean());
 		assertFalse(pkg.isBinaryUpToDate());
-		impl.buildPackage(pkg.getUUID(), null, false);
+		impl.buildPackage(pkg.getUUID(), false);
 		assertTrue(pkg.getNode().getProperty("drools:binaryUpToDate")
 				.getBoolean());
 		assertTrue(pkg.isBinaryUpToDate());
@@ -2778,7 +2778,7 @@ public class ServiceImplementationTest extends TestCase {
 		ass.content = dt;
 		impl.checkinVersion(ass);
 
-		BuilderResult[] results = impl.buildPackage(pkg.getUUID(), null, true);
+		BuilderResult[] results = impl.buildPackage(pkg.getUUID(), true);
 		assertNull(results);
 
 		pkg = repo.loadPackage("testGuidedDTCompile");

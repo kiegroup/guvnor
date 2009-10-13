@@ -49,7 +49,7 @@ public class PackageDeploymentServletTest extends TestCase {
 		asset.updateFormat(AssetFormats.DRL);
 		asset.checkin("");
 
-		assertNull(impl.buildPackage(pkg.getUUID(), null, true));
+		assertNull(impl.buildPackage(pkg.getUUID(), true));
 
 
 
@@ -228,7 +228,7 @@ public class PackageDeploymentServletTest extends TestCase {
         asset.updateFormat(AssetFormats.DRL);
         asset.checkin("");
 
-        assertNull(impl.buildPackage(pkg.getUUID(), null, true));
+        assertNull(impl.buildPackage(pkg.getUUID(), true));
 
 
 

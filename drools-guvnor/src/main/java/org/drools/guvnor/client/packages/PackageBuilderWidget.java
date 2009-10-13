@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.common.SmartViewWizard;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -44,6 +45,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -78,7 +80,13 @@ public class PackageBuilderWidget extends Composite {
 	public FormStyleLayout layout;
 	private PackageConfigData conf;
 	private EditItemEvent editEvent;
-    private static Constants constants;
+    private static Constants constants = GWT.create(Constants.class);
+
+    
+    private final FormStyleLayout buildWholePackageLayout     = new FormStyleLayout();
+    private final FormStyleLayout builtInSelectorLayout     = new FormStyleLayout();
+    private final FormStyleLayout customSelectorLayout     = new FormStyleLayout();
+    private String buildMode = "buildWholePackage";
 
     public PackageBuilderWidget(final PackageConfigData conf,
 			EditItemEvent editEvent) {
@@ -88,27 +96,109 @@ public class PackageBuilderWidget extends Composite {
 
 		final SimplePanel buildResults = new SimplePanel();
 
+		RadioButton wholePackageRadioButton = new RadioButton("action", "Build whole package"); 
+		RadioButton builtInSelectorRadioButton = new RadioButton("action", "Use built-in selector"); 
+		RadioButton customSelectorRadioButton = new RadioButton("action", "Use custom selector"); 
+		wholePackageRadioButton.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				buildWholePackageLayout.setVisible(true);
+				builtInSelectorLayout.setVisible(false);
+				customSelectorLayout.setVisible(false);
+				buildMode = "buildWholePackage";
+			}
+		});
+		builtInSelectorRadioButton.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				buildWholePackageLayout.setVisible(false);
+				builtInSelectorLayout.setVisible(true);
+				customSelectorLayout.setVisible(false);
+				buildMode = "builtInSelector";
+			}
+		});
+		customSelectorRadioButton.addClickListener(new ClickListener() {
+			public void onClick(Widget arg0) {
+				buildWholePackageLayout.setVisible(false);
+				builtInSelectorLayout.setVisible(false);
+				customSelectorLayout.setVisible(true);
+				buildMode = "customSelector";
+			}
+		});
+		
+		VerticalPanel verticalPanel = new VerticalPanel();
+		
+        HorizontalPanel wholePackageRadioButtonPanel = new HorizontalPanel();
+        wholePackageRadioButtonPanel.add(wholePackageRadioButton); 
+        wholePackageRadioButtonPanel.add( new InfoPopup(constants.BuildWholePackage(), constants.BuildWholePackageTip()) );
+		verticalPanel.add(wholePackageRadioButtonPanel);
+		
+	    HorizontalPanel builtInSelectorRadioButtonPanel = new HorizontalPanel();
+	    builtInSelectorRadioButtonPanel.add(builtInSelectorRadioButton); 
+	    builtInSelectorRadioButtonPanel.add( new InfoPopup(constants.BuiltInSelector(), constants.BuiltInSelectorTip()) );  		
+		verticalPanel.add(builtInSelectorRadioButtonPanel);
+		
+	    HorizontalPanel customSelectorRadioButtonPanel = new HorizontalPanel();
+	    customSelectorRadioButtonPanel.add(customSelectorRadioButton); 
+	    customSelectorRadioButtonPanel.add( new InfoPopup(constants.CustomSelector(), constants.SelectorTip()) );  		
+		verticalPanel.add(customSelectorRadioButtonPanel);
 
-        final TextBox selector = new TextBox();
-        constants = ((Constants) GWT.create(Constants.class));
+		layout.addAttribute("", verticalPanel);		
+		wholePackageRadioButton.setChecked(true);	
+		
+		buildWholePackageLayout.setVisible(true);
+		builtInSelectorLayout.setVisible(false);
+		customSelectorLayout.setVisible(false);
+		
+		//Build whole package layout
+		layout.addRow(buildWholePackageLayout);
+
+
+		//Built-in selector layout
+        HorizontalPanel builtInSelectorPanel = new HorizontalPanel();
+        builtInSelectorPanel.add( new HTML("&nbsp;&nbsp;<i>" + "Status" + ": </i>") ); 
+        
+        final ListBox operator = new ListBox();
+        String[] vals = new String[]{"=", "!=", "<", ">"};
+        for ( int i = 0; i < vals.length; i++ ) {
+        	operator.addItem( vals[i], vals[i]);
+        }
+        builtInSelectorPanel.add( operator );
+        
+        final TextBox statusValue = new TextBox();
+        statusValue.setTitle( constants.WildCardsSearchTip() );
+        builtInSelectorPanel.add(statusValue );                  
+ 
+        builtInSelectorLayout.addRow(builtInSelectorPanel);
+        layout.addRow( builtInSelectorLayout );
+        
+        
+		//Custom selector layout
+        customSelectorLayout.setVisible(false);
+        HorizontalPanel customSelectorPanel = new HorizontalPanel();
+        customSelectorPanel.add( new HTML("&nbsp;&nbsp;<i>" + "Custom Selector" + ": </i>") ); //NON-NLS
+         
+        final ListBox customSelector = new ListBox();
+        customSelector.setTitle( constants.WildCardsSearchTip() );
+        customSelectorPanel.add(customSelector);  
+        loadCustomSelectorList(customSelector);        
+          
+        customSelectorLayout.addRow(customSelectorPanel);   
+        layout.addRow( customSelectorLayout );
+
+
         final Button b = new Button(constants.BuildPackage());
 		b.setTitle(constants.ThisWillValidateAndCompileAllTheAssetsInAPackage());
 		b.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
-				doBuild(buildResults, selector.getText());
+				doBuild(buildResults, operator.getValue(operator.getSelectedIndex()), statusValue.getText(), customSelector.getSelectedIndex() != -1?customSelector.getValue(customSelector.getSelectedIndex()):null);
 			}
 		});
 
 
         HorizontalPanel buildStuff = new HorizontalPanel();
         buildStuff.add( b );
-        buildStuff.add( new HTML("&nbsp;&nbsp;<i>" + constants.OptionalSelectorName() + ": </i>") ); //NON-NLS
-        buildStuff.add( selector );
-        buildStuff.add( new InfoPopup(constants.CustomSelector(), constants.SelectorTip()) );
-
+ 
 		layout.addAttribute(constants.BuildBinaryPackage(), buildStuff);
-		layout
-				.addRow(new HTML("<i><small>" + constants.BuildingPackageNote() + "</small></i>"));//NON-NLS
+		layout.addRow(new HTML("<i><small>" + constants.BuildingPackageNote() + "</small></i>"));//NON-NLS
 		layout.addRow(buildResults);
 
 		Button snap = new Button(constants.CreateSnapshotForDeployment());
@@ -125,6 +215,50 @@ public class PackageBuilderWidget extends Composite {
 		layout.setWidth("100%");
 
 		initWidget(layout);
+	}
+
+	private void loadCustomSelectorList(final ListBox customSelector) {
+		RepositoryServiceFactory.getService().getCustomSelectors( new GenericCallback<String[]>() {
+
+            public void onSuccess(String[] list) {
+                for ( int i = 0; i < list.length; i++ ) {
+                	customSelector.addItem( list[i], list[i]);
+                }
+            }
+        });
+	}
+	
+	private void doBuild(final Panel buildResults, final String operator, final String statusValue, final String customSelector) {
+		buildResults.clear();
+
+		final HorizontalPanel busy = new HorizontalPanel();
+		busy.add(new Label(constants.ValidatingAndBuildingPackagePleaseWait()));
+		busy.add(new Image("images/red_anime.gif")); //NON-NLS
+
+        //LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
+		buildResults.add(busy);
+
+		DeferredCommand.addCommand(new Command() {
+			public void execute() {
+				RepositoryServiceFactory.getService().buildPackage(conf.uuid, true, buildMode, operator, statusValue, customSelector, 
+						new GenericCallback<BuilderResult[]>() {
+							public void onSuccess(BuilderResult[] result) {
+                                LoadingPopup.close();
+								if (result == null) {
+									showSuccessfulBuild(buildResults);
+								} else {
+									showBuilderErrors(result, buildResults, editEvent);
+								}
+							}
+
+							public void onFailure(Throwable t) {
+								buildResults.clear();
+								super.onFailure(t);
+							}
+						});
+			}
+		});
+
 	}
 
 	/**
@@ -185,47 +319,6 @@ public class PackageBuilderWidget extends Composite {
 	}
 
 	/**
-	 * Actually do the building.
-	 *
-	 * @param buildResults
-	 *            The panel to stuff the results in.
-	 * @param selectorName
-	 */
-	private void doBuild(final Panel buildResults, final String selectorName) {
-
-		buildResults.clear();
-
-		final HorizontalPanel busy = new HorizontalPanel();
-		busy.add(new Label(constants.ValidatingAndBuildingPackagePleaseWait()));
-		busy.add(new Image("images/red_anime.gif")); //NON-NLS
-
-        //LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
-		buildResults.add(busy);
-
-		DeferredCommand.addCommand(new Command() {
-			public void execute() {
-				RepositoryServiceFactory.getService().buildPackage(conf.uuid, selectorName, true,
-						new GenericCallback<BuilderResult[]>() {
-							public void onSuccess(BuilderResult[] result) {
-                                LoadingPopup.close();
-								if (result == null) {
-									showSuccessfulBuild(buildResults);
-								} else {
-									showBuilderErrors(result, buildResults, editEvent);
-								}
-							}
-
-							public void onFailure(Throwable t) {
-								buildResults.clear();
-								super.onFailure(t);
-							}
-						});
-			}
-		});
-
-	}
-
-	/**
 	 * This is called to display the success (and a download option).
 	 *
 	 * @param buildResults
@@ -265,8 +358,6 @@ public class PackageBuilderWidget extends Composite {
 	 */
 	public static void showBuilderErrors(BuilderResult[] results, Panel buildResults, final EditItemEvent editEvent) {
 		buildResults.clear();
-
-
 
 		Object[][] data = new Object[results.length][4];
 		for (int i = 0; i < results.length; i++) {
@@ -350,9 +441,6 @@ public class PackageBuilderWidget extends Composite {
         });
 
 		buildResults.add(g);
-
-
-
 	}
 
 	/**
