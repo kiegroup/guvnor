@@ -74,7 +74,13 @@ public abstract class Item {
         }
         else {
             Item rhs = (Item)obj;
-            return this.node.equals(rhs.getNode());
+            try {
+				return this.node.isSame(rhs.getNode());
+			} catch (RepositoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return false;
         }
     }
 

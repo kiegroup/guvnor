@@ -14,6 +14,10 @@ import org.apache.jackrabbit.core.security.AccessManager;
 //import org.apache.jackrabbit.core.security.authorization.WorkspaceAccessManager;
 //import org.apache.jackrabbit.spi.Name;
 //import org.apache.jackrabbit.spi.Path;
+import org.apache.jackrabbit.core.security.authorization.AccessControlProvider;
+import org.apache.jackrabbit.core.security.authorization.WorkspaceAccessManager;
+import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.spi.Path;
 
 /**
  * This is just an experimental access manager for proof of concept. Don't
@@ -68,29 +72,35 @@ public class MyAccessManager
         //System.out.println("is granted: " + arg0);
         return true;
     }
-/*
-	public boolean canRead(Path arg0) throws RepositoryException {
+
+	public boolean canRead(Path itemPath) throws RepositoryException {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
-	public void init(AMContext arg0, AccessControlProvider arg1,
-			WorkspaceAccessManager arg2) throws AccessDeniedException,
+	public void checkPermission(Path absPath, int permissions)
+			throws AccessDeniedException, RepositoryException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void init(AMContext context, AccessControlProvider acProvider,
+			WorkspaceAccessManager wspAccessMgr) throws AccessDeniedException,
 			Exception {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public boolean isGranted(Path arg0, int arg1) throws RepositoryException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean isGranted(Path arg0, Name arg1, int arg2)
+	public boolean isGranted(Path absPath, int permissions)
 			throws RepositoryException {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
-*/
+
+	public boolean isGranted(Path parentPath, Name childName, int permissions)
+			throws RepositoryException {
+		// TODO Auto-generated method stub
+		return true;
+	}
 
 }
