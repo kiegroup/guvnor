@@ -6,6 +6,7 @@
     <project>drools-compiler</project>
     <project>drools-core</project>
     <project>drools-decisiontables</project>
+    <project>drools-doc</project>
     <project>drools-repository</project>
     <project>drools-templates</project>
     <project>drools-verifier</project>
