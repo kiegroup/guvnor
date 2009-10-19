@@ -1267,7 +1267,7 @@ public class ServiceImplementationTest extends TestCase {
 				.updateContent(" rule abc \n when \n then \n System.out.println(42); \n end");
 		item.checkin("");
 
-		BuilderResult[] res = impl.buildPackage(pkg.getUUID(), true, null, null, null, "");
+		BuilderResult[] res = impl.buildPackage(pkg.getUUID(), true);
 		assertNull(res);
 
 		impl.createPackageSnapshot("testSnapshotRebuild", "SNAP", false, "");

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
+import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -37,6 +39,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -47,6 +50,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
@@ -86,6 +90,8 @@ public class PackageBuilderWidget extends Composite {
     private final FormStyleLayout builtInSelectorLayout     = new FormStyleLayout();
     private final FormStyleLayout customSelectorLayout     = new FormStyleLayout();
     private String buildMode = "buildWholePackage";
+
+    private String                 initialCategory;
 
     public PackageBuilderWidget(final PackageConfigData conf,
 			EditItemEvent editEvent) {
@@ -152,21 +158,49 @@ public class PackageBuilderWidget extends Composite {
 
 
 		//Built-in selector layout
-        HorizontalPanel builtInSelectorPanel = new HorizontalPanel();
-        builtInSelectorPanel.add( new HTML("&nbsp;&nbsp;<i>" + "Status" + ": </i>") ); 
-        
-        final ListBox operator = new ListBox();
-        String[] vals = new String[]{"=", "!=", "<", ">"};
+	    builtInSelectorLayout.addRow(new HTML("&nbsp;&nbsp;<i>" + "Build package using following assets" + ": </i>") );
+	       
+	    HorizontalPanel builtInSelectorStatusPanel = new HorizontalPanel();
+        final CheckBox enableStatusCheckBox = new CheckBox();
+        enableStatusCheckBox.setChecked(false);
+        builtInSelectorStatusPanel.add(enableStatusCheckBox);
+        builtInSelectorStatusPanel.add( new HTML("&nbsp;&nbsp;<i>" + "When status" + ": </i>") );    
+        final ListBox statusOperator = new ListBox();
+        String[] vals = new String[]{"=", "!="};
         for ( int i = 0; i < vals.length; i++ ) {
-        	operator.addItem( vals[i], vals[i]);
+        	statusOperator.addItem( vals[i], vals[i]);
         }
-        builtInSelectorPanel.add( operator );
+        builtInSelectorStatusPanel.add( statusOperator );
         
         final TextBox statusValue = new TextBox();
         statusValue.setTitle( constants.WildCardsSearchTip() );
-        builtInSelectorPanel.add(statusValue );                  
- 
-        builtInSelectorLayout.addRow(builtInSelectorPanel);
+        builtInSelectorStatusPanel.add(statusValue );                  
+
+        builtInSelectorLayout.addRow(builtInSelectorStatusPanel);
+        
+        HorizontalPanel builtInSelectorCatPanel = new HorizontalPanel();
+        final CheckBox enableCategoryCheckBox = new CheckBox();
+        enableCategoryCheckBox.setChecked(false);
+        builtInSelectorCatPanel.add(enableCategoryCheckBox);
+        builtInSelectorCatPanel.add( new HTML("&nbsp;&nbsp;<i>" + "When category" + ": </i>") );
+        final ListBox catOperator = new ListBox();
+        String[] catVals = new String[]{"=", "!="};
+        for ( int i = 0; i < catVals.length; i++ ) {
+        	catOperator.addItem( catVals[i], catVals[i]);
+        }
+        builtInSelectorCatPanel.add( catOperator );
+        final CategoryExplorerWidget catChooser = new CategoryExplorerWidget( new CategorySelectHandler() {
+            public void selected(String selectedPath) {
+                initialCategory = selectedPath;
+            }
+        });
+        ScrollPanel catScroll = new ScrollPanel(catChooser);
+        catScroll.setAlwaysShowScrollBars(true);
+        catScroll.setSize("300px", "130px");
+        
+        builtInSelectorCatPanel.add(catScroll);               
+        builtInSelectorLayout.addRow(builtInSelectorCatPanel);
+
         layout.addRow( builtInSelectorLayout );
         
         
@@ -188,7 +222,9 @@ public class PackageBuilderWidget extends Composite {
 		b.setTitle(constants.ThisWillValidateAndCompileAllTheAssetsInAPackage());
 		b.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
-				doBuild(buildResults, operator.getValue(operator.getSelectedIndex()), statusValue.getText(), customSelector.getSelectedIndex() != -1?customSelector.getValue(customSelector.getSelectedIndex()):null);
+				doBuild(buildResults, statusOperator.getValue(statusOperator.getSelectedIndex()), statusValue.getText(), enableStatusCheckBox.isChecked(), 
+						catOperator.getValue(catOperator.getSelectedIndex()), catChooser.getSelectedPath(), enableCategoryCheckBox.isChecked(),
+						customSelector.getSelectedIndex() != -1?customSelector.getValue(customSelector.getSelectedIndex()):null);
 			}
 		});
 
@@ -215,7 +251,7 @@ public class PackageBuilderWidget extends Composite {
 
 		initWidget(layout);
 	}
-
+    
 	private void loadCustomSelectorList(final ListBox customSelector) {
 		RepositoryServiceFactory.getService().getCustomSelectors( new GenericCallback<String[]>() {
 
@@ -227,7 +263,8 @@ public class PackageBuilderWidget extends Composite {
         });
 	}
 	
-	private void doBuild(final Panel buildResults, final String operator, final String statusValue, final String customSelector) {
+	private void doBuild(final Panel buildResults, final String statusOperator, final String statusValue, final boolean enableStatusSelector, 
+			final String categoryOperator, final String category, final boolean enableCategorySelector, final String customSelector) {
 		buildResults.clear();
 
 		final HorizontalPanel busy = new HorizontalPanel();
@@ -239,7 +276,8 @@ public class PackageBuilderWidget extends Composite {
 
 		DeferredCommand.addCommand(new Command() {
 			public void execute() {
-				RepositoryServiceFactory.getService().buildPackage(conf.uuid, true, buildMode, operator, statusValue, customSelector, 
+				RepositoryServiceFactory.getService().buildPackage(conf.uuid, true, buildMode, statusOperator, statusValue, enableStatusSelector, 
+						categoryOperator, category, enableCategorySelector, customSelector, 
 						new GenericCallback<BuilderResult[]>() {
 							public void onSuccess(BuilderResult[] result) {
                                 LoadingPopup.close();

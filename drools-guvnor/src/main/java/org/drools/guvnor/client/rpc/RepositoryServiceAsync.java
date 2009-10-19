@@ -71,7 +71,7 @@ public interface RepositoryServiceAsync
 	public void quickFindAsset(java.lang.String p0, int p1, boolean p2, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
 	public void removeCategory(java.lang.String p0, AsyncCallback cb);
 	public void loadSuggestionCompletionEngine(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine> cb);
-	public void buildPackage(java.lang.String p0, boolean p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, java.lang.String p5, AsyncCallback<org.drools.guvnor.client.rpc.BuilderResult[]> cb);
+	public void buildPackage(java.lang.String p0, boolean p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, boolean p5, java.lang.String p6, java.lang.String p7, boolean p8, java.lang.String p9, AsyncCallback<org.drools.guvnor.client.rpc.BuilderResult[]> cb);
 	public void getCustomSelectors(AsyncCallback<java.lang.String[]> cb);
 	public void buildPackageSource(java.lang.String p0, AsyncCallback<java.lang.String> cb);
 	public void buildAssetSource(org.drools.guvnor.client.rpc.RuleAsset p0, AsyncCallback<java.lang.String> cb);

@@ -67,8 +67,12 @@ public class ContentPackageAssembler {
 
 	private String customSelectorName;
 	private String buildMode;
-	private String operator;
+	private String statusOperator;
 	private String statusDescriptionValue;
+	private boolean enableStatusSelector;
+	private String categoryOperator;
+	private String categoryValue;
+	private boolean enableCategorySelector;	
 
 	/**
 	 * Use this if you want to build the whole package.
@@ -88,7 +92,7 @@ public class ContentPackageAssembler {
 	 *            source.
 	 */
 	public ContentPackageAssembler(PackageItem pkg, boolean compile) {
-		this(pkg, compile, null, null, null, null);
+		this(pkg, compile, null, null, null, false, null, null, false, null);
 	}
 
 	/**
@@ -100,14 +104,20 @@ public class ContentPackageAssembler {
 	 * @param selectorConfigName
 	 */
 	public ContentPackageAssembler(PackageItem assetPackage, boolean compile, String buildMode,
-			String operator, String statusDescriptionValue, String selectorConfigName) {
+			String statusOperator, String statusDescriptionValue, boolean enableStatusSelector,
+			String categoryOperator, String categoryValue, boolean enableCategorySelector,
+			String selectorConfigName) {
 
 		this.pkg = assetPackage;
 		this.customSelectorName = selectorConfigName;
 		this.buildMode = buildMode;
-		this.operator = operator;
+		this.statusOperator = statusOperator;
 		this.statusDescriptionValue = statusDescriptionValue;
-
+		this.enableStatusSelector = enableStatusSelector;
+		this.categoryOperator = categoryOperator;
+		this.categoryValue = categoryValue;
+		this.enableCategorySelector = enableCategorySelector;
+		
 		createBuilder();
 
 		if (compile && preparePackage()) {
@@ -165,8 +175,12 @@ public class ContentPackageAssembler {
 		} else if ("builtInSelector".equals(buildMode)) {
 			selector = (BuiltInSelector)SelectorManager.getInstance().getSelector(
 			"BuiltInSelector");
-	        ((BuiltInSelector)selector).setOperator(operator);
-	        ((BuiltInSelector)selector).setStatus(statusDescriptionValue);			
+	        ((BuiltInSelector)selector).setStatusOperator(statusOperator);
+	        ((BuiltInSelector)selector).setStatus(statusDescriptionValue);	
+	        ((BuiltInSelector)selector).setEnableStatusSelector(enableStatusSelector);
+	        ((BuiltInSelector)selector).setCategory(categoryValue);
+	        ((BuiltInSelector)selector).setCategoryOperator(categoryOperator);
+	        ((BuiltInSelector)selector).setEnableCategorySelector(enableCategorySelector);
 		} else {
 			//return the NilSelector, i.e., allows everything
 			selector = SelectorManager.getInstance().getSelector(null);				

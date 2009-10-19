@@ -598,8 +598,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
 
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg,
-                                                                   false,
-                                                                   null, null, null, null );
+                                                                   false);
         String drl = asm.getDRL();
 
         assertNotNull( drl );
@@ -709,8 +708,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertRule3.checkin( "" );
 
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg,
-                                                                   true,
-                                                                   null, null, null, null );
+                                                                   true);
         assertFalse( asm.hasErrors() );
         Package p = asm.builder.getPackage();
 
@@ -939,7 +937,7 @@ public class ContentPackageAssemblerTest extends TestCase {
                           } );
 
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg, true, 
-                                                                   "customSelector", null, null, "testSelect");
+                                                                   "customSelector", null, null, false, null, null, false, "testSelect");
 
         Package pk = asm.getBinaryPackage();
         assertEquals( 1,
@@ -953,7 +951,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertEquals( 2,
                       pk.getRules().length );
 
-        asm = new ContentPackageAssembler( pkg, true, "customSelector", null, null,
+        asm = new ContentPackageAssembler( pkg, true, "customSelector", null, null, false, null, null, false,
                                            "nothing valid" );
         assertTrue( asm.hasErrors() );
         assertEquals( 1,
@@ -961,7 +959,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertEquals( pkg,
                       asm.getErrors().get( 0 ).itemInError );
 
-        asm = new ContentPackageAssembler( pkg, true, "customSelector", null, null,
+        asm = new ContentPackageAssembler( pkg, true, "customSelector", null, null, false, null, null, false,
                                            "" );
         pk = asm.getBinaryPackage();
         assertEquals( 2,

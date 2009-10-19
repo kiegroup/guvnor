@@ -205,8 +205,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 	public org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine loadSuggestionCompletionEngine(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializableException {
 		 return getService().loadSuggestionCompletionEngine( p0);
 	}
-	public org.drools.guvnor.client.rpc.BuilderResult[] buildPackage(java.lang.String p0, boolean p1, java.lang.String p2, java.lang.String p3 ,java.lang.String p4, java.lang.String p5) throws com.google.gwt.user.client.rpc.SerializableException {
-		 return getService().buildPackage( p0,  p1,  p2, p3, p4, p5);
+	public org.drools.guvnor.client.rpc.BuilderResult[] buildPackage(java.lang.String p0, boolean p1, java.lang.String p2, 
+			java.lang.String p3, java.lang.String p4 , boolean p5, 
+			java.lang.String p6, java.lang.String p7, boolean p8, java.lang.String p9) throws com.google.gwt.user.client.rpc.SerializableException {
+		 return getService().buildPackage( p0,  p1,  p2, p3, p4, p5, p6, p7, p8, p9);
 	}
 	public java.lang.String[] getCustomSelectors() throws com.google.gwt.user.client.rpc.SerializableException {
 		 return getService().getCustomSelectors();

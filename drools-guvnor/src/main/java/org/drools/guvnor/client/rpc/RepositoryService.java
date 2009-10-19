@@ -291,7 +291,9 @@ public interface RepositoryService extends RemoteService {
      * in the systems selectors.properties file. This will then apply the filter to the
      * package being built.
      */
-    public BuilderResult[] buildPackage(String packageUUID,  boolean force, String buildMode, String operator, String statusDescriptionValue, 
+    public BuilderResult[] buildPackage(String packageUUID,  boolean force, String buildMode, 
+    		String operator, String statusDescriptionValue, boolean enableStatusSelector, 
+    		String categoryOperator, String category, boolean enableCategorySelector,
 			String customSelectorName) throws SerializableException;
 
     /**

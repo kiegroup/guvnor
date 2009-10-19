@@ -1440,12 +1440,14 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public BuilderResult[] buildPackage(String packageUUID, boolean force)
 			throws SerializableException {
-		return buildPackage(packageUUID, force, null, null, null, null);
+		return buildPackage(packageUUID, force, null, null, null, false, null, null, false, null);
 	}
     
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public BuilderResult[] buildPackage(String packageUUID, boolean force, String buildMode, String operator, String statusDescriptionValue, 
+    public BuilderResult[] buildPackage(String packageUUID, boolean force, String buildMode, 
+    		String statusOperator, String statusDescriptionValue, boolean enableStatusSelector,
+    		String categoryOperator, String category, boolean enableCategorySelector,
 			String customSelectorName)
 			throws SerializableException {
 		if (Contexts.isSessionContextActive()) {
@@ -1455,7 +1457,9 @@ public class ServiceImplementation
 		}
 		PackageItem item = repository.loadPackageByUUID(packageUUID);
 		try {
-			return buildPackage(item, force, buildMode, operator, statusDescriptionValue, customSelectorName);
+			return buildPackage(item, force, buildMode, statusOperator, 
+					statusDescriptionValue, enableStatusSelector, 
+					categoryOperator, category, enableCategorySelector, customSelectorName);
 		} catch (NoClassDefFoundError e) {
 			throw new DetailedSerializableException(
 					"Unable to find a class that was needed when building the package  ["
@@ -1475,15 +1479,21 @@ public class ServiceImplementation
 			throws SerializableException {
 		return SelectorManager.getInstance().getCustomSelectors();
 	}
+ 
+    private BuilderResult[] buildPackage(PackageItem item, boolean force) throws DetailedSerializableException {
+    	return buildPackage(item, force, null, null, null, false, null, null, false, null);
+    }
     
     private BuilderResult[] buildPackage(PackageItem item, boolean force, String buildMode,
-			String operator, String statusDescriptionValue,
+			String statusOperator, String statusDescriptionValue, boolean enableStatusSelector,
+			String categoryOperator, String category, boolean enableCategorySelector,
 			String selectorConfigName) throws DetailedSerializableException {
         if ( !force && item.isBinaryUpToDate() ) {
             // we can just return all OK if its up to date.
             return null;
         }
-        ContentPackageAssembler asm = new ContentPackageAssembler( item, true, buildMode, operator, statusDescriptionValue, selectorConfigName );
+        ContentPackageAssembler asm = new ContentPackageAssembler( item, true, buildMode, statusOperator, statusDescriptionValue, enableStatusSelector, 
+        		categoryOperator, category, enableCategorySelector, selectorConfigName );
         if ( asm.hasErrors() ) {
             BuilderResult[] result = generateBuilderResults( asm );
             return result;
@@ -1772,7 +1782,7 @@ public class ServiceImplementation
                 PackageItem snap = repository.loadPackageSnapshot( pkg.getName(),
                                                                    snapName );
                 BuilderResult[] res = this.buildPackage( snap.getUUID(),
-                                                         true, null, null, null, null );
+                                                         true);
                 if ( res != null ) {
                     StringBuffer buf = new StringBuffer();
                     for ( int i = 0; i < res.length; i++ ) {
@@ -1933,7 +1943,7 @@ public class ServiceImplementation
                 this.ruleBaseCache.put( item.getUUID(),
                                         rb );
             } else {
-                BuilderResult[] errs = this.buildPackage(item, false, null, null, null, null);
+                BuilderResult[] errs = this.buildPackage(item, false);
                 if ( errs == null || errs.length == 0 ) {
                     rb = loadRuleBase( item,
                                        buildCl );
@@ -1960,7 +1970,7 @@ public class ServiceImplementation
             log.error( e );
             log.info( "...but trying to rebuild binaries..." );
             try {
-                BuilderResult[] res = this.buildPackage(item, true, null, null, null, null);
+                BuilderResult[] res = this.buildPackage(item, true);
                 if ( res != null && res.length > 0 ) {
                     throw new DetailedSerializableException( "There were errors when rebuilding the knowledgebase.",
                                                              "" );
@@ -2076,7 +2086,7 @@ public class ServiceImplementation
                                             loadRuleBase( item,
                                                           cl ) );
                 } else {
-                    BuilderResult[] errs = this.buildPackage(item, false, null, null, null, null);
+                    BuilderResult[] errs = this.buildPackage(item, false);
                     if ( errs == null || errs.length == 0 ) {
                         this.ruleBaseCache.put( item.getUUID(),
                                                 loadRuleBase( item,
@@ -2301,7 +2311,7 @@ public class ServiceImplementation
             PackageItem pkg = (PackageItem) pkit.next();
             try {
                 BuilderResult[] res = this.buildPackage( pkg.getUUID(),
-                                                         true, null, null, null, null );
+                                                         true);
                 if ( res != null ) {
                     errs.append( "Unable to build package name [" + pkg.getName() + "]\n" );
                     StringBuffer buf = new StringBuffer();
