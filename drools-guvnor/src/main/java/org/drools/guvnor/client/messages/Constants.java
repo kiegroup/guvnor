@@ -1963,5 +1963,17 @@ public interface Constants extends ConstantsWithLookup {
 
     String BuildWholePackage();
     
+    String BuildPackageUsingBuiltInSelector();
+    
+    String BuildPackageUsingCustomSelector();
+    
+    String BuildPackageUsingFollowingAssets();
+    
+    String BuildPackageUsingBuiltInSelectorStatus();
+    
+    String BuildPackageUsingBuiltInSelectorCat();
+    
     String BuiltInSelector();    
+    
+    String BuildPackageUsingCustomSelectorSelector();    
 }

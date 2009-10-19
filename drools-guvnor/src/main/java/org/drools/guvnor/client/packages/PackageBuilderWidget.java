@@ -101,9 +101,9 @@ public class PackageBuilderWidget extends Composite {
 
 		final SimplePanel buildResults = new SimplePanel();
 
-		RadioButton wholePackageRadioButton = new RadioButton("action", "Build whole package"); 
-		RadioButton builtInSelectorRadioButton = new RadioButton("action", "Use built-in selector"); 
-		RadioButton customSelectorRadioButton = new RadioButton("action", "Use custom selector"); 
+		RadioButton wholePackageRadioButton = new RadioButton("action", constants.BuildWholePackage()); 
+		RadioButton builtInSelectorRadioButton = new RadioButton("action", constants.BuildPackageUsingBuiltInSelector()); 
+		RadioButton customSelectorRadioButton = new RadioButton("action", constants.BuildPackageUsingCustomSelector()); 
 		wholePackageRadioButton.addClickListener(new ClickListener() {
 			public void onClick(Widget w) {
 				buildWholePackageLayout.setVisible(true);
@@ -158,13 +158,13 @@ public class PackageBuilderWidget extends Composite {
 
 
 		//Built-in selector layout
-	    builtInSelectorLayout.addRow(new HTML("&nbsp;&nbsp;<i>" + "Build package using following assets" + ": </i>") );
+	    builtInSelectorLayout.addRow(new HTML("&nbsp;&nbsp;<i>" + constants.BuildPackageUsingFollowingAssets() + "</i>") );
 	       
 	    HorizontalPanel builtInSelectorStatusPanel = new HorizontalPanel();
         final CheckBox enableStatusCheckBox = new CheckBox();
         enableStatusCheckBox.setChecked(false);
         builtInSelectorStatusPanel.add(enableStatusCheckBox);
-        builtInSelectorStatusPanel.add( new HTML("&nbsp;&nbsp;<i>" + "When status" + ": </i>") );    
+        builtInSelectorStatusPanel.add( new HTML("&nbsp;&nbsp;<i>" + constants.BuildPackageUsingBuiltInSelectorStatus() + " </i>") );    
         final ListBox statusOperator = new ListBox();
         String[] vals = new String[]{"=", "!="};
         for ( int i = 0; i < vals.length; i++ ) {
@@ -182,7 +182,7 @@ public class PackageBuilderWidget extends Composite {
         final CheckBox enableCategoryCheckBox = new CheckBox();
         enableCategoryCheckBox.setChecked(false);
         builtInSelectorCatPanel.add(enableCategoryCheckBox);
-        builtInSelectorCatPanel.add( new HTML("&nbsp;&nbsp;<i>" + "When category" + ": </i>") );
+        builtInSelectorCatPanel.add( new HTML("&nbsp;&nbsp;<i>" + constants.BuildPackageUsingBuiltInSelectorCat() + " </i>") );
         final ListBox catOperator = new ListBox();
         String[] catVals = new String[]{"=", "!="};
         for ( int i = 0; i < catVals.length; i++ ) {
@@ -207,7 +207,7 @@ public class PackageBuilderWidget extends Composite {
 		//Custom selector layout
         customSelectorLayout.setVisible(false);
         HorizontalPanel customSelectorPanel = new HorizontalPanel();
-        customSelectorPanel.add( new HTML("&nbsp;&nbsp;<i>" + "Custom Selector" + ": </i>") ); //NON-NLS
+        customSelectorPanel.add( new HTML("&nbsp;&nbsp;<i>" + constants.BuildPackageUsingCustomSelectorSelector() + " </i>") ); //NON-NLS
          
         final ListBox customSelector = new ListBox();
         customSelector.setTitle( constants.WildCardsSearchTip() );
