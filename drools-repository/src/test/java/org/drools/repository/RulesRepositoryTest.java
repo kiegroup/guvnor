@@ -21,6 +21,7 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
+import javax.jcr.Workspace;
 
 import org.apache.jackrabbit.core.TransientRepository;
 import org.drools.repository.RulesRepository.DateQuery;
@@ -1079,6 +1080,29 @@ public class RulesRepositoryTest extends TestCase {
         }
     }
 
+	public void testShareableNodes() throws Exception {
+		RulesRepository repo = RepositorySessionUtil.getRepository();
+		AssetItem item = repo.loadDefaultPackage().addAsset("testShareableNodeOriginal", "desc");
+		item.updateContent("la");
+		item.getNode().addMixin("mix:shareable");
+		PackageItem source = repo.createPackage("testShareableNodesPackage", "desc");
+		repo.save();
+
+		source.checkout();
+		
+		Session session = repo.getSession();
+		Workspace workspace = session.getWorkspace();
+		String path = "/drools:repository/drools:package_area/testShareableNodesPackage/assets/testShareableNodeShared";
+		workspace.clone(workspace.getName(), item.getNode().getPath(), path, false);		
+		repo.save();
+		
+		AssetItem originalItem = repo.loadDefaultPackage().loadAsset("testShareableNodeOriginal");
+		AssetItem sharedItem = repo.loadPackage("testShareableNodesPackage").loadAsset("testShareableNodeShared");
+		
+	    assertTrue( originalItem.getContent().equals("la"));
+	    assertTrue( sharedItem.getContent().equals("la"));
+	}
+	
 	//In this test case we expect an ItemExistException from the second thread,
     //other than ending up with two packages with same name.
 	public void xtestConcurrentCopyPackage() throws Exception {
