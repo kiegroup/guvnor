@@ -38,7 +38,7 @@ public class WebDavImporter {
 //			FileObject packages = fs.resolveFile(fullPath + "/packages", fileoptions);
 //			FileObject packages2=root.getChildren()[0];
 //			
-//			File packageName = new File(packages.getName() + "/gov.tfl.rules");
+//			File packageName = new File(packages.getName() + "/rules");
 //			packageName.createNewFile();
 //			
 //			File drl = new File(packageName.getName() +"/mjatest.drl");
