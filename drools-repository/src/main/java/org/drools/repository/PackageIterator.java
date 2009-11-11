@@ -32,7 +32,8 @@ public class PackageIterator implements Iterator {
 			while (this.packageNodeIterator.hasNext()) {
 				Node element = (Node) this.packageNodeIterator.next();
 				try {
-					if (searchArchived || !element.getProperty("drools:archive").getBoolean()) {
+					//Do not return Global Area
+					if ((searchArchived || !element.getProperty("drools:archive").getBoolean()) && !RulesRepository.RULE_GLOBAL_AREA.equals(element.getName())) {
 						hasnext = true;
 						this.next = element;
 						break;

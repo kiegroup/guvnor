@@ -24,6 +24,7 @@ import java.util.Map;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.testing.Scenario;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializableException;
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -72,11 +73,11 @@ public interface RepositoryService extends RemoteService {
     public String createNewRule(String ruleName, String description, String initialCategory, String initialPackage, String format) throws SerializableException;
 
     /**
-     * Creates a new rule which refers to an existing rule.
+     * Creates a new rule which is imported from global area.
      * Return the UUID of the item created.
      * This will not check in the rule, but just leave it as saved in the repo.
      */
-    public String createNewLinkedRule(String ruleName, String linkedRuleUUID, String initialCategory, String initialPackage) throws SerializableException;
+    public String createNewImportedRule(String sharedAssetName, String initialPackage) throws SerializableException;
 
     /**
      * Delete un checked in Asset
@@ -95,6 +96,12 @@ public interface RepositoryService extends RemoteService {
      */
     public PackageConfigData[] listPackages();
 
+    /**
+     * This returns the global packages. 
+     */
+    public PackageConfigData loadGlobalPackage();
+
+    
     /**
      * This returns a list of archived packages.
      */

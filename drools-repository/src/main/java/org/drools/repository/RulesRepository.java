@@ -62,6 +62,7 @@ public class RulesRepository {
      * The name of the rulepackage area of the repository
      */
     public final static String  RULE_PACKAGE_AREA     = "drools:package_area";
+    public final static String  RULE_GLOBAL_AREA     = "globalArea";
 
     /**
      * The name of the rulepackage area of the repository
@@ -93,6 +94,9 @@ public class RulesRepository {
     public RulesRepository(Session session) {
         this.session = session;
         checkForDataMigration( this );
+        if(!containsPackage(RULE_GLOBAL_AREA)) {
+        	createPackage(RULE_GLOBAL_AREA, "the global area that holds sharable assets");
+        }
     }
 
     private synchronized static void checkForDataMigration(RulesRepository self) {
@@ -565,6 +569,13 @@ public class RulesRepository {
         }
 
     }
+    
+    /**
+     * This will return the global area for rules that can be shared.
+     */
+    public PackageItem loadGlobalArea() throws RulesRepositoryException {
+        return loadPackage( RULE_GLOBAL_AREA );
+    }
 
     /**
      * Similar to above. Loads a RulePackage for the specified uuid.
@@ -619,7 +630,7 @@ public class RulesRepository {
     public AssetItem loadAssetByUUID(String uuid) {
         try {
             Node rulePackageNode = this.session.getNodeByUUID( uuid );
-            return new LinkedAssetItem( this,
+            return new AssetItem( this,
                                   rulePackageNode );
         } catch (ItemNotFoundException e) {
           log.warn(e);

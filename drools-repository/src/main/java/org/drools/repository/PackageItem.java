@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.RowIterator;
@@ -224,72 +225,37 @@ public class PackageItem extends VersionableItem {
         }
 
     }
-
+   
     /**
-     * This adds a rule which is linked to an existing rule. 
+     * This adds a rule which is imported from global area. 
      *
      * This will NOT check the asset in, just create the basic record.
-     * @param assetName The name of the asset (the file name minus the extension)
-     * @param linkedAssetUUID the UUID of the existing rule that this asset is linked to.
+     * @param sharedAssetName The name of the imported asset
      */
-    public AssetItem addLinkedAsset(String assetName, String linkedAssetUUID) {
-    	return addLinkedAsset(assetName, linkedAssetUUID, null);    	
-    }
-    /**
-     * This adds a rule which is linked to an existing rule. 
-     *
-     * This will NOT check the asset in, just create the basic record.
-     * @param assetName The name of the asset (the file name minus the extension)
-     * @param linkedAssetUUID the UUID of the existing rule that this asset is linked to.
-     * @param initialCategory The initial category the asset is placed in (can belong to multiple ones later).
-     */
-    public AssetItem addLinkedAsset(String assetName, String linkedAssetUUID,
-                            String initialCategory) {
-        Node wrapperNode;
+    public AssetItem addAssetImportedFromGlobalArea(String sharedAssetName) {
         try {
-        	assetName = assetName.trim();
+        	//assetName = assetName.trim();
             Node rulesFolder = this.node.getNode( ASSET_FOLDER_NAME );
-            wrapperNode = rulesFolder.addNode( assetName,
-                                            AssetItem.RULE_NODE_TYPE_NAME );
-            wrapperNode.setProperty( AssetItem.TITLE_PROPERTY_NAME,
-                                  assetName );
-
-            wrapperNode.setProperty( AssetItem.DESCRIPTION_PROPERTY_NAME,
-                                  "description_IGNORED" );
-            /*
-            if (format != null) {
-                ruleNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME,
-                                      format );
-            } else {
-                ruleNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME,
-                                      AssetItem.DEFAULT_CONTENT_FORMAT );
-            }
-
-
-            ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT,
-                                  "Initial" );
-*/
-            Calendar lastModified = Calendar.getInstance();
-            wrapperNode.setProperty( AssetItem.LAST_MODIFIED_PROPERTY_NAME, lastModified );
-            wrapperNode.setProperty( AssetItem.PACKAGE_NAME_PROPERTY, this.getName() );
-            wrapperNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME,
-                    AssetItem.DEFAULT_CONTENT_FORMAT );
-
-            //ruleNode.setProperty( CREATOR_PROPERTY_NAME, this.node.getSession().getUserID() );
-
-            wrapperNode.setProperty( LinkedAssetItem.LINKED_NODE_UUID, linkedAssetUUID );
-
-            AssetItem rule = new LinkedAssetItem( this.rulesRepository, wrapperNode );
-
-            //rule.updateState( StateItem.DRAFT_STATE_NAME );
-
-            if (initialCategory != null) {
-                rule.addCategory( initialCategory );
-            }
+            
+    		Session session = rulesRepository.getSession();
+    		Workspace workspace = session.getWorkspace();
+            PackageItem globalArea = rulesRepository.loadPackage( RulesRepository.RULE_GLOBAL_AREA );
+            AssetItem globalAssetItem = globalArea.loadAsset(sharedAssetName);
+ 			if (!hasMixin(globalAssetItem.getNode())) {
+				globalAssetItem.checkout();
+				globalAssetItem.getNode().addMixin("mix:shareable");
+				globalAssetItem.checkin("add mix:shareable");
+			}
+    		
+       		String path = rulesFolder.getPath() + "/" + globalAssetItem.getName();
+       		//System.out.println("---" + path);			
+       	 	workspace.clone(workspace.getName(), globalAssetItem.getNode().getPath(), path, false);	
+    		
+       	    Node ruleNode = rulesFolder.getNode(globalAssetItem.getName());
+            AssetItem rule = new AssetItem( this.rulesRepository, ruleNode );         
 
             return rule;
-
-        } catch ( RepositoryException e ) {
+         } catch ( RepositoryException e ) {
             if ( e instanceof ItemExistsException ) {
                 throw new RulesRepositoryException( "A rule of that name already exists in that package.",
                                                     e );
@@ -298,6 +264,21 @@ public class PackageItem extends VersionableItem {
             }
         }
 
+    }
+    
+    private boolean hasMixin(Node node) {
+    	try {
+			NodeType[] nodeTypes = node.getMixinNodeTypes();
+			for (NodeType nodeType : nodeTypes) {
+				if (nodeType.isNodeType("mix:shareable")) {
+					return true;
+				}
+			}
+		} catch (RepositoryException e) {
+
+		}
+		
+		return false;
     }
 
     /**
@@ -572,7 +553,7 @@ public class PackageItem extends VersionableItem {
 
         try {
             Node content = getVersionContentNode();
-            return new LinkedAssetItem(
+            return new AssetItem(
                         this.rulesRepository,
                         content.getNode( ASSET_FOLDER_NAME ).getNode( name ));
         } catch ( RepositoryException e ) {

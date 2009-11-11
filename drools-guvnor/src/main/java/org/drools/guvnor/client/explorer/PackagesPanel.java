@@ -190,17 +190,28 @@ public class PackagesPanel extends GenericPanel {
     }
 
     private Widget packageExplorer(final ExplorerViewCenterPanel tabPanel) {
-        TreeNode root = new TreeNode(constants.Packages());
-        root.setAttribute("icon", "images/silk/chart_organisation.gif"); //NON-NLS
+		TreeNode rootNode = new TreeNode(constants.Admin());
 
-        final TreePanel panel = genericExplorerWidget(root);
+		
+        TreeNode packageRootNode = new TreeNode(constants.Packages());
+        packageRootNode.setAttribute("icon", "images/silk/chart_organisation.gif"); //NON-NLS
+        loadPackages(packageRootNode);
+        
+/*		TreeNode globalRootNode = new TreeNode("Global area");
+		globalRootNode.setAttribute("icon", "images/silk/chart_organisation.gif");   //NON-NLS
+		globalRootNode.setAttribute("id", "globalarea");*/
+		loadGlobal(rootNode);
+		
+		rootNode.appendChild(packageRootNode);
+		//rootNode.appendChild(globalRootNode);
+		
+        final TreePanel panel = genericExplorerWidget(rootNode);
+        panel.setRootVisible(false);
 
-
-        loadPackages(root);
-
+        
         TreePanelListener treePanelListener = new TreePanelListenerAdapter() {
             public void onClick(TreeNode node, EventObject e) {
-                if (node.getUserObject() instanceof PackageConfigData) {
+                if (node.getUserObject() instanceof PackageConfigData && !"global".equals(((PackageConfigData)node.getUserObject()).name)) {
                     PackageConfigData pc = (PackageConfigData) node.getUserObject();
                     RulePackageSelector.currentlySelectedPackage = pc.name;
 
@@ -300,11 +311,28 @@ public class PackagesPanel extends GenericPanel {
                             buildPkgTree(root, hf);
                         }
 
-                        root.expand();
+                        //root.expand();
                     }
                 });
     }
 
+    private void loadGlobal(final TreeNode root) {
+        RepositoryServiceFactory.getService().loadGlobalPackage(
+                new GenericCallback<PackageConfigData>() {
+                    public void onSuccess(PackageConfigData value) {
+
+                                TreeNode globalRootNode = ExplorerNodeConfig.getPackageItemStructure("Global Area", value.uuid);
+                                globalRootNode.setUserObject(value);
+                                
+                                globalRootNode.setAttribute("icon", "images/silk/chart_organisation.gif");   //NON-NLS
+                                globalRootNode.setAttribute("id", "globalarea");
+                        		
+                                root.appendChild(globalRootNode);
+
+                    }
+                });
+    }
+    
     private void buildPkgTree(TreeNode root, PackageHierarchy.Folder fldr) {
         if (fldr.conf != null) {
             root.appendChild(loadPackage(fldr.name, fldr.conf));

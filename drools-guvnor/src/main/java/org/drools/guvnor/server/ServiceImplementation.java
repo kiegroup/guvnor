@@ -259,21 +259,18 @@ public class ServiceImplementation
      */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public String createNewLinkedRule(String name,
-                                String linkedRuleUUID,
-                                String initialCategory,
-                                String initialPackage) throws SerializableException {
+    public String createNewImportedRule(String sharedAssetName,
+                                 String initialPackage) throws SerializableException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( initialPackage ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
 
-        log.info( "USER:" + repository.getSession().getUserID() + " REFER to an existing asset name [" + linkedRuleUUID + "] in package [" + initialPackage + "]" );
+        log.info( "USER:" + repository.getSession().getUserID() + " Create a shared asset imported from global area named [" + sharedAssetName + "] in package [" + initialPackage + "]" );
 
         try {
-
-            PackageItem pkg = repository.loadPackage( initialPackage );
-            AssetItem asset = pkg.addLinkedAsset( name, linkedRuleUUID, initialCategory);
+            PackageItem pkg = repository.loadPackage(initialPackage);
+            AssetItem asset = pkg.addAssetImportedFromGlobalArea(sharedAssetName);
             repository.save();
 
             return asset.getUUID();
@@ -344,6 +341,30 @@ public class ServiceImplementation
         RepositoryFilter pf = new PackageFilter();
         return listPackages( true,
                              pf );
+    }
+    
+    public PackageConfigData loadGlobalPackage() {
+        PackageConfigData data = new PackageConfigData();
+        PackageItem item = repository.loadPackage(RulesRepository.RULE_GLOBAL_AREA);
+        
+        data.uuid = item.getUUID();
+        data.header = getDroolsHeader( item );
+        data.externalURI = item.getExternalURI();
+        data.catRules = item.getCategoryRules();
+        data.description = item.getDescription();
+        data.archived = item.isArchived();
+        data.name = item.getName();
+        data.lastModified = item.getLastModified().getTime();
+        data.dateCreated = item.getCreatedDate().getTime();
+        data.checkinComment = item.getCheckinComment();
+        data.lasContributor = item.getLastContributor();
+        data.state = item.getStateDescription();
+        data.isSnapshot = item.isSnapshot();
+        if ( data.isSnapshot ) {
+            data.snapshotName = item.getSnapshotName();
+        }
+
+        return data;
     }
 
     private PackageConfigData[] listPackages(boolean archive,
@@ -1844,6 +1865,13 @@ public class ServiceImplementation
         }
     }
 
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public String[] listRulesInGlobalArea() throws SerializableException {
+    	return listRulesInPackage(RulesRepository.RULE_GLOBAL_AREA);
+    }
+
+    
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public SingleScenarioResult runScenario(String packageName,

@@ -33,7 +33,7 @@ public class AssetItemIterator
     }
 
     public AssetItem next() {
-        return new LinkedAssetItem( rulesRepository,
+        return new AssetItem( rulesRepository,
                              (Node) it.next() );
     }
 

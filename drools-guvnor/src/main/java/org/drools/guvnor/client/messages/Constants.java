@@ -1976,4 +1976,11 @@ public interface Constants extends ConstantsWithLookup {
     String BuiltInSelector();    
     
     String BuildPackageUsingCustomSelectorSelector();    
+    
+    String CreateInPackage();
+   
+    String CreateInGlobalArea();
+    
+    String AssetToImport();
+    
 }

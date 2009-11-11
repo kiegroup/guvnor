@@ -1,6 +1,7 @@
 package org.drools.repository;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -9,6 +10,10 @@ import junit.framework.TestCase;
 
 public class PackageItemTest extends TestCase {
 
+	private PackageItem loadGlobalArea() {
+		return getRepo().loadGlobalArea();
+	}
+	
     public void testListPackages() throws Exception {
         RulesRepository repo = getRepo();
         PackageItem item = repo.createPackage( "testListPackages1", "lalalala" );
@@ -448,36 +453,29 @@ public class PackageItemTest extends TestCase {
             assertEquals(2, rules.size());
     }
 
-    public void testAddLinkedRuleRuleItem() {
-        PackageItem rulePackageItem1 = getRepo().createPackage("testAddLinkedRuleRuleItem","desc");
-
-        AssetItem ruleItem1 = rulePackageItem1.addAsset("testAddLinkedRuleRuleItem", "test description");
+    public void testAddRuleItemFromGlobalArea() {
+        AssetItem ruleItem1 = loadGlobalArea().addAsset("testAddRuleItemFromGlobalAreaRuleItem", "test description");
         ruleItem1.updateContent( "test content" );
         ruleItem1.checkin( "updated the rule content" );
         
-        AssetItem linkedRuleItem1 = rulePackageItem1.addLinkedAsset("linkedTestAddLinkedRuleRuleItem", ruleItem1.getUUID(), null);
+        PackageItem rulePackageItem2 = getRepo().createPackage("testAddRuleItemFromGlobalArea1","desc");
+        AssetItem linkedRuleItem1 = rulePackageItem2.addAssetImportedFromGlobalArea(ruleItem1.getName());
         linkedRuleItem1.updateContent( "test content for linked" );
         linkedRuleItem1.checkin( "updated the rule content for linked" );       
-
-        Iterator rulesIt1 = rulePackageItem1.getAssets();
-        List rules1 = iteratorToList( rulesIt1 );
-        assertEquals(2, rules1.size());    
  
         //test that it is following the head revision
         ruleItem1.updateContent("new lhs");
         ruleItem1.checkin( "updated again" );        
         
-        Iterator rulesIt2 = rulePackageItem1.getAssets();
-        List rules2 = iteratorToList( rulesIt2 );
-        assertEquals(2, rules2.size());
-        
-        while(rulesIt2.hasNext()) {
-        	AssetItem ai = (AssetItem)rulesIt2.next();
-            assertTrue(ai.getName().equals("testAddLinkedRuleRuleItem") || ai.getName().equals("linkedTestAddLinkedRuleRuleItem"));
-            assertEquals("new lhs", ai.getContent());
-            assertEquals("test description", ai.getDescription());    
-            assertEquals("updated again", ai.getCheckinComment());  
-        }        
+        Iterator rulesIt2 = rulePackageItem2.getAssets();
+		List rules2 = iteratorToList(rulesIt2);
+		assertEquals(1, rules2.size());
+
+		AssetItem ai = (AssetItem) rules2.get(0);
+		assertTrue(ai.getName().equals("testAddRuleItemFromGlobalAreaRuleItem"));
+		assertEquals("new lhs", ai.getContent());
+		assertEquals("test description", ai.getDescription());
+		assertEquals("updated again", ai.getCheckinComment());       
     }
     
     List iteratorToList(Iterator it) {
@@ -609,34 +607,36 @@ public class PackageItemTest extends TestCase {
         assertTrue(list2.get( 2 ) instanceof AssetItem);
     }
 
-    public void testSearchLinkedAssetByFormat() throws Exception {
-        PackageItem pkg1 = getRepo().createPackage( "testSearchLinkedAssetByFormat1", "" );
-        PackageItem pkg2 = getRepo().createPackage( "testSearchLinkedAssetByFormat2", "" );
-        getRepo().save();
-
-        AssetItem item = pkg1.addAsset( "testSearchLinkedAssetByFormatAsset1", "" );
-        item.updateFormat( "xyz" );
+    public void testSearchSharedAssetByFormat() throws Exception {
+        AssetItem item = loadGlobalArea().addAsset( "testSearchSharedAssetByFormat", "" );
+        item.updateFormat( "testSearchSharedAssetByFormat" );
         item.checkin( "la" );
         
-        AssetItem linkedItem = pkg2.addLinkedAsset( "testSearchLinkedAssetByFormatAsset2", item.getUUID(), null);
-        linkedItem.updateFormat( "xyz" );
-        linkedItem.checkin( "la" );
-
-        Thread.sleep( 150 );
-
-        AssetItemIterator it = pkg1.queryAssets( "drools:format='xyz'" );
+        AssetItemIterator it = loadGlobalArea().queryAssets( "drools:format='testSearchSharedAssetByFormat'" );
         List list = iteratorToList( it );
         assertEquals(1, list.size());
         assertTrue(list.get( 0 ) instanceof AssetItem);
+        
+        PackageItem pkg2 = getRepo().createPackage( "testSearchSharedAssetByFormat", "" );
+        getRepo().save();
+        AssetItem linkedItem = pkg2.addAssetImportedFromGlobalArea(item.getName());
+
+        Thread.sleep( 150 );
+
+        item = loadGlobalArea().loadAsset("testSearchSharedAssetByFormat");
+        assertEquals("testSearchSharedAssetByFormat", item.getFormat());
+
+        it = loadGlobalArea().queryAssets( "drools:format='testSearchSharedAssetByFormat'" );
+        list = iteratorToList( it );
+        assertEquals(1, list.size());
+        assertTrue(list.get( 0 ) instanceof AssetItem);
  
-        linkedItem = pkg2.loadAsset("testSearchLinkedAssetByFormatAsset2");
+/*        linkedItem = pkg2.loadAsset("testSearchLinkedAssetByFormatAsset2");
         assertNotNull(linkedItem);
-        assertTrue(linkedItem instanceof LinkedAssetItem);
-        assertTrue(((LinkedAssetItem)linkedItem).isLinkedAssetItem());
-        assertEquals("testSearchLinkedAssetByFormat2", linkedItem.getPackageName());
+        assertEquals("global", linkedItem.getPackageName());
        	
         it = pkg2.queryAssets( "drools:format='xyz'" );
-        list = iteratorToList( it );
+        list = iteratorToList( it );*/
         
         //REVISIT: Not working yet.
         //assertEquals(1, list.size());
@@ -804,7 +804,7 @@ public class PackageItemTest extends TestCase {
 
         assertEquals(v, item.getVersionNumber());
     }
-
+	
     static class MockAssetItem extends AssetItem {
         private long version;
 

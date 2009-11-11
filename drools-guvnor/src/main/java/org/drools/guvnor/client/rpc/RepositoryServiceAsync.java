@@ -43,10 +43,11 @@ public interface RepositoryServiceAsync
 	public void loadTableConfig(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.TableConfig> cb);
 	public void createCategory(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback<java.lang.Boolean> cb);
 	public void createNewRule(java.lang.String p0, java.lang.String p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, AsyncCallback<java.lang.String> cb);
-	public void createNewLinkedRule(java.lang.String p0, java.lang.String p1, java.lang.String p2, java.lang.String p3, AsyncCallback<java.lang.String> cb);
+	public void createNewImportedRule(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.String> cb);
 	public void deleteUncheckedRule(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
 	public void clearRulesRepository(AsyncCallback cb);
 	public void listPackages(AsyncCallback<org.drools.guvnor.client.rpc.PackageConfigData[]> cb);
+	public void loadGlobalPackage(AsyncCallback<org.drools.guvnor.client.rpc.PackageConfigData> cb);
 	public void listArchivedPackages(AsyncCallback<org.drools.guvnor.client.rpc.PackageConfigData[]> cb);
 	public void loadRuleAsset(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.RuleAsset> cb);
 	public void loadAssetHistory(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
