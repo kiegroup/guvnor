@@ -3,6 +3,7 @@ package org.drools.repository;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -77,12 +78,24 @@ public class JackrabbitRepositoryConfigurator implements JCRRepositoryConfigurat
 
             
             // Setup the RulePackageItem area        
-            RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.RULE_PACKAGE_AREA, "nt:folder");
+            Node packageAreaNode = RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.RULE_PACKAGE_AREA, "nt:folder");
+            
+            // Setup the global area        
+            if(!packageAreaNode.hasNode(RulesRepository.RULE_GLOBAL_AREA)){
+                Node globalAreaNode = RulesRepository.addNodeIfNew(packageAreaNode, RulesRepository.RULE_GLOBAL_AREA, PackageItem.RULE_PACKAGE_TYPE_NAME);
+                globalAreaNode.addNode( PackageItem.ASSET_FOLDER_NAME,  "drools:versionableAssetFolder" );
+                globalAreaNode.setProperty( PackageItem.TITLE_PROPERTY_NAME,  RulesRepository.RULE_GLOBAL_AREA);
+                globalAreaNode.setProperty( AssetItem.DESCRIPTION_PROPERTY_NAME, "the global area that holds sharable assets");         
+                globalAreaNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME,	PackageItem.PACKAGE_FORMAT);
+                globalAreaNode.setProperty(PackageItem.CREATOR_PROPERTY_NAME, session.getUserID());
+                Calendar lastModified = Calendar.getInstance();
+                globalAreaNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME,	lastModified);
+            }
             
             // Setup the Snapshot area        
             RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.PACKAGE_SNAPSHOT_AREA, "nt:folder");
                         
-            //Setup the Cateogry area                
+            //Setup the Category area                
             RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.TAG_AREA, "nt:folder");
             
             //Setup the State area                

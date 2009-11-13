@@ -94,9 +94,6 @@ public class RulesRepository {
     public RulesRepository(Session session) {
         this.session = session;
         checkForDataMigration( this );
-        if(!containsPackage(RULE_GLOBAL_AREA)) {
-        	createPackage(RULE_GLOBAL_AREA, "the global area that holds sharable assets");
-        }
     }
 
     private synchronized static void checkForDataMigration(RulesRepository self) {
@@ -574,7 +571,7 @@ public class RulesRepository {
      * This will return the global area for rules that can be shared.
      */
     public PackageItem loadGlobalArea() throws RulesRepositoryException {
-        return loadPackage( RULE_GLOBAL_AREA );
+        return loadPackage(RULE_GLOBAL_AREA);
     }
 
     /**

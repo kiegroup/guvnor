@@ -345,7 +345,7 @@ public class ServiceImplementation
     
     public PackageConfigData loadGlobalPackage() {
         PackageConfigData data = new PackageConfigData();
-        PackageItem item = repository.loadPackage(RulesRepository.RULE_GLOBAL_AREA);
+        PackageItem item = repository.loadGlobalArea();
         
         data.uuid = item.getUUID();
         data.header = getDroolsHeader( item );
