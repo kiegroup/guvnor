@@ -7,7 +7,7 @@ import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
 import org.apache.log4j.Logger;
-import org.drools.repository.security.DroolsRepositoryAccessManager;
+//import org.drools.repository.security.DroolsRepositoryAccessManager;
 
 //import junit.framework.Assert;
 
@@ -71,7 +71,7 @@ public class RepositorySessionUtil {
 
                 Session adminSession = repository.login(new SimpleCredentials("ADMINISTRATOR", "password".toCharArray()));
                 //loonie hack
-                DroolsRepositoryAccessManager.adminThreadlocal.set(  adminSession );
+                //DroolsRepositoryAccessManager.adminThreadlocal.set(  adminSession );
                 repo.set( repoInstance );
             } catch ( Exception e) {
                 throw new RulesRepositoryException(e);

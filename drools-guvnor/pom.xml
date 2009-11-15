@@ -186,15 +186,21 @@
     	<groupId>wsdl4j</groupId>
     	<artifactId>wsdl4j</artifactId>
     	<version>1.6.2</version>
-	</dependency> 
+    </dependency> 
     
     <dependency>
-	    <groupId>net.sf.webdav-servlet</groupId>
-	    <artifactId>webdav-servlet</artifactId>
-	    <version>2.0</version>
-	</dependency> 
+	<groupId>apache-slide</groupId>
+	<artifactId>webdavlib</artifactId>
+	<version>2.0</version>
+    </dependency> 
     
-    <!-- jackrabbit (this really should come from repository, not sure why not)
+    <dependency>
+ 	<groupId>net.sf.webdav-servlet</groupId>
+ 	<artifactId>webdav-servlet</artifactId>
+ 	<version>2.0</version>
+    </dependency> 
+ 
+ <!-- jackrabbit (this really should come from repository, not sure why not)
     <dependency>
       <groupId>org.apache.jackrabbit</groupId>
       <artifactId>jackrabbit-core</artifactId>
@@ -397,13 +403,19 @@
 		</dependency>
 
 
-<dependency>
+     <dependency>
 	<groupId>commons-logging</groupId>
 	<artifactId>commons-logging</artifactId>
 	<version>1.1</version>
 	<scope>test</scope>
+    </dependency>
+   
+    <dependency>
+	<groupId>commons-httpclient</groupId>
+	<artifactId>commons-httpclient</artifactId>
+	<version>3.1</version>
+	<scope>test</scope>
    </dependency>
-
 
   </dependencies>
 
