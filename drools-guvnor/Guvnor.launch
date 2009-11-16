@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/drools-guvnor"/>
@@ -48,12 +48,12 @@
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/identity-impl-2.0.2.CR6.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/identity-spi-2.0.2.CR6.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/itext-2.1.2.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
-<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/jackrabbit-api-1.4.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
-<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/jackrabbit-core-1.4.5.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
-<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/jackrabbit-jcr-commons-1.4.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
-<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/jackrabbit-spi-1.4.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
-<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/jackrabbit-spi-commons-1.4.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
-<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/jackrabbit-text-extractors-1.4.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
+<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/jackrabbit-api-1.6.0.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
+<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/jackrabbit-core-1.6.0.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
+<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/jackrabbit-jcr-commons-1.6.0.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
+<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/jackrabbit-spi-1.6.0.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
+<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/jackrabbit-spi-commons-1.6.0.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
+<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/jackrabbit-text-extractors-1.6.0.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/janino-2.5.15.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/javassist-3.4.GA.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/jboss-common-core-2.2.1.GA.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
@@ -70,10 +70,13 @@
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/jta-1.0.1B.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/jxl-2.4.2.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/log4j-log4j-1.2.14.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
-<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/lucene-core-2.2.0.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
+<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/lucene-core-2.4.1.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/mvel2-2.0.12.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
+<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/nekohtml-1.9.7.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/org.jboss.seam-jboss-seam-2.1.0.GA.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/persistence-api-1.0.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
+<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/poi-3.2-FINAL.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
+<listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/poi-scratchpad-3.2-FINAL.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/slf4j-api-1.5.0.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/slf4j-log4j12-1.5.0.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/drools-guvnor/target/drools-guvnor/WEB-INF/lib/webdav-servlet-2.0.jar&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
@@ -92,11 +95,9 @@
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry path=&quot;3&quot; projectName=&quot;drools-doc&quot; type=&quot;1&quot;/&gt;&#10;"/>
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;runtimeClasspathEntry path=&quot;3&quot; projectName=&quot;drools-api&quot; type=&quot;1&quot;/&gt;&#10;"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.maven.ide.eclipse.launchconfig.classpathProvider"/>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.GWTShell"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-out www org.drools.guvnor.Guvnor/Guvnor.html"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="drools-guvnor"/>
-<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.maven.ide.eclipse.launchconfig.sourcepathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512M"/>
 </launchConfiguration>
