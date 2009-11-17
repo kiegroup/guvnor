@@ -161,7 +161,6 @@
       <artifactId>drools-repository</artifactId>
     </dependency>
 
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
@@ -181,13 +180,14 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-verifier</artifactId>
     </dependency>
-    
+     
     <dependency>
-    	<groupId>wsdl4j</groupId>
-    	<artifactId>wsdl4j</artifactId>
-    	<version>1.6.2</version>
+     	<groupId>wsdl4j</groupId>
+     	<artifactId>wsdl4j</artifactId>
+     	<version>1.6.2</version>
     </dependency> 
-    
+	
+    <!--REVISIT: This lib is needed by org.apache.util.Base64 in org.drools.guvnor.server.files.RepositoryServlet-->	
     <dependency>
 	<groupId>apache-slide</groupId>
 	<artifactId>webdavlib</artifactId>
@@ -200,28 +200,6 @@
  	<version>2.0</version>
     </dependency> 
  
- <!-- jackrabbit (this really should come from repository, not sure why not)
-    <dependency>
-      <groupId>org.apache.jackrabbit</groupId>
-      <artifactId>jackrabbit-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.tmatesoft</groupId>
-      <artifactId>svnkit</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-    </dependency>
-
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j</artifactId>
-      </dependency>
-	-->
-
     <!-- External dependencies -->
     <!-- now the deps for the web app -->
     <dependency>
@@ -262,20 +240,6 @@
 
 
    <!-- seam follows -->
-<!--   <dependency>
-    	<groupId>jboss.seam.profiles</groupId>
-        <artifactId>seam-nopersistence</artifactId>
-        <version>2.0.0.CR1</version>
-        <scope>compile</scope>
-   </dependency> -->
-
-
-	<dependency>
-		<groupId>javax.persistence</groupId>
-		<artifactId>persistence-api</artifactId>
-		<version>1.0</version>
-	</dependency>
-	
 	<dependency>
 		<groupId>org.jboss.seam</groupId>
 		<artifactId>jboss-seam-remoting</artifactId>
@@ -286,92 +250,18 @@
 		<artifactId>jboss-seam</artifactId>
 		<version>2.1.0.GA</version>
 	</dependency>
+	
+        <dependency>
+            <groupId>javax.ejb</groupId>
+            <artifactId>ejb-api</artifactId>
+            <version>3.0</version>
+        </dependency>
 
 	<dependency>
-		<groupId>javax.transaction</groupId>
-		<artifactId>jta</artifactId>
-		<version>1.0.1B</version>
-	</dependency>
-
-      <dependency>
-        <groupId>javax.ejb</groupId>
-        <artifactId>ejb-api</artifactId>
-        <version>3.0</version>
-      </dependency>
-
-	 <dependency>
-	  <groupId>org.hibernate</groupId>
-	  <artifactId>hibernate</artifactId>
-	  <version>3.2.4.sp1</version>
-	  <scope>provided</scope>
-	  <exclusions>
-	    <exclusion>
-	      <groupId>commons-collections</groupId>
-	      <artifactId>commons-collections</artifactId>
-	    </exclusion>
-	    <exclusion>
-	      <groupId>commons-logging</groupId>
-	      <artifactId>commons-logging</artifactId>
-	    </exclusion>
-	    <exclusion>
-	      <groupId>net.sf.ehcache</groupId>
-	      <artifactId>ehcache</artifactId>
-	    </exclusion>
-	    <exclusion>
-	      <groupId>junit</groupId>
-	      <artifactId>junit</artifactId>
-	    </exclusion>
-	  </exclusions>
-	</dependency>
-
-	<dependency>
-	  <groupId>org.hibernate</groupId>
-	  <artifactId>hibernate-annotations</artifactId>
-	  <version>3.3.0.ga</version>
-	  <scope>provided</scope>
-	  <exclusions>
-	    <exclusion>
-	      <groupId>junit</groupId>
-	      <artifactId>junit</artifactId>
-	    </exclusion>
-	  </exclusions>
-	</dependency>
-
-	<dependency>
-	  <groupId>org.hibernate</groupId>
-	  <artifactId>hibernate-entitymanager</artifactId>
-	  <version>3.3.1.ga</version>
-	  <scope>provided</scope>
-	  <exclusions>
-	    <exclusion>
-	      <groupId>jboss</groupId>
-	      <artifactId>javassist</artifactId>
-	    </exclusion>
-	    <exclusion>
-	      <groupId>commons-logging</groupId>
-	      <artifactId>commons-logging</artifactId>
-	    </exclusion>
-	  </exclusions>
-	</dependency>
-
-	<dependency>
-		<groupId>org.hibernate</groupId>
-		<artifactId>hibernate-validator</artifactId>
-		<version>3.0.0.GA</version>
-	</dependency>
-
-	<dependency>
-		<groupId>javassist</groupId>
-		<artifactId>javassist</artifactId>
-		<version>3.4.GA</version>
-			<scope>runtime</scope>
-	</dependency>
-
-	<dependency>
-		<groupId>dom4j</groupId>
-		<artifactId>dom4j</artifactId>
-		<version>1.6</version>
-			<scope>runtime</scope>
+	    <groupId>javassist</groupId>
+	    <artifactId>javassist</artifactId>
+	    <version>3.4.GA</version>
+	    <scope>runtime</scope>
 	</dependency>
 
 	<dependency>
@@ -386,8 +276,35 @@
 		<version>1.2</version>
 		<scope>runtime</scope>
 	</dependency>
-
-
+	
+	<!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
+	<dependency>
+		<groupId>javax.transaction</groupId>
+		<artifactId>jta</artifactId>
+		<version>1.0.1B</version>
+	</dependency>
+	
+	<!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
+	<dependency>
+		<groupId>javax.persistence</groupId>
+		<artifactId>persistence-api</artifactId>
+		<version>1.0</version>
+	</dependency>
+	
+	<!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
+	<dependency>
+  	    <groupId>javax.faces</groupId>
+  	    <artifactId>jsf-api</artifactId>
+  	    <version>1.2</version>
+	</dependency>
+	
+	<!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
+	<dependency>
+		<groupId>org.hibernate</groupId>
+		<artifactId>hibernate-validator</artifactId>
+		<version>3.0.0.GA</version>
+	</dependency>
+	
 	<!-- NOT needed due to licencing -->
 	<dependency>
 	        <groupId>org.tmatesoft</groupId>
@@ -395,12 +312,12 @@
         	<scope>provided</scope>
 	</dependency>
 
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-embedded</artifactId>
-			<version>6.1.15</version>
-			<scope>test</scope>
-		</dependency>
+	<dependency>
+	    <groupId>org.mortbay.jetty</groupId>
+	    <artifactId>jetty-embedded</artifactId>
+	    <version>6.1.15</version>
+	    <scope>test</scope>
+	</dependency>
 
 
      <dependency>
