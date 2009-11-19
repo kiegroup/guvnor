@@ -186,6 +186,17 @@
      	<artifactId>wsdl4j</artifactId>
      	<version>1.6.2</version>
     </dependency> 
+    
+    <!--REVISIT: Should not depend on JCR directly. Refactor MailboxService.java to hide this dependency 
+    in drools-repository module-->   
+    <dependency>
+    	<groupId>javax.jcr</groupId>
+    	<artifactId>jcr</artifactId>
+    </dependency>
+    <dependency>
+	<groupId>org.apache.jackrabbit</groupId>
+	<artifactId>jackrabbit-core</artifactId>
+    </dependency>	    
 	
     <!--REVISIT: This lib is needed by org.apache.util.Base64 in org.drools.guvnor.server.files.RepositoryServlet-->	
     <dependency>
