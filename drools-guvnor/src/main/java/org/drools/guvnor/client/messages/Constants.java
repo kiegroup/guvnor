@@ -1983,4 +1983,18 @@ public interface Constants extends ConstantsWithLookup {
     
     String AssetToImport();
     
+    String Older0();
+    
+    String Newer0();
+    
+    String TypeAdded();
+    
+    String TypeArchived();
+    
+    String TypeDeleted();
+    
+    String TypeRestored();
+    
+    String TypeUpdated();
+    
 }

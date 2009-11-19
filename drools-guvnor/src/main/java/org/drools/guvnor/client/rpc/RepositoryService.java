@@ -541,4 +541,7 @@ public interface RepositoryService extends RemoteService {
     public TableDataResult loadInbox(String inboxName) throws DetailedSerializableException;
 
 
+    public SnapshotDiffs compareSnapshots(String packageName,
+                                          String firstSnapshotName,
+                                          String secondSnapshotName);
 }

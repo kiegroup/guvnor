@@ -2562,4 +2562,95 @@ public class ServiceImplementation
                           "&lt;" ).replace( ">",
                                             "&gt;" );
     }
+
+    public SnapshotDiffs compareSnapshots(String packageName,
+                                           String firstSnapshotName,
+                                           String secondSnapshotName) {
+        SnapshotDiffs diffs = new SnapshotDiffs();
+        List<SnapshotDiff> list = new ArrayList<SnapshotDiff>();
+
+        PackageItem leftPackage = repository.loadPackageSnapshot( packageName,
+                                                                  firstSnapshotName );
+        PackageItem rightPackage = repository.loadPackageSnapshot( packageName,
+                                                                   secondSnapshotName );
+
+        // Older one has to be on the left.
+        if ( leftPackage.getLastModified().compareTo( rightPackage.getLastModified() ) > 0 ) {
+            PackageItem temp = leftPackage;
+            leftPackage = rightPackage;
+            rightPackage = temp;
+            
+            diffs.leftName = secondSnapshotName;
+            diffs.rightName = firstSnapshotName;
+        } else {
+            diffs.leftName = firstSnapshotName;
+            diffs.rightName = secondSnapshotName;
+        }        
+        
+        Iterator<AssetItem> leftExistingIter = leftPackage.getAssets();
+        while ( leftExistingIter.hasNext() ) {
+            AssetItem left = leftExistingIter.next();
+            if ( !rightPackage.containsAsset( left.getName() ) ) {
+                SnapshotDiff diff = new SnapshotDiff();
+                
+                diff.name = left.getName();
+                diff.diffType = SnapshotDiff.TYPE_DELETED;
+                diff.leftUuid = left.getUUID();
+                
+                list.add( diff );
+            }
+        }
+
+        Iterator<AssetItem> rightExistingIter = rightPackage.getAssets();
+        while ( rightExistingIter.hasNext() ) {
+            AssetItem right = rightExistingIter.next();
+            AssetItem left = null;
+            if ( leftPackage.containsAsset( right.getName() ) ) {
+                left = leftPackage.loadAsset( right.getName() );
+            }
+
+            // Asset is deleted or added
+            if ( right == null || left == null ) {
+                SnapshotDiff diff = new SnapshotDiff();
+                
+                if ( left == null ) {
+                    diff.name = right.getName();
+                    diff.diffType = SnapshotDiff.TYPE_ADDED;
+                    diff.rightUuid = right.getUUID();
+                }
+                
+                list.add( diff );
+            } else
+            // Has the asset been archived or restored
+            if ( right.isArchived() != left.isArchived() ) {
+                SnapshotDiff diff = new SnapshotDiff();
+                
+                diff.name = right.getName();
+                diff.leftUuid = left.getUUID();
+                diff.rightUuid = right.getUUID();
+                
+                if ( left.isArchived() ) {
+                    diff.diffType = SnapshotDiff.TYPE_RESTORED;
+                } else {
+                    diff.diffType = SnapshotDiff.TYPE_ARCHIVED;
+                }
+                
+                list.add( diff );
+            } else
+            // Has the asset been updated
+            if ( right.getLastModified().compareTo( left.getLastModified() ) != 0 ) {
+                SnapshotDiff diff = new SnapshotDiff();
+                
+                diff.name = right.getName();
+                diff.leftUuid = left.getUUID();
+                diff.rightUuid = right.getUUID();
+                diff.diffType = SnapshotDiff.TYPE_UPDATED;
+                
+                list.add( diff );
+            }
+        }
+
+        diffs.diffs = list.toArray( new SnapshotDiff[list.size()] );
+        return diffs;
+    }
 }

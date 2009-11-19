@@ -62,6 +62,8 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
 import org.drools.guvnor.client.rpc.SingleScenarioResult;
+import org.drools.guvnor.client.rpc.SnapshotDiff;
+import org.drools.guvnor.client.rpc.SnapshotDiffs;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
@@ -2849,7 +2851,135 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(2, dtItem3.getCategories().size());
 		assertTrue(dtItem3.getCategorySummary().contains("testAddCategoriesCat2"));		
 	}
-	
+
+    public void testSnapshotDiff() throws Exception {
+        RepositoryService impl = getService();
+
+        // Lets make a package and a rule into tit.
+        impl.createCategory( "/",
+                             "snapshotDiffTesting",
+                             "y" );
+        String packageUuid = impl.createPackage( "testSnapshotDiff",
+                                                 "d" );
+
+        assertNotNull( packageUuid );
+
+        // Create two rules
+        String archiveRuleUuid = impl.createNewRule( "testRuleArchived",
+                                                     "",
+                                                     "snapshotDiffTesting",
+                                                     "testSnapshotDiff",
+                                                     AssetFormats.DRL );
+        String modifiedRuleUuid = impl.createNewRule( "testRuleModified",
+                                                      "",
+                                                      "snapshotDiffTesting",
+                                                      "testSnapshotDiff",
+                                                      AssetFormats.DRL );
+        String deletedRuleUuid = impl.createNewRule( "testRuleDeleted",
+                                                     "",
+                                                     "snapshotDiffTesting",
+                                                     "testSnapshotDiff",
+                                                     AssetFormats.DRL );
+        String restoredRuleUuid = impl.createNewRule( "testRuleRestored",
+                                                      "",
+                                                      "snapshotDiffTesting",
+                                                      "testSnapshotDiff",
+                                                      AssetFormats.DRL );
+        String noChangesRuleUuid = impl.createNewRule( "testRuleNoChanges",
+                                                       "",
+                                                       "snapshotDiffTesting",
+                                                       "testSnapshotDiff",
+                                                       AssetFormats.DRL );
+
+        impl.archiveAsset( restoredRuleUuid,
+                           true );
+
+        // Create a snapshot called FIRST for the package
+        impl.createPackageSnapshot( "testSnapshotDiff",
+                                    "FIRST",
+                                    false,
+                                    "ya" );
+        assertEquals( 1,
+                      impl.listSnapshots( "testSnapshotDiff" ).length );
+        assertEquals( 4,
+                      impl.listRulesInPackage( "testSnapshotDiff" ).length );
+
+        // Change the rule, archive one, delete one and create a new one
+        RuleAsset asset = impl.loadRuleAsset( modifiedRuleUuid );
+        String uuid = impl.checkinVersion( asset );
+        assertNotNull( uuid );
+
+        impl.removeAsset( deletedRuleUuid );
+
+        impl.archiveAsset( archiveRuleUuid,
+                           true );
+
+        String addedRuleUuid = impl.createNewRule( "testRuleAdded",
+                                                   "",
+                                                   "snapshotDiffTesting",
+                                                   "testSnapshotDiff",
+                                                   AssetFormats.DRL );
+
+        impl.archiveAsset( restoredRuleUuid,
+                           false );
+
+        // Create a snapshot called SECOND for the package
+        impl.createPackageSnapshot( "testSnapshotDiff",
+                                    "SECOND",
+                                    false,
+                                    "we" );
+        assertEquals( 2,
+                      impl.listSnapshots( "testSnapshotDiff" ).length );
+        assertEquals( 4,
+                      impl.listRulesInPackage( "testSnapshotDiff" ).length );
+
+        // Compare the snapshots
+        SnapshotDiffs diffs = impl.compareSnapshots( "testSnapshotDiff",
+                                                     "FIRST",
+                                                     "SECOND" );
+        assertEquals( "FIRST",
+                      diffs.leftName );
+        assertEquals( "SECOND",
+                      diffs.rightName );
+
+        SnapshotDiff[] list = diffs.diffs;
+        assertNotNull( list );
+        assertEquals( 5,
+                      list.length );
+
+        for ( int i = 0; i < list.length; i++ ) {
+            SnapshotDiff diff = list[i];
+            if ( diff.name.equals( "testRuleArchived" ) ) {
+                assertEquals( SnapshotDiff.TYPE_ARCHIVED,
+                              diff.diffType );
+                assertNotNull( diff.leftUuid );
+                assertNotNull( diff.rightUuid );
+            } else if ( diff.name.equals( "testRuleModified" ) ) {
+                assertEquals( SnapshotDiff.TYPE_UPDATED,
+                              diff.diffType );
+                assertNotNull( diff.leftUuid );
+                assertNotNull( diff.rightUuid );
+            } else if ( diff.name.equals( "testRuleAdded" ) ) {
+                assertEquals( SnapshotDiff.TYPE_ADDED,
+                              diff.diffType );
+                assertNull( diff.leftUuid );
+                assertNotNull( diff.rightUuid );
+            } else if ( diff.name.equals( "testRuleDeleted" ) ) {
+                assertEquals( SnapshotDiff.TYPE_DELETED,
+                              diff.diffType );
+                assertNotNull( diff.leftUuid );
+                assertNull( diff.rightUuid );
+            } else if ( diff.name.equals( "testRuleRestored" ) ) {
+                assertEquals( SnapshotDiff.TYPE_RESTORED,
+                              diff.diffType );
+                assertNotNull( diff.leftUuid );
+                assertNotNull( diff.rightUuid );
+            } else {
+                fail( "Diff not expected." );
+            }
+        }
+    }
+    
 	/**
 	 * Set up enough of the Seam environment to test it.
 	 */

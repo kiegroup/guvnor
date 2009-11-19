@@ -344,5 +344,8 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
         return getService().loadInbox(inboxName);
     }
 
+    public SnapshotDiffs compareSnapshots(java.lang.String p0, java.lang.String p1, java.lang.String p2)  {
+         return getService().compareSnapshots( p0,  p1,  p2);
+    }
 
 }

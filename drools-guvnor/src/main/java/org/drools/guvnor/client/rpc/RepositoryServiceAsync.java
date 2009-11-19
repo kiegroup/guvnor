@@ -108,6 +108,7 @@ public interface RepositoryServiceAsync
     public void clearAllDiscussionsForAsset(String assetId, AsyncCallback cb);
     public void subscribe(AsyncCallback<List<PushResponse>> cb);
     public void loadInbox(String inboxName, AsyncCallback<TableDataResult> cb);
+    public void compareSnapshots(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback<org.drools.guvnor.client.rpc.SnapshotDiffs> cb);
 
 
 }
