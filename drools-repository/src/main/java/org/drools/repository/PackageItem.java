@@ -287,6 +287,7 @@ public class PackageItem extends VersionableItem {
     public void remove() {
     	checkIsUpdateable();
     	try {
+            log.info( "USER:" + getCurrentUserName() + " REMOVEING package [" + getName() + "]" );
 			this.node.remove();
 		} catch (RepositoryException e) {
 			throw new RulesRepositoryException("Was not able to delete package.", e);
@@ -874,6 +875,8 @@ public class PackageItem extends VersionableItem {
 	public PackageItem createPackage(String subPackageName) throws RepositoryException {
 
 		node.checkout();
+        log.info( "USER:" + getCurrentUserName() + " CREATEING package [" + subPackageName + "]" );
+		
         Node rulePackageNode = node.addNode( subPackageName, PackageItem.RULE_PACKAGE_TYPE_NAME );
 
         rulePackageNode.addNode( PackageItem.ASSET_FOLDER_NAME, "drools:versionableAssetFolder" );
@@ -890,7 +893,9 @@ public class PackageItem extends VersionableItem {
 		return new PackageItem(this.rulesRepository, rulePackageNode);
 	}
 
-
+    private String getCurrentUserName() {
+        return this.rulesRepository.getSession().getUserID();
+    }
 
 
 }

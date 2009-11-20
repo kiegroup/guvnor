@@ -1673,6 +1673,8 @@ public class ServiceImplementation
         }
 
         try {
+            log.info( "USER:" + getCurrentUserName() + " COPYING package [" + sourcePackageName + "] to  package [" + destPackageName + "]");
+      	
             repository.copyPackage( sourcePackageName,
                                     destPackageName );
         } catch ( RulesRepositoryException e ) {
@@ -1765,8 +1767,10 @@ public class ServiceImplementation
             Identity.instance().checkPermission( new PackageUUIDType( uuid ),
                                                  RoleTypes.PACKAGE_ADMIN );
         }
+
         try {
             PackageItem item = repository.loadPackageByUUID( uuid );
+            log.info( "USER:" + getCurrentUserName() + " REMOVEING package [" + item.getName() + "]" );
             item.remove();
             repository.save();
         } catch ( RulesRepositoryException e ) {
@@ -1783,6 +1787,7 @@ public class ServiceImplementation
             Identity.instance().checkPermission( new PackageUUIDType( uuid ),
                                                  RoleTypes.PACKAGE_ADMIN );
         }
+        log.info( "USER:" + getCurrentUserName() + " RENAMING package [UUID: " + uuid + "] to package [" + newName +"]");
 
         return repository.renamePackage( uuid,
                                          newName );
