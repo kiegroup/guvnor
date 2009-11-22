@@ -8,38 +8,19 @@ package org.drools.guvnor.client.qa;
  * To change this template use File | Settings | File Templates.
  */
 
-import java.util.List;
-import java.util.Map;
-
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.InfoPopup;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.common.ValueChanged;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.*;
+import com.gwtext.client.util.Format;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
-import org.drools.guvnor.client.modeldriven.testing.FactData;
-import org.drools.guvnor.client.modeldriven.testing.FieldData;
-import org.drools.guvnor.client.modeldriven.testing.Scenario;
-import org.drools.guvnor.client.modeldriven.testing.VerifyField;
+import org.drools.guvnor.client.modeldriven.testing.*;
 import org.drools.guvnor.client.modeldriven.ui.ActionValueEditor;
 import org.drools.guvnor.client.modeldriven.ui.ConstraintValueEditor;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
-import com.gwtext.client.util.Format;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Constraint editor for the VerifyField of the expect part
@@ -89,7 +70,14 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
 						callback, DropDownData.create(enums)));
 
 			} else {
-
+                if (field.expected != null && field.nature == FieldData.TYPE_UNDEFINED ){
+                    //  GUVNOR-337
+                    if (field.expected.charAt(0)=='='){
+                       field.nature = FieldData.TYPE_VARIABLE;
+                    } else {
+                        field.nature =FieldData.TYPE_LITERAL;
+                    }
+                }
 				if (field.nature == FieldData.TYPE_UNDEFINED
 						&& isThereABoundVariableToSet() == true) {
 					Image clickme = new Image("images/edit.gif"); // NON-NLS
