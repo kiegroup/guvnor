@@ -69,7 +69,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 						callback, DropDownData.create(enums)));
 
 			} else {
-                if (field.value != null && field.nature == FieldData.TYPE_UNDEFINED ){
+                if (field.value != null && field.value.length() > 0 && field.nature == FieldData.TYPE_UNDEFINED ){
                     //  GUVNOR-337
                     if (field.value.charAt(0)=='='){
                        field.nature = FieldData.TYPE_VARIABLE;

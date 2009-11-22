@@ -1,14 +1,9 @@
 package org.drools.guvnor.client.modeldriven.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.FieldEditListener;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.InfoPopup;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.common.ValueChanged;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.*;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
@@ -16,19 +11,7 @@ import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.KeyboardListener;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import java.util.List;
 
 /**
  * This provides for editing of fields in the RHS of a rule.
@@ -90,6 +73,14 @@ public class ActionValueEditor extends DirtyableComposite {
 			// bons editeurs suivant le type
 			// si la valeur vaut 0 il faut mettre un stylo (
 
+            if (value.value != null && value.value.length() > 0 && value.nature == ActionFieldValue.TYPE_UNDEFINED ){
+                ///JBDS-894
+                if (value.value.charAt(0)=='='){
+                    value.nature = ActionFieldValue.TYPE_VARIABLE;
+                } else {
+                    value.nature =ActionFieldValue.TYPE_LITERAL;
+                }
+            }
 			if (value.nature == ActionFieldValue.TYPE_UNDEFINED) {
 				// we have a blank slate..
 				// have to give them a choice

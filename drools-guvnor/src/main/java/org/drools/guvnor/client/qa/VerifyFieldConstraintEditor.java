@@ -70,7 +70,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
 						callback, DropDownData.create(enums)));
 
 			} else {
-                if (field.expected != null && field.nature == FieldData.TYPE_UNDEFINED ){
+                if (field.expected != null && field.expected.length() > 0 && field.nature == FieldData.TYPE_UNDEFINED ){
                     //  GUVNOR-337
                     if (field.expected.charAt(0)=='='){
                        field.nature = FieldData.TYPE_VARIABLE;
