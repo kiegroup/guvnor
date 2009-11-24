@@ -93,6 +93,7 @@ public class LogViewer extends Composite {
 				new ColumnConfig() {
 					{
 					    setDataIndex("severity");  //NON-NLS
+						setHeader(constants.Severity());
 						setSortable(true);
 						setRenderer(new Renderer() {
 							public String render(Object value,
@@ -108,7 +109,7 @@ public class LogViewer extends Composite {
 								}
 							}
 						});
-						setWidth(25);
+						setWidth(50);
 					}
 				}, new ColumnConfig() {
 					{

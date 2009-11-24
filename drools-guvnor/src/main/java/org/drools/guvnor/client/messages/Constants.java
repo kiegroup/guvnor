@@ -1997,4 +1997,6 @@ public interface Constants extends ConstantsWithLookup {
     
     String TypeUpdated();
     
+    String Severity();
+    
 }
