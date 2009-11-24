@@ -91,7 +91,7 @@ public class LoggingHelper {
 }
 
 class MessageList {
-	static int MAX = 250;
+	static int MAX = 500;
 	final LogEntry[] messages = new LogEntry[MAX];
 	int current = 0;
 	public MessageList() {

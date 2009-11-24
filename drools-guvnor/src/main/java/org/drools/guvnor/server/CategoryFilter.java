@@ -40,7 +40,6 @@ public class CategoryFilter implements RepositoryFilter {
 		if (!Contexts.isSessionContextActive()) {
 			return true;
 		} else {
-			System.out.println("Checking access for : "  + makePath(parentPath, child));
 			return Identity.instance().hasPermission(new CategoryPathType(makePath(parentPath, child)), "navigate");
 		}
 	}
