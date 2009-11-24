@@ -25,7 +25,10 @@ public class LoggingHelper {
 		return messages.getMessages();
 	}
 
-
+	public static void cleanLog() {
+		messages.cleanEntry();
+	}
+	
 	public static Logger getLogger(Class cls) {
 
 		Logger l = Logger.getLogger( cls );
@@ -92,8 +95,9 @@ public class LoggingHelper {
 
 class MessageList {
 	static int MAX = 500;
-	final LogEntry[] messages = new LogEntry[MAX];
+	LogEntry[] messages = new LogEntry[MAX];
 	int current = 0;
+	
 	public MessageList() {
 
 	}
@@ -103,14 +107,15 @@ class MessageList {
 			current = 0;
 		}
 		messages[current++] = e;
-
 	}
 
 	public LogEntry[] getMessages() {
 		return messages;
 	}
-
-
+	
+	public synchronized void cleanEntry() {
+		messages = new LogEntry[MAX];
+	}
 
 }
 

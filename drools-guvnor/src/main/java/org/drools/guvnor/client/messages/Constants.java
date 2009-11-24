@@ -1999,4 +1999,7 @@ public interface Constants extends ConstantsWithLookup {
     
     String Severity();
     
+    String CleaningLogMessages();
+    
+    String Clean();
 }

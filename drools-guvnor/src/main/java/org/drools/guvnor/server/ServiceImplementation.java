@@ -2262,9 +2262,18 @@ public class ServiceImplementation
         }
 
         return LoggingHelper.getMessages();
-
     }
 
+    @WebRemote
+    public void cleanLog() {
+        if ( Contexts.isSessionContextActive() ) {
+            Identity.instance().checkPermission( new AdminType(),
+                                                 RoleTypes.ADMIN );
+        }
+
+        LoggingHelper.cleanLog();
+    }
+    
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void renameCategory(String fullPathAndName,

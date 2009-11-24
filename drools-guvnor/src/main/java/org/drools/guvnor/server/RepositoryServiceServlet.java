@@ -267,6 +267,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 	public org.drools.guvnor.client.rpc.LogEntry[] showLog()  {
 		 return getService().showLog();
 	}
+	public void cleanLog()  {
+		 getService().cleanLog();
+	}
 	public java.lang.String[] loadDropDownExpression(java.lang.String[] p0, java.lang.String p1)  {
 		 return getService().loadDropDownExpression( p0,  p1);
 	}

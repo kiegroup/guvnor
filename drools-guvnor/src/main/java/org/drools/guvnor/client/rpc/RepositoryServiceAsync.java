@@ -90,6 +90,7 @@ public interface RepositoryServiceAsync
 	public void runScenariosInPackage(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.BulkTestRunResult> cb);
 	public void analysePackage(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.AnalysisReport> cb);
 	public void listTypesInPackage(java.lang.String p0, AsyncCallback<java.lang.String[]> cb);
+	public void cleanLog(AsyncCallback cb);
 	public void showLog(AsyncCallback<org.drools.guvnor.client.rpc.LogEntry[]> cb);
 	public void loadDropDownExpression(java.lang.String[] p0, java.lang.String p1, AsyncCallback<java.lang.String[]> cb);
 	public void queryFullText(java.lang.String p0, boolean p1, int p2, int p3, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);

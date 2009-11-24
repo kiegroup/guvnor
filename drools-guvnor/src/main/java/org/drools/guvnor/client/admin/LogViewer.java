@@ -38,7 +38,7 @@ import com.gwtext.client.widgets.grid.Renderer;
 public class LogViewer extends Composite {
 
 	private VerticalPanel layout;
-    private Constants constants;
+    private Constants constants = ((Constants) GWT.create(Constants.class));;
 
     public LogViewer() {
 		layout = new VerticalPanel();
@@ -50,7 +50,6 @@ public class LogViewer extends Composite {
 	}
 
 	private void refresh() {
-        constants = ((Constants) GWT.create(Constants.class));
         LoadingPopup.showMessage(constants.LoadingLogMessages());
 		RepositoryServiceFactory.getService().showLog(new GenericCallback<LogEntry[]>() {
 			public void onSuccess(LogEntry[] logs) {
@@ -60,6 +59,16 @@ public class LogViewer extends Composite {
 		});
 	}
 
+	private void cleanLog() {
+	    LoadingPopup.showMessage(constants.CleaningLogMessages());
+		RepositoryServiceFactory.getService().cleanLog(new GenericCallback() {
+			public void onSuccess(Object data) {
+				refresh();
+				LoadingPopup.close();
+			}
+		});
+	}
+	
 	private void showLogs(LogEntry[] logs) {
 		List<LogEntry> entries = new ArrayList<LogEntry>();
 		
@@ -164,7 +173,16 @@ public class LogViewer extends Composite {
 		});
 
 		tb.addButton(reload);
+		
+		ToolbarButton clean = new ToolbarButton(constants.Clean());
+		clean.addListener(new ButtonListenerAdapter() {
+			public void onClick(Button button, EventObject e) {
+				layout.remove(g);
+				cleanLog();
+			}
+		});
 
+		tb.addButton(clean);
 	}
 
 }

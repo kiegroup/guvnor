@@ -422,6 +422,10 @@ public interface RepositoryService extends RemoteService {
      */
     public LogEntry[] showLog();
 
+    /**
+     * clean up the log entry.
+     */
+    public void cleanLog();
 
     /**
      * @param valuePairs key=value pairs to be interpolated into the expression.
