@@ -247,7 +247,7 @@ public class ServiceImplementation
             if ( e.getCause() instanceof ItemExistsException ) {
                 return "DUPLICATE";
             } else {
-                log.error( e );
+                log.error("An error occurred creating new asset" + ruleName + "] in package [" + initialPackage + "]: " + e.getMessage());
                 throw new SerializableException( e.getMessage() );
             }
         }
@@ -266,7 +266,7 @@ public class ServiceImplementation
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
 
-        log.info( "USER:" + repository.getSession().getUserID() + " Create a shared asset imported from global area named [" + sharedAssetName + "] in package [" + initialPackage + "]" );
+        log.info( "USER:" + repository.getSession().getUserID() + " CREATING shared asset imported from global area named [" + sharedAssetName + "] in package [" + initialPackage + "]" );
 
         try {
             PackageItem pkg = repository.loadPackage(initialPackage);
@@ -278,7 +278,7 @@ public class ServiceImplementation
             if ( e.getCause() instanceof ItemExistsException ) {
                 return "DUPLICATE";
             } else {
-                log.error( e );
+                log.error("An error occurred creating shared asset" + sharedAssetName + "] in package [" + initialPackage + "]: " + e.getMessage());
                 throw new SerializableException( e.getMessage() );
             }
         }
@@ -301,8 +301,7 @@ public class ServiceImplementation
         asset.remove();
 
         repository.save();
-        push( "packageChange",
-              pkgName );
+        push( "packageChange", pkgName );
     }
 
     /**
@@ -470,7 +469,6 @@ public class ServiceImplementation
         TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
         // log.debug("time for load: " + (System.currentTimeMillis() - time) );
         return handler.loadRuleListTable( list );
-
     }
 
     @WebRemote
@@ -1258,7 +1256,8 @@ public class ServiceImplementation
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
 
-        return repository.copyAsset( assetUUID,
+       log.info( "USER:" + getCurrentUserName() + " COPYING asset: [" + assetUUID + "] to [" + newName + "] in PACKAGE ["  + newPackage + "]" );
+       return repository.copyAsset( assetUUID,
                                      newPackage,
                                      newName );
     }
@@ -1405,6 +1404,8 @@ public class ServiceImplementation
             repository.loadCategory( categoryPath ).remove();
             repository.save();
         } catch ( RulesRepositoryException e ) {
+            log.info("Unable to remove category [" + categoryPath + "]. It is probably still used: " + e.getMessage());
+
             throw new DetailedSerializableException( "Unable to remove category. It is probably still used.",
                                                      e.getMessage() );
         }
@@ -1449,7 +1450,7 @@ public class ServiceImplementation
             result = loader.getSuggestionEngine( pkg );
 
         } catch ( RulesRepositoryException e ) {
-            log.error( e );
+            log.error("An error occurred loadSuggestionCompletionEngine: " + e.getMessage());
             throw new SerializableException( e.getMessage() );
         } finally {
             Thread.currentThread().setContextClassLoader( originalCL );
@@ -1533,7 +1534,7 @@ public class ServiceImplementation
                 repository.save();
             } catch ( Exception e ) {
                 e.printStackTrace();
-                log.error( e );
+                log.error("An error occurred building the package [" +item.getName() + "]: " + e.getMessage());
                 throw new DetailedSerializableException( "An error occurred building the package.",
                                                          e.getMessage() );
             }
@@ -2005,6 +2006,7 @@ public class ServiceImplementation
             try {
                 BuilderResult[] res = this.buildPackage(item, true);
                 if ( res != null && res.length > 0 ) {
+                    log.error("There were errors when rebuilding the knowledgebase.");
                     throw new DetailedSerializableException( "There were errors when rebuilding the knowledgebase.",
                                                              "" );
                 }
@@ -2012,10 +2014,12 @@ public class ServiceImplementation
                     return deserKnowledgebase( item,
                                                cl );
                 } catch ( Exception e2 ) {
-                    throw new DetailedSerializableException( "Unable to reload knowledgebase.",
+                   log.error("Unable to reload knowledgebase: " + e.getMessage());
+                   throw new DetailedSerializableException( "Unable to reload knowledgebase.",
                                                              e.getMessage() );
                 }
             } catch ( SerializableException e1 ) {
+                log.error("Unable to rebuild the rulebase: " + e.getMessage());
                 throw new DetailedSerializableException( "Unable to rebuild the rulebase.",
                                                          "" );
             }
@@ -2070,15 +2074,15 @@ public class ServiceImplementation
                                               scenario );
             return r;
         } catch ( ClassNotFoundException e ) {
-            log.error( e );
+            log.error("Unable to load a required class: " + e.getMessage());
             throw new DetailedSerializableException( "Unable to load a required class.",
                                                      e.getMessage() );
         } catch ( ConsequenceException e ) {
-            log.info( e );
+            log.error("There was an error executing the consequence of rule [" + e.getRule().getName() + "]: " + e.getMessage());
             throw new DetailedSerializableException( "There was an error executing the consequence of rule [" + e.getRule().getName() + "]",
                                                      e.getMessage() );
         } catch ( Exception e ) {
-            log.error( e );
+            log.error("Unable to run the scenario: " + e.getMessage());
             throw new DetailedSerializableException( "Unable to run the scenario.",
                                                      e.getMessage() );
         }
@@ -2192,7 +2196,7 @@ public class ServiceImplementation
         try {
             return runner.analyse( drl );
         } catch ( DroolsParserException e ) {
-            log.error( e );
+            log.error("Unable to parse the rules: " + e.getMessage() );
             throw new DetailedSerializableException( "Unable to parse the rules.",
                                                      e.getMessage() );
         }
@@ -2236,7 +2240,8 @@ public class ServiceImplementation
                                 res.add( typeDeclarationDescr.getTypeName() );
                             }
                         } catch ( DroolsParserException e ) {
-                            log.error( e );
+                            log.error("An error occurred parsing rule: " + e.getMessage() );
+
                         }
 
                     }
@@ -2245,7 +2250,7 @@ public class ServiceImplementation
             }
             return res.toArray( new String[res.size()] );
         } catch ( IOException e ) {
-            log.error( e );
+            log.error("Unable to read the jar files in the package: " + e.getMessage());
             throw new DetailedSerializableException( "Unable to read the jar files in the package.",
                                                      e.getMessage() );
         } finally {
@@ -2365,7 +2370,7 @@ public class ServiceImplementation
 
                 }
             } catch ( Exception e ) {
-                log.error( e );
+                log.error("An error occurred building package [" + pkg.getName() + "]\n" );
                 errs.append( "An error occurred building package [" + pkg.getName() + "]\n" );
             }
         }
@@ -2538,7 +2543,7 @@ public class ServiceImplementation
                 return UserInbox.toTable(ib.loadIncoming(), true);
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error("Unable to load Inbox: " + e.getMessage());
             throw new DetailedSerializableException("Unable to load Inbox", e.getMessage());
         }
     }
