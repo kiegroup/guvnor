@@ -20,8 +20,6 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.remoteapi.Response.Binary;
 import org.drools.repository.remoteapi.Response.Text;
 
-import com.sun.org.apache.xalan.internal.xsltc.cmdline.getopt.GetOpt;
-
 /**
  * This provides a simple REST style remote friendly API.
  *
