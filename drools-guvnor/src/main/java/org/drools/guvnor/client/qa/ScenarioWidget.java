@@ -5,6 +5,7 @@ import java.util.*;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.testing.ActivateRuleFlowGroup;
 import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
 import org.drools.guvnor.client.modeldriven.testing.FactData;
 import org.drools.guvnor.client.modeldriven.testing.FieldData;
@@ -161,20 +162,30 @@ public class ScenarioWidget extends Composite {
 				editorLayout.setWidget(layoutRow, 0, h);
 
 				layoutRow++;
-				Map facts = (Map) f;
+				Map given = (Map) f;
 				VerticalPanel vert = new VerticalPanel();
-		        for (Iterator iterator = facts.entrySet().iterator(); iterator.hasNext();) {
+		        for (Iterator iterator = given.entrySet().iterator(); iterator.hasNext();) {
 		            Map.Entry e = (Map.Entry) iterator.next();
-		            List factList = (List) facts.get(e.getKey());
-		            if (e.getKey().equals(ScenarioHelper.RETRACT_KEY)) {
-		            	vert.add(new RetractWidget(factList, scenario));
-		            } else {
-                        vert.add(new DataInputWidget((String)e.getKey(), factList, false, scenario, sce, this,listExecutionTrace.get(executionTraceLine)));                             
- 		            }
+		            List itemList = (List) given.get(e.getKey());
+		            if ( e.getKey().equals( ScenarioHelper.RETRACT_KEY ) ) {
+                        vert.add( new RetractWidget( itemList,
+                                                     scenario ) );
+                    } else if ( e.getKey().equals( ScenarioHelper.ACTIVATE_RULE_FLOW_GROUP ) ) {
+                        vert.add( new ActivateRuleFlowWidget( itemList,
+                                                              scenario ) );
+                    } else {
+                        vert.add( new DataInputWidget( (String) e.getKey(),
+                                                       itemList,
+                                                       false,
+                                                       scenario,
+                                                       sce,
+                                                       this,
+                                                       listExecutionTrace.get( executionTraceLine ) ) );
+                    }
 		        }
 
 
-		        if (facts.size() > 0) {
+		        if (given.size() > 0) {
 		        	editorLayout.setWidget(layoutRow, 1, vert);
 		        } else {
 		        	editorLayout.setWidget(layoutRow, 1, new HTML("<i><small>" + constants.AddInputDataAndExpectationsHere() + "</small></i>"));
@@ -182,11 +193,19 @@ public class ScenarioWidget extends Composite {
 			} else {
 				List l = (List) f;
 				Fixture first = (Fixture) l.get(0);
-				if (first instanceof VerifyFact) {
-                    doVerifyFacts(l, editorLayout, layoutRow, scenario,listExecutionTrace.get(executionTraceLine));
-				} else if (first instanceof VerifyRuleFired) {
-					editorLayout.setWidget(layoutRow, 1, new VerifyRulesFiredWidget(l, scenario, showResults));
-				}
+				if ( first instanceof VerifyFact ) {
+                    doVerifyFacts( l,
+                                   editorLayout,
+                                   layoutRow,
+                                   scenario,
+                                   listExecutionTrace.get( executionTraceLine ) );
+                } else if ( first instanceof VerifyRuleFired ) {
+                    editorLayout.setWidget( layoutRow,
+                                            1,
+                                            new VerifyRulesFiredWidget( l,
+                                                                        scenario,
+                                                                        showResults ) );
+                }
 
 			}
 			layoutRow++;
@@ -352,6 +371,26 @@ public class ScenarioWidget extends Composite {
 
 		        }
 
+		        // Activate rule flows
+		        final TextBox ruleFlowName = new TextBox();
+		        final HorizontalPanel settingsPanel = new HorizontalPanel();
+		        settingsPanel.add( ruleFlowName);
+		        
+		        add = new Button( constants.Add() );
+                                                 add.addClickListener( new ClickListener() {
+                                                     public void onClick(Widget w) {
+                                                         scenario.insertBetween( previousEx,
+                                                                                 new ActivateRuleFlowGroup( ruleFlowName.getText() ) );
+//                                                                                 new RetractFact( ruleFlowName.getText() ) );
+                                                         renderEditor();
+                                                         pop.hide();
+                                                     }
+                                                 } );
+
+                settingsPanel.add( add );
+		        
+		        pop.addAttribute( "Activate rule flow group", settingsPanel );
+		        
 
 				pop.show();
 
