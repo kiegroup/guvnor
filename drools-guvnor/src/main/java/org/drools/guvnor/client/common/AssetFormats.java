@@ -59,6 +59,7 @@ public class AssetFormats {
 
     /** Use a ruleflow.*/
     public static final String RULE_FLOW_RF = "rf";
+    public static final String BPMN2_PROCESS = "bpmn";
 
     /** Use a data enum.*/
     public static final String ENUMERATION = "enumeration";
@@ -77,7 +78,6 @@ public class AssetFormats {
      * The following group the assets together for lists, helpers etc...
      */
     public static final String[] BUSINESS_RULE_FORMATS = new String[]{AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE, AssetFormats.DECISION_SPREADSHEET_XLS, AssetFormats.DECISION_TABLE_GUIDED};
-
 
     /**
      * These define assets that are really package level "things". Used to decide when to flush any caches.

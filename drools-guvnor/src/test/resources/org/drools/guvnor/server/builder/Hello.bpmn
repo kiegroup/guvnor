@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://schema.omg.org/spec/BPMN/2.0"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <resource id="Actor" name="Human Actor" />
+
+  <process processType="executable" id="com.sample.bpmn.hello" name="Hello World" tns:packageName="defaultPackage" >
+
+    <!-- process variables -->
+
+    <!-- nodes -->
+    <scriptTask id="_2" name="Hello" g:x="96" g:y="16" g:width="80" g:height="48" scriptLanguage="http://www.java.com/java" >
+      <script>System.out.println("Hello");</script>
+    </scriptTask>
+    <startEvent id="_1" name="StartProcess" g:x="16" g:y="16" g:width="48" g:height="48" />
+    <endEvent id="_3" name="EndProcess" g:x="208" g:y="16" g:width="48" g:height="48" />
+
+    <!-- connections -->
+    <sequenceFlow sourceRef="_1" targetRef="_2" />
+    <sequenceFlow sourceRef="_2" targetRef="_3" />
+
+  </process>
+
+</definitions>

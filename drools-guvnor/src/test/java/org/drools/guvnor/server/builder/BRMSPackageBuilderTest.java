@@ -17,6 +17,7 @@ package org.drools.guvnor.server.builder;
 
 
 
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -207,5 +208,16 @@ public class BRMSPackageBuilderTest extends TestCase {
         assertFalse(builder.getPackageBuilderConfiguration().isAllowMultipleNamespaces());
     }
 
+    public void testRuleFlow() throws Exception {
+        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( new ArrayList<JarInputStream>(), new Properties() );
+        builder.addProcessFromXml( new InputStreamReader( this.getClass().getResourceAsStream( "evaluation.rf" ) ) );
+        assertFalse(builder.hasErrors());
+    }
+
+    public void testBPMN2Process() throws Exception {
+        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( new ArrayList<JarInputStream>(), new Properties() );
+        builder.addProcessFromXml( new InputStreamReader( this.getClass().getResourceAsStream( "Hello.bpmn" ) ) );
+        assertFalse(builder.hasErrors());
+    }
 
 }
