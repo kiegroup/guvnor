@@ -3,22 +3,21 @@ package org.drools.guvnor.client.explorer;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.Inbox;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.qa.AnalysisView;
 import org.drools.guvnor.client.qa.ScenarioPackageView;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.security.Capabilities;
-import org.drools.guvnor.client.messages.Constants;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Timer;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
+import com.gwtext.client.util.Format;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.event.TreeNodeListenerAdapter;
-import com.gwtext.client.util.Format;
 
 /*
  * This class contains static node config for BRMS' explorer widgets
@@ -53,16 +52,14 @@ public class ExplorerNodeConfig {
 		                               new String[]{AssetFormats.MODEL, AssetFormats.DRL_MODEL} ) ) ;
 
 		if (Preferences.getBooleanPref("flex-bpel-editor")) {
-			pkg.appendChild(makeItem(constants.BPELPackages(),
-					"images/model_asset.gif",
-
-					new String[] { AssetFormats.BPEL_PACKAGE }));
+			pkg.appendChild( makeItem(constants.RuleFlows(),
+					 "images/ruleflow_small.gif",
+					 new String[] { AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN2_PROCESS, AssetFormats.BPEL_PACKAGE } ) ) ;
+		} else {
+			pkg.appendChild( makeItem(constants.RuleFlows(),
+					 "images/ruleflow_small.gif",
+					 new String[] { AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN2_PROCESS } ) ) ;
 		}
-		
-		pkg.appendChild( makeItem(constants.RuleFlows(),
-		 "images/ruleflow_small.gif",
-
-		                new String[]{AssetFormats.RULE_FLOW_RF} ) ) ;
 
 		pkg.appendChild( makeItem(constants.Enumerations(),
 		 "images/enumeration.gif",
