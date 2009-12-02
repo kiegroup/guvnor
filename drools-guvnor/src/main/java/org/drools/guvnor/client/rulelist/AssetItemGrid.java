@@ -385,6 +385,7 @@ public class AssetItemGrid extends Composite {
         cfgs[0] = new ColumnConfig() {
             {
                 setHidden( true );
+                setHeader( "uuid" );
                 setDataIndex( "uuid" );   //NON-NLS
             }
         };
