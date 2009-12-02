@@ -73,9 +73,9 @@ public class EditorLauncher {
             return new DecisionTableXLSWidget( asset, viewer );
 
         } else if ( asset.metaData.format.equals( AssetFormats.RULE_FLOW_RF ) ) {
-            //            return new RuleFlowUploadWidget(asset, viewer);
-            return new RuleFlowWrapper( asset,
-                                        viewer );
+            return new RuleFlowWrapper( asset, viewer );
+        } else if ( asset.metaData.format.equals( AssetFormats.BPMN2_PROCESS ) ) {
+            return new RuleFlowWrapper( asset, viewer );
         } else if ( asset.metaData.format.equals( AssetFormats.DRL ) ) {
             return new DrlEditor( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.ENUMERATION ) ) {
@@ -118,6 +118,8 @@ public class EditorLauncher {
         result.put( AssetFormats.DSL_TEMPLATE_RULE,
                     "business_rule.gif" );
         result.put( AssetFormats.RULE_FLOW_RF,
+                    "ruleflow_small.gif" );
+        result.put( AssetFormats.BPMN2_PROCESS,
                     "ruleflow_small.gif" );
         result.put( AssetFormats.TEST_SCENARIO,
                     "test_manager.gif" );
