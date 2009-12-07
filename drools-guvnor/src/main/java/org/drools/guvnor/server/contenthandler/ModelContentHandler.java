@@ -66,8 +66,13 @@ public class ModelContentHandler extends ContentHandler {
         while ( (entry = jis.getNextJarEntry()) != null ) {
             if ( !entry.isDirectory() ) {
                 if ( entry.getName().endsWith( ".class" ) && entry.getName().indexOf( '$' ) == -1 ) {
-                    buf.append( "import " + convertPathToName( entry.getName() ) );
-                    buf.append( "\n" );
+
+                    String line = "import " + convertPathToName( entry.getName() );
+                    // Add imports only once
+                    if ( !header.contains( line ) ) {
+                        buf.append( line );
+                        buf.append( "\n" );
+                    }
                 }
             }
         }
