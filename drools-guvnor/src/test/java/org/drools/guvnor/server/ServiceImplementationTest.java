@@ -2638,7 +2638,7 @@ public class ServiceImplementationTest extends TestCase {
 		AnalysisReport report = impl.analysePackage(pkg.getUUID());
 		assertNotNull(report);
 		assertEquals(0, report.errors.length);
-		assertEquals(11, report.warnings.length);
+		assertEquals(15, report.warnings.length);
 		assertEquals(16, report.notes.length);
 		assertEquals(2, report.factUsages.length);
 
