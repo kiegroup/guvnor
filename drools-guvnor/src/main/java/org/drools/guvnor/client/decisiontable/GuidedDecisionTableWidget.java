@@ -53,6 +53,7 @@ import com.gwtext.client.core.SortDir;
 import com.gwtext.client.data.ArrayReader;
 import com.gwtext.client.data.FieldDef;
 import com.gwtext.client.data.GroupingStore;
+import com.gwtext.client.data.IntegerFieldDef;
 import com.gwtext.client.data.MemoryProxy;
 import com.gwtext.client.data.Record;
 import com.gwtext.client.data.RecordDef;
@@ -714,7 +715,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         colMap = new HashMap();
 
-        fds[0] = new StringFieldDef( "num" ); //NON-NLS
+        fds[0] = new IntegerFieldDef( "num" ); //NON-NLS
         fds[1] = new StringFieldDef( "desc" ); //NON-NLS
 
         int colCount = 0;
