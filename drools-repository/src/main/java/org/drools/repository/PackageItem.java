@@ -239,7 +239,7 @@ public class PackageItem extends VersionableItem {
             
     		Session session = rulesRepository.getSession();
     		Workspace workspace = session.getWorkspace();
-            PackageItem globalArea = rulesRepository.loadPackage( RulesRepository.RULE_GLOBAL_AREA );
+            PackageItem globalArea = rulesRepository.loadGlobalArea();
             AssetItem globalAssetItem = globalArea.loadAsset(sharedAssetName);
  			if (!hasMixin(globalAssetItem.getNode())) {
 				globalAssetItem.checkout();
@@ -248,7 +248,6 @@ public class PackageItem extends VersionableItem {
 			}
     		
        		String path = rulesFolder.getPath() + "/" + globalAssetItem.getName();
-       		//System.out.println("---" + path);			
        	 	workspace.clone(workspace.getName(), globalAssetItem.getNode().getPath(), path, false);	
     		
        	    Node ruleNode = rulesFolder.getNode(globalAssetItem.getName());

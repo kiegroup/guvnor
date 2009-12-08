@@ -367,11 +367,17 @@ public class RulesRepository {
             return new PackageItem( this,
                                     rulePackageNode );
         } catch ( RepositoryException e ) {
-            log.error( "Unable to load a rule package. ",
-                       e );
-
-            throw new RulesRepositoryException( "Unable to load a rule package. ",
-                                                e );
+        	//the Global package should always exist. In case it is not (eg, when
+        	//an old db was imported to repo), we create it. 
+        	if (RULE_GLOBAL_AREA.equals(name)) {
+				log.info("Creating Global area as it does not exist yet.");
+				return createPackage(RULE_GLOBAL_AREA,
+						"the global area that holds sharable assets");
+			} else {
+				log.error("Unable to load a rule package. ", e);
+				throw new RulesRepositoryException(
+						"Unable to load a rule package. ", e);
+			}
 
         }
     }
