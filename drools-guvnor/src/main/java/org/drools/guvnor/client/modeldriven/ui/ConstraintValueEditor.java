@@ -22,6 +22,7 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
@@ -119,11 +120,24 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                                           this.fieldName,
                                                           this.sce,
                                                           this.constraint ) );
+                    } else if ( SuggestionCompletionEngine.TYPE_DATE.equals( this.fieldType ) ) {
+
+                        DatePickerLabel datePicker = new DatePickerLabel( constraint.value );
+
+                        // Set the default time
+                        this.constraint.value = datePicker.getDateString();
+
+                        datePicker.addValueChanged( new ValueChanged() {
+                            public void valueChanged(String newValue) {
+                                constraint.value = newValue;
+                            }
+                        } );
+
+                        panel.add( datePicker );
 
                     } else {
-                        panel.add( new LiteralEditor( this.constraint,
-                                                      this.fieldType,
-                                                      this.numericValue ) );
+                        panel.add( new DefaultLiteralEditor( this.constraint,
+                                                             this.numericValue ) );
                     }
                     break;
                 case SingleFieldConstraint.TYPE_RET_VALUE :
