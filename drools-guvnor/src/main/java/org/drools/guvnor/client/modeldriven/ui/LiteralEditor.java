@@ -3,9 +3,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 
 import com.google.gwt.core.client.GWT;
@@ -15,7 +13,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -32,39 +29,36 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class LiteralEditor extends Composite {
 
-    private final FactPattern                pattern;
-    private final String                     fieldName;
-    private final SuggestionCompletionEngine sce;
-    private Constants                        constants    = ((Constants) GWT.create( Constants.class ));
-    protected Panel                          panel        = new HorizontalPanel();
-    protected Label                          labelWidget  = new Label();
-    private ISingleFieldConstraint           constraint;
-    private DropDownData                     dropDownData;
-    private String                           fieldType;
-    private final boolean                    numericValue;
+    private Constants              constants    = ((Constants) GWT.create( Constants.class ));
+    protected Panel                panel        = new HorizontalPanel();
+    private ISingleFieldConstraint constraint;
+    private String                 fieldType;
+    private final boolean          numericValue;
 
-    private final Button                     okButton     = new Button( constants.OK() );
-    private final ValueChanged               valueChanged = new ValueChanged() {
-                                                              public void valueChanged(String newValue) {
-                                                                  constraint.value = newValue;
-                                                                  okButton.click();
-                                                              }
-                                                          };
+    private Label                  textWidget   = new Label();
 
-    public LiteralEditor(FactPattern pattern,
-                         String fieldName,
-                         SuggestionCompletionEngine sce,
-                         ISingleFieldConstraint constraint,
-                         DropDownData dropDownData,
+    private final Button           okButton     = new Button( constants.OK() );
+    private final ValueChanged     valueChanged = new ValueChanged() {
+                                                    public void valueChanged(String newValue) {
+                                                        constraint.value = newValue;
+                                                        okButton.click();
+                                                    }
+                                                };
+
+    public LiteralEditor(ISingleFieldConstraint constraint,
                          String fieldType,
                          boolean numericValue) {
-        this.pattern = pattern;
-        this.fieldName = fieldName;
-        this.sce = sce;
         this.constraint = constraint;
-        this.dropDownData = dropDownData;
         this.fieldType = fieldType;
         this.numericValue = numericValue;
+
+        textWidget.setStyleName( "x-form-field" );
+
+        textWidget.addClickListener( new ClickListener() {
+            public void onClick(Widget arg0) {
+                showPopup();
+            }
+        } );
 
         if ( SuggestionCompletionEngine.TYPE_DATE.equals( this.fieldType ) ) {
 
@@ -78,21 +72,13 @@ public class LiteralEditor extends Composite {
             initWidget( datePicker );
         } else {
 
-            labelWidget.setStyleName( "x-form-field" );
-
             if ( constraint.value != null && !"".equals( constraint.value ) ) {
-                labelWidget.setText( constraint.value );
+                textWidget.setText( constraint.value );
             } else {
-                labelWidget.setText( constants.Value() );
+                textWidget.setText( constants.Value() );
             }
 
-            panel.add( labelWidget );
-
-            labelWidget.addClickListener( new ClickListener() {
-                public void onClick(Widget arg0) {
-                    showPopup();
-                }
-            } );
+            panel.add( textWidget );
 
             initWidget( panel );
         }
@@ -109,11 +95,10 @@ public class LiteralEditor extends Composite {
             public void onClick(Widget arg0) {
 
                 if ( !isValueEmpty( constraint.value ) ) {
-                    labelWidget.setText( constraint.value );
+                    textWidget.setText( constraint.value );
 
-                    //                valueChanged();
                     panel.clear();
-                    panel.add( labelWidget );
+                    panel.add( textWidget );
                     popup.hide();
                 }
             }
@@ -132,21 +117,7 @@ public class LiteralEditor extends Composite {
 
     public Widget getEditorWidget() {
 
-        //use a drop down if we have a fixed list
-        if ( this.dropDownData != null ) {
-
-            this.dropDownData = sce.getEnums( pattern,
-                                              fieldName );
-
-            ListBox box = ConstraintValueEditor.enumDropDown( constraint.value,
-                                                              valueChanged,
-                                                              this.dropDownData );
-
-            box.setVisibleItemCount( 6 );
-
-            return box;
-
-        } else if ( SuggestionCompletionEngine.TYPE_DATE.equals( this.fieldType ) ) {
+        if ( SuggestionCompletionEngine.TYPE_DATE.equals( this.fieldType ) ) {
 
             DatePickerLabel datePicker = new DatePickerLabel( constraint.value );
 
@@ -159,7 +130,7 @@ public class LiteralEditor extends Composite {
 
         } else {
 
-            final TextBox box = ConstraintValueEditor.boundTextBox( constraint );
+            final TextBox box = new BoundTextBox( constraint );
 
             box.addKeyboardListener( new KeyboardListener() {
 

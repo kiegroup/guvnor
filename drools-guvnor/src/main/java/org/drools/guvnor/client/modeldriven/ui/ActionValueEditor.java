@@ -21,104 +21,107 @@ import java.util.List;
  */
 public class ActionValueEditor extends DirtyableComposite {
 
-	private ActionFieldValue value;
-	private DropDownData enums;
-	private SimplePanel root;
-	private Constants constants = GWT.create(Constants.class);
-	private RuleModeller model = null;
-	private String variableType = null;
+    private ActionFieldValue value;
+    private DropDownData     enums;
+    private SimplePanel      root;
+    private Constants        constants    = GWT.create( Constants.class );
+    private RuleModeller     model        = null;
+    private String           variableType = null;
 
-	public ActionValueEditor(final ActionFieldValue val,
-			final DropDownData enums) {
-		if (val.type.equals(SuggestionCompletionEngine.TYPE_BOOLEAN)) {
-			this.enums = DropDownData.create(new String[] { "true", "false" });
-		} else {
-			this.enums = enums;
-		}
-		this.root = new SimplePanel();
-		this.value = val;
+    public ActionValueEditor(final ActionFieldValue val,
+                             final DropDownData enums) {
+        if ( val.type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+            this.enums = DropDownData.create( new String[]{"true", "false"} );
+        } else {
+            this.enums = enums;
+        }
+        this.root = new SimplePanel();
+        this.value = val;
 
-		refresh();
-		initWidget(root);
-	}
+        refresh();
+        initWidget( root );
+    }
 
-	public ActionValueEditor(final ActionFieldValue val,
-			final DropDownData enums, RuleModeller model, String variableType) {
-		if (val.type.equals(SuggestionCompletionEngine.TYPE_BOOLEAN)) {
-			this.enums = DropDownData.create(new String[] { "true", "false" });
-		} else {
-			this.enums = enums;
-		}
-		this.root = new SimplePanel();
-		this.value = val;
-		this.model = model;
-		this.variableType = variableType;
-		refresh();
-		initWidget(root);
-	}
+    public ActionValueEditor(final ActionFieldValue val,
+                             final DropDownData enums,
+                             RuleModeller model,
+                             String variableType) {
+        if ( val.type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+            this.enums = DropDownData.create( new String[]{"true", "false"} );
+        } else {
+            this.enums = enums;
+        }
+        this.root = new SimplePanel();
+        this.value = val;
+        this.model = model;
+        this.variableType = variableType;
+        refresh();
+        initWidget( root );
+    }
 
-	private void refresh() {
-		root.clear();
-		if (enums != null
-				&& (enums.fixedList != null || enums.queryExpression != null)) {
-			root.add(ConstraintValueEditor.enumDropDown(value.value,
-					new ValueChanged() {
-						public void valueChanged(String newValue) {
-							value.value = newValue;
-							makeDirty();
-						}
-					}, enums));
-		} else {
-			// FIX nheron il faut ajouter les autres choix pour appeller les
-			// bons editeurs suivant le type
-			// si la valeur vaut 0 il faut mettre un stylo (
+    private void refresh() {
+        root.clear();
+        if ( enums != null && (enums.fixedList != null || enums.queryExpression != null) ) {
+            root.add( new EnumDropDown( value.value,
+                                        new DropDownValueChanged() {
+                                            public void valueChanged(String newText,
+                                                                     String newValue) {
+                                                value.value = newValue;
+                                                makeDirty();
+                                            }
+                                        },
+                                        enums ) );
+        } else {
+            // FIX nheron il faut ajouter les autres choix pour appeller les
+            // bons editeurs suivant le type
+            // si la valeur vaut 0 il faut mettre un stylo (
 
-            if (value.value != null && value.value.length() > 0 && value.nature == ActionFieldValue.TYPE_UNDEFINED ){
+            if ( value.value != null && value.value.length() > 0 && value.nature == ActionFieldValue.TYPE_UNDEFINED ) {
                 ///JBDS-894
-                if (value.value.charAt(0)=='='){
+                if ( value.value.charAt( 0 ) == '=' ) {
                     value.nature = ActionFieldValue.TYPE_VARIABLE;
                 } else {
-                    value.nature =ActionFieldValue.TYPE_LITERAL;
+                    value.nature = ActionFieldValue.TYPE_LITERAL;
                 }
             }
-			if (value.nature == ActionFieldValue.TYPE_UNDEFINED) {
-				// we have a blank slate..
-				// have to give them a choice
-				root.add(choice());
-			} else {
-				if (value.nature == ActionFieldValue.TYPE_VARIABLE) {
-					ListBox list = boundVariable(value);
-					root.add(list);
-				} else {
-					TextBox box = boundTextBox(this.value);
-					root.add(box);
-				}
+            if ( value.nature == ActionFieldValue.TYPE_UNDEFINED ) {
+                // we have a blank slate..
+                // have to give them a choice
+                root.add( choice() );
+            } else {
+                if ( value.nature == ActionFieldValue.TYPE_VARIABLE ) {
+                    ListBox list = boundVariable( value );
+                    root.add( list );
+                } else {
+                    TextBox box = boundTextBox( this.value );
+                    root.add( box );
+                }
 
-			}
+            }
 
-		}
-	}
+        }
+    }
 
-	private ListBox boundVariable(final ActionFieldValue c) {
-		/*
-		 * If there is a bound variable that is the same type of the current
-		 * variable type, then propose a list
-		 */
-		ListBox listVariable = new ListBox();
-		List<String> vars = model.getModel().getBoundFacts();
-		for (String v : vars) {
-			FactPattern factPattern = model.getModel().getBoundFact(v);
-			String fv = model.getModel().getFieldConstraint( v );
-			
-			if ( (factPattern != null && factPattern.factType.equals( this.variableType )) || (fv != null) ) {
-				// First selection is empty
-				if (listVariable.getItemCount() == 0) {
-					listVariable.addItem("...");
-				}
+    private ListBox boundVariable(final ActionFieldValue c) {
+        /*
+         * If there is a bound variable that is the same type of the current
+         * variable type, then propose a list
+         */
+        ListBox listVariable = new ListBox();
+        List<String> vars = model.getModel().getBoundFacts();
+        for ( String v : vars ) {
+            FactPattern factPattern = model.getModel().getBoundFact( v );
+            String fv = model.getModel().getFieldConstraint( v );
 
-				listVariable.addItem(v);
-			}
-		}
+            if ( (factPattern != null && factPattern.factType.equals( this.variableType )) || (fv != null) ) {
+                // First selection is empty
+                if ( listVariable.getItemCount() == 0 ) {
+                    listVariable.addItem( "..." );
+                }
+
+                listVariable.addItem( v );
+            }
+        }
         /*
          * add the bound variable of the rhs
          */
@@ -134,143 +137,150 @@ public class ActionValueEditor extends DirtyableComposite {
                 listVariable.addItem( v );
             }
         }
-        if (value.value.equals("=")) {
-			listVariable.setSelectedIndex(0);
-		} else {
-			for (int i = 0; i < listVariable.getItemCount(); i++) {
-				if (listVariable.getItemText(i).equals(value.value.substring(1))) {
-					listVariable.setSelectedIndex(i);
-				}
-			}
-		}
-		if (listVariable.getItemCount() > 0) {
+        if ( value.value.equals( "=" ) ) {
+            listVariable.setSelectedIndex( 0 );
+        } else {
+            for ( int i = 0; i < listVariable.getItemCount(); i++ ) {
+                if ( listVariable.getItemText( i ).equals( value.value.substring( 1 ) ) ) {
+                    listVariable.setSelectedIndex( i );
+                }
+            }
+        }
+        if ( listVariable.getItemCount() > 0 ) {
 
-			listVariable.addChangeListener(new ChangeListener() {
-				public void onChange(Widget arg0) {
-					ListBox w = (ListBox) arg0;
-					value.value = "=" + w.getValue(w.getSelectedIndex());
-					makeDirty();
-					refresh();
-				}
+            listVariable.addChangeListener( new ChangeListener() {
+                public void onChange(Widget arg0) {
+                    ListBox w = (ListBox) arg0;
+                    value.value = "=" + w.getValue( w.getSelectedIndex() );
+                    makeDirty();
+                    refresh();
+                }
 
-			});
-		}
-		return listVariable;
-	}
+            } );
+        }
+        return listVariable;
+    }
 
-	private TextBox boundTextBox(final ActionFieldValue c) {
-		final TextBox box = new TextBox();
-		box.setStyleName("constraint-value-Editor");
-		if (c.value == null) {
-			box.setText("");
-		} else {
-			if (c.value.trim().equals("")) {
-				c.value = "";
-			}
-			box.setText(c.value);
-		}
+    private TextBox boundTextBox(final ActionFieldValue c) {
+        final TextBox box = new TextBox();
+        box.setStyleName( "constraint-value-Editor" );
+        if ( c.value == null ) {
+            box.setText( "" );
+        } else {
+            if ( c.value.trim().equals( "" ) ) {
+                c.value = "";
+            }
+            box.setText( c.value );
+        }
 
-		if (c.value == null || c.value.length() < 5) {
-			box.setVisibleLength(6);
-		} else {
-			box.setVisibleLength(c.value.length() - 1);
-		}
+        if ( c.value == null || c.value.length() < 5 ) {
+            box.setVisibleLength( 6 );
+        } else {
+            box.setVisibleLength( c.value.length() - 1 );
+        }
 
-		box.addChangeListener(new ChangeListener() {
-			public void onChange(Widget w) {
-				c.value = box.getText();
-				makeDirty();
-			}
+        box.addChangeListener( new ChangeListener() {
+            public void onChange(Widget w) {
+                c.value = box.getText();
+                makeDirty();
+            }
 
-		});
+        } );
 
-		box.addKeyboardListener(new FieldEditListener(new Command() {
-			public void execute() {
-				box.setVisibleLength(box.getText().length());
-			}
-		}));
+        box.addKeyboardListener( new FieldEditListener( new Command() {
+            public void execute() {
+                box.setVisibleLength( box.getText().length() );
+            }
+        } ) );
 
-		if (value.type.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
-			box.addKeyboardListener(getNumericFilter(box));
-		}
+        if ( value.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+            box.addKeyboardListener( getNumericFilter( box ) );
+        }
 
-		return box;
-	}
+        return box;
+    }
 
-	/**
-	 * This will return a keyboard listener for field setters, which will obey
-	 * numeric conventions - it will also allow formulas (a formula is when the
-	 * first value is a "=" which means it is meant to be taken as the user
-	 * typed)
-	 */
-	public static KeyboardListener getNumericFilter(final TextBox box) {
-		return new KeyboardListener() {
+    /**
+     * This will return a keyboard listener for field setters, which will obey
+     * numeric conventions - it will also allow formulas (a formula is when the
+     * first value is a "=" which means it is meant to be taken as the user
+     * typed)
+     */
+    public static KeyboardListener getNumericFilter(final TextBox box) {
+        return new KeyboardListener() {
 
-			public void onKeyDown(Widget arg0, char arg1, int arg2) {
+            public void onKeyDown(Widget arg0,
+                                  char arg1,
+                                  int arg2) {
 
-			}
+            }
 
-			public void onKeyPress(Widget w, char c, int i) {
-				if (Character.isLetter(c) && c != '='
-						&& !(box.getText().startsWith("="))) {
-					((TextBox) w).cancelKey();
-				}
-			}
+            public void onKeyPress(Widget w,
+                                   char c,
+                                   int i) {
+                if ( Character.isLetter( c ) && c != '=' && !(box.getText().startsWith( "=" )) ) {
+                    ((TextBox) w).cancelKey();
+                }
+            }
 
-			public void onKeyUp(Widget arg0, char arg1, int arg2) {
-			}
+            public void onKeyUp(Widget arg0,
+                                char arg1,
+                                int arg2) {
+            }
 
-		};
-	}
+        };
+    }
 
-	private Widget choice() {
-		Image clickme = new Image("images/edit.gif");
-		clickme.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
-				showTypeChoice(w);
-			}
-		});
-		return clickme;
-	}
+    private Widget choice() {
+        Image clickme = new Image( "images/edit.gif" );
+        clickme.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                showTypeChoice( w );
+            }
+        } );
+        return clickme;
+    }
 
-	protected void showTypeChoice(Widget w) {
-		final FormStylePopup form = new FormStylePopup("images/newex_wiz.gif",
-				constants.FieldValue());
-		Button lit = new Button(constants.LiteralValue());
-		lit.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
-				value.nature = ActionFieldValue.TYPE_LITERAL;
-				value.value = " ";
-				makeDirty();
-				refresh();
-				form.hide();
-			}
+    protected void showTypeChoice(Widget w) {
+        final FormStylePopup form = new FormStylePopup( "images/newex_wiz.gif",
+                                                        constants.FieldValue() );
+        Button lit = new Button( constants.LiteralValue() );
+        lit.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                value.nature = ActionFieldValue.TYPE_LITERAL;
+                value.value = " ";
+                makeDirty();
+                refresh();
+                form.hide();
+            }
 
-		});
+        } );
 
-		form.addAttribute(constants.LiteralValue() + ":", widgets(lit,
-				new InfoPopup(constants.Literal(), constants.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation())));
-		form.addRow(new HTML("<hr/>"));
-		form.addRow(new SmallLabel(constants.AdvancedSection()));
+        form.addAttribute( constants.LiteralValue() + ":",
+                           widgets( lit,
+                                    new InfoPopup( constants.Literal(),
+                                                   constants.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
+        form.addRow( new HTML( "<hr/>" ) );
+        form.addRow( new SmallLabel( constants.AdvancedSection() ) );
 
-		Button formula = new Button(constants.Formula());
-		formula.addClickListener(new ClickListener() {
+        Button formula = new Button( constants.Formula() );
+        formula.addClickListener( new ClickListener() {
 
-			public void onClick(Widget w) {
-				value.nature = ActionFieldValue.TYPE_FORMULA;
-				value.value = "=";
-				makeDirty();
-				refresh();
-				form.hide();
-			}
+            public void onClick(Widget w) {
+                value.nature = ActionFieldValue.TYPE_FORMULA;
+                value.value = "=";
+                makeDirty();
+                refresh();
+                form.hide();
+            }
 
-		});
+        } );
 
-		/*
-		 * If there is a bound variable that is the same type of the current
-		 * variable type, then show abutton
-		 */
-		List<String> vars = model.getModel().getBoundFacts();
+        /*
+         * If there is a bound variable that is the same type of the current
+         * variable type, then show abutton
+         */
+        List<String> vars = model.getModel().getBoundFacts();
         List<String> vars2 = model.getModel().getRhsBoundFacts();
         for ( String i : vars2 ) {
             vars.add( i );
@@ -324,11 +334,12 @@ public class ActionValueEditor extends DirtyableComposite {
         form.show();
     }
 
-	private Widget widgets(Button lit, InfoPopup popup) {
-		HorizontalPanel h = new HorizontalPanel();
-		h.add(lit);
-		h.add(popup);
-		return h;
-	}
+    private Widget widgets(Button lit,
+                           InfoPopup popup) {
+        HorizontalPanel h = new HorizontalPanel();
+        h.add( lit );
+        h.add( popup );
+        return h;
+    }
 
 }
