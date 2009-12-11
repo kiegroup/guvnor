@@ -227,14 +227,6 @@ public class RulesRepositoryTest extends TestCase {
         assertEquals( 2,
                       ls.size() );
 
-        AssetItem as = ls.get( 0 );
-        assertEquals( "asset1",
-                      as.getName() );
-
-        as = ls.get( 1 );
-        assertEquals( "asset2",
-                      as.getName() );
-
         ls = iteratorToList( repo.queryFullText( "firstCheckintestQueryTest2",
                                                  false ) );
         assertEquals( 1,
@@ -1253,7 +1245,7 @@ public class RulesRepositoryTest extends TestCase {
 		}
 
 		//TO-BE-FIXED: https://jira.jboss.org/jira/browse/GUVNOR-346
-		//assertEquals(1, results.getSize());
+		assertEquals(1, results.getSize());
 	}
 
     private static boolean deleteDir(File dir) {
