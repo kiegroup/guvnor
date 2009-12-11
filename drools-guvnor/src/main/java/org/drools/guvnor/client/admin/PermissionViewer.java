@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
@@ -203,17 +204,28 @@ public class PermissionViewer extends Composite {
 		ToolbarButton create = new ToolbarButton(constants.CreateNewUserMapping());
 		create.addListener(new ButtonListenerAdapter() {
 					public void onClick(Button button, EventObject e) {
-						final String userName = Window.prompt(constants.EnterNewUserName(), constants.NewUserName());
+						final FormStylePopup form = new FormStylePopup("images/snapshot.png", //NON-NLS
+								constants.EnterNewUserName());
+						final TextBox userName = new TextBox();
+						form.addAttribute(constants.NewUserName(), userName);
 
-						if (userName != null) {
-							RepositoryServiceFactory.getService().updateUserPermissions(userName, new HashMap(), new GenericCallback() {
-								public void onSuccess(Object a) {
-									refresh();
-									showEditor(userName);
-								}
-							});
-
-						}
+						com.google.gwt.user.client.ui.Button create = new com.google.gwt.user.client.ui.Button(constants.OK());
+						form.addAttribute("", create);
+						create.addClickListener(new ClickListener() {
+							public void onClick(Widget w) {
+						        if (userName.getText() != null && userName.getText().length() !=0) {
+							        RepositoryServiceFactory.getService().updateUserPermissions(userName.getText(), new HashMap(), new GenericCallback() {
+								        public void onSuccess(Object a) {
+									    refresh();
+									    showEditor(userName.getText());
+								    }
+							    });
+							    form.hide();
+						    } 
+							}
+						});
+						
+						form.show();		
 					}
 				});
 		tb.addButton(create);
