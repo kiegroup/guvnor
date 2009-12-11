@@ -232,7 +232,7 @@ public class PackageDeploymentServletTest extends TestCase {
 
 
 
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
 
         kb = ag.getKnowledgeBase();
