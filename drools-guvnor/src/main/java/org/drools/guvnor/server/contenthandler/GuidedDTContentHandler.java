@@ -1,4 +1,5 @@
 package org.drools.guvnor.server.contenthandler;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -14,8 +15,6 @@ package org.drools.guvnor.server.contenthandler;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -37,47 +36,60 @@ import com.google.gwt.user.client.rpc.SerializableException;
  *
  * @author Michael Neale
  */
-public class GuidedDTContentHandler extends ContentHandler implements IRuleAsset {
+public class GuidedDTContentHandler extends ContentHandler
+    implements
+    IRuleAsset {
 
-	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
-			AssetItem item) throws SerializableException {
-		GuidedDecisionTable model = GuidedDTXMLPersistence.getInstance().unmarshal(
-				item.getContent());
+    public void retrieveAssetContent(RuleAsset asset,
+                                     PackageItem pkg,
+                                     AssetItem item) throws SerializableException {
+        GuidedDecisionTable model = GuidedDTXMLPersistence.getInstance().unmarshal( item.getContent() );
 
-		asset.content = model;
+        asset.content = model;
 
-	}
+    }
 
-	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
-			throws SerializableException {
-		GuidedDecisionTable data = (GuidedDecisionTable) asset.content;
-		if (data.tableName == null) {
-			data.tableName = repoAsset.getName();
-		}
-		repoAsset.updateContent(GuidedDTXMLPersistence.getInstance().marshal(data));
-	}
+    public void storeAssetContent(RuleAsset asset,
+                                  AssetItem repoAsset) throws SerializableException {
+        GuidedDecisionTable data = (GuidedDecisionTable) asset.content;
+        if ( data.tableName == null ) {
+            data.tableName = repoAsset.getName();
+        }
 
-	public void compile(BRMSPackageBuilder builder, AssetItem asset,
-			ContentPackageAssembler.ErrorLogger logger)
-			throws DroolsParserException, IOException {
-		String drl = getSourceDRL(asset, builder);
-		if (drl.equals("")) return;
-		builder
-				.addPackageFromDrl(new StringReader(drl));
-	}
+        // Change the row numbers so they are in the same order as the rows.
+        for ( int i = 0; i < data.data.length; i++ ) {
+            data.data[i][0] = String.valueOf( i + 1 );
+        }
 
-	public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset,
-			StringBuffer buf) {
-		String drl = getSourceDRL(asset, builder);
-		buf.append(drl);
-	}
+        repoAsset.updateContent( GuidedDTXMLPersistence.getInstance().marshal( data ) );
+    }
 
-	private String getSourceDRL(AssetItem asset, BRMSPackageBuilder builder) {
-		GuidedDecisionTable model = GuidedDTXMLPersistence.getInstance().unmarshal(asset.getContent());
+    public void compile(BRMSPackageBuilder builder,
+                        AssetItem asset,
+                        ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
+                                                                   IOException {
+        String drl = getSourceDRL( asset,
+                                   builder );
+        if ( drl.equals( "" ) ) return;
+        builder.addPackageFromDrl( new StringReader( drl ) );
+    }
+
+    public void assembleDRL(BRMSPackageBuilder builder,
+                            AssetItem asset,
+                            StringBuffer buf) {
+        String drl = getSourceDRL( asset,
+                                   builder );
+        buf.append( drl );
+    }
+
+    private String getSourceDRL(AssetItem asset,
+                                BRMSPackageBuilder builder) {
+        GuidedDecisionTable model = GuidedDTXMLPersistence.getInstance().unmarshal( asset.getContent() );
         model.tableName = asset.getName();
-        model.parentName = this.parentNameFromCategory(asset, model.parentName);   
-        
-		String drl = GuidedDTDRLPersistence.getInstance().marshal(model);
-		return drl;
-	}
+        model.parentName = this.parentNameFromCategory( asset,
+                                                        model.parentName );
+
+        String drl = GuidedDTDRLPersistence.getInstance().marshal( model );
+        return drl;
+    }
 }

@@ -12,7 +12,6 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.decisiontable.DecisionTableHandler.DTColumnConfigType;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
@@ -725,7 +724,7 @@ public class GuidedDecisionTableWidget extends Composite
             {
                 setDataIndex( "num" ); //NON-NLS
                 setWidth( 20 );
-                setSortable( true );
+                setSortable( false );
                 setRenderer( new Renderer() {
                     public String render(Object value,
                                          CellMetadata cellMetadata,
@@ -733,7 +732,7 @@ public class GuidedDecisionTableWidget extends Composite
                                          int rowIndex,
                                          int colNum,
                                          Store store) {
-                        return "<span class='x-grid3-cell-inner x-grid3-td-numberer'>" + value + "</span>"; //NON-NLS
+                        return "<span class='x-grid3-cell-inner x-grid3-td-numberer'>" + (rowIndex + 1) + "</span>"; //NON-NLS
                     }
                 } );
             }
