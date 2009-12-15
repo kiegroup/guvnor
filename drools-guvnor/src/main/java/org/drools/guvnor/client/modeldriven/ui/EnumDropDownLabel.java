@@ -94,9 +94,16 @@ public class EnumDropDownLabel extends Composite {
                                          SuggestionCompletionEngine sce,
                                          FactPattern pattern,
                                          String fieldName) {
+        String valueType = sce.getFieldType( pattern.factType,
+                                             fieldName );
 
-        final DropDownData dropDownData = sce.getEnums( pattern,
-                                                        fieldName );
+        final DropDownData dropDownData;
+        if ( SuggestionCompletionEngine.TYPE_BOOLEAN.equals( valueType ) ) {
+            dropDownData = DropDownData.create( new String[]{"true", "false"} ); //NON-NLS
+        } else {
+            dropDownData = sce.getEnums( pattern,
+                                         fieldName );
+        }
 
         final EnumDropDown box = new EnumDropDown( constraint.value,
                                                    new DropDownValueChanged() {
