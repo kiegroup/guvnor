@@ -365,7 +365,9 @@ public class PackageBuilderWidget extends Composite {
 		VerticalPanel vert = new VerticalPanel();
 
 		vert.add(new HTML(
-						"<img src='images/tick_green.gif'/><i>" + constants.PackageBuiltSuccessfully() + "</i>"));
+						"<img src='images/tick_green.gif'/><i>" + constants.PackageBuiltSuccessfully() + " " + conf.lastModified + "</i>"));
+		
+	
 		final String hyp = getDownloadLink(this.conf);
 
 		HTML html = new HTML("<a href='" + hyp
