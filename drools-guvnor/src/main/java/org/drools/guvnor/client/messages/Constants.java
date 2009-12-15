@@ -2001,5 +2001,9 @@ public interface Constants extends ConstantsWithLookup {
     
     String CleaningLogMessages();
     
+    String MoveUp();
+    
+    String MoveDown();
+    
     String Clean();
 }

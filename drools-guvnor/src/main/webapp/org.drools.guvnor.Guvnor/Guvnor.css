@@ -484,6 +484,10 @@ input,.constraint-value-Editor {
     background: #FFFFF0;    
 }
 
+.fact-model-fact-edit-selections {
+	border-bottom: 1px solid #aa9;
+}
+
 .DatePicker,.DatePicker .cell .gwt-HTML,.DatePicker .day .gwt-HTML {
 	border: 1px solid #aa9;
 }
