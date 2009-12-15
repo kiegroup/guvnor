@@ -117,7 +117,62 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 				}
 			});
 			headerPanel.add(addField);
-			headerPanel.add(editFact(mm, m));
+			
+			Button changeName = new Button(constants.ChangeFactName());
+			changeName.addClickListener(new ClickListener() {
+				public void onClick(Widget arg0) {
+					final FormStylePopup pop = new FormStylePopup();
+					HorizontalPanel changeName = new HorizontalPanel();
+					final TextBox name = new TextBox();
+					name.setText(mm.name);
+					changeName.add(name);
+					Button nameBut = new Button(constants.ChangeName());
+
+					nameBut.addKeyboardListener(noSpaceListener());
+
+					nameBut.addClickListener(new ClickListener() {
+						public void onClick(Widget w) {
+	                        if (!uniqueName(name.getText(), m.models)) {
+	                            Window.alert(Format.format(constants.NameTakenForModel(), name.getText()));
+	                            return;
+	                        }
+							if (Window.confirm(constants.ModelNameChangeWarning())) {
+								mm.name = name.getText();
+								pop.hide();
+								renderEditor();
+							}
+						}
+					});
+					changeName.add(nameBut);
+					pop.addAttribute(constants.ChangeFactName(), changeName);
+
+					pop.show();				}
+			});
+			headerPanel.add(changeName);
+			
+			
+			Button deleteFact = new Button(constants.Delete());
+			deleteFact.addClickListener(new ClickListener() {
+				public void onClick(Widget arg0) {
+					final FormStylePopup pop = new FormStylePopup();
+					HorizontalPanel changeName = new HorizontalPanel();
+
+					Button delFact = new Button(constants.Delete());
+					delFact.addClickListener(new ClickListener() {
+						public void onClick(Widget w) {
+							if (Window.confirm(constants.AreYouSureYouWantToRemoveThisFact())) {
+								m.models.remove(mm);
+								pop.hide();
+								renderEditor();
+							}
+						}
+					});
+					pop.addAttribute(constants.RemoveThisFactType(), delFact);
+
+					pop.show();	
+				}
+			});
+			headerPanel.add(deleteFact);
 
 			tb.setWidget(0, 0, headerPanel);
 			FlexCellFormatter formatter = tb.getFlexCellFormatter();
@@ -259,59 +314,6 @@ public class FactModelWidget extends Composite implements SaveEventListener {
 		pop.addAttribute("", ok);
 
 		pop.show();
-	}
-
-	/**
-	 * An editor for fact header name.
-	 * @param m
-	 */
-	private Widget editFact(final FactMetaModel mm, final FactModels m) {
-		ImageButton edit = new ImageButton("images/edit.gif");  //NON-NLS
-		//Button edit = new Button("Edit/remove");
-		edit.addClickListener(new ClickListener() {
-			public void onClick(Widget arg0) {
-				final FormStylePopup pop = new FormStylePopup();
-				HorizontalPanel changeName = new HorizontalPanel();
-				final TextBox name = new TextBox();
-				name.setText(mm.name);
-				changeName.add(name);
-				Button nameBut = new Button(constants.ChangeName());
-
-				nameBut.addKeyboardListener(noSpaceListener());
-
-				nameBut.addClickListener(new ClickListener() {
-					public void onClick(Widget w) {
-                        if (!uniqueName(name.getText(), m.models)) {
-                            Window.alert(Format.format(constants.NameTakenForModel(), name.getText()));
-                            return;
-                        }
-						if (Window.confirm(constants.ModelNameChangeWarning())) {
-							mm.name = name.getText();
-							pop.hide();
-							renderEditor();
-						}
-					}
-				});
-				changeName.add(nameBut);
-				pop.addAttribute(constants.ChangeFactName(), changeName);
-
-				Button delFact = new Button(constants.Delete());
-				delFact.addClickListener(new ClickListener() {
-					public void onClick(Widget w) {
-						if (Window.confirm(constants.AreYouSureYouWantToRemoveThisFact())) {
-							m.models.remove(mm);
-							pop.hide();
-							renderEditor();
-						}
-					}
-				});
-				pop.addAttribute(constants.RemoveThisFactType(), delFact);
-
-				pop.show();
-			}
-
-		});
-		return edit;
 	}
 
 	private KeyboardListener noSpaceListener() {
