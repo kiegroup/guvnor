@@ -30,6 +30,7 @@ import junit.framework.TestCase;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.StatelessSession;
+import org.drools.builder.impl.DateFormatsImpl;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.Inbox;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
@@ -1053,7 +1054,7 @@ public class ServiceImplementationTest extends TestCase {
 		qr[1] = new MetaDataQuery();
 		qr[1].attribute = AssetItem.SOURCE_PROPERTY_NAME;
 		qr[1].valueList = "numberwan*";
-		TableDataResult res = impl.queryMetaData(qr, DateUtils.parseDate("10-Jul-1974"), null, null,null, false, 0, -1);
+		TableDataResult res = impl.queryMetaData(qr, DateUtils.parseDate("10-Jul-1974", new DateFormatsImpl()), null, null,null, false, 0, -1);
 		assertEquals(1, res.data.length);
 
 	}
