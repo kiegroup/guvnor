@@ -273,13 +273,27 @@ public class SnapshotView extends Composite {
                     						options.add(newNameRadioButton);
                     						vert.add(newNameHorizontalPanel);                    						
 
-                                            copy.addAttribute("to an existing snapshot or a new snapshot",
+                                            copy.addAttribute(constants.ExistingSnapshots(),
                                                                vert );
 
                                             Button ok = new Button( constants.OK() );
                                             copy.addAttribute( "", ok );
                                             ok.addClickListener( new ClickListener() {
                                                 public void onClick(Widget w) {
+                                                	
+                                        			boolean oneButtonIsSelected = false;
+                                        			for ( RadioButton rb : options ) {
+                                                        if ( rb.isChecked() ) {
+                                                        	oneButtonIsSelected = true;
+                                                        	break;
+                                                        }
+                                        			}
+                                    				if (!oneButtonIsSelected) {
+                                    					Window.alert(constants.YouHaveToEnterOrChoseALabelNameForTheSnapshot());
+                                    					return;
+                                    				}
+                                    				
+                                    				
                                                     if ( newNameRadioButton.isChecked() ) {
                                                         if ( checkUnique( snaps,
                                                                           newNameTextBox.getText() ) ) {
