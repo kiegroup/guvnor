@@ -246,7 +246,6 @@ public class SnapshotView extends Composite {
                                             final FormStylePopup copy = new FormStylePopup( "images/snapshot.png",
                                                                                             Format.format( constants.CopySnapshotText(),
                                                                                                            snapshotName ) );
-                                            final TextBox box = new TextBox();
                                             final List<RadioButton> options = new ArrayList<RadioButton>();
                                             VerticalPanel vert = new VerticalPanel();
                                             for ( int i = 0; i < snaps.length; i++ ) {
@@ -255,31 +254,44 @@ public class SnapshotView extends Composite {
                                                 options.add( existing );
                                                 vert.add( existing );
                                             }
-                                            final RadioButton newBut = new RadioButton( "snapshotNameGroup",
-                                                                                        "NEW NAME" ); //NON-NLS
-                                            vert.add( newBut );
+                                            
+                    						HorizontalPanel newNameHorizontalPanel = new HorizontalPanel();
+                                            final TextBox newNameTextBox = new TextBox();
+                                    		final String newNameText = constants.NEW() + ": ";
 
-                                            copy.addAttribute( constants.ExistingSnapshots(),
+                    						final RadioButton newNameRadioButton = new RadioButton( "snapshotNameGroup",
+                    								newNameText);
+                    						newNameHorizontalPanel.add(newNameRadioButton);
+                    						newNameTextBox.setEnabled(false);
+                    						newNameRadioButton.addClickListener(new ClickListener() {
+                    							public void onClick(Widget w) {
+                    								newNameTextBox.setEnabled(true);
+                    							}
+                    						});
+
+                    						newNameHorizontalPanel.add(newNameTextBox);
+                    						options.add(newNameRadioButton);
+                    						vert.add(newNameHorizontalPanel);                    						
+
+                                            copy.addAttribute("to an existing snapshot or a new snapshot",
                                                                vert );
-                                            copy.addAttribute( constants.NewSnapshotNameIs(),
-                                                               box );
+
                                             Button ok = new Button( constants.OK() );
-                                            copy.addAttribute( "",
-                                                               ok );
+                                            copy.addAttribute( "", ok );
                                             ok.addClickListener( new ClickListener() {
                                                 public void onClick(Widget w) {
-                                                    if ( newBut.isChecked() ) {
+                                                    if ( newNameRadioButton.isChecked() ) {
                                                         if ( checkUnique( snaps,
-                                                                          box.getText() ) ) {
+                                                                          newNameTextBox.getText() ) ) {
                                                             serv.copyOrRemoveSnapshot( packageName,
                                                                                        snapshotName,
                                                                                        false,
-                                                                                       box.getText(),
+                                                                                       newNameTextBox.getText(),
                                                                                        new GenericCallback() {
                                                                                            public void onSuccess(Object data) {
                                                                                                copy.hide();
                                                                                                Window.alert( Format.format( constants.CreatedSnapshot0ForPackage1(),
-                                                                                                                            box.getText(),
+                                                                                                                            newNameTextBox.getText(),
                                                                                                                             packageName ) );
                                                                                            }
                                                                                        } );
