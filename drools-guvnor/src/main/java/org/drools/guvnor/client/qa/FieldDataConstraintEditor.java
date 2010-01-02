@@ -89,7 +89,9 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             } else {
                 if ( field.value != null && field.value.length() > 0 && field.nature == FieldData.TYPE_UNDEFINED ) {
                     //  GUVNOR-337
-                    if ( field.value.charAt( 0 ) == '=' ) {
+                    if (field.value.length() > 1 && field.value.charAt( 1 ) == '[' &&  field.value.charAt( 0 ) == '=' ) {
+                        field.nature = FieldData.TYPE_LITERAL;
+                    } else if (field.value.charAt( 0 ) == '=') {
                         field.nature = FieldData.TYPE_VARIABLE;
                     } else {
                         field.nature = FieldData.TYPE_LITERAL;
