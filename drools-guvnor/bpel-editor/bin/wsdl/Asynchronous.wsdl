@@ -15,11 +15,11 @@
 	</types>
 	
 	<message name="DUMMY_PROCESSRequestMessage">
-		<part name="payload" element="type="xsd:string"/>
+		<part name="payload" type="xsd:string"/>
 	</message>
 
 	<message name="DUMMY_PROCESSResponseMessage">
-		<part name="payload" element="type="xsd:string"/>
+		<part name="payload" type="xsd:string"/>
 	</message>
 	
 	<!-- portType implemented by the DUMMY_PROCESS BPEL process -->
