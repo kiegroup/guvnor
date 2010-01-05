@@ -25,6 +25,9 @@ import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.*;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.widgets.event.KeyListener;
+import com.gwtext.client.widgets.form.TextField;
 import com.google.gwt.core.client.GWT;
 
 /**
@@ -42,40 +45,47 @@ public class LoginWidget {
 	public void show() {
 		final FormStylePopup pop = new FormStylePopup("images/login.gif", messages.Login());
 
-		final TextBox userName = new TextBox();
+		final TextField userName = new TextField("username");
 		pop.addAttribute(messages.UserName(), userName);
 
-		final PasswordTextBox password = new PasswordTextBox();
+		final TextField password = new TextField("password" );
+		password.setPassword(true);
 		pop.addAttribute(messages.Password(), password);
 
-        KeyboardListener kl = new KeyboardListenerAdapter() {
-            @Override
-            public void onKeyUp(Widget sender, char keyCode, int modifiers) {
-                if (keyCode == KeyboardListener.KEY_ENTER) {
+        KeyListener kl = new KeyListener() {
+          	public void onKey(int key, EventObject e) {
+				if (key == KeyboardListener.KEY_ENTER) {
                     doLogin(userName, password, pop);
                 }
+				
             }
         };
 
-        userName.addKeyboardListener(kl);
-        password.addKeyboardListener(kl);
+        userName.addKeyListener(KeyboardListener.KEY_ENTER, kl);
+        password.addKeyListener(KeyboardListener.KEY_ENTER, kl);
+
 		Button b = new Button(messages.OK());
+
 		b.addClickListener(new ClickListener() {
 			public void onClick(Widget arg0) {
                 doLogin(userName, password, pop);
 			}
 		});
+		
 		pop.addAttribute("", b);
-		pop.show();
+    //
 
         pop.setAfterShow(new Command() {
             public void execute() {
-                userName.setFocus(true);
+                userName.focus(true,100);                    
+            	
             }
         });
+		pop.show();
+		
 	}
 
-    private void doLogin(final TextBox userName, PasswordTextBox password, final FormStylePopup pop) {
+    private void doLogin(final TextField userName, TextField password, final FormStylePopup pop) {
         LoadingPopup.showMessage(messages.Authenticating());
         RepositoryServiceFactory.login( userName.getText(), password.getText(), new GenericCallback() {
             public void onSuccess(Object o) {
