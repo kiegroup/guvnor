@@ -70,9 +70,9 @@ public class BRMSPackageBuilder extends PackageBuilder {
         // See if we can find a packagebuilder.conf
         // We do this manually here, as we cannot rely on PackageBuilder doing this correctly
         // note this chainedProperties already checks System properties too
-        ChainedProperties chainedProperties = new ChainedProperties( BRMSPackageBuilder.class.getClassLoader(), // pass this as it searches currentThread anyway
-                                                                     "packagebuilder.conf",
-                                                                     false ); // false means it ignores any default values
+        ChainedProperties chainedProperties = new ChainedProperties( "packagebuilder.conf",
+        		BRMSPackageBuilder.class.getClassLoader(), // pass this as it searches currentThread anyway
+        		false ); // false means it ignores any default values
 
         // the default compiler. This is nominally JANINO but can be overridden by setting drools.dialect.java.compiler to ECLIPSE
         Properties properties = new Properties();
