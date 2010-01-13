@@ -7,8 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.compiler.DroolsParserException;
-import org.drools.doc.DrlPackageData;
-import org.drools.doc.DrlRuleData;
+import org.drools.verifier.misc.DrlPackageParser;
+import org.drools.verifier.misc.DrlRuleParser;
 import org.drools.doc.DroolsDocsBuilder;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.ServiceImplementation;
@@ -39,9 +39,9 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
         super( createDrlPackageData( packageItem ) );
     }
 
-    protected static DrlPackageData createDrlPackageData(PackageItem packageItem) {
+    protected static DrlPackageParser createDrlPackageData(PackageItem packageItem) {
 
-        List<DrlRuleData> rules = new ArrayList<DrlRuleData>();
+        List<DrlRuleParser> rules = new ArrayList<DrlRuleParser>();
 
         // Get And Fill Rule Data
         Iterator<AssetItem> assets = packageItem.getAssets();
@@ -51,7 +51,7 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
             if ( formats.contains( assetItem.getFormat() ) && !assetItem.getDisabled() && !assetItem.isArchived() ) {
                 String drl = getDRL( assetItem );
                 if ( drl != null ) {
-                    DrlRuleData ruleData = DrlRuleData.findRulesDataFromDrl( drl ).get( 0 );
+                    DrlRuleParser ruleData = DrlRuleParser.findRulesDataFromDrl( drl ).get( 0 );
 
                     // Add info about categories
                     List<String> categories = new ArrayList<String>();
@@ -59,9 +59,9 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
                         categories.add( ci.getName() );
                     }
 
-                    ruleData.otherInformation.put( "Categories",
+                    ruleData.getOtherInformation().put( "Categories",
                                                    categories );
-                    ruleData.metadata.addAll( createMetaData( assetItem ) );
+                    ruleData.getMetadata().addAll( createMetaData( assetItem ) );
 
                     rules.add( ruleData );
                 }
@@ -69,10 +69,10 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
         }
 
         String header = ServiceImplementation.getDroolsHeader( packageItem );
-        List<String> globals = DrlPackageData.findGlobals( header );
+        List<String> globals = DrlPackageParser.findGlobals( header );
 
         // Get And Fill Package Data
-        return new DrlPackageData( packageItem.getName(),
+        return new DrlPackageParser( packageItem.getName(),
                                    packageItem.getDescription(),
                                    rules,
                                    globals,
