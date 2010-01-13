@@ -1,7 +1,17 @@
 <projectDescription>
   <name>drools-guvnor</name>
   <comment>A rule production system</comment>
-  <projects/>
+  <projects>
+    <project>drools-api</project>
+    <project>drools-bpmn2</project>
+    <project>drools-compiler</project>
+    <project>drools-core</project>
+    <project>drools-decisiontables</project>
+    <project>drools-doc</project>
+    <project>drools-repository</project>
+    <project>drools-templates</project>
+    <project>drools-verifier</project>
+  </projects>
   <buildSpec>
     <buildCommand>
       <name>org.maven.ide.eclipse.maven2Builder</name>

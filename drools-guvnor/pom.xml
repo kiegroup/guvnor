@@ -241,8 +241,8 @@
       <artifactId>gwtext</artifactId>
     </dependency>
     <dependency>
-     <groupId>com.thoughtworks.xstream</groupId>
-     <artifactId>xstream</artifactId>
+        <groupId>com.thoughtworks.xstream</groupId>  
+        <artifactId>com.springsource.com.thoughtworks.xstream</artifactId> 
     </dependency>
    <dependency>
      <groupId>commons-fileupload</groupId>
@@ -250,8 +250,8 @@
    </dependency>
 
    <dependency>
-     <groupId>commons-io</groupId>
-     <artifactId>commons-io</artifactId>
+     <groupId>org.apache.commons</groupId>
+     <artifactId>com.springsource.org.apache.commons.io</artifactId>
    </dependency>
 
 
