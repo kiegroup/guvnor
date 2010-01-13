@@ -30,7 +30,7 @@ import junit.framework.TestCase;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.StatelessSession;
-import org.drools.builder.impl.DateFormatsImpl;
+import org.drools.type.DateFormatsImpl;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.Inbox;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
