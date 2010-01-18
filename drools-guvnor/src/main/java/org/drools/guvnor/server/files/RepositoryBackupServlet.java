@@ -28,12 +28,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.drools.guvnor.server.security.AdminType;
-import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.FormData;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.security.Identity;
 import org.apache.log4j.Logger;
 
 /**
@@ -53,43 +49,41 @@ public class RepositoryBackupServlet extends RepositoryServlet {
 	/**
 	 * This accepts a repository, and will apply it.
 	 */
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(final HttpServletRequest request,
+			final HttpServletResponse response) throws ServletException, IOException {
 
-		if (Contexts.isSessionContextActive()) {
-			Identity.instance().checkPermission(new AdminType(),
-					RoleTypes.ADMIN);
-		}
+        doAuthorizedAction(request, response, new A() {
+			public void a() throws Exception {
 
-		response.setContentType("text/html");
-		FormData uploadItem = FileManagerUtils.getFormData(request);
+				response.setContentType("text/html");
+				FormData uploadItem = FileManagerUtils.getFormData(request);
 
-		String packageImport = request.getParameter("packageImport");
+				String packageImport = request.getParameter("packageImport");
 
-		if ("true".equals(packageImport)) {
-			boolean importAsNew = "true".equals(request
-					.getParameter("importAsNew"));
+				if ("true".equals(packageImport)) {
+					boolean importAsNew = "true".equals(request
+							.getParameter("importAsNew"));
 
-			response.getWriter().write(
-					processImportPackage(uploadItem.getFile().getInputStream(),
-							importAsNew));
-		} else {
-			response.getWriter().write(
-					processImportRepository(uploadItem.getFile()
-							.getInputStream()));
-		}
+					response.getWriter().write(
+							processImportPackage(uploadItem.getFile().getInputStream(),
+									importAsNew));
+				} else {
+					response.getWriter().write(
+							processImportRepository(uploadItem.getFile()
+									.getInputStream()));
+				}
+			}
+        });
 	}
 
 	/**
 	 * Explore the repo, provide a download
 	 */
-	protected void doGet(HttpServletRequest req, HttpServletResponse res)
+	protected void doGet(final HttpServletRequest req, final HttpServletResponse res)
 			throws ServletException, IOException {
 
-		if (Contexts.isSessionContextActive()) {
-			Identity.instance().checkPermission(new AdminType(),
-					RoleTypes.ADMIN);
-		}
+        doAuthorizedAction(req, res, new A() {
+			public void a() throws Exception {
 
 		try {
 			String packageName = req.getParameter("packageName");
@@ -103,6 +97,8 @@ public class RepositoryBackupServlet extends RepositoryServlet {
 		} catch (Exception e) {
 			e.printStackTrace(new PrintWriter(res.getOutputStream()));
 		}
+			}
+	        });
 	}
 
 	private void processExportRepositoryDownload(HttpServletResponse res)
