@@ -219,7 +219,12 @@ public class ExplorerViewCenterPanel {
 					SuggestionCompletionCache.getInstance().doAction(a.metaData.packageName, new Command() {
 						public void execute() {
                             loading[0] = false;
-							RuleViewer rv = new RuleViewer(a);
+                            EditItemEvent edit = new EditItemEvent () {
+                                public void open(String key) {
+                                	openAsset(key);
+                                }
+                            };
+							RuleViewer rv = new RuleViewer(a, edit);
 							addTab(a.metaData.name, true, rv, uuid);
 							rv.setCloseCommand(new Command() {
 								public void execute() {

@@ -20,12 +20,15 @@ import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
+import com.gwtext.client.util.Format;
 
 /**
  * The main layout parent/controller the rule viewer.
@@ -50,17 +53,23 @@ public class RuleViewer extends DirtyableComposite {
 
     private long               lastSaved = System.currentTimeMillis();
     private Constants          constants = ((Constants) GWT.create( Constants.class ));
-
-    public RuleViewer(RuleAsset asset) {
-        this( asset,
-              false );
+    
+    private final EditItemEvent editEvent;
+    
+    /**
+     * @param historicalReadOnly true if this is a read only view for historical purposes.
+     */
+    public RuleViewer(RuleAsset asset, final EditItemEvent event) {
+        this( asset, event, false );
     }
 
     /**
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
     public RuleViewer(RuleAsset asset,
+    		          final EditItemEvent event,
                       boolean historicalReadOnly) {
+        this.editEvent = event;    	
         this.asset = asset;
         this.readOnly = historicalReadOnly && asset.isreadonly;
 
@@ -73,16 +82,13 @@ public class RuleViewer extends DirtyableComposite {
 
         doWidgets(null);
 
-
-
         LoadingPopup.close();
     }
 
     public boolean isDirty() {
         return (System.currentTimeMillis() - lastSaved) > 3600000;   
     }
-    
-    
+        
     /**
      * This will actually load up the data (this is called by the callback)
      * when we get the data back from the server,
@@ -124,11 +130,19 @@ public class RuleViewer extends DirtyableComposite {
                                              doDelete();
                                          }
                                      },
-                                     readOnly, editor, new Command() {
+                                     readOnly, 
+                                     editor, 
+                                     new Command() {
                                         public void execute() {
                                             close();
                                         }
-                                    });
+                                    },
+                                    new Command() {
+                                        public void execute() {
+                                            doCopy();
+                                        }       
+                                    }
+        );
 
         //layout.add(toolbar, DockPanel.NORTH);
         layout.add( toolbar );
@@ -173,7 +187,6 @@ public class RuleViewer extends DirtyableComposite {
         hsp.setHeight( "100%" );
 
         layout.add(doco);
-
     }
 
     private void doMetaWidget() {
@@ -201,7 +214,6 @@ public class RuleViewer extends DirtyableComposite {
     private void close() {
         closeCommand.execute();
     }
-
 
     void doDelete() {
         readOnly = true; //set to not cause the extra confirm popup
@@ -310,8 +322,6 @@ public class RuleViewer extends DirtyableComposite {
                                                              } );
     }
 
-
-
     /**
      * This will only refresh the meta data widget if necessary.
      */
@@ -382,5 +392,51 @@ public class RuleViewer extends DirtyableComposite {
 
         pop.show();
     }
+    
+    private void doCopy() {
+        final FormStylePopup form = new FormStylePopup("images/rule_asset.gif", constants.CopyThisItem());
+        final TextBox newName = new TextBox();
+        form.addAttribute(constants.NewName(), newName );
 
+        Button ok = new Button(constants.CreateCopy());
+        ok.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+            	if (newName.getText() == null || newName.getText().equals("")) {
+            		Window.alert(constants.AssetNameMustNotBeEmpty());
+            		return;
+            	}
+                String name = newName.getText().trim();
+                if (!NewAssetWizard.validatePathPerJSR170(name)) {
+                	return;
+                }
+                RepositoryServiceFactory.getService().copyAsset(asset.uuid, asset.metaData.packageName, name,
+                                                                 new GenericCallback<String>() {
+                                                                    public void onSuccess(String data) {
+                                                                        completedCopying(newName.getText(), asset.metaData.packageName, data);
+                                                                        form.hide();                                                                     
+                                                                     }
+
+                                                                     @Override
+                                                                     public void onFailure(Throwable t) {
+                                                                         if (t.getMessage().indexOf("ItemExistsException") > -1) { //NON-NLS
+                                                                             Window.alert(constants.ThatNameIsInUsePleaseTryAnother());
+                                                                         } else {
+                                                                             super.onFailure(t);
+                                                                         }
+                                                                     }
+                                                                 });
+            }
+        } );
+        form.addAttribute( "", ok );
+
+		//form.setPopupPosition((DirtyableComposite.getWidth() - form.getOffsetWidth()) / 2, 100);
+		form.show();
+    }
+
+    private void completedCopying(String name, String pkg, String newAssetUUID) {
+        Window.alert( Format.format(constants.CreatedANewItemSuccess(), name, pkg) );
+        if(editEvent != null) {
+            editEvent.open(newAssetUUID);
+        }
+    }
 }

@@ -214,7 +214,7 @@ public class VersionBrowser extends Composite {
                     }
                 });
 
-                RuleViewer viewer = new RuleViewer(asset, true);
+                RuleViewer viewer = new RuleViewer(asset, null, true);
                 viewer.setWidth( "100%" );
 
 

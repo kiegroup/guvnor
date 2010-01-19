@@ -21,7 +21,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import com.google.gwt.user.client.ui.Button;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.util.Format;
 import com.gwtext.client.widgets.*;
@@ -61,11 +60,16 @@ public class ActionToolbar extends Composite {
     private SmallLabel savedOK;
     private Widget editor;
     private Command closeCommand;
+    private Command copyCommand;
 
     public ActionToolbar(final RuleAsset asset,
                          final CheckinAction checkin,
                          final CheckinAction archiv,
-                         final Command delete, boolean readOnly, Widget editor, Command closeCommand) {
+                         final Command delete, 
+                         boolean readOnly, 
+                         Widget editor, 
+                         Command closeCommand,
+                         Command copyCommand) {
 
         this.checkinAction = checkin;
         this.archiveAction = archiv;
@@ -73,6 +77,7 @@ public class ActionToolbar extends Composite {
         this.asset = asset;
         this.editor = editor;
         this.closeCommand = closeCommand;
+        this.copyCommand = copyCommand;
 
         this.state = new ToolbarTextItem(constants.Status() + " ");
 
@@ -91,7 +96,6 @@ public class ActionToolbar extends Composite {
 
         initWidget( toolbar );
     }
-
 
     /**
      * Show the saved OK message for a little while *.
@@ -114,7 +118,6 @@ public class ActionToolbar extends Composite {
     }
 
     private void controls() {
-
 	    	ToolbarButton save = new ToolbarButton();
 	    	save.setText(constants.SaveChanges());
 			save.setTooltip(getTip(constants.CommitAnyChangesForThisAsset()));
@@ -152,7 +155,7 @@ public class ActionToolbar extends Composite {
         moreMenu.addItem(new Item(constants.Copy(), new BaseItemListenerAdapter() {
             @Override
             public void onClick(BaseItem baseItem, EventObject eventObject) {
-                doCopyDialog();
+            	copyCommand.execute();
             }
         }));
         moreMenu.addItem(new Item(constants.Archive(), new BaseItemListenerAdapter() {
@@ -169,13 +172,7 @@ public class ActionToolbar extends Composite {
                 showStatusChanger();            }
         }));
 
-
-
-        
-
         ToolbarMenuButton more = new ToolbarMenuButton(constants.Actions(), moreMenu);
-
-
 
         if (isValidatorTypeAsset()) {
             ToolbarButton validate = new ToolbarButton();
@@ -203,7 +200,6 @@ public class ActionToolbar extends Composite {
             }
         }
 
-
         if (notCheckedInYet()) {
 
         	final ToolbarButton delete = new ToolbarButton();
@@ -221,22 +217,14 @@ public class ActionToolbar extends Composite {
     		toolbar.addButton(delete);
 
     		this.afterCheckinEvent = new Command() {
-
 				public void execute() {
 					delete.setVisible(false);
 				}
-
     		};
 
         }
 
         toolbar.addButton(more);
-
-
-
-
-
-
     }
 
     private boolean shouldShowViewSource() {
@@ -249,7 +237,6 @@ public class ActionToolbar extends Composite {
         RepositoryServiceFactory.getService().buildAssetSource( this.asset, new GenericCallback<String>() {
             public void onSuccess(String src) { showSource(src);}
         });
-
     }
 
     private void showSource(String src) {
@@ -257,15 +244,12 @@ public class ActionToolbar extends Composite {
         LoadingPopup.close();
     }
 
-
-
     private void doValidate() {
     	onSave();
         LoadingPopup.showMessage(constants.ValidatingItemPleaseWait());
         RepositoryServiceFactory.getService().buildAsset( asset, new GenericCallback<BuilderResult[]>() {
             public void onSuccess(BuilderResult[] results) {RuleValidatorWrapper.showBuilderErrors(results);}
         });
-
     }
 
     public void onSave() {
@@ -275,8 +259,6 @@ public class ActionToolbar extends Composite {
         }
     }
 
-
-
     private boolean isValidatorTypeAsset() {
        String format = asset.metaData.format;
        for(String fmt : VALIDATING_FORMATS) {
@@ -284,7 +266,6 @@ public class ActionToolbar extends Composite {
        }
        return false;
     }
-
 
     private boolean notCheckedInYet() {
 		return asset.metaData.versionNumber == 0;
@@ -295,55 +276,8 @@ public class ActionToolbar extends Composite {
 			{
 				setText(t);
 			}
-
 		};
 	}
-
-
-
-    protected void doCopyDialog() {
-        final FormStylePopup form = new FormStylePopup("images/rule_asset.gif", constants.CopyThisItem());
-        final TextBox newName = new TextBox();
-        form.addAttribute(constants.NewName(), newName );
-
-        Button ok = new Button(constants.CreateCopy());
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-            	if (newName.getText() == null || newName.getText().equals("")) {
-            		Window.alert(constants.AssetNameMustNotBeEmpty());
-            		return;
-            	}
-                String name = newName.getText().trim();
-                if (!NewAssetWizard.validatePathPerJSR170(name)) return;
-                RepositoryServiceFactory.getService().copyAsset( asset.uuid, asset.metaData.packageName, name,
-                                                                 new GenericCallback<String>() {
-                                                                    public void onSuccess(String data) {
-                                                                        completedCopying(newName.getText(), asset.metaData.packageName);
-                                                                        form.hide();
-                                                                    }
-
-                                                                     @Override
-                                                                     public void onFailure(Throwable t) {
-                                                                         if (t.getMessage().indexOf("ItemExistsException") > -1) { //NON-NLS
-                                                                             Window.alert(constants.ThatNameIsInUsePleaseTryAnother());
-                                                                         } else {
-                                                                             super.onFailure(t);
-                                                                         }
-                                                                     }
-                                                                 });
-            }
-        } );
-        form.addAttribute( "", ok );
-
-		//form.setPopupPosition((DirtyableComposite.getWidth() - form.getOffsetWidth()) / 2, 100);
-		form.show();
-
-    }
-
-    private void completedCopying(String name, String pkg) {
-        Window.alert( Format.format(constants.CreatedANewItemSuccess(), name, pkg) );
-
-    }
 
     /**
      * Called when user wants to checkin.
@@ -359,10 +293,7 @@ public class ActionToolbar extends Composite {
             }
         });
         pop.show();
-
     }
-
-
 
 	/**
      * Show the stats change popup.
@@ -378,14 +309,7 @@ public class ActionToolbar extends Composite {
         pop.show();
     }
 
-
-
     public static interface CheckinAction {
     	void doCheckin(String comment);
     }
-
-
-
-
-
 }
