@@ -105,11 +105,11 @@ public class ArchivedAssetManager extends Composite {
         tb.addButton(restoreAsset);
         restoreAsset.addListener(new ButtonListenerAdapter() {
         			public void onClick(com.gwtext.client.widgets.Button button, EventObject e) {
-                    	if (grid.getSelectedRowUUID() == null) {
+                    	if (grid.getSelectedRowUUIDs() == null) {
                     		Window.alert(constants.PleaseSelectAnItemToRestore());
                     		return;
                     	}
-                        RepositoryServiceFactory.getService().archiveAsset( grid.getSelectedRowUUID(), false, new GenericCallback() {
+                        RepositoryServiceFactory.getService().archiveAssets( grid.getSelectedRowUUIDs(), false, new GenericCallback() {
                             public void onSuccess(Object arg0) {
                                 Window.alert(constants.ItemRestored());
                                 grid.refreshGrid();
@@ -128,14 +128,14 @@ public class ArchivedAssetManager extends Composite {
         			public void onClick(
         					com.gwtext.client.widgets.Button button,
         					EventObject e) {
-                    	if (grid.getSelectedRowUUID() == null) {
+                    	if (grid.getSelectedRowUUIDs() == null) {
                     		Window.alert(constants.PleaseSelectAnItemToPermanentlyDelete());
                     		return;
                     	}
                     	if (!Window.confirm(constants.AreYouSureDeletingAsset())) {
                     		return;
                     	}
-                        RepositoryServiceFactory.getService().removeAsset( grid.getSelectedRowUUID(), new GenericCallback() {
+                        RepositoryServiceFactory.getService().removeAssets( grid.getSelectedRowUUIDs(), new GenericCallback() {
 
                             public void onSuccess(Object arg0) {
                                 Window.alert(constants.ItemDeleted());

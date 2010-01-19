@@ -350,10 +350,22 @@ public interface RepositoryService extends RemoteService {
     public void archiveAsset(String uuid, boolean value );
 
     /**
+     * Archive assets based on uuid
+     * @param uuids
+     */
+    public void archiveAssets(String[] uuids, boolean value );
+    
+    /**
      * Remove an asset based on uuid
      * @param uuid
      */
     public void removeAsset(String uuid);
+    
+    /**
+     * Remove assets based on uuid
+     * @param uuids
+     */
+    public void removeAssets(String[] uuids);
 
     /**
      * Permanently remove a package (delete it).

@@ -234,8 +234,14 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 	public void archiveAsset(java.lang.String p0, boolean p1)  {
 		getService().archiveAsset( p0,  p1);
 	}
+	public void archiveAssets(java.lang.String[] p0, boolean p1)  {
+		getService().archiveAssets( p0,  p1);
+	}
 	public void removeAsset(java.lang.String p0)  {
 		getService().removeAsset( p0);
+	}
+	public void removeAssets(java.lang.String[] p0)  {
+		getService().removeAssets( p0);
 	}
 	public void removePackage(java.lang.String p0)  {
 		getService().removePackage( p0);

@@ -80,7 +80,9 @@ public interface RepositoryServiceAsync
 	public void renameAsset(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.String> cb);
 	public void renameCategory(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
 	public void archiveAsset(java.lang.String p0, boolean p1, AsyncCallback cb);
+	public void archiveAssets(java.lang.String[] p0, boolean p1, AsyncCallback cb);
 	public void removeAsset(java.lang.String p0, AsyncCallback cb);
+	public void removeAssets(java.lang.String[] p0, AsyncCallback cb);
 	public void removePackage(java.lang.String p0, AsyncCallback cb);
 	public void renamePackage(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.String> cb);
 	public void rebuildSnapshots(AsyncCallback cb);

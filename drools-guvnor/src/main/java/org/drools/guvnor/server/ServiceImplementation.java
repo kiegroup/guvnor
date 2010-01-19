@@ -1742,6 +1742,15 @@ public class ServiceImplementation
             throw e;
         }
     }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void archiveAssets(String[] uuids,
+                             boolean value) {
+    	for(String uuid : uuids) {
+    		archiveAsset(uuid, value);
+    	}
+    }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
@@ -1759,6 +1768,14 @@ public class ServiceImplementation
             log.error( e );
             throw e;
         }
+    }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void removeAssets(String[] uuids) {
+    	for(String uuid : uuids) {
+    		removeAsset(uuid);
+    	}
     }
 
     @WebRemote

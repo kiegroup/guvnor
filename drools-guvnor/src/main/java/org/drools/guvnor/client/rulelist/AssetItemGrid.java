@@ -300,14 +300,26 @@ public class AssetItemGrid extends Composite {
 
     public String getSelectedRowUUID() {
         Record r = currentGrid.getSelectionModel().getSelected();
-        if ( r != null ) {
-            return r.getAsString( "uuid" );
+        if ( r != null) {
+            return r.getAsString("uuid");
         } else {
             return null;
         }
-
     }
 
+    public String[] getSelectedRowUUIDs() {
+        Record[] records = currentGrid.getSelectionModel().getSelections();
+        if ( records != null && records.length !=0) {
+        	String[] rtn = new String[records.length];
+        	for(int i=0; i<records.length; i++) {
+        		rtn[i] = records[i].getAsString("uuid");
+        	}
+            return rtn;
+        } else {
+            return null;
+        }
+    }
+    
     private void navButton(final AssetItemGridDataLoader source,
                            final ColumnModel cm,
                            final RecordDef rd,
