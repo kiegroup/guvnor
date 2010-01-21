@@ -47,8 +47,9 @@ public class PackageDeploymentServlet extends RepositoryServlet {
 
     private static final long      serialVersionUID = 400L;
 
-    public static SimpleDateFormat RFC822DATEFORMAT = new SimpleDateFormat( "EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z",
-                                                                            Locale.US );
+    public static final String RFC822DATEFORMAT = "EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z";
+    public static final Locale HEADER_LOCALE = Locale.US;
+
 
     @Override
     protected long getLastModified(HttpServletRequest request) {
@@ -68,6 +69,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                           HttpServletResponse response) throws ServletException,
                                                        IOException {
         if ( request.getMethod().equals( "HEAD" ) ) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat(RFC822DATEFORMAT, HEADER_LOCALE);
             PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper( request.getRequestURI() );
             FileManagerUtils fm = getFileManager();
             long mod = fm.getLastModified( helper.getPackageName(),
@@ -75,7 +77,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
             response.addHeader( "lastModified",
                                 "" + mod );
             response.addHeader( "Last-Modified",
-                                RFC822DATEFORMAT.format( new Date( mod ) ) );
+                                dateFormat.format( new Date( mod ) ) );
 
         } else {
             super.doHead( request,
