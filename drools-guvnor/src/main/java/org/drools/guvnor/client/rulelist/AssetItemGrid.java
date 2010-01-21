@@ -409,8 +409,6 @@ public class AssetItemGrid extends Composite {
 
             cfgs[i + 1] = new ColumnConfig() {
                 {
-                    if ( !header.equals( "Description" ) ) {
-
                         setupHeader();
                         setSortable( true );
                         setDataIndex( header );
@@ -445,11 +443,10 @@ public class AssetItemGrid extends Composite {
                                     return format.format( (Date) value  );
                                 }
                             } );
+                        } else if ( header.equals( "Description" ) ) {
+                            setHidden( true ); //don't want to show a separate description
                         }
-                    } else {
-                        setHidden( true ); //don't want to show a separate description
-                    }
-
+                    
                 }
 
                 /**
