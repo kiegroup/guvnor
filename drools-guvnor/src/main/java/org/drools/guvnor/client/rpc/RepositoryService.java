@@ -503,7 +503,11 @@ public interface RepositoryService extends RemoteService {
      */
     public void deleteUser(String userName);
 
-
+    /**
+     * create new user.
+     */
+    public void createUser(String userName);
+    
     /**
      * Returns the lockers user name
      * @param uuid

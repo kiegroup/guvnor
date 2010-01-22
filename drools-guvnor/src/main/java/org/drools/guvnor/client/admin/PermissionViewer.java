@@ -214,11 +214,14 @@ public class PermissionViewer extends Composite {
 						create.addClickListener(new ClickListener() {
 							public void onClick(Widget w) {
 						        if (userName.getText() != null && userName.getText().length() !=0) {
-							        RepositoryServiceFactory.getService().updateUserPermissions(userName.getText(), new HashMap(), new GenericCallback() {
+							        RepositoryServiceFactory.getService().createUser(userName.getText(), new GenericCallback() {
 								        public void onSuccess(Object a) {
-									    refresh();
-									    showEditor(userName.getText());
-								    }
+									        refresh();
+									        showEditor(userName.getText());
+								        }  	
+								        public void onFailure(Throwable t) {
+						                    super.onFailure(t);
+					                    }
 							    });
 							    form.hide();
 						    } 
@@ -227,6 +230,8 @@ public class PermissionViewer extends Composite {
 						
 						form.show();		
 					}
+
+
 				});
 		tb.addButton(create);
 

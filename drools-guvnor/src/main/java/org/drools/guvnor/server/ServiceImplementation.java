@@ -2453,6 +2453,14 @@ public class ServiceImplementation
         pm.removeUserPermissions( userName );
         repository.save();
     }
+    
+    @Restrict("#{identity.loggedIn}")
+    public void createUser(String userName) {
+        log.info( "Creating user permissions, user name [" + userName + "]" );
+        PermissionManager pm = new PermissionManager( repository );
+        pm.createUser( userName );
+        repository.save();
+    }
 
     /* (non-Javadoc)
     * @see org.drools.guvnor.client.rpc.RepositoryService#getAssetLockerUserName(java.lang.String)
