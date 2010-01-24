@@ -262,15 +262,12 @@ public interface RepositoryService extends RemoteService {
 
 
     /**
-     * This will quickly return a list of asset names/descriptions.
-     * This list will be limited, and it will be flagged if more are found then can be shown.
-     * Returning an extra empty row means there are more to come...
-     *
-     * The id of a row is the UUID, the first value is the name, the next the description.
-     * Finally, if there is "more" rows, a row will be returned which has "MORE" as its ID.
-     *
+     * This will quickly return a list of assets 
      */
-    public TableDataResult quickFindAsset(String searchText, int maxMatches, boolean searchArchived);
+    public TableDataResult quickFindAsset(String searchText,  
+    		boolean searchArchived,
+            int skip,
+            int numRows) throws SerializableException;
 
 
     /**

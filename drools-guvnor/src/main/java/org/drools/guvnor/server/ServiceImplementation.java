@@ -1245,7 +1245,7 @@ public class ServiceImplementation
                                         comment );
 
     }
-
+    
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String copyAsset(String assetUUID,
@@ -1342,8 +1342,9 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult quickFindAsset(String searchText,
-                                          int max,
-                                          boolean searchArchived) {
+                                          boolean searchArchived,
+                                          int skip,
+                                          int numRows) throws SerializableException {
 
         String search = searchText.replace( '*',
                                             '%' );
@@ -1354,45 +1355,26 @@ public class ServiceImplementation
 
         TableDataResult result = new TableDataResult();
 
-        List<TableDataRow> resultList = new ArrayList<TableDataRow>();
+        List<AssetItem> resultList = new ArrayList<AssetItem>();
 
         long start = System.currentTimeMillis();
         AssetItemIterator it = repository.findAssetsByName( search,
                                                             searchArchived ); // search for archived items
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
-        RepositoryFilter filter = new AssetItemFilter();
-        for ( int i = 0; i < max; i++ ) {
-            if ( !it.hasNext() ) {
-                break;
-            }
-            AssetItem item = (AssetItem) it.next();
-            if ( filter.accept( item,
-                                RoleTypes.PACKAGE_READONLY ) ) {
-                TableDataRow row = new TableDataRow();
-                row.id = item.getUUID();
-                String desc = item.getDescription() + "";
-                row.values = new String[]{item.getName(), desc.substring( 0,
-                                                                          Math.min( 32,
-                                                                                    desc.length() ) )};
+        // Add filter for READONLY permission
+		RepositoryFilter filter = new AssetItemFilter();
 
-                resultList.add( row );
-            }
-        }
+		while (it.hasNext()) {
+			AssetItem ai = it.next();
+			if (filter.accept(ai, RoleTypes.PACKAGE_READONLY)) {
+				resultList.add(ai);
+			}
+		}
 
-        while ( it.hasNext() ) {
-            if ( filter.accept( (AssetItem) it.next(),
-                                RoleTypes.PACKAGE_READONLY ) ) {
-                TableDataRow empty = new TableDataRow();
-                empty.id = "MORE";
-                resultList.add( empty );
-                break;
-            }
-        }
+        TableDisplayHandler handler = new TableDisplayHandler( "searchresults" );
 
-        result.data = resultList.toArray( new TableDataRow[resultList.size()] );
-        return result;
-
+        return handler.loadRuleListTable(resultList, skip, numRows);
     }
 
     @WebRemote

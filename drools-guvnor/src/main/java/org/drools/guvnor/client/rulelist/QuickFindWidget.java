@@ -46,7 +46,7 @@ public class QuickFindWidget extends Composite {
     private final FlexTable listPanel;
     private SuggestBox searchBox;
     private CheckBox archiveBox;
-    private EditItemEvent editEvent;
+    private final EditItemEvent openItem;
     private Constants constants = ((Constants) GWT.create(Constants.class));
 
 
@@ -60,25 +60,39 @@ public class QuickFindWidget extends Composite {
 			}
         });
 
+        final SimplePanel resultsP = new SimplePanel();
 
-
-
-        this.editEvent = editEvent;
+        this.openItem = editEvent;
         HorizontalPanel srch = new HorizontalPanel();
         Button go = new Button(constants.Search());
-        go.addClickListener( new ClickListener() {
+        final ClickListener cl = new ClickListener() {        
             public void onClick(Widget w) {
-               updateList();
+               //updateList();
+                resultsP.clear();
+                AssetItemGrid grid = new AssetItemGrid( openItem,
+                                                        "searchresults",
+                                                        new AssetItemGridDataLoader() { //NON-NLS
+                                                            public void loadData(int startRow,
+                                                                                 int numberOfRows,
+                                                                                 GenericCallback<TableDataResult> cb) {
+                                                                RepositoryServiceFactory.getService().quickFindAsset(searchBox.getText(),
+                                                                                                                     archiveBox.isChecked(),
+                                                                                                                     startRow,
+                                                                                                                     numberOfRows,
+                                                                                                                     cb );
+                                                             }
+                                                        } );
+                resultsP.add( grid );
 
             }
-        } );
-
-
+        } ;
+        go.addClickListener(cl);
+       
         searchBox.addKeyboardListener(new KeyboardListenerAdapter() {
             @Override
             public void onKeyUp(Widget sender, char keyCode, int modifiers) {
                 if (keyCode == KeyboardListener.KEY_ENTER) {
-                    updateList();
+                    cl.onClick( sender );
                 }
             }
         });
@@ -99,12 +113,10 @@ public class QuickFindWidget extends Composite {
         PrettyFormLayout pfl = new PrettyFormLayout();
         pfl.startSection();
         pfl.addRow(listPanel);
-
+        pfl.addRow( resultsP );
 
         pfl.endSection();
         layout.addRow(pfl);
-
-
 
         /*
 
@@ -116,10 +128,6 @@ public class QuickFindWidget extends Composite {
         });
 
         */
-
-        
-
-
 
         initWidget( layout );
     }
@@ -137,8 +145,6 @@ public class QuickFindWidget extends Composite {
                 for (TableDataRow aData : result.data) {
                     ids.add(aData.id);
                 }
-
-
 
                 RepositoryServiceFactory.getService().loadRuleAsset(ids.get(0), new GenericCallback<RuleAsset>() {
                     public void onSuccess(final RuleAsset result) {
@@ -165,8 +171,6 @@ public class QuickFindWidget extends Composite {
                                                 });
                                             }
                                         }
-
-
                                     }
                                 });
                             }
@@ -175,19 +179,15 @@ public class QuickFindWidget extends Composite {
                     }
                 });
 
-
-
             }
         });
     }
-
 
     /**
      * This will load a list of items as they are typing.
      */
     protected void loadShortList(String match, final Request r, final Callback cb) {
-        RepositoryServiceFactory.getService().quickFindAsset( match, 5, archiveBox.isChecked() ,new GenericCallback<TableDataResult>() {
-
+        RepositoryServiceFactory.getService().quickFindAsset( match, archiveBox.isChecked() ,0, 5, new GenericCallback<TableDataResult>() {
 
             public void onSuccess(TableDataResult result) {
                 List items = new ArrayList();
@@ -214,57 +214,5 @@ public class QuickFindWidget extends Composite {
         });
 
     }
-
-    protected void updateList() {
-       
-        LoadingPopup.showMessage(constants.SearchingDotDotDot());
-        RepositoryServiceFactory.getService().quickFindAsset( searchBox.getText(), 15, archiveBox.isChecked() , new GenericCallback<TableDataResult>() {
-            public void onSuccess(TableDataResult result) {
-                populateList(result);
-            }
-        });
-
-
-    }
-
-    protected void populateList(TableDataResult result) {
-
-
-        FlexTable data = new FlexTable();
-
-        //if its only one, just open it...
-        if (result.data.length == 1) {
-            editEvent.open( result.data[0].id );
-        }
-
-        for ( int i = 0; i < result.data.length; i++ ) {
-
-            final TableDataRow row = result.data[i];
-            if (row.id.equals( "MORE" )) {  //NON-NLS
-                data.setWidget( i, 0, new HTML("<i>" + constants.ThereAreMoreItemsTryNarrowingTheSearchTerms() + "</i>") );
-                data.getFlexCellFormatter().setColSpan( i, 0, 3 );
-            } else {
-                data.setWidget( i, 0, new Label(row.values[0]) );
-                data.setWidget( i, 1, new Label(row.values[1]) );
-                Button open = new Button(constants.Open());
-                open.addClickListener( new ClickListener() {
-                    public void onClick(Widget w) {
-                        editEvent.open( row.id );
-                    }
-                } );
-
-                data.setWidget( i, 2, open );
-            }
-
-
-        }
-
-        //data.setWidth( "100%" );
-        listPanel.setWidget( 0, 0, data);
-
-        LoadingPopup.close();
-
-    }
-
 
 }

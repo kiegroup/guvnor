@@ -61,9 +61,35 @@ public class PermissionManager {
     	}
     }
 
+    public void createUser(String userName) {
+    	if (!isValideUserName(userName)) {
+    		throw new RulesRepositoryException("Invalide user name");
+    	}
+    	if (containsUser(userName)) {
+    		throw new RulesRepositoryException("User name [" + userName + "] already exists");
+    	}
+    	try {
+	    	Node permsNode = getUserPermissionNode(userName);
+	    	permsNode.remove(); //remove this so we get a fresh set
+	    	permsNode = getUserPermissionNode(userName).addNode("jcr:content", "nt:unstructured");
+	    	this.repository.save();
+    	} catch (RepositoryException e) {
+    		throw new RulesRepositoryException(e);
+    	}
+    }
+    
+    private boolean containsUser(String userName) {
+		try {
+			Node userRoot = getUsersRootNode(getRootNode(repository));
+			if (userRoot.hasNode(userName)) {
+				return true;
+			}
+		} catch (RepositoryException e) {
+		}
 
-
-
+		return false;
+	}
+    
 	private Node getUserPermissionNode(String userName)
 			throws RepositoryException {
     	Node permsNode = getNode(getUserInfoNode(userName, repository), "permissions", "nt:file");

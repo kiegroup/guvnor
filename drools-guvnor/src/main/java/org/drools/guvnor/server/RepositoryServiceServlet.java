@@ -199,8 +199,8 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 	public void copyOrRemoveSnapshot(java.lang.String p0, java.lang.String p1, boolean p2, java.lang.String p3) throws com.google.gwt.user.client.rpc.SerializableException {
 		getService().copyOrRemoveSnapshot( p0,  p1,  p2,  p3);
 	}
-	public org.drools.guvnor.client.rpc.TableDataResult quickFindAsset(java.lang.String p0, int p1, boolean p2)  {
-		 return getService().quickFindAsset( p0,  p1,  p2);
+	public org.drools.guvnor.client.rpc.TableDataResult quickFindAsset(java.lang.String p0, boolean p1, int p2, int p3)  throws com.google.gwt.user.client.rpc.SerializableException{
+		 return getService().quickFindAsset( p0,  p1,  p2, p3);
 	}
 	public void removeCategory(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializableException {
 		getService().removeCategory( p0);

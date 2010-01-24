@@ -972,18 +972,14 @@ public class ServiceImplementationTest extends TestCase {
 				"testListByFormat" }, 0, 40, AssetItemGrid.RULE_LIST_TABLE_ID);
 		assertEquals(5, res.data.length);
 
-		TableDataResult result = impl.quickFindAsset("testListByForma", 5,
-				false);
+		TableDataResult result = impl.quickFindAsset("testListByForma", false, 0, 5);
 		assertEquals(5, result.data.length);
 
 		assertNotNull(result.data[0].id);
 		assertTrue(result.data[0].values[0].startsWith("testListByFormat"));
 
-		result = impl.quickFindAsset("testListByForma", 3, false);
+		result = impl.quickFindAsset("testListByForma", false, 0, 4);
 		assertEquals(4, result.data.length);
-
-		assertEquals("MORE", result.data[3].id);
-
 	}
 
 
@@ -1010,18 +1006,18 @@ public class ServiceImplementationTest extends TestCase {
 		impl.createPackage("testQuickFind",
 				"for testing quick find.");
 		String uuid = impl.createNewRule("testQuickFindmyRule1", "desc", cat, "testQuickFind", AssetFormats.DRL);
-		TableDataResult res = impl.quickFindAsset("testQuickFindmyRule", 20, false);
+		TableDataResult res = impl.quickFindAsset("testQuickFindmyRule", false, 0, 20);
 		assertEquals(1, res.data.length);
 
 		impl.createNewRule("testQuickFindmyRule2", "desc", cat, "testQuickFind", AssetFormats.DRL);
-		res = impl.quickFindAsset("testQuickFindmyRule", 20, false);
+		res = impl.quickFindAsset("testQuickFindmyRule", false, 0, 20);
 		assertEquals(2, res.data.length);
 
 		impl.copyAsset(uuid, "testQuickFind", "testQuickFindmyRule3");
-		res = impl.quickFindAsset("testQuickFindmyRule", 20, false);
+		res = impl.quickFindAsset("testQuickFindmyRule", false, 0, 20);
 		assertEquals(3, res.data.length);
 
-		res = impl.quickFindAsset("testQuickFindm*Rule", 20, false);
+		res = impl.quickFindAsset("testQuickFindm*Rule", false, 0, 20);
 		assertEquals(3, res.data.length);
 
 
