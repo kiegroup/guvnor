@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-  <!-- README: if you have problems running the build.
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <!-- README: if you have problems running the build.
   you may need to go up one directory, and run "mvn install" to
   make sure all the deps are ready.
 
@@ -11,345 +11,304 @@
   "mvn -Dmaven.test.skip=true install" and it should work.
 
   -->
-
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <artifactId>drools</artifactId>
-    <groupId>org.drools</groupId>
-	  <version>5.1.0.SNAPSHOT</version>
-  </parent>
-
-  <artifactId>drools-guvnor</artifactId>
-
-  <packaging>war</packaging>
-  <name>Drools :: Guvnor</name>
-
-  <build>
-    <finalName>drools-guvnor</finalName>
-
-	<plugins>
-	      <plugin>     
-	        <artifactId>maven-antrun-plugin</artifactId>
-	        <executions>
-	          <execution>
-                    <id>generate-sources</id>
-	            <phase>generate-sources</phase>
-	            <configuration>
-<!--
-	              <tasks>
-			<ant antfile="${basedir}/revision-number.xml" target="find_revision">
-				<property name="project.version" value="${project.version}"/>
-  			</ant>         	
-		      </tasks>
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <artifactId>drools</artifactId>
+      <groupId>org.drools</groupId>
+      <version>5.1.0.SNAPSHOT</version>
+   </parent>
+   <artifactId>drools-guvnor</artifactId>
+   <packaging>war</packaging>
+   <name>Drools :: Guvnor</name>
+   <build>
+      <finalName>drools-guvnor</finalName>
+      <plugins>
+         <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>generate-sources</id>
+                  <phase>generate-sources</phase>
+                  <configuration>
+                     <!--
+                      <tasks>
+                        <ant antfile="${basedir}/revision-number.xml" target="find_revision">
+                                <property name="project.version" value="${project.version}"/>
+                        </ant>          
+                      </tasks>
 -->
-	            </configuration>
-        	    <goals>
-	              <goal>run</goal>
-        	    </goals>
-	          </execution>
-	        </executions>
-		<dependencies>    
-			<dependency>
-			      <groupId>ant</groupId>
-			      <artifactId>ant-nodeps</artifactId>
-			      <version>1.6.5</version>
-			</dependency>
-			<dependency>
-			      <groupId>ant</groupId>
-			      <artifactId>ant-apache-regexp</artifactId>
-			      <version>1.6.5</version>
-			</dependency>
-			<dependency>
-			      <artifactId>jakarta-regexp</artifactId>
-			      <groupId>jakarta-regexp</groupId>
-			      <version>1.4</version>
-			</dependency>
-		</dependencies>
-	      </plugin>                 
-	</plugins>
-
-  </build>
-
-
-    <profiles>
-        <profile>
-            <id>soa</id>
-            <activation>
-                <property>
-                    <name>soa</name>
-                </property>
-            </activation>
-            <build>
-              <finalName>drools-guvnor</finalName>    
-        	<plugins>
-	          <plugin>
-     
-	        <artifactId>maven-antrun-plugin</artifactId>
-	        <executions>
-	          <execution>
-                    <id>generate-sources</id>
-	            <phase>generate-sources</phase>
-	            <configuration>
-	              <tasks>
-			<ant antfile="${basedir}/revision-number.xml" target="find_revision">
-				<property name="project.version" value="${project.version}"/>
-  			</ant>         	
-		      </tasks>
-	            </configuration>
-        	    <goals>
-	              <goal>run</goal>
-        	    </goals>
-	          </execution>
-	          <execution>
-                    <id>soa_overlay</id>
-	            <phase>package</phase>
-	            <configuration>
-	              <tasks>
-			<ant antfile="${basedir}/soa-specific.xml" target="soa_overlay">
-  			</ant>         	
-		      </tasks>
-	            </configuration>
-        	    <goals>
-	              <goal>run</goal>
-        	    </goals>
-	          </execution>
-	        </executions>
-		<dependencies>    
-			<dependency>
-			      <groupId>ant</groupId>
-			      <artifactId>ant-nodeps</artifactId>
-			      <version>1.6.5</version>
-			</dependency>
-			<dependency>
-			      <groupId>ant</groupId>
-			      <artifactId>ant-apache-regexp</artifactId>
-			      <version>1.6.5</version>
-			</dependency>
-			<dependency>
-			      <artifactId>jakarta-regexp</artifactId>
-			      <groupId>jakarta-regexp</groupId>
-			      <version>1.4</version>
-			</dependency>
-		</dependencies>
-	      </plugin>
-              <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-war-plugin</artifactId>
-               <executions>
-                   <execution>
-                       <id>war-it</id>
-                       <phase>pre-integration-test</phase>
-                       <goals>
+                  </configuration>
+                  <goals>
+                     <goal>run</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <dependencies>
+               <dependency>
+                  <groupId>ant</groupId>
+                  <artifactId>ant-nodeps</artifactId>
+                  <version>1.6.5</version>
+               </dependency>
+               <dependency>
+                  <groupId>ant</groupId>
+                  <artifactId>ant-apache-regexp</artifactId>
+                  <version>1.6.5</version>
+               </dependency>
+               <dependency>
+                  <artifactId>jakarta-regexp</artifactId>
+                  <groupId>jakarta-regexp</groupId>
+                  <version>1.4</version>
+               </dependency>
+            </dependencies>
+         </plugin>
+      </plugins>
+   </build>
+   <profiles>
+      <profile>
+         <id>soa</id>
+         <activation>
+            <property>
+               <name>soa</name>
+            </property>
+         </activation>
+         <build>
+            <finalName>drools-guvnor</finalName>
+            <plugins>
+               <plugin>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                           <tasks>
+                              <ant antfile="${basedir}/revision-number.xml" target="find_revision">
+                                 <property name="project.version" value="${project.version}" />
+                              </ant>
+                           </tasks>
+                        </configuration>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                     </execution>
+                     <execution>
+                        <id>soa_overlay</id>
+                        <phase>package</phase>
+                        <configuration>
+                           <tasks>
+                              <ant antfile="${basedir}/soa-specific.xml" target="soa_overlay"></ant>
+                           </tasks>
+                        </configuration>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <dependencies>
+                     <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-nodeps</artifactId>
+                        <version>1.6.5</version>
+                     </dependency>
+                     <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-apache-regexp</artifactId>
+                        <version>1.6.5</version>
+                     </dependency>
+                     <dependency>
+                        <artifactId>jakarta-regexp</artifactId>
+                        <groupId>jakarta-regexp</groupId>
+                        <version>1.4</version>
+                     </dependency>
+                  </dependencies>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-war-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>war-it</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
                            <goal>war</goal>
-                       </goals>
-                   </execution> 
-               </executions> 
-	      </plugin>                 
-	    </plugins>
-          </build>
-
-        </profile>          
-     </profiles>
-
-  <dependencies>
-    <!-- Internal dependencies -->
-
-    <!-- first the deps for the repo API itself (Jackrabbit based) -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-repository</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-bpmn2</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-decisiontables</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-doc</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-verifier</artifactId>
-    </dependency>
-     
-    <dependency>
-     	<groupId>wsdl4j</groupId>
-     	<artifactId>wsdl4j</artifactId>
-     	<version>1.6.2</version>
-    </dependency> 
-    
-    <!--REVISIT: Should not depend on JCR directly. Refactor MailboxService.java to hide this dependency 
-    in drools-repository module-->   
-    <dependency>
-    	<groupId>javax.jcr</groupId>
-    	<artifactId>jcr</artifactId>
-    </dependency>
-    <dependency>
-	<groupId>org.apache.jackrabbit</groupId>
-	<artifactId>jackrabbit-core</artifactId>
-    </dependency>	    
-	
-    <!--REVISIT: This lib is needed by org.apache.util.Base64 in org.drools.guvnor.server.files.RepositoryServlet-->	
-    <dependency>
-	<groupId>apache-slide</groupId>
-	<artifactId>webdavlib</artifactId>
-	<version>2.0</version>
-    </dependency> 
-    
-    <dependency>
- 	<groupId>net.sf.webdav-servlet</groupId>
- 	<artifactId>webdav-servlet</artifactId>
- 	<version>2.0</version>
-    </dependency> 
- 
-    <!-- External dependencies -->
-    <!-- now the deps for the web app -->
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>pl.balon.gwt</groupId>
-      <artifactId>gwt-diagrams</artifactId>
-      <version>0.2-RC00</version>
-    </dependency>
-    <dependency>
-      <groupId>org.cobogw.gwt</groupId>
-      <artifactId>cobogw</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.gwtext</groupId>
-      <artifactId>gwtext</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>com.thoughtworks.xstream</groupId>  
-        <artifactId>com.springsource.com.thoughtworks.xstream</artifactId> 
-    </dependency>
-   <dependency>
-     <groupId>commons-fileupload</groupId>
-     <artifactId>commons-fileupload</artifactId>
-   </dependency>
-
-   <dependency>
-     <groupId>org.apache.commons</groupId>
-     <artifactId>com.springsource.org.apache.commons.io</artifactId>
-   </dependency>
-
-
-   <!-- seam follows -->
-	<dependency>
-		<groupId>org.jboss.seam</groupId>
-		<artifactId>jboss-seam-remoting</artifactId>
-		<version>2.1.0.GA</version>
-	</dependency>
-	<dependency>
-		<groupId>org.jboss.seam</groupId>
-		<artifactId>jboss-seam</artifactId>
-		<version>2.1.0.GA</version>
-	</dependency>
-	
-        <dependency>
-            <groupId>javax.ejb</groupId>
-            <artifactId>ejb-api</artifactId>
-            <version>3.0</version>
-        </dependency>
-
-	<dependency>
-	    <groupId>javassist</groupId>
-	    <artifactId>javassist</artifactId>
-	    <version>3.4.GA</version>
-	    <scope>runtime</scope>
-	</dependency>
-
-	<dependency>
-		<groupId>javax.el</groupId>
-		<artifactId>el-api</artifactId>
-		<version>1.2</version>
-		<scope>runtime</scope>
-	</dependency>
-	<dependency>
-		<groupId>javax.el</groupId>
-		<artifactId>el-ri</artifactId>
-		<version>1.2</version>
-		<scope>runtime</scope>
-	</dependency>
-	
-	<!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
-	<dependency>
-		<groupId>javax.transaction</groupId>
-		<artifactId>jta</artifactId>
-		<version>1.0.1B</version>
-	</dependency>
-	
-	<!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
-	<dependency>
-		<groupId>javax.persistence</groupId>
-		<artifactId>persistence-api</artifactId>
-		<version>1.0</version>
-	</dependency>
-	
-	<!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
-	<dependency>
-  	    <groupId>javax.faces</groupId>
-  	    <artifactId>jsf-api</artifactId>
-  	    <version>1.2</version>
-	</dependency>
-	
-	<!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
-	<dependency>
-		<groupId>org.hibernate</groupId>
-		<artifactId>hibernate-validator</artifactId>
-		<version>3.0.0.GA</version>
-	</dependency>
-	
-	<!-- NOT needed due to licencing -->
-	<dependency>
-	        <groupId>org.tmatesoft</groupId>
-        	<artifactId>svnkit</artifactId>
-        	<scope>provided</scope>
-	</dependency>
-
-	<dependency>
-	    <groupId>org.mortbay.jetty</groupId>
-	    <artifactId>jetty-embedded</artifactId>
-	    <version>6.1.15</version>
-	    <scope>test</scope>
-	</dependency>
-
-
-     <dependency>
-	<groupId>commons-logging</groupId>
-	<artifactId>commons-logging</artifactId>
-	<version>1.1</version>
-	<scope>test</scope>
-    </dependency>
-   
-    <dependency>
-	<groupId>commons-httpclient</groupId>
-	<artifactId>commons-httpclient</artifactId>
-	<version>3.1</version>
-	<scope>test</scope>
-   </dependency>
-
-  </dependencies>
-
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
+   <dependencies>
+      <!-- Internal dependencies -->
+      <!-- first the deps for the repo API itself (Jackrabbit based) -->
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-repository</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-compiler</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-bpmn2</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-decisiontables</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-doc</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-verifier</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>wsdl4j</groupId>
+         <artifactId>wsdl4j</artifactId>
+         <version>1.6.2</version>
+      </dependency>
+      <!--REVISIT: Should not depend on JCR directly. Refactor MailboxService.java to hide this dependency 
+    in drools-repository module-->
+      <dependency>
+         <groupId>javax.jcr</groupId>
+         <artifactId>jcr</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.jackrabbit</groupId>
+         <artifactId>jackrabbit-core</artifactId>
+      </dependency>
+      <!--REVISIT: This lib is needed by org.apache.util.Base64 in org.drools.guvnor.server.files.RepositoryServlet-->
+      <dependency>
+         <groupId>apache-slide</groupId>
+         <artifactId>webdavlib</artifactId>
+         <version>2.0</version>
+      </dependency>
+      <dependency>
+         <groupId>net.sf.webdav-servlet</groupId>
+         <artifactId>webdav-servlet</artifactId>
+         <version>2.0</version>
+      </dependency>
+      <!-- External dependencies -->
+      <!-- now the deps for the web app -->
+      <dependency>
+         <groupId>javax.servlet</groupId>
+         <artifactId>servlet-api</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>pl.balon.gwt</groupId>
+         <artifactId>gwt-diagrams</artifactId>
+         <version>0.2-RC00</version>
+      </dependency>
+      <dependency>
+         <groupId>org.cobogw.gwt</groupId>
+         <artifactId>cobogw</artifactId>
+         <version>1.0</version>
+      </dependency>
+      <dependency>
+         <groupId>com.google.gwt</groupId>
+         <artifactId>gwt-servlet</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>com.gwtext</groupId>
+         <artifactId>gwtext</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>com.thoughtworks.xstream</groupId>
+         <artifactId>xstream</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>commons-fileupload</groupId>
+         <artifactId>commons-fileupload</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>commons-io</groupId>
+         <artifactId>commons-io</artifactId>
+      </dependency>
+      <!-- seam follows -->
+      <dependency>
+         <groupId>org.jboss.seam</groupId>
+         <artifactId>jboss-seam-remoting</artifactId>
+         <version>2.1.0.GA</version>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.seam</groupId>
+         <artifactId>jboss-seam</artifactId>
+         <version>2.1.0.GA</version>
+      </dependency>
+      <dependency>
+         <groupId>javax.ejb</groupId>
+         <artifactId>ejb-api</artifactId>
+         <version>3.0</version>
+      </dependency>
+      <dependency>
+         <groupId>javassist</groupId>
+         <artifactId>javassist</artifactId>
+         <version>3.4.GA</version>
+         <scope>runtime</scope>
+      </dependency>
+      <dependency>
+         <groupId>javax.el</groupId>
+         <artifactId>el-api</artifactId>
+         <version>1.2</version>
+         <scope>runtime</scope>
+      </dependency>
+      <dependency>
+         <groupId>javax.el</groupId>
+         <artifactId>el-ri</artifactId>
+         <version>1.2</version>
+         <scope>runtime</scope>
+      </dependency>
+      <!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
+      <dependency>
+         <groupId>javax.transaction</groupId>
+         <artifactId>jta</artifactId>
+         <version>1.0.1B</version>
+      </dependency>
+      <!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
+      <dependency>
+         <groupId>javax.persistence</groupId>
+         <artifactId>persistence-api</artifactId>
+         <version>1.0</version>
+      </dependency>
+      <!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
+      <dependency>
+         <groupId>javax.faces</groupId>
+         <artifactId>jsf-api</artifactId>
+         <version>1.2</version>
+      </dependency>
+      <!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
+      <dependency>
+         <groupId>org.hibernate</groupId>
+         <artifactId>hibernate-validator</artifactId>
+         <version>3.0.0.GA</version>
+      </dependency>
+      <!-- NOT needed due to licencing -->
+      <dependency>
+         <groupId>org.tmatesoft</groupId>
+         <artifactId>svnkit</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.mortbay.jetty</groupId>
+         <artifactId>jetty-embedded</artifactId>
+         <version>6.1.15</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>commons-logging</groupId>
+         <artifactId>commons-logging</artifactId>
+         <version>1.1</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>commons-httpclient</groupId>
+         <artifactId>commons-httpclient</artifactId>
+         <version>3.1</version>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
 </project>

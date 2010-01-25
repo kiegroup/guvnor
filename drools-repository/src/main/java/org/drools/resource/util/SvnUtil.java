@@ -34,8 +34,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.drools.resource.RepositoryBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNNodeKind;
@@ -59,7 +60,7 @@ import org.tmatesoft.svn.core.wc.SVNWCUtil;
  * 
  */
 public class SvnUtil {
-    private static Logger logger = Logger.getLogger( SvnUtil.class );
+    private static final Logger logger = LoggerFactory.getLogger( SvnUtil.class );
 
     /**
      * Get a DRL file's contents from Subversion.
@@ -211,7 +212,7 @@ public class SvnUtil {
         try {
             fileText = baos.toString( "text/html" );
         } catch ( IOException ioe ) {
-            logger.error( ioe );
+            logger.error( ioe.getMessage() );
         }
 
         return fileText;
@@ -311,7 +312,7 @@ public class SvnUtil {
             repository.setAuthenticationManager( authManager );
             repository.testConnection();
         } catch ( SVNException e ) {
-            logger.error( e.getErrorMessage() );
+            logger.error( e.getErrorMessage().getFullMessage() );
             return false;
         }
 
