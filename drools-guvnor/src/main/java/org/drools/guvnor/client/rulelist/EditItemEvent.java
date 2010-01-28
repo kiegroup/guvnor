@@ -29,4 +29,10 @@ public interface EditItemEvent {
      */
     public void open(String key);
     
+    /**
+     * Open several assets into the same tab.
+     * 
+     * @param keys - the UUIDs to open.
+     */
+    public void open(String[] keys);
 }

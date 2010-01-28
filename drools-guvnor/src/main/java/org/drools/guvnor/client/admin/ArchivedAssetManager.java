@@ -50,6 +50,12 @@ public class ArchivedAssetManager extends Composite {
             public void open(String key) {
             	tab.openAsset(key);
             }
+
+            public void open(String[] keys) {
+                for ( String key : keys ) {
+                    tab.openAsset( key );
+                }
+            }
         };
         grid = new AssetItemGrid(edit, AssetItemGrid.ARCHIVED_RULE_LIST_TABLE_ID, new AssetItemGridDataLoader() {
 			public void loadData(int startRow, int numberOfRows,

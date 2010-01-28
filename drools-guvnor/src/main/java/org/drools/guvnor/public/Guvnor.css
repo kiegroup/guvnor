@@ -226,8 +226,33 @@ select {
     background-image: url( images/analyze.gif ) !important;
 }
 
-
-
+.bg_rule_asset {
+    background-image: url( images/rule_asset.gif ) !important;
+}
+.bg_technical_rule_assets {
+    background-image: url( images/technical_rule_assets.gif ) !important;
+}
+.bg_function_assets {
+    background-image: url( images/function_assets.gif ) !important;
+}
+.bg_model_asset {
+    background-image: url( images/model_asset.gif ) !important;
+}
+.bg_business_rule {
+    background-image: url( images/business_rule.gif ) !important;
+}
+.bg_ruleflow_small {
+    background-image: url( images/ruleflow_small.gif ) !important;
+}
+.bg_test_manager {
+    background-image: url( images/test_manager.gif ) !important;
+}
+.bg_enumeration {
+    background-image: url( images/enumeration.gif ) !important;
+}
+.bg_gdst {
+    background-image: url( images/gdst.gif ) !important;
+}
 
 
 

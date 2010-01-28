@@ -172,6 +172,12 @@ public class CategoriesPanel extends GenericPanel {
             public void open(String uuid) {
                 centertabbedPanel.openAsset(uuid);
             }
+
+            public void open(String[] keys) {
+                for ( String key : keys ) {
+                    centertabbedPanel.openAsset( key );
+                }
+            }
         };
     }
 

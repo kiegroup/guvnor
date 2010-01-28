@@ -62,6 +62,12 @@ public abstract class GenericPanel extends Panel {
             public void open(String key) {
                 centertabbedPanel.openAsset(key);
             }
+
+            public void open(String[] keys) {
+                for ( String key : keys ) {
+                    centertabbedPanel.openAsset( key );
+                }
+            }
         }, showCats, format, title);
 
         pop.show();

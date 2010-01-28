@@ -63,19 +63,22 @@ public class EditorLauncher {
         } else if ( asset.metaData.format.equals( AssetFormats.DSL_TEMPLATE_RULE ) ) {
             return new RuleValidatorWrapper( new DSLRuleEditor( asset ),
                                              asset );
-        } else if (asset.metaData.format.equals(AssetFormats.BPEL_PACKAGE)
-				&& Preferences.getBooleanPref("flex-bpel-editor")) {
-			return new BPELWrapper(asset, viewer);
+        } else if ( asset.metaData.format.equals( AssetFormats.BPEL_PACKAGE ) && Preferences.getBooleanPref( "flex-bpel-editor" ) ) {
+            return new BPELWrapper( asset,
+                                    viewer );
         } else if ( asset.metaData.format.equals( AssetFormats.MODEL ) ) {
             return new ModelAttachmentFileWidget( asset,
                                                   viewer );
         } else if ( asset.metaData.format.equals( AssetFormats.DECISION_SPREADSHEET_XLS ) ) {
-            return new DecisionTableXLSWidget( asset, viewer );
+            return new DecisionTableXLSWidget( asset,
+                                               viewer );
 
         } else if ( asset.metaData.format.equals( AssetFormats.RULE_FLOW_RF ) ) {
-            return new RuleFlowWrapper( asset, viewer );
+            return new RuleFlowWrapper( asset,
+                                        viewer );
         } else if ( asset.metaData.format.equals( AssetFormats.BPMN2_PROCESS ) ) {
-            return new RuleFlowWrapper( asset, viewer );
+            return new RuleFlowWrapper( asset,
+                                        viewer );
         } else if ( asset.metaData.format.equals( AssetFormats.DRL ) ) {
             return new DrlEditor( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.ENUMERATION ) ) {
@@ -89,13 +92,16 @@ public class EditorLauncher {
         } else if ( asset.metaData.format.equals( AssetFormats.DSL ) ) {
             return new DefaultRuleContentWidget( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.PROPERTIES ) ) {
-            return new PropertiesWidget( asset, viewer );
+            return new PropertiesWidget( asset,
+                                         viewer );
         } else if ( asset.metaData.format.equals( AssetFormats.XML ) ) {
-            return new XmlFileWidget( asset, viewer );
+            return new XmlFileWidget( asset,
+                                      viewer );
         } else if ( asset.metaData.format.equals( AssetFormats.FUNCTION ) ) {
             return new FunctionEditor( asset );
         } else {
-            return new DefaultContentUploadEditor( asset, viewer );
+            return new DefaultContentUploadEditor( asset,
+                                                   viewer );
         }
 
     }
@@ -127,6 +133,52 @@ public class EditorLauncher {
                     "enumeration.gif" );
         result.put( AssetFormats.DECISION_TABLE_GUIDED,
                     "gdst.gif" );
+
+        return result;
+    }
+
+    /**
+     * Returns a css style for background with the icon that belongs for the format.
+     * @param format
+     * @return
+     */
+    public static String getAssetFormatBGStyle(String format) {
+        String style = getTypeStyles().get( format );
+
+        if ( style == null ) {
+            return "bg_rule_asset";
+        } else {
+            return style;
+        }
+    }
+
+    private static Map<String, String> getTypeStyles() {
+        Map<String, String> result = new HashMap<String, String>();
+
+        result.put( AssetFormats.DRL,
+                    "bg_technical_rule_assets" );
+        result.put( AssetFormats.DSL,
+                    "bg_dsl" );
+        result.put( AssetFormats.FUNCTION,
+                    "bg_function_assets" );
+        result.put( AssetFormats.MODEL,
+                    "bg_model_asset" );
+        result.put( AssetFormats.DECISION_SPREADSHEET_XLS,
+                    "bg_spreadsheet_small" );
+        result.put( AssetFormats.BUSINESS_RULE,
+                    "bg_business_rule" );
+        result.put( AssetFormats.DSL_TEMPLATE_RULE,
+                    "bg_business_rule" );
+        result.put( AssetFormats.RULE_FLOW_RF,
+                    "bg_ruleflow_small" );
+        result.put( AssetFormats.BPMN2_PROCESS,
+                    "bg_ruleflow_small" );
+        result.put( AssetFormats.TEST_SCENARIO,
+                    "bg_test_manager" );
+        result.put( AssetFormats.ENUMERATION,
+                    "bg_enumeration" );
+        result.put( AssetFormats.DECISION_TABLE_GUIDED,
+                    "bg_gdst" );
 
         return result;
     }

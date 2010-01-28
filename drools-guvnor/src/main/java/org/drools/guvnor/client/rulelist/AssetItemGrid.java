@@ -258,15 +258,32 @@ public class AssetItemGrid extends Composite {
 
 
                                  ToolbarButton openSelected = new ToolbarButton();
-                                 openSelected.setText(constants.openSelected());
+                                 openSelected.setText( constants.openSelected() );
                                  openSelected.addListener( new ButtonListenerAdapter() {
                                      public void onClick(Button button,
                                                          EventObject e) {
-                                                 String uuid = currentGrid.getSelectionModel().getSelected().getAsString( "uuid" );
-                                                 editEvent.open( uuid );
+                                         Record[] selections = currentGrid.getSelectionModel().getSelections();
+                                         for ( Record record : selections ) {
+                                             String uuid = record.getAsString( "uuid" );
+                                             editEvent.open( uuid );
+                                         }
                                      }
                                  } );
                                  tb.addButton( openSelected );
+                                 ToolbarButton openSelectedToSingleTab = new ToolbarButton();
+                                 openSelectedToSingleTab.setText( constants.openSelectedToSingleTab() );
+                                 openSelectedToSingleTab.addListener( new ButtonListenerAdapter() {
+                                     public void onClick(Button button,
+                                                         EventObject e) {
+                                         Record[] selections = currentGrid.getSelectionModel().getSelections();
+                                         String[] uuids = new String[selections.length];
+                                         for ( int i = 0; i < selections.length; i++ ) {
+                                             uuids[i] = selections[i].getAsString( "uuid" );
+                                         }
+                                         editEvent.open( uuids );
+                                     }
+                                 } );
+                                 tb.addButton( openSelectedToSingleTab );
 
 
                                  if (feedURL != null) {
@@ -310,10 +327,10 @@ public class AssetItemGrid extends Composite {
     public String[] getSelectedRowUUIDs() {
         Record[] records = currentGrid.getSelectionModel().getSelections();
         if ( records != null && records.length !=0) {
-        	String[] rtn = new String[records.length];
-        	for(int i=0; i<records.length; i++) {
-        		rtn[i] = records[i].getAsString("uuid");
-        	}
+            String[] rtn = new String[records.length];
+            for(int i=0; i<records.length; i++) {
+                rtn[i] = records[i].getAsString("uuid");
+            }
             return rtn;
         } else {
             return null;

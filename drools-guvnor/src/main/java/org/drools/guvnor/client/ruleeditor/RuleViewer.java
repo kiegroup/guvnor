@@ -35,41 +35,53 @@ import com.gwtext.client.util.Format;
  *
  * @author Michael Neale
  */
-public class RuleViewer extends DirtyableComposite {
+public class RuleViewer extends GuvnorEditor {
 
-    private Command            closeCommand;
-    public Command             checkedInCommand;
-    protected RuleAsset        asset;
+    private Command                    closeCommand;
+    public Command                     checkedInCommand;
+    public ActionToolbar.CheckinAction checkInCommand;
+    protected RuleAsset                asset;
 
-    private boolean            readOnly;
+    private boolean                    readOnly;
 
-    private MetaDataWidget     metaWidget;
-    private RuleDocumentWidget doco;
-    private Widget             editor;
+    private MetaDataWidget             metaWidget;
+    private RuleDocumentWidget         doco;
+    private Widget                     editor;
 
-    private ActionToolbar      toolbar;
-    private VerticalPanel      layout;
-    private HorizontalPanel    hsp;
+    private ActionToolbar              toolbar;
+    private VerticalPanel              layout;
+    private HorizontalPanel            hsp;
 
-    private long               lastSaved = System.currentTimeMillis();
-    private Constants          constants = ((Constants) GWT.create( Constants.class ));
-    
-    private final EditItemEvent editEvent;
-    
+    private long                       lastSaved = System.currentTimeMillis();
+    private Constants                  constants = ((Constants) GWT.create( Constants.class ));
+
+    private final EditItemEvent        editEvent;
+
     /**
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
-    public RuleViewer(RuleAsset asset, final EditItemEvent event) {
-        this( asset, event, false );
+    public RuleViewer(RuleAsset asset,
+                      final EditItemEvent event) {
+        this( asset,
+              event,
+              false );
+    }
+
+    RuleDocumentWidget getDoco() {
+        return doco;
+    }
+
+    MetaDataWidget getMetaWidget() {
+        return metaWidget;
     }
 
     /**
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
     public RuleViewer(RuleAsset asset,
-    		          final EditItemEvent event,
+                      final EditItemEvent event,
                       boolean historicalReadOnly) {
-        this.editEvent = event;    	
+        this.editEvent = event;
         this.asset = asset;
         this.readOnly = historicalReadOnly && asset.isreadonly;
 
@@ -77,18 +89,35 @@ public class RuleViewer extends DirtyableComposite {
 
         layout.setWidth( "100%" );
         layout.setHeight( "100%" );
-        
+
+        this.checkInCommand = new ActionToolbar.CheckinAction() {
+            public void doCheckin(String comment) {
+                if ( editor instanceof SaveEventListener ) {
+                    ((SaveEventListener) editor).onSave();
+                }
+                performCheckIn( comment );
+                if ( editor instanceof SaveEventListener ) {
+                    ((SaveEventListener) editor).onAfterSave();
+                }
+                if ( checkedInCommand != null ) {
+                    checkedInCommand.execute();
+                }
+                lastSaved = System.currentTimeMillis();
+                resetDirty();
+            }
+        };
+
         initWidget( layout );
 
-        doWidgets(null);
+        doWidgets( null );
 
         LoadingPopup.close();
     }
 
     public boolean isDirty() {
-        return (System.currentTimeMillis() - lastSaved) > 3600000;   
+        return (System.currentTimeMillis() - lastSaved) > 3600000;
     }
-        
+
     /**
      * This will actually load up the data (this is called by the callback)
      * when we get the data back from the server,
@@ -96,28 +125,13 @@ public class RuleViewer extends DirtyableComposite {
      */
     private void doWidgets(Widget messageWidget) {
         layout.clear();
-        
+
         editor = EditorLauncher.getEditorViewer( asset,
                                                  this );
 
         //the action widgets (checkin/close etc).
         toolbar = new ActionToolbar( asset,
-                                     new ActionToolbar.CheckinAction() {
-                                         public void doCheckin(String comment) {
-                                             if ( editor instanceof SaveEventListener ) {
-                                                 ((SaveEventListener) editor).onSave();
-                                             }
-                                             performCheckIn( comment );
-                                             if ( editor instanceof SaveEventListener ) {
-                                                 ((SaveEventListener) editor).onAfterSave();
-                                             }
-                                             if ( checkedInCommand != null ) {
-                                                 checkedInCommand.execute();
-                                             }
-                                             lastSaved = System.currentTimeMillis();
-                                             resetDirty();
-                                         }
-                                     },
+                                     checkInCommand,
                                      new ActionToolbar.CheckinAction() {
                                          public void doCheckin(String comment) {
                                              doArchive( comment );
@@ -130,19 +144,18 @@ public class RuleViewer extends DirtyableComposite {
                                              doDelete();
                                          }
                                      },
-                                     readOnly, 
-                                     editor, 
+                                     readOnly,
+                                     editor,
                                      new Command() {
-                                        public void execute() {
-                                            close();
-                                        }
-                                    },
-                                    new Command() {
-                                        public void execute() {
-                                            doCopy();
-                                        }       
-                                    }
-        );
+                                         public void execute() {
+                                             close();
+                                         }
+                                     },
+                                     new Command() {
+                                         public void execute() {
+                                             doCopy();
+                                         }
+                                     } );
 
         //layout.add(toolbar, DockPanel.NORTH);
         layout.add( toolbar );
@@ -156,7 +169,7 @@ public class RuleViewer extends DirtyableComposite {
         if ( messageWidget != null ) {
             layout.add( messageWidget );
         }
-        
+
         doMetaWidget();
 
         hsp = new HorizontalPanel();
@@ -186,7 +199,7 @@ public class RuleViewer extends DirtyableComposite {
         //hsp.setSplitPosition("80%");
         hsp.setHeight( "100%" );
 
-        layout.add(doco);
+        layout.add( doco );
     }
 
     private void doMetaWidget() {
@@ -243,12 +256,10 @@ public class RuleViewer extends DirtyableComposite {
         final boolean[] saved = {false};
         Timer t = new Timer() {
             public void run() {
-                if (!saved[0]) LoadingPopup.showMessage( constants.SavingPleaseWait() );
+                if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
             }
         };
-        t.schedule(500);
-
-
+        t.schedule( 500 );
 
         RepositoryServiceFactory.getService().checkinVersion( this.asset,
                                                               new GenericCallback<String>() {
@@ -273,14 +284,13 @@ public class RuleViewer extends DirtyableComposite {
                                                                       doco.resetDirty();
 
                                                                       // No need to refresh if we are archiving
-                                                                      if (asset.archived) {
+                                                                      if ( asset.archived ) {
                                                                           LoadingPopup.close();
                                                                       } else {
-                                                                          refreshMetaWidgetOnly(false);
+                                                                          refreshMetaWidgetOnly( false );
                                                                       }
                                                                       LoadingPopup.close();
                                                                       saved[0] = true;
-
 
                                                                       toolbar.showSavedConfirmation();
                                                                   }
@@ -309,14 +319,14 @@ public class RuleViewer extends DirtyableComposite {
     public void refreshDataAndView() {
         refreshDataAndView( null );
     }
-    
+
     public void refreshDataAndView(final Widget messageWidget) {
         LoadingPopup.showMessage( constants.RefreshingItem() );
         RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid,
                                                              new GenericCallback<RuleAsset>() {
                                                                  public void onSuccess(RuleAsset asset_) {
                                                                      asset = asset_;
-                                                                     doWidgets(messageWidget);
+                                                                     doWidgets( messageWidget );
                                                                      LoadingPopup.close();
                                                                  }
                                                              } );
@@ -326,11 +336,11 @@ public class RuleViewer extends DirtyableComposite {
      * This will only refresh the meta data widget if necessary.
      */
     public void refreshMetaWidgetOnly() {
-        refreshMetaWidgetOnly(true);
+        refreshMetaWidgetOnly( true );
     }
 
     private void refreshMetaWidgetOnly(final boolean showBusy) {
-        if (showBusy) LoadingPopup.showMessage( constants.RefreshingItem() );
+        if ( showBusy ) LoadingPopup.showMessage( constants.RefreshingItem() );
         RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid,
                                                              new GenericCallback<RuleAsset>() {
                                                                  public void onSuccess(RuleAsset asset_) {
@@ -340,7 +350,7 @@ public class RuleViewer extends DirtyableComposite {
                                                                      hsp.add( metaWidget );
                                                                      hsp.setCellWidth( metaWidget,
                                                                                        "25%" );
-                                                                     if (showBusy) LoadingPopup.close();
+                                                                     if ( showBusy ) LoadingPopup.close();
                                                                  }
                                                              } );
     }
@@ -392,51 +402,62 @@ public class RuleViewer extends DirtyableComposite {
 
         pop.show();
     }
-    
-    private void doCopy() {
-        final FormStylePopup form = new FormStylePopup("images/rule_asset.gif", constants.CopyThisItem());
-        final TextBox newName = new TextBox();
-        form.addAttribute(constants.NewName(), newName );
 
-        Button ok = new Button(constants.CreateCopy());
+    private void doCopy() {
+        final FormStylePopup form = new FormStylePopup( "images/rule_asset.gif",
+                                                        constants.CopyThisItem() );
+        final TextBox newName = new TextBox();
+        form.addAttribute( constants.NewName(),
+                           newName );
+
+        Button ok = new Button( constants.CreateCopy() );
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-            	if (newName.getText() == null || newName.getText().equals("")) {
-            		Window.alert(constants.AssetNameMustNotBeEmpty());
-            		return;
-            	}
-                String name = newName.getText().trim();
-                if (!NewAssetWizard.validatePathPerJSR170(name)) {
-                	return;
+                if ( newName.getText() == null || newName.getText().equals( "" ) ) {
+                    Window.alert( constants.AssetNameMustNotBeEmpty() );
+                    return;
                 }
-                RepositoryServiceFactory.getService().copyAsset(asset.uuid, asset.metaData.packageName, name,
+                String name = newName.getText().trim();
+                if ( !NewAssetWizard.validatePathPerJSR170( name ) ) {
+                    return;
+                }
+                RepositoryServiceFactory.getService().copyAsset( asset.uuid,
+                                                                 asset.metaData.packageName,
+                                                                 name,
                                                                  new GenericCallback<String>() {
-                                                                    public void onSuccess(String data) {
-                                                                        completedCopying(newName.getText(), asset.metaData.packageName, data);
-                                                                        form.hide();                                                                     
+                                                                     public void onSuccess(String data) {
+                                                                         completedCopying( newName.getText(),
+                                                                                           asset.metaData.packageName,
+                                                                                           data );
+                                                                         form.hide();
                                                                      }
 
                                                                      @Override
                                                                      public void onFailure(Throwable t) {
-                                                                         if (t.getMessage().indexOf("ItemExistsException") > -1) { //NON-NLS
-                                                                             Window.alert(constants.ThatNameIsInUsePleaseTryAnother());
+                                                                         if ( t.getMessage().indexOf( "ItemExistsException" ) > -1 ) { //NON-NLS
+                                                                             Window.alert( constants.ThatNameIsInUsePleaseTryAnother() );
                                                                          } else {
-                                                                             super.onFailure(t);
+                                                                             super.onFailure( t );
                                                                          }
                                                                      }
-                                                                 });
+                                                                 } );
             }
         } );
-        form.addAttribute( "", ok );
+        form.addAttribute( "",
+                           ok );
 
-		//form.setPopupPosition((DirtyableComposite.getWidth() - form.getOffsetWidth()) / 2, 100);
-		form.show();
+        //form.setPopupPosition((DirtyableComposite.getWidth() - form.getOffsetWidth()) / 2, 100);
+        form.show();
     }
 
-    private void completedCopying(String name, String pkg, String newAssetUUID) {
-        Window.alert( Format.format(constants.CreatedANewItemSuccess(), name, pkg) );
-        if(editEvent != null) {
-            editEvent.open(newAssetUUID);
+    private void completedCopying(String name,
+                                  String pkg,
+                                  String newAssetUUID) {
+        Window.alert( Format.format( constants.CreatedANewItemSuccess(),
+                                     name,
+                                     pkg ) );
+        if ( editEvent != null ) {
+            editEvent.open( newAssetUUID );
         }
     }
 }

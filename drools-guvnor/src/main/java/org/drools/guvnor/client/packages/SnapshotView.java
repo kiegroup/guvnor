@@ -397,6 +397,11 @@ public class SnapshotView extends Composite {
                                                             //todo add snap notice to this...
                                                             centerPanel.openAsset( key );
                                                         }
+                                                        public void open(String[] keys) {
+                                                            for ( String key : keys ) {
+                                                                centerPanel.openAsset( key );
+                                                            }
+                                                        }
                                                     },
                                                     AssetItemGrid.RULE_LIST_TABLE_ID,
                                                     new AssetItemGridDataLoader() {

@@ -114,6 +114,8 @@ public interface RepositoryService extends RemoteService {
      */
     public RuleAsset loadRuleAsset(String UUID) throws SerializableException;
 
+    public RuleAsset[] loadRuleAssets(String[] UUIDs) throws SerializableException;
+
 
     /**
      * This will load the history of the given asset, in a summary format suitable

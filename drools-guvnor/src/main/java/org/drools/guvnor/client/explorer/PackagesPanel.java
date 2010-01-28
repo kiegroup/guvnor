@@ -234,6 +234,9 @@ public class PackagesPanel extends GenericPanel {
                             public void open(String uuid) {
                                 centertabbedPanel.openAsset(uuid);
                             }
+                            public void open(String[] uuids) {
+                                centertabbedPanel.openAssets( uuids );
+                            }
                         },
                                 AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID,
                                 new AssetItemGridDataLoader() {

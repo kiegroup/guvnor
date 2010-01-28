@@ -1,5 +1,6 @@
 package org.drools.guvnor.client.messages;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.i18n.client.ConstantsWithLookup;
 
 /**
@@ -2006,4 +2007,17 @@ public interface Constants extends ConstantsWithLookup {
     String MoveDown();
     
     String Clean();
+
+    String openSelectedToSingleTab();
+
+    String SaveAllChanges();
+
+    String SaveAndCloseAll();
+
+    String DescriptionAndDiscussion();
+
+    String Show();
+    
+    String Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview();
+    
 }

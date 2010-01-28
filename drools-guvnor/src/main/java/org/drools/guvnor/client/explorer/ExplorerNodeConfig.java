@@ -291,6 +291,12 @@ public class ExplorerNodeConfig {
 
 		final EditItemEvent edit = new EditItemEvent() {
 			public void open(String key) {centerPanel.openAsset(key);}
+
+            public void open(String[] keys) {
+                for ( String key : keys ) {
+                    centerPanel.openAsset( key );
+                }
+            }
 		};
 
 		scenarios.appendChild(new TreeNode(constants.PleaseWaitDotDotDot()));
