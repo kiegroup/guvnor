@@ -11,19 +11,21 @@ import java.util.Set;
  * @author trikkola
  *
  */
-public class MultiKeyMap<T> extends HashMap<Set<String>, T> {
-    private static final long serialVersionUID = -3028001095889963235L;
+public class MultiKeyMap<T> {
+    private static final long       serialVersionUID = -3028001095889963235L;
+
+    private HashMap<Set<String>, T> map              = new HashMap<Set<String>, T>();
 
     public boolean containsKey(String key) {
 
-        for ( Set<String> keys : keySet() ) {
+        for ( Set<String> keys : map.keySet() ) {
             for ( String string : keys ) {
-            
-                if(string.equals( key )){
+
+                if ( string.equals( key ) ) {
                     continue;
                 }
             }
-            
+
             if ( keys.contains( key ) ) {
                 return true;
             }
@@ -33,9 +35,9 @@ public class MultiKeyMap<T> extends HashMap<Set<String>, T> {
     }
 
     public T get(String key) {
-        for ( Set<String> keys : keySet() ) {
+        for ( Set<String> keys : map.keySet() ) {
             if ( keys.contains( key ) ) {
-                return super.get( keys );
+                return map.get( keys );
             }
         }
 
@@ -44,33 +46,45 @@ public class MultiKeyMap<T> extends HashMap<Set<String>, T> {
 
     public T put(final String key,
                  T value) {
-        return put( new HashSet<String>() {
-                        private static final long serialVersionUID = 6639904539329507948L;
-                        {
-                            add( key );
-                        }
-                    },
-                    value );
+        return map.put( new HashSet<String>() {
+                            private static final long serialVersionUID = 6639904539329507948L;
+                            {
+                                add( key );
+                            }
+                        },
+                        value );
     }
 
     public T put(String[] key,
                  T value) {
-        return put( new HashSet<String>( Arrays.asList( key ) ),
-                    value );
+        return map.put( new HashSet<String>( Arrays.asList( key ) ),
+                        value );
     }
 
-    public T remove(String[] key) {
-        return remove( new HashSet<String>( Arrays.asList( key ) ) );
-    }
-
-    public T remove(Object key) {
-        for ( Set<String> keys : keySet() ) {
-            if ( keys.equals( key ) || keys.contains( key ) ) {
-                return super.remove( keys );
+    public T remove(String[] keys) {
+        for ( String key : keys ) {
+            T result = remove( key );
+            if ( result != null ) {
+                return result;
             }
         }
 
         return null;
+    }
+
+    public T remove(String key) {
+
+        for ( Set<String> existingKeys : map.keySet() ) {
+            if ( existingKeys.contains( key ) ) {
+                return map.remove( existingKeys );
+            }
+        }
+
+        return null;
+    }
+
+    public void clear() {
+        map.clear();
     }
 
 }

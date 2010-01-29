@@ -154,7 +154,9 @@ public class ExplorerViewCenterPanel {
      */
     public void addTab (final String tabname, boolean closeable, Widget widget, final String[] keys) {
 
-        final String panelId = Arrays.toString( keys ) + id;
+        
+        
+        final String panelId = (keys.length == 1 ? keys[0] + id : Arrays.toString( keys ) + id);
         Panel localTP = new Panel();
         localTP.setClosable(closeable);
         localTP.setTitle(tabname);
@@ -163,14 +165,16 @@ public class ExplorerViewCenterPanel {
         localTP.add(widget);
         tp.add(localTP, this.centerLayoutData);
 
-
-        localTP.addListener(new PanelListenerAdapter() {
+        localTP.addListener( new PanelListenerAdapter() {
             public void onDestroy(Component component) {
-                openedTabs.remove(keys).destroy();
-                openedAssetEditors.remove(panelId);
+                Panel p = openedTabs.remove( keys );
+                if ( p != null ) {
+                    p.destroy();
+                }
+                openedAssetEditors.remove( panelId );
                 openedPackageEditors.remove( tabname );
             }
-        });
+        } );
 
         if ( widget instanceof GuvnorEditor ) {
             this.openedAssetEditors.put( panelId,
