@@ -719,12 +719,13 @@ public class GuidedDecisionTableWidget extends Composite
 
         int colCount = 0;
 
-        BaseColumnConfig[] cols = new BaseColumnConfig[fds.length + 1]; //its +1 as we have the separator -> thing.
+        BaseColumnConfig[] cols = new BaseColumnConfig[fds.length]; //its +1 as we have the separator -> thing.
         cols[0] = new ColumnConfig() {
             {
                 setDataIndex( "num" ); //NON-NLS
-                setWidth( 20 );
+                setWidth( 60 );
                 setSortable( false );
+                setHeader( "Row Number" );
                 setRenderer( new Renderer() {
                     public String render(Object value,
                                          CellMetadata cellMetadata,
@@ -822,10 +823,12 @@ public class GuidedDecisionTableWidget extends Composite
         }
 
         //the split thing
-        cols[colCount] = new ColumnConfig() {
+        //The separator column causes confusion, see GUVNOR-498. Remove this column for now until  
+        //we find a better way to represent a column for the purpose of separator. 
+/*        cols[colCount] = new ColumnConfig() {
             {
                 setDataIndex( "x" );
-                setHeader( "" );
+                setHeader( "x" );
                 //setFixed(true);
                 setSortable( false );
                 setResizable( false );
@@ -843,12 +846,12 @@ public class GuidedDecisionTableWidget extends Composite
                 setWidth( 20 );
             }
         };
-        colCount++;
+        colCount++;*/
 
         for ( int i = 0; i < dt.actionCols.size(); i++ ) {
             //here we could also deal with numeric type?
             final ActionCol c = dt.actionCols.get( i );
-            fds[colCount - 1] = new StringFieldDef( c.header );
+            fds[colCount] = new StringFieldDef( c.header );
 
             cols[colCount] = new ColumnConfig() {
                 {
