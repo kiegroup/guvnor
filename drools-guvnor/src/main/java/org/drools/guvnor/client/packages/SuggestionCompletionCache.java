@@ -94,6 +94,7 @@ public class SuggestionCompletionCache {
 
 
     public void loadPackage(final String packageName, final Command command) {
+
         LoadingPopup.showMessage(Format.format(constants.InitialisingInfoFor0PleaseWait(), packageName));
         RepositoryServiceFactory.getService().loadSuggestionCompletionEngine( packageName, new GenericCallback<SuggestionCompletionEngine>() {
             public void onSuccess(SuggestionCompletionEngine engine) {

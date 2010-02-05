@@ -28,14 +28,14 @@ public class FactTypeBrowser extends Composite {
 		panel.add(hp);
 
 		panel.add(tree);
-		if (sce.factTypes != null) {
-			for (String type : sce.factTypes) {
+		if (sce.getFactTypes() != null) {
+			for (String type : sce.getFactTypes()) {
 				TreeItem it = new TreeItem();
 				it.setHTML("<img src=\"images/class.gif\"/><small>" + type + "</small>");
 				it.setUserObject(type + "( )");
 				tree.addItem(it);
 
-				String[] fields = (String[]) sce.fieldsForType.get(type);
+				String[] fields = (String[]) sce.getModelFields(type);
 				if (fields != null) {
 					for (String field : fields) {
 						TreeItem fi = new TreeItem();

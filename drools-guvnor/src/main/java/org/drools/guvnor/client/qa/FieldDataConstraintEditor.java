@@ -56,7 +56,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
     private void refreshEditor() {
         String key = factType + "." + field.name;
-        String flType = sce.fieldTypes.get( key );
+        String flType = sce.getFieldType(key);
         panel.clear();
         if ( flType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
             final TextBox box = editableTextBox( callback,
@@ -75,7 +75,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                          },
                                          DropDownData.create( c ) ) );
         } else {
-            String[] enums = sce.dataEnumLists.get( key );
+            String[] enums = sce.getDataEnumList( key );
             if ( enums != null ) {
                 panel.add( new EnumDropDown( field.value,
                                              new DropDownValueChanged() {

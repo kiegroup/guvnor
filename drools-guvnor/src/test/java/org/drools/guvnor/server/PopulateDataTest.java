@@ -109,8 +109,8 @@ public class PopulateDataTest extends TestCase {
         SuggestionCompletionEngine eng = serv.loadSuggestionCompletionEngine( "com.billasurf.manufacturing.plant" );
         assertNotNull(eng);
 
-        assertEquals(2, eng.factTypes.length);
-        String[] fields = (String[]) eng.fieldsForType.get( "Board" );
+        assertEquals(2, eng.getFactTypes().length);
+        String[] fields = (String[]) eng.getModelFields( "Board" );
         assertTrue(fields.length >= 3);
 
         String[] globalVars = eng.getGlobalVariables();
@@ -118,7 +118,7 @@ public class PopulateDataTest extends TestCase {
         assertEquals("prs", globalVars[0]);
         assertTrue(eng.getFieldCompletionsForGlobalVariable( "prs" ).length >= 2);
 
-        fields = (String[]) eng.fieldsForType.get( "Person" );
+        fields = (String[]) eng.getModelFields( "Person" );
 
         assertTrue(fields.length >= 2);
 

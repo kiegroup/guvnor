@@ -41,16 +41,15 @@ import com.google.gwt.core.client.GWT;
  */
 public class CompositeFactPatternWidget extends DirtyableComposite {
 
-    private final SuggestionCompletionEngine completions;
-    private CompositeFactPattern             pattern;
-    private DirtyableFlexTable                             layout;
-    private RuleModeller                     modeller;
-    private Constants constants = ((Constants) GWT.create(Constants.class));
+    protected final SuggestionCompletionEngine completions;
+    protected CompositeFactPattern             pattern;
+    protected DirtyableFlexTable                             layout;
+    protected RuleModeller                     modeller;
+    protected Constants constants = ((Constants) GWT.create(Constants.class));
 
     public CompositeFactPatternWidget(RuleModeller modeller,
-                                      CompositeFactPattern pattern,
-                                      SuggestionCompletionEngine completions) {
-        this.completions = completions;
+                                      CompositeFactPattern pattern) {
+        this.completions = modeller.getSuggestionCompletions();
         this.pattern = pattern;
         this.modeller = modeller;
 
@@ -61,7 +60,7 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
         initWidget( layout );
     }
 
-    private void doLayout() {
+    protected void doLayout() {
         this.layout.setWidget( 0,
                                0,
                                getCompositeLabel() );
@@ -77,7 +76,6 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
             for ( int i = 0; i < facts.length; i++ ) {
                 vert.add( new FactPatternWidget( modeller,
                                                  facts[i],
-                                                 this.completions,
                                                  false ) );
             }
             this.layout.setWidget( 1,
@@ -86,7 +84,7 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
         }
     }
 
-    private Widget getCompositeLabel() {
+    protected Widget getCompositeLabel() {
 
         ClickListener click =  new ClickListener() {
             public void onClick(Widget w) {
@@ -134,7 +132,5 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
     public boolean isDirty() {
         return layout.hasDirty();
     }
-
-
 
 }

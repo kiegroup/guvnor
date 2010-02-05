@@ -31,7 +31,7 @@ import org.drools.guvnor.client.modeldriven.brl.PortableObject;
  */
 public class RuleAsset
     implements
-    Serializable {
+    Serializable, IsSerializable {
     
     public MetaData metaData;
     public PortableObject content;

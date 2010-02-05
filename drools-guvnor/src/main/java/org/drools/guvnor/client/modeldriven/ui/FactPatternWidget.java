@@ -59,10 +59,17 @@ public class FactPatternWidget extends DirtyableComposite {
     private boolean                    bindable;
     private Constants constants = ((Constants) GWT.create(Constants.class));
 
+    private String customLabel;
+
     public FactPatternWidget(RuleModeller mod, IPattern p,
-            SuggestionCompletionEngine com, boolean canBind) {
+            boolean canBind) {
+        this(mod, p, null, canBind);
+    }
+
+    public FactPatternWidget(RuleModeller mod, IPattern p,
+            String customLabel, boolean canBind) {
         this.pattern = (FactPattern) p;
-        this.completions = com;
+        this.completions = mod.getSuggestionCompletions();
         this.modeller = mod;
         this.bindable = canBind;
 
@@ -76,6 +83,8 @@ public class FactPatternWidget extends DirtyableComposite {
         this.popupCreator.setCompletions(completions);
         this.popupCreator.setModeller(modeller);
         this.popupCreator.setPattern(pattern);
+
+        this.customLabel = customLabel;
 
         layout.setWidget( 0, 0, getPatternLabel() );
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
@@ -93,7 +102,7 @@ public class FactPatternWidget extends DirtyableComposite {
     }
 
     /**
-     * Render a hierarchy of constraints, hierarchy here means constaints that may
+     * Render a hierarchy of constraints, hierarchy here means constraints that may
      * themselves depend on members of constraint objects. With this code, the GUI
      * enables clicking rules of the form:
      *
@@ -324,6 +333,7 @@ public class FactPatternWidget extends DirtyableComposite {
         return pred;
     }
 
+
     /**
      * This returns the pattern label.
      */
@@ -336,13 +346,19 @@ public class FactPatternWidget extends DirtyableComposite {
 
         String patternName = (pattern.boundName != null) ? pattern.factType  + " <b>[" + pattern.boundName + "]</b>" : pattern.factType;
 
-        if (pattern.constraintList != null && pattern.constraintList.constraints.length > 0) {
-            String desc = Format.format(constants.ThereIsAAn0With(), patternName);
-            return  new ClickableLabel( anA(desc, patternName) , click, !modeller.lockLHS()) ;
-        } else {
-            String desc = Format.format(constants.ThereIsAAn0(), patternName);
-            return new ClickableLabel( anA(desc, patternName) , click, !modeller.lockLHS() );
+        String desc = this.getCustomLabel();
+        if (desc == null){
+            if (pattern.constraintList != null && pattern.constraintList.constraints.length > 0) {
+                desc = Format.format(constants.ThereIsAAn0With(), patternName);
+            } else {
+                desc = Format.format(constants.ThereIsAAn0(), patternName);
+            }
+            desc = anA(desc, patternName);
+        }else{
+            desc = Format.format(desc, patternName);
         }
+
+        return  new ClickableLabel( desc , click, !modeller.lockLHS()) ;
     }
 
     /** Change to an/a depending on context - only for english */
@@ -427,7 +443,16 @@ public class FactPatternWidget extends DirtyableComposite {
         return ab;
     }
 
+    public String getCustomLabel() {
+        return customLabel;
+    }
 
+    public void setCustomLabel(String customLabel) {
+        this.customLabel = customLabel;
+    }
+
+
+    
 
     public boolean isDirty() {
         return layout.hasDirty();

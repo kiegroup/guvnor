@@ -72,7 +72,7 @@ public class ActionCallMethodWidget extends DirtyableComposite {
                 i++;
             }
 
-            this.variableClass = (String) completions.globalTypes.get( set.variable );
+            this.variableClass = (String) completions.getGlobalVariable( set.variable );
         } else {
             FactPattern pattern = mod.getModel().getBoundFact( set.variable );
             if ( pattern != null ) {
@@ -189,7 +189,7 @@ public class ActionCallMethodWidget extends DirtyableComposite {
                 model.methodName = methodName;
                 List<String> fieldList = new ArrayList<String>();
 
-                fieldList.addAll( completions.getMethodFields( variableClass,
+                fieldList.addAll( completions.getMethodParams( variableClass,
                                                                methodNameWithParams ) );
 
                 // String fieldType = completions.getFieldType( variableClass,
@@ -216,7 +216,7 @@ public class ActionCallMethodWidget extends DirtyableComposite {
 
         String type = "";
         if ( this.completions.isGlobalVariable( this.model.variable ) ) {
-            type = (String) this.completions.globalTypes.get( this.model.variable );
+            type = (String) this.completions.getGlobalVariable( this.model.variable );
         } else {
             if ( this.modeller.getModel().getBoundFact( this.model.variable ) != null ) {
                 type = this.modeller.getModel().getBoundFact( this.model.variable ).factType;
@@ -273,9 +273,8 @@ public class ActionCallMethodWidget extends DirtyableComposite {
 
     private Widget actionSelector(final ActionFieldFunction val) {
         final ListBox box = new ListBox();
-        final Map modMap = this.completions.modifiers;
         final String fieldType = val.type;
-        final String[] modifiers = (String[]) modMap.get( fieldType );
+        final String[] modifiers = this.completions.getModifiers( fieldType );
 
         if ( modifiers != null ) {
             for ( int i = 0; i < modifiers.length; i++ ) {

@@ -15,10 +15,8 @@ package org.drools.guvnor.client.common;
  * limitations under the License.
  */
 
-
-
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
@@ -26,20 +24,14 @@ import com.google.gwt.user.client.ui.Widget;
 public class DirtyableFlexTable extends FlexTable implements DirtyableContainer {
     
     private int length; 
-    private ArrayList list = new ArrayList();
+    private List<Pair> list = new ArrayList<Pair>();
 
     public boolean hasDirty() {
-        
-        Pair coordinates;
-        Widget element;
-        
-        for ( Iterator iter = list.iterator(); iter.hasNext(); ) {
-            coordinates = (Pair) iter.next();
-            element =  (Widget) getWidget( coordinates.getRow(), coordinates.getColumn() );
-            if (element instanceof DirtyableWidget) 
-                if ( ((DirtyableWidget) element).isDirty() ) return true;
-            if (element instanceof DirtyableContainer)
-                if ( ((DirtyableContainer) element).hasDirty()) return true;
+    	for (Pair coord : list) {
+            Widget element = getWidget( coord.getRow(), coord.getColumn() );
+            if ((element instanceof DirtyableWidget && ((DirtyableWidget) element).isDirty()) ||
+            		(element instanceof DirtyableContainer && ((DirtyableContainer) element).hasDirty()))
+                return true;
         }
         return false;
     }
@@ -47,9 +39,9 @@ public class DirtyableFlexTable extends FlexTable implements DirtyableContainer 
     public void setWidget(int row, int column , Widget arg2) {
         super.setWidget( row, column, arg2 );
         
-        if (( arg2 instanceof IDirtyable ))  {
-            list.add( length++, new Pair(row ,column) );
-        }
+		if (arg2 instanceof IDirtyable) {
+			list.add(length++, new Pair(row, column));
+		}
     }
 
 }
@@ -70,7 +62,4 @@ class Pair {
     public int getRow() {
         return row;
     }
-    
-    
-    
 }

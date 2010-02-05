@@ -1,6 +1,5 @@
 package org.drools.guvnor.client.messages;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.i18n.client.ConstantsWithLookup;
 
 /**
@@ -1408,6 +1407,8 @@ public interface Constants extends ConstantsWithLookup {
 
     String FreeFormDrl();
 
+    String ExpressionEditor();
+    
     String ConditionTypeButton();
 
 
@@ -1843,6 +1844,8 @@ public interface Constants extends ConstantsWithLookup {
     String AddAnActionToThisRule();
 
     String optionsRuleModeller();
+    
+    String clickToAddPattern();
 
     String clickToAddPatterns();
 
@@ -1871,6 +1874,8 @@ public interface Constants extends ConstantsWithLookup {
     String ThereIsAAn0With();
 
     String ThereIsAAn0();
+    
+    String All0with();
 
     String AddFirstNewField();
 
@@ -1933,6 +1938,10 @@ public interface Constants extends ConstantsWithLookup {
     String IncomingChanges();
 
     String From();
+    
+    String FromAccumulate();
+
+    String FromCollect();
     
     String URLDocumentionDescription();
 
@@ -2007,6 +2016,22 @@ public interface Constants extends ConstantsWithLookup {
     String MoveDown();
     
     String Clean();
+
+    String Top();
+
+    String Bottom();
+    
+    String Line0();
+
+    String PositionColon();
+
+    String ConditionPositionExplanation();
+
+    String ActionPositionExplanation();
+
+    String AddAConditionBelow();
+
+    String AddAnActionBelow();
 
     String openSelectedToSingleTab();
 

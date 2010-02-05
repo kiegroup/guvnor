@@ -52,7 +52,7 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
 
     public void testStripUnNeededFields() {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        String[] result = loader.removeIrrelevantFields( new String[] {"foo", "toString", "class", "hashCode"} );
+        String[] result = loader.removeIrrelevantFields( Arrays.asList(new String[] {"foo", "toString", "class", "hashCode"} ));
         assertEquals(1, result.length);
         assertEquals("foo", result[0]);
     }
@@ -134,8 +134,7 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
 
 
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( item );
-        assertNotNull(eng.dataEnumLists);
-        assertEquals(Collections.EMPTY_MAP, eng.dataEnumLists);
+        assertFalse(eng.hasDataEnumLists());
         assertFalse(loader.hasErrors());
         assertEquals(1, eng.actionDSLSentences.length);
         assertEquals(1, eng.conditionDSLSentences.length);
@@ -159,7 +158,7 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
         SuggestionCompletionEngine sce = loader.getSuggestionEngine( item );
 
         assertFalse(loader.hasErrors());
-        assertEquals(1, sce.dataEnumLists.size());
+        assertEquals(1, sce.getDataEnumListsSize());
 
 
         asset.updateContent( "goober boy" );

@@ -226,8 +226,8 @@ public class ActionSetColumn extends FormStylePopup {
     }
 
     private String getFactType() {
-        if ( sce.globalTypes.containsKey( editingCol.boundName ) ) {
-            return sce.globalTypes.get( editingCol.boundName );
+        if ( sce.isGlobalVariable( editingCol.boundName ) ) {
+            return sce.getGlobalVariable( editingCol.boundName );
         }
         return getFactType( this.editingCol.boundName );
     }

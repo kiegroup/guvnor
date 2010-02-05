@@ -1467,9 +1467,9 @@ public class ServiceImplementationTest extends TestCase {
         SuggestionCompletionEngine eng = impl
                 .loadSuggestionCompletionEngine(pkg.getName());
         assertNotNull(eng);
-        assertEquals(2, eng.factTypes.length);
+        assertEquals(2, eng.getFactTypes().length);
 
-        for (String ft : eng.factTypes) {
+        for (String ft : eng.getFactTypes()) {
             if (!(ft.equals("Board") || ft.equals("Whee"))) {
                 fail("Should be one of the above...");
             }

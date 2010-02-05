@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import org.drools.guvnor.client.modeldriven.brl.FromCompositeFactPattern;
 
 /**
  * This contains some simple mappings between operators, conditional elements and the human readable
@@ -39,6 +40,7 @@ public class HumanReadable {
     public static Map ceDisplayMap = new HashMap();
     public static Map actionDisplayMap = new HashMap();
     public static final String[] CONDITIONAL_ELEMENTS = new String[] {"not", "exists", "or"};
+    public static final String[] FROM_CONDITIONAL_ELEMENTS = new String[] {"from","from accumulate","from collect"};
 
     private static Constants constants;
 
@@ -78,6 +80,10 @@ public class HumanReadable {
         ceDisplayMap.put( "not", constants.ThereIsNo());
         ceDisplayMap.put( "exists", constants.ThereExists());
         ceDisplayMap.put( "or", constants.AnyOf1());
+
+        ceDisplayMap.put( "from", constants.From());
+        ceDisplayMap.put( "from accumulate", constants.FromAccumulate());
+        ceDisplayMap.put( "from collect", constants.FromCollect());
 
         actionDisplayMap.put( "assert", constants.Insert());
         actionDisplayMap.put( "assertLogical", constants.LogicallyInsert());

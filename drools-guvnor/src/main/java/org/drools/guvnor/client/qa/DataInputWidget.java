@@ -104,7 +104,7 @@ public class DataInputWidget extends DirtyableComposite {
 					}
 
 				}
-				String[] fields = (String[]) sce.fieldsForType.get(type);
+				String[] fields = (String[]) sce.getModelFields(type);
 				final FormStylePopup pop = new FormStylePopup(); //NON-NLS
                 pop.setTitle(constants.ChooseDotDotDot());
 				final ListBox b = new ListBox();

@@ -43,6 +43,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.modeldriven.brl.ExpressionFormLine;
 
 /**
  * This is an editor for constraint values.
@@ -60,6 +61,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private final ISingleFieldConstraint     constraint;
     private final Panel                      panel;
     private final RuleModel                  model;
+    private final RuleModeller               modeller;
     private final boolean                    numericValue;
     private DropDownData                     dropDownData;
     private Constants                        constants = ((Constants) GWT.create( Constants.class ));
@@ -93,6 +95,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         this.model = modeller.getModel();
+        this.modeller = modeller;
 
         panel = new SimplePanel();
         refreshEditor();
@@ -142,6 +145,9 @@ public class ConstraintValueEditor extends DirtyableComposite {
                     break;
                 case SingleFieldConstraint.TYPE_RET_VALUE :
                     panel.add( returnValueEditor() );
+                    break;
+                case SingleFieldConstraint.TYPE_EXPR_BUILDER :
+                    panel.add( expressionEditor() );
                     break;
                 case SingleFieldConstraint.TYPE_VARIABLE :
                     panel.add( variableEditor() );
@@ -206,6 +212,17 @@ public class ConstraintValueEditor extends DirtyableComposite {
         box.setTitle( msg );
         Widget ed = widgets( img,
                              box );
+        return ed;
+    }
+
+    private Widget expressionEditor() {
+        if (!(this.constraint instanceof SingleFieldConstraint)){
+            throw new IllegalArgumentException("Expected SingleFieldConstraint, but "+constraint.getClass().getName()+" found.");
+        }
+        ExpressionBuilder builder = new ExpressionBuilder(this.modeller, ((SingleFieldConstraint)this.constraint).getExpression());
+        String msg = constants.ExpressionEditor();
+        Widget ed = widgets( new HTML("&nbsp;"),
+                             builder );
         return ed;
     }
 
@@ -282,6 +299,20 @@ public class ConstraintValueEditor extends DirtyableComposite {
                            widgets( formula,
                                     new InfoPopup( constants.AFormula(),
                                                    constants.FormulaExpressionTip() ) ) );
+
+        Button expression = new Button( constants.ExpressionEditor() );
+        expression.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                con.constraintValueType = SingleFieldConstraint.TYPE_EXPR_BUILDER;
+                doTypeChosen( form );
+            }
+        } );
+
+        form.addAttribute( constants.ExpressionEditor() + ":",
+                           widgets( expression,
+                                    new InfoPopup(  constants.ExpressionEditor(),
+                                                    constants.ExpressionEditor() ) ) );
+
 
         form.show();
     }

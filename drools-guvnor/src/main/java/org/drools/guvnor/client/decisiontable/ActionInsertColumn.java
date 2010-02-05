@@ -261,8 +261,8 @@ public class ActionInsertColumn extends FormStylePopup {
         final FormStylePopup pop = new FormStylePopup();
         pop.setTitle( constants.NewFactSelectTheType() );
         final ListBox types = new ListBox();
-        for ( int i = 0; i < sce.factTypes.length; i++ ) {
-            types.addItem( sce.factTypes[i] );
+        for ( int i = 0; i < sce.getFactTypes().length; i++ ) {
+            types.addItem( sce.getFactTypes()[i] );
         }
         pop.addAttribute( constants.FactType(),
                           types );

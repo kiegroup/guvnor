@@ -52,7 +52,7 @@ public class VerifyFactWidget extends Composite {
         Image add = new ImageButton("images/add_field_to_fact.gif", constants.AddAFieldToThisExpectation(), new ClickListener() { //NON-NLS
 			public void onClick(Widget w) {
 
-				String[] fields = (String[]) sce.fieldsForType.get(type);
+				String[] fields = (String[]) sce.getModelFields(type);
 				final FormStylePopup pop = new FormStylePopup("images/rule_asset.gif", constants.ChooseAFieldToAdd()); //NON-NLS
 				final ListBox b = new ListBox();
 				for (int i = 0; i < fields.length; i++) {

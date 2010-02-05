@@ -67,7 +67,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
         layout.setStyleName( "model-builderInner-Background" );
         if (completions.isGlobalVariable( set.variable )) {
             this.fieldCompletions = completions.getFieldCompletionsForGlobalVariable( set.variable );
-            this.variableClass = (String) completions.globalTypes.get( set.variable );
+            this.variableClass = (String) completions.getGlobalVariable( set.variable );
         } else {
             FactPattern pattern = mod.getModel().getBoundFact( set.variable );
             if (pattern !=null){
@@ -204,7 +204,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
 
     	String type = "";
     	if (this.completions.isGlobalVariable(this.model.variable)) {
-    		type = (String) this.completions.globalTypes.get(this.model.variable);
+    		type = (String) this.completions.getGlobalVariable(this.model.variable);
     	} else {
     		type = this.modeller.getModel().getBoundFact(this.model.variable).factType;
     		/*
