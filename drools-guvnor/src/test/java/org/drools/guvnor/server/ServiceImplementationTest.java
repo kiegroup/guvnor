@@ -1951,6 +1951,47 @@ public class ServiceImplementationTest extends TestCase {
 
 	}
 
+    public void testBuildAssetMultipleFunctionsCallingEachOther() throws Exception {
+
+        ServiceImplementation impl = getService();
+        impl.createPackage( "testBuildAssetMultipleFunctionsCallingEachOther",
+                            "" );
+        impl.createCategory( "/",
+                             "funkytest",
+                             "" );
+
+        String uuidt1 = impl.createNewRule( "t1",
+                                            "",
+                                            "funkytest",
+                                            "testBuildAssetMultipleFunctionsCallingEachOther",
+                                            AssetFormats.FUNCTION );
+        RuleAsset t1 = impl.loadRuleAsset( uuidt1 );
+        RuleContentText t1Content = new RuleContentText();
+        t1Content.content = "function void t1(){\n";
+        t1Content.content += " t2();\n";
+        t1Content.content += "}\n";
+        t1.content = t1Content;    
+        impl.checkinVersion( t1 );
+
+        String uuidt2 = impl.createNewRule( "t2",
+                                            "",
+                                            "funkytest",
+                                            "testBuildAssetMultipleFunctionsCallingEachOther",
+                                            AssetFormats.FUNCTION );
+        RuleAsset t2 = impl.loadRuleAsset( uuidt2 );
+        RuleContentText t2Content = new RuleContentText();
+        t2Content.content = "function void t2(){\n";
+        t2Content.content += " t1();\n";
+        t2Content.content += "}\n";
+        t2.content = t2Content;
+        impl.checkinVersion( t2 );
+
+        BuilderResult[] result = impl.buildAsset( t1 );
+
+        assertNull( result );
+        
+    }
+
 	public void testBuildAssetBRXMLAndCopy() throws Exception {
 		ServiceImplementation impl = getService();
 		RulesRepository repo = impl.repository;

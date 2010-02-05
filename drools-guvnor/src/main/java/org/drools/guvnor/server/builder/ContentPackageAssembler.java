@@ -261,18 +261,33 @@ public class ContentPackageAssembler {
 		// finally, any functions we will load at this point.
 		AssetItemIterator it = this.pkg
 				.listAssetsByFormat(new String[] { AssetFormats.FUNCTION });
-		while (it.hasNext()) {
-			AssetItem func = it.next();
-            if (!func.getDisabled()) {
-                addDrl(func.getContent());
-                if (builder.hasErrors()) {
-                    recordBuilderErrors(func);
-                    builder.clearErrors();
+		
+        // Adds the function DRLs as one string because they might be calling each others.
+        StringBuilder stringBuilder = new StringBuilder();
+        while ( it.hasNext() ) {
+            AssetItem func = it.next();
+            if ( !func.getDisabled() ) {
+                stringBuilder.append( func.getContent() );
+            }
+        }
+        addDrl( stringBuilder.toString() );
+        // If the function part had errors we need to add them one by one to find out which one is bad.
+        if ( builder.hasErrors() ) {
+            builder.clearErrors();
+            it = this.pkg.listAssetsByFormat( new String[]{AssetFormats.FUNCTION} );
+            while ( it.hasNext() ) {
+                AssetItem func = it.next();
+                if ( !func.getDisabled() ) {
+                    addDrl( func.getContent() );
+                    if ( builder.hasErrors() ) {
+                        recordBuilderErrors( func );
+                        builder.clearErrors();
+                    }
                 }
             }
-		}
+        }
 
-		return errors.size() == 0;
+        return errors.size() == 0;
 	}
 
 	private void loadDeclaredTypes() {
