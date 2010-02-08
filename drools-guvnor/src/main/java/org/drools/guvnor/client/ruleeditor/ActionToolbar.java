@@ -161,7 +161,7 @@ public class ActionToolbar extends Composite {
             	copyCommand.execute();
             }
         }));
-        moreMenu.addItem(new Item(constants.PromptToGlobal(), new BaseItemListenerAdapter() {
+        moreMenu.addItem(new Item(constants.PromoteToGlobal(), new BaseItemListenerAdapter() {
             @Override
             public void onClick(BaseItem baseItem, EventObject eventObject) {
             	promptCommand.execute();

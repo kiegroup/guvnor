@@ -2045,9 +2045,11 @@ public interface Constants extends ConstantsWithLookup {
     
     String Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview();
     
-    String PromptToGlobal();  
+    String PromoteToGlobal();  
     
-    String PromptAreYouSure();   
+    String PromoteAreYouSure();   
     
-    String Prompted();  
+    String Promoted();  
+    
+    String ItemAlreadyInGlobalArea();  
 }

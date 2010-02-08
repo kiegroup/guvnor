@@ -224,7 +224,7 @@ public interface RepositoryService extends RemoteService {
      * Prompt an asset into Global area. 
      * @param assetUUID The source assetID.
      */
-    public void promptAssetToGlobalArea(String assetUUID);
+    public void promoteAssetToGlobalArea(String assetUUID);
     
     /**
      * Copies an asset into a new destination package.

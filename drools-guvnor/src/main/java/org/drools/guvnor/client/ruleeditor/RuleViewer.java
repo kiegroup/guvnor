@@ -465,11 +465,15 @@ public class RuleViewer extends GuvnorEditor {
     }
     
     private void doPromptToGlobal() {
-        if (Window.confirm(constants.PromptAreYouSure()) ) {
-            RepositoryServiceFactory.getService().promptAssetToGlobalArea(asset.uuid,
+        if (asset.metaData.packageName.equals("globalArea")) {
+            Window.alert( constants.ItemAlreadyInGlobalArea() );
+            return;
+        }
+        if (Window.confirm(constants.PromoteAreYouSure()) ) {
+            RepositoryServiceFactory.getService().promoteAssetToGlobalArea(asset.uuid,
                     new GenericCallback<String>() {
                         public void onSuccess(String data) {
-                            Window.alert(constants.Prompted());
+                            Window.alert(constants.Promoted());
                             refreshMetaWidgetOnly();
                         }
 

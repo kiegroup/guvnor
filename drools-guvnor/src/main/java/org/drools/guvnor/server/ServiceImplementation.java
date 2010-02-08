@@ -1261,7 +1261,7 @@ public class ServiceImplementation
     
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public void promptAssetToGlobalArea(String uuid) {
+    public void promoteAssetToGlobalArea(String uuid) {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType(RulesRepository.RULE_GLOBAL_AREA),
                                                  RoleTypes.PACKAGE_DEVELOPER );
@@ -1270,7 +1270,7 @@ public class ServiceImplementation
         log.info( "USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [ globalArea ]" );
         repository.moveRuleItemPackage(RulesRepository.RULE_GLOBAL_AREA,
                                        uuid,
-                                       "prompt asset to globalArea");
+                                       "promote asset to globalArea");
     }
     
     @WebRemote
