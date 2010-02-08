@@ -470,6 +470,7 @@ public class RuleViewer extends GuvnorEditor {
                     new GenericCallback<String>() {
                         public void onSuccess(String data) {
                             Window.alert(constants.Prompted());
+                            refreshMetaWidgetOnly();
                         }
 
                         @Override
