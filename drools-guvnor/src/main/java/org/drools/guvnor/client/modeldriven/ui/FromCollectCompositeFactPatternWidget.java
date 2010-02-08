@@ -108,9 +108,10 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         box.addItem("java.util.LinkedList", "java.util.LinkedArrayList");
         box.addItem("java.util.HashSet", "java.util.HashSet");
         box.addItem("java.util.LinkedHashSet", "java.util.LinkedHashSet");
-        box.addItem("...");
-
-        box.addItem("TODO: Add Facts that extedns Collection");
+        
+        //TODO: Add Facts that extedns Collection
+//        box.addItem("...");
+//        box.addItem("TODO: Add Facts that extedns Collection");
 
         box.setSelectedIndex(0);
 
