@@ -183,6 +183,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     public void changeAssetPackage(java.lang.String p0, java.lang.String p1, java.lang.String p2)  {
         getService().changeAssetPackage( p0,  p1,  p2);
     }
+    public void promptAssetToGlobalArea(java.lang.String p0) {
+        getService().promptAssetToGlobalArea( p0);
+    }
     public java.lang.String copyAsset(java.lang.String p0, java.lang.String p1, java.lang.String p2)  {
          return getService().copyAsset( p0,  p1,  p2);
     }

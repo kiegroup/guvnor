@@ -1257,9 +1257,22 @@ public class ServiceImplementation
         repository.moveRuleItemPackage( newPackage,
                                         uuid,
                                         comment );
-
     }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void promptAssetToGlobalArea(String uuid) {
+        if ( Contexts.isSessionContextActive() ) {
+            Identity.instance().checkPermission( new PackageNameType(RulesRepository.RULE_GLOBAL_AREA),
+                                                 RoleTypes.PACKAGE_DEVELOPER );
+        }
 
+        log.info( "USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [ globalArea ]" );
+        repository.moveRuleItemPackage(RulesRepository.RULE_GLOBAL_AREA,
+                                       uuid,
+                                       "prompt asset to globalArea");
+    }
+    
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String copyAsset(String assetUUID,

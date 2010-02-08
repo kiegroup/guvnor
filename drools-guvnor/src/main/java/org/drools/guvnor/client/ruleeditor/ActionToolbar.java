@@ -61,15 +61,17 @@ public class ActionToolbar extends Composite {
     private Widget editor;
     private Command closeCommand;
     private Command copyCommand;
+    private Command promptCommand;
 
     public ActionToolbar(final RuleAsset asset,
+                         boolean readOnly, 
+                         Widget editor,                         
                          final CheckinAction checkin,
                          final CheckinAction archiv,
-                         final Command delete, 
-                         boolean readOnly, 
-                         Widget editor, 
+                         final Command delete,  
                          Command closeCommand,
-                         Command copyCommand) {
+                         Command copyCommand,
+                         Command promptCommand) {
 
         this.checkinAction = checkin;
         this.archiveAction = archiv;
@@ -78,6 +80,7 @@ public class ActionToolbar extends Composite {
         this.editor = editor;
         this.closeCommand = closeCommand;
         this.copyCommand = copyCommand;
+        this.promptCommand = promptCommand;
 
         this.state = new ToolbarTextItem(constants.Status() + " ");
 
@@ -156,6 +159,12 @@ public class ActionToolbar extends Composite {
             @Override
             public void onClick(BaseItem baseItem, EventObject eventObject) {
             	copyCommand.execute();
+            }
+        }));
+        moreMenu.addItem(new Item(constants.PromptToGlobal(), new BaseItemListenerAdapter() {
+            @Override
+            public void onClick(BaseItem baseItem, EventObject eventObject) {
+            	promptCommand.execute();
             }
         }));
         moreMenu.addItem(new Item(constants.Archive(), new BaseItemListenerAdapter() {

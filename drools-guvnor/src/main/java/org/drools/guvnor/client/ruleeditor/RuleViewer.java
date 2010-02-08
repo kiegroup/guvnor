@@ -131,21 +131,19 @@ public class RuleViewer extends GuvnorEditor {
 
         //the action widgets (checkin/close etc).
         toolbar = new ActionToolbar( asset,
+                                     readOnly,
+                                     editor,                                     
                                      checkInCommand,
                                      new ActionToolbar.CheckinAction() {
                                          public void doCheckin(String comment) {
                                              doArchive( comment );
                                          }
-
                                      },
-
                                      new Command() {
                                          public void execute() {
                                              doDelete();
                                          }
                                      },
-                                     readOnly,
-                                     editor,
                                      new Command() {
                                          public void execute() {
                                              close();
@@ -155,7 +153,12 @@ public class RuleViewer extends GuvnorEditor {
                                          public void execute() {
                                              doCopy();
                                          }
-                                     } );
+                                     }, 
+                                     new Command() {
+                                         public void execute() {
+                                             doPromptToGlobal();
+                                         }
+                                     });
 
         //layout.add(toolbar, DockPanel.NORTH);
         layout.add( toolbar );
@@ -459,5 +462,23 @@ public class RuleViewer extends GuvnorEditor {
         if ( editEvent != null ) {
             editEvent.open( newAssetUUID );
         }
+    }
+    
+    private void doPromptToGlobal() {
+        if (Window.confirm(constants.PromptAreYouSure()) ) {
+            RepositoryServiceFactory.getService().promptAssetToGlobalArea(asset.uuid,
+                    new GenericCallback<String>() {
+                        public void onSuccess(String data) {
+                            Window.alert(constants.Prompted());
+                        }
+
+                        @Override
+                        public void onFailure(Throwable t) {                           
+                            super.onFailure( t );
+                        }
+                    } );
+
+} ;
+ 	
     }
 }

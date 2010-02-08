@@ -67,6 +67,7 @@ public interface RepositoryServiceAsync
     public void removeState(java.lang.String p0, AsyncCallback cb);
     public void changeState(java.lang.String p0, java.lang.String p1, boolean p2, AsyncCallback cb);
     public void changeAssetPackage(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback cb);
+    public void promptAssetToGlobalArea(java.lang.String p0, AsyncCallback cb);
     public void copyAsset(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback<java.lang.String> cb);
     public void copyPackage(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
     public void listSnapshots(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.SnapshotInfo[]> cb);

@@ -221,6 +221,12 @@ public interface RepositoryService extends RemoteService {
     public void changeAssetPackage(String uuid, String newPackage, String comment);
 
     /**
+     * Prompt an asset into Global area. 
+     * @param assetUUID The source assetID.
+     */
+    public void promptAssetToGlobalArea(String assetUUID);
+    
+    /**
      * Copies an asset into a new destination package.
      * @param assetUUID The source assetID.
      * @param newPackage The destination package (may be the same as the current source package, but
@@ -228,7 +234,6 @@ public interface RepositoryService extends RemoteService {
      * @param newName The new name of the asset.
      */
     public String copyAsset(String assetUUID, String newPackage, String newName);
-
 
     /**
      * Copy the package (everything).

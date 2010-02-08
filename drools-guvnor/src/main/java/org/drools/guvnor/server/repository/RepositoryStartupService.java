@@ -32,7 +32,7 @@ import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
-import org.apache.derby.iapi.services.i18n.MessageService;
+
 
 /**
  * This startup class manages the JCR repository, sets it up if necessary.
