@@ -1,4 +1,8 @@
 package org.drools.guvnor.client.rulelist;
+
+import org.drools.guvnor.client.ruleeditor.MultiViewEditor;
+import org.drools.guvnor.client.ruleeditor.MultiViewRow;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,24 +19,22 @@ package org.drools.guvnor.client.rulelist;
  * limitations under the License.
  */
 
-
-
 /**
  * This is used by the list view to "open" an item.
  * @author Michael Neale
  */
 public interface EditItemEvent {
-    
+
     /**
      * @param key - the UUID to open.
      * @param type - the resource type.
      */
     public void open(String key);
-    
+
     /**
      * Open several assets into the same tab.
      * 
      * @param keys - the UUIDs to open.
      */
-    public void open(String[] keys);
+    public void open(MultiViewRow[] rows);
 }

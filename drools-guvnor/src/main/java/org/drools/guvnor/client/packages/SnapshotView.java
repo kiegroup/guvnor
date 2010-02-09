@@ -17,6 +17,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotDiffs;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
@@ -397,9 +398,9 @@ public class SnapshotView extends Composite {
                                                             //todo add snap notice to this...
                                                             centerPanel.openAsset( key );
                                                         }
-                                                        public void open(String[] keys) {
-                                                            for ( String key : keys ) {
-                                                                centerPanel.openAsset( key );
+                                                        public void open(MultiViewRow[] rows) {
+                                                            for ( MultiViewRow row : rows ) {
+                                                                centerPanel.openAsset( row.uuid);
                                                             }
                                                         }
                                                     },

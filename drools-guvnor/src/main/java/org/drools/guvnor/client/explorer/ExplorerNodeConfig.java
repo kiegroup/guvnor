@@ -8,6 +8,7 @@ import org.drools.guvnor.client.qa.AnalysisView;
 import org.drools.guvnor.client.qa.ScenarioPackageView;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.security.Capabilities;
 
@@ -292,9 +293,9 @@ public class ExplorerNodeConfig {
 		final EditItemEvent edit = new EditItemEvent() {
 			public void open(String key) {centerPanel.openAsset(key);}
 
-            public void open(String[] keys) {
-                for ( String key : keys ) {
-                    centerPanel.openAsset( key );
+            public void open(MultiViewRow[] rows) {
+                for ( MultiViewRow row: rows) {
+                    centerPanel.openAsset( row.uuid );
                 }
             }
 		};

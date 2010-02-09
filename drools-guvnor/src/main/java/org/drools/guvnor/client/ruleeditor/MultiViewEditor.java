@@ -1,14 +1,21 @@
 package org.drools.guvnor.client.ruleeditor;
 
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.Panel;
@@ -16,6 +23,7 @@ import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.ToolbarMenuButton;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.event.PanelListenerAdapter;
 import com.gwtext.client.widgets.menu.CheckItem;
 import com.gwtext.client.widgets.menu.Menu;
 import com.gwtext.client.widgets.menu.event.CheckItemListener;
@@ -28,28 +36,28 @@ import com.gwtext.client.widgets.menu.event.CheckItemListenerAdapter;
  */
 public class MultiViewEditor extends GuvnorEditor {
 
-    private Constants                   constants       = GWT.create( Constants.class );
+    private Constants               constants       = GWT.create( Constants.class );
 
-    private VerticalPanel               viewsPanel      = new VerticalPanel();
+    private VerticalPanel           viewsPanel      = new VerticalPanel();
 
-    private CheckItem                   showMetadata    = new CheckItem( constants.Metadata(),
-                                                                         false );
-    private CheckItem                   showDescription = new CheckItem( constants.DescriptionAndDiscussion(),
-                                                                         false );
+    private CheckItem               showMetadata    = new CheckItem( constants.Metadata(),
+                                                                     false );
+    private CheckItem               showDescription = new CheckItem( constants.DescriptionAndDiscussion(),
+                                                                     false );
 
-    private Command                     closeCommand;
+    private Command                 closeCommand;
 
-    private final Collection<RuleAsset> assets;
-    private Collection<RuleViewer>      ruleViews       = new HashSet<RuleViewer>();
+    private final Set<MultiViewRow> rows;
+    private Map<String, RuleViewer> ruleViews       = new HashMap<String, RuleViewer>();
 
-    private final EditItemEvent         editItemEvent;
+    private final EditItemEvent     editItemEvent;
 
-    public MultiViewEditor(RuleAsset[] assets,
+    public MultiViewEditor(MultiViewRow[] rows,
                            EditItemEvent editItemEvent) {
         this.editItemEvent = editItemEvent;
-        this.assets = new HashSet<RuleAsset>();
-        for ( RuleAsset ruleAsset : assets ) {
-            this.assets.add( ruleAsset );
+        this.rows = new HashSet<MultiViewRow>();
+        for ( MultiViewRow row : rows ) {
+            this.rows.add( row );
         }
 
         VerticalPanel rootPanel = new VerticalPanel();
@@ -111,32 +119,59 @@ public class MultiViewEditor extends GuvnorEditor {
         viewsPanel.clear();
         ruleViews.clear();
 
-        for ( final RuleAsset asset : assets ) {
-            Panel panel = new Panel( asset.metaData.name );
-            panel.setIconCls( EditorLauncher.getAssetFormatBGStyle( asset.metaData.format ) ); //NON-NLS
+        for ( final MultiViewRow row : rows ) {
+            Panel panel = new Panel( row.name );
+            panel.setIconCls( EditorLauncher.getAssetFormatBGStyle( row.format ) ); //NON-NLS
             panel.setCollapsible( true );
             panel.setTitleCollapse( true );
             panel.setCollapsed( true );
             panel.setWidth( "100%" );
 
-            final RuleViewer ruleViewer = new RuleViewer( asset,
-                                                          this.editItemEvent );
-            ruleViewer.setDocoVisible( showDescription.isChecked() );
-            ruleViewer.setMetaVisible( showMetadata.isChecked() );
+            panel.addListener( new PanelListenerAdapter() {
+                public void onExpand(final Panel panel) {
 
-            ruleViewer.setWidth( "100%" );
+                    // Only load if it doesn't exist yet.
+                    if ( ruleViews.get( row.uuid ) == null ) {
 
-            panel.add( ruleViewer );
-            ruleViewer.setCloseCommand( new Command() {
+                        RepositoryServiceFactory.getService().loadRuleAsset( row.uuid,
+                                                                             new GenericCallback<RuleAsset>() {
+                                                                                 public void onSuccess(final RuleAsset asset) {
+                                                                                     SuggestionCompletionCache.getInstance().doAction( asset.metaData.packageName,
+                                                                                                                                       new Command() {
+                                                                                                                                           public void execute() {
 
-                public void execute() {
-                    ruleViews.remove( ruleViewer );
-                    assets.remove( asset );
-                    doViews();
+                                                                                                                                               final RuleViewer ruleViewer = new RuleViewer( asset,
+                                                                                                                                                                                             editItemEvent );
+                                                                                                                                               ruleViewer.setDocoVisible( showDescription.isChecked() );
+                                                                                                                                               ruleViewer.setMetaVisible( showMetadata.isChecked() );
+
+                                                                                                                                               ruleViewer.setWidth( "100%" );
+
+                                                                                                                                               panel.add( ruleViewer );
+                                                                                                                                               ruleViewer.setCloseCommand( new Command() {
+
+                                                                                                                                                   public void execute() {
+                                                                                                                                                       ruleViews.remove( ruleViewer );
+                                                                                                                                                       rows.remove( row );
+                                                                                                                                                       doViews();
+                                                                                                                                                   }
+                                                                                                                                               } );
+
+                                                                                                                                               ruleViews.put( row.uuid,
+                                                                                                                                                              ruleViewer );
+
+                                                                                                                                               panel.doLayout();
+                                                                                                                                           }
+                                                                                                                                       } );
+                                                                                 }
+                                                                             } );
+                    } else {
+                        panel.add( ruleViews.get( row.uuid ) );
+                        panel.doLayout();
+                    }
                 }
-            } );
 
-            ruleViews.add( ruleViewer );
+            } );
 
             viewsPanel.add( panel );
         }
@@ -150,9 +185,11 @@ public class MultiViewEditor extends GuvnorEditor {
         pop.setCommand( new Command() {
             public void execute() {
                 String comment = pop.getCheckinComment();
-                for ( RuleViewer ruleViewer : ruleViews ) {
+                for ( RuleViewer ruleViewer : ruleViews.values() ) {
                     ruleViewer.checkInCommand.doCheckin( comment );
-                    if ( closeAfter ) close();
+                }
+                if ( closeAfter ) {
+                    close();
                 }
             }
         } );

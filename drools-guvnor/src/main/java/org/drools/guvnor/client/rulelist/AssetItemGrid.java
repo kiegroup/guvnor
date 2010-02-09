@@ -16,26 +16,30 @@ package org.drools.guvnor.client.rulelist;
  * limitations under the License.
  */
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.Stack;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.ruleeditor.EditorLauncher;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.*;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.gwtext.client.core.EventObject;
-import com.gwtext.client.core.JsObject;
 import com.gwtext.client.data.ArrayReader;
 import com.gwtext.client.data.DateFieldDef;
 import com.gwtext.client.data.FieldDef;
@@ -45,7 +49,11 @@ import com.gwtext.client.data.RecordDef;
 import com.gwtext.client.data.Store;
 import com.gwtext.client.data.StringFieldDef;
 import com.gwtext.client.util.Format;
-import com.gwtext.client.widgets.*;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Toolbar;
+import com.gwtext.client.widgets.ToolbarButton;
+import com.gwtext.client.widgets.ToolbarItem;
+import com.gwtext.client.widgets.ToolbarTextItem;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.grid.CellMetadata;
 import com.gwtext.client.widgets.grid.ColumnConfig;
@@ -276,11 +284,15 @@ public class AssetItemGrid extends Composite {
                                      public void onClick(Button button,
                                                          EventObject e) {
                                          Record[] selections = currentGrid.getSelectionModel().getSelections();
-                                         String[] uuids = new String[selections.length];
+                                         MultiViewRow[] rows = new MultiViewRow[selections.length];
                                          for ( int i = 0; i < selections.length; i++ ) {
-                                             uuids[i] = selections[i].getAsString( "uuid" );
+                                             MultiViewRow row = new MultiViewRow();
+                                             row.uuid = selections[i].getAsString( "uuid" );
+                                             row.name = selections[i].getAsString( "Name" );
+                                             row.format = selections[i].getAsString( "format" );
+                                             rows[i] = row;
                                          }
-                                         editEvent.open( uuids );
+                                         editEvent.open( rows );
                                      }
                                  } );
                                  tb.addButton( openSelectedToSingleTab );

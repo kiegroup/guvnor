@@ -6,6 +6,7 @@ import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
+import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
@@ -51,9 +52,9 @@ public class ArchivedAssetManager extends Composite {
             	tab.openAsset(key);
             }
 
-            public void open(String[] keys) {
-                for ( String key : keys ) {
-                    tab.openAsset( key );
+            public void open(MultiViewRow[] rows) {
+                for ( MultiViewRow row : rows ) {
+                    tab.openAsset( row.uuid );
                 }
             }
         };

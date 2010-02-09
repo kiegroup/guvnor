@@ -3,6 +3,7 @@ package org.drools.guvnor.client.explorer;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.Inbox;
 import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
@@ -173,9 +174,9 @@ public class CategoriesPanel extends GenericPanel {
                 centertabbedPanel.openAsset(uuid);
             }
 
-            public void open(String[] keys) {
-                for ( String key : keys ) {
-                    centertabbedPanel.openAsset( key );
+            public void open(MultiViewRow[] rows) {
+                for ( MultiViewRow row: rows) {
+                    centertabbedPanel.openAsset( row.uuid );
                 }
             }
         };

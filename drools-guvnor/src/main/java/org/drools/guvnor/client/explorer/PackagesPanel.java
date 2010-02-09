@@ -10,6 +10,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.PushClient;
 import org.drools.guvnor.client.rpc.ServerPushNotification;
 import org.drools.guvnor.client.rpc.PushResponse;
+import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
@@ -234,8 +235,8 @@ public class PackagesPanel extends GenericPanel {
                             public void open(String uuid) {
                                 centertabbedPanel.openAsset(uuid);
                             }
-                            public void open(String[] uuids) {
-                                centertabbedPanel.openAssets( uuids );
+                            public void open(MultiViewRow[] rows) {
+                                centertabbedPanel.openAssets( rows );
                             }
                         },
                                 AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID,
