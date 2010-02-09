@@ -55,7 +55,7 @@ public class MultiViewEditor extends GuvnorEditor {
         VerticalPanel rootPanel = new VerticalPanel();
 
         rootPanel.setWidth( "100%" );
-        
+
         rootPanel.add( createToolbar() );
 
         viewsPanel.setWidth( "100%" );
@@ -121,11 +121,11 @@ public class MultiViewEditor extends GuvnorEditor {
 
             final RuleViewer ruleViewer = new RuleViewer( asset,
                                                           this.editItemEvent );
-            ruleViewer.getDoco().setVisible( showDescription.isChecked() );
-            ruleViewer.getMetaWidget().setVisible( showMetadata.isChecked() );
+            ruleViewer.setDocoVisible( showDescription.isChecked() );
+            ruleViewer.setMetaVisible( showMetadata.isChecked() );
 
             ruleViewer.setWidth( "100%" );
-            
+
             panel.add( ruleViewer );
             ruleViewer.setCloseCommand( new Command() {
 

@@ -44,6 +44,8 @@ public class RuleViewer extends GuvnorEditor {
 
     private boolean                    readOnly;
 
+    private boolean                    metaVisible = true;
+    private boolean                    docoVisible = true;
     private MetaDataWidget             metaWidget;
     private RuleDocumentWidget         doco;
     private Widget                     editor;
@@ -67,14 +69,15 @@ public class RuleViewer extends GuvnorEditor {
               false );
     }
 
-    RuleDocumentWidget getDoco() {
-        return doco;
+    public void setDocoVisible(boolean docoVisible) {
+        this.docoVisible = docoVisible;
+        this.doco.setVisible( docoVisible );
     }
 
-    MetaDataWidget getMetaWidget() {
-        return metaWidget;
+    public void setMetaVisible(boolean metaVisible) {
+        this.metaVisible = metaVisible;
+        this.metaWidget.setVisible( metaVisible );
     }
-
     /**
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
@@ -181,6 +184,7 @@ public class RuleViewer extends GuvnorEditor {
 
         //the document widget
         doco = new RuleDocumentWidget( asset );
+        doco.setVisible( docoVisible );
 
         VerticalPanel vert = new VerticalPanel();
         vert.add( editor );
@@ -219,6 +223,7 @@ public class RuleViewer extends GuvnorEditor {
                                                  refreshDataAndView();
                                              }
                                          } );
+        metaWidget.setVisible( metaVisible );
     }
 
     protected boolean hasDirty() {
