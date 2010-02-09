@@ -412,7 +412,9 @@ public class RuleViewer extends GuvnorEditor {
         final TextBox newName = new TextBox();
         form.addAttribute( constants.NewName(),
                            newName );
-
+        final RulePackageSelector sel = new RulePackageSelector();
+        form.addAttribute( constants.NewPackage(), sel );
+        
         Button ok = new Button( constants.CreateCopy() );
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -425,12 +427,12 @@ public class RuleViewer extends GuvnorEditor {
                     return;
                 }
                 RepositoryServiceFactory.getService().copyAsset( asset.uuid,
-                                                                 asset.metaData.packageName,
+                		                                         sel.getSelectedPackage(),
                                                                  name,
                                                                  new GenericCallback<String>() {
                                                                      public void onSuccess(String data) {
                                                                          completedCopying( newName.getText(),
-                                                                                           asset.metaData.packageName,
+                                                                        		           sel.getSelectedPackage(),
                                                                                            data );
                                                                          form.hide();
                                                                      }
