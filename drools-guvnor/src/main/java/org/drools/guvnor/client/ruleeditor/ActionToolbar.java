@@ -175,6 +175,27 @@ public class ActionToolbar extends Composite {
                 }
             }
         }));
+        
+        final Item deleteItem = new Item(constants.Delete(), new BaseItemListenerAdapter() {
+            @Override
+            public void onClick(BaseItem baseItem, EventObject eventObject) {
+                if (Window.confirm(constants.DeleteAreYouSure())) {
+                    deleteAction.execute();
+                }
+            }
+        });
+        moreMenu.addItem(deleteItem);
+        deleteItem.setTitle(constants.DeleteAssetTooltip());
+    	this.afterCheckinEvent = new Command() {
+		    public void execute() {
+				deleteItem.setDisabled(true);
+			}
+    	};
+    		
+    	if (!notCheckedInYet()) {
+			deleteItem.setDisabled(true);
+		}
+
         moreMenu.addItem(new Item(constants.ChangeStatus(), new BaseItemListenerAdapter() {
             @Override
             public void onClick(BaseItem baseItem, EventObject eventObject) {
@@ -207,30 +228,6 @@ public class ActionToolbar extends Composite {
                 });
                 toolbar.addButton(viewSource);
             }
-        }
-
-        if (notCheckedInYet()) {
-
-        	final ToolbarButton delete = new ToolbarButton();
-        	delete.setText(constants.Delete());
-    		delete.setTooltip(getTip(constants.DeleteAssetTooltip()));
-    		delete.addListener(new ButtonListenerAdapter() {
-    			public void onClick(
-    					com.gwtext.client.widgets.Button button,
-    					EventObject e) {
-                            if (Window.confirm(constants.DeleteAreYouSure()) ) {
-                                deleteAction.execute();
-                            }
-				}
-    			});
-    		toolbar.addButton(delete);
-
-    		this.afterCheckinEvent = new Command() {
-				public void execute() {
-					delete.setVisible(false);
-				}
-    		};
-
         }
 
         toolbar.addButton(more);
