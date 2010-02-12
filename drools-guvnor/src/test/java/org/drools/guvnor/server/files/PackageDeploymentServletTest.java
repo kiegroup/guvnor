@@ -239,6 +239,20 @@ public class PackageDeploymentServletTest extends TestCase {
         assertEquals(1, kb.getKnowledgePackages().size());
         kp = kb.getKnowledgePackages().iterator().next();
 
+        if (kp.getRules().size() != 2) {
+            Thread.sleep(2000);
+            kb = ag.getKnowledgeBase();
+            assertEquals(1, kb.getKnowledgePackages().size());
+            kp = kb.getKnowledgePackages().iterator().next();
+        }
+
+        if (kp.getRules().size() != 2) {
+            Thread.sleep(2000);
+            kb = ag.getKnowledgeBase();
+            assertEquals(1, kb.getKnowledgePackages().size());
+            kp = kb.getKnowledgePackages().iterator().next();
+        }
+        
         assertEquals(2, kp.getRules().size());
 
         server.stop();
