@@ -1,5 +1,22 @@
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.InfoPopup;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.FieldAccessorsAndMutators;
+import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
+import org.drools.guvnor.client.modeldriven.dt.DTColumnConfig;
+import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -14,21 +31,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.InfoPopup;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
-import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
-import org.drools.guvnor.client.modeldriven.dt.DTColumnConfig;
-import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * This is a configuration editor for a column in a the guided decision table.
@@ -361,7 +363,9 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     protected void showFieldChange() {
         final FormStylePopup pop = new FormStylePopup();
         pop.setModal( false );
-        String[] fields = this.sce.getFieldCompletions( this.editingCol.factType );
+        String[] fields = this.sce.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
+                                                        this.editingCol.factType );
+        
         final ListBox box = new ListBox();
         for ( int i = 0; i < fields.length; i++ ) {
             box.addItem( fields[i] );

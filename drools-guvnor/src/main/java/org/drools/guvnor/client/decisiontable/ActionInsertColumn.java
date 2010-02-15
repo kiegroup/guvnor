@@ -7,6 +7,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.dt.ActionCol;
 import org.drools.guvnor.client.modeldriven.dt.ActionInsertFactCol;
@@ -174,7 +175,8 @@ public class ActionInsertColumn extends FormStylePopup {
     private void showFieldChange() {
         final FormStylePopup pop = new FormStylePopup();
         pop.setModal( false );
-        String[] fields = this.sce.getFieldCompletions( this.editingCol.factType );
+        String[] fields = this.sce.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
+                                                        this.editingCol.factType );
         final ListBox box = new ListBox();
         for ( int i = 0; i < fields.length; i++ ) {
             box.addItem( fields[i] );
