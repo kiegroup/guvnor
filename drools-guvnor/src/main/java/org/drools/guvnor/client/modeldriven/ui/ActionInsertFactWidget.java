@@ -20,6 +20,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.modeldriven.DropDownData;
+import org.drools.guvnor.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
@@ -54,7 +55,8 @@ public class ActionInsertFactWidget extends DirtyableComposite {
         this.layout = new DirtyableFlexTable();
         this.modeller = mod;
         this.factType = set.factType;
-        this.fieldCompletions = this.completions.getFieldCompletions( set.factType );
+        this.fieldCompletions = this.completions.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
+                                                                      set.factType );
 
         layout.setStyleName( "model-builderInner-Background" );  //NON-NLS
 

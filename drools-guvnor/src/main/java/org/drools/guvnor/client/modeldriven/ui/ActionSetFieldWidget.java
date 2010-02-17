@@ -19,6 +19,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.modeldriven.DropDownData;
+import org.drools.guvnor.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
@@ -70,17 +71,19 @@ public class ActionSetFieldWidget extends DirtyableComposite {
             this.variableClass = (String) completions.getGlobalVariable( set.variable );
         } else {
             FactPattern pattern = mod.getModel().getBoundFact( set.variable );
-            if (pattern !=null){
-            	this.fieldCompletions = completions.getFieldCompletions( pattern.factType );
-            	this.variableClass = pattern.factType;
-            	this.isBoundFact = true;
-            }else{
-            	ActionInsertFact patternRhs = mod.getModel().getRhsBoundFact(set.variable);
-            	if (patternRhs!=null){
-                	this.fieldCompletions = completions.getFieldCompletions( patternRhs.factType );
-                	this.variableClass = patternRhs.factType;
-                	this.isBoundFact = true;
-            	}
+            if ( pattern != null ) {
+                this.fieldCompletions = completions.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
+                                                                         pattern.factType );
+                this.variableClass = pattern.factType;
+                this.isBoundFact = true;
+            } else {
+                ActionInsertFact patternRhs = mod.getModel().getRhsBoundFact( set.variable );
+                if ( patternRhs != null ) {
+                    this.fieldCompletions = completions.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
+                                                                             patternRhs.factType );
+                    this.variableClass = patternRhs.factType;
+                    this.isBoundFact = true;
+                }
             }
         }
 

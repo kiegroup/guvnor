@@ -3,6 +3,7 @@ package org.drools.guvnor.client.modeldriven.ui.factPattern;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
@@ -196,7 +197,8 @@ public class PopupCreator {
 
         final ListBox box = new ListBox();
         box.addItem("...");
-        String[] fields = this.completions.getFieldCompletions(factType);
+        String[] fields = this.completions.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
+                                                                factType );
         for (int i = 0; i < fields.length; i++) {
             box.addItem(fields[i]);
         }
