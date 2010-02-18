@@ -2664,7 +2664,7 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(scenario2.getName(), s2.scenarioName);
 	}
 
-	public void TODOtestVerifier() throws Exception {
+	public void testVerifier() throws Exception {
 		ServiceImplementation impl = getService();
 		PackageItem pkg = impl.repository.createPackage("testVerifier", "");
 		AssetItem asset = pkg.addAsset("SomeDRL", "");
@@ -2678,7 +2678,7 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(0, report.errors.length);
 		assertEquals(13, report.warnings.length);
 		assertEquals(15, report.notes.length);
-		assertEquals(2, report.factUsages.length);
+		assertEquals(3, report.factUsages.length);
 
 		assertNotNull(report.notes[0].description);
 		assertNotNull(report.notes[0].reason);
@@ -2686,20 +2686,22 @@ public class ServiceImplementationTest extends TestCase {
 		assertNotNull(report.notes[0].cause[0]);
 		assertNotNull(report.notes[0].cause[1]);
 
-		assertEquals("RedundancyPattern", report.factUsages[0].name);
-		assertEquals("RedundancyPattern2", report.factUsages[1].name);
+		assertEquals("Message", report.factUsages[0].name);
+		assertEquals("RedundancyPattern", report.factUsages[1].name);
+		assertEquals("RedundancyPattern2", report.factUsages[2].name);
 
-		assertEquals(1, report.factUsages[0].fields.length);
+		assertEquals(0, report.factUsages[0].fields.length);
 		assertEquals(1, report.factUsages[1].fields.length);
+		assertEquals(1, report.factUsages[2].fields.length);
 
-		assertEquals("a", report.factUsages[0].fields[0].name);
 		assertEquals("a", report.factUsages[1].fields[0].name);
+		assertEquals("a", report.factUsages[2].fields[0].name);
 
 
-		assertEquals(3, report.factUsages[0].fields[0].rules.length);
-		assertEquals(2, report.factUsages[1].fields[0].rules.length);
+		assertEquals(3, report.factUsages[1].fields[0].rules.length);
+		assertEquals(2, report.factUsages[2].fields[0].rules.length);
 
-		assertNotNull(report.factUsages[0].fields[0].rules[0]);
+		assertNotNull(report.factUsages[1].fields[0].rules[0]);
 
 	}
 
