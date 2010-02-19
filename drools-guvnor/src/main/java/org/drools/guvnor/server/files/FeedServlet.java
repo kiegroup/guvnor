@@ -8,7 +8,7 @@ import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.AssetPageList;
-import org.drools.util.StringUtils;
+import org.drools.core.util.StringUtils;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.AuthorizationException;

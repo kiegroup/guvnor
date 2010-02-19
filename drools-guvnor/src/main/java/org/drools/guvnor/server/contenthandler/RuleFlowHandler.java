@@ -32,8 +32,8 @@ import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.xml.XmlProcessReader;
-import org.drools.xml.XmlRuleFlowProcessDumper;
+import org.drools.compiler.xml.XmlProcessReader;
+import org.drools.compiler.xml.XmlRuleFlowProcessDumper;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 

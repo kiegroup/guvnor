@@ -8,7 +8,7 @@ import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
 import org.drools.repository.RulesRepository;
-import org.drools.xml.processes.RuleFlowMigrator;
+import org.drools.compiler.xml.processes.RuleFlowMigrator;
 
 import org.apache.log4j.Logger;
 

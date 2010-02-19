@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.security.Capabilities;
-import org.drools.util.DateUtils;
+import org.drools.core.util.DateUtils;
 import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.AuthorizationException;
