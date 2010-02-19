@@ -134,7 +134,7 @@ public class ActionSetFieldWidget extends DirtyableComposite {
         if (model.fieldValues.length == 0) {
             HorizontalPanel h = new HorizontalPanel();
             h.add(getSetterLabel());
-            h.add(new ImageButton("images/new_item.gif", constants.AddFirstNewField(), new ClickListener() {
+            h.add(new ImageButton("images/edit_tiny.gif", constants.AddFirstNewField(), new ClickListener() {
                 public void onClick(Widget sender) {
                     showAddFieldPopup(sender);
                 }
