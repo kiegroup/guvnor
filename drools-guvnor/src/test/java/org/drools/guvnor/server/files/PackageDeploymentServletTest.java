@@ -1,37 +1,38 @@
 package org.drools.guvnor.server.files;
 
-import java.io.*;
-import java.util.Date;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.Writer;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.HeadMethod;
+import org.drools.KnowledgeBase;
+import org.drools.agent.KnowledgeAgent;
+import org.drools.agent.KnowledgeAgentFactory;
+import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.FileManager;
+import org.drools.definition.KnowledgePackage;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import org.drools.io.ResourceChangeScannerConfiguration;
+import org.drools.io.ResourceFactory;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
-import org.drools.core.util.DroolsStreamUtils;
-import org.drools.core.util.FileManager;
-import org.drools.io.ResourceFactory;
-import org.drools.io.ResourceChangeScannerConfiguration;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentFactory;
-import org.drools.KnowledgeBase;
-import org.drools.definition.KnowledgePackage;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.methods.HeadMethod;
-
-import javax.jcr.Session;
 
 public class PackageDeploymentServletTest extends TestCase {
 
-	public void testLoadingRules() throws Exception {
+	public void FIXMEtestLoadingRules() throws Exception {
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
 
 		ServiceImplementation impl = new ServiceImplementation();
