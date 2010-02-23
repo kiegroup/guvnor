@@ -20,10 +20,6 @@ package org.drools.guvnor.client.rpc;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 
-import java.util.List;
-
-import org.drools.guvnor.client.common.GenericCallback;
-
 /**
 
  * This is what the remote service will implement, as a servlet.
@@ -76,11 +72,11 @@ public interface RepositoryServiceAsync
     public void quickFindAsset(java.lang.String p0, boolean p1, int p2, int p3, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void removeCategory(java.lang.String p0, AsyncCallback cb);
     public void loadSuggestionCompletionEngine(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine> cb);
-    public void buildPackage(java.lang.String p0, boolean p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, boolean p5, java.lang.String p6, java.lang.String p7, boolean p8, java.lang.String p9, AsyncCallback<org.drools.guvnor.client.rpc.BuilderResult[]> cb);
+    public void buildPackage(java.lang.String p0, boolean p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, boolean p5, java.lang.String p6, java.lang.String p7, boolean p8, java.lang.String p9, AsyncCallback<org.drools.guvnor.client.rpc.BuilderResult> cb);
     public void getCustomSelectors(AsyncCallback<java.lang.String[]> cb);
     public void buildPackageSource(java.lang.String p0, AsyncCallback<java.lang.String> cb);
     public void buildAssetSource(org.drools.guvnor.client.rpc.RuleAsset p0, AsyncCallback<java.lang.String> cb);
-    public void buildAsset(org.drools.guvnor.client.rpc.RuleAsset p0, AsyncCallback<org.drools.guvnor.client.rpc.BuilderResult[]> cb);
+    public void buildAsset(org.drools.guvnor.client.rpc.RuleAsset p0, AsyncCallback<org.drools.guvnor.client.rpc.BuilderResult> cb);
     public void renameAsset(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.String> cb);
     public void renameCategory(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
     public void archiveAsset(java.lang.String p0, boolean p1, AsyncCallback cb);
@@ -117,6 +113,8 @@ public interface RepositoryServiceAsync
     public void subscribe(AsyncCallback cb);
     public void loadInbox(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void compareSnapshots(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback<org.drools.guvnor.client.rpc.SnapshotDiffs> cb);
+    public void verifyAsset(RuleAsset asset,
+                            AsyncCallback<AnalysisReport> asyncCallback);
 
 
 

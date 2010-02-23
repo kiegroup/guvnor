@@ -302,7 +302,7 @@ public interface RepositoryService extends RemoteService {
      * in the systems selectors.properties file. This will then apply the filter to the
      * package being built.
      */
-    public BuilderResult[] buildPackage(String packageUUID,  boolean force, String buildMode, 
+    public BuilderResult buildPackage(String packageUUID,  boolean force, String buildMode, 
     		String operator, String statusDescriptionValue, boolean enableStatusSelector, 
     		String categoryOperator, String category, boolean enableCategorySelector,
 			String customSelectorName) throws SerializableException;
@@ -335,7 +335,7 @@ public interface RepositoryService extends RemoteService {
      * This will build the asset and return any build results (errors).
      * This is only to report on the results - it will generally not store any state or apply any changed.
      */
-    public BuilderResult[] buildAsset(RuleAsset asset) throws SerializableException;
+    public BuilderResult buildAsset(RuleAsset asset) throws SerializableException;
 
     /**
      * Rename an asset.
@@ -568,4 +568,6 @@ public interface RepositoryService extends RemoteService {
     public SnapshotDiffs compareSnapshots(String packageName,
                                           String firstSnapshotName,
                                           String secondSnapshotName);
+    
+    public AnalysisReport verifyAsset(RuleAsset asset) throws SerializableException;
 }

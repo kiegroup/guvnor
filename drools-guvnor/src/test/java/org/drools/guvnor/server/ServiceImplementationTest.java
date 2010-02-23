@@ -1219,7 +1219,7 @@ public class ServiceImplementationTest extends TestCase {
 				.updateContent(" rule abc \n when \n then \n System.out.println(42); \n end");
 		item.checkin("");
 
-		BuilderResult[] res = impl.buildPackage(pkg.getUUID(), true);
+		BuilderResult res = impl.buildPackage(pkg.getUUID(), true);
 		assertNull(res);
 
 		impl.createPackageSnapshot("testSnapshotRebuild", "SNAP", false, "");
@@ -1550,8 +1550,8 @@ public class ServiceImplementationTest extends TestCase {
 		rule1.checkin("");
 		repo.save();
 
-		BuilderResult[] results = impl.buildPackage(pkg.getUUID(),true);
-		assertNull(results);
+		BuilderResult result = impl.buildPackage(pkg.getUUID(),true);
+		assertNull(result);
 
 		pkg = repo.loadPackage("testBinaryPackageCompile");
 		byte[] binPackage = pkg.getCompiledPackageBytes();
@@ -1582,17 +1582,17 @@ public class ServiceImplementationTest extends TestCase {
 				.updateContent("rule 'rule1' \n when p:PersonX() \n then System.err.println(42); \n end");
 		rule1.checkin("");
 
-		results = impl.buildPackage(pkg.getUUID(), true);
-		assertNotNull(results);
-		assertEquals(1, results.length);
-		assertEquals(rule1.getName(), results[0].assetName);
-		assertEquals(AssetFormats.DRL, results[0].assetFormat);
-		assertNotNull(results[0].message);
-		assertEquals(rule1.getUUID(), results[0].uuid);
+		result = impl.buildPackage(pkg.getUUID(), true);
+		assertNotNull(result);
+		assertEquals(1, result.lines.length);
+		assertEquals(rule1.getName(), result.lines[0].assetName);
+		assertEquals(AssetFormats.DRL, result.lines[0].assetFormat);
+		assertNotNull(result.lines[0].message);
+		assertEquals(rule1.getUUID(), result.lines[0].uuid);
 
 		pkg = repo.loadPackageSnapshot("testBinaryPackageCompile", "SNAP1");
-		results = impl.buildPackage(pkg.getUUID(),true);
-		assertNull(results);
+		result = impl.buildPackage(pkg.getUUID(),true);
+		assertNull(result);
 
 	}
 
@@ -1633,13 +1633,13 @@ public class ServiceImplementationTest extends TestCase {
 		rule2.checkin("");
 		repo.save();
 
-		BuilderResult[] results = impl.buildPackage(pkg.getUUID(), true);
-		if (results != null) {
-			for (int i = 0; i < results.length; i++) {
-				System.err.println(results[i].message);
+		BuilderResult result = impl.buildPackage(pkg.getUUID(), true);
+		if (result != null) {
+			for (int i = 0; i < result.lines.length; i++) {
+				System.err.println(result.lines[i].message);
 			}
 		}
-		assertNull(results);
+		assertNull(result);
 
 		pkg = repo.loadPackage("testBinaryPackageCompileBRL");
 		byte[] binPackage = pkg.getCompiledPackageBytes();
@@ -1677,18 +1677,18 @@ public class ServiceImplementationTest extends TestCase {
 		rule2.updateContent(BRXMLPersistence.getInstance().marshal(model));
 		rule2.checkin("");
 
-		results = impl.buildPackage(pkg.getUUID(), true);
-		assertNotNull(results);
-		assertTrue(results.length > 0);
+		result = impl.buildPackage(pkg.getUUID(), true);
+		assertNotNull(result);
+		assertTrue(result.lines.length > 0);
 		// assertEquals(2, results.length);
-		assertEquals(rule2.getName(), results[0].assetName);
-		assertEquals(AssetFormats.BUSINESS_RULE, results[0].assetFormat);
-		assertNotNull(results[0].message);
-		assertEquals(rule2.getUUID(), results[0].uuid);
+		assertEquals(rule2.getName(), result.lines[0].assetName);
+		assertEquals(AssetFormats.BUSINESS_RULE, result.lines[0].assetFormat);
+		assertNotNull(result.lines[0].message);
+		assertEquals(rule2.getUUID(), result.lines[0].uuid);
 
 		pkg = repo.loadPackageSnapshot("testBinaryPackageCompileBRL", "SNAP1");
-		results = impl.buildPackage(pkg.getUUID(), true);
-		assertNull(results);
+		result = impl.buildPackage(pkg.getUUID(), true);
+		assertNull(result);
 
 		// check that the rule name in the model is being set
 		AssetItem asset2 = pkg.addAsset("testSetRuleName", "");
@@ -1877,10 +1877,10 @@ public class ServiceImplementationTest extends TestCase {
 		RuleAsset rule = impl.loadRuleAsset(asset.getUUID());
 
 
-		BuilderResult[] result = impl.buildAsset(rule);
+		BuilderResult result = impl.buildAsset(rule);
 		assertNotNull(result);
-        assertEquals(-1, result[0].message.indexOf("Check log for"));
-        assertTrue(result[0].message.indexOf("Unable to resolve") > -1);
+        assertEquals(-1, result.lines[0].message.indexOf("Check log for"));
+        assertTrue(result.lines[0].message.indexOf("Unable to resolve") > -1);
 
 
 	}
@@ -1909,7 +1909,7 @@ public class ServiceImplementationTest extends TestCase {
 		RuleAsset rule = impl.loadRuleAsset(asset.getUUID());
 
 		// check its all OK
-		BuilderResult[] result = impl.buildAsset(rule);
+		BuilderResult result = impl.buildAsset(rule);
 		assertNull(result);
 
         ServiceImplementation.ruleBaseCache.clear();
@@ -1921,8 +1921,8 @@ public class ServiceImplementationTest extends TestCase {
 
 		result = impl.buildAsset(rule);
 		assertNotNull(result);
-		assertNotNull(result[0].message);
-		assertEquals(AssetFormats.DRL, result[0].assetFormat);
+		assertNotNull(result.lines[0].message);
+		assertEquals(AssetFormats.DRL, result.lines[0].assetFormat);
 
 		// now mix in a DSL
 		AssetItem dsl = pkg.addAsset("MyDSL", "");
@@ -1947,7 +1947,7 @@ public class ServiceImplementationTest extends TestCase {
 		asset.updateContent("goober boy");
 		asset.checkin("");
 		result = impl.buildAsset(impl.loadRuleAsset(asset.getUUID()));
-		assertFalse(result.length == 0);
+		assertFalse(result.lines.length == 0);
 
 	}
 
@@ -1986,7 +1986,7 @@ public class ServiceImplementationTest extends TestCase {
         t2.content = t2Content;
         impl.checkinVersion( t2 );
 
-        BuilderResult[] result = impl.buildAsset( t1 );
+        BuilderResult result = impl.buildAsset( t1 );
 
         assertNull( result );
         
@@ -2038,10 +2038,10 @@ public class ServiceImplementationTest extends TestCase {
 		impl.checkinVersion(rule);
 
 		// check its all OK
-		BuilderResult[] result = impl.buildAsset(rule);
+		BuilderResult result = impl.buildAsset(rule);
 		if (result != null) {
-			for (int i = 0; i < result.length; i++) {
-				System.err.println(result[i].message);
+			for (int i = 0; i < result.lines.length; i++) {
+				System.err.println(result.lines[i].message);
 			}
 		}
 		assertNull(result);
@@ -2099,9 +2099,9 @@ public class ServiceImplementationTest extends TestCase {
 		RuleAsset rule = impl.loadRuleAsset(asset.getUUID());
 
 		// check its all OK
-		BuilderResult[] result = impl.buildAsset(rule);
+		BuilderResult result = impl.buildAsset(rule);
 		if (!(result == null)) {
-			System.err.println(result[0].assetName + " " + result[0].message);
+			System.err.println(result.lines[0].assetName + " " + result.lines[0].message);
 		}
 		assertNull(result);
 
@@ -2110,9 +2110,9 @@ public class ServiceImplementationTest extends TestCase {
 		result = impl.buildAsset(rule);
 		assertNotNull(result);
 
-		assertEquals(1, result.length);
-		assertEquals("package", result[0].assetFormat);
-		assertNotNull(result[0].message);
+		assertEquals(1, result.lines.length);
+		assertEquals("package", result.lines[0].assetFormat);
+		assertNotNull(result.lines[0].message);
 
 	}
 
@@ -2173,7 +2173,7 @@ public class ServiceImplementationTest extends TestCase {
 		assertFalse(impl.ruleBaseCache.containsKey(pkg.getUUID()));
 		impl.ruleBaseCache.remove("XXX");
 
-		BuilderResult[] results = impl.buildPackage(pkg.getUUID(), true);
+		BuilderResult results = impl.buildPackage(pkg.getUUID(), true);
 		assertNull(results);
 
 		pkg = repo.loadPackage("testBinaryPackageUpToDate");
@@ -2421,7 +2421,7 @@ public class ServiceImplementationTest extends TestCase {
         scenario2.checkin("");
 
         BulkTestRunResult result = impl.runScenariosInPackage(pkg.getUUID());
-        assertNull(result.errors);
+        assertNull(result.result);
 
         assertEquals(50, result.percentCovered);
         assertEquals(1, result.rulesNotCovered.length);
@@ -2643,7 +2643,7 @@ public class ServiceImplementationTest extends TestCase {
 		long time = System.currentTimeMillis();
 		BulkTestRunResult result = impl.runScenariosInPackage(pkg.getUUID());
 		System.err.println("Time taken for runScenariosInPackage " + (System.currentTimeMillis() - time));
-		assertNull(result.errors);
+		assertNull(result.result);
 
 		assertEquals(50, result.percentCovered);
 		assertEquals(1, result.rulesNotCovered.length);
@@ -2773,7 +2773,7 @@ public class ServiceImplementationTest extends TestCase {
 		ass.content = dt;
 		impl.checkinVersion(ass);
 
-		BuilderResult[] results = impl.buildPackage(pkg.getUUID(), true);
+		BuilderResult results = impl.buildPackage(pkg.getUUID(), true);
 		assertNull(results);
 
 		pkg = repo.loadPackage("testGuidedDTCompile");
@@ -2862,7 +2862,7 @@ public class ServiceImplementationTest extends TestCase {
 		assertTrue(cfgs[0].name.equals("mortgages") || cfgs[1].name.equals("mortgages"));
 		String puuid = (cfgs[0].name.equals("mortgages")) ? cfgs[0].uuid : cfgs[1].uuid;
 		BulkTestRunResult res = serv.runScenariosInPackage(puuid);
-		assertEquals(null, res.errors);
+		assertEquals(null, res.result);
 	}
 
 	public void testAddCategories() throws Exception {

@@ -68,17 +68,17 @@ public class ContentHandlerTest extends TestCase {
         asset.updateContent( "'Person.age' : [1, 2, 3]" );
 
         EnumerationContentHandler ch = new EnumerationContentHandler();
-        BuilderResult[] result =  ch.validateAsset( asset );
+        BuilderResult result =  ch.validateAsset( asset );
         assertNotNull(result);
-        assertEquals(0, result.length);
+        assertEquals(0, result.lines.length);
 
         asset.updateContent( "goober boy" );
         result = ch.validateAsset( asset );
-        assertFalse(result.length == 0);
-        assertEquals(asset.getName(), result[0].assetName);
-        assertEquals(asset.getFormat(), result[0].assetFormat);
-        assertNotNull(result[0].message);
-        assertEquals(asset.getUUID(), result[0].uuid);
+        assertFalse(result.lines.length == 0);
+        assertEquals(asset.getName(), result.lines[0].assetName);
+        assertEquals(asset.getFormat(), result.lines[0].assetFormat);
+        assertNotNull(result.lines[0].message);
+        assertEquals(asset.getUUID(), result.lines[0].uuid);
 
     }
 

@@ -11,14 +11,14 @@ public class DetailedSerializableException extends SerializableException {
 
     private String longDescription;
 
-    private BuilderResult[] errs;
+    private BuilderResultLine[] errs;
     public DetailedSerializableException() {}
 
     public DetailedSerializableException(String shortDescription, String longDescription) {
         super(shortDescription);
         this.longDescription = longDescription;
     }
-    public DetailedSerializableException(String shortDescription, BuilderResult[] errs) {
+    public DetailedSerializableException(String shortDescription, BuilderResultLine[] errs) {
         super(shortDescription);
         this.errs = errs;
     }
@@ -26,7 +26,7 @@ public class DetailedSerializableException extends SerializableException {
     public String getLongDescription() {
         return this.longDescription;
     }
-    public BuilderResult[] getErrs(){
+    public BuilderResultLine[] getErrs(){
     	return errs;
     }
 

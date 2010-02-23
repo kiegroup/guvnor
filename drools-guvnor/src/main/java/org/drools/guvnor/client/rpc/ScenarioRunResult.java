@@ -14,9 +14,9 @@ public class ScenarioRunResult implements IsSerializable {
 	public ScenarioRunResult() {}
 
 
-	public BuilderResult[] errors;
+	public BuilderResultLine[] errors;
 	public Scenario scenario;
-	public ScenarioRunResult(BuilderResult[] errors, Scenario scenario) {
+	public ScenarioRunResult(BuilderResultLine[] errors, Scenario scenario) {
 
 		this.errors = errors;
 		this.scenario = scenario;

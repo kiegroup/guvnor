@@ -10,7 +10,7 @@ import org.drools.repository.AssetItem;
  */
 public interface IValidating {
 
-    BuilderResult[] validateAsset(AssetItem asset);
+    BuilderResult validateAsset(AssetItem asset);
 
 
 }

@@ -45,7 +45,7 @@ public class BulkRunResultWidget extends Composite {
 		this.editEvent = editEvent;
 		parent = new SimplePanel();
 
-		if (result.errors != null && result.errors.length > 0) {
+		if (result.result != null && result.result.lines != null && result.result.lines.length > 0) {
 			showErrors();
 		} else {
 			showResult();
@@ -168,7 +168,7 @@ public class BulkRunResultWidget extends Composite {
 
 	private void showErrors() {
 		clear();
-		BuilderResult[] errors = result.errors;
+		BuilderResult errors = result.result;
 
 		Panel err = new SimplePanel();
 

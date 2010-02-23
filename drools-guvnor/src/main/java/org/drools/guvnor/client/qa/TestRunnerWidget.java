@@ -10,6 +10,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.testing.*;
 import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
 import org.drools.guvnor.client.rpc.SingleScenarioResult;
@@ -68,7 +69,7 @@ class TestRunnerWidget extends Composite {
 	}
 
 
-	private void showErrors(BuilderResult[] rs) {
+	private void showErrors(BuilderResultLine[] rs) {
 		results.clear();
 		results.setVisible(true);
 
@@ -76,7 +77,7 @@ class TestRunnerWidget extends Composite {
         errTable.setStyleName( "build-Results" );
         for ( int i = 0; i < rs.length; i++ ) {
             int row = i;
-            final BuilderResult res = rs[i];
+            final BuilderResultLine res = rs[i];
             errTable.setWidget( row, 0, new Image("images/error.gif"));
             if( res.assetFormat.equals( "package" )) {
                 errTable.setText( row, 1, constants.packageConfigurationProblem1() + res.message );

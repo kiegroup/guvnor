@@ -24,52 +24,55 @@ import com.gwtext.client.util.Format;
  */
 public class AnalysisView extends Composite {
 
-	private VerticalPanel layout;
-	private String packageUUID;
-    private Constants constants = GWT.create(Constants.class);
+    private VerticalPanel layout;
+    private String        packageUUID;
+    private Constants     constants = GWT.create( Constants.class );
 
-    public AnalysisView(String packageUUID, String packageName) {
-		this.layout = new VerticalPanel();
-		this.packageUUID = packageUUID;
+    public AnalysisView(String packageUUID,
+                        String packageName) {
+        this.layout = new VerticalPanel();
+        this.packageUUID = packageUUID;
 
-		PrettyFormLayout pf = new PrettyFormLayout();
+        PrettyFormLayout pf = new PrettyFormLayout();
 
-		VerticalPanel vert = new VerticalPanel();
-        String m = Format.format(constants.AnalysingPackage(), new String[] {packageName});
-		vert.add(new HTML(m));
-		Button run = new Button(constants.RunAnalysis());
-		run.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
-				runAnalysis();
-			}
-		});
-		vert.add(run);
+        VerticalPanel vert = new VerticalPanel();
+        String m = Format.format( constants.AnalysingPackage(),
+                                  new String[]{packageName} );
+        vert.add( new HTML( m ) );
+        Button run = new Button( constants.RunAnalysis() );
+        run.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                runAnalysis();
+            }
+        } );
+        vert.add( run );
 
+        pf.addHeader( "images/analyse_large.png",
+                      vert );
+        layout.add( pf );
 
-		pf.addHeader("images/analyse_large.png", vert);
-		layout.add(pf);
+        layout.add( new Label() );
 
-		layout.add(new Label());
+        layout.setWidth( "100%" );
 
-		layout.setWidth("100%");
+        initWidget( layout );
+    }
 
-		initWidget(layout);
-	}
+    private void runAnalysis() {
+        LoadingPopup.showMessage( constants.AnalysingPackageRunning() );
+        RepositoryServiceFactory.getService().analysePackage( packageUUID,
+                                                              new GenericCallback() {
+                                                                  public void onSuccess(Object data) {
+                                                                      AnalysisReport rep = (AnalysisReport) data;
+                                                                      AnalysisResultWidget w = new AnalysisResultWidget( rep,
+                                                                                                                         true );
+                                                                      w.setWidth( "100%" );
+                                                                      layout.remove( 1 );
+                                                                      layout.add( w );
+                                                                      LoadingPopup.close();
+                                                                  }
+                                                              } );
 
-	private void runAnalysis() {
-		LoadingPopup.showMessage(constants.AnalysingPackageRunning());
-		RepositoryServiceFactory.getService().analysePackage(packageUUID, new GenericCallback() {
-			public void onSuccess(Object data) {
-				AnalysisReport rep = (AnalysisReport) data;
-				AnalysisResultWidget w = new AnalysisResultWidget(rep);
-				w.setWidth("100%");
-				layout.remove(1);
-				layout.add(w);
-				LoadingPopup.close();
-			}
-		});
-
-	}
-
+    }
 
 }

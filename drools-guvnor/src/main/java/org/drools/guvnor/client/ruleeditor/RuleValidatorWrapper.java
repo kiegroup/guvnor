@@ -24,6 +24,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.packages.PackageBuilderWidget;
 import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.messages.Constants;
@@ -111,8 +112,8 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
     private void doValidate() {
     	onSave();
         LoadingPopup.showMessage(constants.ValidatingItemPleaseWait());
-        RepositoryServiceFactory.getService().buildAsset( asset, new GenericCallback<BuilderResult[]>() {
-            public void onSuccess(BuilderResult[] results) {showBuilderErrors(results);}
+        RepositoryServiceFactory.getService().buildAsset( asset, new GenericCallback<BuilderResult>() {
+            public void onSuccess(BuilderResult result) {showBuilderErrors(result);}
         });
 
     }
@@ -134,9 +135,9 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
     /**
      * This will show a popup of error messages in compilation.
      */
-    public static void showBuilderErrors(BuilderResult[] results) {
+    public static void showBuilderErrors(BuilderResult result) {
 
-        if (results == null || results.length == 0) {
+        if (result == null || result.lines == null || result.lines.length == 0) {
         	FormStylePopup pop = new FormStylePopup();
         	pop.setWidth(200);
         	pop.setTitle(constants.ValidationResultsDotDot());
@@ -150,9 +151,9 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
         	FormStylePopup pop = new FormStylePopup("images/package_builder.png", constants.ValidationResults()); //NON-NLS
             FlexTable errTable = new FlexTable();
             errTable.setStyleName( "build-Results" ); //NON-NLS
-            for ( int i = 0; i < results.length; i++ ) {
+            for ( int i = 0; i < result.lines.length; i++ ) {
                 int row = i;
-                final BuilderResult res = results[i];
+                final BuilderResultLine res = result.lines[i];
                 errTable.setWidget( row, 0, new Image("images/error.gif")); //NON-NLS
                 if( res.assetFormat.equals( "package" )) {
                     errTable.setText( row, 1, constants.packageConfigurationProblem() + res.message );

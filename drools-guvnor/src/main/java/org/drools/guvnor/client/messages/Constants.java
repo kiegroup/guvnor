@@ -2051,5 +2051,11 @@ public interface Constants extends ConstantsWithLookup {
     
     String Promoted();  
     
-    String ItemAlreadyInGlobalArea();  
+    String ItemAlreadyInGlobalArea();
+
+    String VerifyingItemPleaseWait();
+
+    String Verify();  
+    
+    String VerificationReport();
 }

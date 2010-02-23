@@ -16,6 +16,8 @@ package org.drools.guvnor.server;
  * limitations under the License.
  */
 
+import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -54,11 +56,34 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.Inbox;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.testing.Scenario;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.rpc.AnalysisReport;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.client.rpc.BulkTestRunResult;
+import org.drools.guvnor.client.rpc.DetailedSerializableException;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.drools.guvnor.client.rpc.LogEntry;
+import org.drools.guvnor.client.rpc.MetaData;
+import org.drools.guvnor.client.rpc.MetaDataQuery;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.PushResponse;
+import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.ScenarioResultSummary;
+import org.drools.guvnor.client.rpc.ScenarioRunResult;
+import org.drools.guvnor.client.rpc.SingleScenarioResult;
+import org.drools.guvnor.client.rpc.SnapshotDiff;
+import org.drools.guvnor.client.rpc.SnapshotDiffs;
+import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.drools.guvnor.client.rpc.TableConfig;
+import org.drools.guvnor.client.rpc.TableDataResult;
+import org.drools.guvnor.client.rpc.TableDataRow;
+import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentAssemblyError;
@@ -68,6 +93,8 @@ import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.contenthandler.IValidating;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
+import org.drools.guvnor.server.repository.MailboxService;
+import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
@@ -77,14 +104,11 @@ import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.util.AssetFormatHelper;
 import org.drools.guvnor.server.util.AssetLockManager;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
+import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.guvnor.server.util.VerifierRunner;
-import org.drools.guvnor.server.util.Discussion;
-import static org.drools.guvnor.server.util.ClassicDRLImporter.*;
-import org.drools.guvnor.server.repository.UserInbox;
-import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.repository.AssetHistoryIterator;
@@ -106,7 +130,7 @@ import org.drools.rule.Package;
 import org.drools.runtime.rule.ConsequenceException;
 import org.drools.testframework.RuleCoverageListener;
 import org.drools.testframework.ScenarioRunner;
-import org.drools.core.util.DroolsStreamUtils;
+import org.drools.verifier.VerifierConfiguration;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -1472,7 +1496,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public BuilderResult[] buildPackage(String packageUUID,
+    public BuilderResult buildPackage(String packageUUID,
                                         boolean force) throws SerializableException {
         return buildPackage( packageUUID,
                              force,
@@ -1488,7 +1512,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public BuilderResult[] buildPackage(String packageUUID,
+    public BuilderResult buildPackage(String packageUUID,
                                         boolean force,
                                         String buildMode,
                                         String statusOperator,
@@ -1529,7 +1553,7 @@ public class ServiceImplementation
         return SelectorManager.getInstance().getCustomSelectors();
     }
 
-    private BuilderResult[] buildPackage(PackageItem item,
+    private BuilderResult buildPackage(PackageItem item,
                                          boolean force) throws DetailedSerializableException {
         return buildPackage( item,
                              force,
@@ -1543,7 +1567,7 @@ public class ServiceImplementation
                              null );
     }
 
-    private BuilderResult[] buildPackage(PackageItem item,
+    private BuilderResult buildPackage(PackageItem item,
                                          boolean force,
                                          String buildMode,
                                          String statusOperator,
@@ -1568,7 +1592,8 @@ public class ServiceImplementation
                                                                    enableCategorySelector,
                                                                    selectorConfigName );
         if ( asm.hasErrors() ) {
-            BuilderResult[] result = generateBuilderResults( asm );
+            BuilderResult result = new BuilderResult();
+            result.lines = generateBuilderResults( asm );
             return result;
         } else {
             try {
@@ -1607,11 +1632,11 @@ public class ServiceImplementation
         // this.ruleBaseCache.put(item.getUUID(), rb);
     }
 
-    private BuilderResult[] generateBuilderResults(ContentPackageAssembler asm) {
-        BuilderResult[] result = new BuilderResult[asm.getErrors().size()];
+    private BuilderResultLine[] generateBuilderResults(ContentPackageAssembler asm) {
+        BuilderResultLine[] result = new BuilderResultLine[asm.getErrors().size()];
         for ( int i = 0; i < result.length; i++ ) {
             ContentAssemblyError err = asm.getErrors().get( i );
-            BuilderResult res = new BuilderResult();
+            BuilderResultLine res = new BuilderResultLine();
             res.assetName = err.itemInError.getName();
             res.assetFormat = err.itemInError.getFormat();
             res.message = err.errorReport;
@@ -1673,12 +1698,12 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public BuilderResult[] buildAsset(RuleAsset asset) throws SerializableException {
+    public BuilderResult buildAsset(RuleAsset asset) throws SerializableException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
-        BuilderResult[] result = null;
+        BuilderResult result = new BuilderResult();
 
         try {
 
@@ -1697,19 +1722,21 @@ public class ServiceImplementation
                 if ( !asm.hasErrors() ) {
                     return null;
                 } else {
-                    result = generateBuilderResults( asm );
+                    result.lines = generateBuilderResults( asm );
                 }
             }
         } catch ( Exception e ) {
             log.error( e );
-            result = new BuilderResult[1];
+            result = new BuilderResult();
 
-            BuilderResult res = new BuilderResult();
+            BuilderResultLine res = new BuilderResultLine();
             res.assetName = asset.metaData.name;
             res.assetFormat = asset.metaData.format;
             res.message = "Unable to validate this asset. (Check log for detailed messages).";
             res.uuid = asset.uuid;
-            result[0] = res;
+            result.lines = new BuilderResultLine[1];
+            result.lines[0] = res;
+            
             return result;
 
         }
@@ -1876,12 +1903,12 @@ public class ServiceImplementation
             for ( String snapName : snaps ) {
                 PackageItem snap = repository.loadPackageSnapshot( pkg.getName(),
                                                                    snapName );
-                BuilderResult[] res = this.buildPackage( snap.getUUID(),
+                BuilderResult res = this.buildPackage( snap.getUUID(),
                                                          true );
                 if ( res != null ) {
                     StringBuffer buf = new StringBuffer();
-                    for ( int i = 0; i < res.length; i++ ) {
-                        buf.append( res[i].toString() );
+                    for ( int i = 0; i < res.lines.length; i++ ) {
+                        buf.append( res.lines[i].toString() );
                         buf.append( '\n' );
                     }
                     throw new DetailedSerializableException( "Unable to rebuild snapshot [" + snapName,
@@ -2044,15 +2071,15 @@ public class ServiceImplementation
                 this.ruleBaseCache.put( item.getUUID(),
                                         rb );
             } else {
-                BuilderResult[] errs = this.buildPackage( item,
+                BuilderResult result = this.buildPackage( item,
                                                           false );
-                if ( errs == null || errs.length == 0 ) {
+                if ( result == null || result.lines.length == 0 ) {
                     rb = loadRuleBase( item,
                                        buildCl );
                     this.ruleBaseCache.put( item.getUUID(),
                                             rb );
                 } else throw new DetailedSerializableException( "Build error",
-                                                                errs );
+                                                                result.lines );
             }
 
         }
@@ -2072,9 +2099,9 @@ public class ServiceImplementation
             log.error( e );
             log.info( "...but trying to rebuild binaries..." );
             try {
-                BuilderResult[] res = this.buildPackage( item,
+                BuilderResult res = this.buildPackage( item,
                                                          true );
-                if ( res != null && res.length > 0 ) {
+                if ( res != null && res.lines.length > 0 ) {
                     log.error( "There were errors when rebuilding the knowledgebase." );
                     throw new DetailedSerializableException( "There were errors when rebuilding the knowledgebase.",
                                                              "" );
@@ -2192,14 +2219,14 @@ public class ServiceImplementation
                                             loadRuleBase( item,
                                                           cl ) );
                 } else {
-                    BuilderResult[] errs = this.buildPackage( item,
+                    BuilderResult result = this.buildPackage( item,
                                                               false );
-                    if ( errs == null || errs.length == 0 ) {
+                    if ( result == null || result.lines.length == 0 ) {
                         this.ruleBaseCache.put( item.getUUID(),
                                                 loadRuleBase( item,
                                                               cl ) );
                     } else {
-                        return new BulkTestRunResult( errs,
+                        return new BulkTestRunResult( result,
                                                       null,
                                                       0,
                                                       null );
@@ -2264,7 +2291,8 @@ public class ServiceImplementation
         String drl = this.buildPackageSource( packageUUID );
         VerifierRunner runner = new VerifierRunner();
         try {
-            return runner.analyse( drl );
+            return runner.verify( drl,
+                                   VerifierConfiguration.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE );
         } catch ( DroolsParserException e ) {
             log.error( "Unable to parse the rules: " + e.getMessage() );
             throw new DetailedSerializableException( "Unable to parse the rules.",
@@ -2427,13 +2455,13 @@ public class ServiceImplementation
         while ( pkit.hasNext() ) {
             PackageItem pkg = (PackageItem) pkit.next();
             try {
-                BuilderResult[] res = this.buildPackage( pkg.getUUID(),
+                BuilderResult res = this.buildPackage( pkg.getUUID(),
                                                          true );
                 if ( res != null ) {
                     errs.append( "Unable to build package name [" + pkg.getName() + "]\n" );
                     StringBuffer buf = new StringBuffer();
-                    for ( int i = 0; i < res.length; i++ ) {
-                        buf.append( res[i].toString() );
+                    for ( int i = 0; i < res.lines.length; i++ ) {
+                        buf.append( res.lines[i].toString() );
                         buf.append( '\n' );
                     }
                     log.warn( buf.toString() );
@@ -2752,5 +2780,33 @@ public class ServiceImplementation
 
         diffs.diffs = list.toArray( new SnapshotDiff[list.size()] );
         return diffs;
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public AnalysisReport verifyAsset(RuleAsset asset) throws SerializableException {
+        if ( Contexts.isSessionContextActive() ) {
+            Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
+                                                 RoleTypes.PACKAGE_DEVELOPER );
+        }
+
+        String drl = "package " + asset.metaData.packageName + "\n" + getDroolsHeader( repository.loadPackage( asset.metaData.packageName ) ) + "\n" + this.buildAssetSource( asset );
+
+        VerifierRunner runner = new VerifierRunner();
+        try {
+
+            if ( asset.metaData.format.equals( AssetFormats.DECISION_TABLE_GUIDED ) || asset.metaData.format.equals( AssetFormats.DECISION_SPREADSHEET_XLS ) ) {
+                return runner.verify( drl,
+                                       VerifierConfiguration.VERIFYING_SCOPE_DECISION_TABLE );
+            } else {
+                return runner.verify( drl,
+                                       VerifierConfiguration.VERIFYING_SCOPE_SINGLE_RULE );
+            }
+
+        } catch ( DroolsParserException e ) {
+            log.error( "Unable to parse the rules: " + e.getMessage() );
+            throw new DetailedSerializableException( "Unable to parse the rules.",
+                                                     e.getMessage() );
+        }
     }
 }

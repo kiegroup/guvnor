@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.server.util.DataEnumLoader;
 import org.drools.repository.AssetItem;
 
@@ -28,20 +29,20 @@ import org.drools.repository.AssetItem;
 
 public class EnumerationContentHandler extends PlainTextContentHandler implements IValidating {
 
-    public BuilderResult[] validateAsset(AssetItem asset) {
+    public BuilderResult validateAsset(AssetItem asset) {
 
         String content = asset.getContent();
         DataEnumLoader loader = new DataEnumLoader(content);
         if (!loader.hasErrors()) {
-            return new BuilderResult[0];
+            return new BuilderResult();
         } else {
-            List<BuilderResult> errors = new ArrayList<BuilderResult>();
+            List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
             List errs = loader.getErrors();
 
 
             for ( Iterator iter = errs.iterator(); iter.hasNext(); ) {
 
-                BuilderResult result = new BuilderResult();
+                BuilderResultLine result = new BuilderResultLine();
                 result.assetName = asset.getName();
                 result.assetFormat = asset.getFormat();
                 result.uuid = asset.getUUID();
@@ -49,7 +50,11 @@ public class EnumerationContentHandler extends PlainTextContentHandler implement
                 errors.add( result );
             }
 
-            return errors.toArray( new BuilderResult[errors.size()] );
+
+            BuilderResult result = new BuilderResult();
+            result.lines = errors.toArray( new BuilderResultLine[errors.size()] );
+            
+            return result;
         }
     }
 

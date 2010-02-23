@@ -23,12 +23,20 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * Returned by the builder.
  * @author Michael Neale
  */
-public class BuilderResult
+public class BuilderResultLine
     implements
     IsSerializable {
 
-    public BuilderResultLine[] lines = new BuilderResultLine[0];
-    
-    public AnalysisReport verifierReport;
+
+    public String assetFormat;
+    public String assetName;
+    public String uuid;
+    public String message;
+
+    public String toString() {
+        return "Asset: " + assetName + "." + assetFormat + "\n" + //NON-NLS
+               "Message: " + message + "\n" +   //NON-NLS
+               "UUID: " + uuid; //NON-NLS
+    }
 
 }
