@@ -33,7 +33,7 @@ import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import org.drools.guvnor.client.common.*;
 import static org.drools.guvnor.client.common.AssetFormats.*;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.qa.AnalysisResultWidget;
+import org.drools.guvnor.client.qa.VerifierResultWidget;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -289,9 +289,11 @@ public class ActionToolbar extends Composite {
                                                                    LoadingPopup.close();
                                                                    final FormStylePopup form = new FormStylePopup( "images/rule_asset.gif",
                                                                                                                    constants.VerificationReport() );
-                                                                   form.addRow( new AnalysisResultWidget( report,
-                                                                                                          false ) );
-
+                                                                   ScrollPanel scrollPanel = new ScrollPanel( new VerifierResultWidget( report,
+                                                                                                                                        false ) );
+                                                                   scrollPanel.setWidth( "100%" );
+                                                                   form.addRow( scrollPanel );
+                                                                   
                                                                    LoadingPopup.close();
                                                                    form.show();
                                                                }

@@ -14,29 +14,29 @@ import org.drools.guvnor.client.rpc.AnalysisReportLine;
  * Shows the results of an analysis run.
  * @author Michael Neale
  */
-public class AnalysisResultWidget extends Composite {
+public class VerifierResultWidget extends Composite {
     private Constants constants = GWT.create( Constants.class );
 
-    public AnalysisResultWidget(AnalysisReport report,
+    public VerifierResultWidget(AnalysisReport report,
                                 boolean showFactUsage) {
         FormStyleLayout layout = new FormStyleLayout();
 
-        Tree t = new Tree();
-
-        t.addItem( renderItems( report.errors,
-                                "images/error.gif",
-                                constants.Errors() ) );
-        t.addItem( renderItems( report.warnings,
-                                "images/warning.gif",
-                                constants.Warnings() ) );
-        t.addItem( renderItems( report.notes,
-                                "images/note.gif",
-                                constants.Notes() ) );
+        Tree tree = new Tree();
+        
+        tree.addItem( renderItems( report.errors,
+                                   "images/error.gif",
+                                   constants.Errors() ) );
+        tree.addItem( renderItems( report.warnings,
+                                   "images/warning.gif",
+                                   constants.Warnings() ) );
+        tree.addItem( renderItems( report.notes,
+                                   "images/note.gif",
+                                   constants.Notes() ) );
         if ( showFactUsage ) {
-            t.addItem( renderFactUsage( report.factUsages ) );
+            tree.addItem( renderFactUsage( report.factUsages ) );
         }
-        t.addTreeListener( swapTitleWithUserObject() );
-        layout.addRow( t );
+        tree.addTreeListener( swapTitleWithUserObject() );
+        layout.addRow( tree );
 
         initWidget( layout );
     }

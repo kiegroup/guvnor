@@ -1,4 +1,5 @@
 package org.drools.guvnor.client.common;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,10 +16,9 @@ package org.drools.guvnor.client.common;
  * limitations under the License.
  */
 
-
-
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.widgets.BoxComponent;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Window;
 import com.gwtext.client.widgets.event.WindowListenerAdapter;
@@ -32,46 +32,48 @@ import com.gwtext.client.widgets.layout.FitLayout;
  */
 public class FormStylePopup {
 
-
     private FormStyleLayout form;
-	private Window dialog;
-	private String title;
+    private Window          dialog;
+    private String          title;
 
-	private Boolean shadow;
-	private Integer width;
-	private boolean modal = true;
-	private int popLeft = -1;
-	private int popTop;
-	private Command afterShowEvent;
+    private Boolean         shadow;
+    private Integer         width;
+    private boolean         modal   = true;
+    private int             popLeft = -1;
+    private int             popTop;
+    private Command         afterShowEvent;
 
     public FormStylePopup(String image,
                           final String title) {
 
-        form = new FormStyleLayout( image, title );
+        form = new FormStyleLayout( image,
+                                    title );
         this.title = title;
 
     }
 
     public FormStylePopup() {
-    	form = new FormStyleLayout();
+        form = new FormStyleLayout();
     }
 
-
-
-
-    public FormStylePopup(String image, final String title, Integer width,  Boolean shadow) {
-    	this(image, title);
-    	this.shadow = shadow;
-    	this.width = width;
+    public FormStylePopup(String image,
+                          final String title,
+                          Integer width,
+                          Boolean shadow) {
+        this( image,
+              title );
+        this.shadow = shadow;
+        this.width = width;
     }
 
     public void clear() {
-    	this.form.clear();
+        this.form.clear();
     }
 
-
-    public void addAttribute(String label, Widget wid) {
-        form.addAttribute( label, wid );
+    public void addAttribute(String label,
+                             Widget wid) {
+        form.addAttribute( label,
+                           wid );
     }
 
     public void addRow(Widget wid) {
@@ -85,75 +87,85 @@ public class FormStylePopup {
         }
     }
 
-    public void setPopupPosition(int left, int top) {
-    	this.popLeft = left;
-    	this.popTop = top;
+    public void setPopupPosition(int left,
+                                 int top) {
+        this.popLeft = left;
+        this.popTop = top;
     }
 
     public void setAfterShow(Command c) {
-    	this.afterShowEvent = c;
+        this.afterShowEvent = c;
     }
 
-	public void show() {
+    public void show() {
 
-		dialog = new Window();
-		dialog.setAutoScroll(true);
-		dialog.setModal(modal );
-		dialog.setPlain(true);
-		dialog.setConstrainHeader(true);
-		dialog.setBodyBorder(false);
-		dialog.setBorder(false);
-        if (width == null) {
-            dialog.setWidth(430);
-        } else if (width != -1) {
-            dialog.setWidth(width);            
+        dialog = new Window();
+        dialog.setAutoScroll( true );
+        dialog.setModal( modal );
+        dialog.setPlain( true );
+        dialog.setConstrainHeader( true );
+        dialog.setBodyBorder( false );
+        dialog.setBorder( false );
+        if ( width == null ) {
+            dialog.setWidth( 430 );
+        } else if ( width != -1 ) {
+            dialog.setWidth( width );
         }
-		dialog.setShadow((shadow == null)? true : shadow.booleanValue());
-		dialog.setResizable(true);
-		dialog.setClosable(true);
-		dialog.setTitle(title);
-		if (popLeft > -1) {
-			dialog.setPosition(popLeft, popTop);
-		}
+        dialog.setShadow( (shadow == null) ? true : shadow.booleanValue() );
+        dialog.setResizable( true );
+        dialog.setClosable( true );
+        dialog.setTitle( title );
+        if ( popLeft > -1 ) {
+            dialog.setPosition( popLeft,
+                                popTop );
+        }
 
+        Panel p = new Panel();
+        p.setLayout( new FitLayout() );
+        p.add( form );
+        dialog.add( p );
+        p.setBodyBorder( false );
+        p.setPaddings( 0 );
 
-		Panel p = new Panel();
-		p.setLayout(new FitLayout());
-		p.add(form);
-		dialog.add(p);
-		p.setBodyBorder(false);
-		p.setPaddings(0);
+        if ( this.afterShowEvent != null ) {
+            this.dialog.addListener( new WindowListenerAdapter() {
+                @Override
+                public void onActivate(Panel panel) {
+                    afterShowEvent.execute();
+                }
+            } );
+        }
 
-		if (this.afterShowEvent != null) {
-			this.dialog.addListener(new WindowListenerAdapter() {
-				@Override
-				public void onActivate(Panel panel) {
-					afterShowEvent.execute();
-				}
-			});
-		}
+        dialog.addListener( new WindowListenerAdapter() {
 
-		this.dialog.show();
+            public void onResize(BoxComponent component,
+                                 int adjWidth,
+                                 int adjHeight,
+                                 int rawWidth,
+                                 int rawHeight) {
+                dialog.doLayout();
+            }
+        } );
 
+        this.dialog.show();
 
-	}
+    }
 
-	public boolean isVisible(){
-	    if ( dialog == null ) return false;
+    public boolean isVisible() {
+        if ( dialog == null ) return false;
         else return dialog.isVisible();
-	}
+    }
 
-	public void setModal(boolean m) {
-		this.modal = m;
-	}
+    public void setModal(boolean m) {
+        this.modal = m;
+    }
 
-	public void setTitle(String t) {
-		this.title = t;
-	}
+    public void setTitle(String t) {
+        this.title = t;
+    }
 
-	public void setWidth(int i) {
-		this.width = new Integer(i);
-	}
-
+    public void setWidth(int i) {
+        this.width = new Integer( i );
+    }
 
 }
