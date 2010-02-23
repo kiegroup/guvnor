@@ -28,6 +28,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
@@ -305,8 +306,8 @@ public class PackageBuilderWidget extends Composite {
                                                                     category,
                                                                     enableCategorySelector,
                                                                     customSelector,
-                                                                    new GenericCallback<BuilderResult[]>() {
-                                                                        public void onSuccess(BuilderResult[] result) {
+                                                                    new GenericCallback<BuilderResult>() {
+                                                                        public void onSuccess(BuilderResult result) {
                                                                             LoadingPopup.close();
                                                                             if ( result == null ) {
                                                                                 showSuccessfulBuild( buildResults );
@@ -393,9 +394,9 @@ public class PackageBuilderWidget extends Composite {
             text = "<span style='color:green'>" + text + "</span>";
         } else {
 
-            String[] keywords = {"rule", "when", "then", "end", "true", "false", "accumulate", "collect", "from", "null", "over", "lock-on-active", "date-effective", "date-expires", "no-loop", "auto-focus", "activation-group", "agenda-group",
-                    "ruleflow-group", "entry-point", "duration", "package", "import", "dialect", "salience", "enabled", "attributes", "extend", "template", "query", "declare", "function", "global", "eval", "exists", "forall", "action", "reverse",
-                    "result", "end", "init"};
+            String[] keywords = {"rule", "when", "then", "end", "accumulate", "collect", "from", "null", "over", "lock-on-active", "date-effective", "date-expires", "no-loop", "auto-focus", "activation-group", "agenda-group", "ruleflow-group",
+                    "entry-point", "duration", "package", "import", "dialect", "salience", "enabled", "attributes", "extend", "template", "query", "declare", "function", "global", "eval", "exists", "forall", "action", "reverse", "result", "end",
+                    "init"};
 
             for ( String keyword : keywords ) {
                 if ( text.contains( keyword ) ) {
@@ -421,12 +422,21 @@ public class PackageBuilderWidget extends Composite {
         while ( stringStart >= 0 ) {
             int stringEnd = text.indexOf( character,
                                           stringStart + 1 );
+            if ( stringEnd < 0 ) {
+                stringStart = -1;
+                break;
+            }
+
             String oldString = text.substring( stringStart,
                                                stringEnd + 1 );
 
-            String newString = "<span style='color:green;>" + oldString + "</span>";
-            text = text.replace( oldString,
-                                 newString );
+            String newString = "<span style='color:green;'>" + oldString + "</span>";
+
+            String beginning = text.substring( 0,
+                                               stringStart );
+            String end = text.substring( stringEnd + 1 );
+
+            text = beginning + newString + end;
 
             int searchStart = stringStart + newString.length() + 1;
 
@@ -477,14 +487,14 @@ public class PackageBuilderWidget extends Composite {
     /**
      * This is called in the unhappy event of there being errors.
      */
-    public static void showBuilderErrors(BuilderResult[] results,
+    public static void showBuilderErrors(BuilderResult results,
                                          Panel buildResults,
                                          final EditItemEvent editEvent) {
         buildResults.clear();
 
-        Object[][] data = new Object[results.length][4];
-        for ( int i = 0; i < results.length; i++ ) {
-            BuilderResult res = results[i];
+        Object[][] data = new Object[results.lines.length][4];
+        for ( int i = 0; i < results.lines.length; i++ ) {
+            BuilderResultLine res = results.lines[i];
             data[i][0] = res.uuid;
             data[i][1] = res.assetName;
             data[i][2] = res.assetFormat;
