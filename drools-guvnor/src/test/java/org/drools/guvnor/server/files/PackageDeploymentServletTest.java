@@ -6,6 +6,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -29,6 +31,8 @@ import org.drools.repository.RulesRepository;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
+
+import sun.misc.BASE64Encoder;
 
 public class PackageDeploymentServletTest extends TestCase {
 
@@ -270,10 +274,18 @@ public class PackageDeploymentServletTest extends TestCase {
 		PackageItem pkg = repo.createPackage("testScenariosURL", "");
 		impl.createPackageSnapshot("testScenariosURL", "SNAP1", false, "");
 
+        BASE64Encoder enc = new sun.misc.BASE64Encoder();
+        String userpassword = "test" + ":" + "password";
+        final String encodedAuthorization = enc.encode( userpassword.getBytes() );      
 
+        Map<String, String> headers = new HashMap<String, String>() {
+            {
+                put("Authorization", "BASIC " + encodedAuthorization);
+            }
+        };
 		//now run the scenarios
 		PackageDeploymentServlet serv = new PackageDeploymentServlet();
-		MockHTTPRequest req = new MockHTTPRequest("/package/testScenariosURL/LATEST/SCENARIOS", null);
+		MockHTTPRequest req = new MockHTTPRequest("/package/testScenariosURL/LATEST/SCENARIOS", headers);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		MockHTTPResponse res = new MockHTTPResponse(out);
 		serv.doGet(req, res);
@@ -283,7 +295,7 @@ public class PackageDeploymentServletTest extends TestCase {
 
 
 		serv = new PackageDeploymentServlet();
-		req = new MockHTTPRequest("/package/testScenariosURL/SNAP1/SCENARIOS", null);
+		req = new MockHTTPRequest("/package/testScenariosURL/SNAP1/SCENARIOS", headers);
 		out = new ByteArrayOutputStream();
 		res = new MockHTTPResponse(out);
 		serv.doGet(req, res);
@@ -293,7 +305,7 @@ public class PackageDeploymentServletTest extends TestCase {
 
 
         serv = new PackageDeploymentServlet();
-        req = new MockHTTPRequest("/package/testScenariosURL/SNAP1/ChangeSet.xml", null);
+        req = new MockHTTPRequest("/package/testScenariosURL/SNAP1/ChangeSet.xml", headers);
         req.url = new StringBuffer("http://foo/ChangeSet.xml");
         out = new ByteArrayOutputStream();
         res = new MockHTTPResponse(out);
