@@ -32,9 +32,12 @@ import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializableException;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.files.RepositoryServlet.A;
 import org.drools.guvnor.server.util.FormData;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.remoteapi.Response;
+import org.drools.repository.remoteapi.RestAPI;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -122,81 +125,85 @@ public class PackageDeploymentServlet extends RepositoryServlet {
      * Normally that will only be used when downloading on demand, otherwise you should ONLY
      * use a snapshot as they are always "up to date".
      */
-    protected void doGet(HttpServletRequest req,
-                         HttpServletResponse response) throws ServletException,
-                                                      IOException {
-        PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper( req.getRequestURI() );
+    protected void doGet(final HttpServletRequest req,
+                         final HttpServletResponse res) throws ServletException,
+                                                      IOException {  
+        
+        doAuthorizedAction(req, res, new A() {
+			public void a() throws Exception {
+		        PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper( req.getRequestURI() );
 
-        System.out.println( "PackageName: " + helper.getPackageName() );
-        System.out.println( "PackageVersion: " + helper.getVersion() );
-        System.out.println( "PackageIsLatest: " + helper.isLatest() );
-        System.out.println( "PackageIsSource: " + helper.isSource() );
+		        log.info( "PackageName: " + helper.getPackageName() );
+		        log.info( "PackageVersion: " + helper.getVersion() );
+		        log.info( "PackageIsLatest: " + helper.isLatest() );
+		        log.info( "PackageIsSource: " + helper.isSource() );
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        FileManagerUtils fm = getFileManager();
-        String fileName = null;
-        if ( helper.isSource() ) {
-            if ( helper.isAsset() ) {
-                fileName = fm.loadSourceAsset( helper.getPackageName(),
-                                               helper.getVersion(),
-                                               helper.isLatest(),
-                                               helper.getAssetName(),
-                                               out );
-            } else {
-                fileName = fm.loadSourcePackage( helper.getPackageName(),
-                                                 helper.getVersion(),
-                                                 helper.isLatest(),
-                                                 out );
-            }
-        } else if ( helper.isDocumentation() ) {
+		        ByteArrayOutputStream out = new ByteArrayOutputStream();
+		        FileManagerUtils fm = getFileManager();
+		        String fileName = null;
+		        if ( helper.isSource() ) {
+		            if ( helper.isAsset() ) {
+		                fileName = fm.loadSourceAsset( helper.getPackageName(),
+		                                               helper.getVersion(),
+		                                               helper.isLatest(),
+		                                               helper.getAssetName(),
+		                                               out );
+		            } else {
+		                fileName = fm.loadSourcePackage( helper.getPackageName(),
+		                                                 helper.getVersion(),
+		                                                 helper.isLatest(),
+		                                                 out );
+		            }
+		        } else if ( helper.isDocumentation() ) {
 
-            PackageItem pkg = fm.getRepository().loadPackage( helper.getPackageName() );
+		            PackageItem pkg = fm.getRepository().loadPackage( helper.getPackageName() );
 
-            GuvnorDroolsDocsBuilder builder;
-            try {
-                builder = GuvnorDroolsDocsBuilder.getInstance( pkg );
-            } catch ( DroolsParserException e ) {
-                throw new ServletException( "Could not parse the rule package." );
+		            GuvnorDroolsDocsBuilder builder;
+		            try {
+		                builder = GuvnorDroolsDocsBuilder.getInstance( pkg );
+		            } catch ( DroolsParserException e ) {
+		                throw new ServletException( "Could not parse the rule package." );
 
-            }
+		            }
 
-            fileName = "documentation.pdf";
+		            fileName = "documentation.pdf";
 
-            builder.writePDF( out );
+		            builder.writePDF( out );
 
-        } else {
-            if ( req.getRequestURI().endsWith( "SCENARIOS" ) ) {
-                doRunScenarios( helper,
-                                out );
-            } else if ( req.getRequestURI().endsWith( "ChangeSet.xml" ) ) {
-                //here be dragons !
-                String url = req.getRequestURL().toString().replace( "/ChangeSet.xml",
-                                                                     "" );
-                fileName = "ChangeSet.xml";
-                String xml = "";
-                xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'\n";
-                xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'\n";
-                xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >\n";
-                xml += "    <add>\n ";
-                xml += "        <resource source='" + url + "' type='PKG' />\n";
-                xml += "    </add>\n";
-                xml += "</change-set>";
-                out.write( xml.getBytes() );
-            } else {
-                fileName = fm.loadBinaryPackage( helper.getPackageName(),
-                                                 helper.getVersion(),
-                                                 helper.isLatest(),
-                                                 out );
-            }
-        }
+		        } else {
+		            if ( req.getRequestURI().endsWith( "SCENARIOS" ) ) {
+		                doRunScenarios( helper,
+		                                out );
+		            } else if ( req.getRequestURI().endsWith( "ChangeSet.xml" ) ) {
+		                //here be dragons !
+		                String url = req.getRequestURL().toString().replace( "/ChangeSet.xml",
+		                                                                     "" );
+		                fileName = "ChangeSet.xml";
+		                String xml = "";
+		                xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'\n";
+		                xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'\n";
+		                xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >\n";
+		                xml += "    <add>\n ";
+		                xml += "        <resource source='" + url + "' type='PKG' />\n";
+		                xml += "    </add>\n";
+		                xml += "</change-set>";
+		                out.write( xml.getBytes() );
+		            } else {
+		                fileName = fm.loadBinaryPackage( helper.getPackageName(),
+		                                                 helper.getVersion(),
+		                                                 helper.isLatest(),
+		                                                 out );
+		            }
+		        }
 
-        response.setContentType( "application/x-download" );
-        response.setHeader( "Content-Disposition",
-                            "attachment; filename=" + fileName + ";" );
-        response.setContentLength( out.size() );
-        response.getOutputStream().write( out.toByteArray() );
-        response.getOutputStream().flush();
-
+		        res.setContentType( "application/x-download" );
+		        res.setHeader( "Content-Disposition",
+		                            "attachment; filename=" + fileName + ";" );
+		        res.setContentLength( out.size() );
+		        res.getOutputStream().write( out.toByteArray() );
+		        res.getOutputStream().flush();
+			}
+        });    	
     }
 
     private void doRunScenarios(PackageDeploymentURIHelper helper,

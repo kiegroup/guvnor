@@ -84,6 +84,7 @@ public class RepositoryServlet extends HttpServlet {
      */
 	void doAuthorizedAction(HttpServletRequest req, HttpServletResponse res, A action) throws IOException {
         String auth = req.getHeader("Authorization");
+
         if (!allowUser(auth)) {
           res.setHeader("WWW-Authenticate", "BASIC realm=\"users\"");
           res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -122,6 +123,8 @@ public class RepositoryServlet extends HttpServlet {
             ids.getCredentials().setPassword(pwd);
             try {
                 ids.authenticate();
+                log.info(usr + " authenticated for rest api");
+               
                 return true;
             } catch (LoginException e) {
                 log.warn("Unable to authenticate for rest api: " + usr);
