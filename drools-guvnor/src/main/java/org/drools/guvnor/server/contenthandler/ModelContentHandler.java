@@ -65,7 +65,8 @@ public class ModelContentHandler extends ContentHandler {
         JarEntry entry = null;
         while ( (entry = jis.getNextJarEntry()) != null ) {
             if ( !entry.isDirectory() ) {
-                if ( entry.getName().endsWith( ".class" ) && entry.getName().indexOf( '$' ) == -1 ) {
+                if ( entry.getName().endsWith( ".class" ) && entry.getName().indexOf( '$' ) == -1 
+                		&& !entry.getName().endsWith( "package-info.class" )) {
 
                     String line = "import " + convertPathToName( entry.getName() );
                     // Add imports only once
