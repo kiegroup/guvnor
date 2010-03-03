@@ -33,8 +33,6 @@ import com.google.gwt.core.client.GWT;
  * @author Michael Neale
  */
 public class PackageHeaderWidget extends Composite {
-
-
 	private PackageConfigData conf;
 	private SimplePanel layout;
 	private ListBox importList;
@@ -47,17 +45,19 @@ public class PackageHeaderWidget extends Composite {
 		layout = new SimplePanel();
 		render();
 
-
 		initWidget(layout);
 	}
 
-
 	private void render() {
-
 		final Types t = PackageHeaderHelper.parseHeader(conf.header);
 		if (t == null) {
 			textEditorVersion();
 		} else {
+			basicEditorVersion(t);
+		}
+	}
+			
+	private void basicEditorVersion(final Types t) {
 			layout.clear();
 			HorizontalPanel main = new HorizontalPanel();
 
@@ -149,12 +149,8 @@ public class PackageHeaderWidget extends Composite {
 			};
 			main.add(advanced);
 
-
 			layout.add(main);
-
-		}
 	}
-
 
 	private void textEditorVersion() {
 		layout.clear();
@@ -182,22 +178,25 @@ public class PackageHeaderWidget extends Composite {
                 setTitle(constants.SwitchToGuidedModeEditing());
                 addClickListener(new ClickListener() {
                     public void onClick(Widget w) {
-                        if (Window.confirm(constants.SwitchToGuidedModeForPackageEditing())) {
-                            conf.header=area.getText();
-                            render();
-                        }
+                        conf.header = area.getText();
+                		final Types t = PackageHeaderHelper.parseHeader(conf.header);
+                		if (t == null) {
+							Window.alert(constants.CanNotSwitchToBasicView());
+                		} else {
+                    		if (Window.confirm(constants.SwitchToGuidedModeForPackageEditing())) {             			
+                			    basicEditorVersion(t);
+                    		}
+                		}                		
                     }
                 });
             }
         };
         main.add( basicMode );
-
 		
 		layout.add(main);
 	}
 
 	private void showTypeQuestion(Widget w, final Types t, final boolean global, String headerMessage) {
-
 		final FormStylePopup pop = new FormStylePopup("images/home_icon.gif", constants.ChooseAFactType()); //NON-NLS
         pop.setWidth(-1);
 		pop.addRow(new HTML("<small><i>" + headerMessage + " </i></small>")); //NON-NLS
@@ -260,12 +259,7 @@ public class PackageHeaderWidget extends Composite {
 		pop.addAttribute("", ok);
 
 		pop.show();
-
-
-
 	}
-
-
 
 	private void updateHeader(Types t) {
 		this.conf.header = PackageHeaderHelper.renderTypes(t);
@@ -279,7 +273,6 @@ public class PackageHeaderWidget extends Composite {
 		}
 	}
 
-
 	private void doImports(Types t) {
 		importList.clear();
 		for (Iterator it = t.imports.iterator(); it.hasNext();) {
@@ -287,14 +280,6 @@ public class PackageHeaderWidget extends Composite {
 			importList.addItem(i.type);
 		}
 	}
-
-
-
-
-
-
-
-
 
 	static class Types {
 		List imports = new ArrayList();
