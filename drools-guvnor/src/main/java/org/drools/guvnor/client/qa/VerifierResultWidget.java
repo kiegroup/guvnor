@@ -9,6 +9,7 @@ import org.drools.guvnor.client.rpc.AnalysisFactUsage;
 import org.drools.guvnor.client.rpc.AnalysisFieldUsage;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
+import org.drools.guvnor.client.rpc.Cause;
 
 /**
  * Shows the results of an analysis run.
@@ -22,7 +23,7 @@ public class VerifierResultWidget extends Composite {
         FormStyleLayout layout = new FormStyleLayout();
 
         Tree tree = new Tree();
-        
+
         tree.addItem( renderItems( report.errors,
                                    "images/error.gif",
                                    constants.Errors() ) );
@@ -112,12 +113,11 @@ public class VerifierResultWidget extends Composite {
             AnalysisReportLine r = lines[i];
             TreeItem w = new TreeItem( new HTML( r.description ) );
             w.addItem( new TreeItem( new HTML( "<b>" + constants.Reason() + ":</b>&nbsp;" + r.reason ) ) );
-            TreeItem causes = new TreeItem( new HTML( "<b>" + constants.Cause() + ":</b>" ) );
 
-            for ( int j = 0; j < r.cause.length; j++ ) {
-                causes.addItem( new HTML( r.cause[j] ) );
-            }
-            if ( r.cause.length > 0 ) {
+            TreeItem causes = causes( new HTML( "<b>" + constants.Causes() + ":</b>" ),
+                                      r.causes );
+
+            if ( r.causes.length > 0 ) {
                 w.addItem( causes );
                 causes.setState( true );
             }
@@ -125,6 +125,19 @@ public class VerifierResultWidget extends Composite {
         }
         lineNode.setState( true );
         return lineNode;
+    }
+
+    private TreeItem causes(HTML title,
+                            Cause[] causes) {
+
+        TreeItem treeItem = new TreeItem( title );
+
+        for ( Cause cause : causes ) {
+            treeItem.addItem( causes( new HTML( cause.getCause() ),
+                                      cause.getCauses() ) );
+        }
+
+        return treeItem;
     }
 
 }

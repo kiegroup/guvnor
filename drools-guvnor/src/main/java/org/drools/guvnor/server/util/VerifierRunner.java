@@ -9,15 +9,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.builder.ResourceType;
-import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.AnalysisFactUsage;
 import org.drools.guvnor.client.rpc.AnalysisFieldUsage;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
-import org.drools.guvnor.client.rpc.DetailedSerializableException;
+import org.drools.guvnor.client.rpc.Cause;
 import org.drools.io.ResourceFactory;
-import org.drools.lang.descr.PackageDescr;
 import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
@@ -106,16 +104,25 @@ public class VerifierRunner {
         for ( VerifierMessageBase m : msgs ) {
             AnalysisReportLine line = new AnalysisReportLine();
             line.description = m.getMessage();
-            line.reason = m.getFaulty().toString();
-            Collection< ? > causes = m.getCauses();
-            List<String> causeList = new ArrayList<String>();
-            for ( Object c : causes ) {
-                causeList.add( c.toString() );
+            if ( m.getFaulty() != null ) {
+                line.reason = m.getFaulty().toString();
             }
-            line.cause = causeList.toArray( new String[causeList.size()] );
+            line.causes = doCauses( m.getCauses() );
             lines.add( line );
         }
         return lines.toArray( new AnalysisReportLine[lines.size()] );
+    }
+
+    private Cause[] doCauses(Collection<org.drools.verifier.report.components.Cause> causes) {
+        ArrayList<Cause> results = new ArrayList<Cause>();
+
+        for ( org.drools.verifier.report.components.Cause cause : causes ) {
+            Cause result = new Cause( cause.toString(),
+                                      doCauses( cause.getCauses() ) );
+            results.add( result );
+        }
+
+        return results.toArray( new Cause[results.size()] );
     }
 
 }

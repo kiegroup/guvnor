@@ -1,0 +1,26 @@
+
+
+
+rule "Your First Rule"
+	when
+		Person( name == "Toni" )
+	then 
+        System.out.println( "*******************" );
+		
+end
+
+rule "Your Second Rule"
+	when
+		Person( name == "Toni" )
+	then 
+        System.out.println( "*******************" );
+		
+end
+
+rule "Your Third Rule"
+	when
+		Person( name != "Toni" )
+	then 
+        System.out.println( "*******************" );
+		
+end

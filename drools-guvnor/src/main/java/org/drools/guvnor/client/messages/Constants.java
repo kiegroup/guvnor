@@ -2060,4 +2060,6 @@ public interface Constants extends ConstantsWithLookup {
     String VerificationReport();
     
     String CanNotSwitchToBasicView();
+
+    String Causes();
 }
