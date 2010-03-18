@@ -37,78 +37,80 @@ import org.drools.compiler.xml.XmlProcessReader;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
-public class BPMN2ProcessHandler extends ContentHandler implements IRuleAsset {
+public class BPMN2ProcessHandler extends ContentHandler
+    implements
+    ICompilable {
 
-	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item) throws SerializableException {
-		RuleFlowProcess process = readProcess(new ByteArrayInputStream(item.getContent().getBytes()));
-		if (process != null) {
-			RuleFlowContentModel content = RuleFlowContentModelBuilder.createModel(process);
-			content.setXml(item.getContent());
-			asset.content = content;
-		}
-	}
+    public void retrieveAssetContent(RuleAsset asset,
+                                     PackageItem pkg,
+                                     AssetItem item) throws SerializableException {
+        RuleFlowProcess process = readProcess( new ByteArrayInputStream( item.getContent().getBytes() ) );
+        if ( process != null ) {
+            RuleFlowContentModel content = RuleFlowContentModelBuilder.createModel( process );
+            content.setXml( item.getContent() );
+            asset.content = content;
+        }
+    }
 
-	protected RuleFlowProcess readProcess(InputStream is) {
-		RuleFlowProcess process = null;
-		try {
-			InputStreamReader reader = new InputStreamReader(is);
-			PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
-			configuration.initSemanticModules();
-			configuration.addSemanticModule(new BPMN2SemanticModule());
-			XmlProcessReader xmlReader = new XmlProcessReader(configuration.getSemanticModules());
-			try {
-				process = (RuleFlowProcess) xmlReader.read(reader);
-			} catch (Exception e) {
-				reader.close();
-				throw new Exception("Unable to read BPMN2 XML.", e);
-			}
-			reader.close();
-		} catch (Exception e) {
-			return null;
-		}
+    protected RuleFlowProcess readProcess(InputStream is) {
+        RuleFlowProcess process = null;
+        try {
+            InputStreamReader reader = new InputStreamReader( is );
+            PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
+            configuration.initSemanticModules();
+            configuration.addSemanticModule( new BPMN2SemanticModule() );
+            XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
+            try {
+                process = (RuleFlowProcess) xmlReader.read( reader );
+            } catch ( Exception e ) {
+                reader.close();
+                throw new Exception( "Unable to read BPMN2 XML.",
+                                     e );
+            }
+            reader.close();
+        } catch ( Exception e ) {
+            return null;
+        }
 
-		return process;
-	}
+        return process;
+    }
 
-	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset) throws SerializableException {
-	}
+    public void storeAssetContent(RuleAsset asset,
+                                  AssetItem repoAsset) throws SerializableException {
+    }
 
-	/**
-	 * The rule flow can not be built if the package name is not the same as the
-	 * package that it exists in. This changes the package name.
-	 * 
-	 * @param item
-	 */
-	public void ruleFlowAttached(AssetItem item) {
-		String content = item.getContent();
+    /**
+     * The rule flow can not be built if the package name is not the same as the
+     * package that it exists in. This changes the package name.
+     * 
+     * @param item
+     */
+    public void ruleFlowAttached(AssetItem item) {
+        String content = item.getContent();
 
-		if (content != null && !content.equals("")) {
-			RuleFlowProcess process = readProcess(new ByteArrayInputStream(content.getBytes()));
-			if (process != null) {
-				String packageName = item.getPackageName();
-				String originalPackageName = process.getPackageName();
-				if (!packageName.equals(originalPackageName)) {
-					process.setPackageName(packageName);
-					XmlBPMNProcessDumper dumper = XmlBPMNProcessDumper.INSTANCE;
-					String out = dumper.dump(process);
-					item.updateContent(out);
-					item.checkin("Changed BPMN2 process package from "
-						+ originalPackageName + " to " + packageName);
-				}
-			}
-		}
-	}
+        if ( content != null && !content.equals( "" ) ) {
+            RuleFlowProcess process = readProcess( new ByteArrayInputStream( content.getBytes() ) );
+            if ( process != null ) {
+                String packageName = item.getPackageName();
+                String originalPackageName = process.getPackageName();
+                if ( !packageName.equals( originalPackageName ) ) {
+                    process.setPackageName( packageName );
+                    XmlBPMNProcessDumper dumper = XmlBPMNProcessDumper.INSTANCE;
+                    String out = dumper.dump( process );
+                    item.updateContent( out );
+                    item.checkin( "Changed BPMN2 process package from " + originalPackageName + " to " + packageName );
+                }
+            }
+        }
+    }
 
-	public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset,
-			StringBuffer buf) {
-		// do nothing... as no change to source.
-	}
-
-	public void compile(BRMSPackageBuilder builder, AssetItem asset,
-			ErrorLogger logger) throws DroolsParserException, IOException {
-		InputStream ins = asset.getBinaryContentAttachment();
-		if (ins != null) {
-			builder.addProcessFromXml(new InputStreamReader(asset.getBinaryContentAttachment()));
-		}
-	}
+    public void compile(BRMSPackageBuilder builder,
+                        AssetItem asset,
+                        ErrorLogger logger) throws DroolsParserException,
+                                           IOException {
+        InputStream ins = asset.getBinaryContentAttachment();
+        if ( ins != null ) {
+            builder.addProcessFromXml( new InputStreamReader( asset.getBinaryContentAttachment() ) );
+        }
+    }
 }

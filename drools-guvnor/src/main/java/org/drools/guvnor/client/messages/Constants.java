@@ -2062,4 +2062,7 @@ public interface Constants extends ConstantsWithLookup {
     String CanNotSwitchToBasicView();
 
     String Causes();
+
+    String ImpactedRules();
+
 }

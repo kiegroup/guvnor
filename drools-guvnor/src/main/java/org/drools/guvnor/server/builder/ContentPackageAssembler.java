@@ -31,6 +31,7 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
+import org.drools.guvnor.server.contenthandler.ICompilable;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.selector.AssetSelector;
 import org.drools.guvnor.server.selector.SelectorManager;
@@ -219,9 +220,9 @@ public class ContentPackageAssembler {
 	 */
 	private void buildAsset(AssetItem asset) {
 		ContentHandler h = ContentManager.getHandler(asset.getFormat());
-		if (h instanceof IRuleAsset && !asset.getDisabled()) {
+		if (h instanceof ICompilable && !asset.getDisabled()) {
 			try {
-				((IRuleAsset) h).compile(builder, asset, new ErrorLogger());
+				((ICompilable) h).compile(builder, asset, new ErrorLogger());
 				if (builder.hasErrors()) {
 					this.recordBuilderErrors(asset);
 					// clear the errors, so we don't double report.
@@ -431,9 +432,9 @@ public class ContentPackageAssembler {
 			AssetItem asset = (AssetItem) iter.next();
 			if (!asset.isArchived() && !asset.getDisabled()) {
 
-				ContentHandler h = ContentManager.getHandler(asset.getFormat());
-				if (h instanceof IRuleAsset) {
-					IRuleAsset ruleAsset = (IRuleAsset) h;
+				ContentHandler handler = ContentManager.getHandler(asset.getFormat());
+				if (handler.isRuleAsset()) {
+					IRuleAsset ruleAsset = (IRuleAsset) handler;
 					ruleAsset.assembleDRL(builder, asset, src);
 				}
 				src.append("\n\n");

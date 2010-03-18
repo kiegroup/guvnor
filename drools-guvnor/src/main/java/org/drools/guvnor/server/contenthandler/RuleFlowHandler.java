@@ -39,7 +39,7 @@ import com.google.gwt.user.client.rpc.SerializableException;
 
 public class RuleFlowHandler extends ContentHandler
     implements
-    IRuleAsset {
+    ICompilable {
 
     public void retrieveAssetContent(RuleAsset asset,
                                      PackageItem pkg,
@@ -150,12 +150,6 @@ public class RuleFlowHandler extends ContentHandler
                 }
             }
         }
-    }
-
-    public void assembleDRL(BRMSPackageBuilder builder,
-                            AssetItem asset,
-                            StringBuffer buf) {
-        // do nothing... as no change to source.
     }
 
     public void compile(BRMSPackageBuilder builder,

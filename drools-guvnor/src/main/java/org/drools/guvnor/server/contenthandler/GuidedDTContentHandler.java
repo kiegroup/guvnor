@@ -68,8 +68,7 @@ public class GuidedDTContentHandler extends ContentHandler
                         AssetItem asset,
                         ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
                                                                    IOException {
-        String drl = getSourceDRL( asset,
-                                   builder );
+        String drl = getRawDRL( asset );
         if ( drl.equals( "" ) ) return;
         builder.addPackageFromDrl( new StringReader( drl ) );
     }
@@ -77,19 +76,16 @@ public class GuidedDTContentHandler extends ContentHandler
     public void assembleDRL(BRMSPackageBuilder builder,
                             AssetItem asset,
                             StringBuffer buf) {
-        String drl = getSourceDRL( asset,
-                                   builder );
+        String drl = getRawDRL( asset );
         buf.append( drl );
     }
 
-    private String getSourceDRL(AssetItem asset,
-                                BRMSPackageBuilder builder) {
+    public String getRawDRL(AssetItem asset) {
         GuidedDecisionTable model = GuidedDTXMLPersistence.getInstance().unmarshal( asset.getContent() );
         model.tableName = asset.getName();
         model.parentName = this.parentNameFromCategory( asset,
                                                         model.parentName );
 
-        String drl = GuidedDTDRLPersistence.getInstance().marshal( model );
-        return drl;
+        return GuidedDTDRLPersistence.getInstance().marshal( model );
     }
 }

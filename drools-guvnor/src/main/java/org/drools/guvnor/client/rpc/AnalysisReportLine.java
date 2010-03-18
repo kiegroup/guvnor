@@ -1,5 +1,7 @@
 package org.drools.guvnor.client.rpc;
 
+import java.util.Map;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -9,9 +11,10 @@ public class AnalysisReportLine
     implements
     IsSerializable {
 
-    public String  description;
-    public String  reason;
-    public Cause[] causes;
+    public String              description;
+    public String              reason;
+    public Cause[]             causes;
+    public Map<String, String> impactedRules;
 
     public AnalysisReportLine() {
     }

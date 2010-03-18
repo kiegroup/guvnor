@@ -90,6 +90,7 @@ import org.drools.guvnor.server.builder.ContentAssemblyError;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
+import org.drools.guvnor.server.contenthandler.ICompilable;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.contenthandler.IValidating;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
@@ -2290,14 +2291,8 @@ public class ServiceImplementation
 
         String drl = this.buildPackageSource( packageUUID );
         VerifierRunner runner = new VerifierRunner();
-        try {
-            return runner.verify( drl,
-                                   VerifierConfiguration.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE );
-        } catch ( DroolsParserException e ) {
-            log.error( "Unable to parse the rules: " + e.getMessage() );
-            throw new DetailedSerializableException( "Unable to parse the rules.",
-                                                     e.getMessage() );
-        }
+        return runner.verify( drl,
+                              VerifierConfiguration.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE );
     }
 
     @WebRemote
@@ -2793,20 +2788,14 @@ public class ServiceImplementation
         String drl = "package " + asset.metaData.packageName + "\n" + getDroolsHeader( repository.loadPackage( asset.metaData.packageName ) ) + "\n" + this.buildAssetSource( asset );
 
         VerifierRunner runner = new VerifierRunner();
-        try {
 
-            if ( asset.metaData.format.equals( AssetFormats.DECISION_TABLE_GUIDED ) || asset.metaData.format.equals( AssetFormats.DECISION_SPREADSHEET_XLS ) ) {
-                return runner.verify( drl,
-                                       VerifierConfiguration.VERIFYING_SCOPE_DECISION_TABLE );
-            } else {
-                return runner.verify( drl,
-                                       VerifierConfiguration.VERIFYING_SCOPE_SINGLE_RULE );
-            }
-
-        } catch ( DroolsParserException e ) {
-            log.error( "Unable to parse the rules: " + e.getMessage() );
-            throw new DetailedSerializableException( "Unable to parse the rules.",
-                                                     e.getMessage() );
+        if ( asset.metaData.format.equals( AssetFormats.DECISION_TABLE_GUIDED ) || asset.metaData.format.equals( AssetFormats.DECISION_SPREADSHEET_XLS ) ) {
+            return runner.verify( drl,
+                                  VerifierConfiguration.VERIFYING_SCOPE_DECISION_TABLE );
+        } else {
+            return runner.verify( drl,
+                                  VerifierConfiguration.VERIFYING_SCOPE_SINGLE_RULE );
         }
+
     }
 }

@@ -105,14 +105,7 @@ public class DSLRuleContentHandler extends ContentHandler
                             AssetItem asset,
                             StringBuffer buf) {
         //add the rule keyword if its 'stand alone'
-        String source = asset.getContent();
-        if ( DRLFileContentHandler.isStandAloneRule( source ) ) {
-            String parentName = this.parentNameFromCategory( asset,
-                                                             "" );
-            source = wrapRule( asset,
-                               parentName,
-                               source );
-        }
+        String source = getRawDRL( asset );
 
         DefaultExpander expander = builder.getDSLExpander();
         buf.append( expander.expand( source ) );
@@ -128,6 +121,19 @@ public class DSLRuleContentHandler extends ContentHandler
             return "rule '" + asset.getName() + "' extends " + parentName + " \n" + source + "\nend";
 
         }
+    }
+
+    public String getRawDRL(AssetItem asset) {
+        String source = asset.getContent();
+        if ( DRLFileContentHandler.isStandAloneRule( source ) ) {
+            String parentName = this.parentNameFromCategory( asset,
+                                                             "" );
+            source = wrapRule( asset,
+                               parentName,
+                               source );
+        }
+
+        return source;
     }
 
 }

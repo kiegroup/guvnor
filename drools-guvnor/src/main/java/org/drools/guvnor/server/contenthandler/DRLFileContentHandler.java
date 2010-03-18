@@ -33,23 +33,10 @@ public class DRLFileContentHandler extends PlainTextContentHandler
                         AssetItem asset,
                         ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
                                                                    IOException {
-        String content = getContent(asset);
-        if (content != null && !content.trim().equals("")) {
+        String content = getRawDRL( asset );
+        if ( content != null && !content.trim().equals( "" ) ) {
             builder.addPackageFromDrl( new StringReader( content ) );
         }
-    }
-
-    private String getContent(AssetItem asset) {
-        String content = asset.getContent();
-        if ( isStandAloneRule( content ) ) {
-
-            String parentName = this.parentNameFromCategory( asset,
-                                                             "" );
-            content = wrapRuleDeclaration( asset.getName(),
-                                           parentName,
-                                           content );
-        }
-        return content;
     }
 
     String wrapRuleDeclaration(String name,
@@ -113,20 +100,20 @@ public class DRLFileContentHandler extends PlainTextContentHandler
     public void assembleDRL(BRMSPackageBuilder builder,
                             AssetItem asset,
                             StringBuffer buf) {
-        String content = getContent(asset);
-        buf.append(content);
-        /*
+        String content = getRawDRL( asset );
+        buf.append( content );
+    }
+
+    public String getRawDRL(AssetItem asset) {
         String content = asset.getContent();
-        boolean standAlone = isStandAloneRule( content );
-        if ( standAlone ) {
+        if ( isStandAloneRule( content ) ) {
+
             String parentName = this.parentNameFromCategory( asset,
                                                              "" );
-            buf.append( wrapRuleDeclaration( asset.getName(),
-                                             parentName,
-                                             content ) );
-        } else {
-            buf.append( content );
+            content = wrapRuleDeclaration( asset.getName(),
+                                           parentName,
+                                           content );
         }
-        */
+        return content;
     }
 }

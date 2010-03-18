@@ -1,4 +1,5 @@
 package org.drools.guvnor.server.contenthandler;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,8 +16,6 @@ package org.drools.guvnor.server.contenthandler;
  * limitations under the License.
  */
 
-
-
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -32,50 +31,61 @@ import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
-public class BRLContentHandler extends ContentHandler implements IRuleAsset {
+public class BRLContentHandler extends ContentHandler
+    implements
+    IRuleAsset {
 
-	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
-			AssetItem item) throws SerializableException {
-		RuleModel model = BRXMLPersistence.getInstance().unmarshal(
-				item.getContent());
+    public void retrieveAssetContent(RuleAsset asset,
+                                     PackageItem pkg,
+                                     AssetItem item) throws SerializableException {
+        RuleModel model = BRXMLPersistence.getInstance().unmarshal( item.getContent() );
 
-		asset.content = model;
+        asset.content = model;
 
-	}
+    }
 
-	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
-			throws SerializableException {
-		RuleModel data = (RuleModel) asset.content;
-		if (data.name == null) {
-			data.name = repoAsset.getName();
-		}
-		repoAsset.updateContent(BRXMLPersistence.getInstance().marshal(data));
-	}
+    public void storeAssetContent(RuleAsset asset,
+                                  AssetItem repoAsset) throws SerializableException {
+        RuleModel data = (RuleModel) asset.content;
+        if ( data.name == null ) {
+            data.name = repoAsset.getName();
+        }
+        repoAsset.updateContent( BRXMLPersistence.getInstance().marshal( data ) );
+    }
 
-	public void compile(BRMSPackageBuilder builder, AssetItem asset,
-			ContentPackageAssembler.ErrorLogger logger)
-			throws DroolsParserException, IOException {
-		builder
-				.addPackageFromDrl(new StringReader(
-						getSourceDRL(asset, builder)));
-	}
+    public void compile(BRMSPackageBuilder builder,
+                        AssetItem asset,
+                        ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
+                                                                   IOException {
+        builder.addPackageFromDrl( new StringReader( getSourceDRL( asset,
+                                                                   builder ) ) );
+    }
 
-	public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset,
-			StringBuffer buf) {
-		String drl = getSourceDRL(asset, builder);
-		buf.append(drl);
-	}
+    public void assembleDRL(BRMSPackageBuilder builder,
+                            AssetItem asset,
+                            StringBuffer buf) {
+        String drl = getSourceDRL( asset,
+                                   builder );
+        buf.append( drl );
+    }
 
-	private String getSourceDRL(AssetItem asset, BRMSPackageBuilder builder) {
-		RuleModel model = BRXMLPersistence.getInstance().unmarshal(
-				asset.getContent());
+    private String getSourceDRL(AssetItem asset,
+                                BRMSPackageBuilder builder) {
+        RuleModel model = BRXMLPersistence.getInstance().unmarshal( asset.getContent() );
         model.name = asset.getName();
-        model.parentName = this.parentNameFromCategory(asset, model.parentName);  
-        
-		String drl = BRDRLPersistence.getInstance().marshal(model);
-		if (builder.hasDSL() && model.hasDSLSentences()) {
-			drl = builder.getDSLExpander().expand(drl);
-		}
-		return drl;
-	}
+        model.parentName = this.parentNameFromCategory( asset,
+                                                        model.parentName );
+
+        String drl = BRDRLPersistence.getInstance().marshal( model );
+        if ( builder.hasDSL() && model.hasDSLSentences() ) {
+            drl = builder.getDSLExpander().expand( drl );
+        }
+        return drl;
+    }
+
+    public String getRawDRL(AssetItem asset) {
+        RuleModel model = BRXMLPersistence.getInstance().unmarshal( asset.getContent() );
+
+        return BRDRLPersistence.getInstance().marshal( model );
+    }
 }

@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.compiler.DroolsParserException;
-import org.drools.verifier.misc.DrlPackageParser;
-import org.drools.verifier.misc.DrlRuleParser;
 import org.drools.doc.DroolsDocsBuilder;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.ServiceImplementation;
@@ -20,6 +18,8 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.VersionableItem;
+import org.drools.verifier.misc.DrlPackageParser;
+import org.drools.verifier.misc.DrlRuleParser;
 
 /**
  * 

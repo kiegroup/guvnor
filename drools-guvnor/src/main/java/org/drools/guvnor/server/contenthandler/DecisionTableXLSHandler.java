@@ -1,4 +1,5 @@
 package org.drools.guvnor.server.contenthandler;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -14,8 +15,6 @@ package org.drools.guvnor.server.contenthandler;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -36,8 +35,9 @@ import com.google.gwt.user.client.rpc.SerializableException;
  *
  * @author Michael Neale
  */
-public class DecisionTableXLSHandler extends ContentHandler implements IRuleAsset {
-
+public class DecisionTableXLSHandler extends ContentHandler
+    implements
+    IRuleAsset {
 
     public void retrieveAssetContent(RuleAsset asset,
                                      PackageItem pkg,
@@ -50,19 +50,31 @@ public class DecisionTableXLSHandler extends ContentHandler implements IRuleAsse
         //do nothing, as we have an attachment
     }
 
-    public void assembleDRL(BRMSPackageBuilder builder, AssetItem asset, StringBuffer buf) {
-        SpreadsheetCompiler comp = new SpreadsheetCompiler();
-        String drl = comp.compile( false, asset.getBinaryContentAttachment(), InputType.XLS );
-        buf.append( drl );
+    public void assembleDRL(BRMSPackageBuilder builder,
+                            AssetItem asset,
+                            StringBuffer buf) {
+        buf.append( getRawDRL( asset ) );
     }
 
-    public void compile(BRMSPackageBuilder builder, AssetItem asset, ErrorLogger logger) throws DroolsParserException,
-                                                                                        IOException {
-    	StringBuffer buf = new StringBuffer();
+    public void compile(BRMSPackageBuilder builder,
+                        AssetItem asset,
+                        ErrorLogger logger) throws DroolsParserException,
+                                           IOException {
+        StringBuffer buf = new StringBuffer();
 
-    	assembleDRL(builder, asset, buf);
-        builder.addPackageFromDrl( new StringReader(buf.toString()) );
+        assembleDRL( builder,
+                     asset,
+                     buf );
+        builder.addPackageFromDrl( new StringReader( buf.toString() ) );
 
+    }
+
+    public String getRawDRL(AssetItem asset) {
+        SpreadsheetCompiler comp = new SpreadsheetCompiler();
+        String drl = comp.compile( false,
+                                   asset.getBinaryContentAttachment(),
+                                   InputType.XLS );
+        return drl;
     }
 
 }

@@ -5,6 +5,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.Button;
@@ -27,11 +28,14 @@ public class AnalysisView extends Composite {
     private VerticalPanel layout;
     private String        packageUUID;
     private Constants     constants = GWT.create( Constants.class );
+    private EditItemEvent edit;
 
     public AnalysisView(String packageUUID,
-                        String packageName) {
+                        String packageName,
+                        EditItemEvent edit) {
         this.layout = new VerticalPanel();
         this.packageUUID = packageUUID;
+        this.edit = edit;
 
         PrettyFormLayout pf = new PrettyFormLayout();
 
@@ -65,7 +69,8 @@ public class AnalysisView extends Composite {
                                                                   public void onSuccess(Object data) {
                                                                       AnalysisReport rep = (AnalysisReport) data;
                                                                       VerifierResultWidget w = new VerifierResultWidget( rep,
-                                                                                                                         true );
+                                                                                                                         true,
+                                                                                                                         edit);
                                                                       w.setWidth( "100%" );
                                                                       layout.remove( 1 );
                                                                       layout.add( w );
