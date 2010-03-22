@@ -73,6 +73,7 @@ import com.gwtext.client.widgets.grid.ColumnModel;
 import com.gwtext.client.widgets.grid.GridPanel;
 import com.gwtext.client.widgets.grid.GroupingView;
 import com.gwtext.client.widgets.grid.Renderer;
+import com.gwtext.client.widgets.grid.event.ColumnModelListenerAdapter;
 import com.gwtext.client.widgets.grid.event.GridCellListenerAdapter;
 import com.gwtext.client.widgets.grid.event.GridColumnListener;
 import com.gwtext.client.widgets.grid.event.GridColumnListenerAdapter;
@@ -886,6 +887,16 @@ public class GuidedDecisionTableWidget extends Composite
         if ( this.dt.groupField != null ) {
             store.setGroupField( dt.groupField );
         }
+        cm.addListener(new ColumnModelListenerAdapter(){
+ 			    public void onHiddenChange(ColumnModel cm, int colIndex,
+ 					  boolean hidden) {
+ 				     final String dta = cm.getDataIndex(colIndex);        		
+         			if (colMap.containsKey(dta)) {
+         				DTColumnConfig col = (DTColumnConfig) colMap.get(dta);
+         				col.hideColumn = hidden;
+         			}
+         		}  	
+         });
 
         store.load();
 
