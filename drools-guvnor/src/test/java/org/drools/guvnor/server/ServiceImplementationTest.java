@@ -3311,9 +3311,9 @@ public class ServiceImplementationTest extends TestCase {
 
         assertEquals( "Message",
                       report.factUsages[0].name );
-        assertEquals( "RedundancyPattern",
-                      report.factUsages[1].name );
         assertEquals( "RedundancyPattern2",
+                      report.factUsages[1].name );
+        assertEquals( "RedundancyPattern",
                       report.factUsages[2].name );
 
         assertEquals( 0,
@@ -3329,9 +3329,9 @@ public class ServiceImplementationTest extends TestCase {
                       report.factUsages[2].fields[0].name );
 
         assertEquals( 3,
-                      report.factUsages[1].fields[0].rules.length );
-        assertEquals( 2,
                       report.factUsages[2].fields[0].rules.length );
+        assertEquals( 2,
+                      report.factUsages[1].fields[0].rules.length );
 
         assertNotNull( report.factUsages[1].fields[0].rules[0] );
 

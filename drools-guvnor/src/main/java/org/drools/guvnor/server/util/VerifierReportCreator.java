@@ -52,10 +52,10 @@ public class VerifierReportCreator {
             for ( Field f : flds ) {
                 AnalysisFieldUsage fu = new AnalysisFieldUsage();
                 fu.name = f.getName();
-                Collection<VerifierRule> cr = verifierData.getRulesByFieldId( f.getGuid() );
+                Collection<VerifierRule> cr = verifierData.getRulesByFieldPath( f.getPath() );
                 List<String> ruleNames = new ArrayList<String>();
                 for ( VerifierRule verifierRule : cr ) {
-                    ruleNames.add( intern( verifierRule.getRuleName(),
+                    ruleNames.add( intern( verifierRule.getName(),
                                            interned ) );
                 }
                 fu.rules = ruleNames.toArray( new String[ruleNames.size()] );
