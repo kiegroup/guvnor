@@ -24,6 +24,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
@@ -49,6 +50,44 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
         assertNotNull(engine);
 
     }
+
+    public void testLoaderWithComplexFields() throws Exception {
+
+        RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+        PackageItem item = repo.createPackage( "testLoaderWithComplexFields", "to test the loader" );
+        ServiceImplementation.updateDroolsHeader("import org.drools.guvnor.server.rules.Agent", item );
+        repo.save();
+
+        BRMSSuggestionCompletionLoader  loader = new BRMSSuggestionCompletionLoader();
+        String header = ServiceImplementation.getDroolsHeader(item);
+
+
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( item );
+        assertNotNull(engine);
+
+        String[] modelFields = engine.getModelFields("Agent");
+        System.out.println("modelFields: "+Arrays.asList(modelFields));
+        assertNotNull(modelFields);
+        assertEquals(9, modelFields.length );
+
+        modelFields = engine.getModelFields(FieldAccessorsAndMutators.BOTH, "Agent");
+        assertNotNull(modelFields);
+        System.out.println("modelFields: "+Arrays.asList(modelFields));
+        assertEquals(10, modelFields.length );
+        
+        modelFields = engine.getModelFields(FieldAccessorsAndMutators.ACCESSOR, "Agent");
+        assertNotNull(modelFields);
+        System.out.println("modelFields: "+Arrays.asList(modelFields));
+        assertEquals(9, modelFields.length );
+
+        modelFields = engine.getModelFields(FieldAccessorsAndMutators.MUTATOR, "Agent");
+        assertNotNull(modelFields);
+        System.out.println("modelFields: "+Arrays.asList(modelFields));
+        assertEquals(9, modelFields.length );
+
+    }
+
+
 
     public void testStripUnNeededFields() {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
