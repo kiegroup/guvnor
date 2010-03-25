@@ -14,7 +14,7 @@ public interface JCRRepositoryConfigurator {
     /** 
      * @return a new Repository instance. 
      * There should only be one instance of this in an application.
-     * Generally, one repository (which may be bineded to JNDI) can spawn multiple sessions
+     * Generally, one repository (which may be binded to JNDI) can spawn multiple sessions
      * for each user as needed.
      * Typically this would be created on application startup.
      * @param repositoryRootDirectory The directory where the data is stored. If empty, the repository will be generated 
