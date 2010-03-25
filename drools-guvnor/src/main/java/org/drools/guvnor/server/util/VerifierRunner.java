@@ -1,6 +1,7 @@
 package org.drools.guvnor.server.util;
 
 import java.io.StringReader;
+import java.util.Collection;
 
 import org.drools.builder.ResourceType;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -24,10 +25,14 @@ public class VerifierRunner {
     private Verifier    verifier;
     private PackageItem packageItem;
 
-    public AnalysisReport verify(String drl,
-                                 String scope) {
+	public AnalysisReport verify(String drl, String scope) {
+		return verify(drl, scope, null);
+	}
 
-        initVerifier( scope );
+	public AnalysisReport verify(String drl, String scope,
+			Collection<String> additionalVerifierRules) {
+
+        initVerifier( scope, additionalVerifierRules );
 
         verifier.addResourcesToVerify( ResourceFactory.newReaderResource( new StringReader( drl ) ),
                                        ResourceType.DRL );
@@ -38,10 +43,10 @@ public class VerifierRunner {
     }
 
     public AnalysisReport verify(PackageItem packageItem,
-                                 String scope) {
+                                 String scope, Collection<String> additionalVerifierRules) {
         this.packageItem = packageItem;
 
-        initVerifier( scope );
+        initVerifier( scope, additionalVerifierRules );
 
         addHeaderToVerifier();
 
@@ -66,11 +71,18 @@ public class VerifierRunner {
         return VerifierReportCreator.doReport( report );
     }
 
-    private void initVerifier(String scope) {
+    private void initVerifier(String scope, Collection<String> additionalVerifierRules) {
         VerifierConfiguration conf = new DefaultVerifierConfiguration();
         conf.getVerifyingScopes().clear();
         conf.getVerifyingScopes().add( scope );
         conf.setAcceptRulesWithoutVerifiyingScope( true );
+		if (additionalVerifierRules != null) {
+			for (String rule : additionalVerifierRules) {
+				conf.getVerifyingResources().put(
+						ResourceFactory.newByteArrayResource(rule.getBytes()),
+						ResourceType.DRL);
+			}
+		}
         verifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier( conf );
     }
 
