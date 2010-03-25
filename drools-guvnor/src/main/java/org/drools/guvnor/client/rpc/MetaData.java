@@ -41,6 +41,7 @@ public class MetaData
     public Date     createdDate;
 
     public String   packageName      = "";
+    public String   packageUUID      = "";
     public String[] categories       = new String[0];
 
     public String   format           = "";

@@ -15,23 +15,69 @@ package org.drools.guvnor.client.modeldriven.ui;
  * limitations under the License.
  */
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.common.ClickableLabel;
+import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.common.DirtyableFlexTable;
+import org.drools.guvnor.client.common.DirtyableHorizontalPane;
+import org.drools.guvnor.client.common.DirtyableVerticalPane;
+import org.drools.guvnor.client.common.ErrorPopup;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.InfoPopup;
+import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.*;
+import org.drools.guvnor.client.modeldriven.brl.ActionCallMethod;
+import org.drools.guvnor.client.modeldriven.brl.ActionGlobalCollectionAdd;
+import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
+import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
+import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
+import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
+import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
+import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
+import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
+import org.drools.guvnor.client.modeldriven.brl.ExpressionFormLine;
+import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
+import org.drools.guvnor.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
+import org.drools.guvnor.client.modeldriven.brl.FromCollectCompositeFactPattern;
+import org.drools.guvnor.client.modeldriven.brl.FromCompositeFactPattern;
+import org.drools.guvnor.client.modeldriven.brl.IAction;
+import org.drools.guvnor.client.modeldriven.brl.IPattern;
+import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
+import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
+import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.security.Capabilities;
-import org.drools.guvnor.client.messages.Constants;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.KeyboardListener;
+import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.MouseListenerAdapter;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.ExtElement;
 import com.gwtext.client.util.Format;
 
@@ -44,20 +90,19 @@ import com.gwtext.client.util.Format;
 public class RuleModeller extends DirtyableComposite {
 
     private DirtyableFlexTable layout;
-    private SuggestionCompletionEngine completions;
     private RuleModel model;
     private Constants constants = ((Constants) GWT.create(Constants.class));
     private boolean showingOptions = false;
     private int currentLayoutRow = 0;
-
+    private String packageName;
+    
     public RuleModeller(RuleAsset asset, RuleViewer viewer) {
         this(asset);
     }
 
     public RuleModeller(RuleAsset asset) {
         this.model = (RuleModel) asset.content;
-
-        this.completions = SuggestionCompletionCache.getInstance().getEngineFromCache(asset.metaData.packageName);
+        this.packageName = asset.metaData.packageName;
 
         layout = new DirtyableFlexTable();
 
@@ -294,43 +339,35 @@ public class RuleModeller extends DirtyableComposite {
 
         for (int i = 0; i < model.rhs.length; i++) {
             DirtyableVerticalPane widget = new DirtyableVerticalPane();
+            widget.setWidth("100%");
             IAction action = model.rhs[i];
 
-            Widget w = null;
+            //if lockRHS() set the widget RO, otherwise let them decide.
+            Boolean readOnly = this.lockRHS()?true:null;
+
+            RuleModellerWidget w = null;
             if (action instanceof ActionCallMethod) {
-                w = new ActionCallMethodWidget(this, (ActionCallMethod) action, completions);
+                w = new ActionCallMethodWidget(this, (ActionCallMethod) action,readOnly);
             } else if (action instanceof ActionSetField) {
-                w = new ActionSetFieldWidget(this, (ActionSetField) action, completions);
+                w = new ActionSetFieldWidget(this, (ActionSetField) action,readOnly);
             } else if (action instanceof ActionInsertFact) {
-                w = new ActionInsertFactWidget(this, (ActionInsertFact) action, completions);
+                w = new ActionInsertFactWidget(this, (ActionInsertFact) action, readOnly);
             } else if (action instanceof ActionRetractFact) {
-                w = new ActionRetractFactWidget(this.completions, (ActionRetractFact) action, this.getModel());
+                w = new ActionRetractFactWidget(this, (ActionRetractFact) action, readOnly);
             } else if (action instanceof DSLSentence) {
-                w = new DSLSentenceWidget((DSLSentence) action, this.completions);
-                w.setStyleName("model-builderInner-Background"); //NON-NLS
+                w = new DSLSentenceWidget(this,(DSLSentence) action, readOnly);
+                w.addStyleName("model-builderInner-Background"); //NON-NLS
             } else if (action instanceof FreeFormLine) {
-                final TextBox tb = new TextBox();
-                final FreeFormLine ffl = (FreeFormLine) action;
-                tb.setText(ffl.text);
-                tb.addChangeListener(new ChangeListener() {
-
-                    public void onChange(Widget arg0) {
-                        ffl.text = tb.getText();
-                    }
-                });
-                w = tb;
+                w = new FreeFormLineWidget(this, (FreeFormLine) action, readOnly);
             } else if (action instanceof ActionGlobalCollectionAdd) {
-                ActionGlobalCollectionAdd gca = (ActionGlobalCollectionAdd) action;
-                SimplePanel sp = new SimplePanel();
-                sp.setStyleName("model-builderInner-Background"); //NON-NLS
-                w = sp;
-                sp.add(new SmallLabel("&nbsp;" + Format.format(constants.AddXToListY(), gca.factName, gca.globalName)));
-            }
+                w = new GlobalCollectionAddWidget(this, (ActionGlobalCollectionAdd) action, readOnly);
+            } 
 
-            //w.setWidth( "100%" );
+            w.setWidth( "100%" );
             widget.add(spacerWidget());
 
             DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
+            horiz.setWidth("100%");
             //horiz.setBorderWidth(2);
 
             Image remove = new ImageButton("images/delete_faded.gif"); //NON-NLS
@@ -368,9 +405,10 @@ public class RuleModeller extends DirtyableComposite {
             layout.setWidget(currentLayoutRow, 1, widget);
             layout.getFlexCellFormatter().setHorizontalAlignment(currentLayoutRow, 1, HasHorizontalAlignment.ALIGN_LEFT);
             layout.getFlexCellFormatter().setVerticalAlignment(currentLayoutRow, 1, HasVerticalAlignment.ALIGN_TOP);
+            layout.getFlexCellFormatter().setWidth(currentLayoutRow, 1, "100%");
 
             final int index = i;
-            if (!lockRHS()) {
+            if (!(this.lockRHS() || w.isReadOnly())) {
                 this.addActionsButtonsToLayout(constants.AddAnActionBelow(), new ClickListener() {
 
                     public void onClick(Widget w) {
@@ -432,6 +470,7 @@ public class RuleModeller extends DirtyableComposite {
         //
         // The list of DSL sentences
         //
+        SuggestionCompletionEngine completions = SuggestionCompletionCache.getInstance().getEngineFromCache(packageName);
         if (completions.getDSLConditions().length > 0) {
             for (int i = 0; i < completions.getDSLConditions().length; i++) {
                 final DSLSentence sen = completions.getDSLConditions()[i];
@@ -624,9 +663,10 @@ public class RuleModeller extends DirtyableComposite {
         //
         // First load up the stuff to do with bound variables or globals
         //
+        SuggestionCompletionEngine completions = SuggestionCompletionCache.getInstance().getEngineFromCache(packageName);
         List<String> vars = model.getBoundFacts();
         List<String> vars2 = model.getRhsBoundFacts();
-        String[] globals = this.completions.getGlobalVariables();
+        String[] globals = completions.getGlobalVariables();
 
 
         //
@@ -918,37 +958,31 @@ public class RuleModeller extends DirtyableComposite {
 
         for (int i = 0; i < model.lhs.length; i++) {
             DirtyableVerticalPane vert = new DirtyableVerticalPane();
-            IPattern pattern = model.lhs[i];
-            Widget w = null;
-            if (pattern instanceof FactPattern) {
-                w = new FactPatternWidget(this, pattern, true);
-            } else if (pattern instanceof CompositeFactPattern) {
-                w = new CompositeFactPatternWidget(this, (CompositeFactPattern) pattern);
-            } else if (pattern instanceof FromAccumulateCompositeFactPattern) {
-                w = new FromAccumulateCompositeFactPatternWidget(this, (FromAccumulateCompositeFactPattern) pattern);
-            } else if (pattern instanceof FromCollectCompositeFactPattern) {
-                w = new FromCollectCompositeFactPatternWidget(this, (FromCollectCompositeFactPattern) pattern);
-            } else if (pattern instanceof FromCompositeFactPattern) {
-                w = new FromCompositeFactPatternWidget(this, (FromCompositeFactPattern) pattern);
-            } else if (pattern instanceof DSLSentence) {
-                w = new DSLSentenceWidget((DSLSentence) pattern, completions);
-            } else if (pattern instanceof FreeFormLine) {
-                final FreeFormLine ffl = (FreeFormLine) pattern;
-                final TextBox tb = new TextBox();
-                tb.setText(ffl.text);
-                tb.setTitle(constants.ThisIsADrlExpressionFreeForm());
-                tb.addChangeListener(new ChangeListener() {
+            vert.setWidth("100%");
 
-                    public void onChange(Widget arg0) {
-                        ffl.text = tb.getText();
-                    }
-                });
-                w = tb;
+            //if lockLHS() set the widget RO, otherwise let them decide.
+            Boolean readOnly = this.lockLHS()?true:null;
+
+            IPattern pattern = model.lhs[i];
+            RuleModellerWidget w = null;
+            if (pattern instanceof FactPattern) {
+                w = new FactPatternWidget(this, pattern, true, readOnly);
+            } else if (pattern instanceof CompositeFactPattern) {
+                w = new CompositeFactPatternWidget(this, (CompositeFactPattern) pattern, readOnly);
+            } else if (pattern instanceof FromAccumulateCompositeFactPattern) {
+                w = new FromAccumulateCompositeFactPatternWidget(this, (FromAccumulateCompositeFactPattern) pattern, readOnly);
+            } else if (pattern instanceof FromCollectCompositeFactPattern) {
+                w = new FromCollectCompositeFactPatternWidget(this, (FromCollectCompositeFactPattern) pattern, readOnly);
+            } else if (pattern instanceof FromCompositeFactPattern) {
+                w = new FromCompositeFactPatternWidget(this, (FromCompositeFactPattern) pattern, readOnly);
+            } else if (pattern instanceof DSLSentence) {
+                w = new DSLSentenceWidget(this,(DSLSentence) pattern, readOnly);
+            } else if (pattern instanceof FreeFormLine) {
+                w = new FreeFormLineWidget(this, (FreeFormLine)pattern, readOnly);
             } else if (pattern instanceof ExpressionFormLine) {
-                ExpressionFormLine efl = (ExpressionFormLine) pattern;
-                w = new ExpressionBuilder(this, efl);
+                w = new ExpressionBuilder(this, (ExpressionFormLine) pattern, readOnly);
             } else {
-                throw new RuntimeException("I don't know what type of pattern that is.");
+                throw new RuntimeException("I don't know what type of pattern it is: "+pattern);
             }
 
             vert.add(wrapLHSWidget(model, i, w));
@@ -962,9 +996,10 @@ public class RuleModeller extends DirtyableComposite {
             layout.setWidget(currentLayoutRow, 1, vert);
             layout.getFlexCellFormatter().setHorizontalAlignment(currentLayoutRow, 1, HasHorizontalAlignment.ALIGN_LEFT);
             layout.getFlexCellFormatter().setVerticalAlignment(currentLayoutRow, 1, HasVerticalAlignment.ALIGN_TOP);
+            layout.getFlexCellFormatter().setWidth(currentLayoutRow, 1, "100%");
 
             final int index = i;
-            if (!lockLHS()) {
+            if (!(this.lockLHS() || w.isReadOnly())) {
                 this.addActionsButtonsToLayout(constants.AddAConditionBelow(), new ClickListener() {
 
                     public void onClick(Widget w) {
@@ -1003,7 +1038,7 @@ public class RuleModeller extends DirtyableComposite {
      */
     private Widget wrapLHSWidget(final RuleModel model,
             int i,
-            Widget w) {
+            RuleModellerWidget w) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
         final Image remove = new ImageButton("images/delete_faded.gif"); //NON-NLS
@@ -1027,7 +1062,7 @@ public class RuleModeller extends DirtyableComposite {
         w.setWidth("100%");
 
         horiz.add(w);
-        if (!lockLHS()) {
+        if (!(this.lockLHS() || w.isReadOnly())) {
             horiz.add(remove);
         }
 
@@ -1080,11 +1115,7 @@ public class RuleModeller extends DirtyableComposite {
         layout.setWidget(currentLayoutRow, 2, actionPanel);
         layout.getFlexCellFormatter().setHorizontalAlignment(currentLayoutRow, 2, HasHorizontalAlignment.ALIGN_CENTER);
         layout.getFlexCellFormatter().setVerticalAlignment(currentLayoutRow, 2, HasVerticalAlignment.ALIGN_MIDDLE);
-        
-
-
     }
-
 
     public RuleModel getModel() {
         return model;
@@ -1095,15 +1126,16 @@ public class RuleModeller extends DirtyableComposite {
      * either by the rule, or as a global.
      */
     public boolean isVariableNameUsed(String name) {
-
+        SuggestionCompletionEngine completions = SuggestionCompletionCache.getInstance().getEngineFromCache(packageName);
         return model.isVariableNameUsed(name) || completions.isGlobalVariable(name);
     }
 
+    @Override
     public boolean isDirty() {
         return (layout.hasDirty() || dirtyflag);
     }
 
     public SuggestionCompletionEngine getSuggestionCompletions() {
-        return this.completions;
+        return SuggestionCompletionCache.getInstance().getEngineFromCache(packageName);
     }
 }

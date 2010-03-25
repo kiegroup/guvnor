@@ -9,7 +9,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.ClickableLabel;
-import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -24,22 +23,37 @@ import org.drools.guvnor.client.messages.Constants;
  *
  * @author esteban
  */
-public class FromCompositeFactPatternWidget extends DirtyableComposite {
+public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
-    protected final SuggestionCompletionEngine completions;
     protected FromCompositeFactPattern pattern;
     protected DirtyableFlexTable layout;
     protected RuleModeller modeller;
     protected Constants constants = ((Constants) GWT.create(Constants.class));
+    protected boolean readOnly;
 
     public FromCompositeFactPatternWidget(RuleModeller modeller,
             FromCompositeFactPattern pattern) {
-        this.completions = modeller.getSuggestionCompletions();
+        this(modeller, pattern, null);
+    }
+
+    public FromCompositeFactPatternWidget(RuleModeller modeller,
+            FromCompositeFactPattern pattern, Boolean readOnly) {
         this.pattern = pattern;
         this.modeller = modeller;
 
+        //if readOnly is null, the readOnly attribute is calculated.
+        if (readOnly == null) {
+            this.calculateReadOnly();
+        }else{
+            this.readOnly = readOnly;
+        }
+
+
         this.layout = new DirtyableFlexTable();
-        this.layout.setStyleName("model-builderInner-Background");
+        if (this.readOnly) {
+            this.layout.addStyleName("editor-disabled-widget");
+        }
+        this.layout.addStyleName("model-builderInner-Background");
 
         doLayout();
         initWidget(layout);
@@ -52,19 +66,27 @@ public class FromCompositeFactPatternWidget extends DirtyableComposite {
         if (pattern.getFactPattern() != null) {
             FactPattern fact = pattern.getFactPattern();
             if (fact != null) {
-                this.layout.setWidget(r,
-                        0,
-                        addRemoveButton(new FactPatternWidget(modeller,
-                        fact,
-                        true), new ClickListener() {
 
-                    public void onClick(Widget w) {
-                        if (Window.confirm(constants.RemoveThisEntireConditionQ())) {
-                            pattern.setFactPattern(null);
-                            modeller.refreshWidget();
+
+                if (this.readOnly) {
+                    //creates a new read-only FactPatternWidget
+                    FactPatternWidget factPatternWidget = new FactPatternWidget(modeller, fact, false, true);
+                    this.layout.setWidget(r,
+                            0, factPatternWidget);
+                } else {
+                    FactPatternWidget factPatternWidget = new FactPatternWidget(modeller, fact, true);
+                    this.layout.setWidget(r,
+                            0,
+                            addRemoveButton(factPatternWidget, new ClickListener() {
+
+                        public void onClick(Widget w) {
+                            if (Window.confirm(constants.RemoveThisEntireConditionQ())) {
+                                pattern.setFactPattern(null);
+                                modeller.refreshWidget();
+                            }
                         }
-                    }
-                }));
+                    }));
+                }
                 r++;
             }
         }
@@ -90,13 +112,13 @@ public class FromCompositeFactPatternWidget extends DirtyableComposite {
         int r = 0;
 
         if (pattern.getFactPattern() == null) {
-            panel.setWidget(r, 0, new ClickableLabel("<br> <font color='red'>" + constants.clickToAddPatterns() + "</font>", click, !this.modeller.lockLHS()));
+            panel.setWidget(r, 0, new ClickableLabel("<br> <font color='red'>" + constants.clickToAddPatterns() + "</font>", click, !this.readOnly));
             r++;
         }
 
 
         panel.setWidget(r, 0, new HTML(lbl));
-        panel.setWidget(r, 1, new ExpressionBuilder(modeller, this.pattern.getExpression()));
+        panel.setWidget(r, 1, new ExpressionBuilder(modeller, this.pattern.getExpression(), this.readOnly));
 
 
         return panel;
@@ -106,6 +128,7 @@ public class FromCompositeFactPatternWidget extends DirtyableComposite {
      * Pops up the fact selector.
      */
     protected void showFactTypeSelector(final Widget w) {
+        SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
         final ListBox box = new ListBox();
         String[] facts = completions.getFactTypes();
 
@@ -145,14 +168,24 @@ public class FromCompositeFactPatternWidget extends DirtyableComposite {
         w.setWidth("100%");
 
         horiz.add(w);
-        if (!modeller.lockLHS()) {
+        if (!this.readOnly) {
             horiz.add(remove);
         }
-
         return horiz;
     }
 
     public boolean isDirty() {
         return layout.hasDirty();
+    }
+
+    protected void calculateReadOnly() {
+        if (this.pattern.factPattern != null) {
+            this.readOnly = !modeller.getSuggestionCompletions().containsFactType(this.pattern.factPattern.factType);
+        }
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return this.readOnly;
     }
 }

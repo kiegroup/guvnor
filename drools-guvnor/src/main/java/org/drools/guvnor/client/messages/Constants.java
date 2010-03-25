@@ -18,9 +18,7 @@ public interface Constants extends ConstantsWithLookup {
 
     String ChooseAPatternThatThisColumnAddsDataTo();
 
-
     String Assets();
-
 
     String Category();
     
@@ -28,31 +26,15 @@ public interface Constants extends ConstantsWithLookup {
 
     String AddAnotherFieldToThisSoYouCanSetItsValue();
 
-
     String ChooseAMethodToInvoke();
 
     String AddField();
-
-
-
-
-
-
-
-
-
 
     String OK();
 
     String pleaseChooseFactType();
 
-
-
-
     String NewFactSelectTheType();
-
-
-
 
     String ColumnConfigurationSetAFieldOnAFact();
 
@@ -95,7 +77,6 @@ public interface Constants extends ConstantsWithLookup {
     String DeleteAssetTooltip();
 
     String DeleteAreYouSure();
-
 
     String ChangeStatusTip();
 
@@ -296,7 +277,6 @@ public interface Constants extends ConstantsWithLookup {
     String SuccessOverall();
 
     String FailureOverall();
-
 
     String RuleCoveragePercent();
 
@@ -908,7 +888,9 @@ public interface Constants extends ConstantsWithLookup {
 
     String CreateANewPackage();
 
+    String CreateANewSubPackage();
     
+    String ParentPackage();
 
     String ImportDRLDesc1();
 
@@ -1148,7 +1130,8 @@ public interface Constants extends ConstantsWithLookup {
     String CreateNew();
 
     String NewPackage1();
-
+    
+    String NewSubPackage();
 
     String NewRule();
 
@@ -1832,7 +1815,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String December();
 
-
     String SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother();
 
     String ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation();
@@ -2065,4 +2047,22 @@ public interface Constants extends ConstantsWithLookup {
 
     String ImpactedRules();
 
+    String SelectWorkingSets();
+    
+    String ErrorLoadingRules();
+    
+    String WorkingSets();
+    String NewWorkingSet();
+    String CreateWorkingSet();
+    String WorkingSetName();
+    String CopyTheWorkingSet();
+    String CopyTheWorkingSetTip();
+    String NewWorkingSetNameIs();
+    String NotAValidWorkingSetName();
+    String WorkingSetCopiedSuccessfully();
+    String RenameTheWorkingSet();
+    String RenameTheWorkingSetTip();
+    String WorkingSetRenamedSuccessfully();
+    String ConstraintsSection();
+    String AddNewConstrain();
 }

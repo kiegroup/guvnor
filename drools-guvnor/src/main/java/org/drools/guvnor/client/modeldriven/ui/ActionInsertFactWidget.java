@@ -39,26 +39,41 @@ import com.gwtext.client.util.Format;
  * @author Michael Neale
  *
  */
-public class ActionInsertFactWidget extends DirtyableComposite {
+public class ActionInsertFactWidget extends RuleModellerWidget {
 
     private final DirtyableFlexTable layout;
     private final ActionInsertFact model;
-    private final SuggestionCompletionEngine completions;
     private final String[] fieldCompletions;
     private final RuleModeller modeller;
     private final String factType;
     private Constants constants = GWT.create(Constants.class);
+    private boolean readOnly;
 
-    public ActionInsertFactWidget(RuleModeller mod, ActionInsertFact set, SuggestionCompletionEngine com) {
+    public ActionInsertFactWidget(RuleModeller mod, ActionInsertFact set) {
+        this(mod, set, null);
+    }
+
+    public ActionInsertFactWidget(RuleModeller mod, ActionInsertFact set,Boolean readOnly) {
         this.model = set;
-        this.completions = com;
         this.layout = new DirtyableFlexTable();
         this.modeller = mod;
         this.factType = set.factType;
-        this.fieldCompletions = this.completions.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
+
+        SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+        this.fieldCompletions = completions.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
                                                                       set.factType );
 
         layout.setStyleName( "model-builderInner-Background" );  //NON-NLS
+
+        if (readOnly == null) {
+            this.readOnly = !completions.containsFactType(set.factType);
+        } else {
+            this.readOnly = readOnly;
+        }
+
+        if (this.readOnly) {
+            layout.addStyleName("editor-disabled-widget");
+        }
 
         doLayout();
 
@@ -89,7 +104,7 @@ public class ActionInsertFactWidget extends DirtyableComposite {
                 	};
                 }
             });
-            if (!this.modeller.lockRHS()) {
+            if (!this.readOnly) {
                 inner.setWidget( i, 2 + col, remove );
             }
 
@@ -101,8 +116,9 @@ public class ActionInsertFactWidget extends DirtyableComposite {
     }
 
     private Widget valueEditor(final ActionFieldValue val) {
-    	DropDownData enums = this.completions.getEnums(this.factType, this.model.fieldValues, val.field);
-    	return new ActionValueEditor(val, enums,modeller,val.type);
+        SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+    	DropDownData enums = completions.getEnums(this.factType, this.model.fieldValues, val.field);
+    	return new ActionValueEditor(val, enums,modeller,val.type,this.readOnly);
     }
 
     private Widget fieldSelector(final ActionFieldValue val) {
@@ -128,11 +144,12 @@ public class ActionInsertFactWidget extends DirtyableComposite {
         if (this.model.fieldValues != null && model.fieldValues.length > 0 ) {
             lbl = lbl + ":";
         }
-        return new ClickableLabel( lbl, cl, !this.modeller.lockRHS() );
+        return new ClickableLabel( lbl, cl, !this.readOnly );
 
     }
 
     protected void showAddFieldPopup(Widget w) {
+        final SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
         final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
                                                          constants.AddAField() );
         final ListBox box = new ListBox();
@@ -189,5 +206,12 @@ public class ActionInsertFactWidget extends DirtyableComposite {
         popup.show();
 
     }
+
+    @Override
+    public boolean isReadOnly() {
+        return this.readOnly;
+    }
+
+
 
 }

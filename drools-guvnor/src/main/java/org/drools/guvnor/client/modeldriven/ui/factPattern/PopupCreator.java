@@ -13,7 +13,6 @@ import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;

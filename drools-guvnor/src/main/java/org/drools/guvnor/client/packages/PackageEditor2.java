@@ -64,9 +64,6 @@ import com.gwtext.client.util.Format;
  * @author Michael Neale
  */
 public class PackageEditor2 extends PrettyFormLayout {
-
-
-
     private PackageConfigData conf;
     private HTML status;
     protected ValidatedResponse previousResponse;
@@ -111,11 +108,6 @@ public class PackageEditor2 extends PrettyFormLayout {
         addAttribute(constants.DescriptionColon(), description() );
         addAttribute(constants.CategoryRules(), getAddCatRules() );
         addAttribute( "", getShowCatRules() );
-
-
-
-
-
 
         if (!conf.isSnapshot) {
             Button save = new Button(constants.SaveAndValidateConfiguration());
@@ -262,13 +254,11 @@ public class PackageEditor2 extends PrettyFormLayout {
     	}
 
     }
+
     protected void showCatRuleSelector(Widget w) {
         final FormStylePopup pop = new FormStylePopup("images/config.png", constants.AddACategoryRuleToThePackage()); //NON-NLS
         final Button addbutton = new Button(constants.OK());
         final TextBox ruleName = new TextBox();
-
-
-
 
         final CategoryExplorerWidget exw = new CategoryExplorerWidget(new CategorySelectHandler(){
 			public void selected(String selectedPath) { //not needed
@@ -295,7 +285,6 @@ public class PackageEditor2 extends PrettyFormLayout {
 
         pop.show();
     }
-
 
 	private String getDateString(Date d) {
 		if (d != null)
@@ -430,8 +419,6 @@ public class PackageEditor2 extends PrettyFormLayout {
         return horiz;
     }
 
-
-
     private void showRenameDialog() {
         final FormStylePopup pop = new FormStylePopup("images/new_wiz.gif", constants.RenameThePackage());
         pop.addRow( new HTML(constants.RenamePackageTip()) );
@@ -442,8 +429,8 @@ public class PackageEditor2 extends PrettyFormLayout {
 
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                RepositoryServiceFactory.getService().renamePackage( conf.uuid, name.getText(), new GenericCallback() {
-                    public void onSuccess(Object data) {
+                RepositoryServiceFactory.getService().renamePackage( conf.uuid, name.getText(), new GenericCallback<String>() {
+                    public void onSuccess(String data) {
                         refreshPackageList.execute();
                         conf.name = name.getText();
                         refreshWidgets();
@@ -456,8 +443,6 @@ public class PackageEditor2 extends PrettyFormLayout {
 
         pop.show();
     }
-
-
 
     /**
      * Will show a copy dialog for copying the whole package.
@@ -477,8 +462,8 @@ public class PackageEditor2 extends PrettyFormLayout {
                     return;
                 }
                 LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
-                RepositoryServiceFactory.getService().copyPackage( conf.name, name.getText(), new GenericCallback() {
-                    public void onSuccess(Object data) {
+                RepositoryServiceFactory.getService().copyPackage( conf.name, name.getText(), new GenericCallback<Void>() {
+                    public void onSuccess(Void data) {
                         refreshPackageList.execute();
                         Window.alert(constants.PackageCopiedSuccessfully());
                         pop.hide();
@@ -492,18 +477,12 @@ public class PackageEditor2 extends PrettyFormLayout {
 
     }
 
-    protected void doCopyPackage(String name) {
-
-    }
-
     private void doSaveAction(final Command refresh) {
         LoadingPopup.showMessage(constants.SavingPackageConfigurationPleaseWait());
 
-        RepositoryServiceFactory.getService().savePackage( this.conf, new GenericCallback() {
-            public void onSuccess(Object data) {
-
-                previousResponse = (ValidatedResponse) data;
-
+        RepositoryServiceFactory.getService().savePackage( this.conf, new GenericCallback<ValidatedResponse>() {
+            public void onSuccess(ValidatedResponse data) {
+                previousResponse = data;
                 reload();
                 LoadingPopup.showMessage(constants.PackageConfigurationUpdatedSuccessfullyRefreshingContentCache());
 
@@ -515,16 +494,9 @@ public class PackageEditor2 extends PrettyFormLayout {
                         LoadingPopup.close();
                     }
                 });
-
-
-
-
             }
         });
-
     }
-
-
 
     /**
      * Will refresh all the data.

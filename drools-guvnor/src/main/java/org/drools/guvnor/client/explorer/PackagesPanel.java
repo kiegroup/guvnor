@@ -4,25 +4,26 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.NewPackageWizard;
 import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.PushClient;
-import org.drools.guvnor.client.rpc.ServerPushNotification;
 import org.drools.guvnor.client.rpc.PushResponse;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.ServerPushNotification;
+import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
-import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.WindowResizeListener;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
 import com.gwtext.client.widgets.Button;
@@ -47,7 +48,7 @@ public class PackagesPanel extends GenericPanel {
 
     private VerticalPanel packagesPanel;
     private boolean packagesLoaded = false;
-    private static Constants constants = ((Constants) GWT.create(Constants.class));
+    private static final Constants constants = ((Constants) GWT.create(Constants.class));
 
     public PackagesPanel(ExplorerViewCenterPanel tabbedPanel) {
         super(constants.KnowledgeBases(), tabbedPanel);
@@ -101,6 +102,24 @@ public class PackagesPanel extends GenericPanel {
             }
         }, "images/new_package.gif")); //NON-NLS
 
+        //SubPackage are currently not used.
+//        m.addItem(new Item(constants.NewSubPackage(), new BaseItemListenerAdapter() {
+//            public void onClick(BaseItem item, EventObject e) {
+//                NewSubPackageWizard wiz = new NewSubPackageWizard(new Command() {
+//                    public void execute() {
+//                        refreshPackageTree();
+//                    }
+//                });
+//                wiz.show();
+//            }
+//        }, "images/new_package.gif")); //NON-NLS
+        
+        m.addItem(new Item(constants.NewWorkingSet(), new BaseItemListenerAdapter() {
+            public void onClick(BaseItem item, EventObject e) {
+                launchWizard(AssetFormats.WORKING_SET, constants.NewWorkingSet(), false);
+            }
+        }, "images/new_package.gif"));          //NON-NLS
+        
         m.addItem(new Item(constants.NewRule(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
                 launchWizard(null, constants.NewRule(), true);
@@ -172,8 +191,8 @@ public class PackagesPanel extends GenericPanel {
             public void onClick(BaseItem item, EventObject e) {
                 if (Window.confirm(constants.RebuildConfirmWarning())) {
                     LoadingPopup.showMessage(constants.RebuildingPackageBinaries());
-                    RepositoryServiceFactory.getService().rebuildPackages(new GenericCallback() {
-                        public void onSuccess(Object data) {
+                    RepositoryServiceFactory.getService().rebuildPackages(new GenericCallback<Void>() {
+                        public void onSuccess(Void data) {
                             LoadingPopup.close();
                         }
                     });
@@ -190,80 +209,82 @@ public class PackagesPanel extends GenericPanel {
         packagesPanel.add(packageExplorer(centertabbedPanel));
     }
 
-    private Widget packageExplorer(final ExplorerViewCenterPanel tabPanel) {
+	private Widget packageExplorer(final ExplorerViewCenterPanel tabPanel) {
 		TreeNode rootNode = new TreeNode(constants.Admin());
 
-		
-        TreeNode packageRootNode = new TreeNode(constants.Packages());
-        packageRootNode.setAttribute("icon", "images/silk/chart_organisation.gif"); //NON-NLS
-        loadPackages(packageRootNode);
-        
-/*		TreeNode globalRootNode = new TreeNode("Global area");
-		globalRootNode.setAttribute("icon", "images/silk/chart_organisation.gif");   //NON-NLS
-		globalRootNode.setAttribute("id", "globalarea");*/
+		TreeNode packageRootNode = new TreeNode(constants.Packages());
+		packageRootNode.setAttribute("icon", "images/silk/chart_organisation.gif"); // NON-NLS
+		loadPackages(packageRootNode);
+
+		/*
+		 * TreeNode globalRootNode = new TreeNode("Global area");
+		 * globalRootNode.setAttribute("icon",
+		 * "images/silk/chart_organisation.gif"); //NON-NLS
+		 * globalRootNode.setAttribute("id", "globalarea");
+		 */
 		loadGlobal(rootNode);
-		
+
 		rootNode.appendChild(packageRootNode);
-		//rootNode.appendChild(globalRootNode);
-		
-        final TreePanel panel = genericExplorerWidget(rootNode);
-        panel.setRootVisible(false);
+		// rootNode.appendChild(globalRootNode);
 
-        
-        TreePanelListener treePanelListener = new TreePanelListenerAdapter() {
-            public void onClick(TreeNode node, EventObject e) {
-                if (node.getUserObject() instanceof PackageConfigData && !"global".equals(((PackageConfigData)node.getUserObject()).name)) {
-                    PackageConfigData pc = (PackageConfigData) node.getUserObject();
-                    RulePackageSelector.currentlySelectedPackage = pc.name;
+		final TreePanel panel = genericExplorerWidget(rootNode);
+		panel.setRootVisible(false);
 
-                    String uuid = pc.uuid;
-                    centertabbedPanel.openPackageEditor(uuid, new Command() {
-                        public void execute() {
-                            //refresh the package tree.
-                            refreshPackageTree();
-                        }
-                    });
-                } else if (node.getUserObject() instanceof Object[]) {
-                    Object[] uo = (Object[]) node.getUserObject();
-                    final String[] fmts = (String[]) uo[0];
-                    final PackageConfigData pc = (PackageConfigData) node.getParentNode().getUserObject();
-                    RulePackageSelector.currentlySelectedPackage = pc.name;
-                    String key = key(fmts, pc);
-                    if (!centertabbedPanel.showIfOpen(key)) {
+		TreePanelListener treePanelListener = new TreePanelListenerAdapter() {
+			public void onClick(TreeNode node, EventObject e) {
+				if (node.getUserObject() instanceof PackageConfigData
+						&& !"global".equals(((PackageConfigData) node.getUserObject()).name)) {
+					PackageConfigData pc = (PackageConfigData) node.getUserObject();
+					RulePackageSelector.currentlySelectedPackage = pc.name;
 
-                        final AssetItemGrid list = new AssetItemGrid(new EditItemEvent() {
-                            public void open(String uuid) {
-                                centertabbedPanel.openAsset(uuid);
-                            }
-                            public void open(MultiViewRow[] rows) {
-                                centertabbedPanel.openAssets( rows );
-                            }
-                        },
-                                AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID,
-                                new AssetItemGridDataLoader() {
-                                    public void loadData(int skip, int numRows, GenericCallback cb) {
-                                        RepositoryServiceFactory.getService().listAssets(pc.uuid, fmts, skip, numRows, AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID, cb);
-                                    }
-                                }
-                        , GWT.getModuleBaseURL() + "feed/package?name=" + pc.name + "&viewUrl=" + CategoriesPanel.getSelfURL() + "&status=*");
-                        tabPanel.addTab(uo[1] + " [" + pc.name + "]", true, list, key);
-                        
-                        final ServerPushNotification sub = new ServerPushNotification() {
-                            public void messageReceived(PushResponse response) {
-                                if (response.messageType.equals("packageChange") && response.message.equals(pc.name)) {
-                                    list.refreshGrid();
-                                }
-                            }
-                        };
-                        PushClient.instance().subscribe(sub);
-                        list.addUnloadListener(new Command() {
-                            public void execute() {
-                                PushClient.instance().unsubscribe(sub);
-                            }
-                        });
-                    }
-                }
-            }
+					String uuid = pc.uuid;
+					centertabbedPanel.openPackageEditor(uuid, new Command() {
+						public void execute() {
+							// refresh the package tree.
+							refreshPackageTree();
+						}
+					});
+				} else if (node.getUserObject() instanceof Object[]) {
+					Object[] uo = (Object[]) node.getUserObject();
+					final String[] fmts = (String[]) uo[0];
+					final PackageConfigData pc = (PackageConfigData) node.getParentNode().getUserObject();
+					RulePackageSelector.currentlySelectedPackage = pc.name;
+					String key = key(fmts, pc);
+					if (!centertabbedPanel.showIfOpen(key)) {
+
+						final AssetItemGrid list = new AssetItemGrid(new EditItemEvent() {
+							public void open(String uuid) {
+								centertabbedPanel.openAsset(uuid);
+							}
+
+							public void open(MultiViewRow[] rows) {
+								centertabbedPanel.openAssets(rows);
+							}
+						}, AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID, new AssetItemGridDataLoader() {
+							public void loadData(int startRow, int numberOfRows, GenericCallback<TableDataResult> cb) {
+								RepositoryServiceFactory.getService().listAssets(pc.uuid, fmts, startRow, numberOfRows,
+										AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID, cb);
+							}
+						}, GWT.getModuleBaseURL() + "feed/package?name=" + pc.name + "&viewUrl="
+								+ CategoriesPanel.getSelfURL() + "&status=*");
+						tabPanel.addTab(uo[1] + " [" + pc.name + "]", true, list, key);
+
+						final ServerPushNotification sub = new ServerPushNotification() {
+							public void messageReceived(PushResponse response) {
+								if (response.messageType.equals("packageChange") && response.message.equals(pc.name)) {
+									list.refreshGrid();
+								}
+							}
+						};
+						PushClient.instance().subscribe(sub);
+						list.addUnloadListener(new Command() {
+							public void execute() {
+								PushClient.instance().unsubscribe(sub);
+							}
+						});
+					}
+				}
+			}
 
 
             @Override
@@ -353,6 +374,9 @@ public class PackagesPanel extends GenericPanel {
 
     private TreeNode loadPackage(String name, PackageConfigData conf) {
         TreeNode pn = ExplorerNodeConfig.getPackageItemStructure(name, conf.uuid);
+//        TreeNode wsNode = new TreeNode(constants.WorkingSets(), "images/workingset.gif");
+//        ExplorerNodeConfig.getWorkingSetItemsStructure(wsNode, conf.workingsets);
+//        pn.appendChild(wsNode);
         pn.setUserObject(conf);
         return pn;
     }

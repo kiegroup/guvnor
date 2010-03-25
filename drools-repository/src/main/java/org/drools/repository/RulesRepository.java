@@ -1,6 +1,10 @@
 package org.drools.repository;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -10,14 +14,24 @@ import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.jcr.*;
+import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.InvalidItemStateException;
+import javax.jcr.ItemExistsException;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
-import javax.jcr.version.Version;
 
-import org.apache.log4j.Logger;
-import org.drools.repository.migration.MigrateDroolsPackage;
 import org.drools.repository.events.StorageEventManager;
+import org.drools.repository.migration.MigrateDroolsPackage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RulesRepository is the class that defines the bahavior for the JBoss Rules
@@ -56,7 +70,7 @@ public class RulesRepository {
 
     public static final String  DROOLS_URI            = "http://www.jboss.org/drools-repository/1.0";
 
-    private static final Logger log                   = Logger.getLogger( RulesRepository.class );
+    private static final Logger log                   = LoggerFactory.getLogger( RulesRepository.class );
 
     /**
      * The name of the rulepackage area of the repository
@@ -134,8 +148,7 @@ public class RulesRepository {
         } catch ( PathNotFoundException e ) {
             // it doesn't exist yet, so create it
             try {
-                log.debug( new StringBuilder().append( "Adding new node of type: " ).append( type ).append( " named: " ).append( nodeName ).append( " to parent node named " ).append( parent.getName() ) );
-
+				log.debug("Adding new node of type: {} named: {} to parent node named {}", new Object[] {type, nodeName, parent.getName()});
                 node = parent.addNode( nodeName,
                                        type );
             } catch ( Exception e1 ) {
@@ -144,8 +157,7 @@ public class RulesRepository {
                 throw new RulesRepositoryException( e1 );
             }
         } catch ( Exception e ) {
-            log.error( "Caught Exception",
-                       e );
+            log.error( "Caught Exception", e );
             throw new RulesRepositoryException( e );
         }
         return node;
@@ -433,7 +445,7 @@ public class RulesRepository {
             Node n = areaNode.getNode( packageName );
             return n.hasNode( snapshotName );
         } catch ( RepositoryException e ) {
-            log.error( e );
+            log.error( e.getMessage(), e );
             throw new RulesRepositoryException( e );
         }
     }
@@ -445,7 +457,7 @@ public class RulesRepository {
             return new PackageItem( this,
                                     n );
         } catch ( RepositoryException e ) {
-            log.error( e );
+            log.error( e.getMessage(), e );
             throw new RulesRepositoryException( e );
         }
     }
@@ -636,7 +648,7 @@ public class RulesRepository {
             return new AssetItem( this,
                                   rulePackageNode );
         } catch (ItemNotFoundException e) {
-          log.warn(e);
+          log.warn(e.getMessage(), e);
           throw new RulesRepositoryException("That item does not exist.");
         } catch ( RepositoryException e ) {
 
@@ -704,12 +716,61 @@ public class RulesRepository {
     }
 
     /**
+     * Adds a Sub package to the repository.
+     *
+     * @param name
+     *            what to name the node added
+     * @param description
+     *            what description to use for the node
+     * @param parentPackage
+     * 			  parent node under which this new package will be created
+     * @return a PackageItem, encapsulating the created node
+     * @throws RulesRepositoryException
+     */	
+	public PackageItem createSubPackage(String name, String description, String parentPackage)
+			throws RulesRepositoryException {
+
+		try {
+			PackageItem pkg = loadPackage(parentPackage);
+			PackageItem subPkg = pkg.createSubPackage(name);
+
+			// create the node - see section 6.7.22.6 of the spec
+//			Node rulePackageNode = subPkg.node; // folderNode.addNode( name,
+												// PackageItem.RULE_PACKAGE_TYPE_NAME
+												// );
+
+//			rulePackageNode.addNode(PackageItem.ASSET_FOLDER_NAME, "drools:versionableAssetFolder");
+
+//			rulePackageNode.setProperty(PackageItem.TITLE_PROPERTY_NAME, name);
+//			rulePackageNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME, description);
+//			rulePackageNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME, PackageItem.PACKAGE_FORMAT);
+//			rulePackageNode.setProperty(PackageItem.CREATOR_PROPERTY_NAME, this.session.getUserID());
+//
+//			Calendar lastModified = Calendar.getInstance();
+//			rulePackageNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
+
+			subPkg.checkin("Initial");
+
+			if (StorageEventManager.hasSaveEvent()) {
+				StorageEventManager.getSaveEvent().onPackageCreate(subPkg);
+			}
+
+			return subPkg;
+		} catch (ItemExistsException e) {
+			throw new RulesRepositoryException("A package name must be unique.", e);
+		} catch (RepositoryException e) {
+			log.error("Error when creating a new rule package", e);
+			throw new RulesRepositoryException(e);
+		}
+	}
+    
+    /**
      * Gets a StateItem for the specified state name. If a node for the
      * specified state does not yet exist, one is first created.
      *
      * @param name
      *            the name of the state to get
-     * @return a StateItem object encapsulating the retreived node
+     * @return a StateItem object encapsulating the retrieved node
      * @throws RulesRepositoryException
      */
     public StateItem getState(String name) throws RulesRepositoryException {
@@ -724,7 +785,7 @@ public class RulesRepository {
             return new StateItem( this,
                                   stateNode );
         } catch ( Exception e ) {
-            log.error( e );
+            log.error( e.getMessage(), e );
             throw new RulesRepositoryException( e );
         }
     }
@@ -742,7 +803,7 @@ public class RulesRepository {
             return new StateItem( this,
                                   stateNode );
         } catch ( Exception e ) {
-            log.error( e );
+            log.error( e.getMessage(), e );
             throw new RulesRepositoryException( e );
         }
     }
@@ -890,10 +951,8 @@ public class RulesRepository {
             Node parentNode = ruleLink.getParent();
             if ( isNotSnapshot( parentNode ) && parentNode.getPrimaryNodeType().getName().equals( AssetItem.RULE_NODE_TYPE_NAME ) ) {
                 if ( seekArchivedAsset || !parentNode.getProperty( AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG ).getBoolean() ) {
-                    AssetItem ai = new AssetItem( this,
-                                                  parentNode );
-                    if ( filter == null || filter.accept( ai,
-                                                          "package.readonly" ) ) {
+                    AssetItem ai = new AssetItem( this, parentNode );
+                    if ( filter == null || filter.accept( ai, "package.readonly")) {
                         results.add( ai );
                         rows++;
                     }
@@ -901,8 +960,7 @@ public class RulesRepository {
             }
         }
 
-        return new AssetPageList( results,
-                                  it );
+        return new AssetPageList(results, it);
     }
 
     public AssetPageList findAssetsByCategory(String categoryTag,
@@ -922,7 +980,7 @@ public class RulesRepository {
                                       false,
                                       false );
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             throw new RulesRepositoryException(e);
         }
 
@@ -996,10 +1054,10 @@ public class RulesRepository {
                        e );
             throw new RulesRepositoryException( message );
         } catch ( RepositoryException e ) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             throw new RulesRepositoryException("Repository error when importing from stream.", e);
         } catch ( IOException e ) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             throw new RulesRepositoryException(e);
 
         }
@@ -1027,10 +1085,10 @@ public class RulesRepository {
                 mig.migrate( this );
             }
         } catch ( RepositoryException e ) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             throw new RulesRepositoryException(e);
         } catch ( IOException e ) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             throw new RulesRepositoryException(e);
         }
     }
@@ -1150,7 +1208,7 @@ public class RulesRepository {
             itemOriginal.checkin( "Renamed asset " + itemOriginal.getName() );
             return itemOriginal.getUUID();
         } catch ( RepositoryException e ) {
-            log.error( e );
+            log.error( e.getMessage(), e );
             throw new RulesRepositoryException( e );
         }
     }
@@ -1171,7 +1229,7 @@ public class RulesRepository {
                                destPath );
             save();
         } catch ( RepositoryException e ) {
-            log.error( e );
+            log.error( e.getMessage(), e );
             throw new RulesRepositoryException( e );
         }
     }
@@ -1187,7 +1245,7 @@ public class RulesRepository {
                                destPath );
             save();
         } catch ( RepositoryException e ) {
-            log.error( e );
+            log.error( e.getMessage(), e );
             throw new RulesRepositoryException( e );
         }
     }
@@ -1222,7 +1280,7 @@ public class RulesRepository {
 
             return itemOriginal.getUUID();
         } catch ( RepositoryException e ) {
-            log.error( e );
+            log.error( e.getMessage(), e );
             throw new RulesRepositoryException( e );
         }
     }
@@ -1420,7 +1478,7 @@ public class RulesRepository {
                                            it.nextNode() ) );
             }
         } catch ( RepositoryException e ) {
-            log.error( e );
+            log.error( e.getMessage(), e );
             throw new RulesRepositoryException( e );
         }
         return (StateItem[]) states.toArray( new StateItem[states.size()] );
@@ -1455,7 +1513,7 @@ public class RulesRepository {
             save();
 
         } catch ( RepositoryException e ) {
-            log.error( e );
+            log.error( e.getMessage(), e );
             throw new RulesRepositoryException( e );
         }
 

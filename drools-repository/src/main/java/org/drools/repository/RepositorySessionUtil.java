@@ -18,17 +18,16 @@ import org.apache.log4j.Logger;
  */
 public class RepositorySessionUtil {
 
-    private static ThreadLocal repo = new ThreadLocal();
+    private static ThreadLocal<RulesRepository> repo = new ThreadLocal<RulesRepository>();
 
-    private static final Logger log = Logger.getLogger( RepositorySessionUtil.class );
+//    private static final Logger log = Logger.getLogger( RepositorySessionUtil.class );
 
     public static boolean deleteDir(File dir) {
 
         if (dir.isDirectory()) {
             String[] children = dir.list();
             for (int i=0; i<children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
+                if (!deleteDir(new File(dir, children[i]))) {
                     return false;
                 }
             }
@@ -40,7 +39,7 @@ public class RepositorySessionUtil {
 
 
     public static RulesRepository getRepository() throws RulesRepositoryException {
-        Object repoInstance = repo.get();
+    	RulesRepository repoInstance = repo.get();
     	System.out.println("----------getRepository");
         if ( repoInstance == null ) {
         	
@@ -78,7 +77,7 @@ public class RepositorySessionUtil {
             }
         }
 
-        return (RulesRepository) repoInstance;
+        return repoInstance;
     }
 
 }

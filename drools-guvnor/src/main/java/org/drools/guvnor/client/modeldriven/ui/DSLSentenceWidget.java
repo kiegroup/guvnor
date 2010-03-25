@@ -46,28 +46,44 @@ import com.gwtext.client.util.Format;
  * 
  * @author Michael Neale
  */
-public class DSLSentenceWidget extends Composite {
+public class DSLSentenceWidget extends RuleModellerWidget {
 
     private static final String        ENUM_TAG    = "ENUM";
     private static final String        DATE_TAG    = "DATE";
     private static final String        BOOLEAN_TAG = "BOOLEAN";
     private final List                 widgets;
     private final DSLSentence          sentence;
-    private SuggestionCompletionEngine completions;
     private final VerticalPanel        layout;
     private HorizontalPanel            currentRow;
+    private RuleModeller               modeller;
+    private boolean readOnly;
 
-    public DSLSentenceWidget(DSLSentence sentence,
-                             SuggestionCompletionEngine completions) {
+    public DSLSentenceWidget(RuleModeller modeller, DSLSentence sentence) {
+        this(modeller, sentence, null);
+    }
+
+    public DSLSentenceWidget(RuleModeller modeller, DSLSentence sentence, Boolean readOnly) {
         widgets = new ArrayList();
+        this.modeller = modeller;
         this.sentence = sentence;
-        this.completions = completions;
+
+        if (readOnly == null){
+            this.readOnly = false;
+        }else{
+            this.readOnly = readOnly;
+        }
+
         this.layout = new VerticalPanel();
         this.currentRow = new HorizontalPanel();
         this.layout.add( currentRow );
         this.layout.setCellWidth( currentRow,
                                   "100%" );
         this.layout.setWidth( "100%" );
+
+        if (this.readOnly) {
+            this.layout.addStyleName("editor-disabled-widget");
+        }
+
         init();
     }
 
@@ -336,7 +352,7 @@ public class DSLSentenceWidget extends Composite {
     }
 
     class DSLDropDown extends DirtyableComposite {
-
+        final SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
         ListBox        resultWidget = null;
         // Format for the dropdown def is <varName>:<type>:<Fact.field>
         private String varName      = "";
@@ -494,5 +510,10 @@ public class DSLSentenceWidget extends Composite {
         public String getType() {
             return DATE_TAG;
         }
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return this.readOnly;
     }
 }

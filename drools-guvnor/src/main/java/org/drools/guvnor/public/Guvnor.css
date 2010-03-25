@@ -518,3 +518,8 @@ input,.constraint-value-Editor {
 }
 
 div.smallish-progress-wrapper { /* Don't change the following lines. */ position: relative; border: 1px solid black; } div.smallish-progress-bar { /* Don't change the following lines. */ position: absolute; top: 0; left: 0; height: 100%; } div.smallish-progress-text { /* Don't change the following lines. */ text-align: center; position: relative; /* Add your customizations after this line. */ }
+
+.editor-disabled-widget{
+    background-color: #F7F7F8;
+    color: #868686;
+}

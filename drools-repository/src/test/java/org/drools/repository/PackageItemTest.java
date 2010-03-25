@@ -74,7 +74,7 @@ public class PackageItemTest extends TestCase {
         repo.save();
 
 
-        PackageItem pkgNested = p.createPackage("NestedGoodness");
+        PackageItem pkgNested = p.createSubPackage("NestedGoodness");
         assertNotNull(pkgNested);
 
         int n = iteratorToList(repo.listPackages()).size();

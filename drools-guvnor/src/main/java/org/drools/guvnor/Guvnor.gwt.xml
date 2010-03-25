@@ -3,11 +3,11 @@
 	<!-- Inherit the core Web Toolkit stuff.                  -->
 
     <inherits name="com.google.gwt.i18n.I18N"/>
-    <inherits name='com.google.gwt.user.User'/>
+    <inherits name="com.google.gwt.user.User"/>
     <inherits name="com.gwtext.GwtExt"/>
     <inherits name="com.gwtext.Pagebus"/>
-	<inherits name='pl.balon.gwt.diagrams.Diagrams'/>
-	<inherits name='org.cobogw.gwt.user.User'/>
+	<inherits name="pl.balon.gwt.diagrams.Diagrams"/>
+	<inherits name="org.cobogw.gwt.user.User"/>
 
 
     <!-- Here we put different locales (translations)

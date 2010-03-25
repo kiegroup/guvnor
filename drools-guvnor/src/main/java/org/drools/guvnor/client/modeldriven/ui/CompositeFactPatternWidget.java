@@ -18,11 +18,9 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 
 import org.drools.guvnor.client.common.ClickableLabel;
-import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.DirtyableVerticalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
@@ -39,22 +37,48 @@ import com.google.gwt.core.client.GWT;
  * @author Michael Neale
  *
  */
-public class CompositeFactPatternWidget extends DirtyableComposite {
+public class CompositeFactPatternWidget extends RuleModellerWidget {
 
     protected final SuggestionCompletionEngine completions;
     protected CompositeFactPattern             pattern;
     protected DirtyableFlexTable                             layout;
     protected RuleModeller                     modeller;
     protected Constants constants = ((Constants) GWT.create(Constants.class));
+    protected boolean readOnly;
 
     public CompositeFactPatternWidget(RuleModeller modeller,
                                       CompositeFactPattern pattern) {
+        this(modeller, pattern, null);
+    }
+
+    public CompositeFactPatternWidget(RuleModeller modeller,
+                                      CompositeFactPattern pattern,
+                                      Boolean readOnly) {
         this.completions = modeller.getSuggestionCompletions();
         this.pattern = pattern;
         this.modeller = modeller;
 
         this.layout = new DirtyableFlexTable();
         this.layout.setStyleName( "model-builderInner-Background" );
+
+        if (readOnly != null){
+            this.readOnly = readOnly;
+        }else{
+            this.readOnly = false;
+            if (this.pattern != null && this.pattern.patterns != null){
+                for (int i = 0; i < this.pattern.patterns.length; i++) {
+                    FactPattern factPattern = this.pattern.patterns[i];
+                    if (!completions.containsFactType(factPattern.factType)){
+                        this.readOnly = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (this.readOnly){
+            layout.addStyleName("editor-disabled-widget");
+        }
 
         doLayout();
         initWidget( layout );
@@ -76,7 +100,7 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
             for ( int i = 0; i < facts.length; i++ ) {
                 vert.add( new FactPatternWidget( modeller,
                                                  facts[i],
-                                                 false ) );
+                                                 false,this.readOnly ) );
             }
             this.layout.setWidget( 1,
                                    1,
@@ -97,7 +121,7 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
             lbl += " <font color='red'>" + constants.clickToAddPatterns() + "</font>";
         }
 
-        return new ClickableLabel( lbl + ":", click, !this.modeller.lockLHS() ) ;
+        return new ClickableLabel( lbl + ":", click, !this.readOnly ) ;
     }
 
     /**
@@ -131,6 +155,11 @@ public class CompositeFactPatternWidget extends DirtyableComposite {
 
     public boolean isDirty() {
         return layout.hasDirty();
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return this.readOnly;
     }
 
 }

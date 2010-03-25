@@ -52,59 +52,49 @@ public class EditorLauncher {
     /**
      * This will return the appropriate viewer for the asset.
      */
-    public static Widget getEditorViewer(RuleAsset asset,
-                                         RuleViewer viewer) {
-        RulePackageSelector.currentlySelectedPackage = asset.metaData.packageName;
-        //depending on the format, load the appropriate editor
-        if ( asset.metaData.format.equals( AssetFormats.BUSINESS_RULE ) ) {
+	public static Widget getEditorViewer(RuleAsset asset, RuleViewer viewer) {
+		RulePackageSelector.currentlySelectedPackage = asset.metaData.packageName;
+		// depending on the format, load the appropriate editor
+		if (asset.metaData.format.equals(AssetFormats.BUSINESS_RULE)) {
+			return new RuleModeller(asset);
+		} else if (asset.metaData.format.equals(AssetFormats.DSL_TEMPLATE_RULE)) {
+			return new RuleValidatorWrapper(new DSLRuleEditor(asset), asset);
+		} else if (asset.metaData.format.equals(AssetFormats.BPEL_PACKAGE)
+				&& Preferences.getBooleanPref("flex-bpel-editor")) {
+			return new BPELWrapper(asset, viewer);
+		} else if (asset.metaData.format.equals(AssetFormats.MODEL)) {
+			return new ModelAttachmentFileWidget(asset, viewer);
+		} else if (asset.metaData.format.equals(AssetFormats.DECISION_SPREADSHEET_XLS)) {
+			return new DecisionTableXLSWidget(asset, viewer);
+		} else if (asset.metaData.format.equals(AssetFormats.RULE_FLOW_RF)) {
+			return new RuleFlowWrapper(asset, viewer);
+		} else if (asset.metaData.format.equals(AssetFormats.BPMN2_PROCESS)) {
+			return new RuleFlowWrapper(asset, viewer);
+		} else if (asset.metaData.format.equals(AssetFormats.DRL)) {
+			return new DrlEditor(asset);
+		} else if (asset.metaData.format.equals(AssetFormats.ENUMERATION)) {
+			return new DefaultRuleContentWidget(asset);
+		} else if (asset.metaData.format.equals(AssetFormats.TEST_SCENARIO)) {
+			return new ScenarioWidget(asset);
+		} else if (asset.metaData.format.equals(AssetFormats.DECISION_TABLE_GUIDED)) {
+			return new GuidedDecisionTableWidget(asset);
+		} else if (asset.metaData.format.equals(AssetFormats.DRL_MODEL)) {
+			return new FactModelWidget(asset);
+		} else if (asset.metaData.format.equals(AssetFormats.DSL)) {
+			return new DefaultRuleContentWidget(asset);
+		} else if (asset.metaData.format.equals(AssetFormats.PROPERTIES)) {
+			return new PropertiesWidget(asset, viewer);
+		} else if (asset.metaData.format.equals(AssetFormats.XML)) {
+			return new XmlFileWidget(asset, viewer);
+		} else if (asset.metaData.format.equals(AssetFormats.FUNCTION)) {
+			return new FunctionEditor(asset);
+		} else if (asset.metaData.format.equals(AssetFormats.WORKING_SET)) {
+			return new WorkingSetEditor(asset);
+		} else {
+			return new DefaultContentUploadEditor(asset, viewer);
+		}
 
-            return new RuleModeller( asset );
-            //return new RuleModeller( asset  );
-        } else if ( asset.metaData.format.equals( AssetFormats.DSL_TEMPLATE_RULE ) ) {
-            return new RuleValidatorWrapper( new DSLRuleEditor( asset ),
-                                             asset );
-        } else if ( asset.metaData.format.equals( AssetFormats.BPEL_PACKAGE ) && Preferences.getBooleanPref( "flex-bpel-editor" ) ) {
-            return new BPELWrapper( asset,
-                                    viewer );
-        } else if ( asset.metaData.format.equals( AssetFormats.MODEL ) ) {
-            return new ModelAttachmentFileWidget( asset,
-                                                  viewer );
-        } else if ( asset.metaData.format.equals( AssetFormats.DECISION_SPREADSHEET_XLS ) ) {
-            return new DecisionTableXLSWidget( asset,
-                                               viewer );
-
-        } else if ( asset.metaData.format.equals( AssetFormats.RULE_FLOW_RF ) ) {
-            return new RuleFlowWrapper( asset,
-                                        viewer );
-        } else if ( asset.metaData.format.equals( AssetFormats.BPMN2_PROCESS ) ) {
-            return new RuleFlowWrapper( asset,
-                                        viewer );
-        } else if ( asset.metaData.format.equals( AssetFormats.DRL ) ) {
-            return new DrlEditor( asset );
-        } else if ( asset.metaData.format.equals( AssetFormats.ENUMERATION ) ) {
-            return new DefaultRuleContentWidget( asset );
-        } else if ( asset.metaData.format.equals( AssetFormats.TEST_SCENARIO ) ) {
-            return new ScenarioWidget( asset );
-        } else if ( asset.metaData.format.equals( AssetFormats.DECISION_TABLE_GUIDED ) ) {
-            return new GuidedDecisionTableWidget( asset );
-        } else if ( asset.metaData.format.equals( AssetFormats.DRL_MODEL ) ) {
-            return new FactModelWidget( asset );
-        } else if ( asset.metaData.format.equals( AssetFormats.DSL ) ) {
-            return new DefaultRuleContentWidget( asset );
-        } else if ( asset.metaData.format.equals( AssetFormats.PROPERTIES ) ) {
-            return new PropertiesWidget( asset,
-                                         viewer );
-        } else if ( asset.metaData.format.equals( AssetFormats.XML ) ) {
-            return new XmlFileWidget( asset,
-                                      viewer );
-        } else if ( asset.metaData.format.equals( AssetFormats.FUNCTION ) ) {
-            return new FunctionEditor( asset );
-        } else {
-            return new DefaultContentUploadEditor( asset,
-                                                   viewer );
-        }
-
-    }
+	}
 
     private static Map<String, String> getTypeImages() {
         Map<String, String> result = new HashMap<String, String>();

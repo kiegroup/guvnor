@@ -73,7 +73,7 @@ public class PopulateDataTest extends TestCase {
 
     private void createPermissions(ServiceImplementation serv) {
     	Map<String, List<String>> perms = new HashMap<String, List<String>>();
-    	perms.put(RoleTypes.ADMIN, new ArrayList());
+    	perms.put(RoleTypes.ADMIN, new ArrayList<String>());
 		serv.updateUserPermissions("woozle1", perms);
 
 		perms = new HashMap<String, List<String>>();
@@ -142,10 +142,6 @@ public class PopulateDataTest extends TestCase {
         uuid = serv.createNewRule( "Fibreglass supplier selection", "This defines XXX.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
         uuid = serv.createNewRule( "Recommended wax", "This defines XXX.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
         uuid = serv.createNewRule( "SomeDSL", "Ignore me.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.DSL );
-
-
-
-
     }
 
     private void createPackages(ServiceImplementation serv) throws SerializableException {

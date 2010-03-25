@@ -74,6 +74,8 @@ public class AssetFormats {
     
     public static final String PROPERTIES = "properties";
 
+    public static final String WORKING_SET = "workingset";
+    
     /**
      * The following group the assets together for lists, helpers etc...
      */
@@ -82,8 +84,7 @@ public class AssetFormats {
     /**
      * These define assets that are really package level "things". Used to decide when to flush any caches.
      */
-    private static final String[] PACKAGE_DEPENCENCIES = new String[] {AssetFormats.FUNCTION, AssetFormats.DSL, AssetFormats.MODEL, AssetFormats.ENUMERATION, AssetFormats.DRL_MODEL};
-
+    private static final String[] PACKAGE_DEPENCENCIES = new String[] {AssetFormats.FUNCTION, AssetFormats.DSL, AssetFormats.MODEL, AssetFormats.ENUMERATION, AssetFormats.DRL_MODEL, AssetFormats.WORKING_SET};
 
     /**
      * Will return true if the given asset format is a package dependency (eg a function, DSL, model etc).

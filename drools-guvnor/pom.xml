@@ -167,6 +167,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <artifactId>drools-verifier</artifactId>
       </dependency>
       <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-factconstraint</artifactId>
+      </dependency>
+      <dependency>
          <groupId>wsdl4j</groupId>
          <artifactId>wsdl4j</artifactId>
          <version>1.6.2</version>

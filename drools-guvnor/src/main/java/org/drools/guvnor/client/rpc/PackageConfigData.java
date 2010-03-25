@@ -15,8 +15,6 @@ package org.drools.guvnor.client.rpc;
  * limitations under the License.
  */
 
-
-
 import java.util.Date;
 import java.util.HashMap;
 
@@ -27,11 +25,10 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Michael Neale
  *
  */
-public class PackageConfigData
-    implements
-    IsSerializable {
+public class PackageConfigData implements IsSerializable {
 
 	public PackageConfigData() {}
+	
 	public PackageConfigData(String name) {
 		this.name = name;
 	}
@@ -50,4 +47,6 @@ public class PackageConfigData
     public Date dateCreated;
     public String checkinComment;
     public HashMap<String,String> catRules;
+    
+    public PackageConfigData[] subPackages;
 }

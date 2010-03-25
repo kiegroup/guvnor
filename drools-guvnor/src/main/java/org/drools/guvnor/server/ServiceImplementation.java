@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,6 +61,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.Inbox;
+import org.drools.guvnor.client.factcontraints.Constraint;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.testing.Scenario;
 import org.drools.guvnor.client.rpc.AnalysisReport;
@@ -84,6 +87,7 @@ import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
+import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentAssemblyError;
@@ -273,7 +277,7 @@ public class ServiceImplementation
             if ( e.getCause() instanceof ItemExistsException ) {
                 return "DUPLICATE";
             } else {
-                log.error( "An error occurred creating new asset" + ruleName + "] in package [" + initialPackage + "]: " + e.getMessage() );
+                log.error( "An error occurred creating new asset" + ruleName + "] in package [" + initialPackage + "]: ", e);
                 throw new SerializableException( e.getMessage() );
             }
         }
@@ -300,11 +304,12 @@ public class ServiceImplementation
             repository.save();
 
             return asset.getUUID();
-        } catch ( RulesRepositoryException e ) {
+        } 
+        catch ( RulesRepositoryException e ) {
             if ( e.getCause() instanceof ItemExistsException ) {
                 return "DUPLICATE";
             } else {
-                log.error( "An error occurred creating shared asset" + sharedAssetName + "] in package [" + initialPackage + "]: " + e.getMessage() );
+                log.error( "An error occurred creating shared asset" + sharedAssetName + "] in package [" + initialPackage + "]: ", e);
                 throw new SerializableException( e.getMessage() );
             }
         }
@@ -386,47 +391,74 @@ public class ServiceImplementation
         data.lasContributor = item.getLastContributor();
         data.state = item.getStateDescription();
         data.isSnapshot = item.isSnapshot();
+
         if ( data.isSnapshot ) {
             data.snapshotName = item.getSnapshotName();
         }
 
         return data;
     }
-
+    
     private PackageConfigData[] listPackages(boolean archive,
                                              RepositoryFilter filter) {
         List<PackageConfigData> result = new ArrayList<PackageConfigData>();
         PackageIterator pkgs = repository.listPackages();
         pkgs.setArchivedIterator( archive );
         while ( pkgs.hasNext() ) {
-            PackageItem pkg = (PackageItem) pkgs.next();
+            PackageItem pkg = pkgs.next();
 
             PackageConfigData data = new PackageConfigData();
             data.uuid = pkg.getUUID();
             data.name = pkg.getName();
             data.archived = pkg.isArchived();
-            if ( !archive && (filter == null || filter.accept( data,
-                                                               RoleTypes.PACKAGE_READONLY )) ) {
+            if ( !archive && 
+            		(filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY )) ) {
                 result.add( data );
-            } else if ( archive && data.archived && (filter == null || filter.accept( data,
-                                                                                      RoleTypes.PACKAGE_READONLY )) ) {
+            } else if ( archive && data.archived && 
+            		(filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY )) ) {
                 result.add( data );
             }
+            
+            data.subPackages = listSubPackages(pkg, archive, filter);
         }
 
         sortPackages( result );
-        PackageConfigData[] resultArr = result.toArray( new PackageConfigData[result.size()] );
-        return resultArr;
+        return result.toArray( new PackageConfigData[result.size()] );
     }
 
+	private PackageConfigData[] listSubPackages(PackageItem parentPkg, boolean archive, RepositoryFilter filter) {
+    	List<PackageConfigData> children = new LinkedList<PackageConfigData>();
+    	
+    	PackageIterator pkgs = parentPkg.listSubPackages();
+        pkgs.setArchivedIterator( archive );
+        while ( pkgs.hasNext() ) {
+            PackageItem pkg = pkgs.next();
+
+            PackageConfigData data = new PackageConfigData();
+            data.uuid = pkg.getUUID();
+            data.name = pkg.getName();
+            data.archived = pkg.isArchived();
+            if ( !archive && 
+            		(filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY )) ) {
+                children.add( data );
+            } else if ( archive && data.archived && 
+            		(filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY )) ) {
+            	children.add( data );
+            }
+            
+            data.subPackages = listSubPackages(pkg, archive, filter);
+        }
+    	
+    	sortPackages( children );
+        return children.toArray( new PackageConfigData[children.size()] );
+    }
+    
     void sortPackages(List<PackageConfigData> result) {
         Collections.sort( result,
-                          new Comparator<Object>() {
+                          new Comparator<PackageConfigData>() {
 
-                              public int compare(final Object o1,
-                                                 final Object o2) {
-                                  final PackageConfigData d1 = (PackageConfigData) o1;
-                                  final PackageConfigData d2 = (PackageConfigData) o2;
+                              public int compare(final PackageConfigData d1,
+                                                 final PackageConfigData d2) {
                                   return d1.name.compareTo( d2.name );
                               }
 
@@ -582,7 +614,13 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public RuleAsset[] loadRuleAssets(String[] uuids) throws SerializableException {
-
+       return loadRuleAssets(Arrays.asList(uuids));
+    }
+    
+    private RuleAsset[] loadRuleAssets(Collection<String> uuids) throws SerializableException {
+    	if (uuids == null) {
+    		return null;
+    	}
         Collection<RuleAsset> assets = new HashSet<RuleAsset>();
 
         for ( String uuid : uuids ) {
@@ -590,7 +628,7 @@ public class ServiceImplementation
         }
 
         return assets.toArray( new RuleAsset[assets.size()] );
-    }
+    }    
 
     private RuleAsset loadAsset(AssetItem item) throws SerializableException {
 
@@ -631,7 +669,9 @@ public class ServiceImplementation
      */
     MetaData populateMetaData(AssetItem item) {
         MetaData meta = populateMetaData( (VersionableItem) item );
+        
         meta.packageName = item.getPackageName();
+        meta.packageUUID = item.getPackage().getUUID();
 
         List cats = item.getCategories();
         meta.categories = new String[cats.size()];
@@ -840,19 +880,31 @@ public class ServiceImplementation
 
     @WebRemote
     public String createPackage(String name,
-                                String description) throws SerializableException {
+                                String description) throws RulesRepositoryException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new AdminType(),
                                                  RoleTypes.ADMIN );
         }
 
-        log.info( "USER:" + getCurrentUserName() + " CREATING package [" + name + "]" );
+        log.info( "USER: " + getCurrentUserName() + " CREATING package [" + name + "]" );
         PackageItem item = repository.createPackage( name,
                                                      description );
 
         return item.getUUID();
     }
 
+    @WebRemote
+    public String createSubPackage(String name, String description, String parentNode) throws SerializableException {
+        //XXX bauna
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(new AdminType(), RoleTypes.ADMIN);
+		}
+	
+        log.info( "USER: " + getCurrentUserName() + " CREATING subPackage [" + name + "], parent [" + parentNode + "]");
+		PackageItem item = repository.createSubPackage(name, description, parentNode);
+        return item.getUUID();
+    }
+    
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public PackageConfigData loadPackageConfig(String uuid) {
@@ -1239,7 +1291,7 @@ public class ServiceImplementation
                     }
                 } catch ( RulesRepositoryException e ) {
                     // This was not a rule asset
-                } catch ( SerializableException e ) {
+                } catch ( Exception e ) {
                     // This was not a rule asset
                 }
 
@@ -1403,8 +1455,6 @@ public class ServiceImplementation
         if ( !search.endsWith( "%" ) ) {
             search += "%";
         }
-
-        TableDataResult result = new TableDataResult();
 
         List<AssetItem> resultList = new ArrayList<AssetItem>();
 
@@ -1622,7 +1672,7 @@ public class ServiceImplementation
     }
 
     private void updateBinaryPackage(PackageItem item,
-                                     ContentPackageAssembler asm) throws Exception {
+                                     ContentPackageAssembler asm) throws SerializableException {
         item.updateBinaryUpToDate( true );
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         // setting the MapBackedClassloader that is the parent of the builder classloader as the parent
@@ -2115,7 +2165,7 @@ public class ServiceImplementation
                     throw new DetailedSerializableException( "Unable to reload knowledgebase.",
                                                              e.getMessage() );
                 }
-            } catch ( SerializableException e1 ) {
+            } catch ( Exception e1 ) {
                 log.error( "Unable to rebuild the rulebase: " + e.getMessage() );
                 throw new DetailedSerializableException( "Unable to rebuild the rulebase.",
                                                          "" );
@@ -2197,7 +2247,7 @@ public class ServiceImplementation
     }
 
     public BulkTestRunResult runScenariosInPackage(PackageItem item) throws DetailedSerializableException,
-                                                                    SerializableException {
+    		SerializableException {
         ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
         ClassLoader cl = null;
 
@@ -2665,7 +2715,7 @@ public class ServiceImplementation
         try {
             return backchannel.await( getCurrentUserName() );
         } catch ( InterruptedException e ) {
-            return new ArrayList();
+            return new ArrayList<PushResponse>();
         }
     }
 
@@ -2777,25 +2827,43 @@ public class ServiceImplementation
         return diffs;
     }
 
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public AnalysisReport verifyAsset(RuleAsset asset) throws SerializableException {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
-                                                 RoleTypes.PACKAGE_DEVELOPER );
-        }
+	@WebRemote
+	@Restrict("#{identity.loggedIn}")
+	public AnalysisReport verifyAsset(RuleAsset asset, Set<String> activeWorkingSets) throws SerializableException {
+		if (Contexts.isSessionContextActive()) {
+			Identity.instance().checkPermission(new PackageNameType(asset.metaData.packageName),
+					RoleTypes.PACKAGE_DEVELOPER);
+		}
 
-        String drl = "package " + asset.metaData.packageName + "\n" + getDroolsHeader( repository.loadPackage( asset.metaData.packageName ) ) + "\n" + this.buildAssetSource( asset );
+		String drl = "package " + asset.metaData.packageName + "\n"
+				+ getDroolsHeader(repository.loadPackage(asset.metaData.packageName)) + "\n"
+				+ this.buildAssetSource(asset);
 
         VerifierRunner runner = new VerifierRunner();
 
-        if ( asset.metaData.format.equals( AssetFormats.DECISION_TABLE_GUIDED ) || asset.metaData.format.equals( AssetFormats.DECISION_SPREADSHEET_XLS ) ) {
+		RuleAsset[] workingSets = loadRuleAssets(activeWorkingSets);
+		List<String> constraintRules = new LinkedList<String>();
+		if (workingSets != null) {
+			for (RuleAsset ws : workingSets) {
+				WorkingSetConfigData wsConfig = (WorkingSetConfigData) ws.content;
+				if (wsConfig.constraints != null) {
+					for (Constraint cons : wsConfig.constraints) {
+						constraintRules.add(cons.getVerifierRule());
+					}
+				}
+			}
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("constraints rules: " + constraintRules);
+		}
+        if ( AssetFormats.DECISION_TABLE_GUIDED.equals(asset.metaData.format) || AssetFormats.DECISION_SPREADSHEET_XLS.equals(asset.metaData.format) ) {
             return runner.verify( drl,
-                                  VerifierConfiguration.VERIFYING_SCOPE_DECISION_TABLE );
+                                  VerifierConfiguration.VERIFYING_SCOPE_DECISION_TABLE,
+                                  constraintRules );
         } else {
             return runner.verify( drl,
-                                  VerifierConfiguration.VERIFYING_SCOPE_SINGLE_RULE );
+                                  VerifierConfiguration.VERIFYING_SCOPE_SINGLE_RULE,
+                                  constraintRules );
         }
-
     }
 }

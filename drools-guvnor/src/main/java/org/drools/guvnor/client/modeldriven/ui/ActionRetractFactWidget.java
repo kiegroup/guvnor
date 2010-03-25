@@ -19,35 +19,53 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 
 /**
  * This is used when you want to retract a fact. It will provide a list of
  * bound facts for you to retract.
  * @author Michael Neale
  */
-public class ActionRetractFactWidget extends Composite {
+public class ActionRetractFactWidget extends RuleModellerWidget {
 
-    private FlexTable layout;
+    private HorizontalPanel layout;
+    private boolean readOnly;
 
+    public ActionRetractFactWidget(RuleModeller modeller, ActionRetractFact model) {
+        this(modeller, model, null);
+    }
 
-    public ActionRetractFactWidget(SuggestionCompletionEngine com, ActionRetractFact model, RuleModel ruleModel) {
-        layout = new FlexTable();
+    public ActionRetractFactWidget(RuleModeller modeller, ActionRetractFact model, Boolean readOnly) {
 
+        layout = new HorizontalPanel();
+        layout.setWidth("100%");
         layout.setStyleName( "model-builderInner-Background" );
 
-        layout.setWidget( 0, 0, new SmallLabel(HumanReadable.getActionDisplayName( "retract" ))  );
+        if (readOnly == null) {
+            this.readOnly = !modeller.getSuggestionCompletions().containsFactType(modeller.getModel().getBoundFact(model.variableName).factType);
+        } else {
+            this.readOnly = readOnly;
+        }
 
-        String desc = ruleModel.getBoundFact(model.variableName).factType + " [" + model.variableName + "]";
-        layout.setWidget( 0, 1, new SmallLabel("<b>"  + desc  + "</b>") );
+        if (this.readOnly) {
+            layout.addStyleName("editor-disabled-widget");
+        }
+
+        String desc = modeller.getModel().getBoundFact(model.variableName).factType + " [" + model.variableName + "]";
+        layout.add(new SmallLabel(HumanReadable.getActionDisplayName( "retract" )+"&nbsp;<b>"  + desc  + "</b>"));
 
         initWidget( layout );
     }
+
+    @Override
+    public boolean isReadOnly() {
+        return this.readOnly;
+    }
+
+
 
 
 }

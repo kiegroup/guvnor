@@ -20,14 +20,13 @@ package org.drools.guvnor.client.rpc;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.testing.Scenario;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializableException;
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This is what the remote service will implement, as a servlet.
@@ -151,6 +150,12 @@ public interface RepositoryService extends RemoteService {
      * @return UUID of the created item.
      */
     public String createPackage(String name, String description) throws SerializableException;
+    
+    /**
+     * This creates a package of the given name, and checks it in.
+     * @return UUID of the created item.
+     */
+    public String createSubPackage(String name, String description, String parentPackage) throws SerializableException;
 
     /**
      * Loads a package by its uuid.
@@ -569,5 +574,5 @@ public interface RepositoryService extends RemoteService {
                                           String firstSnapshotName,
                                           String secondSnapshotName);
     
-    public AnalysisReport verifyAsset(RuleAsset asset) throws SerializableException;
+    public AnalysisReport verifyAsset(RuleAsset asset, Set<String> activeWorkingSets) throws SerializableException;
 }

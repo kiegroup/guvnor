@@ -26,11 +26,11 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.GlobalAreaAssetSelector;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -45,7 +45,6 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
 import com.gwtext.client.util.Format;
 
 /**
@@ -57,7 +56,7 @@ public class NewAssetWizard extends FormStylePopup {
     private Constants constants = GWT.create(Constants.class);
     
     private TextBox                name        = new TextBox();
-    private TextBox                importedAssetName        = new TextBox();
+//    private TextBox                importedAssetName        = new TextBox();
     private TextArea               description = new TextArea();
     private String                 initialCategory;
     
@@ -109,15 +108,15 @@ public class NewAssetWizard extends FormStylePopup {
 
 		addRow(newAssetLayout);
 		addRow(importAssetLayout); 
-			
         
 		//layout for new asset.
 		newAssetLayout.addAttribute( constants.NameColon(), name );        	
 
-        this.setAfterShow(new Command() {
+		this.setAfterShow(new Command() {
 			public void execute() {
-				name.setFocus(true);			}
-        });
+				name.setFocus(true);
+			}
+		});
 
         if (showCats) {
         	newAssetLayout.addAttribute(constants.InitialCategory(), getCatChooser());
@@ -125,7 +124,7 @@ public class NewAssetWizard extends FormStylePopup {
 
         if (format == null) {
         	newAssetLayout.addAttribute(constants.TypeFormatOfRule(), this.formatChooser );
-        } else if (format == "*") { //NON-NLS
+        } else if ("*".equals(format)) { //NON-NLS
         	final TextBox fmt = new TextBox();
         	newAssetLayout.addAttribute(constants.FileExtensionTypeFormat(), fmt);
         	fmt.addChangeListener(new ChangeListener() {
@@ -142,7 +141,6 @@ public class NewAssetWizard extends FormStylePopup {
 		newAssetLayout.addAttribute("", hp);
 		newAssetLayout.addAttribute("", createInGlobalButton);
 
-		
         //newAssetLayout.addAttribute(constants.Package() + ":", packageSelector);
 
         description.setVisibleLines( 4 );
@@ -156,26 +154,25 @@ public class NewAssetWizard extends FormStylePopup {
 
         newAssetLayout.addAttribute(constants.InitialDescription(), description);
 
-        Button ok = new Button( constants.OK() );
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget arg0) {
-                ok();
-            }
-        } );
+		Button ok = new Button(constants.OK());
+		ok.addClickListener(new ClickListener() {
+			public void onClick(Widget arg0) {
+				ok();
+			}
+		});
 
-        newAssetLayout.addAttribute( "", ok );
+		newAssetLayout.addAttribute("", ok);
         
         //layout for importing share asset from global area.
         importAssetLayout.addAttribute(constants.AssetToImport(), globalAreaAssetSelector);
         importAssetLayout.addAttribute(constants.Package() + ":", importedPackageSelector);
 
-        Button linkedAssetOKButton = new Button( constants.OK() );
-        linkedAssetOKButton.addClickListener( new ClickListener() {
-            public void onClick(Widget arg0) {
-                importOK();
-            }
-
-        } );
+		Button linkedAssetOKButton = new Button(constants.OK());
+		linkedAssetOKButton.addClickListener(new ClickListener() {
+			public void onClick(Widget arg0) {
+				importOK();
+			}
+		});
         importAssetLayout.addAttribute( "", linkedAssetOKButton );
         importAssetLayout.addRow( new HTML( "<br/><b>" + constants.NoteNewLinkedAsset() + "</b>" ) );
         importAssetLayout.addRow( new HTML( constants.NewLinkedAssetDesc1() ) );
@@ -223,64 +220,55 @@ public class NewAssetWizard extends FormStylePopup {
 		}
 
         String fmt = getFormat();
-        if (fmt == null || fmt.equals("*")) {
+        if ("*".equals(fmt)) {
         	Window.alert(constants.PleaseEnterAFormatFileType());
         	return;
         }
-
         
-        GenericCallback cb = new GenericCallback() {
-            public void onSuccess(Object result) {
-            		String uuid = (String) result;
-            		if (uuid.startsWith("DUPLICATE")) { //NON-NLS
-            			LoadingPopup.close();
-            			Window.alert(constants.AssetNameAlreadyExistsPickAnother());
-            		} else {
-            			openEditor((String) result);
-            			hide();
-            		}
-            }
-        };
+		GenericCallback<String> cb = new GenericCallback<String>() {
+			public void onSuccess(String uuid) {
+				if (uuid.startsWith("DUPLICATE")) { // NON-NLS
+					LoadingPopup.close();
+					Window.alert(constants.AssetNameAlreadyExistsPickAnother());
+				} else {
+					openEditor(uuid);
+					hide();
+				}
+			}
+		};
         
-        String selectedPackage;
-        if (createInGlobalButton.isChecked()) {
-        	selectedPackage = "globalArea";
-        } else {
-        	selectedPackage = packageSelector.getSelectedPackage();
-        }
+		String selectedPackage;
+		if (createInGlobalButton.isChecked()) {
+			selectedPackage = "globalArea";
+		} else {
+			selectedPackage = packageSelector.getSelectedPackage();
+		}
 
-
-        LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-        RepositoryServiceFactory.getService().createNewRule( name.getText(),
-                                                          description.getText(),
-                                                          initialCategory,
-                                                          selectedPackage,
-                                                          getFormat(),
-                                                          cb );
+		LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
+		RepositoryServiceFactory.getService().createNewRule(name.getText(), description.getText(), initialCategory,
+				selectedPackage, getFormat(), cb);
     }
 
     /**
      * When Import OK is pressed, it will update the repository with the imported asset.
      */
-    void importOK() {
-        GenericCallback cb = new GenericCallback() {
-            public void onSuccess(Object result) {
-            		String uuid = (String) result;
-            		if (uuid.startsWith("DUPLICATE")) { //NON-NLS
-            			LoadingPopup.close();
-            			Window.alert(constants.AssetNameAlreadyExistsPickAnother());
-            		} else {
-            			openEditor((String) result);
-            			hide();
-            		}
-            }
-        };
+	void importOK() {
+		GenericCallback<String> cb = new GenericCallback<String>() {
+			public void onSuccess(String uuid) {
+				if (uuid.startsWith("DUPLICATE")) { // NON-NLS
+					LoadingPopup.close();
+					Window.alert(constants.AssetNameAlreadyExistsPickAnother());
+				} else {
+					openEditor(uuid);
+					hide();
+				}
+			}
+		};
 
-        LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-        RepositoryServiceFactory.getService().createNewImportedRule(globalAreaAssetSelector.getSelectedAsset(),
-                                                          importedPackageSelector.getSelectedPackage(),
-                                                          cb );
-    }
+		LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
+		RepositoryServiceFactory.getService().createNewImportedRule(globalAreaAssetSelector.getSelectedAsset(),
+				importedPackageSelector.getSelectedPackage(), cb);
+	}
 
     private String getFormat() {
         if (format != null) return format;
@@ -303,10 +291,9 @@ public class NewAssetWizard extends FormStylePopup {
 	 * @param jsrPath
 	 */
 	public static boolean validatePathPerJSR170(String jsrPath) {
-		int len = jsrPath == null ? 0 : jsrPath.length();
-
+		int len = jsrPath == null ? 0 : jsrPath.trim().length();
 		if (len == 0) {
-			Window.alert(((Constants) GWT.create(Constants.class)).emptyNameIsNotAllowed());
+			Window.alert(GWT.<Constants>create(Constants.class).emptyNameIsNotAllowed());
 			return false;
 		}
 
@@ -324,7 +311,7 @@ public class NewAssetWizard extends FormStylePopup {
 			case '*':
 			case '\'':
 			case '\"':
-                Window.alert(Format.format(((Constants) GWT.create(Constants.class)).NonValidJCRName(), jsrPath, ""+ c));
+				Window.alert(Format.format(GWT.<Constants>create(Constants.class).NonValidJCRName(), jsrPath, ""+ c));
 				return false;
 			default:
 			}

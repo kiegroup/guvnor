@@ -1,12 +1,8 @@
 package org.drools.repository;
 
-import org.drools.repository.events.StorageEventManager;
-
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.Node;
@@ -15,6 +11,9 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
+import javax.jcr.lock.LockException;
+
+import org.drools.repository.events.StorageEventManager;
 
 /**
  * This is the parent class for versionable assets.
@@ -39,7 +38,6 @@ public abstract class VersionableItem extends Item {
     public static final String VERSION_NUMBER_PROPERTY_NAME   = "drools:versionNumber";
     public static final String CONTENT_PROPERTY_ARCHIVE_FLAG  = "drools:archive";
 
-
     /** Dublin core based fields. */
     public static final String LAST_CONTRIBUTOR_PROPERTY_NAME = "drools:lastContributor";
     public static final String CREATOR_PROPERTY_NAME          = "drools:creator";
@@ -51,8 +49,6 @@ public abstract class VersionableItem extends Item {
     public static final String COVERAGE_PROPERTY_NAME         = "drools:coverage";
     public static final String PUBLISHER_PROPERTY_NAME        = "drools:publisher";
 
-
-
     /**
      * The name of the state property on the rule node type
      */
@@ -62,7 +58,6 @@ public abstract class VersionableItem extends Item {
      * The name of the tag property on the rule node type
      */
     public static final String CATEGORY_PROPERTY_NAME         = "drools:categoryReference";
-
 
     /**
      * The possible formats for the format property of the node
@@ -109,40 +104,40 @@ public abstract class VersionableItem extends Item {
 
 
     /**
-     * @return the predessor node of this node in the version history, or null if no predecessor version exists
+     * @return the predecessor node of this node in the version history, or null if no predecessor version exists
      * @throws RulesRepositoryException
      */
-    protected Node getPrecedingVersionNode() throws RulesRepositoryException {
-        try {
-            Node versionNode;
-            if ( this.node.getPrimaryNodeType().getName().equals( "nt:version" ) ) {
-                versionNode = this.node;
-            } else {
-                versionNode = this.node.getBaseVersion();
-            }
+	protected Node getPrecedingVersionNode() throws RulesRepositoryException {
+		try {
+			Node versionNode;
+			if (this.node.getPrimaryNodeType().getName().equals("nt:version")) {
+				versionNode = this.node;
+			} else {
+				versionNode = this.node.getBaseVersion();
+			}
 
-            Property predecessorsProperty = versionNode.getProperty( "jcr:predecessors" );
-            Value[] predecessorValues = predecessorsProperty.getValues();
+			Property predecessorsProperty = versionNode.getProperty("jcr:predecessors");
+			Value[] predecessorValues = predecessorsProperty.getValues();
 
-            if ( predecessorValues.length > 0 ) {
-                Node predecessorNode = this.node.getSession().getNodeByUUID( predecessorValues[0].getString() );
+			if (predecessorValues.length > 0) {
+				Node predecessorNode = this.node.getSession().getNodeByUUID(predecessorValues[0].getString());
 
-                //we don't want to return the root node - it isn't a true predecessor
-                if ( predecessorNode.getName().equals( "jcr:rootVersion" ) ) {
-                    return null;
-                }
+				// we don't want to return the root node - it isn't a true
+				// predecessor
+				if (predecessorNode.getName().equals("jcr:rootVersion")) {
+					return null;
+				}
 
-                return predecessorNode;
-            }
-        } catch ( PathNotFoundException e ) {
-            //do nothing - this will happen if no predecessors exits
-        } catch ( Exception e ) {
-            log.error( "Caught exception",
-                       e );
-            throw new RulesRepositoryException( e );
-        }
-        return null;
-    }
+				return predecessorNode;
+			}
+		} catch (PathNotFoundException e) {
+			// do nothing - this will happen if no predecessors exits
+		} catch (Exception e) {
+			log.error("Caught exception", e);
+			throw new RulesRepositoryException(e);
+		}
+		return null;
+	}
 
     /**
      * @return the successor node of this node in the version history
@@ -327,8 +322,35 @@ public abstract class VersionableItem extends Item {
         }
     }
 
+	/**
+	 * optionally update last updated...
+	 */
+	public void updateStringArrayProperty(String[] value, String prop, boolean setLastUpdated) {
+		try {
+			checkIsUpdateable();
 
+			if (value == null) {
+				return;
+			}
 
+			node.checkout();
+			node.setProperty(prop, value);
+			if (setLastUpdated) {
+				Calendar lastModified = Calendar.getInstance();
+				this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME, lastModified);
+				this.node.setProperty(LAST_CONTRIBUTOR_PROPERTY_NAME, node.getSession().getUserID());
+			}
+
+		} catch (RulesRepositoryException e) {
+			throw new RulesRepositoryException(e);
+		} catch (UnsupportedRepositoryOperationException e) {
+			throw new RulesRepositoryException(e);
+		} catch (LockException e) {
+			throw new RulesRepositoryException(e);
+		} catch (RepositoryException e) {
+			throw new RulesRepositoryException(e);
+		}
+	}
 
     /**
      * See the Dublin Core documentation for more
@@ -417,7 +439,7 @@ public abstract class VersionableItem extends Item {
     
     /**
      * This returns the format of an item.
-     * This is analagous to a file extension
+     * This is analogous to a file extension
      * if the resource was a file (it may contain more information
      * then a pure file extension could, however).
      *
@@ -427,18 +449,17 @@ public abstract class VersionableItem extends Item {
      * @return the format of this object's node
      * @throws RulesRepositoryException
      */
-    public String getFormat() throws RulesRepositoryException {
-        try {
-            Node theNode = getVersionContentNode();
+	public String getFormat() throws RulesRepositoryException {
+		try {
+			Node theNode = getVersionContentNode();
 
-            Property data = theNode.getProperty( FORMAT_PROPERTY_NAME );
-            return data.getValue().getString();
-        } catch ( Exception e ) {
-            log.error( "Caught Exception",
-                       e );
-            throw new RulesRepositoryException( e );
-        }
-    }
+			Property data = theNode.getProperty(FORMAT_PROPERTY_NAME);
+			return data.getValue().getString();
+		} catch (Exception e) {
+			log.error("Caught Exception", e);
+			throw new RulesRepositoryException(e);
+		}
+	}
 
     /**
      * This sets the format (or "file extension" of the resource).
@@ -468,26 +489,25 @@ public abstract class VersionableItem extends Item {
     /**
      * This deals with a node which *may* be a version, if it is, it grabs the frozen copy.
      */
-    protected Node getRealContentFromVersion(Node node) throws RepositoryException,
-                                            PathNotFoundException {
-        if ( node.getPrimaryNodeType().getName().equals( "nt:version" ) ) {
-            return node.getNode( "jcr:frozenNode" );
-        } else {
-            return node;
-        }
-    }
+	protected Node getRealContentFromVersion(Node node) throws RepositoryException, PathNotFoundException {
+		if (node.getPrimaryNodeType().getName().equals("nt:version")) {
+			return node.getNode("jcr:frozenNode");
+		} else {
+			return node;
+		}
+	}
 
     /**
      * Need to get the name from the content node, not the version node
      * if it is in fact a version !
      */
-    public String getName() {
-        try {
-                return getVersionContentNode().getName();
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
-        }
-    }
+	public String getName() {
+		try {
+			return getVersionContentNode().getName();
+		} catch (RepositoryException e) {
+			throw new RulesRepositoryException(e);
+		}
+	}
 
     /**
      * This will check out the node prior to editing.

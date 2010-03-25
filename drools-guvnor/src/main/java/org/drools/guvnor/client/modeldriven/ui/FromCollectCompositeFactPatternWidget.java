@@ -11,6 +11,7 @@ import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
 import org.drools.guvnor.client.modeldriven.brl.FromCollectCompositeFactPattern;
@@ -26,6 +27,11 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
     public FromCollectCompositeFactPatternWidget(RuleModeller modeller,
             FromCollectCompositeFactPattern pattern) {
         super(modeller, pattern);
+    }
+
+    public FromCollectCompositeFactPatternWidget(RuleModeller modeller,
+            FromCollectCompositeFactPattern pattern,Boolean readOnly) {
+        super(modeller, pattern, readOnly);
     }
 
     @Override
@@ -53,26 +59,26 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         int r = 0;
 
         if (pattern.getFactPattern() == null) {
-            panel.setWidget(r++, 0, new ClickableLabel("<br> <font color='red'>" + constants.clickToAddPatterns() + "</font>", leftPatternclick, !this.modeller.lockLHS()));
+            panel.setWidget(r++, 0, new ClickableLabel("<br> <font color='red'>" + constants.clickToAddPatterns() + "</font>", leftPatternclick, !this.readOnly));
         }
 
 
         panel.setWidget(r++, 0, new HTML(lbl));
 
         if (this.getFromCollectPattern().getRightPattern() == null) {
-            panel.setWidget(r++, 0, new ClickableLabel("<br> <font color='red'>" + constants.clickToAddPatterns() + "</font>", rightPatternclick, !this.modeller.lockLHS()));
+            panel.setWidget(r++, 0, new ClickableLabel("<br> <font color='red'>" + constants.clickToAddPatterns() + "</font>", rightPatternclick, !this.readOnly));
         } else {
             IPattern rPattern = this.getFromCollectPattern().getRightPattern();
 
             Widget patternWidget = null;
             if (rPattern instanceof FactPattern) {
-                patternWidget = new FactPatternWidget(modeller, rPattern, constants.All0with(), true);
+                patternWidget = new FactPatternWidget(modeller, rPattern, constants.All0with(), true, this.readOnly);
             } else if (rPattern instanceof FromAccumulateCompositeFactPattern) {
-                patternWidget = new FromAccumulateCompositeFactPatternWidget(modeller, (FromAccumulateCompositeFactPattern) rPattern);
+                patternWidget = new FromAccumulateCompositeFactPatternWidget(modeller, (FromAccumulateCompositeFactPattern) rPattern,this.readOnly);
             } else if (rPattern instanceof FromCollectCompositeFactPattern) {
-                patternWidget = new FromCollectCompositeFactPatternWidget(modeller, (FromCollectCompositeFactPattern) rPattern);
+                patternWidget = new FromCollectCompositeFactPatternWidget(modeller, (FromCollectCompositeFactPattern) rPattern,this.readOnly);
             } else if (rPattern instanceof FromCompositeFactPattern) {
-                patternWidget = new FromCompositeFactPatternWidget(modeller, (FromCompositeFactPattern) rPattern);
+                patternWidget = new FromCompositeFactPatternWidget(modeller, (FromCompositeFactPattern) rPattern,this.readOnly);
             } else {
                 throw new IllegalArgumentException("Unsuported pattern " + rPattern + " for right side of FROM COLLECT");
             }
@@ -135,6 +141,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
      */
     protected void showRightPatternSelector(final Widget w) {
         final ListBox box = new ListBox();
+        SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
         String[] facts = completions.getFactTypes();
 
         box.addItem(constants.Choose());

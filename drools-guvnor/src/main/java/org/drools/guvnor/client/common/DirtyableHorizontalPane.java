@@ -31,7 +31,7 @@ public class DirtyableHorizontalPane extends HorizontalPanel implements Dirtyabl
         Widget element;
         
         for ( int i = 0; i < widNumber; i++ ) {
-            element =  (Widget) getWidget(i);
+            element = getWidget(i);
             if ((element instanceof DirtyableWidget && ((DirtyableWidget) element).isDirty()) || 
             		(element instanceof DirtyableContainer && ((DirtyableContainer) element).hasDirty())) 
                 return true;

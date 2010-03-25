@@ -72,9 +72,9 @@ public class AssetItemGrid extends Composite {
     public static final String  RULE_LIST_TABLE_ID          = "rulelist";
     public static final String  PACKAGEVIEW_LIST_TABLE_ID   = "packageviewlist";
     public static final String  ARCHIVED_RULE_LIST_TABLE_ID = "archivedrulelist";
-    private static final Map<String, ColumnModel>    columnConfigs               = new HashMap();
-    private static final Map<String, RecordDef>    recordDefs                  = new HashMap();
-    private static final Map<String, Integer>    rowsPerPage                 = new HashMap();
+    private static final Map<String, ColumnModel>    columnConfigs               = new HashMap<String, ColumnModel>();
+    private static final Map<String, RecordDef>    recordDefs                  = new HashMap<String, RecordDef>();
+    private static final Map<String, Integer>    rowsPerPage                 = new HashMap<String, Integer>();
 
     private final EditItemEvent editEvent;
     private SimplePanel         layout;

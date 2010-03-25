@@ -107,17 +107,16 @@ public class StateManager extends Composite {
         initWidget( form );
     }
 
-    private void removeStatus() {
-        String name = currentStatuses.getItemText( currentStatuses.getSelectedIndex() );
+	private void removeStatus() {
+		String name = currentStatuses.getItemText(currentStatuses.getSelectedIndex());
 
-        RepositoryServiceFactory.getService().removeState( name,
-                                                           new GenericCallback() {
-                                                               public void onSuccess(Object data) {
-                                                                   Window.alert(constants.StatusRemoved());
-                                                                   refreshList();
-                                                               }
-                                                           } );
-    }
+		RepositoryServiceFactory.getService().removeState(name, new GenericCallback() {
+			public void onSuccess(Object data) {
+				Window.alert(constants.StatusRemoved());
+				refreshList();
+			}
+		});
+	}
 
     private void renameSelected() {
 
@@ -126,20 +125,18 @@ public class StateManager extends Composite {
 
         String oldName = currentStatuses.getItemText( currentStatuses.getSelectedIndex() );
 
-        if ( newName != null ) {
-        	if (!NewAssetWizard.validatePathPerJSR170(newName)) {
-        		return;
-        	}
-            RepositoryServiceFactory.getService().renameState( oldName,
-                                                               newName,
-                                                               new GenericCallback<Object>() {
-                                                                   public void onSuccess(Object data) {
-                                                                       Window.alert(constants.StatusRenamed());
-                                                                       refreshList();
-                                                                   }
-                                                               } );
-        }
-    }
+		if (newName != null) {
+			if (!NewAssetWizard.validatePathPerJSR170(newName)) {
+				return;
+			}
+			RepositoryServiceFactory.getService().renameState(oldName, newName, new GenericCallback<Void>() {
+				public void onSuccess(Void data) {
+					Window.alert(constants.StatusRenamed());
+					refreshList();
+				}
+			});
+		}
+	}
 
     private void refreshList() {
         LoadingPopup.showMessage(constants.LoadingStatuses());

@@ -16,6 +16,8 @@ package org.drools.guvnor.client.ruleeditor;
  * limitations under the License.
  */
 
+import java.util.Set;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
@@ -39,8 +41,10 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
+import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.packages.PackageBuilderWidget;
+import org.drools.guvnor.client.packages.WorkingSetManager;
 
 /**
  * This contains the widgets used to action a rule asset
@@ -219,6 +223,19 @@ public class ActionToolbar extends Composite {
                                                         moreMenu );
 
         if ( isValidatorTypeAsset() ) {
+
+            if (editor instanceof RuleModeller){
+                ToolbarButton workingSets = new ToolbarButton();
+                workingSets.setText( constants.SelectWorkingSets() );
+                workingSets.addListener( new ButtonListenerAdapter() {
+                    public void onClick(com.gwtext.client.widgets.Button button,
+                                        EventObject e) {
+                        showWorkingSetsSelection((RuleModeller)editor);
+                    }
+                } );
+                toolbar.addButton( workingSets );
+            }
+
             ToolbarButton validate = new ToolbarButton();
             validate.setText( constants.Validate() );
             validate.addListener( new ButtonListenerAdapter() {
@@ -282,7 +299,9 @@ public class ActionToolbar extends Composite {
     private void doVerify() {
         onSave();
         LoadingPopup.showMessage( constants.VerifyingItemPleaseWait() );
-        RepositoryServiceFactory.getService().verifyAsset( asset,
+        Set<String> activeWorkingSets = null;
+        activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs(asset.metaData.packageName);
+        RepositoryServiceFactory.getService().verifyAsset( asset, activeWorkingSets, 
                                                            new AsyncCallback<AnalysisReport>() {
 
                                                                public void onSuccess(AnalysisReport report) {
@@ -383,6 +402,22 @@ public class ActionToolbar extends Composite {
             }
         } );
 
+        pop.show();
+    }
+
+    protected void showWorkingSetsSelection(RuleModeller modeller) {
+        final WorkingSetSelectorPopup pop = new WorkingSetSelectorPopup(modeller,asset);
+
+
+        /*
+        pop.setCommand( new Command() {
+            public void execute() {
+                checkinAction.doCheckin( pop.getCheckinComment() );
+                if ( afterCheckinEvent != null ) afterCheckinEvent.execute();
+            }
+        } );
+
+         */
         pop.show();
     }
 

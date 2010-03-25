@@ -8,6 +8,7 @@ import org.drools.guvnor.client.qa.AnalysisView;
 import org.drools.guvnor.client.qa.ScenarioPackageView;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.security.Capabilities;
@@ -84,6 +85,8 @@ public class ExplorerNodeConfig {
                                    "images/new_file.gif",
                                    new String[0] ) );
 
+		pkg.appendChild(makeItem(constants.WorkingSets(), "images/workingset.gif", new String[] {AssetFormats.WORKING_SET}));
+		
         return pkg;
     }
 
@@ -102,17 +105,21 @@ public class ExplorerNodeConfig {
         TreeNode adminNode = new TreeNode( constants.Admin() );
         //adminNode.setAttribute("icon", "images/managment.gif");
 
-        String[][] adminStructure = new String[][]{{constants.Category(), "images/category_small.gif", "0"}, {constants.Status(), "images/tag.png", "2"}, {constants.Archive(), "images/backup_small.gif", "1"},
-                {constants.EventLog(), "images/error.gif", "4"}, {constants.UserPermission(), "images/icoUsers.gif", "5"}, {constants.ImportExport(), "images/save_edit.gif", "3"}, {constants.About(), "images/information.gif", "6"}};
+		String[][] adminStructure = new String[][] {
+				{ constants.Category(), "images/category_small.gif", "0"},
+                { constants.Status(), "images/tag.png", "2" },
+				{ constants.Archive(), "images/backup_small.gif", "1" }, 
+                { constants.EventLog(), "images/error.gif", "4" },
+                { constants.UserPermission(), "images/icoUsers.gif", "5" },
+				{ constants.ImportExport(), "images/save_edit.gif", "3" },
+				{ constants.About(), "images/information.gif", "6" }};
 
         for ( int i = 0; i < adminStructure.length; i++ ) {
 
             String[] packageData = adminStructure[i];
             TreeNode localChildNode = new TreeNode( packageData[0] );
-            localChildNode.setAttribute( "icon",
-                                         packageData[1] ); //NON-NLS
-            localChildNode.setAttribute( "id",
-                                         packageData[2] );
+			localChildNode.setAttribute("icon", packageData[1]);   //NON-NLS
+			localChildNode.setAttribute("id", packageData[2]);
 
             adminNode.appendChild( localChildNode );
         }

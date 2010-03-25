@@ -29,31 +29,28 @@ public class RepositoryServiceFactory {
 
     public static RepositoryServiceAsync SERVICE;
 
-    public static RepositoryServiceAsync getService() {
-        if (SERVICE == null) {
-            loadService();
-        }
-        return SERVICE;
+	public static RepositoryServiceAsync getService() {
+		if (SERVICE == null) {
+			loadService();
+		}
+		return SERVICE;
 
-    }
+	}
 
-    private static void loadService() {
-            SERVICE = getRealService();
-    }
+	private static void loadService() {
+		SERVICE = getRealService();
+	}
 
+	private static RepositoryServiceAsync getRealService() {
+		// define the service you want to call
+		RepositoryServiceAsync svc = (RepositoryServiceAsync) GWT.create(RepositoryService.class);
+		ServiceDefTarget endpoint = (ServiceDefTarget) svc;
 
+		String endpointURL = GWT.getModuleBaseURL() + "guvnorService";
 
-    private static RepositoryServiceAsync getRealService() {
-        // define the service you want to call
-        RepositoryServiceAsync svc =
-            (RepositoryServiceAsync) GWT.create(RepositoryService.class);
-        ServiceDefTarget endpoint = (ServiceDefTarget) svc;
-
-        String endpointURL = GWT.getModuleBaseURL() + "guvnorService";
-
-        endpoint.setServiceEntryPoint(endpointURL);
-        return svc;
-    }
+		endpoint.setServiceEntryPoint(endpointURL);
+		return svc;
+	}
 
     /**
      * Perform the login.

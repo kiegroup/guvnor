@@ -1,18 +1,17 @@
 package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SnapshotView;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
-import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
-import com.gwtext.client.data.NodeTraversalCallback;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Toolbar;
@@ -115,27 +114,27 @@ public class DeploymentPanel extends GenericPanel {
                 }
             }
 
-            public void onExpandNode(final TreeNode node) {
-                if (node.getId().equals("snapshotRoot")) { //NON-NLS
-                    return;
-                }
-                final PackageConfigData conf = (PackageConfigData) node.getUserObject();
-                if (conf != null) {
-                    RepositoryServiceFactory.getService().listSnapshots(conf.name, new GenericCallback() {
-                        public void onSuccess(Object data) {
-                            final SnapshotInfo[] snaps = (SnapshotInfo[]) data;
-                            for (final SnapshotInfo snapInfo : snaps) {
-                                TreeNode snap = new TreeNode();
-                                snap.setTooltip(snapInfo.comment);
-                                snap.setText(snapInfo.name);
-                                snap.setUserObject(new Object[]{snapInfo, conf});
-                                node.appendChild(snap);
-                            }
-                            node.removeChild(node.getFirstChild());
-                        }
-                    });
-                }
-            }
+			public void onExpandNode(final TreeNode node) {
+				if (node.getId().equals("snapshotRoot")) { // NON-NLS
+					return;
+				}
+				final PackageConfigData conf = (PackageConfigData) node.getUserObject();
+				if (conf != null) {
+					RepositoryServiceFactory.getService().listSnapshots(conf.name,
+							new GenericCallback<SnapshotInfo[]>() {
+								public void onSuccess(SnapshotInfo[] snaps) {
+									for (final SnapshotInfo snapInfo : snaps) {
+										TreeNode snap = new TreeNode();
+										snap.setTooltip(snapInfo.comment);
+										snap.setText(snapInfo.name);
+										snap.setUserObject(new Object[] { snapInfo, conf });
+										node.appendChild(snap);
+									}
+									node.removeChild(node.getFirstChild());
+								}
+							});
+				}
+			}
 
             public void onClick(TreeNode node, EventObject e) {
 
@@ -165,24 +164,21 @@ public class DeploymentPanel extends GenericPanel {
         return PackagesPanel.wrapScroll(panel);
     }
 
-    private void deploymentListPackages(final TreeNode root) {
-        RepositoryServiceFactory.getService().listPackages(
-                new GenericCallback() {
-                    public void onSuccess(Object data) {
-                        PackageConfigData[] value = (PackageConfigData[]) data;
-                        PackageHierarchy ph = new PackageHierarchy();
+	private void deploymentListPackages(final TreeNode root) {
+		RepositoryServiceFactory.getService().listPackages(new GenericCallback<PackageConfigData[]>() {
+			public void onSuccess(PackageConfigData[] values) {
+				PackageHierarchy ph = new PackageHierarchy();
 
-                        for (PackageConfigData val : value) {
-                            ph.addPackage(val);
-                        }
-                        for (PackageHierarchy.Folder hf : ph.root.children) {
-                            buildDeploymentTree(root, hf);
-                        }
-
-                        root.expand();
-                    }
-                });
-    }
+				for (PackageConfigData val : values) {
+					ph.addPackage(val);
+				}
+				for (PackageHierarchy.Folder hf : ph.root.children) {
+					buildDeploymentTree(root, hf);
+				}
+				root.expand();
+			}
+		});
+	}
 
     private void buildDeploymentTree(TreeNode root, PackageHierarchy.Folder fldr) {
         if (fldr.conf != null) {

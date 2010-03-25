@@ -478,8 +478,8 @@ public class RuleViewer extends GuvnorEditor {
         }
         if (Window.confirm(constants.PromoteAreYouSure()) ) {
             RepositoryServiceFactory.getService().promoteAssetToGlobalArea(asset.uuid,
-                    new GenericCallback<String>() {
-                        public void onSuccess(String data) {
+                    new GenericCallback<Void>() {
+                        public void onSuccess(Void data) {
                             Window.alert(constants.Promoted());
                             refreshMetaWidgetOnly();
                         }
