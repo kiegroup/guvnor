@@ -56,16 +56,27 @@ public abstract class DefaultConstraintImpl implements Constraint {
         this.verifierFieldPatternTemplate += "      )\n";
 
         this.verifierRestrictionPatternTemplate += "      $restriction :LiteralRestriction(\n";
-        this.verifierRestrictionPatternTemplate += "            fieldGuid == $field.guid,\n";
+        this.verifierRestrictionPatternTemplate += "            fieldPath == $field.path,\n";
         this.verifierRestrictionPatternTemplate += "            ${constraints}\n";
         this.verifierRestrictionPatternTemplate += "      )\n";
 
         this.verifierRuleThenTemplate += "  then\n";
 
+        /*
+         result.add( new VerifierMessage(
+								impactedRules,
+								Severity.ERROR,
+								MessageType.ALWAYS_FALSE,
+								$p,
+								$p + " in " + $r + " can never be satisfied." ) );
+         */
+        
+        
         this.verifierActionTemplate += "      Map<String,String> impactedRules = new HashMap<String,String>();\n";
-        this.verifierActionTemplate += "      impactedRules.put( $restriction.getRuleGuid(), $restriction.getRuleName());\n";
+//        this.verifierActionTemplate += "      impactedRules.put( $restriction.getPath(), $restriction.getRuleName());\n";
+//        this.verifierActionTemplate += "      impactedRules.put( $r.getPath(), $r.getName());\n";
         this.verifierActionTemplate += "      result.add(new VerifierMessage(\n";
-        //this.verifierActionTemplate += "                        impactedRules,\n";
+        this.verifierActionTemplate += "                        impactedRules,\n";
         this.verifierActionTemplate += "                        Severity.ERROR,\n";
         this.verifierActionTemplate += "                        MessageType.NOT_SPECIFIED,\n";
         this.verifierActionTemplate += "                        $restriction,\n";

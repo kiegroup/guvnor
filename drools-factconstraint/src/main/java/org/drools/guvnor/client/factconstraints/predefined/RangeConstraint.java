@@ -74,12 +74,12 @@ public class RangeConstraint extends DefaultConstraintImpl {
         StringBuilder restrictionPattern = new StringBuilder();
 
         restrictionPattern.append("      ($restriction :LiteralRestriction(\n");
-        restrictionPattern.append("            fieldGuid == $field.guid,\n");
+        restrictionPattern.append("            fieldPath == $field.path,\n");
         restrictionPattern.append("            valueType == Field.INT,\n");
         restrictionPattern.append("            intValue < " + getMin() + " || > " + getMax() + "\n");
         restrictionPattern.append("      ) OR\n");
         restrictionPattern.append("      $restriction :LiteralRestriction(\n");
-        restrictionPattern.append("            fieldGuid == $field.guid,\n");
+        restrictionPattern.append("            fieldPath == $field.path,\n");
         restrictionPattern.append("            valueType == Field.DOUBLE,\n");
         restrictionPattern.append("            doubleValue < " + getMin() + " || > " + getMax() + "\n");
         restrictionPattern.append("      ))\n");

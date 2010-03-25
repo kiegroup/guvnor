@@ -119,6 +119,7 @@ public class RangeConstraintTest {
 
 
         String ruleToVerify = "";
+        int fail = 0;
 
         //OK
         ruleToVerify += "package org.drools.factconstraint.test\n\n";
@@ -137,6 +138,7 @@ public class RangeConstraintTest {
         ruleToVerify += "   then\n";
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n\n";
+        fail++;
 
         //OK
         ruleToVerify += "rule \"rule3\"\n";
@@ -169,19 +171,21 @@ public class RangeConstraintTest {
         ruleToVerify += "   then\n";
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n";
+        fail++;
 
         //FAIL - 3
         ruleToVerify += "rule \"rule7\"\n";
         ruleToVerify += "   when\n";
-        ruleToVerify += "       Person(salary == 1001)\n";
+        ruleToVerify += "       Person(salary == 1024)\n";
         ruleToVerify += "   then\n";
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n";
+        fail++;
 
         //OK
         ruleToVerify += "rule \"rule8\"\n";
         ruleToVerify += "   when\n";
-        ruleToVerify += "       Person(age == 40, salary == 1000)\n";
+        ruleToVerify += "       Person(age == 45, salary == 1000)\n";
         ruleToVerify += "   then\n";
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n";
@@ -189,34 +193,38 @@ public class RangeConstraintTest {
         //FAIL: age - 4
         ruleToVerify += "rule \"rule9\"\n";
         ruleToVerify += "   when\n";
-        ruleToVerify += "       Person(age == 400, salary == 1000)\n";
+        ruleToVerify += "       Person(age == 40, salary == 1011)\n";
         ruleToVerify += "   then\n";
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n";
+        fail++;
 
         //FAIL salary - 5
         ruleToVerify += "rule \"rule10\"\n";
         ruleToVerify += "   when\n";
-        ruleToVerify += "       Person(age == 40, salary == 1003)\n";
+        ruleToVerify += "       Person(age == 43, salary == 1007)\n";
         ruleToVerify += "   then\n";
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n";
+        fail++;
 
         //FAIL both (creates 2 warnings) - 6,7
         ruleToVerify += "rule \"rule11\"\n";
         ruleToVerify += "   when\n";
-        ruleToVerify += "       Person(age == 400, salary == 1003)\n";
+        ruleToVerify += "       Person(age == 403, salary == 1008)\n";
         ruleToVerify += "   then\n";
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n";
-
+        fail+=2;
+        
         //FAIL both (creates 2 warnings) - 8,9
-        ruleToVerify += "rule \"rule11\"\n";
+        ruleToVerify += "rule \"rule12\"\n";
         ruleToVerify += "   when\n";
-        ruleToVerify += "       Person(age == 400, salary == -0.69)\n";
+        ruleToVerify += "       Person(age == 404, salary == -0.679)\n";
         ruleToVerify += "   then\n";
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n";
+        fail+=2;
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
@@ -249,7 +257,7 @@ public class RangeConstraintTest {
 
         System.out.println(warnings);
 
-        Assert.assertEquals(9, warnings.size());
+        Assert.assertEquals(fail, warnings.size());
         verifier.dispose();
     }
 
