@@ -28,10 +28,10 @@ public class VerifierRunnerTest {
     }
 
     @Test
-    public void verifyPackageItem() {
+    public void verifyPackageItem() { 
         VerifierRunner verifierRunner = checkinDRLAssetToPackage( "/VerifierCauseTrace.drl" );
 
-        AnalysisReport report = verifierRunner.verify( packageItem,
+        AnalysisReport report = verifierRunner.verify( packageItem.getName(),
                                                        VerifierConfiguration.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE );
 
         Assert.assertNotNull( report );
