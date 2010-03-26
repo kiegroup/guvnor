@@ -15,6 +15,7 @@ public abstract class DefaultConstraintImpl implements Constraint {
     private String factType;
     private String fieldName;
     private Map<String, String> arguments = new HashMap<String, String>();
+    /*
     private String verifierPackageTemplate = "";
     private String verifierImportsTemplate = "";
     private String verifierGlobalsTemplate = "";
@@ -25,67 +26,10 @@ public abstract class DefaultConstraintImpl implements Constraint {
     private String verifierRuleThenTemplate = "";
     private String verifierActionTemplate = "";
     private String verifierRuleEndTemplate = "";
+    */
 
-    /**
-     * Fills the rule's template sections. Subclasses of DefaultConstraintImpl
-     * can modify these templates, use the ${} or both.
-     */
     public DefaultConstraintImpl() {
 
-        this.verifierPackageTemplate += "package org.drools.verifier.consequence\n";
-
-        this.verifierImportsTemplate += "import org.drools.verifier.components.*;\n";
-        this.verifierImportsTemplate += "import java.util.Map;\n";
-        this.verifierImportsTemplate += "import java.util.HashMap;\n";
-        this.verifierImportsTemplate += "import org.drools.verifier.report.components.VerifierMessage;\n";
-        this.verifierImportsTemplate += "import org.drools.verifier.data.VerifierReport;\n";
-        this.verifierImportsTemplate += "import org.drools.verifier.report.components.Severity;\n";
-        this.verifierImportsTemplate += "import org.drools.verifier.report.components.MessageType;\n";
-
-
-        this.verifierGlobalsTemplate += "global VerifierReport result;\n";
-
-
-        this.verifierRuleNameTemplate += "rule \"${ruleName}\"\n";
-
-        this.verifierRuleWhenTemplate += "  when\n";
-
-        this.verifierFieldPatternTemplate += "      $field :Field(\n";
-        this.verifierFieldPatternTemplate += "          objectTypeName == \"${factType}\",\n";
-        this.verifierFieldPatternTemplate += "          name == \"${fieldName}\"\n";
-        this.verifierFieldPatternTemplate += "      )\n";
-
-        this.verifierRestrictionPatternTemplate += "      $restriction :LiteralRestriction(\n";
-        this.verifierRestrictionPatternTemplate += "            fieldPath == $field.path,\n";
-        this.verifierRestrictionPatternTemplate += "            ${constraints}\n";
-        this.verifierRestrictionPatternTemplate += "      )\n";
-
-        this.verifierRuleThenTemplate += "  then\n";
-
-        /*
-         result.add( new VerifierMessage(
-								impactedRules,
-								Severity.ERROR,
-								MessageType.ALWAYS_FALSE,
-								$p,
-								$p + " in " + $r + " can never be satisfied." ) );
-         */
-        
-        
-        this.verifierActionTemplate += "      Map<String,String> impactedRules = new HashMap<String,String>();\n";
-//        this.verifierActionTemplate += "      impactedRules.put( $restriction.getPath(), $restriction.getRuleName());\n";
-//        this.verifierActionTemplate += "      impactedRules.put( $r.getPath(), $r.getName());\n";
-        this.verifierActionTemplate += "      result.add(new VerifierMessage(\n";
-        this.verifierActionTemplate += "                        impactedRules,\n";
-        this.verifierActionTemplate += "                        Severity.ERROR,\n";
-        this.verifierActionTemplate += "                        MessageType.NOT_SPECIFIED,\n";
-        this.verifierActionTemplate += "                        $restriction,\n";
-        this.verifierActionTemplate += "                        \"${message}\" ) );\n";
-
-        //this.verifierActionTemplate += "      System.out.println(\"doubleValue= \"+$restriction.getDoubleValue());\n";
-        //this.verifierActionTemplate += "      System.out.println(\"intValue= \"+$restriction.getIntValue());\n";
-
-        this.verifierRuleEndTemplate += "end\n";
     }
 
     private String concatRule() {
@@ -215,7 +159,21 @@ public abstract class DefaultConstraintImpl implements Constraint {
     
     /* Action */
     protected String getVerifierActionTemplate() {
-        return verifierActionTemplate;
+        StringBuilder verifierActionTemplate = new StringBuilder();
+        verifierActionTemplate.append("      Map<String,String> impactedRules = new HashMap<String,String>();\n");
+//        verifierActionTemplate.append("      impactedRules.put( $restriction.getPath(), $restriction.getRuleName());\n");
+//        verifierActionTemplate.append("      impactedRules.put( $r.getPath(), $r.getName());\n");
+        verifierActionTemplate.append("      result.add(new VerifierMessage(\n");
+        verifierActionTemplate.append("                        impactedRules,\n");
+        verifierActionTemplate.append("                        Severity.ERROR,\n");
+        verifierActionTemplate.append("                        MessageType.NOT_SPECIFIED,\n");
+        verifierActionTemplate.append("                        $restriction,\n");
+        verifierActionTemplate.append("                        \"${message}\" ) );\n");
+
+//        verifierActionTemplate.append("      System.out.println(\"doubleValue= \"+$restriction.getDoubleValue());\n");
+//        verifierActionTemplate.append("      System.out.println(\"intValue= \"+$restriction.getIntValue());\n");
+
+        return verifierActionTemplate.toString();
     }
 
     protected String getVerifierActionPrefixTemplate() {
@@ -228,7 +186,12 @@ public abstract class DefaultConstraintImpl implements Constraint {
 
     /* Field Pattern */
     protected String getVerifierFieldPatternTemplate() {
-        return verifierFieldPatternTemplate;
+        StringBuilder verifierFieldPatternTemplate = new StringBuilder();
+        verifierFieldPatternTemplate.append("      $field :Field(\n");
+        verifierFieldPatternTemplate.append("          objectTypeName == \"${factType}\",\n");
+        verifierFieldPatternTemplate.append("          name == \"${fieldName}\"\n");
+        verifierFieldPatternTemplate.append("      )\n");
+        return verifierFieldPatternTemplate.toString();
     }
 
     protected String getVerifierFieldPatternPrefixTemplate() {
@@ -241,7 +204,7 @@ public abstract class DefaultConstraintImpl implements Constraint {
 
     /* Globals*/
     protected String getVerifierGlobalsTemplate() {
-        return verifierGlobalsTemplate;
+        return "global VerifierReport result;\n";
     }
 
     protected String getVerifierGlobalsPrefixTemplate() {
@@ -254,7 +217,17 @@ public abstract class DefaultConstraintImpl implements Constraint {
 
     /* Imports */
     protected String getVerifierImportsTemplate() {
-        return verifierImportsTemplate;
+        StringBuilder verifierImportsTemplate = new StringBuilder();
+        verifierImportsTemplate.append("import org.drools.verifier.components.*;\n");
+        verifierImportsTemplate.append("import java.util.Map;\n");
+        verifierImportsTemplate.append("import java.util.HashMap;\n");
+        verifierImportsTemplate.append("import org.drools.verifier.report.components.VerifierMessage;\n");
+        verifierImportsTemplate.append("import org.drools.verifier.data.VerifierReport;\n");
+        verifierImportsTemplate.append("import org.drools.verifier.report.components.Severity;\n");
+        verifierImportsTemplate.append("import org.drools.verifier.report.components.MessageType;\n");
+
+        return verifierImportsTemplate.toString();
+
     }
 
     protected String getVerifierImportsPrefixTemplate() {
@@ -265,9 +238,8 @@ public abstract class DefaultConstraintImpl implements Constraint {
         return "";
     }
 
-    /* Package (mmmh... sounds useless) */
     protected String getVerifierPackageTemplate() {
-        return verifierPackageTemplate;
+        return "package org.drools.verifier.consequence\n";
     }
 
     protected String getVerifierPackagePrefixTemplate() {
@@ -280,7 +252,13 @@ public abstract class DefaultConstraintImpl implements Constraint {
 
     /* Restriction Pattern */
     protected String getVerifierRestrictionPatternTemplate() {
-        return verifierRestrictionPatternTemplate;
+        StringBuilder verifierRestrictionPatternTemplate = new StringBuilder();
+        verifierRestrictionPatternTemplate.append("      $restriction :LiteralRestriction(\n");
+        verifierRestrictionPatternTemplate.append("            fieldPath == $field.path,\n");
+        verifierRestrictionPatternTemplate.append("            ${constraints}\n");
+        verifierRestrictionPatternTemplate.append("      )\n");
+        
+        return verifierRestrictionPatternTemplate.toString();
     }
 
     protected String getVerifierRestrictionPatternPrefixTemplate() {
@@ -293,7 +271,7 @@ public abstract class DefaultConstraintImpl implements Constraint {
 
     /* end */
     protected String getVerifierRuleEndTemplate() {
-        return verifierRuleEndTemplate;
+        return "end\n";
     }
 
     protected String getVerifierRuleEndSufixTemplate() {
@@ -302,7 +280,7 @@ public abstract class DefaultConstraintImpl implements Constraint {
 
     /* Rule Name */
     protected String getVerifierRuleNameTemplate() {
-        return verifierRuleNameTemplate;
+        return "rule \"${ruleName}\"\n";
     }
 
     protected String getVerifierRuleNamePrefixTemplate() {
@@ -315,12 +293,12 @@ public abstract class DefaultConstraintImpl implements Constraint {
 
     /* then */
     protected String getVerifierRuleThenTemplate() {
-        return verifierRuleThenTemplate;
+        return "  then\n";
     }
 
     /* when */
     protected String getVerifierRuleWhenTemplate() {
-        return verifierRuleWhenTemplate;
+        return "  when\n";
     }
 
     
