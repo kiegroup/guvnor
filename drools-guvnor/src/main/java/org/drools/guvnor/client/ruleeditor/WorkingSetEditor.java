@@ -124,7 +124,7 @@ public class WorkingSetEditor extends Composite {
 
         addNewConstraint.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                showNewConstrainPop(factsCombo, fieldsCombo, constraintsCombo);
+                showNewConstrainPop();
             }
         });
 		
@@ -151,7 +151,7 @@ public class WorkingSetEditor extends Composite {
 		
 		constraintsCombo.addChangeListener(new ChangeListener() {
 			public void onChange(Widget sender) {
-				showConstraintConfig(constraintsCombo, vpConstraintConf);
+				showConstraintConfig();
 			}
 		});
 		
@@ -163,11 +163,11 @@ public class WorkingSetEditor extends Composite {
 		fillSelectedFacts();
 		fillSelectedFactFields();
 		fillFieldConstrains();
-		showConstraintConfig(constraintsCombo, vpConstraintConf);
+		showConstraintConfig();
 		return table;
 	}
 
-	private void showConstraintConfig(ListBox constraintsCombo, VerticalPanel vpConstraintConf) {
+	private void showConstraintConfig() {
 		if (constraintsCombo.getItemCount() == 0) {
 			vpConstraintConf.remove(vpConstraintConf.getWidgetCount() - 1);
 			vpConstraintConf.add(new Label());
@@ -181,7 +181,7 @@ public class WorkingSetEditor extends Composite {
 		}
 	}
 
-	private void showNewConstrainPop(final ListBox factsCombo, final ListBox fieldsCombo, final ListBox constraintsCombo) {
+	private void showNewConstrainPop() {
         final FormStylePopup pop = new FormStylePopup("images/config.png", constants.AddNewConstrain()); //NON-NLS
         final Button addbutton = new Button(constants.OK());
         final ListBox consDefsCombo = new ListBox(false);
@@ -276,6 +276,7 @@ public class WorkingSetEditor extends Composite {
 			vpConstraintConf.remove(vpConstraintConf.getWidgetCount() - 1);
 			vpConstraintConf.add(new Label());
 		}
+		showConstraintConfig();
 	}
 	
 	private String addContrainsMap(Constraint c) {
