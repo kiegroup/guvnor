@@ -50,6 +50,10 @@ public class WorkingSetEditor extends Composite {
 	private boolean validFactsChanged = true;
 	private SuggestionCompletionEngine sce;
 	private ConstraintsContainer cc;
+
+	private ListBox fieldsCombo = new ListBox(false);
+	private ListBox constraintsCombo = new ListBox(false);
+	private VerticalPanel vpConstraintConf = new VerticalPanel();
 	
 	public WorkingSetEditor(RuleAsset asset) {
 		if (!AssetFormats.WORKING_SET.equals(asset.metaData.format)) {
@@ -87,15 +91,10 @@ public class WorkingSetEditor extends Composite {
 		initWidget(tPanel);
 	}
 
-	private int lastSelectedFact = -1;
-	private int lastSelectedField = -1;
-	private int lastSelectedConstraint = -1;
+//	private int lastSelectedFact = -1;
+//	private int lastSelectedField = -1;
+//	private int lastSelectedConstraint = -1;
 	private Widget buildFactsConstraintsEditor(TabPanel tPanel) {
-		
-		final ListBox fieldsCombo = new ListBox(false);
-		final ListBox constraintsCombo = new ListBox(false);
-		final VerticalPanel vpConstraintConf = new VerticalPanel();
-		
 		factsCombo.setVisibleItemCount(1);
 		fieldsCombo.setVisibleItemCount(1);
 		constraintsCombo.setVisibleItemCount(5);
@@ -103,20 +102,20 @@ public class WorkingSetEditor extends Composite {
 		tPanel.addListener(new PanelListenerAdapter() {
 			@Override
 			public boolean doBeforeShow(Component component) {
-				fillSelectedFacts(factsCombo);
+				fillSelectedFacts();
 				return true;
 			}
 		});
 		
 		factsCombo.addChangeListener(new ChangeListener() {
 			public void onChange(Widget sender) {
-				fillSelectedFactFields(factsCombo, fieldsCombo);
+				fillSelectedFactFields();
 			}
 		});
 		
 		fieldsCombo.addChangeListener(new ChangeListener() {
 			public void onChange(Widget sender) {
-				fillFieldConstrains(factsCombo, fieldsCombo, constraintsCombo, vpConstraintConf);
+				fillFieldConstrains();
 			}
 		});
 		
@@ -161,9 +160,9 @@ public class WorkingSetEditor extends Composite {
 		table.setWidget(0, 1, vpConstraintConf);
 		table.getFlexCellFormatter().setRowSpan(0, 1, 5);
 	
-		fillSelectedFacts(factsCombo);
-		fillSelectedFactFields(factsCombo, fieldsCombo);
-		fillFieldConstrains(factsCombo, fieldsCombo, constraintsCombo, vpConstraintConf);
+		fillSelectedFacts();
+		fillSelectedFactFields();
+		fillFieldConstrains();
 		showConstraintConfig(constraintsCombo, vpConstraintConf);
 		return table;
 	}
@@ -174,12 +173,11 @@ public class WorkingSetEditor extends Composite {
 			vpConstraintConf.add(new Label());
 			return;
 		}
-		if (lastSelectedConstraint != constraintsCombo.getSelectedIndex()) {
+		if (constraintsCombo.getSelectedIndex() != -1) {
 			Constraint c = contraintsMap.get(constraintsCombo.getValue(constraintsCombo.getSelectedIndex()));
 			ConstraintEditor editor = new ConstraintEditor(c);
 			vpConstraintConf.remove(vpConstraintConf.getWidgetCount() - 1);
 			vpConstraintConf.add(editor);
-			lastSelectedConstraint = constraintsCombo.getSelectedIndex();
 		}
 	}
 
@@ -208,8 +206,9 @@ public class WorkingSetEditor extends Composite {
             		cons = new IntegerConstraint();
             	}
             	if (cons != null) {
-            		String factName = factsCombo.getItemText(lastSelectedFact);
-            		String fieldName = fieldsCombo.getItemText(lastSelectedField);
+            		
+            		String factName = factsCombo.getItemText(factsCombo.getSelectedIndex());
+            		String fieldName = fieldsCombo.getItemText(fieldsCombo.getSelectedIndex());
             		cons.setFactType(factName);
             		cons.setFieldName(fieldName);
             		if (((WorkingSetConfigData) workingSet.content).constraints == null) {
@@ -231,7 +230,7 @@ public class WorkingSetEditor extends Composite {
         pop.show();
 	}
 
-	private void fillSelectedFacts(final ListBox factsCombo) {
+	private void fillSelectedFacts() {
 		if (validFactsChanged) {
 			String s = factsCombo.getSelectedIndex() != -1 ? factsCombo.getItemText(factsCombo.getSelectedIndex()) : "";
 			factsCombo.clear();
@@ -243,28 +242,32 @@ public class WorkingSetEditor extends Composite {
 					factsCombo.setSelectedIndex(i);
 				}
 			}
-			lastSelectedFact = -1;
+			if (factsCombo.getSelectedIndex() == -1 && factsCombo.getItemCount() > 0) {
+				factsCombo.setSelectedIndex(0);
+			}
+			fillSelectedFactFields();
 		}
 	}
 
-	private void fillSelectedFactFields(final ListBox factsCombo, final ListBox fieldsCombo) {
-		if (lastSelectedFact != factsCombo.getSelectedIndex()) {
-			lastSelectedFact = factsCombo.getSelectedIndex();
-			String fact = factsCombo.getItemText(lastSelectedFact);
+	private void fillSelectedFactFields() {
+		if (factsCombo.getSelectedIndex() != -1) {
+			String fact = factsCombo.getItemText(factsCombo.getSelectedIndex());
 			fieldsCombo.clear();
 			for(String field : getCompletionEngine().getFieldCompletions(fact)) {
 				fieldsCombo.addItem(field);
 			}
-			lastSelectedField = -1;
 		}
+		if (fieldsCombo.getSelectedIndex() == -1 && fieldsCombo.getItemCount() > 0) {
+			fieldsCombo.setSelectedIndex(0);
+		}
+		fillFieldConstrains();
 	}
 
 	private Map<String, Constraint> contraintsMap = new HashMap<String, Constraint>();
-	private void fillFieldConstrains(final ListBox factsCombo, final ListBox fieldsCombo, final ListBox constraintsCombo, VerticalPanel vpConstraintConf) {
-		if (lastSelectedField != fieldsCombo.getSelectedIndex()) {
-			lastSelectedField = fieldsCombo.getSelectedIndex();
-			String fieldName = fieldsCombo.getItemText(lastSelectedField);
-			String factField = factsCombo.getItemText(lastSelectedFact);
+	private void fillFieldConstrains() {
+		if (fieldsCombo.getSelectedIndex() != -1) {
+			String fieldName = fieldsCombo.getItemText(fieldsCombo.getSelectedIndex());
+			String factField = factsCombo.getItemText(factsCombo.getSelectedIndex());
 			constraintsCombo.clear();
 			contraintsMap.clear();
 			for (Constraint c : getConstraintsConstrainer().getConstraints(factField, fieldName)) {
@@ -272,7 +275,6 @@ public class WorkingSetEditor extends Composite {
 			}
 			vpConstraintConf.remove(vpConstraintConf.getWidgetCount() - 1);
 			vpConstraintConf.add(new Label());
-			lastSelectedConstraint = -1;
 		}
 	}
 	
@@ -311,7 +313,7 @@ public class WorkingSetEditor extends Composite {
 			public void onClick(Widget sender) {
 				copySelected(availFacts, validFacts);
 				updateAsset(validFacts);
-				fillSelectedFacts(factsCombo);
+				fillSelectedFacts();
 			}
 		}));
 
@@ -319,7 +321,7 @@ public class WorkingSetEditor extends Composite {
 			public void onClick(Widget sender) {
 				copySelected(validFacts, availFacts);
 				updateAsset(validFacts);
-				fillSelectedFacts(factsCombo);
+				fillSelectedFacts();
 			}
 		}));
 
