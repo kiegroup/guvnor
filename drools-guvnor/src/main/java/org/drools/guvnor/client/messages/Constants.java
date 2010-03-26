@@ -2064,5 +2064,6 @@ public interface Constants extends ConstantsWithLookup {
     String RenameTheWorkingSetTip();
     String WorkingSetRenamedSuccessfully();
     String ConstraintsSection();
-    String AddNewConstrain();
+    String AddNewConstraint();
+    String removeConstraint();
 }

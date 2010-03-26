@@ -54,6 +54,7 @@ public class WorkingSetEditor extends Composite {
 	private ListBox fieldsCombo = new ListBox(false);
 	private ListBox constraintsCombo = new ListBox(false);
 	private VerticalPanel vpConstraintConf = new VerticalPanel();
+	private Map<String, Constraint> contraintsMap = new HashMap<String, Constraint>();
 	
 	public WorkingSetEditor(RuleAsset asset) {
 		if (!AssetFormats.WORKING_SET.equals(asset.metaData.format)) {
@@ -119,15 +120,24 @@ public class WorkingSetEditor extends Composite {
 			}
 		});
 		
-		Image addNewConstraint = new ImageButton("images/new_item.gif");
-        addNewConstraint.setTitle(constants.AddNewConstrain());
+		Image addNewConstraint = new ImageButton("images/new_item.gif"); // NON-NLS
+		addNewConstraint.setTitle(constants.AddNewConstraint());
 
-        addNewConstraint.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                showNewConstrainPop();
-            }
-        });
+		addNewConstraint.addClickListener(new ClickListener() {
+			public void onClick(Widget w) {
+				showNewConstrainPop();
+			}
+		});
 		
+        Image removeConstraint = new Image( "images/trash.gif" ); //NON-NLS
+        removeConstraint.setTitle(constants.removeConstraint());
+        removeConstraint.addClickListener(new ClickListener() {
+			public void onClick(Widget arg0) {
+				removeConstraint();
+			}
+		});
+        
+        
         final FlexTable table = new FlexTable();
         
 		VerticalPanel vp = new VerticalPanel();
@@ -144,7 +154,11 @@ public class WorkingSetEditor extends Composite {
 		HorizontalPanel hp = new HorizontalPanel();
 		vp.add(new Label(constants.ConstraintsSection()));
 		hp.add(constraintsCombo);
-		hp.add(addNewConstraint);
+		
+		VerticalPanel btnPanel = new VerticalPanel();
+		btnPanel.add(addNewConstraint);
+		btnPanel.add(removeConstraint);
+		hp.add(btnPanel);
 		vp.add(hp);
 		table.setWidget(2, 0, vp);
 		table.getFlexCellFormatter().setRowSpan(2, 0, 3);
@@ -167,6 +181,14 @@ public class WorkingSetEditor extends Composite {
 		return table;
 	}
 
+	protected void removeConstraint() {
+		if (constraintsCombo.getSelectedIndex() != -1) {
+			Constraint c = contraintsMap.get(constraintsCombo.getValue(constraintsCombo.getSelectedIndex()));
+			getConstraintsConstrainer().removeConstraint(c);
+		}
+		fillFieldConstrains();
+	}
+
 	private void showConstraintConfig() {
 		if (constraintsCombo.getItemCount() == 0) {
 			vpConstraintConf.remove(vpConstraintConf.getWidgetCount() - 1);
@@ -182,13 +204,13 @@ public class WorkingSetEditor extends Composite {
 	}
 
 	private void showNewConstrainPop() {
-        final FormStylePopup pop = new FormStylePopup("images/config.png", constants.AddNewConstrain()); //NON-NLS
+        final FormStylePopup pop = new FormStylePopup("images/config.png", constants.AddNewConstraint()); //NON-NLS
         final Button addbutton = new Button(constants.OK());
         final ListBox consDefsCombo = new ListBox(false);
 
         consDefsCombo.setVisibleItemCount(5);
 
-        addbutton.setTitle(constants.AddNewConstrain());
+        addbutton.setTitle(constants.AddNewConstraint());
         
         consDefsCombo.addItem("NotNull");
         consDefsCombo.addItem("Range");
@@ -263,7 +285,6 @@ public class WorkingSetEditor extends Composite {
 		fillFieldConstrains();
 	}
 
-	private Map<String, Constraint> contraintsMap = new HashMap<String, Constraint>();
 	private void fillFieldConstrains() {
 		if (fieldsCombo.getSelectedIndex() != -1) {
 			String fieldName = fieldsCombo.getItemText(fieldsCombo.getSelectedIndex());

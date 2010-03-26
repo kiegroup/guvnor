@@ -29,7 +29,14 @@ public class ConstraintsContainer {
 		
 	}
 	
-	public  void addConstraint(Constraint c) {
+	public void removeConstraint(Constraint c) {
+		List<Constraint> list = constraints.get(c.getFactType());
+		if (list != null) {
+			list.remove(c);
+		}
+	}
+	
+	public void addConstraint(Constraint c) {
 		List<Constraint> list = constraints.get(c.getFactType());
 		if (list == null) {
 			list = new LinkedList<Constraint>();
