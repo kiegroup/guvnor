@@ -2050,7 +2050,16 @@ public interface Constants extends ConstantsWithLookup {
     String SelectWorkingSets();
     
     String ErrorLoadingRules();
-    
+                               ;
+    String AElementToDelInCollectionList();
+    String  AElementToAddInCollectionList();
+    String GuidedList();
+    String AGuidedList();
+    String AGuidedListTip();
+    String AddElementBelow();
+    String MoveUpList();
+    String MoveDownListMove();
+
     String WorkingSets();
     String NewWorkingSet();
     String CreateWorkingSet();
