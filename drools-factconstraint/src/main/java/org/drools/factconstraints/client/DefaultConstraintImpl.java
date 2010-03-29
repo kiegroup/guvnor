@@ -1,4 +1,4 @@
-package org.drools.guvnor.client.factcontraints;
+package org.drools.factconstraints.client;
 
 import java.util.HashMap;
 import java.util.List;

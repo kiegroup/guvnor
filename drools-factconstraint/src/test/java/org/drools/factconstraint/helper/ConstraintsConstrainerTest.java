@@ -2,10 +2,10 @@ package org.drools.factconstraint.helper;
 
 import java.util.LinkedList;
 
-import org.drools.guvnor.client.factconstraints.helper.ConstraintsContainer;
-import org.drools.guvnor.client.factconstraints.predefined.IntegerConstraint;
-import org.drools.guvnor.client.factconstraints.predefined.NotNullConstraint;
-import org.drools.guvnor.client.factcontraints.Constraint;
+import org.drools.factconstraints.client.Constraint;
+import org.drools.factconstraints.client.helper.ConstraintsContainer;
+import org.drools.factconstraints.client.predefined.IntegerConstraint;
+import org.drools.factconstraints.client.predefined.NotNullConstraint;
 
 import static org.junit.Assert.*;
 import org.junit.Test;

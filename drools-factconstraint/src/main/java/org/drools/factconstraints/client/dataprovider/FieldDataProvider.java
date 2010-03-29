@@ -1,4 +1,4 @@
-package org.drools.guvnor.client.factcontraints.dataprovider;
+package org.drools.factconstraints.client.dataprovider;
 
 import java.util.Map;
 

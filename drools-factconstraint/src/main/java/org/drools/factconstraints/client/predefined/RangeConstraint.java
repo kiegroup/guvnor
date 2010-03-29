@@ -1,8 +1,8 @@
-package org.drools.guvnor.client.factconstraints.predefined;
+package org.drools.factconstraints.client.predefined;
 
-import org.drools.guvnor.client.factcontraints.ArgumentNotSetException;
-import org.drools.guvnor.client.factcontraints.DefaultConstraintImpl;
-import org.drools.guvnor.client.factcontraints.ValidationResult;
+import org.drools.factconstraints.client.ArgumentNotSetException;
+import org.drools.factconstraints.client.DefaultConstraintImpl;
+import org.drools.factconstraints.client.ValidationResult;
 
 /**
  *
@@ -13,17 +13,6 @@ public class RangeConstraint extends DefaultConstraintImpl {
     public static final String RANGE_CONSTRAINT_MIN = "Min.value";
     public static final String RANGE_CONSTRAINT_MAX = "Max.value";
 
-    private enum Operator{
-        EQ,
-        NEQ,
-        GT,
-        LT,
-        GE,
-        LE
-    }
-
-    private Operator currentOperator;
-
     public RangeConstraint() {
         //set default values
         this.setArgumentValue(RANGE_CONSTRAINT_MIN, "0");
@@ -32,12 +21,7 @@ public class RangeConstraint extends DefaultConstraintImpl {
 
     @Override
     public String getVerifierRule() {
-        StringBuilder rules = new StringBuilder();
-        for (Operator operator : Operator.values()) {
-            this.currentOperator = operator;
-            this.createVerifierRuleTemplate("Range_Field_Constraint_"+this.currentOperator, null, "The value must be between " + getMin() + " and " + getMax()); //I18N
-        }
-    	return rules.toString();
+    	return this.createVerifierRuleTemplate("Range_Field_Constraint", null, "The value must be between " + getMin() + " and " + getMax()); //I18N
     }
 
     @Override
@@ -91,24 +75,15 @@ public class RangeConstraint extends DefaultConstraintImpl {
 
         restrictionPattern.append("      ($restriction :LiteralRestriction(\n");
         restrictionPattern.append("            fieldPath == $field.path,\n");
-        restrictionPattern.append("            operator.operatorString == Operator.EQUAL.operatorString,\n");
-        restrictionPattern.append("            ((valueType == Field.INT && (intValue < " + getMin() + " || > " + getMax() + ")) ");
-        restrictionPattern.append("             || ");
-        restrictionPattern.append("            (valueType == Field.DOUBLE && (doubleValue < " + getMin() + " || > " + getMax() + ")) ");
-        restrictionPattern.append("      )))\n");
+        restrictionPattern.append("            valueType == Field.INT,\n");
+        restrictionPattern.append("            intValue < " + getMin() + " || > " + getMax() + "\n");
+        restrictionPattern.append("      ) OR\n");
+        restrictionPattern.append("      $restriction :LiteralRestriction(\n");
+        restrictionPattern.append("            fieldPath == $field.path,\n");
+        restrictionPattern.append("            valueType == Field.DOUBLE,\n");
+        restrictionPattern.append("            doubleValue < " + getMin() + " || > " + getMax() + "\n");
+        restrictionPattern.append("      ))\n");
 
         return restrictionPattern.toString();
     }
-
-
-//    @Override
-//    protected String getVerifierImportsSufixTemplate() {
-//        return "import org.drools.base.evaluators.Operator;\n";
-//    }
-//
-//    @Override
-//    protected String getVerifierActionSufixTemplate() {
-//        return "System.out.println(\"OPERATOR= \"+$restriction.getOperator().getOperatorString()+\". Operator.EQUAL= \"+Operator.EQUAL.getOperatorString());\n";
-//    }
-
 }

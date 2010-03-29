@@ -1,0 +1,3 @@
+<module>
+	<set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true" />
+</module>

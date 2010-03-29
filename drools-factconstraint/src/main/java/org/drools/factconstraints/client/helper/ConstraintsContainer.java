@@ -1,4 +1,4 @@
-package org.drools.guvnor.client.factconstraints.helper;
+package org.drools.factconstraints.client.helper;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.guvnor.client.factcontraints.Constraint;
+import org.drools.factconstraints.client.Constraint;
 
 public class ConstraintsContainer {
 	Map<String, List<Constraint>> constraints = new HashMap<String, List<Constraint>>();

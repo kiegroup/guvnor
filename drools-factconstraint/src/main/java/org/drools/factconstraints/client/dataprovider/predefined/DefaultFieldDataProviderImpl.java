@@ -1,9 +1,10 @@
-package org.drools.guvnor.client.factcontraints.dataprovider;
+package org.drools.factconstraints.client.dataprovider.predefined;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.guvnor.client.factcontraints.ArgumentNotSetException;
+import org.drools.factconstraints.client.ArgumentNotSetException;
+import org.drools.factconstraints.client.dataprovider.FieldDataProvider;
 
 /**
  *

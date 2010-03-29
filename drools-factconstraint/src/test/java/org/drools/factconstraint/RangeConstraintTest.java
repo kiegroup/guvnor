@@ -2,9 +2,9 @@ package org.drools.factconstraint;
 
 import java.util.Collection;
 import org.drools.builder.ResourceType;
-import org.drools.guvnor.client.factconstraints.predefined.RangeConstraint;
-import org.drools.guvnor.client.factcontraints.Constraint;
-import org.drools.guvnor.client.factcontraints.ValidationResult;
+import org.drools.factconstraints.client.Constraint;
+import org.drools.factconstraints.client.ValidationResult;
+import org.drools.factconstraints.client.predefined.RangeConstraint;
 import org.drools.io.ResourceFactory;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;

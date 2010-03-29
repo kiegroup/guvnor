@@ -1,10 +1,10 @@
-package org.drools.guvnor.client.factconstraints.predefined;
+package org.drools.factconstraints.client.predefined;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.factcontraints.DefaultConstraintImpl;
-import org.drools.guvnor.client.factcontraints.ValidationResult;
+import org.drools.factconstraints.client.DefaultConstraintImpl;
+import org.drools.factconstraints.client.ValidationResult;
 
 /**
  *
