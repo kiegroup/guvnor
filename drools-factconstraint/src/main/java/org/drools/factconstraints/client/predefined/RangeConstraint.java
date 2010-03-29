@@ -1,17 +1,21 @@
 package org.drools.factconstraints.client.predefined;
 
+import org.drools.base.evaluators.Operator;
 import org.drools.factconstraints.client.ArgumentNotSetException;
-import org.drools.factconstraints.client.DefaultConstraintImpl;
+import org.drools.factconstraints.client.DefaultMultiRulesConstraintImpl;
 import org.drools.factconstraints.client.ValidationResult;
+import org.drools.verifier.report.components.Severity;
 
 /**
  *
  * @author esteban.aliverti@gmail.com
  */
-public class RangeConstraint extends DefaultConstraintImpl {
+public class RangeConstraint extends DefaultMultiRulesConstraintImpl {
 
     public static final String RANGE_CONSTRAINT_MIN = "Min.value";
     public static final String RANGE_CONSTRAINT_MAX = "Max.value";
+
+    private Operator currentOperator;
 
     public RangeConstraint() {
         //set default values
@@ -21,7 +25,25 @@ public class RangeConstraint extends DefaultConstraintImpl {
 
     @Override
     public String getVerifierRule() {
-    	return this.createVerifierRuleTemplate("Range_Field_Constraint", null, "The value must be between " + getMin() + " and " + getMax()); //I18N
+
+        this.resetRuleCount();
+
+        StringBuilder rules = new StringBuilder();
+        for (Operator operator : RangeConstraint.supportedOperators) {
+            this.currentOperator = operator;
+            rules.append(this.createVerifierRuleTemplate("Range_Field_Constraint_"+this.currentOperator.getOperatorString(), null, this.getResultMessage()));
+            this.incrementRuleCount();
+        }
+
+        return rules.toString();
+    }
+
+    private String getResultMessage(){
+        if (this.currentOperator.getOperatorString().equals(Operator.NOT_EQUAL.getOperatorString())){
+            return "The value must be between " + getMin() + " and " + getMax(); //I18N
+        }else{
+            return "The value must be between " + getMin() + " and " + getMax(); //I18N
+        }
     }
 
     @Override
@@ -37,7 +59,7 @@ public class RangeConstraint extends DefaultConstraintImpl {
                     result.setMessage("Invalid value type " + value.getClass().getName()); //TODO: I18N
                 }
             } else {
-            	double min = Double.parseDouble(getMin()) ;
+                double min = Double.parseDouble(getMin());
                 double max = Double.parseDouble(getMax());
                 double d = Double.parseDouble(value.toString());
                 result.setSuccess(d > min && d < max);
@@ -54,36 +76,63 @@ public class RangeConstraint extends DefaultConstraintImpl {
     }
 
     public String getMin() {
-    	try {
-			return (String) this.getMandatoryArgument(RANGE_CONSTRAINT_MIN);
-		} catch (ArgumentNotSetException e) {
-			throw new IllegalStateException(e);
-		}
+        try {
+            return (String) this.getMandatoryArgument(RANGE_CONSTRAINT_MIN);
+        } catch (ArgumentNotSetException e) {
+            throw new IllegalStateException(e);
+        }
     }
-    
+
     public String getMax() {
-    	try {
-			return (String) this.getMandatoryArgument(RANGE_CONSTRAINT_MAX);
-		} catch (ArgumentNotSetException e) {
-			throw new IllegalStateException(e);
-		}
+        try {
+            return (String) this.getMandatoryArgument(RANGE_CONSTRAINT_MAX);
+        } catch (ArgumentNotSetException e) {
+            throw new IllegalStateException(e);
+        }
     }
-    
+
     @Override
     protected String getVerifierRestrictionPatternTemplate() {
         StringBuilder restrictionPattern = new StringBuilder();
 
         restrictionPattern.append("      ($restriction :LiteralRestriction(\n");
         restrictionPattern.append("            fieldPath == $field.path,\n");
-        restrictionPattern.append("            valueType == Field.INT,\n");
-        restrictionPattern.append("            intValue < " + getMin() + " || > " + getMax() + "\n");
-        restrictionPattern.append("      ) OR\n");
-        restrictionPattern.append("      $restriction :LiteralRestriction(\n");
-        restrictionPattern.append("            fieldPath == $field.path,\n");
-        restrictionPattern.append("            valueType == Field.DOUBLE,\n");
-        restrictionPattern.append("            doubleValue < " + getMin() + " || > " + getMax() + "\n");
-        restrictionPattern.append("      ))\n");
+        restrictionPattern.append(this.getOperatorPattern());
+        restrictionPattern.append("            ((valueType == Field.INT && (intValue < " + getMin() + " || > " + getMax() + ")) ");
+        restrictionPattern.append("             || ");
+        restrictionPattern.append("            (valueType == Field.DOUBLE && (doubleValue < " + getMin() + " || > " + getMax() + ")) ");
+        restrictionPattern.append("      )))\n");
 
         return restrictionPattern.toString();
     }
+
+    private String getOperatorPattern() {
+        return "            operator.operatorString == '"+this.currentOperator.getOperatorString()+"',\n";
+    }
+
+    @Override
+    protected String getVerifierActionTemplate() {
+        StringBuilder verifierActionTemplate = new StringBuilder();
+
+
+        if (this.currentOperator.getOperatorString().equals(Operator.EQUAL.getOperatorString())){
+            verifierActionTemplate.append(this.addResult(Severity.ERROR));
+        } else if (this.currentOperator.getOperatorString().equals(Operator.NOT_EQUAL.getOperatorString())){
+            verifierActionTemplate.append(this.addResult(Severity.WARNING));
+        } else{
+            return super.getVerifierActionTemplate();
+        }
+
+        return verifierActionTemplate.toString();
+    }
+
+//    @Override
+//    protected String getVerifierImportsSufixTemplate() {
+//        return "import org.drools.base.evaluators.Operator;\n";
+//    }
+//
+//    @Override
+//    protected String getVerifierActionSufixTemplate() {
+//        return "System.out.println(\"OPERATOR= \"+$restriction.getOperator().getOperatorString()+\". Operator.EQUAL= \"+Operator.EQUAL.getOperatorString());\n";
+//    }
 }

@@ -1,9 +1,11 @@
 package org.drools.factconstraints.client;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.drools.base.evaluators.Operator;
+import org.drools.verifier.report.components.Severity;
 
 /**
  *
@@ -15,18 +17,17 @@ public abstract class DefaultConstraintImpl implements Constraint {
     private String factType;
     private String fieldName;
     private Map<String, String> arguments = new HashMap<String, String>();
-    /*
-    private String verifierPackageTemplate = "";
-    private String verifierImportsTemplate = "";
-    private String verifierGlobalsTemplate = "";
-    private String verifierRuleNameTemplate = "";
-    private String verifierRuleWhenTemplate = "";
-    private String verifierFieldPatternTemplate = "";
-    private String verifierRestrictionPatternTemplate = "";
-    private String verifierRuleThenTemplate = "";
-    private String verifierActionTemplate = "";
-    private String verifierRuleEndTemplate = "";
-    */
+
+
+    public static List<Operator> supportedOperators = new ArrayList<Operator>();
+    static{
+        supportedOperators.add(Operator.EQUAL);
+        supportedOperators.add(Operator.NOT_EQUAL);
+        supportedOperators.add(Operator.GREATER);
+        supportedOperators.add(Operator.GREATER_OR_EQUAL);
+        supportedOperators.add(Operator.LESS);
+        supportedOperators.add(Operator.LESS_OR_EQUAL);
+    }
 
     public DefaultConstraintImpl() {
 
@@ -78,9 +79,9 @@ public abstract class DefaultConstraintImpl implements Constraint {
     protected String createVerifierRuleTemplate(String ruleName, List<String> constraints, String message) {
         if (ruleName == null) {
             ruleName = "Constraint_rule";
-            
+
         }
-        ruleName += "_" + ruleNum++; 
+        ruleName += "_" + ruleNum++;
         String rule = this.concatRule().replace("${ruleName}", ruleName);
         rule = rule.replace("${factType}", this.getFactType());
         rule = rule.replace("${fieldName}", this.getFieldName());
@@ -156,19 +157,13 @@ public abstract class DefaultConstraintImpl implements Constraint {
     public String getConstraintName() {
     	return getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1);
     }
-    
+
     /* Action */
     protected String getVerifierActionTemplate() {
         StringBuilder verifierActionTemplate = new StringBuilder();
-        verifierActionTemplate.append("      Map<String,String> impactedRules = new HashMap<String,String>();\n");
-//        verifierActionTemplate.append("      impactedRules.put( $restriction.getPath(), $restriction.getRuleName());\n");
-//        verifierActionTemplate.append("      impactedRules.put( $r.getPath(), $r.getName());\n");
-        verifierActionTemplate.append("      result.add(new VerifierMessage(\n");
-        verifierActionTemplate.append("                        impactedRules,\n");
-        verifierActionTemplate.append("                        Severity.ERROR,\n");
-        verifierActionTemplate.append("                        MessageType.NOT_SPECIFIED,\n");
-        verifierActionTemplate.append("                        $restriction,\n");
-        verifierActionTemplate.append("                        \"${message}\" ) );\n");
+
+          //by default, add an ERROR
+          verifierActionTemplate.append(this.addResult(Severity.ERROR));
 
 //        verifierActionTemplate.append("      System.out.println(\"doubleValue= \"+$restriction.getDoubleValue());\n");
 //        verifierActionTemplate.append("      System.out.println(\"intValue= \"+$restriction.getIntValue());\n");
@@ -176,8 +171,29 @@ public abstract class DefaultConstraintImpl implements Constraint {
         return verifierActionTemplate.toString();
     }
 
+    protected String addResult(Severity  severity){
+        StringBuilder addString = new StringBuilder();
+        addString.append("      result.add(new VerifierMessage(\n");
+        addString.append("                        impactedRules,\n");
+        if (severity.compareTo(Severity.ERROR) == 0){
+            addString.append("                        Severity.ERROR,\n");
+        }else if(severity.compareTo(Severity.NOTE) == 0){
+            addString.append("                        Severity.NOTE,\n");
+        }else if(severity.compareTo(Severity.WARNING) == 0){
+            addString.append("                        Severity.WARNING,\n");
+        }
+        addString.append("                        MessageType.NOT_SPECIFIED,\n");
+        addString.append("                        $restriction,\n");
+        addString.append("                        \"${message}\" ) );\n");
+        return addString.toString();
+    }
+
     protected String getVerifierActionPrefixTemplate() {
-        return "";
+        StringBuilder verifierActionPrefixTemplate = new StringBuilder();
+        verifierActionPrefixTemplate.append("      Map<String,String> impactedRules = new HashMap<String,String>();\n");
+//        verifierActionTemplate.append("      impactedRules.put( $restriction.getPath(), $restriction.getRuleName());\n");
+//        verifierActionTemplate.append("      impactedRules.put( $r.getPath(), $r.getName());\n");
+        return verifierActionPrefixTemplate.toString();
     }
 
     protected String getVerifierActionSufixTemplate() {
@@ -257,7 +273,7 @@ public abstract class DefaultConstraintImpl implements Constraint {
         verifierRestrictionPatternTemplate.append("            fieldPath == $field.path,\n");
         verifierRestrictionPatternTemplate.append("            ${constraints}\n");
         verifierRestrictionPatternTemplate.append("      )\n");
-        
+
         return verifierRestrictionPatternTemplate.toString();
     }
 
@@ -301,5 +317,5 @@ public abstract class DefaultConstraintImpl implements Constraint {
         return "  when\n";
     }
 
-    
+
 }
