@@ -2,7 +2,7 @@ package org.drools.guvnor.client.rpc;
 
 import java.util.List;
 
-import org.drools.guvnor.client.factcontraints.Constraint;
+import org.drools.factconstraints.client.Constraint;
 import org.drools.guvnor.client.modeldriven.brl.PortableObject;
 
 import com.google.gwt.user.client.rpc.IsSerializable;

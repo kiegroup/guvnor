@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
 
-import org.drools.guvnor.client.factcontraints.Constraint;
+import org.drools.factconstraints.client.Constraint;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;

@@ -7,8 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.factconstraints.client.Constraint;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.factcontraints.Constraint;
 import org.drools.guvnor.client.modeldriven.FactTypeFilter;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
