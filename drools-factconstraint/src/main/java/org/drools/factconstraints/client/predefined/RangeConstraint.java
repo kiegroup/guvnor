@@ -12,7 +12,9 @@ import org.drools.verifier.report.components.Severity;
  */
 public class RangeConstraint extends DefaultMultiRulesConstraintImpl {
 
-    public static final String RANGE_CONSTRAINT_MIN = "Min.value";
+	private static final long serialVersionUID = 501L;
+	
+	public static final String RANGE_CONSTRAINT_MIN = "Min.value";
     public static final String RANGE_CONSTRAINT_MAX = "Max.value";
 
     private Operator currentOperator;

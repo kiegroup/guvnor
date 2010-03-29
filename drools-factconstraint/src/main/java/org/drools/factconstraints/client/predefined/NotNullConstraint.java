@@ -11,7 +11,7 @@ import org.drools.factconstraints.client.ValidationResult;
  * @author esteban.aliverti@gmail.com
  */
 public class NotNullConstraint extends DefaultConstraintImpl {
-
+	private static final long serialVersionUID = 501L;
 
     public NotNullConstraint(){
     }
