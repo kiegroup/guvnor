@@ -1,0 +1,43 @@
+package org.drools.verifier.consequence
+import org.drools.verifier.components.*;
+import java.util.Map;
+import java.util.HashMap;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.MessageType;
+import org.drools.base.evaluators.Operator;
+
+global VerifierReport result;
+
+rule "abcdef"
+when
+  $field :Field(
+      objectTypeName == "Person",
+      name == "age"
+  )
+  ($restriction1 :LiteralRestriction(
+      $rulePath: rulePath,
+      fieldPath == $field.path,
+      operator == Operator.GREATER,
+      (valueType == Field.INT || == Field.DOUBLE),
+      $v1: doubleValue))
+  ($restriction2 :LiteralRestriction(
+      fieldPath == $field.path,
+      rulePath == $rulePath,
+      operator == Operator.LESS,
+      $v2: doubleValue))
+then
+    System.out.println("Fired");
+
+    if (!($v1 > 0 && $v1 < 120 && $v2 > 0 && $v2 < 120)){
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        result.add(new VerifierMessage(
+                impactedRules,
+                Severity.ERROR,
+                MessageType.NOT_SPECIFIED,
+                $restriction1,
+                "Missing range" ) );
+    }
+  
+end

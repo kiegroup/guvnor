@@ -38,6 +38,10 @@ public class RangeConstraintSingleOperatorTest {
         conf = new SimpleConstraintConfigurationImpl();
         conf.setFactType("Person");
         conf.setFieldName("age");
+
+        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "0");
+        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "120");
+        System.out.println("Validation Rule:\n" + cons.getVerifierRule(conf) + "\n\n");
     }
 
     @After
@@ -49,12 +53,6 @@ public class RangeConstraintSingleOperatorTest {
 
     @Test
     public void testEq() {
-
-        //age constraint
-        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "0");
-        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "120");
-        System.out.println("Validation Rule:\n" + cons.getVerifierRule(conf) + "\n\n");
-
 
         String rulesToVerify = "";
         int fail = 0;
@@ -99,11 +97,6 @@ public class RangeConstraintSingleOperatorTest {
     @Test
     public void testNotEq() {
 
-        //age constraint
-        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "0");
-        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "120");
-        System.out.println("Validation Rule:\n" + cons.getVerifierRule(conf) + "\n\n");
-
         String rulesToVerify = "";
         int warning = 0;
 
@@ -130,6 +123,186 @@ public class RangeConstraintSingleOperatorTest {
         rulesToVerify += "rule \"rule3\"\n";
         rulesToVerify += "   when\n";
         rulesToVerify += "       Person(age != 130)\n";
+        rulesToVerify += "   then\n";
+        rulesToVerify += "       System.out.println(\"Rule fired\");\n";
+        rulesToVerify += "end\n";
+        warning++;
+
+        VerifierReport result = this.verify(rulesToVerify);
+
+        Collection<VerifierMessageBase> warnings = result.getBySeverity(Severity.WARNING);
+
+        System.out.println(warnings);
+
+        Assert.assertEquals(warning, warnings.size());
+    }
+
+    @Test
+    public void testGT() {
+
+        String rulesToVerify = "";
+        int fail = 0;
+        int warning = 0;
+
+        //FAIL
+        rulesToVerify += "package org.drools.factconstraint.test\n\n";
+        rulesToVerify += "import org.drools.factconstraint.model.*\n";
+        rulesToVerify += "rule \"rule1\"\n";
+        rulesToVerify += "   when\n";
+        rulesToVerify += "       Person(age > -5)\n";
+        rulesToVerify += "   then\n";
+        rulesToVerify += "       System.out.println(\"Rule fired\");\n";
+        rulesToVerify += "end\n\n";
+        warning++;
+
+        //FAIL
+        rulesToVerify += "rule \"rule2\"\n";
+        rulesToVerify += "   when\n";
+        rulesToVerify += "       Person(age > 10)\n";
+        rulesToVerify += "   then\n";
+        rulesToVerify += "       System.out.println(\"Rule fired\");\n";
+        rulesToVerify += "end\n\n";
+        warning++;
+
+        //FAIL
+        rulesToVerify += "rule \"rule3\"\n";
+        rulesToVerify += "   when\n";
+        rulesToVerify += "       Person(age > 130)\n";
+        rulesToVerify += "   then\n";
+        rulesToVerify += "       System.out.println(\"Rule fired\");\n";
+        rulesToVerify += "end\n";
+        warning++;
+
+        VerifierReport result = this.verify(rulesToVerify);
+
+        Collection<VerifierMessageBase> warnings = result.getBySeverity(Severity.WARNING);
+
+        System.out.println(warnings);
+
+        Assert.assertEquals(warning, warnings.size());
+    }
+
+    @Test
+    public void testGE() {
+
+        String rulesToVerify = "";
+        int fail = 0;
+        int warning = 0;
+
+        //FAIL
+        rulesToVerify += "package org.drools.factconstraint.test\n\n";
+        rulesToVerify += "import org.drools.factconstraint.model.*\n";
+        rulesToVerify += "rule \"rule1\"\n";
+        rulesToVerify += "   when\n";
+        rulesToVerify += "       Person(age >= -5)\n";
+        rulesToVerify += "   then\n";
+        rulesToVerify += "       System.out.println(\"Rule fired\");\n";
+        rulesToVerify += "end\n\n";
+        warning++;
+
+        //FAIL
+        rulesToVerify += "rule \"rule2\"\n";
+        rulesToVerify += "   when\n";
+        rulesToVerify += "       Person(age >= 10)\n";
+        rulesToVerify += "   then\n";
+        rulesToVerify += "       System.out.println(\"Rule fired\");\n";
+        rulesToVerify += "end\n\n";
+        warning++;
+
+        //FAIL
+        rulesToVerify += "rule \"rule3\"\n";
+        rulesToVerify += "   when\n";
+        rulesToVerify += "       Person(age >= 130)\n";
+        rulesToVerify += "   then\n";
+        rulesToVerify += "       System.out.println(\"Rule fired\");\n";
+        rulesToVerify += "end\n";
+        warning++;
+
+        VerifierReport result = this.verify(rulesToVerify);
+
+        Collection<VerifierMessageBase> warnings = result.getBySeverity(Severity.WARNING);
+
+        System.out.println(warnings);
+
+        Assert.assertEquals(warning, warnings.size());
+    }
+
+    @Test
+    public void testLT() {
+
+        String rulesToVerify = "";
+        int fail = 0;
+        int warning = 0;
+
+        //FAIL
+        rulesToVerify += "package org.drools.factconstraint.test\n\n";
+        rulesToVerify += "import org.drools.factconstraint.model.*\n";
+        rulesToVerify += "rule \"rule1\"\n";
+        rulesToVerify += "   when\n";
+        rulesToVerify += "       Person(age < -5)\n";
+        rulesToVerify += "   then\n";
+        rulesToVerify += "       System.out.println(\"Rule fired\");\n";
+        rulesToVerify += "end\n\n";
+        warning++;
+
+        //FAIL
+        rulesToVerify += "rule \"rule2\"\n";
+        rulesToVerify += "   when\n";
+        rulesToVerify += "       Person(age < 10)\n";
+        rulesToVerify += "   then\n";
+        rulesToVerify += "       System.out.println(\"Rule fired\");\n";
+        rulesToVerify += "end\n\n";
+        warning++;
+
+        //FAIL
+        rulesToVerify += "rule \"rule3\"\n";
+        rulesToVerify += "   when\n";
+        rulesToVerify += "       Person(age < 130)\n";
+        rulesToVerify += "   then\n";
+        rulesToVerify += "       System.out.println(\"Rule fired\");\n";
+        rulesToVerify += "end\n";
+        warning++;
+
+        VerifierReport result = this.verify(rulesToVerify);
+
+        Collection<VerifierMessageBase> warnings = result.getBySeverity(Severity.WARNING);
+
+        System.out.println(warnings);
+
+        Assert.assertEquals(warning, warnings.size());
+    }
+
+    @Test
+    public void testLE() {
+
+        String rulesToVerify = "";
+        int fail = 0;
+        int warning = 0;
+
+        //FAIL
+        rulesToVerify += "package org.drools.factconstraint.test\n\n";
+        rulesToVerify += "import org.drools.factconstraint.model.*\n";
+        rulesToVerify += "rule \"rule1\"\n";
+        rulesToVerify += "   when\n";
+        rulesToVerify += "       Person(age <= -5)\n";
+        rulesToVerify += "   then\n";
+        rulesToVerify += "       System.out.println(\"Rule fired\");\n";
+        rulesToVerify += "end\n\n";
+        warning++;
+
+        //FAIL
+        rulesToVerify += "rule \"rule2\"\n";
+        rulesToVerify += "   when\n";
+        rulesToVerify += "       Person(age <= 10)\n";
+        rulesToVerify += "   then\n";
+        rulesToVerify += "       System.out.println(\"Rule fired\");\n";
+        rulesToVerify += "end\n\n";
+        warning++;
+
+        //FAIL
+        rulesToVerify += "rule \"rule3\"\n";
+        rulesToVerify += "   when\n";
+        rulesToVerify += "       Person(age <= 130)\n";
         rulesToVerify += "   then\n";
         rulesToVerify += "       System.out.println(\"Rule fired\");\n";
         rulesToVerify += "end\n";

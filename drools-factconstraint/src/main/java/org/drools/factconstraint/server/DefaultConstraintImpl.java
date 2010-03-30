@@ -32,7 +32,7 @@ public abstract class DefaultConstraintImpl implements Constraint {
 
     private String concatRule(ConstraintConfiguration config, Map<String, Object> context) {
         StringBuilder rule = new StringBuilder();
-        
+
         rule.append(this.getVerifierPackagePrefixTemplate(config, context));
         rule.append(this.getVerifierPackageTemplate(config, context));
         rule.append(this.getVerifierPackageSufixTemplate(config, context));
@@ -119,15 +119,15 @@ public abstract class DefaultConstraintImpl implements Constraint {
     }
 
     protected Map<String, Object> createContext() {
-    	return new HashMap<String, Object>(); 
+    	return new HashMap<String, Object>();
     }
-    
+
     public final String getVerifierRule(ConstraintConfiguration config) {
         return internalVerifierRule(config, createContext());
     }
 
     abstract protected String internalVerifierRule(ConstraintConfiguration config, Map<String, Object> context);
-    
+
     public String getConstraintName() {
     	return getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1);
     }
@@ -290,7 +290,7 @@ public abstract class DefaultConstraintImpl implements Constraint {
     protected String getVerifierRuleWhenTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "  when\n";
     }
-    
+
     public List<String> getArgumentKeys() {
     	return new ArrayList<String>();
     }

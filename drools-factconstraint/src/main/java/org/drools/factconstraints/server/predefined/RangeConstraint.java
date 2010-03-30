@@ -19,140 +19,159 @@ import org.drools.verifier.report.components.Severity;
  */
 public class RangeConstraint extends DefaultMultiRulesConstraintImpl {
 
-	private static final long serialVersionUID = 501L;
-	public static final String NAME = "RangeConstraint";
+    private static final long serialVersionUID = 501L;
+    public static final String NAME = "RangeConstraint";
+    public static final String RANGE_CONSTRAINT_MIN = "Min.value";
+    public static final String RANGE_CONSTRAINT_MAX = "Max.value";
+    public static final String CURRENT_OPERATOR = "currOperator";
 
-	public static final String RANGE_CONSTRAINT_MIN = "Min.value";
-	public static final String RANGE_CONSTRAINT_MAX = "Max.value";
-
-	public static final String CURRENT_OPERATOR = "currOperator";
-	
 //	private Operator currentOperator;
+    @Override
+    protected String internalVerifierRule(ConstraintConfiguration config, Map<String, Object> context) {
 
-	@Override
-	protected String internalVerifierRule(ConstraintConfiguration config, Map<String, Object> context) {
+        this.resetRuleCount(context);
 
-		this.resetRuleCount(context);
+        StringBuilder rules = new StringBuilder();
+        for (Operator operator : RangeConstraint.supportedOperators) {
+            setCurrentOperator(context, operator);
+            rules.append(this.createVerifierRuleTemplate(config, context,
+                    "Range_Field_Constraint_" + operator.getOperatorString(),
+                    Collections.<String>emptyList(), this.getResultMessage(config, context)));
+            this.incrementRuleCount(context);
+        }
 
-		StringBuilder rules = new StringBuilder();
-		for (Operator operator : RangeConstraint.supportedOperators) {
-			setCurrentOperator(context, operator);
-			rules.append(this.createVerifierRuleTemplate(config, context, 
-					"Range_Field_Constraint_" + operator.getOperatorString(), 
-					Collections.<String> emptyList(), this.getResultMessage(config, context)));
-			this.incrementRuleCount(context);
-		}
+        return rules.toString();
+    }
 
-		return rules.toString();
-	}
+    private String getResultMessage(ConstraintConfiguration conf, Map<String, Object> context) {
+        if (getCurrentOperator(context).equals(Operator.NOT_EQUAL)) {
+            return "Impossible value. Possible values are from " + getMin(conf) + " to " + getMax(conf); //I18N
+        } else if (!getCurrentOperator(context).equals(Operator.EQUAL)) {
+            return "Missing range"; //I18N
+        } else {
+            return "The value must be between " + getMin(conf) + " and " + getMax(conf); //I18N
+        }
+    }
 
-	private String getResultMessage(ConstraintConfiguration conf, Map<String, Object> context) {
-		if (getCurrentOperator(context).getOperatorString().equals(Operator.NOT_EQUAL.getOperatorString())) {
-			return "The value must be between " + getMin(conf) + " and " + getMax(conf); // I18N
-		} else {
-			return "The value must be between " + getMin(conf) + " and " + getMax(conf); // I18N
-		}
-	}
+    @Override
+    public ValidationResult validate(Object value, ConstraintConfiguration config) {
+        ValidationResult result = new ValidationResult();
 
-	@Override
-	public ValidationResult validate(Object value, ConstraintConfiguration config) {
-		ValidationResult result = new ValidationResult();
+        try {
+            if (value == null || !(value instanceof Number || value instanceof String)) {
+                result.setSuccess(false);
+                if (value == null) {
+                    result.setMessage("The value is null"); // TODO: I18N
+                } else {
+                    result.setMessage("Invalid value type " + value.getClass().getName()); // TODO:
+                    // I18N
+                }
+            } else {
+                double min = Double.parseDouble(getMin(config));
+                double max = Double.parseDouble(getMax(config));
+                double d = Double.parseDouble(value.toString());
+                result.setSuccess(d > min && d < max);
+                if (!result.isSuccess()) {
+                    result.setMessage("The value should be between " + min + " and " + max); // TODO:
+                    // I18N
+                }
+            }
+        } catch (Throwable t) {
+            result.setSuccess(false);
+            result.setMessage(t.getMessage()); // TODO: I18N
+        }
 
-		try {
-			if (value == null || !(value instanceof Number || value instanceof String)) {
-				result.setSuccess(false);
-				if (value == null) {
-					result.setMessage("The value is null"); // TODO: I18N
-				} else {
-					result.setMessage("Invalid value type " + value.getClass().getName()); // TODO:
-																							// I18N
-				}
-			} else {
-				double min = Double.parseDouble(getMin(config));
-				double max = Double.parseDouble(getMax(config));
-				double d = Double.parseDouble(value.toString());
-				result.setSuccess(d > min && d < max);
-				if (!result.isSuccess()) {
-					result.setMessage("The value should be between " + min + " and " + max); // TODO:
-																								// I18N
-				}
-			}
-		} catch (Throwable t) {
-			result.setSuccess(false);
-			result.setMessage(t.getMessage()); // TODO: I18N
-		}
+        return result;
+    }
 
-		return result;
-	}
+    public String getMin(ConstraintConfiguration conf) {
+        try {
+            return (String) this.getMandatoryArgument(RANGE_CONSTRAINT_MIN, conf);
+        } catch (ArgumentNotSetException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
-	public String getMin(ConstraintConfiguration conf) {
-		try {
-			return (String) this.getMandatoryArgument(RANGE_CONSTRAINT_MIN, conf);
-		} catch (ArgumentNotSetException e) {
-			throw new IllegalStateException(e);
-		}
-	}
+    public String getMax(ConstraintConfiguration conf) {
+        try {
+            return (String) this.getMandatoryArgument(RANGE_CONSTRAINT_MAX, conf);
+        } catch (ArgumentNotSetException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
-	public String getMax(ConstraintConfiguration conf) {
-		try {
-			return (String) this.getMandatoryArgument(RANGE_CONSTRAINT_MAX, conf);
-		} catch (ArgumentNotSetException e) {
-			throw new IllegalStateException(e);
-		}
-	}
+    @Override
+    protected String getVerifierRestrictionPatternTemplate(ConstraintConfiguration config, Map<String, Object> context) {
+        String valuePattern = this.getValuePattern(config,context);
 
-	@Override
-	protected String getVerifierRestrictionPatternTemplate(ConstraintConfiguration config, Map<String, Object> context) {
-		StringBuilder restrictionPattern = new StringBuilder();
+        StringBuilder restrictionPattern = new StringBuilder();
 
-		restrictionPattern.append("      ($restriction :LiteralRestriction(\n");
-		restrictionPattern.append("            fieldPath == $field.path,\n");
-		restrictionPattern.append(this.getOperatorPattern(context));
-		restrictionPattern.append("            ((valueType == Field.INT && (intValue < ")
-			.append(getMin(config)).append(" || > ").append(getMax(config)).append(")) ");
-		restrictionPattern.append("             || \n");
-		restrictionPattern.append("            (valueType == Field.DOUBLE && (doubleValue < ")
-			.append(getMin(config)).append(" || > ").append(getMax(config)).append(")) ");
-		restrictionPattern.append("      )))\n");
+        restrictionPattern.append("      ($restriction :LiteralRestriction(\n");
+        restrictionPattern.append("            fieldPath == $field.path,\n");
+        restrictionPattern.append("            operator.operatorString == '" + this.getCurrentOperator(context).getOperatorString() + "'");
+        if (!valuePattern.isEmpty()){
+            restrictionPattern.append(",\n");
+            restrictionPattern.append(valuePattern);
+        }
+        restrictionPattern.append("      ))\n");
 
-		return restrictionPattern.toString();
-	}
+        return restrictionPattern.toString();
+    }
 
-	private String getOperatorPattern(Map<String, Object> context) {
-		return "            operator.operatorString == '" + getCurrentOperator(context).getOperatorString() + "',\n";
-	}
+    private String getValuePattern(ConstraintConfiguration conf, Map<String, Object> context) {
+        StringBuilder pattern = new StringBuilder();
 
-	@Override
-	protected String getVerifierActionTemplate(ConstraintConfiguration config, Map<String, Object> context) {
-		StringBuilder verifierActionTemplate = new StringBuilder();
+        // >, <, <=, >= operators doesn't need to evaluate the value.  They
+        //will always fail because of missing range.
+        if (this.getCurrentOperator(context).equals(Operator.EQUAL) || this.getCurrentOperator(context).equals(Operator.NOT_EQUAL)) {
+            pattern.append("            ((valueType == Field.INT && (intValue < " + getMin(conf) + " || > " + getMax(conf) + ")) ");
+            pattern.append("             || ");
+            pattern.append("            (valueType == Field.DOUBLE && (doubleValue < " + getMin(conf) + " || > " + getMax(conf) + "))) ");
+        }
 
-		if (getCurrentOperator(context).getOperatorString().equals(Operator.EQUAL.getOperatorString())) {
-			verifierActionTemplate.append(this.addResult(Severity.ERROR));
-		} else if (getCurrentOperator(context).getOperatorString().equals(Operator.NOT_EQUAL.getOperatorString())) {
-			verifierActionTemplate.append(this.addResult(Severity.WARNING));
-		} else {
-			return super.getVerifierActionTemplate(config, context);
-		}
+        return pattern.toString();
+    }
 
-		return verifierActionTemplate.toString();
-	}
+    @Override
+    protected String getVerifierActionTemplate(ConstraintConfiguration config, Map<String, Object> context) {
+        StringBuilder verifierActionTemplate = new StringBuilder();
 
-	public List<String> getArgumentKeys() {
-		return Arrays.asList(new String[] { RANGE_CONSTRAINT_MIN, RANGE_CONSTRAINT_MAX });
-	}
-	
-	private Operator getCurrentOperator(Map<String, Object> context) {
-		return (Operator) context.get(CURRENT_OPERATOR);
-	}
-	
-	private void setCurrentOperator(Map<String, Object> context, Operator operator) {
-		context.put(CURRENT_OPERATOR, operator);
-	}
-	
-	public static ConstraintConfiguration getEmptyConfiguration() {
-		ConstraintConfiguration config = new SimpleConstraintConfigurationImpl();
-		config.setArgumentValue("Min.value", "0");
-		config.setArgumentValue("Max.value", "0");
-		return config;
-	}
+
+        if (this.getCurrentOperator(context).equals(Operator.EQUAL)) {
+            verifierActionTemplate.append(this.addResult(Severity.ERROR));
+        } else if (this.getCurrentOperator(context).equals(Operator.NOT_EQUAL)) {
+            verifierActionTemplate.append(this.addResult(Severity.WARNING));
+        } else if (this.getCurrentOperator(context).equals(Operator.GREATER)) {
+            verifierActionTemplate.append(this.addResult(Severity.WARNING));
+        } else if (this.getCurrentOperator(context).equals(Operator.LESS)) {
+            verifierActionTemplate.append(this.addResult(Severity.WARNING));
+        } else if (this.getCurrentOperator(context).equals(Operator.GREATER_OR_EQUAL)) {
+            verifierActionTemplate.append(this.addResult(Severity.WARNING));
+        } else if (this.getCurrentOperator(context).equals(Operator.LESS_OR_EQUAL)) {
+            verifierActionTemplate.append(this.addResult(Severity.WARNING));
+        } else {
+            return super.getVerifierActionTemplate(config,context);
+        }
+
+        return verifierActionTemplate.toString();
+    }
+
+    public List<String> getArgumentKeys() {
+        return Arrays.asList(new String[]{RANGE_CONSTRAINT_MIN, RANGE_CONSTRAINT_MAX});
+    }
+
+    private Operator getCurrentOperator(Map<String, Object> context) {
+        return (Operator) context.get(CURRENT_OPERATOR);
+    }
+
+    private void setCurrentOperator(Map<String, Object> context, Operator operator) {
+        context.put(CURRENT_OPERATOR, operator);
+    }
+
+    public static ConstraintConfiguration getEmptyConfiguration() {
+        ConstraintConfiguration config = new SimpleConstraintConfigurationImpl();
+        config.setArgumentValue("Min.value", "0");
+        config.setArgumentValue("Max.value", "0");
+        return config;
+    }
 }
