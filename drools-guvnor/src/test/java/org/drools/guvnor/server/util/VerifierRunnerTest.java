@@ -1,5 +1,7 @@
 package org.drools.guvnor.server.util;
 
+import java.util.Collections;
+
 import junit.framework.Assert;
 
 import org.drools.guvnor.client.common.AssetFormats;
@@ -28,11 +30,12 @@ public class VerifierRunnerTest {
     }
 
     @Test
-    public void verifyPackageItem() { 
+    public void verifyPackageItem() {
         VerifierRunner verifierRunner = checkinDRLAssetToPackage( "/VerifierCauseTrace.drl" );
 
-        AnalysisReport report = verifierRunner.verify( packageItem.getName(),
-                                                       VerifierConfiguration.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE );
+        AnalysisReport report = verifierRunner.verify( packageItem,
+                                                       VerifierConfiguration.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE,
+                                                       Collections.EMPTY_LIST );
 
         Assert.assertNotNull( report );
         Assert.assertEquals( 1,
