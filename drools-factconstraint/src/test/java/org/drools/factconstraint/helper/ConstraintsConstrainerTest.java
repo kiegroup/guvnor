@@ -1,13 +1,15 @@
 package org.drools.factconstraint.helper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.LinkedList;
 
-import org.drools.factconstraints.client.Constraint;
+import org.drools.factconstraints.client.ConstraintConfiguration;
+import org.drools.factconstraints.client.config.SimpleConstraintConfigurationImpl;
 import org.drools.factconstraints.client.helper.ConstraintsContainer;
-import org.drools.factconstraints.client.predefined.IntegerConstraint;
-import org.drools.factconstraints.client.predefined.NotNullConstraint;
-
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 
@@ -15,33 +17,33 @@ public class ConstraintsConstrainerTest {
 
 	@Test
 	public void test() {
-		LinkedList<Constraint> list = new LinkedList<Constraint>();
-		Constraint cons = new IntegerConstraint();
-        cons.setFactType("Person");
-        cons.setFieldName("age");
+		LinkedList<ConstraintConfiguration> list = new LinkedList<ConstraintConfiguration>();
+		ConstraintConfiguration conf = new SimpleConstraintConfigurationImpl();
+        conf.setFactType("Person");
+        conf.setFieldName("age");
         
-        list.add(cons);
+        list.add(conf);
 		ConstraintsContainer cc = new ConstraintsContainer(list);
 		assertTrue(cc.hasConstraints("Person"));
 		assertFalse(cc.hasConstraints("Person3"));
 		
 		assertEquals(1, cc.getConstraints("Person").size());
 		
-		cons = new NotNullConstraint();
-        cons.setFactType("Person");
-        cons.setFieldName("name");
+		conf = new SimpleConstraintConfigurationImpl();
+        conf.setFactType("Person");
+        conf.setFieldName("name");
         
-        cc.addConstraint(cons);
+        cc.addConstraint(conf);
         assertEquals(2, cc.getConstraints("Person").size());
         assertEquals(1, cc.getConstraints("Person", "age").size());
-        assertSame(cons, cc.getConstraints("Person", "name").get(0));
+        assertSame(conf, cc.getConstraints("Person", "name").get(0));
         assertEquals(0, cc.getConstraints("Person", "toothCount").size());
         
-        cons = new NotNullConstraint();
-        cons.setFactType("Pet");
-        cons.setFieldName("name");
+        conf = new SimpleConstraintConfigurationImpl();
+        conf.setFactType("Pet");
+        conf.setFieldName("name");
 		
-        cc.addConstraint(cons);
+        cc.addConstraint(conf);
         
         assertEquals(1, cc.getConstraints("Pet").size());
         

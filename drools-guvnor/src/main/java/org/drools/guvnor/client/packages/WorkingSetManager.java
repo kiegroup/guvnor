@@ -1,6 +1,5 @@
 package org.drools.guvnor.client.packages;
 
-import com.google.gwt.user.client.Command;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,12 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.factconstraints.client.Constraint;
+import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.modeldriven.FactTypeFilter;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
+
+import com.google.gwt.user.client.Command;
 
 /**
  *
@@ -79,7 +80,6 @@ public class WorkingSetManager {
                 }
             }
         };
-
 
         if (wss == null || wss.isEmpty()) {
             //if no WS, we refresh the SCE (release any filter)
@@ -178,7 +178,6 @@ public class WorkingSetManager {
         return false;
     }
 
-
     /**
      * Returns a Set of Constraints for a Fact Type's field. This method uses
      * the active Working Sets of the package in order to get the Constraints.
@@ -187,17 +186,17 @@ public class WorkingSetManager {
      * @param fieldName the field name
      * @return a Set of Constraints for a Fact Type's field.
      */
-    public Set<Constraint> getFieldContraints(String packageName, String factType, String fieldName ){
+    public Set<ConstraintConfiguration> getFieldContraints(String packageName, String factType, String fieldName ){
 
-        Set<Constraint> result = new HashSet<Constraint>();
+        Set<ConstraintConfiguration> result = new HashSet<ConstraintConfiguration>();
 
         //TODO: Change this with a centralized way of Constraint Administration.
         Set<RuleAsset> activeAssets = this.getActiveAssets(packageName);
         if (activeAssets != null){
             for (RuleAsset ruleAsset : activeAssets) {
-                List<Constraint> constraints = ((WorkingSetConfigData)ruleAsset.content).constraints;
+                List<ConstraintConfiguration> constraints = ((WorkingSetConfigData)ruleAsset.content).constraints;
                 if (constraints != null) {
-                	for (Constraint constraint : constraints) {
+                	for (ConstraintConfiguration constraint : constraints) {
                 		if (constraint.getFactType().equals(factType) && constraint.getFieldName().equals(fieldName)){
                 			result.add(constraint);
                 		}

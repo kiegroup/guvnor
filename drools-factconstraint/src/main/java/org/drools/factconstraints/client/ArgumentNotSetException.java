@@ -6,11 +6,22 @@ package org.drools.factconstraints.client;
  */
 public class ArgumentNotSetException extends Exception {
 
-    public ArgumentNotSetException(String message) {
-        super(message);
-    }
+	private static final long serialVersionUID = 501L;
 
-    public ArgumentNotSetException() {
-    }
+	public ArgumentNotSetException() {
+		super();
+	}
+
+	public ArgumentNotSetException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public ArgumentNotSetException(String message) {
+		super(message);
+	}
+
+	public ArgumentNotSetException(Throwable cause) {
+		super(cause);
+	}
 
 }

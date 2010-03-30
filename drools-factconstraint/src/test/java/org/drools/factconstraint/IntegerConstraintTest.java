@@ -3,9 +3,11 @@ package org.drools.factconstraint;
 import java.util.Collection;
 
 import org.drools.builder.ResourceType;
-import org.drools.factconstraints.client.Constraint;
+import org.drools.factconstraint.server.Constraint;
+import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.client.ValidationResult;
-import org.drools.factconstraints.client.predefined.IntegerConstraint;
+import org.drools.factconstraints.client.config.SimpleConstraintConfigurationImpl;
+import org.drools.factconstraints.server.predefined.IntegerConstraint;
 import org.drools.io.ResourceFactory;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
@@ -26,65 +28,61 @@ import org.junit.Test;
  */
 public class IntegerConstraintTest {
 
-    private Constraint cons;
+    private ConstraintConfiguration conf;
 
     @Before
     public void setup() {
-        cons = new IntegerConstraint();
-        cons.setFactType("Person");
-        cons.setFieldName("age");
-
-
-        System.out.println("Validation Rule:\n" + cons.getVerifierRule() + "\n\n");
-
+        conf = new SimpleConstraintConfigurationImpl();
+        conf.setFactType("Person");
+        conf.setFieldName("age");
     }
 
     @Test
     public void testValidConstraint() {
-
-        ValidationResult result = cons.validate(12);
+    	Constraint cons = new IntegerConstraint();
+    	
+        ValidationResult result = cons.validate(12, conf);
         Assert.assertTrue(result.isSuccess());
 
-        result = cons.validate(new Integer("12"));
+        result = cons.validate(new Integer("12"), conf);
         Assert.assertTrue(result.isSuccess());
 
-        result = cons.validate("12");
+        result = cons.validate("12", conf);
         Assert.assertTrue(result.isSuccess());
 
     }
 
     @Test
     public void testInvalidConstraint() {
-
-        ValidationResult result = cons.validate(new Object());
+    	Constraint cons = new IntegerConstraint();
+    	
+        ValidationResult result = cons.validate(new Object(), conf);
         Assert.assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
-        result = cons.validate("");
+        result = cons.validate("", conf);
         Assert.assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
-        result = cons.validate("ABC");
+        result = cons.validate("ABC", conf);
         Assert.assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
-        result = cons.validate(null);
+        result = cons.validate(null, conf);
         Assert.assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
-        result = cons.validate(new Long("12"));
+        result = cons.validate(new Long("12"), conf);
         Assert.assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
-        result = cons.validate(12L);
+        result = cons.validate(12L, conf);
         Assert.assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
-        result = cons.validate(12.8);
+        result = cons.validate(12.8, conf);
         Assert.assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
-
-
     }
 
     @Test
@@ -122,11 +120,12 @@ public class IntegerConstraintTest {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         //VerifierConfiguration conf = new DefaultVerifierConfiguration();
-        VerifierConfiguration conf = new VerifierConfigurationImpl();
+        VerifierConfiguration vconf = new VerifierConfigurationImpl();
 
-        conf.getVerifyingResources().put(ResourceFactory.newByteArrayResource(cons.getVerifierRule().getBytes()), ResourceType.DRL);
+        Constraint cons = new IntegerConstraint();
+        vconf.getVerifyingResources().put(ResourceFactory.newByteArrayResource(cons.getVerifierRule(conf).getBytes()), ResourceType.DRL);
 
-        Verifier verifier = vBuilder.newVerifier(conf);
+        Verifier verifier = vBuilder.newVerifier(vconf);
 
         verifier.addResourcesToVerify(ResourceFactory.newByteArrayResource(ruleToVerify.getBytes()),
                 ResourceType.DRL);
@@ -153,8 +152,7 @@ public class IntegerConstraintTest {
             counter++;
         }
 
-        Assert.assertEquals(2,
-                counter);
+        Assert.assertEquals(2, counter);
 
         verifier.dispose();
     }

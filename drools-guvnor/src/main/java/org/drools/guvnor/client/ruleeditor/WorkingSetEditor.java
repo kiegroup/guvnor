@@ -2,17 +2,15 @@ package org.drools.guvnor.client.ruleeditor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.factconstraints.client.Constraint;
+import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.client.helper.ConstraintsContainer;
-import org.drools.factconstraints.client.predefined.IntegerConstraint;
-import org.drools.factconstraints.client.predefined.NotNullConstraint;
-import org.drools.factconstraints.client.predefined.RangeConstraint;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
@@ -54,7 +52,7 @@ public class WorkingSetEditor extends Composite {
 	private ListBox fieldsCombo = new ListBox(false);
 	private ListBox constraintsCombo = new ListBox(false);
 	private VerticalPanel vpConstraintConf = new VerticalPanel();
-	private Map<String, Constraint> contraintsMap = new HashMap<String, Constraint>();
+	private Map<String, ConstraintConfiguration> contraintsMap = new HashMap<String, ConstraintConfiguration>();
 	
 	public WorkingSetEditor(RuleAsset asset) {
 		if (!AssetFormats.WORKING_SET.equals(asset.metaData.format)) {
@@ -92,9 +90,6 @@ public class WorkingSetEditor extends Composite {
 		initWidget(tPanel);
 	}
 
-//	private int lastSelectedFact = -1;
-//	private int lastSelectedField = -1;
-//	private int lastSelectedConstraint = -1;
 	private Widget buildFactsConstraintsEditor(TabPanel tPanel) {
 		factsCombo.setVisibleItemCount(1);
 		fieldsCombo.setVisibleItemCount(1);
@@ -183,7 +178,7 @@ public class WorkingSetEditor extends Composite {
 
 	protected void removeConstraint() {
 		if (constraintsCombo.getSelectedIndex() != -1) {
-			Constraint c = contraintsMap.get(constraintsCombo.getValue(constraintsCombo.getSelectedIndex()));
+			ConstraintConfiguration c = contraintsMap.get(constraintsCombo.getValue(constraintsCombo.getSelectedIndex()));
 			getConstraintsConstrainer().removeConstraint(c);
 		}
 		fillFieldConstrains();
@@ -196,7 +191,7 @@ public class WorkingSetEditor extends Composite {
 			return;
 		}
 		if (constraintsCombo.getSelectedIndex() != -1) {
-			Constraint c = contraintsMap.get(constraintsCombo.getValue(constraintsCombo.getSelectedIndex()));
+			ConstraintConfiguration c = contraintsMap.get(constraintsCombo.getValue(constraintsCombo.getSelectedIndex()));
 			ConstraintEditor editor = new ConstraintEditor(c);
 			vpConstraintConf.remove(vpConstraintConf.getWidgetCount() - 1);
 			vpConstraintConf.add(editor);
@@ -212,33 +207,28 @@ public class WorkingSetEditor extends Composite {
 
         addbutton.setTitle(constants.AddNewConstraint());
         
-        consDefsCombo.addItem("NotNull");
-        consDefsCombo.addItem("Range");
-        consDefsCombo.addItem("Integer");
+        List<String> names = new ArrayList<String>(ConstraintsContainer.getAllConfigurations().keySet());
+        Collections.sort(names);
+        for (String name : names) {
+        	consDefsCombo.addItem(name);	
+		}
         
         addbutton.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-            	String consDef = consDefsCombo.getItemText(consDefsCombo.getSelectedIndex());
-            	Constraint cons = null;
-            	if ("NotNull".equals(consDef)) {
-            		cons = new NotNullConstraint();
-            	} else if ("Range".equals(consDef)) {
-            		cons = new RangeConstraint();
-            	} else if ("Integer".equals(consDef)) {
-            		cons = new IntegerConstraint();
-            	}
-            	if (cons != null) {
+            	String name = consDefsCombo.getItemText(consDefsCombo.getSelectedIndex());
+            	ConstraintConfiguration config = ConstraintsContainer.getEmptyConfiguration(name);
+            	if (config != null) {
             		
             		String factName = factsCombo.getItemText(factsCombo.getSelectedIndex());
             		String fieldName = fieldsCombo.getItemText(fieldsCombo.getSelectedIndex());
-            		cons.setFactType(factName);
-            		cons.setFieldName(fieldName);
+            		config.setFactType(factName);
+            		config.setFieldName(fieldName);
             		if (((WorkingSetConfigData) workingSet.content).constraints == null) {
-            			((WorkingSetConfigData) workingSet.content).constraints = new ArrayList<Constraint>();
+            			((WorkingSetConfigData) workingSet.content).constraints = new ArrayList<ConstraintConfiguration>();
             		}
-            		((WorkingSetConfigData) workingSet.content).constraints.add(cons);
-            		constraintsCombo.addItem(cons.getConstraintName(), addContrainsMap(cons));
-            		getConstraintsConstrainer().addConstraint(cons);
+            		((WorkingSetConfigData) workingSet.content).constraints.add(config);
+            		constraintsCombo.addItem(config.getConstraintName(), addContrainsMap(config));
+            		getConstraintsConstrainer().addConstraint(config);
             		
             	}
             	pop.hide();
@@ -291,7 +281,7 @@ public class WorkingSetEditor extends Composite {
 			String factField = factsCombo.getItemText(factsCombo.getSelectedIndex());
 			constraintsCombo.clear();
 			contraintsMap.clear();
-			for (Constraint c : getConstraintsConstrainer().getConstraints(factField, fieldName)) {
+			for (ConstraintConfiguration c : getConstraintsConstrainer().getConstraints(factField, fieldName)) {
 				constraintsCombo.addItem(c.getConstraintName(), addContrainsMap(c));
 			}
 			vpConstraintConf.remove(vpConstraintConf.getWidgetCount() - 1);
@@ -300,7 +290,7 @@ public class WorkingSetEditor extends Composite {
 		showConstraintConfig();
 	}
 	
-	private String addContrainsMap(Constraint c) {
+	private String addContrainsMap(ConstraintConfiguration c) {
 		String id = "" + contraintsMap.size();
 		contraintsMap.put(id, c);
 		return id;

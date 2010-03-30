@@ -1,10 +1,13 @@
 package org.drools.factconstraint;
 
 import java.util.Collection;
+
 import org.drools.builder.ResourceType;
-import org.drools.factconstraints.client.Constraint;
+import org.drools.factconstraint.server.Constraint;
+import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.client.ValidationResult;
-import org.drools.factconstraints.client.predefined.RangeConstraint;
+import org.drools.factconstraints.client.config.SimpleConstraintConfigurationImpl;
+import org.drools.factconstraints.server.predefined.RangeConstraint;
 import org.drools.io.ResourceFactory;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
@@ -26,39 +29,38 @@ import org.junit.Test;
 public class RangeConstraintTest {
 
     private Constraint cons;
+    private ConstraintConfiguration conf;
 
     @Before
     public void setup() {
         cons = new RangeConstraint();
-        cons.setFactType("Person");
-        cons.setFieldName("age");
-
-        System.out.println("Validation Rule:\n" + cons.getVerifierRule() + "\n\n");
-
+        conf = new SimpleConstraintConfigurationImpl();
+        conf.setFactType("Person");
+        conf.setFieldName("age");
     }
 
     @Test
     public void testValidConstraint(){
 
-        cons.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "-0.5");
-        cons.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "100");
+        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "-0.5");
+        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "100");
         
-        ValidationResult result = cons.validate(12);
+        ValidationResult result = cons.validate(12, conf);
         Assert.assertTrue(result.isSuccess());
 
-        result = cons.validate(new Integer("12"));
+        result = cons.validate(new Integer("12"), conf);
         Assert.assertTrue(result.isSuccess());
 
-        result = cons.validate("12");
+        result = cons.validate("12", conf);
         Assert.assertTrue(result.isSuccess());
 
-        result = cons.validate(0.6);
+        result = cons.validate(0.6, conf);
         Assert.assertTrue(result.isSuccess());
 
-        result = cons.validate(new Float("-0.3"));
+        result = cons.validate(new Float("-0.3"), conf);
         Assert.assertTrue(result.isSuccess());
 
-        result = cons.validate("90.76");
+        result = cons.validate("90.76", conf);
         Assert.assertTrue(result.isSuccess());
 
     }
@@ -66,34 +68,34 @@ public class RangeConstraintTest {
     @Test
     public void testInvalidConstraint(){
 
-        cons.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "-0.5");
-        cons.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "100");
+        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "-0.5");
+        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "100");
 
-        ValidationResult result = cons.validate(new Object());
+        ValidationResult result = cons.validate(new Object(), conf);
         Assert.assertFalse(result.isSuccess());
         System.out.println("Message: "+result.getMessage());
 
-        result = cons.validate(null);
+        result = cons.validate(null, conf);
         Assert.assertFalse(result.isSuccess());
         System.out.println("Message: "+result.getMessage());
 
-        result = cons.validate("");
+        result = cons.validate("", conf);
         Assert.assertFalse(result.isSuccess());
         System.out.println("Message: "+result.getMessage());
 
-        result = cons.validate("ABC");
+        result = cons.validate("ABC", conf);
         Assert.assertFalse(result.isSuccess());
         System.out.println("Message: "+result.getMessage());
 
-        result = cons.validate(new Long("-100"));
+        result = cons.validate(new Long("-100"), conf);
         Assert.assertFalse(result.isSuccess());
         System.out.println("Message: "+result.getMessage());
 
-        result = cons.validate(-0.5);
+        result = cons.validate(-0.5, conf);
         Assert.assertFalse(result.isSuccess());
         System.out.println("Message: "+result.getMessage());
 
-        result = cons.validate(100);
+        result = cons.validate(100, conf);
         Assert.assertFalse(result.isSuccess());
         System.out.println("Message: "+result.getMessage());
 
@@ -104,18 +106,18 @@ public class RangeConstraintTest {
     public void testUsingVerifier() {
 
         //age constraint
-        cons.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "0");
-        cons.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "120");
-        System.out.println("Validation Rule:\n" + cons.getVerifierRule() + "\n\n");
+        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "0");
+        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "120");
+        System.out.println("Validation Rule:\n" + cons.getVerifierRule(conf) + "\n\n");
 
         //salary constraint
-        Constraint salaryCons = new RangeConstraint();
+        ConstraintConfiguration salaryCons = new SimpleConstraintConfigurationImpl();
         salaryCons.setFactType("Person");
         salaryCons.setFieldName("salary");
         salaryCons.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "0");
         salaryCons.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "1000.6");
 
-        System.out.println("Validation Rule:\n" + salaryCons.getVerifierRule() + "\n\n");
+        System.out.println("Validation Rule:\n" + cons.getVerifierRule(salaryCons) + "\n\n");
 
 
         String ruleToVerify = "";
@@ -228,13 +230,12 @@ public class RangeConstraintTest {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
-        //VerifierConfiguration conf = new DefaultVerifierConfiguration();
-        VerifierConfiguration conf = new VerifierConfigurationImpl();
+        VerifierConfiguration vconf = new VerifierConfigurationImpl();
 
-        conf.getVerifyingResources().put(ResourceFactory.newByteArrayResource(cons.getVerifierRule().getBytes()), ResourceType.DRL);
-        conf.getVerifyingResources().put(ResourceFactory.newByteArrayResource(salaryCons.getVerifierRule().getBytes()), ResourceType.DRL);
+        vconf.getVerifyingResources().put(ResourceFactory.newByteArrayResource(cons.getVerifierRule(this.conf).getBytes()), ResourceType.DRL);
+        vconf.getVerifyingResources().put(ResourceFactory.newByteArrayResource(cons.getVerifierRule(salaryCons).getBytes()), ResourceType.DRL);
 
-        Verifier verifier = vBuilder.newVerifier(conf);
+        Verifier verifier = vBuilder.newVerifier(vconf);
 
         verifier.addResourcesToVerify(ResourceFactory.newByteArrayResource(ruleToVerify.getBytes()),
                 ResourceType.DRL);

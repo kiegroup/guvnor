@@ -1,4 +1,4 @@
-package org.drools.factconstraints.client.dataprovider.predefined;
+package org.drools.factconstraints.server.predefined;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,5 +61,4 @@ public abstract class DefaultFieldDataProviderImpl implements FieldDataProvider 
     public void setArgumentValue(String key, Object value) {
         this.arguments.put(key, value);
     }
-
 }

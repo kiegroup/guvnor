@@ -1,9 +1,11 @@
-package org.drools.factconstraints.client.predefined;
+package org.drools.factconstraints.server.predefined;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import org.drools.factconstraints.client.DefaultConstraintImpl;
+import org.drools.factconstraint.server.DefaultConstraintImpl;
+import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.client.ValidationResult;
 
 /**
@@ -12,20 +14,21 @@ import org.drools.factconstraints.client.ValidationResult;
  */
 public class IntegerConstraint extends DefaultConstraintImpl {
 	private static final long serialVersionUID = 501L;
-
-    public IntegerConstraint(){
-    }
+	public static final String NAME = "IntegerConstraint";
+	
+    public IntegerConstraint(){}
 
     @Override
-    public String getVerifierRule() {
+    protected String internalVerifierRule(ConstraintConfiguration config,
+    		Map<String, Object> context) {
         List<String> constraints = new ArrayList<String>();
         constraints.add("valueType != Field.INT");
 
-        return this.createVerifierRuleTemplate("Integer_Field_Constraint", constraints, "The value must be an integer"); //I18N
+        return this.createVerifierRuleTemplate(config, context, "Integer_Field_Constraint", constraints, "The value must be an integer"); //I18N
     }
 
     @Override
-    public ValidationResult validate(Object value) {
+    public ValidationResult validate(Object value, ConstraintConfiguration config) {
         ValidationResult result = new ValidationResult();
 
         if (value == null){
@@ -48,5 +51,4 @@ public class IntegerConstraint extends DefaultConstraintImpl {
 
         return result;
     }
-    
 }

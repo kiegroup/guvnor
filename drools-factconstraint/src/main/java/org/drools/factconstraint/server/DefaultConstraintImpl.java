@@ -1,10 +1,13 @@
-package org.drools.factconstraints.client;
+package org.drools.factconstraint.server;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 import org.drools.base.evaluators.Operator;
+import org.drools.factconstraints.client.ArgumentNotSetException;
+import org.drools.factconstraints.client.ConstraintConfiguration;
+import org.drools.factconstraints.client.ValidationResult;
 import org.drools.verifier.report.components.Severity;
 
 /**
@@ -13,11 +16,9 @@ import org.drools.verifier.report.components.Severity;
  * @author baunax@gmail.com
  */
 public abstract class DefaultConstraintImpl implements Constraint {
-	private long ruleNum = 0;
-    private String factType;
-    private String fieldName;
-    private Map<String, String> arguments = new HashMap<String, String>();
 
+	private static final long serialVersionUID = 501L;
+	private long ruleNum = 0;
 
     public static List<Operator> supportedOperators = new ArrayList<Operator>();
     static{
@@ -29,62 +30,57 @@ public abstract class DefaultConstraintImpl implements Constraint {
         supportedOperators.add(Operator.LESS_OR_EQUAL);
     }
 
-    public DefaultConstraintImpl() {
-
-    }
-
-    private String concatRule() {
+    private String concatRule(ConstraintConfiguration config, Map<String, Object> context) {
         StringBuilder rule = new StringBuilder();
+        
+        rule.append(this.getVerifierPackagePrefixTemplate(config, context));
+        rule.append(this.getVerifierPackageTemplate(config, context));
+        rule.append(this.getVerifierPackageSufixTemplate(config, context));
 
-        rule.append(this.getVerifierPackagePrefixTemplate());
-        rule.append(this.getVerifierPackageTemplate());
-        rule.append(this.getVerifierPackageSufixTemplate());
+        rule.append(this.getVerifierImportsPrefixTemplate(config, context));
+        rule.append(this.getVerifierImportsTemplate(config, context));
+        rule.append(this.getVerifierImportsSufixTemplate(config, context));
 
-        rule.append(this.getVerifierImportsPrefixTemplate());
-        rule.append(this.getVerifierImportsTemplate());
-        rule.append(this.getVerifierImportsSufixTemplate());
+        rule.append(this.getVerifierGlobalsPrefixTemplate(config, context));
+        rule.append(this.getVerifierGlobalsTemplate(config, context));
+        rule.append(this.getVerifierGlobalsSufixTemplate(config, context));
 
-        rule.append(this.getVerifierGlobalsPrefixTemplate());
-        rule.append(this.getVerifierGlobalsTemplate());
-        rule.append(this.getVerifierGlobalsSufixTemplate());
+        rule.append(this.getVerifierRuleNamePrefixTemplate(config, context));
+        rule.append(this.getVerifierRuleNameTemplate(config, context));
+        rule.append(this.getVerifierRuleNameSufixTemplate(config, context));
 
-        rule.append(this.getVerifierRuleNamePrefixTemplate());
-        rule.append(this.getVerifierRuleNameTemplate());
-        rule.append(this.getVerifierRuleNameSufixTemplate());
+        rule.append(this.getVerifierRuleWhenTemplate(config, context));
 
-        rule.append(this.getVerifierRuleWhenTemplate());
+        rule.append(this.getVerifierFieldPatternPrefixTemplate(config, context));
+        rule.append(this.getVerifierFieldPatternTemplate(config, context));
+        rule.append(this.getVerifierFieldPatternSufixTemplate(config, context));
 
-        rule.append(this.getVerifierFieldPatternPrefixTemplate());
-        rule.append(this.getVerifierFieldPatternTemplate());
-        rule.append(this.getVerifierFieldPatternSufixTemplate());
+        rule.append(this.getVerifierRestrictionPatternPrefixTemplate(config, context));
+        rule.append(this.getVerifierRestrictionPatternTemplate(config, context));
+        rule.append(this.getVerifierRestrictionPatternSufixTemplate(config, context));
 
-        rule.append(this.getVerifierRestrictionPatternPrefixTemplate());
-        rule.append(this.getVerifierRestrictionPatternTemplate());
-        rule.append(this.getVerifierRestrictionPatternSufixTemplate());
+        rule.append(this.getVerifierRuleThenTemplate(config, context));
 
-        rule.append(this.getVerifierRuleThenTemplate());
+        rule.append(this.getVerifierActionPrefixTemplate(config, context));
+        rule.append(this.getVerifierActionTemplate(config, context));
+        rule.append(this.getVerifierActionSufixTemplate(config, context));
 
-        rule.append(this.getVerifierActionPrefixTemplate());
-        rule.append(this.getVerifierActionTemplate());
-        rule.append(this.getVerifierActionSufixTemplate());
-
-        rule.append(this.getVerifierRuleEndTemplate());
-        rule.append(this.getVerifierRuleEndSufixTemplate());
-
+        rule.append(this.getVerifierRuleEndTemplate(config, context));
+        rule.append(this.getVerifierRuleEndSufixTemplate(config, context));
 
         return rule.toString();
 
     }
 
-    protected String createVerifierRuleTemplate(String ruleName, List<String> constraints, String message) {
+    protected String createVerifierRuleTemplate(ConstraintConfiguration config, Map<String, Object> context, String ruleName, List<String> constraints, String message) {
         if (ruleName == null) {
             ruleName = "Constraint_rule";
 
         }
         ruleName += "_" + ruleNum++;
-        String rule = this.concatRule().replace("${ruleName}", ruleName);
-        rule = rule.replace("${factType}", this.getFactType());
-        rule = rule.replace("${fieldName}", this.getFieldName());
+        String rule = this.concatRule(config, context).replace("${ruleName}", ruleName);
+        rule = rule.replace("${factType}", config.getFactType());
+        rule = rule.replace("${fieldName}", config.getFieldName());
         if (constraints != null && !constraints.isEmpty()) {
             String constraintsTxt = "";
             String delimiter = "";
@@ -101,12 +97,12 @@ public abstract class DefaultConstraintImpl implements Constraint {
         return rule;
     }
 
-    protected Object getMandatoryArgument(String key) throws ArgumentNotSetException {
-        if (!this.arguments.containsKey(key)) {
+    protected Object getMandatoryArgument(String key, ConstraintConfiguration conf) throws ArgumentNotSetException {
+        if (!conf.containsArgument(key)) {
             throw new ArgumentNotSetException("The argument " + key + " doesn't exist.");
         }
 
-        Object value = this.getArgumentValue(key);
+        Object value = conf.getArgumentValue(key);
 
         if (value == null) {
             throw new ArgumentNotSetException("The argument " + key + " is null.");
@@ -115,51 +111,29 @@ public abstract class DefaultConstraintImpl implements Constraint {
         return value;
     }
 
-    public void setFactType(String factType) {
-        this.factType = factType;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public String getFactType() {
-        return factType;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public Set<String> getArgumentKeys() {
-        return this.arguments.keySet();
-    }
-
-    public Object getArgumentValue(String key) {
-        return this.arguments.get(key);
-    }
-
-    public void setArgumentValue(String key, String value) {
-        this.arguments.put(key, value);
-    }
-
-    public ValidationResult validate(Object value) {
+    public ValidationResult validate(Object value, ConstraintConfiguration config) {
         ValidationResult result = new ValidationResult();
         result.setSuccess(true);
 
         return result;
     }
 
-    public String getVerifierRule() {
-        return null;
+    protected Map<String, Object> createContext() {
+    	return new HashMap<String, Object>(); 
+    }
+    
+    public final String getVerifierRule(ConstraintConfiguration config) {
+        return internalVerifierRule(config, createContext());
     }
 
+    abstract protected String internalVerifierRule(ConstraintConfiguration config, Map<String, Object> context);
+    
     public String getConstraintName() {
     	return getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1);
     }
 
     /* Action */
-    protected String getVerifierActionTemplate() {
+    protected String getVerifierActionTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         StringBuilder verifierActionTemplate = new StringBuilder();
 
           //by default, add an ERROR
@@ -188,7 +162,7 @@ public abstract class DefaultConstraintImpl implements Constraint {
         return addString.toString();
     }
 
-    protected String getVerifierActionPrefixTemplate() {
+    protected String getVerifierActionPrefixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         StringBuilder verifierActionPrefixTemplate = new StringBuilder();
         verifierActionPrefixTemplate.append("      Map<String,String> impactedRules = new HashMap<String,String>();\n");
 //        verifierActionTemplate.append("      impactedRules.put( $restriction.getPath(), $restriction.getRuleName());\n");
@@ -196,12 +170,12 @@ public abstract class DefaultConstraintImpl implements Constraint {
         return verifierActionPrefixTemplate.toString();
     }
 
-    protected String getVerifierActionSufixTemplate() {
+    protected String getVerifierActionSufixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "";
     }
 
     /* Field Pattern */
-    protected String getVerifierFieldPatternTemplate() {
+    protected String getVerifierFieldPatternTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         StringBuilder verifierFieldPatternTemplate = new StringBuilder();
         verifierFieldPatternTemplate.append("      $field :Field(\n");
         verifierFieldPatternTemplate.append("          objectTypeName == \"${factType}\",\n");
@@ -210,29 +184,29 @@ public abstract class DefaultConstraintImpl implements Constraint {
         return verifierFieldPatternTemplate.toString();
     }
 
-    protected String getVerifierFieldPatternPrefixTemplate() {
+    protected String getVerifierFieldPatternPrefixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "";
     }
 
-    protected String getVerifierFieldPatternSufixTemplate() {
+    protected String getVerifierFieldPatternSufixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "";
     }
 
     /* Globals*/
-    protected String getVerifierGlobalsTemplate() {
+    protected String getVerifierGlobalsTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "global VerifierReport result;\n";
     }
 
-    protected String getVerifierGlobalsPrefixTemplate() {
+    protected String getVerifierGlobalsPrefixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "";
     }
 
-    protected String getVerifierGlobalsSufixTemplate() {
+    protected String getVerifierGlobalsSufixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "";
     }
 
     /* Imports */
-    protected String getVerifierImportsTemplate() {
+    protected String getVerifierImportsTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         StringBuilder verifierImportsTemplate = new StringBuilder();
         verifierImportsTemplate.append("import org.drools.verifier.components.*;\n");
         verifierImportsTemplate.append("import java.util.Map;\n");
@@ -246,28 +220,28 @@ public abstract class DefaultConstraintImpl implements Constraint {
 
     }
 
-    protected String getVerifierImportsPrefixTemplate() {
+    protected String getVerifierImportsPrefixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "";
     }
 
-    protected String getVerifierImportsSufixTemplate() {
+    protected String getVerifierImportsSufixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "";
     }
 
-    protected String getVerifierPackageTemplate() {
+    protected String getVerifierPackageTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "package org.drools.verifier.consequence\n";
     }
 
-    protected String getVerifierPackagePrefixTemplate() {
+    protected String getVerifierPackagePrefixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "";
     }
 
-    protected String getVerifierPackageSufixTemplate() {
+    protected String getVerifierPackageSufixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "";
     }
 
     /* Restriction Pattern */
-    protected String getVerifierRestrictionPatternTemplate() {
+    protected String getVerifierRestrictionPatternTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         StringBuilder verifierRestrictionPatternTemplate = new StringBuilder();
         verifierRestrictionPatternTemplate.append("      $restriction :LiteralRestriction(\n");
         verifierRestrictionPatternTemplate.append("            fieldPath == $field.path,\n");
@@ -277,45 +251,47 @@ public abstract class DefaultConstraintImpl implements Constraint {
         return verifierRestrictionPatternTemplate.toString();
     }
 
-    protected String getVerifierRestrictionPatternPrefixTemplate() {
+    protected String getVerifierRestrictionPatternPrefixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "";
     }
 
-    protected String getVerifierRestrictionPatternSufixTemplate() {
+    protected String getVerifierRestrictionPatternSufixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "";
     }
 
     /* end */
-    protected String getVerifierRuleEndTemplate() {
+    protected String getVerifierRuleEndTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "end\n";
     }
 
-    protected String getVerifierRuleEndSufixTemplate() {
+    protected String getVerifierRuleEndSufixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "";
     }
 
     /* Rule Name */
-    protected String getVerifierRuleNameTemplate() {
+    protected String getVerifierRuleNameTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "rule \"${ruleName}\"\n";
     }
 
-    protected String getVerifierRuleNamePrefixTemplate() {
+    protected String getVerifierRuleNamePrefixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "";
     }
 
-    protected String getVerifierRuleNameSufixTemplate() {
+    protected String getVerifierRuleNameSufixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "";
     }
 
     /* then */
-    protected String getVerifierRuleThenTemplate() {
+    protected String getVerifierRuleThenTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "  then\n";
     }
 
     /* when */
-    protected String getVerifierRuleWhenTemplate() {
+    protected String getVerifierRuleWhenTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         return "  when\n";
     }
-
-
+    
+    public List<String> getArgumentKeys() {
+    	return new ArrayList<String>();
+    }
 }

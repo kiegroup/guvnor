@@ -1,10 +1,13 @@
 package org.drools.factconstraint;
 
 import java.util.Collection;
+
 import org.drools.builder.ResourceType;
-import org.drools.factconstraints.client.Constraint;
+import org.drools.factconstraint.server.Constraint;
+import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.client.ValidationResult;
-import org.drools.factconstraints.client.predefined.NotNullConstraint;
+import org.drools.factconstraints.client.config.SimpleConstraintConfigurationImpl;
+import org.drools.factconstraints.server.predefined.NotNullConstraint;
 import org.drools.io.ResourceFactory;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
@@ -25,46 +28,44 @@ import org.junit.Test;
  */
 public class NotNullConstraintTest {
 
+    private ConstraintConfiguration conf;
     private Constraint cons;
-
+    
     @Before
     public void setup() {
+        conf = new SimpleConstraintConfigurationImpl();
+        conf.setFactType("Person");
+        conf.setFieldName("name");
+        
         cons = new NotNullConstraint();
-        cons.setFactType("Person");
-        cons.setFieldName("name");
-        System.out.println("Validation Rule:\n" + cons.getVerifierRule() + "\n\n");
-
     }
 
     @Test
     public void testValidConstraint(){
-
-        ValidationResult result = cons.validate(new Object());
+    	
+        ValidationResult result = cons.validate(new Object(), conf);
         Assert.assertTrue(result.isSuccess());
 
-        result = cons.validate("");
+        result = cons.validate("", conf);
         Assert.assertTrue(result.isSuccess());
 
-        result = cons.validate("ABC");
+        result = cons.validate("ABC", conf);
         Assert.assertTrue(result.isSuccess());
 
-        result = cons.validate(new Long("12"));
+        result = cons.validate(new Long("12"), conf);
         Assert.assertTrue(result.isSuccess());
 
-        result = cons.validate(12L);
+        result = cons.validate(12L, conf);
         Assert.assertTrue(result.isSuccess());
 
-        result = cons.validate(12.8);
+        result = cons.validate(12.8, conf);
         Assert.assertTrue(result.isSuccess());
-
-
-
     }
 
     @Test
     public void testInvalidConstraint(){
 
-        ValidationResult result = cons.validate(null);
+        ValidationResult result = cons.validate(null, conf);
         Assert.assertFalse(result.isSuccess());
         System.out.println("Message: "+result.getMessage());
 
@@ -104,12 +105,11 @@ public class NotNullConstraintTest {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
-        //VerifierConfiguration conf = new DefaultVerifierConfiguration();
-        VerifierConfiguration conf = new VerifierConfigurationImpl();
+        VerifierConfiguration vconf = new VerifierConfigurationImpl();
 
-        conf.getVerifyingResources().put(ResourceFactory.newByteArrayResource(cons.getVerifierRule().getBytes()), ResourceType.DRL);
+        vconf.getVerifyingResources().put(ResourceFactory.newByteArrayResource(cons.getVerifierRule(this.conf).getBytes()), ResourceType.DRL);
 
-        Verifier verifier = vBuilder.newVerifier(conf);
+        Verifier verifier = vBuilder.newVerifier(vconf);
 
         verifier.addResourcesToVerify(ResourceFactory.newByteArrayResource(ruleToVerify.getBytes()),
                 ResourceType.DRL);

@@ -59,7 +59,8 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.factconstraints.client.Constraint;
+import org.drools.factconstraint.server.factory.ConstraintsFactory;
+import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.Inbox;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
@@ -94,7 +95,6 @@ import org.drools.guvnor.server.builder.ContentAssemblyError;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
-import org.drools.guvnor.server.contenthandler.ICompilable;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.contenthandler.IValidating;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
@@ -2847,8 +2847,8 @@ public class ServiceImplementation
 			for (RuleAsset ws : workingSets) {
 				WorkingSetConfigData wsConfig = (WorkingSetConfigData) ws.content;
 				if (wsConfig.constraints != null) {
-					for (Constraint cons : wsConfig.constraints) {
-						constraintRules.add(cons.getVerifierRule());
+					for (ConstraintConfiguration config : wsConfig.constraints) {
+						constraintRules.add(ConstraintsFactory.getInstance().getVerifierRule(config));
 					}
 				}
 			}

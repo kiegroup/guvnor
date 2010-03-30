@@ -8,18 +8,37 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.factconstraints.client.Constraint;
+import org.drools.factconstraints.client.ConstraintConfiguration;
+import org.drools.factconstraints.client.config.SimpleConstraintConfigurationImpl;
 
 public class ConstraintsContainer {
-	Map<String, List<Constraint>> constraints = new HashMap<String, List<Constraint>>();
+	private static final Map<String, ConstraintConfiguration> constraintConfigs = new HashMap<String, ConstraintConfiguration>();
 	
-	public ConstraintsContainer(Constraint[] constraints) {
+	static {
+		ConstraintConfiguration config = new SimpleConstraintConfigurationImpl();
+		config.setConstraintName("NotNull");
+		constraintConfigs.put(config.getConstraintName(), config);
+		
+		config = new SimpleConstraintConfigurationImpl();
+		config.setConstraintName("IntegerConstraint");
+		constraintConfigs.put(config.getConstraintName(), config);
+		
+		config = new SimpleConstraintConfigurationImpl();
+		config.setConstraintName("RangeConstraint");
+		config.setArgumentValue("Min.value", "0");
+		config.setArgumentValue("Max.value", "0");
+		constraintConfigs.put(config.getConstraintName(), config);
+	}
+	
+	private Map<String, List<ConstraintConfiguration>> constraints = new HashMap<String, List<ConstraintConfiguration>>();
+	
+	public ConstraintsContainer(ConstraintConfiguration[] constraints) {
 		this(Arrays.asList(constraints));
 	}
 	
-	public ConstraintsContainer(Collection<Constraint> constraints) {
+	public ConstraintsContainer(Collection<ConstraintConfiguration> constraints) {
 		if (constraints != null && !constraints.isEmpty()) {
-			for (Constraint c : constraints) {
+			for (ConstraintConfiguration c : constraints) {
 				addConstraint(c);
 			}
 		}
@@ -29,34 +48,34 @@ public class ConstraintsContainer {
 		
 	}
 	
-	public void removeConstraint(Constraint c) {
-		List<Constraint> list = constraints.get(c.getFactType());
+	public void removeConstraint(ConstraintConfiguration c) {
+		List<ConstraintConfiguration> list = constraints.get(c.getFactType());
 		if (list != null) {
 			list.remove(c);
 		}
 	}
 	
-	public void addConstraint(Constraint c) {
-		List<Constraint> list = constraints.get(c.getFactType());
+	public void addConstraint(ConstraintConfiguration c) {
+		List<ConstraintConfiguration> list = constraints.get(c.getFactType());
 		if (list == null) {
-			list = new LinkedList<Constraint>();
+			list = new LinkedList<ConstraintConfiguration>();
 			constraints.put(c.getFactType(), list);
 		}
 		list.add(c);
 	}
 
-	public List<Constraint> getConstraints(String factType) {
+	public List<ConstraintConfiguration> getConstraints(String factType) {
 		return Collections.unmodifiableList(constraints.get(factType));
 	}
 	
-	public List<Constraint> getConstraints(String factType, String fieldName) {
+	public List<ConstraintConfiguration> getConstraints(String factType, String fieldName) {
 		
-		List<Constraint> list = constraints.get(factType);
+		List<ConstraintConfiguration> list = constraints.get(factType);
 		if (list == null || list.isEmpty()) {
 			return Collections.emptyList();
 		}
-		List<Constraint> res = new LinkedList<Constraint>();
-		for (Constraint c : list) {
+		List<ConstraintConfiguration> res = new LinkedList<ConstraintConfiguration>();
+		for (ConstraintConfiguration c : list) {
 			if (fieldName.equals(c.getFieldName())) {
 				res.add(c);
 			}
@@ -66,5 +85,13 @@ public class ConstraintsContainer {
 	
 	public boolean hasConstraints(String FactType) {
 		return constraints.containsKey(FactType);
+	}
+	
+	public static Map<String, ConstraintConfiguration> getAllConfigurations() {
+		return constraintConfigs;
+	}
+ 	
+	public static ConstraintConfiguration getEmptyConfiguration(String constraintName) {
+		return getAllConfigurations().get(constraintName);
 	}
 }

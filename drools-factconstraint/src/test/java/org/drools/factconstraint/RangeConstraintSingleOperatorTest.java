@@ -1,9 +1,12 @@
 package org.drools.factconstraint;
 
 import java.util.Collection;
+
 import org.drools.builder.ResourceType;
-import org.drools.factconstraints.client.Constraint;
-import org.drools.factconstraints.client.predefined.RangeConstraint;
+import org.drools.factconstraint.server.Constraint;
+import org.drools.factconstraints.client.ConstraintConfiguration;
+import org.drools.factconstraints.client.config.SimpleConstraintConfigurationImpl;
+import org.drools.factconstraints.server.predefined.RangeConstraint;
 import org.drools.io.ResourceFactory;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
@@ -27,15 +30,14 @@ public class RangeConstraintSingleOperatorTest {
 
     private Verifier verifier;
     private Constraint cons;
+    private ConstraintConfiguration conf;
 
     @Before
     public void setup() {
         cons = new RangeConstraint();
-        cons.setFactType("Person");
-        cons.setFieldName("age");
-
-        System.out.println("Validation Rule:\n" + cons.getVerifierRule() + "\n\n");
-
+        conf = new SimpleConstraintConfigurationImpl();
+        conf.setFactType("Person");
+        conf.setFieldName("age");
     }
 
     @After
@@ -49,9 +51,9 @@ public class RangeConstraintSingleOperatorTest {
     public void testEq() {
 
         //age constraint
-        cons.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "0");
-        cons.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "120");
-        System.out.println("Validation Rule:\n" + cons.getVerifierRule() + "\n\n");
+        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "0");
+        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "120");
+        System.out.println("Validation Rule:\n" + cons.getVerifierRule(conf) + "\n\n");
 
 
         String rulesToVerify = "";
@@ -98,13 +100,11 @@ public class RangeConstraintSingleOperatorTest {
     public void testNotEq() {
 
         //age constraint
-        cons.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "0");
-        cons.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "120");
-        System.out.println("Validation Rule:\n" + cons.getVerifierRule() + "\n\n");
-
+        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "0");
+        conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "120");
+        System.out.println("Validation Rule:\n" + cons.getVerifierRule(conf) + "\n\n");
 
         String rulesToVerify = "";
-        int fail = 0;
         int warning = 0;
 
         //FAIL
@@ -148,11 +148,11 @@ public class RangeConstraintSingleOperatorTest {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         //VerifierConfiguration conf = new DefaultVerifierConfiguration();
-        VerifierConfiguration conf = new VerifierConfigurationImpl();
+        VerifierConfiguration vconf = new VerifierConfigurationImpl();
 
-        conf.getVerifyingResources().put(ResourceFactory.newByteArrayResource(cons.getVerifierRule().getBytes()), ResourceType.DRL);
+        vconf.getVerifyingResources().put(ResourceFactory.newByteArrayResource(cons.getVerifierRule(this.conf).getBytes()), ResourceType.DRL);
 
-        verifier = vBuilder.newVerifier(conf);
+        verifier = vBuilder.newVerifier(vconf);
 
         verifier.addResourcesToVerify(ResourceFactory.newByteArrayResource(rulesToVerify.getBytes()),
                 ResourceType.DRL);

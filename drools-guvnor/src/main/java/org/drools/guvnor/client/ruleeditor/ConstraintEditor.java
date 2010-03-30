@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
 
-import org.drools.factconstraints.client.Constraint;
+import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
@@ -19,16 +19,16 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ConstraintEditor extends Composite {
 	private Constants constants =  GWT.create(Constants.class);
-	private Constraint constraint;
+	private ConstraintConfiguration config;
 
-	public ConstraintEditor(Constraint constraint) {
-		this.constraint = constraint;
+	public ConstraintEditor(ConstraintConfiguration config) {
+		this.config = config;
 		
-		Grid confGrid = new Grid(constraint.getArgumentKeys().size(), 2);
+		Grid confGrid = new Grid(config.getArgumentKeys().size(), 2);
 		
 		ArrayList<String> list = new ArrayList<String>();
 		Map<String, String> argI18N = new HashMap<String, String>();
-		for (String arg : constraint.getArgumentKeys()) {
+		for (String arg : config.getArgumentKeys()) {
 			String i18n = getI18NText(arg);
 			list.add(i18n);
 			argI18N.put(i18n, arg);
@@ -38,13 +38,13 @@ public class ConstraintEditor extends Composite {
 		int row = 0;
 		for (String arg : list) {
 			TextBox argTB = new TextBox();
-			argTB.setText(getConstraint().getArgumentValue(arg).toString());
+			argTB.setText(getConstraintConfiguration().getArgumentValue(arg).toString());
 			argTB.setName(argI18N.get(arg));
 			argTB.setTitle(arg);
 			argTB.addChangeListener(new ChangeListener() {
 				public void onChange(Widget sender) {
 					TextBox argTB = (TextBox) sender;
-					getConstraint().setArgumentValue(argTB.getName(), argTB.getText());
+					getConstraintConfiguration().setArgumentValue(argTB.getName(), argTB.getText());
 				}
 			});
 			
@@ -64,15 +64,15 @@ public class ConstraintEditor extends Composite {
 		}
 	}
 
-	public Constraint getConstraint() {
-		return constraint;
+	public ConstraintConfiguration getConstraintConfiguration() {
+		return config;
 	}
 
-	public void setConstraint(Constraint constraint) {
-		this.constraint = constraint;
+	public void setConstraintConfiguration(ConstraintConfiguration config) {
+		this.config = config;
 	}
 	
 	public String getConstraintName() {
-		return getConstraint().getConstraintName();
+		return getConstraintConfiguration().getConstraintName();
 	}
  }
