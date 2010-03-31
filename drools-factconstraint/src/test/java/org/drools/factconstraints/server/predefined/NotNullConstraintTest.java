@@ -1,4 +1,4 @@
-package org.drools.factconstraint;
+package org.drools.factconstraints.server.predefined;
 
 import java.util.Collection;
 
@@ -7,7 +7,7 @@ import org.drools.factconstraint.server.Constraint;
 import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.client.ValidationResult;
 import org.drools.factconstraints.client.config.SimpleConstraintConfigurationImpl;
-import org.drools.factconstraints.server.predefined.IntegerConstraint;
+import org.drools.factconstraints.server.predefined.NotNullConstraint;
 import org.drools.io.ResourceFactory;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
@@ -26,63 +26,49 @@ import org.junit.Test;
  *
  * @author esteban.aliverti@gmail.com
  */
-public class IntegerConstraintTest {
+public class NotNullConstraintTest {
 
     private ConstraintConfiguration conf;
-
+    private Constraint cons;
+    
     @Before
     public void setup() {
         conf = new SimpleConstraintConfigurationImpl();
         conf.setFactType("Person");
-        conf.setFieldName("age");
+        conf.setFieldName("name");
+        
+        cons = new NotNullConstraint();
     }
 
     @Test
-    public void testValidConstraint() {
-    	Constraint cons = new IntegerConstraint();
-    	
-        ValidationResult result = cons.validate(12, conf);
-        Assert.assertTrue(result.isSuccess());
-
-        result = cons.validate(new Integer("12"), conf);
-        Assert.assertTrue(result.isSuccess());
-
-        result = cons.validate("12", conf);
-        Assert.assertTrue(result.isSuccess());
-
-    }
-
-    @Test
-    public void testInvalidConstraint() {
-    	Constraint cons = new IntegerConstraint();
+    public void testValidConstraint(){
     	
         ValidationResult result = cons.validate(new Object(), conf);
-        Assert.assertFalse(result.isSuccess());
-        System.out.println("Message: " + result.getMessage());
+        Assert.assertTrue(result.isSuccess());
 
         result = cons.validate("", conf);
-        Assert.assertFalse(result.isSuccess());
-        System.out.println("Message: " + result.getMessage());
+        Assert.assertTrue(result.isSuccess());
 
         result = cons.validate("ABC", conf);
-        Assert.assertFalse(result.isSuccess());
-        System.out.println("Message: " + result.getMessage());
-
-        result = cons.validate(null, conf);
-        Assert.assertFalse(result.isSuccess());
-        System.out.println("Message: " + result.getMessage());
+        Assert.assertTrue(result.isSuccess());
 
         result = cons.validate(new Long("12"), conf);
-        Assert.assertFalse(result.isSuccess());
-        System.out.println("Message: " + result.getMessage());
+        Assert.assertTrue(result.isSuccess());
 
         result = cons.validate(12L, conf);
-        Assert.assertFalse(result.isSuccess());
-        System.out.println("Message: " + result.getMessage());
+        Assert.assertTrue(result.isSuccess());
 
         result = cons.validate(12.8, conf);
+        Assert.assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void testInvalidConstraint(){
+
+        ValidationResult result = cons.validate(null, conf);
         Assert.assertFalse(result.isSuccess());
-        System.out.println("Message: " + result.getMessage());
+        System.out.println("Message: "+result.getMessage());
+
     }
 
     @Test
@@ -90,28 +76,28 @@ public class IntegerConstraintTest {
 
         String ruleToVerify = "";
 
-        //FAIL
+        //OK
         ruleToVerify += "package org.drools.factconstraint.test\n\n";
         ruleToVerify += "import org.drools.factconstraint.model.*\n";
         ruleToVerify += "rule \"rule1\"\n";
         ruleToVerify += "   when\n";
-        ruleToVerify += "       Person(age == 'abc')\n";
+        ruleToVerify += "       Person(name == 'John McClane')\n";
+        ruleToVerify += "   then\n";
+        ruleToVerify += "       System.out.println(\"Rule fired\");\n";
+        ruleToVerify += "end\n\n";
+
+        //FAIL
+        ruleToVerify += "rule \"rule2\"\n";
+        ruleToVerify += "   when\n";
+        ruleToVerify += "       Person(name == null)\n";
         ruleToVerify += "   then\n";
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n\n";
 
         //OK
-        ruleToVerify += "rule \"rule2\"\n";
-        ruleToVerify += "   when\n";
-        ruleToVerify += "       Person(age == 12)\n";
-        ruleToVerify += "   then\n";
-        ruleToVerify += "       System.out.println(\"Rule fired\");\n";
-        ruleToVerify += "end\n\n";
-
-        //FAIL
         ruleToVerify += "rule \"rule3\"\n";
         ruleToVerify += "   when\n";
-        ruleToVerify += "       Person(age == '')\n";
+        ruleToVerify += "       Person(name == '')\n";
         ruleToVerify += "   then\n";
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n";
@@ -119,11 +105,9 @@ public class IntegerConstraintTest {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
-        //VerifierConfiguration conf = new DefaultVerifierConfiguration();
         VerifierConfiguration vconf = new VerifierConfigurationImpl();
 
-        Constraint cons = new IntegerConstraint();
-        vconf.getVerifyingResources().put(ResourceFactory.newByteArrayResource(cons.getVerifierRule(conf).getBytes()), ResourceType.DRL);
+        vconf.getVerifyingResources().put(ResourceFactory.newByteArrayResource(cons.getVerifierRule(this.conf).getBytes()), ResourceType.DRL);
 
         Verifier verifier = vBuilder.newVerifier(vconf);
 
@@ -152,8 +136,10 @@ public class IntegerConstraintTest {
             counter++;
         }
 
-        Assert.assertEquals(2, counter);
+        Assert.assertEquals(1,
+                counter);
 
         verifier.dispose();
     }
+
 }

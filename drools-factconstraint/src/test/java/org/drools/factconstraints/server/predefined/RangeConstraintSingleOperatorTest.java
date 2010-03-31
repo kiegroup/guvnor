@@ -1,4 +1,4 @@
-package org.drools.factconstraint;
+package org.drools.factconstraints.server.predefined;
 
 import java.util.Collection;
 
