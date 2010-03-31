@@ -5,6 +5,7 @@ import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.server.predefined.IntegerConstraint;
 import org.drools.factconstraints.server.predefined.NotNullConstraint;
 import org.drools.factconstraints.server.predefined.RangeConstraint;
+import org.drools.factconstraints.server.predefined.NotMatchesConstraint;
 
 public class ConstraintsFactory {
 	private final static ConstraintsFactory INSTANCE = new ConstraintsFactory();
@@ -22,6 +23,8 @@ public class ConstraintsFactory {
 			return new IntegerConstraint();
 		} else if (RangeConstraint.NAME.equals(config.getConstraintName())) {
 			return new RangeConstraint();
+		} else if (NotMatchesConstraint.NAME.equals(config.getConstraintName())) {
+			return new NotMatchesConstraint();
 		} else {
 			throw new IllegalArgumentException("Constraint unknown: " + config.getConstraintName());
 		}
