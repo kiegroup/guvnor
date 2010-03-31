@@ -75,7 +75,7 @@ public class RangeConstraintMultipleOperatorsTest {
         rulesToVerify += "   then\n";
         rulesToVerify += "       System.out.println(\"Rule fired\");\n";
         rulesToVerify += "end\n\n";
-        fail++;
+        warn++;
 
         //FAIL
         rulesToVerify += "rule \"rule3\"\n";
@@ -84,7 +84,7 @@ public class RangeConstraintMultipleOperatorsTest {
         rulesToVerify += "   then\n";
         rulesToVerify += "       System.out.println(\"Rule fired\");\n";
         rulesToVerify += "end\n\n";
-        fail++;
+        warn++;
 
         //FAIL-Impossible
         rulesToVerify += "rule \"rule4\"\n";
@@ -102,7 +102,7 @@ public class RangeConstraintMultipleOperatorsTest {
         rulesToVerify += "   then\n";
         rulesToVerify += "       System.out.println(\"Rule fired\");\n";
         rulesToVerify += "end\n\n";
-        fail++;
+        warn++;
 
         //FAIL
         rulesToVerify += "rule \"rule6\"\n";
@@ -111,7 +111,7 @@ public class RangeConstraintMultipleOperatorsTest {
         rulesToVerify += "   then\n";
         rulesToVerify += "       System.out.println(\"Rule fired\");\n";
         rulesToVerify += "end\n\n";
-        fail++;
+        warn++;
 
         //FAIL-Impossible
         rulesToVerify += "rule \"rule7\"\n";
@@ -129,7 +129,7 @@ public class RangeConstraintMultipleOperatorsTest {
         rulesToVerify += "   then\n";
         rulesToVerify += "       System.out.println(\"Rule fired\");\n";
         rulesToVerify += "end\n\n";
-        fail++;
+        warn++;
 
         //FAIL-Impossible
         rulesToVerify += "rule \"rule9\"\n";
@@ -148,8 +148,8 @@ public class RangeConstraintMultipleOperatorsTest {
         System.out.println(warnings);
         System.out.println(errors);
 
-        //Assert.assertEquals(warn, warnings.size());
-        //Assert.assertEquals(fail, errors.size());
+        Assert.assertEquals(warn, warnings.size());
+        Assert.assertEquals(fail, errors.size());
     }
 
     private VerifierReport verify(String rulesToVerify) {
