@@ -16,7 +16,7 @@ public class MatchesConstraint extends DefaultConstraintImpl {
 	@Override
 	protected String internalVerifierRule(ConstraintConfiguration config, Map<String, Object> context) {
 		List<String> constraints = new ArrayList<String>();
-		constraints.add("valueAsString \"" + config.getArgumentValue(MATCHES_ARGUMENT) + "\"");
+		constraints.add("valueAsString matches \"" + config.getArgumentValue(MATCHES_ARGUMENT) + "\"");
 
 		return this.createVerifierRuleTemplate(config, context, 
 				"Matches_Field_Constraint", constraints,
