@@ -98,6 +98,15 @@ public class NotMatchesConstraintTest {
         ruleToVerify += "end\n";
 
         //FAIL
+        ruleToVerify += "rule \"pepe\"\n";
+        ruleToVerify += "dialect \"mvel\"\n";
+        ruleToVerify += "    when\n";
+        ruleToVerify += "        Person( name == 'pepe' )\n";
+        ruleToVerify += "    then\n";
+        ruleToVerify += "       System.out.println(\"Rule fired\");\n";
+        ruleToVerify += "end\n";
+        
+        //FAIL
         ruleToVerify += "rule \"rule3\"\n";
         ruleToVerify += "   when\n";
         ruleToVerify += "       Person(name == 'bart')\n";
@@ -112,6 +121,8 @@ public class NotMatchesConstraintTest {
         ruleToVerify += "   then\n";
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n";
+        
+        System.out.println(ruleToVerify);
         
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
@@ -142,7 +153,7 @@ public class NotMatchesConstraintTest {
 
         System.out.println(warnings);
 
-        Assert.assertEquals(3, warnings.size());
+        Assert.assertEquals(4, warnings.size());
 
         verifier.dispose();
     }
