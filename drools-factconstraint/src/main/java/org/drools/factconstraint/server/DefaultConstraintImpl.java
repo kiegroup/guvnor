@@ -164,9 +164,8 @@ public abstract class DefaultConstraintImpl implements Constraint {
 
     protected String getVerifierActionPrefixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         StringBuilder verifierActionPrefixTemplate = new StringBuilder();
-        verifierActionPrefixTemplate.append("      Map<String,String> impactedRules = new HashMap<String,String>();\n");
-//        verifierActionTemplate.append("      impactedRules.put( $restriction.getPath(), $restriction.getRuleName());\n");
-//        verifierActionTemplate.append("      impactedRules.put( $r.getPath(), $r.getName());\n");
+        verifierActionPrefixTemplate.append("      Map<String,String> impactedRules = new HashMap<String,String>();\n")
+        	.append("      impactedRules.put( $restriction.getPackagePath(), $restriction.getRuleName());\n");
         return verifierActionPrefixTemplate.toString();
     }
 
