@@ -39,7 +39,7 @@ public class RangeConstraintTest {
         conf.setFieldName("age");
     }
 
-    @Test
+    //@Test
     public void testValidConstraint(){
 
         conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "-0.5");
@@ -65,7 +65,7 @@ public class RangeConstraintTest {
 
     }
 
-    @Test
+    //@Test
     public void testInvalidConstraint(){
 
         conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "-0.5");

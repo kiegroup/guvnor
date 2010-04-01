@@ -6,7 +6,6 @@ import org.drools.builder.ResourceType;
 import org.drools.factconstraint.server.Constraint;
 import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.client.config.SimpleConstraintConfigurationImpl;
-import org.drools.factconstraints.server.predefined.RangeConstraint;
 import org.drools.io.ResourceFactory;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;

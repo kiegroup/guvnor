@@ -1,56 +1,238 @@
 package org.drools.factconstraints.server.predefined;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-import org.drools.base.evaluators.Operator;
-import org.drools.factconstraint.server.DefaultMultiRulesConstraintImpl;
+import org.drools.factconstraint.server.Constraint;
 import org.drools.factconstraints.client.ArgumentNotSetException;
 import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.client.ValidationResult;
-import org.drools.factconstraints.client.config.SimpleConstraintConfigurationImpl;
-import org.drools.verifier.report.components.Severity;
 
 /**
  * 
  * @author esteban.aliverti@gmail.com
  */
-public class RangeConstraint extends DefaultMultiRulesConstraintImpl {
+public class RangeConstraint implements Constraint {
 
     private static final long serialVersionUID = 501L;
     public static final String NAME = "RangeConstraint";
     public static final String RANGE_CONSTRAINT_MIN = "Min.value";
     public static final String RANGE_CONSTRAINT_MAX = "Max.value";
-    public static final String CURRENT_OPERATOR = "currOperator";
+    private static String template;
 
-//	private Operator currentOperator;
-    @Override
-    protected String internalVerifierRule(ConstraintConfiguration config, Map<String, Object> context) {
-
-        this.resetRuleCount(context);
-
+    static {
         StringBuilder rules = new StringBuilder();
-        for (Operator operator : RangeConstraint.supportedOperators) {
-            setCurrentOperator(context, operator);
-            rules.append(this.createVerifierRuleTemplate(config, context,
-                    "Range_Field_Constraint_" + operator.getOperatorString(),
-                    Collections.<String>emptyList(), this.getResultMessage(config, context)));
-            this.incrementRuleCount(context);
-        }
+        rules.append("package org.drools.verifier.consequence\n");
 
-        return rules.toString();
+        rules.append("import org.drools.verifier.components.*;\n");
+        rules.append("import java.util.Map;\n");
+        rules.append("import java.util.HashMap;\n");
+        rules.append("import org.drools.verifier.report.components.VerifierMessage;\n");
+        rules.append("import org.drools.verifier.data.VerifierReport;\n");
+        rules.append("import org.drools.verifier.report.components.Severity;\n");
+        rules.append("import org.drools.verifier.report.components.MessageType;\n");
+        rules.append("import org.drools.base.evaluators.Operator;\n");
+
+        rules.append("global VerifierReport result;\n");
+
+        rules.append("declare RangeConstraintCandidate{0}\n");
+        rules.append("    restriction : LiteralRestriction\n");
+        rules.append("    greaterValue : double\n");
+        rules.append("    lessValue : double\n");
+        rules.append("end\n");
+
+
+        rules.append("function void addResult{0}(VerifierReport report, LiteralRestriction restriction, Severity severity, String message){\n");
+        rules.append("    Map<String,String> impactedRules = new HashMap<String,String>();\n");
+        rules.append("    report.add(new VerifierMessage(\n");
+        rules.append("        impactedRules,\n");
+        rules.append("        severity,\n");
+        rules.append("        MessageType.NOT_SPECIFIED,\n");
+        rules.append("        restriction,\n");
+        rules.append("        message ) );\n");
+        rules.append("}\n");
+
+        rules.append("rule \"Range_Field_Constraint_Base_{0}\"\n");
+        rules.append("    when\n");
+        rules.append("        $field :Field(\n");
+        rules.append("          objectTypeName == \"{1}\",\n");
+        rules.append("          name == \"{2}\"\n");
+        rules.append("        )\n");
+        rules.append("    then\n");
+        rules.append("end\n");
+
+        rules.append("/* Single operators */\n");
+
+        rules.append("rule \"Range_Field_Constraint_==_{0}\" extends \"Range_Field_Constraint_Base_{0}\"\n");
+        rules.append("  when\n");
+        rules.append("     ($restriction :LiteralRestriction(\n");
+        rules.append("            fieldPath == $field.path,\n");
+        rules.append("            operator == Operator.EQUAL,\n");
+        rules.append("            (valueType == Field.DOUBLE || ==Field.INT),\n");
+        rules.append("            (doubleValue < {3} || > {4}))\n");
+        rules.append("      )\n");
+        rules.append("  then\n");
+        rules.append("      addResult{0}(result, $restriction, Severity.ERROR, \"The value must be between {3} and {4}\");\n");
+        rules.append("end\n");
+
+        rules.append("rule \"Range_Field_Constraint_!=_{0}\" extends \"Range_Field_Constraint_Base_{0}\"\n");
+        rules.append("  when\n");
+        rules.append("      ($restriction :LiteralRestriction(\n");
+        rules.append("            fieldPath == $field.path,\n");
+        rules.append("            operator == Operator.NOT_EQUAL,\n");
+        rules.append("            (valueType == Field.DOUBLE || ==Field.INT),\n");
+        rules.append("            (doubleValue < {3} || > {4}))\n");
+        rules.append("      )\n");
+        rules.append("  then\n");
+        rules.append("    addResult{0}(result, $restriction, Severity.WARNING, \"Impossible value. Possible values are from {3} to {4}\");\n");
+        rules.append("end\n");
+
+        rules.append("rule \"Range_Field_Constraint_>_{0}\" extends \"Range_Field_Constraint_Base_{0}\"\n");
+        rules.append("  when\n");
+        rules.append("      ($restriction :LiteralRestriction(\n");
+        rules.append("            fieldPath == $field.path,\n");
+        rules.append("            $rulePath: rulePath,\n");
+        rules.append("            (operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL))\n");
+        rules.append("      )\n");
+        rules.append("      not (LiteralRestriction(\n");
+        rules.append("          fieldPath == $field.path,\n");
+        rules.append("          rulePath == $rulePath,\n");
+        rules.append("          (operator == Operator.LESS || == Operator.LESS_OR_EQUAL)\n");
+        rules.append("          )\n");
+        rules.append("      )\n");
+        rules.append("  then\n");
+        rules.append("    addResult{0}(result, $restriction, Severity.WARNING, \"Missing range\");\n");
+        rules.append("end\n");
+
+        rules.append("rule \"Range_Field_Constraint_<_{0}\"  extends \"Range_Field_Constraint_Base_{0}\"\n");
+        rules.append("  when\n");
+        rules.append("      ($restriction :LiteralRestriction(\n");
+        rules.append("            fieldPath == $field.path,\n");
+        rules.append("            $rulePath: rulePath,\n");
+        rules.append("            (operator == Operator.LESS || == Operator.LESS_OR_EQUAL))\n");
+        rules.append("      )\n");
+        rules.append("      not (LiteralRestriction(\n");
+        rules.append("          fieldPath == $field.path,\n");
+        rules.append("          rulePath == $rulePath,\n");
+        rules.append("          (operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)\n");
+        rules.append("          )\n");
+        rules.append("      )\n");
+        rules.append("  then\n");
+        rules.append("      addResult{0}(result, $restriction, Severity.WARNING, \"Missing range\");\n");
+        rules.append("end\n");
+
+
+        rules.append("/* Multi operator */\n");
+
+        rules.append("rule \"identifyRangeConstraintCandidate{0}\" extends \"Range_Field_Constraint_Base_{0}\"\n");
+        rules.append("when\n");
+        rules.append("  ($restriction1 :LiteralRestriction(\n");
+        rules.append("      $rulePath: rulePath,\n");
+        rules.append("      fieldPath == $field.path,\n");
+        rules.append("      (operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL),\n");
+        rules.append("      $op1: operator,\n");
+        rules.append("      (valueType == Field.INT || == Field.DOUBLE),\n");
+        rules.append("      $value1: doubleValue))\n");
+        rules.append("  ($restriction2 :LiteralRestriction(\n");
+        rules.append("      fieldPath == $field.path,\n");
+        rules.append("      rulePath == $rulePath,\n");
+        rules.append("      (operator == Operator.LESS || == Operator.LESS_OR_EQUAL),\n");
+        rules.append("      $op2: operator,\n");
+        rules.append("      $value2: doubleValue))\n");
+        rules.append("then\n");
+        rules.append("    System.out.println(\"Fired\");\n");
+
+        rules.append("    RangeConstraintCandidate{0} rcc = new RangeConstraintCandidate{0}();\n");
+        rules.append("    rcc.setRestriction($restriction1);\n");
+        rules.append("    rcc.setGreaterValue($value1);\n");
+        rules.append("    rcc.setLessValue($value2);\n");
+
+        rules.append("    insert (rcc);\n");
+
+        rules.append("end\n");
+
+        rules.append("/*\n");
+        rules.append(" GM = the value is greater than max ( > max)\n");
+        rules.append(" LM = the value is less than min (< min)\n");
+        rules.append(" VV  = the value is inside the range (>= min && <= max)\n");
+        rules.append("*/\n");
+        rules.append("rule \"processGMGM{0}\"\n");
+        rules.append("when\n");
+        rules.append("    $r: RangeConstraintCandidate{0}(greaterValue > {4} && lessValue > {4})\n");
+        rules.append("then\n");
+        rules.append("    addResult{0}(result, $r.getRestriction(), Severity.WARNING, \"Both sides are outside the range\");\n");
+        rules.append("    retract ($r);\n");
+        rules.append("end\n");
+
+        rules.append("rule \"processGMVV{0}\"\n");
+        rules.append("when\n");
+        rules.append("    $r: RangeConstraintCandidate{0}(greaterValue > {4} && lessValue >= {3} && lessValue <={4})\n");
+        rules.append("then\n");
+        rules.append("    addResult{0}(result, $r.getRestriction(), Severity.ERROR, \"Impossible condition\");\n");
+        rules.append("    retract ($r);\n");
+        rules.append("end\n");
+
+        rules.append("rule \"processGMLM{0}\"\n");
+        rules.append("when\n");
+        rules.append("    $r: RangeConstraintCandidate{0}(greaterValue > {4} && lessValue < {3})\n");
+        rules.append("then\n");
+        rules.append("    addResult{0}(result, $r.getRestriction(), Severity.ERROR, \"Impossible condition\");\n");
+        rules.append("    retract ($r);\n");
+        rules.append("end\n");
+
+        rules.append("rule \"processVVGM{0}\"\n");
+        rules.append("when\n");
+        rules.append("    $r: RangeConstraintCandidate{0}(greaterValue >= {3} && greaterValue <={4} && lessValue > {4})\n");
+        rules.append("then\n");
+        rules.append("    addResult{0}(result, $r.getRestriction(), Severity.WARNING, \"Right side is outside the range\");\n");
+        rules.append("    retract ($r);\n");
+        rules.append("end\n");
+
+        rules.append("rule \"processVVLM{0}\"\n");
+        rules.append("when\n");
+        rules.append("    $r: RangeConstraintCandidate{0}(greaterValue >= {3} && greaterValue <={4} && lessValue < {3})\n");
+        rules.append("then\n");
+        rules.append("    addResult{0}(result, $r.getRestriction(), Severity.ERROR, \"Impossible condition\");\n");
+        rules.append("    retract ($r);\n");
+        rules.append("end\n");
+
+        rules.append("rule \"processLMGM{0}\"\n");
+        rules.append("when\n");
+        rules.append("    $r: RangeConstraintCandidate{0}(greaterValue < {3} && lessValue > {4})\n");
+        rules.append("then\n");
+        rules.append("    addResult{0}(result, $r.getRestriction(), Severity.WARNING, \"Both sides are outside the range\");\n");
+        rules.append("    retract ($r);\n");
+        rules.append("end\n");
+
+        rules.append("rule \"processLMVV{0}\"\n");
+        rules.append("when\n");
+        rules.append("    $r: RangeConstraintCandidate{0}(greaterValue < {3} && lessValue >= {3} && lessValue <={4})\n");
+        rules.append("then\n");
+        rules.append("    addResult{0}(result, $r.getRestriction(), Severity.WARNING, \"Left side is outside the range\");\n");
+        rules.append("    retract ($r);\n");
+        rules.append("end\n");
+
+        rules.append("rule \"processLMLM{0}\"\n");
+        rules.append("when\n");
+        rules.append("    $r: RangeConstraintCandidate{0}(greaterValue < {3} && lessValue < {3})\n");
+        rules.append("then\n");
+        rules.append("    addResult{0}(result, $r.getRestriction(), Severity.WARNING, \"Both sides are outside the range\");\n");
+        rules.append("    retract ($r);\n");
+        rules.append("end\n");
+
+        template = rules.toString();
     }
 
-    private String getResultMessage(ConstraintConfiguration conf, Map<String, Object> context) {
-        if (getCurrentOperator(context).equals(Operator.NOT_EQUAL)) {
-            return "Impossible value. Possible values are from " + getMin(conf) + " to " + getMax(conf); //I18N
-        } else if (!getCurrentOperator(context).equals(Operator.EQUAL)) {
-            return "Missing range"; //I18N
-        } else {
-            return "The value must be between " + getMin(conf) + " and " + getMax(conf); //I18N
-        }
+    public String getConstraintName() {
+        return NAME;
+    }
+
+    @Override
+    public String getVerifierRule(ConstraintConfiguration config) {        
+        return template.replaceAll("\\{0\\}", String.valueOf(System.nanoTime())).replaceAll("\\{1\\}", config.getFactType()).replaceAll("\\{2\\}", config.getFieldName()).replaceAll("\\{3\\}", this.getMin(config)).replaceAll("\\{4\\}", this.getMax(config));
     }
 
     @Override
@@ -100,78 +282,21 @@ public class RangeConstraint extends DefaultMultiRulesConstraintImpl {
         }
     }
 
-    @Override
-    protected String getVerifierRestrictionPatternTemplate(ConstraintConfiguration config, Map<String, Object> context) {
-        String valuePattern = this.getValuePattern(config,context);
-
-        StringBuilder restrictionPattern = new StringBuilder();
-
-        restrictionPattern.append("      ($restriction :LiteralRestriction(\n");
-        restrictionPattern.append("            fieldPath == $field.path,\n");
-        restrictionPattern.append("            operator.operatorString == '" + this.getCurrentOperator(context).getOperatorString() + "'");
-        if (!valuePattern.isEmpty()){
-            restrictionPattern.append(",\n");
-            restrictionPattern.append(valuePattern);
-        }
-        restrictionPattern.append("      ))\n");
-
-        return restrictionPattern.toString();
-    }
-
-    private String getValuePattern(ConstraintConfiguration conf, Map<String, Object> context) {
-        StringBuilder pattern = new StringBuilder();
-
-        // >, <, <=, >= operators doesn't need to evaluate the value.  They
-        //will always fail because of missing range.
-        if (this.getCurrentOperator(context).equals(Operator.EQUAL) || this.getCurrentOperator(context).equals(Operator.NOT_EQUAL)) {
-            pattern.append("            ((valueType == Field.INT && (intValue < " + getMin(conf) + " || > " + getMax(conf) + ")) ");
-            pattern.append("             || ");
-            pattern.append("            (valueType == Field.DOUBLE && (doubleValue < " + getMin(conf) + " || > " + getMax(conf) + "))) ");
-        }
-
-        return pattern.toString();
-    }
-
-    @Override
-    protected String getVerifierActionTemplate(ConstraintConfiguration config, Map<String, Object> context) {
-        StringBuilder verifierActionTemplate = new StringBuilder();
-
-
-        if (this.getCurrentOperator(context).equals(Operator.EQUAL)) {
-            verifierActionTemplate.append(this.addResult(Severity.ERROR));
-        } else if (this.getCurrentOperator(context).equals(Operator.NOT_EQUAL)) {
-            verifierActionTemplate.append(this.addResult(Severity.WARNING));
-        } else if (this.getCurrentOperator(context).equals(Operator.GREATER)) {
-            verifierActionTemplate.append(this.addResult(Severity.WARNING));
-        } else if (this.getCurrentOperator(context).equals(Operator.LESS)) {
-            verifierActionTemplate.append(this.addResult(Severity.WARNING));
-        } else if (this.getCurrentOperator(context).equals(Operator.GREATER_OR_EQUAL)) {
-            verifierActionTemplate.append(this.addResult(Severity.WARNING));
-        } else if (this.getCurrentOperator(context).equals(Operator.LESS_OR_EQUAL)) {
-            verifierActionTemplate.append(this.addResult(Severity.WARNING));
-        } else {
-            return super.getVerifierActionTemplate(config,context);
-        }
-
-        return verifierActionTemplate.toString();
-    }
-
     public List<String> getArgumentKeys() {
         return Arrays.asList(new String[]{RANGE_CONSTRAINT_MIN, RANGE_CONSTRAINT_MAX});
     }
 
-    private Operator getCurrentOperator(Map<String, Object> context) {
-        return (Operator) context.get(CURRENT_OPERATOR);
-    }
+    private Object getMandatoryArgument(String key, ConstraintConfiguration conf) throws ArgumentNotSetException {
+        if (!conf.containsArgument(key)) {
+            throw new ArgumentNotSetException("The argument " + key + " doesn't exist.");
+        }
 
-    private void setCurrentOperator(Map<String, Object> context, Operator operator) {
-        context.put(CURRENT_OPERATOR, operator);
-    }
+        Object value = conf.getArgumentValue(key);
 
-    public static ConstraintConfiguration getEmptyConfiguration() {
-        ConstraintConfiguration config = new SimpleConstraintConfigurationImpl();
-        config.setArgumentValue("Min.value", "0");
-        config.setArgumentValue("Max.value", "0");
-        return config;
+        if (value == null) {
+            throw new ArgumentNotSetException("The argument " + key + " is null.");
+        }
+
+        return value;
     }
 }

@@ -5,7 +5,6 @@ import org.drools.builder.ResourceType;
 import org.drools.factconstraint.server.Constraint;
 import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.client.config.SimpleConstraintConfigurationImpl;
-import org.drools.factconstraints.server.predefined.RangeConstraint;
 import org.drools.io.ResourceFactory;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
@@ -40,7 +39,7 @@ public class RangeConstraintMultipleOperatorsTest {
 
         conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "0");
         conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "120");
-        //System.out.println("Validation Rule:\n" + cons.getVerifierRule(conf) + "\n\n");
+        System.out.println("Validation Rule:\n" + cons.getVerifierRule(conf) + "\n\n");
 
     }
 
@@ -52,8 +51,9 @@ public class RangeConstraintMultipleOperatorsTest {
     }
 
     @Test
-    public void test() {
+    public void test1() {
 
+        
         String rulesToVerify = "";
         int fail = 0;
         int warn = 0;
@@ -152,15 +152,62 @@ public class RangeConstraintMultipleOperatorsTest {
         Assert.assertEquals(fail, errors.size());
     }
 
+    @Test
+    public void test2() {
+        String rulesToVerify = "";
+        int fail = 0;
+        int warn = 0;
+
+        //OK (RangeConstraint is inclussive)
+        rulesToVerify += "package org.drools.factconstraint.test\n\n";
+        rulesToVerify += "import org.drools.factconstraint.model.*\n";
+        rulesToVerify += "rule \"rule1\"\n";
+        rulesToVerify += "   when\n";
+        rulesToVerify += "       Person(age >= 0, age <= 120)\n";
+        rulesToVerify += "   then\n";
+        rulesToVerify += "       System.out.println(\"Rule fired\");\n";
+        rulesToVerify += "end\n\n";
+
+        //FAIL
+        rulesToVerify += "rule \"rule2\"\n";
+        rulesToVerify += "   when\n";
+        rulesToVerify += "       Person(age >= 0, age <= 121)\n";
+        rulesToVerify += "   then\n";
+        rulesToVerify += "       System.out.println(\"Rule fired\");\n";
+        rulesToVerify += "end\n\n";
+        warn++;
+
+        //FAIL
+        rulesToVerify += "rule \"rule3\"\n";
+        rulesToVerify += "   when\n";
+        rulesToVerify += "       Person(age >= 0, age <= 121.1)\n";
+        rulesToVerify += "   then\n";
+        rulesToVerify += "       System.out.println(\"Rule fired\");\n";
+        rulesToVerify += "end\n\n";
+        warn++;
+
+        VerifierReport result = this.verify(rulesToVerify);
+
+        Collection<VerifierMessageBase> errors = result.getBySeverity(Severity.ERROR);
+        Collection<VerifierMessageBase> warnings = result.getBySeverity(Severity.WARNING);
+
+        System.out.println(warnings);
+        System.out.println(errors);
+
+        Assert.assertEquals(warn, warnings.size());
+        Assert.assertEquals(fail, errors.size());
+    }
+
+
     private VerifierReport verify(String rulesToVerify) {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
         //VerifierConfiguration conf = new DefaultVerifierConfiguration();
         VerifierConfiguration conf = new VerifierConfigurationImpl();
 
-        conf.getVerifyingResources().put(ResourceFactory.newClassPathResource("RangeConstraintMultiOperator.drl"), ResourceType.DRL);
+        //conf.getVerifyingResources().put(ResourceFactory.newClassPathResource("RangeConstraintMultiOperator.drl"), ResourceType.DRL);
 
-        //conf.getVerifyingResources().put(ResourceFactory.newByteArrayResource(cons.getVerifierRule().getBytes()), ResourceType.DRL);
+        conf.getVerifyingResources().put(ResourceFactory.newByteArrayResource(cons.getVerifierRule(this.conf).getBytes()), ResourceType.DRL);
 
         verifier = vBuilder.newVerifier(conf);
 
