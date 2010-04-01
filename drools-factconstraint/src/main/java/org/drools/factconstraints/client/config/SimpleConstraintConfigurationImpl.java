@@ -53,4 +53,10 @@ public class SimpleConstraintConfigurationImpl implements ConstraintConfiguratio
 	public boolean containsArgument(String key) {
 		return args.containsKey(key);
 	}
+
+	@Override
+	public String toString() {
+		return "SimpleConstraintConfigurationImpl [args=" + args + ", constraintName=" + constraintName + ", factType="
+				+ factType + ", fieldName=" + fieldName + "]";
+	}
 }
