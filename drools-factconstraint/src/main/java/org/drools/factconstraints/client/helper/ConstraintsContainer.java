@@ -58,11 +58,12 @@ public class ConstraintsContainer {
 		
 	}
 	
-	public void removeConstraint(ConstraintConfiguration c) {
+	public List<ConstraintConfiguration> removeConstraint(ConstraintConfiguration c) {
 		List<ConstraintConfiguration> list = constraints.get(c.getFactType());
 		if (list != null) {
 			list.remove(c);
 		}
+		return list;
 	}
 	
 	public void addConstraint(ConstraintConfiguration c) {
