@@ -179,7 +179,7 @@ public class WorkingSetEditor extends Composite {
 	protected void removeConstraint() {
 		if (constraintsCombo.getSelectedIndex() != -1) {
 			ConstraintConfiguration c = contraintsMap.get(constraintsCombo.getValue(constraintsCombo.getSelectedIndex()));
-			getConstraintsConstrainer().removeConstraint(c);
+			((WorkingSetConfigData) workingSet.content).constraints = getConstraintsConstrainer().removeConstraint(c);
 		}
 		fillFieldConstrains();
 	}
@@ -300,96 +300,62 @@ public class WorkingSetEditor extends Composite {
 		Grid grid = new Grid(1, 3);
 		
 		SuggestionCompletionEngine sce = SuggestionCompletionCache.getInstance().getEngineFromCache(workingSet.metaData.packageName);
+		boolean filteringFact = sce.isFilteringFacts();
+		sce.setFilteringFacts(false);
 		
-		Set<String> elem = new HashSet<String>();
+		try {
+			Set<String> elem = new HashSet<String>();
 
-		availFacts.setVisibleItemCount(10);
-		validFacts.setVisibleItemCount(10);
-		
-		if (wsData.validFacts != null) {
-			elem.addAll(Arrays.asList(wsData.validFacts));
-			for (String factName : wsData.validFacts) {
-				validFacts.addItem(factName);
-			}
-		}
+			availFacts.setVisibleItemCount(10);
+			validFacts.setVisibleItemCount(10);
 			
-		for (String factName : sce.getFactTypes()) {
-			if (!elem.contains(factName)) {
-				availFacts.addItem(factName);
+			if (wsData.validFacts != null) {
+				elem.addAll(Arrays.asList(wsData.validFacts));
+				for (String factName : wsData.validFacts) {
+					validFacts.addItem(factName);
+				}
 			}
+				
+			for (String factName : sce.getFactTypes()) {
+				if (!elem.contains(factName)) {
+					availFacts.addItem(factName);
+				}
+			}
+			
+			Grid btnsPanel = new Grid(2,1);
+			
+			btnsPanel.setWidget(0, 0, new Button(">", new ClickListener() {
+				public void onClick(Widget sender) {
+					copySelected(availFacts, validFacts);
+					updateAsset(validFacts);
+					fillSelectedFacts();
+				}
+			}));
+
+			btnsPanel.setWidget(1, 0, new Button("&lt;", new ClickListener() {
+				public void onClick(Widget sender) {
+					copySelected(validFacts, availFacts);
+					updateAsset(validFacts);
+					fillSelectedFacts();
+				}
+			}));
+
+			grid.setWidget(0, 0, availFacts);
+			grid.setWidget(0, 1, btnsPanel);
+			grid.setWidget(0, 2, validFacts);
+			
+			grid.getColumnFormatter().setWidth(0, "45%");
+			grid.getColumnFormatter().setWidth(0, "10%");
+			grid.getColumnFormatter().setWidth(0, "45%");
+			return grid;
+		} finally {
+			sce.setFilteringFacts(filteringFact);
 		}
-		
-		Grid btnsPanel = new Grid(2,1);
-		
-		btnsPanel.setWidget(0, 0, new Button(">", new ClickListener() {
-			public void onClick(Widget sender) {
-				copySelected(availFacts, validFacts);
-				updateAsset(validFacts);
-				fillSelectedFacts();
-			}
-		}));
-
-		btnsPanel.setWidget(1, 0, new Button("&lt;", new ClickListener() {
-			public void onClick(Widget sender) {
-				copySelected(validFacts, availFacts);
-				updateAsset(validFacts);
-				fillSelectedFacts();
-			}
-		}));
-
-		grid.setWidget(0, 0, availFacts);
-		grid.setWidget(0, 1, btnsPanel);
-		grid.setWidget(0, 2, validFacts);
-		
-		grid.getColumnFormatter().setWidth(0, "45%");
-		grid.getColumnFormatter().setWidth(0, "10%");
-		grid.getColumnFormatter().setWidth(0, "45%");
-		return grid;
 	}
 	
 	/**
      * This will get the save widgets.
      */
-//    private Widget modifyWidgets() {
-//
-//        HorizontalPanel horiz = new HorizontalPanel();
-//
-//        Button copy = new Button(constants.Copy());
-//        copy.addClickListener( new ClickListener() {
-//            public void onClick(Widget w) {
-//                showCopyDialog();
-//            }
-//        } );
-//        horiz.add( copy );
-//
-//        Button rename = new Button(constants.Rename());
-//        rename.addClickListener( new ClickListener() {
-//            public void onClick(Widget w) {
-//                showRenameDialog();
-//            }
-//        } );
-//        horiz.add( rename );
-//
-//
-//        Button archive = new Button(constants.Archive());
-//        archive.addClickListener(new ClickListener() {
-//            public void onClick(Widget w) {
-//                if ( Window.confirm(constants.AreYouSureYouWantToArchiveRemoveThisPackage()) ) {
-////                    conf.archived = true;
-//                    Command ref = new Command() {
-//						public void execute() {
-////		                    close.execute();
-////		                    refreshPackageList.execute();
-//						}
-//                    };
-////                    doSaveAction(ref);
-//                }
-//            }
-//        });
-//        horiz.add(archive);
-//
-//        return horiz;
-//    }
 	
 	private void updateAsset(ListBox availFacts) {
 		List<String> l = new ArrayList<String>(availFacts.getItemCount()); 
@@ -408,65 +374,6 @@ public class WorkingSetEditor extends Composite {
 		}
 	}
 	
-	/**
-	 * Will show a copy dialog for copying the whole package.
-	 */
-//	private void showCopyDialog() {
-//		final FormStylePopup pop = new FormStylePopup("images/new_wiz.gif", constants.CopyTheWorkingSet()); // NON-NLS
-//		pop.addRow(new HTML(constants.CopyTheWorkingSetTip()));
-//		final TextBox name = new TextBox();
-//		pop.addAttribute(constants.NewWorkingSetNameIs(), name);
-//		Button ok = new Button(constants.OK());
-//		pop.addAttribute("", ok);
-//
-//		ok.addClickListener(new ClickListener() {
-//			public void onClick(Widget w) {
-//				if (!PackageNameValidator.validatePackageName(name.getText())) {
-//					Window.alert(constants.NotAValidWorkingSetName());
-//					return;
-//				}
-//				LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
-//				RepositoryServiceFactory.getService().copyAsset(workingSet.uuid, workingSet.metaData.packageName, name.getText(), 
-//						new GenericCallback<String>() {
-//							public void onSuccess(String uuid) {
-//								//TODO {bauna} refreshPackageList.execute();
-//								Window.alert(constants.WorkingSetCopiedSuccessfully());
-//								pop.hide();
-//								LoadingPopup.close();
-//							}
-//					
-//				});
-//			}
-//		});
-//
-//		pop.show();
-//	}
-	
-//	private void showRenameDialog() {
-//		final FormStylePopup pop = new FormStylePopup("images/new_wiz.gif", constants.RenameTheWorkingSet());
-//		pop.addRow(new HTML(constants.RenameTheWorkingSetTip()));
-//		final TextBox name = new TextBox();
-//		pop.addAttribute(constants.NewWorkingSetNameIs(), name);
-//		Button ok = new Button(constants.OK());
-//		pop.addAttribute("", ok);
-//
-//		ok.addClickListener(new ClickListener() {
-//			public void onClick(Widget w) {
-//				LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
-//				RepositoryServiceFactory.getService().renameAsset(workingSet.uuid, name.getText(),
-//						new GenericCallback<String>() {
-//							public void onSuccess(String uuid) {
-//								Window.alert(constants.WorkingSetRenamedSuccessfully());
-//								pop.hide();
-//								LoadingPopup.close();
-//							}
-//						});
-//			}
-//		});
-//
-//		pop.show();
-//	}
-
 	public SuggestionCompletionEngine getCompletionEngine() {
 		return sce;
 	}

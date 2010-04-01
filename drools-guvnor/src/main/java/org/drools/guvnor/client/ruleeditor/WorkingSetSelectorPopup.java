@@ -61,18 +61,21 @@ public class WorkingSetSelectorPopup {
         treePanel.setRootVisible(false);
 
 
-        RepositoryServiceFactory.getService().listAssets(asset.metaData.packageUUID, new String[]{AssetFormats.WORKING_SET}, 0, -1, "workingsetList", new GenericCallback<TableDataResult>() {
+		RepositoryServiceFactory.getService().listAssets(asset.metaData.packageUUID,
+				new String[] { AssetFormats.WORKING_SET }, 0, -1, "workingsetList",
+				new GenericCallback<TableDataResult>() {
 
-            public void onSuccess(TableDataResult result) {
+					public void onSuccess(TableDataResult result) {
 
-                for (int i = 0; i < result.data.length; i++) {
-                    TreeNode node = new TreeNode(result.data[i].getDisplayName());
-                    node.setUserObject(result.data[i].id);
-                    node.setChecked(WorkingSetManager.getInstance().isWorkingSetActive(asset.metaData.packageName, result.data[i].id));
-                    root.appendChild(node);
-                }
-            }
-        });
+						for (int i = 0; i < result.data.length; i++) {
+							TreeNode node = new TreeNode(result.data[i].getDisplayName());
+							node.setUserObject(result.data[i].id);
+							node.setChecked(WorkingSetManager.getInstance().isWorkingSetActive(
+									asset.metaData.packageName, result.data[i].id));
+							root.appendChild(node);
+						}
+					}
+				});
 
         save = new Button(constants.SaveAndClose());
         save.addClickListener(new ClickListener() {

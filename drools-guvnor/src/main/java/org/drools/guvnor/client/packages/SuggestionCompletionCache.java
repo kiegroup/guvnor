@@ -23,14 +23,14 @@ import java.util.Map;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.FactTypeFilter;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.messages.Constants;
 
-import com.google.gwt.user.client.Command;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
 import com.gwtext.client.util.Format;
-import org.drools.guvnor.client.modeldriven.FactTypeFilter;
 
 /**
  * This utility cache will maintain a cache of suggestion completion engines,
@@ -111,9 +111,14 @@ public class SuggestionCompletionCache {
      * Removed the package from the cache, causing it to be loaded the next time.
      */
     public void refreshPackage(String packageName, Command done) {
-        if (cache.containsKey( packageName )) {
-            cache.remove( packageName );
-            loadPackage( packageName, done );
+    	SuggestionCompletionEngine sce = cache.get(packageName);
+        if (sce != null) {
+        	sce.setFactTypeFilter(null);
+        	if (done != null) {
+        		done.execute();
+        	}
+//            cache.remove( packageName );
+//            loadPackage( packageName, done );
         } else {
             done.execute();
         }
@@ -125,12 +130,12 @@ public class SuggestionCompletionCache {
      * @param filter the filter.
      * @param done the command to be executed after the filter is applied.
      */
-    public void applyFactFilter(final String packageName,final FactTypeFilter filter, final Command done){
-        this.refreshPackage(packageName, new Command() {
-            public void execute() {
-                getEngineFromCache(packageName).filterFactTypes(filter);
-                done.execute();
-            }
-        });
-    }
+	public void applyFactFilter(final String packageName, final FactTypeFilter filter, final Command done) {
+		this.refreshPackage(packageName, new Command() {
+			public void execute() {
+				getEngineFromCache(packageName).setFactTypeFilter(filter);
+				done.execute();
+			}
+		});
+	}
 }

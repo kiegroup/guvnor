@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.modeldriven.FactTypeFilter;
+import org.drools.guvnor.client.modeldriven.SetFactTypeFilter;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
@@ -22,13 +22,10 @@ import com.google.gwt.user.client.Command;
  */
 public class WorkingSetManager {
 
-    private static WorkingSetManager INSTANCE = null;
-    Map<String, Set<RuleAsset>> activeWorkingSets = new HashMap<String, Set<RuleAsset>>();
+    private static WorkingSetManager INSTANCE = new WorkingSetManager();
+    private Map<String, Set<RuleAsset>> activeWorkingSets = new HashMap<String, Set<RuleAsset>>();
 
     public synchronized static WorkingSetManager getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new WorkingSetManager();
-        }
         return INSTANCE;
     }
 
@@ -95,14 +92,8 @@ public class WorkingSetManager {
                 validFacts.addAll(Arrays.asList(wsConfig.validFacts));
             }
 
-            FactTypeFilter filter = new FactTypeFilter() {
-
-                public boolean filter(String originalFact) {
-                    return !validFacts.contains(originalFact);
-                }
-            };
-
-            SuggestionCompletionCache.getInstance().applyFactFilter(packageName, filter, cmd);
+            SuggestionCompletionCache.getInstance().applyFactFilter(packageName, 
+            		new SetFactTypeFilter(validFacts), cmd);
         }
 
     }

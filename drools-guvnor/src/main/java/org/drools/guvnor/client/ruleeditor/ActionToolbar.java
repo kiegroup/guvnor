@@ -407,17 +407,6 @@ public class ActionToolbar extends Composite {
 
     protected void showWorkingSetsSelection(RuleModeller modeller) {
         final WorkingSetSelectorPopup pop = new WorkingSetSelectorPopup(modeller,asset);
-
-
-        /*
-        pop.setCommand( new Command() {
-            public void execute() {
-                checkinAction.doCheckin( pop.getCheckinComment() );
-                if ( afterCheckinEvent != null ) afterCheckinEvent.execute();
-            }
-        } );
-
-         */
         pop.show();
     }
 
