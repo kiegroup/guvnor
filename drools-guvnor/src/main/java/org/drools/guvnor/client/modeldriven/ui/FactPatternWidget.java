@@ -49,7 +49,6 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     private FactPattern pattern;
     private SuggestionCompletionEngine completions;
-    private RuleModeller modeller;
     private DirtyableFlexTable layout = new DirtyableFlexTable();
     private Connectives connectives;
     private PopupCreator popupCreator;
@@ -86,20 +85,20 @@ public class FactPatternWidget extends RuleModellerWidget {
      */
     public FactPatternWidget(RuleModeller mod, IPattern p,
             String customLabel, boolean canBind, Boolean readOnly) {
+        super(mod);
         this.pattern = (FactPattern) p;
         this.completions = mod.getSuggestionCompletions();
-        this.modeller = mod;
         this.bindable = canBind;
 
         this.connectives = new Connectives();
         this.connectives.setCompletions(completions);
-        this.connectives.setModeller(modeller);
+        this.connectives.setModeller(mod);
         this.connectives.setPattern(pattern);
 
         this.popupCreator = new PopupCreator();
         this.popupCreator.setBindable(bindable);
         this.popupCreator.setCompletions(completions);
-        this.popupCreator.setModeller(modeller);
+        this.popupCreator.setModeller(mod);
         this.popupCreator.setPattern(pattern);
 
         this.customLabel = customLabel;
@@ -182,7 +181,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                 public void onClick(Widget w) {
                     if (Window.confirm(constants.RemoveThisItem())) {
                         pattern.removeConstraint(currentRow);
-                        modeller.refreshWidget();
+                        getModeller().refreshWidget();
                     }
                 }
             });
@@ -240,7 +239,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     private void renderFieldConstraint(final DirtyableFlexTable inner, int row, FieldConstraint constraint, boolean showBinding, int tabs) {
         //if nesting, or predicate, then it will need to span 5 cols.
         if (constraint instanceof SingleFieldConstraint) {
-            renderSingleFieldConstraint(modeller, inner, row, (SingleFieldConstraint) constraint, showBinding, tabs);
+            renderSingleFieldConstraint(this.getModeller(), inner, row, (SingleFieldConstraint) constraint, showBinding, tabs);
         } else if (constraint instanceof CompositeFieldConstraint) {
             inner.setWidget(row, 1, compositeFieldConstraintEditor((CompositeFieldConstraint) constraint));
             inner.getFlexCellFormatter().setColSpan(row, 1, 5);
@@ -289,7 +288,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                     public void onClick(Widget w) {
                         if (Window.confirm(constants.RemoveThisItemFromNestedConstraint())) {
                             constraint.removeConstraint(currentRow);
-                            modeller.refreshWidget();
+                            getModeller().refreshWidget();
                         }
                     }
                 });
@@ -365,7 +364,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
                 public void onChange(Widget w) {
                     c.value = box.getText();
-                    modeller.makeDirty();
+                    getModeller().makeDirty();
                 }
             });
             box.setWidth("100%");
@@ -424,7 +423,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     private Widget valueEditor(final SingleFieldConstraint c, String factType) {
         //String type = this.modeller.getSuggestionCompletions().getFieldType( factType, c.fieldName );
-        return new ConstraintValueEditor(pattern, c.fieldName, c, this.modeller, c.fieldType,this.readOnly);
+        return new ConstraintValueEditor(pattern, c.fieldName, c, this.getModeller(), c.fieldType,this.readOnly);
     }
 
     private Widget operatorDropDown(final SingleFieldConstraint c) {
@@ -448,7 +447,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                     if (c.operator.equals("")) {
                         c.operator = null;
                     }
-                    modeller.makeDirty();
+                    getModeller().makeDirty();
                 }
             });
 

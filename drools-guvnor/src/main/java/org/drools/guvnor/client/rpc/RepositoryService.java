@@ -575,4 +575,6 @@ public interface RepositoryService extends RemoteService {
                                           String secondSnapshotName);
     
     public AnalysisReport verifyAsset(RuleAsset asset, Set<String> activeWorkingSets) throws SerializableException;
+
+    public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset, Set<String> activeWorkingSets) throws SerializableException;
 }

@@ -44,7 +44,6 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     private final DirtyableFlexTable layout;
     private final ActionInsertFact model;
     private final String[] fieldCompletions;
-    private final RuleModeller modeller;
     private final String factType;
     private Constants constants = GWT.create(Constants.class);
     private boolean readOnly;
@@ -54,12 +53,12 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     }
 
     public ActionInsertFactWidget(RuleModeller mod, ActionInsertFact set,Boolean readOnly) {
+        super(mod);
         this.model = set;
         this.layout = new DirtyableFlexTable();
-        this.modeller = mod;
         this.factType = set.factType;
 
-        SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+        SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         this.fieldCompletions = completions.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
                                                                       set.factType );
 
@@ -100,7 +99,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
                 public void onClick(Widget w) {
                 	if (Window.confirm(constants.RemoveThisItem())) {
                             model.removeField( idx );
-                            modeller.refreshWidget();
+                            getModeller().refreshWidget();
                 	};
                 }
             });
@@ -116,9 +115,9 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     }
 
     private Widget valueEditor(final ActionFieldValue val) {
-        SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+        SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
     	DropDownData enums = completions.getEnums(this.factType, this.model.fieldValues, val.field);
-    	return new ActionValueEditor(val, enums,modeller,val.type,this.readOnly);
+    	return new ActionValueEditor(val, enums,this.getModeller(),val.type,this.readOnly);
     }
 
     private Widget fieldSelector(final ActionFieldValue val) {
@@ -149,7 +148,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     }
 
     protected void showAddFieldPopup(Widget w) {
-        final SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+        final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
                                                          constants.AddAField() );
         final ListBox box = new ListBox();
@@ -171,7 +170,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
                 model.addFieldValue( new ActionFieldValue( fieldName,
                                                            "",
                                                            fieldType ) );
-                modeller.refreshWidget();
+                getModeller().refreshWidget();
                 popup.hide();
             }
         } );
@@ -191,13 +190,13 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
                 String var = varName.getText();
-                if ( modeller.isVariableNameUsed( var ) && ((model.getBoundName() != null && model.getBoundName().equals( var ) == false) || model.getBoundName() == null) ) {
+                if ( getModeller().isVariableNameUsed( var ) && ((model.getBoundName() != null && model.getBoundName().equals( var ) == false) || model.getBoundName() == null) ) {
                     Window.alert( Format.format( constants.TheVariableName0IsAlreadyTaken(),
                                                  var ) );
                     return;
                 }
                 model.setBoundName( var );
-                modeller.refreshWidget();
+                getModeller().refreshWidget();
                 popup.hide();
             }
         } );

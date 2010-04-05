@@ -17,6 +17,7 @@ import org.drools.repository.PackageItem;
 import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
+import org.drools.verifier.VerifierConfigurationImpl;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.data.VerifierReport;
 
@@ -24,6 +25,7 @@ public class VerifierRunner {
 
     private Verifier    verifier;
     private PackageItem packageItem;
+    private boolean useDefaultConfig = true;
 
 	public AnalysisReport verify(String drl, String scope) {
 		return verify(drl, scope, null);
@@ -73,6 +75,12 @@ public class VerifierRunner {
 
     private void initVerifier(String scope, Collection<String> additionalVerifierRules) {
         VerifierConfiguration conf = new DefaultVerifierConfiguration();
+        if(useDefaultConfig){
+            conf = new DefaultVerifierConfiguration();
+        }else{
+            conf = new VerifierConfigurationImpl();
+        }
+
         conf.getVerifyingScopes().clear();
         conf.getVerifyingScopes().add( scope );
         conf.setAcceptRulesWithoutVerifiyingScope( true );
@@ -124,5 +132,15 @@ public class VerifierRunner {
             }
         }
     }
+
+    public boolean isUseDefaultConfig() {
+        return useDefaultConfig;
+    }
+
+    public void setUseDefaultConfig(boolean useDefaultConfig) {
+        this.useDefaultConfig = useDefaultConfig;
+    }
+
+
 
 }

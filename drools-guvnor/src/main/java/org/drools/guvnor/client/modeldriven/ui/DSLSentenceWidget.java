@@ -55,7 +55,6 @@ public class DSLSentenceWidget extends RuleModellerWidget {
     private final DSLSentence          sentence;
     private final VerticalPanel        layout;
     private HorizontalPanel            currentRow;
-    private RuleModeller               modeller;
     private boolean readOnly;
 
     public DSLSentenceWidget(RuleModeller modeller, DSLSentence sentence) {
@@ -63,8 +62,8 @@ public class DSLSentenceWidget extends RuleModellerWidget {
     }
 
     public DSLSentenceWidget(RuleModeller modeller, DSLSentence sentence, Boolean readOnly) {
+        super (modeller);
         widgets = new ArrayList();
-        this.modeller = modeller;
         this.sentence = sentence;
 
         if (readOnly == null){
@@ -352,7 +351,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
     }
 
     class DSLDropDown extends DirtyableComposite {
-        final SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+        final SuggestionCompletionEngine completions = getModeller().getSuggestionCompletions();
         ListBox        resultWidget = null;
         // Format for the dropdown def is <varName>:<type>:<Fact.field>
         private String varName      = "";

@@ -8,6 +8,12 @@ import org.drools.guvnor.client.common.DirtyableComposite;
  */
 public abstract class RuleModellerWidget extends DirtyableComposite {
 
+    private RuleModeller modeller;
+
+    public RuleModellerWidget(RuleModeller modeller) {
+        this.modeller = modeller;
+    }
+
     /**
      * Dictates if the widget's state is RO or not. Sometimes RuleModeller will
      * force this state (i.e. when lockLHS() or lockRHS()), but some other times,
@@ -15,4 +21,8 @@ public abstract class RuleModellerWidget extends DirtyableComposite {
      * @return
      */
     public abstract boolean isReadOnly();
+
+    public RuleModeller getModeller() {
+        return modeller;
+    }
 }

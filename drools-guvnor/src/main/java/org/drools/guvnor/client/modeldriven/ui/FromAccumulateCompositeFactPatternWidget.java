@@ -76,13 +76,13 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
             Widget patternWidget = null;
             if (rPattern instanceof FactPattern) {
-                patternWidget = new FactPatternWidget(modeller, rPattern, constants.All0with(), true,this.readOnly);
+                patternWidget = new FactPatternWidget(this.getModeller(), rPattern, constants.All0with(), true,this.readOnly);
             } else if (rPattern instanceof FromAccumulateCompositeFactPattern) {
-                patternWidget = new FromAccumulateCompositeFactPatternWidget(modeller, (FromAccumulateCompositeFactPattern) rPattern,this.readOnly);
+                patternWidget = new FromAccumulateCompositeFactPatternWidget(this.getModeller(), (FromAccumulateCompositeFactPattern) rPattern,this.readOnly);
             } else if (rPattern instanceof FromCollectCompositeFactPattern) {
-                patternWidget = new FromCollectCompositeFactPatternWidget(modeller, (FromCollectCompositeFactPattern) rPattern,this.readOnly);
+                patternWidget = new FromCollectCompositeFactPatternWidget(this.getModeller(), (FromCollectCompositeFactPattern) rPattern,this.readOnly);
             } else if (rPattern instanceof FromCompositeFactPattern) {
-                patternWidget = new FromCompositeFactPatternWidget(modeller, (FromCompositeFactPattern) rPattern,this.readOnly);
+                patternWidget = new FromCompositeFactPatternWidget(this.getModeller(), (FromCompositeFactPattern) rPattern,this.readOnly);
             } else {
                 throw new IllegalArgumentException("Unsuported pattern " + rPattern + " for right side of FROM ACCUMULATE");
             }
@@ -94,7 +94,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
                 public void onClick(Widget sender) {
                     if (Window.confirm(constants.RemoveThisBlockOfData())) {
                         getFromAccumulatePattern().setSourcePattern(null);
-                        modeller.refreshWidget();
+                        getModeller().refreshWidget();
                     }
                 }
             }));
@@ -225,7 +225,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
     @Override
     protected void showFactTypeSelector(final Widget w) {
         final ListBox box = new ListBox();
-        SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+        SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         String[] facts = completions.getFactTypes();
 
         box.addItem(constants.Choose());
@@ -244,7 +244,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
             public void onChange(Widget w) {
                 pattern.setFactPattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
-                modeller.refreshWidget();
+                getModeller().refreshWidget();
                 popup.hide();
             }
         });
@@ -257,7 +257,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
      */
     protected void showSourcePatternSelector(final Widget w) {
         final ListBox box = new ListBox();
-        SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+        SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         String[] facts = completions.getFactTypes();
 
         box.addItem(constants.Choose());
@@ -275,7 +275,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
             public void onChange(Widget w) {
                 getFromAccumulatePattern().setSourcePattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
-                modeller.refreshWidget();
+                getModeller().refreshWidget();
                 popup.hide();
             }
         });
@@ -301,7 +301,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
                     throw new IllegalArgumentException("Unknown sender: " + sender);
                 }
 
-                modeller.refreshWidget();
+                getModeller().refreshWidget();
                 popup.hide();
             }
         };

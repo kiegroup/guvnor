@@ -27,7 +27,6 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
     protected FromCompositeFactPattern pattern;
     protected DirtyableFlexTable layout;
-    protected RuleModeller modeller;
     protected Constants constants = ((Constants) GWT.create(Constants.class));
     protected boolean readOnly;
 
@@ -38,8 +37,8 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
     public FromCompositeFactPatternWidget(RuleModeller modeller,
             FromCompositeFactPattern pattern, Boolean readOnly) {
+        super(modeller);
         this.pattern = pattern;
-        this.modeller = modeller;
 
         //if readOnly is null, the readOnly attribute is calculated.
         if (readOnly == null) {
@@ -70,11 +69,11 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
                 if (this.readOnly) {
                     //creates a new read-only FactPatternWidget
-                    FactPatternWidget factPatternWidget = new FactPatternWidget(modeller, fact, false, true);
+                    FactPatternWidget factPatternWidget = new FactPatternWidget(this.getModeller(), fact, false, true);
                     this.layout.setWidget(r,
                             0, factPatternWidget);
                 } else {
-                    FactPatternWidget factPatternWidget = new FactPatternWidget(modeller, fact, true);
+                    FactPatternWidget factPatternWidget = new FactPatternWidget(this.getModeller(), fact, true);
                     this.layout.setWidget(r,
                             0,
                             addRemoveButton(factPatternWidget, new ClickListener() {
@@ -82,7 +81,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
                         public void onClick(Widget w) {
                             if (Window.confirm(constants.RemoveThisEntireConditionQ())) {
                                 pattern.setFactPattern(null);
-                                modeller.refreshWidget();
+                                getModeller().refreshWidget();
                             }
                         }
                     }));
@@ -118,7 +117,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
 
         panel.setWidget(r, 0, new HTML(lbl));
-        panel.setWidget(r, 1, new ExpressionBuilder(modeller, this.pattern.getExpression(), this.readOnly));
+        panel.setWidget(r, 1, new ExpressionBuilder(this.getModeller(), this.pattern.getExpression(), this.readOnly));
 
 
         return panel;
@@ -128,7 +127,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
      * Pops up the fact selector.
      */
     protected void showFactTypeSelector(final Widget w) {
-        SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+        SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         final ListBox box = new ListBox();
         String[] facts = completions.getFactTypes();
 
@@ -148,7 +147,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
             public void onChange(Widget w) {
                 pattern.setFactPattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
-                modeller.refreshWidget();
+                getModeller().refreshWidget();
                 popup.hide();
             }
         });
@@ -180,7 +179,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
     protected void calculateReadOnly() {
         if (this.pattern.factPattern != null) {
-            this.readOnly = !modeller.getSuggestionCompletions().containsFactType(this.pattern.factPattern.factType);
+            this.readOnly = !this.getModeller().getSuggestionCompletions().containsFactType(this.pattern.factPattern.factType);
         }
     }
 

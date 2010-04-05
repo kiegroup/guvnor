@@ -13,6 +13,7 @@ public class AnalysisReportLine
 
     public String              description;
     public String              reason;
+    public Integer                patternOrderNumber;
     public Cause[]             causes;
     public Map<String, String> impactedRules;
 

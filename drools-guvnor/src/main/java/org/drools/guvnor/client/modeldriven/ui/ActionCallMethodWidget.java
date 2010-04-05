@@ -6,7 +6,6 @@ package org.drools.guvnor.client.modeldriven.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
@@ -45,7 +44,6 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
     private String[]                         fieldCompletionTexts;
     private String[]                         fieldCompletionValues;
-    final private RuleModeller               modeller;
     private String                           variableClass;
     private Constants                        constants   = GWT.create( Constants.class );
 
@@ -58,13 +56,13 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
     public ActionCallMethodWidget(RuleModeller mod,
                                   ActionCallMethod set, Boolean readOnly) {
+        super(mod);
         this.model = set;
         this.layout = new DirtyableFlexTable();
-        this.modeller = mod;
 
         layout.setStyleName( "model-builderInner-Background" ); // NON-NLS
 
-        SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+        SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         if ( completions.isGlobalVariable( set.variable ) ) {
 
             List<MethodInfo> infos = completions.getMethodInfosForGlobalVariable( set.variable );
@@ -185,7 +183,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
     protected void showAddFieldPopup(Widget w) {
 
-        final SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+        final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
 
         final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
                                                          constants.ChooseAMethodToInvoke() ); // NON-NLS
@@ -224,7 +222,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
                     i++;
                 }
 
-                modeller.refreshWidget();
+                getModeller().refreshWidget();
                 popup.hide();
             }
         } );
@@ -236,17 +234,17 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
     private Widget valueEditor(final ActionFieldFunction val) {
 
-        SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+        SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
 
         String type = "";
         if ( completions.isGlobalVariable( this.model.variable ) ) {
             type = (String) completions.getGlobalVariable( this.model.variable );
         } else {
-            if ( this.modeller.getModel().getBoundFact( this.model.variable ) != null ) {
-                type = this.modeller.getModel().getBoundFact( this.model.variable ).factType;
+            if ( this.getModeller().getModel().getBoundFact( this.model.variable ) != null ) {
+                type = this.getModeller().getModel().getBoundFact( this.model.variable ).factType;
             } else {
-                if ( this.modeller.getModel().getRhsBoundFact( this.model.variable ) != null ) {
-                    type = this.modeller.getModel().getRhsBoundFact( this.model.variable ).factType;
+                if ( this.getModeller().getModel().getRhsBoundFact( this.model.variable ) != null ) {
+                    type = this.getModeller().getModel().getRhsBoundFact( this.model.variable ).factType;
                 }
             }
         }
@@ -256,7 +254,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
                                                         val.field );
         return new MethodParameterValueEditor( val,
                                                enums,
-                                               modeller,
+                                               this.getModeller(),
                                                val.type );
     }
 
@@ -296,7 +294,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
     }
 
     private Widget actionSelector(final ActionFieldFunction val) {
-        SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+        SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         
         final ListBox box = new ListBox();
         final String fieldType = val.type;

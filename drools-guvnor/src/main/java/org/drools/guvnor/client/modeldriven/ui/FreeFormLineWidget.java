@@ -15,7 +15,6 @@ package org.drools.guvnor.client.modeldriven.ui;
  * limitations under the License.
  */
 
-
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.messages.Constants;
 
@@ -49,11 +48,12 @@ public class FreeFormLineWidget extends RuleModellerWidget {
      */
     public FreeFormLineWidget(RuleModeller mod, FreeFormLine p,
             Boolean readOnly) {
+        super(mod);
         this.action = p;
 
-        if (readOnly == null){
+        if (readOnly == null) {
             this.readOnly = false;
-        }else{
+        } else {
             this.readOnly = readOnly;
         }
 
@@ -74,14 +74,23 @@ public class FreeFormLineWidget extends RuleModellerWidget {
         tb.setText(this.action.text);
         tb.setTitle(constants.ThisIsADrlExpressionFreeForm());
 
-        if (!this.readOnly){
-        tb.addChangeListener(new ChangeListener() {
+        if (!this.readOnly) {
+            tb.addChangeListener(new ChangeListener() {
 
-            public void onChange(Widget arg0) {
-                action.text = tb.getText();
-            }
-        });
-        } else{
+                public void onChange(Widget arg0) {
+                    action.text = tb.getText();
+                }
+            });
+
+            tb.addFocusListener(new FocusListenerAdapter() {
+
+                @Override
+                public void onLostFocus(Widget sender) {
+                    getModeller().verifyRule();
+                }
+
+            });
+        } else {
             tb.setEnabled(false);
         }
         return tb;

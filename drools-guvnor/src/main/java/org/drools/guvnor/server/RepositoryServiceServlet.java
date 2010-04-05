@@ -347,6 +347,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
         return getService().verifyAsset( asset, activeWorkingSets );
     }
 
+    public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset, Set<String> activeWorkingSets) throws SerializableException{
+        return getService().verifyAssetWithoutVerifiersRules(asset, activeWorkingSets);
+    }
+
     
 
 

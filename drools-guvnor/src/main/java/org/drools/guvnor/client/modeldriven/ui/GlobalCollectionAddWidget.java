@@ -49,6 +49,8 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
     public GlobalCollectionAddWidget(RuleModeller modeller, ActionGlobalCollectionAdd action,
             Boolean readOnly) {
 
+        super(modeller);
+
         if (readOnly == null) {
             this.readOnly = !modeller.getSuggestionCompletions().containsFactType(modeller.getModel().getBoundFact(action.factName).factType);
         } else {

@@ -42,7 +42,6 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
     protected final SuggestionCompletionEngine completions;
     protected CompositeFactPattern             pattern;
     protected DirtyableFlexTable                             layout;
-    protected RuleModeller                     modeller;
     protected Constants constants = ((Constants) GWT.create(Constants.class));
     protected boolean readOnly;
 
@@ -54,9 +53,9 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
     public CompositeFactPatternWidget(RuleModeller modeller,
                                       CompositeFactPattern pattern,
                                       Boolean readOnly) {
+        super(modeller);
         this.completions = modeller.getSuggestionCompletions();
         this.pattern = pattern;
-        this.modeller = modeller;
 
         this.layout = new DirtyableFlexTable();
         this.layout.setStyleName( "model-builderInner-Background" );
@@ -98,7 +97,7 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
             DirtyableVerticalPane vert = new DirtyableVerticalPane();
             FactPattern[] facts = pattern.patterns;
             for ( int i = 0; i < facts.length; i++ ) {
-                vert.add( new FactPatternWidget( modeller,
+                vert.add( new FactPatternWidget( this.getModeller(),
                                                  facts[i],
                                                  false,this.readOnly ) );
             }
@@ -145,7 +144,7 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 pattern.addFactPattern( new FactPattern( box.getItemText( box.getSelectedIndex() ) ) );
-                modeller.refreshWidget();
+                getModeller().refreshWidget();
                 popup.hide();
             }
         } );

@@ -21,7 +21,6 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
 
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 /**
@@ -39,7 +38,7 @@ public class ActionRetractFactWidget extends RuleModellerWidget {
     }
 
     public ActionRetractFactWidget(RuleModeller modeller, ActionRetractFact model, Boolean readOnly) {
-
+        super(modeller);
         layout = new HorizontalPanel();
         layout.setWidth("100%");
         layout.setStyleName( "model-builderInner-Background" );

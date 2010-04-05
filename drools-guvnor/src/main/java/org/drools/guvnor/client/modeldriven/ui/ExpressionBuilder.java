@@ -39,7 +39,6 @@ public class ExpressionBuilder extends RuleModellerWidget {
     private Constants constants = ((Constants) GWT.create(Constants.class));
     //private FlowPanel panel = new FlowPanel();
     private HorizontalPanel panel = new HorizontalPanel();
-    private RuleModeller modeller;
     private ExpressionFormLine expression;
     private boolean readOnly;
 
@@ -50,7 +49,7 @@ public class ExpressionBuilder extends RuleModellerWidget {
 
     public ExpressionBuilder(RuleModeller modeller,
             ExpressionFormLine expression, Boolean readOnly) {
-        super();
+        super(modeller);
 
         if (readOnly == null){
             this.readOnly = !modeller.getSuggestionCompletions().containsFactType(modeller.getSuggestionCompletions().getFactNameFromType(this.expression.getRootExpression().getClassType()));
@@ -59,7 +58,6 @@ public class ExpressionBuilder extends RuleModellerWidget {
         }
 
         this.expression = expression;
-        this.modeller = modeller;
         if (expression == null || expression.getText().length() == 0) {
             if (this.readOnly) {
                 panel.add(new SmallLabel("<b>-</b"));
@@ -319,11 +317,11 @@ public class ExpressionBuilder extends RuleModellerWidget {
     }
 
     private RuleModel getRuleModel() {
-        return modeller.getModel();
+        return this.getModeller().getModel();
     }
 
     private SuggestionCompletionEngine getCompletionEngine() {
-        return modeller.getSuggestionCompletions();
+        return this.getModeller().getSuggestionCompletions();
     }
 
     private String getCurrentClassType() {

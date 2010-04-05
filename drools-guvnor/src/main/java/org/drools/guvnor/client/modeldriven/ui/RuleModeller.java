@@ -62,7 +62,7 @@ import org.drools.guvnor.client.security.Capabilities;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -80,6 +80,14 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.ExtElement;
 import com.gwtext.client.util.Format;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Set;
+import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.packages.WorkingSetManager;
+import org.drools.guvnor.client.rpc.AnalysisReport;
+import org.drools.guvnor.client.rpc.AnalysisReportLine;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 /**
  * This is the parent widget that contains the model based rule builder.
@@ -95,12 +103,14 @@ public class RuleModeller extends DirtyableComposite {
     private boolean showingOptions = false;
     private int currentLayoutRow = 0;
     private String packageName;
+    private RuleAsset asset;
     
     public RuleModeller(RuleAsset asset, RuleViewer viewer) {
         this(asset);
     }
 
     public RuleModeller(RuleAsset asset) {
+        this.asset = asset;
         this.model = (RuleModel) asset.content;
         this.packageName = asset.metaData.packageName;
 
@@ -989,7 +999,7 @@ public class RuleModeller extends DirtyableComposite {
             vert.add(spacerWidget());
 
 
-            layout.setHTML(currentLayoutRow, 0, "<div class='x-form-field'>" + (i + 1) + ".</div>");
+            layout.setWidget(currentLayoutRow, 0, this.wrapLineNumber(i+1, true));
             layout.getFlexCellFormatter().setHorizontalAlignment(currentLayoutRow, 0, HasHorizontalAlignment.ALIGN_CENTER);
             layout.getFlexCellFormatter().setVerticalAlignment(currentLayoutRow, 0, HasVerticalAlignment.ALIGN_MIDDLE);
 
@@ -1069,6 +1079,48 @@ public class RuleModeller extends DirtyableComposite {
         return horiz;
     }
 
+    private Widget wrapLineNumber(int number, boolean isLHSLine){
+        String id = "rhsLine";
+        if (isLHSLine){
+            id="lhsLine";
+        }
+        id+=number;
+
+        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
+        horiz.add(new HTML("<div class='x-form-field' id='"+id+"'>" + number + ".</div>"));
+
+        return horiz;
+    }
+
+    private void addLineIcon(int row, String img, String title){
+        Widget widget = layout.getWidget(row, 0);
+        if (widget instanceof DirtyableHorizontalPane){
+            DirtyableHorizontalPane horiz = (DirtyableHorizontalPane)widget;
+            final Image icon = new ImageButton(img);
+            icon.setTitle(title);
+            horiz.add(icon);
+        }
+    }
+
+    private void clearLineIcons(int row){
+        if (layout.getCellCount(row)<=0){
+            return;
+        }
+        Widget widget = layout.getWidget(row, 0);
+        if (widget instanceof DirtyableHorizontalPane){
+            DirtyableHorizontalPane horiz = (DirtyableHorizontalPane)widget;
+            while (horiz.getWidgetCount() > 1){
+                horiz.remove(horiz.getWidgetCount()-1);
+            }
+        }
+    }
+
+    private void clearLinesIcons(){
+        for (int i = 0; i < layout.getRowCount(); i++) {
+            this.clearLineIcons(i);
+        }
+    }
+
     private void addActionsButtonsToLayout(String title, ClickListener addBelowListener, ClickListener moveDownListener, ClickListener moveUpListener) {
 
         DirtyableHorizontalPane hp = new DirtyableHorizontalPane();
@@ -1137,5 +1189,52 @@ public class RuleModeller extends DirtyableComposite {
 
     public SuggestionCompletionEngine getSuggestionCompletions() {
         return SuggestionCompletionCache.getInstance().getEngineFromCache(packageName);
+    }
+
+
+    private List<AnalysisReportLine> errors;
+    private List<AnalysisReportLine> warnings;
+
+    private void showWarningsAndErrors(){
+        this.clearLinesIcons();
+        if (this.warnings != null){
+            for (AnalysisReportLine warning : this.warnings) {
+                if (warning.patternOrderNumber != null){
+                    this.addLineIcon(warning.patternOrderNumber+1, "images/warning.gif", warning.description);
+                }
+            }
+        }
+        if (this.errors != null){
+            for (AnalysisReportLine error : this.errors) {
+                if (error.patternOrderNumber != null){
+                    this.addLineIcon(error.patternOrderNumber+1, "images/error.gif", error.description);
+                }
+            }
+        }
+    }
+
+    public void verifyRule(){
+//        LoadingPopup.showMessage( constants.VerifyingItemPleaseWait() );
+//        Set<String> activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs(asset.metaData.packageName);
+//        RepositoryServiceFactory.getService().verifyAssetWithoutVerifiersRules( this.asset, activeWorkingSets,
+//                                                                new AsyncCallback<AnalysisReport>() {
+//
+//                                                               public void onSuccess(AnalysisReport report) {
+//                                                                   LoadingPopup.close();
+//                                                                   errors = new ArrayList<AnalysisReportLine>();
+//                                                                   warnings = new ArrayList<AnalysisReportLine>();
+//
+//                                                                   errors = Arrays.asList(report.errors);
+//                                                                   warnings = Arrays.asList(report.warnings);
+//
+//                                                                   showWarningsAndErrors();
+//                                                               }
+//
+//                                                               public void onFailure(Throwable arg0) {
+//                                                                   // TODO Auto-generated method stub
+//
+//                                                               }
+//                                                           }  );
+
     }
 }

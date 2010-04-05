@@ -2830,6 +2830,16 @@ public class ServiceImplementation
 	@WebRemote
 	@Restrict("#{identity.loggedIn}")
 	public AnalysisReport verifyAsset(RuleAsset asset, Set<String> activeWorkingSets) throws SerializableException {
+            return this.performAssetVerification(asset, true, activeWorkingSets);
+        }
+
+        @WebRemote
+	@Restrict("#{identity.loggedIn}")
+	public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset, Set<String> activeWorkingSets) throws SerializableException {
+            return this.performAssetVerification(asset, false, activeWorkingSets);
+        }
+
+        private AnalysisReport performAssetVerification(RuleAsset asset, boolean useVerifierDefaultConfig, Set<String> activeWorkingSets) throws SerializableException{
 		if (Contexts.isSessionContextActive()) {
 			Identity.instance().checkPermission(new PackageNameType(asset.metaData.packageName),
 					RoleTypes.PACKAGE_DEVELOPER);
@@ -2839,7 +2849,9 @@ public class ServiceImplementation
 				+ getDroolsHeader(repository.loadPackage(asset.metaData.packageName)) + "\n"
 				+ this.buildAssetSource(asset);
 
-        VerifierRunner runner = new VerifierRunner();
+                VerifierRunner runner = new VerifierRunner();
+
+                runner.setUseDefaultConfig(useVerifierDefaultConfig);
 
 		RuleAsset[] workingSets = loadRuleAssets(activeWorkingSets);
 		List<String> constraintRules = new LinkedList<String>();

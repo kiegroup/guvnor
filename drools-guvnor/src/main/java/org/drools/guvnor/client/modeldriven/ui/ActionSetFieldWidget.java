@@ -49,7 +49,6 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     final private DirtyableFlexTable layout;
     private boolean isBoundFact = false;
     private String[] fieldCompletions;
-    final private RuleModeller modeller;
     private String variableClass;
     private Constants constants = GWT.create(Constants.class);
     private boolean readOnly;
@@ -59,13 +58,13 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     }
 
     public ActionSetFieldWidget(RuleModeller mod, ActionSetField set, Boolean readOnly) {
+        super(mod);
         this.model = set;
         this.layout = new DirtyableFlexTable();
-        this.modeller = mod;
 
         layout.setStyleName("model-builderInner-Background");
 
-        SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+        SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
 
         if (completions.isGlobalVariable(set.variable)) {
             this.fieldCompletions = completions.getFieldCompletionsForGlobalVariable(set.variable);
@@ -124,7 +123,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
                 public void onClick(Widget w) {
                     if (Window.confirm(constants.RemoveThisItem())) {
                         model.removeField(idx);
-                        modeller.refreshWidget();
+                        getModeller().refreshWidget();
                     }
                 }
             });
@@ -181,16 +180,16 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
 
 
-        FactPattern fp = this.modeller.getModel().getBoundFact(model.variable);
+        FactPattern fp = this.getModeller().getModel().getBoundFact(model.variable);
 
-        String descFact = (fp != null) ? this.modeller.getModel().getBoundFact(model.variable).factType + " <b>[" + model.variable + "]</b>" : model.variable;
+        String descFact = (fp != null) ? this.getModeller().getModel().getBoundFact(model.variable).factType + " <b>[" + model.variable + "]</b>" : model.variable;
 
         String sl = Format.format(constants.setterLabel(), new String[]{HumanReadable.getActionDisplayName(modifyType), descFact});
         return new ClickableLabel(sl, clk, !this.readOnly);//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
     }
 
     protected void showAddFieldPopup(Widget w) {
-        final SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+        final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", constants.AddAField());
 
         final ListBox box = new ListBox();
@@ -210,7 +209,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
                 String fieldType = completions.getFieldType(variableClass, fieldName);
                 model.addFieldValue(new ActionFieldValue(fieldName, "", fieldType));
-                modeller.refreshWidget();
+                getModeller().refreshWidget();
                 popup.hide();
             }
         });
@@ -221,22 +220,22 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     }
 
     private Widget valueEditor(final ActionFieldValue val) {
-        SuggestionCompletionEngine completions = modeller.getSuggestionCompletions();
+        SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         String type = "";
         if (completions.isGlobalVariable(this.model.variable)) {
             type = (String) completions.getGlobalVariable(this.model.variable);
         } else {
-            type = this.modeller.getModel().getBoundFact(this.model.variable).factType;
+            type = this.getModeller().getModel().getBoundFact(this.model.variable).factType;
             /*
              * to take in account if the using a rhs bound variable
              */
             if (type == null) {
-                type = this.modeller.getModel().getRhsBoundFact(this.model.variable).factType;
+                type = this.getModeller().getModel().getRhsBoundFact(this.model.variable).factType;
             }
         }
 
         DropDownData enums = completions.getEnums(type, this.model.fieldValues, val.field);
-        return new ActionValueEditor(val, enums, modeller, val.type, this.readOnly);
+        return new ActionValueEditor(val, enums, this.getModeller(), val.type, this.readOnly);
     }
 
     private Widget fieldSelector(final ActionFieldValue val) {
