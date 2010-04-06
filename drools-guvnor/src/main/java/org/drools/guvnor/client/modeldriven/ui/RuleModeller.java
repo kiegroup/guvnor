@@ -233,6 +233,7 @@ public class RuleModeller extends DirtyableComposite {
         layout.getCellFormatter().setHeight(currentLayoutRow + 1, 1, "100%");
 
 
+        this.verifyRule(null);
     }
 
     private boolean showAttributes() {
@@ -242,6 +243,7 @@ public class RuleModeller extends DirtyableComposite {
 
     public void refreshWidget() {
         initWidget();
+        showWarningsAndErrors();
         makeDirty();
     }
 
@@ -1213,28 +1215,40 @@ public class RuleModeller extends DirtyableComposite {
         }
     }
 
-    public void verifyRule(){
-//        LoadingPopup.showMessage( constants.VerifyingItemPleaseWait() );
-//        Set<String> activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs(asset.metaData.packageName);
-//        RepositoryServiceFactory.getService().verifyAssetWithoutVerifiersRules( this.asset, activeWorkingSets,
-//                                                                new AsyncCallback<AnalysisReport>() {
-//
-//                                                               public void onSuccess(AnalysisReport report) {
-//                                                                   LoadingPopup.close();
-//                                                                   errors = new ArrayList<AnalysisReportLine>();
-//                                                                   warnings = new ArrayList<AnalysisReportLine>();
-//
-//                                                                   errors = Arrays.asList(report.errors);
-//                                                                   warnings = Arrays.asList(report.warnings);
-//
-//                                                                   showWarningsAndErrors();
-//                                                               }
-//
-//                                                               public void onFailure(Throwable arg0) {
-//                                                                   // TODO Auto-generated method stub
-//
-//                                                               }
-//                                                           }  );
+    public void verifyRule(final Command cmd){
+        LoadingPopup.showMessage( constants.VerifyingItemPleaseWait() );
+        Set<String> activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs(asset.metaData.packageName);
+        RepositoryServiceFactory.getService().verifyAssetWithoutVerifiersRules( this.asset, activeWorkingSets,
+                                                                new AsyncCallback<AnalysisReport>() {
 
+                                                               public void onSuccess(AnalysisReport report) {
+                                                                   LoadingPopup.close();
+                                                                   errors = new ArrayList<AnalysisReportLine>();
+                                                                   warnings = new ArrayList<AnalysisReportLine>();
+
+                                                                   errors = Arrays.asList(report.errors);
+                                                                   warnings = Arrays.asList(report.warnings);
+
+                                                                   showWarningsAndErrors();
+                                                                   
+                                                                   if (cmd != null){
+                                                                       cmd.execute();
+                                                                   }
+                                                               }
+
+                                                               public void onFailure(Throwable arg0) {
+                                                                   // TODO Auto-generated method stub
+
+                                                               }
+                                                           }  );
+
+    }
+
+    public boolean hasVerifierErrors(){
+        return this.errors != null && this.errors.size() > 0;
+    }
+
+    public boolean hasVerifierWarnings(){
+        return this.warnings != null && this.warnings.size() > 0;
     }
 }

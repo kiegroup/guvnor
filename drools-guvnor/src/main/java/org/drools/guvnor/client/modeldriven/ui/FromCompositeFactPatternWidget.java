@@ -73,7 +73,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
                     this.layout.setWidget(r,
                             0, factPatternWidget);
                 } else {
-                    FactPatternWidget factPatternWidget = new FactPatternWidget(this.getModeller(), fact, true);
+                    FactPatternWidget factPatternWidget = new FactPatternWidget(this.getModeller(), fact, true,false);
                     this.layout.setWidget(r,
                             0,
                             addRemoveButton(factPatternWidget, new ClickListener() {

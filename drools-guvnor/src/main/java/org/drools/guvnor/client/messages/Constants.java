@@ -2075,4 +2075,5 @@ public interface Constants extends ConstantsWithLookup {
     String ConstraintsSection();
     String AddNewConstraint();
     String removeConstraint();
+    String theRuleHasErrorsOrWarningsDotDoYouWantToContinue();
 }

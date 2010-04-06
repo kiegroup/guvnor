@@ -82,14 +82,15 @@ public class FreeFormLineWidget extends RuleModellerWidget {
                 }
             });
 
-            tb.addFocusListener(new FocusListenerAdapter() {
-
-                @Override
-                public void onLostFocus(Widget sender) {
-                    getModeller().verifyRule();
-                }
-
-            });
+            
+//            tb.addFocusListener(new FocusListenerAdapter() {
+//
+//                @Override
+//                public void onLostFocus(Widget sender) {
+//                    getModeller().verifyRule();
+//                }
+//
+//            });
         } else {
             tb.setEnabled(false);
         }

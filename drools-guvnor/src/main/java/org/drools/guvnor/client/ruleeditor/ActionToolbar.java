@@ -135,7 +135,7 @@ public class ActionToolbar extends Composite {
         save.addListener( new ButtonListenerAdapter() {
             public void onClick(com.gwtext.client.widgets.Button button,
                                 EventObject e) {
-                doCheckinConfirm( button,
+                verifyAndDoCheckinConfirm( button,
                                   false );
             }
         } );
@@ -147,7 +147,7 @@ public class ActionToolbar extends Composite {
         saveAndClose.addListener( new ButtonListenerAdapter() {
             public void onClick(com.gwtext.client.widgets.Button button,
                                 EventObject e) {
-                doCheckinConfirm( button,
+                verifyAndDoCheckinConfirm( button,
                                   true );
             }
         } );
@@ -369,6 +369,27 @@ public class ActionToolbar extends Composite {
                 setText( t );
             }
         };
+    }
+
+
+
+    protected void verifyAndDoCheckinConfirm(final Widget w,
+                                    final boolean closeAfter){
+        if (editor instanceof RuleModeller){
+            ((RuleModeller)editor).verifyRule(new Command() {
+
+                public void execute() {
+                    if (((RuleModeller)editor).hasVerifierErrors() || ((RuleModeller)editor).hasVerifierWarnings()){
+                        if (!Window.confirm(constants.theRuleHasErrorsOrWarningsDotDoYouWantToContinue())){
+                            return;
+                        }
+                    }
+                    doCheckinConfirm(w, closeAfter);
+                }
+            });
+        }else{
+            doCheckinConfirm(w, closeAfter);
+        }
     }
 
     /**

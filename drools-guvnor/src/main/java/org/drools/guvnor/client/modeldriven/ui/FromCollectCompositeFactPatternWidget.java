@@ -7,6 +7,8 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import java.util.HashMap;
+import java.util.Map;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -24,6 +26,8 @@ import org.drools.guvnor.client.modeldriven.brl.IPattern;
  */
 public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatternWidget {
 
+    private Map<String,String> extraLeftSidePatternFactTypes = null;
+
     public FromCollectCompositeFactPatternWidget(RuleModeller modeller,
             FromCollectCompositeFactPattern pattern) {
         super(modeller, pattern);
@@ -32,6 +36,14 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
     public FromCollectCompositeFactPatternWidget(RuleModeller modeller,
             FromCollectCompositeFactPattern pattern,Boolean readOnly) {
         super(modeller, pattern, readOnly);
+    }
+
+    private void initExtraLeftSidePatternFactTypes(){
+        extraLeftSidePatternFactTypes = new HashMap<String, String>();
+        extraLeftSidePatternFactTypes.put("java.util.ArrayList", "java.util.ArrayList");
+        extraLeftSidePatternFactTypes.put("java.util.LinkedList", "java.util.LinkedArrayList");
+        extraLeftSidePatternFactTypes.put("java.util.HashSet", "java.util.HashSet");
+        extraLeftSidePatternFactTypes.put("java.util.LinkedHashSet", "java.util.LinkedHashSet");
     }
 
     @Override
@@ -110,10 +122,9 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
 
         box.addItem(constants.Choose());
 
-        box.addItem("java.util.ArrayList", "java.util.ArrayList");
-        box.addItem("java.util.LinkedList", "java.util.LinkedArrayList");
-        box.addItem("java.util.HashSet", "java.util.HashSet");
-        box.addItem("java.util.LinkedHashSet", "java.util.LinkedHashSet");
+        for (Map.Entry<String, String> entry : this.getExtraLeftSidePatternFactTypes().entrySet()) {
+            box.addItem(entry.getKey(), entry.getValue());
+        }
         
         //TODO: Add Facts that extedns Collection
 //        box.addItem("...");
@@ -202,5 +213,19 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
 
     private FromCollectCompositeFactPattern getFromCollectPattern() {
         return (FromCollectCompositeFactPattern) this.pattern;
+    }
+
+    @Override
+    protected void calculateReadOnly() {
+        if (this.pattern.factPattern != null) {
+            this.readOnly = !(this.getExtraLeftSidePatternFactTypes().containsKey(this.pattern.factPattern.factType) || this.getModeller().getSuggestionCompletions().containsFactType(this.pattern.factPattern.factType));
+        }
+    }
+
+    private Map<String,String> getExtraLeftSidePatternFactTypes(){
+        if (this.extraLeftSidePatternFactTypes == null){
+            this.initExtraLeftSidePatternFactTypes();
+        }
+        return this.extraLeftSidePatternFactTypes;
     }
 }
