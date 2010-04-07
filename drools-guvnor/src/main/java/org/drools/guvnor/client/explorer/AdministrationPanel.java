@@ -17,6 +17,7 @@ import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
 import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
+import org.drools.guvnor.client.admin.RuleVerifierManager;
 
 /**
  * @author Anton Arhipov
@@ -80,7 +81,12 @@ public class AdministrationPanel extends GenericPanel {
 					aboutPop.addAttribute(constants.Version() + ":", aboutFrame);
 					aboutPop.show();
 					break;
-
+                                    case 7:
+                                        if (!centertabbedPanel.showIfOpen("ruleVerifierManager"))
+						centertabbedPanel.addTab(constants.RulesVerificationManager(),
+								true, new RuleVerifierManager(),
+								"ruleVerifierManager");
+                                        break;
 				}
 			}
 		});

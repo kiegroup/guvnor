@@ -1216,31 +1216,39 @@ public class RuleModeller extends DirtyableComposite {
     }
 
     public void verifyRule(final Command cmd){
-        LoadingPopup.showMessage( constants.VerifyingItemPleaseWait() );
+        errors = new ArrayList<AnalysisReportLine>();
+        warnings = new ArrayList<AnalysisReportLine>();
+        
+        //if AutoVerifierEnabled is off, just execute cmd and return.
+        if (!WorkingSetManager.getInstance().isAutoVerifierEnabled()){
+            if (cmd != null){
+                cmd.execute();
+            }
+            return;
+        }
+
+        LoadingPopup.showMessage(constants.VerifyingItemPleaseWait());
         Set<String> activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs(asset.metaData.packageName);
-        RepositoryServiceFactory.getService().verifyAssetWithoutVerifiersRules( this.asset, activeWorkingSets,
-                                                                new AsyncCallback<AnalysisReport>() {
+        RepositoryServiceFactory.getService().verifyAssetWithoutVerifiersRules(this.asset, activeWorkingSets,
+                new AsyncCallback<AnalysisReport>() {
 
-                                                               public void onSuccess(AnalysisReport report) {
-                                                                   LoadingPopup.close();
-                                                                   errors = new ArrayList<AnalysisReportLine>();
-                                                                   warnings = new ArrayList<AnalysisReportLine>();
+                    public void onSuccess(AnalysisReport report) {
+                        LoadingPopup.close();
+                        
+                        errors = Arrays.asList(report.errors);
+                        warnings = Arrays.asList(report.warnings);
 
-                                                                   errors = Arrays.asList(report.errors);
-                                                                   warnings = Arrays.asList(report.warnings);
+                        showWarningsAndErrors();
 
-                                                                   showWarningsAndErrors();
-                                                                   
-                                                                   if (cmd != null){
-                                                                       cmd.execute();
-                                                                   }
-                                                               }
+                        if (cmd != null) {
+                            cmd.execute();
+                        }
+                    }
 
-                                                               public void onFailure(Throwable arg0) {
-                                                                   // TODO Auto-generated method stub
-
-                                                               }
-                                                           }  );
+                    public void onFailure(Throwable arg0) {
+                        // TODO Auto-generated method stub
+                    }
+                });
 
     }
 

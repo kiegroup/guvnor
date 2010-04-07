@@ -25,6 +25,12 @@ public class WorkingSetManager {
     private static WorkingSetManager INSTANCE = new WorkingSetManager();
     private Map<String, Set<RuleAsset>> activeWorkingSets = new HashMap<String, Set<RuleAsset>>();
 
+    /**
+     * This attribute should be sever side. Maybe in some FactConstraintConfig
+     * object.
+     */
+    private boolean autoVerifierEnabled = false;
+
     public synchronized static WorkingSetManager getInstance() {
         return INSTANCE;
     }
@@ -198,4 +204,22 @@ public class WorkingSetManager {
 
         return result;
     }
+
+    /**
+     * TODO: We need to store/retrieve this value from repository
+     * @return
+     */
+    public boolean isAutoVerifierEnabled() {
+        return autoVerifierEnabled;
+    }
+
+    /**
+     * TODO: We need to store/retrieve this value from repository
+     */
+    public void setAutoVerifierEnabled(boolean autoVerifierEnabled) {
+        this.autoVerifierEnabled = autoVerifierEnabled;
+    }
+
+
+
 }

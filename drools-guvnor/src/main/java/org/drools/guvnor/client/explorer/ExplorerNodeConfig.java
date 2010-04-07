@@ -112,6 +112,7 @@ public class ExplorerNodeConfig {
                 { constants.EventLog(), "images/error.gif", "4" },
                 { constants.UserPermission(), "images/icoUsers.gif", "5" },
 				{ constants.ImportExport(), "images/save_edit.gif", "3" },
+				{ constants.RulesVerification(), "images/rule_verification.png", "7" },
 				{ constants.About(), "images/information.gif", "6" }};
 
         for ( int i = 0; i < adminStructure.length; i++ ) {
