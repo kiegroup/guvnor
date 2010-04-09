@@ -18,6 +18,8 @@ package org.drools.guvnor.server.util;
 
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -60,26 +62,63 @@ public class TestEnvironmentSessionHelper {
                 String home = System.getProperty("guvnor.repository.dir");
 	            repository = config.getJCRRepository(home);
 
-	            Session testSession = repository.login(
-	                                                                     new SimpleCredentials("alan_parsons", "password".toCharArray()));
+	            Session testSession = repository.login(new SimpleCredentials("alan_parsons", "password".toCharArray()));
 
 	            RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(testSession);
 	            if (erase && admin.isRepositoryInitialized()) {
-
 	                admin.clearRulesRepository( );
 	            }
 	            config.setupRulesRepository( testSession );
+	            PrintWriter out = new PrintWriter(new FileOutputStream("/tmp/pepe.txt"));
+				//dump(testSession.getRootNode(), out);
+//	            OutputStream out = new FileOutputStream("/tmp/pepe.txt");
+//	            testSession.exportSystemView("/", out, true, false);
+				out.close();
 	            return testSession;
 	        } else {
-	            return repository.login(
-	                             new SimpleCredentials("alan_parsons", "password".toCharArray()));
+	            return repository.login(new SimpleCredentials("alan_parsons", "password".toCharArray()));
 	        }
-    	} catch (RepositoryException e) {
+    	} catch (Exception e) {
     		throw new IllegalStateException(e);
     	}
 
     }
 
+	/** Recursively outputs the contents of the given node. */
+//	private static void dump(Node node, PrintWriter out) throws Exception {
+//		
+//		// First output the node path
+//		out.println(node.getPath());
+//		// Skip the virtual (and large!) jcr:system subtree
+//		if (node.getName().equals("jcr:system")) {
+//			return;
+//		}
+//
+//		// Then output the properties
+//		PropertyIterator properties = node.getProperties();
+//		while (properties.hasNext()) {
+//			Property property = properties.nextProperty();
+//			if (property.getDefinition().isMultiple()) {
+//				// A multi-valued property, print all values
+//				Value[] values = property.getValues();
+//				for (int i = 0; i < values.length; i++) {
+//					out.println(property.getPath() + " = "
+//							+ values[i].getString());
+//				}
+//			} else {
+//				// A single-valued property
+//				out.println(property.getPath() + " = "
+//						+ property.getString());
+//			}
+//		}
+//
+//		// Finally output all the child nodes recursively
+//		NodeIterator nodes = node.getNodes();
+//		while (nodes.hasNext()) {
+//			dump(nodes.nextNode(), out);
+//		}
+//	}
+    
     /**
      * Uses the given user name.
      */

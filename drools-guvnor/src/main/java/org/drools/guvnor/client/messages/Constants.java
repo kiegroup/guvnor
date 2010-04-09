@@ -2081,4 +2081,6 @@ public interface Constants extends ConstantsWithLookup {
     String EditRulesVerificationConfiguration();
     String AutomaticVerification();
     String Enabled();
+    String NewRuleTemplate();
+    String TemplateKey();
 }

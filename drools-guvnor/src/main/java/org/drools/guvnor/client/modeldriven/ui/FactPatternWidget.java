@@ -56,6 +56,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     private Constants constants = ((Constants) GWT.create(Constants.class));
     private String customLabel;
     private boolean readOnly;
+	private boolean template;
 
     public FactPatternWidget(RuleModeller mod, IPattern p,
             boolean canBind) {
@@ -85,11 +86,22 @@ public class FactPatternWidget extends RuleModellerWidget {
      */
     public FactPatternWidget(RuleModeller mod, IPattern p,
             String customLabel, boolean canBind, Boolean readOnly) {
+    	this(mod, p, customLabel, canBind, readOnly, false);
+    }
+
+    public FactPatternWidget(RuleModeller ruleModeller, IPattern pattern,
+			boolean canBind, Boolean readOnly, boolean template) {
+    	this(ruleModeller, pattern, null, canBind, readOnly, template);
+	}
+
+    public FactPatternWidget(RuleModeller mod, IPattern p,
+            String customLabel, boolean canBind, Boolean readOnly, boolean template) {
         super(mod);
         this.pattern = (FactPattern) p;
         this.completions = mod.getSuggestionCompletions();
         this.bindable = canBind;
-
+        this.template = template;
+        
         this.connectives = new Connectives();
         this.connectives.setCompletions(completions);
         this.connectives.setModeller(mod);
@@ -115,7 +127,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         formatter.setAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_BOTTOM);
         formatter.setStyleName(0, 0, "modeller-fact-TypeHeader");
 
-        ArrayList sortedConst = sortConstraints(pattern.getFieldConstraints());
+        List<FieldConstraint> sortedConst = sortConstraints(pattern.getFieldConstraints());
         pattern.setFieldConstraints(sortedConst);
         drawConstraints(sortedConst);
 
@@ -132,7 +144,8 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     }
 
-    /**
+    
+	/**
      * Render a hierarchy of constraints, hierarchy here means constraints that may
      * themselves depend on members of constraint objects. With this code, the GUI
      * enables clicking rules of the form:
@@ -141,10 +154,10 @@ public class FactPatternWidget extends RuleModellerWidget {
      *
      * @param sortedConst a sorted list of constraints to display.
      * */
-    private void drawConstraints(ArrayList sortedConst) {
+    private void drawConstraints(List<FieldConstraint> sortedConst) {
         final DirtyableFlexTable table = new DirtyableFlexTable();
         layout.setWidget(1, 0, table);
-        List parents = new ArrayList();
+        List<FieldConstraint> parents = new ArrayList<FieldConstraint>();
 
         for (int i = 0; i < sortedConst.size(); i++) {
             int tabs = -1;
@@ -199,8 +212,8 @@ public class FactPatternWidget extends RuleModellerWidget {
      * @param constraints the list of inheriting constraints to sort.
      * @return a sorted list of constraints ready for display.
      * */
-    private ArrayList sortConstraints(FieldConstraint[] constraints) {
-        ArrayList sortedConst = new ArrayList(constraints.length);
+    private List<FieldConstraint> sortConstraints(FieldConstraint[] constraints) {
+        List<FieldConstraint> sortedConst = new ArrayList<FieldConstraint>(constraints.length);
         for (int i = 0; i < constraints.length; i++) {
             FieldConstraint current = constraints[i];
             if (current instanceof SingleFieldConstraint) {
@@ -225,7 +238,7 @@ public class FactPatternWidget extends RuleModellerWidget {
      * @param sortedConst the array to fill.
      * @param fieldConst the constraint to investigate.
      * */
-    private void insertSingleFieldConstraint(SingleFieldConstraint fieldConst, ArrayList sortedConst) {
+    private void insertSingleFieldConstraint(SingleFieldConstraint fieldConst, List<FieldConstraint> sortedConst) {
         if (fieldConst.parent instanceof SingleFieldConstraint) {
             insertSingleFieldConstraint((SingleFieldConstraint) fieldConst.parent, sortedConst);
         }
@@ -423,7 +436,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     private Widget valueEditor(final SingleFieldConstraint c, String factType) {
         //String type = this.modeller.getSuggestionCompletions().getFieldType( factType, c.fieldName );
-        return new ConstraintValueEditor(pattern, c.fieldName, c, this.getModeller(), c.fieldType,this.readOnly);
+        return new ConstraintValueEditor(pattern, c.fieldName, c, this.getModeller(), c.fieldType,this.readOnly, isTemplate());
     }
 
     private Widget operatorDropDown(final SingleFieldConstraint c) {
@@ -515,5 +528,9 @@ public class FactPatternWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
+	public boolean isTemplate() {
+		return template;
+	}
 
 }

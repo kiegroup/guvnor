@@ -25,6 +25,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.util.BRDRLPersistence;
+import org.drools.guvnor.server.util.BRLPersistence;
 import org.drools.guvnor.server.util.BRXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -32,16 +33,13 @@ import org.drools.repository.PackageItem;
 import com.google.gwt.user.client.rpc.SerializableException;
 
 public class BRLContentHandler extends ContentHandler
-    implements
-    IRuleAsset {
+		implements IRuleAsset {
 
-    public void retrieveAssetContent(RuleAsset asset,
+
+	public void retrieveAssetContent(RuleAsset asset,
                                      PackageItem pkg,
                                      AssetItem item) throws SerializableException {
-        RuleModel model = BRXMLPersistence.getInstance().unmarshal( item.getContent() );
-
-        asset.content = model;
-
+        asset.content = getBrlXmlPersistence().unmarshal( item.getContent() );
     }
 
     public void storeAssetContent(RuleAsset asset,
@@ -50,7 +48,7 @@ public class BRLContentHandler extends ContentHandler
         if ( data.name == null ) {
             data.name = repoAsset.getName();
         }
-        repoAsset.updateContent( BRXMLPersistence.getInstance().marshal( data ) );
+        repoAsset.updateContent( getBrlXmlPersistence().marshal( data ) );
     }
 
     public void compile(BRMSPackageBuilder builder,
@@ -71,21 +69,33 @@ public class BRLContentHandler extends ContentHandler
 
     private String getSourceDRL(AssetItem asset,
                                 BRMSPackageBuilder builder) {
-        RuleModel model = BRXMLPersistence.getInstance().unmarshal( asset.getContent() );
-        model.name = asset.getName();
-        model.parentName = this.parentNameFromCategory( asset,
-                                                        model.parentName );
+        RuleModel model = buildModelFromAsset(asset);
 
-        String drl = BRDRLPersistence.getInstance().marshal( model );
+        String drl = getBrlDrlPersistence().marshal( model );
         if ( builder.hasDSL() && model.hasDSLSentences() ) {
             drl = builder.getDSLExpander().expand( drl );
         }
         return drl;
     }
 
-    public String getRawDRL(AssetItem asset) {
-        RuleModel model = BRXMLPersistence.getInstance().unmarshal( asset.getContent() );
+	protected RuleModel buildModelFromAsset(AssetItem asset) {
+		RuleModel model = getBrlXmlPersistence().unmarshal(asset.getContent());
+		model.name = asset.getName();
+		model.parentName = this.parentNameFromCategory(asset, model.parentName);
+		return model;
+	}
 
-        return BRDRLPersistence.getInstance().marshal( model );
+    public String getRawDRL(AssetItem asset) {
+        RuleModel model = getBrlXmlPersistence().unmarshal( asset.getContent() );
+
+        return getBrlDrlPersistence().marshal( model );
     }
+    
+    protected BRLPersistence getBrlDrlPersistence() {
+		return BRDRLPersistence.getInstance();
+	}
+
+    protected BRLPersistence getBrlXmlPersistence() {
+		return BRXMLPersistence.getInstance();
+	}
 }

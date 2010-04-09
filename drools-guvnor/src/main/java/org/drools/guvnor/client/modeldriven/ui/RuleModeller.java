@@ -15,10 +15,13 @@ package org.drools.guvnor.client.modeldriven.ui;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableComposite;
@@ -29,6 +32,7 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
+import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.messages.Constants;
@@ -43,7 +47,6 @@ import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
 import org.drools.guvnor.client.modeldriven.brl.ActionUpdateField;
 import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
-import org.drools.guvnor.client.modeldriven.brl.ExpressionFormLine;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
 import org.drools.guvnor.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
@@ -55,6 +58,10 @@ import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
 import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
 import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.packages.WorkingSetManager;
+import org.drools.guvnor.client.rpc.AnalysisReport;
+import org.drools.guvnor.client.rpc.AnalysisReportLine;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.security.Capabilities;
@@ -80,14 +87,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.ExtElement;
 import com.gwtext.client.util.Format;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Set;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.packages.WorkingSetManager;
-import org.drools.guvnor.client.rpc.AnalysisReport;
-import org.drools.guvnor.client.rpc.AnalysisReportLine;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 /**
  * This is the parent widget that contains the model based rule builder.
@@ -95,7 +94,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
  * @author Michael Neale
  *
  */
-public class RuleModeller extends DirtyableComposite {
+public class RuleModeller extends DirtyableComposite implements RuleModelEditor {
 
     private DirtyableFlexTable layout;
     private RuleModel model;
@@ -104,16 +103,19 @@ public class RuleModeller extends DirtyableComposite {
     private int currentLayoutRow = 0;
     private String packageName;
     private RuleAsset asset;
+    private ModellerWidgetFactory widgetFactory;
     
-    public RuleModeller(RuleAsset asset, RuleViewer viewer) {
-        this(asset);
+    public RuleModeller(RuleAsset asset, RuleViewer viewer, ModellerWidgetFactory widgetFactory) {
+        this(asset, widgetFactory);
     }
 
-    public RuleModeller(RuleAsset asset) {
-        this.asset = asset;
+    public RuleModeller(RuleAsset asset, ModellerWidgetFactory widgetFactory) {
+		this.asset = asset;
         this.model = (RuleModel) asset.content;
         this.packageName = asset.metaData.packageName;
 
+        this.widgetFactory = widgetFactory;
+        
         layout = new DirtyableFlexTable();
 
         initWidget();
@@ -357,23 +359,7 @@ public class RuleModeller extends DirtyableComposite {
             //if lockRHS() set the widget RO, otherwise let them decide.
             Boolean readOnly = this.lockRHS()?true:null;
 
-            RuleModellerWidget w = null;
-            if (action instanceof ActionCallMethod) {
-                w = new ActionCallMethodWidget(this, (ActionCallMethod) action,readOnly);
-            } else if (action instanceof ActionSetField) {
-                w = new ActionSetFieldWidget(this, (ActionSetField) action,readOnly);
-            } else if (action instanceof ActionInsertFact) {
-                w = new ActionInsertFactWidget(this, (ActionInsertFact) action, readOnly);
-            } else if (action instanceof ActionRetractFact) {
-                w = new ActionRetractFactWidget(this, (ActionRetractFact) action, readOnly);
-            } else if (action instanceof DSLSentence) {
-                w = new DSLSentenceWidget(this,(DSLSentence) action, readOnly);
-                w.addStyleName("model-builderInner-Background"); //NON-NLS
-            } else if (action instanceof FreeFormLine) {
-                w = new FreeFormLineWidget(this, (FreeFormLine) action, readOnly);
-            } else if (action instanceof ActionGlobalCollectionAdd) {
-                w = new GlobalCollectionAddWidget(this, (ActionGlobalCollectionAdd) action, readOnly);
-            } 
+            RuleModellerWidget w = getWidgetFactory().getWidget(this, action, readOnly);
 
             w.setWidth( "100%" );
             widget.add(spacerWidget());
@@ -502,7 +488,7 @@ public class RuleModeller extends DirtyableComposite {
         // The list of facts
         //
         final String[] facts = completions.getFactTypes();
-        if (facts != null && facts.length > 0) {
+        if (facts.length > 0) {
             choices.addItem("..................");
 
             for (int i = 0; i < facts.length; i++) {
@@ -651,7 +637,6 @@ public class RuleModeller extends DirtyableComposite {
         popup.setWidth(-1);
         popup.setTitle(constants.AddANewAction());
 
-
         final ListBox positionCbo = new ListBox();
         if (position == null) {
             positionCbo.addItem(constants.Bottom(), String.valueOf(this.model.rhs.length));
@@ -664,10 +649,6 @@ public class RuleModeller extends DirtyableComposite {
             positionCbo.addItem(String.valueOf(position));
             positionCbo.setSelectedIndex(0);
         }
-
-
-
-
 
         final ListBox choices = new ListBox(true);
         final Map<String, Command> cmds = new HashMap<String, Command>();
@@ -976,26 +957,8 @@ public class RuleModeller extends DirtyableComposite {
             Boolean readOnly = this.lockLHS()?true:null;
 
             IPattern pattern = model.lhs[i];
-            RuleModellerWidget w = null;
-            if (pattern instanceof FactPattern) {
-                w = new FactPatternWidget(this, pattern, true, readOnly);
-            } else if (pattern instanceof CompositeFactPattern) {
-                w = new CompositeFactPatternWidget(this, (CompositeFactPattern) pattern, readOnly);
-            } else if (pattern instanceof FromAccumulateCompositeFactPattern) {
-                w = new FromAccumulateCompositeFactPatternWidget(this, (FromAccumulateCompositeFactPattern) pattern, readOnly);
-            } else if (pattern instanceof FromCollectCompositeFactPattern) {
-                w = new FromCollectCompositeFactPatternWidget(this, (FromCollectCompositeFactPattern) pattern, readOnly);
-            } else if (pattern instanceof FromCompositeFactPattern) {
-                w = new FromCompositeFactPatternWidget(this, (FromCompositeFactPattern) pattern, readOnly);
-            } else if (pattern instanceof DSLSentence) {
-                w = new DSLSentenceWidget(this,(DSLSentence) pattern, readOnly);
-            } else if (pattern instanceof FreeFormLine) {
-                w = new FreeFormLineWidget(this, (FreeFormLine)pattern, readOnly);
-            } else if (pattern instanceof ExpressionFormLine) {
-                w = new ExpressionBuilder(this, (ExpressionFormLine) pattern, readOnly);
-            } else {
-                throw new RuntimeException("I don't know what type of pattern it is: "+pattern);
-            }
+            
+            RuleModellerWidget w = getWidgetFactory().getWidget(this, pattern, readOnly);
 
             vert.add(wrapLHSWidget(model, i, w));
             vert.add(spacerWidget());
@@ -1259,4 +1222,16 @@ public class RuleModeller extends DirtyableComposite {
     public boolean hasVerifierWarnings(){
         return this.warnings != null && this.warnings.size() > 0;
     }
+
+	public ModellerWidgetFactory getWidgetFactory() {
+		return widgetFactory;
+	}
+
+	public void setWidgetFactory(ModellerWidgetFactory widgetFactory) {
+		this.widgetFactory = widgetFactory;
+	}
+
+	public RuleModeller getRuleModeller() {
+		return this;
+	}
 }

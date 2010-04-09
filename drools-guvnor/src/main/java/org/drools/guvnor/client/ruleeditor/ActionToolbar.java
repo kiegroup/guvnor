@@ -41,6 +41,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
+import org.drools.guvnor.client.modeldriven.ui.RuleModelEditor;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.packages.PackageBuilderWidget;
@@ -53,9 +54,9 @@ import org.drools.guvnor.client.packages.WorkingSetManager;
  */
 public class ActionToolbar extends Composite {
 
-    static String[]         VALIDATING_FORMATS = new String[]{BUSINESS_RULE, DSL_TEMPLATE_RULE, DECISION_SPREADSHEET_XLS, DRL, ENUMERATION, DECISION_TABLE_GUIDED, DRL_MODEL, DSL, FUNCTION};
+    static String[]         VALIDATING_FORMATS = new String[]{BUSINESS_RULE, DSL_TEMPLATE_RULE, DECISION_SPREADSHEET_XLS, DRL, ENUMERATION, DECISION_TABLE_GUIDED, DRL_MODEL, DSL, FUNCTION, RULE_TEMPLATE};
 
-    static String[]         VERIFY_FORMATS     = new String[]{BUSINESS_RULE, DECISION_SPREADSHEET_XLS, DRL, DECISION_TABLE_GUIDED, DRL_MODEL};
+    static String[]         VERIFY_FORMATS     = new String[]{BUSINESS_RULE, DECISION_SPREADSHEET_XLS, DRL, DECISION_TABLE_GUIDED, DRL_MODEL, RULE_TEMPLATE};
 
     private Toolbar         toolbar;
     private CheckinAction   checkinAction;
@@ -224,17 +225,16 @@ public class ActionToolbar extends Composite {
 
         if ( isValidatorTypeAsset() ) {
 
-            if (editor instanceof RuleModeller){
-                ToolbarButton workingSets = new ToolbarButton();
-                workingSets.setText( constants.SelectWorkingSets() );
-                workingSets.addListener( new ButtonListenerAdapter() {
-                    public void onClick(com.gwtext.client.widgets.Button button,
-                                        EventObject e) {
-                        showWorkingSetsSelection((RuleModeller)editor);
-                    }
-                } );
-                toolbar.addButton( workingSets );
-            }
+			if (editor instanceof RuleModelEditor) {
+				ToolbarButton workingSets = new ToolbarButton();
+				workingSets.setText(constants.SelectWorkingSets());
+				workingSets.addListener(new ButtonListenerAdapter() {
+					public void onClick(com.gwtext.client.widgets.Button button, EventObject e) {
+						showWorkingSetsSelection(((RuleModelEditor) editor).getRuleModeller());
+					}
+				});
+				toolbar.addButton(workingSets);
+			}
 
             ToolbarButton validate = new ToolbarButton();
             validate.setText( constants.Validate() );

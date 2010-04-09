@@ -47,16 +47,18 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     private final String factType;
     private Constants constants = GWT.create(Constants.class);
     private boolean readOnly;
+	private boolean template;
 
     public ActionInsertFactWidget(RuleModeller mod, ActionInsertFact set) {
         this(mod, set, null);
     }
 
-    public ActionInsertFactWidget(RuleModeller mod, ActionInsertFact set,Boolean readOnly) {
+    public ActionInsertFactWidget(RuleModeller mod, ActionInsertFact set,Boolean readOnly, boolean template) {
         super(mod);
         this.model = set;
         this.layout = new DirtyableFlexTable();
         this.factType = set.factType;
+        this.template = template;
 
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         this.fieldCompletions = completions.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
@@ -77,9 +79,14 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         doLayout();
 
         initWidget(this.layout);
+    
+	}
+
+    public ActionInsertFactWidget(RuleModeller mod, ActionInsertFact set,Boolean readOnly) {
+		this(mod, set, readOnly, false);
     }
 
-    private void doLayout() {
+	private void doLayout() {
         layout.clear();
         layout.setWidget( 0, 0, getAssertLabel() );
         layout.setWidget( 1, 0, new HTML("&nbsp;&nbsp;&nbsp;&nbsp;"));
@@ -117,7 +124,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     private Widget valueEditor(final ActionFieldValue val) {
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
     	DropDownData enums = completions.getEnums(this.factType, this.model.fieldValues, val.field);
-    	return new ActionValueEditor(val, enums,this.getModeller(),val.type,this.readOnly);
+    	return new ActionValueEditor(val, enums,this.getModeller(),val.type,this.readOnly, isTemplate());
     }
 
     private Widget fieldSelector(final ActionFieldValue val) {
@@ -210,6 +217,10 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
+	public boolean isTemplate() {
+		return template;
+	}
 
 
 

@@ -73,7 +73,7 @@ public class WorkingSetEditor extends Composite {
 		Panel pnl = new Panel();
         pnl.setAutoWidth(true);
         pnl.setClosable(false);
-        pnl.setTitle("WS Definition");
+        pnl.setTitle("WS Definition"); //TODO {bauna} i18n
         pnl.setAutoHeight(true);
         pnl.add(buildDoubleList(wsData));
 		tPanel.add(pnl);
@@ -81,7 +81,7 @@ public class WorkingSetEditor extends Composite {
 		pnl = new Panel();
         pnl.setAutoWidth(true);
         pnl.setClosable(false);
-        pnl.setTitle("WS Constraints");
+        pnl.setTitle("WS Constraints"); //TODO {bauna} i18n
         pnl.setAutoHeight(true);
         pnl.add(buildFactsConstraintsEditor(tPanel));
 		tPanel.add(pnl);

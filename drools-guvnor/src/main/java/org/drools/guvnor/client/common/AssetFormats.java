@@ -76,10 +76,12 @@ public class AssetFormats {
 
     public static final String WORKING_SET = "workingset";
     
+    public static final String RULE_TEMPLATE = "template";
+    
     /**
      * The following group the assets together for lists, helpers etc...
      */
-    public static final String[] BUSINESS_RULE_FORMATS = new String[]{AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE, AssetFormats.DECISION_SPREADSHEET_XLS, AssetFormats.DECISION_TABLE_GUIDED};
+    public static final String[] BUSINESS_RULE_FORMATS = new String[]{AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE, AssetFormats.DECISION_SPREADSHEET_XLS, AssetFormats.DECISION_TABLE_GUIDED, AssetFormats.RULE_TEMPLATE};
 
     /**
      * These define assets that are really package level "things". Used to decide when to flush any caches.
@@ -91,13 +93,11 @@ public class AssetFormats {
      * Package dependencies are needed before the package is validated, and any rule assets are processed.
      */
     public static boolean isPackageDependency(String format) {
-        for ( int i = 0; i < PACKAGE_DEPENCENCIES.length; i++ ) {
-            if (PACKAGE_DEPENCENCIES[i].equals( format )) {
+        for (String dep : PACKAGE_DEPENCENCIES) {
+            if (dep.equals( format )) {
                 return true;
             }
         }
         return false;
     }
-
-
 }

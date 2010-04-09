@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -15,12 +14,9 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepositoryException;
 
 public class RowLoader {
-
-
-    private static SimpleDateFormat DF = new SimpleDateFormat("yyyy-MM-dd");
     private String[] headers;
     private String[] headerTypes;
-    List             extractors;
+    List<Method>             extractors;
 
     public String[] getHeaders() {
         return headers;
@@ -30,11 +26,10 @@ public class RowLoader {
         return headerTypes;
     }
 
-
     public String[] getRow(AssetItem item) {
         String[] row = new String[headers.length];
         for ( int i = 0; i < row.length; i++ ) {
-            Method meth = (Method) extractors.get( i );
+            Method meth = extractors.get( i );
             try {
                 Object val = meth.invoke( item,
                                           (Object[]) null );
@@ -63,10 +58,13 @@ public class RowLoader {
     public RowLoader(String resourcename) {
 
         InputStream in = RowLoader.class.getResourceAsStream( "/" + resourcename + ".properties" );
+        if (in == null) {
+        	throw new IllegalStateException("can't find resource name: /" + resourcename + ".properties");
+        }
         BufferedReader reader = new BufferedReader( new InputStreamReader( in ) );
         List<String> fields = new ArrayList<String>();
         List<String> fieldTypes = new ArrayList<String>();
-        extractors = new ArrayList();
+        extractors = new ArrayList<Method>();
         String line;
 
         try {
@@ -96,8 +94,8 @@ public class RowLoader {
         } finally {
             closeStream( reader );
         }
-        headers = (String[]) fields.toArray( new String[fields.size()] );
-        headerTypes = (String[]) fieldTypes.toArray( new String[fieldTypes.size()] );
+        headers = fields.toArray( new String[fields.size()] );
+        headerTypes = fieldTypes.toArray( new String[fieldTypes.size()] );
     }
 
     private void closeStream(BufferedReader reader) {

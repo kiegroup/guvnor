@@ -98,7 +98,7 @@ public class GuidedDecisionTableWidget extends Composite
     private VerticalPanel              conditionsConfigWidget;
     private String                     packageName;
     private VerticalPanel              actionsConfigWidget;
-    private Map                        colMap;
+    private Map<String, DTColumnConfig> colMap;
     private SuggestionCompletionEngine sce;
     private GroupingStore              store;
     private Constants                  constants = ((Constants) GWT.create( Constants.class ));
@@ -152,44 +152,35 @@ public class GuidedDecisionTableWidget extends Composite
 
         list.addItem( constants.Description(),
                       "desc" ); //NON-NLS
-        if ( dt.getMetadataCols() == null ) {
-            dt.setMetadataCols( new ArrayList<MetadataCol>() );
-        }
-        for ( Iterator iterator = dt.getMetadataCols().iterator(); iterator.hasNext(); ) {
-            MetadataCol c = (MetadataCol) iterator.next();
-            list.addItem( c.attr,
-                          c.attr );
-            if ( c.attr.equals( dt.groupField ) ) {
-                list.setSelectedIndex( list.getItemCount() - 1 );
-            }
-        }
-        for ( Iterator iterator = dt.attributeCols.iterator(); iterator.hasNext(); ) {
-            AttributeCol c = (AttributeCol) iterator.next();
-            list.addItem( c.attr,
-                          c.attr );
-            if ( c.attr.equals( dt.groupField ) ) {
-                list.setSelectedIndex( list.getItemCount() - 1 );
-            }
-        }
-        for ( Iterator iterator = dt.conditionCols.iterator(); iterator.hasNext(); ) {
-            ConditionCol c = (ConditionCol) iterator.next();
-            list.addItem( c.header,
-                          c.header );
-            if ( c.header.equals( dt.groupField ) ) {
-                list.setSelectedIndex( list.getItemCount() - 1 );
-            }
-        }
-        for ( Iterator iterator = dt.actionCols.iterator(); iterator.hasNext(); ) {
-            ActionCol c = (ActionCol) iterator.next();
-            list.addItem( c.header,
-                          c.header );
-            if ( c.header.equals( dt.groupField ) ) {
-                list.setSelectedIndex( list.getItemCount() - 1 );
-            }
-        }
+		if (dt.getMetadataCols() == null) {
+			dt.setMetadataCols(new ArrayList<MetadataCol>());
+		}
+		for (MetadataCol c : dt.getMetadataCols()) {
+			list.addItem(c.attr, c.attr);
+			if (c.attr.equals(dt.groupField)) {
+				list.setSelectedIndex(list.getItemCount() - 1);
+			}
+		}
+		for (AttributeCol c : dt.attributeCols) {
+			list.addItem(c.attr, c.attr);
+			if (c.attr.equals(dt.groupField)) {
+				list.setSelectedIndex(list.getItemCount() - 1);
+			}
+		}
+		for (ConditionCol c : dt.conditionCols) {
+			list.addItem(c.header, c.header);
+			if (c.header.equals(dt.groupField)) {
+				list.setSelectedIndex(list.getItemCount() - 1);
+			}
+		}
+		for (ActionCol c : dt.actionCols) {
+			list.addItem(c.header, c.header);
+			if (c.header.equals(dt.groupField)) {
+				list.setSelectedIndex(list.getItemCount() - 1);
+			}
+		}
 
-        list.addItem( constants.none(),
-                      "" );
+		list.addItem(constants.none(), "");
         if ( dt.groupField == null ) {
             list.setSelectedIndex( list.getItemCount() - 1 );
         }
@@ -220,8 +211,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private void refreshActionsWidget() {
         this.actionsConfigWidget.clear();
-        for ( int i = 0; i < dt.actionCols.size(); i++ ) {
-            ActionCol c = (ActionCol) dt.actionCols.get( i );
+        for (ActionCol c : dt.actionCols) {
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( removeAction( c ) );
             hp.add( editAction( c ) );
@@ -229,7 +219,6 @@ public class GuidedDecisionTableWidget extends Composite
             actionsConfigWidget.add( hp );
         }
         actionsConfigWidget.add( newAction() );
-
     }
 
     private Widget editAction(final ActionCol c) {
@@ -469,8 +458,7 @@ public class GuidedDecisionTableWidget extends Composite
             hp.add( new SmallLabel( constants.Metadata() ) );
             attributeConfigWidget.add( hp );
         }
-        for ( int i = 0; i < dt.getMetadataCols().size(); i++ ) {
-            MetadataCol at = (MetadataCol) dt.getMetadataCols().get( i );
+        for (MetadataCol at : dt.getMetadataCols()) {
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) ); //NON-NLS
             hp.add( removeMeta( at ) );
@@ -484,9 +472,8 @@ public class GuidedDecisionTableWidget extends Composite
             attributeConfigWidget.add( hp );
         }
 
-        for ( int i = 0; i < dt.attributeCols.size(); i++ ) {
-
-            final AttributeCol at = dt.attributeCols.get( i );
+        for (AttributeCol atc : dt.attributeCols) {
+        	final AttributeCol at = atc;
             HorizontalPanel hp = new HorizontalPanel();
 
             hp.add( new SmallLabel( at.attr ) );
@@ -578,9 +565,9 @@ public class GuidedDecisionTableWidget extends Composite
                                                }
 
                                                private boolean hasAttribute(String at,
-                                                                            List attributeCols) {
-                                                   for ( Iterator iterator = attributeCols.iterator(); iterator.hasNext(); ) {
-                                                       AttributeCol c = (AttributeCol) iterator.next();
+                                                                            List<AttributeCol> attributeCols) {
+                                                   for ( Iterator<AttributeCol> iterator = attributeCols.iterator(); iterator.hasNext(); ) {
+                                                       AttributeCol c = iterator.next();
                                                        if ( c.attr.equals( at ) ) {
                                                            return true;
                                                        }
@@ -713,7 +700,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         fds = new FieldDef[dt.getMetadataCols().size() + dt.attributeCols.size() + dt.actionCols.size() + dt.conditionCols.size() + 2]; //its +2 as we have counter and description data
 
-        colMap = new HashMap();
+        colMap = new HashMap<String, DTColumnConfig>();
 
         fds[0] = new IntegerFieldDef( "num" ); //NON-NLS
         fds[1] = new StringFieldDef( "desc" ); //NON-NLS
@@ -770,8 +757,7 @@ public class GuidedDecisionTableWidget extends Composite
 
                 }
             };
-            colMap.put( attr.attr,
-                        attr );
+            colMap.put( attr.attr, attr );
             colCount++;
         }
 
@@ -892,7 +878,7 @@ public class GuidedDecisionTableWidget extends Composite
  					  boolean hidden) {
  				     final String dta = cm.getDataIndex(colIndex);        		
          			if (colMap.containsKey(dta)) {
-         				DTColumnConfig col = (DTColumnConfig) colMap.get(dta);
+         				DTColumnConfig col = colMap.get(dta);
          				col.hideColumn = hidden;
          			}
          		}  	
@@ -964,7 +950,7 @@ public class GuidedDecisionTableWidget extends Composite
                 final String dataIdx = grid.getColumnModel().getDataIndex( colIndex );
                 final Record r = store.getAt( rowIndex );
                 String val = r.getAsString( dataIdx );
-                DTColumnConfig colConf = (DTColumnConfig) colMap.get( dataIdx );
+                DTColumnConfig colConf = colMap.get( dataIdx );
                 String[] vals = dt.getValueList( colConf,
                                                  getSCE() );
                 if ( vals.length == 0 ) {
@@ -994,7 +980,7 @@ public class GuidedDecisionTableWidget extends Composite
                     dt.descriptionWidth = newSize;
                 } else {
                     if ( colMap.containsKey( dta ) ) {
-                        DTColumnConfig col = (DTColumnConfig) colMap.get( dta );
+                        DTColumnConfig col = colMap.get( dta );
                         col.width = newSize;
                     }
                 }
@@ -1294,18 +1280,15 @@ public class GuidedDecisionTableWidget extends Composite
 
     }
 
-    private void changeRowPositions(Record from,
-                                    Record to) {
-        int fromNum = from.getAsInteger( "num" );
-        int toNum = to.getAsInteger( "num" );
-        from.set( "num",
-                  toNum );
-        to.set( "num",
-                fromNum );
+	private void changeRowPositions(Record from, Record to) {
+		int fromNum = from.getAsInteger("num");
+		int toNum = to.getAsInteger("num");
+		from.set("num", toNum);
+		to.set("num", fromNum);
 
-        scrapeData( -1 );
+		scrapeData(-1);
 
-        refreshGrid();
-    }
+		refreshGrid();
+	}
 
 }

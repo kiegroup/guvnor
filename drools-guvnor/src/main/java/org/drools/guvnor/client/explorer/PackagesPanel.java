@@ -201,6 +201,13 @@ public class PackagesPanel extends GenericPanel {
             }
         }, "images/refresh.gif")); //NON-NLS
 
+        m.addItem(new Item(constants.NewRuleTemplate(), new BaseItemListenerAdapter() {
+            @Override
+            public void onClick(BaseItem item, EventObject e) {
+                launchWizard(AssetFormats.RULE_TEMPLATE, constants.NewRuleTemplate(), true);
+            }
+        }, "images/new_template.gif")); //NON-NLS
+        
         return m;
     }
 

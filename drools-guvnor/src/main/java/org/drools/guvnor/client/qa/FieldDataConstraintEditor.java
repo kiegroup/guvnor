@@ -1,9 +1,16 @@
 package org.drools.guvnor.client.qa;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.*;
-import com.gwtext.client.util.Format;
-import org.drools.guvnor.client.common.*;
+import java.util.List;
+import java.util.Map;
+
+import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.common.DirtyableHorizontalPane;
+import org.drools.guvnor.client.common.DropDownValueChanged;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.InfoPopup;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
@@ -14,8 +21,20 @@ import org.drools.guvnor.client.modeldriven.testing.Scenario;
 import org.drools.guvnor.client.modeldriven.ui.ActionValueEditor;
 import org.drools.guvnor.client.modeldriven.ui.EnumDropDown;
 
-import java.util.List;
-import java.util.Map;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.util.Format;
 
 /**
  * Constraint editor for the FieldData in the Given Section
@@ -281,26 +300,18 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
     }
 
     private void calculateValueFromList() {
+        if (this.field.collectionFieldList == null || this.field.collectionFieldList.isEmpty()) {
+            this.field.value = "=[]";
+            return;
+        }
         StringBuffer listContent = new StringBuffer();
-        listContent.append("=[");
-        boolean isFirst = true;
         for (final FieldData f : this.field.collectionFieldList) {
-            if (isFirst == true){
-                isFirst = false;
-                 if (f.value!=null){
-                    listContent.append(f.value.substring(1));
-                 }
-            } else{
-                if (f.value==null){
-                    listContent.append(",");
-                }else{
-                    listContent.append(","+f.value.substring(1));
-                }
+            listContent.append(',');
+            if (f.value != null) {
+                listContent.append(f.value.substring(1));
             }
         }
-        listContent.append("]");
-        this.field.value = listContent.toString();
-
+        this.field.value = "=[" + listContent.substring(1) + "]";
     }
 
     private void showTypeChoice(Widget w,

@@ -27,6 +27,8 @@ import org.drools.guvnor.client.decisiontable.GuidedDecisionTableWidget;
 import org.drools.guvnor.client.explorer.Preferences;
 import org.drools.guvnor.client.factmodel.FactModelWidget;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
+import org.drools.guvnor.client.modeldriven.ui.RuleModellerWidgetFactory;
+import org.drools.guvnor.client.modeldriven.ui.RuleTemplateEditor;
 import org.drools.guvnor.client.packages.ModelAttachmentFileWidget;
 import org.drools.guvnor.client.qa.ScenarioWidget;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -56,7 +58,7 @@ public class EditorLauncher {
 		RulePackageSelector.currentlySelectedPackage = asset.metaData.packageName;
 		// depending on the format, load the appropriate editor
 		if (asset.metaData.format.equals(AssetFormats.BUSINESS_RULE)) {
-			return new RuleModeller(asset);
+			return new RuleModeller(asset, new RuleModellerWidgetFactory());
 		} else if (asset.metaData.format.equals(AssetFormats.DSL_TEMPLATE_RULE)) {
 			return new RuleValidatorWrapper(new DSLRuleEditor(asset), asset);
 		} else if (asset.metaData.format.equals(AssetFormats.BPEL_PACKAGE)
@@ -90,6 +92,8 @@ public class EditorLauncher {
 			return new FunctionEditor(asset);
 		} else if (asset.metaData.format.equals(AssetFormats.WORKING_SET)) {
 			return new WorkingSetEditor(asset);
+        } else if (asset.metaData.format.equals(AssetFormats.RULE_TEMPLATE)) {
+            return new RuleTemplateEditor(asset);
 		} else {
 			return new DefaultContentUploadEditor(asset, viewer);
 		}

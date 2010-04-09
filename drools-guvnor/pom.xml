@@ -160,6 +160,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       </dependency>
       <dependency>
          <groupId>org.drools</groupId>
+         <artifactId>drools-templates</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.drools</groupId>
          <artifactId>drools-doc</artifactId>
       </dependency>
       <dependency>

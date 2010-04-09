@@ -1,9 +1,13 @@
 package org.drools.guvnor.client.modeldriven.ui;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.common.*;
+import java.util.List;
+
+import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.common.DropDownValueChanged;
+import org.drools.guvnor.client.common.FieldEditListener;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.InfoPopup;
+import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
@@ -11,7 +15,19 @@ import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
 import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 
-import java.util.List;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.KeyboardListener;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This provides for editing of fields in the RHS of a rule.
@@ -28,20 +44,11 @@ public class ActionValueEditor extends DirtyableComposite {
     private RuleModeller model = null;
     private String variableType = null;
     private boolean readOnly;
+	private boolean template;
 
     public ActionValueEditor(final ActionFieldValue val,
             final DropDownData enums, boolean readOnly) {
-        this.readOnly = readOnly;
-        if (val.type.equals(SuggestionCompletionEngine.TYPE_BOOLEAN)) {
-            this.enums = DropDownData.create(new String[]{"true", "false"});
-        } else {
-            this.enums = enums;
-        }
-        this.root = new SimplePanel();
-        this.value = val;
-
-        refresh();
-        initWidget(root);
+        this(val, enums, null, null, readOnly, false);
     }
 
     public ActionValueEditor(final ActionFieldValue val,
@@ -56,10 +63,15 @@ public class ActionValueEditor extends DirtyableComposite {
         this(val, enums, model, variableType, false);
     }
 
+    public ActionValueEditor(ActionFieldValue val, DropDownData enums,
+			RuleModeller model, String type, boolean readOnly) {
+    	this(val, enums, model, type, readOnly, false);
+	}
+
     public ActionValueEditor(final ActionFieldValue val,
             final DropDownData enums,
             RuleModeller model,
-            String variableType, boolean readOnly) {
+            String variableType, boolean readOnly, boolean template) {
 
         this.readOnly = readOnly;
 
@@ -72,11 +84,12 @@ public class ActionValueEditor extends DirtyableComposite {
         this.value = val;
         this.model = model;
         this.variableType = variableType;
+        this.template = template;
         refresh();
         initWidget(root);
     }
 
-    private void refresh() {
+	private void refresh() {
         root.clear();
         if (enums != null && (enums.fixedList != null || enums.queryExpression != null)) {
             //enum
@@ -103,6 +116,10 @@ public class ActionValueEditor extends DirtyableComposite {
                 if (value.nature == ActionFieldValue.TYPE_VARIABLE) {
                     Widget list = boundVariable(value);
                     root.add(list);
+                } else if(value.nature == ActionFieldValue.TYPE_TEMPLATE){
+                	value.type = SuggestionCompletionEngine.TYPE_STRING;
+                    Widget box = boundTextBox(this.value);
+                    root.add(box);
                 } else {
                     //formula and literal
                     Widget box = boundTextBox(this.value);
@@ -273,7 +290,6 @@ public class ActionValueEditor extends DirtyableComposite {
         } else {
             Image clickme = new Image("images/edit.gif");
             clickme.addClickListener(new ClickListener() {
-
                 public void onClick(Widget w) {
                     showTypeChoice(w);
                 }
@@ -301,6 +317,23 @@ public class ActionValueEditor extends DirtyableComposite {
                 widgets(lit,
                 new InfoPopup(constants.Literal(),
                 constants.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation())));
+        
+        if(isTemplate()){
+	        Button templateButton = new Button(constants.TemplateKey(), new ClickListener() {
+	            public void onClick(Widget arg0) {
+	                value.nature = ActionFieldValue.TYPE_TEMPLATE;
+	                value.value = " ";
+	                makeDirty();
+	                refresh();
+	                form.hide();
+	            }
+	        });
+	        form.addAttribute(constants.TemplateKey() + ":",
+	                widgets(templateButton,
+	                new InfoPopup(constants.Literal(),
+	                constants.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation())));
+        }
+        
         form.addRow(new HTML("<hr/>"));
         form.addRow(new SmallLabel(constants.AdvancedSection()));
 
@@ -379,5 +412,9 @@ public class ActionValueEditor extends DirtyableComposite {
         h.add(lit);
         h.add(popup);
         return h;
+    }
+    
+    public boolean isTemplate(){
+    	return this.template;
     }
 }
