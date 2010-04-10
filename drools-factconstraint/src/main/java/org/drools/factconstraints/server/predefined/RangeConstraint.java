@@ -39,13 +39,13 @@ public class RangeConstraint implements Constraint {
         rules.append("global VerifierReport result;\n");
 
         rules.append("declare RangeConstraintCandidate{0}\n");
-        rules.append("    restriction : LiteralRestriction\n");
+        rules.append("    restriction : NumberRestriction\n");
         rules.append("    greaterValue : double\n");
         rules.append("    lessValue : double\n");
         rules.append("end\n");
 
 
-        rules.append("function void addResult{0}(VerifierReport report, LiteralRestriction restriction, Severity severity, String message){\n");
+        rules.append("function void addResult{0}(VerifierReport report, NumberRestriction restriction, Severity severity, String message){\n");
         rules.append("    Map<String,String> impactedRules = new HashMap<String,String>();\n");
         rules.append("    report.add(new VerifierMessage(\n");
         rules.append("        impactedRules,\n");
@@ -68,11 +68,10 @@ public class RangeConstraint implements Constraint {
 
         rules.append("rule \"Range_Field_Constraint_==_{0}\" extends \"Range_Field_Constraint_Base_{0}\"\n");
         rules.append("  when\n");
-        rules.append("     ($restriction :LiteralRestriction(\n");
+        rules.append("     ($restriction :NumberRestriction(\n");
         rules.append("            fieldPath == $field.path,\n");
         rules.append("            operator == Operator.EQUAL,\n");
-        rules.append("            (valueType == Field.DOUBLE || ==Field.INT),\n");
-        rules.append("            (doubleValue < {3} || > {4}))\n");
+        rules.append("            (value < {3} || > {4}))\n");
         rules.append("      )\n");
         rules.append("  then\n");
         rules.append("      addResult{0}(result, $restriction, Severity.ERROR, \"The value must be between {3} and {4}\");\n");
@@ -80,11 +79,10 @@ public class RangeConstraint implements Constraint {
 
         rules.append("rule \"Range_Field_Constraint_!=_{0}\" extends \"Range_Field_Constraint_Base_{0}\"\n");
         rules.append("  when\n");
-        rules.append("      ($restriction :LiteralRestriction(\n");
+        rules.append("      ($restriction :NumberRestriction(\n");
         rules.append("            fieldPath == $field.path,\n");
         rules.append("            operator == Operator.NOT_EQUAL,\n");
-        rules.append("            (valueType == Field.DOUBLE || ==Field.INT),\n");
-        rules.append("            (doubleValue < {3} || > {4}))\n");
+        rules.append("            (value < {3} || > {4}))\n");
         rules.append("      )\n");
         rules.append("  then\n");
         rules.append("    addResult{0}(result, $restriction, Severity.WARNING, \"Impossible value. Possible values are from {3} to {4}\");\n");
@@ -92,12 +90,12 @@ public class RangeConstraint implements Constraint {
 
         rules.append("rule \"Range_Field_Constraint_>_{0}\" extends \"Range_Field_Constraint_Base_{0}\"\n");
         rules.append("  when\n");
-        rules.append("      ($restriction :LiteralRestriction(\n");
+        rules.append("      ($restriction :NumberRestriction(\n");
         rules.append("            fieldPath == $field.path,\n");
         rules.append("            $rulePath: rulePath,\n");
         rules.append("            (operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL))\n");
         rules.append("      )\n");
-        rules.append("      not (LiteralRestriction(\n");
+        rules.append("      not (NumberRestriction(\n");
         rules.append("          fieldPath == $field.path,\n");
         rules.append("          rulePath == $rulePath,\n");
         rules.append("          (operator == Operator.LESS || == Operator.LESS_OR_EQUAL)\n");
@@ -109,12 +107,12 @@ public class RangeConstraint implements Constraint {
 
         rules.append("rule \"Range_Field_Constraint_<_{0}\"  extends \"Range_Field_Constraint_Base_{0}\"\n");
         rules.append("  when\n");
-        rules.append("      ($restriction :LiteralRestriction(\n");
+        rules.append("      ($restriction :NumberRestriction(\n");
         rules.append("            fieldPath == $field.path,\n");
         rules.append("            $rulePath: rulePath,\n");
         rules.append("            (operator == Operator.LESS || == Operator.LESS_OR_EQUAL))\n");
         rules.append("      )\n");
-        rules.append("      not (LiteralRestriction(\n");
+        rules.append("      not (NumberRestriction(\n");
         rules.append("          fieldPath == $field.path,\n");
         rules.append("          rulePath == $rulePath,\n");
         rules.append("          (operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)\n");
@@ -129,26 +127,24 @@ public class RangeConstraint implements Constraint {
 
         rules.append("rule \"identifyRangeConstraintCandidate{0}\" extends \"Range_Field_Constraint_Base_{0}\"\n");
         rules.append("when\n");
-        rules.append("  ($restriction1 :LiteralRestriction(\n");
+        rules.append("  ($restriction1 :NumberRestriction(\n");
         rules.append("      $rulePath: rulePath,\n");
         rules.append("      fieldPath == $field.path,\n");
         rules.append("      (operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL),\n");
         rules.append("      $op1: operator,\n");
-        rules.append("      (valueType == Field.INT || == Field.DOUBLE),\n");
-        rules.append("      $value1: doubleValue))\n");
-        rules.append("  ($restriction2 :LiteralRestriction(\n");
+        rules.append("      $value1: value))\n");
+        rules.append("  ($restriction2 :NumberRestriction(\n");
         rules.append("      fieldPath == $field.path,\n");
         rules.append("      rulePath == $rulePath,\n");
         rules.append("      (operator == Operator.LESS || == Operator.LESS_OR_EQUAL),\n");
         rules.append("      $op2: operator,\n");
-        rules.append("      $value2: doubleValue))\n");
+        rules.append("      $value2: value))\n");
         rules.append("then\n");
-        rules.append("    System.out.println(\"Fired\");\n");
 
         rules.append("    RangeConstraintCandidate{0} rcc = new RangeConstraintCandidate{0}();\n");
         rules.append("    rcc.setRestriction($restriction1);\n");
-        rules.append("    rcc.setGreaterValue($value1);\n");
-        rules.append("    rcc.setLessValue($value2);\n");
+        rules.append("    rcc.setGreaterValue($value1.doubleValue());\n");
+        rules.append("    rcc.setLessValue($value2.doubleValue());\n");
 
         rules.append("    insert (rcc);\n");
 

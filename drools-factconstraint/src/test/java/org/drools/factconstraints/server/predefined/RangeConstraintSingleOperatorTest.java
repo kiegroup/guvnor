@@ -329,6 +329,8 @@ public class RangeConstraintSingleOperatorTest {
         verifier.addResourcesToVerify(ResourceFactory.newByteArrayResource(rulesToVerify.getBytes()),
                 ResourceType.DRL);
 
+        boolean noProblems = verifier.fireAnalysis();
+
         if (verifier.hasErrors()) {
             for (VerifierError error : verifier.getErrors()) {
                 System.out.println(error.getMessage());
@@ -336,9 +338,6 @@ public class RangeConstraintSingleOperatorTest {
             throw new RuntimeException("Error building verifier");
         }
 
-        Assert.assertFalse(verifier.hasErrors());
-
-        boolean noProblems = verifier.fireAnalysis();
         Assert.assertTrue(noProblems);
 
         return verifier.getResult();
