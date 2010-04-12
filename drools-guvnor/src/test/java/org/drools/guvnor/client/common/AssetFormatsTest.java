@@ -34,7 +34,7 @@ public class AssetFormatsTest extends TestCase {
                     ||
                     fmt.equals( AssetFormats.DECISION_TABLE_GUIDED )
             ) ) {
-                fail("Incorrect grouping of business rules.");
+                fail("Incorrect grouping of business rules. format=" + fmt );
             }
         }
     }
