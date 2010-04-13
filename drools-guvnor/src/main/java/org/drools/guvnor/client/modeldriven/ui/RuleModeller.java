@@ -1234,4 +1234,8 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
 	public RuleModeller getRuleModeller() {
 		return this;
 	}
+
+	public boolean isTemplate() {
+		return widgetFactory.isTemplate();
+	}
 }

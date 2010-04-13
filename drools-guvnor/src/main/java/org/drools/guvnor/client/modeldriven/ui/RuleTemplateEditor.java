@@ -49,13 +49,13 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 		model = (TemplateModel) asset.content;
 		TabPanel tPanel = new TabPanel();
 		tPanel.setAutoWidth(true);
-		tPanel.setAutoHeight(true);
+//		tPanel.setAutoHeight(true);
 		
 		Panel pnl = new Panel();
 		pnl.setAutoWidth(true);
 		pnl.setClosable(false);
 		pnl.setTitle("Template Editor");
-		pnl.setAutoHeight(true);
+//		pnl.setAutoHeight(true);
 		ruleModeller = new RuleModeller(asset, new TemplateModellerWidgetFactory());
 		pnl.add(ruleModeller);
 		tPanel.add(pnl);
@@ -64,7 +64,7 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 		pnl.setAutoWidth(true);
 		pnl.setClosable(false);
 		pnl.setTitle("Template Data");
-		pnl.setAutoHeight(true);
+//		pnl.setAutoHeight(true);
 		pnl.add(buildTemplateTable());
 		pnl.setId("tplTable");
 		tPanel.add(pnl);
@@ -172,8 +172,9 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 	@Override
 	public void resetDirty() {
 		super.resetDirty();
-		store.commitChanges();
-		
+		if (store != null) {
+			store.commitChanges();
+		}
 	}
 
 	public RuleModeller getRuleModeller() {

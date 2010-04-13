@@ -29,7 +29,7 @@ public class RuleModellerWidgetFactory implements ModellerWidgetFactory {
             return new ActionSetFieldWidget(ruleModeller, (ActionSetField) action,readOnly);
         } 
         if (action instanceof ActionInsertFact) {
-            return new ActionInsertFactWidget(ruleModeller, (ActionInsertFact) action, readOnly, isTemplate());
+            return new ActionInsertFactWidget(ruleModeller, (ActionInsertFact) action, readOnly);
         } 
         if (action instanceof ActionRetractFact) {
             return new ActionRetractFactWidget(ruleModeller, (ActionRetractFact) action, readOnly);
@@ -53,7 +53,7 @@ public class RuleModellerWidgetFactory implements ModellerWidgetFactory {
 	 */
 	public RuleModellerWidget getWidget(RuleModeller ruleModeller, IPattern pattern, Boolean readOnly){
         if (pattern instanceof FactPattern) {
-            return new FactPatternWidget(ruleModeller, pattern, true, readOnly, isTemplate());
+            return new FactPatternWidget(ruleModeller, pattern, true, readOnly);
         } 
         if (pattern instanceof CompositeFactPattern) {
             return new CompositeFactPatternWidget(ruleModeller, (CompositeFactPattern) pattern, readOnly);
@@ -80,7 +80,7 @@ public class RuleModellerWidgetFactory implements ModellerWidgetFactory {
 
 	}
 
-	protected boolean isTemplate(){
+	public boolean isTemplate(){
 		return false;
 	}
 }

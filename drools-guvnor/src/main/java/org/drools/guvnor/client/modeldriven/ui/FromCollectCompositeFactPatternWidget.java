@@ -40,10 +40,10 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
 
     private void initExtraLeftSidePatternFactTypes(){
         extraLeftSidePatternFactTypes = new HashMap<String, String>();
-        extraLeftSidePatternFactTypes.put("java.util.ArrayList", "java.util.ArrayList");
-        extraLeftSidePatternFactTypes.put("java.util.LinkedList", "java.util.LinkedArrayList");
-        extraLeftSidePatternFactTypes.put("java.util.HashSet", "java.util.HashSet");
-        extraLeftSidePatternFactTypes.put("java.util.LinkedHashSet", "java.util.LinkedHashSet");
+        extraLeftSidePatternFactTypes.put("java.util.Collection", "java.util.Collection");
+        extraLeftSidePatternFactTypes.put("java.util.List", "java.util.List");
+        extraLeftSidePatternFactTypes.put("java.util.Set", "java.util.Set");
+        extraLeftSidePatternFactTypes.put("java.lang.Number", "java.lang.Number");
     }
 
     @Override
@@ -175,7 +175,6 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
             }
         });
 
-
         final Button fromBtn = new Button(constants.From());
         final Button fromAccumulateBtn = new Button(constants.FromAccumulate());
         final Button fromCollectBtn = new Button(constants.FromCollect());
@@ -218,7 +217,8 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
     @Override
     protected void calculateReadOnly() {
         if (this.pattern.factPattern != null) {
-            this.readOnly = !(this.getExtraLeftSidePatternFactTypes().containsKey(this.pattern.factPattern.factType) || this.getModeller().getSuggestionCompletions().containsFactType(this.pattern.factPattern.factType));
+            this.readOnly = !(this.getExtraLeftSidePatternFactTypes().containsKey(this.pattern.factPattern.factType) 
+            		|| this.getModeller().getSuggestionCompletions().containsFactType(this.pattern.factPattern.factType));
         }
     }
 

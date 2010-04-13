@@ -80,7 +80,7 @@ public class SuggestionCompletionCache {
     }
 
     public SuggestionCompletionEngine getEngineFromCache(String packageName) {
-        SuggestionCompletionEngine eng = (SuggestionCompletionEngine) cache.get( packageName );
+        SuggestionCompletionEngine eng = cache.get( packageName );
         if (eng == null) {
             ErrorPopup.showMessage(constants.UnableToGetContentAssistanceForThisRule());
             return null;
@@ -117,8 +117,8 @@ public class SuggestionCompletionCache {
         	if (done != null) {
         		done.execute();
         	}
-//            cache.remove( packageName );
-//            loadPackage( packageName, done );
+            cache.remove( packageName );
+            loadPackage( packageName, done );
         } else {
             done.execute();
         }

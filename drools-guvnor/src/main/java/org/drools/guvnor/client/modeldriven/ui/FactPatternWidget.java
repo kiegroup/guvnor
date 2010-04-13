@@ -56,24 +56,16 @@ public class FactPatternWidget extends RuleModellerWidget {
     private Constants constants = ((Constants) GWT.create(Constants.class));
     private String customLabel;
     private boolean readOnly;
-	private boolean template;
 
     public FactPatternWidget(RuleModeller mod, IPattern p,
             boolean canBind) {
         this(mod, p, null, canBind,null);
     }
 
-    public FactPatternWidget(RuleModeller mod, IPattern p,
-            boolean canBind, Boolean readOnly) {
-        this(mod, p, null, canBind, readOnly);
-    }
-
      public FactPatternWidget(RuleModeller mod, IPattern p,
             String customLabel, boolean canBind) {
          this(mod, p, null, canBind, null);
      }
-
-    
 
     /**
      * Creates a new FactPatternWidget
@@ -84,23 +76,18 @@ public class FactPatternWidget extends RuleModellerWidget {
      * @param readOnly if the widget should be in RO mode. If this parameter
      * is null, the readOnly attribute is calculated.
      */
-    public FactPatternWidget(RuleModeller mod, IPattern p,
-            String customLabel, boolean canBind, Boolean readOnly) {
-    	this(mod, p, customLabel, canBind, readOnly, false);
-    }
 
     public FactPatternWidget(RuleModeller ruleModeller, IPattern pattern,
-			boolean canBind, Boolean readOnly, boolean template) {
-    	this(ruleModeller, pattern, null, canBind, readOnly, template);
+			boolean canBind, Boolean readOnly) {
+    	this(ruleModeller, pattern, null, canBind, readOnly);
 	}
 
     public FactPatternWidget(RuleModeller mod, IPattern p,
-            String customLabel, boolean canBind, Boolean readOnly, boolean template) {
+            String customLabel, boolean canBind, Boolean readOnly) {
         super(mod);
         this.pattern = (FactPattern) p;
         this.completions = mod.getSuggestionCompletions();
         this.bindable = canBind;
-        this.template = template;
         
         this.connectives = new Connectives();
         this.connectives.setCompletions(completions);
@@ -386,9 +373,6 @@ public class FactPatternWidget extends RuleModellerWidget {
             pred.add(new SmallLabel(c.value));
         }
 
-
-
-
         return pred;
     }
 
@@ -436,7 +420,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     private Widget valueEditor(final SingleFieldConstraint c, String factType) {
         //String type = this.modeller.getSuggestionCompletions().getFieldType( factType, c.fieldName );
-        return new ConstraintValueEditor(pattern, c.fieldName, c, this.getModeller(), c.fieldType,this.readOnly, isTemplate());
+        return new ConstraintValueEditor(pattern, c.fieldName, c, this.getModeller(), c.fieldType,this.readOnly);
     }
 
     private Widget operatorDropDown(final SingleFieldConstraint c) {
@@ -528,9 +512,4 @@ public class FactPatternWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
-
-	public boolean isTemplate() {
-		return template;
-	}
-
 }

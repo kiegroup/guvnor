@@ -44,11 +44,10 @@ public class ActionValueEditor extends DirtyableComposite {
     private RuleModeller model = null;
     private String variableType = null;
     private boolean readOnly;
-	private boolean template;
 
     public ActionValueEditor(final ActionFieldValue val,
             final DropDownData enums, boolean readOnly) {
-        this(val, enums, null, null, readOnly, false);
+        this(val, enums, null, null, readOnly);
     }
 
     public ActionValueEditor(final ActionFieldValue val,
@@ -63,15 +62,10 @@ public class ActionValueEditor extends DirtyableComposite {
         this(val, enums, model, variableType, false);
     }
 
-    public ActionValueEditor(ActionFieldValue val, DropDownData enums,
-			RuleModeller model, String type, boolean readOnly) {
-    	this(val, enums, model, type, readOnly, false);
-	}
-
     public ActionValueEditor(final ActionFieldValue val,
             final DropDownData enums,
             RuleModeller model,
-            String variableType, boolean readOnly, boolean template) {
+            String variableType, boolean readOnly) {
 
         this.readOnly = readOnly;
 
@@ -84,7 +78,6 @@ public class ActionValueEditor extends DirtyableComposite {
         this.value = val;
         this.model = model;
         this.variableType = variableType;
-        this.template = template;
         refresh();
         initWidget(root);
     }
@@ -318,7 +311,7 @@ public class ActionValueEditor extends DirtyableComposite {
                 new InfoPopup(constants.Literal(),
                 constants.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation())));
         
-        if(isTemplate()){
+        if(model.isTemplate()){
 	        Button templateButton = new Button(constants.TemplateKey(), new ClickListener() {
 	            public void onClick(Widget arg0) {
 	                value.nature = ActionFieldValue.TYPE_TEMPLATE;
@@ -412,9 +405,5 @@ public class ActionValueEditor extends DirtyableComposite {
         h.add(lit);
         h.add(popup);
         return h;
-    }
-    
-    public boolean isTemplate(){
-    	return this.template;
     }
 }

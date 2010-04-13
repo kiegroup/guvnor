@@ -65,23 +65,10 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private Constants constants = ((Constants) GWT.create(Constants.class));
     private String fieldType;
     private boolean readOnly;
-	private boolean template;
-
-    /**
-     * @param con The constraint being edited.
-     */
-    public ConstraintValueEditor(FactPattern pattern,
-            String fieldName,
-            ISingleFieldConstraint con,
-            RuleModeller modeller,
-            String valueType /* eg is numeric */,
-            boolean readOnly) {
-    	this(pattern, fieldName, con, modeller, valueType, readOnly, false);
-    }
 
     public ConstraintValueEditor(FactPattern pattern, String fieldName,
     		ISingleFieldConstraint con, RuleModeller modeller, String valueType,
-			boolean readOnly, boolean template) {
+			boolean readOnly) {
         this.pattern = pattern;
         this.fieldName = fieldName;
         this.sce = modeller.getSuggestionCompletions();
@@ -89,7 +76,6 @@ public class ConstraintValueEditor extends DirtyableComposite {
         this.panel = new SimplePanel();
         this.model = modeller.getModel();
         this.modeller = modeller;
-        this.template = template;
 
         valueType = sce.getFieldType(pattern.factType, fieldName);
         this.fieldType = valueType;
@@ -275,7 +261,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 new InfoPopup(constants.LiteralValue(),
                 constants.LiteralValTip())));
 
-        if(isTemplate()){
+		if (modeller.isTemplate()) {
 	        String templateKeyLabel = constants.TemplateKey();
 	        Button templateKeyButton = new Button(templateKeyLabel);
 	        templateKeyButton.addClickListener(new ClickListener() {
@@ -381,8 +367,4 @@ public class ConstraintValueEditor extends DirtyableComposite {
     public boolean isDirty() {
         return super.isDirty();
     }
-
-	public boolean isTemplate() {
-		return template;
-	}
 }

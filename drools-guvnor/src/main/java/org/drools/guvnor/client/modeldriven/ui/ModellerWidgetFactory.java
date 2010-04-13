@@ -12,7 +12,7 @@ public interface ModellerWidgetFactory {
 	 * @param readOnly
 	 * @return
 	 */
-	public abstract RuleModellerWidget getWidget(RuleModeller ruleModeller,
+	public RuleModellerWidget getWidget(RuleModeller ruleModeller,
 			IAction action, Boolean readOnly);
 
 	/**
@@ -22,7 +22,9 @@ public interface ModellerWidgetFactory {
 	 * @param readOnly
 	 * @return
 	 */
-	public abstract RuleModellerWidget getWidget(RuleModeller ruleModeller,
+	public RuleModellerWidget getWidget(RuleModeller ruleModeller,
 			IPattern pattern, Boolean readOnly);
+	
+	public boolean isTemplate();
 
 }
