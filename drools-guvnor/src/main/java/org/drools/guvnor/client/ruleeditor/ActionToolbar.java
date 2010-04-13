@@ -60,7 +60,7 @@ public class ActionToolbar extends Composite {
 
     private Toolbar         toolbar;
     private CheckinAction   checkinAction;
-    private CheckinAction   archiveAction;
+    private Command         archiveAction;
     private Command         deleteAction;
     private ToolbarTextItem state;
     final private RuleAsset asset;
@@ -76,7 +76,7 @@ public class ActionToolbar extends Composite {
                          boolean readOnly,
                          Widget editor,
                          final CheckinAction checkin,
-                         final CheckinAction archiv,
+                         final Command archiv,
                          final Command delete,
                          Command closeCommand,
                          Command copyCommand,
@@ -137,7 +137,7 @@ public class ActionToolbar extends Composite {
             public void onClick(com.gwtext.client.widgets.Button button,
                                 EventObject e) {
                 verifyAndDoCheckinConfirm( button,
-                                  false );
+                                           false );
             }
         } );
         toolbar.addButton( save );
@@ -149,7 +149,7 @@ public class ActionToolbar extends Composite {
             public void onClick(com.gwtext.client.widgets.Button button,
                                 EventObject e) {
                 verifyAndDoCheckinConfirm( button,
-                                  true );
+                                           true );
             }
         } );
         toolbar.addButton( saveAndClose );
@@ -184,7 +184,7 @@ public class ActionToolbar extends Composite {
                                         public void onClick(BaseItem baseItem,
                                                             EventObject eventObject) {
                                             if ( Window.confirm( constants.AreYouSureYouWantToArchiveThisItem() + "\n" + constants.ArchiveThisAssetThisWillNotPermanentlyDeleteIt() ) ) {
-                                                archiveAction.doCheckin( constants.ArchivedItemOn() + new java.util.Date().toString() );
+                                                archiveAction.execute();
                                             }
                                         }
                                     } ) );
@@ -225,16 +225,17 @@ public class ActionToolbar extends Composite {
 
         if ( isValidatorTypeAsset() ) {
 
-			if (editor instanceof RuleModelEditor) {
-				ToolbarButton workingSets = new ToolbarButton();
-				workingSets.setText(constants.SelectWorkingSets());
-				workingSets.addListener(new ButtonListenerAdapter() {
-					public void onClick(com.gwtext.client.widgets.Button button, EventObject e) {
-						showWorkingSetsSelection(((RuleModelEditor) editor).getRuleModeller());
-					}
-				});
-				toolbar.addButton(workingSets);
-			}
+            if ( editor instanceof RuleModelEditor ) {
+                ToolbarButton workingSets = new ToolbarButton();
+                workingSets.setText( constants.SelectWorkingSets() );
+                workingSets.addListener( new ButtonListenerAdapter() {
+                    public void onClick(com.gwtext.client.widgets.Button button,
+                                        EventObject e) {
+                        showWorkingSetsSelection( ((RuleModelEditor) editor).getRuleModeller() );
+                    }
+                } );
+                toolbar.addButton( workingSets );
+            }
 
             ToolbarButton validate = new ToolbarButton();
             validate.setText( constants.Validate() );
@@ -300,8 +301,9 @@ public class ActionToolbar extends Composite {
         onSave();
         LoadingPopup.showMessage( constants.VerifyingItemPleaseWait() );
         Set<String> activeWorkingSets = null;
-        activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs(asset.metaData.packageName);
-        RepositoryServiceFactory.getService().verifyAsset( asset, activeWorkingSets, 
+        activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs( asset.metaData.packageName );
+        RepositoryServiceFactory.getService().verifyAsset( asset,
+                                                           activeWorkingSets,
                                                            new AsyncCallback<AnalysisReport>() {
 
                                                                public void onSuccess(AnalysisReport report) {
@@ -312,7 +314,7 @@ public class ActionToolbar extends Composite {
                                                                                                                                         false ) );
                                                                    scrollPanel.setWidth( "100%" );
                                                                    form.addRow( scrollPanel );
-                                                                   
+
                                                                    LoadingPopup.close();
                                                                    form.show();
                                                                }
@@ -371,24 +373,24 @@ public class ActionToolbar extends Composite {
         };
     }
 
-
-
     protected void verifyAndDoCheckinConfirm(final Widget w,
-                                    final boolean closeAfter){
-        if (editor instanceof RuleModeller){
-            ((RuleModeller)editor).verifyRule(new Command() {
+                                             final boolean closeAfter) {
+        if ( editor instanceof RuleModeller ) {
+            ((RuleModeller) editor).verifyRule( new Command() {
 
                 public void execute() {
-                    if (((RuleModeller)editor).hasVerifierErrors() || ((RuleModeller)editor).hasVerifierWarnings()){
-                        if (!Window.confirm(constants.theRuleHasErrorsOrWarningsDotDoYouWantToContinue())){
+                    if ( ((RuleModeller) editor).hasVerifierErrors() || ((RuleModeller) editor).hasVerifierWarnings() ) {
+                        if ( !Window.confirm( constants.theRuleHasErrorsOrWarningsDotDoYouWantToContinue() ) ) {
                             return;
                         }
                     }
-                    doCheckinConfirm(w, closeAfter);
+                    doCheckinConfirm( w,
+                                      closeAfter );
                 }
-            });
-        }else{
-            doCheckinConfirm(w, closeAfter);
+            } );
+        } else {
+            doCheckinConfirm( w,
+                              closeAfter );
         }
     }
 
@@ -427,7 +429,8 @@ public class ActionToolbar extends Composite {
     }
 
     protected void showWorkingSetsSelection(RuleModeller modeller) {
-        final WorkingSetSelectorPopup pop = new WorkingSetSelectorPopup(modeller,asset);
+        final WorkingSetSelectorPopup pop = new WorkingSetSelectorPopup( modeller,
+                                                                         asset );
         pop.show();
     }
 

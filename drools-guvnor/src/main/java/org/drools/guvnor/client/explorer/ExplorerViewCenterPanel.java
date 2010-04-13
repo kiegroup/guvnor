@@ -9,7 +9,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.PackageEditor2;
+import org.drools.guvnor.client.packages.PackageEditor;
 import org.drools.guvnor.client.packages.SnapshotView;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -58,7 +58,7 @@ public class ExplorerViewCenterPanel {
 
     /** to keep track of what is dirty, filthy */
     private Map<String, GuvnorEditor>   openedAssetEditors   = new HashMap<String, GuvnorEditor>();
-    private Map<String, PackageEditor2> openedPackageEditors = new HashMap<String, PackageEditor2>();
+    private Map<String, PackageEditor> openedPackageEditors = new HashMap<String, PackageEditor>();
 
     private Button                      closeAllButton;
     private Constants                   constants            = ((Constants) GWT.create( Constants.class ));
@@ -180,9 +180,9 @@ public class ExplorerViewCenterPanel {
         if ( widget instanceof GuvnorEditor ) {
             this.openedAssetEditors.put( panelId,
                                          (GuvnorEditor) widget );
-        } else if ( widget instanceof PackageEditor2 ) {
+        } else if ( widget instanceof PackageEditor ) {
             this.openedPackageEditors.put( tabname,
-                                           (PackageEditor2) widget );
+                                           (PackageEditor) widget );
         }
 
         tp.activate( localTP.getId() );
@@ -259,12 +259,12 @@ public class ExplorerViewCenterPanel {
 								}
 							});
 
-							// When model is saved update the package view it is
+							// When model is saved update the package view if it is
 							// opened.
 							if (a.metaData.format.equals(AssetFormats.MODEL)) {
 								rv.setCheckedInCommand(new Command() {
 									public void execute() {
-										PackageEditor2 packageEditor = openedPackageEditors.get(a.metaData.packageName);
+										PackageEditor packageEditor = openedPackageEditors.get(a.metaData.packageName);
 										if (packageEditor != null) {
 											packageEditor.reload();
 										}
@@ -340,7 +340,7 @@ public class ExplorerViewCenterPanel {
 			LoadingPopup.showMessage(constants.LoadingPackageInformation());
 			RepositoryServiceFactory.getService().loadPackageConfig(uuid, new GenericCallback<PackageConfigData>() {
 				public void onSuccess(PackageConfigData conf) {
-					PackageEditor2 ed = new PackageEditor2(conf, new Command() {
+					PackageEditor ed = new PackageEditor(conf, new Command() {
 						public void execute() {
 							close(uuid);
 						}

@@ -39,9 +39,8 @@ import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
+import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
-import org.drools.guvnor.server.contenthandler.ModelContentHandler;
-import org.drools.guvnor.server.contenthandler.RuleFlowHandler;
 import org.drools.guvnor.server.repository.MigrateRepository;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleTypes;
@@ -111,10 +110,8 @@ public class FileManagerUtils {
 
         // Special treatment for model and ruleflow attachments.
         ContentHandler handler = ContentManager.getHandler( item.getFormat() );
-        if ( handler instanceof ModelContentHandler ) {
-            ((ModelContentHandler) handler).modelAttached( item );
-        } else if ( handler instanceof RuleFlowHandler ) {
-            ((RuleFlowHandler) handler).ruleFlowAttached( item );
+        if ( handler instanceof ICanHasAttachment ) {
+            ((ICanHasAttachment) handler).onAttachmentAdded( item );
         }
 
     }

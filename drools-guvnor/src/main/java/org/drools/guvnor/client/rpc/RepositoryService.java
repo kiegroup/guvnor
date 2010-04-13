@@ -1,4 +1,5 @@
 package org.drools.guvnor.client.rpc;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,8 +16,6 @@ package org.drools.guvnor.client.rpc;
  * limitations under the License.
  */
 
-
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,9 @@ import com.google.gwt.user.client.rpc.SerializableException;
  * This is what the remote service will implement, as a servlet.
  * (in hosted/debug mode, you could also use an implementation that was in-process).
  */
-public interface RepositoryService extends RemoteService {
+public interface RepositoryService
+    extends
+    RemoteService {
 
     /**
      * @param categoryPath A "/" delimited path to a category.
@@ -44,14 +45,19 @@ public interface RepositoryService extends RemoteService {
      * Return a a 2d array/grid of results for rules.
      * @param A "/" delimited path to a category.
      */
-    public TableDataResult loadRuleListForCategories(String categoryPath, int skip, int numRows, String tableConfig) throws SerializableException;
+    public TableDataResult loadRuleListForCategories(String categoryPath,
+                                                     int skip,
+                                                     int numRows,
+                                                     String tableConfig) throws SerializableException;
 
     /**
      * Return a a 2d array/grid of results for rules.
      * @param The name of the state.
      */
-    public TableDataResult loadRuleListForState(String state, int skip, int numRows, String tableConfig) throws SerializableException;
-
+    public TableDataResult loadRuleListForState(String state,
+                                                int skip,
+                                                int numRows,
+                                                String tableConfig) throws SerializableException;
 
     /**
      * This will return a TableConfig of header names.
@@ -62,27 +68,34 @@ public interface RepositoryService extends RemoteService {
     /**
      * This will create a new category at the specified path.
      */
-    public Boolean createCategory(String path, String name, String description);
+    public Boolean createCategory(String path,
+                                  String name,
+                                  String description);
 
     /**
      * Creates a brand new rule with the initial category.
      * Return the UUID of the item created.
      * This will not check in the rule, but just leave it as saved in the repo.
      */
-    public String createNewRule(String ruleName, String description, String initialCategory, String initialPackage, String format) throws SerializableException;
+    public String createNewRule(String ruleName,
+                                String description,
+                                String initialCategory,
+                                String initialPackage,
+                                String format) throws SerializableException;
 
     /**
      * Creates a new rule which is imported from global area.
      * Return the UUID of the item created.
      * This will not check in the rule, but just leave it as saved in the repo.
      */
-    public String createNewImportedRule(String sharedAssetName, String initialPackage) throws SerializableException;
+    public String createNewImportedRule(String sharedAssetName,
+                                        String initialPackage) throws SerializableException;
 
     /**
      * Delete un checked in Asset
      */
-    public void deleteUncheckedRule(String ruleName, String initialPackage);
-
+    public void deleteUncheckedRule(String ruleName,
+                                    String initialPackage);
 
     /**
      * Clear the rules repositoty, Use at your own risk.
@@ -100,12 +113,10 @@ public interface RepositoryService extends RemoteService {
      */
     public PackageConfigData loadGlobalPackage();
 
-    
     /**
      * This returns a list of archived packages.
      */
     public PackageConfigData[] listArchivedPackages();
-
 
     /**
      * This loads up all the stuff for a
@@ -115,21 +126,19 @@ public interface RepositoryService extends RemoteService {
 
     public RuleAsset[] loadRuleAssets(String[] UUIDs) throws SerializableException;
 
-
     /**
      * This will load the history of the given asset, in a summary format suitable
      * for display in a table.
      */
     public TableDataResult loadAssetHistory(String uuid) throws SerializableException;
 
-
     /**
      * This will load all archived assets, in a summary format suitable
      * for display in a table.
      */
 
-    public TableDataResult loadArchivedAssets(int skip, int numRows) throws SerializableException;
-
+    public TableDataResult loadArchivedAssets(int skip,
+                                              int numRows) throws SerializableException;
 
     /**
      * This checks in a new version of an asset.
@@ -138,24 +147,28 @@ public interface RepositoryService extends RemoteService {
      */
     public String checkinVersion(RuleAsset asset) throws SerializableException;
 
-
     /**
      * This will restore the specified version in the repository, saving, and creating
      * a new version (with all the restored content).
      */
-    public void restoreVersion(String versionUUID, String assetUUID, String comment);
+    public void restoreVersion(String versionUUID,
+                               String assetUUID,
+                               String comment);
 
     /**
      * This creates a package of the given name, and checks it in.
      * @return UUID of the created item.
      */
-    public String createPackage(String name, String description) throws SerializableException;
-    
+    public String createPackage(String name,
+                                String description) throws SerializableException;
+
     /**
      * This creates a package of the given name, and checks it in.
      * @return UUID of the created item.
      */
-    public String createSubPackage(String name, String description, String parentPackage) throws SerializableException;
+    public String createSubPackage(String name,
+                                   String description,
+                                   String parentPackage) throws SerializableException;
 
     /**
      * Loads a package by its uuid.
@@ -172,7 +185,6 @@ public interface RepositoryService extends RemoteService {
      */
     public ValidatedResponse savePackage(PackageConfigData data) throws SerializableException;
 
-
     /**
      * Given a format, this will return assets that match.
      * It can also be used for "pagination" by passing in start and
@@ -182,7 +194,11 @@ public interface RepositoryService extends RemoteService {
      * @param numRows The number of rows to return. -1 means all.
      * @param startRow The starting row number if paging - if numRows is -1 then this is ignored.
      */
-    public TableDataResult listAssets(String packageUUID, String formats[], int skip, int numRows, String tableConfig) throws SerializableException;
+    public TableDataResult listAssets(String packageUUID,
+                                      String formats[],
+                                      int skip,
+                                      int numRows,
+                                      String tableConfig) throws SerializableException;
 
     /**
      * Returns a list of valid states.
@@ -201,7 +217,8 @@ public interface RepositoryService extends RemoteService {
      * @param newName states new name.
      * @throws SerializableException
      */
-    public void renameState(String oldName, String newName) throws SerializableException;
+    public void renameState(String oldName,
+                            String newName) throws SerializableException;
 
     /**
      * Removes a state.
@@ -210,7 +227,6 @@ public interface RepositoryService extends RemoteService {
      */
     public void removeState(String name) throws SerializableException;
 
-
     /**
      * This will change the state of an asset or package.
      * @param uuid The UUID of the asset we are tweaking.
@@ -218,19 +234,23 @@ public interface RepositoryService extends RemoteService {
      * @param wholePackage true if it is a package we are setting the state of.
      * If this is true, UUID must be the status of a package, if false, it must be an asset.
      */
-    public void changeState(String uuid, String newState, boolean wholePackage);
+    public void changeState(String uuid,
+                            String newState,
+                            boolean wholePackage);
 
     /**
      * This moves an asset to the given target package.
      */
-    public void changeAssetPackage(String uuid, String newPackage, String comment);
+    public void changeAssetPackage(String uuid,
+                                   String newPackage,
+                                   String comment);
 
     /**
      * Prompt an asset into Global area. 
      * @param assetUUID The source assetID.
      */
     public void promoteAssetToGlobalArea(String assetUUID);
-    
+
     /**
      * Copies an asset into a new destination package.
      * @param assetUUID The source assetID.
@@ -238,21 +258,23 @@ public interface RepositoryService extends RemoteService {
      * in that case the asset has to have a different name).
      * @param newName The new name of the asset.
      */
-    public String copyAsset(String assetUUID, String newPackage, String newName);
+    public String copyAsset(String assetUUID,
+                            String newPackage,
+                            String newName);
 
     /**
      * Copy the package (everything).
      * @param sourcePackageName
      * @param destPackageName
      */
-    public void copyPackage(String sourcePackageName, String destPackageName) throws SerializableException;
+    public void copyPackage(String sourcePackageName,
+                            String destPackageName) throws SerializableException;
 
     /**
      * This will load a list of snapshots for the given package. Snapshots are created
      * by taking a labelled copy of a package, at a point in time, for instance for deployment.
      */
     public SnapshotInfo[] listSnapshots(String packageName);
-
 
     /**
      * Create a package snapshot for deployment.
@@ -261,7 +283,10 @@ public interface RepositoryService extends RemoteService {
      * @param replaceExisting Replace the existing one (must be true to replace an existing snapshot of the same name).
      * @param comment A comment to be added to the copied one.
      */
-    public void createPackageSnapshot(String packageName, String snapshotName, boolean replaceExisting, String comment);
+    public void createPackageSnapshot(String packageName,
+                                      String snapshotName,
+                                      boolean replaceExisting,
+                                      String comment);
 
     /**
      * This alters an existing snapshot, it can be used to copy or delete it.
@@ -270,17 +295,18 @@ public interface RepositoryService extends RemoteService {
      * @param delete true if the snapshotName is to be removed.
      * @param newSnapshotName The name of the target snapshot that the contents will be copied to.
      */
-    public void copyOrRemoveSnapshot(String packageName, String snapshotName, boolean delete, String newSnapshotName) throws SerializableException;
-
+    public void copyOrRemoveSnapshot(String packageName,
+                                     String snapshotName,
+                                     boolean delete,
+                                     String newSnapshotName) throws SerializableException;
 
     /**
      * This will quickly return a list of assets 
      */
-    public TableDataResult quickFindAsset(String searchText,  
-    		boolean searchArchived,
-            int skip,
-            int numRows) throws SerializableException;
-
+    public TableDataResult quickFindAsset(String searchText,
+                                          boolean searchArchived,
+                                          int skip,
+                                          int numRows) throws SerializableException;
 
     /**
      * This will remove a category. A category must have no
@@ -307,10 +333,16 @@ public interface RepositoryService extends RemoteService {
      * in the systems selectors.properties file. This will then apply the filter to the
      * package being built.
      */
-    public BuilderResult buildPackage(String packageUUID,  boolean force, String buildMode, 
-    		String operator, String statusDescriptionValue, boolean enableStatusSelector, 
-    		String categoryOperator, String category, boolean enableCategorySelector,
-			String customSelectorName) throws SerializableException;
+    public BuilderResult buildPackage(String packageUUID,
+                                      boolean force,
+                                      String buildMode,
+                                      String operator,
+                                      String statusDescriptionValue,
+                                      boolean enableStatusSelector,
+                                      String categoryOperator,
+                                      String category,
+                                      boolean enableCategorySelector,
+                                      String customSelectorName) throws SerializableException;
 
     /**
      * return custom selector names
@@ -329,7 +361,6 @@ public interface RepositoryService extends RemoteService {
      */
     public String buildPackageSource(String packageUUID) throws SerializableException;
 
-
     /**
      * This will return the effective source for an asset (in DRL).
      * Used as an aid for debugging.
@@ -345,31 +376,32 @@ public interface RepositoryService extends RemoteService {
     /**
      * Rename an asset.
      */
-    public String renameAsset(String uuid, String newName);
+    public String renameAsset(String uuid,
+                              String newName);
 
     /**
      * Rename a category - taking in the full path, and just the new name.
      */
-    public void renameCategory(String fullPathAndName, String newName);
+    public void renameCategory(String fullPathAndName,
+                               String newName);
 
-    /**
-     * Archive asset based on uuid
-     * @param uuid
-     */
-    public void archiveAsset(String uuid, boolean value );
+    public void archiveAsset(String uuid);
+
+    public void unArchiveAsset(String uuid);
 
     /**
      * Archive assets based on uuid
      * @param uuids
      */
-    public void archiveAssets(String[] uuids, boolean value );
-    
+    public void archiveAssets(String[] uuids,
+                              boolean value);
+
     /**
      * Remove an asset based on uuid
      * @param uuid
      */
     public void removeAsset(String uuid);
-    
+
     /**
      * Remove assets based on uuid
      * @param uuids
@@ -385,7 +417,8 @@ public interface RepositoryService extends RemoteService {
     /**
      * Rename a package.
      */
-    public String renamePackage(String uuid, String newName);
+    public String renamePackage(String uuid,
+                                String newName);
 
     /**
      * This will force a rebuild of all snapshots binary data.
@@ -394,15 +427,12 @@ public interface RepositoryService extends RemoteService {
      */
     public void rebuildSnapshots() throws SerializableException;
 
-
     /**
      * This will force a rebuild of all packages binary data.
      * No errors are expected, as there will be no change. If there are errors,
      * an expert will need to look at them.
      */
     public void rebuildPackages() throws SerializableException;
-
-
 
     /**
      * This will list the rules available in a package.
@@ -417,8 +447,8 @@ public interface RepositoryService extends RemoteService {
      * @return The scenario, with the results fields populated.
      * @throws SerializableException
      */
-    public SingleScenarioResult runScenario(String packageName, Scenario scenario) throws SerializableException;
-
+    public SingleScenarioResult runScenario(String packageName,
+                                            Scenario scenario) throws SerializableException;
 
     /**
      * This should be pretty obvious what it does !
@@ -429,7 +459,6 @@ public interface RepositoryService extends RemoteService {
      * Analyse the package and get a report for it.
      */
     public AnalysisReport analysePackage(String packageUUID) throws SerializableException;
-
 
     /**
      * List the fact types (class names) in the scope of a given package.
@@ -452,7 +481,8 @@ public interface RepositoryService extends RemoteService {
      * @param valuePairs key=value pairs to be interpolated into the expression.
      * @param expression The expression, which will then be eval'ed to generate a String[]
      */
-    public String[] loadDropDownExpression(String[] valuePairs, String expression);
+    public String[] loadDropDownExpression(String[] valuePairs,
+                                           String expression);
 
     /**
      * Runs a full text search using JCR.
@@ -463,7 +493,10 @@ public interface RepositoryService extends RemoteService {
      * @return
      * @throws SerializableException
      */
-    public TableDataResult queryFullText(String text, boolean seekArchived, int skip, int numRows) throws SerializableException;
+    public TableDataResult queryFullText(String text,
+                                         boolean seekArchived,
+                                         int skip,
+                                         int numRows) throws SerializableException;
 
     /**
      * Run a meta data search. All dates are in format as configured for the system. Pass in null and they will not be included in the search (that
@@ -479,9 +512,14 @@ public interface RepositoryService extends RemoteService {
      * @return
      * @throws SerializableException
      */
-    public TableDataResult queryMetaData(final MetaDataQuery[] qr, Date createdAfter, Date createdBefore, Date modifiedAfter, Date modifiedBefore,
-    		boolean seekArchived, int skip, int numRows) throws SerializableException;
-
+    public TableDataResult queryMetaData(final MetaDataQuery[] qr,
+                                         Date createdAfter,
+                                         Date createdBefore,
+                                         Date modifiedAfter,
+                                         Date modifiedBefore,
+                                         boolean seekArchived,
+                                         int skip,
+                                         int numRows) throws SerializableException;
 
     /**
      * @return A map of username : list of permission types for display reasons.
@@ -498,8 +536,8 @@ public interface RepositoryService extends RemoteService {
     /**
      * Update the user permissions - takes the userName, and a map from permission type to the list of targets it applies to.
      */
-    public void updateUserPermissions(String userName, Map<String, List<String>> perms);
-
+    public void updateUserPermissions(String userName,
+                                      Map<String, List<String>> perms);
 
     /**
      * List the available permission types.
@@ -516,7 +554,7 @@ public interface RepositoryService extends RemoteService {
      * create new user.
      */
     public void createUser(String userName);
-    
+
     /**
      * Returns the lockers user name
      * @param uuid
@@ -542,18 +580,16 @@ public interface RepositoryService extends RemoteService {
      */
     public void installSampleRepository() throws SerializableException;
 
-
     /**
      * Return a list of discussion items for a given asset...
      */
     public List<DiscussionRecord> loadDiscussionForAsset(String assetId);
 
-
     /**
      * Append a discussion item for the current user.
      */
-    public List<DiscussionRecord> addToDiscussionForAsset(String assetId, String comment);
-
+    public List<DiscussionRecord> addToDiscussionForAsset(String assetId,
+                                                          String comment);
 
     /** Only for admins, they can nuke it from orbit to clear it out */
     public void clearAllDiscussionsForAsset(String assetId);
@@ -563,18 +599,18 @@ public interface RepositoryService extends RemoteService {
      */
     public List<PushResponse> subscribe();
 
-
     /**
      * Load the data for a given inbox for the currently logged in user.
      */
     public TableDataResult loadInbox(String inboxName) throws DetailedSerializableException;
 
-
     public SnapshotDiffs compareSnapshots(String packageName,
                                           String firstSnapshotName,
                                           String secondSnapshotName);
-    
-    public AnalysisReport verifyAsset(RuleAsset asset, Set<String> activeWorkingSets) throws SerializableException;
 
-    public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset, Set<String> activeWorkingSets) throws SerializableException;
+    public AnalysisReport verifyAsset(RuleAsset asset,
+                                      Set<String> activeWorkingSets) throws SerializableException;
+
+    public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset,
+                                                           Set<String> activeWorkingSets) throws SerializableException;
 }

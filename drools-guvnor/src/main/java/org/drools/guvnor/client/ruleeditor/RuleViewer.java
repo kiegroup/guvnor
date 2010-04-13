@@ -26,6 +26,7 @@ import org.drools.guvnor.client.messages.Constants;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.util.Format;
@@ -54,8 +55,8 @@ public class RuleViewer extends GuvnorEditor {
     private VerticalPanel              layout;
     private HorizontalPanel            hsp;
 
-    private long                       lastSaved = System.currentTimeMillis();
-    private Constants                  constants = ((Constants) GWT.create( Constants.class ));
+    private long                       lastSaved   = System.currentTimeMillis();
+    private Constants                  constants   = ((Constants) GWT.create( Constants.class ));
 
     private final EditItemEvent        editEvent;
 
@@ -78,6 +79,7 @@ public class RuleViewer extends GuvnorEditor {
         this.metaVisible = metaVisible;
         this.metaWidget.setVisible( metaVisible );
     }
+
     /**
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
@@ -135,11 +137,11 @@ public class RuleViewer extends GuvnorEditor {
         //the action widgets (checkin/close etc).
         toolbar = new ActionToolbar( asset,
                                      readOnly,
-                                     editor,                                     
+                                     editor,
                                      checkInCommand,
-                                     new ActionToolbar.CheckinAction() {
-                                         public void doCheckin(String comment) {
-                                             doArchive( comment );
+                                     new Command() {
+                                         public void execute() {
+                                             doArchive();
                                          }
                                      },
                                      new Command() {
@@ -156,12 +158,12 @@ public class RuleViewer extends GuvnorEditor {
                                          public void execute() {
                                              doCopy();
                                          }
-                                     }, 
+                                     },
                                      new Command() {
                                          public void execute() {
                                              doPromptToGlobal();
                                          }
-                                     });
+                                     } );
 
         //layout.add(toolbar, DockPanel.NORTH);
         layout.add( toolbar );
@@ -240,22 +242,20 @@ public class RuleViewer extends GuvnorEditor {
         readOnly = true; //set to not cause the extra confirm popup
         RepositoryServiceFactory.getService().deleteUncheckedRule( this.asset.uuid,
                                                                    this.asset.metaData.packageName,
-                                                                   new GenericCallback() {
-                                                                       public void onSuccess(Object o) {
+                                                                   new GenericCallback<Void>() {
+                                                                       public void onSuccess(Void o) {
                                                                            close();
                                                                        }
                                                                    } );
     }
 
-    /**
-     * This responds to the checkin command.
-     */
-
-    private void doArchive(String comment) {
-        this.readOnly = true; //set to read only to not bother with the close warning
-        this.asset.archived = true;
-        this.performCheckIn( comment );
-        this.closeCommand.execute();
+    private void doArchive() {
+        RepositoryServiceFactory.getService().archiveAsset( asset.uuid,
+                                                            new GenericCallback<Void>() {
+                                                                public void onSuccess(Void o) {
+                                                                    close();
+                                                                }
+                                                            } );
     }
 
     private void performCheckIn(String comment) {
@@ -291,12 +291,8 @@ public class RuleViewer extends GuvnorEditor {
 
                                                                       doco.resetDirty();
 
-                                                                      // No need to refresh if we are archiving
-                                                                      if ( asset.archived ) {
-                                                                          LoadingPopup.close();
-                                                                      } else {
-                                                                          refreshMetaWidgetOnly( false );
-                                                                      }
+                                                                      refreshMetaWidgetOnly( false );
+
                                                                       LoadingPopup.close();
                                                                       saved[0] = true;
 
@@ -418,8 +414,9 @@ public class RuleViewer extends GuvnorEditor {
         form.addAttribute( constants.NewName(),
                            newName );
         final RulePackageSelector sel = new RulePackageSelector();
-        form.addAttribute( constants.NewPackage(), sel );
-        
+        form.addAttribute( constants.NewPackage(),
+                           sel );
+
         Button ok = new Button( constants.CreateCopy() );
         ok.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
@@ -432,12 +429,12 @@ public class RuleViewer extends GuvnorEditor {
                     return;
                 }
                 RepositoryServiceFactory.getService().copyAsset( asset.uuid,
-                		                                         sel.getSelectedPackage(),
+                                                                 sel.getSelectedPackage(),
                                                                  name,
                                                                  new GenericCallback<String>() {
                                                                      public void onSuccess(String data) {
                                                                          completedCopying( newName.getText(),
-                                                                        		           sel.getSelectedPackage(),
+                                                                                           sel.getSelectedPackage(),
                                                                                            data );
                                                                          form.hide();
                                                                      }
@@ -470,27 +467,27 @@ public class RuleViewer extends GuvnorEditor {
             editEvent.open( newAssetUUID );
         }
     }
-    
+
     private void doPromptToGlobal() {
-        if (asset.metaData.packageName.equals("globalArea")) {
+        if ( asset.metaData.packageName.equals( "globalArea" ) ) {
             Window.alert( constants.ItemAlreadyInGlobalArea() );
             return;
         }
-        if (Window.confirm(constants.PromoteAreYouSure()) ) {
-            RepositoryServiceFactory.getService().promoteAssetToGlobalArea(asset.uuid,
-                    new GenericCallback<Void>() {
-                        public void onSuccess(Void data) {
-                            Window.alert(constants.Promoted());
-                            refreshMetaWidgetOnly();
-                        }
+        if ( Window.confirm( constants.PromoteAreYouSure() ) ) {
+            RepositoryServiceFactory.getService().promoteAssetToGlobalArea( asset.uuid,
+                                                                            new GenericCallback<Void>() {
+                                                                                public void onSuccess(Void data) {
+                                                                                    Window.alert( constants.Promoted() );
+                                                                                    refreshMetaWidgetOnly();
+                                                                                }
 
-                        @Override
-                        public void onFailure(Throwable t) {                           
-                            super.onFailure( t );
-                        }
-                    } );
+                                                                                @Override
+                                                                                public void onFailure(Throwable t) {
+                                                                                    super.onFailure( t );
+                                                                                }
+                                                                            } );
 
-} ;
- 	
+        };
+
     }
 }

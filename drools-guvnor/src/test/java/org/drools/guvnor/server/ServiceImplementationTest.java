@@ -1778,8 +1778,7 @@ public class ServiceImplementationTest extends TestCase {
                                                       1000 );
         assertEquals( -1,
                       td.total );
-        impl.archiveAsset( uuid4,
-                           true );
+        impl.archiveAsset( uuid4 );
 
         TableDataResult td2 = impl.loadArchivedAssets( 0,
                                                        1000 );
@@ -1793,8 +1792,7 @@ public class ServiceImplementationTest extends TestCase {
         assertEquals( 3,
                       res.data.length );
 
-        impl.archiveAsset( uuid4,
-                           false );
+        impl.unArchiveAsset( uuid4 );
 
         res = impl.listAssets( pkgUUID,
                                arr( "testArchiveAsset" ),
@@ -1854,8 +1852,7 @@ public class ServiceImplementationTest extends TestCase {
                                                       1000 );
         assertEquals( -1,
                       td.total );
-        impl.archiveAsset( uuid4,
-                           true );
+        impl.archiveAsset( uuid4 );
         PackageItem packageItem = impl.repository.loadPackage( packageName );
         packageItem.archiveItem( true );
 
@@ -1872,8 +1869,7 @@ public class ServiceImplementationTest extends TestCase {
                       res.data.length );
 
         try {
-            impl.archiveAsset( uuid4,
-                               false );
+            impl.unArchiveAsset( uuid4 );
             fail( "Should throw an exception" );
         } catch ( RulesRepositoryException e ) {
             // Works
@@ -3353,8 +3349,6 @@ public class ServiceImplementationTest extends TestCase {
         assertEquals( 1,
                       report.warnings.length );
 
-        
-        
     }
 
     public void testListFactTypesAvailableInPackage() throws Exception {
@@ -3618,8 +3612,7 @@ public class ServiceImplementationTest extends TestCase {
                                                        "testSnapshotDiff",
                                                        AssetFormats.DRL );
 
-        impl.archiveAsset( restoredRuleUuid,
-                           true );
+        impl.archiveAsset( restoredRuleUuid );
 
         // Create a snapshot called FIRST for the package
         impl.createPackageSnapshot( "testSnapshotDiff",
@@ -3638,8 +3631,7 @@ public class ServiceImplementationTest extends TestCase {
 
         impl.removeAsset( deletedRuleUuid );
 
-        impl.archiveAsset( archiveRuleUuid,
-                           true );
+        impl.archiveAsset( archiveRuleUuid );
 
         String addedRuleUuid = impl.createNewRule( "testRuleAdded",
                                                    "",
@@ -3647,8 +3639,7 @@ public class ServiceImplementationTest extends TestCase {
                                                    "testSnapshotDiff",
                                                    AssetFormats.DRL );
 
-        impl.archiveAsset( restoredRuleUuid,
-                           false );
+        impl.unArchiveAsset( restoredRuleUuid );
 
         // Create a snapshot called SECOND for the package
         impl.createPackageSnapshot( "testSnapshotDiff",

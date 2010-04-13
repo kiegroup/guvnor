@@ -240,8 +240,11 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     public void renameCategory(java.lang.String p0, java.lang.String p1)  {
         getService().renameCategory( p0,  p1);
     }
-    public void archiveAsset(java.lang.String p0, boolean p1)  {
-        getService().archiveAsset( p0,  p1);
+    public void archiveAsset(java.lang.String p0)  {
+        getService().archiveAsset( p0);
+    }
+    public void unArchiveAsset(java.lang.String p0)  {
+        getService().unArchiveAsset( p0);
     }
     public void archiveAssets(java.lang.String[] p0, boolean p1)  {
         getService().archiveAssets( p0,  p1);

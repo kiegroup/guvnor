@@ -1,4 +1,5 @@
 package org.drools.guvnor.client.rpc;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,8 +16,6 @@ package org.drools.guvnor.client.rpc;
  * limitations under the License.
  */
 
-
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
@@ -31,14 +30,15 @@ import org.drools.guvnor.client.modeldriven.brl.PortableObject;
  */
 public class RuleAsset
     implements
-    Serializable, IsSerializable {
-    
-    public MetaData metaData;
+    Serializable,
+    IsSerializable {
+
+    public MetaData       metaData;
     public PortableObject content;
 
-    public String uuid;
-    public boolean archived = false;
-    public boolean isreadonly = false;
+    public String         uuid;
+    public boolean        isreadonly = false;
+
     public long getVersionNumber() {
         return metaData.versionNumber;
     }

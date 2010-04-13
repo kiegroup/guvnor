@@ -39,7 +39,8 @@ import com.google.gwt.user.client.rpc.SerializableException;
 
 public class RuleFlowHandler extends ContentHandler
     implements
-    ICompilable {
+    ICompilable,
+    ICanHasAttachment {
 
     public void retrieveAssetContent(RuleAsset asset,
                                      PackageItem pkg,
@@ -128,7 +129,7 @@ public class RuleFlowHandler extends ContentHandler
      * 
      * @param item
      */
-    public void ruleFlowAttached(AssetItem item) {
+    public void onAttachmentAdded(AssetItem item) {
         String content = item.getContent();
 
         if ( content != null && !content.equals( "" ) ) {
@@ -152,6 +153,10 @@ public class RuleFlowHandler extends ContentHandler
         }
     }
 
+    public void onAttachmentRemoved(AssetItem item) throws IOException {
+        // Nothing to do when this asset type is removed.
+    }
+
     public void compile(BRMSPackageBuilder builder,
                         AssetItem asset,
                         ErrorLogger logger) throws DroolsParserException,
@@ -161,4 +166,5 @@ public class RuleFlowHandler extends ContentHandler
             builder.addRuleFlow( new InputStreamReader( asset.getBinaryContentAttachment() ) );
         }
     }
+
 }

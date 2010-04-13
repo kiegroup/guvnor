@@ -111,7 +111,7 @@ public class FileManagerUtilsTest extends TestCase {
                               this.getClass().getResourceAsStream( "/billasurf.jar" ),
                               "billasurf.jar" );
         pkg = repo.loadPackage( "testAttachModelImports" );
-        assertEquals( "goo wee\nimport com.billasurf.Person\nimport com.billasurf.Board\n",
+        assertEquals( "goo wee\nimport com.billasurf.Board\nimport com.billasurf.Person\n",
                       ServiceImplementation.getDroolsHeader( pkg ) );
 
     }
@@ -119,7 +119,7 @@ public class FileManagerUtilsTest extends TestCase {
     public void testGetFilebyUUID() throws Exception {
         FileManagerUtils uploadHelper = new FileManagerUtils();
         RulesRepository repo = new RulesRepository( session );
-        uploadHelper.setRepository(repo);
+        uploadHelper.setRepository( repo );
         AssetItem item = repo.loadDefaultPackage().addAsset( "testGetFilebyUUID",
                                                              "description" );
         item.updateFormat( "drl" );
@@ -151,7 +151,7 @@ public class FileManagerUtilsTest extends TestCase {
         Thread.sleep( 20 );
         FileManagerUtils uploadHelper = new FileManagerUtils();
 
-        uploadHelper.setRepository(repo);
+        uploadHelper.setRepository( repo );
         PackageItem pkg = repo.createPackage( "testGetBinaryPackageServlet",
                                               "" );
         ServiceImplementation.updateDroolsHeader( "import java.util.List",
@@ -241,12 +241,13 @@ public class FileManagerUtilsTest extends TestCase {
      */
     public void testImportArchivedPackage() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
-        fm.setRepository(new RulesRepository( session ));
+        fm.setRepository( new RulesRepository( session ) );
 
         // Import package
         String drl = "package testClassicDRLImport\n import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in, null );
+        fm.importClassicDRL( in,
+                             null );
 
         PackageItem pkg = fm.getRepository().loadPackage( "testClassicDRLImport" );
         assertNotNull( pkg );
@@ -261,7 +262,8 @@ public class FileManagerUtilsTest extends TestCase {
 
         // Import it again
         InputStream in2 = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in2, null );
+        fm.importClassicDRL( in2,
+                             null );
 
         pkg = fm.getRepository().loadPackage( "testClassicDRLImport" );
         assertNotNull( pkg );
@@ -271,10 +273,11 @@ public class FileManagerUtilsTest extends TestCase {
 
     public void testClassicDRLImport() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
-        fm.setRepository(new RulesRepository( session ));
+        fm.setRepository( new RulesRepository( session ) );
         String drl = "package testClassicDRLImport\n import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in, null );
+        fm.importClassicDRL( in,
+                             null );
 
         PackageItem pkg = fm.getRepository().loadPackage( "testClassicDRLImport" );
         assertNotNull( pkg );
@@ -310,7 +313,8 @@ public class FileManagerUtilsTest extends TestCase {
         // now lets import an existing thing
         drl = "package testClassicDRLImport\n import should not see \n rule 'ola2' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         in = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in, null );
+        fm.importClassicDRL( in,
+                             null );
 
         pkg = fm.getRepository().loadPackage( "testClassicDRLImport" );
         assertNotNull( pkg );
@@ -332,7 +336,8 @@ public class FileManagerUtilsTest extends TestCase {
 
         drl = "package testClassicDRLImport\n import blah \n rule 'ola' \n when CHANGED\n then \n end \n rule 'hola' \n when \n then \n end";
         in = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in, null );
+        fm.importClassicDRL( in,
+                             null );
         pkg = fm.getRepository().loadPackage( "testClassicDRLImport" );
         AssetItem asset = pkg.loadAsset( "ola" );
 
@@ -344,19 +349,22 @@ public class FileManagerUtilsTest extends TestCase {
 
     public void testDRLImportWithoutPackageName() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
-        fm.setRepository(new RulesRepository( session ));
+        fm.setRepository( new RulesRepository( session ) );
         String drl = "import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
 
         try {
-            fm.importClassicDRL( in, null );
+            fm.importClassicDRL( in,
+                                 null );
         } catch ( IllegalArgumentException e ) {
-            assertEquals( "Missing package name.", e.getMessage() );
+            assertEquals( "Missing package name.",
+                          e.getMessage() );
         }
 
         in = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in, "testDRLImportWithoutPackageName" );
-        
+        fm.importClassicDRL( in,
+                             "testDRLImportWithoutPackageName" );
+
         PackageItem pkg = fm.getRepository().loadPackage( "testDRLImportWithoutPackageName" );
         assertNotNull( pkg );
 
@@ -392,26 +400,26 @@ public class FileManagerUtilsTest extends TestCase {
 
     public void testDRLImportOverrideExistingPackageName() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
-        fm.setRepository(new RulesRepository( session ));
+        fm.setRepository( new RulesRepository( session ) );
         String drl = "package thisIsNeverUsed \n import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
-        
-        
+
         in = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in, "testDRLImportOverrideExistingPackageName" );
-        
+        fm.importClassicDRL( in,
+                             "testDRLImportOverrideExistingPackageName" );
+
         PackageItem pkg = fm.getRepository().loadPackage( "testDRLImportOverrideExistingPackageName" );
         assertNotNull( pkg );
-        
+
         List<AssetItem> rules = iteratorToList( pkg.getAssets() );
         assertEquals( 3,
                       rules.size() );
-        
+
         AssetItem pkgConf = rules.get( 0 );
         assertEquals( "drools",
                       pkgConf.getName() );
         rules.remove( 0 );
-        
+
         final AssetItem rule1 = rules.get( 0 );
         assertEquals( "ola",
                       rule1.getName() );
@@ -419,7 +427,7 @@ public class FileManagerUtilsTest extends TestCase {
         assertEquals( AssetFormats.DRL,
                       rule1.getFormat() );
         assertTrue( rule1.getContent().indexOf( "when" ) > -1 );
-        
+
         final AssetItem rule2 = rules.get( 1 );
         assertEquals( "hola",
                       rule2.getName() );
@@ -427,18 +435,19 @@ public class FileManagerUtilsTest extends TestCase {
         assertEquals( AssetFormats.DRL,
                       rule2.getFormat() );
         assertTrue( rule2.getContent().indexOf( "when" ) > -1 );
-        
+
         assertNotNull( ServiceImplementation.getDroolsHeader( pkg ) );
         assertTrue( ServiceImplementation.getDroolsHeader( pkg ).indexOf( "import" ) > -1 );
-        
+
     }
 
     public void testClassicDRLImportWithDSL() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
-        fm.setRepository(new RulesRepository( session ));
+        fm.setRepository( new RulesRepository( session ) );
         String drl = "package testClassicDRLImportDSL\n import blah \n expander goo \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in, null );
+        fm.importClassicDRL( in,
+                             null );
 
         PackageItem pkg = fm.getRepository().loadPackage( "testClassicDRLImportDSL" );
         assertNotNull( pkg );
@@ -488,7 +497,7 @@ public class FileManagerUtilsTest extends TestCase {
         while ( true ) {
             iterations++;
             FileManagerUtils fm = new FileManagerUtils();
-            fm.setRepository(new RulesRepository( TestEnvironmentSessionHelper.getSession() ));
+            fm.setRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession() ) );
 
             if ( iterations % 50 == 0 ) {
                 updatePackage( "testHeadOOME" );
