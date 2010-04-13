@@ -262,14 +262,16 @@ public class ExplorerViewCenterPanel {
 							// When model is saved update the package view if it is
 							// opened.
 							if (a.metaData.format.equals(AssetFormats.MODEL)) {
-								rv.setCheckedInCommand(new Command() {
-									public void execute() {
-										PackageEditor packageEditor = openedPackageEditors.get(a.metaData.packageName);
-										if (packageEditor != null) {
-											packageEditor.reload();
-										}
-									}
-								});
+							    Command command =new Command() {
+                                    public void execute() {
+                                        PackageEditor packageEditor = openedPackageEditors.get(a.metaData.packageName);
+                                        if (packageEditor != null) {
+                                            packageEditor.reload();
+                                        }
+                                    }
+                                };
+								rv.setCheckedInCommand( command );
+								rv.setArchiveCommand( command );
 							}
 
 							LoadingPopup.close();

@@ -16,19 +16,31 @@ package org.drools.guvnor.client.ruleeditor;
  * limitations under the License.
  */
 
-import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.common.ErrorPopup;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.common.RulePackageSelector;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
-import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.util.Format;
 
 /**
@@ -39,6 +51,7 @@ import com.gwtext.client.util.Format;
 public class RuleViewer extends GuvnorEditor {
 
     private Command                    closeCommand;
+    private Command                    archiveCommand;
     public Command                     checkedInCommand;
     public ActionToolbar.CheckinAction checkInCommand;
     protected RuleAsset                asset;
@@ -253,6 +266,9 @@ public class RuleViewer extends GuvnorEditor {
         RepositoryServiceFactory.getService().archiveAsset( asset.uuid,
                                                             new GenericCallback<Void>() {
                                                                 public void onSuccess(Void o) {
+                                                                    if ( archiveCommand != null ) {
+                                                                        archiveCommand.execute();
+                                                                    }
                                                                     close();
                                                                 }
                                                             } );
@@ -373,6 +389,10 @@ public class RuleViewer extends GuvnorEditor {
      */
     public void setCheckedInCommand(Command c) {
         this.checkedInCommand = c;
+    }
+
+    public void setArchiveCommand(Command c) {
+        this.archiveCommand = c;
     }
 
     /**
