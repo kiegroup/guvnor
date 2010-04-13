@@ -579,6 +579,7 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
                     if (cmd != null) {
                         cmd.execute();
                     }
+                    verifyRule(null);
                 }
             }
         };

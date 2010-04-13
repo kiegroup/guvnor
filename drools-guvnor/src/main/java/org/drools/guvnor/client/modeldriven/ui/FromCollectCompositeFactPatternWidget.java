@@ -15,6 +15,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
 import org.drools.guvnor.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
 import org.drools.guvnor.client.modeldriven.brl.FromCollectCompositeFactPattern;
 import org.drools.guvnor.client.modeldriven.brl.FromCompositeFactPattern;
@@ -90,6 +91,8 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                 patternWidget = new FromCollectCompositeFactPatternWidget(this.getModeller(), (FromCollectCompositeFactPattern) rPattern,this.readOnly);
             } else if (rPattern instanceof FromCompositeFactPattern) {
                 patternWidget = new FromCompositeFactPatternWidget(this.getModeller(), (FromCompositeFactPattern) rPattern,this.readOnly);
+            } else if (rPattern instanceof FreeFormLine) {
+                patternWidget = new FreeFormLineWidget(this.getModeller(), (FreeFormLine) rPattern,this.readOnly);
             } else {
                 throw new IllegalArgumentException("Unsuported pattern " + rPattern + " for right side of FROM COLLECT");
             }
@@ -174,6 +177,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
             }
         });
 
+        final Button freeFormDRLBtn = new Button(constants.FreeFormDrl());
         final Button fromBtn = new Button(constants.From());
         final Button fromAccumulateBtn = new Button(constants.FromAccumulate());
         final Button fromCollectBtn = new Button(constants.FromCollect());
@@ -188,6 +192,8 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                     getFromCollectPattern().setRightPattern(new FromAccumulateCompositeFactPattern());
                 } else if (sender == fromCollectBtn) {
                     getFromCollectPattern().setRightPattern(new FromCollectCompositeFactPattern());
+                } else if (sender == freeFormDRLBtn) {
+                    getFromCollectPattern().setRightPattern(new FreeFormLine());
                 } else {
                     throw new IllegalArgumentException("Unknown sender: " + sender);
                 }
@@ -197,10 +203,12 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
             }
         };
 
+        freeFormDRLBtn.addClickListener(btnsClickListener);
         fromBtn.addClickListener(btnsClickListener);
         fromAccumulateBtn.addClickListener(btnsClickListener);
         fromCollectBtn.addClickListener(btnsClickListener);
 
+        popup.addAttribute("", freeFormDRLBtn);
         popup.addAttribute("", fromBtn);
         popup.addAttribute("", fromAccumulateBtn);
         popup.addAttribute("", fromCollectBtn);
