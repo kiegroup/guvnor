@@ -40,10 +40,9 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
 
     private void initExtraLeftSidePatternFactTypes(){
         extraLeftSidePatternFactTypes = new HashMap<String, String>();
-        extraLeftSidePatternFactTypes.put("java.util.Collection", "java.util.Collection");
-        extraLeftSidePatternFactTypes.put("java.util.List", "java.util.List");
-        extraLeftSidePatternFactTypes.put("java.util.Set", "java.util.Set");
-        extraLeftSidePatternFactTypes.put("java.lang.Number", "java.lang.Number");
+        extraLeftSidePatternFactTypes.put("Collection", "Collection");
+        extraLeftSidePatternFactTypes.put("List", "List");
+        extraLeftSidePatternFactTypes.put("Set", "Set");
     }
 
     @Override
