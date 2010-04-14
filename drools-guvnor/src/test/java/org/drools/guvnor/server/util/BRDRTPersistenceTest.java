@@ -50,7 +50,7 @@ public class BRDRTPersistenceTest extends TestCase {
 				"rule \"with composite_0\"\n" + 
 				"	dialect \"mvel\"\n" + 
 				"	when\n" + 
-				"		$p : Person( name == \"name_na\" )\n" + 
+				"		$p : Person( name == name_na )\n" + 
 				"	then\n" + 
 				"end";
         TemplateModel m = new TemplateModel();
@@ -119,7 +119,7 @@ public class BRDRTPersistenceTest extends TestCase {
 		m.lhs[0] = fp;
 		
 		FreeFormLine ffl = new FreeFormLine();
-		ffl.text = "Cheese(type == \"@{type}\", price < @{price})";
+		ffl.text = "Cheese(type == @{type}, price < @{price})";
 		
 		m.lhs[1] = ffl;
 
@@ -130,8 +130,8 @@ public class BRDRTPersistenceTest extends TestCase {
 		aif.addFieldValue(afv);
 		m.rhs[0] = aif;
 
-		m.addRow(new String[] {"baunax", "Cheddar", "23", "34"});
-		m.addRow(new String[] {"diegoll", "Gouda", "17", "87"});
+		m.addRow(new String[] {"\"baunax\"", "\"Cheddar\"", "23", "34"});
+		m.addRow(new String[] {"\"diegoll\"", "\"Gouda\"", "17", "87"});
 		final String drl = p.marshal(m);
 		log.info("drl :\n{}", drl);
 
@@ -186,8 +186,8 @@ public class BRDRTPersistenceTest extends TestCase {
         aif.addFieldValue(afv);
         m.rhs[0] = aif;
         
-        m.addRow(new String[] {"baunax", "34"});
-        m.addRow(new String[] {"diegoll", "87"});
+        m.addRow(new String[] {"\"baunax\"", "34"});
+        m.addRow(new String[] {"\"diegoll\"", "87"});
         final String drl = p.marshal(m);
 		log.info("drl :\n{}", drl);
 		
@@ -229,8 +229,8 @@ public class BRDRTPersistenceTest extends TestCase {
         
         m.lhs[0] = fp;
         
-        m.addRow(new String[] {"baunax"});
-        m.addRow(new String[] {"diegoll"});
+        m.addRow(new String[] {"\"baunax\""});
+        m.addRow(new String[] {"\"diegoll\""});
         
         final String drl = p.marshal(m);
 		log.info("drl :\n{}", drl);

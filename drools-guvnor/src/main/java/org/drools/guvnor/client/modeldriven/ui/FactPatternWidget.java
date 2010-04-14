@@ -118,8 +118,6 @@ public class FactPatternWidget extends RuleModellerWidget {
         pattern.setFieldConstraints(sortedConst);
         drawConstraints(sortedConst);
 
-        
-
         if (this.readOnly){
             layout.addStyleName("editor-disabled-widget");
         }
@@ -148,13 +146,13 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         for (int i = 0; i < sortedConst.size(); i++) {
             int tabs = -1;
-            FieldConstraint current = (FieldConstraint) sortedConst.get(i);
+            FieldConstraint current = sortedConst.get(i);
             if (current instanceof SingleFieldConstraint) {
                 SingleFieldConstraint single = (SingleFieldConstraint) current;
                 FieldConstraint parent = single.parent;
 
                 for (int j = 0; j < parents.size(); j++) {
-                    FieldConstraint storedParent = (FieldConstraint) parents.get(j);
+                    FieldConstraint storedParent = parents.get(j);
                     if (storedParent != null && storedParent.equals(parent)) {
                         tabs = j + 1;
                         for (int k = j + 1; k < parents.size(); k++) {
