@@ -1534,7 +1534,6 @@ public class ServiceImplementation
         try {
             PackageItem pkg = repository.loadPackage( packageName );
             BRMSSuggestionCompletionLoader loader = null;
-
             List<JarInputStream> jars = BRMSPackageBuilder.getJars( pkg );
             if ( jars != null && !jars.isEmpty() ) {
                 ClassLoader cl = BRMSPackageBuilder.createClassLoader( jars );

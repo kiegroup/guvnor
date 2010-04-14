@@ -15,11 +15,11 @@ package org.drools.guvnor.server.util;
  * limitations under the License.
  */
 
-
-
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.jar.JarInputStream;
 
 import org.drools.guvnor.client.common.AssetFormats;
@@ -27,6 +27,7 @@ import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.rules.SuggestionCompletionLoader;
+import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -39,55 +40,71 @@ import org.drools.repository.PackageItem;
  */
 public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
 
-    public SuggestionCompletionEngine getSuggestionEngine(PackageItem pkg) {
-
-    		StringBuilder buf = new StringBuilder();
-    		AssetItemIterator it = pkg.listAssetsByFormat(new String[] {AssetFormats.DRL_MODEL});
-    		while(it.hasNext()) {
-    			AssetItem as = it.next();
-    			buf.append(as.getContent());
-    			buf.append('\n');
-    		}
-
-            return super.getSuggestionEngine( ServiceImplementation.getDroolsHeader(pkg) + "\n" + buf.toString(),
-            									getJars( pkg ),
-            									getDSLMappingFiles( pkg ),
-            									getDataEnums( pkg ));
-    }
-
+    private final Set<ImportDescr> extraImports = new HashSet<ImportDescr>();
 
     public BRMSSuggestionCompletionLoader() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+        super();
+        initAndAttachExtraImportsProvider();
+    }
 
+    public BRMSSuggestionCompletionLoader(ClassLoader classLoader) {
+        super(classLoader);
+        initAndAttachExtraImportsProvider();
+    }
 
-	public BRMSSuggestionCompletionLoader(ClassLoader classLoader) {
-		super(classLoader);
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * Initialize the extra Imports and creates a Provider to use them.
+     */
+    private void initAndAttachExtraImportsProvider(){
+        this.extraImports.add(new ImportDescr("java.util.Set"));
+        this.extraImports.add(new ImportDescr("java.util.List"));
+        this.extraImports.add(new ImportDescr("java.util.Collection"));
+        this.extraImports.add(new ImportDescr("java.lang.Number"));
 
+        this.addExternalImportDescrProvider(new ExternalImportDescrProvider() {
 
-	private List<String> getDataEnums(PackageItem pkg) {
-        Iterator it = pkg.listAssetsByFormat( new String[] {AssetFormats.ENUMERATION} );
+            public Set<ImportDescr> getImportDescrs() {
+                return extraImports;
+            }
+        });
+    }
+
+    public SuggestionCompletionEngine getSuggestionEngine(PackageItem pkg) {
+
+        StringBuilder buf = new StringBuilder();
+        AssetItemIterator it = pkg.listAssetsByFormat(new String[]{AssetFormats.DRL_MODEL});
+        while (it.hasNext()) {
+            AssetItem as = it.next();
+            buf.append(as.getContent());
+            buf.append('\n');
+        }
+
+        return super.getSuggestionEngine(ServiceImplementation.getDroolsHeader(pkg) + "\n" + buf.toString(),
+                getJars(pkg),
+                getDSLMappingFiles(pkg),
+                getDataEnums(pkg));
+    }
+
+    private List<String> getDataEnums(PackageItem pkg) {
+        Iterator it = pkg.listAssetsByFormat(new String[]{AssetFormats.ENUMERATION});
         List<String> list = new ArrayList<String>();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             AssetItem item = (AssetItem) it.next();
-            list.add( item.getContent() );
+            list.add(item.getContent());
         }
         return list;
     }
 
     private List<DSLTokenizedMappingFile> getDSLMappingFiles(PackageItem pkg) {
-        return BRMSPackageBuilder.getDSLMappingFiles( pkg, new BRMSPackageBuilder.DSLErrorEvent() {
+        return BRMSPackageBuilder.getDSLMappingFiles(pkg, new BRMSPackageBuilder.DSLErrorEvent() {
+
             public void recordError(AssetItem asset, String message) {
-                errors.add( asset.getName() + " : " + message );
+                errors.add(asset.getName() + " : " + message);
             }
         });
     }
 
     private List<JarInputStream> getJars(PackageItem pkg) {
-        return BRMSPackageBuilder.getJars( pkg );
+        return BRMSPackageBuilder.getJars(pkg);
     }
-
 }

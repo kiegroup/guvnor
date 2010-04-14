@@ -109,7 +109,8 @@ public class PopulateDataTest extends TestCase {
         SuggestionCompletionEngine eng = serv.loadSuggestionCompletionEngine( "com.billasurf.manufacturing.plant" );
         assertNotNull(eng);
 
-        assertEquals(2, eng.getFactTypes().length);
+        //The loader could define extra imports
+        assertTrue( eng.getFactTypes().length >= 2);
         String[] fields = (String[]) eng.getModelFields( "Board" );
         assertTrue(fields.length >= 3);
 

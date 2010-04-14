@@ -85,7 +85,6 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
-import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
@@ -98,6 +97,7 @@ import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.permission.RoleBasedPermissionResolver;
 
 import com.google.gwt.user.client.rpc.SerializableException;
+import java.util.Arrays;
 
 /**
  * This is really a collection of integration tests.
@@ -1915,14 +1915,14 @@ public class ServiceImplementationTest extends TestCase {
 
         SuggestionCompletionEngine eng = impl.loadSuggestionCompletionEngine( pkg.getName() );
         assertNotNull( eng );
-        assertEquals( 2,
-                      eng.getFactTypes().length );
 
-        for ( String ft : eng.getFactTypes() ) {
-            if ( !(ft.equals( "Board" ) || ft.equals( "Whee" )) ) {
-                fail( "Should be one of the above..." );
-            }
-        }
+        //The loader could define extra imports
+        assertTrue(eng.getFactTypes().length >= 2);
+        List<String> factTypes =Arrays.asList(eng.getFactTypes());
+
+        assertTrue(factTypes.contains("Board"));
+        assertTrue(factTypes.contains("Whee"));
+
     }
 
     public void testDiscussion() throws Exception {

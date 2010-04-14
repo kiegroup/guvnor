@@ -18,7 +18,6 @@ package org.drools.guvnor.server.rules;
 
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -115,11 +114,12 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
 
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( item );
         assertNotNull(engine);
-        String[] factTypes = engine.getFactTypes();
 
-        assertEquals( 2, factTypes.length );
-        assertEquals("Date", factTypes[0]);
-        assertEquals("Person", factTypes[1]);
+        List<String> factTypes = Arrays.asList(engine.getFactTypes());
+
+        assertEquals( 2 + loader.getExternalImportDescrs().size(), factTypes.size() );
+        assertTrue(factTypes.contains("Date"));
+        assertTrue(factTypes.contains("Person"));
 
         String[] fieldsForType = engine.getFieldCompletions( "Person" );
         assertEquals( 2, fieldsForType.length );
@@ -146,7 +146,7 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( item );
         assertNotNull(engine);
         String[] factTypes = engine.getFactTypes();
-        assertEquals(1, factTypes.length);
+        assertEquals(1 + loader.getExternalImportDescrs().size(), factTypes.length);
         assertEquals("Car", factTypes[0]);
 
         List<String> fields = Arrays.asList( engine.getFieldCompletions("Car") );
