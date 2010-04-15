@@ -76,7 +76,7 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 				if ("tplTable".equals(newPanel.getId())) {
 					Set<String> keySet = new HashSet<String>(model.getTable().keySet());
 					model.putInSync();
-					if (!keySet.equals(model.getTable().keySet())) {
+					if (!keySet.equals(model.getTable().keySet()) || model.getRowsCount() == 0) {
 						newPanel.clear();
 						newPanel.add(buildTemplateTable());
 					}
