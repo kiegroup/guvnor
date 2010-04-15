@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import java.util.regex.Pattern;
 
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.ServiceImplementation;
@@ -61,15 +62,14 @@ public class ModelContentHandler extends ContentHandler
         Set<String> imports = getImportsFromJar( asset.getBinaryContentAttachment() );
 
         for ( String importLine : imports ) {
-            if ( header.indexOf( importLine ) == -1 ) {
-                header.append( importLine ).append( "\n" );
-            }
+        	Pattern pattern = Pattern.compile("\\b" + importLine.replace(".", "\\.") + "\\b");
+        	if (!pattern.matcher(header).find()) {
+        		header.append( importLine ).append( "\n" );
+        	}
         }
 
-        ServiceImplementation.updateDroolsHeader( header.toString(),
-                                                  pkg );
-
-        pkg.checkin( "Imports setup automatically on model import." );
+		ServiceImplementation.updateDroolsHeader(header.toString(), pkg);
+		pkg.checkin("Imports setup automatically on model import.");
 
     }
 
