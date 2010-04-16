@@ -29,7 +29,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * in-process).
  */
 
-public interface RepositoryServiceAsync extends RemoteService {
+public interface RepositoryServiceAsync {
 
     /** PLACE THE FOLLOWING IN RepositoryServiceAsync.java **/
 
