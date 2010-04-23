@@ -103,6 +103,10 @@ public class ConstraintsContainer {
 	}
  	
 	public static ConstraintConfiguration getEmptyConfiguration(String constraintName) {
-		return getAllConfigurations().get(constraintName);
+		return copyConfig(getAllConfigurations().get(constraintName));
+	}
+
+	private static ConstraintConfiguration copyConfig(ConstraintConfiguration constraintConfiguration) {
+		return new SimpleConstraintConfigurationImpl(constraintConfiguration);
 	}
 }

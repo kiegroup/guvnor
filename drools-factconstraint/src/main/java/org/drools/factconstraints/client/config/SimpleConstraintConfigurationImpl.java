@@ -14,6 +14,13 @@ public class SimpleConstraintConfigurationImpl implements ConstraintConfiguratio
 	private String factType;
 	private String fieldName;
 
+	public SimpleConstraintConfigurationImpl(ConstraintConfiguration constraintConfiguration) {
+		copyFrom(constraintConfiguration);
+	}
+
+	public SimpleConstraintConfigurationImpl() {
+	}
+
 	public Set<String> getArgumentKeys() {
 		return args.keySet();
 	}
@@ -58,5 +65,18 @@ public class SimpleConstraintConfigurationImpl implements ConstraintConfiguratio
 	public String toString() {
 		return "SimpleConstraintConfigurationImpl [args=" + args + ", constraintName=" + constraintName + ", factType="
 				+ factType + ", fieldName=" + fieldName + "]";
+	}
+
+	private void copyFrom(ConstraintConfiguration other) {
+		if (constraintName != null) {
+			throw new RuntimeException("can't copy configuration on a configured instance");
+		}
+		this.constraintName = other.getConstraintName();
+		this.factType = other.getFactType();
+		this.fieldName = other.getFieldName();
+		this.args = new HashMap<String, String>();
+		for (String argName : other.getArgumentKeys()) {
+			this.args.put(argName, (String) other.getArgumentValue(argName));
+		}
 	}
 }

@@ -140,7 +140,6 @@ public class RangeConstraintSingleOperatorTest {
     public void testGT() {
 
         String rulesToVerify = "";
-        int fail = 0;
         int warning = 0;
 
         //FAIL
@@ -185,7 +184,6 @@ public class RangeConstraintSingleOperatorTest {
     public void testGE() {
 
         String rulesToVerify = "";
-        int fail = 0;
         int warning = 0;
 
         //FAIL
@@ -230,7 +228,6 @@ public class RangeConstraintSingleOperatorTest {
     public void testLT() {
 
         String rulesToVerify = "";
-        int fail = 0;
         int warning = 0;
 
         //FAIL
@@ -275,7 +272,6 @@ public class RangeConstraintSingleOperatorTest {
     public void testLE() {
 
         String rulesToVerify = "";
-        int fail = 0;
         int warning = 0;
 
         //FAIL

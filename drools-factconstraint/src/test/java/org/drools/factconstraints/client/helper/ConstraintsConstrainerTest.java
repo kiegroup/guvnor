@@ -50,4 +50,16 @@ public class ConstraintsConstrainerTest {
         assertEquals(1, cc.getConstraints("Pet", "name").size());
 	}
 	
+	@Test
+	public void newConfig() {
+		for (String confName : new String[] {"NotNull", "IntegerConstraint", "RangeConstraint", "NotMatches", "Matches"}) {
+			ConstraintConfiguration conf1 = ConstraintsContainer.getEmptyConfiguration(confName);
+			ConstraintConfiguration conf2 = ConstraintsContainer.getEmptyConfiguration(confName);
+			assertFalse(conf1.equals(conf2));
+			
+			assertEquals(conf1.getArgumentKeys(), conf2.getArgumentKeys());
+		}
+		
+	}
+	
 }

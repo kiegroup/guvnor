@@ -429,9 +429,7 @@ public class ActionToolbar extends Composite {
     }
 
     protected void showWorkingSetsSelection(RuleModeller modeller) {
-        final WorkingSetSelectorPopup pop = new WorkingSetSelectorPopup( modeller,
-                                                                         asset );
-        pop.show();
+        new WorkingSetSelectorPopup( modeller, asset ).show();
     }
 
     public static interface CheckinAction {

@@ -14,6 +14,7 @@ import org.drools.factconstraints.client.helper.ConstraintsContainer;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
@@ -29,7 +30,6 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -39,6 +39,7 @@ import com.gwtext.client.widgets.TabPanel;
 import com.gwtext.client.widgets.event.PanelListenerAdapter;
 
 public class WorkingSetEditor extends Composite {
+	private static int idGenerator = 0;
 	private Constants constants =  GWT.create(Constants.class);
 	private RuleAsset workingSet;
 	
@@ -70,19 +71,20 @@ public class WorkingSetEditor extends Composite {
         WorkingSetConfigData wsData = (WorkingSetConfigData) workingSet.content;
 		
 		TabPanel tPanel = new TabPanel();
+		tPanel.setWidth(800);
 		Panel pnl = new Panel();
-        pnl.setAutoWidth(true);
+//        pnl.setAutoWidth(true);
         pnl.setClosable(false);
         pnl.setTitle("WS Definition"); //TODO {bauna} i18n
-        pnl.setAutoHeight(true);
+//        pnl.setAutoHeight(true);
         pnl.add(buildDoubleList(wsData));
 		tPanel.add(pnl);
 		
 		pnl = new Panel();
-        pnl.setAutoWidth(true);
+//        pnl.setAutoWidth(true);
         pnl.setClosable(false);
         pnl.setTitle("WS Constraints"); //TODO {bauna} i18n
-        pnl.setAutoHeight(true);
+//        pnl.setAutoHeight(true);
         pnl.add(buildFactsConstraintsEditor(tPanel));
 		tPanel.add(pnl);
 		
@@ -136,18 +138,18 @@ public class WorkingSetEditor extends Composite {
         final FlexTable table = new FlexTable();
         
 		VerticalPanel vp = new VerticalPanel();
-		vp.add(new Label(constants.FactTypes()));
+		vp.add(new SmallLabel(constants.FactTypes()));
 		vp.add(factsCombo);
 		table.setWidget(0, 0, vp);
 		
 		vp = new VerticalPanel();
-		vp.add(new Label(constants.Field()));
+		vp.add(new SmallLabel(constants.Field()));
 		vp.add(fieldsCombo);
 		table.setWidget(1, 0, vp);
 		
 		vp = new VerticalPanel();
 		HorizontalPanel hp = new HorizontalPanel();
-		vp.add(new Label(constants.ConstraintsSection()));
+		vp.add(new SmallLabel("Constraints")); //TODO i18n
 		hp.add(constraintsCombo);
 		
 		VerticalPanel btnPanel = new VerticalPanel();
@@ -164,8 +166,8 @@ public class WorkingSetEditor extends Composite {
 			}
 		});
 		
-		vpConstraintConf.add(new Label(constants.ConstraintsSection()));
-		vpConstraintConf.add(new Label(""));
+		vpConstraintConf.add(new SmallLabel("Contraints Parameters")); //TODO i18n
+		vpConstraintConf.add(new SmallLabel(""));
 		table.setWidget(0, 1, vpConstraintConf);
 		table.getFlexCellFormatter().setRowSpan(0, 1, 5);
 	
@@ -187,7 +189,7 @@ public class WorkingSetEditor extends Composite {
 	private void showConstraintConfig() {
 		if (constraintsCombo.getItemCount() == 0) {
 			vpConstraintConf.remove(vpConstraintConf.getWidgetCount() - 1);
-			vpConstraintConf.add(new Label());
+			vpConstraintConf.add(new SmallLabel());
 			return;
 		}
 		if (constraintsCombo.getSelectedIndex() != -1) {
@@ -285,19 +287,19 @@ public class WorkingSetEditor extends Composite {
 				constraintsCombo.addItem(c.getConstraintName(), addContrainsMap(c));
 			}
 			vpConstraintConf.remove(vpConstraintConf.getWidgetCount() - 1);
-			vpConstraintConf.add(new Label());
+			vpConstraintConf.add(new SmallLabel());
 		}
 		showConstraintConfig();
 	}
 	
-	private String addContrainsMap(ConstraintConfiguration c) {
-		String id = "" + contraintsMap.size();
+	synchronized private String addContrainsMap(ConstraintConfiguration c) {
+		String id = String.valueOf(idGenerator++);
 		contraintsMap.put(id, c);
 		return id;
 	}
 	
 	private Grid buildDoubleList(WorkingSetConfigData wsData) {
-		Grid grid = new Grid(1, 3);
+		Grid grid = new Grid(2, 3);
 		
 		SuggestionCompletionEngine sce = SuggestionCompletionCache.getInstance().getEngineFromCache(workingSet.metaData.packageName);
 		boolean filteringFact = sce.isFilteringFacts();
@@ -340,9 +342,12 @@ public class WorkingSetEditor extends Composite {
 				}
 			}));
 
-			grid.setWidget(0, 0, availFacts);
-			grid.setWidget(0, 1, btnsPanel);
-			grid.setWidget(0, 2, validFacts);
+			grid.setWidget(0, 0, new SmallLabel("Available Facts")); //TODO i18n
+			grid.setWidget(0, 1, new SmallLabel(""));
+			grid.setWidget(0, 2, new SmallLabel("WorkingSet Facts")); //TODO i18n
+			grid.setWidget(1, 0, availFacts);
+			grid.setWidget(1, 1, btnsPanel);
+			grid.setWidget(1, 2, validFacts);
 			
 			grid.getColumnFormatter().setWidth(0, "45%");
 			grid.getColumnFormatter().setWidth(0, "10%");

@@ -41,18 +41,19 @@ import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 public class RuleTemplateEditor extends DirtyableComposite implements RuleModelEditor {
 
 	private TemplateModel model;
-	private GroupingStore store;
+	private GroupingStore store = null;
 	private RuleModeller ruleModeller;
 	private Constants constants = ((Constants) GWT.create(Constants.class));
 
 	public RuleTemplateEditor(RuleAsset asset) {
 		model = (TemplateModel) asset.content;
 		TabPanel tPanel = new TabPanel();
-		tPanel.setAutoWidth(true);
+		tPanel.setWidth(800);
+//		tPanel.setAutoWidth(true);
 //		tPanel.setAutoHeight(true);
 		
 		Panel pnl = new Panel();
-		pnl.setAutoWidth(true);
+//		pnl.setAutoWidth(true);
 		pnl.setClosable(false);
 		pnl.setTitle("Template Editor");
 //		pnl.setAutoHeight(true);
@@ -61,7 +62,7 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 		tPanel.add(pnl);
 
 		pnl = new Panel();
-		pnl.setAutoWidth(true);
+//		pnl.setAutoWidth(true);
 		pnl.setClosable(false);
 		pnl.setTitle("Template Data");
 //		pnl.setAutoHeight(true);
@@ -124,7 +125,7 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 		}
 		store = new GroupingStore(proxy, reader);
 		store.load();
-		EditorGridPanel grid = new EditorGridPanel(store, cm);
+		final EditorGridPanel grid = new EditorGridPanel(store, cm);
 		grid.setStripeRows(true);
 
 		GroupingView gv = new GroupingView();
@@ -153,7 +154,7 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 				model.addRow(rowData);
 			}
 		}));
-
+		
 		ToolbarMenuButton tbb = new ToolbarMenuButton(constants.Modify(), menu);
 		tb.addButton(tbb);
 		grid.add(tb);
