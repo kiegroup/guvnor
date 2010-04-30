@@ -25,7 +25,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
-      <version>5.1.0.SNAPSHOT</version>
       <type>jar</type>
     </dependency>
   </dependencies>
