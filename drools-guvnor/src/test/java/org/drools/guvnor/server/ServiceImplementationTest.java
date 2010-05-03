@@ -18,6 +18,7 @@ package org.drools.guvnor.server;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,7 +31,9 @@ import junit.framework.TestCase;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.StatelessSession;
-import org.drools.type.DateFormatsImpl;
+import org.drools.core.util.BinaryRuleBaseLoader;
+import org.drools.core.util.DateUtils;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.Inbox;
 import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
@@ -55,6 +58,7 @@ import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializableException;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryService;
@@ -70,17 +74,16 @@ import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
-import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
+import org.drools.guvnor.server.repository.MailboxService;
+import org.drools.guvnor.server.repository.RepositoryStartupService;
+import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.util.BRXMLPersistence;
 import org.drools.guvnor.server.util.IO;
 import org.drools.guvnor.server.util.ScenarioXMLPersistence;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
-import org.drools.guvnor.server.repository.MailboxService;
-import org.drools.guvnor.server.repository.RepositoryStartupService;
-import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.CategoryItem;
@@ -89,15 +92,12 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.rule.Package;
-import org.drools.core.util.BinaryRuleBaseLoader;
-import org.drools.core.util.DateUtils;
-import org.drools.core.util.DroolsStreamUtils;
+import org.drools.type.DateFormatsImpl;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.permission.RoleBasedPermissionResolver;
 
 import com.google.gwt.user.client.rpc.SerializableException;
-import java.util.Arrays;
 
 /**
  * This is really a collection of integration tests.
@@ -153,6 +153,7 @@ public class ServiceImplementationTest extends TestCase {
         for ( TableDataRow row : res.data ) {
             if ( row.id.equals( as.getUUID() ) ) {
                 rowMatch = row;
+				break;
             }
         }
         assertNotNull( rowMatch );
