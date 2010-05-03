@@ -175,6 +175,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <artifactId>drools-factconstraint</artifactId>
       </dependency>
       <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-ide-common</artifactId>
+      </dependency>
+      <dependency>
          <groupId>wsdl4j</groupId>
          <artifactId>wsdl4j</artifactId>
          <version>1.6.2</version>
@@ -201,6 +205,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>javax.servlet</groupId>
          <artifactId>servlet-api</artifactId>
+         <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>pl.balon.gwt</groupId>
@@ -258,13 +263,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <groupId>javax.el</groupId>
          <artifactId>el-api</artifactId>
          <version>1.2</version>
-         <scope>runtime</scope>
+         <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-ri</artifactId>
          <version>1.2</version>
-         <scope>runtime</scope>
+         <scope>provided</scope>
       </dependency>
       <!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
       <dependency>
