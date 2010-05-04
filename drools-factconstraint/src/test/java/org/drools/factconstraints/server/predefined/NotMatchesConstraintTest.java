@@ -3,10 +3,10 @@ package org.drools.factconstraints.server.predefined;
 import java.util.Collection;
 
 import org.drools.builder.ResourceType;
-import org.drools.factconstraint.server.Constraint;
 import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.client.ValidationResult;
 import org.drools.factconstraints.client.config.SimpleConstraintConfigurationImpl;
+import org.drools.factconstraints.server.Constraint;
 import org.drools.io.ResourceFactory;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;

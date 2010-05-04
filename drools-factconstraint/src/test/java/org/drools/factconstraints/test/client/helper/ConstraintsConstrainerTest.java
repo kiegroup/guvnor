@@ -1,4 +1,4 @@
-package org.drools.factconstraints.client.helper;
+package org.drools.factconstraints.test.client.helper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
