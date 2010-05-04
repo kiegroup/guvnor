@@ -3,10 +3,10 @@ package org.drools.factconstraints.server.predefined;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.factconstraint.server.Constraint;
 import org.drools.factconstraints.client.ArgumentNotSetException;
 import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.client.ValidationResult;
+import org.drools.factconstraints.server.Constraint;
 
 /**
  * 

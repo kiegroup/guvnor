@@ -1,7 +1,7 @@
-package org.drools.factconstraint.server.factory;
+package org.drools.factconstraints.server.factory;
 
-import org.drools.factconstraint.server.Constraint;
 import org.drools.factconstraints.client.ConstraintConfiguration;
+import org.drools.factconstraints.server.Constraint;
 import org.drools.factconstraints.server.predefined.IntegerConstraint;
 import org.drools.factconstraints.server.predefined.MatchesConstraint;
 import org.drools.factconstraints.server.predefined.NotMatchesConstraint;

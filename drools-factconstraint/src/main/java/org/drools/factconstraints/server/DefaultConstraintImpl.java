@@ -1,4 +1,4 @@
-package org.drools.factconstraint.server;
+package org.drools.factconstraints.server;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.factconstraint.server.DefaultConstraintImpl;
 import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.client.ValidationResult;
+import org.drools.factconstraints.server.DefaultConstraintImpl;
 
 /**
  *

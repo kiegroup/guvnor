@@ -1,4 +1,4 @@
-package org.drools.factconstraint.server;
+package org.drools.factconstraints.server;
 
 import java.io.Serializable;
 import java.util.List;
