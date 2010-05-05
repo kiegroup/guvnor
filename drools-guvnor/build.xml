@@ -56,7 +56,7 @@
 		<gwt:compile outDir="target/gwt-compiled-output"
 			gwtHome="${gwt.home}"
 			classBase="org.drools.guvnor.Guvnor"
-			sourceclasspath="src/main/java; ../drools-compiler/src/main/java; ../drools-factconstraint/src/main/java; ../drools-factconstraint/src/main/resources; ../lib/gwtext.jar; ../lib/gwt-diagrams-0.1.jar; ../lib/cobogw-1.0.jar"/>
+			sourceclasspath="src/main/java; ../drools-ide-common/src/main/java; ../drools-ide-common/src/main/resources; ../drools-factconstraint/src/main/java; ../drools-factconstraint/src/main/resources; ../lib/gwtext.jar; ../lib/gwt-diagrams-0.1.jar; ../lib/cobogw-1.0.jar"/>
 		<!-- get rid of old -->
 	 	 <delete>
 	      <fileset dir="src/main/webapp/org.drools.guvnor.Guvnor" includes="*.gwt.rpc *.cache.html *.cache.js *.cache.xml *.cache.png"/>
