@@ -1,7 +1,5 @@
 package org.drools.testframework;
 
-import static org.mvel2.MVEL.eval;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -10,26 +8,29 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.*;
+import org.drools.Cheese;
+import org.drools.Cheesery;
+import org.drools.OuterFact;
+import org.drools.Person;
+import org.drools.WorkingMemory;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.guvnor.client.modeldriven.testing.ActivateRuleFlowGroup;
-import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
-import org.drools.guvnor.client.modeldriven.testing.Expectation;
-import org.drools.guvnor.client.modeldriven.testing.FactData;
-import org.drools.guvnor.client.modeldriven.testing.FieldData;
-import org.drools.guvnor.client.modeldriven.testing.Fixture;
-import org.drools.guvnor.client.modeldriven.testing.RetractFact;
-import org.drools.guvnor.client.modeldriven.testing.Scenario;
-import org.drools.guvnor.client.modeldriven.testing.VerifyFact;
-import org.drools.guvnor.client.modeldriven.testing.VerifyField;
-import org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired;
-import org.drools.guvnor.server.util.ScenarioXMLPersistence;
+import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.Expectation;
+import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.FieldData;
+import org.drools.ide.common.client.modeldriven.testing.Fixture;
+import org.drools.ide.common.client.modeldriven.testing.RetractFact;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
+import org.drools.ide.common.client.modeldriven.testing.VerifyField;
+import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.ide.common.server.util.ScenarioXMLPersistence;
 import org.drools.rule.TimeMachine;
-import org.mvel2.MVEL;
 
 public class ScenarioRunnerTest extends RuleUnit {
 

@@ -23,12 +23,12 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.DropDownData;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.DropDownData;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Button;

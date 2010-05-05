@@ -6,19 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.MethodInfo;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.ExpressionCollection;
-import org.drools.guvnor.client.modeldriven.brl.ExpressionCollectionIndex;
-import org.drools.guvnor.client.modeldriven.brl.ExpressionField;
-import org.drools.guvnor.client.modeldriven.brl.ExpressionFormLine;
-import org.drools.guvnor.client.modeldriven.brl.ExpressionGlobalVariable;
-import org.drools.guvnor.client.modeldriven.brl.ExpressionMethod;
-import org.drools.guvnor.client.modeldriven.brl.ExpressionPart;
-import org.drools.guvnor.client.modeldriven.brl.ExpressionText;
-import org.drools.guvnor.client.modeldriven.brl.ExpressionVariable;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -27,6 +14,19 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.widgets.form.Label;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.ide.common.client.modeldriven.MethodInfo;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionCollection;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionCollectionIndex;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionField;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionFormLine;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionGlobalVariable;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionMethod;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionPart;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionText;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionVariable;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 
 public class ExpressionBuilder extends RuleModellerWidget {
 

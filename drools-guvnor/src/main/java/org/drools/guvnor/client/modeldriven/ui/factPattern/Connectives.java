@@ -2,14 +2,14 @@ package org.drools.guvnor.client.modeldriven.ui.factPattern;
 
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.ConnectiveConstraint;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
-import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.guvnor.client.modeldriven.ui.ConstraintValueEditor;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ListBox;

@@ -4,8 +4,8 @@ import org.drools.repository.events.SaveEvent;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.server.util.BRXMLPersistence;
+import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.server.util.BRXMLPersistence;
 
 /**
  * @author Michael Neale

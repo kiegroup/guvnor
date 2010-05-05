@@ -23,10 +23,10 @@ import java.util.Set;
 import java.util.jar.JarInputStream;
 
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
-import org.drools.guvnor.server.rules.SuggestionCompletionLoader;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.repository.AssetItem;

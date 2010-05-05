@@ -18,12 +18,12 @@ package org.drools.guvnor.client.ruleeditor;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;

@@ -6,8 +6,8 @@ import java.util.Set;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.dt.TemplateModel;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Label;

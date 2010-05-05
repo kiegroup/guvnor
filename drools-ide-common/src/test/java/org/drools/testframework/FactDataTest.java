@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
-import org.drools.guvnor.client.modeldriven.testing.FactData;
-import org.drools.guvnor.client.modeldriven.testing.FieldData;
+import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.FieldData;
 
 public class FactDataTest extends TestCase {
 	public void testAdd() {

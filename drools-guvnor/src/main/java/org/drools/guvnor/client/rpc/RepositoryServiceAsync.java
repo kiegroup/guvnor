@@ -87,7 +87,7 @@ public interface RepositoryServiceAsync {
 	void loadRuleAssets(java.lang.String[] UUIDs, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.RuleAsset[]> arg2);
 	void loadRuleListForCategories(java.lang.String categoryPath, int skip, int numRows, java.lang.String tableConfig, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> arg5);
 	void loadRuleListForState(java.lang.String state, int skip, int numRows, java.lang.String tableConfig, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> arg5);
-	void loadSuggestionCompletionEngine(java.lang.String packageName, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine> arg2);
+	void loadSuggestionCompletionEngine(java.lang.String packageName, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine> arg2);
 	void loadTableConfig(java.lang.String listName, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.TableConfig> arg2);
 	void lockAsset(java.lang.String uuid, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg2);
 	void promoteAssetToGlobalArea(java.lang.String assetUUID, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg2);
@@ -107,7 +107,7 @@ public interface RepositoryServiceAsync {
 	void renameState(java.lang.String oldName, java.lang.String newName, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg3);
 	void restoreVersion(java.lang.String versionUUID, java.lang.String assetUUID, java.lang.String comment, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg4);
 	void retrieveUserPermissions(java.lang.String userName, com.google.gwt.user.client.rpc.AsyncCallback<java.util.Map<java.lang.String, java.util.List<java.lang.String>>> arg2);
-	void runScenario(java.lang.String packageName, org.drools.guvnor.client.modeldriven.testing.Scenario scenario, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.SingleScenarioResult> arg3);
+	void runScenario(java.lang.String packageName, org.drools.ide.common.client.modeldriven.testing.Scenario scenario, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.SingleScenarioResult> arg3);
 	void runScenariosInPackage(java.lang.String packageUUID, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.BulkTestRunResult> arg2);
 	void savePackage(org.drools.guvnor.client.rpc.PackageConfigData data, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.ValidatedResponse> arg2);
 	void showLog(com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.LogEntry[]> arg1);

@@ -19,14 +19,14 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 
 import org.drools.guvnor.client.common.*;
-import org.drools.guvnor.client.modeldriven.DropDownData;
-import org.drools.guvnor.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertLogicalFact;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.ide.common.client.modeldriven.DropDownData;
+import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
+import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
+import org.drools.ide.common.client.modeldriven.brl.ActionInsertLogicalFact;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;

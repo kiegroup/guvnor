@@ -33,9 +33,9 @@ import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.brl.RuleAttribute;
-import org.drools.guvnor.client.modeldriven.brl.RuleMetadata;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
+import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
+import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 
 /**
  * Displays a list of rule options (attributes).

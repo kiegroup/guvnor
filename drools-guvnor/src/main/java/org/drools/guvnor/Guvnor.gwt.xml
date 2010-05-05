@@ -9,6 +9,7 @@
 	<inherits name="pl.balon.gwt.diagrams.Diagrams"/>
 	<inherits name="org.cobogw.gwt.user.User"/>
 	<inherits name="org.drools.factconstraints.FactConstraints"/>
+	<inherits name="org.drools.ide.common.Common"/>
 
     <!-- Here we put different locales (translations)
      There are of the form values="xx_YY" - which match to Constants_xx_YY.properties which contain the content.

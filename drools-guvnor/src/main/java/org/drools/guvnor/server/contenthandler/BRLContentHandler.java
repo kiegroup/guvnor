@@ -20,13 +20,13 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
-import org.drools.guvnor.server.util.BRDRLPersistence;
-import org.drools.guvnor.server.util.BRLPersistence;
-import org.drools.guvnor.server.util.BRXMLPersistence;
+import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.server.util.BRDRLPersistence;
+import org.drools.ide.common.server.util.BRLPersistence;
+import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 

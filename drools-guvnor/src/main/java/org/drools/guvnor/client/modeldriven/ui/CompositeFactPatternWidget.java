@@ -22,10 +22,10 @@ import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.DirtyableVerticalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;

@@ -2,10 +2,10 @@ package org.drools.guvnor.client.decisiontable;
 
 import java.util.List;
 
-import org.drools.guvnor.client.modeldriven.dt.ActionCol;
-import org.drools.guvnor.client.modeldriven.dt.AttributeCol;
-import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
-import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.ActionCol;
+import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;

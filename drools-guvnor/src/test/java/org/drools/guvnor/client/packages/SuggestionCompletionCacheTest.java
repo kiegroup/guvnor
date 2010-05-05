@@ -19,8 +19,8 @@ package org.drools.guvnor.client.packages;
 
 import junit.framework.TestCase;
 
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 import com.google.gwt.user.client.Command;
 

@@ -21,7 +21,8 @@ import org.drools.guvnor.client.messages.Constants;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
-import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
+
+import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 
 /**
  * Free form DRL line widget

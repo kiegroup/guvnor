@@ -23,7 +23,7 @@ import java.io.Serializable;
 
 import org.drools.guvnor.client.rulefloweditor.TransferConnection;
 import org.drools.guvnor.client.rulefloweditor.TransferNode;
-import org.drools.guvnor.client.modeldriven.brl.PortableObject;
+import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 public class RuleFlowContentModel
     implements

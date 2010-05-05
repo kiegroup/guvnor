@@ -2,8 +2,8 @@ package org.drools.guvnor.client.ruleeditor;
 
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ClickableLabel;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;

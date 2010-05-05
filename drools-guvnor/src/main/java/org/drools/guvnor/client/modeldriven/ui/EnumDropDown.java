@@ -5,8 +5,9 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.IDirtyable;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.DropDownData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.ide.common.client.modeldriven.DropDownData;
+import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;

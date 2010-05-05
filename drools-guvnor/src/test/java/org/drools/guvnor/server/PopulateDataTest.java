@@ -26,11 +26,11 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.server.files.FileManagerUtils;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;

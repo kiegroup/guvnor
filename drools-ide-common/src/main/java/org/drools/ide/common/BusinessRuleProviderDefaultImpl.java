@@ -7,9 +7,9 @@ import java.io.StringReader;
 
 import org.drools.Service;
 import org.drools.compiler.BusinessRuleProvider;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.server.util.BRDRLPersistence;
-import org.drools.guvnor.server.util.BRXMLPersistence;
+import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.server.util.BRDRLPersistence;
+import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.io.Resource;
 
 public class BusinessRuleProviderDefaultImpl implements Service, BusinessRuleProvider {

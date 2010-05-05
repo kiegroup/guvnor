@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.drools.factconstraints.client.ConstraintConfiguration;
-import org.drools.guvnor.client.modeldriven.brl.PortableObject;
+import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * 

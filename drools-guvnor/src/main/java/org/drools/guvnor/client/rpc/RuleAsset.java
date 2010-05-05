@@ -20,7 +20,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
 
-import org.drools.guvnor.client.modeldriven.brl.PortableObject;
+import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * This is the "payload" of a rule asset.

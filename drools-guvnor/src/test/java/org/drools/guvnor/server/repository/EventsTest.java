@@ -6,12 +6,12 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.PackageItem;
 import org.drools.repository.AssetItem;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
-import org.drools.guvnor.server.util.BRXMLPersistence;
-import org.drools.guvnor.server.util.GuidedDTXMLPersistence;
+import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.ide.common.server.util.BRXMLPersistence;
+import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 
 /**
  * @author Michael Neale

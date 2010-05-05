@@ -6,7 +6,7 @@ import com.gwtext.client.util.Format;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 
 import java.util.Date;
 

@@ -3,7 +3,7 @@ package org.drools.guvnor.client.factmodel;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.modeldriven.brl.PortableObject;
+import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * Represents the GUI data for a fact model definition.

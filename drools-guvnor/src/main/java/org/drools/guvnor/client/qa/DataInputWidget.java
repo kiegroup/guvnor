@@ -6,11 +6,11 @@ import com.google.gwt.user.client.ui.*;
 import com.gwtext.client.util.Format;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
-import org.drools.guvnor.client.modeldriven.testing.FactData;
-import org.drools.guvnor.client.modeldriven.testing.FieldData;
-import org.drools.guvnor.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.FieldData;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import java.util.*;
 

@@ -20,12 +20,12 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
-import org.drools.guvnor.server.util.GuidedDTDRLPersistence;
-import org.drools.guvnor.server.util.GuidedDTXMLPersistence;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.ide.common.server.util.GuidedDTDRLPersistence;
+import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 

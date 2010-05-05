@@ -3,7 +3,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Button;

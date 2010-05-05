@@ -9,11 +9,11 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.DropDownData;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.DropDownData;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
+import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;

@@ -8,12 +8,12 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.dt.ActionSetFieldCol;
-import org.drools.guvnor.client.modeldriven.dt.ConditionCol;
-import org.drools.guvnor.client.modeldriven.dt.GuidedDecisionTable;
-import org.drools.guvnor.client.modeldriven.dt.ActionCol;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt.ActionCol;
+import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;

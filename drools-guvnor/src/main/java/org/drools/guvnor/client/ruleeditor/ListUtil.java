@@ -20,7 +20,7 @@ package org.drools.guvnor.client.ruleeditor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 
 public class ListUtil {
 

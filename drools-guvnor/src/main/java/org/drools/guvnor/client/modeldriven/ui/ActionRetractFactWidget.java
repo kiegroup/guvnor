@@ -19,7 +19,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
+import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
 

@@ -1,20 +1,20 @@
 package org.drools.guvnor.client.modeldriven.ui;
 
-import org.drools.guvnor.client.modeldriven.brl.ActionCallMethod;
-import org.drools.guvnor.client.modeldriven.brl.ActionGlobalCollectionAdd;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionRetractFact;
-import org.drools.guvnor.client.modeldriven.brl.ActionSetField;
-import org.drools.guvnor.client.modeldriven.brl.CompositeFactPattern;
-import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
-import org.drools.guvnor.client.modeldriven.brl.ExpressionFormLine;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
-import org.drools.guvnor.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
-import org.drools.guvnor.client.modeldriven.brl.FromCollectCompositeFactPattern;
-import org.drools.guvnor.client.modeldriven.brl.FromCompositeFactPattern;
-import org.drools.guvnor.client.modeldriven.brl.IAction;
-import org.drools.guvnor.client.modeldriven.brl.IPattern;
+import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
+import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
+import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
+import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
+import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
+import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionFormLine;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
+import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.IAction;
+import org.drools.ide.common.client.modeldriven.brl.IPattern;
 
 public class RuleModellerWidgetFactory implements ModellerWidgetFactory {
 	

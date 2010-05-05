@@ -6,14 +6,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.guvnor.client.modeldriven.testing.ActivateRuleFlowGroup;
-import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
-import org.drools.guvnor.client.modeldriven.testing.FactData;
-import org.drools.guvnor.client.modeldriven.testing.FieldData;
-import org.drools.guvnor.client.modeldriven.testing.Fixture;
-import org.drools.guvnor.client.modeldriven.testing.RetractFact;
-import org.drools.guvnor.client.modeldriven.testing.VerifyFact;
-import org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.FieldData;
+import org.drools.ide.common.client.modeldriven.testing.Fixture;
+import org.drools.ide.common.client.modeldriven.testing.RetractFact;
+import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
+import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 
 /**
  * Some utility methods as the display logic is a bit hairy.

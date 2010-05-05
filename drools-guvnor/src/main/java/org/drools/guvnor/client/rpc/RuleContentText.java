@@ -17,7 +17,7 @@ package org.drools.guvnor.client.rpc;
 
 
 
-import org.drools.guvnor.client.modeldriven.brl.PortableObject;
+import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * This is the guts of a plain text (advanced) rule.

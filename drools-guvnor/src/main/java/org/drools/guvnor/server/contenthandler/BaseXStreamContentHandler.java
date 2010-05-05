@@ -1,8 +1,8 @@
 package org.drools.guvnor.server.contenthandler;
 
-import org.drools.guvnor.client.modeldriven.brl.PortableObject;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
+import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;

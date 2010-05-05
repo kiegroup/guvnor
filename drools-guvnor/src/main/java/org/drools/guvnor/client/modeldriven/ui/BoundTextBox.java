@@ -2,7 +2,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 import org.drools.guvnor.client.common.FieldEditListener;
 import org.drools.guvnor.client.common.IDirtyable;
-import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ChangeListener;

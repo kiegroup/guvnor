@@ -14,12 +14,12 @@ import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
-import org.drools.guvnor.client.modeldriven.brl.FromCollectCompositeFactPattern;
-import org.drools.guvnor.client.modeldriven.brl.FromCompositeFactPattern;
-import org.drools.guvnor.client.modeldriven.brl.IPattern;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.IPattern;
 
 /**
  *

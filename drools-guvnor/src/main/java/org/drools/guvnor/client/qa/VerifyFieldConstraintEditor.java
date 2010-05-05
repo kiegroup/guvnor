@@ -8,19 +8,39 @@ package org.drools.guvnor.client.qa;
  * To change this template use File | Settings | File Templates.
  */
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.*;
-import com.gwtext.client.util.Format;
-import org.drools.guvnor.client.common.*;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.DropDownData;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.testing.*;
-import org.drools.guvnor.client.modeldriven.ui.ActionValueEditor;
-import org.drools.guvnor.client.modeldriven.ui.EnumDropDown;
-
 import java.util.List;
 import java.util.Map;
+
+import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.common.DropDownValueChanged;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.InfoPopup;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.ValueChanged;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.ui.ActionValueEditor;
+import org.drools.guvnor.client.modeldriven.ui.EnumDropDown;
+import org.drools.ide.common.client.modeldriven.DropDownData;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.FieldData;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.modeldriven.testing.VerifyField;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.util.Format;
 
 /**
  * Constraint editor for the VerifyField of the expect part

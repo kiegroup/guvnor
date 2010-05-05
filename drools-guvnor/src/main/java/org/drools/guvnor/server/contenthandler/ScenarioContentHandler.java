@@ -1,8 +1,8 @@
 package org.drools.guvnor.server.contenthandler;
 
-import org.drools.guvnor.client.modeldriven.testing.Scenario;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.server.util.ScenarioXMLPersistence;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.server.util.ScenarioXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 

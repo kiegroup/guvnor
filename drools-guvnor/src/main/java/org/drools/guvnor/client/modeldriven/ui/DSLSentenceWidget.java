@@ -24,8 +24,9 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;

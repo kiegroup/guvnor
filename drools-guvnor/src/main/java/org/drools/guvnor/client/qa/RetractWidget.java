@@ -5,8 +5,8 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.testing.RetractFact;
-import org.drools.guvnor.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.modeldriven.testing.RetractFact;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import java.util.Iterator;
 import java.util.List;

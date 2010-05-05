@@ -2,8 +2,10 @@ package org.drools.guvnor.server.util;
 
 import java.io.ByteArrayInputStream;
 
-import org.drools.guvnor.client.modeldriven.brl.RuleModel;
-import org.drools.guvnor.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.server.util.BRDRLPersistence;
+import org.drools.ide.common.server.util.BRLPersistence;
 import org.drools.template.DataProvider;
 import org.drools.template.DataProviderCompiler;
 import org.drools.template.objects.ArrayDataProvider;

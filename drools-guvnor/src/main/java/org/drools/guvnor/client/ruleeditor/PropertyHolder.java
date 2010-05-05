@@ -15,7 +15,7 @@ package org.drools.guvnor.client.ruleeditor;
  * limitations under the License.
  */
 
-import org.drools.guvnor.client.modeldriven.brl.PortableObject;
+import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * key/value pair to be used as an exchange object for properties rule asset

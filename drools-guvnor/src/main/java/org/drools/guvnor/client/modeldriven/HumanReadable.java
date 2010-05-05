@@ -23,7 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import org.drools.guvnor.client.modeldriven.brl.FromCompositeFactPattern;
+
+import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
 
 /**
  * This contains some simple mappings between operators, conditional elements and the human readable

@@ -2,10 +2,10 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.DropDownData;
-import org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.DropDownData;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Button;

@@ -216,7 +216,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     public void removeCategory(java.lang.String p0) throws SerializableException {
         getService().removeCategory( p0);
     }
-    public org.drools.guvnor.client.modeldriven.SuggestionCompletionEngine loadSuggestionCompletionEngine(java.lang.String p0) throws SerializableException {
+    public org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine loadSuggestionCompletionEngine(java.lang.String p0) throws SerializableException {
          return getService().loadSuggestionCompletionEngine( p0);
     }
     public org.drools.guvnor.client.rpc.BuilderResult buildPackage(java.lang.String p0, boolean p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, boolean p5, java.lang.String p6, java.lang.String p7, boolean p8, java.lang.String p9) throws SerializableException {
@@ -270,7 +270,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     public java.lang.String[] listRulesInPackage(java.lang.String p0) throws SerializableException {
          return getService().listRulesInPackage( p0);
     }
-    public org.drools.guvnor.client.rpc.SingleScenarioResult runScenario(java.lang.String p0, org.drools.guvnor.client.modeldriven.testing.Scenario p1) throws SerializableException {
+    public org.drools.guvnor.client.rpc.SingleScenarioResult runScenario(java.lang.String p0, org.drools.ide.common.client.modeldriven.testing.Scenario p1) throws SerializableException {
          return getService().runScenario( p0,  p1);
     }
     public org.drools.guvnor.client.rpc.BulkTestRunResult runScenariosInPackage(java.lang.String p0) throws SerializableException {

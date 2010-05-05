@@ -4,15 +4,16 @@ import java.util.HashSet;
 
 import junit.framework.TestCase;
 
-import org.drools.guvnor.client.modeldriven.brl.ActionFieldValue;
-import org.drools.guvnor.client.modeldriven.brl.ActionInsertFact;
-import org.drools.guvnor.client.modeldriven.brl.FactPattern;
-import org.drools.guvnor.client.modeldriven.brl.FreeFormLine;
-import org.drools.guvnor.client.modeldriven.brl.IAction;
-import org.drools.guvnor.client.modeldriven.brl.IPattern;
-import org.drools.guvnor.client.modeldriven.brl.ISingleFieldConstraint;
-import org.drools.guvnor.client.modeldriven.brl.SingleFieldConstraint;
-import org.drools.guvnor.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
+import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
+import org.drools.ide.common.client.modeldriven.brl.IAction;
+import org.drools.ide.common.client.modeldriven.brl.IPattern;
+import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.server.util.BRLPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

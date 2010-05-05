@@ -22,7 +22,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.*;
 import com.gwtext.client.util.Format;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.modeldriven.brl.ActionGlobalCollectionAdd;
+import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
 
 /**
  * Add Variable to global collection Widget

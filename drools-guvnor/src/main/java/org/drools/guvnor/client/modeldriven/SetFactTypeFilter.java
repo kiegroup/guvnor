@@ -6,7 +6,7 @@ package org.drools.guvnor.client.modeldriven;
 import java.util.Collections;
 import java.util.Set;
 
-import org.drools.guvnor.client.modeldriven.FactTypeFilter;
+import org.drools.ide.common.client.modeldriven.FactTypeFilter;
 
 public class SetFactTypeFilter implements FactTypeFilter {
 

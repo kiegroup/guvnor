@@ -1,7 +1,7 @@
 package org.drools.guvnor.client.modeldriven.ui;
 
-import org.drools.guvnor.client.modeldriven.brl.IAction;
-import org.drools.guvnor.client.modeldriven.brl.IPattern;
+import org.drools.ide.common.client.modeldriven.brl.IAction;
+import org.drools.ide.common.client.modeldriven.brl.IPattern;
 
 public interface ModellerWidgetFactory {
 

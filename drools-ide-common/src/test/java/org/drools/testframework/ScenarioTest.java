@@ -6,13 +6,13 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.drools.guvnor.client.modeldriven.testing.ExecutionTrace;
-import org.drools.guvnor.client.modeldriven.testing.FactData;
-import org.drools.guvnor.client.modeldriven.testing.RetractFact;
-import org.drools.guvnor.client.modeldriven.testing.Scenario;
-import org.drools.guvnor.client.modeldriven.testing.VerifyFact;
-import org.drools.guvnor.client.modeldriven.testing.VerifyField;
-import org.drools.guvnor.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.RetractFact;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
+import org.drools.ide.common.client.modeldriven.testing.VerifyField;
+import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 
 public class ScenarioTest extends TestCase {
 
