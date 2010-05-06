@@ -183,12 +183,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <artifactId>wsdl4j</artifactId>
          <version>1.6.2</version>
       </dependency>
-      <!--REVISIT: Should not depend on JCR directly. Refactor MailboxService.java to hide this dependency 
-    in drools-repository module-->
-      <dependency>
-         <groupId>javax.jcr</groupId>
-         <artifactId>jcr</artifactId>
-      </dependency>
+
       <!--REVISIT: This lib is needed by org.apache.util.Base64 in org.drools.guvnor.server.files.RepositoryServlet-->
       <dependency>
          <groupId>apache-slide</groupId>
@@ -224,10 +219,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>com.gwtext</groupId>
          <artifactId>gwtext</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>com.thoughtworks.xstream</groupId>
-         <artifactId>xstream</artifactId>
       </dependency>
       <dependency>
          <groupId>commons-fileupload</groupId>

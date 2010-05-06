@@ -3,8 +3,6 @@ package org.drools.repository;
 import junit.framework.TestCase;
 import org.drools.repository.security.PermissionManager;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -95,10 +93,6 @@ public class UserInfoTest extends TestCase {
 
 
         assertEquals("", info.getProperty("inbox", "qanno").value);
-
-
-
-
     }
 
     public void testIterateOverUsers() throws Exception {
@@ -109,16 +103,14 @@ public class UserInfoTest extends TestCase {
         UserInfo uf = new UserInfo(repo);
         uf.init(repo, "michael");
         uf.setProperty("random", "property", new UserInfo.Val("hi"));
-        uf.eachUser(repo, new UserInfo.Command() {
-            public void process(Node userNode) throws RepositoryException {
-                names.add(userNode.getName());
+        UserInfo.eachUser(repo, new UserInfo.Command() {
+            public void process(String toUser) {
+                names.add(toUser);
             }
         });
 
         assertTrue(names.size() > 0) ;
         assertTrue(names.contains("michael"));
-
-
     }
 
 }

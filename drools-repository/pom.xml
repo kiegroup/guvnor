@@ -43,6 +43,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>javax.jcr</groupId>
          <artifactId>jcr</artifactId>
+         <version>1.0</version>
       </dependency>
       <dependency>
          <groupId>org.tmatesoft</groupId>
@@ -65,6 +66,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <groupId>org.hsqldb</groupId>
          <artifactId>hsqldb</artifactId>
       </dependency>
+      <dependency>
+         <groupId>com.thoughtworks.xstream</groupId>
+         <artifactId>xstream</artifactId>
+      </dependency>      
       <!-- Logging -->
       <!-- TODO JBRULES-1254 remove the above, and replace by these:
         <dependency>

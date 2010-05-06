@@ -91,6 +91,7 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
+import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.rule.Package;
 import org.drools.type.DateFormatsImpl;
 import org.jboss.seam.contexts.Contexts;
@@ -723,7 +724,7 @@ public class ServiceImplementationTest extends TestCase {
 
         impl.checkinVersion( ass );
 
-        List<UserInbox.InboxEntry> es = ib.loadRecentEdited();
+        List<InboxEntry> es = ib.loadRecentEdited();
         assertEquals( 1,
                       es.size() );
         assertEquals( ass.uuid,
@@ -803,7 +804,7 @@ public class ServiceImplementationTest extends TestCase {
         ServiceImplementation serv = getService();
 
         UserInbox ib = new UserInbox( serv.repository );
-        List<UserInbox.InboxEntry> inbox = ib.loadRecentEdited();
+        List<InboxEntry> inbox = ib.loadRecentEdited();
 
         serv.listPackages();
 

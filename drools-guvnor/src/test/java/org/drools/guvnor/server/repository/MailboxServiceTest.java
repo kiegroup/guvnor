@@ -3,6 +3,7 @@ package org.drools.guvnor.server.repository;
 import junit.framework.TestCase;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.AssetItem;
+import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class MailboxServiceTest extends TestCase {
 
         Thread.sleep(300);
         
-        List<UserInbox.InboxEntry> es = ib.loadIncoming();
+        List<InboxEntry> es = ib.loadIncoming();
         assertEquals(1, es.size());
         assertEquals(asset.getUUID(), es.get(0).assetUUID);
 
