@@ -2262,9 +2262,15 @@ public class ServiceImplementation
             throw new DetailedSerializableException( "Unable to load a required class.",
                                                      e.getMessage() );
         } catch ( ConsequenceException e ) {
-            log.error( "There was an error executing the consequence of rule [" + e.getRule().getName() + "]: " + e.getMessage() );
-            throw new DetailedSerializableException( "There was an error executing the consequence of rule [" + e.getRule().getName() + "]",
-                                                     e.getMessage() );
+            String messageShort = "There was an error executing the consequence of rule [" + e.getRule().getName() + "]";
+            String messageLong = e.getMessage();
+            if (e.getCause() != null){
+                messageLong += "\nCAUSED BY "+e.getCause().getMessage();
+            }
+
+            log.error( messageShort+": "+messageLong );
+            throw new DetailedSerializableException( messageShort,
+                                                     messageLong );
         } catch ( Exception e ) {
             log.error( "Unable to run the scenario: " + e.getMessage() );
             throw new DetailedSerializableException( "Unable to run the scenario.",
@@ -2911,14 +2917,18 @@ public class ServiceImplementation
         if ( log.isDebugEnabled() ) {
             log.debug( "constraints rules: " + constraintRules );
         }
-        if ( AssetFormats.DECISION_TABLE_GUIDED.equals( asset.metaData.format ) || AssetFormats.DECISION_SPREADSHEET_XLS.equals( asset.metaData.format ) ) {
-            return runner.verify( drl,
-                                  VerifierConfiguration.VERIFYING_SCOPE_DECISION_TABLE,
-                                  constraintRules );
-        } else {
-            return runner.verify( drl,
-                                  VerifierConfiguration.VERIFYING_SCOPE_SINGLE_RULE,
-                                  constraintRules );
+        try{
+            if ( AssetFormats.DECISION_TABLE_GUIDED.equals( asset.metaData.format ) || AssetFormats.DECISION_SPREADSHEET_XLS.equals( asset.metaData.format ) ) {
+                return runner.verify( drl,
+                                      VerifierConfiguration.VERIFYING_SCOPE_DECISION_TABLE,
+                                      constraintRules );
+            } else {
+                return runner.verify( drl,
+                                      VerifierConfiguration.VERIFYING_SCOPE_SINGLE_RULE,
+                                      constraintRules );
+            }
+        } catch (Throwable t){
+            throw new SerializableException( t.getMessage() );
         }
     }
 }

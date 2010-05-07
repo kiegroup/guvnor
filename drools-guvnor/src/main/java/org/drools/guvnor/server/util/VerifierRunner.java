@@ -18,6 +18,7 @@ import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.VerifierConfigurationImpl;
+import org.drools.verifier.VerifierError;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.data.VerifierReport;
 
@@ -38,11 +39,11 @@ public class VerifierRunner {
 
         verifier.addResourcesToVerify( ResourceFactory.newReaderResource( new StringReader( drl ) ),
                                        ResourceType.DRL );
-        verifier.fireAnalysis();
-        VerifierReport res = verifier.getResult();
+        VerifierReport res = fireAnalysis();
 
         return VerifierReportCreator.doReport( res );
     }
+
 
     public AnalysisReport verify(PackageItem packageItem,
                                  String scope, Collection<String> additionalVerifierRules) {
@@ -66,11 +67,25 @@ public class VerifierRunner {
 
         addToRulesVerifier();
 
-        verifier.fireAnalysis();
+        this.fireAnalysis();
 
         VerifierReport report = verifier.getResult();
 
         return VerifierReportCreator.doReport( report );
+    }
+
+    private VerifierReport fireAnalysis() throws RuntimeException {
+        verifier.fireAnalysis();
+        if (verifier.hasErrors()) {
+            StringBuilder message = new StringBuilder("Verifier Errors:\n");
+            for (VerifierError verifierError : verifier.getErrors()) {
+                message.append("\t");
+                message.append(verifierError.getMessage());
+                message.append("\n");
+            }
+            throw new RuntimeException(message.toString());
+        }
+        return verifier.getResult();
     }
 
     private void initVerifier(String scope, Collection<String> additionalVerifierRules) {
