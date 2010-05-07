@@ -88,7 +88,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         this.pattern = (FactPattern) p;
         this.completions = mod.getSuggestionCompletions();
         this.bindable = canBind;
-        
+
         this.connectives = new Connectives();
         this.connectives.setCompletions(completions);
         this.connectives.setModeller(mod);
@@ -129,7 +129,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     }
 
-    
+
 	/**
      * Render a hierarchy of constraints, hierarchy here means constraints that may
      * themselves depend on members of constraint objects. With this code, the GUI
@@ -381,7 +381,8 @@ public class FactPatternWidget extends RuleModellerWidget {
         ClickListener click = new ClickListener() {
 
             public void onClick(Widget w) {
-                popupCreator.showPatternPopup(w, pattern.factType, null);
+                String factTypeShortName = (pattern.factType.contains(".")?pattern.factType.substring(pattern.factType.lastIndexOf(".")+1):pattern.factType);
+                popupCreator.showPatternPopup(w, factTypeShortName, null);
             }
         };
 

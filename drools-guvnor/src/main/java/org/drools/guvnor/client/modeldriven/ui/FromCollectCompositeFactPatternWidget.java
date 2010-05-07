@@ -41,9 +41,9 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
 
     private void initExtraLeftSidePatternFactTypes(){
         extraLeftSidePatternFactTypes = new HashMap<String, String>();
-        extraLeftSidePatternFactTypes.put("Collection", "Collection");
-        extraLeftSidePatternFactTypes.put("List", "List");
-        extraLeftSidePatternFactTypes.put("Set", "Set");
+        extraLeftSidePatternFactTypes.put("Collection","java.util.Collection");
+        extraLeftSidePatternFactTypes.put("List","java.util.List");
+        extraLeftSidePatternFactTypes.put("Set","java.util.Set");
     }
 
     @Override
@@ -137,7 +137,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         box.addChangeListener(new ChangeListener() {
 
             public void onChange(Widget w) {
-                pattern.setFactPattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
+                pattern.setFactPattern(new FactPattern(box.getValue(box.getSelectedIndex())));
                 getModeller().refreshWidget();
                 popup.hide();
             }
