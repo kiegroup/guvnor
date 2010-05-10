@@ -425,8 +425,9 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
     	resolver.setEnableRoleBasedAuthorization(true);
 
-        assertTrue(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.ANALYST));
-        assertTrue(resolver.hasPermission(new PackageNameType(package2Name), RoleTypes.ANALYST));
+    	assertFalse(resolver.hasPermission(new PackageNameType(package1Name), RoleTypes.ANALYST));
+    	assertFalse(resolver.hasPermission(new PackageNameType(package2Name), RoleTypes.ANALYST));
+        assertTrue(resolver.hasPermission(new CategoryPathType("category1"), RoleTypes.ANALYST));
 
     	Lifecycle.endApplication();
     }

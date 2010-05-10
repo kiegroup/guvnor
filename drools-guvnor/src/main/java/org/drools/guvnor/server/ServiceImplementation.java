@@ -360,6 +360,12 @@ public class ServiceImplementation
         }
     }
 
+    /**
+     * Role-based Authorization check: This method only returns packages that the user has
+     * permission to access. User has permission to access the particular package when:
+     * The user has a package.readonly role or higher (i.e., package.admin, package.developer)
+     * to this package.
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public PackageConfigData[] listPackages() {
@@ -478,13 +484,9 @@ public class ServiceImplementation
     /**
      * loadRuleListForCategories
      *
-     * Role-based Authorization check: This method can be accessed if user has
-     * following permissions:
-     * 1. The user has Analyst role and this role has permission to access the category
-     * Or.
-     * 2. The user has one of the following roles: package.readonly|package.admin|package.developer.
-     * In this case, this method only returns assets that belong to packages the role has at least
-     * package.readonly permission to access.
+     * Role-based Authorization check: This method only returns rules that the user has
+     * permission to access. The user is considered to has permission to access the particular category when:
+     * The user has ANALYST_READ role or higher (i.e., ANALYST) to this category
      */
     public TableDataResult loadRuleListForCategories(String categoryPath,
                                                      int skip,
@@ -503,15 +505,10 @@ public class ServiceImplementation
             }
         }
 
-        //use AssetItemFilter to enforce package-based permissions.
-        //        RepositoryFilter filter = new AssetItemFilter();
-        // Filter is null since the permission is checked on category level.
-        RepositoryFilter filter = null;
         AssetPageList list = repository.findAssetsByCategory( categoryPath,
                                                               false,
                                                               skip,
-                                                              numRows,
-                                                              filter );
+                                                              numRows);
         TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
         // log.debug("time for load: " + (System.currentTimeMillis() - time) );
         return handler.loadRuleListTable( list );
@@ -527,6 +524,7 @@ public class ServiceImplementation
         // love you
         // long time = System.currentTimeMillis();
 
+    	//TODO: May need to use a filter that acts on both package based and category based. 
         RepositoryFilter filter = new AssetItemFilter();
         AssetPageList list = repository.findAssetsByState( stateName,
                                                            false,
@@ -551,10 +549,10 @@ public class ServiceImplementation
      *
      * Role-based Authorization check: This method can be accessed if user has
      * following permissions:
-     * 1. The user has Analyst role and this role has permission to access the category
-     * which the asset belongs to.
+     * 1. The user has a ANALYST_READ role or higher (i.e., ANALYST) and this role has permission 
+     * to access the category which the asset belongs to.
      * Or.
-     * 2. The user has package.readonly role (or package.admin, package.developer)
+     * 2. The user has a package.readonly role or higher (i.e., package.admin, package.developer)
      * and this role has permission to access the package which the asset belongs to.
      */
     @WebRemote
@@ -571,32 +569,39 @@ public class ServiceImplementation
         // load standard meta data
         asset.metaData = populateMetaData( item );
 
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
-                                                 RoleTypes.PACKAGE_READONLY );
+        //Verify if the user has permission to access the asset through package based permission.
+        //If failed, then verify if the user has permission to access the asset through category
+        //based permission
+        if (Contexts.isSessionContextActive()) {
+			boolean passed = false;
 
-            if ( asset.metaData.categories.length == 0 ) {
-                Identity.instance().checkPermission( new CategoryPathType( null ),
-                                                     RoleTypes.ANALYST_READ );
-            } else {
-                boolean passed = false;
-                RuntimeException exception = null;
+			try {
+				Identity.instance().checkPermission(
+						new PackageNameType(asset.metaData.packageName),
+						RoleTypes.PACKAGE_READONLY);
+			} catch (RuntimeException e) {
+				if (asset.metaData.categories.length == 0) {
+					Identity.instance().checkPermission(
+							new CategoryPathType(null), RoleTypes.ANALYST_READ);
+				} else {
+					RuntimeException exception = null;
 
-                for ( String cat : asset.metaData.categories ) {
-                    // Check if user has a permission to read this asset.
-                    try {
-                        Identity.instance().checkPermission( new CategoryPathType( cat ),
-                                                             RoleTypes.ANALYST_READ );
-                        passed = true;
-                    } catch ( RuntimeException e ) {
-                        exception = e;
-                    }
-                }
-                if ( !passed ) {
-                    throw exception;
-                }
-            }
-        }
+					for (String cat : asset.metaData.categories) {
+						try {
+							Identity.instance().checkPermission(
+									new CategoryPathType(cat),
+									RoleTypes.ANALYST_READ);
+							passed = true;
+						} catch (RuntimeException re) {
+							exception = re;
+						}
+					}
+					if (!passed) {
+						throw exception;
+					}
+				}
+			}
+		}
 
         // get package header
 
@@ -711,39 +716,49 @@ public class ServiceImplementation
      *
      * Role-based Authorization check: This method can be accessed if user has
      * following permissions:
-     * 1. The user has Analyst role and this role has permission to access the category
+     * 1. The user has a Analyst role and this role has permission to access the category
      * which the asset belongs to.
      * Or.
-     * 2. The user has package.readonly role (or package.admin, package.developer)
+     * 2. The user has a package.developer role or higher (i.e., package.admin)
      * and this role has permission to access the package which the asset belongs to.
      */
     public String checkinVersion(RuleAsset asset) throws SerializableException {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
-                                                 RoleTypes.PACKAGE_DEVELOPER );
+    	
+        //Verify if the user has permission to access the asset through package based permission.
+        //If failed, then verify if the user has permission to access the asset through category
+        //based permission
+        if (Contexts.isSessionContextActive()) {
+			boolean passed = false;
 
-            if ( asset.metaData.categories.length == 0 ) {
-                Identity.instance().checkPermission( new CategoryPathType( null ),
-                                                     RoleTypes.ANALYST );
-            } else {
-                boolean passed = false;
-                RuntimeException exception = null;
+			try {
+				Identity.instance().checkPermission(
+						new PackageNameType(asset.metaData.packageName),
+						RoleTypes.PACKAGE_DEVELOPER);
+			} catch (RuntimeException e) {
+				if (asset.metaData.categories.length == 0) {
+					Identity.instance().checkPermission(
+							new CategoryPathType(null), RoleTypes.ANALYST);
+				} else {
+					RuntimeException exception = null;
 
-                for ( String cat : asset.metaData.categories ) {
-                    try {
-                        Identity.instance().checkPermission( new CategoryPathType( cat ),
-                                                             RoleTypes.ANALYST );
-                        passed = true;
-                    } catch ( RuntimeException e ) {
-                        exception = e;
-                    }
-                }
-                if ( !passed ) {
-                    throw exception;
-                }
-            }
-        }
-
+					for (String cat : asset.metaData.categories) {
+						try {
+							Identity.instance().checkPermission(
+									new CategoryPathType(cat),
+									RoleTypes.ANALYST);
+							passed = true;
+						} catch (RuntimeException re) {
+							exception = re;
+						}
+					}
+					if (!passed) {
+						throw exception;
+					}
+				}
+			}
+		}
+        
+  
         log.info( "USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "] " );
 
         AssetItem repoAsset = repository.loadAssetByUUID( asset.uuid );
@@ -1261,6 +1276,16 @@ public class ServiceImplementation
         return result;
     }
 
+    /**
+    *
+    * Role-based Authorization check: This method can be accessed if user has
+    * following permissions:
+    * 1. The user has a Analyst role and this role has permission to access the category
+    * which the asset belongs to.
+    * Or.
+    * 2. The user has a package.developer role or higher (i.e., package.admin)
+    * and this role has permission to access the package which the asset belongs to.
+    */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void changeState(String uuid,
@@ -1268,57 +1293,55 @@ public class ServiceImplementation
                             boolean wholePackage) {
 
         if ( !wholePackage ) {
-
             AssetItem asset = repository.loadAssetByUUID( uuid );
-            log.info( "USER:" + getCurrentUserName() + " CHANGING ASSET STATUS. Asset name, uuid: " + "[" + asset.getName() + ", " + asset.getUUID() + "]" + " to [" + newState + "]" );
+ 
+            //Verify if the user has permission to access the asset through package based permission.
+            //If failed, then verify if the user has permission to access the asset through category
+            //based permission
+            if (Contexts.isSessionContextActive()) {
+    			boolean passed = false;
 
-            if ( Contexts.isSessionContextActive() ) {
-                Identity.instance().checkPermission( new PackageUUIDType( asset.getPackage().getUUID() ),
-                                                     RoleTypes.PACKAGE_DEVELOPER );
+    			try {
+    				Identity.instance().checkPermission(
+    						new PackageUUIDType(asset.getPackage().getUUID()),
+    						RoleTypes.PACKAGE_DEVELOPER);
+    			} catch (RuntimeException e) {
+     				if (asset.getCategories().size() == 0) {
+    					Identity.instance().checkPermission(
+    							new CategoryPathType(null), RoleTypes.ANALYST);
+    				} else {
+    					RuntimeException exception = null;
 
-                try {
-                    RuleAsset ruleAsset = loadAsset( asset );
+    					for (CategoryItem cat : asset.getCategories()) {
+    						try {
+    							Identity.instance().checkPermission(
+    									new CategoryPathType(cat.getName()),
+    									RoleTypes.ANALYST);
+    							passed = true;
+    						} catch (RuntimeException re) {
+    							exception = re;
+    						}
+    					}
+    					if (!passed) {
+    						throw exception;
+    					}
+    				}
+    			}
+    		}
+            
+ 
+            log.info("USER:" + getCurrentUserName()
+					+ " CHANGING ASSET STATUS. Asset name, uuid: " + "["
+					+ asset.getName() + ", " + asset.getUUID() + "]" + " to ["
+					+ newState + "]");
+			String oldState = asset.getStateDescription();
+			asset.updateState(newState);
 
-                    if ( ruleAsset.metaData.categories.length == 0 ) {
-                        Identity.instance().checkPermission( new CategoryPathType( null ),
-                                                             RoleTypes.ANALYST_READ );
-                    } else {
+			push("statusChange", oldState);
+			push("statusChange", newState);
 
-                        // Check category permissions
-                        boolean passed = false;
-                        RuntimeException exception = null;
-
-                        for ( String cat : ruleAsset.metaData.categories ) {
-                            try {
-                                Identity.instance().checkPermission( new CategoryPathType( cat ),
-                                                                     RoleTypes.ANALYST );
-                                passed = true;
-                            } catch ( RuntimeException e ) {
-                                exception = e;
-                            }
-                        }
-                        if ( !passed ) {
-                            throw exception;
-                        }
-                    }
-                } catch ( RulesRepositoryException e ) {
-                    // This was not a rule asset
-                } catch ( Exception e ) {
-                    // This was not a rule asset
-                }
-
-                String oldState = asset.getStateDescription();
-                asset.updateState( newState );
-
-                push( "statusChange",
-                      oldState );
-                push( "statusChange",
-                      newState );
-
-                addToDiscussionForAsset( asset.getUUID(),
-                                         oldState + " -> " + newState );
-
-            }
+			addToDiscussionForAsset(asset.getUUID(), oldState + " -> "
+					+ newState);           
         } else {
             if ( Contexts.isSessionContextActive() ) {
                 Identity.instance().checkPermission( new PackageUUIDType( uuid ),

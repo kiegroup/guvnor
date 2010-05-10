@@ -30,22 +30,16 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
  *
  * This PermissionResolver resolves category-based permissions and package-based permissions.
  *
- * If the input is category-based request, it returns true under following situations:
- *
- * For category-based permissions:
+ * If the input is category-based request, the resolver returns true under following situations:
  * 1. The user is admin
  * Or
- * 2. The user has at least one analyst role, and at least one of the analyst role has access to requested category path.
- * Or
- * 3. The user does not have any Analyst role(eg, the user only has other roles like package.admin|package.developer|package.readonly)
+ * 2. The user has at least one analyst role that has access to the requested category path.
  *
- * If the input is package-based request, it returns true under following situations:
+ * If the input is package-based request, the resolver returns true under following situations:
  * 1. The user is admin
  * Or
  * 2. The user has one of the following roles package.admin|package.developer|package.readonly on the requested
  * package, and requested role requires lower privilege than assigned role(I.e., package.admin>package.developer>package.readonly)
- * Or
- * 3. The user is Analyst
  *
  *
 
@@ -120,17 +114,10 @@ public class RoleBasedPermissionResolver
                 }
                 return false;
             } else {
-                //category path based permission check only applies to analyst and analyst.readonly role. If there is no Analyst or Analyst.readonly
-                //role (e.g, only other roles like admin|package.admin|package.dev|package.readonly) we always grant permission.
-                boolean isPermitted = true;
-                //return true when there is no analyst role, or one of the analyst role has permission to access this category
-
                 for ( RoleBasedPermission pbp : permissions ) {
-
                     // Check if there is a analyst or analyst.readonly role
                     if ( pbp.getRole().equals( RoleTypes.ANALYST ) || pbp.getRole().equals( RoleTypes.ANALYST_READ ) ) {
-                        isPermitted = false;
-
+  
                         // Check if user has permissions for the current category
                         if ( requestedPermType.equals( pbp.getRole() ) || (requestedPermType.equals( RoleTypes.ANALYST_READ ) && pbp.getRole().equals( RoleTypes.ANALYST )) ) {
                             if ( isPermittedCategoryPath( requestedPath,
@@ -141,7 +128,7 @@ public class RoleBasedPermissionResolver
                     }
                 }
 
-                return isPermitted;
+                return false;
             }
         } else {
             String targetName = "";
@@ -158,12 +145,8 @@ public class RoleBasedPermissionResolver
                 targetName = ((PackageNameType) requestedObject).getPackageName();
             }
 
-            //package based permission check only applies to admin|package.admin|package.dev|package.readonly role.
-            //For Analyst we always grant permission, unless we are connected through webdav.
             for ( RoleBasedPermission pbp : permissions ) {
-                if ( !(requestedObject instanceof WebDavPackageNameType) && (RoleTypes.ANALYST.equals( pbp.getRole() ) || RoleTypes.ANALYST_READ.equals( pbp.getRole() )) ) {
-                    return true;
-                } else if ( targetName.equalsIgnoreCase( pbp.getPackageName() ) && isPermittedPackage( requestedPermission,
+                if ( targetName.equalsIgnoreCase( pbp.getPackageName() ) && isPermittedPackage( requestedPermission,
                                                                                                        pbp.getRole() ) ) {
                     return true;
                 }
@@ -184,7 +167,9 @@ public class RoleBasedPermissionResolver
 
     private boolean isPermittedCategoryPath(String requestedPath,
                                             String allowedPath) {
-        if ( requestedPath == null || allowedPath == null ) {
+        if ( requestedPath == null && allowedPath == null ) {
+            return true;
+        } else if ( requestedPath == null || allowedPath == null ) {
             return false;
         }
         return requestedPath.equals( allowedPath ) || isSubPath( allowedPath,
