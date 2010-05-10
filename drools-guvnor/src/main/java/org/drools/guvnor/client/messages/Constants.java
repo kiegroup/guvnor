@@ -2083,4 +2083,5 @@ public interface Constants extends ConstantsWithLookup {
     String Enabled();
     String NewRuleTemplate();
     String TemplateKey();
+    String AllChangesHaveBeenSaved();
 }

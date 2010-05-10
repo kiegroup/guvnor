@@ -17,17 +17,18 @@ package org.drools.guvnor.client.admin;
 
 
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import org.drools.guvnor.client.packages.WorkingSetManager;
 
@@ -47,7 +48,7 @@ public class RuleVerifierManager extends Composite {
         form.startSection(constants.AutomaticVerification());
 
         final CheckBox enableOnlineValidator = new CheckBox();
-        enableOnlineValidator.setChecked(WorkingSetManager.getInstance().isAutoVerifierEnabled());
+        enableOnlineValidator.setValue(WorkingSetManager.getInstance().isAutoVerifierEnabled());
         form.addAttribute(constants.Enabled(), enableOnlineValidator  );
 
         HorizontalPanel actions = new HorizontalPanel();
@@ -56,11 +57,12 @@ public class RuleVerifierManager extends Composite {
 
         Button btnSave = new Button(constants.SaveChanges());
         btnSave.setTitle(constants.SaveAllChanges());
-        btnSave.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                WorkingSetManager.getInstance().setAutoVerifierEnabled(enableOnlineValidator.isChecked());
+        btnSave.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                WorkingSetManager.getInstance().setAutoVerifierEnabled(enableOnlineValidator.getValue());
+                Window.alert(constants.AllChangesHaveBeenSaved());
             }
-        } );
+        });
 
         actions.add(btnSave);
 
