@@ -1044,6 +1044,58 @@ public class ServiceImplSecurityTest extends TestCase {
 		}
 	}
 	
+	public void testLoadChildCategories() throws Exception {
+		try {
+			ServiceImplementation impl = getService();
+			String package1Name = "testLoadChildCategoriesPack1";
+			String category1Name = "testLoadChildCategoriesCat1"; 
+			String category2Name = "testLoadChildCategoriesCat2"; 
+			
+			impl.repository.createPackage(package1Name, "desc");
+			impl.createCategory("", category1Name, "this is a cat");
+			impl.createCategory("", category2Name, "this is a cat");
+
+			impl.createNewRule("testLoadChildCategoriesRule1",
+					"description", category1Name, package1Name, AssetFormats.DRL);
+
+			impl.createNewRule("testLoadChildCategoriesRule2",
+					"description", category2Name, package1Name, AssetFormats.DRL);
+
+			// Mock up SEAM contexts
+			Map application = new HashMap<String, Object>();
+			Lifecycle.beginApplication(application);
+			Lifecycle.beginCall();
+			MockIdentity midentity = new MockIdentity();
+	    	RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+	    	resolver.setEnableRoleBasedAuthorization(true);
+			midentity.addPermissionResolver(resolver);
+			midentity.create();
+
+			Contexts.getSessionContext().set(
+					"org.jboss.seam.security.identity", midentity);
+			Contexts.getSessionContext().set(
+					"org.drools.guvnor.client.rpc.RepositoryService", impl);
+
+			List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+			pbps.add(new RoleBasedPermission("jervis",
+					RoleTypes.ANALYST, 
+					null, category1Name));
+	    	MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore(pbps);
+	    	Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore", store);
+
+ 	    	// Put permission list in session.
+ 	    	RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+ 	    	testManager.create();
+	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);	    	
+
+			String[] res = impl.loadChildCategories("/");
+			assertEquals(1, res.length);
+		} finally {
+			Lifecycle.endApplication();
+		}
+	}
+
+	
 	public void testloadRuleListForCategoriesPackageReadonly() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
