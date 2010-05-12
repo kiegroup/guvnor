@@ -8,6 +8,7 @@ import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -32,6 +33,8 @@ public class EnumDropDownLabel extends Composite {
     private final EnumDropDown enumDropDown;
 
     private final Button       okButton  = new Button( constants.OK() );
+
+    private Command onValueChangeCommand;
 
     public EnumDropDownLabel(FactPattern pattern,
                              String fieldName,
@@ -75,6 +78,7 @@ public class EnumDropDownLabel extends Composite {
 
         okButton.addClickListener( new ClickListener() {
             public void onClick(Widget arg0) {
+                executeOnValueChangeCommand();
                 panel.clear();
                 panel.add( textWidget );
                 popup.hide();
@@ -124,4 +128,15 @@ public class EnumDropDownLabel extends Composite {
 
         return box;
     }
+
+    private void executeOnValueChangeCommand(){
+        if (this.onValueChangeCommand != null){
+            this.onValueChangeCommand.execute();
+        }
+    }
+
+    public void setOnValueChangeCommand(Command onValueChangeCommand) {
+        this.onValueChangeCommand = onValueChangeCommand;
+    }
+
 }

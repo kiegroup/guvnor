@@ -110,6 +110,7 @@ public class ExpressionBuilder extends RuleModellerWidget {
     }
 
     private void startPointChange(String value) {
+        setModified(true);
         panel.clear();
         Widget w;
         int dotPos = value.indexOf('.');
@@ -215,6 +216,8 @@ public class ExpressionBuilder extends RuleModellerWidget {
     }
 
     private void onChangeSelection(String value) {
+        setModified(true);
+
         String prevFactName = null;
         if (DELETE_VALUE.equals(value)) {
             expression.removeLast();

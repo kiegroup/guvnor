@@ -56,6 +56,9 @@ public class ActionRetractFactWidget extends RuleModellerWidget {
         String desc = modeller.getModel().getBoundFact(model.variableName).factType + " [" + model.variableName + "]";
         layout.add(new SmallLabel(HumanReadable.getActionDisplayName( "retract" )+"&nbsp;<b>"  + desc  + "</b>"));
 
+        //This widget couldn't be modified.
+        this.setModified(false);
+
         initWidget( layout );
     }
 
@@ -63,6 +66,7 @@ public class ActionRetractFactWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
 
 
 

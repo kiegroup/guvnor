@@ -285,6 +285,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                 newSentence = newSentence + "\\n";
             }
         }
+        this.setModified(true);
         this.sentence.sentence = newSentence.trim();
     }
 

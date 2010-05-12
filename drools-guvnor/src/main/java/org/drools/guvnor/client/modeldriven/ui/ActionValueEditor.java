@@ -1,5 +1,6 @@
 package org.drools.guvnor.client.modeldriven.ui;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
 import java.util.List;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
@@ -16,6 +17,7 @@ import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -44,6 +46,7 @@ public class ActionValueEditor extends DirtyableComposite {
     private RuleModeller model = null;
     private String variableType = null;
     private boolean readOnly;
+    private Command onChangeCommand;
 
     public ActionValueEditor(final ActionFieldValue val,
             final DropDownData enums, boolean readOnly) {
@@ -175,6 +178,7 @@ public class ActionValueEditor extends DirtyableComposite {
                 public void onChange(Widget arg0) {
                     ListBox w = (ListBox) arg0;
                     value.value = "=" + w.getValue(w.getSelectedIndex());
+                    executeOnChageCommand();
                     makeDirty();
                     refresh();
                 }
@@ -193,6 +197,7 @@ public class ActionValueEditor extends DirtyableComposite {
 
             public void valueChanged(String newText, String newValue) {
                 value.value = newValue;
+                executeOnChageCommand();
                 makeDirty();
             }
         }, enums);
@@ -226,6 +231,7 @@ public class ActionValueEditor extends DirtyableComposite {
 
             public void onChange(Widget w) {
                 c.value = box.getText();
+                executeOnChageCommand();
                 makeDirty();
             }
         });
@@ -301,6 +307,7 @@ public class ActionValueEditor extends DirtyableComposite {
                 value.nature = ActionFieldValue.TYPE_LITERAL;
                 value.value = " ";
                 makeDirty();
+                executeOnChageCommand();
                 refresh();
                 form.hide();
             }
@@ -406,4 +413,20 @@ public class ActionValueEditor extends DirtyableComposite {
         h.add(popup);
         return h;
     }
+
+    private void executeOnChageCommand(){
+        if (this.onChangeCommand != null){
+            this.onChangeCommand.execute();
+        }
+    }
+
+    public Command getOnChangeCommand() {
+        return onChangeCommand;
+    }
+
+    public void setOnChangeCommand(Command onChangeCommand) {
+        this.onChangeCommand = onChangeCommand;
+    }
+
+
 }

@@ -34,6 +34,7 @@ import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
@@ -178,6 +179,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
                 public void onClick(Widget w) {
                     if (Window.confirm(constants.RemoveThisItem())) {
+                        setModified(true);
                         pattern.removeConstraint(currentRow);
                         getModeller().refreshWidget();
                     }
@@ -285,6 +287,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
                     public void onClick(Widget w) {
                         if (Window.confirm(constants.RemoveThisItemFromNestedConstraint())) {
+                            setModified(true);
                             constraint.removeConstraint(currentRow);
                             getModeller().refreshWidget();
                         }
@@ -325,6 +328,7 @@ public class FactPatternWidget extends RuleModellerWidget {
             addConnective.addClickListener(new ClickListener() {
 
                 public void onClick(Widget w) {
+                    setModified(true);
                     constraint.addNewConnective();
                     modeller.refreshWidget();
                 }
@@ -361,6 +365,7 @@ public class FactPatternWidget extends RuleModellerWidget {
             box.addChangeListener(new ChangeListener() {
 
                 public void onChange(Widget w) {
+                    setModified(true);
                     c.value = box.getText();
                     getModeller().makeDirty();
                 }
@@ -419,7 +424,13 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     private Widget valueEditor(final SingleFieldConstraint c, String factType) {
         //String type = this.modeller.getSuggestionCompletions().getFieldType( factType, c.fieldName );
-        return new ConstraintValueEditor(pattern, c.fieldName, c, this.getModeller(), c.fieldType,this.readOnly);
+        ConstraintValueEditor constraintValueEditor = new ConstraintValueEditor(pattern, c.fieldName, c, this.getModeller(), c.fieldType,this.readOnly);
+        constraintValueEditor.setOnValueChangeCommand(new Command() {
+            public void execute() {
+                setModified(true);
+            }
+        });
+        return constraintValueEditor;
     }
 
     private Widget operatorDropDown(final SingleFieldConstraint c) {
@@ -439,6 +450,7 @@ public class FactPatternWidget extends RuleModellerWidget {
             box.addChangeListener(new ChangeListener() {
 
                 public void onChange(Widget w) {
+                    setModified(true);
                     c.operator = box.getValue(box.getSelectedIndex());
                     if (c.operator.equals("")) {
                         c.operator = null;

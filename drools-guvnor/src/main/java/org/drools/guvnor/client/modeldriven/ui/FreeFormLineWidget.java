@@ -79,19 +79,11 @@ public class FreeFormLineWidget extends RuleModellerWidget {
             tb.addChangeListener(new ChangeListener() {
 
                 public void onChange(Widget arg0) {
+                    setModified(true);
                     action.text = tb.getText();
                 }
             });
-
             
-//            tb.addFocusListener(new FocusListenerAdapter() {
-//
-//                @Override
-//                public void onLostFocus(Widget sender) {
-//                    getModeller().verifyRule();
-//                }
-//
-//            });
         } else {
             tb.setEnabled(false);
         }

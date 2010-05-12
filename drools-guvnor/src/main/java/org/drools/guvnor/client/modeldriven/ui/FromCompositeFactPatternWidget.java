@@ -1,6 +1,7 @@
 package org.drools.guvnor.client.modeldriven.ui;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -29,6 +30,9 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
     protected DirtyableFlexTable layout;
     protected Constants constants = ((Constants) GWT.create(Constants.class));
     protected boolean readOnly;
+
+    private FactPatternWidget factPatternWidget;
+    private ExpressionBuilder expressionBuilder;
 
     public FromCompositeFactPatternWidget(RuleModeller modeller,
             FromCompositeFactPattern pattern) {
@@ -69,17 +73,23 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
                 if (this.readOnly) {
                     //creates a new read-only FactPatternWidget
-                    FactPatternWidget factPatternWidget = new FactPatternWidget(this.getModeller(), fact, false, true);
+                    this.factPatternWidget = new FactPatternWidget(this.getModeller(), fact, false, true);
                     this.layout.setWidget(r,
                             0, factPatternWidget);
                 } else {
-                    FactPatternWidget factPatternWidget = new FactPatternWidget(this.getModeller(), fact, true,false);
+                    this.factPatternWidget = new FactPatternWidget(this.getModeller(), fact, true,false);
+                    this.factPatternWidget.addOnModifiedCommand(new Command() {
+                        public void execute() {
+                            setModified(true);
+                        }
+                    });
                     this.layout.setWidget(r,
                             0,
                             addRemoveButton(factPatternWidget, new ClickListener() {
 
                         public void onClick(Widget w) {
                             if (Window.confirm(constants.RemoveThisEntireConditionQ())) {
+                                setModified(true);
                                 pattern.setFactPattern(null);
                                 getModeller().refreshWidget();
                             }
@@ -117,8 +127,13 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
 
         panel.setWidget(r, 0, new HTML(lbl));
-        panel.setWidget(r, 1, new ExpressionBuilder(this.getModeller(), this.pattern.getExpression(), this.readOnly));
-
+        this.expressionBuilder =new ExpressionBuilder(this.getModeller(), this.pattern.getExpression(), this.readOnly);
+        this.expressionBuilder.addOnModifiedCommand(new Command() {
+            public void execute() {
+                setModified(true);
+            }
+        });
+        panel.setWidget(r, 1, this.expressionBuilder);
 
         return panel;
     }
@@ -147,6 +162,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
             public void onChange(Widget w) {
                 pattern.setFactPattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
+                setModified(true);
                 getModeller().refreshWidget();
                 popup.hide();
             }

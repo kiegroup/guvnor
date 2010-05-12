@@ -6,6 +6,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -35,9 +36,14 @@ public class DefaultLiteralEditor extends Composite {
     private final ValueChanged     valueChanged = new ValueChanged() {
                                                     public void valueChanged(String newValue) {
                                                         constraint.value = newValue;
+                                                        if (onValueChangeCommand != null){
+                                                            onValueChangeCommand.execute();
+                                                        }
                                                         okButton.click();
                                                     }
                                                 };
+
+    private Command onValueChangeCommand;
 
     public DefaultLiteralEditor(ISingleFieldConstraint constraint,
                                 boolean numericValue) {
@@ -72,6 +78,9 @@ public class DefaultLiteralEditor extends Composite {
             public void onClick(Widget arg0) {
 
                 if ( !isValueEmpty( constraint.value ) ) {
+                    if (onValueChangeCommand != null){
+                        onValueChangeCommand.execute();
+                    }
                     textWidget.setText( constraint.value );
 
                     popup.hide();
@@ -132,5 +141,15 @@ public class DefaultLiteralEditor extends Composite {
         } else {
             return false;
         }
+    }
+
+    private void executeOnValueChangeCommand(){
+        if (this.onValueChangeCommand != null){
+            this.onValueChangeCommand.execute();
+        }
+    }
+
+    public void setOnValueChangeCommand(Command onValueChangeCommand) {
+        this.onValueChangeCommand = onValueChangeCommand;
     }
 }

@@ -29,6 +29,9 @@ import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This represents a top level CE, like an OR, NOT, EXIST etc...
@@ -44,6 +47,8 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
     protected DirtyableFlexTable                             layout;
     protected Constants constants = ((Constants) GWT.create(Constants.class));
     protected boolean readOnly;
+
+    private List<FactPatternWidget> childWidgets;
 
     public CompositeFactPatternWidget(RuleModeller modeller,
                                       CompositeFactPattern pattern) {
@@ -84,6 +89,9 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
     }
 
     protected void doLayout() {
+
+        this.childWidgets = new ArrayList<FactPatternWidget>();
+
         this.layout.setWidget( 0,
                                0,
                                getCompositeLabel() );
@@ -97,9 +105,14 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
             DirtyableVerticalPane vert = new DirtyableVerticalPane();
             FactPattern[] facts = pattern.patterns;
             for ( int i = 0; i < facts.length; i++ ) {
-                vert.add( new FactPatternWidget( this.getModeller(),
-                                                 facts[i],
-                                                 false,this.readOnly ) );
+                FactPatternWidget factPatternWidget = new FactPatternWidget(this.getModeller(), facts[i], false, this.readOnly);
+                factPatternWidget.addOnModifiedCommand(new Command() {
+                    public void execute() {
+                        setModified(true);
+                    }
+                });
+                childWidgets.add(factPatternWidget);
+                vert.add(factPatternWidget);
             }
             this.layout.setWidget( 1,
                                    1,
@@ -144,6 +157,7 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
                 pattern.addFactPattern( new FactPattern( box.getItemText( box.getSelectedIndex() ) ) );
+                setModified(true);
                 getModeller().refreshWidget();
                 popup.hide();
             }

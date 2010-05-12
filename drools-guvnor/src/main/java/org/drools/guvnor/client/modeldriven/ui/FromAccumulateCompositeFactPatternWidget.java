@@ -1,5 +1,6 @@
 package org.drools.guvnor.client.modeldriven.ui;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -26,6 +27,8 @@ import org.drools.ide.common.client.modeldriven.brl.IPattern;
  * @author esteban
  */
 public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactPatternWidget {
+
+    private RuleModellerWidget sourcePatternWidget;
 
     public FromAccumulateCompositeFactPatternWidget(RuleModeller modeller,
             FromAccumulateCompositeFactPattern pattern, Boolean readOnly) {
@@ -74,25 +77,31 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         } else {
             IPattern rPattern = this.getFromAccumulatePattern().getSourcePattern();
 
-            Widget patternWidget = null;
             if (rPattern instanceof FactPattern) {
-                patternWidget = new FactPatternWidget(this.getModeller(), rPattern, constants.All0with(), true,this.readOnly);
+                this.sourcePatternWidget = new FactPatternWidget(this.getModeller(), rPattern, constants.All0with(), true,this.readOnly);
             } else if (rPattern instanceof FromAccumulateCompositeFactPattern) {
-                patternWidget = new FromAccumulateCompositeFactPatternWidget(this.getModeller(), (FromAccumulateCompositeFactPattern) rPattern,this.readOnly);
+                this.sourcePatternWidget = new FromAccumulateCompositeFactPatternWidget(this.getModeller(), (FromAccumulateCompositeFactPattern) rPattern,this.readOnly);
             } else if (rPattern instanceof FromCollectCompositeFactPattern) {
-                patternWidget = new FromCollectCompositeFactPatternWidget(this.getModeller(), (FromCollectCompositeFactPattern) rPattern,this.readOnly);
+                this.sourcePatternWidget = new FromCollectCompositeFactPatternWidget(this.getModeller(), (FromCollectCompositeFactPattern) rPattern,this.readOnly);
             } else if (rPattern instanceof FromCompositeFactPattern) {
-                patternWidget = new FromCompositeFactPatternWidget(this.getModeller(), (FromCompositeFactPattern) rPattern,this.readOnly);
+                this.sourcePatternWidget = new FromCompositeFactPatternWidget(this.getModeller(), (FromCompositeFactPattern) rPattern,this.readOnly);
             } else {
                 throw new IllegalArgumentException("Unsuported pattern " + rPattern + " for right side of FROM ACCUMULATE");
             }
 
+            this.sourcePatternWidget.addOnModifiedCommand(new Command() {
+                public void execute() {
+                    setModified(true);
+                }
+            });
+
             panel.setWidget(r++,
                     0,
-                    addRemoveButton(patternWidget, new ClickListener() {
+                    addRemoveButton(this.sourcePatternWidget, new ClickListener() {
 
                 public void onClick(Widget sender) {
                     if (Window.confirm(constants.RemoveThisBlockOfData())) {
+                        setModified(true);
                         getFromAccumulatePattern().setSourcePattern(null);
                         getModeller().refreshWidget();
                     }
@@ -166,7 +175,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
                 TextBox senderTB = (TextBox) sender;
                 String code = senderTB.getText();
-
+                setModified(true);
                 if (sender == initField) {
                     getFromAccumulatePattern().setFunction(null);
                     functionField.setText("");
@@ -244,6 +253,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
             public void onChange(Widget w) {
                 pattern.setFactPattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
+                setModified(true);
                 getModeller().refreshWidget();
                 popup.hide();
             }
@@ -275,6 +285,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
             public void onChange(Widget w) {
                 getFromAccumulatePattern().setSourcePattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
+                setModified(true);
                 getModeller().refreshWidget();
                 popup.hide();
             }
@@ -301,6 +312,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
                     throw new IllegalArgumentException("Unknown sender: " + sender);
                 }
 
+                setModified(true);
                 getModeller().refreshWidget();
                 popup.hide();
             }

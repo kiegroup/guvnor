@@ -104,7 +104,20 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
     private String packageName;
     private RuleAsset asset;
     private ModellerWidgetFactory widgetFactory;
-    
+
+    private List<RuleModellerWidget> lhsWidgets = new ArrayList<RuleModellerWidget>();
+    private List<RuleModellerWidget> rhsWidgets = new ArrayList<RuleModellerWidget>();
+
+    private boolean hasModifiedWidgets;
+
+    private final Command onWidgetModifiedCommand = new Command() {
+
+        public void execute() {
+            GWT.log("Widget Modified!");
+            hasModifiedWidgets = true;
+        }
+    };
+
     public RuleModeller(RuleAsset asset, RuleViewer viewer, ModellerWidgetFactory widgetFactory) {
         this(asset, widgetFactory);
     }
@@ -360,6 +373,7 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
             Boolean readOnly = this.lockRHS()?true:null;
 
             RuleModellerWidget w = getWidgetFactory().getWidget(this, action, readOnly);
+            w.addOnModifiedCommand(this.onWidgetModifiedCommand);
 
             w.setWidth( "100%" );
             widget.add(spacerWidget());
@@ -428,7 +442,7 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
             }
 
             
-
+            this.rhsWidgets.add(w);
             currentLayoutRow++;
 
 
@@ -960,6 +974,7 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
             IPattern pattern = model.lhs[i];
             
             RuleModellerWidget w = getWidgetFactory().getWidget(this, pattern, readOnly);
+            w.addOnModifiedCommand(this.onWidgetModifiedCommand);
 
             vert.add(wrapLHSWidget(model, i, w));
             vert.add(spacerWidget());
@@ -997,7 +1012,7 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
             }
 
             
-
+            this.lhsWidgets.add(w);
             currentLayoutRow++;
         }
 
@@ -1161,30 +1176,13 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
     private List<AnalysisReportLine> errors;
     private List<AnalysisReportLine> warnings;
 
-    private void showWarningsAndErrors(){
-        this.clearLinesIcons();
-        if (this.warnings != null){
-            for (AnalysisReportLine warning : this.warnings) {
-                if (warning.patternOrderNumber != null){
-                    this.addLineIcon(warning.patternOrderNumber+1, "images/warning.gif", warning.description);
-                }
-            }
-        }
-        if (this.errors != null){
-            for (AnalysisReportLine error : this.errors) {
-                if (error.patternOrderNumber != null){
-                    this.addLineIcon(error.patternOrderNumber+1, "images/error.gif", error.description);
-                }
-            }
-        }
-    }
-
     public void verifyRule(final Command cmd){
         errors = new ArrayList<AnalysisReportLine>();
         warnings = new ArrayList<AnalysisReportLine>();
         
-        //if AutoVerifierEnabled is off, just execute cmd and return.
-        if (!WorkingSetManager.getInstance().isAutoVerifierEnabled()){
+        //if AutoVerifierEnabled is off or there are not modified widgets,
+        //just execute cmd and return.
+        if (!WorkingSetManager.getInstance().isAutoVerifierEnabled() || !this.hasModifiedWidgets){
             if (cmd != null){
                 cmd.execute();
             }
@@ -1202,18 +1200,51 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
                         errors = Arrays.asList(report.errors);
                         warnings = Arrays.asList(report.warnings);
 
-                        showWarningsAndErrors();
+                        processWarningsAndErrors();
 
+
+                        hasModifiedWidgets = false;
                         if (cmd != null) {
                             cmd.execute();
                         }
                     }
 
                     public void onFailure(Throwable arg0) {
-                        // TODO Auto-generated method stub
+                         LoadingPopup.close();
                     }
                 });
 
+    }
+
+    private void processWarningsAndErrors(){
+        
+        if (this.warnings.isEmpty() && this.errors.isEmpty()){
+            for (RuleModellerWidget ruleModellerWidget : this.lhsWidgets) {
+                ruleModellerWidget.setModified(false);
+            }
+            for (RuleModellerWidget ruleModellerWidget : this.rhsWidgets) {
+                ruleModellerWidget.setModified(false);
+            }
+        }
+        showWarningsAndErrors();
+    }
+
+    private void showWarningsAndErrors(){
+        this.clearLinesIcons();
+        if (this.warnings != null){
+            for (AnalysisReportLine warning : this.warnings) {
+                if (warning.patternOrderNumber != null){
+                    this.addLineIcon(warning.patternOrderNumber+1, "images/warning.gif", warning.description);
+                }
+            }
+        }
+        if (this.errors != null){
+            for (AnalysisReportLine error : this.errors) {
+                if (error.patternOrderNumber != null){
+                    this.addLineIcon(error.patternOrderNumber+1, "images/error.gif", error.description);
+                }
+            }
+        }
     }
 
     public boolean hasVerifierErrors(){

@@ -36,6 +36,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.MouseListenerAdapter;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
 import com.gwtext.client.util.Format;
 
 /**
@@ -123,6 +124,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
                 public void onClick(Widget w) {
                     if (Window.confirm(constants.RemoveThisItem())) {
                         model.removeField(idx);
+                        setModified(true);
                         getModeller().refreshWidget();
                     }
                 }
@@ -209,6 +211,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
                 String fieldType = completions.getFieldType(variableClass, fieldName);
                 model.addFieldValue(new ActionFieldValue(fieldName, "", fieldType));
+                setModified(true);
                 getModeller().refreshWidget();
                 popup.hide();
             }
@@ -235,7 +238,14 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         }
 
         DropDownData enums = completions.getEnums(type, this.model.fieldValues, val.field);
-        return new ActionValueEditor(val, enums, this.getModeller(), val.type, this.readOnly);
+        ActionValueEditor actionValueEditor = new ActionValueEditor(val, enums, this.getModeller(), val.type, this.readOnly);
+        actionValueEditor.setOnChangeCommand(new Command() {
+
+            public void execute() {
+                setModified(true);
+            }
+        });
+        return actionValueEditor;
     }
 
     private Widget fieldSelector(final ActionFieldValue val) {

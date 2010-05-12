@@ -31,6 +31,7 @@ import org.drools.ide.common.client.modeldriven.brl.ActionInsertLogicalFact;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
 import com.gwtext.client.util.Format;
 
 /**
@@ -100,6 +101,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
                 public void onClick(Widget w) {
                 	if (Window.confirm(constants.RemoveThisItem())) {
                             model.removeField( idx );
+                            setModified(true);
                             getModeller().refreshWidget();
                 	};
                 }
@@ -118,7 +120,15 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     private Widget valueEditor(final ActionFieldValue val) {
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
     	DropDownData enums = completions.getEnums(this.factType, this.model.fieldValues, val.field);
-    	return new ActionValueEditor(val, enums,this.getModeller(),val.type,this.readOnly);
+
+        ActionValueEditor actionValueEditor = new ActionValueEditor(val, enums,this.getModeller(),val.type,this.readOnly);
+        actionValueEditor.setOnChangeCommand(new Command() {
+            public void execute() {
+                setModified(true);
+            }
+        });
+
+    	return actionValueEditor;
     }
 
     private Widget fieldSelector(final ActionFieldValue val) {
@@ -171,6 +181,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
                 model.addFieldValue( new ActionFieldValue( fieldName,
                                                            "",
                                                            fieldType ) );
+                setModified(true);
                 getModeller().refreshWidget();
                 popup.hide();
             }
@@ -197,6 +208,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
                     return;
                 }
                 model.setBoundName( var );
+                setModified(true);
                 getModeller().refreshWidget();
                 popup.hide();
             }

@@ -15,6 +15,7 @@ package org.drools.guvnor.client.modeldriven.ui;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import com.google.gwt.event.dom.client.ChangeEvent;
 import java.util.List;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
@@ -31,6 +32,8 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -65,6 +68,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private Constants constants = ((Constants) GWT.create(Constants.class));
     private String fieldType;
     private boolean readOnly;
+    private Command onValueChangeCommand;
+
 
     public ConstraintValueEditor(FactPattern pattern, String fieldName,
     		ISingleFieldConstraint con, RuleModeller modeller, String valueType,
@@ -119,6 +124,12 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                 this.fieldName,
                                 this.sce,
                                 this.constraint);
+                        ((EnumDropDownLabel)constraintWidget).setOnValueChangeCommand(new Command() {
+
+                            public void execute() {
+                                executeOnValueChangeCommand();
+                            }
+                        });
                     } else if (SuggestionCompletionEngine.TYPE_DATE.equals(this.fieldType)) {
 
                         DatePickerLabel datePicker = new DatePickerLabel(constraint.value);
@@ -130,6 +141,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                             datePicker.addValueChanged(new ValueChanged() {
 
                                 public void valueChanged(String newValue) {
+                                    executeOnValueChangeCommand();
                                     constraint.value = newValue;
                                 }
                             });
@@ -142,6 +154,12 @@ public class ConstraintValueEditor extends DirtyableComposite {
                         if (!this.readOnly) {
                         	constraintWidget = new DefaultLiteralEditor(this.constraint,
                                     this.numericValue);
+                                ((DefaultLiteralEditor)constraintWidget).setOnValueChangeCommand(new Command() {
+
+                                    public void execute() {
+                                        executeOnValueChangeCommand();
+                                    }
+                                });
                         } else {
                         	constraintWidget = new SmallLabel(this.constraint.value);
                         }
@@ -208,6 +226,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         box.addChangeListener(new ChangeListener() {
 
             public void onChange(Widget w) {
+                executeOnValueChangeCommand();
                 constraint.value = box.getItemText(box.getSelectedIndex());
             }
         });
@@ -224,6 +243,12 @@ public class ConstraintValueEditor extends DirtyableComposite {
         Image img = new Image("images/function_assets.gif"); //NON-NLS
         img.setTitle(msg);
         box.setTitle(msg);
+        box.addChangeHandler(new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
+                executeOnValueChangeCommand();
+            }
+        });
         Widget ed = widgets(img,
                 box);
         return ed;
@@ -234,6 +259,12 @@ public class ConstraintValueEditor extends DirtyableComposite {
             throw new IllegalArgumentException("Expected SingleFieldConstraint, but " + constraint.getClass().getName() + " found.");
         }
         ExpressionBuilder builder = new ExpressionBuilder(this.modeller, ((SingleFieldConstraint) this.constraint).getExpression());
+        builder.addOnModifiedCommand(new Command() {
+
+            public void execute() {
+                executeOnValueChangeCommand();
+            }
+        });
         String msg = constants.ExpressionEditor();
         Widget ed = widgets(new HTML("&nbsp;"),
                 builder);
@@ -351,6 +382,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
     }
 
     private void doTypeChosen(final FormStylePopup form) {
+        executeOnValueChangeCommand();
         refreshEditor();
         form.hide();
     }
@@ -364,7 +396,20 @@ public class ConstraintValueEditor extends DirtyableComposite {
         return panel;
     }
 
+    private void executeOnValueChangeCommand(){
+        if (this.onValueChangeCommand != null){
+            this.onValueChangeCommand.execute();
+        }
+    }
+
+
     public boolean isDirty() {
         return super.isDirty();
     }
+
+    public void setOnValueChangeCommand(Command onValueChangeCommand) {
+        this.onValueChangeCommand = onValueChangeCommand;
+    }
+
+
 }

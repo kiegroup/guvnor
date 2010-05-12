@@ -21,6 +21,7 @@ import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -252,10 +253,15 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         DropDownData enums = completions.getEnums( type,
                                                         this.model.fieldValues,
                                                         val.field );
-        return new MethodParameterValueEditor( val,
-                                               enums,
-                                               this.getModeller(),
-                                               val.type );
+        return new MethodParameterValueEditor(val,
+                enums,
+                this.getModeller(),
+                val.type, new Command() {
+
+            public void execute() {
+                setModified(true);
+            }
+        });
     }
 
     /**

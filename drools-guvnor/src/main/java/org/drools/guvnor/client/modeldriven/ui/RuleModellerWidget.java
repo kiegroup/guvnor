@@ -1,5 +1,9 @@
 package org.drools.guvnor.client.modeldriven.ui;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
+import java.util.ArrayList;
+import java.util.List;
 import org.drools.guvnor.client.common.DirtyableComposite;
 
 /**
@@ -9,6 +13,10 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 public abstract class RuleModellerWidget extends DirtyableComposite {
 
     private RuleModeller modeller;
+
+    private boolean modified;
+
+    private List<Command> onModifiedCommands = new ArrayList<Command>();
 
     public RuleModellerWidget(RuleModeller modeller) {
         this.modeller = modeller;
@@ -25,4 +33,22 @@ public abstract class RuleModellerWidget extends DirtyableComposite {
     public RuleModeller getModeller() {
         return modeller;
     }
+
+    protected void setModified(boolean modified) {
+        if (modified){
+            executeOnModifiedCommands();
+        }
+        this.modified = modified;
+    }
+
+    public void addOnModifiedCommand(Command command){
+        this.onModifiedCommands.add(command);
+    }
+
+    private void executeOnModifiedCommands(){
+        for (Command command : onModifiedCommands) {
+            command.execute();
+        }
+    }
+
 }

@@ -70,6 +70,8 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
         layout.setWidget(0, 0, sp);
         initWidget(layout);
 
+        //This widget couldn't be modified
+        this.setModified(false);
     }
 
     @Override
