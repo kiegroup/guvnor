@@ -338,8 +338,8 @@ public class FactPatternWidget extends RuleModellerWidget {
                 inner.setWidget(row, 4 + col, addConnective);
             }
         } else if (constraint.constraintValueType == SingleFieldConstraint.TYPE_PREDICATE) {
-            inner.setWidget(row, 0 + col, predicateEditor(constraint));
-            inner.getFlexCellFormatter().setColSpan(row, 0, 5);
+            inner.setWidget(row, 1, predicateEditor(constraint));
+            inner.getFlexCellFormatter().setColSpan(row, 1, 5);
         }
     }
 
