@@ -16,6 +16,7 @@ package org.drools.guvnor.client.ruleeditor;
  */
 
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -26,10 +27,9 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.TableDataResult;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
@@ -78,9 +78,9 @@ public class WorkingSetSelectorPopup {
 				});
 
         save = new Button(constants.SaveAndClose());
-        save.addClickListener(new ClickListener() {
+        save.addClickHandler(new ClickHandler() {
 
-            public void onClick(Widget widget) {
+            public void onClick(ClickEvent event) {
                 TreeNode[] checked = treePanel.getChecked();
 
                 String[] wsUUIDs = new String[checked.length];
@@ -99,6 +99,7 @@ public class WorkingSetSelectorPopup {
                         }
                     });
             }
+
         });
 
         treePanel.setHeight(100);

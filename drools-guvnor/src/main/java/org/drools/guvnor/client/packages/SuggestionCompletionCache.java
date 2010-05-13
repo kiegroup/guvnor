@@ -114,9 +114,9 @@ public class SuggestionCompletionCache {
     	SuggestionCompletionEngine sce = cache.get(packageName);
         if (sce != null) {
         	sce.setFactTypeFilter(null);
-        	if (done != null) {
-        		done.execute();
-        	}
+//        	if (done != null) {
+//        		done.execute();
+//        	}
             cache.remove( packageName );
             loadPackage( packageName, done );
         } else {

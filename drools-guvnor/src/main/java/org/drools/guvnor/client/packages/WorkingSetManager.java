@@ -95,7 +95,9 @@ public class WorkingSetManager {
             final Set<String> validFacts = new HashSet<String>();
             for (RuleAsset asset : wss) {
                 WorkingSetConfigData wsConfig = (WorkingSetConfigData) asset.content;
-                validFacts.addAll(Arrays.asList(wsConfig.validFacts));
+                if (wsConfig.validFacts != null && wsConfig.validFacts.length > 0){
+                    validFacts.addAll(Arrays.asList(wsConfig.validFacts));
+                }
             }
 
             SuggestionCompletionCache.getInstance().applyFactFilter(packageName, 
