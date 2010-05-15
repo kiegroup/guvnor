@@ -1035,6 +1035,7 @@ public class GuidedDecisionTableWidget extends Composite
                                         }
                                     }
                                 } ) );
+        
         menu.addItem( new Item( constants.RemoveSelectedRowS(),
                                 new BaseItemListenerAdapter() {
                                     public void onClick(BaseItem item,

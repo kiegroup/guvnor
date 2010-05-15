@@ -1,7 +1,6 @@
 package org.drools.guvnor.client.modeldriven.ui;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
@@ -31,7 +30,8 @@ import com.gwtext.client.widgets.grid.ColumnModel;
 import com.gwtext.client.widgets.grid.EditorGridPanel;
 import com.gwtext.client.widgets.grid.GridEditor;
 import com.gwtext.client.widgets.grid.GridPanel;
-import com.gwtext.client.widgets.grid.GroupingView;
+import com.gwtext.client.widgets.grid.GridView;
+import com.gwtext.client.widgets.grid.RowSelectionModel;
 import com.gwtext.client.widgets.grid.event.EditorGridListenerAdapter;
 import com.gwtext.client.widgets.menu.BaseItem;
 import com.gwtext.client.widgets.menu.Item;
@@ -92,18 +92,16 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 
 	private Widget buildTemplateTable() {
 
-		final Map<String, Integer> vars = model.getInterpolationVariables();
-		if (vars.isEmpty()) {
+		String[] vars = model.getInterpolationVariablesList();
+		if (vars.length == 0) {
 			return new Label("");
 		}
 
-		FieldDef[] fds = new FieldDef[vars.size()];
+		FieldDef[] fds = new FieldDef[vars.length];
 		ColumnConfig[] cols = new ColumnConfig[fds.length];
 
-		for (Map.Entry<String, Integer> entry: vars.entrySet()) {
-			int idx = entry.getValue();
-			String var = entry.getKey();
-			
+		int idx = 0;
+		for (String var: vars) {
 			cols[idx] = new ColumnConfig();
 			cols[idx].setHeader(var);
 			cols[idx].setDataIndex(var);
@@ -112,6 +110,7 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 			cols[idx].setResizable(true);
 			cols[idx].setEditor(new GridEditor(new TextField()));
 			fds[idx] = new StringFieldDef(var);
+			idx++;
 		}
 		final RecordDef recordDef = new RecordDef(fds);
 		ArrayReader reader = new ArrayReader(recordDef);
@@ -128,12 +127,13 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 		final EditorGridPanel grid = new EditorGridPanel(store, cm);
 		grid.setStripeRows(true);
 
-		GroupingView gv = new GroupingView();
+//		GroupingView gv = new GroupingView();
+		GridView gv = new GridView(); 
 
 		// to stretch it out
 		gv.setForceFit(true);
-		gv.setGroupTextTpl("{text} ({[values.rs.length]} {[values.rs.length > 1 ? \"" // NON-NLS
-				+ constants.Items() + "\" : \"" + constants.Item() + "\"]})");
+//		gv.setGroupTextTpl("{text} ({[values.rs.length]} {[values.rs.length > 1 ? \"" // NON-NLS
+//				+ constants.Items() + "\" : \"" + constants.Item() + "\"]})");
 
 		grid.setView(gv);
 
@@ -150,15 +150,29 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 				for (int i = 0; i < rowData.length; i++) {
 					rowData[i] = "";
 				}
-				store.add(recordDef.createRecord(rowData));
-				model.addRow(rowData);
+				Record newRecord = recordDef.createRecord(rowData);
+				store.add(newRecord);
+				model.addRow(newRecord.getId(), rowData);
 			}
 		}));
+		
+		menu.addItem(new Item(constants.RemoveSelectedRowS(), new BaseItemListenerAdapter() {
+			public void onClick(BaseItem item, EventObject e) {
+				Record[] selected = grid.getSelectionModel().getSelections();
+				for (int i = 0; i < selected.length; i++) {
+					store.remove(selected[i]);
+					model.removeRowById(selected[i].getId());
+				}
+				grid.doLayout();
+			}
+		}));
+		
+		grid.setSelectionModel(new RowSelectionModel(false));
 		
 		ToolbarMenuButton tbb = new ToolbarMenuButton(constants.Modify(), menu);
 		tb.addButton(tbb);
 		grid.add(tb);
-
+		
 		grid.addEditorGridListener(new EditorGridListenerAdapter() {
 			@Override
 			public void onAfterEdit(GridPanel grid, Record record, String field, Object newValue, Object oldValue,

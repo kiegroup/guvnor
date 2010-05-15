@@ -271,18 +271,21 @@ public class BRDRTPersistenceTest extends TestCase {
         HashSet<String> expected = new HashSet<String>();
         expected.add("name");
         expected.add("age");
+        expected.add(TemplateModel.ID_COLUMN_NAME);
         assertEquals(expected, m.getTable().keySet());
         
         fp.removeConstraint(1);
         m.putInSync();
         
         expected.remove("age");
+        expected.add(TemplateModel.ID_COLUMN_NAME);
         assertEquals(expected, m.getTable().keySet());
         
         fp.addConstraint(sfc);
         m.putInSync();
         
         expected.add("age");
+        expected.add(TemplateModel.ID_COLUMN_NAME);
         assertEquals(expected, m.getTable().keySet());
         
 	}
