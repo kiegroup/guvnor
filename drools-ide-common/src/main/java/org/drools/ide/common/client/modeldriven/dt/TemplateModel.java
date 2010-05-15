@@ -24,22 +24,37 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
 public class TemplateModel extends RuleModel implements PortableObject {
+	public static final String ID_COLUMN_NAME = "__ID_KOL_NAME__";
+	
+	private long idCol = 0;
 	private Map<String, List<String>> table = new HashMap<String, List<String>>();
 	private int rowsCount = 0;
 	
 	public int getColsCount() {
-		return getInterpolationVariables().size();
+		return getInterpolationVariables().size() - 1;
 	}
 	
 	public int getRowsCount() {
 		return rowsCount;
 	}
 
-	public void addRow(String[] row) {
+	private String getNewIdColValue() {
+		idCol++;
+		return String.valueOf(idCol);
+	}
+	
+	public String addRow(String[] row) {
+		return addRow(null, row);
+	}
+	
+	public String addRow(String rowId, String[] row) {
 		Map<String, Integer> vars = getInterpolationVariables();
-		if (row.length != vars.size()) {
-			throw new IllegalArgumentException("Invalid numbers of columns: " + 
-					row.length + " expected: " + vars.size());
+		if (row.length != vars.size() - 1) {
+			throw new IllegalArgumentException("Invalid numbers of columns: " + row.length + " expected: "
+					+ vars.size());
+		}
+		if (rowId == null || rowId.length() == 0) {
+			rowId = getNewIdColValue();
 		}
 		for (Map.Entry<String, Integer> entry : vars.entrySet()) {
 			List<String> list = table.get(entry.getKey());
@@ -47,12 +62,29 @@ public class TemplateModel extends RuleModel implements PortableObject {
 				list = new ArrayList<String>();
 				table.put(entry.getKey(), list);
 			}
-			if (rowsCount != list.size() ) {
-				throw new IllegalArgumentException("invalid list size for " + entry.getKey() + ", expected: " + rowsCount + " was: " + list.size());
+			if (rowsCount != list.size()) {
+				throw new IllegalArgumentException("invalid list size for " + entry.getKey() + ", expected: "
+						+ rowsCount + " was: " + list.size());
 			}
-			list.add(row[entry.getValue()]);
+			if (ID_COLUMN_NAME.equals(entry.getKey())) {
+				list.add(rowId);
+			} else {
+				list.add(row[entry.getValue()]);
+			}
 		}
 		rowsCount++;
+		return rowId;
+	}
+	
+	public boolean removeRowById(String rowId) {
+		int idx = table.get(ID_COLUMN_NAME).indexOf(rowId);
+		if (idx != -1) {
+			for (List<String> col : table.values()) {
+				col.remove(idx);
+			}
+			rowsCount--;
+		}
+		return idx != -1;
 	}
 	
 	public void removeRow(int row) {
@@ -63,6 +95,15 @@ public class TemplateModel extends RuleModel implements PortableObject {
 			rowsCount--;
 		} else {
 			throw new ArrayIndexOutOfBoundsException(row);
+		}
+	}
+	
+	public void clearRows() {
+		if (rowsCount > 0) {
+			for (List<String> col : table.values()) {
+				col.clear();
+			}
+			rowsCount = 0;
 		}
 	}
 	
@@ -83,16 +124,19 @@ public class TemplateModel extends RuleModel implements PortableObject {
 	
 	public String[] getInterpolationVariablesList() {
 		Map<String, Integer> vars = getInterpolationVariables();
-		String[] ret = new String[vars.size()];
+		String[] ret = new String[vars.size() - 1];
 		for (Map.Entry<String, Integer> entry: vars.entrySet()) {
-			ret[entry.getValue()] = entry.getKey();
+			if (!ID_COLUMN_NAME.equals(entry.getKey())) {
+				ret[entry.getValue()] = entry.getKey();
+			}
 		}
 		return ret;
 	}
 	
-	public Map<String, Integer> getInterpolationVariables() {
+	private Map<String, Integer> getInterpolationVariables() {
 		Map<String, Integer> result = new HashMap<String, Integer>();
 		new RuleModelVisitor(result).visit(this);
+		result.put(ID_COLUMN_NAME, result.size());
 		return result;
 	}
 
@@ -104,10 +148,13 @@ public class TemplateModel extends RuleModel implements PortableObject {
 		if (rowsCount <= 0) {
 			return new String[0][0];
 		}
-		String[][] ret = new String[rowsCount][table.size()];
+		String[][] ret = new String[rowsCount][table.size() - 1];
 		Map<String, Integer> vars = getInterpolationVariables();
 		for (Map.Entry<String, Integer> entry : vars.entrySet()) {
 			String varName = entry.getKey();
+			if (ID_COLUMN_NAME.equals(entry.getKey())) {
+				continue;
+			}
 			int idx = entry.getValue();
 			for (int row = 0; row < rowsCount; row++) {
 				ret[row][idx] = table.get(varName).get(row);
