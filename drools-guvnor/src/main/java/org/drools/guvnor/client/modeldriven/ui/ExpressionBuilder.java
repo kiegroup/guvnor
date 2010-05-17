@@ -19,6 +19,7 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionCollection;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionCollectionIndex;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionField;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionFieldVariable;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionFormLine;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionGlobalVariable;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionMethod;
@@ -118,7 +119,12 @@ public class ExpressionBuilder extends RuleModellerWidget {
         String attrib = value.substring(dotPos + 1);
         if (prefix.equals(VARIABLE_VALUE_PREFIX)) {
             FactPattern fact = getRuleModel().getBoundFact(attrib);
-            ExpressionVariable variable = new ExpressionVariable(fact);
+            ExpressionPart variable;
+            if (fact!=null){
+                variable = new ExpressionVariable(fact);
+            }else{
+               variable = new ExpressionFieldVariable(attrib);
+            }
             expression.appendPart(variable);
 
         } else if (prefix.equals(GLOBAL_VARIABLE_VALUE_PREFIX)) {
@@ -268,6 +274,10 @@ public class ExpressionBuilder extends RuleModellerWidget {
 
     private Map<String, String> getCompletionsForCurrentType() {
         Map<String, String> completions = new LinkedHashMap<String, String>();
+
+        if (SuggestionCompletionEngine.TYPE_FINAL_OBJECT.equals(getCurrentGenericType())) {
+            return completions;
+        }
 
         if (SuggestionCompletionEngine.TYPE_COLLECTION.equals(getCurrentGenericType())) {
             completions.put("size()", "size");
