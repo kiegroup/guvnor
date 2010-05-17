@@ -32,6 +32,7 @@ public class SuggestionCompletionEngine implements PortableObject {
     public static final String            TYPE_BOOLEAN           = "Boolean";
     public static final String            TYPE_DATE              = "Date";
     public static final String            TYPE_OBJECT            = "Object";                                                                                                   // for all other unknown
+    public static final String            TYPE_FINAL_OBJECT      = "FinalObject";                                                                                                   // for all other unknown
     // types
 
     /**
