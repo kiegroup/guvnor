@@ -240,6 +240,55 @@ public class BRDRTPersistenceTest extends TestCase {
 
 	}
 	
+	public void testRemoveWithData() {
+		String expected = 
+				"rule \"with composite_1\"\n" + 
+				"	dialect \"mvel\"\n" + 
+				"	when\n" + 
+				"		$p : Person( name == \"diegoll\" )\n" + 
+				"	then\n" + 
+				"end\n" + 
+				"\n" + 
+				"rule \"with composite_0\"\n" + 
+				"	dialect \"mvel\"\n" + 
+				"	when\n" + 
+				"		$p : Person( name == \"baunax\" )\n" + 
+				"	then\n" + 
+				"end";
+		
+        TemplateModel m = new TemplateModel();
+        m.name = "with composite";
+        m.lhs = new IPattern[1];
+        m.rhs = new IAction[0];
+
+        FactPattern fp = new FactPattern("Person");
+        fp.boundName = "$p";
+        
+        SingleFieldConstraint sfc = new SingleFieldConstraint("name");
+        sfc.fieldName = "name";
+        sfc.value = "name";
+        sfc.operator = "==";
+        	
+        sfc.constraintValueType = ISingleFieldConstraint.TYPE_TEMPLATE;
+        fp.addConstraint(sfc);
+        
+        m.lhs[0] = fp;
+        
+        m.addRow(new String[] {"\"baunax\""});
+        m.addRow(new String[] {"\"diegoll\""});
+        String id1 = m.addRow(new String[] {"\"diegoll1\""});
+        String id2 = m.addRow(new String[] {"\"diegoll2\""});
+        
+        m.removeRowById(id1);
+        m.removeRowById(id2);
+        
+        final String drl = p.marshal(m);
+		log.info("drl :\n{}", drl);
+        assertNotNull(drl);
+        assertEquals(expected, drl);
+
+	}
+	
 	public void testWithDataAndSync() {
         TemplateModel m = new TemplateModel();
         m.name = "with composite";
