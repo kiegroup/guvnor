@@ -9,10 +9,10 @@ import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtext.client.widgets.form.Label;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.ide.common.client.modeldriven.MethodInfo;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -58,18 +58,20 @@ public class ExpressionBuilder extends RuleModellerWidget {
             this.readOnly = readOnly;
         }
 
+        panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+
         this.expression = expression;
         if (expression == null || expression.getText().length() == 0) {
             if (this.readOnly) {
-                panel.add(new SmallLabel("<b>-</b"));
+                panel.add(new SmallLabel("<b>-</b>"));
             } else {
                 panel.add(createStartPointWidget());
             }
         } else {
             if (this.readOnly) {
-                panel.add(new SmallLabel("<b>" + expression.getText() + "</b"));
+                panel.add(new SmallLabel("<b>" + expression.getText() + "</b>"));
             } else {
-                panel.add(new SmallLabel("<b>" + expression.getText() + ".</b"));
+                panel.add(new SmallLabel("<b>" + expression.getText() + ".</b>"));
                 panel.add(getWidgetForCurrentType());
             }
         }
@@ -135,7 +137,7 @@ public class ExpressionBuilder extends RuleModellerWidget {
         w = getWidgetForCurrentType();
 
         if (!expression.isEmpty()) {
-            panel.add(new Label(expression.getText()));
+            panel.add(new SmallLabel("<b>"+expression.getText()+".</b>"));
         }
         if (w != null) {
             panel.add(w);
@@ -265,7 +267,7 @@ public class ExpressionBuilder extends RuleModellerWidget {
 
         panel.clear();
         if (!expression.isEmpty()) {
-            panel.add(new Label(expression.getText()));
+            panel.add(new SmallLabel("<b>"+expression.getText()+".</b>"));
         }
         if (w != null) {
             panel.add(w);
