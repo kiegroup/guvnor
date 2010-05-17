@@ -78,8 +78,9 @@ public class NotMatchesConstraintTest {
     public void testUsingVerifier() {
 
         String ruleToVerify = "";
+        int fails = 0;
 
-        //OK
+        //FAIL
         ruleToVerify += "package org.drools.factconstraint.test\n\n";
         ruleToVerify += "import org.drools.factconstraint.model.*\n";
         ruleToVerify += "rule \"rule1\"\n";
@@ -88,8 +89,9 @@ public class NotMatchesConstraintTest {
         ruleToVerify += "   then\n";
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n\n";
+        fails++;
 
-        //FAIL
+        //OK
         ruleToVerify += "rule \"rule2\"\n";
         ruleToVerify += "   when\n";
         ruleToVerify += "       Person(name == '')\n";
@@ -97,7 +99,7 @@ public class NotMatchesConstraintTest {
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n";
 
-        //FAIL
+        //OK
         ruleToVerify += "rule \"pepe\"\n";
         ruleToVerify += "dialect \"mvel\"\n";
         ruleToVerify += "    when\n";
@@ -106,7 +108,7 @@ public class NotMatchesConstraintTest {
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n";
         
-        //FAIL
+        //OK
         ruleToVerify += "rule \"rule3\"\n";
         ruleToVerify += "   when\n";
         ruleToVerify += "       Person(name == 'bart')\n";
@@ -114,7 +116,7 @@ public class NotMatchesConstraintTest {
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n";
         
-        //FAIL
+        //OK
         ruleToVerify += "rule \"rule4\"\n";
         ruleToVerify += "   when\n";
         ruleToVerify += "       Person(name == '1bart')\n";
@@ -153,7 +155,7 @@ public class NotMatchesConstraintTest {
 
         System.out.println(warnings);
 
-        Assert.assertEquals(4, warnings.size());
+        Assert.assertEquals(fails, warnings.size());
 
         verifier.dispose();
     }
