@@ -9,6 +9,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
@@ -31,8 +32,8 @@ import com.gwtext.client.widgets.grid.EditorGridPanel;
 import com.gwtext.client.widgets.grid.GridEditor;
 import com.gwtext.client.widgets.grid.GridPanel;
 import com.gwtext.client.widgets.grid.GridView;
-import com.gwtext.client.widgets.grid.RowSelectionModel;
 import com.gwtext.client.widgets.grid.event.EditorGridListenerAdapter;
+import com.gwtext.client.widgets.grid.event.GridListenerAdapter;
 import com.gwtext.client.widgets.menu.BaseItem;
 import com.gwtext.client.widgets.menu.Item;
 import com.gwtext.client.widgets.menu.Menu;
@@ -42,8 +43,10 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 
 	private TemplateModel model;
 	private GroupingStore store = null;
+	private EditorGridPanel grid = null;
 	private RuleModeller ruleModeller;
 	private Constants constants = ((Constants) GWT.create(Constants.class));
+	
 
 	public RuleTemplateEditor(RuleAsset asset) {
 		model = (TemplateModel) asset.content;
@@ -124,7 +127,7 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 		}
 		store = new GroupingStore(proxy, reader);
 		store.load();
-		final EditorGridPanel grid = new EditorGridPanel(store, cm);
+		grid = new EditorGridPanel(store, cm);
 		grid.setStripeRows(true);
 
 //		GroupingView gv = new GroupingView();
@@ -158,17 +161,24 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 		
 		menu.addItem(new Item(constants.RemoveSelectedRowS(), new BaseItemListenerAdapter() {
 			public void onClick(BaseItem item, EventObject e) {
-				Record[] selected = grid.getSelectionModel().getSelections();
-				for (int i = 0; i < selected.length; i++) {
-					store.remove(selected[i]);
-					model.removeRowById(selected[i].getId());
-				}
-				grid.doLayout();
+				removeSelectedRows(grid);
 			}
 		}));
 		
-		grid.setSelectionModel(new RowSelectionModel(false));
-		
+		grid.addGridListener(new GridListenerAdapter() {
+			
+			public void onKeyPress(EventObject e) {
+				int k = e.getKey();
+				if (k == KeyCodes.KEY_DELETE || k == KeyCodes.KEY_BACKSPACE) {
+					removeSelectedRows(grid);
+				} 
+				else if (k == KeyCodes.KEY_ENTER) {
+					int[] selectedCell = grid.getCellSelectionModel().getSelectedCell();
+					grid.startEditing(selectedCell[0], selectedCell[1]);
+				}
+			}
+		});
+//		grid.setSelectionModel(new RowSelectionModel(false));
 		ToolbarMenuButton tbb = new ToolbarMenuButton(constants.Modify(), menu);
 		tb.addButton(tbb);
 		grid.add(tb);
@@ -182,6 +192,15 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 		});
 
 		return grid;
+	}
+	
+	private void removeSelectedRows(EditorGridPanel grid) {
+		if (com.google.gwt.user.client.Window.confirm(constants.AreYouSureYouWantToDeleteTheSelectedRowS())) {
+			int row = grid.getCellSelectionModel().getSelectedCell()[0];
+			Record rec = store.getAt(row);
+			model.removeRowById(rec.getId());
+			store.remove(rec);
+		}
 	}
 	
 	@Override
