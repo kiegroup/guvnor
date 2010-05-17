@@ -21,10 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.drools.bpmn2.xml.BPMN2SemanticModule;
+import org.drools.bpmn2.xml.BPMNSemanticModule;
 import org.drools.bpmn2.xml.XmlBPMNProcessDumper;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.xml.XmlProcessReader;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
@@ -33,7 +34,6 @@ import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.compiler.xml.XmlProcessReader;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -58,7 +58,7 @@ public class BPMN2ProcessHandler extends ContentHandler
             InputStreamReader reader = new InputStreamReader( is );
             PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
             configuration.initSemanticModules();
-            configuration.addSemanticModule( new BPMN2SemanticModule() );
+            configuration.addSemanticModule( new BPMNSemanticModule() );
             XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
             try {
                 process = (RuleFlowProcess) xmlReader.read( reader );
