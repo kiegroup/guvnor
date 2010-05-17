@@ -23,6 +23,7 @@ import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 
 
 class MockRepo implements Repository {
@@ -60,5 +61,25 @@ class MockRepo implements Repository {
                                                        RepositoryException {
         return null;
     }
+
+	public Value getDescriptorValue(String arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Value[] getDescriptorValues(String arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean isSingleValueDescriptor(String arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean isStandardDescriptor(String arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
     
 }

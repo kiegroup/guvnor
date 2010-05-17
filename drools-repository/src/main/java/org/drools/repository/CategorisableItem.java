@@ -86,7 +86,7 @@ public abstract class CategorisableItem extends VersionableItem {
                                                        ValueFormatException,
                                                        VersionException,
                                                        ConstraintViolationException {
-        this.node.checkout();
+        this.checkout();
         this.node.setProperty( CATEGORY_PROPERTY_NAME,
                                newTagValues );
     }
@@ -136,7 +136,7 @@ public abstract class CategorisableItem extends VersionableItem {
                 Value[] tagValues = tagReferenceProperty.getValues();
                 for ( int i = 0; i < tagValues.length; i++ ) {
                     try {
-                        Node tagNode = this.node.getSession().getNodeByUUID( tagValues[i].getString() );
+                        Node tagNode = this.node.getSession().getNodeByIdentifier( tagValues[i].getString() );
                         CategoryItem tagItem = new CategoryItem( this.rulesRepository,
                                                                  tagNode );
                         ac.add(tagItem);
@@ -217,7 +217,7 @@ public abstract class CategorisableItem extends VersionableItem {
                 //see if the tag was even there
                 boolean wasThere = false;
                 for ( i = 0; i < oldTagValues.length; i++ ) {
-                    Node tagNode = targetNode.getSession().getNodeByUUID( oldTagValues[i].getString() );
+                    Node tagNode = targetNode.getSession().getNodeByIdentifier( oldTagValues[i].getString() );
                     if ( tagNode.getName().equals( tag ) ) {
                         wasThere = true;
                     }
@@ -227,7 +227,7 @@ public abstract class CategorisableItem extends VersionableItem {
                     //copy the array, minus the specified tag
                     newTagValues = new Value[oldTagValues.length + 1];
                     for ( i = 0; i < oldTagValues.length; i++ ) {
-                        Node tagNode = targetNode.getSession().getNodeByUUID( oldTagValues[i].getString() );
+                        Node tagNode = targetNode.getSession().getNodeByIdentifier( oldTagValues[i].getString() );
                         if ( !tagNode.getName().equals( tag ) ) {
                             newTagValues[j] = oldTagValues[i];
                             j++;

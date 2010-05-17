@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.Calendar;
 import java.util.Iterator;
 
+import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
@@ -169,11 +170,11 @@ public class AssetItem extends CategorisableItem {
 			if (ruleNode.hasProperty(CONTENT_PROPERTY_BINARY_NAME)) {
 				Property data = ruleNode
 						.getProperty(CONTENT_PROPERTY_BINARY_NAME);
-				return data.getStream();
+				return data.getBinary().getStream();
 			} else {
 				if (ruleNode.hasProperty(CONTENT_PROPERTY_NAME)) {
 					Property data = ruleNode.getProperty(CONTENT_PROPERTY_NAME);
-					return data.getStream();
+					return data.getBinary().getStream();
 				}
 				return null;
 			}
@@ -202,7 +203,7 @@ public class AssetItem extends CategorisableItem {
 			if (isBinary()) {
 				Property data = ruleNode
 						.getProperty(CONTENT_PROPERTY_BINARY_NAME);
-				InputStream in = data.getStream();
+				InputStream in = data.getBinary().getStream();
 
 				// Create the byte array to hold the data
 				byte[] bytes = new byte[(int) data.getLength()];
@@ -386,7 +387,8 @@ public class AssetItem extends CategorisableItem {
 	public AssetItem updateBinaryContentAttachment(InputStream data) {
 		checkout();
 		try {
-			this.node.setProperty(CONTENT_PROPERTY_BINARY_NAME, data);
+			Binary is = this.node.getSession().getValueFactory().createBinary(data);
+			this.node.setProperty(CONTENT_PROPERTY_BINARY_NAME, is);
 			return this;
 		} catch (RepositoryException e) {
 			log.error("Unable to update the assets binary content", e);

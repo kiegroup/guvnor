@@ -153,6 +153,9 @@ public class ArchiveItemTest extends TestCase {
         item2.archiveItem( true );
 
         // not archived until repository isn't save.
+/*        assertEquals( 1,
+        		repo.findAssetsByName( "findRulesByNameArchived1" ).getSize() );*/
+
         List list = iteratorToList( repo.findAssetsByName( "findRulesByNameArchived1" ) );
         assertEquals( 1,
                       list.size() );

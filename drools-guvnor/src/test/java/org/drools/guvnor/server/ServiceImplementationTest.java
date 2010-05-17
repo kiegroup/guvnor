@@ -444,9 +444,12 @@ public class ServiceImplementationTest extends TestCase {
         //now verify AssetItemIterator works by calling search
         AssetItemIterator it = impl.repository.findAssetsByName( "testCreateLinkedAssetItemRule%",
                                                                  true );
-        assertEquals( 1,
-                      it.getSize() );
+        //NOTE, getSize() may return -1
+ /*       assertEquals( 1,
+                      it.getSize() );*/
+        int size = 0;
         while ( it.hasNext() ) {
+        	size++;
             AssetItem ai = it.next();
             if ( ai.getUUID().equals( uuid ) ) {
                 assertEquals( ai.getPackage().getName(),
@@ -457,6 +460,7 @@ public class ServiceImplementationTest extends TestCase {
                 fail( "unexptected asset found: " + ai.getPackage().getName() );
             }
         }
+        assertEquals( 1, size );
     }
 
     public void testLinkedAssetItemHistoryRelated() throws Exception {
@@ -555,6 +559,7 @@ public class ServiceImplementationTest extends TestCase {
                       newHead.metaData.checkinComment );
     }
 
+    //path name contains Apostrophe is no longer a problem with jackrabbit 2.0
     public void testCreateNewRuleContainsApostrophe() throws Exception {
         ServiceImplementation impl = getService();
         impl.repository.createPackage( "testCreateNewRuleContainsApostrophe",
@@ -563,16 +568,24 @@ public class ServiceImplementationTest extends TestCase {
                              "testCreateNewRuleContainsApostrophe",
                              "this is a cat" );
 
+        String uuid = null;
         try {
-            impl.createNewRule( "testCreateNewRuleContains' character",
+        	uuid = impl.createNewRule( "testCreateNewRuleContains' character",
                                 "an initial desc",
                                 "testCreateNewRuleContainsApostrophe",
                                 "testCreateNewRuleContainsApostrophe",
                                 AssetFormats.DSL_TEMPLATE_RULE );
-            fail( "did not get expected exception" );
+            //fail( "did not get expected exception" );
         } catch ( SerializableException e ) {
-            assertTrue( e.getMessage().indexOf( "'testCreateNewRuleContains' character' is not a valid path. ''' not a valid name character" ) >= 0 );
+            //assertTrue( e.getMessage().indexOf( "'testCreateNewRuleContains' character' is not a valid path. ''' not a valid name character" ) >= 0 );
         }
+        
+        RuleAsset assetWrapper = impl.loadRuleAsset( uuid );
+        assertEquals( assetWrapper.metaData.description,
+                      "an initial desc" );
+        assertEquals( assetWrapper.metaData.name,
+        "testCreateNewRuleContains' character" );
+    
     }
 
     public void testRuleTableLoad() throws Exception {

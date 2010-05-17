@@ -6,10 +6,6 @@ import javax.jcr.Repository;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
-import org.apache.log4j.Logger;
-//import org.drools.repository.security.DroolsRepositoryAccessManager;
-
-//import junit.framework.Assert;
 
 /**
  * This is a utility to simulate session behavior for the test suite.
@@ -40,10 +36,10 @@ public class RepositorySessionUtil {
 
     public static RulesRepository getRepository() throws RulesRepositoryException {
     	RulesRepository repoInstance = repo.get();
-    	System.out.println("----------getRepository");
+    	//System.out.println("----------getRepository");
         if ( repoInstance == null ) {
         	
-        	System.out.println("----------repoInstance == null");
+        	//System.out.println("----------repoInstance == null");
 
             File dir = new File( "repository" );
             System.out.println( "DELETING test repo: " + dir.getAbsolutePath() );
@@ -68,7 +64,7 @@ public class RepositorySessionUtil {
                 config.setupRulesRepository( session );
                 repoInstance = new RulesRepository( session );
 
-                Session adminSession = repository.login(new SimpleCredentials("ADMINISTRATOR", "password".toCharArray()));
+                repository.login(new SimpleCredentials("ADMINISTRATOR", "password".toCharArray()));
                 //loonie hack
                 //DroolsRepositoryAccessManager.adminThreadlocal.set(  adminSession );
                 repo.set( repoInstance );

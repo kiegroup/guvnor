@@ -26,7 +26,7 @@ public class AssetHistoryIterator
         this.head = head;
         this.repo = repo;
         try {
-            this.versionIterator =  this.head.getVersionHistory().getAllVersions();
+        	this.versionIterator =  VersionableItem.getVersionManager(head).getVersionHistory(head.getPath()).getAllVersions();
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }

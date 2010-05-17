@@ -52,7 +52,8 @@ public class AssetItemIterator
      * @return the size of the underlying iterator's potential data set.
      * May be -1 if not known.
      */
-    public long getSize() {
+    //NOTE this may return -1 as per JCR2.0 when precise count is not available due to performance reasons. 
+     public long getSize() {
     	return it.getSize();
     }
 

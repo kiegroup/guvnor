@@ -550,7 +550,7 @@ public class RulesRepository {
             Node sourceNode = pkgSnaps.getNode( snapshotName );
             if (pkgSnaps.hasNode(newName)) {
             	pkgSnaps.getNode(newName).remove();
-            	pkgSnaps.save();
+            	this.session.save();
             }
 
             String destinationPath = pkgSnaps.getPath() + "/" + newName;
@@ -602,7 +602,7 @@ public class RulesRepository {
      */
     public PackageItem loadPackageByUUID(String uuid) throws RulesRepositoryException {
         try {
-            Node rulePackageNode = this.session.getNodeByUUID( uuid );
+            Node rulePackageNode = this.session.getNodeByIdentifier( uuid );
             return new PackageItem( this,
                                     rulePackageNode );
         } catch ( Exception e ) {
@@ -644,7 +644,7 @@ public class RulesRepository {
      */
     public AssetItem loadAssetByUUID(String uuid) {
         try {
-            Node rulePackageNode = this.session.getNodeByUUID( uuid );
+            Node rulePackageNode = this.session.getNodeByIdentifier( uuid );
             return new AssetItem( this,
                                   rulePackageNode );
         } catch (ItemNotFoundException e) {
@@ -1176,7 +1176,8 @@ public class RulesRepository {
 
             this.session.move( sourcePath,
                                destPath );
-
+            this.session.save();
+            
             item.checkout();
             item.node.setProperty( AssetItem.PACKAGE_NAME_PROPERTY,
                                    newPackage );
@@ -1203,6 +1204,7 @@ public class RulesRepository {
             String destPath = node.getParent().getPath() + "/" + newAssetName;
             this.session.move( sourcePath,
                                destPath );
+            this.session.save();
 
             itemOriginal.updateTitle( newAssetName );
             itemOriginal.checkin( "Renamed asset " + itemOriginal.getName() );
@@ -1264,6 +1266,8 @@ public class RulesRepository {
             String destPath = node.getParent().getPath() + "/" + newPackageName;
             this.session.move( sourcePath,
                                destPath );
+            
+            this.session.save();
 
             itemOriginal.updateTitle( newPackageName );
             itemOriginal.checkin( "Renamed package " + itemOriginal.getName() );

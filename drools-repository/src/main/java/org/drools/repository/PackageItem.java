@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.jcr.Binary;
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -129,7 +130,7 @@ public class PackageItem extends VersionableItem {
     public void updateBinaryUpToDate(boolean status) {
     	try {
     		checkIsUpdateable();
-    		node.checkout();
+    		this.checkout();
 			node.setProperty("drools:binaryUpToDate", status);
 		} catch (RepositoryException e) {
 			log.error("fail to update drools:binaryUpToDate of " + getName(), e);
@@ -211,6 +212,7 @@ public class PackageItem extends VersionableItem {
             ruleNode.setProperty( AssetItem.PACKAGE_NAME_PROPERTY, this.getName() );
             ruleNode.setProperty( CREATOR_PROPERTY_NAME, this.node.getSession().getUserID() );
 
+            rulesRepository.getSession().save();
 
             AssetItem rule = new AssetItem( this.rulesRepository, ruleNode );
 
@@ -741,7 +743,7 @@ public class PackageItem extends VersionableItem {
     	//System.out.println("(updateCategoryRules) keys: " + keys + " Values: " + values );
         try {
         	
-            this.node.checkout();
+            this.checkout();
             this.updateStringProperty(keys,CATEGORY_RULE_KEYS_PROPERTY_NAME);
             this.updateStringProperty(values,CATEGORY_RULE_VALUES_PROPERTY_NAME);
             
@@ -812,7 +814,8 @@ public class PackageItem extends VersionableItem {
     public PackageItem updateCompiledPackage(InputStream data) {
         checkout();
         try {
-            this.node.setProperty( COMPILED_PACKAGE_PROPERTY_NAME, data );
+        	Binary binary = this.node.getSession().getValueFactory().createBinary(data);
+            this.node.setProperty( COMPILED_PACKAGE_PROPERTY_NAME, binary );
             this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME,
                                    Calendar.getInstance() );
             return this;
@@ -831,7 +834,7 @@ public class PackageItem extends VersionableItem {
             Node ruleNode = getVersionContentNode();
             if ( ruleNode.hasProperty(  COMPILED_PACKAGE_PROPERTY_NAME ) ) {
                 Property data = ruleNode.getProperty( COMPILED_PACKAGE_PROPERTY_NAME );
-                InputStream in = data.getStream();
+                InputStream in = data.getBinary().getStream();
 
                 // Create the byte array to hold the data
                 byte[] bytes = new byte[(int) data.getLength()];
@@ -867,7 +870,7 @@ public class PackageItem extends VersionableItem {
      */
 	public PackageItem createSubPackage(String subPackageName) throws RepositoryException {
 
-		node.checkout();
+		this.checkout();
         log.info( "USER: {} CREATEING subpackage [{}] under [{}]", new Object[] {getCurrentUserName(), subPackageName, getName() });
 		Node subPkgsNode;
         try {

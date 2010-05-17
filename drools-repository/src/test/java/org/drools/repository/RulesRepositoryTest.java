@@ -413,7 +413,7 @@ public class RulesRepositoryTest extends TestCase {
 
         repo.save();
 
-        String uuid = rule.getNode().getUUID();
+        String uuid = rule.getNode().getIdentifier();
 
         AssetItem loaded = repo.loadAssetByUUID( uuid );
         assertNotNull( loaded );
@@ -813,7 +813,7 @@ public class RulesRepositoryTest extends TestCase {
         repo.createPackage( "testMove2",
                             "description" );
         repo.moveRuleItemPackage( "testMove2",
-                                  r.node.getUUID(),
+                                  r.node.getIdentifier(),
                                   "explanation" );
 
         pkg = repo.loadPackage( "testMove" );

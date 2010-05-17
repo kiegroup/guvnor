@@ -33,6 +33,7 @@ import javax.jcr.LoginException;
 import javax.jcr.NamespaceException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -42,6 +43,8 @@ import javax.jcr.Workspace;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.retention.RetentionManager;
+import javax.jcr.security.AccessControlManager;
 import javax.jcr.version.VersionException;
 
 import org.xml.sax.ContentHandler;
@@ -244,5 +247,64 @@ class MockSession implements Session {
          
         
     }
+
+	public AccessControlManager getAccessControlManager()
+			throws UnsupportedRepositoryOperationException, RepositoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Node getNode(String arg0) throws PathNotFoundException,
+			RepositoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Node getNodeByIdentifier(String arg0) throws ItemNotFoundException,
+			RepositoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Property getProperty(String arg0) throws PathNotFoundException,
+			RepositoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public RetentionManager getRetentionManager()
+			throws UnsupportedRepositoryOperationException, RepositoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean hasCapability(String arg0, Object arg1, Object[] arg2)
+			throws RepositoryException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean hasPermission(String arg0, String arg1)
+			throws RepositoryException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean nodeExists(String arg0) throws RepositoryException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean propertyExists(String arg0) throws RepositoryException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void removeItem(String arg0) throws VersionException, LockException,
+			ConstraintViolationException, AccessDeniedException,
+			RepositoryException {
+		// TODO Auto-generated method stub
+		
+	}
     
 }

@@ -10,7 +10,6 @@ import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
 
 import junit.framework.TestCase;
-import org.drools.repository.events.StorageEventManager;
 
 public class AssetItemTest extends TestCase {
 
@@ -256,7 +255,7 @@ public class AssetItemTest extends TestCase {
 
 
             ruleItem1 = getDefaultPackage().loadAsset( "testUpdateContent" );
-            VersionIterator it = ruleItem1.getNode().getVersionHistory().getAllVersions();
+            VersionIterator it = VersionableItem.getVersionManager(ruleItem1.getNode()).getVersionHistory(ruleItem1.getNode().getPath()).getAllVersions();
 
             // and this shows using a version iterator.
             // perhaps migrate to using this rather then next/prev methods.

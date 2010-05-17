@@ -12,6 +12,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 import javax.jcr.lock.LockException;
+import javax.jcr.version.VersionManager;
 
 import org.drools.repository.events.StorageEventManager;
 
@@ -86,7 +87,7 @@ public abstract class VersionableItem extends Item {
      */
     public String getUUID() {
         try {
-            return this.getVersionContentNode().getUUID();
+            return this.getVersionContentNode().getIdentifier();
         } catch (  RepositoryException e ) {
             throw new RulesRepositoryException(e);
         }
@@ -113,14 +114,14 @@ public abstract class VersionableItem extends Item {
 			if (this.node.getPrimaryNodeType().getName().equals("nt:version")) {
 				versionNode = this.node;
 			} else {
-				versionNode = this.node.getBaseVersion();
+				versionNode = getVersionManager(this.node).getBaseVersion(this.node.getPath());
 			}
 
 			Property predecessorsProperty = versionNode.getProperty("jcr:predecessors");
 			Value[] predecessorValues = predecessorsProperty.getValues();
 
 			if (predecessorValues.length > 0) {
-				Node predecessorNode = this.node.getSession().getNodeByUUID(predecessorValues[0].getString());
+				Node predecessorNode = this.node.getSession().getNodeByIdentifier(predecessorValues[0].getString());
 
 				// we don't want to return the root node - it isn't a true
 				// predecessor
@@ -149,7 +150,7 @@ public abstract class VersionableItem extends Item {
             Value[] successorValues = successorsProperty.getValues();
 
             if ( successorValues.length > 0 ) {
-                Node successorNode = this.node.getSession().getNodeByUUID( successorValues[0].getString() );
+                Node successorNode = this.node.getSession().getNodeByIdentifier( successorValues[0].getString() );
                 return successorNode;
             }
         } catch ( PathNotFoundException e ) {
@@ -305,7 +306,7 @@ public abstract class VersionableItem extends Item {
                 return;
             }
 
-            node.checkout();
+            this.checkout();
             node.setProperty( prop,
                               value );
             if (setLastUpdated) {
@@ -333,7 +334,7 @@ public abstract class VersionableItem extends Item {
 				return;
 			}
 
-			node.checkout();
+			this.checkout();
 			node.setProperty(prop, value);
 			if (setLastUpdated) {
 				Calendar lastModified = Calendar.getInstance();
@@ -420,7 +421,7 @@ public abstract class VersionableItem extends Item {
      */
     public void updateDescription(String newDescriptionContent) throws RulesRepositoryException {
         try {
-            this.node.checkout();
+            this.checkout();
             //this.node.setProperty(arg0, arg1);
 
             this.node.setProperty( DESCRIPTION_PROPERTY_NAME,
@@ -521,9 +522,8 @@ public abstract class VersionableItem extends Item {
      * @param targetNode the node to be checked out.
      */
     public static void checkout(Node targetNode) {
-
         try {
-        	targetNode.checkout();
+        	getVersionManager(targetNode).checkout(targetNode.getPath());
         } catch ( UnsupportedRepositoryOperationException e ) {
             String message = "";
             try {
@@ -562,7 +562,8 @@ public abstract class VersionableItem extends Item {
             long nextVersion = getVersionNumber() + 1;
             this.node.setProperty( VERSION_NUMBER_PROPERTY_NAME,  nextVersion );
             this.node.getSession().save();
-            this.node.checkin();
+            
+            getVersionManager(this.node).checkin(this.node.getPath());
 
             if (StorageEventManager.hasSaveEvent()) {
                 if (this instanceof AssetItem) {
@@ -649,7 +650,7 @@ public abstract class VersionableItem extends Item {
         try {
             Node content = getVersionContentNode();
             Property stateProperty = content.getProperty( STATE_PROPERTY_NAME );
-            Node stateNode = this.rulesRepository.getSession().getNodeByUUID( stateProperty.getString() );
+            Node stateNode = this.rulesRepository.getSession().getNodeByIdentifier( stateProperty.getString() );
             return new StateItem( this.rulesRepository,
                                   stateNode );
         } catch ( PathNotFoundException e ) {
@@ -827,7 +828,7 @@ public abstract class VersionableItem extends Item {
     public String getVersionSnapshotUUID() {
         try {
             if ( isHistoricalVersion() ) {
-                return this.node.getUUID();
+                return this.node.getIdentifier();
             } else {
                 throw new RulesRepositoryException( "This is the current version of the asset." );
             }
@@ -862,6 +863,9 @@ public abstract class VersionableItem extends Item {
     		throw new RulesRepositoryException(e);
     	}
     }
-
+    
+    public static VersionManager getVersionManager(Node targetNode) throws RepositoryException {
+        return targetNode.getSession().getWorkspace().getVersionManager();
+    }
 
 }
