@@ -70,9 +70,12 @@ public class RuleModel implements PortableObject {
         }
         if (f instanceof CompositeFieldConstraint) {
             CompositeFieldConstraint s = (CompositeFieldConstraint) f;
-            for (FieldConstraint ss : s.constraints) {
-                return giveFieldBinding(ss,
-                        var);
+            //If the user didn't add any constraint yet, s.constraints is null
+            if (s.constraints != null){
+                for (FieldConstraint ss : s.constraints) {
+                    return giveFieldBinding(ss,
+                            var);
+                }
             }
         }
         return null;
@@ -140,9 +143,13 @@ public class RuleModel implements PortableObject {
         }
         if (f instanceof CompositeFieldConstraint) {
             CompositeFieldConstraint s = (CompositeFieldConstraint) f;
-            for (FieldConstraint ss : s.constraints) {
-                List<String> t = giveFieldBinding(ss);
-                result.addAll(t);
+
+            //If the user didn't add any constraint yet, s.constraints is null
+            if (s.constraints != null){
+                for (FieldConstraint ss : s.constraints) {
+                    List<String> t = giveFieldBinding(ss);
+                    result.addAll(t);
+                }
             }
         }
         return result;
