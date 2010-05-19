@@ -1160,119 +1160,78 @@ public class RulesRepositoryTest extends TestCase {
 	}
 	
 	//In this test case we expect an ItemExistException from the second thread,
-    //other than ending up with two packages with same name.
+        //other than ending up with two packages with same name.
 	//https://jira.jboss.org/jira/browse/GUVNOR-346
-	public void xtestConcurrentCopyPackage() throws Exception {
-		//We have to handle how to get an instance of RulesRepository,
-		//by ourself, as different threads need to use different sessions.
-		final Repository repository;
+    public void testConcurrentCopyPackage() throws Exception {
+       // set up testing data               
+       RulesRepository repo = RepositorySessionUtil.getMultiThreadedRepository();
+       PackageItem source = repo.createPackage("testConcurrentCopyPackage",
+               "asset");
+       AssetItem item = source.addAsset("testCopyPackage", "desc");
+       item.updateContent("la");
+       item.checkin("");
+       repo.save();
 
-		File dir = new File("repository");
-		System.out.println("DELETING test repo: " + dir.getAbsolutePath());
-		deleteDir(dir);
-		System.out.println("TEST repo was deleted.");
+       int NUM_ITERATIONS = 40;
+       int NUM_SESSIONS = 2;
+              for (int n = 0; n < NUM_ITERATIONS; n++) {
+           Node folderNode = repo.getAreaNode(RulesRepository.RULE_PACKAGE_AREA);
+                      // cleanup
+           while (folderNode.hasNode("testConcurrentCopyPackage2")) {
+               folderNode.getNode("testConcurrentCopyPackage2").remove();
+               repo.save();
+           }
 
-		JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
+           Thread[] threads = new Thread[NUM_SESSIONS];
+           for (int i = 0; i < threads.length; i++) {
+               String id = "session#" + i;
+               ConcurrentCopySession ts = new ConcurrentCopySession(id);
+               Thread t = new Thread(ts);
+               t.setName(id);
+               t.start();
+               threads[i] = t;
+           }
+           for (int i = 0; i < threads.length; i++) {
+               threads[i].join();
+           }
 
-		repository = new TransientRepository("/repository.xml", "tmpdir");
-		//repository = config.getJCRRepository("tmpdir");
-		Session session = repository.login(new SimpleCredentials("alan_parsons",
-				"password".toCharArray()));
-		RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(
-				session);
+           //Node folderNode = repo.getAreaNode(RulesRepository.RULE_PACKAGE_AREA);
+           NodeIterator results = folderNode.getNodes("testConcurrentCopyPackage2");
+           assertEquals(1, results.getSize());
+       }        }
 
-		// clear out and setup
-		if (admin.isRepositoryInitialized()) {
-			admin.clearRulesRepository();
-		}
-		config.setupRulesRepository(session);
-		RulesRepository repo = new RulesRepository(session);
+      class ConcurrentCopySession implements Runnable {
+       String identity;
+       Random r;
+       RulesRepository localRepo;
+              ConcurrentCopySession(String identity) {
+           this.identity = identity;
+           r = new Random();
+           localRepo = RepositorySessionUtil.getMultiThreadedRepository();
+       }
 
-		// set up testing data
-		PackageItem source = repo.createPackage("testConcurrentCopyPackage",
-				"asset");
-		AssetItem item = source.addAsset("testCopyPackage", "desc");
-		item.updateContent("la");
-		item.checkin("");
-		repo.save();
+       private void randomSleep() {
+           long l = r.nextInt(90) + 20;
+           try {
+               Thread.sleep(l);
+           } catch (InterruptedException ie) {
+           }
+       }
 
-	    int NUM_ITERATIONS = 40;
-	    int NUM_SESSIONS = 2;
-	    
-        for (int n = 0; n < NUM_ITERATIONS; n++) {
-    		Node folderNode = repo.getAreaNode(RulesRepository.RULE_PACKAGE_AREA);
-        	
-            // cleanup
-            while (folderNode.hasNode("testConcurrentCopyPackage2")) {
-            	folderNode.getNode("testConcurrentCopyPackage2").remove();
-            	repo.save();
-            }
-
-            Thread[] threads = new Thread[NUM_SESSIONS];
-            for (int i = 0; i < threads.length; i++) {
-                String id = "session#" + i;
-                ConcurrentCopySession ts = new ConcurrentCopySession(id, repository);
-                Thread t = new Thread(ts);
-                t.setName(id);
-                t.start();
-                threads[i] = t;
-            }
-            for (int i = 0; i < threads.length; i++) {
-                threads[i].join();
-            }
-
-    		//Node folderNode = repo.getAreaNode(RulesRepository.RULE_PACKAGE_AREA);
-    		NodeIterator results = folderNode.getNodes("testConcurrentCopyPackage2");
-    		assertEquals(1, results.getSize());
-        }     
-	}
-	
-    class ConcurrentCopySession implements Runnable {
-        String identity;
-        Random r;
-        Repository repository;
-
-        ConcurrentCopySession(String identity, Repository repository) {
-        	this.repository = repository;
-            this.identity = identity;
-            r = new Random();
-        }
-
-        private void randomSleep() {
-            long l = r.nextInt(90) + 20;
-            try {
-                Thread.sleep(l);
-            } catch (InterruptedException ie) {
-            }
-        }
-
-        public void run() {
-			try {
-				Session localSession = repository.login(new SimpleCredentials("admin", "admin"
-								.toCharArray()));
-				RulesRepository repo1 = new RulesRepository(
-						localSession);
-
-				repo1.copyPackage("testConcurrentCopyPackage",
-						"testConcurrentCopyPackage2");
-				PackageItem dest = repo1
-						.loadPackage("testConcurrentCopyPackage2");
-				assertNotNull(dest);
-				randomSleep();
-			} catch (LoginException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				fail();
-			} catch (RepositoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				fail();
-			} catch (RulesRepositoryException rre) {
-				//expected
-			} finally {
-			}
-        }
-    }
+       public void run() {
+           try {
+               //This returns different repository instances for different threads
+               localRepo.copyPackage("testConcurrentCopyPackage",
+                       "testConcurrentCopyPackage2");
+               PackageItem dest = localRepo
+                       .loadPackage("testConcurrentCopyPackage2");
+               assertNotNull(dest);
+               randomSleep();                       } catch (RulesRepositoryException rre) {
+               //expected
+           } finally {
+           }
+       }
+   }
 
     private static boolean deleteDir(File dir) {
 
