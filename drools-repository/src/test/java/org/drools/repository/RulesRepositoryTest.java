@@ -1162,7 +1162,7 @@ public class RulesRepositoryTest extends TestCase {
 	//In this test case we expect an ItemExistException from the second thread,
     //other than ending up with two packages with same name.
 	//https://jira.jboss.org/jira/browse/GUVNOR-346
-	public void testConcurrentCopyPackage() throws Exception {
+	public void xtestConcurrentCopyPackage() throws Exception {
 		//We have to handle how to get an instance of RulesRepository,
 		//by ourself, as different threads need to use different sessions.
 		final Repository repository;
