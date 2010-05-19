@@ -21,6 +21,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -68,6 +69,15 @@ public class GlobalAreaAssetSelector extends Composite {
                     }
                 });
 
+            }
+            
+	        public void onFailure(Throwable t) {
+	            if ( t.getMessage().indexOf( "AuthorizationException" ) > -1 ) { 
+                    //Do nothing, just leave asset list empty.
+	            	//Window.alert( "No permission to access global area" );
+                } else {
+                    super.onFailure( t );
+                }
             }
 
         });

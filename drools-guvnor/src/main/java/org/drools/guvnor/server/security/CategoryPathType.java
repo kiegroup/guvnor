@@ -15,5 +15,8 @@ public class CategoryPathType {
 	public String getCategoryPath() {
 		return categoryPath;
 	}
-
+	
+	public String toString() {
+		return "CategoryPath: " + categoryPath;
+	}
 }

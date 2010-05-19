@@ -63,6 +63,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 			HttpServletResponse response = getThreadLocalResponse();
 		    try {
 		      log.error(e.getCause());
+		      e.printStackTrace();
 		      response.setContentType("text/plain");
 		      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		      response.getWriter().write("Sorry, insufficient permissions to perform this action.");

@@ -16,5 +16,9 @@ public class PackageNameType {
 	public String getPackageName() {
 		return packageName;
 	}
+	
+	public String toString() {
+		return "Package name: " + packageName;
+	}
 
 }

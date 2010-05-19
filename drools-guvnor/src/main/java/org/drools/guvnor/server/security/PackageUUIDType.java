@@ -16,5 +16,8 @@ public class PackageUUIDType {
 	public String getUUID() {
 		return uuid;
 	}
-
+	
+	public String toString() {
+		return "Package UUID: " + uuid;
+	}
 }
