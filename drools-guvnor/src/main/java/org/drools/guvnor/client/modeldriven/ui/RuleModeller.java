@@ -1177,12 +1177,16 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
     private List<AnalysisReportLine> warnings;
 
     public void verifyRule(final Command cmd){
+        this.verifyRule(cmd, false);
+    }
+
+    public void verifyRule(final Command cmd, boolean forceVerification){
         errors = new ArrayList<AnalysisReportLine>();
         warnings = new ArrayList<AnalysisReportLine>();
         
         //if AutoVerifierEnabled is off or there are not modified widgets,
         //just execute cmd and return.
-        if (!WorkingSetManager.getInstance().isAutoVerifierEnabled() || !this.hasModifiedWidgets){
+        if (!forceVerification && (!WorkingSetManager.getInstance().isAutoVerifierEnabled() || !this.hasModifiedWidgets)){
             if (cmd != null){
                 cmd.execute();
             }

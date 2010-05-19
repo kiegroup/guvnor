@@ -96,6 +96,7 @@ public class WorkingSetSelectorPopup {
                             LoadingPopup.close();
                             pop.hide();
                             modeller.refreshWidget();
+                            modeller.verifyRule(null, true);
                         }
                     });
             }
