@@ -92,9 +92,12 @@ public class CategoriesPanel extends GenericPanel {
                 } else if (self.getAttribute("id").equals("FIND")) {     //NON-NLS
                     centertabbedPanel.openFind();
                 } else if (self.getAttribute("id").startsWith("inbox")) {
-                    openInbox(self.getText(), (String)self.getUserObject());
+                	Boolean open = (Boolean) self.getAttributeAsObject("open");
+                	if (open == null || open) {
+                		openInbox(self.getText(), (String)self.getUserObject());
+                	}
                 } else {
-                    openStateOrCategory(self);                                 
+                    openStateOrCategory(self);
                 }
 
             }

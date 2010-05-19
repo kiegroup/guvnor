@@ -165,6 +165,8 @@ public class ExplorerNodeConfig {
         treeNode.setAttribute( "id",
                                "inboxes" );
 
+        treeNode.setAttribute("open", false);
+        
         TreeNode incoming = new TreeNode( constants.IncomingChanges() );
         incoming.setId( "inbox3" );
         incoming.setAttribute( "icon",
