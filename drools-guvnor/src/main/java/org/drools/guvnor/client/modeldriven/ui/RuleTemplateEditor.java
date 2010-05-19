@@ -58,7 +58,7 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 		Panel pnl = new Panel();
 //		pnl.setAutoWidth(true);
 		pnl.setClosable(false);
-		pnl.setTitle("Template Editor");
+		pnl.setTitle(constants.TemplateEditor());
 //		pnl.setAutoHeight(true);
 		ruleModeller = new RuleModeller(asset, new TemplateModellerWidgetFactory());
 		pnl.add(ruleModeller);
@@ -67,7 +67,7 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 		pnl = new Panel();
 //		pnl.setAutoWidth(true);
 		pnl.setClosable(false);
-		pnl.setTitle("Template Data");
+		pnl.setTitle(constants.TemplateData());
 //		pnl.setAutoHeight(true);
 		pnl.add(buildTemplateTable());
 		pnl.setId("tplTable");
