@@ -69,8 +69,7 @@ public class ScenarioRunner {
         this.scenario = scenario;
         this.workingMemory = wm;
         runScenario( scenario,
-                     resolver,
-                     wm );
+                     resolver );
     }
 
     /**
@@ -89,8 +88,7 @@ public class ScenarioRunner {
         TypeResolver resolver = new ClassTypeResolver( imports,
                                                        cl );
         runScenario( scenario,
-                     resolver,
-                     this.workingMemory );
+                     resolver );
     }
 
     interface Populate {
@@ -98,46 +96,43 @@ public class ScenarioRunner {
     }
 
     private void runScenario(final Scenario scenario,
-                             final TypeResolver resolver,
-                             final InternalWorkingMemory wm) throws ClassNotFoundException {
+                             final TypeResolver resolver) throws ClassNotFoundException {
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
         scenario.lastRunResult = new Date();
         //stub out any rules we don't want to have the consequences firing of.
         HashSet<String> ruleList = new HashSet<String>();
         ruleList.addAll( scenario.rules );
-        //TestingEventListener.stubOutRules(ruleList, wm.getRuleBase(), scenario.inclusive);
 
         TestingEventListener listener = null;
 
         List<Populate> toPopulate = new ArrayList<Populate>();
 
-        for ( Iterator iterator = scenario.globals.iterator(); iterator.hasNext(); ) {
-            final FactData fact = (FactData) iterator.next();
-            final Object f = eval( "new " + getTypeName( resolver,
-                                                         fact ) + "()" );
+        for ( final FactData fact : scenario.globals ) {
+            final Object factObject = eval( "new " + getTypeName( resolver,
+                                                                  fact ) + "()" );
             toPopulate.add( new Populate() {
                 public void go() {
                     populateFields( fact,
                                     globalData,
-                                    f );
+                                    factObject );
                 }
             } );
             globalData.put( fact.name,
-                            f );
-            wm.setGlobal( fact.name,
-                          f );
+                            factObject );
+            this.workingMemory.setGlobal( fact.name,
+                                          factObject );
         }
 
         doPopulate( toPopulate );
 
         for ( Iterator<Fixture> iterator = scenario.fixtures.iterator(); iterator.hasNext(); ) {
-            Fixture fx = iterator.next();
+            Fixture fixture = iterator.next();
 
-            if ( fx instanceof FactData ) {
+            if ( fixture instanceof FactData ) {
                 //deal with facts and globals
-                final FactData fact = (FactData) fx;
-                final Object f = (fact.isModify) ? this.populatedData.get( fact.name ) : eval( "new " + getTypeName( resolver,
-                                                                                                                     fact ) + "()" );
+                final FactData fact = (FactData) fixture;
+                final Object factObject = (fact.isModify) ? this.populatedData.get( fact.name ) : eval( "new " + getTypeName( resolver,
+                                                                                                                              fact ) + "()" );
                 if ( fact.isModify ) {
                     if ( !this.factHandles.containsKey( fact.name ) ) {
                         throw new IllegalArgumentException( "Was not a previously inserted fact. [" + fact.name + "]" );
@@ -146,56 +141,56 @@ public class ScenarioRunner {
                         public void go() {
                             populateFields( fact,
                                             populatedData,
-                                            f );
+                                            factObject );
                             workingMemory.update( factHandles.get( fact.name ),
-                                                  f );
+                                                  factObject );
                         }
                     } );
                 } else /* a new one */{
                     populatedData.put( fact.name,
-                                       f );
+                                       factObject );
                     toPopulate.add( new Populate() {
                         public void go() {
                             populateFields( fact,
                                             populatedData,
-                                            f );
+                                            factObject );
                             factHandles.put( fact.name,
-                                             wm.insert( f ) );
+                                             workingMemory.insert( factObject ) );
                         }
                     } );
                 }
-            } else if ( fx instanceof RetractFact ) {
-                RetractFact f = (RetractFact) fx;
-                this.workingMemory.retract( this.factHandles.get( f.name ) );
-                this.populatedData.remove( f.name );
-            } else if ( fx instanceof ActivateRuleFlowGroup ) {
-                workingMemory.getAgenda().activateRuleFlowGroup( ((ActivateRuleFlowGroup) fx).name );
-            } else if ( fx instanceof ExecutionTrace ) {
+            } else if ( fixture instanceof RetractFact ) {
+                RetractFact retractFact = (RetractFact) fixture;
+                this.workingMemory.retract( this.factHandles.get( retractFact.name ) );
+                this.populatedData.remove( retractFact.name );
+            } else if ( fixture instanceof ActivateRuleFlowGroup ) {
+                workingMemory.getAgenda().activateRuleFlowGroup( ((ActivateRuleFlowGroup) fixture).name );
+            } else if ( fixture instanceof ExecutionTrace ) {
                 doPopulate( toPopulate );
-                ExecutionTrace executionTrace = (ExecutionTrace) fx;
+                ExecutionTrace executionTrace = (ExecutionTrace) fixture;
                 //create the listener to trace rules
 
-                if ( listener != null ) wm.removeEventListener( listener ); //remove the old
+                if ( listener != null ) this.workingMemory.removeEventListener( listener ); //remove the old
                 listener = new TestingEventListener();
 
-                wm.addEventListener( listener );
+                this.workingMemory.addEventListener( listener );
 
                 //set up the time machine
-                applyTimeMachine( wm,
+                applyTimeMachine( this.workingMemory,
                                   executionTrace );
 
                 //love you
                 long time = System.currentTimeMillis();
-                wm.fireAllRules( listener.getAgendaFilter( ruleList,
-                                                           scenario.inclusive ),
-                                 scenario.maxRuleFirings );
+                this.workingMemory.fireAllRules( listener.getAgendaFilter( ruleList,
+                                                                           scenario.inclusive ),
+                                                 scenario.maxRuleFirings );
                 executionTrace.executionTimeResult = System.currentTimeMillis() - time;
                 executionTrace.numberOfRulesFired = listener.totalFires;
                 executionTrace.rulesFired = listener.getRulesFiredSummary();
 
-            } else if ( fx instanceof Expectation ) {
+            } else if ( fixture instanceof Expectation ) {
                 doPopulate( toPopulate );
-                Expectation assertion = (Expectation) fx;
+                Expectation assertion = (Expectation) fixture;
                 if ( assertion instanceof VerifyFact ) {
                     verify( (VerifyFact) assertion );
                 } else if ( assertion instanceof VerifyRuleFired ) {
@@ -203,7 +198,7 @@ public class ScenarioRunner {
                             (listener.firingCounts != null) ? listener.firingCounts : new HashMap<String, Integer>() );
                 }
             } else {
-                throw new IllegalArgumentException( "Not sure what to do with " + fx );
+                throw new IllegalArgumentException( "Not sure what to do with " + fixture );
             }
 
         }
