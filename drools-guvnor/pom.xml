@@ -266,7 +266,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>javax.transaction</groupId>
          <artifactId>jta</artifactId>
-         <version>1.0.1B</version>
+         <version>1.1</version>
       </dependency>
       <!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
       <dependency>
