@@ -394,7 +394,7 @@ public class PermissionViewer extends Composite {
 							});
 							pop.addAttribute(constants.SelectCategoryToProvidePermissionFor(), cat);
 						} else if (sel.startsWith("package")) {
-							final RulePackageSelector rps = new RulePackageSelector();
+							final RulePackageSelector rps = new RulePackageSelector(true);
 							com.google.gwt.user.client.ui.Button ok = new com.google.gwt.user.client.ui.Button(constants.OK());
 							ok.addClickListener(new ClickListener() {
 								public void onClick(Widget w) {

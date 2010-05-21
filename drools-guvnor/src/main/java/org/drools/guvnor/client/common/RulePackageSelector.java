@@ -38,9 +38,16 @@ public class RulePackageSelector extends Composite {
     public static String currentlySelectedPackage;
 
     private ListBox packageList;
+    private boolean loadGlobalArea = false;
 
 
     public RulePackageSelector() {
+		this(false);
+	}
+    
+    public RulePackageSelector(boolean loadGlobalArea) {
+    	this.loadGlobalArea = loadGlobalArea;
+    	
         packageList = new ListBox();
 
         DeferredCommand.addCommand(new Command() {
@@ -50,7 +57,7 @@ public class RulePackageSelector extends Composite {
         });
 
         initWidget( packageList );
-    }
+     }
 
 	private void loadPackageList() {
 		RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
@@ -63,6 +70,11 @@ public class RulePackageSelector extends Composite {
                         packageList.setSelectedIndex( i );
                     }
                 }
+                
+                if(loadGlobalArea) {
+                    packageList.addItem( "globalArea", "nouuidavailable" );
+                }
+               
                 packageList.addChangeListener(new ChangeListener() {
                     public void onChange(Widget sender) {
                          currentlySelectedPackage = getSelectedPackage();                       
@@ -79,10 +91,4 @@ public class RulePackageSelector extends Composite {
         return packageList.getItemText( packageList.getSelectedIndex() );
     }
 
-    /**
-     * Returns the selected package.
-     */
-    public String getSelectedPackageUUID() {
-        return packageList.getValue( packageList.getSelectedIndex() );
-    }
 }

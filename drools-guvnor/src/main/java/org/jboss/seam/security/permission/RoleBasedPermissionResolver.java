@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.CategoryPathType;
@@ -15,6 +16,7 @@ import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleBasedPermissionManager;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.security.WebDavPackageNameType;
+import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.Create;
@@ -54,6 +56,7 @@ public class RoleBasedPermissionResolver
     implements
     PermissionResolver,
     Serializable {
+	private static final Logger log = LoggingHelper.getLogger(RoleBasedPermissionResolver.class);
 
     private boolean enableRoleBasedAuthorization = false;
 
@@ -79,7 +82,8 @@ public class RoleBasedPermissionResolver
     public boolean hasPermission(Object requestedObject,
                                  String requestedPermission) {
         if ( !((requestedObject instanceof CategoryPathType) || (requestedObject instanceof PackageNameType) || (requestedObject instanceof WebDavPackageNameType) || (requestedObject instanceof AdminType) || (requestedObject instanceof PackageUUIDType)) ) {
-            return false;
+            log.debug("Requested permission is not an instance of CategoryPathType|PackageNameType|WebDavPackageNameType|AdminType|PackageUUIDType");
+        	return false;
         }
 
         if ( !enableRoleBasedAuthorization ) {
@@ -89,11 +93,11 @@ public class RoleBasedPermissionResolver
         RoleBasedPermissionManager permManager = (RoleBasedPermissionManager) Component.getInstance( "roleBasedPermissionManager" );
         List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
 
-        if ( RoleTypes.ADMIN.equals( requestedPermission ) ) {
-            return hasAdminPermission( permissions );
-        } else if ( hasAdminPermission( permissions ) ) {
+        if ( hasAdminPermission( permissions ) ) {
             //admin can do everything,no need for further checks.
             return true;
+        } else if ( RoleTypes.ADMIN.equals( requestedPermission ) ) {
+            return hasAdminPermission( permissions );
         }
 
         if ( requestedObject instanceof CategoryPathType ) {
@@ -105,13 +109,19 @@ public class RoleBasedPermissionResolver
                         if ( p.getCategoryPath().equals( requestedPath ) ) return true;
                         if ( isSubPath( requestedPath,
                                         p.getCategoryPath() ) ) {
+                            log.debug("Requested permission: " + requestedPermType + ", Requested object: " 
+                            		+ requestedPath + " , Permission granted: Yes");  
                             return true;
                         } else if ( isSubPath( p.getCategoryPath(),
                                                requestedPath ) ) {
+                            log.debug("Requested permission: " + requestedPermType + ", Requested object: " 
+                            		+ requestedPath + " , Permission granted: Yes");  
                             return true;
                         }
                     }
                 }
+                log.debug("Requested permission: " + requestedPermType + ", Requested object: " 
+                		+ requestedPath + " , Permission granted: No");  
                 return false;
             } else {
                 for ( RoleBasedPermission pbp : permissions ) {
@@ -122,12 +132,16 @@ public class RoleBasedPermissionResolver
                         if ( requestedPermType.equals( pbp.getRole() ) || (requestedPermType.equals( RoleTypes.ANALYST_READ ) && pbp.getRole().equals( RoleTypes.ANALYST )) ) {
                             if ( isPermittedCategoryPath( requestedPath,
                                                           pbp.getCategoryPath() ) ) {
+                                log.debug("Requested permission: " + requestedPermType + ", Requested object: " 
+                                		+ requestedPath + " , Permission granted: Yes");  
                                 return true;
                             }
                         }
                     }
                 }
 
+                log.debug("Requested permission: " + requestedPermType + ", Requested object: " 
+                		+ requestedPath + " , Permission granted: No");  
                 return false;
             }
         } else {
@@ -148,10 +162,14 @@ public class RoleBasedPermissionResolver
             for ( RoleBasedPermission pbp : permissions ) {
                 if ( targetName.equalsIgnoreCase( pbp.getPackageName() ) && isPermittedPackage( requestedPermission,
                                                                                                        pbp.getRole() ) ) {
+                    log.debug("Requested permission: " + requestedPermission + ", Requested object: " 
+                    		+ targetName + " , Permission granted: Yes");  
                     return true;
                 }
             }
 
+            log.debug("Requested permission: " + requestedPermission + ", Requested object: " 
+            		+ targetName + " , Permission granted: No");  
             return false;
         }
     }
@@ -159,9 +177,11 @@ public class RoleBasedPermissionResolver
     private boolean hasAdminPermission(List<RoleBasedPermission> permissions) {
         for ( RoleBasedPermission p : permissions ) {
             if ( RoleTypes.ADMIN.equalsIgnoreCase( p.getRole() ) ) {
+                log.debug("Requested permission: unknown, Permission granted: Yes");
                 return true;
             }
         }
+        log.debug("Requested permission: admin, Permission granted: No");
         return false;
     }
 
