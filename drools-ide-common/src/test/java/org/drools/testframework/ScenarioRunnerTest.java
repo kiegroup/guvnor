@@ -1165,6 +1165,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         wm.clearAgenda();
         sc.fixtures.addAll( Arrays.asList( given ) );
         sc.fixtures.add( executionTrace );
+        wm.getAgenda().getRuleFlowGroup( "asdf" ).setAutoDeactivate( false );
         run = new ScenarioRunner( sc,
                                   resolver,
                                   (InternalWorkingMemory) wm );
