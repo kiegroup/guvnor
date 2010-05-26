@@ -30,11 +30,11 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -278,12 +278,16 @@ public class RuleViewer extends GuvnorEditor {
         //layout.clear();
         this.asset.metaData.checkinComment = comment;
         final boolean[] saved = {false};
-        Timer t = new Timer() {
+        
+        if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
+
+       //Not sure why we need a delay here.       
+/*        Timer t = new Timer() {
             public void run() {
                 if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
             }
         };
-        t.schedule( 500 );
+        t.schedule( 500 );*/
 
         RepositoryServiceFactory.getService().checkinVersion( this.asset,
                                                               new GenericCallback<String>() {
@@ -411,18 +415,18 @@ public class RuleViewer extends GuvnorEditor {
         pop.addRow( new HTML( constants.AreYouSureYouWantToDiscardChanges() ) );
         pop.addRow( hor );
 
-        dis.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        dis.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent arg0) {
                 closeCommand.execute();
-                pop.hide();
-            }
-        } );
-
-        can.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                pop.hide();
-            }
-        } );
+                pop.hide();				
+			}     	
+        });
+                
+        can.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent arg0) {
+                pop.hide();			
+			}     	
+        });
 
         pop.show();
     }
@@ -438,8 +442,9 @@ public class RuleViewer extends GuvnorEditor {
                            sel );
 
         Button ok = new Button( constants.CreateCopy() );
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        
+        ok.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent arg0) {
                 if ( newName.getText() == null || newName.getText().equals( "" ) ) {
                     Window.alert( constants.AssetNameMustNotBeEmpty() );
                     return;
@@ -469,9 +474,12 @@ public class RuleViewer extends GuvnorEditor {
                                                                      }
                                                                  } );
             }
-        } );
-        form.addAttribute( "",
-                           ok );
+		
+   	
+        });
+        
+
+        form.addAttribute( "", ok );
 
         //form.setPopupPosition((DirtyableComposite.getWidth() - form.getOffsetWidth()) / 2, 100);
         form.show();
