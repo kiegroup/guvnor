@@ -15,12 +15,12 @@ import org.drools.verifier.report.components.Severity;
  * @author esteban.aliverti@gmail.com
  * @author baunax@gmail.com
  */
-public abstract class DefaultConstraintImpl implements Constraint {
+public abstract class DefaultFieldConstraintImpl implements Constraint {
 
 	private static final long serialVersionUID = 501L;
 	private long ruleNum = 0;
 
-    public static List<Operator> supportedOperators = new ArrayList<Operator>();
+    public static final List<Operator> supportedOperators = new ArrayList<Operator>();
     static{
         supportedOperators.add(Operator.EQUAL);
         supportedOperators.add(Operator.NOT_EQUAL);
@@ -29,6 +29,7 @@ public abstract class DefaultConstraintImpl implements Constraint {
         supportedOperators.add(Operator.LESS);
         supportedOperators.add(Operator.LESS_OR_EQUAL);
     }
+  
 
     private String concatRule(ConstraintConfiguration config, Map<String, Object> context) {
         StringBuilder rule = new StringBuilder();
@@ -81,17 +82,14 @@ public abstract class DefaultConstraintImpl implements Constraint {
         String rule = this.concatRule(config, context).replace("${ruleName}", ruleName);
         rule = rule.replace("${factType}", config.getFactType());
         rule = rule.replace("${fieldName}", config.getFieldName());
+        StringBuilder constraintsTxt = new StringBuilder();
         if (constraints != null && !constraints.isEmpty()) {
-            String constraintsTxt = "";
-            String delimiter = "";
             for (String c : constraints) {
-                constraintsTxt += delimiter + c + "\n";
-                if (delimiter.equals("")) {
-                    delimiter = ",";
-                }
+                constraintsTxt.append(",\n");
+                constraintsTxt.append(c);
             }
-            rule = rule.replace("${constraints}", constraintsTxt);
         }
+        rule = rule.replace("${constraints}", constraintsTxt);
         rule = rule.replace("${message}", (message == null || message.equals("")) ? "Invalid Value" : message);
 
         return rule;
@@ -111,6 +109,15 @@ public abstract class DefaultConstraintImpl implements Constraint {
         return value;
     }
 
+    /**
+     * Used for on-demand validation
+     * @param value
+     * @param config
+     * @return
+     * @deprecated Use drools-verifier instead of this method:
+     * {@link #getVerifierRule(org.drools.factconstraints.client.ConstraintConfiguration) }
+     */
+    @Deprecated
     public ValidationResult validate(Object value, ConstraintConfiguration config) {
         ValidationResult result = new ValidationResult();
         result.setSuccess(true);
@@ -243,7 +250,7 @@ public abstract class DefaultConstraintImpl implements Constraint {
     protected String getVerifierRestrictionPatternTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         StringBuilder verifierRestrictionPatternTemplate = new StringBuilder();
         verifierRestrictionPatternTemplate.append("      $restriction :LiteralRestriction(\n");
-        verifierRestrictionPatternTemplate.append("            fieldPath == $field.path,\n");
+        verifierRestrictionPatternTemplate.append("            fieldPath == $field.path\n");
         verifierRestrictionPatternTemplate.append("            ${constraints}\n");
         verifierRestrictionPatternTemplate.append("      )\n");
 

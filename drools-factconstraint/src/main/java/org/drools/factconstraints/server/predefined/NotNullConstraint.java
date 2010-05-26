@@ -6,13 +6,13 @@ import java.util.Map;
 
 import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.client.ValidationResult;
-import org.drools.factconstraints.server.DefaultConstraintImpl;
+import org.drools.factconstraints.server.DefaultFieldConstraintImpl;
 
 /**
  * 
  * @author esteban.aliverti@gmail.com
  */
-public class NotNullConstraint extends DefaultConstraintImpl {
+public class NotNullConstraint extends DefaultFieldConstraintImpl {
 	private static final long serialVersionUID = 501L;
 	public static final String NAME = "NotNull";
 

@@ -12,7 +12,7 @@ import org.drools.factconstraints.client.ConstraintConfiguration;
  * The counter must be handled by subclasses.
  * @author esteban.aliverti@gmail.com
  */
-public abstract class DefaultMultiRulesConstraintImpl extends DefaultConstraintImpl {
+public abstract class DefaultMultiRulesConstraintImpl extends DefaultFieldConstraintImpl {
 
 	private static final long serialVersionUID = 501L;
 	protected static final String RULE_COUNT = "ruleCount";

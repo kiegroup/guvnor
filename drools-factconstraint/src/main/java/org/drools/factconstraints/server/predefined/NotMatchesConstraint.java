@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.factconstraints.client.ConstraintConfiguration;
-import org.drools.factconstraints.server.DefaultConstraintImpl;
+import org.drools.factconstraints.server.DefaultFieldConstraintImpl;
 
-public class NotMatchesConstraint extends DefaultConstraintImpl {
+public class NotMatchesConstraint extends DefaultFieldConstraintImpl {
 
 	public static final String NOT_MATCHES_ARGUMENT = "matches";
 	private static final long serialVersionUID = 501L;
