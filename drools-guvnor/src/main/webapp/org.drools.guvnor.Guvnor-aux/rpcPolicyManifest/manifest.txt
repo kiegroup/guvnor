@@ -1,4 +1,0 @@
-# Module org.drools.guvnor.Guvnor
-# RPC service class, partial path of RPC policy file
-org.drools.guvnor.client.rpc.RepositoryService, B359CEC1F03B810F0889B80414235352.gwt.rpc
-org.drools.guvnor.client.rpc.SecurityService, 9A8D89752931A65155F5EEB8D00DB1E7.gwt.rpc
