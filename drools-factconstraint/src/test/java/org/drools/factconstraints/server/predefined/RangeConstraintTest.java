@@ -348,22 +348,22 @@ public class RangeConstraintTest {
 
         Assert.assertEquals(fail, errors.size());
 
-        System.out.println("\nOrders:");
-        for (VerifierMessageBase message : errors) {
-            if (message.getFaulty() instanceof PatternComponent) {
-                int rootPatternOrderNumber = this.getRootPatternOrderNumber((PatternComponent) message.getFaulty());
-                System.out.println(((PatternComponent) message.getFaulty()).getPath()+". Order= "+rootPatternOrderNumber);
-            }
-        }
+//        System.out.println("\nOrders:");
+//        for (VerifierMessageBase message : errors) {
+//            if (message.getFaulty() instanceof PatternComponent) {
+//                int rootPatternOrderNumber = this.getRootPatternOrderNumber((PatternComponent) message.getFaulty());
+//                System.out.println(((PatternComponent) message.getFaulty()).getPath()+". Order= "+rootPatternOrderNumber);
+//            }
+//        }
 
         verifier.dispose();
     }
 
-    private int getRootPatternOrderNumber(RuleComponent pattern){
-        if (pattern.getParentPatternComponent() == null){
-            return (pattern instanceof PatternComponent)?((PatternComponent)pattern).getPatternOrderNumber():pattern.getOrderNumber();
-        }else{
-            return getRootPatternOrderNumber(pattern.getParentPatternComponent());
-        }
-    }
+//    private int getRootPatternOrderNumber(RuleComponent pattern){
+//        if (pattern.getParentPatternComponent() == null){
+//            return (pattern instanceof PatternComponent)?((PatternComponent)pattern).getPatternOrderNumber():pattern.getOrderNumber();
+//        }else{
+//            return getRootPatternOrderNumber(pattern.getParentPatternComponent());
+//        }
+//    }
 }
