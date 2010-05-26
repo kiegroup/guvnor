@@ -29,7 +29,17 @@ public abstract class DefaultFieldConstraintImpl implements Constraint {
         supportedOperators.add(Operator.LESS);
         supportedOperators.add(Operator.LESS_OR_EQUAL);
     }
-  
+
+    /**
+     * Method used to create the field Restriction. It returns the class name
+     * of the Restriction used in the generated rule. By default, it returns
+     * "LiteralRestriction", but subclasses could override this method in order
+     * to use other subclasses of org.drools.verifier.components.Restriction
+     * @return
+     */
+    protected String getFieldRestrictionClassName(){
+        return "LiteralRestriction";
+    }
 
     private String concatRule(ConstraintConfiguration config, Map<String, Object> context) {
         StringBuilder rule = new StringBuilder();
@@ -249,7 +259,9 @@ public abstract class DefaultFieldConstraintImpl implements Constraint {
     /* Restriction Pattern */
     protected String getVerifierRestrictionPatternTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         StringBuilder verifierRestrictionPatternTemplate = new StringBuilder();
-        verifierRestrictionPatternTemplate.append("      $restriction :LiteralRestriction(\n");
+        verifierRestrictionPatternTemplate.append("      $restriction :");
+        verifierRestrictionPatternTemplate.append(this.getFieldRestrictionClassName());
+        verifierRestrictionPatternTemplate.append("      (\n");
         verifierRestrictionPatternTemplate.append("            fieldPath == $field.path\n");
         verifierRestrictionPatternTemplate.append("            ${constraints}\n");
         verifierRestrictionPatternTemplate.append("      )\n");

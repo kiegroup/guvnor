@@ -3,6 +3,7 @@ package org.drools.factconstraints.server.factory;
 import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.server.Constraint;
 import org.drools.factconstraints.server.predefined.IntegerConstraint;
+import org.drools.factconstraints.server.predefined.InvalidFieldConstraint;
 import org.drools.factconstraints.server.predefined.MatchesConstraint;
 import org.drools.factconstraints.server.predefined.NotMatchesConstraint;
 import org.drools.factconstraints.server.predefined.NotNullConstraint;
@@ -26,8 +27,10 @@ public class ConstraintsFactory {
 			return new RangeConstraint();
 		} else if (NotMatchesConstraint.NAME.equals(config.getConstraintName())) {
 			return new NotMatchesConstraint();
-		} if (MatchesConstraint.NAME.equals(config.getConstraintName())) {
+		}else if (MatchesConstraint.NAME.equals(config.getConstraintName())) {
 			return new MatchesConstraint();
+		}else if (InvalidFieldConstraint.NAME.equals(config.getConstraintName())) {
+			return new InvalidFieldConstraint();
 		} else {
 			throw new IllegalArgumentException("Constraint unknown: " + config.getConstraintName());
 		}

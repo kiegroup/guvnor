@@ -44,6 +44,9 @@ public class InvalidFieldConstraintTest {
         //FAIL
         ruleToVerify += "package org.drools.factconstraint.test\n\n";
         ruleToVerify += "import org.drools.factconstraint.model.*\n";
+
+        ruleToVerify += "global Number globalAge;\n";
+
         ruleToVerify += "rule \"rule1\"\n";
         ruleToVerify += "   when\n";
         ruleToVerify += "       Person(age == 20)\n";
@@ -79,6 +82,25 @@ public class InvalidFieldConstraintTest {
         ruleToVerify += "end\n";
         fail++;
 
+
+        //FAIL
+        ruleToVerify += "rule \"rule5\"\n";
+        ruleToVerify += "   when\n";
+        ruleToVerify += "       Person($age: age)\n";
+        ruleToVerify += "       Person(age == $age)\n";
+        ruleToVerify += "   then\n";
+        ruleToVerify += "       System.out.println(\"Rule fired\");\n";
+        ruleToVerify += "end\n";
+        fail++;
+
+        //FAIL
+        ruleToVerify += "rule \"rule6\"\n";
+        ruleToVerify += "   when\n";
+        ruleToVerify += "       Person(age == globalAge)\n";
+        ruleToVerify += "   then\n";
+        ruleToVerify += "       System.out.println(\"Rule fired\");\n";
+        ruleToVerify += "end\n";
+        fail++;
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 

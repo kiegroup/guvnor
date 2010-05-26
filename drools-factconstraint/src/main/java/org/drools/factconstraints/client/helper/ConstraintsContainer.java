@@ -38,6 +38,10 @@ public class ConstraintsContainer {
 		config.setConstraintName("Matches");
 		config.setArgumentValue("matches", "");
 		constraintConfigs.put(config.getConstraintName(), config);
+
+		config = new SimpleConstraintConfigurationImpl();
+		config.setConstraintName("IvalidFieldConstraint");
+		constraintConfigs.put(config.getConstraintName(), config);
 	}
 	
 	private Map<String, List<ConstraintConfiguration>> constraints = new HashMap<String, List<ConstraintConfiguration>>();

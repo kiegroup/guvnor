@@ -29,4 +29,9 @@ public class InvalidFieldConstraint extends DefaultFieldConstraintImpl {
         return null;
     }
 
+    @Override
+    protected String getFieldRestrictionClassName(){
+        return "Restriction";
+    }
+
 }
