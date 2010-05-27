@@ -49,7 +49,12 @@ public class SecurityServiceImpl
     static final Map<String, String> PREFERENCES = loadPrefs();
 
     public boolean login(String userName,
-                         String password) {
+                         String password) {  	
+
+	if ( userName == null || userName.trim().equals( "" ) ) {
+ 		            userName = "admin";
+ 	}
+ 		
         log.info( "Logging in user [" + userName + "]" );
         if ( Contexts.isApplicationContextActive() ) {
 
