@@ -29,18 +29,18 @@
         </fileset>
     </path>
 
-<path id="gg.classpath">
-        <fileset dir="/home/trikkola/NotBackedUp/tools/gwt-2.0.3">
+<path id="gwt.classpath">
+        <fileset dir="${gwt.home}">
                 <include name="*.jar" />
                 <include name="*.xml" />
         </fileset>
     </path>
 
 
-<target name="gwtc"  description="GWT compile to JavaScript">
+<target name="gwt-compile"  description="GWT compile to JavaScript">
                 <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
   			<classpath>                      
-      			        <path refid="gg.classpath" />
+      			        <path refid="gwt.classpath" />
       			        <pathelement location="${src.dir}" />
 				<pathelement location="../drools-ide-common/src/main/java" />
 				<pathelement location="../drools-ide-common/src/main/resources" />
@@ -113,35 +113,6 @@
 	<!-- If JBoss AS was downloaded remove it -->
 	<target name="remove-jboss-as" unless="isJBossASDowloaded">
 		<delete file="${jbossAS.version}.zip" />
-	</target>
-
-    <target name="gwt-compile">
-		<gwt:compile outDir="target/gwt-compiled-output"
-			gwtHome="${gwt.home}"
-			classBase="org.drools.guvnor.Guvnor"
-			sourceclasspath="src/main/java; ../drools-ide-common/src/main/java; ../drools-ide-common/src/main/resources; ../drools-factconstraint/src/main/java; ../drools-factconstraint/src/main/resources; ../lib/gwtext.jar; ../lib/gwt-diagrams-0.1.jar; ../lib/cobogw-1.0.jar"/>
-		<!-- get rid of old -->
-	 	 <delete>
-	      <fileset dir="src/main/webapp/org.drools.guvnor.Guvnor" includes="*.gwt.rpc *.cache.html *.cache.js *.cache.xml *.cache.png"/>
-	    </delete>
-
-		<copy todir="src/main/webapp">
-			<fileset dir="target/gwt-compiled-output">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-	 	<delete>
-	      <fileset dir="src/main/webapp/.gwt-tmp"/>
-	    </delete>
-	</target>
-
-	<target name="gwt-shell">
-		<gwt:shell sourceclasspath="src/main/java/; ../drools-compiler/src/main/java"
-			bindir="target/classes"
-			outDir="src/main/webapp"
-			gwtHome="${gwt.home}"
-			startPage="org.drools.guvnor.Guvnor/Guvnor.html"
-		/>
 	</target>
 
     <target name="plug-editors">
