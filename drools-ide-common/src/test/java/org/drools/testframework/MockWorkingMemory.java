@@ -47,6 +47,7 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.runtime.Calendars;
+import org.drools.runtime.Channel;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
@@ -639,5 +640,10 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         // TODO Auto-generated method stub
         
     }
+
+	public Map<String, Channel> getChannels() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
