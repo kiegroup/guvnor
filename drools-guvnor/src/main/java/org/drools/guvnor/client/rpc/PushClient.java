@@ -1,10 +1,13 @@
 package org.drools.guvnor.client.rpc;
 
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.core.client.GWT;
 
 import java.util.List;
 import java.util.ArrayList;
+
+import org.drools.guvnor.client.common.GenericCallback;
 
 /**
  * This manages "subscriptions" for when messages are pushed from the server.
@@ -32,10 +35,31 @@ public class PushClient {
 
     private void connect() {
         connected = true;
+        
         System.err.println("Connecting" + System.currentTimeMillis());
+        Timer timer = new Timer() {
+
+            public void run() {
+                RepositoryServiceFactory.getService().subscribe(new AsyncCallback<List<PushResponse>>() {
+                    public void onFailure(Throwable caught) {
+                        System.err.println("FAIL" + System.currentTimeMillis());
+                    }
+
+                    public void onSuccess(List<PushResponse> result) {
+                        System.err.println("Got response !" + System.currentTimeMillis());
+                        processResult(result);
+                    }
+                });
+            }
+
+        };
+
+        timer.scheduleRepeating( 60000 );
+/*        
         RepositoryServiceFactory.getService().subscribe(new AsyncCallback<List<PushResponse>>() {
             public void onFailure(Throwable caught) {
                 System.err.println("FAIL" + System.currentTimeMillis());
+                
                 connect();
             }
 
@@ -44,7 +68,7 @@ public class PushClient {
                 processResult(result);
                 connect();
             }
-        });
+        });*/
 
     }
 

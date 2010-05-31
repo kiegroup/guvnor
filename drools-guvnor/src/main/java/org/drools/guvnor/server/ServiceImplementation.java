@@ -144,6 +144,7 @@ import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
+import org.jboss.seam.web.Session;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
@@ -2778,11 +2779,15 @@ public class ServiceImplementation
     }
 
     public List<PushResponse> subscribe() {
-        try {
-            return backchannel.await( getCurrentUserName() );
-        } catch ( InterruptedException e ) {
-            return new ArrayList<PushResponse>();
-        }
+    	if (Contexts.isApplicationContextActive() && !Session.instance().isInvalid()) {
+			try {
+				return backchannel.await(getCurrentUserName());
+			} catch (InterruptedException e) {
+				return new ArrayList<PushResponse>();
+			}
+		} else {
+			return new ArrayList<PushResponse>();
+		}
     }
 
     private String getCurrentUserName() {
