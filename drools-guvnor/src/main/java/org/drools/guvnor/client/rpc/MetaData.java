@@ -56,6 +56,8 @@ public class MetaData
     public String   checkinComment   = "";
 
     public boolean  disabled         = false;
+    public boolean  hasPreceedingVersion = false;
+    public boolean  hasSucceedingVersion = false;
 
     public Date     dateEffective;
     public Date     dateExpired;
