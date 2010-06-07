@@ -615,6 +615,9 @@ public class ServiceImplementation
         handler.retrieveAssetContent( asset,
                                       pkgItem,
                                       item );
+        
+        asset.isreadonly = asset.metaData.hasSucceedingVersion;
+
         if ( pkgItem.isSnapshot() ) {
             asset.isreadonly = true;
         }
@@ -675,6 +678,8 @@ public class ServiceImplementation
         meta.createdDate = calendarToDate( item.getCreatedDate() );
         meta.lastModifiedDate = calendarToDate( item.getLastModified() );
 
+        meta.hasPreceedingVersion = item.getPrecedingVersion() != null;
+        meta.hasSucceedingVersion = item.getSucceedingVersion() != null;
         return meta;
     }
 
