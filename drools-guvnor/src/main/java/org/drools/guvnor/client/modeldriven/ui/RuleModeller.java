@@ -143,7 +143,9 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
 
         //UNCOMMENT THIS WHEN READY !
         //if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_CREATE_NEW_PACKAGE)) return true;
-
+        if (this.asset.isreadonly){
+            return true;
+        }
 
         if (this.model.metadataList.length == 0) {
             return false;
