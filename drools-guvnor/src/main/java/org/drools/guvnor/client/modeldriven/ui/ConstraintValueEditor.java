@@ -15,7 +15,6 @@ package org.drools.guvnor.client.modeldriven.ui;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import com.google.gwt.event.dom.client.ChangeEvent;
 import java.util.List;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
@@ -32,11 +31,12 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -85,23 +85,17 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         valueType = sce.getFieldType(pattern.factType, fieldName);
         this.fieldType = valueType;
-        if (SuggestionCompletionEngine.TYPE_NUMERIC.equals(valueType)) {
-            this.numericValue = true;
-        } else {
-            this.numericValue = false;
-        }
+        this.numericValue = SuggestionCompletionEngine.TYPE_NUMERIC.equals(valueType);
         
         this.readOnly = readOnly;
         if (SuggestionCompletionEngine.TYPE_BOOLEAN.equals(valueType)) {
             this.dropDownData = DropDownData.create(new String[]{"true", "false"}); //NON-NLS
         } else {
-            this.dropDownData = sce.getEnums(pattern,
-                    fieldName);
+            this.dropDownData = sce.getEnums(pattern, fieldName);
         }
 
         refreshEditor();
         initWidget(panel);
-
     }
 
 	private void refreshEditor() {
@@ -109,11 +103,10 @@ public class ConstraintValueEditor extends DirtyableComposite {
         Widget constraintWidget = null;
         if (constraint.constraintValueType == SingleFieldConstraint.TYPE_UNDEFINED) {
             Image clickme = new Image("images/edit.gif"); //NON-NLS
-            clickme.addClickListener(new ClickListener() {
-
-                public void onClick(Widget w) {
-                    showTypeChoice(w,
-                            constraint);
+            clickme.addClickHandler(new ClickHandler() {
+				
+				public void onClick(ClickEvent event) {
+					showTypeChoice((Widget) event.getSource(), constraint);
                 }
             });
             constraintWidget = clickme;
@@ -169,7 +162,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 case SingleFieldConstraint.TYPE_RET_VALUE:
                 	constraintWidget = returnValueEditor();
                     break;
-                case SingleFieldConstraint.TYPE_EXPR_BUILDER:
+                case SingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE:
                 	constraintWidget = expressionEditor();
                     break;
                 case SingleFieldConstraint.TYPE_VARIABLE:
@@ -191,7 +184,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
             return new SmallLabel(this.constraint.value);
         }
 
-        List vars = this.model.getBoundVariablesInScope(this.constraint);
+        List<String> vars = this.model.getBoundVariablesInScope(this.constraint);
 
         final ListBox box = new ListBox();
 
@@ -200,8 +193,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         int j = 0;
-        for (int i = 0; i < vars.size(); i++) {
-            String var = (String) vars.get(i);
+        for (String var : vars) {
             FactPattern f = model.getBoundFact(var);
             String fv = model.getFieldConstraint(var);
             if ((f != null && f.factType.equals(this.fieldType)) || (fv != null && fv.equals(this.fieldType))) {
@@ -224,10 +216,10 @@ public class ConstraintValueEditor extends DirtyableComposite {
             }
         }
 
-        box.addChangeListener(new ChangeListener() {
-
-            public void onChange(Widget w) {
-                executeOnValueChangeCommand();
+        box.addChangeHandler(new ChangeHandler() {
+			
+			public void onChange(ChangeEvent event) {
+				executeOnValueChangeCommand();
                 constraint.value = box.getItemText(box.getSelectedIndex());
             }
         });
@@ -259,19 +251,25 @@ public class ConstraintValueEditor extends DirtyableComposite {
         if (!(this.constraint instanceof SingleFieldConstraint)) {
             throw new IllegalArgumentException("Expected SingleFieldConstraint, but " + constraint.getClass().getName() + " found.");
         }
-        ExpressionBuilder builder = new ExpressionBuilder(this.modeller, ((SingleFieldConstraint) this.constraint).getExpression());
+        ExpressionBuilder builder = new ExpressionBuilder(this.modeller, ((SingleFieldConstraint) this.constraint).getExpressionValue());
+        builder.addExpressionTypeChangeHandler(new ExpressionTypeChangeHandler() {
+			
+			public void onExpressionTypeChanged(ExpressionTypeChangeEvent event) {
+				System.out.println("type changed: " + event.getOldType() + " -> " + event.getNewType());
+			}
+		});
         builder.addOnModifiedCommand(new Command() {
 
             public void execute() {
                 executeOnValueChangeCommand();
             }
         });
-        String msg = constants.ExpressionEditor();
+//        String msg = constants.ExpressionEditor();
         Widget ed = widgets(new HTML("&nbsp;"),
                 builder);
         return ed;
     }
-
+    
     /**
      * Show a list of possibilities for the value type.
      */
@@ -281,10 +279,9 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 constants.FieldValue());
 
         Button lit = new Button(constants.LiteralValue());
-        lit.addClickListener(new ClickListener() {
-
-            public void onClick(Widget w) {
-                con.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
+        lit.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				con.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
                 doTypeChosen(form);
             }
         });
@@ -296,8 +293,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
 		if (modeller.isTemplate()) {
 	        String templateKeyLabel = constants.TemplateKey();
 	        Button templateKeyButton = new Button(templateKeyLabel);
-	        templateKeyButton.addClickListener(new ClickListener() {
-	            public void onClick(Widget arg0) {
+	        templateKeyButton.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
 	                con.constraintValueType = ISingleFieldConstraint.TYPE_TEMPLATE;
 	                doTypeChosen(form);
 	            }
@@ -314,14 +311,15 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         //only want to show variables if we have some !
         if (this.model.getBoundVariablesInScope(this.constraint).size() > 0 || SuggestionCompletionEngine.TYPE_COLLECTION.equals(this.fieldType)) {
-            List vars = this.model.getBoundFacts();
+            List<String> vars = this.model.getBoundFacts();
             boolean foundABouncVariableThatMatches = false;
-            for (int i = 0; i < vars.size(); i++) {
-                String var = (String) vars.get(i);
+            for (String var : vars) {
                 FactPattern f = model.getBoundFact(var);
                 String fieldConstraint = model.getFieldConstraint(var);
 
-                if ((f != null && f.factType.equals(this.fieldType)) || this.fieldType.equals(fieldConstraint)) {
+                if ((f != null && f.factType != null && this.fieldType != null) 
+                		&& (f.factType.equals(this.fieldType) 
+                			|| this.fieldType.equals(fieldConstraint))) {
                     foundABouncVariableThatMatches = true;
                     break;
                 } else {
@@ -334,11 +332,10 @@ public class ConstraintValueEditor extends DirtyableComposite {
                     }
                 }
             }
-            if (foundABouncVariableThatMatches == true) {
+            if (foundABouncVariableThatMatches) {
                 Button variable = new Button(constants.BoundVariable());
-                variable.addClickListener(new ClickListener() {
-
-                    public void onClick(Widget w) {
+                variable.addClickHandler(new ClickHandler() {
+        			public void onClick(ClickEvent event) {
                         con.constraintValueType = SingleFieldConstraint.TYPE_VARIABLE;
                         doTypeChosen(form);
                     }
@@ -351,9 +348,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         Button formula = new Button(constants.NewFormula());
-        formula.addClickListener(new ClickListener() {
-
-            public void onClick(Widget w) {
+        formula.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
                 con.constraintValueType = SingleFieldConstraint.TYPE_RET_VALUE;
                 doTypeChosen(form);
             }
@@ -365,10 +361,9 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 constants.FormulaExpressionTip())));
 
         Button expression = new Button(constants.ExpressionEditor());
-        expression.addClickListener(new ClickListener() {
-
-            public void onClick(Widget w) {
-                con.constraintValueType = SingleFieldConstraint.TYPE_EXPR_BUILDER;
+        expression.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+                con.constraintValueType = SingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE;
                 doTypeChosen(form);
             }
         });
@@ -377,7 +372,6 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 widgets(expression,
                 new InfoPopup(constants.ExpressionEditor(),
                 constants.ExpressionEditor())));
-
 
         form.show();
     }

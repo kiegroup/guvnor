@@ -1,20 +1,21 @@
 package org.drools.guvnor.client.modeldriven.ui.factPattern;
 
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.ui.ConstraintValueEditor;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
-import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
-import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
 
 public class Connectives {
     private FactPattern                pattern;
@@ -96,14 +97,14 @@ public class Connectives {
             if ( op.equals( con.operator ) ) {
                 box.setSelectedIndex( i + 1 );
             }
-
         }
 
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                con.operator = box.getValue( box.getSelectedIndex() );
-            }
-        } );
+		box.addChangeHandler(new ChangeHandler() {
+
+			public void onChange(ChangeEvent event) {
+				con.operator = box.getValue(box.getSelectedIndex());
+			}
+		});
 
         return box;
     }

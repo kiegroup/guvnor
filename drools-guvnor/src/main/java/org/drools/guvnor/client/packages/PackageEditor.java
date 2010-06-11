@@ -39,6 +39,8 @@ import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -301,16 +303,17 @@ public class PackageEditor extends PrettyFormLayout {
 
         addbutton.setTitle( constants.CreateCategoryRule() );
 
-        addbutton.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                if ( exw.getSelectedPath().length() > 0 && ruleName.getText().trim().length() > 0 ) {
+        addbutton.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+				if ( exw.getSelectedPath().length() > 0 && ruleName.getText().trim().length() > 0 ) {
                     addToCatRules( exw.getSelectedPath(),
                                    ruleName.getText() );
                 }
                 refreshWidgets();
                 pop.hide();
-            }
-        } );
+			}
+		});
 
         pop.addAttribute( constants.AllTheRulesInFollowingCategory(),
                           exw );

@@ -36,6 +36,11 @@ public class CopyExpressionVisitor implements ExpressionVisitor {
 		moveNext(part);
 	}
 
+	public void visit(ExpressionUnboundFact part) {
+		add(new ExpressionUnboundFact(part.getFact()));
+		moveNext(part);
+	}
+	
 	public void visit(ExpressionCollection part) {
 		add(new ExpressionCollection(part.getName(), part.getClassType(), part.getGenericType(), part.getParametricType()));
 		moveNext(part);

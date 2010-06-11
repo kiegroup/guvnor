@@ -62,14 +62,14 @@ public class SingleFieldConstraint extends ISingleFieldConstraint implements Fie
      * Returns true of there is a field binding.
      */
     public boolean isBound() {
-        return this.fieldBinding != null && this.fieldBinding.length() > 0 ;
+        return this.fieldBinding != null && this.fieldBinding.length() > 0; 
     }
 
-    public ExpressionFormLine getExpression() {
+    public ExpressionFormLine getExpressionValue() {
         return expression;
     }
 
-    public void setExpression(ExpressionFormLine expression) {
+    public void setExpressionValue(ExpressionFormLine expression) {
         this.expression = expression;
     }
 }

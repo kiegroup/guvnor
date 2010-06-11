@@ -204,21 +204,23 @@ public class SuggestionCompletionEngine implements PortableObject {
     
     public String[] getOperatorCompletions(final String factType,
                                            final String fieldName) {
-        final String type = this.getFieldType( factType, fieldName );
-        if ( type == null ) {
-            return STANDARD_OPERATORS;
-        } else if ( type.equals( TYPE_STRING ) ) {
-            return STRING_OPERATORS;
-        } else if ( type.equals( TYPE_COMPARABLE ) || type.equals( TYPE_DATE ) || type.equals( TYPE_NUMERIC ) ) {
-            return COMPARABLE_OPERATORS;
-        } else if ( type.equals( TYPE_COLLECTION ) ) {
-            return COLLECTION_OPERATORS;
-        } else {
-            return STANDARD_OPERATORS;
-        }
-
+        return getOperatorCompletions(getFieldType( factType, fieldName ));
     }
 
+	public String[] getOperatorCompletions(final String type) {
+		if (type == null) {
+			return STANDARD_OPERATORS;
+		} else if (type.equals(TYPE_STRING)) {
+			return STRING_OPERATORS;
+		} else if (type.equals(TYPE_COMPARABLE) || type.equals(TYPE_DATE) || type.equals(TYPE_NUMERIC)) {
+			return COMPARABLE_OPERATORS;
+		} else if (type.equals(TYPE_COLLECTION)) {
+			return COLLECTION_OPERATORS;
+		} else {
+			return STANDARD_OPERATORS;
+		}
+	}
+    
     public String[] getFieldCompletionsForGlobalVariable(final String varName) {
         final String type = this.getGlobalVariable( varName );
         return this.getModelFields(type);
@@ -248,6 +250,9 @@ public class SuggestionCompletionEngine implements PortableObject {
     public DropDownData getEnums(FactPattern pat,
                                  String field) {
 
+    	if (field == null) {
+    		return null;
+    	}
         Map<String, Object> dataEnumLookupFields = loadDataEnumLookupFields();
 
         if ( pat.constraintList != null && pat.constraintList.constraints != null ) {

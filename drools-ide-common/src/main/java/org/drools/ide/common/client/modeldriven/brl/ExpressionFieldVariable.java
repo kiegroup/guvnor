@@ -9,9 +9,6 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
  */
 public class ExpressionFieldVariable extends ExpressionText {
 	
-	@SuppressWarnings("unused")
-	private ExpressionFieldVariable() {}
-
 	public ExpressionFieldVariable(String name) {
 		super(name, "java.lang.String", SuggestionCompletionEngine.TYPE_FINAL_OBJECT);
 	}

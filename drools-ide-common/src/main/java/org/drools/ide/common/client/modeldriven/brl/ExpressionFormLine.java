@@ -5,7 +5,8 @@ import java.util.Map;
 
 public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 	
-    private LinkedList<ExpressionPart> parts = new LinkedList<ExpressionPart>() ;
+    private String bindVariable = null;
+	private LinkedList<ExpressionPart> parts = new LinkedList<ExpressionPart>() ;
     
     public ExpressionFormLine() {}
 
@@ -22,7 +23,7 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 	}
 
 	public String getText() {
-		return new ToStringVisitor().buildString(getRootExpression());
+		return new ToStringVisitor().buildString(getBindVariable(), getRootExpression());
 	}
 	
 	public void appendPart(ExpressionPart part) {
@@ -46,7 +47,7 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 		return parts.getLast();
 	}
 	
-	public String getPreviousType() {
+	public String getPreviousClassType() {
 		ExpressionPart last = getPreviousPart();
 		return last.getPrevious() == null ? null : last.getPrevious().getClassType(); 
 	}
@@ -56,7 +57,12 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 	}
 	
 	public String getGenericType() {
-		return parts.getLast().getGenericType();
+		return parts.isEmpty() ? null : parts.getLast().getGenericType();
+	}
+	
+	public String getPreviousGenericType() {
+		ExpressionPart prev = getPreviousPart().getPrevious();
+		return prev == null ? null : prev.getGenericType();
 	}
 
 	public String getParametricType() {
@@ -79,15 +85,29 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 	public ExpressionPart getRootExpression() {
 		return parts.isEmpty() ? null : parts.getFirst();
 	}
+
+	public boolean isBound() {
+		return bindVariable != null;
+	}
 	
+	public String getBindVariable() {
+		return bindVariable;
+	}
+
+	public void setBindVariable(String bindVariable) {
+		this.bindVariable = bindVariable;
+	}
+
 	private static class ToStringVisitor implements ExpressionVisitor {
 		private StringBuilder str;
+		private boolean first;
 		
-		public String buildString(ExpressionPart exp) {
+		public String buildString(String bindVariable, ExpressionPart exp) {
 			if (exp == null) {
 				return "";
 			}
-			str = new StringBuilder();
+			str = new StringBuilder(bindVariable == null ? "" : bindVariable );
+			first = true;
 			exp.accept(this);
 			return str.toString();
 		}
@@ -97,12 +117,18 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 		}
 
 		public void visit(ExpressionField part) {
-			str.append('.').append(part.getName());
+			if (!first) {
+				str.append('.');
+			}
+			str.append(part.getName());
 			moveNext(part);
 		}
 
 		public void visit(ExpressionMethod part) {
-			str.append('.').append(part.getName())
+			if (!first) {
+				str.append('.');
+			}
+			str.append(part.getName())
 				.append('(')
 				.append(paramsToString(part.getParams()))
 				.append(')');
@@ -114,13 +140,21 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 			moveNext(part);			
 		}
 
+		public void visit(ExpressionUnboundFact part) {
+			moveNext(part, false);
+		}
+
+		
 		public void visit(ExpressionGlobalVariable part) {
 			str.append(part.getName());
 			moveNext(part);
 		}
 
 		public void visit(ExpressionCollection part) {
-			str.append('.').append(part.getName());
+			if (!first) {
+				str.append('.');
+			}
+			str.append(part.getName());
 			moveNext(part);
 		}
 
@@ -141,13 +175,20 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 			ToStringVisitor stringVisitor = new ToStringVisitor();
 			StringBuilder strParams = new StringBuilder();
 			for (ExpressionFormLine param : params.values()) {
-				strParams.append(", ").append(stringVisitor.buildString(param.getRootExpression()));
+				strParams.append(", ").append(stringVisitor.buildString(param.getBindVariable(), param.getRootExpression()));
 			}
 			return strParams.substring(2);
 		}
 		
 		private void moveNext(ExpressionPart exp) {
+			moveNext(exp, true);
+		}
+		
+		private void moveNext(ExpressionPart exp, boolean resetFirst) {
 			if (exp.getNext() != null) {
+				if (resetFirst) {
+					first = false;
+				}
 				exp.getNext().accept(this);
 			}
 		}

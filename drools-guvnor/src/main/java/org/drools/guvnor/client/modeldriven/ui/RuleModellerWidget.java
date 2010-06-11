@@ -40,6 +40,10 @@ public abstract class RuleModellerWidget extends DirtyableComposite {
         }
         this.modified = modified;
     }
+    
+    protected boolean isModified() {
+        return modified;
+    }
 
     public void addOnModifiedCommand(Command command){
         this.onModifiedCommands.add(command);

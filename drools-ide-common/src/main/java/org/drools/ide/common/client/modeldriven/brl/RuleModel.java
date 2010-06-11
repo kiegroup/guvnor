@@ -127,27 +127,27 @@ public class RuleModel implements PortableObject {
 
         for (int j = 0; j < fact.getFieldConstraints().length; j++) {
             FieldConstraint fc = fact.getFieldConstraints()[j];
-            List<String> s = giveFieldBinding(fc);
+            List<String> s = getFieldBinding(fc);
             result.addAll(s);
         }
         return result;
     }
 
-    private List<String> giveFieldBinding(FieldConstraint f) {
+    private List<String> getFieldBinding(FieldConstraint f) {
         List<String> result = new ArrayList<String>();
         if (f instanceof SingleFieldConstraint) {
-            SingleFieldConstraint s = (SingleFieldConstraint) f;
-            if (s.isBound() == true) {
-                result.add(s.fieldBinding);
+            SingleFieldConstraint sfc = (SingleFieldConstraint) f;
+            if (sfc.isBound()) {
+                result.add(sfc.fieldBinding);
             }
         }
         if (f instanceof CompositeFieldConstraint) {
-            CompositeFieldConstraint s = (CompositeFieldConstraint) f;
+            CompositeFieldConstraint cfc = (CompositeFieldConstraint) f;
 
             //If the user didn't add any constraint yet, s.constraints is null
-            if (s.constraints != null){
-                for (FieldConstraint ss : s.constraints) {
-                    List<String> t = giveFieldBinding(ss);
+            if (cfc.constraints != null){
+                for (FieldConstraint ss : cfc.constraints) {
+                    List<String> t = getFieldBinding(ss);
                     result.addAll(t);
                 }
             }

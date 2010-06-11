@@ -28,11 +28,10 @@ import org.drools.io.ResourceFactory;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.drools.util.codec.Base64;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
-
-import sun.misc.BASE64Encoder;
 
 public class PackageDeploymentServletTest extends TestCase {
 
@@ -271,12 +270,12 @@ public class PackageDeploymentServletTest extends TestCase {
 		ServiceImplementation impl = new ServiceImplementation();
 		impl.repository = repo;
 
-		PackageItem pkg = repo.createPackage("testScenariosURL", "");
+		repo.createPackage("testScenariosURL", "");
 		impl.createPackageSnapshot("testScenariosURL", "SNAP1", false, "");
 
-        BASE64Encoder enc = new sun.misc.BASE64Encoder();
+		Base64 enc = new Base64();
         String userpassword = "test" + ":" + "password";
-        final String encodedAuthorization = enc.encode( userpassword.getBytes() );      
+        final String encodedAuthorization = enc.encodeToString( userpassword.getBytes() );      
 
         Map<String, String> headers = new HashMap<String, String>() {
             {

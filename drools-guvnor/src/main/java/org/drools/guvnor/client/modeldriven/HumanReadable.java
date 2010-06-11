@@ -14,17 +14,12 @@ package org.drools.guvnor.client.modeldriven;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-
-import org.drools.guvnor.client.messages.Constants;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.core.client.GWT;
+import org.drools.guvnor.client.messages.Constants;
 
-import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This contains some simple mappings between operators, conditional elements and the human readable
@@ -37,9 +32,9 @@ import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
  */
 public class HumanReadable {
 
-    public static Map operatorDisplayMap = new HashMap();
-    public static Map ceDisplayMap = new HashMap();
-    public static Map actionDisplayMap = new HashMap();
+    public static Map<String, String> operatorDisplayMap = new HashMap<String, String>();
+    public static Map<String, String> ceDisplayMap = new HashMap<String, String>();
+    public static Map<String, String> actionDisplayMap = new HashMap<String, String>();
     public static final String[] CONDITIONAL_ELEMENTS = new String[] {"not", "exists", "or"};
     public static final String[] FROM_CONDITIONAL_ELEMENTS = new String[] {"from","from accumulate","from collect"};
 
@@ -95,9 +90,6 @@ public class HumanReadable {
 
     }
 
-
-
-
     public static String getOperatorDisplayName(String op) {
         return lookup(op, operatorDisplayMap);
     }
@@ -106,16 +98,12 @@ public class HumanReadable {
         return lookup( ce, ceDisplayMap );
     }
 
-    private static String lookup(String ce, Map map) {
-        if (map.containsKey(ce)) {
-            return (String) map.get(ce);
-        } else {
-            return ce;
-        }
+    private static String lookup(String ce, Map<String, String> map) {
+    	String ret = map.get(ce);
+    	return ret == null ? ce : ret;
     }
 
     public static String getActionDisplayName(String action) {
         return lookup(action, actionDisplayMap);
     }
-
 }

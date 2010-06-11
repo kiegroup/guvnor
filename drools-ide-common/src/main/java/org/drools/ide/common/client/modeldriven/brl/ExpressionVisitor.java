@@ -9,4 +9,5 @@ public interface ExpressionVisitor {
 	void visit(ExpressionCollection part);
 	void visit(ExpressionCollectionIndex part);
 	void visit(ExpressionText part);
+	void visit(ExpressionUnboundFact part);
 }

@@ -3,24 +3,27 @@ package org.drools.guvnor.client.modeldriven.ui.factPattern;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionFormLine;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionUnboundFact;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
 import com.gwtext.client.util.Format;
 
 public class PopupCreator {
@@ -101,9 +104,8 @@ public class PopupCreator {
         vn.add(varName);
         vn.add(ok);
 
-        ok.addClickListener(new ClickListener() {
-
-            public void onClick(Widget w) {
+        ok.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
                 String var = varName.getText();
                 if (modeller.isVariableNameUsed(var)) {
                     Window.alert(Format.format(constants.TheVariableName0IsAlreadyTaken(), var));
@@ -118,9 +120,8 @@ public class PopupCreator {
         if (fields != null) {
             Button sub = new Button(constants.ShowSubFields());
             popup.addAttribute(Format.format(constants.ApplyAConstraintToASubFieldOf0(), con.fieldName), sub);
-            sub.addClickListener(new ClickListener() {
-
-                public void onClick(Widget sender) {
+            sub.addClickHandler(new ClickHandler() {
+    			public void onClick(ClickEvent event) {
                     popup.hide();
                     popupCreator.showPatternPopup(w, con.fieldType, con);
                 }
@@ -146,9 +147,8 @@ public class PopupCreator {
 
         box.setSelectedIndex(0);
 
-        box.addChangeListener(new ChangeListener() {
-
-            public void onChange(Widget w) {
+        box.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
                 composite.addConstraint(new SingleFieldConstraint(box.getItemText(box.getSelectedIndex())));
                 modeller.refreshWidget();
                 popup.hide();
@@ -163,9 +163,8 @@ public class PopupCreator {
         composites.addItem(constants.AnyOfOr(), CompositeFieldConstraint.COMPOSITE_TYPE_OR);
         composites.setSelectedIndex(0);
 
-        composites.addChangeListener(new ChangeListener() {
-
-            public void onChange(Widget w) {
+        composites.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
                 CompositeFieldConstraint comp = new CompositeFieldConstraint();
                 comp.compositeJunctionType = composites.getValue(composites.getSelectedIndex());
                 composite.addConstraint(comp);
@@ -204,12 +203,11 @@ public class PopupCreator {
 
         box.setSelectedIndex(0);
 
-        box.addChangeListener(new ChangeListener() {
-
-            public void onChange(Widget w) {
+        box.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
                 String fieldName = box.getItemText(box.getSelectedIndex());
                 String qualifiedName = factType + "." + fieldName;
-                String fieldType = (String) completions.getFieldType(qualifiedName);
+                String fieldType = completions.getFieldType(qualifiedName);
                 pattern.addConstraint(new SingleFieldConstraint(fieldName, fieldType, con));
                 modeller.refreshWidget();
                 popup.hide();
@@ -217,16 +215,14 @@ public class PopupCreator {
         });
         popup.addAttribute(constants.AddARestrictionOnAField(), box);
 
-
         final ListBox composites = new ListBox();
         composites.addItem("...");
         composites.addItem(constants.AllOfAnd(), CompositeFieldConstraint.COMPOSITE_TYPE_AND);
         composites.addItem(constants.AnyOfOr(), CompositeFieldConstraint.COMPOSITE_TYPE_OR);
         composites.setSelectedIndex(0);
 
-        composites.addChangeListener(new ChangeListener() {
-
-            public void onChange(Widget w) {
+        composites.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
                 CompositeFieldConstraint comp = new CompositeFieldConstraint();
                 comp.compositeJunctionType = composites.getValue(composites.getSelectedIndex());
                 pattern.addConstraint(comp);
@@ -245,14 +241,11 @@ public class PopupCreator {
             popup.addAttribute(constants.MultipleFieldConstraint(), horiz);
         }
 
-
-        //popup.addRow( new HTML("<hr/>") );
         if (con == null) {
             popup.addRow(new SmallLabel("<i>" + constants.AdvancedOptionsColon() + "</i>")); //NON-NLS
-            final Button predicate = new Button(constants.NewFormula());
-            predicate.addClickListener(new ClickListener() {
-
-                public void onClick(Widget w) {
+            Button predicate = new Button(constants.NewFormula());
+            predicate.addClickHandler(new ClickHandler() {
+    			public void onClick(ClickEvent event) {
                     SingleFieldConstraint con = new SingleFieldConstraint();
                     con.constraintValueType = SingleFieldConstraint.TYPE_PREDICATE;
                     pattern.addConstraint(con);
@@ -261,7 +254,21 @@ public class PopupCreator {
                 }
             });
             popup.addAttribute(constants.AddANewFormulaStyleExpression(), predicate);
-
+            
+            Button ebBtn = new Button(constants.ExpressionEditor());
+            
+            ebBtn.addClickHandler(new ClickHandler() {
+    			public void onClick(ClickEvent event) {
+                    SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
+                    con.constraintValueType = SingleFieldConstraint.TYPE_UNDEFINED;
+                    pattern.addConstraint(con);
+                    con.setExpressionLeftSide(new ExpressionFormLine(new ExpressionUnboundFact(pattern)));
+                    modeller.refreshWidget();
+                    popup.hide();
+                }
+            });
+            popup.addAttribute(constants.ExpressionEditor(), ebBtn);
+                        
             doBindingEditor(popup);
         }
 
@@ -288,9 +295,8 @@ public class PopupCreator {
             varName.add(varTxt);
 
             Button bindVar = new Button(constants.Set());
-            bindVar.addClickListener(new ClickListener() {
-
-                public void onClick(Widget w) {
+            bindVar.addClickHandler(new ClickHandler() {
+    			public void onClick(ClickEvent event) {
                     String var = varTxt.getText();
                     if (modeller.isVariableNameUsed(var)) {
                         Window.alert(Format.format(constants.TheVariableName0IsAlreadyTaken(), var));
